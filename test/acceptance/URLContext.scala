@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.decex.controllers
+package acceptance
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc._
+import org.scalatestplus.play.BaseOneServerPerSuite
 
-import scala.concurrent.Future
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.decex.config.AppConfig
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+trait URLContext {
+  self: BaseOneServerPerSuite =>
+  
+  override lazy val port = Env.port
 
-@Singleton
-class DeclareExports @Inject()(val messagesApi: MessagesApi, implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
-
-  val selectRole = Action.async { implicit request =>
-    Future.successful(Ok(uk.gov.hmrc.decex.views.html.select_role()))
-  }
-
+  def url(url: String): String = s"http://localhost:$port/declare-exports-frontend/${url.stripPrefix("/")}"
 }

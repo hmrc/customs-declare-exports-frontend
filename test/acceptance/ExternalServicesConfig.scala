@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.decex.controllers
+package acceptance
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc._
-
-import scala.concurrent.Future
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.decex.config.AppConfig
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-
-@Singleton
-class DeclareExports @Inject()(val messagesApi: MessagesApi, implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
-
-  val selectRole = Action.async { implicit request =>
-    Future.successful(Ok(uk.gov.hmrc.decex.views.html.select_role()))
-  }
-
+object ExternalServicesConfig {
+  val Port: Int = sys.env.getOrElse("WIREMOCK_SERVICE_LOCATOR_PORT", "11111").toInt
+  val Host = "localhost"
+  val sessionCacheDomain = "test-only/keystore"
+  val shortLivedCacheDomain = "test-only/save4later"
+  val cdsFrontendSource = "cds-frontend"
+  val subscriptionEoriNumber = "ZZZ1ZZZZ23ZZZZZZZ"
+  val etmpFormBundleId = "077063075008"
 }

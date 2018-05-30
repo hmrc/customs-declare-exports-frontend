@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.decex.controllers
+package acceptance
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc._
+object TestEnvironment extends Enumeration {
 
-import scala.concurrent.Future
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.decex.config.AppConfig
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+  type TestEnvironment = Value
 
-@Singleton
-class DeclareExports @Inject()(val messagesApi: MessagesApi, implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
+  val DEV = Value("dev")
+  val QA = Value("qa")
+  val LOCAL = Value("local")
 
-  val selectRole = Action.async { implicit request =>
-    Future.successful(Ok(uk.gov.hmrc.decex.views.html.select_role()))
+  def withNameEither(s: String): Either[String, Value] = values.find(_.toString.toLowerCase == s.toLowerCase) match {
+    case None => Left(s"Environment name $s is incorrect")
+    case Some(v) => Right(v)
   }
-
 }

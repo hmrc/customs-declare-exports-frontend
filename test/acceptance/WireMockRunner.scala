@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.decex.controllers
+package acceptance
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc._
+import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
+import ExternalServicesConfig._
 
-import scala.concurrent.Future
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.decex.config.AppConfig
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+trait WireMockRunner {
 
-@Singleton
-class DeclareExports @Inject()(val messagesApi: MessagesApi, implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
+  lazy val wireMockUrl = s"http://$Host:$Port"
+  lazy val wireMockServer = new WireMockServer(wireMockConfig().port(Port))
 
-  val selectRole = Action.async { implicit request =>
-    Future.successful(Ok(uk.gov.hmrc.decex.views.html.select_role()))
+  def startMockServer() {
+    if (!wireMockServer.isRunning) wireMockServer.start()
+    WireMock.configureFor(Host, Port)
   }
 
+  def resetMockServer() {
+    WireMock.reset()
+  }
+
+  def stopMockServer() {
+    wireMockServer.stop()
+  }
 }

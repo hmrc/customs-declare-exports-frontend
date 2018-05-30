@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.decex.controllers
+package role
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc._
+import acceptance.{StubbedWordSpecWithOneServerPerSuite, URLContext}
 
-import scala.concurrent.Future
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.decex.config.AppConfig
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+class SelectRoleSpec extends StubbedWordSpecWithOneServerPerSuite  with URLContext {
 
-@Singleton
-class DeclareExports @Inject()(val messagesApi: MessagesApi, implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
+  "Select Role" should {
 
-  val selectRole = Action.async { implicit request =>
-    Future.successful(Ok(uk.gov.hmrc.decex.views.html.select_role()))
+    "Display a selectable radio button for each choice of role" in {
+
+      go to url("/select-role")
+
+      pageTitle mustBe "Select role"
+    }
   }
-
 }
