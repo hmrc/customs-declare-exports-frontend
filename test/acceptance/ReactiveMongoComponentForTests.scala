@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.decex.controllers
+package acceptance
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc._
-
-import scala.concurrent.Future
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.decex.config.AppConfig
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.Application
+import play.api.inject.DefaultApplicationLifecycle
+import play.modules.reactivemongo.ReactiveMongoComponentImpl
 
 @Singleton
-class DeclareExports @Inject()(val messagesApi: MessagesApi, implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
-
-  val selectRole = Action.async { implicit request =>
-    Future.successful(Ok(uk.gov.hmrc.decex.views.html.select_role()))
-  }
-
-}
+class ReactiveMongoComponentForTests @Inject()(app: Application) extends ReactiveMongoComponentImpl(app, new DefaultApplicationLifecycle())
