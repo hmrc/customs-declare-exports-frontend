@@ -16,9 +16,10 @@
 
 package role
 
-import acceptance.{StubbedWordSpecWithOneServerPerSuite, URLContext}
+import acceptance.URLContext
+import org.scalatestplus.play.{HtmlUnitFactory, OneBrowserPerSuite, OneServerPerSuite, PlaySpec}
 
-class SelectRoleSpec extends StubbedWordSpecWithOneServerPerSuite  with URLContext {
+class SelectRoleSpec extends PlaySpec with OneServerPerSuite with OneBrowserPerSuite with HtmlUnitFactory with URLContext {
 
   "Select Role" should {
 
