@@ -23,7 +23,7 @@ class SelectRoleSpec extends PlaySpec with OneServerPerSuite with OneBrowserPerS
 
   "Select Role" should {
 
-    "Display a selectable radio button for each choice of role" in {
+    "Go to the Select role page" in {
 
       go to url("/select-role")
 
