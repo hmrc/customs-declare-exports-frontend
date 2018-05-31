@@ -42,32 +42,32 @@
                         Is this part of a consolidation or linked to a wider shipment?
                     </legend>
 
-                    <div class="multiple-choice" data-target="contact-by-email">
-                        <input id="example-contact-by-email" type="radio" name="radio-contact-group" value="Yes">
-                        <label for="example-contact-by-email">Yes</label>
+                    <div class="multiple-choice" data-target="is-consolidation">
+                        <input id="is-consolidation-yes" type="radio" name="radio-consolidation-group" value="Yes">
+                        <label for="is-consolidation-yes">Yes</label>
                     </div>
-                    <div class="panel panel-border-narrow js-hidden" id="contact-by-email">
+                    <div class="panel panel-border-narrow">
                         <div class="form-group">
                             <label class="form-label" for="mucr-both">Enter Master Unique Consignment Reference (MUCR)</label>
                             <span class="form-hint">Alphanumeric, max 35 characters, eg GB1234567890001410-0124-411018Aq</span>
-                            <input class="form-control" name="mucr-both" type="text" id="contact-email">
+                            <input class="form-control" name="mucr-both" type="text" id="mucr-both">
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="ducr-both">Enter Declaration Unique Consignment Reference (DUCR)</label>
                             <span class="form-hint">Alphanumeric, max 35 characters, eg GB1234567890001410-0124-411018Aq</span>
-                            <input class="form-control" name="ducr-both" type="text" id="contact-email">
+                            <input class="form-control" name="ducr-both" type="text" id="ducr-both">
                         </div>
                     </div>
 
-                    <div class="multiple-choice" data-target="contact-by-phone">
-                        <input id="example-contact-by-phone" type="radio" name="radio-contact-group" value="No">
-                        <label for="example-contact-by-phone">No</label>
+                    <div class="multiple-choice" data-target="is-consolidation">
+                        <input id="is-consolidation-no" type="radio" name="radio-consolidation-group" value="No">
+                        <label for="is-consolidation-no">No</label>
                     </div>
-                    <div class="panel panel-border-narrow js-hidden" id="contact-by-phone">
+                    <div class="panel panel-border-narrow">
                         <div class="form-group">
-                            <label class="form-label" for="ducr-both">Enter Declaration Unique Consignment Reference (DUCR)</label>
+                            <label class="form-label" for="ducr">Enter Declaration Unique Consignment Reference (DUCR)</label>
                             <span class="form-hint">Alphanumeric, max 35 characters, eg GB1234567890001410-0124-411018Aq</span>
-                            <input class="form-control" name="ducr-both" type="text" id="contact-email">
+                            <input class="form-control" name="ducr" type="text" id="ducr">
                         </div>
                     </div>
 
@@ -76,7 +76,7 @@
             <br>
 
             <div class="form-group">
-                <button class="button">Save and continue</button>
+                <button id="save-and-continue" class="button">Save and continue</button>
             </div>
 
             <a href="summary-consignment">Save and come back later</a>

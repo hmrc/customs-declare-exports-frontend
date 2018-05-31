@@ -24,5 +24,6 @@ lazy val microservice = Project(appName, file("."))
     addTestReportOption(IntegrationTest, "int-test-reports")
   )
   .settings(
-    resolvers += Resolver.jcenterRepo
+//    resolvers += Resolver.jcenterRepo
+      resolvers += "Sonatype Repo" at "http://oss.sonatype.org/content/groups/public/"
   )

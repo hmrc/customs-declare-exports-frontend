@@ -22,7 +22,9 @@ object AppDependencies {
     "org.jsoup" % "jsoup" % "1.11.3" % scope,
     "com.github.tomakehurst" % "wiremock-standalone" % "2.13.0" % scope,
 //    "uk.gov.hmrc" %% "play-reactivemongo" % "6.1.0" % scope   TODO I want this version but the rosm example resolved to 5.2.0 - newer version breaks my code
-    "uk.gov.hmrc" %% "play-reactivemongo" % "5.2.0" % scope
+    "uk.gov.hmrc" %% "play-reactivemongo" % "5.2.0" % scope,
+    "im.mange" %% "flakeless" % "0.0.29" % scope
+
   )
 
 }

@@ -18,16 +18,24 @@ package declaration.create
 
 import acceptance.URLContext
 import org.scalatestplus.play.{HtmlUnitFactory, OneBrowserPerSuite, OneServerPerSuite, PlaySpec}
+import im.mange.flakeless._
+import org.openqa.selenium.{By, WebDriver, WebElement}
 
 class IsThisPartOfAConsolidationSpec extends PlaySpec with OneServerPerSuite with OneBrowserPerSuite with HtmlUnitFactory with URLContext {
 
   "Is this part of a consolidation" should {
 
-    "Prompt for DUCR when 'No' is selected" in {
+    "Enter DUCR when 'No' is selected" in {
 
       go to url("/mucr-ref-ducr")
 
       pageTitle mustBe "Full export declaration"
+
+      Click(webDriver, By.id("is-consolidation-no"))
+
+      SendKeys(webDriver, By.id("ducr"), "GB1234567890001410-0124-411018Aq")
+
+      Click(webDriver, By.id("save-and-continue"))
     }
   }
 }
