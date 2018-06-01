@@ -4,6 +4,15 @@
 
 Declare Exports Frontend Application
 
+
+
+#Developer notes
+You may want to point to a non-local frontend Assets server.  If so then simply set an environment variable 
+ASSETS_URL
+
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
+
+
+

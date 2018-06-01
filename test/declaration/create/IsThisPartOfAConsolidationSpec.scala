@@ -37,8 +37,9 @@ class IsThisPartOfAConsolidationSpec extends PlaySpec with OneServerPerSuite wit
 
       Click(webDriver, By.id("save-and-continue"))
 
-      pageTitle mustBe "Full export declaration"
+      pageTitle mustBe "Full export declaration: Consolidation saved"
 
+      AssertElementTextContains(webDriver, By.id("consolidation-saved"), "Consolidation saved. Id :")
     }
   }
 }

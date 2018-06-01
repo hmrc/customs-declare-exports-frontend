@@ -16,4 +16,4 @@
 
 package uk.gov.hmrc.decex.model
 
-case class Consolidation(id: String = "", ducr: String)
+case class Consolidation(id: Option[String] = None, ducr: String)

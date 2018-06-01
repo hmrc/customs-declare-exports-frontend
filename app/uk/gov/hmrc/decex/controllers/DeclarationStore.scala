@@ -21,5 +21,5 @@ import java.util.UUID
 import uk.gov.hmrc.decex.model.Consolidation
 
 object DeclarationStore {
-  def save(consolidation: Consolidation): Consolidation = consolidation.copy(id = UUID.randomUUID().toString())
+  def save(consolidation: Consolidation): Consolidation = consolidation.copy(id = Some(UUID.randomUUID().toString()))
 }

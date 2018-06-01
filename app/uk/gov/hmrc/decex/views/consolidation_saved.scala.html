@@ -19,14 +19,14 @@
 
 @(consolidation: Consolidation)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = "Full export declaration", bodyClasses = None) {
+@main_template(title = "Full export declaration: Consolidation saved", bodyClasses = None) {
 
-<div class="phase-banner">
-    <p>
-        <strong class="phase-tag">ALPHA</strong>
-        <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
-    </p>
-</div>
+    <div class="phase-banner">
+        <p>
+            <strong class="phase-tag">ALPHA</strong>
+            <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+        </p>
+    </div>
 
-<div id="consolidation-saved"> Consolidation saved. Id : @consolidation.id</div>
+    <div id="consolidation-saved">@{consolidation.id.map(id => s"Consolidation saved. Id : $id").getOrElse("Error saving consolidation")}</div>
 }
