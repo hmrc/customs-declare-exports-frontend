@@ -1,6 +1,7 @@
 # microservice specific routes
 
 GET        /select-role             @uk.gov.hmrc.decex.controllers.DeclareExports.selectRole
-GET        /mucr-ref-ducr           @uk.gov.hmrc.decex.controllers.IsThisPartOfAConsolidation.choose
+GET        /mucr-ref-ducr           @uk.gov.hmrc.decex.controllers.IsThisPartOfAConsolidation.showChoice
+POST       /mucr-ref-ducr           @uk.gov.hmrc.decex.controllers.IsThisPartOfAConsolidation.choose
 
 

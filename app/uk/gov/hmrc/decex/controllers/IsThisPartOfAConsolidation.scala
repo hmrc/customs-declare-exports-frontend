@@ -17,19 +17,58 @@
 package uk.gov.hmrc.decex.controllers
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.decex.config.AppConfig
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.data._
+import play.api.data.Forms._
+import play.api.data.validation.Constraints._
+import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
+import uk.gov.hmrc.auth.core.AuthProviders
+import uk.gov.hmrc.decex.model.Consolidation
+import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAction}
 
 import scala.concurrent.Future
 
 @Singleton
 class IsThisPartOfAConsolidation @Inject()(val messagesApi: MessagesApi, implicit val appConfig: AppConfig) extends FrontendController with I18nSupport {
 
+  val consolidationForm = Form(
+    mapping(
+      "id" -> text,
+      "ducr" -> nonEmptyText(maxLength = 35)
+    )(Consolidation.apply)(Consolidation.unapply)
+  )
 
-  val choose = Action.async { implicit request =>
-    Future.successful(Ok(uk.gov.hmrc.decex.views.html.choose_consolidation()))
+  def showChoice = Action.async { implicit request =>
+    Future.successful(Ok(uk.gov.hmrc.decex.views.html.choose_consolidation(consolidationForm)))
   }
 
+  def choose = Action.async { implicit request =>
+
+    println("I am choosing...")
+    
+    Future.successful(Ok(uk.gov.hmrc.decex.views.html.choose_consolidation(consolidationForm)))
+  }
+
+//  def choose = UnauthorisedAction.async { implicit request =>
+//
+//    Logger.info(s"You clicked the save button with ducr: ${request.queryString.get("ducr")}")
+//
+//    consolidationForm.bindFromRequest().fold(
+//      formWithErrors => Future.successful(BadRequest(uk.gov.hmrc.decex.views.html.choose_consolidation(formWithErrors))),
+//
+//      consolidation => {
+//        val consolidationWithId = DeclarationStore.save(consolidation)
+//        consolidationForm.bind(Map("id" -> consolidationWithId.id))
+////        Future.successful(Ok)
+//        Future.successful(Ok(uk.gov.hmrc.decex.views.html.choose_consolidation(consolidationForm)))
+//      }
+//    )
+//  }
+
+
 }
+
+

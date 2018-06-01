@@ -36,6 +36,9 @@ class IsThisPartOfAConsolidationSpec extends PlaySpec with OneServerPerSuite wit
       SendKeys(webDriver, By.id("ducr"), "GB1234567890001410-0124-411018Aq")
 
       Click(webDriver, By.id("save-and-continue"))
+
+      pageTitle mustBe "Full export declaration"
+
     }
   }
 }

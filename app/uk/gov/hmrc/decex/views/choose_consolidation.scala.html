@@ -15,8 +15,10 @@
  *@
 
 @import uk.gov.hmrc.decex.config.AppConfig
+@import uk.gov.hmrc.decex.model.Consolidation
+@import helper._
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[Consolidation])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = "Full export declaration", bodyClasses = None) {
 
@@ -30,59 +32,56 @@
 <div class="grid-row">
     <div class="column-two-thirds">
 
-        <form class="form" name="establishedin" action="ducr">
+        @helper.form(uk.gov.hmrc.decex.controllers.routes.IsThisPartOfAConsolidation.choose, 'class -> "form", 'id -> "consolidation-form") {
 
-            <a class="link-back back-to-previous" href='#' onclick="goBack()">Back<span class="visuallyhidden"> to the previous question</span></a>
+        <a class="link-back back-to-previous" href='#' onclick="goBack()">Back<span class="visuallyhidden"> to the previous question</span></a>
 
-            <div class="field-group">
-                <fieldset>
+        <div class="field-group">
+            <fieldset>
 
-                    <legend class="heading-large" role="heading" aria level="1">
-                        <span class="heading-secondary">Consignment</span>
-                        Is this part of a consolidation or linked to a wider shipment?
-                    </legend>
+                <legend class="heading-large" role="heading" aria level="1">
+                    <span class="heading-secondary">Consignment</span>
+                    Is this part of a consolidation or linked to a wider shipment?
+                </legend>
 
-                    <div class="multiple-choice" data-target="is-consolidation">
-                        <input id="is-consolidation-yes" type="radio" name="radio-consolidation-group" value="Yes">
-                        <label for="is-consolidation-yes">Yes</label>
+                <div class="multiple-choice" data-target="is-consolidation">
+                    <input id="is-consolidation-yes" type="radio" name="radio-consolidation-group" value="Yes">
+                    <label for="is-consolidation-yes">Yes</label>
+                </div>
+                <div class="panel panel-border-narrow">
+                    <div class="form-group">
+                        <label class="form-label" for="mucr-both">Enter Master Unique Consignment Reference (MUCR)</label>
+                        <span class="form-hint">Alphanumeric, max 35 characters, eg GB1234567890001410-0124-411018Aq</span>
+                        <input class="form-control" name="mucr-both" type="text" id="mucr-both">
                     </div>
-                    <div class="panel panel-border-narrow">
-                        <div class="form-group">
-                            <label class="form-label" for="mucr-both">Enter Master Unique Consignment Reference (MUCR)</label>
-                            <span class="form-hint">Alphanumeric, max 35 characters, eg GB1234567890001410-0124-411018Aq</span>
-                            <input class="form-control" name="mucr-both" type="text" id="mucr-both">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="ducr-both">Enter Declaration Unique Consignment Reference (DUCR)</label>
-                            <span class="form-hint">Alphanumeric, max 35 characters, eg GB1234567890001410-0124-411018Aq</span>
-                            <input class="form-control" name="ducr-both" type="text" id="ducr-both">
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label" for="ducr-both">Enter Declaration Unique Consignment Reference (DUCR)</label>
+                        <span class="form-hint">Alphanumeric, max 35 characters, eg GB1234567890001410-0124-411018Aq</span>
+                        <input class="form-control" name="ducr-both" type="text" id="ducr-both">
                     </div>
+                </div>
 
-                    <div class="multiple-choice" data-target="is-consolidation">
-                        <input id="is-consolidation-no" type="radio" name="radio-consolidation-group" value="No">
-                        <label for="is-consolidation-no">No</label>
+                <div class="multiple-choice" data-target="is-consolidation">
+                    <input id="is-consolidation-no" type="radio" name="radio-consolidation-group" value="No">
+                    <label for="is-consolidation-no">No</label>
+                </div>
+                <div class="panel panel-border-narrow">
+                    <div class="form-group">
+                        @inputText(form("ducr"))
                     </div>
-                    <div class="panel panel-border-narrow">
-                        <div class="form-group">
-                            <label class="form-label" for="ducr">Enter Declaration Unique Consignment Reference (DUCR)</label>
-                            <span class="form-hint">Alphanumeric, max 35 characters, eg GB1234567890001410-0124-411018Aq</span>
-                            <input class="form-control" name="ducr" type="text" id="ducr">
-                        </div>
-                    </div>
+                </div>
 
-                </fieldset>
-            </div>
-            <br>
+            </fieldset>
+        </div>
+        <br>
 
-            <div class="form-group">
-                <button id="save-and-continue" class="button">Save and continue</button>
-            </div>
+        <div class="form-group">
+            <input id="save-and-continue" class="button" type="submit" value="Save and continue">
+        </div>
 
-            <a href="summary-consignment">Save and come back later</a>
+        <a href="summary-consignment">Save and come back later</a>
 
-        </form>
-
+        }
     </div>
 </div>
 }
