@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
-package views
+package models
 
-import views.behaviours.ViewBehaviours
-import views.html.session_expired
+import utils.{Enumerable, RadioOption, WithName}
 
-class SessionExpiredViewSpec extends ViewBehaviours {
+sealed trait SelectRole
 
-  def view = () => session_expired(frontendAppConfig)(fakeRequest, messages)
+object SelectRole {
 
-  "Session Expired view" must {
+  case object Webloaderarrivinggoods extends WithName("webLoaderArrivingGoods") with SelectRole
+  case object Webloaderdepartinggoods extends WithName("webLoaderDepartingGoods") with SelectRole
 
-    behave like normalPage(view, "session_expired", "guidance")
+  val values: Set[SelectRole] = Set(
+    Webloaderarrivinggoods, Webloaderdepartinggoods
+  )
+
+  val options: Set[RadioOption] = values.map {
+    value =>
+      RadioOption("selectRole", value.toString)
   }
+
+  implicit val enumerable: Enumerable[SelectRole] =
+    Enumerable(values.toSeq.map(v => v.toString -> v): _*)
 }

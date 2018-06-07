@@ -1,27 +1,17 @@
-import sbt.Keys._
-import sbt.Tests.{Group, SubProcess}
-import sbt._
-import scoverage.ScoverageKeys
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
-
+import TestPhases._
+import com.typesafe.sbt.digest.Import._
+import com.typesafe.sbt.uglify.Import._
 import com.typesafe.sbt.web.Import._
 import net.ground5hark.sbt.concat.Import._
-import com.typesafe.sbt.uglify.Import._
-import com.typesafe.sbt.digest.Import._
-import uk.gov.hmrc._
-import DefaultBuildSettings._
-import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt, SbtAutoBuildPlugin}
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
-import play.sbt.routes.RoutesKeys.routesGenerator
-import play.sbt.routes.RoutesKeys
+import sbt.Keys._
+import sbt._
+import uk.gov.hmrc.DefaultBuildSettings._
+import uk.gov.hmrc.{SbtAutoBuildPlugin, _}
 
-import TestPhases._
-
-val appName = "customs-decex-frontend"
+val appName = "customs-declare-exports-frontend"
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin)
+  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin)
   .settings(
     scalacOptions ++= Seq("-Xfatal-warnings", "-feature"),
     libraryDependencies ++= AppDependencies(),

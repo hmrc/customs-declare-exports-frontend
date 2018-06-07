@@ -14,6 +14,18 @@
  * limitations under the License.
  */
 
-package viewmodels
+package forms
 
-case class AnswerRow(label: String, answer: String, answerIsMessageKey: Boolean, changeUrl: String)
+import javax.inject.Inject
+
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.SelectRole
+
+class SelectRoleFormProvider @Inject() extends FormErrorHelper with Mappings {
+
+  def apply(): Form[SelectRole] =
+    Form(
+      "value" -> enumerable[SelectRole]("selectRole.error.required")
+    )
+}

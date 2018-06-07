@@ -16,8 +16,30 @@
 
 package forms
 
+import forms.behaviours.OptionFieldBehaviours
+import models.SelectRole
 import play.api.data.FormError
 
-trait FormErrorHelper {
-  def produceError(key: String, error: String) = Left(Seq(FormError(key, error)))
+class SelectRoleFormProviderSpec extends OptionFieldBehaviours {
+
+  val form = new SelectRoleFormProvider()()
+
+  ".value" must {
+
+    val fieldName = "value"
+    val requiredKey = "selectRole.error.required"
+
+    behave like optionsField[SelectRole](
+      form,
+      fieldName,
+      validValues  = SelectRole.values,
+      invalidError = FormError(fieldName, "error.invalid")
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

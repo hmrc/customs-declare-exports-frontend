@@ -15,25 +15,31 @@
  *@
 
 @import config.FrontendAppConfig
-@import viewmodels.{Section, AnswerSection, RepeaterAnswerSection}
+@import uk.gov.hmrc.play.views.html._
+@import controllers.routes._
+@import models.SelectRole
+@import models.Mode
 
-@(appConfig: FrontendAppConfig, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("checkYourAnswers.title"),
+    title = messages("selectRole.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @components.heading("checkYourAnswers.heading")</h1>
+    @helpers.form(action = SelectRoleController.onSubmit(mode), 'autoComplete -> "off") {
 
-    <p>@messages("checkYourAnswers.guidance")</p>
+        @components.error_summary(form.errors)
 
-    @for(section <- answerSections){
-        @{
-            section match {
-                case a: AnswerSection => components.answer_section(a)
-                case r: RepeaterAnswerSection => components.repeater_answer_section(r)
-            }
-        }
+        @components.heading("selectRole.heading")
+
+        @components.input_radio(
+            field = form("value"),
+            legend = messages("selectRole.heading"),
+            legendClass = Some("visually-hidden"),
+            inputs = SelectRole.options.toSeq
+        )
+
+        @components.submit_button()
     }
 }

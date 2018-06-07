@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
-package viewmodels
+package identifiers
 
-case class AnswerRow(label: String, answer: String, answerIsMessageKey: Boolean, changeUrl: String)
+case object SelectRoleId extends Identifier {
+  override def toString: String = "selectRole"
+}
