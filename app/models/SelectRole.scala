@@ -22,11 +22,13 @@ sealed trait SelectRole
 
 object SelectRole {
 
-  case object Webloaderarrivinggoods extends WithName("webLoaderArrivingGoods") with SelectRole
-  case object Webloaderdepartinggoods extends WithName("webLoaderDepartingGoods") with SelectRole
+  case object WebLoaderArrivingGoods extends WithName("webLoaderArrivingGoods") with SelectRole
+  case object WebLoaderDepartingGoods extends WithName("webLoaderDepartingGoods") with SelectRole
+  case object ExporterMakingDeclaration extends WithName("exporterMakingDeclaration") with SelectRole
+
 
   val values: Set[SelectRole] = Set(
-    Webloaderarrivinggoods, Webloaderdepartinggoods
+    WebLoaderArrivingGoods, WebLoaderDepartingGoods, ExporterMakingDeclaration
   )
 
   val options: Set[RadioOption] = values.map {

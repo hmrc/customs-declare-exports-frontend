@@ -47,5 +47,6 @@ selectRole.title = Select role
 selectRole.heading = Select role
 selectRole.webLoaderArrivingGoods = Web loader arriving goods
 selectRole.webLoaderDepartingGoods = Web loader departing goods
+selectRole.exporterMakingDeclaration = Exporter making declaration
 selectRole.checkYourAnswersLabel = Select role
 selectRole.error.required = Please give an answer for selectRole
