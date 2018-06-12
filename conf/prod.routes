@@ -1,5 +1,5 @@
 # Add all the application routes to the app.routes file
-->         /customs-decex-frontend                    app.Routes
+->         /customs-declare-exports-frontend                    app.Routes
 ->         /                          health.Routes
 ->     	   /template                  template.Routes
 
