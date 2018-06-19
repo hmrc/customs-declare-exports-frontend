@@ -26,7 +26,7 @@ class DeclarationSpec extends WordSpec {
     "produce declarant id as XML" in {
       val freightForwarder = Declarant("ZZ123456789000")
       val declaration = Declaration(freightForwarder)
-      declaration.toXML shouldEqual "<Declaration><Declarant><ID>ZZ123456789000</ID></Declarant></Declaration>"
+      declaration.toXml shouldEqual "<Declaration><Declarant><ID>ZZ123456789000</ID></Declarant></Declaration>"
     }
   }
 }

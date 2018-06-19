@@ -17,5 +17,5 @@
 package models.declaration
 
 case class Declaration(declarant: Declarant) {
-  def toXML: String = s"<Declaration><Declarant><ID>${declarant.id}</ID></Declarant></Declaration>"
+  def toXml: String = s"<Declaration><Declarant><ID>${declarant.id}</ID></Declarant></Declaration>"
 }
