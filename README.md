@@ -5,7 +5,6 @@
 Declare Exports Frontend Application
 
 
-
 # Developer notes
 You may want to point to a non-local frontend Assets server.  If so then simply set an environment variable
 ASSETS_URL
