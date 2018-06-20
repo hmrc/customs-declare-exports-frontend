@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/hmrc/customs-declare-exports-frontend.svg)](https://travis-ci.org/hmrc/customs-declare-exports-frontend) [ ![Download](https://api.bintray.com/packages/hmrc/releases/customs-declare-exports-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/customs-declare-exports-frontend/_latestVersion)
 
-Declare Exports Frontend Application
+Declare Exports Frontend Application.
 
 
 # Developer notes
