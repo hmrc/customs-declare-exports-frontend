@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-package models.declaration
+package api.declaration
 
-case class Declaration(declarant: Declarant) {
-  def toXml: String = s"<Declaration><Declarant><ID>${declarant.id}</ID></Declarant></Declaration>"
-}
+case class Declarant(id: String)
