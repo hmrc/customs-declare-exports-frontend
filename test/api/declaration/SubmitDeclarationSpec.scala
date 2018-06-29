@@ -30,13 +30,13 @@ class SubmitDeclarationSpec extends WordSpec with Matchers with ScalaFutures wit
     "return HTTP Status 400 (Bad Request) for invalid XML" in {
 
       Server.withRouter() {
-        case POST(p"/customs/declarations/") => Action {
+        case POST(p"/") => Action {
           Results.BadRequest
         }
       } { implicit port =>
         WsTestClient.withClient { client =>
           val submitter = new SubmitDeclaration(client, "")
-          whenReady(submitter.submit(Declaration(Declarant("")))) {
+          whenReady(submitter.submit(Declaration(Declarant("")), "someAuthToken")) {
             _ shouldEqual 400
           }
         }
