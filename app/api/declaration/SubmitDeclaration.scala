@@ -24,12 +24,6 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.concurrent.Future
 
 /*
--XPOST
--H 'Accept: application/vnd.hmrc.1.0+xml'
--H 'Content-Type:application/xml; charset=UTF-8'
--H 'X-Client-ID: RMaFZKEe45nkUwn4R0w1Wa6pBJUa'
--H 'Authorization: Bearer 8KNIXbr3VVsSEP0CJKYPymHg2bW9K0QShxHubhrabtEWqg8ZIt4ZQQBZ2JdMkuFLttJGHRqw5UR1bLzMVb00OqvL+hFbARAmaST7Y2PYTCj2Mk+WM6BEv3NM3pHsjl/A1PVYEAFiPI6HhojM7EdN8jNsyjLq70S6l9UZUqLrBVf/f7Ox2YRht7vJBTxJtTKf'
--d
 '<?xml version="1.0" encoding="UTF-8"?>
 <md:MetaData xmlns:md="urn:wco:datamodel:WCO:DocumentMetaData-DMS:2" xmlns="urn:wco:datamodel:WCO:DEC-DMS:2"
              xmlns:udt="urn:wco:datamodel:WCO:Declaration_DS:DMS:2">
@@ -271,8 +265,10 @@ class SubmitDeclaration(ws: WSClient, baseUrl: String) {
   def submit(declaration: Declaration, authToken: String): Future[Int] = {
     ws.url(s"$baseUrl/")
       .withHeaders(
-        "Content-Type" -> "application/xml",
-        "Authorization" -> authToken
+        "Accept" -> "application/vnd.hmrc.1.0+xml",
+        "Content-Type" -> "application/xml; charset=UTF-8",
+        "X-Client-ID" -> "RMaFZKEe45nkUwn4R0w1Wa6pBJUa",     //Is this a dynamic thing from user auth?
+        "Authorization" -> s"Bearer $authToken"
       )
       .post(declaration.toXml)
       .map(_.status)
