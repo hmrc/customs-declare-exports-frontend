@@ -25,8 +25,6 @@ import play.core.server.Server
 
 class SubmitDeclarationSpec extends WordSpec with Matchers with ScalaFutures with IntegrationPatience {
 
-  val goodXml = <Declaration><Declarant><ID>Some Declarant Id</ID></Declarant></Declaration>
-
   "Submit declaration" should {
 
     "return HTTP Status 400 (Bad Request) for missing declarant" in {
@@ -34,7 +32,7 @@ class SubmitDeclarationSpec extends WordSpec with Matchers with ScalaFutures wit
       Server.withRouter() {
         case POST(p"/") => Action { implicit req =>
           req.body.asXml match {
-            case Some(n) if n == goodXml => Results.Accepted
+            case Some(n) if (n \\ "Declarant" \ "ID").text == "testDecId" => Results.Accepted
             case _ => Results.BadRequest
           }
         }
@@ -53,14 +51,14 @@ class SubmitDeclarationSpec extends WordSpec with Matchers with ScalaFutures wit
       Server.withRouter() {
         case POST(p"/") => Action { implicit req =>
           req.body.asXml match {
-            case Some(n) if n == goodXml => Results.Accepted
-            case _ => Results.BadRequest
+            case Some(n) if (n \\ "Declarant" \ "ID").text == "testDecId" => Results.Accepted
+            case Some(n) => Results.BadRequest
           }
         }
       } { implicit port =>
         WsTestClient.withClient { client =>
           val submitter = new SubmitDeclaration(client, "")
-          whenReady(submitter.submit(Declaration(Declarant("Some Declarant Id")), "someAuthToken")) {
+          whenReady(submitter.submit(Declaration(Declarant("testDecId")), "someAuthToken")) {
             _ shouldEqual 202
           }
         }
