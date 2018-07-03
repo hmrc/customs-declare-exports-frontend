@@ -12,7 +12,22 @@ GET        /check-your-answers                          controllers.CheckYourAns
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /selectRole               controllers.SelectRoleController.onPageLoad(mode: models.Mode = models.NormalMode)
-POST       /selectRole               controllers.SelectRoleController.onSubmit(mode: models.Mode = models.NormalMode)
-GET        /changeSelectRole               controllers.SelectRoleController.onPageLoad(mode: models.Mode = models.CheckMode)
-POST       /changeSelectRole               controllers.SelectRoleController.onSubmit(mode: models.Mode = models.CheckMode)
+# Select role
+
+GET        /selectRole                                  controllers.SelectRoleController.onPageLoad(mode: models.Mode = models.NormalMode)
+
+POST       /selectRole                                  controllers.SelectRoleController.onSubmit(mode: models.Mode = models.NormalMode)
+
+GET        /changeSelectRole                            controllers.SelectRoleController.onPageLoad(mode: models.Mode = models.CheckMode)
+
+POST       /changeSelectRole                            controllers.SelectRoleController.onSubmit(mode: models.Mode = models.CheckMode)
+
+# Consignment
+
+GET        /consignment                                 controllers.ConsignmentController.onPageLoad(mode: models.Mode = models.NormalMode)
+
+POST       /consignment                                 controllers.ConsignmentController.onSubmit(mode: models.Mode = models.NormalMode)
+
+GET        /changeConsignment                           controllers.ConsignmentController.onPageLoad(mode: models.Mode = models.CheckMode)
+
+POST       /changeConsignment                           controllers.ConsignmentController.onSubmit(mode: models.Mode = models.CheckMode)

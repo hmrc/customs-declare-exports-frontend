@@ -14,14 +14,26 @@
  * limitations under the License.
  */
 
-package utils
+package models
 
-import uk.gov.hmrc.http.cache.client.CacheMap
-import identifiers._
-import models._
+import utils.{Enumerable, RadioOption, WithName}
 
-class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
-  def selectRole: Option[SelectRole] = cacheMap.getEntry[SelectRole](SelectRoleId.toString)
+sealed trait Consignment
 
-  def consignment: Option[Consignment] = cacheMap.getEntry[Consignment](ConsignmentId.toString)
+object Consignment {
+
+  case object Consolidation extends WithName("consolidation") with Consignment
+  case object SingleShipment extends WithName("singleShipment") with Consignment
+
+  val values: Set[Consignment] = Set(
+    Consolidation, SingleShipment
+  )
+
+  val options: Set[RadioOption] = values.map {
+    value =>
+      RadioOption("consignment", value.toString)
+  }
+
+  implicit val enumerable: Enumerable[Consignment] =
+    Enumerable(values.toSeq.map(v => v.toString -> v): _*)
 }
