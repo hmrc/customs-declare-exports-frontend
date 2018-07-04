@@ -50,3 +50,10 @@ selectRole.webLoaderDepartingGoods = Web loader departing goods
 selectRole.exporterMakingDeclaration = Exporter making declaration
 selectRole.checkYourAnswersLabel = Select role
 selectRole.error.required = Please give an answer for selectRole
+
+consignment.title = Consignment
+consignment.heading = Is this part of consolidation or a signal shipment?
+consignment.consolidation = Consolidation
+consignment.singleShipment = Single shipment
+consignment.checkYourAnswersLabel = Consignment
+consignment.error.required = Please give an answer for consignment
