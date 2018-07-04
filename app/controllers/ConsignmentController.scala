@@ -45,9 +45,9 @@ class ConsignmentController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode) = (authenticate andThen getData) {
     implicit request =>
-      val preparedForm = request.userAnswers.consignment match {
+      val preparedForm = request.userAnswers.flatMap(_.consignment) match {
         case None => form
         case Some(value) => form.fill(value)
       }
