@@ -21,9 +21,14 @@ error.required = Please enter a value
 error.summary.title = There’s been a problem
 error.summary.text = Check the following
 
-index.title = customs-decex-frontend
-index.heading = customs-decex-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+index.title =Export Declarations
+index.heading=Customs Export Declarations
+index.guidance=On this page you can declare exported items, look up earlier exports declarations and check their status
+index.how-to-access=How to access the service
+index.you-must-have=You must have a valid Government Gateway User ID and password and an EORI number. If you don't have an EORI number please request one first
+index.if-company=If you’re a company or partnership you’ll need to sign in with the user ID and password for your organisation.
+index.if-individual=If your registering as an individual, are self employed or a sole trader, then you’ll need to sign in with your own user ID and password.
+index.start-now=Start now
 
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
@@ -37,7 +42,7 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.save_and_continue = Save and continue
-site.service_name = customs-decex-frontend
+site.service_name = Customs Export Declarations
 site.textarea.char_limit = (Limit is {0} characters)
 
 unauthorised.title = You can’t access this service with this account
@@ -57,3 +62,6 @@ consignment.consolidation = Consolidation
 consignment.singleShipment = Single shipment
 consignment.checkYourAnswersLabel = Consignment
 consignment.error.required = Please give an answer for consignment
+
+dashboard.title = dashboard
+dashboard.heading = dashboard

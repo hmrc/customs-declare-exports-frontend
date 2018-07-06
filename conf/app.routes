@@ -31,3 +31,5 @@ POST       /consignment                                 controllers.ConsignmentC
 GET        /changeConsignment                           controllers.ConsignmentController.onPageLoad(mode: models.Mode = models.CheckMode)
 
 POST       /changeConsignment                           controllers.ConsignmentController.onSubmit(mode: models.Mode = models.CheckMode)
+
+GET        /dashboard                                   controllers.DashboardController.onPageLoad()

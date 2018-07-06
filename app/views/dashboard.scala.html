@@ -19,29 +19,9 @@
 @(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("index.title"),
+    title = messages("dashboard.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-<div class="column-two-thirds start_page">
-
-    <h1>@Messages("index.heading")</h1>
-    <p>@Messages("index.guidance")</p>
-
-    <h2 id="how-to-access-the-service">@Messages("index.how-to-access")</h2>
-    <p>@Messages("index.you-must-have")</p>
-
-    <ul class="bullets">
-        <li>@Messages("index.if-company")</li>
-        <li>@Messages("index.if-individual")</li>
-    </ul>
-    <br>
-    <p>
-        <a class="button button--get-started" href='@controllers.routes.DashboardController.onPageLoad' role="button">@Messages("index.start-now")</a>
-    </p>
-
-</div>
-
+    @components.heading("dashboard.heading")
 }
-
-
