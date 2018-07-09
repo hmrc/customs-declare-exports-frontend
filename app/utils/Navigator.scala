@@ -27,17 +27,20 @@ import models.{CheckMode, Mode, NormalMode}
 class Navigator @Inject()() {
 
   private val routeMap: Map[Identifier, UserAnswers => Call] = Map(
-
+    SelectRoleId -> (_ => routes.ConsignmentController.onPageLoad(NormalMode)),
+    ConsignmentId -> (_ => routes.SubmitPageController.onPageLoad(NormalMode))
   )
 
   private val editRouteMap: Map[Identifier, UserAnswers => Call] = Map(
 
   )
 
-  def nextPage(id: Identifier, mode: Mode): UserAnswers => Call = mode match {
-    case NormalMode =>
-      routeMap.getOrElse(id, _ => routes.IndexController.onPageLoad())
-    case CheckMode =>
-      editRouteMap.getOrElse(id, _ => routes.CheckYourAnswersController.onPageLoad())
+  def nextPage(id: Identifier, mode: Mode): UserAnswers => Call = {
+    mode match {
+      case NormalMode =>
+        routeMap.getOrElse(id, _ => routes.IndexController.onPageLoad())
+      case CheckMode =>
+        editRouteMap.getOrElse(id, _ => routes.CheckYourAnswersController.onPageLoad())
+    }
   }
 }

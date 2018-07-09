@@ -78,13 +78,5 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
     }
-
-    "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", Consignment.options.head.value))
-      val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad().url)
-    }
   }
 }

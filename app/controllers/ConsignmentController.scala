@@ -54,7 +54,7 @@ class ConsignmentController @Inject()(
       Ok(consignment(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode) = (authenticate andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
