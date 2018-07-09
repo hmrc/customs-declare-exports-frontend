@@ -63,5 +63,12 @@ consignment.singleShipment = Single shipment
 consignment.checkYourAnswersLabel = Consignment
 consignment.error.required = Please give an answer for consignment
 
+
 dashboard.title = dashboard
 dashboard.heading = dashboard
+
+submitPage.title = submitPage
+submitPage.heading = submitPage
+submitPage.checkYourAnswersLabel = submitPage
+submitPage.error.required = Enter submitPage
+submitPage.error.length = SubmitPage must be 100 characters or less

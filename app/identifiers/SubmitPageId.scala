@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package api.declaration
+package identifiers
 
-import play.api.libs.json._
-
-case class Declarant(id: String) extends AnyVal
+case object SubmitPageId extends Identifier {
+  override def toString: String = "submitPage"
+}

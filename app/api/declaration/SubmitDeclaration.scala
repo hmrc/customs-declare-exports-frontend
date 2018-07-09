@@ -23,18 +23,20 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
 
-class SubmitDeclaration(ws: WSClient, baseUrl: String) {
+class SubmitDeclaration (ws: WSClient, baseUrl: String) {
   @Inject def this(ws: WSClient, env: Environment) = this(ws, "https://customs-declarations.protected.mdtp")
+  //https://customs-declarations.protected.mdtp
+  //val link = "http://localhost:9820"
 
-  def submit(declaration: Declaration, authToken: String): Future[Int] = {
+  def submit(declaration: Declaration, bearerToken: String): Future[Int] = {
     ws.url(s"$baseUrl/")
       .withHeaders(
-        "Accept" -> "application/vnd.hmrc.1.0+xml",
+        "Accept" -> "application/vnd.hmrc.2.0+xml",
         "Content-Type" -> "application/xml; charset=UTF-8",
-        "X-Client-ID" -> "RMaFZKEe45nkUwn4R0w1Wa6pBJUa",
-        "Authorization" -> s"Bearer $authToken"
+        "X-Client-ID" -> "d65f2252-9fcf-4f04-9445-5971021226bb",
+        "Authorization" -> s"Bearer $bearerToken"
       )
-      .post(declaration.toXml)
+      .post("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + declaration.toXml.toString())
       .map(_.status)
   }
 }

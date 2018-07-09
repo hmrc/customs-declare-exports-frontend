@@ -21,14 +21,14 @@ import org.scalatest.{Matchers, WordSpec}
 import play.api.mvc._
 import play.api.routing.sird._
 import play.api.test._
+import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST}
 import play.core.server.Server
 
 class SubmitDeclarationSpec extends WordSpec with Matchers with ScalaFutures with IntegrationPatience {
 
   "Submit declaration" should {
 
-    "return HTTP Status 400 (Bad Request) for missing declarant" in {
-
+    "return HTTP Status 400 (Bad request) for missing declarant" in {
       Server.withRouter() {
         case POST(p"/") => Action { implicit req =>
           req.body.asXml match {
@@ -39,27 +39,26 @@ class SubmitDeclarationSpec extends WordSpec with Matchers with ScalaFutures wit
       } { implicit port =>
         WsTestClient.withClient { client =>
           val submitter = new SubmitDeclaration(client, "")
-          whenReady(submitter.submit(Declaration(Declarant("")), "someAuthToken")) {
-            _ shouldEqual 400
+          whenReady(submitter.submit(Declaration(Declarant("")), "Non CSP")) {
+            _ shouldEqual BAD_REQUEST
           }
         }
       }
     }
 
     "return HTTP Status 202 (Accepted) for valid declaration" in {
-
       Server.withRouter() {
         case POST(p"/") => Action { implicit req =>
           req.body.asXml match {
             case Some(n) if (n \\ "Declarant" \ "ID").text == "testDecId" => Results.Accepted
-            case Some(n) => Results.BadRequest
+            case _ => Results.BadRequest
           }
         }
       } { implicit port =>
         WsTestClient.withClient { client =>
           val submitter = new SubmitDeclaration(client, "")
-          whenReady(submitter.submit(Declaration(Declarant("testDecId")), "someAuthToken")) {
-            _ shouldEqual 202
+          whenReady(submitter.submit(Declaration(Declarant("testDecId")), "Non CSP")) {
+            _ shouldEqual ACCEPTED
           }
         }
       }

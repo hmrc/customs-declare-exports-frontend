@@ -1,9 +1,15 @@
-1. Find out how to get the auth token for the logged-in user.  See Gabor for an example - bear in mind it needs to use the scaffolding approach.  Pair with Gabor and he can show you easily.
+1. Find out how to get the auth token for the logged-in user.
+See Gabor for an example - bear in mind it needs to use the scaffolding approach.
+Pair with Gabor and he can show you easily.
 
-2. With the auth token you can then submit a declaration.  So you need to imagine some code that does this.  Perhaps there is simpply a User instance that is passed (implicit?) so that we can get this?  Ask Gabor
+2. With the auth token you can then submit a declaration.
+So you need to imagine some code that does this.
+ Perhaps there is simpply a User instance that is passed (implicit?) so that we can get this? Ask Gabor
 
-3. The other issue is a public app talking to a protected api.  This is an issue which maybe Usman can advise ?
+3. The other issue is a public app talking to a protected api. This is an issue which maybe Usman can advise?
 
-4. In general Usman is the one who knows how to talk to the API.  Gabor is the guy who knows how to get interesting things out of the session for the logged in user.
+4. In general Usman is the one who knows how to talk to the API.
+Gabor is the guy who knows how to get interesting things out of the session for the logged in user.
 
-5. Next step is an integration test on QA that asserts a 202 HTTP Status - in fact if you are TDD this is the first step.  Maybe create a test endpoint that triggers this code as we dont yet have the facility to submit a sensible declaration
+5. Next step is an integration test on QA that asserts a 202 HTTP Status - in fact if you are TDD this is the first step.
+Maybe create a test endpoint that triggers this code as we dont yet have the facility to submit a sensible declaration
