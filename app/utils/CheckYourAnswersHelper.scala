@@ -22,6 +22,10 @@ import viewmodels.{AnswerRow, RepeaterAnswerRow, RepeaterAnswerSection}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def submitPage: Option[AnswerRow] = userAnswers.submitPage map {
+    x => AnswerRow("submitPage.checkYourAnswersLabel", s"$x", false, routes.SubmitPageController.onPageLoad(CheckMode).url)
+  }
+
   def consignment: Option[AnswerRow] = userAnswers.consignment map {
     x => AnswerRow("consignment.checkYourAnswersLabel", s"consignment.$x", true, routes.ConsignmentController.onPageLoad(CheckMode).url)
   }

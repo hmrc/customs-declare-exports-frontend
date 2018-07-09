@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-package api.declaration
+package forms
 
-import play.api.libs.json._
+import javax.inject.Inject
 
-case class Declarant(id: String) extends AnyVal
+import forms.mappings.Mappings
+import play.api.data.Form
+
+class SubmitPageFormProvider @Inject() extends FormErrorHelper with Mappings {
+
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("submitPage.error.required")
+        .verifying(maxLength(100, "submitPage.error.length"))
+    )
+}
