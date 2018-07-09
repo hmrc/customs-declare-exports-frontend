@@ -113,3 +113,5 @@ class FakeFailingAuthConnector(exceptionToReturn: Throwable) extends AuthConnect
   override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =
     Future.failed(exceptionToReturn)
 }
+
+

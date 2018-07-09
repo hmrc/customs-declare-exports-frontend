@@ -16,13 +16,37 @@
 
 package controllers.actions
 
+import models.SignedInUser
 import play.api.mvc.{Request, Result}
 import models.requests.AuthenticatedRequest
+import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.retrieve.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, Retrieval, ~}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
 object FakeAuthAction extends AuthAction {
+
+  val defaultUser = newUser("0771123680108", "Ext-1234-5678")
+
+  def newUser(eori: String, externalId: String): SignedInUser = SignedInUser(
+    Credentials("2345235235","GovernmentGateway"),
+    Name(Some("Aldo"),Some("Rain")),
+    Some("amina@hmrc.co.uk"),
+    eori,
+    externalId,
+    Some("Int-ba17b467-90f3-42b6-9570-73be7b78eb2b"),
+    Some(AffinityGroup.Individual),
+    Enrolments(Set(
+      Enrolment("IR-SA",List(EnrolmentIdentifier("UTR","111111111")),"Activated",None),
+      Enrolment("IR-CT",List(EnrolmentIdentifier("UTR","222222222")),"Activated",None),
+      Enrolment("HMRC-CUS-ORG",List(EnrolmentIdentifier("EORINumber", eori)),"Activated",None)
+    ))
+  )
+
+
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
-    block(AuthenticatedRequest(request, "id"))
+    block(AuthenticatedRequest(request, defaultUser))
 }
 

@@ -19,14 +19,17 @@ package controllers.actions
 import com.google.inject.{ImplementedBy, Inject}
 import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
 import play.api.mvc.Results._
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.Retrievals
+import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import config.FrontendAppConfig
 import controllers.routes
+import models.SignedInUser
 import models.requests.AuthenticatedRequest
 import uk.gov.hmrc.http.UnauthorizedException
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,22 +39,24 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised().retrieve(Retrievals.externalId) {
-      _.map {
-        externalId => block(AuthenticatedRequest(request, externalId))
-      }.getOrElse(throw new UnauthorizedException("Unable to retrieve external Id"))
+    authorised().retrieve(credentials and name and email and externalId and internalId  and affinityGroup and allEnrolments) {
+      case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments =>
+        val eori = allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber"))
+        if (eori.isEmpty) {
+          throw InsufficientEnrolments()
+        }
+        if (externalId.isEmpty) {
+          throw NoExternalId()
+        }
+        val cdsLoggedInUser = SignedInUser(credentials, name, email, eori.get.value, externalId.get, internalId, affinityGroup, allEnrolments)
+        block(AuthenticatedRequest(request, cdsLoggedInUser))
     } recover {
       case ex: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case ex: InsufficientEnrolments =>
+        //TODO put in a redirect here to the Get an EORI page!
         Redirect(routes.UnauthorisedController.onPageLoad)
-      case ex: InsufficientConfidenceLevel =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
-      case ex: UnsupportedAuthProvider =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
-      case ex: UnsupportedAffinityGroup =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
-      case ex: UnsupportedCredentialRole =>
+      case _ =>
         Redirect(routes.UnauthorisedController.onPageLoad)
     }
   }
@@ -59,3 +64,5 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
 
 @ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]
+
+case class NoExternalId() extends NoActiveSession("No externalId was found")

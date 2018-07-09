@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
-package models.requests
+package models
 
-import models.SignedInUser
-import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 
-case class AuthenticatedRequest[A] (request: Request[A], user: SignedInUser) extends WrappedRequest[A](request)
+
+case class SignedInUser(credentials: Credentials,
+                        name: Name,
+                        email: Option[String],
+                        eori: String,
+                        externalId: String,
+                        internalId: Option[String],
+                        affinityGroup: Option[AffinityGroup],
+                        enrolments: Enrolments)

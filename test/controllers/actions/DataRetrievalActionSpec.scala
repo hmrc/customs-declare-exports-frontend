@@ -37,10 +37,10 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
     "there is no data in the cache" must {
       "set userAnswers to 'None' in the request" in {
         val dataCacheConnector = mock[DataCacheConnector]
-        when(dataCacheConnector.fetch("id")) thenReturn Future(None)
+        when(dataCacheConnector.fetch(FakeAuthAction.defaultUser.externalId)) thenReturn Future(None)
         val action = new Harness(dataCacheConnector)
 
-        val futureResult = action.callTransform(new AuthenticatedRequest(fakeRequest, "id"))
+        val futureResult = action.callTransform(new AuthenticatedRequest(fakeRequest, FakeAuthAction.defaultUser))
 
         whenReady(futureResult) { result =>
           result.userAnswers.isEmpty mustBe true
@@ -51,10 +51,10 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
     "there is data in the cache" must {
       "build a userAnswers object and add it to the request" in {
         val dataCacheConnector = mock[DataCacheConnector]
-        when(dataCacheConnector.fetch("id")) thenReturn Future(Some(new CacheMap("id", Map())))
+        when(dataCacheConnector.fetch(FakeAuthAction.defaultUser.externalId)) thenReturn Future(Some(new CacheMap(FakeAuthAction.defaultUser.externalId, Map())))
         val action = new Harness(dataCacheConnector)
 
-        val futureResult = action.callTransform(new AuthenticatedRequest(fakeRequest, "id"))
+        val futureResult = action.callTransform(new AuthenticatedRequest(fakeRequest, FakeAuthAction.defaultUser))
 
         whenReady(futureResult) { result =>
           result.userAnswers.isDefined mustBe true
