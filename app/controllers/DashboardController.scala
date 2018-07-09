@@ -34,6 +34,6 @@ class DashboardController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad = (authenticate) {
     implicit request =>
-      Ok(dashboard(appConfig))
+      Ok(dashboard(appConfig,request.user))
   }
 }

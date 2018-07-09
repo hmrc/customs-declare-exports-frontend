@@ -16,6 +16,7 @@
 
 package views
 
+import controllers.actions.FakeAuthAction
 import views.behaviours.ViewBehaviours
 import views.html.dashboard
 
@@ -23,7 +24,7 @@ class DashboardViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "dashboard"
 
-  def createView = () => dashboard(frontendAppConfig)(fakeRequest, messages)
+  def createView = () => dashboard(frontendAppConfig,FakeAuthAction.defaultUser)(fakeRequest, messages)
 
   "Dashboard view" must {
     behave like normalPage(createView, messageKeyPrefix)

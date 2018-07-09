@@ -15,8 +15,9 @@
  *@
 
 @import config.FrontendAppConfig
+@import models.SignedInUser
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, loggedInUser: SignedInUser)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("dashboard.title"),
@@ -24,4 +25,21 @@
     bodyClasses = None) {
 
     @components.heading("dashboard.heading")
+
+    <h2>@loggedInUser.email you are logged in</h2>
+    <table>
+        <thead></thead>
+        <th>Key</th>
+        <th>Value</th>
+        <tbody>
+        <tr><td>Credentials:</td><td>@loggedInUser.credentials</td></tr>
+        <tr><td>Name:</td><td>@loggedInUser.name</td></tr>
+        <tr><td>Email:</td><td>@loggedInUser.email</td></tr>
+        <tr><td>AffinityGroup:</td><td>@loggedInUser.affinityGroup</td></tr>
+        <tr><td>ExternalId:</td><td>@loggedInUser.externalId</td></tr>
+        <tr><td>InternalId:</td><td>@loggedInUser.internalId</td></tr>
+        <tr><td>Enrollments:</td><td>@loggedInUser.enrolments</td></tr>
+        </tbody>
+    </table>
+
 }
