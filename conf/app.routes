@@ -53,3 +53,8 @@ GET        /ownDescription                       controllers.OwnDescriptionContr
 POST       /ownDescription                       controllers.OwnDescriptionController.onSubmit(mode: Mode = NormalMode)
 GET        /changeOwnDescription                       controllers.OwnDescriptionController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeOwnDescription                       controllers.OwnDescriptionController.onSubmit(mode: Mode = CheckMode)
+
+GET        /haveRepresentative                         controllers.HaveRepresentativeController.onPageLoad(mode: Mode = NormalMode)
+POST       /haveRepresentative                         controllers.HaveRepresentativeController.onSubmit(mode: Mode = NormalMode)
+GET        /changeHaveRepresentative                   controllers.HaveRepresentativeController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeHaveRepresentative                   controllers.HaveRepresentativeController.onSubmit(mode: Mode = CheckMode)

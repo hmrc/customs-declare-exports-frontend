@@ -22,6 +22,10 @@ import viewmodels.{AnswerRow, RepeaterAnswerRow, RepeaterAnswerSection}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def haveRepresentative: Option[AnswerRow] = userAnswers.haveRepresentative map {
+    x => AnswerRow("haveRepresentative.checkYourAnswersLabel", s"haveRepresentative.$x", true, routes.HaveRepresentativeController.onPageLoad(CheckMode).url)
+  }
+
   def ownDescription: Option[AnswerRow] = userAnswers.ownDescription map {
     x => AnswerRow("ownDescription.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.OwnDescriptionController.onPageLoad(CheckMode).url)
   }

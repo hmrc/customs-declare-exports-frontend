@@ -23,26 +23,26 @@ import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.actions._
 import play.api.test.Helpers._
-import forms.DeclarationForYourselfOrSomeoneElseFormProvider
-import identifiers.DeclarationForYourselfOrSomeoneElseId
+import forms.HaveRepresentativeFormProvider
+import identifiers.HaveRepresentativeId
 import models.NormalMode
-import models.DeclarationForYourselfOrSomeoneElse
-import views.html.declarationForYourselfOrSomeoneElse
+import models.HaveRepresentative
+import views.html.haveRepresentative
 
-class DeclarationForYourselfOrSomeoneElseControllerSpec extends ControllerSpecBase {
+class HaveRepresentativeControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = routes.IndexController.onPageLoad()
 
-  val formProvider = new DeclarationForYourselfOrSomeoneElseFormProvider()
+  val formProvider = new HaveRepresentativeFormProvider()
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new DeclarationForYourselfOrSomeoneElseController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
+    new HaveRepresentativeController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form) = declarationForYourselfOrSomeoneElse(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form) = haveRepresentative(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
-  "DeclarationForYourselfOrSomeoneElse Controller" must {
+  "HaveRepresentative Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -52,16 +52,16 @@ class DeclarationForYourselfOrSomeoneElseControllerSpec extends ControllerSpecBa
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Map(DeclarationForYourselfOrSomeoneElseId.toString -> JsString(DeclarationForYourselfOrSomeoneElse.values.head.toString))
+      val validData = Map(HaveRepresentativeId.toString -> JsString(HaveRepresentative.values.head.toString))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(DeclarationForYourselfOrSomeoneElse.values.head))
+      contentAsString(result) mustBe viewAsString(form.fill(HaveRepresentative.values.head))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationForYourselfOrSomeoneElse.options.head.value))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", HaveRepresentative.options.head.value))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 

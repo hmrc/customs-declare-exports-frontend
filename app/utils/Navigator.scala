@@ -17,7 +17,6 @@
 package utils
 
 import javax.inject.{Inject, Singleton}
-
 import play.api.mvc.Call
 import controllers.routes
 import identifiers._
@@ -30,7 +29,8 @@ class Navigator @Inject()() {
     SelectRoleId -> (_ => routes.ConsignmentController.onPageLoad(NormalMode)),
     ConsignmentId -> (_ => routes.OwnDescriptionController.onPageLoad(NormalMode)),
     OwnDescriptionId -> (_ => routes.DeclarationForYourselfOrSomeoneElseController.onPageLoad(NormalMode)),
-    DeclarationForYourselfOrSomeoneElseId -> (_ => routes.SubmitPageController.onPageLoad(NormalMode))
+    DeclarationForYourselfOrSomeoneElseId -> (_ => routes.HaveRepresentativeController.onPageLoad(NormalMode)),
+    HaveRepresentativeId -> (_ => routes.SubmitPageController.onPageLoad(NormalMode))
   )
 
   private val editRouteMap: Map[Identifier, UserAnswers => Call] = Map(
