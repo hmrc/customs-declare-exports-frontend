@@ -79,3 +79,8 @@ declarationForYourselfOrSomeoneElse.yourself = Yourself
 declarationForYourselfOrSomeoneElse.someoneElse = Someone Else
 declarationForYourselfOrSomeoneElse.checkYourAnswersLabel = declarationForYourselfOrSomeoneElse
 declarationForYourselfOrSomeoneElse.error.required = Please give an answer for declarationForYourselfOrSomeoneElse
+
+ownDescription.title = ownDescription
+ownDescription.heading = ownDescription
+ownDescription.checkYourAnswersLabel = ownDescription
+ownDescription.error.required = Please give an answer for ownDescription

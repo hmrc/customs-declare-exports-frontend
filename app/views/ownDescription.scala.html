@@ -1,0 +1,71 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.routes._
+@import models.Mode
+
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("ownDescription.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
+
+        <div class="grid-row">
+            <form class="form" name="establishedin" action="who-declarant">
+                <div class="field-group">
+                    <fieldset>
+                        <legend class="heading-large" role="heading" aria="" level="1">
+                            <span class="heading-secondary">Consignment</span>
+                            Would you like to add your own description to the declaration?
+                        </legend>
+                        <div class="multiple-choice" data-target="contact-by-email" id="yes-input" onClick={showDescription()}>
+                            <input id="example-contact-by-email" type="radio" name="radio-contact-group" value="Yes" aria-controls="contact-by-email" aria-expanded="true">
+                            <label for="example-contact-by-email">Yes</label>
+                        </div>
+
+                        <div class="panel panel-border-narrow js-hidden" id="contact-by-email-optional">
+                            <label class="form-label" for="contact-email">Enter your description</label>
+                            <span class="form-hint">This is just for your own records</span>
+                            <input class="form-control" name="contact-email" type="text" id="contact-email">
+                        </div>
+
+                        <div class="multiple-choice" id="no-input" onClick={hideDescription()}>
+                            <input id="example-contact-by-phone" type="radio" name="radio-contact-group" value="No">
+                            <label for="example-contact-by-phone">No</label>
+                        </div>
+
+                    </fieldset>
+                </div>
+                <br>
+                @components.submit_button()
+            </form>
+        </div>
+
+        <script type="text/javascript">
+            function showDescription() {
+                console.log("Show description");
+                document.getElementById('contact-by-email-optional').setAttribute("class", "panel panel-border-narrow");
+            }
+
+            function hideDescription() {
+                console.log("Hide description");
+                document.getElementById('contact-by-email-optional').setAttribute("class", "panel panel-border-narrow js-hidden");
+            }
+        </script>
+}

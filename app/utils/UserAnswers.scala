@@ -21,6 +21,8 @@ import identifiers._
 import models._
 
 class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
+  def ownDescription: Option[Boolean] = cacheMap.getEntry[Boolean](OwnDescriptionId.toString)
+
   def declarationForYourselfOrSomeoneElse: Option[DeclarationForYourselfOrSomeoneElse] = cacheMap.getEntry[DeclarationForYourselfOrSomeoneElse](DeclarationForYourselfOrSomeoneElseId.toString)
 
   def submitPage: Option[String] = cacheMap.getEntry[String](SubmitPageId.toString)

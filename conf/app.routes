@@ -48,3 +48,8 @@ GET        /declarationForYourselfOrSomeoneElse         controllers.DeclarationF
 POST       /declarationForYourselfOrSomeoneElse         controllers.DeclarationForYourselfOrSomeoneElseController.onSubmit(mode: Mode = NormalMode)
 GET        /changeDeclarationForYourselfOrSomeoneElse   controllers.DeclarationForYourselfOrSomeoneElseController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeDeclarationForYourselfOrSomeoneElse   controllers.DeclarationForYourselfOrSomeoneElseController.onSubmit(mode: Mode = CheckMode)
+
+GET        /ownDescription                       controllers.OwnDescriptionController.onPageLoad(mode: Mode = NormalMode)
+POST       /ownDescription                       controllers.OwnDescriptionController.onSubmit(mode: Mode = NormalMode)
+GET        /changeOwnDescription                       controllers.OwnDescriptionController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeOwnDescription                       controllers.OwnDescriptionController.onSubmit(mode: Mode = CheckMode)
