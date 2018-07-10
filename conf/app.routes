@@ -43,3 +43,8 @@ POST       /submitPage                                  controllers.SubmitPageCo
 GET        /changeSubmitPage                            controllers.SubmitPageController.onPageLoad(mode: models.Mode = models.CheckMode)
 
 POST       /changeSubmitPage                            controllers.SubmitPageController.onSubmit(mode: models.Mode = models.CheckMode)
+
+GET        /declarationForYourselfOrSomeoneElse         controllers.DeclarationForYourselfOrSomeoneElseController.onPageLoad(mode: Mode = NormalMode)
+POST       /declarationForYourselfOrSomeoneElse         controllers.DeclarationForYourselfOrSomeoneElseController.onSubmit(mode: Mode = NormalMode)
+GET        /changeDeclarationForYourselfOrSomeoneElse   controllers.DeclarationForYourselfOrSomeoneElseController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeDeclarationForYourselfOrSomeoneElse   controllers.DeclarationForYourselfOrSomeoneElseController.onSubmit(mode: Mode = CheckMode)

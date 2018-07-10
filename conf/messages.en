@@ -72,3 +72,10 @@ submitPage.heading = submitPage
 submitPage.checkYourAnswersLabel = submitPage
 submitPage.error.required = Enter submitPage
 submitPage.error.length = SubmitPage must be 100 characters or less
+
+declarationForYourselfOrSomeoneElse.title = declarationForYourselfOrSomeoneElse
+declarationForYourselfOrSomeoneElse.heading = Is this declaration for yourself or someone else?
+declarationForYourselfOrSomeoneElse.yourself = Yourself
+declarationForYourselfOrSomeoneElse.someoneElse = Someone Else
+declarationForYourselfOrSomeoneElse.checkYourAnswersLabel = declarationForYourselfOrSomeoneElse
+declarationForYourselfOrSomeoneElse.error.required = Please give an answer for declarationForYourselfOrSomeoneElse

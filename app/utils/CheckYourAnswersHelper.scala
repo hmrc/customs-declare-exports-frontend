@@ -22,6 +22,10 @@ import viewmodels.{AnswerRow, RepeaterAnswerRow, RepeaterAnswerSection}
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers) {
 
+  def declarationForYourselfOrSomeoneElse: Option[AnswerRow] = userAnswers.declarationForYourselfOrSomeoneElse map {
+    x => AnswerRow("declarationForYourselfOrSomeoneElse.checkYourAnswersLabel", s"declarationForYourselfOrSomeoneElse.$x", true, routes.DeclarationForYourselfOrSomeoneElseController.onPageLoad(CheckMode).url)
+  }
+
   def submitPage: Option[AnswerRow] = userAnswers.submitPage map {
     x => AnswerRow("submitPage.checkYourAnswersLabel", s"$x", false, routes.SubmitPageController.onPageLoad(CheckMode).url)
   }
