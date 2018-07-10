@@ -27,7 +27,7 @@
     bodyClasses = None) {
 
         <div class="grid-row">
-            <form class="form" name="establishedin" action="who-declarant">
+            @helpers.form(action = OwnDescriptionController.onSubmit(mode), 'autoComplete -> "off") {
                 <div class="field-group">
                     <fieldset>
                         <legend class="heading-large" role="heading" aria="" level="1">
@@ -35,18 +35,18 @@
                             Would you like to add your own description to the declaration?
                         </legend>
                         <div class="multiple-choice" data-target="contact-by-email" id="yes-input" onClick={showDescription()}>
-                            <input id="example-contact-by-email" type="radio" name="radio-contact-group" value="Yes" aria-controls="contact-by-email" aria-expanded="true">
+                            <input id="example-contact-by-email" type="radio" name="choice" value="Yes" aria-controls="contact-by-email" aria-expanded="true">
                             <label for="example-contact-by-email">Yes</label>
                         </div>
 
                         <div class="panel panel-border-narrow js-hidden" id="contact-by-email-optional">
                             <label class="form-label" for="contact-email">Enter your description</label>
                             <span class="form-hint">This is just for your own records</span>
-                            <input class="form-control" name="contact-email" type="text" id="contact-email">
+                            <input class="form-control" name="description" type="text" id="contact-email">
                         </div>
 
                         <div class="multiple-choice" id="no-input" onClick={hideDescription()}>
-                            <input id="example-contact-by-phone" type="radio" name="radio-contact-group" value="No">
+                            <input id="example-contact-by-phone" type="radio" name="choice" value="No">
                             <label for="example-contact-by-phone">No</label>
                         </div>
 
@@ -54,7 +54,7 @@
                 </div>
                 <br>
                 @components.submit_button()
-            </form>
+            }
         </div>
 
         <script type="text/javascript">

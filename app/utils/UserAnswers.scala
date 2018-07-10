@@ -16,14 +16,16 @@
 
 package utils
 
+import forms.OwnDescriptionData
 import uk.gov.hmrc.http.cache.client.CacheMap
 import identifiers._
 import models._
 
 class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
+
   def haveRepresentative: Option[HaveRepresentative] = cacheMap.getEntry[HaveRepresentative](HaveRepresentativeId.toString)
 
-  def ownDescription: Option[Boolean] = cacheMap.getEntry[Boolean](OwnDescriptionId.toString)
+  def ownDescription: Option[OwnDescriptionData] = cacheMap.getEntry[OwnDescriptionData](OwnDescriptionId.toString)
 
   def declarationForYourselfOrSomeoneElse: Option[DeclarationForYourselfOrSomeoneElse] = cacheMap.getEntry[DeclarationForYourselfOrSomeoneElse](DeclarationForYourselfOrSomeoneElseId.toString)
 

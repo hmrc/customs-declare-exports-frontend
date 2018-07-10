@@ -17,14 +17,27 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
+import play.api.libs.json.Json
+import play.api.data._
+import play.api.data.Forms._
+import play.api.data.format.Formats._
+
+case class OwnDescriptionData(choice:String, description:Option[String])
 
 class OwnDescriptionFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("ownDescription.error.required")
+  def apply(): Form[OwnDescriptionData] =
+    Form(mapping(
+      "choice" -> text("ownDescription.error.required"),
+      "description" -> optional(text("ownDescription.error.required"))
+    )(OwnDescriptionData.apply)(OwnDescriptionData.unapply)
     )
+
 }
+
+object OwnDescriptionData {
+  implicit val format = Json.format[OwnDescriptionData]
+}
+

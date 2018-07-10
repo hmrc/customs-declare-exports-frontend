@@ -26,10 +26,6 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers) {
     x => AnswerRow("haveRepresentative.checkYourAnswersLabel", s"haveRepresentative.$x", true, routes.HaveRepresentativeController.onPageLoad(CheckMode).url)
   }
 
-  def ownDescription: Option[AnswerRow] = userAnswers.ownDescription map {
-    x => AnswerRow("ownDescription.checkYourAnswersLabel", if(x) "site.yes" else "site.no", true, routes.OwnDescriptionController.onPageLoad(CheckMode).url)
-  }
-
   def declarationForYourselfOrSomeoneElse: Option[AnswerRow] = userAnswers.declarationForYourselfOrSomeoneElse map {
     x => AnswerRow("declarationForYourselfOrSomeoneElse.checkYourAnswersLabel", s"declarationForYourselfOrSomeoneElse.$x", true, routes.DeclarationForYourselfOrSomeoneElseController.onPageLoad(CheckMode).url)
   }

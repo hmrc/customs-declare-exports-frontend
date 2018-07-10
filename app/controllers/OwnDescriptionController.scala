@@ -17,20 +17,21 @@
 package controllers
 
 import javax.inject.Inject
-
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
-import forms.OwnDescriptionFormProvider
+import forms.{OwnDescriptionData, OwnDescriptionFormProvider}
 import identifiers.OwnDescriptionId
 import models.Mode
+import play.api.libs.json.Json
 import utils.{Navigator, UserAnswers}
 import views.html.ownDescription
 
 import scala.concurrent.Future
+
 
 class OwnDescriptionController @Inject()(appConfig: FrontendAppConfig,
                                          override val messagesApi: MessagesApi,
@@ -41,7 +42,8 @@ class OwnDescriptionController @Inject()(appConfig: FrontendAppConfig,
                                          requireData: DataRequiredAction,
                                          formProvider: OwnDescriptionFormProvider) extends FrontendController with I18nSupport {
 
-  val form: Form[Boolean] = formProvider()
+  val form: Form[OwnDescriptionData] = formProvider()
+  import OwnDescriptionData._
 
   def onPageLoad(mode: Mode) = (authenticate andThen getData) {
     implicit request =>
@@ -52,14 +54,16 @@ class OwnDescriptionController @Inject()(appConfig: FrontendAppConfig,
       Ok(ownDescription(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData).async {
+  def onSubmit(mode: Mode) = (authenticate).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(ownDescription(appConfig, formWithErrors, mode))),
-        (value) =>
-          dataCacheConnector.save[Boolean](request.externalId, OwnDescriptionId.toString, value).map(cacheMap =>
+        (formWithErrors: Form[_]) => {
+          Future.successful(BadRequest(ownDescription(appConfig, formWithErrors, mode)))
+        },
+        (value) => {
+          dataCacheConnector.save[OwnDescriptionData](request.user.externalId, OwnDescriptionId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(OwnDescriptionId, mode)(new UserAnswers(cacheMap))))
+  }
       )
   }
 }
