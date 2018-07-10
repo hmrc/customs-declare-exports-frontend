@@ -28,7 +28,9 @@ class Navigator @Inject()() {
 
   private val routeMap: Map[Identifier, UserAnswers => Call] = Map(
     SelectRoleId -> (_ => routes.ConsignmentController.onPageLoad(NormalMode)),
-    ConsignmentId -> (_ => routes.SubmitPageController.onPageLoad(NormalMode))
+    ConsignmentId -> (_ => routes.OwnDescriptionController.onPageLoad(NormalMode)),
+    OwnDescriptionId -> (_ => routes.DeclarationForYourselfOrSomeoneElseController.onPageLoad(NormalMode)),
+    DeclarationForYourselfOrSomeoneElseId -> (_ => routes.SubmitPageController.onPageLoad(NormalMode))
   )
 
   private val editRouteMap: Map[Identifier, UserAnswers => Call] = Map(
