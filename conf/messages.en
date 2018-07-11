@@ -65,8 +65,8 @@ consignment.checkYourAnswersLabel = Consignment
 consignment.error.required = Please give an answer for consignment
 
 
-dashboard.title = dashboard
-dashboard.heading = dashboard
+dashboard.title = EDS dashboard
+dashboard.heading = Dashboard
 
 submitPage.title = Submit page
 submitPage.heading = submitPage

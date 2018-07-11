@@ -32,7 +32,6 @@ import views.html.ownDescription
 
 import scala.concurrent.Future
 
-
 class OwnDescriptionController @Inject()(appConfig: FrontendAppConfig,
                                          override val messagesApi: MessagesApi,
                                          dataCacheConnector: DataCacheConnector,

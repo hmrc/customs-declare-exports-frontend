@@ -24,7 +24,172 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
+    <style>
+        .content__body {
+            width: 100% !important;
+        }
+
+        .eds-hr {
+            display: block;
+            border: 0;
+            border-top: 5px solid #005ea5;
+            margin: 15px 0 30px;
+            padding: 0;
+        }
+
+        .home-section .tile {
+            font-size: 16px;
+            flex: 1;
+            margin-right: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #ccc;
+        }
+
+        .home-section .grid-row {
+            margin: 0;
+            display: flex;
+            overflow: hidden;
+
+        }
+
+        .home-section .tile .tile-top {
+            display: block;
+            background: #f8f8f8;
+            padding: 12px;
+            text-decoration: none;
+            border: 1px solid #f8f8f8;
+        }
+
+        .home-section .tile .tile-header {
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .home-section .tile .tile-detail {
+            color: #0b0c0c;
+        }
+
+        .home-section .tile .tile-detail-main {
+            font-weight: 600
+            margin-bottom: 15px;
+        }
+
+        .home-section .tile .tile-top.large {
+            min-height: 150px;
+        }
+
+        .home-section .tile .tile-links {
+            padding: 12px;
+            min-height: 110px;
+        }
+
+        .home-section .tile:last-child {
+            margin-right: 0;
+        }
+    </style>
+
+
     @components.heading("dashboard.heading")
+
+    <hr class="eds-hr">
+
+    <table class="home-section">
+
+        <tr class="grid-row">
+            <td class="tile">
+                <a href="_task-list/mucr-ref-ducr" class="tile-top large">
+                    <div class="tile-header">Declarations</div>
+                    <div class="tile-detail">
+                        <div class="tile-detail-main">
+                            No declarations submitted<br>
+                        </div>
+                        &nbsp;
+                    </div>
+                </a>
+                <div class="tile-links">
+                    <a class="bold" href="consignment">Create a Simplified declaration</a>
+                    <a href="#">Create a Full declaration</a>
+                    <a href="#">Use a template</a>
+                </div>
+            </td>
+
+            <td class="tile">
+                <a href="messages-home" class="tile-top large">
+                    <div class="tile-header">Messages</div>
+                    <div class="tile-detail">
+                        <div class="tile-detail-main">
+                            No new messages<br>
+                        </div>
+                        &nbsp;
+                    </div>
+                </a>
+                <div class="tile-links">
+                    <a href="messages-home-2">View messages area</a>
+                </div>
+            </td>
+
+            <td class="tile">
+                <a href="search-home" class="tile-top large">
+                    <div class="tile-header">Search</div>
+                    <div class="tile-detail">
+                        <div class="tile-detail-main">Main detail</div>
+                        <div>Descriptive text</div>
+                    </div>
+                </a>
+                <div class="tile-links">
+                    <a href="print-ni">Search for declarations</a>
+                </div>
+            </td>
+        </tr>
+
+        <tr class="grid-row">
+            <td class="tile">
+                <a href="archive-home" class="tile-top large">
+                    <div class="tile-header">Archive</div>
+                    <div class="tile-detail">
+                        <div class="tile-detail-main">
+                            No archived items<br>
+                        </div>
+                        <div>Descriptive text</div>
+                    </div>
+                </a>
+                <div class="tile-links">
+                    <a href="header-consignor-tid">Create a new declaration</a>
+                    <a href="#">Use a template</a>
+                </div>
+            </td>
+
+            <td class="tile">
+                <a href="licence-home" class="tile-top large">
+                    <div class="tile-header">Licences and permissions</div>
+                    <div class="tile-detail">
+                        <div class="tile-detail-main">You hold no licences</div>
+                        <div>Descriptive text</div>
+                    </div>
+                </a>
+                <div class="tile-links">
+                    <a href="#">Check if you need a licence</a>
+                    <a href="#">Apply for a new licence</a>
+                    <a href="#">Check a licence application</a>
+                </div>
+            </td>
+
+            <td class="tile">
+                <a href="#" class="tile-top large">
+                    <div class="tile-header">Reports</div>
+                    <div class="tile-detail">
+                        <div class="tile-detail-main">Main detail</div>
+                        <div>Descriptive text</div>
+                    </div>
+                </a>
+                <div class="tile-links">
+                    <a href="#">A link</a>
+                </div>
+            </td>
+        </tr>
+
+    </table>
 
     <h2>@loggedInUser.email you are logged in</h2>
     <table>
