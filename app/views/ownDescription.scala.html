@@ -25,6 +25,15 @@
     title = messages("ownDescription.title"),
     appConfig = appConfig,
     bodyClasses = None) {
+        <script type="text/javascript">
+            function showDescription() {
+                document.getElementById('contact-by-email-optional').setAttribute("class", "panel panel-border-narrow");
+            }
+
+            function hideDescription() {
+                document.getElementById('contact-by-email-optional').setAttribute("class", "panel panel-border-narrow js-hidden");
+            }
+        </script>
 
         <div class="grid-row">
             @helpers.form(action = OwnDescriptionController.onSubmit(mode), 'autoComplete -> "off") {
@@ -35,37 +44,24 @@
                             Would you like to add your own description to the declaration?
                         </legend>
                         <div class="multiple-choice" data-target="contact-by-email" id="yes-input" onClick={showDescription()}>
-                            <input id="example-contact-by-email" type="radio" name="choice" value="Yes" aria-controls="contact-by-email" aria-expanded="true">
+                            <input id="example-contact-by-email" type="radio" name="choice" value="Yes" @if(form("choice").value == Some("Yes")){checked="checked"} aria-controls="contact-by-email" aria-expanded="true">
                             <label for="example-contact-by-email">Yes</label>
                         </div>
 
-                        <div class="panel panel-border-narrow js-hidden" id="contact-by-email-optional">
+                        <div @if(form("choice").value == Some("Yes")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"} id="contact-by-email-optional">
                             <label class="form-label" for="contact-email">Enter your description</label>
                             <span class="form-hint">This is just for your own records</span>
-                            <input class="form-control" name="description" type="text" id="contact-email">
+                            <input class="form-control" name="description" type="text" id="contact-email" value=@{form("description").value}>
                         </div>
 
                         <div class="multiple-choice" id="no-input" onClick={hideDescription()}>
-                            <input id="example-contact-by-phone" type="radio" name="choice" value="No">
+                            <input id="example-contact-by-phone" type="radio" name="choice" value="No" @if(form("choice").value == Some("No")){checked="checked"}>
                             <label for="example-contact-by-phone">No</label>
                         </div>
-
                     </fieldset>
                 </div>
                 <br>
                 @components.submit_button()
             }
         </div>
-
-        <script type="text/javascript">
-            function showDescription() {
-                console.log("Show description");
-                document.getElementById('contact-by-email-optional').setAttribute("class", "panel panel-border-narrow");
-            }
-
-            function hideDescription() {
-                console.log("Hide description");
-                document.getElementById('contact-by-email-optional').setAttribute("class", "panel panel-border-narrow js-hidden");
-            }
-        </script>
 }

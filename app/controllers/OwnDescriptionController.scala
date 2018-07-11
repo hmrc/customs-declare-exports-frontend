@@ -26,7 +26,7 @@ import config.FrontendAppConfig
 import forms.{OwnDescriptionData, OwnDescriptionFormProvider}
 import identifiers.OwnDescriptionId
 import models.Mode
-import play.api.libs.json.Json
+import play.api.mvc.{Action, AnyContent}
 import utils.{Navigator, UserAnswers}
 import views.html.ownDescription
 
@@ -45,7 +45,7 @@ class OwnDescriptionController @Inject()(appConfig: FrontendAppConfig,
   val form: Form[OwnDescriptionData] = formProvider()
   import OwnDescriptionData._
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.flatMap(_.ownDescription) match {
         case None => form
@@ -54,14 +54,14 @@ class OwnDescriptionController @Inject()(appConfig: FrontendAppConfig,
       Ok(ownDescription(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           Future.successful(BadRequest(ownDescription(appConfig, formWithErrors, mode)))
         },
         (value) => {
-          dataCacheConnector.save[OwnDescriptionData](request.user.externalId, OwnDescriptionId.toString, value).map(cacheMap =>
+          dataCacheConnector.save[OwnDescriptionData](request.externalId, OwnDescriptionId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(OwnDescriptionId, mode)(new UserAnswers(cacheMap))))
   }
       )

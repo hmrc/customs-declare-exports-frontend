@@ -24,7 +24,7 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.data.format.Formats._
 
-case class OwnDescriptionData(choice:String, description:Option[String])
+case class OwnDescriptionData(choice: String, description: Option[String])
 
 class OwnDescriptionFormProvider @Inject() extends FormErrorHelper with Mappings {
 
@@ -34,7 +34,6 @@ class OwnDescriptionFormProvider @Inject() extends FormErrorHelper with Mappings
       "description" -> optional(text("ownDescription.error.required"))
     )(OwnDescriptionData.apply)(OwnDescriptionData.unapply)
     )
-
 }
 
 object OwnDescriptionData {

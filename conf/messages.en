@@ -49,7 +49,8 @@ unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
 selectRole.title = Select role
-selectRole.heading = Select role
+selectRole.heading = Export declaration service
+selectRole.hint = Please choose a role
 selectRole.webLoaderArrivingGoods = Web loader arriving goods
 selectRole.webLoaderDepartingGoods = Web loader departing goods
 selectRole.exporterMakingDeclaration = Exporter making declaration
@@ -67,26 +68,26 @@ consignment.error.required = Please give an answer for consignment
 dashboard.title = dashboard
 dashboard.heading = dashboard
 
-submitPage.title = submitPage
+submitPage.title = Submit page
 submitPage.heading = submitPage
 submitPage.checkYourAnswersLabel = submitPage
 submitPage.error.required = Enter submitPage
 submitPage.error.length = SubmitPage must be 100 characters or less
 
-declarationForYourselfOrSomeoneElse.title = declarationForYourselfOrSomeoneElse
+declarationForYourselfOrSomeoneElse.title = Declaration for yourself or someone else?
 declarationForYourselfOrSomeoneElse.heading = Is this declaration for yourself or someone else?
 declarationForYourselfOrSomeoneElse.yourself = Yourself
 declarationForYourselfOrSomeoneElse.someoneElse = Someone Else
 declarationForYourselfOrSomeoneElse.checkYourAnswersLabel = declarationForYourselfOrSomeoneElse
 declarationForYourselfOrSomeoneElse.error.required = Please give an answer for declarationForYourselfOrSomeoneElse
 
-ownDescription.title = ownDescription
+ownDescription.title = Own description
 ownDescription.heading = ownDescription
 ownDescription.checkYourAnswersLabel = ownDescription
 ownDescription.error.required = Please give an answer for ownDescription
 
-haveRepresentative.title = haveRepresentative
-haveRepresentative.heading = Do you have a representative?
+haveRepresentative.title = Exporter's representative
+haveRepresentative.heading = Are you the exporter's representative?
 haveRepresentative.yes = Yes
 haveRepresentative.no = No
 haveRepresentative.checkYourAnswersLabel = haveRepresentative
