@@ -113,7 +113,7 @@ ownDescription.description = Enter your description
 ownDescription.descriptionHint = This is just for your own records
 
 haveRepresentative.title = Exporter's representative
-haveRepresentative.heading = Are you the exporter's representative?
+haveRepresentative.heading = Do you have a representative?
 haveRepresentative.yes = Yes
 haveRepresentative.no = No
 haveRepresentative.checkYourAnswersLabel = haveRepresentative
