@@ -17,17 +17,15 @@
 package controllers
 
 import javax.inject.Inject
-
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
-import forms.ConsignmentFormProvider
+import forms.{ConsignmentData, ConsignmentFormProvider}
 import identifiers.ConsignmentId
 import models.Mode
-import models.Consignment
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.consignment
 
@@ -43,13 +41,13 @@ class ConsignmentController @Inject()(
                                         requireData: DataRequiredAction,
                                         formProvider: ConsignmentFormProvider) extends FrontendController with I18nSupport with Enumerable.Implicits {
 
-  val form = formProvider()
+  val form: Form[ConsignmentData] = formProvider()
 
   def onPageLoad(mode: Mode) = (authenticate andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.flatMap(_.consignment) match {
         case None => form
-        case Some(value) => form.fill(value)
+        case Some(value) => println("#### value");form.fill(value)
       }
       Ok(consignment(appConfig, preparedForm, mode))
   }
@@ -60,7 +58,7 @@ class ConsignmentController @Inject()(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(consignment(appConfig, formWithErrors, mode))),
         (value) =>
-          dataCacheConnector.save[Consignment](request.externalId, ConsignmentId.toString, value).map(cacheMap =>
+          dataCacheConnector.save[ConsignmentData](request.externalId, ConsignmentId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(ConsignmentId, mode)(new UserAnswers(cacheMap))))
       )
   }

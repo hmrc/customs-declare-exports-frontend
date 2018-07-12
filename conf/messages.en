@@ -63,7 +63,10 @@ consignment.consolidation = Consolidation
 consignment.singleShipment = Single shipment
 consignment.checkYourAnswersLabel = Consignment
 consignment.error.required = Please give an answer for consignment
-
+consignment.mucr = Enter Master Unique Consignment Reference (MUCR)
+consignment.mucrHint = Alphanumeric, max 35 characters, eg GB1234567890001410-0124-411018Aq
+consignment.ducr = Enter Declaration Unique Consignment Reference (DUCR)
+consignment.ducrHint = Alphanumeric, max 35 characters, eg GB1234567890001410-0124-411018Aq
 
 dashboard.title = EDS dashboard
 dashboard.heading = Dashboard

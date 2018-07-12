@@ -17,15 +17,31 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.Consignment
+import play.api.data.Forms._
+import play.api.libs.json.Json
+
+case class ConsignmentData(
+  choice: String,
+  mocrConsolidation: Option[String],
+  ducrConsolidation: Option[String],
+  ducrSingleShipment: Option[String]
+)
+
+object ConsignmentData {
+  implicit val format = Json.format[ConsignmentData]
+}
 
 class ConsignmentFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def apply(): Form[Consignment] =
+  def apply(): Form[ConsignmentData] =
     Form(
-      "value" -> enumerable[Consignment]("consignment.error.required")
+      mapping(
+        "choice" -> text("consignment.error.required"),
+        "mucrConsolidation" -> optional(text("consignment.error.required")),
+        "ducrConsolidation" -> optional(text("consignment.error.required")),
+        "ducrSingleShipment" -> optional(text("consignment.error.required"))
+      )(ConsignmentData.apply)(ConsignmentData.unapply)
     )
 }
