@@ -27,11 +27,11 @@
     bodyClasses = None) {
         <script type="text/javascript">
             function showDescription() {
-                document.getElementById('contact-by-email-optional').setAttribute("class", "panel panel-border-narrow");
+                document.getElementById('description-optional').setAttribute("class", "panel panel-border-narrow");
             }
 
             function hideDescription() {
-                document.getElementById('contact-by-email-optional').setAttribute("class", "panel panel-border-narrow js-hidden");
+                document.getElementById('description-optional').setAttribute("class", "panel panel-border-narrow js-hidden");
             }
         </script>
 
@@ -41,22 +41,22 @@
                     <fieldset>
                         <legend class="heading-large" role="heading" aria="" level="1">
                             <span class="heading-secondary">Consignment</span>
-                            Would you like to add your own description to the declaration?
+                            @messages("ownDescription.question")
                         </legend>
                         <div class="multiple-choice" data-target="contact-by-email" id="yes-input" onClick={showDescription()}>
-                            <input id="example-contact-by-email" type="radio" name="choice" value="Yes" @if(form("choice").value == Some("Yes")){checked="checked"} aria-controls="contact-by-email" aria-expanded="true">
-                            <label for="example-contact-by-email">Yes</label>
+                            <input id="example-contact-by-email" type="radio" name="choice" value="Yes" @if(form("choice").value == Some("Yes")){checked} aria-expanded="true">
+                            <label for="example-contact-by-email">@messages("site.yes")</label>
                         </div>
 
-                        <div @if(form("choice").value == Some("Yes")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"} id="contact-by-email-optional">
-                            <label class="form-label" for="contact-email">Enter your description</label>
-                            <span class="form-hint">This is just for your own records</span>
+                        <div @if(form("choice").value == Some("Yes")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"} id="description-optional">
+                            <label class="form-label" for="contact-email">@messages("ownDescription.description")</label>
+                            <span class="form-hint">@messages("ownDescription.descriptionHint")</span>
                             <input class="form-control" name="description" type="text" id="contact-email" value=@{form("description").value}>
                         </div>
 
                         <div class="multiple-choice" id="no-input" onClick={hideDescription()}>
-                            <input id="example-contact-by-phone" type="radio" name="choice" value="No" @if(form("choice").value == Some("No")){checked="checked"}>
-                            <label for="example-contact-by-phone">No</label>
+                            <input id="example-contact-by-phone" type="radio" name="choice" value="No" @if(form("choice").value == Some("No")){checked}>
+                            <label for="example-contact-by-phone">@messages("site.no")</label>
                         </div>
                     </fieldset>
                 </div>
