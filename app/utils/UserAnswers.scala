@@ -16,7 +16,7 @@
 
 package utils
 
-import forms.OwnDescriptionData
+import forms.{ConsignmentData, OwnDescriptionData}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import identifiers._
 import models._
@@ -31,7 +31,7 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
 
   def submitPage: Option[String] = cacheMap.getEntry[String](SubmitPageId.toString)
 
-  def consignment: Option[Consignment] = cacheMap.getEntry[Consignment](ConsignmentId.toString)
+  def consignment: Option[ConsignmentData] = cacheMap.getEntry[ConsignmentData](ConsignmentId.toString)
 
   def selectRole: Option[SelectRole] = cacheMap.getEntry[SelectRole](SelectRoleId.toString)
 }

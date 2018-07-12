@@ -26,21 +26,98 @@
     title = messages("consignment.title"),
     appConfig = appConfig,
     bodyClasses = None) {
+    <script type="text/javascript">
+        function showConsolidation() {
+            document.getElementById('single-shipment').setAttribute("class", "panel panel-border-narrow js-hidden");
+            document.getElementById('consolidation').setAttribute("class", "panel panel-border-narrow");
+        }
 
-    @helpers.form(action = ConsignmentController.onSubmit(mode), 'autoComplete -> "off") {
+        function showSingleShipment() {
+            document.getElementById('single-shipment').setAttribute("class", "panel panel-border-narrow");
+            document.getElementById('consolidation').setAttribute("class", "panel panel-border-narrow js-hidden");
+        }
+    </script>
 
-        @components.error_summary(form.errors)
+    <div class="grid-row">
+        @helpers.form(action = ConsignmentController.onSubmit(mode), 'autoComplete -> "off") {
+            <div class="field-group">
+                <fieldset>
+                    <legend class="heading-large" role="heading" aria="" level="1">
+                        <span class="heading-secondary">@messages("consignment.title")</span>
+                        @messages("consignment.heading")
+                    </legend>
 
-        @components.heading("consignment.heading")
+                    <div class="multiple-choice" id="consolidation-radio" onClick={showConsolidation()}>
+                        <input
+                            id="radio-consolidation"
+                            type="radio"
+                            name="choice"
+                            value="consolidation"
+                            @if(form("choice").value == Some("consolidation")){checked}
+                            aria-expanded="true"
+                        >
+                        <label for="radio-consolidation">@messages("consignment.consolidation")</label>
+                    </div>
+
+                    <div @if(form("choice").value == Some("consolidation")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"}
+                         id="consolidation">
+                        <label class="form-label" for="mucr-consolidation-input">
+                            @messages("consignment.mucr")
+                        </label>
+                        <span class="form-hint">@messages("consignment.mucrHint")</span>
+                        <input class="form-control"
+                               name="mucrConsolidation"
+                               type="text"
+                               id="mucr-consolidation-input"
+                               value=@{form("mucrConsolidation").value}>
+
+                        <label class="form-label" for="ducr-consolidation-input">
+                            @messages("consignment.ducr")
+                        </label>
+                        <span class="form-hint">@messages("consignment.ducrHint")</span>
+                        <input class="form-control"
+                               name="ducrConsolidation"
+                               type="text"
+                               id="ducr-consolidation-input"
+                               value=@{form("ducrConsolidation").value}>
+                    </div>
+
+                    <div class="multiple-choice" id="single-shipment-radio" onClick={showSingleShipment()}>
+                        <input id="radio-single-shipment"
+                               type="radio"
+                               name="choice"
+                               value="singleShipment"
+                               @if(form("choice").value == Some("singleShipment")){checked}>
+                        <label for="radio-single-shipment">@messages("consignment.singleShipment")</label>
+                    </div>
+
+                    <div @if(form("choice").value == Some("singleShipment")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"}
+                         id="single-shipment">
+                        <label class="form-label" for="ducr-single-shipment-input">
+                            @messages("consignment.ducr")
+                        </label>
+                        <span class="form-hint">@messages("consignment.ducrHint")</span>
+                        <input class="form-control"
+                               name="ducrSingleShipment"
+                               type="text"
+                               id="ducr-single-shipment-input"
+                               value=@{form("ducrSingleShipment").value}>
+                    </div>
+                </fieldset>
+            </div>
+            <br>
+            @components.submit_button()
 
 
-        @components.input_radio(
-            field = form("value"),
-            legend = messages("consignment.heading"),
-            legendClass = Some("visually-hidden"),
-            inputs = Consignment.options.toSeq
-        )
 
-        @components.submit_button()
-    }
+            <!--
+            Missing!!
+
+            Validation for both numbers
+            - frontend
+            - backend
+
+            -->
+        }
+    </div>
 }
