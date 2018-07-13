@@ -35,46 +35,44 @@
             }
         </script>
 
-        <div class="grid-row">
-            @helpers.form(action = OwnDescriptionController.onSubmit(mode), 'autoComplete -> "off") {
-                <div class="field-group">
-                    <fieldset>
-                        <legend class="heading-large" role="heading" aria="" level="1">
-                            <span class="heading-secondary">@messages("consignment.title")</span>
-                            @messages("ownDescription.heading")
-                        </legend>
+        @helpers.form(action = OwnDescriptionController.onSubmit(mode), 'autoComplete -> "off") {
+            <div class="field-group">
+                <fieldset>
+                    <legend class="heading-large" role="heading" aria="" level="1">
+                        <span class="heading-secondary">@messages("consignment.title")</span>
+                        @messages("ownDescription.heading")
+                    </legend>
 
-                        <div class="multiple-choice" id="yes-input" onClick={showDescription()}>
-                            <input
-                                id="radio-yes"
-                                type="radio"
-                                name="choice"
-                                value="Yes"
-                                @if(form("choice").value == Some("Yes")){checked}
-                                aria-expanded="true"
-                            >
-                            <label for="radio-yes">@messages("site.yes")</label>
-                        </div>
+                    <div class="multiple-choice" id="yes-input" onClick={showDescription()}>
+                        <input
+                            id="radio-yes"
+                            type="radio"
+                            name="choice"
+                            value="Yes"
+                            @if(form("choice").value == Some("Yes")){checked}
+                            aria-expanded="true"
+                        >
+                        <label for="radio-yes">@messages("site.yes")</label>
+                    </div>
 
-                        <div @if(form("choice").value == Some("Yes")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"} id="description-optional">
-                            <label class="form-label" for="description">@messages("ownDescription.description")</label>
-                            <span class="form-hint">@messages("ownDescription.descriptionHint")</span>
-                            <input class="form-control" name="description" type="text" id="description" value=@{form("description").value}>
-                        </div>
+                    <div @if(form("choice").value == Some("Yes")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"} id="description-optional">
+                        <label class="form-label" for="description">@messages("ownDescription.description")</label>
+                        <span class="form-hint">@messages("ownDescription.descriptionHint")</span>
+                        <input class="form-control" name="description" type="text" id="description" value=@{form("description").value}>
+                    </div>
 
-                        <div class="multiple-choice" id="no-input" onClick={hideDescription()}>
-                            <input
-                                id="radio-no"
-                                type="radio"
-                                name="choice"
-                                value="No"
-                                @if(form("choice").value == Some("No")){checked}>
-                            <label for="radio-no">@messages("site.no")</label>
-                        </div>
-                    </fieldset>
-                </div>
-                <br>
-                @components.submit_button()
-            }
-        </div>
+                    <div class="multiple-choice" id="no-input" onClick={hideDescription()}>
+                        <input
+                            id="radio-no"
+                            type="radio"
+                            name="choice"
+                            value="No"
+                            @if(form("choice").value == Some("No")){checked}>
+                        <label for="radio-no">@messages("site.no")</label>
+                    </div>
+                </fieldset>
+            </div>
+            <br>
+            @components.submit_button()
+        }
 }
