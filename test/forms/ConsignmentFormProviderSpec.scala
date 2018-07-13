@@ -17,11 +17,96 @@
 package forms
 
 import forms.behaviours.OptionFieldBehaviours
+import play.api.data.FormError
 
-// TODO Tests for ConsignmentFormProviderSpec
 class ConsignmentFormProviderSpec extends OptionFieldBehaviours {
 
   val form = new ConsignmentFormProvider()()
 
+  val correctMucr = "A:GBP23"
+  val correctDucr = "5GB123456789000-123ABC456DEFIIIIIII"
 
+  val mucrFormatError = FormError("", "error.mucr.format")
+  val ducrEmptyError = FormError("", "error.ducr.empty")
+  val ducrFormatError = FormError("", "error.ducr.format")
+
+  "ConsignmentFormProvider" should {
+    "return error if there is no choice" in {
+      val data = Map(
+        "choice" -> "",
+        "mucrConsolidation" -> "",
+        "ducrConsolidation" -> "",
+        "ducrSingleShipment" -> ""
+      )
+
+      val expectedError = Seq(ducrEmptyError, ducrFormatError)
+
+      checkForError(form, data, expectedError)
+    }
+
+    "return error if ducr number is missing for consolidation" in {
+      val data = Map(
+        "choice" -> "consolidation",
+        "mucrConsolidation" -> "",
+        "ducrConsolidation" -> "",
+        "ducrSingleShipment" -> ""
+      )
+
+      val expectedError = Seq(ducrEmptyError, ducrFormatError)
+
+      checkForError(form, data, expectedError)
+    }
+
+    "return error if ducr number is missing for single shipment" in {
+      val data = Map(
+        "choice" -> "singleShipment",
+        "mucrConsolidation" -> "",
+        "ducrConsolidation" -> "",
+        "ducrSingleShipment" -> ""
+      )
+
+      val expectedError = Seq(ducrEmptyError, ducrFormatError)
+
+      checkForError(form, data, expectedError)
+    }
+
+    "return error if mucr number is incorrect for consolidation" in {
+      val data = Map(
+        "choice" -> "consolidation",
+        "mucrConsolidation" -> "incorrectMucrNumber",
+        "ducrConsolidation" -> correctDucr,
+        "ducrSingleShipment" -> ""
+      )
+
+      val expectedError = Seq(mucrFormatError)
+
+      checkForError(form, data, expectedError)
+    }
+
+    "return error if ducr number is incorrect for consolidation" in {
+      val data = Map(
+        "choice" -> "consolidation",
+        "mucrConsolidation" -> correctMucr,
+        "ducrConsolidation" -> "incorrectDucrNumber",
+        "ducrSingleShipment" -> ""
+      )
+
+      val expectedError = Seq(ducrFormatError)
+
+      checkForError(form, data, expectedError)
+    }
+
+    "return error if ducr number is incorrect for single shipment" in {
+      val data = Map(
+        "choice" -> "singleShipment",
+        "mucrConsolidation" -> "",
+        "ducrConsolidation" -> "",
+        "ducrSingleShipment" -> "incorrectDucrNumber"
+      )
+
+      val expectedError = Seq(ducrFormatError)
+
+      checkForError(form, data, expectedError)
+    }
+  }
 }
