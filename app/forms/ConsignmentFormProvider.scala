@@ -16,15 +16,13 @@
 
 package forms
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.data._
 import play.api.data.Forms._
 import play.api.libs.json.Json
 
 case class ConsignmentData(
   choice: String,
-  mocrConsolidation: Option[String],
+  mucrConsolidation: Option[String],
   ducrConsolidation: Option[String],
   ducrSingleShipment: Option[String]
 )
@@ -33,15 +31,60 @@ object ConsignmentData {
   implicit val format = Json.format[ConsignmentData]
 }
 
-class ConsignmentFormProvider @Inject() extends FormErrorHelper with Mappings {
+object ConsignmentDataValidationHelper {
+  private final val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{19}$"
+
+  private final val correctMucrFormats: Seq[String] = Seq(
+    "^A:[A-Z]{3}[0-9A-Z]{0,8}$",
+    "^C:[A-Z]{3}[0-9A-Z]{4}$",
+    "^[A-Z]{2}\\/[A-Z]{3}-[0-9A-Z]{5,}",
+    "^[A-Z]{2}\\/[A-Z]{4}-[0-9A-Z]{5,}",
+    "^[A-Z]{2}\\/[0-9]{12}-[0-9A-Z]{1,}"
+  )
+
+  def emptyDucr(consignmentData: ConsignmentData): Boolean =
+    if(consignmentData.choice == "consolidation") {
+      ducrEmptyValidationHelper(consignmentData.ducrConsolidation)
+    } else {
+      ducrEmptyValidationHelper(consignmentData.ducrSingleShipment)
+    }
+
+  private def ducrEmptyValidationHelper(ducr: Option[String]): Boolean = ducr match {
+    case Some(value) => !value.isEmpty
+    case None => false
+  }
+
+  def ducrFormat(consignmentData: ConsignmentData): Boolean =
+    if(consignmentData.choice == "consolidation") {
+      ducrFormatValidationHelper(consignmentData.ducrConsolidation)
+    } else {
+      ducrFormatValidationHelper(consignmentData.ducrSingleShipment)
+    }
+
+  private def ducrFormatValidationHelper(ducr: Option[String]): Boolean = ducr match {
+    case Some(value) => value.matches(correctDucrFormat)
+    case None => false
+  }
+
+  def mucrFormat(consignmentData: ConsignmentData): Boolean = consignmentData.mucrConsolidation match {
+    case Some(value) if consignmentData.choice == "consolidation" =>
+      correctMucrFormats.exists(value.matches(_))
+    case None => true
+  }
+}
+
+class ConsignmentFormProvider {
 
   def apply(): Form[ConsignmentData] =
     Form(
       mapping(
-        "choice" -> text("consignment.error.required"),
-        "mucrConsolidation" -> optional(text("consignment.error.required")),
-        "ducrConsolidation" -> optional(text("consignment.error.required")),
-        "ducrSingleShipment" -> optional(text("consignment.error.required"))
+        "choice" -> text,
+        "mucrConsolidation" -> optional(text),
+        "ducrConsolidation" -> optional(text),
+        "ducrSingleShipment" -> optional(text)
       )(ConsignmentData.apply)(ConsignmentData.unapply)
+        .verifying("error.mucr.format", ConsignmentDataValidationHelper.mucrFormat(_))
+        .verifying("error.ducr.empty", ConsignmentDataValidationHelper.emptyDucr(_))
+        .verifying("error.ducr.format", ConsignmentDataValidationHelper.ducrFormat(_))
     )
 }

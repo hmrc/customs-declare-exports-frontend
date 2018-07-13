@@ -20,6 +20,9 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There’s been a problem
 error.summary.text = Check the following
+error.ducr.empty = DUCR number can not be empty
+error.ducr.format = DUCR number is in incorrect format
+error.mucr.format = MUCR number is in incorrect format
 
 index.title =Export Declarations
 index.heading=Customs Export Declarations
@@ -64,9 +67,9 @@ consignment.singleShipment = Single shipment
 consignment.checkYourAnswersLabel = Consignment
 consignment.error.required = Please give an answer for consignment
 consignment.mucr = Enter Master Unique Consignment Reference (MUCR)
-consignment.mucrHint = Alphanumeric, max 35 characters, eg GB1234567890001410-0124-411018Aq
+consignment.mucrHint = Alphanumeric, max 35 characters, eg A:GBP23
 consignment.ducr = Enter Declaration Unique Consignment Reference (DUCR)
-consignment.ducrHint = Alphanumeric, max 35 characters, eg GB1234567890001410-0124-411018Aq
+consignment.ducrHint = Alphanumeric, max 35 characters, eg 5GB123456789000-123ABC456DEFIIIIIII
 
 dashboard.title = EDS dashboard
 dashboard.heading = Dashboard

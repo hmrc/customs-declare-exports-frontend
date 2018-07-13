@@ -17,7 +17,6 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import controllers.routes._
-@import models.Consignment
 @import models.Mode
 
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -40,6 +39,8 @@
 
     <div class="grid-row">
         @helpers.form(action = ConsignmentController.onSubmit(mode), 'autoComplete -> "off") {
+            @components.error_summary(form.errors)
+
             <div class="field-group">
                 <fieldset>
                     <legend class="heading-large" role="heading" aria="" level="1">
@@ -114,9 +115,26 @@
             Missing!!
 
             Validation for both numbers
-            - frontend
             - backend
 
+
+            REGEX FOR DUCR
+            ^\d[A-Z]{2}\d{12}-[0-9A-Z]{19}$
+
+            DUCR field must be mandatory
+
+
+            MUCR field must not be mandatory
+
+            REGEX FOR MUCR
+            For Air: ^A:[A-Z]{3}[0-9A-Z]{0,8}$
+
+            For courier traffic: ^C:[A-Z]{3}[0-9A-Z]{4}$
+
+            Other formats:
+            ^[A-Z]{2}\/[A-Z]{3}-[0-9A-Z]{5,}
+            ^[A-Z]{2}\/[A-Z]{4}-[0-9A-Z]{5,}
+            ^[A-Z]{2}\/[0-9]{12}-[0-9A-Z]{1,}
             -->
         }
     </div>

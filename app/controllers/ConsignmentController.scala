@@ -26,6 +26,7 @@ import config.FrontendAppConfig
 import forms.{ConsignmentData, ConsignmentFormProvider}
 import identifiers.ConsignmentId
 import models.Mode
+import play.api.mvc.{Action, AnyContent}
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.consignment
 
@@ -43,16 +44,16 @@ class ConsignmentController @Inject()(
 
   val form: Form[ConsignmentData] = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.flatMap(_.consignment) match {
         case None => form
-        case Some(value) => println("#### value");form.fill(value)
+        case Some(value) => form.fill(value)
       }
       Ok(consignment(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
