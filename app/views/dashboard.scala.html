@@ -43,6 +43,7 @@
             margin-right: 30px;
             margin-bottom: 30px;
             border: 1px solid #ccc;
+            padding: 0;
         }
 
         .home-section .grid-row {
@@ -71,7 +72,7 @@
         }
 
         .home-section .tile .tile-detail-main {
-            font-weight: 600
+            font-weight: 600;
             margin-bottom: 15px;
         }
 
@@ -82,6 +83,12 @@
         .home-section .tile .tile-links {
             padding: 12px;
             min-height: 110px;
+        }
+
+        .home-section .tile .tile-links a {
+            display: block;
+            margin-bottom: 8px;
+            line-height: 10px;
         }
 
         .home-section .tile:last-child {
@@ -101,15 +108,17 @@
                 <a href="_task-list/mucr-ref-ducr" class="tile-top large">
                     <div class="tile-header">@messages("dashboard.declarations")</div>
                     <div class="tile-detail">
-                        <div class="tile-detail-main">
+                        <div class="tile-detail-main bold">
                             @messages("dashboard.noDeclarationsSubmitted")<br>
                         </div>
                         &nbsp;
                     </div>
                 </a>
                 <div class="tile-links">
-                    <a class="bold" href="consignment" id="simplifiedDeclaration">Create a Simplified declaration</a>
-                    <a href="#">Create a Full declaration</a>
+                    <a class="link bold" href="consignment" id="simplifiedDeclaration">
+                        @messages("dashboard.createSimplifiedDeclaration")
+                    </a><br>
+                    <a class="link" href="#">Create a Full declaration</a><br>
                     <a href="#">Use a template</a>
                 </div>
             </td>
@@ -118,14 +127,14 @@
                 <a href="messages-home" class="tile-top large">
                     <div class="tile-header">@messages("dashboard.messages")</div>
                     <div class="tile-detail">
-                        <div class="tile-detail-main">
+                        <div class="tile-detail-main bold">
                             @messages("dashboard.noNewMessages")<br>
                         </div>
                         &nbsp;
                     </div>
                 </a>
                 <div class="tile-links">
-                    <a href="messages-home-2">@messages("dashboard.viewMessageArea")</a>
+                    <a href="messages-home-2">@messages("dashboard.viewMessagesArea")</a>
                 </div>
             </td>
 
@@ -133,7 +142,7 @@
                 <a href="search-home" class="tile-top large">
                     <div class="tile-header">@messages("dashboard.search")</div>
                     <div class="tile-detail">
-                        <div class="tile-detail-main">@messages("dashboard.mainDetail")</div>
+                        <div class="tile-detail-main bold">@messages("dashboard.mainDetail")</div>
                         <div>@messages("dashboard.descriptiveText")</div>
                     </div>
                 </a>
@@ -148,14 +157,14 @@
                 <a href="archive-home" class="tile-top large">
                     <div class="tile-header">@messages("dashboard.archive")</div>
                     <div class="tile-detail">
-                        <div class="tile-detail-main">
+                        <div class="tile-detail-main bold">
                             @messages("dashboard.noArchivedItems")<br>
                         </div>
                         <div>@messages("dashboard.descriptiveText")</div>
                     </div>
                 </a>
                 <div class="tile-links">
-                    <a href="header-consignor-tid">@messages("dashboard.createNewDeclaration")</a>
+                    <a href="header-consignor-tid">@messages("dashboard.createNewDeclaration")</a><br>
                     <a href="#">@messages("dashboard.useTemplate")</a>
                 </div>
             </td>
@@ -164,13 +173,13 @@
                 <a href="licence-home" class="tile-top large">
                     <div class="tile-header">@messages("dashboard.licencesAndPermissions")</div>
                     <div class="tile-detail">
-                        <div class="tile-detail-main">@messages("dashboard.noLicence")</div>
+                        <div class="tile-detail-main bold">@messages("dashboard.noLicences")</div>
                         <div>@messages("dashboard.descriptiveText")</div>
                     </div>
                 </a>
                 <div class="tile-links">
-                    <a href="#">@messages("dashboard.checkLicence")</a>
-                    <a href="#">@messages("dashboard.applyForLicence")</a>
+                    <a href="#">@messages("dashboard.checkLicence")</a><br>
+                    <a href="#">@messages("dashboard.applyForLicence")</a><br>
                     <a href="#">@messages("dashboard.checkLicenceApplication")</a>
                 </div>
             </td>
@@ -179,7 +188,7 @@
                 <a href="#" class="tile-top large">
                     <div class="tile-header">@messages("dashboard.reports")</div>
                     <div class="tile-detail">
-                        <div class="tile-detail-main">@messages("dashboard.mainDetail")</div>
+                        <div class="tile-detail-main bold">@messages("dashboard.mainDetail")</div>
                         <div>@messages("dashboard.descriptiveText")</div>
                     </div>
                 </a>
