@@ -29,9 +29,15 @@
 
     @helpers.form(action = DeclarationForYourselfOrSomeoneElseController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @components.back_link()
 
-        @components.heading("declarationForYourselfOrSomeoneElse.heading")
+        @components.error_summary(form.errors)
+         <div class="field-group">
+          <legend class="heading-large" role="heading" aria="" level="1">
+              <span class="heading-secondary">@messages("consignment.title")</span>
+              <h1 style="margin:0">@messages("declarationForYourselfOrSomeoneElse.heading")</h1>
+          </legend>
+         </div>
 
         @components.input_radio(
             field = form("value"),
@@ -41,5 +47,6 @@
         )
 
         @components.submit_button()
+
     }
 }

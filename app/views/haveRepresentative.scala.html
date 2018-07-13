@@ -33,7 +33,10 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("haveRepresentative.heading")
+        <legend class="heading-large" role="heading" aria="" level="1">
+           <span class="heading-secondary">@messages("consignment.title")</span>
+            <h1 style="margin:0">@messages("haveRepresentative.heading")</h1>
+        </legend>
 
         @components.input_radio(
             field = form("value"),
@@ -44,4 +47,5 @@
 
         @components.submit_button()
     }
+
 }

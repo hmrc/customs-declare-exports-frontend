@@ -108,14 +108,13 @@ declarationForYourselfOrSomeoneElse.checkYourAnswersLabel = declarationForYourse
 declarationForYourselfOrSomeoneElse.error.required = Please give an answer for declarationForYourselfOrSomeoneElse
 
 ownDescription.title = Own description
-ownDescription.heading = ownDescription
+ownDescription.heading = Would you like to add your own description to the declaration?
 ownDescription.checkYourAnswersLabel = ownDescription
 ownDescription.error.required = Please give an answer for ownDescription
-ownDescription.question = Would you like to add your own description to the declaration?
 ownDescription.description = Enter your description
 ownDescription.descriptionHint = This is just for your own records
 
-haveRepresentative.title = Exporter's representative
+haveRepresentative.title = Exporter representative
 haveRepresentative.heading = Do you have a representative?
 haveRepresentative.yes = Yes
 haveRepresentative.no = No
