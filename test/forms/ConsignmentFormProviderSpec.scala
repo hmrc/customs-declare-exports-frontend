@@ -39,7 +39,7 @@ class ConsignmentFormProviderSpec extends OptionFieldBehaviours {
         "ducrSingleShipment" -> ""
       )
 
-      val expectedError = Seq(ducrEmptyError, ducrFormatError)
+      val expectedError = Seq(ducrEmptyError)
 
       checkForError(form, data, expectedError)
     }
@@ -52,7 +52,7 @@ class ConsignmentFormProviderSpec extends OptionFieldBehaviours {
         "ducrSingleShipment" -> ""
       )
 
-      val expectedError = Seq(ducrEmptyError, ducrFormatError)
+      val expectedError = Seq(ducrEmptyError)
 
       checkForError(form, data, expectedError)
     }
@@ -65,7 +65,7 @@ class ConsignmentFormProviderSpec extends OptionFieldBehaviours {
         "ducrSingleShipment" -> ""
       )
 
-      val expectedError = Seq(ducrEmptyError, ducrFormatError)
+      val expectedError = Seq(ducrEmptyError)
 
       checkForError(form, data, expectedError)
     }
