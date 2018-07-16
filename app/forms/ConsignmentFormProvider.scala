@@ -50,7 +50,7 @@ object ConsignmentDataValidationHelper {
     }
 
   private def ducrEmptyValidationHelper(ducr: Option[String]): Boolean = ducr match {
-    case Some(value) => !value.isEmpty
+    case Some(value) => !value.trim.isEmpty
     case None => false
   }
 
@@ -62,8 +62,8 @@ object ConsignmentDataValidationHelper {
     }
 
   private def ducrFormatValidationHelper(ducr: Option[String]): Boolean = ducr match {
-    case Some(value) => value.matches(correctDucrFormat)
-    case None => false
+    case Some(value) if(!value.trim.isEmpty) => value.matches(correctDucrFormat)
+    case _ => true
   }
 
   def mucrFormat(consignmentData: ConsignmentData): Boolean = consignmentData.mucrConsolidation match {
