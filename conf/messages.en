@@ -98,9 +98,10 @@ dashboard.checkLicenceApplication = Check a licence application
 dashboard.reports = Reports
 dashboard.link = A link
 
-submitPage.title = Submit page
-submitPage.heading = submitPage
+submitPage.title = New export declaration
+submitPage.heading = Declaration summary
 submitPage.checkYourAnswersLabel = submitPage
+submitPage.submit = Submit declaration
 submitPage.error.required = Enter submitPage
 submitPage.error.length = SubmitPage must be 100 characters or less
 
@@ -132,3 +133,12 @@ enterEORI.form.label = EORI number
 enterEORI.form.hint = Usually a country code and 12 digits, for example GB111222333444
 enterEORI.error.required = Enter enterEORI
 enterEORI.error.length = EnterEORI must be 100 characters or less
+
+consignmentSummary.change = Change
+consignmentSummary.reference = Declaration Unique Consignment Reference
+consignmentSummary.ownDescription = Own description of declaration
+consignmentSummary.timeOfDeclaration = Time and date of declaration
+consignmentSummary.yourselfOrSomeoneElse = Declaring yourselft or for someone else
+consignmentSummary.eoriNumber = Declarant's EORI number
+consignmentSummary.nameAndAddress = Declarant's name and address
+consignmentSummary.representative = Do you have a representative?

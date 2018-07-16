@@ -1,0 +1,125 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.ConsignmentAnswers
+
+@(consignmentAnswers: ConsignmentAnswers)(implicit messages: Messages)
+
+<style>
+    .no-border {
+        border: 0px;
+    }
+</style>
+
+<dl class="panel panel-border-narrow govuk-check-your-answers cya-questions-long">
+    <div>
+        <dt class="cya-question">
+            @messages("consignmentSummary.reference")
+        </dt>
+        <dd class="cya-answer">
+            @consignmentAnswers.reference
+        </dd>
+        <dd class="cya-change">
+            <a href="mucr-ref-ducr">
+                @messages("consignmentSummary.change")
+            </a>
+        </dd>
+    </div>
+
+    <div>
+        <dt class="cya-question">
+            @messages("consignmentSummary.ownDescription")
+        </dt>
+        <dd class="cya-answer">
+            @consignmentAnswers.ownDescription
+        </dd>
+        <dd class="cya-change">
+            <a href="ducr">
+                @messages("consignmentSummary.change")
+            </a>
+        </dd>
+    </div>
+
+    <div>
+        <dt class="cya-question">
+            @messages("consignmentSummary.timeOfDeclaration")
+        </dt>
+        <dd class="cya-answer">
+            @consignmentAnswers.timeOfDeclaration
+        </dd>
+        <dd class="cya-change">
+            <a href="header-consignor-tid-edit">
+            @messages("consignmentSummary.change")
+        </a>
+        </dd>
+    </div>
+
+    <div>
+        <dt class="cya-question">
+            @messages("consignmentSummary.yourselfOrSomeoneElse")
+        </dt>
+        <dd class="cya-answer">
+            @consignmentAnswers.yourselfOrSomeoneElse
+        </dd>
+        <dd class="cya-change">
+            <a href="header-consignor-tid-edit">
+            @messages("consignmentSummary.change")
+            </a>
+        </dd>
+    </div>
+
+    <div>
+        <dt class="cya-question">
+            @messages("consignmentSummary.eoriNumber")
+        </dt>
+        <dd class="cya-answer">
+            @consignmentAnswers.eoriNumber
+        </dd>
+        <dd class="cya-change">
+            <a href="header-consignor-tid-edit">
+                @messages("consignmentSummary.change")
+            </a>
+        </dd>
+    </div>
+
+    <div>
+        <dt class="cya-question">
+            @messages("consignmentSummary.nameAndAddress")
+        </dt>
+        <dd class="cya-answer">
+            @consignmentAnswers.nameAndAddress
+        </dd>
+        <dd class="cya-change">
+            <a href="#">
+                @messages("consignmentSummary.change")
+            </a>
+        </dd>
+    </div>
+
+    <div class="no-border">
+        <dt class="cya-question">
+            @messages("consignmentSummary.representative")
+        </dt>
+        <dd class="cya-answer">
+            @consignmentAnswers.representative
+        </dd>
+        <dd class="cya-change">
+            <a href="header-consignor-tid-edit">
+                @messages("consignmentSummary.change")
+            </a>
+        </dd>
+    </div>
+</dl>

@@ -24,11 +24,11 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
-import forms.SubmitPageFormProvider
+import forms.{DeclarationSummary, SubmitPageFormProvider}
 import identifiers.SubmitPageId
 import models.Mode
 import utils.{Navigator, UserAnswers}
-import views.html.submitPage
+import views.html.{index, submitPage}
 
 import scala.concurrent.Future
 
@@ -42,32 +42,27 @@ class SubmitPageController @Inject()(
                                         requireData: DataRequiredAction,
                                         formProvider: SubmitPageFormProvider,
                                         submitDeclaration: SubmitDeclaration) extends FrontendController with I18nSupport {
-
   val form = formProvider()
 
   def onPageLoad(mode: Mode) = (authenticate andThen getData) {
     implicit request =>
-      val preparedForm = request.userAnswers.flatMap(_.submitPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+
+      val declarationSummary = request.userAnswers match {
+        case None => DeclarationSummary()
+        case Some(answers) => DeclarationSummary.buildFromAnswers(answers)
       }
 
-      Ok(submitPage(appConfig, preparedForm, mode))
+      Ok(submitPage(appConfig, declarationSummary, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode) = (authenticate andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(submitPage(appConfig, formWithErrors, mode))),
-        (value) => {
-          val bearerToken = hc.authorization.map(_.value).getOrElse("Non CSP")
+      // Below declaration from users answers
+      // val declaration = DeclarationSummary.buildFromAnswers(request.userAnswers)
+      val bearerToken = hc.authorization.map(_.value).getOrElse("Non CSP")
 
-          submitDeclaration.submit(new Declaration(new Declarant("123")), bearerToken).flatMap{ _ =>
-            dataCacheConnector.save[String](request.externalId, SubmitPageId.toString, value).map(cacheMap =>
-              Redirect(navigator.nextPage(SubmitPageId, mode)(new UserAnswers(cacheMap))))
-          }
-        }
-      )
+      submitDeclaration.submit(new Declaration(new Declarant("123")), bearerToken).map{ _ =>
+        Ok(index(appConfig))
+      }
   }
 }

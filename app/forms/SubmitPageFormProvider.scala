@@ -17,9 +17,55 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.data.{Form, Forms, Mapping}
+import utils.UserAnswers
+
+case class ConsignmentAnswers(
+  reference: Option[String] = Some("Example reference"),
+  ownDescription: Option[String] = Some("Example ownDescription"),
+  timeOfDeclaration: Option[String] = Some("Example timeOfDeclaration"),
+  yourselfOrSomeoneElse: Option[String] = Some("Example yourselfOrSomeoneElse"),
+  eoriNumber: Option[String] = Some("Example EoriNumber"),
+  nameAndAddress: Option[String] = Some("Example nameAndAddress"),
+  representative: Option[String] = Some("Example representative")
+)
+
+case class ItemsAnswers()
+
+case class PackageAnswers()
+
+case class TransportAnswers()
+
+case class DeclarationSummary(
+  consignmentAnswers: ConsignmentAnswers = ConsignmentAnswers(),
+  itemsAnswers: ItemsAnswers = ItemsAnswers(),
+  packageAnswers: PackageAnswers = PackageAnswers(),
+  transportAnswers: TransportAnswers = TransportAnswers()
+)
+
+// TODO add correct values instead of Some("") after you create a page for it
+object DeclarationSummary {
+  def buildFromAnswers(userAnswers: UserAnswers): DeclarationSummary = {
+
+    val consignmentAnswers = ConsignmentAnswers(
+      reference = userAnswers.consignment.flatMap(ConsignmentData.ducr(_)),
+      ownDescription = userAnswers.ownDescription.flatMap(_.description),
+      timeOfDeclaration = Some(""),
+      yourselfOrSomeoneElse = userAnswers.declarationForYourselfOrSomeoneElse.map(_.toString()),
+      eoriNumber = userAnswers.enterEORI.map(_.toString()),
+      nameAndAddress = Some(""),
+      representative = userAnswers.haveRepresentative.map(_.toString())
+    )
+
+    DeclarationSummary(
+      consignmentAnswers,
+      ItemsAnswers(),
+      PackageAnswers(),
+      TransportAnswers()
+    )
+  }
+}
 
 class SubmitPageFormProvider @Inject() extends FormErrorHelper with Mappings {
 

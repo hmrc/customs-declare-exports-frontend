@@ -29,6 +29,13 @@ case class ConsignmentData(
 
 object ConsignmentData {
   implicit val format = Json.format[ConsignmentData]
+
+  def ducr(consignmentData: ConsignmentData): Option[String] =
+    if(consignmentData.choice == "consolidation") {
+      consignmentData.ducrConsolidation
+    } else {
+      consignmentData.ducrSingleShipment
+    }
 }
 
 object ConsignmentDataValidationHelper {
