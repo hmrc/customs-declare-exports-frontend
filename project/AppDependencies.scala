@@ -13,7 +13,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % "7.4.0",
     "uk.gov.hmrc" %% "http-caching-client" % "7.0.0",
     "uk.gov.hmrc" %% "play-conditional-form-mapping" % "0.2.0",
-    "uk.gov.hmrc" %% "bootstrap-play-25" % "1.4.0",
+    "uk.gov.hmrc" %% "bootstrap-play-25" % "1.7.0",
     "uk.gov.hmrc" %% "play-language" % "3.4.0",
     "com.thoughtworks.xstream" % "xstream" % "1.4.10"
   )
