@@ -124,3 +124,11 @@ haveRepresentative.yes = Yes
 haveRepresentative.no = No
 haveRepresentative.checkYourAnswersLabel = haveRepresentative
 haveRepresentative.error.required = Please give an answer for haveRepresentative
+
+enterEORI.title = enterEORI
+enterEORI.heading = Enter representative's Economic Operator Registration and Identification (EORI) number
+enterEORI.checkYourAnswersLabel = enterEORI
+enterEORI.form.label = EORI number
+enterEORI.form.hint = Usually a country code and 12 digits, for example GB111222333444
+enterEORI.error.required = Enter enterEORI
+enterEORI.error.length = EnterEORI must be 100 characters or less

@@ -30,7 +30,8 @@ class Navigator @Inject()() {
     ConsignmentId -> (_ => routes.OwnDescriptionController.onPageLoad(NormalMode)),
     OwnDescriptionId -> (_ => routes.DeclarationForYourselfOrSomeoneElseController.onPageLoad(NormalMode)),
     DeclarationForYourselfOrSomeoneElseId -> (_ => routes.HaveRepresentativeController.onPageLoad(NormalMode)),
-    HaveRepresentativeId -> (_ => routes.SubmitPageController.onPageLoad(NormalMode))
+    HaveRepresentativeId -> (_ => routes.EnterEORIController.onPageLoad(NormalMode)),
+    EnterEORIId -> (_ => routes.SubmitPageController.onPageLoad(NormalMode))
   )
 
   private val editRouteMap: Map[Identifier, UserAnswers => Call] = Map(

@@ -58,3 +58,8 @@ GET        /haveRepresentative                         controllers.HaveRepresent
 POST       /haveRepresentative                         controllers.HaveRepresentativeController.onSubmit(mode: Mode = NormalMode)
 GET        /changeHaveRepresentative                   controllers.HaveRepresentativeController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeHaveRepresentative                   controllers.HaveRepresentativeController.onSubmit(mode: Mode = CheckMode)
+
+GET        /enterEORI               controllers.EnterEORIController.onPageLoad(mode: Mode = NormalMode)
+POST       /enterEORI               controllers.EnterEORIController.onSubmit(mode: Mode = NormalMode)
+GET        /changeEnterEORI                        controllers.EnterEORIController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeEnterEORI                        controllers.EnterEORIController.onSubmit(mode: Mode = CheckMode)

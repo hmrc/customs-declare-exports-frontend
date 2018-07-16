@@ -22,6 +22,8 @@ import identifiers._
 import models._
 
 class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
+  def enterEORI: Option[String] = cacheMap.getEntry[String](EnterEORIId.toString)
+
 
   def haveRepresentative: Option[HaveRepresentative] = cacheMap.getEntry[HaveRepresentative](HaveRepresentativeId.toString)
 
