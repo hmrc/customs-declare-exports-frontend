@@ -25,6 +25,9 @@
     title = messages("consignment.title"),
     appConfig = appConfig,
     bodyClasses = None) {
+
+    @components.back_link()
+
     <script type="text/javascript">
         function showConsolidation() {
             document.getElementById('single-shipment').setAttribute("class", "panel panel-border-narrow js-hidden");
