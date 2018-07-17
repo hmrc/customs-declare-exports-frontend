@@ -16,6 +16,9 @@
 
 package forms
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 import utils.UserAnswers
 
 case class ConsignmentAnswers(
@@ -45,10 +48,13 @@ case class DeclarationSummary(
 object DeclarationSummary {
   def buildFromAnswers(userAnswers: UserAnswers): DeclarationSummary = {
 
+    val dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")
+    val currentTime = dateTimeFormatter.format(LocalDateTime.now())
+
     val consignmentAnswers = ConsignmentAnswers(
       reference = userAnswers.consignment.flatMap(ConsignmentData.ducr(_)),
       ownDescription = userAnswers.ownDescription.flatMap(_.description),
-      timeOfDeclaration = Some(""),
+      timeOfDeclaration = Some(currentTime),
       yourselfOrSomeoneElse = userAnswers.declarationForYourselfOrSomeoneElse.map(_.toString()),
       eoriNumber = userAnswers.enterEORI.map(_.toString()),
       nameAndAddress = Some(""),
