@@ -59,14 +59,13 @@ selectRole.webLoaderArrivingGoods = Web loader arriving goods
 selectRole.webLoaderDepartingGoods = Web loader departing goods
 selectRole.exporterMakingDeclaration = Exporter making declaration
 selectRole.checkYourAnswersLabel = Select role
-selectRole.error.required = Please give an answer for selectRole
+selectRole.error.required = Enter a correct role
 
 consignment.title = Consignment
 consignment.heading = Is this part of consolidation or a signal shipment?
 consignment.consolidation = Consolidation
 consignment.singleShipment = Single shipment
 consignment.checkYourAnswersLabel = Consignment
-consignment.error.required = Please give an answer for consignment
 consignment.mucr = Enter Master Unique Consignment Reference (MUCR)
 consignment.mucrHint = Alphanumeric, max 35 characters, eg A:GBP23
 consignment.ducr = Enter Declaration Unique Consignment Reference (DUCR)
@@ -110,12 +109,12 @@ declarationForYourselfOrSomeoneElse.heading = Is this declaration for yourself o
 declarationForYourselfOrSomeoneElse.yourself = Yourself
 declarationForYourselfOrSomeoneElse.someoneElse = Someone Else
 declarationForYourselfOrSomeoneElse.checkYourAnswersLabel = declarationForYourselfOrSomeoneElse
-declarationForYourselfOrSomeoneElse.error.required = Please give an answer for declarationForYourselfOrSomeoneElse
+declarationForYourselfOrSomeoneElse.error.required = Please give an answer for the question below
 
 ownDescription.title = Own description
 ownDescription.heading = Would you like to add your own description to the declaration?
 ownDescription.checkYourAnswersLabel = ownDescription
-ownDescription.error.required = Please give an answer for ownDescription
+ownDescription.error.required = Please give an answer for question below
 ownDescription.description = Enter your description
 ownDescription.descriptionHint = This is just for your own records
 
@@ -124,14 +123,14 @@ haveRepresentative.heading = Do you have a representative?
 haveRepresentative.yes = Yes
 haveRepresentative.no = No
 haveRepresentative.checkYourAnswersLabel = haveRepresentative
-haveRepresentative.error.required = Please give an answer for haveRepresentative
+haveRepresentative.error.required = Please give an answer for question below
 
 enterEORI.title = enterEORI
 enterEORI.heading = Enter representative''s Economic Operator Registration and Identification (EORI) number
 enterEORI.checkYourAnswersLabel = enterEORI
 enterEORI.form.label = EORI number
 enterEORI.form.hint = Usually a country code and 12 digits, for example GB111222333444
-enterEORI.error.required = Enter enterEORI
+enterEORI.error.required = Enter enter EORI number
 enterEORI.error.length = EnterEORI must be 100 characters or less
 
 consignmentSummary.change = Change

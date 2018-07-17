@@ -85,7 +85,7 @@ class ConsignmentFormProvider {
   def apply(): Form[ConsignmentData] =
     Form(
       mapping(
-        "choice" -> text,
+        "choice" -> text(),
         "mucrConsolidation" -> optional(text),
         "ducrConsolidation" -> optional(text),
         "ducrSingleShipment" -> optional(text)

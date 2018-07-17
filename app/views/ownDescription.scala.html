@@ -27,17 +27,19 @@
     bodyClasses = None) {
         <script type="text/javascript">
             function showDescription() {
-                document.getElementById('description-optional').setAttribute("class", "panel panel-border-narrow");
+                document.getElementById('description').setAttribute("class", "panel panel-border-narrow");
             }
 
             function hideDescription() {
-                document.getElementById('description-optional').setAttribute("class", "panel panel-border-narrow js-hidden");
+                document.getElementById('description').setAttribute("class", "panel panel-border-narrow js-hidden");
             }
         </script>
 
-        @components.back_link()
-
         @helpers.form(action = OwnDescriptionController.onSubmit(mode), 'autoComplete -> "off") {
+            @components.back_link()
+
+            @components.error_summary(form.errors)
+
             <div class="field-group">
                 <fieldset>
                     <legend class="heading-large" role="heading" aria="" level="1">
@@ -45,7 +47,7 @@
                         @messages("ownDescription.heading")
                     </legend>
 
-                    <div class="multiple-choice" id="yes-input" onClick={showDescription()}>
+                    <div class="multiple-choice" id="choice" onClick={showDescription()}>
                         <input
                             id="radio-yes"
                             type="radio"
@@ -57,7 +59,7 @@
                         <label for="radio-yes">@messages("site.yes")</label>
                     </div>
 
-                    <div @if(form("choice").value == Some("Yes")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"} id="description-optional">
+                    <div @if(form("choice").value == Some("Yes")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"} id="description">
                         <label class="form-label" for="description">@messages("ownDescription.description")</label>
                         <span class="form-hint">@messages("ownDescription.descriptionHint")</span>
                         <input class="form-control" name="description" type="text" id="description" value=@{form("description").value}>

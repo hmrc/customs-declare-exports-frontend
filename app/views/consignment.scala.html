@@ -26,8 +26,6 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @components.back_link()
-
     <script type="text/javascript">
         function showConsolidation() {
             document.getElementById('single-shipment').setAttribute("class", "panel panel-border-narrow js-hidden");
@@ -41,6 +39,8 @@
     </script>
 
     @helpers.form(action = ConsignmentController.onSubmit(mode), 'autoComplete -> "off") {
+        @components.back_link()
+
         @components.error_summary(form.errors)
 
         <div class="field-group">
@@ -50,7 +50,7 @@
                     @messages("consignment.heading")
                 </legend>
 
-                <div class="multiple-choice" id="consolidation-radio" onClick={showConsolidation()}>
+                <div class="multiple-choice" id="choice" onClick={showConsolidation()}>
                     <input
                         id="radio-consolidation"
                         type="radio"
