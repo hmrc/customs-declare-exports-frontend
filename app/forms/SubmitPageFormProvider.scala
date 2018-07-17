@@ -27,7 +27,7 @@ case class ConsignmentAnswers(
   timeOfDeclaration: Option[String] = None,
   yourselfOrSomeoneElse: Option[String] = None,
   eoriNumber: Option[String] = None,
-  nameAndAddress: Option[String] = None,
+  nameAndAddress: Option[NameAndAddress] = None,
   representative: Option[String] = None
 )
 
@@ -57,7 +57,7 @@ object DeclarationSummary {
       timeOfDeclaration = Some(currentTime),
       yourselfOrSomeoneElse = userAnswers.declarationForYourselfOrSomeoneElse.map(_.toString()),
       eoriNumber = userAnswers.enterEORI.map(_.toString()),
-      nameAndAddress = Some(""),
+      nameAndAddress = userAnswers.nameAndAddress,
       representative = userAnswers.haveRepresentative.map(_.toString())
     )
 

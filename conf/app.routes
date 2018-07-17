@@ -44,22 +44,50 @@ GET        /changeSubmitPage                            controllers.SubmitPageCo
 
 POST       /changeSubmitPage                            controllers.SubmitPageController.onSubmit(mode: models.Mode = models.CheckMode)
 
-GET        /declarationForYourselfOrSomeoneElse         controllers.DeclarationForYourselfOrSomeoneElseController.onPageLoad(mode: Mode = NormalMode)
-POST       /declarationForYourselfOrSomeoneElse         controllers.DeclarationForYourselfOrSomeoneElseController.onSubmit(mode: Mode = NormalMode)
-GET        /changeDeclarationForYourselfOrSomeoneElse   controllers.DeclarationForYourselfOrSomeoneElseController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeDeclarationForYourselfOrSomeoneElse   controllers.DeclarationForYourselfOrSomeoneElseController.onSubmit(mode: Mode = CheckMode)
+GET        /declarationForYourselfOrSomeoneElse         controllers.DeclarationForYourselfOrSomeoneElseController.onPageLoad(mode: models.Mode = models.NormalMode)
 
-GET        /ownDescription                       controllers.OwnDescriptionController.onPageLoad(mode: Mode = NormalMode)
-POST       /ownDescription                       controllers.OwnDescriptionController.onSubmit(mode: Mode = NormalMode)
-GET        /changeOwnDescription                       controllers.OwnDescriptionController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeOwnDescription                       controllers.OwnDescriptionController.onSubmit(mode: Mode = CheckMode)
+POST       /declarationForYourselfOrSomeoneElse         controllers.DeclarationForYourselfOrSomeoneElseController.onSubmit(mode: models.Mode = models.NormalMode)
 
-GET        /haveRepresentative                         controllers.HaveRepresentativeController.onPageLoad(mode: Mode = NormalMode)
-POST       /haveRepresentative                         controllers.HaveRepresentativeController.onSubmit(mode: Mode = NormalMode)
-GET        /changeHaveRepresentative                   controllers.HaveRepresentativeController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeHaveRepresentative                   controllers.HaveRepresentativeController.onSubmit(mode: Mode = CheckMode)
+GET        /changeDeclarationForYourselfOrSomeoneElse   controllers.DeclarationForYourselfOrSomeoneElseController.onPageLoad(mode: models.Mode = models.CheckMode)
 
-GET        /enterEORI               controllers.EnterEORIController.onPageLoad(mode: Mode = NormalMode)
-POST       /enterEORI               controllers.EnterEORIController.onSubmit(mode: Mode = NormalMode)
-GET        /changeEnterEORI                        controllers.EnterEORIController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeEnterEORI                        controllers.EnterEORIController.onSubmit(mode: Mode = CheckMode)
+POST       /changeDeclarationForYourselfOrSomeoneElse   controllers.DeclarationForYourselfOrSomeoneElseController.onSubmit(mode: models.Mode = models.CheckMode)
+
+# Own description
+
+GET        /ownDescription                              controllers.OwnDescriptionController.onPageLoad(mode: models.Mode = models.NormalMode)
+
+POST       /ownDescription                              controllers.OwnDescriptionController.onSubmit(mode: models.Mode = models.NormalMode)
+
+GET        /changeOwnDescription                        controllers.OwnDescriptionController.onPageLoad(mode: models.Mode = models.CheckMode)
+
+POST       /changeOwnDescription                        controllers.OwnDescriptionController.onSubmit(mode: models.Mode = models.CheckMode)
+
+# Have representative
+
+GET        /haveRepresentative                          controllers.HaveRepresentativeController.onPageLoad(mode: models.Mode = models.NormalMode)
+
+POST       /haveRepresentative                          controllers.HaveRepresentativeController.onSubmit(mode: models.Mode = models.NormalMode)
+
+GET        /changeHaveRepresentative                    controllers.HaveRepresentativeController.onPageLoad(mode: models.Mode = models.CheckMode)
+
+POST       /changeHaveRepresentative                    controllers.HaveRepresentativeController.onSubmit(mode: models.Mode = models.CheckMode)
+
+# Enter EORI
+
+GET        /enterEORI                                   controllers.EnterEORIController.onPageLoad(mode: models.Mode = models.NormalMode)
+
+POST       /enterEORI                                   controllers.EnterEORIController.onSubmit(mode: models.Mode = models.NormalMode)
+
+GET        /changeEnterEORI                             controllers.EnterEORIController.onPageLoad(mode: models.Mode = models.CheckMode)
+
+POST       /changeEnterEORI                             controllers.EnterEORIController.onSubmit(mode: models.Mode = models.CheckMode)
+
+# Name and address
+
+GET        /nameAndAddress                              controllers.NameAndAddressController.onPageLoad(mode: models.Mode = models.NormalMode)
+
+POST       /nameAndAddress                              controllers.NameAndAddressController.onSubmit(mode: models.Mode = models.NormalMode)
+
+GET        /changeNameAndAddress                        controllers.NameAndAddressController.onPageLoad(mode: models.Mode = models.CheckMode)
+
+POST       /changeNameAndAddress                        controllers.NameAndAddressController.onSubmit(mode: models.Mode = models.CheckMode)

@@ -95,7 +95,7 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
 
     "redirect to the next page when valid data is submitted for consolidation" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("choice", "consolidation"),
+        ("choice" -> "consolidation"),
         ("mucrConsolidation" -> correctMucr),
         ("ducrConsolidation" -> correctDucr),
         ("ducrSingleShipment" -> "")
@@ -109,7 +109,7 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
 
     "redirect to the next page when valid data is submitted for single shipment" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("choice", "singleShipment"),
+        ("choice" -> "singleShipment"),
         ("mucrConsolidation" -> ""),
         ("ducrConsolidation" -> ""),
         ("ducrSingleShipment" -> correctDucr)
@@ -122,7 +122,7 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value" -> "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)

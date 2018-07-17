@@ -1,0 +1,133 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.routes._
+@import models.Mode
+
+@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("nameAndAddress.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
+    <style>
+        .compound {
+            margin-bottom: 10px;
+        }
+    </style>
+
+    @helpers.form(action = NameAndAddressController.onSubmit(mode), 'autoComplete -> "off") {
+        @components.back_link()
+
+        @components.error_summary(form.errors)
+
+        <div class="field-group">
+            <fieldset>
+                <legend class="heading-large" role="heading" aria="" level="1">
+                    <span class="heading-secondary">@messages("nameAndAddress.secondaryHeading")</span>
+                    <h1>@messages("nameAndAddress.heading")</h1>
+                </legend>
+
+                <div className="panel panel-border-narrow" id="fullName">
+                    <label class="form-label" for="fullNameInput">
+                        @messages("nameAndAddress.fullName")
+                    </label>
+                    <input class="form-control"
+                           name="fullName"
+                           type="text"
+                           id="fullNameInput"
+                           value=@{form("fullName").value}>
+                </div>
+
+                <br>
+
+                <div className="panel panel-border-narrow" id="buildingAndStreet">
+                    <label class="form-label" for="buildingAndStreetInput">
+                        @messages("nameAndAddress.buildingAndStreet")
+                    </label>
+                    <input class="form-control compound"
+                           name="buildingAndStreet"
+                           type="text"
+                           id="buildingAndStreetInput"
+                           value=@{form("buildingAndStreetFirstPart").value}>
+                    <input class="form-control"
+                           name="buildingAndStreetSecondPart"
+                           type="text"
+                           id="buildingAndStreetSecondInput"
+                           value=@{form("buildingAndStreetSecondPart").value}>
+                </div>
+
+                <br>
+
+                <div className="panel panel-border-narrow" id="townOrCity">
+                    <label class="form-label" for="townOrCityInput">
+                        @messages("nameAndAddress.city")
+                    </label>
+                    <input class="form-control"
+                           name="townOrCity"
+                           type="text"
+                           id="townOrCityInput"
+                           value=@{form("townOrCity").value}>
+                </div>
+
+                <br>
+
+                <div className="panel panel-border-narrow" id="county">
+                    <label class="form-label" for="county-input">
+                        @messages("nameAndAddress.county")
+                    </label>
+                    <input class="form-control"
+                           name="county"
+                           type="text"
+                           id="county-input"
+                           value=@{form("county").value}>
+                </div>
+
+                <br>
+
+                <div className="panel panel-border-narrow" id="postcode">
+                    <label class="form-label" for="postcode-input">
+                        @messages("nameAndAddress.postcode")
+                    </label>
+                    <input class="form-control form-control-1-4"
+                           name="postcode"
+                           type="text"
+                           id="postcode-input"
+                           value=@{form("postcode").value}>
+                </div>
+
+                <br>
+
+                <div className="panel panel-border-narrow" id="country">
+                    <label class="form-label" for="country-input">
+                        @messages("nameAndAddress.country")
+                    </label>
+                    <input class="form-control"
+                           name="country"
+                           type="text"
+                           id="country-input"
+                           value=@{form("country").value}>
+                </div>
+
+            </fieldset>
+        </div>
+        <br>
+
+        @components.submit_button()
+    }
+}

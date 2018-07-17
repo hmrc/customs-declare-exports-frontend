@@ -102,7 +102,19 @@
             @messages("consignmentSummary.nameAndAddress")
         </dt>
         <dd class="cya-answer">
-            @consignmentAnswers.nameAndAddress
+            @if(consignmentAnswers.nameAndAddress.isDefined){
+                @consignmentAnswers.nameAndAddress.get.fullName<br>
+                @consignmentAnswers.nameAndAddress.get.buildingAndStreet<br>
+                @if(consignmentAnswers.nameAndAddress.get.buildingAndStreetSecondPart.isDefined) {
+                    @consignmentAnswers.nameAndAddress.get.buildingAndStreetSecondPart.get<br>
+                }
+                @consignmentAnswers.nameAndAddress.get.townOrCity<br>
+                @if(consignmentAnswers.nameAndAddress.get.county.isDefined) {
+                    @consignmentAnswers.nameAndAddress.get.county.get<br>
+                }
+                @consignmentAnswers.nameAndAddress.get.postcode<br>
+                @consignmentAnswers.nameAndAddress.get.country<br>
+            }
         </dd>
         <dd class="cya-change">
             <a href="#">

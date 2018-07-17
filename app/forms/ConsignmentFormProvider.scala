@@ -39,7 +39,7 @@ object ConsignmentData {
 }
 
 object ConsignmentDataValidationHelper {
-  private final val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{19}$"
+  private final val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
 
   private final val correctMucrFormats: Seq[String] = Seq(
     "^A:[A-Z]{3}[0-9A-Z]{0,8}$",
