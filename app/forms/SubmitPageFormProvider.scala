@@ -16,19 +16,16 @@
 
 package forms
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.{Form, Forms, Mapping}
 import utils.UserAnswers
 
 case class ConsignmentAnswers(
-  reference: Option[String] = Some("Example reference"),
-  ownDescription: Option[String] = Some("Example ownDescription"),
-  timeOfDeclaration: Option[String] = Some("Example timeOfDeclaration"),
-  yourselfOrSomeoneElse: Option[String] = Some("Example yourselfOrSomeoneElse"),
-  eoriNumber: Option[String] = Some("Example EoriNumber"),
-  nameAndAddress: Option[String] = Some("Example nameAndAddress"),
-  representative: Option[String] = Some("Example representative")
+  reference: Option[String] = None,
+  ownDescription: Option[String] = None,
+  timeOfDeclaration: Option[String] = None,
+  yourselfOrSomeoneElse: Option[String] = None,
+  eoriNumber: Option[String] = None,
+  nameAndAddress: Option[String] = None,
+  representative: Option[String] = None
 )
 
 case class ItemsAnswers()
@@ -65,13 +62,4 @@ object DeclarationSummary {
       TransportAnswers()
     )
   }
-}
-
-class SubmitPageFormProvider @Inject() extends FormErrorHelper with Mappings {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("submitPage.error.required")
-        .verifying(maxLength(100, "submitPage.error.length"))
-    )
 }

@@ -18,19 +18,16 @@ package controllers
 
 import api.declaration.{Declarant, Declaration, SubmitDeclaration}
 import javax.inject.Inject
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
-import forms.{DeclarationSummary, SubmitPageFormProvider}
-import identifiers.SubmitPageId
+import forms.DeclarationSummary
 import models.Mode
-import utils.{Navigator, UserAnswers}
+import play.api.mvc.{Action, AnyContent}
+import utils.Navigator
 import views.html.{index, submitPage}
-
-import scala.concurrent.Future
 
 class SubmitPageController @Inject()(
                                         appConfig: FrontendAppConfig,
@@ -40,11 +37,9 @@ class SubmitPageController @Inject()(
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: SubmitPageFormProvider,
                                         submitDeclaration: SubmitDeclaration) extends FrontendController with I18nSupport {
-  val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
 
       val declarationSummary = request.userAnswers match {
@@ -55,7 +50,7 @@ class SubmitPageController @Inject()(
       Ok(submitPage(appConfig, declarationSummary, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       // Below declaration from users answers
       // val declaration = DeclarationSummary.buildFromAnswers(request.userAnswers)

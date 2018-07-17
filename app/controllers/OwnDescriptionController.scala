@@ -62,7 +62,7 @@ class OwnDescriptionController @Inject()(appConfig: FrontendAppConfig,
         (value) => {
           dataCacheConnector.save[OwnDescriptionData](request.externalId, OwnDescriptionId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(OwnDescriptionId, mode)(new UserAnswers(cacheMap))))
-  }
+        }
       )
   }
 }

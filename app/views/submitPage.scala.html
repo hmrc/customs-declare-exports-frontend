@@ -136,6 +136,8 @@
 
     </script>
 
+    @components.back_link()
+
     @helpers.form(action = DashboardController.onPageLoad(), 'autoComplete -> "off") {
 
         @components.heading("submitPage.heading")

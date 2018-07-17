@@ -17,7 +17,7 @@
 package controllers
 
 import play.api.data.Form
-import play.api.libs.json.{JsBoolean, JsObject, JsString}
+import play.api.libs.json.{JsObject, JsString}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
@@ -67,16 +67,5 @@ class OwnDescriptionControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
-
-    //TODO Fixme Patryk please fix this
-//    "return a Bad Request and errors when invalid data is submitted" in {
-//      val postRequest = fakeRequest.withFormUrlEncodedBody(("choice", "NONONONO"),("description" ,"Something"))
-//      val boundForm = form.bind(Map("choice" -> "NONONONO" , "description" -> "Something"))
-//
-//      val result = controller().onSubmit(NormalMode)(postRequest)
-//
-//      status(result) mustBe BAD_REQUEST
-//      contentAsString(result) mustBe viewAsString(boundForm)
-//    }
   }
 }

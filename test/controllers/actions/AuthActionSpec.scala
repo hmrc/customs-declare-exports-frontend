@@ -23,6 +23,7 @@ import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import base.SpecBase
 import controllers.routes
+import models.NormalMode
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -61,7 +62,7 @@ class AuthActionSpec extends SpecBase {
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.EnterEORIController.onPageLoad(NormalMode).url)
       }
     }
 

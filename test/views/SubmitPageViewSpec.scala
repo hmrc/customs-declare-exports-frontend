@@ -17,28 +17,24 @@
 package views
 
 import play.api.data.Form
-import controllers.routes
-import forms.SubmitPageFormProvider
+import forms.DeclarationSummary
 import models.NormalMode
-import views.behaviours.StringViewBehaviours
+import views.behaviours.ViewBehaviours
 import views.html.submitPage
 
-// TODO Fix me
-class SubmitPageViewSpec extends StringViewBehaviours {
-//
-//  val messageKeyPrefix = "submitPage"
-//
-  val form = new SubmitPageFormProvider()()
-//
-//  def createView = () => submitPage(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
-//
-//  def createViewUsingForm = (form: Form[String]) => submitPage(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
-//
-//  "SubmitPage view" must {
-//    behave like normalPage(createView, messageKeyPrefix)
-//
-//    behave like pageWithBackLink(createView)
-//
-//    behave like stringPage(createViewUsingForm, messageKeyPrefix, routes.SubmitPageController.onSubmit(NormalMode).url)
-//  }
+class SubmitPageViewSpec extends ViewBehaviours {
+
+  val messageKeyPrefix = "submitPage"
+
+  val summary = DeclarationSummary()
+
+  def createView = () => submitPage(frontendAppConfig, summary, NormalMode)(fakeRequest, messages)
+
+  def createViewUsingForm = (form: Form[String]) => submitPage(frontendAppConfig, summary, NormalMode)(fakeRequest, messages)
+
+  "SubmitPage view" must {
+    behave like normalPage(createView, messageKeyPrefix)
+
+    behave like pageWithBackLink(createView)
+  }
 }

@@ -72,7 +72,9 @@
             @messages("consignmentSummary.yourselfOrSomeoneElse")
         </dt>
         <dd class="cya-answer">
-            @consignmentAnswers.yourselfOrSomeoneElse
+            @if(consignmentAnswers.yourselfOrSomeoneElse.isDefined){
+                @messages("declarationForYourselfOrSomeoneElse." + consignmentAnswers.yourselfOrSomeoneElse.get)
+            }
         </dd>
         <dd class="cya-change">
             <a href="header-consignor-tid-edit">
@@ -114,7 +116,9 @@
             @messages("consignmentSummary.representative")
         </dt>
         <dd class="cya-answer">
-            @consignmentAnswers.representative
+            @if(consignmentAnswers.representative.isDefined) {
+                @messages("haveRepresentative." + consignmentAnswers.representative.get)
+            }
         </dd>
         <dd class="cya-change">
             <a href="header-consignor-tid-edit">

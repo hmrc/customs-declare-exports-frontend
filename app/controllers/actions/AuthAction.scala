@@ -22,9 +22,8 @@ import play.api.mvc.Results._
 import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import config.FrontendAppConfig
 import controllers.routes
-import models.SignedInUser
+import models.{NormalMode, SignedInUser}
 import models.requests.AuthenticatedRequest
-import uk.gov.hmrc.http.UnauthorizedException
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.auth.core._
@@ -51,11 +50,10 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
         val cdsLoggedInUser = SignedInUser(credentials, name, email, eori.get.value, externalId.get, internalId, affinityGroup, allEnrolments)
         block(AuthenticatedRequest(request, cdsLoggedInUser))
     } recover {
-      case ex: NoActiveSession =>
+      case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
-      case ex: InsufficientEnrolments =>
-        //TODO put in a redirect here to the Get an EORI page!
-        Redirect(routes.UnauthorisedController.onPageLoad)
+      case _: InsufficientEnrolments =>
+        Redirect(routes.EnterEORIController.onPageLoad(NormalMode))
       case _ =>
         Redirect(routes.UnauthorisedController.onPageLoad)
     }
