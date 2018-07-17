@@ -44,7 +44,6 @@ case class DeclarationSummary(
   transportAnswers: TransportAnswers = TransportAnswers()
 )
 
-// TODO add correct values instead of Some("") after you create a page for it
 object DeclarationSummary {
   def buildFromAnswers(userAnswers: UserAnswers): DeclarationSummary = {
 
