@@ -36,33 +36,13 @@ class NameAndAddressFormProviderSpec extends StringFieldBehaviours {
         )
       )
 
-      result.apply("fullName").value map { choice =>
-        choice shouldBe "Full name"
-      }
-
-      result.apply("buildingAndStreet").value map { description =>
-        description shouldBe "Building"
-      }
-
-      result.apply("buildingAndStreetSecondPart").value map { description =>
-        description shouldBe "Street"
-      }
-
-      result.apply("townOrCity").value map { description =>
-        description shouldBe "Town"
-      }
-
-      result.apply("county").value map { description =>
-        description shouldBe "County"
-      }
-
-      result.apply("postcode").value map { description =>
-        description shouldBe "Postcode"
-      }
-
-      result.apply("country").value map { description =>
-        description shouldBe "Country"
-      }
+      result.apply("fullName").value.map(_ shouldBe "Full name")
+      result.apply("buildingAndStreet").value.map(_ shouldBe "Building")
+      result.apply("buildingAndStreetSecondPart").value.map(_ shouldBe "Street")
+      result.apply("townOrCity").value.map(_ shouldBe "Town")
+      result.apply("county").value.map(_ shouldBe "County")
+      result.apply("postcode").value.map(_ shouldBe "Postcode")
+      result.apply("country").value.map(_ shouldBe "Country")
     }
   }
 }

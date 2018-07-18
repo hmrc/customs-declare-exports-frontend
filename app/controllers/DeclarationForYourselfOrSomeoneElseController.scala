@@ -45,16 +45,16 @@ class DeclarationForYourselfOrSomeoneElseController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData) {
+  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.flatMap(_.declarationForYourselfOrSomeoneElse) match {
+      val preparedForm = request.userAnswers.declarationForYourselfOrSomeoneElse match {
         case None => form
         case Some(value) => form.fill(value)
       }
       Ok(declarationForYourselfOrSomeoneElse(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData).async {
+  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>

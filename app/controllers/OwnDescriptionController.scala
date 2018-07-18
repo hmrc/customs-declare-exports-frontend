@@ -44,16 +44,16 @@ class OwnDescriptionController @Inject()(appConfig: FrontendAppConfig,
   val form: Form[OwnDescriptionData] = formProvider()
   import OwnDescriptionData._
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.flatMap(_.ownDescription) match {
+      val preparedForm = request.userAnswers.ownDescription match {
         case None => form
         case Some(value) => form.fill(value)
       }
       Ok(ownDescription(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {

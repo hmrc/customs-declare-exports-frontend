@@ -40,7 +40,7 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new ConsignmentController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+      dataRetrievalAction, formProvider)
 
   def viewAsString(form: Form[_] = form) = consignment(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 

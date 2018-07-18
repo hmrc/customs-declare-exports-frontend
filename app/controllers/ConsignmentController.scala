@@ -39,7 +39,6 @@ class ConsignmentController @Inject()(
     navigator: Navigator,
     authenticate: AuthAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
     formProvider: ConsignmentFormProvider)
   extends FrontendController
   with I18nSupport

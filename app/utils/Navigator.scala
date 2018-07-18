@@ -43,7 +43,7 @@ class Navigator @Inject()() {
       case NormalMode =>
         routeMap.getOrElse(id, _ => routes.IndexController.onPageLoad())
       case CheckMode =>
-        editRouteMap.getOrElse(id, _ => routes.CheckYourAnswersController.onPageLoad())
+        editRouteMap.getOrElse(id, _ => routes.SubmitPageController.onPageLoad(CheckMode))
     }
   }
 }

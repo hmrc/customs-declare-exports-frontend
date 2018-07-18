@@ -24,7 +24,6 @@ class ConsignmentFormProviderSpec extends OptionFieldBehaviours {
   val form = new ConsignmentFormProvider()()
 
   val correctMucr = "A:GBP23"
-  val secondCorrectMucr = "GB/ASD-12345"
   val correctDucr = "5GB123456789000-123ABC456DEFIIIIIII"
 
   val mucrFormatError = FormError("", "error.mucr.format")
