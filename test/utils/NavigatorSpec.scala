@@ -24,21 +24,54 @@ import models._
 
 class NavigatorSpec extends SpecBase with MockitoSugar {
 
-  val navigator = new Navigator
+  val navigator = new Navigator()
+
+  val userAnswers = mock[UserAnswers]
 
   "Navigator" when {
 
     "in Normal mode" must {
       "go to Index from an identifier that doesn't exist in the route map" in {
         case object UnknownIdentifier extends Identifier
-        navigator.nextPage(UnknownIdentifier, NormalMode)(mock[UserAnswers]) mustBe routes.IndexController.onPageLoad()
+        navigator.nextPage(UnknownIdentifier, NormalMode)(userAnswers) mustBe routes.IndexController.onPageLoad()
+      }
+
+      "go to Own description page after consignment has been submitted" in {
+        navigator.nextPage(ConsignmentId, NormalMode)(userAnswers) mustBe
+          routes.OwnDescriptionController.onPageLoad(NormalMode)
+      }
+
+      "go to Declaration question page after own description has been submitted" in {
+        navigator.nextPage(OwnDescriptionId, NormalMode)(userAnswers) mustBe
+          routes.DeclarationForYourselfOrSomeoneElseController.onPageLoad(NormalMode)
+      }
+
+      "go to Have representative page after declaration has been submitted" in {
+        navigator.nextPage(DeclarationForYourselfOrSomeoneElseId, NormalMode)(userAnswers) mustBe
+          routes.HaveRepresentativeController.onPageLoad(NormalMode)
+      }
+
+      "go to Enter EORI page after have representative has been submitted" in {
+        navigator.nextPage(HaveRepresentativeId, NormalMode)(userAnswers) mustBe
+          routes.EnterEORIController.onPageLoad(NormalMode)
+      }
+
+      "go to name and address page after EORI has been submitted" in {
+        navigator.nextPage(EnterEORIId, NormalMode)(userAnswers) mustBe
+          routes.NameAndAddressController.onPageLoad(NormalMode)
+      }
+
+      "got to summary page after name and address has been submitted" in {
+        navigator.nextPage(NameAndAddressId, NormalMode)(userAnswers) mustBe
+          routes.SubmitPageController.onPageLoad(NormalMode)
       }
     }
 
     "in Check mode" must {
       "go to CheckYourAnswers from an identifier that doesn't exist in the edit route map" in {
         case object UnknownIdentifier extends Identifier
-        navigator.nextPage(UnknownIdentifier, CheckMode)(mock[UserAnswers]) mustBe routes.SubmitPageController.onPageLoad(CheckMode)
+        navigator.nextPage(UnknownIdentifier, CheckMode)(userAnswers) mustBe
+          routes.SubmitPageController.onPageLoad(CheckMode)
       }
     }
   }
