@@ -33,14 +33,17 @@ import views.html.consignment
 import scala.concurrent.Future
 
 class ConsignmentController @Inject()(
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: ConsignmentFormProvider) extends FrontendController with I18nSupport with Enumerable.Implicits {
+    appConfig: FrontendAppConfig,
+    override val messagesApi: MessagesApi,
+    dataCacheConnector: DataCacheConnector,
+    navigator: Navigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: ConsignmentFormProvider)
+  extends FrontendController
+  with I18nSupport
+  with Enumerable.Implicits {
 
   val form: Form[ConsignmentData] = formProvider()
 
@@ -58,9 +61,14 @@ class ConsignmentController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(consignment(appConfig, formWithErrors, mode))),
-        (value) =>
-          dataCacheConnector.save[ConsignmentData](request.externalId, ConsignmentId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(ConsignmentId, mode)(new UserAnswers(cacheMap))))
+        (value) => {
+          val consignmentData = ConsignmentData.cleanConsignmentData(value)
+
+          dataCacheConnector.save[ConsignmentData](request.externalId, ConsignmentId.toString, consignmentData)
+            .map(cacheMap =>
+              Redirect(navigator.nextPage(ConsignmentId, mode)(new UserAnswers(cacheMap)))
+            )
+        }
       )
   }
 }

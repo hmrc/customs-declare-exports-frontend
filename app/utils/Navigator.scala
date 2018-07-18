@@ -26,7 +26,6 @@ import models.{CheckMode, Mode, NormalMode}
 class Navigator @Inject()() {
 
   private val routeMap: Map[Identifier, UserAnswers => Call] = Map(
-    SelectRoleId -> (_ => routes.DashboardController.onPageLoad()),
     ConsignmentId -> (_ => routes.OwnDescriptionController.onPageLoad(NormalMode)),
     OwnDescriptionId -> (_ => routes.DeclarationForYourselfOrSomeoneElseController.onPageLoad(NormalMode)),
     DeclarationForYourselfOrSomeoneElseId -> (_ => routes.HaveRepresentativeController.onPageLoad(NormalMode)),

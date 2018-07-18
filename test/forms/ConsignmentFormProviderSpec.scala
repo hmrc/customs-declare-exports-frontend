@@ -24,6 +24,7 @@ class ConsignmentFormProviderSpec extends OptionFieldBehaviours {
   val form = new ConsignmentFormProvider()()
 
   val correctMucr = "A:GBP23"
+  val secondCorrectMucr = "GB/ASD-12345"
   val correctDucr = "5GB123456789000-123ABC456DEFIIIIIII"
 
   val mucrFormatError = FormError("", "error.mucr.format")
@@ -31,6 +32,22 @@ class ConsignmentFormProviderSpec extends OptionFieldBehaviours {
   val ducrFormatError = FormError("", "error.ducr.format")
 
   "ConsignmentFormProvider" should {
+    "bindValidData" in {
+      val result = form.bind(
+        Map(
+          "choice" -> "singleShipment",
+          "mucrConsolidation" -> correctMucr,
+          "ducrConsolidation" -> correctDucr,
+          "ducrSingleShipment" -> correctDucr
+        )
+      )
+
+      result.apply("choice").value.map(_ shouldBe "singleShipment")
+      result.apply("mucrConsolidation").value.map(_ shouldBe correctMucr)
+      result.apply("ducrConsolidation").value.map(_ shouldBe correctDucr)
+      result.apply("ducrSingleShipment").value.map(_ shouldBe correctDucr)
+    }
+
     "return error if there is no choice" in {
       val data = Map(
         "choice" -> "",

@@ -36,6 +36,21 @@ object ConsignmentData {
     } else {
       consignmentData.ducrSingleShipment
     }
+
+  def cleanConsignmentData(consignmentData: ConsignmentData): ConsignmentData =
+    consignmentData match {
+      case ConsignmentData("consolidation", None, ducr, _) =>
+        ConsignmentData("singleShipment", None, None, ducr)
+
+      case ConsignmentData("consolidation", mucr, ducr, _) =>
+        ConsignmentData("consolidation", mucr, ducr, None)
+
+      case ConsignmentData("singleShipment", _, _, ducr) =>
+        ConsignmentData("singleShipment", None, None, ducr)
+
+      case _ =>
+        consignmentData
+    }
 }
 
 object ConsignmentDataValidationHelper {
@@ -76,7 +91,7 @@ object ConsignmentDataValidationHelper {
   def mucrFormat(consignmentData: ConsignmentData): Boolean = consignmentData.mucrConsolidation match {
     case Some(value) if consignmentData.choice == "consolidation" =>
       correctMucrFormats.exists(value.matches(_))
-    case None => true
+    case _ => true
   }
 }
 
