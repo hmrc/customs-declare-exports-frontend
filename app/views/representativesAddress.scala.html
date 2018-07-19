@@ -22,7 +22,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("nameAndAddress.title"),
+    title = messages("nameAddress.title"),
     appConfig = appConfig,
     bodyClasses = None) {
     <style>
@@ -31,7 +31,7 @@
         }
     </style>
 
-    @helpers.form(action = NameAndAddressController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = RepresentativesAddress.onSubmit(mode), 'autoComplete -> "off") {
         @components.back_link()
 
         @components.error_summary(form.errors)
@@ -39,13 +39,13 @@
         <div class="field-group">
             <fieldset>
                 <legend class="heading-large" role="heading" aria="" level="1">
-                    <span class="heading-secondary">@messages("nameAndAddress.secondaryHeading")</span>
-                    <h1>@messages("nameAndAddress.heading")</h1>
+                    <span class="heading-secondary">@messages("representativesAddress.secondaryHeading")</span>
+                    <h1>@messages("representativesAddress.heading")</h1>
                 </legend>
 
                 <div className="panel panel-border-narrow" id="fullName">
                     <label class="form-label" for="fullNameInput">
-                        @messages("nameAndAddress.fullName")
+                        @messages("representativesAddress.fullName")
                     </label>
                     <input class="form-control"
                            name="fullName"
@@ -58,7 +58,7 @@
 
                 <div className="panel panel-border-narrow" id="buildingAndStreet">
                     <label class="form-label" for="buildingAndStreetInput">
-                        @messages("nameAndAddress.buildingAndStreet")
+                        @messages("representativesAddress.buildingAndStreet")
                     </label>
                     <input class="form-control compound"
                            name="buildingAndStreet"
@@ -76,7 +76,7 @@
 
                 <div className="panel panel-border-narrow" id="townOrCity">
                     <label class="form-label" for="townOrCityInput">
-                        @messages("nameAndAddress.city")
+                        @messages("representativesAddress.city")
                     </label>
                     <input class="form-control"
                            name="townOrCity"
@@ -89,7 +89,7 @@
 
                 <div className="panel panel-border-narrow" id="county">
                     <label class="form-label" for="county-input">
-                        @messages("nameAndAddress.county")
+                        @messages("representativesAddress.county")
                     </label>
                     <input class="form-control"
                            name="county"
@@ -102,7 +102,7 @@
 
                 <div className="panel panel-border-narrow" id="postcode">
                     <label class="form-label" for="postcode-input">
-                        @messages("nameAndAddress.postcode")
+                        @messages("representativesAddress.postcode")
                     </label>
                     <input class="form-control form-control-1-4"
                            name="postcode"
@@ -115,7 +115,7 @@
 
                 <div className="panel panel-border-narrow" id="country">
                     <label class="form-label" for="country-input">
-                        @messages("nameAndAddress.country")
+                        @messages("representativesAddress.country")
                     </label>
                     <input class="form-control"
                            name="country"
