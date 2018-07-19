@@ -72,12 +72,12 @@
             @messages("consignmentSummary.yourselfOrSomeoneElse")
         </dt>
         <dd class="cya-answer">
-            @if(consignmentAnswers.yourselfOrSomeoneElse.isDefined){
-                @messages("declarationForYourselfOrSomeoneElse." + consignmentAnswers.yourselfOrSomeoneElse.get)
+            @if(consignmentAnswers.whoseDeclaration.isDefined){
+                @messages("whoseDeclaration." + consignmentAnswers.whoseDeclaration.get)
             }
         </dd>
         <dd class="cya-change">
-            <a href="declarationForYourselfOrSomeoneElse">
+            <a href="whoseDeclaration">
             @messages("consignmentSummary.change")
             </a>
         </dd>

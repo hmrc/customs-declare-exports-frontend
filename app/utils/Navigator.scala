@@ -27,8 +27,8 @@ class Navigator @Inject()() {
 
   private val routeMap: Map[Identifier, UserAnswers => Call] = Map(
     ConsignmentId -> (_ => routes.OwnDescriptionController.onPageLoad(NormalMode)),
-    OwnDescriptionId -> (_ => routes.DeclarationForYourselfOrSomeoneElseController.onPageLoad(NormalMode)),
-    DeclarationForYourselfOrSomeoneElseId -> (_ => routes.HaveRepresentativeController.onPageLoad(NormalMode)),
+    OwnDescriptionId -> (_ => routes.WhoseDeclarationController.onPageLoad(NormalMode)),
+    WhoseDeclarationId -> (_ => routes.HaveRepresentativeController.onPageLoad(NormalMode)),
     HaveRepresentativeId -> (_ => routes.EnterEORIController.onPageLoad(NormalMode)),
     EnterEORIId -> (_ => routes.RepresentativesAddressController.onPageLoad(NormalMode)),
     representativesAddressId -> (_ => routes.DeclarationSummaryController.onPageLoad(NormalMode))

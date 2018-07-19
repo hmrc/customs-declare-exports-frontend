@@ -25,7 +25,7 @@ case class ConsignmentAnswers(
                                reference: Option[String] = None,
                                ownDescription: Option[String] = None,
                                timeOfDeclaration: Option[String] = None,
-                               yourselfOrSomeoneElse: Option[String] = None,
+                               whoseDeclaration: Option[String] = None,
                                eoriNumber: Option[String] = None,
                                nameAndAddress: Option[RepresentativesAddress] = None,
                                representative: Option[String] = None
@@ -54,7 +54,7 @@ object DeclarationSummary {
       reference = userAnswers.consignment.flatMap(ConsignmentData.ducr(_)),
       ownDescription = userAnswers.ownDescription.flatMap(_.description),
       timeOfDeclaration = Some(currentTime),
-      yourselfOrSomeoneElse = userAnswers.declarationForYourselfOrSomeoneElse.map(_.toString()),
+      whoseDeclaration = userAnswers.whoseDeclaration.map(_.toString()),
       eoriNumber = userAnswers.enterEORI.map(_.toString()),
       nameAndAddress = userAnswers.representativesAddress,
       representative = userAnswers.haveRepresentative.map(_.toString())

@@ -17,17 +17,17 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import controllers.routes._
-@import models.DeclarationForYourselfOrSomeoneElse
+@import models.WhoseDeclaration
 @import models.Mode
 
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declarationForYourselfOrSomeoneElse.title"),
+    title = messages("whoseDeclaration.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = DeclarationForYourselfOrSomeoneElseController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = WhoseDeclarationController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -35,15 +35,15 @@
          <div class="field-group">
           <legend class="heading-large" role="heading" aria="" level="1">
               <span class="heading-secondary">@messages("consignment.title")</span>
-              <h1 style="margin:0">@messages("declarationForYourselfOrSomeoneElse.heading")</h1>
+              <h1 style="margin:0">@messages("whoseDeclaration.heading")</h1>
           </legend>
          </div>
 
         @components.input_radio(
             field = form("value"),
-            legend = messages("declarationForYourselfOrSomeoneElse.heading"),
+            legend = messages("whoseDeclaration.heading"),
             legendClass = Some("visually-hidden"),
-            inputs = DeclarationForYourselfOrSomeoneElse.options.toSeq
+            inputs = WhoseDeclaration.options.toSeq
         )
 
         @components.submit_button()

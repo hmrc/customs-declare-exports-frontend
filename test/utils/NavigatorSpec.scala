@@ -43,11 +43,11 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go to Declaration question page after own description has been submitted" in {
         navigator.nextPage(OwnDescriptionId, NormalMode)(userAnswers) mustBe
-          routes.DeclarationForYourselfOrSomeoneElseController.onPageLoad(NormalMode)
+          routes.WhoseDeclarationController.onPageLoad(NormalMode)
       }
 
       "go to Have representative page after declaration has been submitted" in {
-        navigator.nextPage(DeclarationForYourselfOrSomeoneElseId, NormalMode)(userAnswers) mustBe
+        navigator.nextPage(WhoseDeclarationId, NormalMode)(userAnswers) mustBe
           routes.HaveRepresentativeController.onPageLoad(NormalMode)
       }
 

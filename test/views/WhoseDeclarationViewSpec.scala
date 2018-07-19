@@ -17,21 +17,21 @@
 package views
 
 import play.api.data.Form
-import forms.DeclarationForYourselfOrSomeoneElseFormProvider
+import forms.WhoseDeclarationFormProvider
 import models.NormalMode
-import models.DeclarationForYourselfOrSomeoneElse
+import models.WhoseDeclaration
 import views.behaviours.ViewBehaviours
-import views.html.declarationForYourselfOrSomeoneElse
+import views.html.whoseDeclaration
 
-class DeclarationForYourselfOrSomeoneElseViewSpec extends ViewBehaviours {
+class WhoseDeclarationViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "declarationForYourselfOrSomeoneElse"
+  val messageKeyPrefix = "whoseDeclaration"
 
-  val form = new DeclarationForYourselfOrSomeoneElseFormProvider()()
+  val form = new WhoseDeclarationFormProvider()()
 
-  def createView = () => declarationForYourselfOrSomeoneElse(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView = () => whoseDeclaration(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => declarationForYourselfOrSomeoneElse(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[_]) => whoseDeclaration(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
   "DeclarationForYourselfOrSomeoneElse view" must {
     behave like normalPage(createView, messageKeyPrefix)
@@ -41,19 +41,19 @@ class DeclarationForYourselfOrSomeoneElseViewSpec extends ViewBehaviours {
     "rendered" must {
       "contain radio buttons for the value" in {
         val doc = asDocument(createViewUsingForm(form))
-        for (option <- DeclarationForYourselfOrSomeoneElse.options) {
+        for (option <- WhoseDeclaration.options) {
           assertContainsRadioButton(doc, option.id, "value", option.value, false)
         }
       }
     }
 
-    for(option <- DeclarationForYourselfOrSomeoneElse.options) {
+    for(option <- WhoseDeclaration.options) {
       s"rendered with a value of '${option.value}'" must {
         s"have the '${option.value}' radio button selected" in {
           val doc = asDocument(createViewUsingForm(form.bind(Map("value" -> s"${option.value}"))))
           assertContainsRadioButton(doc, option.id, "value", option.value, true)
 
-          for(unselectedOption <- DeclarationForYourselfOrSomeoneElse.options.filterNot(o => o == option)) {
+          for(unselectedOption <- WhoseDeclaration.options.filterNot(o => o == option)) {
             assertContainsRadioButton(doc, unselectedOption.id, "value", unselectedOption.value, false)
           }
         }

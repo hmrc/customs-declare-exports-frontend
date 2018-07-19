@@ -104,12 +104,12 @@ declarationSummary.submit = Submit declaration
 declarationSummary.error.required = Enter declarationSummary
 declarationSummary.error.length = declarationSummary must be 100 characters or less
 
-declarationForYourselfOrSomeoneElse.title = Declaration for yourself or someone else?
-declarationForYourselfOrSomeoneElse.heading = Is this declaration for yourself or someone else?
-declarationForYourselfOrSomeoneElse.yourself = Yourself
-declarationForYourselfOrSomeoneElse.someoneElse = Someone Else
-declarationForYourselfOrSomeoneElse.checkYourAnswersLabel = declarationForYourselfOrSomeoneElse
-declarationForYourselfOrSomeoneElse.error.required = Please give an answer for the question below
+whoseDeclaration.title = Declaration for yourself or someone else?
+whoseDeclaration.heading = Is this declaration for yourself or someone else?
+whoseDeclaration.yourself = Yourself
+whoseDeclaration.someoneElse = Someone Else
+whoseDeclaration.checkYourAnswersLabel = whoseDeclaration
+whoseDeclaration.error.required = Please give an answer for the question below
 
 ownDescription.title = Own description
 ownDescription.heading = Would you like to add your own description to the declaration?

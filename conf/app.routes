@@ -44,13 +44,13 @@ POST       /changeDeclarationSummary                    controllers.DeclarationS
 
 # Declaration for yourself or someone else
 
-GET        /declarationForYourselfOrSomeoneElse         controllers.DeclarationForYourselfOrSomeoneElseController.onPageLoad(mode: models.Mode = models.NormalMode)
+GET        /whoseDeclaration                            controllers.WhoseDeclarationController.onPageLoad(mode: models.Mode = models.NormalMode)
 
-POST       /declarationForYourselfOrSomeoneElse         controllers.DeclarationForYourselfOrSomeoneElseController.onSubmit(mode: models.Mode = models.NormalMode)
+POST       /whoseDeclaration                            controllers.WhoseDeclarationController.onSubmit(mode: models.Mode = models.NormalMode)
 
-GET        /changeDeclarationForYourselfOrSomeoneElse   controllers.DeclarationForYourselfOrSomeoneElseController.onPageLoad(mode: models.Mode = models.CheckMode)
+GET        /changeWhoseDeclaration                      controllers.WhoseDeclarationController.onPageLoad(mode: models.Mode = models.CheckMode)
 
-POST       /changeDeclarationForYourselfOrSomeoneElse   controllers.DeclarationForYourselfOrSomeoneElseController.onSubmit(mode: models.Mode = models.CheckMode)
+POST       /changeWhoseDeclaration                      controllers.WhoseDeclarationController.onSubmit(mode: models.Mode = models.CheckMode)
 
 # Own description
 
