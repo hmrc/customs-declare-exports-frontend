@@ -28,7 +28,6 @@
     bodyClasses = None) {
 
     @helpers.form(action = WhoseDeclarationController.onSubmit(mode), 'autoComplete -> "off") {
-
         @components.back_link()
 
         @components.error_summary(form.errors)

@@ -136,14 +136,14 @@
 
     </script>
 
-    @components.back_link()
-
     @helpers.form(action = DashboardController.onPageLoad(), 'autoComplete -> "off") {
+        @components.back_link()
 
         @components.heading("declarationSummary.heading")
 
         <div>
             <section class="block-summary">
+                @summary_list()
                 <span class="inline">
                     <span class="arrow-side" id="arrow-right">
                         ►
