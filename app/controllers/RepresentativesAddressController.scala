@@ -23,15 +23,15 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
-import forms.{NameAndAddress, NameAndAddressFormProvider}
-import identifiers.NameAndAddressId
+import forms.{RepresentativesAddress, RepresentativesAddressFormProvider}
+import identifiers.representativesAddressId
 import models.Mode
 import utils.{Navigator, UserAnswers}
-import views.html.nameAndAddress
+import views.html.representativesAddress
 
 import scala.concurrent.Future
 
-class NameAndAddressController @Inject()(
+class RepresentativesAddressController @Inject()(
                                         appConfig: FrontendAppConfig,
                                         override val messagesApi: MessagesApi,
                                         dataCacheConnector: DataCacheConnector,
@@ -39,27 +39,27 @@ class NameAndAddressController @Inject()(
                                         authenticate: AuthAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: NameAndAddressFormProvider) extends FrontendController with I18nSupport {
+                                        formProvider: RepresentativesAddressFormProvider) extends FrontendController with I18nSupport {
 
-  val form: Form[NameAndAddress] = formProvider()
+  val form: Form[RepresentativesAddress] = formProvider()
 
   def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.nameAndAddress match {
+      val preparedForm = request.userAnswers.representativesAddress match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(nameAndAddress(appConfig, preparedForm, mode))
+      Ok(representativesAddress(appConfig, preparedForm, mode))
   }
 
   def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(nameAndAddress(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(representativesAddress(appConfig, formWithErrors, mode))),
         (value) =>
-          dataCacheConnector.save[NameAndAddress](request.externalId, NameAndAddressId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(NameAndAddressId, mode)(new UserAnswers(cacheMap))))
+          dataCacheConnector.save[RepresentativesAddress](request.externalId, representativesAddressId.toString, value).map(cacheMap =>
+            Redirect(navigator.nextPage(representativesAddressId, mode)(new UserAnswers(cacheMap))))
       )
   }
 }

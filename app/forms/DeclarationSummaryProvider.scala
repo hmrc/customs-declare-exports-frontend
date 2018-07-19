@@ -22,13 +22,13 @@ import java.time.format.DateTimeFormatter
 import utils.UserAnswers
 
 case class ConsignmentAnswers(
-  reference: Option[String] = None,
-  ownDescription: Option[String] = None,
-  timeOfDeclaration: Option[String] = None,
-  yourselfOrSomeoneElse: Option[String] = None,
-  eoriNumber: Option[String] = None,
-  nameAndAddress: Option[NameAndAddress] = None,
-  representative: Option[String] = None
+                               reference: Option[String] = None,
+                               ownDescription: Option[String] = None,
+                               timeOfDeclaration: Option[String] = None,
+                               yourselfOrSomeoneElse: Option[String] = None,
+                               eoriNumber: Option[String] = None,
+                               nameAndAddress: Option[RepresentativesAddress] = None,
+                               representative: Option[String] = None
 )
 
 case class ItemsAnswers()
@@ -56,7 +56,7 @@ object DeclarationSummary {
       timeOfDeclaration = Some(currentTime),
       yourselfOrSomeoneElse = userAnswers.declarationForYourselfOrSomeoneElse.map(_.toString()),
       eoriNumber = userAnswers.enterEORI.map(_.toString()),
-      nameAndAddress = userAnswers.nameAndAddress,
+      nameAndAddress = userAnswers.representativesAddress,
       representative = userAnswers.haveRepresentative.map(_.toString())
     )
 

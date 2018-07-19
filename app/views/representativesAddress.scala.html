@@ -22,7 +22,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("nameAddress.title"),
+    title = messages("representativesAddress.title"),
     appConfig = appConfig,
     bodyClasses = None) {
     <style>
@@ -31,7 +31,7 @@
         }
     </style>
 
-    @helpers.form(action = RepresentativesAddress.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = RepresentativesAddressController.onSubmit(mode), 'autoComplete -> "off") {
         @components.back_link()
 
         @components.error_summary(form.errors)

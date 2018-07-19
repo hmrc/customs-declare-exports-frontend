@@ -84,10 +84,10 @@ POST       /changeEnterEORI                             controllers.EnterEORICon
 
 # Name and address
 
-GET        /nameAndAddress                              controllers.NameAndAddressController.onPageLoad(mode: models.Mode = models.NormalMode)
+GET        /representativesAddress                      controllers.RepresentativesAddressController.onPageLoad(mode: models.Mode = models.NormalMode)
 
-POST       /nameAndAddress                              controllers.NameAndAddressController.onSubmit(mode: models.Mode = models.NormalMode)
+POST       /representativesAddress                      controllers.RepresentativesAddressController.onSubmit(mode: models.Mode = models.NormalMode)
 
-GET        /changeNameAndAddress                        controllers.NameAndAddressController.onPageLoad(mode: models.Mode = models.CheckMode)
+GET        /changeRepresentativesAddress                controllers.RepresentativesAddressController.onPageLoad(mode: models.Mode = models.CheckMode)
 
-POST       /changeNameAndAddress                        controllers.NameAndAddressController.onSubmit(mode: models.Mode = models.CheckMode)
+POST       /changeRepresentativesAddress                controllers.RepresentativesAddressController.onSubmit(mode: models.Mode = models.CheckMode)

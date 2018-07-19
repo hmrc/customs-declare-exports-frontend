@@ -18,9 +18,9 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 
-class NameAndAddressFormProviderSpec extends StringFieldBehaviours {
+class RepresentativesAddressFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new NameAndAddressFormProvider()()
+  val form = new RepresentativesAddressFormProvider()()
 
   "NameAndAddressFormProvider" should {
     "bind valid data" in {

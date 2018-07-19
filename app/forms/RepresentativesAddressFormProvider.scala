@@ -22,7 +22,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.Json
 
-case class NameAndAddress(
+case class RepresentativesAddress(
   fullName: String,
   buildingAndStreet: String,
   buildingAndStreetSecondPart: Option[String],
@@ -32,13 +32,13 @@ case class NameAndAddress(
   country: String
 )
 
-object NameAndAddress {
-  implicit val format = Json.format[NameAndAddress]
+object RepresentativesAddress {
+  implicit val format = Json.format[RepresentativesAddress]
 }
 
-class NameAndAddressFormProvider @Inject() extends FormErrorHelper with Mappings {
+class RepresentativesAddressFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def apply(): Form[NameAndAddress] =
+  def apply(): Form[RepresentativesAddress] =
     Form(
       mapping(
         "fullName" -> text("nameAndAddress.error.required.fullName"),
@@ -48,6 +48,6 @@ class NameAndAddressFormProvider @Inject() extends FormErrorHelper with Mappings
         "county" -> optional(text()),
         "postcode" -> text("nameAndAddress.error.required.postcode"),
         "country" -> text("nameAndAddress.error.required.country")
-      )(NameAndAddress.apply)(NameAndAddress.unapply)
+      )(RepresentativesAddress.apply)(RepresentativesAddress.unapply)
     )
 }

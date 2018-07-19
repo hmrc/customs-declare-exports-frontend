@@ -58,11 +58,11 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go to name and address page after EORI has been submitted" in {
         navigator.nextPage(EnterEORIId, NormalMode)(userAnswers) mustBe
-          routes.NameAndAddressController.onPageLoad(NormalMode)
+          routes.RepresentativesAddressController.onPageLoad(NormalMode)
       }
 
       "got to summary page after name and address has been submitted" in {
-        navigator.nextPage(NameAndAddressId, NormalMode)(userAnswers) mustBe
+        navigator.nextPage(representativesAddressId, NormalMode)(userAnswers) mustBe
           routes.DeclarationSummaryController.onPageLoad(NormalMode)
       }
     }

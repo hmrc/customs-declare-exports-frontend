@@ -17,32 +17,30 @@
 package controllers
 
 import play.api.data.Form
-import play.api.libs.json.JsString
-import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.actions._
 import play.api.test.Helpers._
-import forms.{NameAndAddress, NameAndAddressFormProvider}
+import forms.{RepresentativesAddress, RepresentativesAddressFormProvider}
 import models.NormalMode
-import views.html.nameAndAddress
+import views.html.representativesAddress
 
-class NameAndAddressControllerSpec extends ControllerSpecBase {
+class RepresentativesAddressControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = routes.IndexController.onPageLoad()
 
-  val formProvider = new NameAndAddressFormProvider()
+  val formProvider = new RepresentativesAddressFormProvider()
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new NameAndAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
+    new RepresentativesAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl, formProvider)
 
-  def viewAsString(form: Form[_] = form) = nameAndAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form) = representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
-  val testAnswer = NameAndAddress("Fullname", "Street", None, "town", None, "postcode", "country")
+  val testAnswer = RepresentativesAddress("Fullname", "Street", None, "town", None, "postcode", "country")
 
-  "NameAndAddress Controller" must {
+  "RepresentativesAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)

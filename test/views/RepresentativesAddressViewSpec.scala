@@ -17,22 +17,22 @@
 package views
 
 import play.api.data.Form
-import forms.{NameAndAddress, NameAndAddressFormProvider}
+import forms.{RepresentativesAddress, RepresentativesAddressFormProvider}
 import models.NormalMode
 import views.behaviours.ViewBehaviours
-import views.html.nameAndAddress
+import views.html.representativesAddress
 
-class NameAndAddressViewSpec extends ViewBehaviours {
+class RepresentativesAddressViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "nameAndAddress"
+  val messageKeyPrefix = "representativesAddress"
 
-  val form: Form[NameAndAddress] = new NameAndAddressFormProvider()()
+  val form: Form[RepresentativesAddress] = new RepresentativesAddressFormProvider()()
 
-  def createView = () => nameAndAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView = () => representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[NameAndAddress]) => nameAndAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[RepresentativesAddress]) => representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
-  "NameAndAddress view" must {
+  "RepresentativesAddress view" must {
     behave like normalPage(createView, messageKeyPrefix)
 
     behave like pageWithBackLink(createView)
