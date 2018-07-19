@@ -20,17 +20,17 @@ import play.api.data.Form
 import forms.DeclarationSummary
 import models.NormalMode
 import views.behaviours.ViewBehaviours
-import views.html.submitPage
+import views.html.declarationSummary
 
-class SubmitPageViewSpec extends ViewBehaviours {
+class DeclarationSummaryViewSpec extends ViewBehaviours {
 
-  val messageKeyPrefix = "submitPage"
+  val messageKeyPrefix = "declarationSummary"
 
   val summary = DeclarationSummary()
 
-  def createView = () => submitPage(frontendAppConfig, summary, NormalMode)(fakeRequest, messages)
+  def createView = () => declarationSummary(frontendAppConfig, summary, NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[String]) => submitPage(frontendAppConfig, summary, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[String]) => declarationSummary(frontendAppConfig, summary, NormalMode)(fakeRequest, messages)
 
   "SubmitPage view" must {
     behave like normalPage(createView, messageKeyPrefix)

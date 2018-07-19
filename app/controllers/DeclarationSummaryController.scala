@@ -27,27 +27,29 @@ import forms.DeclarationSummary
 import models.Mode
 import play.api.mvc.{Action, AnyContent}
 import utils.Navigator
-import views.html.{index, submitPage}
+import views.html.{index, declarationSummary}
 
-class SubmitPageController @Inject()(
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        submitDeclaration: SubmitDeclaration) extends FrontendController with I18nSupport {
+class DeclarationSummaryController @Inject()(
+    appConfig: FrontendAppConfig,
+    override val messagesApi: MessagesApi,
+    dataCacheConnector: DataCacheConnector,
+    navigator: Navigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    submitDeclaration: SubmitDeclaration)
+  extends FrontendController
+  with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
 
-      val declarationSummary = request.userAnswers match {
+      val declaration = request.userAnswers match {
         case None => DeclarationSummary()
         case Some(answers) => DeclarationSummary.buildFromAnswers(answers)
       }
 
-      Ok(submitPage(appConfig, declarationSummary, mode))
+      Ok(declarationSummary(appConfig, declaration, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {

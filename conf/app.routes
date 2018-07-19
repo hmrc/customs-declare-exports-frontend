@@ -32,15 +32,17 @@ POST       /changeConsignment                           controllers.ConsignmentC
 
 GET        /dashboard                                   controllers.DashboardController.onPageLoad()
 
-# Declaration
+# Declaration summary
 
-GET        /submitPage                                  controllers.SubmitPageController.onPageLoad(mode: models.Mode = models.NormalMode)
+GET        /declarationSummary                          controllers.DeclarationSummaryController.onPageLoad(mode: models.Mode = models.NormalMode)
 
-POST       /submitPage                                  controllers.SubmitPageController.onSubmit(mode: models.Mode = models.NormalMode)
+POST       /declarationSummary                          controllers.DeclarationSummaryController.onSubmit(mode: models.Mode = models.NormalMode)
 
-GET        /changeSubmitPage                            controllers.SubmitPageController.onPageLoad(mode: models.Mode = models.CheckMode)
+GET        /changeDeclarationSummary                    controllers.DeclarationSummaryController.onPageLoad(mode: models.Mode = models.CheckMode)
 
-POST       /changeSubmitPage                            controllers.SubmitPageController.onSubmit(mode: models.Mode = models.CheckMode)
+POST       /changeDeclarationSummary                    controllers.DeclarationSummaryController.onSubmit(mode: models.Mode = models.CheckMode)
+
+# Declaration for yourself or someone else
 
 GET        /declarationForYourselfOrSomeoneElse         controllers.DeclarationForYourselfOrSomeoneElseController.onPageLoad(mode: models.Mode = models.NormalMode)
 

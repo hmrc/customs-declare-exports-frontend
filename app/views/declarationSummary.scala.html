@@ -23,7 +23,7 @@
 @(appConfig: FrontendAppConfig, summary: DeclarationSummary, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("submitPage.title"),
+    title = messages("declarationSummary.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
@@ -140,7 +140,7 @@
 
     @helpers.form(action = DashboardController.onPageLoad(), 'autoComplete -> "off") {
 
-        @components.heading("submitPage.heading")
+        @components.heading("declarationSummary.heading")
 
         <div>
             <section class="block-summary">
@@ -218,7 +218,7 @@
         </div>
 
         <div class="section">
-            <button id="submit" class="button">@messages("submitPage.submit")</button>
+            <button id="submit" class="button">@messages("declarationSummary.submit")</button>
         </div>
     }
 }

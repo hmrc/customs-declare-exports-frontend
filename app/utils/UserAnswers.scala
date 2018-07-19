@@ -32,7 +32,7 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
 
   def declarationForYourselfOrSomeoneElse: Option[DeclarationForYourselfOrSomeoneElse] = cacheMap.getEntry[DeclarationForYourselfOrSomeoneElse](DeclarationForYourselfOrSomeoneElseId.toString)
 
-  def submitPage: Option[String] = cacheMap.getEntry[String](SubmitPageId.toString)
+  def submitPage: Option[String] = cacheMap.getEntry[String](DeclarationSummaryId.toString)
 
   def consignment: Option[ConsignmentData] = cacheMap.getEntry[ConsignmentData](ConsignmentId.toString)
 

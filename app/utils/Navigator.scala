@@ -31,7 +31,7 @@ class Navigator @Inject()() {
     DeclarationForYourselfOrSomeoneElseId -> (_ => routes.HaveRepresentativeController.onPageLoad(NormalMode)),
     HaveRepresentativeId -> (_ => routes.EnterEORIController.onPageLoad(NormalMode)),
     EnterEORIId -> (_ => routes.NameAndAddressController.onPageLoad(NormalMode)),
-    NameAndAddressId -> (_ => routes.SubmitPageController.onPageLoad(NormalMode))
+    NameAndAddressId -> (_ => routes.DeclarationSummaryController.onPageLoad(NormalMode))
   )
 
   private val editRouteMap: Map[Identifier, UserAnswers => Call] = Map(
@@ -43,7 +43,7 @@ class Navigator @Inject()() {
       case NormalMode =>
         routeMap.getOrElse(id, _ => routes.IndexController.onPageLoad())
       case CheckMode =>
-        editRouteMap.getOrElse(id, _ => routes.SubmitPageController.onPageLoad(CheckMode))
+        editRouteMap.getOrElse(id, _ => routes.DeclarationSummaryController.onPageLoad(CheckMode))
     }
   }
 }

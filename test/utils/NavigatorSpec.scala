@@ -63,7 +63,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "got to summary page after name and address has been submitted" in {
         navigator.nextPage(NameAndAddressId, NormalMode)(userAnswers) mustBe
-          routes.SubmitPageController.onPageLoad(NormalMode)
+          routes.DeclarationSummaryController.onPageLoad(NormalMode)
       }
     }
 
@@ -71,7 +71,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go to CheckYourAnswers from an identifier that doesn't exist in the edit route map" in {
         case object UnknownIdentifier extends Identifier
         navigator.nextPage(UnknownIdentifier, CheckMode)(userAnswers) mustBe
-          routes.SubmitPageController.onPageLoad(CheckMode)
+          routes.DeclarationSummaryController.onPageLoad(CheckMode)
       }
     }
   }

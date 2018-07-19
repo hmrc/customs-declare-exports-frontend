@@ -24,14 +24,14 @@ import play.api.test.Helpers._
 import forms.DeclarationSummary
 import models.NormalMode
 
-class SubmitPageControllerSpec extends ControllerSpecBase {
+class DeclarationSummaryControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = routes.IndexController.onPageLoad()
 
   val declarationSummary = new DeclarationSummary()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new SubmitPageController(
+    new DeclarationSummaryController(
       frontendAppConfig,
       messagesApi,
       FakeDataCacheConnector,

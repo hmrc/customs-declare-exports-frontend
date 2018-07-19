@@ -16,6 +16,6 @@
 
 package identifiers
 
-case object SubmitPageId extends Identifier {
+case object DeclarationSummaryId extends Identifier {
   override def toString: String = "submitPage"
 }
