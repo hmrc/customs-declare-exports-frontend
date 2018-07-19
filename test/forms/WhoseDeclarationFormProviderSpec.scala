@@ -17,22 +17,22 @@
 package forms
 
 import forms.behaviours.OptionFieldBehaviours
-import models.DeclarationForYourselfOrSomeoneElse
+import models.WhoseDeclaration
 import play.api.data.FormError
 
-class DeclarationForYourselfOrSomeoneElseFormProviderSpec extends OptionFieldBehaviours {
+class WhoseDeclarationFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new DeclarationForYourselfOrSomeoneElseFormProvider()()
+  val form = new WhoseDeclarationFormProvider()()
 
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "declarationForYourselfOrSomeoneElse.error.required"
+    val requiredKey = "whoseDeclaration.error.required"
 
-    behave like optionsField[DeclarationForYourselfOrSomeoneElse](
+    behave like optionsField[WhoseDeclaration](
       form,
       fieldName,
-      validValues  = DeclarationForYourselfOrSomeoneElse.values,
+      validValues  = WhoseDeclaration.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

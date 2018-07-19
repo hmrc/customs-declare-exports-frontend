@@ -18,22 +18,22 @@ package models
 
 import utils.{Enumerable, RadioOption, WithName}
 
-sealed trait DeclarationForYourselfOrSomeoneElse
+sealed trait WhoseDeclaration
 
-object DeclarationForYourselfOrSomeoneElse {
+object WhoseDeclaration {
 
-  case object Yourself extends WithName("yourself") with DeclarationForYourselfOrSomeoneElse
-  case object Someoneelse extends WithName("someoneElse") with DeclarationForYourselfOrSomeoneElse
+  case object Yourself extends WithName("yourself") with WhoseDeclaration
+  case object Someoneelse extends WithName("someoneElse") with WhoseDeclaration
 
-  val values: Set[DeclarationForYourselfOrSomeoneElse] = Set(
+  val values: Set[WhoseDeclaration] = Set(
     Yourself, Someoneelse
   )
 
   val options: Set[RadioOption] = values.map {
     value =>
-      RadioOption("declarationForYourselfOrSomeoneElse", value.toString)
+      RadioOption("whoseDeclaration", value.toString)
   }
 
-  implicit val enumerable: Enumerable[DeclarationForYourselfOrSomeoneElse] =
+  implicit val enumerable: Enumerable[WhoseDeclaration] =
     Enumerable(values.toSeq.map(v => v.toString -> v): _*)
 }

@@ -14,18 +14,8 @@
  * limitations under the License.
  */
 
-package forms
+package identifiers
 
-import javax.inject.Inject
-
-import forms.mappings.Mappings
-import play.api.data.Form
-import models.DeclarationForYourselfOrSomeoneElse
-
-class DeclarationForYourselfOrSomeoneElseFormProvider @Inject() extends FormErrorHelper with Mappings {
-
-  def apply(): Form[DeclarationForYourselfOrSomeoneElse] =
-    Form(
-      "value" -> enumerable[DeclarationForYourselfOrSomeoneElse]("declarationForYourselfOrSomeoneElse.error.required")
-    )
+case object WhoseDeclarationId extends Identifier {
+  override def toString: String = "whoseDeclaration"
 }
