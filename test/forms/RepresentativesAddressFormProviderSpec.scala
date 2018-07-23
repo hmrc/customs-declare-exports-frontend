@@ -22,7 +22,7 @@ class RepresentativesAddressFormProviderSpec extends StringFieldBehaviours {
 
   val form = new RepresentativesAddressFormProvider()()
 
-  "NameAndAddressFormProvider" should {
+  "Representatives Address Form Provider" should {
     "bind valid data" in {
       val result = form.bind(
         Map(

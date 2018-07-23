@@ -17,5 +17,5 @@
 package identifiers
 
 case object representativesAddressId extends Identifier {
-  override def toString: String = "nameAndAddress"
+  override def toString: String = "representativesAddress"
 }

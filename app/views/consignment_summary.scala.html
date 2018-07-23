@@ -99,40 +99,40 @@
 
     <div>
         <dt class="cya-question">
-            @messages("consignmentSummary.nameAndAddress")
+            @messages("consignmentSummary.representativesAddress")
         </dt>
         <dd class="cya-answer">
-            @if(consignmentAnswers.nameAndAddress.isDefined){
-                @consignmentAnswers.nameAndAddress.get.fullName<br>
-                @consignmentAnswers.nameAndAddress.get.buildingAndStreet<br>
-                @if(consignmentAnswers.nameAndAddress.get.buildingAndStreetSecondPart.isDefined) {
-                    @consignmentAnswers.nameAndAddress.get.buildingAndStreetSecondPart.get<br>
+            @if(consignmentAnswers.representativesAddress.isDefined){
+                @consignmentAnswers.representativesAddress.get.fullName<br>
+                @consignmentAnswers.representativesAddress.get.buildingAndStreet<br>
+                @if(consignmentAnswers.representativesAddress.get.buildingAndStreetSecondPart.isDefined) {
+                    @consignmentAnswers.representativesAddress.get.buildingAndStreetSecondPart.get<br>
                 }
-                @consignmentAnswers.nameAndAddress.get.townOrCity<br>
-                @if(consignmentAnswers.nameAndAddress.get.county.isDefined) {
-                    @consignmentAnswers.nameAndAddress.get.county.get<br>
+                @consignmentAnswers.representativesAddress.get.townOrCity<br>
+                @if(consignmentAnswers.representativesAddress.get.county.isDefined) {
+                    @consignmentAnswers.representativesAddress.get.county.get<br>
                 }
-                @consignmentAnswers.nameAndAddress.get.postcode<br>
-                @consignmentAnswers.nameAndAddress.get.country<br>
+                @consignmentAnswers.representativesAddress.get.postcode<br>
+                @consignmentAnswers.representativesAddress.get.country<br>
             }
         </dd>
         <dd class="cya-change">
-            <a href="nameAndAddress">
+            <a href="representativesAddress">
                 @messages("consignmentSummary.change")
             </a>
         </dd>
     </div>
 
     <div class="no-border">
-        <dt class="cya-question">
+        <dt class="cya-question no-border">
             @messages("consignmentSummary.representative")
         </dt>
-        <dd class="cya-answer">
+        <dd class="cya-answer no-border">
             @if(consignmentAnswers.representative.isDefined) {
                 @messages("haveRepresentative." + consignmentAnswers.representative.get)
             }
         </dd>
-        <dd class="cya-change">
+        <dd class="cya-change no-border">
             <a href="haveRepresentative">
                 @messages("consignmentSummary.change")
             </a>

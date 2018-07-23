@@ -41,13 +41,13 @@ class RepresentativesAddressFormProvider @Inject() extends FormErrorHelper with 
   def apply(): Form[RepresentativesAddress] =
     Form(
       mapping(
-        "fullName" -> text("nameAndAddress.error.required.fullName"),
-        "buildingAndStreet" -> text("nameAndAddress.error.required.buildingAndStreet"),
+        "fullName" -> text("representativesAddress.error.required.fullName"),
+        "buildingAndStreet" -> text("representativesAddress.error.required.buildingAndStreet"),
         "buildingAndStreetSecondPart" -> optional(text()),
-        "townOrCity" -> text("nameAndAddress.error.required.townOrCity"),
+        "townOrCity" -> text("representativesAddress.error.required.townOrCity"),
         "county" -> optional(text()),
-        "postcode" -> text("nameAndAddress.error.required.postcode"),
-        "country" -> text("nameAndAddress.error.required.country")
+        "postcode" -> text("representativesAddress.error.required.postcode"),
+        "country" -> text("representativesAddress.error.required.country")
       )(RepresentativesAddress.apply)(RepresentativesAddress.unapply)
     )
 }
