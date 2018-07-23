@@ -25,12 +25,13 @@ import forms.{ConsignmentData, ConsignmentFormProvider}
 import identifiers.ConsignmentId
 import models.NormalMode
 import play.api.libs.json.{JsObject, JsString}
+import play.api.mvc.Call
 import uk.gov.hmrc.http.cache.client.CacheMap
 import views.html.consignment
 
 class ConsignmentControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.IndexController.onPageLoad()
 
   val formProvider = new ConsignmentFormProvider()
   val form = formProvider()
@@ -39,10 +40,18 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
   val correctDucr = "5GB123456789000-123ABC456DEFIIIIIII"
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new ConsignmentController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, formProvider)
+    new ConsignmentController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      formProvider
+    )
 
-  def viewAsString(form: Form[_] = form) = consignment(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String =
+    consignment(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
   "Consignment Controller" must {
 

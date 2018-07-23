@@ -26,20 +26,30 @@ import play.api.test.Helpers._
 import forms.{OwnDescriptionData, OwnDescriptionFormProvider}
 import identifiers.OwnDescriptionId
 import models.NormalMode
+import play.api.mvc.Call
 import views.html.ownDescription
 
 class OwnDescriptionControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.IndexController.onPageLoad()
 
   val formProvider = new OwnDescriptionFormProvider()
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new OwnDescriptionController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new OwnDescriptionController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
-  def viewAsString(form: Form[_] = form) = ownDescription(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String =
+    ownDescription(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
   "OwnDescription Controller" must {
 
@@ -51,7 +61,11 @@ class OwnDescriptionControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Map(OwnDescriptionId.toString -> JsObject(Map("choice" -> JsString("Yes"), "description" -> JsString("Something"))))
+      val validData = Map(
+        OwnDescriptionId.toString -> JsObject(
+          Map("choice" -> JsString("Yes"), "description" -> JsString("Something"))
+        )
+      )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)

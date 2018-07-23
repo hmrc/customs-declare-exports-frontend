@@ -19,6 +19,7 @@ package forms.mappings
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.validation.{Invalid, Valid}
 
+// TODO extract all number to vals
 class ConstraintsSpec extends WordSpec with MustMatchers with Constraints {
 
 

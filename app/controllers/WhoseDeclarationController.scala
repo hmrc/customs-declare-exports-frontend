@@ -17,7 +17,6 @@
 package controllers
 
 import javax.inject.Inject
-
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -28,40 +27,44 @@ import forms.WhoseDeclarationFormProvider
 import identifiers.WhoseDeclarationId
 import models.Mode
 import models.WhoseDeclaration
+import play.api.mvc.{Action, AnyContent}
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.whoseDeclaration
 
 import scala.concurrent.Future
 
 class WhoseDeclarationController @Inject()(
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: WhoseDeclarationFormProvider) extends FrontendController with I18nSupport with Enumerable.Implicits {
+    appConfig: FrontendAppConfig,
+    override val messagesApi: MessagesApi,
+    dataCacheConnector: DataCacheConnector,
+    navigator: Navigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: WhoseDeclarationFormProvider)
+  extends FrontendController with I18nSupport with Enumerable.Implicits {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode):Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.whoseDeclaration match {
         case None => form
         case Some(value) => form.fill(value)
       }
+
       Ok(whoseDeclaration(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(whoseDeclaration(appConfig, formWithErrors, mode))),
         (value) =>
-          dataCacheConnector.save[WhoseDeclaration](request.externalId, WhoseDeclarationId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(WhoseDeclarationId, mode)(new UserAnswers(cacheMap))))
+          dataCacheConnector.save[WhoseDeclaration](request.externalId, WhoseDeclarationId.toString, value).map {
+            cacheMap => Redirect(navigator.nextPage(WhoseDeclarationId, mode)(new UserAnswers(cacheMap)))
+          }
       )
   }
 }

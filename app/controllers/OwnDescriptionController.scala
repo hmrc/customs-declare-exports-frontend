@@ -32,14 +32,16 @@ import views.html.ownDescription
 
 import scala.concurrent.Future
 
-class OwnDescriptionController @Inject()(appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
-                                         dataCacheConnector: DataCacheConnector,
-                                         navigator: Navigator,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: OwnDescriptionFormProvider) extends FrontendController with I18nSupport {
+class OwnDescriptionController @Inject()(
+    appConfig: FrontendAppConfig,
+    override val messagesApi: MessagesApi,
+    dataCacheConnector: DataCacheConnector,
+    navigator: Navigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: OwnDescriptionFormProvider)
+  extends FrontendController with I18nSupport {
 
   val form: Form[OwnDescriptionData] = formProvider()
   import OwnDescriptionData._
@@ -60,8 +62,9 @@ class OwnDescriptionController @Inject()(appConfig: FrontendAppConfig,
           Future.successful(BadRequest(ownDescription(appConfig, formWithErrors, mode)))
         },
         (value) => {
-          dataCacheConnector.save[OwnDescriptionData](request.externalId, OwnDescriptionId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(OwnDescriptionId, mode)(new UserAnswers(cacheMap))))
+          dataCacheConnector.save[OwnDescriptionData](request.externalId, OwnDescriptionId.toString, value).map {
+            cacheMap => Redirect(navigator.nextPage(OwnDescriptionId, mode)(new UserAnswers(cacheMap)))
+          }
         }
       )
   }

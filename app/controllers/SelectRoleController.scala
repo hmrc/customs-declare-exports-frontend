@@ -17,7 +17,6 @@
 package controllers
 
 import javax.inject.Inject
-
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -28,24 +27,26 @@ import forms.SelectRoleFormProvider
 import identifiers.SelectRoleId
 import models.Mode
 import models.SelectRole
+import play.api.mvc.{Action, AnyContent}
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.selectRole
 
 import scala.concurrent.Future
 
 class SelectRoleController @Inject()(
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: SelectRoleFormProvider) extends FrontendController with I18nSupport with Enumerable.Implicits {
+    appConfig: FrontendAppConfig,
+    override val messagesApi: MessagesApi,
+    dataCacheConnector: DataCacheConnector,
+    navigator: Navigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: SelectRoleFormProvider)
+  extends FrontendController with I18nSupport with Enumerable.Implicits {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.flatMap(_.selectRole) match {
         case None => form
@@ -54,14 +55,15 @@ class SelectRoleController @Inject()(
       Ok(selectRole(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(selectRole(appConfig, formWithErrors, mode))),
         (value) =>
-          dataCacheConnector.save[SelectRole](request.externalId, SelectRoleId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(SelectRoleId, mode)(new UserAnswers(cacheMap))))
+          dataCacheConnector.save[SelectRole](request.externalId, SelectRoleId.toString, value).map { cacheMap =>
+            Redirect(navigator.nextPage(SelectRoleId, mode)(new UserAnswers(cacheMap)))
+          }
       )
   }
 }

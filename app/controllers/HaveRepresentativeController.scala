@@ -17,7 +17,6 @@
 package controllers
 
 import javax.inject.Inject
-
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -28,40 +27,44 @@ import forms.HaveRepresentativeFormProvider
 import identifiers.HaveRepresentativeId
 import models.Mode
 import models.HaveRepresentative
+import play.api.mvc.{Action, AnyContent}
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.haveRepresentative
 
 import scala.concurrent.Future
 
 class HaveRepresentativeController @Inject()(
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: HaveRepresentativeFormProvider) extends FrontendController with I18nSupport with Enumerable.Implicits {
+    appConfig: FrontendAppConfig,
+    override val messagesApi: MessagesApi,
+    dataCacheConnector: DataCacheConnector,
+    navigator: Navigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: HaveRepresentativeFormProvider)
+  extends FrontendController with I18nSupport with Enumerable.Implicits {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.haveRepresentative match {
         case None => form
         case Some(value) => form.fill(value)
       }
+
       Ok(haveRepresentative(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(haveRepresentative(appConfig, formWithErrors, mode))),
         (value) =>
-          dataCacheConnector.save[HaveRepresentative](request.externalId, HaveRepresentativeId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(HaveRepresentativeId, mode)(new UserAnswers(cacheMap))))
+          dataCacheConnector.save[HaveRepresentative](request.externalId, HaveRepresentativeId.toString, value).map {
+            cacheMap => Redirect(navigator.nextPage(HaveRepresentativeId, mode)(new UserAnswers(cacheMap)))
+          }
       )
   }
 }

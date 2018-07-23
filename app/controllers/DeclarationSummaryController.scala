@@ -56,8 +56,10 @@ class DeclarationSummaryController @Inject()(
     implicit request =>
       // Below declaration from users answers
       // val declaration = DeclarationSummary.buildFromAnswers(request.userAnswers)
+      // TODO No CSP is only for test purposes, we should throw exception here
       val bearerToken = hc.authorization.map(_.value).getOrElse("Non CSP")
 
+      // TODO generate declaration based on user answers
       submitDeclaration.submit(new Declaration(new Declarant("123")), bearerToken).map{ _ =>
         Ok(index(appConfig))
       }

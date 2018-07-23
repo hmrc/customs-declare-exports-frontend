@@ -17,12 +17,10 @@
 package controllers.actions
 
 import models.SignedInUser
-import play.api.mvc.{Request, Result}
 import models.requests.AuthenticatedRequest
+import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.Retrievals._
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, Retrieval, ~}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
 
 import scala.concurrent.Future
 

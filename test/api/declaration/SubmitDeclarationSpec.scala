@@ -27,7 +27,6 @@ import play.core.server.Server
 class SubmitDeclarationSpec extends WordSpec with Matchers with ScalaFutures with IntegrationPatience {
 
   "Submit declaration" should {
-
     "return HTTP Status 400 (Bad request) for missing declarant" in {
       Server.withRouter() {
         case POST(p"/") => Action { implicit req =>

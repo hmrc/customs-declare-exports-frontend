@@ -36,7 +36,7 @@ class CascadeUpsert {
     originalCacheMap copy(data = originalCacheMap.data + (key -> Json.toJson(values)))
   }
 
-  private def store[A](key:String, value: A, cacheMap: CacheMap)(implicit fmt: Format[A]) =
+  private def store[A](key:String, value: A, cacheMap: CacheMap)(implicit fmt: Format[A]): CacheMap =
     cacheMap copy (data = cacheMap.data + (key -> Json.toJson(value)))
 
   private def clearIfFalse[A](key: String, value: A, keysToRemove: Set[String], cacheMap: CacheMap)(implicit fmt: Format[A]): CacheMap = {

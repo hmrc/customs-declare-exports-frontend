@@ -20,11 +20,13 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 
 
-case class SignedInUser(credentials: Credentials,
-                        name: Name,
-                        email: Option[String],
-                        eori: String,
-                        externalId: String,
-                        internalId: Option[String],
-                        affinityGroup: Option[AffinityGroup],
-                        enrolments: Enrolments)
+case class SignedInUser(
+  credentials: Credentials,
+  name: Name,
+  email: Option[String],
+  eori: String,
+  externalId: String,
+  internalId: Option[String],
+  affinityGroup: Option[AffinityGroup],
+  enrolments: Enrolments
+)

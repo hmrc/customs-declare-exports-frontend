@@ -26,24 +26,26 @@ import config.FrontendAppConfig
 import forms.{RepresentativesAddress, RepresentativesAddressFormProvider}
 import identifiers.representativesAddressId
 import models.Mode
+import play.api.mvc.{Action, AnyContent}
 import utils.{Navigator, UserAnswers}
 import views.html.representativesAddress
 
 import scala.concurrent.Future
 
 class RepresentativesAddressController @Inject()(
-                                        appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
-                                        dataCacheConnector: DataCacheConnector,
-                                        navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: RepresentativesAddressFormProvider) extends FrontendController with I18nSupport {
+    appConfig: FrontendAppConfig,
+    override val messagesApi: MessagesApi,
+    dataCacheConnector: DataCacheConnector,
+    navigator: Navigator,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: RepresentativesAddressFormProvider)
+  extends FrontendController with I18nSupport {
 
   val form: Form[RepresentativesAddress] = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.representativesAddress match {
         case None => form
@@ -52,14 +54,16 @@ class RepresentativesAddressController @Inject()(
       Ok(representativesAddress(appConfig, preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(representativesAddress(appConfig, formWithErrors, mode))),
         (value) =>
-          dataCacheConnector.save[RepresentativesAddress](request.externalId, representativesAddressId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(representativesAddressId, mode)(new UserAnswers(cacheMap))))
+          dataCacheConnector.save[RepresentativesAddress](request.externalId, representativesAddressId.toString, value)
+            .map { cacheMap =>
+              Redirect(navigator.nextPage(representativesAddressId, mode)(new UserAnswers(cacheMap)))
+            }
       )
   }
 }

@@ -23,20 +23,30 @@ import controllers.actions._
 import play.api.test.Helpers._
 import forms.{RepresentativesAddress, RepresentativesAddressFormProvider}
 import models.NormalMode
+import play.api.mvc.Call
 import views.html.representativesAddress
 
 class RepresentativesAddressControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.IndexController.onPageLoad()
 
   val formProvider = new RepresentativesAddressFormProvider()
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new RepresentativesAddressController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new RepresentativesAddressController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
-  def viewAsString(form: Form[_] = form) = representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String =
+    representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
   val testAnswer = RepresentativesAddress("Fullname", "Street", None, "town", None, "postcode", "country")
 

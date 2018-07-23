@@ -40,10 +40,8 @@ object SessionIdFilterSpec {
 
   class Filters @Inject() (sessionId: SessionIdFilter) extends DefaultHttpFilters(sessionId)
 
-  class TestSessionIdFilter @Inject() (
-                                        override val mat: Materializer,
-                                        ec: ExecutionContext
-                                      ) extends SessionIdFilter(mat, UUID.fromString(sessionId), ec)
+  class TestSessionIdFilter @Inject()(override val mat: Materializer, ec: ExecutionContext)
+    extends SessionIdFilter(mat, UUID.fromString(sessionId), ec)
 }
 
 class SessionIdFilterSpec extends WordSpec with MustMatchers with OneAppPerSuite {

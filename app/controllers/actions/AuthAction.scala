@@ -47,7 +47,9 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
         if (externalId.isEmpty) {
           throw NoExternalId()
         }
-        val cdsLoggedInUser = SignedInUser(credentials, name, email, eori.get.value, externalId.get, internalId, affinityGroup, allEnrolments)
+        val cdsLoggedInUser =
+          SignedInUser(credentials, name, email, eori.get.value, externalId.get, internalId, affinityGroup, allEnrolments)
+
         block(AuthenticatedRequest(request, cdsLoggedInUser))
     } recover {
       case _: NoActiveSession =>

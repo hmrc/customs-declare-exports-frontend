@@ -26,7 +26,8 @@ class DashboardControllerSpec extends ControllerSpecBase {
     new DashboardController(frontendAppConfig, messagesApi, FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl)
 
-  def viewAsString() = dashboard(frontendAppConfig, FakeAuthAction.defaultUser)(fakeRequest, messages).toString
+  def viewAsString(): String =
+    dashboard(frontendAppConfig, FakeAuthAction.defaultUser)(fakeRequest, messages).toString()
 
   "Dashboard Controller" must {
 

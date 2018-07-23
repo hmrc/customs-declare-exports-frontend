@@ -27,20 +27,30 @@ import forms.HaveRepresentativeFormProvider
 import identifiers.HaveRepresentativeId
 import models.NormalMode
 import models.HaveRepresentative
+import play.api.mvc.Call
 import views.html.haveRepresentative
 
 class HaveRepresentativeControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.IndexController.onPageLoad()
 
   val formProvider = new HaveRepresentativeFormProvider()
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new HaveRepresentativeController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new HaveRepresentativeController(
+      frontendAppConfig,
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )
 
-  def viewAsString(form: Form[_] = form) = haveRepresentative(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String =
+    haveRepresentative(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
   "HaveRepresentative Controller" must {
 

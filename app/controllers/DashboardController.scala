@@ -17,22 +17,22 @@
 package controllers
 
 import javax.inject.Inject
-
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
 import config.FrontendAppConfig
+import play.api.mvc.{Action, AnyContent}
 import views.html.dashboard
 
-import scala.concurrent.Future
+class DashboardController @Inject()(
+    appConfig: FrontendAppConfig,
+    override val messagesApi: MessagesApi,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction)
+	extends FrontendController with I18nSupport {
 
-class DashboardController @Inject()(appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
-                                         authenticate: AuthAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction) extends FrontendController with I18nSupport {
-
-  def onPageLoad = (authenticate) {
+  def onPageLoad: Action[AnyContent] = (authenticate) {
     implicit request =>
       Ok(dashboard(appConfig,request.user))
   }

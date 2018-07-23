@@ -37,6 +37,8 @@ import scala.xml.NodeSeq
 //      - Additional calculation units
 //      - Previous document
 //      -->
+
+// TODO This case class should contain declaration summary and generate xml based on the input data
 case class Declaration(declarant: Declarant) {
   def toXml: NodeSeq =
         <md:MetaData xmlns:md="urn:wco:datamodel:WCO:DocumentMetaData-DMS:2" xmlns="urn:wco:datamodel:WCO:DEC-DMS:2"

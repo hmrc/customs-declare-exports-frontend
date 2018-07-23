@@ -16,37 +16,49 @@
 
 package controllers
 
-import api.declaration.SubmitDeclaration
+import api.declaration.{Declarant, Declaration, SubmitDeclaration}
 import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.actions._
 import play.api.test.Helpers._
-import forms.DeclarationSummary
 import models.NormalMode
+import org.scalatest.mockito.MockitoSugar
+import org.mockito.Mockito._
 
-class DeclarationSummaryControllerSpec extends ControllerSpecBase {
+import scala.concurrent.Future
 
-  def onwardRoute = routes.IndexController.onPageLoad()
+class DeclarationSummaryControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  val declarationSummary = new DeclarationSummary()
+  trait Scope {
+    val mockFakeNavigator = mock[FakeNavigator]
+    val mockSubmitDeclaration = mock[SubmitDeclaration]
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new DeclarationSummaryController(
-      frontendAppConfig,
-      messagesApi,
-      FakeDataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      new SubmitDeclaration(wsClient, "")
-    )
+    def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
+      new DeclarationSummaryController(
+        frontendAppConfig,
+        messagesApi,
+        FakeDataCacheConnector,
+        mockFakeNavigator,
+        FakeAuthAction,
+        dataRetrievalAction,
+        new DataRequiredActionImpl,
+        mockSubmitDeclaration
+      )
+  }
 
-  val testAnswer = "answer"
-
-  "SubmitPage Controller" must {
-    "return OK and the correct view for a GET" in {
+  "Declaration summary controller" must {
+    "return OK and the correct view for a GET" in new Scope {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+    }
+
+    "return OK after send declaration" in new Scope {
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
+      val declaration = new Declaration(new Declarant("123"))
+
+      when(mockSubmitDeclaration.submit(declaration, "Non CSP"))
+        .thenReturn(Future.successful(1))
 
       status(result) mustBe OK
     }

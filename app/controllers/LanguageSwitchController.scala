@@ -25,10 +25,10 @@ import uk.gov.hmrc.play.language.LanguageUtils
 
 // TODO, upstream this into play-language
 class LanguageSwitchController @Inject() (
-                                           configuration: Configuration,
-                                           appConfig: FrontendAppConfig,
-                                           implicit val messagesApi: MessagesApi
-                                         ) extends Controller with I18nSupport {
+    configuration: Configuration,
+    appConfig: FrontendAppConfig,
+    implicit val messagesApi: MessagesApi)
+  extends Controller with I18nSupport {
 
   private def langToCall(lang: String): (String) => Call = appConfig.routeToSwitchLanguage
 

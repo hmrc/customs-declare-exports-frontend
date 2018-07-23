@@ -22,11 +22,13 @@ import identifiers._
 import models._
 
 class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
-  def representativesAddress: Option[RepresentativesAddress] = cacheMap.getEntry[RepresentativesAddress](representativesAddressId.toString)
+  def representativesAddress: Option[RepresentativesAddress] =
+    cacheMap.getEntry[RepresentativesAddress](representativesAddressId.toString)
 
   def enterEORI: Option[String] = cacheMap.getEntry[String](EnterEORIId.toString)
 
-  def haveRepresentative: Option[HaveRepresentative] = cacheMap.getEntry[HaveRepresentative](HaveRepresentativeId.toString)
+  def haveRepresentative: Option[HaveRepresentative] =
+    cacheMap.getEntry[HaveRepresentative](HaveRepresentativeId.toString)
 
   def ownDescription: Option[OwnDescriptionData] = cacheMap.getEntry[OwnDescriptionData](OwnDescriptionId.toString)
 
