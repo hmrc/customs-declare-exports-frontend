@@ -22,7 +22,7 @@ class OwnDescriptionFormProviderSpec extends WordSpec with Matchers {
 
   val form = new OwnDescriptionFormProvider()()
 
-  "OwnDescriptorFormProvider" should {
+  "Own descriptor form provider" should {
     "bind valid data" in {
       val result = form.bind(Map("choice" -> "Yes", "description" -> "Own Description"))
 
@@ -33,6 +33,32 @@ class OwnDescriptionFormProviderSpec extends WordSpec with Matchers {
       result.apply("description").value map { description =>
         description shouldBe "Own Description"
       }
+    }
+  }
+
+  "Own description data" should {
+    "change choice to No if there is no description" in {
+      val preparedData = OwnDescriptionData("Yes", None)
+
+      val expectedData = OwnDescriptionData("No", None)
+
+      OwnDescriptionData.validateCorrectness(preparedData) shouldBe expectedData
+    }
+
+    "clear description if it's provided and choice in No" in {
+      val preparedData = OwnDescriptionData("No", Some("Description"))
+
+      val expectedData = OwnDescriptionData("No", None)
+
+      OwnDescriptionData.validateCorrectness(preparedData) shouldBe expectedData
+    }
+
+    "don't change data if it's correct" in {
+      val validData1 = OwnDescriptionData("Yes", Some("Description"))
+      val validData2 = OwnDescriptionData("No", None)
+
+      OwnDescriptionData.validateCorrectness(validData1) shouldBe validData1
+      OwnDescriptionData.validateCorrectness(validData2) shouldBe validData2
     }
   }
 }

@@ -26,6 +26,12 @@ case class OwnDescriptionData(choice: String, description: Option[String])
 
 object OwnDescriptionData {
   implicit val format = Json.format[OwnDescriptionData]
+
+  def validateCorrectness(ownDescriptionData: OwnDescriptionData): OwnDescriptionData = ownDescriptionData match {
+    case OwnDescriptionData("Yes", None) => OwnDescriptionData("No", None)
+    case OwnDescriptionData("No", Some(_)) => OwnDescriptionData("No", None)
+    case _ => ownDescriptionData
+  }
 }
 
 class OwnDescriptionFormProvider @Inject() extends FormErrorHelper with Mappings {

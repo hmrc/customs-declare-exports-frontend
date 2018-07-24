@@ -61,10 +61,14 @@ class OwnDescriptionController @Inject()(
         (formWithErrors: Form[_]) => {
           Future.successful(BadRequest(ownDescription(appConfig, formWithErrors, mode)))
         },
-        (value) => {
-          dataCacheConnector.save[OwnDescriptionData](request.externalId, OwnDescriptionId.toString, value).map {
-            cacheMap => Redirect(navigator.nextPage(OwnDescriptionId, mode)(new UserAnswers(cacheMap)))
-          }
+        value => {
+          val correctOwnDescription = OwnDescriptionData.validateCorrectness(value)
+
+          dataCacheConnector
+            .save[OwnDescriptionData](request.externalId, OwnDescriptionId.toString, correctOwnDescription)
+            .map { cacheMap =>
+              navigator.redirect(OwnDescriptionId, mode, cacheMap)
+            }
         }
       )
   }
