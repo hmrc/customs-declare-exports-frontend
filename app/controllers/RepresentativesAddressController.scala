@@ -24,7 +24,7 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
 import forms.{RepresentativesAddress, RepresentativesAddressFormProvider}
-import identifiers.representativesAddressId
+import identifiers.RepresentativesAddressId
 import models.Mode
 import play.api.mvc.{Action, AnyContent}
 import utils.{Navigator, UserAnswers}
@@ -59,10 +59,10 @@ class RepresentativesAddressController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(representativesAddress(appConfig, formWithErrors, mode))),
-        (value) =>
-          dataCacheConnector.save[RepresentativesAddress](request.externalId, representativesAddressId.toString, value)
+        value =>
+          dataCacheConnector.save[RepresentativesAddress](request.externalId, RepresentativesAddressId.toString, value)
             .map { cacheMap =>
-              Redirect(navigator.nextPage(representativesAddressId, mode)(new UserAnswers(cacheMap)))
+              navigator.redirect(RepresentativesAddressId, mode, cacheMap)
             }
       )
   }

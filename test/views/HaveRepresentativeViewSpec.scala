@@ -16,6 +16,7 @@
 
 package views
 
+import connectors.FakeDataCacheConnector
 import play.api.data.Form
 import forms.HaveRepresentativeFormProvider
 import models.NormalMode
@@ -27,7 +28,7 @@ class HaveRepresentativeViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "haveRepresentative"
 
-  val form = new HaveRepresentativeFormProvider()()
+  val form = new HaveRepresentativeFormProvider(FakeDataCacheConnector)()
 
   def createView = () => haveRepresentative(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 

@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import play.api.data.FormError
 
 class RepresentativesAddressFormProviderSpec extends StringFieldBehaviours {
 
@@ -27,8 +28,8 @@ class RepresentativesAddressFormProviderSpec extends StringFieldBehaviours {
       val result = form.bind(
         Map(
           "fullName" -> "Full name",
-          "buildingAndStreet" -> "Building",
-          "buildingAndStreetSecondPart" -> "Street",
+          "building" -> "Building",
+          "street" -> "Street",
           "townOrCity" -> "Town",
           "county" -> "County",
           "postcode" -> "Postcode",
@@ -37,12 +38,36 @@ class RepresentativesAddressFormProviderSpec extends StringFieldBehaviours {
       )
 
       result.apply("fullName").value.map(_ shouldBe "Full name")
-      result.apply("buildingAndStreet").value.map(_ shouldBe "Building")
-      result.apply("buildingAndStreetSecondPart").value.map(_ shouldBe "Street")
+      result.apply("building").value.map(_ shouldBe "Building")
+      result.apply("street").value.map(_ shouldBe "Street")
       result.apply("townOrCity").value.map(_ shouldBe "Town")
       result.apply("county").value.map(_ shouldBe "County")
       result.apply("postcode").value.map(_ shouldBe "Postcode")
       result.apply("country").value.map(_ shouldBe "Country")
+    }
+
+    "return error if required fields are empty" in {
+      val data = Map(
+        "fullName" -> "",
+        "building" -> "",
+        "street" -> "",
+        "townOrCity" -> "",
+        "county" -> "",
+        "postcode" -> "",
+        "country" -> ""
+      )
+
+      val emptyFullNameError = FormError("fullName", "representativesAddress.error.required.fullName")
+      val emptyBuildingError = FormError("building", "representativesAddress.error.required.building")
+      val emptyStreetError = FormError("street", "representativesAddress.error.required.street")
+      val emptyTownOrCityError = FormError("townOrCity", "representativesAddress.error.required.townOrCity")
+      val emptyPostcodeError = FormError("postcode", "representativesAddress.error.required.postcode")
+      val emptyCountryError = FormError("country", "representativesAddress.error.required.country")
+
+      val expectedErrors = Seq(emptyFullNameError, emptyBuildingError, emptyStreetError, emptyTownOrCityError,
+        emptyPostcodeError, emptyCountryError)
+
+      checkForError(form, data, expectedErrors)
     }
   }
 }

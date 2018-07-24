@@ -83,45 +83,45 @@
         </dd>
     </div>
 
-    <div>
-        <dt class="cya-question">
-            @messages("consignmentSummary.eoriNumber")
-        </dt>
-        <dd class="cya-answer">
-            @consignmentAnswers.eoriNumber
-        </dd>
-        <dd class="cya-change">
-            <a href="enterEORI">
-                @messages("consignmentSummary.change")
-            </a>
-        </dd>
-    </div>
+    @if(consignmentAnswers.representative == Some("yes")){
+        <div>
+            <dt class="cya-question">
+                @messages("consignmentSummary.eoriNumber")
+            </dt>
+            <dd class="cya-answer">
+                @consignmentAnswers.eoriNumber
+            </dd>
+            <dd class="cya-change">
+                <a href="enterEORI">
+                    @messages("consignmentSummary.change")
+                </a>
+            </dd>
+        </div>
 
-    <div>
-        <dt class="cya-question">
-            @messages("consignmentSummary.representativesAddress")
-        </dt>
-        <dd class="cya-answer">
-            @if(consignmentAnswers.representativesAddress.isDefined){
-                @consignmentAnswers.representativesAddress.get.fullName<br>
-                @consignmentAnswers.representativesAddress.get.buildingAndStreet<br>
-                @if(consignmentAnswers.representativesAddress.get.buildingAndStreetSecondPart.isDefined) {
-                    @consignmentAnswers.representativesAddress.get.buildingAndStreetSecondPart.get<br>
+        <div>
+            <dt class="cya-question">
+                @messages("consignmentSummary.representativesAddress")
+            </dt>
+            <dd class="cya-answer">
+                @if(consignmentAnswers.representativesAddress.isDefined){
+                    @consignmentAnswers.representativesAddress.get.fullName<br>
+                    @consignmentAnswers.representativesAddress.get.building<br>
+                    @consignmentAnswers.representativesAddress.get.street<br>
+                    @consignmentAnswers.representativesAddress.get.townOrCity<br>
+                    @if(consignmentAnswers.representativesAddress.get.county.isDefined) {
+                        @consignmentAnswers.representativesAddress.get.county.get<br>
+                    }
+                    @consignmentAnswers.representativesAddress.get.postcode<br>
+                    @consignmentAnswers.representativesAddress.get.country<br>
                 }
-                @consignmentAnswers.representativesAddress.get.townOrCity<br>
-                @if(consignmentAnswers.representativesAddress.get.county.isDefined) {
-                    @consignmentAnswers.representativesAddress.get.county.get<br>
-                }
-                @consignmentAnswers.representativesAddress.get.postcode<br>
-                @consignmentAnswers.representativesAddress.get.country<br>
-            }
-        </dd>
-        <dd class="cya-change">
-            <a href="representativesAddress">
-                @messages("consignmentSummary.change")
-            </a>
-        </dd>
-    </div>
+            </dd>
+            <dd class="cya-change">
+                <a href="representativesAddress">
+                    @messages("consignmentSummary.change")
+                </a>
+            </dd>
+        </div>
+    }
 
     <div class="no-border">
         <dt class="cya-question no-border">

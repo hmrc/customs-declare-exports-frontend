@@ -16,13 +16,18 @@
 
 package forms
 
+import connectors.FakeDataCacheConnector
 import forms.behaviours.OptionFieldBehaviours
 import models.HaveRepresentative
+import org.scalatest.concurrent.ScalaFutures
 import play.api.data.FormError
+import play.api.libs.json.JsString
+import uk.gov.hmrc.http.cache.client.CacheMap
 
-class HaveRepresentativeFormProviderSpec extends OptionFieldBehaviours {
+class HaveRepresentativeFormProviderSpec extends OptionFieldBehaviours with ScalaFutures {
 
-  val form = new HaveRepresentativeFormProvider()()
+  val formProvider = new HaveRepresentativeFormProvider(FakeDataCacheConnector)
+  val form = formProvider()
 
   ".value" must {
 
@@ -41,5 +46,22 @@ class HaveRepresentativeFormProviderSpec extends OptionFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+  }
+
+  "clear representative cache method" should {
+    "return cache without enter EORI and representatives address" in {
+      val data = Map(
+        "testId" -> JsString("Test value"),
+        "enterEORI" -> JsString("EORI"),
+        "representativesAddress" -> JsString("Address")
+      )
+      val cacheMap = CacheMap("id", data)
+
+      whenReady(formProvider.clearRepresentativeCache(cacheMap)){ result =>
+        result.getEntry[String]("testId").isDefined shouldBe true
+        result.getEntry[String]("enterEORI").isDefined shouldBe false
+        result.getEntry[String]("representativesAddress").isDefined shouldBe false
+      }
+    }
   }
 }

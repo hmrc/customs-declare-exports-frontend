@@ -62,7 +62,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       }
 
       "got to summary page after name and address has been submitted" in {
-        navigator.nextPage(representativesAddressId, NormalMode)(userAnswers) mustBe
+        navigator.nextPage(RepresentativesAddressId, NormalMode)(userAnswers) mustBe
           routes.DeclarationSummaryController.onPageLoad(NormalMode)
       }
     }

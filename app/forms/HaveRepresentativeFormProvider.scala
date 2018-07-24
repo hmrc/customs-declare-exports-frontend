@@ -16,16 +16,23 @@
 
 package forms
 
+import connectors.DataCacheConnector
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
 import models.HaveRepresentative
+import uk.gov.hmrc.http.cache.client.CacheMap
 
-class HaveRepresentativeFormProvider @Inject() extends FormErrorHelper with Mappings {
+import scala.concurrent.Future
+
+class HaveRepresentativeFormProvider @Inject()(dataCacheConnector: DataCacheConnector)
+  extends FormErrorHelper with Mappings {
 
   def apply(): Form[HaveRepresentative] =
     Form(
       "value" -> enumerable[HaveRepresentative]("haveRepresentative.error.required")
     )
+
+  def clearRepresentativeCache(cacheMap: CacheMap): Future[CacheMap] =
+    dataCacheConnector.removeAndRetrieveEntries(cacheMap, Seq("enterEORI", "representativesAddress"))
 }

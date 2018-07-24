@@ -24,11 +24,12 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import config.FrontendAppConfig
 import forms.HaveRepresentativeFormProvider
-import identifiers.HaveRepresentativeId
+import identifiers.{HaveRepresentativeId, RepresentativesAddressId}
 import models.Mode
 import models.HaveRepresentative
+import models.HaveRepresentative.{No, Yes}
 import play.api.mvc.{Action, AnyContent}
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Enumerable, Navigator}
 import views.html.haveRepresentative
 
 import scala.concurrent.Future
@@ -61,9 +62,18 @@ class HaveRepresentativeController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(haveRepresentative(appConfig, formWithErrors, mode))),
-        (value) =>
-          dataCacheConnector.save[HaveRepresentative](request.externalId, HaveRepresentativeId.toString, value).map {
-            cacheMap => Redirect(navigator.nextPage(HaveRepresentativeId, mode)(new UserAnswers(cacheMap)))
+        value =>
+          dataCacheConnector
+            .save[HaveRepresentative](request.externalId, HaveRepresentativeId.toString, value)
+            .flatMap { cacheMap =>
+              value match {
+                case Yes =>
+                  Future.successful(navigator.redirect(HaveRepresentativeId, mode, cacheMap))
+                case No =>
+                  formProvider.clearRepresentativeCache(cacheMap).map { newCacheMap =>
+                    navigator.redirect(RepresentativesAddressId, mode, newCacheMap)
+                  }
+              }
           }
       )
   }

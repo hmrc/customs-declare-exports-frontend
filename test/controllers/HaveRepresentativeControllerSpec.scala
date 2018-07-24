@@ -16,25 +16,24 @@
 
 package controllers
 
-import play.api.data.Form
-import play.api.libs.json.JsString
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.actions._
-import play.api.test.Helpers._
 import forms.HaveRepresentativeFormProvider
 import identifiers.HaveRepresentativeId
-import models.NormalMode
-import models.HaveRepresentative
+import models.{HaveRepresentative, NormalMode}
+import play.api.data.Form
+import play.api.libs.json.JsString
 import play.api.mvc.Call
+import play.api.test.Helpers._
+import uk.gov.hmrc.http.cache.client.CacheMap
+import utils.FakeNavigator
 import views.html.haveRepresentative
 
 class HaveRepresentativeControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = routes.IndexController.onPageLoad()
 
-  val formProvider = new HaveRepresentativeFormProvider()
+  val formProvider = new HaveRepresentativeFormProvider(FakeDataCacheConnector)
   val form = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
@@ -88,6 +87,5 @@ class HaveRepresentativeControllerSpec extends ControllerSpecBase {
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
     }
-
   }
 }

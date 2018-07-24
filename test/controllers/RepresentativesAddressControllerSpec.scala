@@ -48,9 +48,9 @@ class RepresentativesAddressControllerSpec extends ControllerSpecBase {
   def viewAsString(form: Form[_] = form): String =
     representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
-  val testAnswer = RepresentativesAddress("Fullname", "Street", None, "town", None, "postcode", "country")
+  val testAnswer = RepresentativesAddress("Fullname", "Building", "Street", "town", None, "postcode", "country")
 
-  "RepresentativesAddress Controller" must {
+  "Representatives address controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -62,8 +62,8 @@ class RepresentativesAddressControllerSpec extends ControllerSpecBase {
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(
         ("fullName" -> "Full name"),
-        ("buildingAndStreet" -> "Building"),
-        ("buildingAndStreetSecondPart" -> "Street"),
+        ("building" -> "Building"),
+        ("street" -> "Street"),
         ("townOrCity" -> "Town"),
         ("county" -> "County"),
         ("postcode" -> "Postcode"),

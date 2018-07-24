@@ -17,10 +17,12 @@
 package utils
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.Call
+import play.api.mvc.{Call, Result}
+import play.api.mvc.Results._
 import controllers.routes
 import identifiers._
 import models.{CheckMode, Mode, NormalMode}
+import uk.gov.hmrc.http.cache.client.CacheMap
 
 @Singleton
 class Navigator @Inject()() {
@@ -31,13 +33,16 @@ class Navigator @Inject()() {
     WhoseDeclarationId -> (_ => routes.HaveRepresentativeController.onPageLoad(NormalMode)),
     HaveRepresentativeId -> (_ => routes.EnterEORIController.onPageLoad(NormalMode)),
     EnterEORIId -> (_ => routes.RepresentativesAddressController.onPageLoad(NormalMode)),
-    representativesAddressId -> (_ => routes.DeclarationSummaryController.onPageLoad(NormalMode))
+    RepresentativesAddressId -> (_ => routes.DeclarationSummaryController.onPageLoad(NormalMode))
   )
 
+  // TODO add editRouteMap and connect it with back button
   private val editRouteMap: Map[Identifier, UserAnswers => Call] = Map(
 
   )
 
+  // TODO this method should be private
+  // Please use redirect method instead of that
   def nextPage(id: Identifier, mode: Mode): UserAnswers => Call = {
     mode match {
       case NormalMode =>
@@ -46,4 +51,7 @@ class Navigator @Inject()() {
         editRouteMap.getOrElse(id, _ => routes.DeclarationSummaryController.onPageLoad(CheckMode))
     }
   }
+
+  def redirect(id: Identifier, mode: Mode, cache: CacheMap): Result =
+    Redirect(nextPage(id, mode)(new UserAnswers(cache)))
 }

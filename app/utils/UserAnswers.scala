@@ -23,7 +23,7 @@ import models._
 
 class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
   def representativesAddress: Option[RepresentativesAddress] =
-    cacheMap.getEntry[RepresentativesAddress](representativesAddressId.toString)
+    cacheMap.getEntry[RepresentativesAddress](RepresentativesAddressId.toString)
 
   def enterEORI: Option[String] = cacheMap.getEntry[String](EnterEORIId.toString)
 

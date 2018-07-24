@@ -24,8 +24,8 @@ import play.api.libs.json.Json
 
 case class RepresentativesAddress(
   fullName: String,
-  buildingAndStreet: String,
-  buildingAndStreetSecondPart: Option[String],
+  building: String,
+  street: String,
   townOrCity: String,
   county: Option[String],
   postcode: String,
@@ -42,8 +42,8 @@ class RepresentativesAddressFormProvider @Inject() extends FormErrorHelper with 
     Form(
       mapping(
         "fullName" -> text("representativesAddress.error.required.fullName"),
-        "buildingAndStreet" -> text("representativesAddress.error.required.buildingAndStreet"),
-        "buildingAndStreetSecondPart" -> optional(text()),
+        "building" -> text("representativesAddress.error.required.building"),
+        "street" -> text("representativesAddress.error.required.street"),
         "townOrCity" -> text("representativesAddress.error.required.townOrCity"),
         "county" -> optional(text()),
         "postcode" -> text("representativesAddress.error.required.postcode"),

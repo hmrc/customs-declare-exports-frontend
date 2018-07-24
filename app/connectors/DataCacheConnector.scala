@@ -52,11 +52,19 @@ class DataCacheConnectorImpl @Inject()(val sessionRepository: SessionRepository,
 
   def remove(cacheId: String, key: String): Future[Boolean] =
     sessionRepository().get(cacheId).flatMap { optionalCacheMap =>
-      optionalCacheMap.fold(Future(false)) { cacheMap =>
+      optionalCacheMap.fold(Future.successful(false)) { cacheMap =>
         val newCacheMap = cacheMap copy (data = cacheMap.data - key)
         sessionRepository().upsert(newCacheMap)
       }
     }
+
+  def removeAndRetrieveEntries(cacheMap: CacheMap, keys: Seq[String]): Future[CacheMap] = {
+    val newCacheMap = cacheMap copy (data = cacheMap.data.filterKeys(!keys.contains(_)))
+    sessionRepository().upsert(newCacheMap).flatMap { updated =>
+      if(updated) Future.successful(newCacheMap)
+      else Future.successful(cacheMap)
+    }
+  }
 
   def fetch(cacheId: String): Future[Option[CacheMap]] = sessionRepository().get(cacheId)
 
@@ -101,6 +109,8 @@ trait DataCacheConnector {
   def save[A](cacheId: String, key: String, value: A)(implicit fmt: Format[A]): Future[CacheMap]
 
   def remove(cacheId: String, key: String): Future[Boolean]
+
+  def removeAndRetrieveEntries(cacheMap: CacheMap, keys: Seq[String]): Future[CacheMap]
 
   def fetch(cacheId: String): Future[Option[CacheMap]]
 
