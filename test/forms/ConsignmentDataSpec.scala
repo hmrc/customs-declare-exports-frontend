@@ -23,6 +23,9 @@ class ConsignmentDataSpec extends WordSpec with Matchers {
   val ducrNumber = Some("ducrNumber")
   val mucrNumber = Some("mucrNumber")
 
+  val ducrConsolidation = Some("ducrConsolidation")
+  val ducrSingleShipment = Some("ducrSingleShipment")
+
   "ConsignmentData" should {
     "change choice to single shipment if mucr is missing" in {
       val preparedData = ConsignmentData("consolidation", None, ducrNumber, None)
@@ -50,13 +53,14 @@ class ConsignmentDataSpec extends WordSpec with Matchers {
     }
 
     "return correct ducr number for consolidation" in {
-      val ducrConsolidation = Some("ducrConsolidation")
-      val ducrSingleShipment = Some("ducrSingleShipment")
-
       val consolidationData = ConsignmentData("consolidation", None, ducrConsolidation, ducrSingleShipment)
-      val singleShipmentData = ConsignmentData("singleShipment", None, ducrConsolidation, ducrSingleShipment)
 
       ConsignmentData.ducr(consolidationData) shouldBe ducrConsolidation
+    }
+
+    "return correct ducr number for single shipment" in {
+      val singleShipmentData = ConsignmentData("singleShipment", None, ducrConsolidation, ducrSingleShipment)
+
       ConsignmentData.ducr(singleShipmentData) shouldBe ducrSingleShipment
     }
   }

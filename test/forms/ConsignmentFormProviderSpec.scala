@@ -30,8 +30,8 @@ class ConsignmentFormProviderSpec extends OptionFieldBehaviours {
   val ducrEmptyError = FormError("", "error.ducr.empty")
   val ducrFormatError = FormError("", "error.ducr.format")
 
-  "ConsignmentFormProvider" should {
-    "bindValidData" in {
+  "Consignment form provider" should {
+    "bind valid data" in {
       val result = form.bind(
         Map(
           "choice" -> "singleShipment",
