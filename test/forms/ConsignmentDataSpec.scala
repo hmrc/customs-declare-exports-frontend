@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.ConsignmentChoice.{Consolidation, SingleShipment}
 import org.scalatest.{Matchers, WordSpec}
 
 class ConsignmentDataSpec extends WordSpec with Matchers {
@@ -28,17 +29,17 @@ class ConsignmentDataSpec extends WordSpec with Matchers {
 
   "ConsignmentData" should {
     "change choice to single shipment if mucr is missing" in {
-      val preparedData = ConsignmentData("consolidation", None, ducrNumber, None)
-      val expectedResult = ConsignmentData("singleShipment", None, None, ducrNumber)
+      val preparedData = ConsignmentData(Consolidation, None, ducrNumber, None)
+      val expectedResult = ConsignmentData(SingleShipment, None, None, ducrNumber)
 
       ConsignmentData.cleanConsignmentData(preparedData) shouldBe expectedResult
     }
 
     "clean consignment data for single shipment if contain something from consolidation" in {
-      val firstPreparedData = ConsignmentData("singleShipment", mucrNumber, ducrNumber, ducrNumber)
-      val secondPreparedData = ConsignmentData("singleShipment", None, ducrNumber, ducrNumber)
-      val thirdPreparedData = ConsignmentData("singleShipment", mucrNumber, None, ducrNumber)
-      val expectedResult = ConsignmentData("singleShipment", None, None, ducrNumber)
+      val firstPreparedData = ConsignmentData(SingleShipment, mucrNumber, ducrNumber, ducrNumber)
+      val secondPreparedData = ConsignmentData(SingleShipment, None, ducrNumber, ducrNumber)
+      val thirdPreparedData = ConsignmentData(SingleShipment, mucrNumber, None, ducrNumber)
+      val expectedResult = ConsignmentData(SingleShipment, None, None, ducrNumber)
 
       ConsignmentData.cleanConsignmentData(firstPreparedData) shouldBe expectedResult
       ConsignmentData.cleanConsignmentData(secondPreparedData) shouldBe expectedResult
@@ -46,20 +47,20 @@ class ConsignmentDataSpec extends WordSpec with Matchers {
     }
 
     "clean consignment data for consolidation if contain ducr from single shipment" in {
-      val preparedData = ConsignmentData("consolidation", mucrNumber, ducrNumber, ducrNumber)
-      val expectedResult = ConsignmentData("consolidation", mucrNumber, ducrNumber, None)
+      val preparedData = ConsignmentData(Consolidation, mucrNumber, ducrNumber, ducrNumber)
+      val expectedResult = ConsignmentData(Consolidation, mucrNumber, ducrNumber, None)
 
       ConsignmentData.cleanConsignmentData(preparedData) shouldBe expectedResult
     }
 
     "return correct ducr number for consolidation" in {
-      val consolidationData = ConsignmentData("consolidation", None, ducrConsolidation, ducrSingleShipment)
+      val consolidationData = ConsignmentData(Consolidation, None, ducrConsolidation, ducrSingleShipment)
 
       ConsignmentData.ducr(consolidationData) shouldBe ducrConsolidation
     }
 
     "return correct ducr number for single shipment" in {
-      val singleShipmentData = ConsignmentData("singleShipment", None, ducrConsolidation, ducrSingleShipment)
+      val singleShipmentData = ConsignmentData(SingleShipment, None, ducrConsolidation, ducrSingleShipment)
 
       ConsignmentData.ducr(singleShipmentData) shouldBe ducrSingleShipment
     }

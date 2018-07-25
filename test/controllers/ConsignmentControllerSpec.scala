@@ -20,11 +20,12 @@ import play.api.data.Form
 import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.actions._
+import forms.ConsignmentChoice.{Consolidation, SingleShipment}
 import play.api.test.Helpers._
 import forms.{ConsignmentData, ConsignmentFormProvider}
 import identifiers.ConsignmentId
 import models.NormalMode
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.cache.client.CacheMap
 import views.html.consignment
@@ -74,7 +75,7 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
         )
 
       val validData = Map(ConsignmentId.toString -> data)
-      val expectResult = ConsignmentData("consolidation", Some(correctMucr), Some(correctDucr), None)
+      val expectResult = ConsignmentData(Consolidation, Some(correctMucr), Some(correctDucr), None)
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
@@ -94,7 +95,7 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
         )
 
       val validData = Map(ConsignmentId.toString -> data)
-      val expectResult = ConsignmentData("singleShipment", None, None, Some(correctDucr))
+      val expectResult = ConsignmentData(SingleShipment, None, None, Some(correctDucr))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)

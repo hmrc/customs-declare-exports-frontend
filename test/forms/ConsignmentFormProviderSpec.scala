@@ -26,6 +26,7 @@ class ConsignmentFormProviderSpec extends OptionFieldBehaviours {
   val correctMucr = "A:GBP23"
   val correctDucr = "5GB123456789000-123ABC456DEFIIIIIII"
 
+  val consignmentError = FormError("choice", "error.consignment")
   val mucrFormatError = FormError("", "error.mucr.format")
   val ducrEmptyError = FormError("", "error.ducr.empty")
   val ducrFormatError = FormError("", "error.ducr.format")
@@ -55,7 +56,7 @@ class ConsignmentFormProviderSpec extends OptionFieldBehaviours {
         "ducrSingleShipment" -> ""
       )
 
-      val expectedError = Seq(ducrEmptyError)
+      val expectedError = Seq(consignmentError)
 
       checkForError(form, data, expectedError)
     }

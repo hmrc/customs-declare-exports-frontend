@@ -16,12 +16,62 @@
 
 package forms
 
-import play.api.data._
+import forms.ConsignmentChoice._
 import play.api.data.Forms._
-import play.api.libs.json.Json
+import play.api.data._
+import play.api.data.format.Formatter
+import play.api.libs.json._
+
+object ConsignmentChoice {
+  sealed trait Consignment
+
+  case object Consolidation extends Consignment
+  case object SingleShipment extends Consignment
+
+  implicit object ConsignmentFormat extends Format[Consignment] {
+    def writes(choice: Consignment): JsValue = choice match {
+      case Consolidation => JsString("consolidation")
+      case SingleShipment => JsString("singleShipment")
+    }
+
+    def reads(choice: JsValue): JsResult[Consignment] = choice match {
+      case JsString("consolidation") => JsSuccess(Consolidation)
+      case JsString("singleShipment") => JsSuccess(SingleShipment)
+      case _ => JsError("Incorrect value")
+    }
+  }
+
+  class ConsignmentFormatter extends Formatter[Consignment] {
+    import play.api.data.FormError
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Consignment] = try{
+      Right(
+        data(key) match {
+          case "consolidation" => Consolidation
+          case "singleShipment" => SingleShipment
+          case _ => throw new Exception("Incorrect value")
+        }
+      )
+    }
+    catch{
+      case _:Throwable => Left(Seq(new FormError(key, Seq("error.consignment"))))
+    }
+
+    override def unbind(key: String, value: Consignment): Map[String, String] = Map(key -> value.toString)
+  }
+
+  object UtilsConsignment {
+    import play.api.data.FieldMapping
+
+    def of(implicit binder: play.api.data.format.Formatter[Consignment]): FieldMapping[Consignment] =
+      FieldMapping[Consignment]()(binder)
+
+    val formBinder = of(new ConsignmentFormatter())
+  }
+}
 
 case class ConsignmentData(
-  choice: String,
+  choice: Consignment,
   mucrConsolidation: Option[String],
   ducrConsolidation: Option[String],
   ducrSingleShipment: Option[String]
@@ -31,7 +81,7 @@ object ConsignmentData {
   implicit val format = Json.format[ConsignmentData]
 
   def ducr(consignmentData: ConsignmentData): Option[String] =
-    if(consignmentData.choice == "consolidation") {
+    if(consignmentData.choice == Consolidation) {
       consignmentData.ducrConsolidation
     } else {
       consignmentData.ducrSingleShipment
@@ -39,14 +89,14 @@ object ConsignmentData {
 
   def cleanConsignmentData(consignmentData: ConsignmentData): ConsignmentData =
     consignmentData match {
-      case ConsignmentData("consolidation", None, ducr, _) =>
-        ConsignmentData("singleShipment", None, None, ducr)
+      case ConsignmentData(Consolidation, None, ducr, _) =>
+        ConsignmentData(SingleShipment, None, None, ducr)
 
-      case ConsignmentData("consolidation", mucr, ducr, _) =>
-        ConsignmentData("consolidation", mucr, ducr, None)
+      case ConsignmentData(Consolidation, mucr, ducr, _) =>
+        ConsignmentData(Consolidation, mucr, ducr, None)
 
-      case ConsignmentData("singleShipment", _, _, ducr) =>
-        ConsignmentData("singleShipment", None, None, ducr)
+      case ConsignmentData(SingleShipment, _, _, ducr) =>
+        ConsignmentData(SingleShipment, None, None, ducr)
 
       case _ =>
         consignmentData
@@ -65,7 +115,7 @@ object ConsignmentDataValidationHelper {
   )
 
   def emptyDucr(consignmentData: ConsignmentData): Boolean =
-    if(consignmentData.choice == "consolidation") {
+    if(consignmentData.choice == Consolidation) {
       ducrEmptyValidationHelper(consignmentData.ducrConsolidation)
     } else {
       ducrEmptyValidationHelper(consignmentData.ducrSingleShipment)
@@ -77,7 +127,7 @@ object ConsignmentDataValidationHelper {
   }
 
   def ducrFormat(consignmentData: ConsignmentData): Boolean =
-    if(consignmentData.choice == "consolidation") {
+    if(consignmentData.choice == Consolidation) {
       ducrFormatValidationHelper(consignmentData.ducrConsolidation)
     } else {
       ducrFormatValidationHelper(consignmentData.ducrSingleShipment)
@@ -89,22 +139,23 @@ object ConsignmentDataValidationHelper {
   }
 
   def mucrFormat(consignmentData: ConsignmentData): Boolean = consignmentData.mucrConsolidation match {
-    case Some(value) if consignmentData.choice == "consolidation" =>
+    case Some(value) if consignmentData.choice == Consolidation =>
       correctMucrFormats.exists(value.matches(_))
     case _ => true
   }
 }
 
 class ConsignmentFormProvider {
+  import forms.ConsignmentChoice._
 
   def apply(): Form[ConsignmentData] =
     Form(
       mapping(
-        "choice" -> text(),
+        "choice" -> UtilsConsignment.formBinder,
         "mucrConsolidation" -> optional(text),
         "ducrConsolidation" -> optional(text),
         "ducrSingleShipment" -> optional(text)
-      )(ConsignmentData.apply)(ConsignmentData.unapply)
+      )(ConsignmentData.apply)(ConsignmentData.unapply _)
         .verifying("error.mucr.format", ConsignmentDataValidationHelper.mucrFormat(_))
         .verifying("error.ducr.empty", ConsignmentDataValidationHelper.emptyDucr(_))
         .verifying("error.ducr.format", ConsignmentDataValidationHelper.ducrFormat(_))

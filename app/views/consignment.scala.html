@@ -56,13 +56,13 @@
                         type="radio"
                         name="choice"
                         value="consolidation"
-                        @if(form("choice").value == Some("consolidation")){checked}
+                        @if(form("choice").value == Some("Consolidation")){checked}
                         aria-expanded="true"
                     >
                     <label for="radio-consolidation">@messages("consignment.consolidation")</label>
                 </div>
 
-                <div @if(form("choice").value == Some("consolidation")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"}
+                <div @if(form("choice").value == Some("Consolidation")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"}
                      id="consolidation">
                     <label class="form-label" for="mucr-consolidation-input">
                         @messages("consignment.mucr")
@@ -90,11 +90,11 @@
                            type="radio"
                            name="choice"
                            value="singleShipment"
-                           @if(form("choice").value == Some("singleShipment")){checked}>
+                           @if(form("choice").value == Some("SingleShipment")){checked}>
                     <label for="radio-single-shipment">@messages("consignment.singleShipment")</label>
                 </div>
 
-                <div @if(form("choice").value == Some("singleShipment")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"}
+                <div @if(form("choice").value == Some("SingleShipment")){class="panel panel-border-narrow"}else{class="panel panel-border-narrow js-hidden"}
                      id="single-shipment">
                     <label class="form-label" for="ducr-single-shipment-input">
                         @messages("consignment.ducr")
