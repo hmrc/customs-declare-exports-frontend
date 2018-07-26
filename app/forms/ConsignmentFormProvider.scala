@@ -155,7 +155,7 @@ class ConsignmentFormProvider {
         "mucrConsolidation" -> optional(text),
         "ducrConsolidation" -> optional(text),
         "ducrSingleShipment" -> optional(text)
-      )(ConsignmentData.apply)(ConsignmentData.unapply _)
+      )(ConsignmentData.apply)(ConsignmentData.unapply)
         .verifying("error.mucr.format", ConsignmentDataValidationHelper.mucrFormat(_))
         .verifying("error.ducr.empty", ConsignmentDataValidationHelper.emptyDucr(_))
         .verifying("error.ducr.format", ConsignmentDataValidationHelper.ducrFormat(_))

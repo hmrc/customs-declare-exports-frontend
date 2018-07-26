@@ -25,7 +25,7 @@ import scala.concurrent.Future
 
 class SubmitDeclaration (ws: WSClient, baseUrl: String) {
   @Inject def this(ws: WSClient, env: Environment) = this(ws, "https://customs-declarations.protected.mdtp")
-  //val link = "http://localhost:9820"
+  //@Inject def this(ws: WSClient, env: Environment) = this(ws, "http://localhost:9820")
 
   def submit(declaration: Declaration, bearerToken: String): Future[Int] = {
     ws.url(s"$baseUrl/")

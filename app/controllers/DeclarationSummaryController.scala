@@ -17,17 +17,18 @@
 package controllers
 
 import api.declaration.{Declarant, Declaration, SubmitDeclaration}
-import javax.inject.Inject
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import config.FrontendAppConfig
 import forms.DeclarationSummary
+import identifiers.SubmitDeclarationId
+import javax.inject.Inject
 import models.Mode
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Navigator
-import views.html.{index, declarationSummary}
+import views.html.declarationSummary
 
 class DeclarationSummaryController @Inject()(
     appConfig: FrontendAppConfig,
@@ -60,8 +61,10 @@ class DeclarationSummaryController @Inject()(
       val bearerToken = hc.authorization.map(_.value).getOrElse("Non CSP")
 
       // TODO generate declaration based on user answers
-      submitDeclaration.submit(new Declaration(new Declarant("123")), bearerToken).map{ _ =>
-        Ok(index(appConfig))
+      submitDeclaration.submit(new Declaration(new Declarant("123")), bearerToken).flatMap{ _ =>
+        dataCacheConnector.clearAndRetrieveCache(request.externalId).map{ cache =>
+          navigator.redirect(SubmitDeclarationId, mode, cache)
+        }
       }
   }
 }

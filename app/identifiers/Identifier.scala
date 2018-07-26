@@ -18,3 +18,7 @@ package identifiers
 
 // TODO change it to sealed trait and move all identifiers to this file
 trait Identifier
+
+case object SubmitDeclarationId extends Identifier {
+	override def toString: String = "submitDeclaration"
+}

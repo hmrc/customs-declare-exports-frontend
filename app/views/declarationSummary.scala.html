@@ -114,8 +114,6 @@
             width: 10%;
             text-align: right;
         }
-
-
     </style>
 
     <script type="text/javascript">
@@ -136,7 +134,7 @@
 
     </script>
 
-    @helpers.form(action = DashboardController.onPageLoad(), 'autoComplete -> "off") {
+    @helpers.form(action = DeclarationSummaryController.onSubmit(mode), 'autoComplete -> "off") {
         @components.back_link()
 
         @components.heading("declarationSummary.heading")

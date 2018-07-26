@@ -33,7 +33,8 @@ class Navigator @Inject()() {
     WhoseDeclarationId -> (_ => routes.HaveRepresentativeController.onPageLoad(NormalMode)),
     HaveRepresentativeId -> (_ => routes.EnterEORIController.onPageLoad(NormalMode)),
     EnterEORIId -> (_ => routes.RepresentativesAddressController.onPageLoad(NormalMode)),
-    RepresentativesAddressId -> (_ => routes.DeclarationSummaryController.onPageLoad(NormalMode))
+    RepresentativesAddressId -> (_ => routes.DeclarationSummaryController.onPageLoad(NormalMode)),
+    SubmitDeclarationId -> (_ => routes.DashboardController.onPageLoad())
   )
 
   // TODO add editRouteMap and connect it with back button
