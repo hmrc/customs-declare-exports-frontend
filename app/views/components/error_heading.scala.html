@@ -14,11 +14,6 @@
  * limitations under the License.
  *@
 
-@(title: String, heading: String)(implicit messages: Messages)
+@(headingKey: String, headingSize: String = "heading-large")(implicit messages: Messages)
 
-<fieldset>
-    <legend class="heading-large" role="heading" aria="" level="1">
-        <span class="heading-secondary">@messages(title)</span>
-        <h1 style="margin:0">@messages(heading)</h1>
-    </legend>
-</fieldset>
+<h1 class="@headingSize">@messages(headingKey)</h1>

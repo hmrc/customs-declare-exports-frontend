@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@()(implicit messages: Messages)
+@(href: String)(implicit messages: Messages)
 
 <div class="js-visible">
-  <p><a id="back-link" class="link-back" href="#">@messages("site.back")</a></p>
+  <a id="link-back" class="link-back" href="@href">@messages("site.back")</a>
 </div>

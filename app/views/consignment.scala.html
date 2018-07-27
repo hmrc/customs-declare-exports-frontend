@@ -39,17 +39,14 @@
     </script>
 
     @helpers.form(action = ConsignmentController.onSubmit(), 'autoComplete -> "off") {
-        @components.back_link()
+        @components.back_link("dashboard")
 
         @components.error_summary(form.errors)
 
+        @components.heading("consignment.title", "consignment.heading")
+
         <div class="field-group">
             <fieldset>
-                <legend class="heading-large" role="heading" aria="" level="1">
-                    <span class="heading-secondary">@messages("consignment.title")</span>
-                    @messages("consignment.heading")
-                </legend>
-
                 <div class="multiple-choice" id="choice" onClick={showConsolidation()}>
                     <input
                         id="radio-consolidation"

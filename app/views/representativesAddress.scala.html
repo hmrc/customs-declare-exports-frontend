@@ -32,17 +32,14 @@
     </style>
 
     @helpers.form(action = RepresentativesAddressController.onSubmit(), 'autoComplete -> "off") {
-        @components.back_link()
+        @components.back_link("enterEORI")
 
         @components.error_summary(form.errors)
 
+        @components.heading("representativesAddress.secondaryHeading", "representativesAddress.heading")
+
         <div class="field-group">
             <fieldset>
-                <legend class="heading-large" role="heading" aria="" level="1">
-                    <span class="heading-secondary">@messages("representativesAddress.secondaryHeading")</span>
-                    <h1>@messages("representativesAddress.heading")</h1>
-                </legend>
-
                 <div className="panel panel-border-narrow" id="fullName">
                     <label class="form-label" for="fullNameInput">
                         @messages("representativesAddress.fullName")

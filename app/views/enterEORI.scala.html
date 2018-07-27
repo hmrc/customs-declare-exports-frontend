@@ -27,18 +27,16 @@
     bodyClasses = None) {
 
     @helpers.form(action = EnterEORIController.onSubmit(), 'autoComplete -> "off") {
-        @components.back_link()
+        @components.back_link("haveRepresentative")
 
         @components.error_summary(form.errors)
 
+        @components.heading("consignment.title", "enterEORI.heading")
+
         <div class="field-group">
             <fieldset>
-             <legend class="heading-large" role="heading" aria="" level="1">
-                 <span class="heading-secondary">@messages("consignment.title")</span>
-                 <h1 style="margin:0">@messages("enterEORI.heading")</h1>
-             </legend>
-             <label class="form-label">@messages("enterEORI.form.label")</label>
-             <span class="form-hint">@messages("enterEORI.form.hint")</span>
+                 <label class="form-label">@messages("enterEORI.form.label")</label>
+                 <span class="form-hint">@messages("enterEORI.form.hint")</span>
             </fieldset>
         </div>
 

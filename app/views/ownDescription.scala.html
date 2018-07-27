@@ -36,17 +36,14 @@
         </script>
 
         @helpers.form(action = OwnDescriptionController.onSubmit(), 'autoComplete -> "off") {
-            @components.back_link()
+            @components.back_link("consignment")
 
             @components.error_summary(form.errors)
 
+            @components.heading("consignment.title", "ownDescription.heading")
+
             <div class="field-group">
                 <fieldset>
-                    <legend class="heading-large" role="heading" aria="" level="1">
-                        <span class="heading-secondary">@messages("consignment.title")</span>
-                        @messages("ownDescription.heading")
-                    </legend>
-
                     <div class="multiple-choice" id="choice" onClick={showDescription()}>
                         <input
                             id="radio-yes"

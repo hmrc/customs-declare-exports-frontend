@@ -28,14 +28,11 @@
     bodyClasses = None) {
 
     @helpers.form(action = HaveRepresentativeController.onSubmit(), 'autoComplete -> "off") {
-        @components.back_link()
+        @components.back_link("whoseDeclaration")
 
         @components.error_summary(form.errors)
 
-        <legend class="heading-large" role="heading" aria="" level="1">
-           <span class="heading-secondary">@messages("consignment.title")</span>
-            <h1 style="margin:0">@messages("haveRepresentative.heading")</h1>
-        </legend>
+        @components.heading("consignment.title", "haveRepresentative.heading")
 
         @components.input_radio(
             field = form("value"),

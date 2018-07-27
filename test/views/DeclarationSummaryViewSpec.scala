@@ -32,7 +32,7 @@ class DeclarationSummaryViewSpec extends ViewBehaviours {
 
   def createViewUsingForm = (form: Form[String]) => declarationSummary(frontendAppConfig, summary, NormalMode)(fakeRequest, messages)
 
-  "SubmitPage view" must {
+  "Declaration summary view" must {
     behave like normalPage(createView, messageKeyPrefix)
 
     behave like pageWithBackLink(createView)

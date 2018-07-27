@@ -35,6 +35,8 @@ class WhoseDeclarationViewSpec extends ViewBehaviours {
 
   "DeclarationForYourselfOrSomeoneElse view" must {
     behave like normalPage(createView, messageKeyPrefix)
+
+    behave like pageWithBackLink(createView)
   }
 
   "DeclarationForYourselfOrSomeoneElse view" when {

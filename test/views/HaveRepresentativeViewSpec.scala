@@ -36,6 +36,8 @@ class HaveRepresentativeViewSpec extends ViewBehaviours {
 
   "HaveRepresentative view" must {
     behave like normalPage(createView, messageKeyPrefix)
+
+    behave like pageWithBackLink(createView)
   }
 
   "HaveRepresentative view" when {

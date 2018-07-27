@@ -135,9 +135,13 @@
     </script>
 
     @helpers.form(action = DeclarationSummaryController.onSubmit(), 'autoComplete -> "off") {
-        @components.back_link()
+        @if(summary.consignmentAnswers.representative == Some("yes")){
+            @components.back_link("representativesAddress")
+        } else {
+            @components.back_link("haveRepresentative")
+        }
 
-        @components.heading("declarationSummary.heading")
+        @components.heading("", "declarationSummary.heading")
 
         <div>
             <section class="block-summary">

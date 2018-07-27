@@ -28,15 +28,11 @@
     bodyClasses = None) {
 
     @helpers.form(action = WhoseDeclarationController.onSubmit(), 'autoComplete -> "off") {
-        @components.back_link()
+        @components.back_link("ownDescription")
 
         @components.error_summary(form.errors)
-         <div class="field-group">
-          <legend class="heading-large" role="heading" aria="" level="1">
-              <span class="heading-secondary">@messages("consignment.title")</span>
-              <h1 style="margin:0">@messages("whoseDeclaration.heading")</h1>
-          </legend>
-         </div>
+
+        @components.heading("consignment.title", "whoseDeclaration.heading")
 
         @components.input_radio(
             field = form("value"),
