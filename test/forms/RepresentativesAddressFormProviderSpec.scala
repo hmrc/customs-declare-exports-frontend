@@ -57,12 +57,12 @@ class RepresentativesAddressFormProviderSpec extends StringFieldBehaviours {
         "country" -> ""
       )
 
-      val emptyFullNameError = FormError("fullName", "representativesAddress.error.required.fullName")
-      val emptyBuildingError = FormError("building", "representativesAddress.error.required.building")
-      val emptyStreetError = FormError("street", "representativesAddress.error.required.street")
-      val emptyTownOrCityError = FormError("townOrCity", "representativesAddress.error.required.townOrCity")
-      val emptyPostcodeError = FormError("postcode", "representativesAddress.error.required.postcode")
-      val emptyCountryError = FormError("country", "representativesAddress.error.required.country")
+      val emptyFullNameError = FormError("fullName", "address.error.required.fullName")
+      val emptyBuildingError = FormError("building", "address.error.required.building")
+      val emptyStreetError = FormError("street", "address.error.required.street")
+      val emptyTownOrCityError = FormError("townOrCity", "address.error.required.townOrCity")
+      val emptyPostcodeError = FormError("postcode", "address.error.required.postcode")
+      val emptyCountryError = FormError("country", "address.error.required.country")
 
       val expectedErrors = Seq(emptyFullNameError, emptyBuildingError, emptyStreetError, emptyTownOrCityError,
         emptyPostcodeError, emptyCountryError)
