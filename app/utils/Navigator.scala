@@ -16,30 +16,34 @@
 
 package utils
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Call, Result}
-import play.api.mvc.Results._
 import controllers.routes
 import identifiers._
+import javax.inject.{Inject, Singleton}
 import models.{CheckMode, Mode, NormalMode}
+import play.api.mvc.Results._
+import play.api.mvc.{Call, Result}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 @Singleton
 class Navigator @Inject()() {
 
   private val routeMap: Map[Identifier, UserAnswers => Call] = Map(
-    ConsignmentId -> (_ => routes.OwnDescriptionController.onPageLoad(NormalMode)),
-    OwnDescriptionId -> (_ => routes.WhoseDeclarationController.onPageLoad(NormalMode)),
-    WhoseDeclarationId -> (_ => routes.HaveRepresentativeController.onPageLoad(NormalMode)),
-    HaveRepresentativeId -> (_ => routes.EnterEORIController.onPageLoad(NormalMode)),
-    EnterEORIId -> (_ => routes.RepresentativesAddressController.onPageLoad(NormalMode)),
-    RepresentativesAddressId -> (_ => routes.DeclarationSummaryController.onPageLoad(NormalMode)),
+    ConsignmentId -> (_ => routes.OwnDescriptionController.onPageLoad()),
+    OwnDescriptionId -> (_ => routes.WhoseDeclarationController.onPageLoad()),
+    WhoseDeclarationId -> (_ => routes.HaveRepresentativeController.onPageLoad()),
+    HaveRepresentativeId -> (_ => routes.EnterEORIController.onPageLoad()),
+    EnterEORIId -> (_ => routes.RepresentativesAddressController.onPageLoad()),
+    RepresentativesAddressId -> (_ => routes.DeclarationSummaryController.onPageLoad()),
     SubmitDeclarationId -> (_ => routes.DashboardController.onPageLoad())
   )
 
-  // TODO add editRouteMap and connect it with back button
   private val editRouteMap: Map[Identifier, UserAnswers => Call] = Map(
-
+    ConsignmentId -> (_ => routes.DashboardController.onPageLoad()),
+    OwnDescriptionId -> (_ => routes.ConsignmentController.onPageLoad()),
+    WhoseDeclarationId -> (_ => routes.OwnDescriptionController.onPageLoad()),
+    HaveRepresentativeId -> (_ => routes.WhoseDeclarationController.onPageLoad()),
+    EnterEORIId -> (_ => routes.HaveRepresentativeController.onPageLoad()),
+    RepresentativesAddressId -> (_ => routes.EnterEORIController.onPageLoad())
   )
 
   // TODO this method should be private
@@ -49,7 +53,7 @@ class Navigator @Inject()() {
       case NormalMode =>
         routeMap.getOrElse(id, _ => routes.IndexController.onPageLoad())
       case CheckMode =>
-        editRouteMap.getOrElse(id, _ => routes.DeclarationSummaryController.onPageLoad(CheckMode))
+        editRouteMap.getOrElse(id, _ => routes.DeclarationSummaryController.onPageLoad())
     }
   }
 

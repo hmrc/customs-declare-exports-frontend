@@ -10,84 +10,54 @@ GET        /this-service-has-been-reset                 controllers.SessionExpir
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-# Select role
-
-GET        /selectRole                                  controllers.SelectRoleController.onPageLoad(mode: models.Mode = models.NormalMode)
-
-POST       /selectRole                                  controllers.SelectRoleController.onSubmit(mode: models.Mode = models.NormalMode)
-
-GET        /changeSelectRole                            controllers.SelectRoleController.onPageLoad(mode: models.Mode = models.CheckMode)
-
-POST       /changeSelectRole                            controllers.SelectRoleController.onSubmit(mode: models.Mode = models.CheckMode)
-
-# Consignment
-
-GET        /consignment                                 controllers.ConsignmentController.onPageLoad(mode: models.Mode = models.NormalMode)
-
-POST       /consignment                                 controllers.ConsignmentController.onSubmit(mode: models.Mode = models.NormalMode)
-
-GET        /changeConsignment                           controllers.ConsignmentController.onPageLoad(mode: models.Mode = models.CheckMode)
-
-POST       /changeConsignment                           controllers.ConsignmentController.onSubmit(mode: models.Mode = models.CheckMode)
+# Dashboard
 
 GET        /dashboard                                   controllers.DashboardController.onPageLoad()
 
-# Declaration summary
+# Select role
 
-GET        /declarationSummary                          controllers.DeclarationSummaryController.onPageLoad(mode: models.Mode = models.NormalMode)
+GET        /selectRole                                  controllers.SelectRoleController.onPageLoad()
 
-POST       /declarationSummary                          controllers.DeclarationSummaryController.onSubmit(mode: models.Mode = models.NormalMode)
+POST       /selectRole                                  controllers.SelectRoleController.onSubmit()
 
-GET        /changeDeclarationSummary                    controllers.DeclarationSummaryController.onPageLoad(mode: models.Mode = models.CheckMode)
+# Consignment
 
-POST       /changeDeclarationSummary                    controllers.DeclarationSummaryController.onSubmit(mode: models.Mode = models.CheckMode)
+GET        /consignment                                 controllers.ConsignmentController.onPageLoad()
 
-# Declaration for yourself or someone else
-
-GET        /whoseDeclaration                            controllers.WhoseDeclarationController.onPageLoad(mode: models.Mode = models.NormalMode)
-
-POST       /whoseDeclaration                            controllers.WhoseDeclarationController.onSubmit(mode: models.Mode = models.NormalMode)
-
-GET        /changeWhoseDeclaration                      controllers.WhoseDeclarationController.onPageLoad(mode: models.Mode = models.CheckMode)
-
-POST       /changeWhoseDeclaration                      controllers.WhoseDeclarationController.onSubmit(mode: models.Mode = models.CheckMode)
+POST       /consignment                                 controllers.ConsignmentController.onSubmit()
 
 # Own description
 
-GET        /ownDescription                              controllers.OwnDescriptionController.onPageLoad(mode: models.Mode = models.NormalMode)
+GET        /ownDescription                              controllers.OwnDescriptionController.onPageLoad()
 
-POST       /ownDescription                              controllers.OwnDescriptionController.onSubmit(mode: models.Mode = models.NormalMode)
+POST       /ownDescription                              controllers.OwnDescriptionController.onSubmit()
 
-GET        /changeOwnDescription                        controllers.OwnDescriptionController.onPageLoad(mode: models.Mode = models.CheckMode)
+# Declaration for yourself or someone else
 
-POST       /changeOwnDescription                        controllers.OwnDescriptionController.onSubmit(mode: models.Mode = models.CheckMode)
+GET        /whoseDeclaration                            controllers.WhoseDeclarationController.onPageLoad()
+
+POST       /whoseDeclaration                            controllers.WhoseDeclarationController.onSubmit()
 
 # Have representative
 
-GET        /haveRepresentative                          controllers.HaveRepresentativeController.onPageLoad(mode: models.Mode = models.NormalMode)
+GET        /haveRepresentative                          controllers.HaveRepresentativeController.onPageLoad()
 
-POST       /haveRepresentative                          controllers.HaveRepresentativeController.onSubmit(mode: models.Mode = models.NormalMode)
-
-GET        /changeHaveRepresentative                    controllers.HaveRepresentativeController.onPageLoad(mode: models.Mode = models.CheckMode)
-
-POST       /changeHaveRepresentative                    controllers.HaveRepresentativeController.onSubmit(mode: models.Mode = models.CheckMode)
+POST       /haveRepresentative                          controllers.HaveRepresentativeController.onSubmit()
 
 # Enter EORI
 
-GET        /enterEORI                                   controllers.EnterEORIController.onPageLoad(mode: models.Mode = models.NormalMode)
+GET        /enterEORI                                   controllers.EnterEORIController.onPageLoad()
 
-POST       /enterEORI                                   controllers.EnterEORIController.onSubmit(mode: models.Mode = models.NormalMode)
-
-GET        /changeEnterEORI                             controllers.EnterEORIController.onPageLoad(mode: models.Mode = models.CheckMode)
-
-POST       /changeEnterEORI                             controllers.EnterEORIController.onSubmit(mode: models.Mode = models.CheckMode)
+POST       /enterEORI                                   controllers.EnterEORIController.onSubmit()
 
 # Name and address
 
-GET        /representativesAddress                      controllers.RepresentativesAddressController.onPageLoad(mode: models.Mode = models.NormalMode)
+GET        /representativesAddress                      controllers.RepresentativesAddressController.onPageLoad()
 
-POST       /representativesAddress                      controllers.RepresentativesAddressController.onSubmit(mode: models.Mode = models.NormalMode)
+POST       /representativesAddress                      controllers.RepresentativesAddressController.onSubmit()
 
-GET        /changeRepresentativesAddress                controllers.RepresentativesAddressController.onPageLoad(mode: models.Mode = models.CheckMode)
+# Declaration summary
 
-POST       /changeRepresentativesAddress                controllers.RepresentativesAddressController.onSubmit(mode: models.Mode = models.CheckMode)
+GET        /declarationSummary                          controllers.DeclarationSummaryController.onPageLoad()
+
+POST       /declarationSummary                          controllers.DeclarationSummaryController.onSubmit()

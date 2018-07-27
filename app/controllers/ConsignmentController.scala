@@ -16,17 +16,17 @@
 
 package controllers
 
-import javax.inject.Inject
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import config.FrontendAppConfig
 import forms.{ConsignmentData, ConsignmentFormProvider}
 import identifiers.ConsignmentId
-import models.Mode
+import javax.inject.Inject
+import models.NormalMode
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.consignment
 
@@ -46,26 +46,26 @@ class ConsignmentController @Inject()(
 
   val form: Form[ConsignmentData] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.flatMap(_.consignment) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(consignment(appConfig, preparedForm, mode))
+      Ok(consignment(appConfig, preparedForm, NormalMode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(consignment(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(consignment(appConfig, formWithErrors, NormalMode))),
         (value) => {
           val consignmentData = ConsignmentData.cleanConsignmentData(value)
 
           dataCacheConnector.save[ConsignmentData](request.externalId, ConsignmentId.toString, consignmentData)
             .map(cacheMap =>
-              Redirect(navigator.nextPage(ConsignmentId, mode)(new UserAnswers(cacheMap)))
+              Redirect(navigator.nextPage(ConsignmentId, NormalMode)(new UserAnswers(cacheMap)))
             )
         }
       )

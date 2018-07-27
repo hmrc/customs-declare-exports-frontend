@@ -25,7 +25,7 @@ import controllers.actions._
 import config.FrontendAppConfig
 import forms.EnterEORIFormProvider
 import identifiers.EnterEORIId
-import models.Mode
+import models.{Mode, NormalMode}
 import play.api.mvc.{Action, AnyContent}
 import utils.{Navigator, UserAnswers}
 import views.html.enterEORI
@@ -45,23 +45,23 @@ class EnterEORIController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.enterEORI match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(enterEORI(appConfig, preparedForm, mode))
+      Ok(enterEORI(appConfig, preparedForm, NormalMode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(enterEORI(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(enterEORI(appConfig, formWithErrors, NormalMode))),
         (value) =>
           dataCacheConnector.save[String](request.externalId, EnterEORIId.toString, value).map{ cacheMap =>
-            Redirect(navigator.nextPage(EnterEORIId, mode)(new UserAnswers(cacheMap)))
+            Redirect(navigator.nextPage(EnterEORIId, NormalMode)(new UserAnswers(cacheMap)))
           }
       )
   }

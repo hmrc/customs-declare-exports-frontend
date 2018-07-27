@@ -16,17 +16,17 @@
 
 package controllers
 
-import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString}
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.actions._
-import play.api.test.Helpers._
 import forms.{OwnDescriptionData, OwnDescriptionFormProvider}
 import identifiers.OwnDescriptionId
 import models.NormalMode
+import play.api.data.Form
+import play.api.libs.json.{JsObject, JsString}
 import play.api.mvc.Call
+import play.api.test.Helpers._
+import uk.gov.hmrc.http.cache.client.CacheMap
+import utils.FakeNavigator
 import views.html.ownDescription
 
 class OwnDescriptionControllerSpec extends ControllerSpecBase {
@@ -54,7 +54,7 @@ class OwnDescriptionControllerSpec extends ControllerSpecBase {
   "OwnDescription Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+      val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -68,7 +68,7 @@ class OwnDescriptionControllerSpec extends ControllerSpecBase {
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(OwnDescriptionData("Yes", Some("Something"))))
     }
@@ -76,7 +76,7 @@ class OwnDescriptionControllerSpec extends ControllerSpecBase {
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("choice", "Yes"),("description" ,"Something"))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)

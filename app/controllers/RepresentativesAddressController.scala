@@ -16,18 +16,18 @@
 
 package controllers
 
-import javax.inject.Inject
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import config.FrontendAppConfig
 import forms.{RepresentativesAddress, RepresentativesAddressFormProvider}
 import identifiers.RepresentativesAddressId
-import models.Mode
+import javax.inject.Inject
+import models.NormalMode
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import utils.{Navigator, UserAnswers}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import views.html.representativesAddress
 
 import scala.concurrent.Future
@@ -45,24 +45,24 @@ class RepresentativesAddressController @Inject()(
 
   val form: Form[RepresentativesAddress] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.representativesAddress match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(representativesAddress(appConfig, preparedForm, mode))
+      Ok(representativesAddress(appConfig, preparedForm, NormalMode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(representativesAddress(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(representativesAddress(appConfig, formWithErrors, NormalMode))),
         value =>
           dataCacheConnector.save[RepresentativesAddress](request.externalId, RepresentativesAddressId.toString, value)
             .map { cacheMap =>
-              navigator.redirect(RepresentativesAddressId, mode, cacheMap)
+              navigator.redirect(RepresentativesAddressId, NormalMode, cacheMap)
             }
       )
   }

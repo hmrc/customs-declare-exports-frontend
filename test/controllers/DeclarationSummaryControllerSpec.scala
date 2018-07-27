@@ -19,7 +19,6 @@ package controllers
 import api.declaration.SubmitDeclaration
 import connectors.FakeDataCacheConnector
 import controllers.actions._
-import models.NormalMode
 import org.scalatest.mockito.MockitoSugar
 import play.api.test.Helpers._
 import utils.FakeNavigator
@@ -45,7 +44,7 @@ class DeclarationSummaryControllerSpec extends ControllerSpecBase with MockitoSu
 
   "Declaration summary controller" must {
     "return OK and the correct view for a GET" in new Scope {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+      val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
     }

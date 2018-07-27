@@ -27,7 +27,7 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = HaveRepresentativeController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = HaveRepresentativeController.onSubmit(), 'autoComplete -> "off") {
         @components.back_link()
 
         @components.error_summary(form.errors)

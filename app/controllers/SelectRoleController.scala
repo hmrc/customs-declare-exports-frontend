@@ -16,18 +16,17 @@
 
 package controllers
 
-import javax.inject.Inject
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import config.FrontendAppConfig
 import forms.SelectRoleFormProvider
 import identifiers.SelectRoleId
-import models.Mode
-import models.SelectRole
+import javax.inject.Inject
+import models.{NormalMode, SelectRole}
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.selectRole
 
@@ -46,23 +45,23 @@ class SelectRoleController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.flatMap(_.selectRole) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(selectRole(appConfig, preparedForm, mode))
+      Ok(selectRole(appConfig, preparedForm, NormalMode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(selectRole(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(selectRole(appConfig, formWithErrors, NormalMode))),
         (value) =>
           dataCacheConnector.save[SelectRole](request.externalId, SelectRoleId.toString, value).map { cacheMap =>
-            Redirect(navigator.nextPage(SelectRoleId, mode)(new UserAnswers(cacheMap)))
+            Redirect(navigator.nextPage(SelectRoleId, NormalMode)(new UserAnswers(cacheMap)))
           }
       )
   }

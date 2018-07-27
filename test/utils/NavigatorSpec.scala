@@ -38,32 +38,32 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
 
       "go to Own description page after consignment has been submitted" in {
         navigator.nextPage(ConsignmentId, NormalMode)(userAnswers) mustBe
-          routes.OwnDescriptionController.onPageLoad(NormalMode)
+          routes.OwnDescriptionController.onPageLoad()
       }
 
       "go to Declaration question page after own description has been submitted" in {
         navigator.nextPage(OwnDescriptionId, NormalMode)(userAnswers) mustBe
-          routes.WhoseDeclarationController.onPageLoad(NormalMode)
+          routes.WhoseDeclarationController.onPageLoad()
       }
 
       "go to Have representative page after declaration has been submitted" in {
         navigator.nextPage(WhoseDeclarationId, NormalMode)(userAnswers) mustBe
-          routes.HaveRepresentativeController.onPageLoad(NormalMode)
+          routes.HaveRepresentativeController.onPageLoad()
       }
 
       "go to Enter EORI page after have representative has been submitted" in {
         navigator.nextPage(HaveRepresentativeId, NormalMode)(userAnswers) mustBe
-          routes.EnterEORIController.onPageLoad(NormalMode)
+          routes.EnterEORIController.onPageLoad()
       }
 
       "go to name and address page after EORI has been submitted" in {
         navigator.nextPage(EnterEORIId, NormalMode)(userAnswers) mustBe
-          routes.RepresentativesAddressController.onPageLoad(NormalMode)
+          routes.RepresentativesAddressController.onPageLoad()
       }
 
       "got to summary page after name and address has been submitted" in {
         navigator.nextPage(RepresentativesAddressId, NormalMode)(userAnswers) mustBe
-          routes.DeclarationSummaryController.onPageLoad(NormalMode)
+          routes.DeclarationSummaryController.onPageLoad()
       }
     }
 
@@ -71,7 +71,7 @@ class NavigatorSpec extends SpecBase with MockitoSugar {
       "go to CheckYourAnswers from an identifier that doesn't exist in the edit route map" in {
         case object UnknownIdentifier extends Identifier
         navigator.nextPage(UnknownIdentifier, CheckMode)(userAnswers) mustBe
-          routes.DeclarationSummaryController.onPageLoad(CheckMode)
+          routes.DeclarationSummaryController.onPageLoad()
       }
     }
   }

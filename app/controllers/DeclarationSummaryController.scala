@@ -23,7 +23,7 @@ import controllers.actions._
 import forms.DeclarationSummary
 import identifiers.SubmitDeclarationId
 import javax.inject.Inject
-import models.Mode
+import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -42,7 +42,7 @@ class DeclarationSummaryController @Inject()(
   extends FrontendController
   with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
 
       val declaration = request.userAnswers match {
@@ -50,10 +50,10 @@ class DeclarationSummaryController @Inject()(
         case Some(answers) => DeclarationSummary.buildFromAnswers(answers)
       }
 
-      Ok(declarationSummary(appConfig, declaration, mode))
+      Ok(declarationSummary(appConfig, declaration, NormalMode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       // Below declaration from users answers
       // val declaration = DeclarationSummary.buildFromAnswers(request.userAnswers)
@@ -63,7 +63,7 @@ class DeclarationSummaryController @Inject()(
       // TODO generate declaration based on user answers
       submitDeclaration.submit(new Declaration(new Declarant("123")), bearerToken).flatMap{ _ =>
         dataCacheConnector.clearAndRetrieveCache(request.externalId).map{ cache =>
-          navigator.redirect(SubmitDeclarationId, mode, cache)
+          navigator.redirect(SubmitDeclarationId, NormalMode, cache)
         }
       }
   }

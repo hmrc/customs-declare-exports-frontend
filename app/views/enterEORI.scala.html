@@ -26,7 +26,7 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = EnterEORIController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = EnterEORIController.onSubmit(), 'autoComplete -> "off") {
         @components.back_link()
 
         @components.error_summary(form.errors)

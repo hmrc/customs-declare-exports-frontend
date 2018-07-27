@@ -25,8 +25,7 @@ import controllers.actions._
 import config.FrontendAppConfig
 import forms.WhoseDeclarationFormProvider
 import identifiers.WhoseDeclarationId
-import models.Mode
-import models.WhoseDeclaration
+import models.{Mode, NormalMode, WhoseDeclaration}
 import play.api.mvc.{Action, AnyContent}
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.whoseDeclaration
@@ -46,24 +45,24 @@ class WhoseDeclarationController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode):Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad():Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.whoseDeclaration match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(whoseDeclaration(appConfig, preparedForm, mode))
+      Ok(whoseDeclaration(appConfig, preparedForm, NormalMode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(whoseDeclaration(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(whoseDeclaration(appConfig, formWithErrors, NormalMode))),
         (value) =>
           dataCacheConnector.save[WhoseDeclaration](request.externalId, WhoseDeclarationId.toString, value).map {
-            cacheMap => Redirect(navigator.nextPage(WhoseDeclarationId, mode)(new UserAnswers(cacheMap)))
+            cacheMap => Redirect(navigator.nextPage(WhoseDeclarationId, NormalMode)(new UserAnswers(cacheMap)))
           }
       )
   }

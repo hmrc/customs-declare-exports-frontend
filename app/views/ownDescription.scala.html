@@ -35,7 +35,7 @@
             }
         </script>
 
-        @helpers.form(action = OwnDescriptionController.onSubmit(mode), 'autoComplete -> "off") {
+        @helpers.form(action = OwnDescriptionController.onSubmit(), 'autoComplete -> "off") {
             @components.back_link()
 
             @components.error_summary(form.errors)

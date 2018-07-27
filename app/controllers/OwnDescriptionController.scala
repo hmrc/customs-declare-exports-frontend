@@ -16,18 +16,18 @@
 
 package controllers
 
-import javax.inject.Inject
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import config.FrontendAppConfig
 import forms.{OwnDescriptionData, OwnDescriptionFormProvider}
 import identifiers.OwnDescriptionId
-import models.Mode
+import javax.inject.Inject
+import models.NormalMode
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import utils.{Navigator, UserAnswers}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.Navigator
 import views.html.ownDescription
 
 import scala.concurrent.Future
@@ -46,20 +46,20 @@ class OwnDescriptionController @Inject()(
   val form: Form[OwnDescriptionData] = formProvider()
   import OwnDescriptionData._
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.ownDescription match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(ownDescription(appConfig, preparedForm, mode))
+      Ok(ownDescription(appConfig, preparedForm, NormalMode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          Future.successful(BadRequest(ownDescription(appConfig, formWithErrors, mode)))
+          Future.successful(BadRequest(ownDescription(appConfig, formWithErrors, NormalMode)))
         },
         value => {
           val correctOwnDescription = OwnDescriptionData.validateCorrectness(value)
@@ -67,7 +67,7 @@ class OwnDescriptionController @Inject()(
           dataCacheConnector
             .save[OwnDescriptionData](request.externalId, OwnDescriptionId.toString, correctOwnDescription)
             .map { cacheMap =>
-              navigator.redirect(OwnDescriptionId, mode, cacheMap)
+              navigator.redirect(OwnDescriptionId, NormalMode, cacheMap)
             }
         }
       )

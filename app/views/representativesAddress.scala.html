@@ -31,7 +31,7 @@
         }
     </style>
 
-    @helpers.form(action = RepresentativesAddressController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = RepresentativesAddressController.onSubmit(), 'autoComplete -> "off") {
         @components.back_link()
 
         @components.error_summary(form.errors)

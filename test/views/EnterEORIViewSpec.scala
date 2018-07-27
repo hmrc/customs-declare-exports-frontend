@@ -38,6 +38,6 @@ class EnterEORIViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(createView)
 
-    behave like stringPage(createViewUsingForm, messageKeyPrefix, routes.EnterEORIController.onSubmit(NormalMode).url)
+    behave like stringPage(createViewUsingForm, messageKeyPrefix, routes.EnterEORIController.onSubmit().url)
   }
 }

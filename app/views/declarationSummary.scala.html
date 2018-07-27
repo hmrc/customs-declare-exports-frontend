@@ -134,7 +134,7 @@
 
     </script>
 
-    @helpers.form(action = DeclarationSummaryController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = DeclarationSummaryController.onSubmit(), 'autoComplete -> "off") {
         @components.back_link()
 
         @components.heading("declarationSummary.heading")

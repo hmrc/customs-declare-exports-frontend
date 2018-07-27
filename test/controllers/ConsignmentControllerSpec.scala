@@ -16,18 +16,18 @@
 
 package controllers
 
-import play.api.data.Form
-import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.actions._
 import forms.ConsignmentChoice.{Consolidation, SingleShipment}
-import play.api.test.Helpers._
 import forms.{ConsignmentData, ConsignmentFormProvider}
 import identifiers.ConsignmentId
 import models.NormalMode
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.data.Form
+import play.api.libs.json.{JsObject, JsString}
 import play.api.mvc.Call
+import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
+import utils.FakeNavigator
 import views.html.consignment
 
 class ConsignmentControllerSpec extends ControllerSpecBase {
@@ -57,7 +57,7 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
   "Consignment Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+      val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -78,7 +78,7 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
       val expectResult = ConsignmentData(Consolidation, Some(correctMucr), Some(correctDucr), None)
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(expectResult))
     }
@@ -98,7 +98,7 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
       val expectResult = ConsignmentData(SingleShipment, None, None, Some(correctDucr))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(expectResult))
     }
@@ -111,7 +111,7 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
         ("ducrSingleShipment" -> "")
       )
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -125,7 +125,7 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
         ("ducrSingleShipment" -> correctDucr)
       )
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -135,7 +135,7 @@ class ConsignmentControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value" -> "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)

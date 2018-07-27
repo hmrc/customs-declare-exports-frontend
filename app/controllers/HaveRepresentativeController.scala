@@ -16,19 +16,18 @@
 
 package controllers
 
-import javax.inject.Inject
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import config.FrontendAppConfig
 import forms.HaveRepresentativeFormProvider
 import identifiers.{HaveRepresentativeId, RepresentativesAddressId}
-import models.Mode
-import models.HaveRepresentative
+import javax.inject.Inject
 import models.HaveRepresentative.{No, Yes}
+import models.{HaveRepresentative, NormalMode}
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Enumerable, Navigator}
 import views.html.haveRepresentative
 
@@ -47,31 +46,31 @@ class HaveRepresentativeController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.haveRepresentative match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(haveRepresentative(appConfig, preparedForm, mode))
+      Ok(haveRepresentative(appConfig, preparedForm, NormalMode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(haveRepresentative(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(haveRepresentative(appConfig, formWithErrors, NormalMode))),
         value =>
           dataCacheConnector
             .save[HaveRepresentative](request.externalId, HaveRepresentativeId.toString, value)
             .flatMap { cacheMap =>
               value match {
                 case Yes =>
-                  Future.successful(navigator.redirect(HaveRepresentativeId, mode, cacheMap))
+                  Future.successful(navigator.redirect(HaveRepresentativeId, NormalMode, cacheMap))
                 case No =>
                   formProvider.clearRepresentativeCache(cacheMap).map { newCacheMap =>
-                    navigator.redirect(RepresentativesAddressId, mode, newCacheMap)
+                    navigator.redirect(RepresentativesAddressId, NormalMode, newCacheMap)
                   }
               }
           }

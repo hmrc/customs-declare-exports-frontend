@@ -38,7 +38,7 @@
         }
     </script>
 
-    @helpers.form(action = ConsignmentController.onSubmit(mode), 'autoComplete -> "off") {
+    @helpers.form(action = ConsignmentController.onSubmit(), 'autoComplete -> "off") {
         @components.back_link()
 
         @components.error_summary(form.errors)
