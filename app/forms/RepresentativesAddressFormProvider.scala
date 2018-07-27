@@ -16,29 +16,15 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
+import javax.inject.Inject
+import models.Address
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.json.Json
-
-case class RepresentativesAddress(
-  fullName: String,
-  building: String,
-  street: String,
-  townOrCity: String,
-  county: Option[String],
-  postcode: String,
-  country: String
-)
-
-object RepresentativesAddress {
-  implicit val format = Json.format[RepresentativesAddress]
-}
 
 class RepresentativesAddressFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def apply(): Form[RepresentativesAddress] =
+  def apply(): Form[Address] =
     Form(
       mapping(
         "fullName" -> text("representativesAddress.error.required.fullName"),
@@ -48,6 +34,6 @@ class RepresentativesAddressFormProvider @Inject() extends FormErrorHelper with 
         "county" -> optional(text()),
         "postcode" -> text("representativesAddress.error.required.postcode"),
         "country" -> text("representativesAddress.error.required.country")
-      )(RepresentativesAddress.apply)(RepresentativesAddress.unapply)
+      )(Address.apply)(Address.unapply)
     )
 }

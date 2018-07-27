@@ -16,9 +16,9 @@
 
 package views
 
+import forms.RepresentativesAddressFormProvider
+import models.{Address, NormalMode}
 import play.api.data.Form
-import forms.{RepresentativesAddress, RepresentativesAddressFormProvider}
-import models.NormalMode
 import views.behaviours.ViewBehaviours
 import views.html.representativesAddress
 
@@ -26,11 +26,11 @@ class RepresentativesAddressViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "representativesAddress"
 
-  val form: Form[RepresentativesAddress] = new RepresentativesAddressFormProvider()()
+  val form: Form[Address] = new RepresentativesAddressFormProvider()()
 
   def createView = () => representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[RepresentativesAddress]) => representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[Address]) => representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
 
   "RepresentativesAddress view" must {
     behave like normalPage(createView, messageKeyPrefix)

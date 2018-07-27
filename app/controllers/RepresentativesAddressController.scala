@@ -19,10 +19,10 @@ package controllers
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import forms.{RepresentativesAddress, RepresentativesAddressFormProvider}
+import forms.RepresentativesAddressFormProvider
 import identifiers.RepresentativesAddressId
 import javax.inject.Inject
-import models.NormalMode
+import models.{Address, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -43,7 +43,7 @@ class RepresentativesAddressController @Inject()(
     formProvider: RepresentativesAddressFormProvider)
   extends FrontendController with I18nSupport {
 
-  val form: Form[RepresentativesAddress] = formProvider()
+  val form: Form[Address] = formProvider()
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
@@ -60,7 +60,7 @@ class RepresentativesAddressController @Inject()(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(representativesAddress(appConfig, formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[RepresentativesAddress](request.externalId, RepresentativesAddressId.toString, value)
+          dataCacheConnector.save[Address](request.externalId, RepresentativesAddressId.toString, value)
             .map { cacheMap =>
               navigator.redirect(RepresentativesAddressId, NormalMode, cacheMap)
             }

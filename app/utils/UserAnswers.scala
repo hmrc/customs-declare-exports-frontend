@@ -16,14 +16,14 @@
 
 package utils
 
-import forms.{ConsignmentData, RepresentativesAddress, OwnDescriptionData}
-import uk.gov.hmrc.http.cache.client.CacheMap
+import forms.{ConsignmentData, OwnDescriptionData}
 import identifiers._
 import models._
+import uk.gov.hmrc.http.cache.client.CacheMap
 
 class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
-  def representativesAddress: Option[RepresentativesAddress] =
-    cacheMap.getEntry[RepresentativesAddress](RepresentativesAddressId.toString)
+  def representativesAddress: Option[Address] =
+    cacheMap.getEntry[Address](RepresentativesAddressId.toString)
 
   def enterEORI: Option[String] = cacheMap.getEntry[String](EnterEORIId.toString)
 

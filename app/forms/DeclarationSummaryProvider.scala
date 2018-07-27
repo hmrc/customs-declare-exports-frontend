@@ -19,6 +19,7 @@ package forms
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+import models.Address
 import utils.UserAnswers
 
 case class ConsignmentAnswers(
@@ -27,7 +28,7 @@ case class ConsignmentAnswers(
   timeOfDeclaration: Option[String] = None,
   whoseDeclaration: Option[String] = None,
   eoriNumber: Option[String] = None,
-  representativesAddress: Option[RepresentativesAddress] = None,
+  representativesAddress: Option[Address] = None,
   representative: Option[String] = None
 )
 

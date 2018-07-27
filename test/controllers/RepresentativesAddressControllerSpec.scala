@@ -18,8 +18,8 @@ package controllers
 
 import connectors.FakeDataCacheConnector
 import controllers.actions._
-import forms.{RepresentativesAddress, RepresentativesAddressFormProvider}
-import models.NormalMode
+import forms.RepresentativesAddressFormProvider
+import models.{Address, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers._
@@ -48,7 +48,7 @@ class RepresentativesAddressControllerSpec extends ControllerSpecBase {
   def viewAsString(form: Form[_] = form): String =
     representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 
-  val testAnswer = RepresentativesAddress("Fullname", "Building", "Street", "town", None, "postcode", "country")
+  val testAnswer = Address("Fullname", "Building", "Street", "town", None, "postcode", "country")
 
   "Representatives address controller" must {
 
