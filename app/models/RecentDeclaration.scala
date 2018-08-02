@@ -55,7 +55,7 @@ object RecentDeclaration {
 		from.plusDays(random.nextInt(diff.toInt))
 	}
 
-	val dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")
+	val dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm")
 	val from = LocalDateTime.of(2018, 7, 2, 0, 0)
 	val to = LocalDateTime.now()
 
@@ -107,7 +107,7 @@ object RecentDeclaration {
 	def generateRecentDeclarations(amount: Int): List[RecentDeclaration] = {
 		val statuses = List(prelodged, arrived, accepted, query, departed)
 
-		List.fill(amount)(statuses).flatten
+		List.fill(amount)(statuses).flatten.sortWith(_.dateAndTime < _.dateAndTime)
 	}
 
 	def generatePageDeclarations(page: Int): Page[RecentDeclaration] = {
