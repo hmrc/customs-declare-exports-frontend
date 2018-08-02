@@ -53,14 +53,14 @@ class HaveRepresentativeController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(haveRepresentative(appConfig, preparedForm, NormalMode))
+      Ok(haveRepresentative(appConfig, preparedForm))
   }
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(haveRepresentative(appConfig, formWithErrors, NormalMode))),
+          Future.successful(BadRequest(haveRepresentative(appConfig, formWithErrors))),
         value =>
           dataCacheConnector
             .save[HaveRepresentative](request.externalId, HaveRepresentativeId.toString, value)

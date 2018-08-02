@@ -49,7 +49,7 @@ class HaveRepresentativeControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[_] = form): String =
-    haveRepresentative(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+    haveRepresentative(frontendAppConfig, form)(fakeRequest, messages).toString
 
   "HaveRepresentative Controller" must {
 

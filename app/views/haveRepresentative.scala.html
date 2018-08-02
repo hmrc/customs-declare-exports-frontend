@@ -20,7 +20,7 @@
 @import models.HaveRepresentative
 @import models.Mode
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("haveRepresentative.title"),

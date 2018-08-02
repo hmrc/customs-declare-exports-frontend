@@ -60,7 +60,7 @@ class ConsignmentController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(consignment(appConfig, formWithErrors, NormalMode))),
-        (value) => {
+        value => {
           val consignmentData = ConsignmentData.cleanConsignmentData(value)
 
           dataCacheConnector.save[ConsignmentData](request.externalId, ConsignmentId.toString, consignmentData)
