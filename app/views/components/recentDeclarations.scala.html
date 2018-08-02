@@ -1,0 +1,65 @@
+/*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import models.RecentDeclaration
+@import utils.Page
+
+@(page: Page[RecentDeclaration])(implicit messages: Messages)
+
+<table>
+    <tr>
+        <td>
+            @messages("recentDeclarations.name")
+        </td>
+        <td>
+            @messages("recentDeclarations.date")
+        </td>
+        <td>
+            @messages("recentDeclarations.ducr")
+        </td>
+        <td>
+            @messages("recentDeclarations.status")
+        </td>
+        <td>
+            @messages("recentDeclarations.messages")
+        </td>
+        <td>
+            @messages("recentDeclarations.action")
+        </td>
+    </tr>
+    @for(declaration <- page.results){
+        <tr>
+            <td>
+                @declaration.name
+            </td>
+            <td>
+                @declaration.dateAndTime
+            </td>
+            <td>
+                @declaration.ducr
+            </td>
+            <td>
+                @declaration.status
+            </td>
+            <td>
+                @declaration.messages
+            </td>
+            <td>
+                @declaration.action
+            </td>
+        </tr>
+    }
+</table>
