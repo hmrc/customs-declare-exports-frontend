@@ -97,6 +97,20 @@ dashboard.applyForLicence = Apply for a new licence
 dashboard.checkLicenceApplication = Check a licence application
 dashboard.reports = Reports
 dashboard.link = A link
+dashboard.all.declarations = View all declarations
+
+recentDeclarations.title = Recent declarations
+recentDeclarations.name = Name
+recentDeclarations.date = Date and time
+recentDeclarations.ducr = DUCR
+recentDeclarations.status = Status
+recentDeclarations.messages = Messages
+recentDeclarations.action = Action
+recentDeclarations.status.prelodged = Pre-lodged
+recentDeclarations.status.arrived = Arrived
+recentDeclarations.status.accepted = Accepted
+recentDeclarations.status.query = Query
+recentDeclarations.status.departed = Departed
 
 declarationSummary.title = New export declaration
 declarationSummary.heading = Declaration summary
@@ -159,3 +173,6 @@ address.error.required.street = Enter street
 address.error.required.townOrCity = Enter town or city
 address.error.required.postcode = Enter postcode
 address.error.required.country = Enter country
+
+pagination.prev = Prev
+pagination.next = Next

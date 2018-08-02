@@ -14,6 +14,8 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /dashboard                                   controllers.DashboardController.onPageLoad()
 
+GET        /declarations/:page                          controllers.DeclarationsController.onPageLoad(page: Int)
+
 # Select role
 
 GET        /selectRole                                  controllers.SelectRoleController.onPageLoad()

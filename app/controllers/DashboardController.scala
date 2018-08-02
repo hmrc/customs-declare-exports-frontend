@@ -21,6 +21,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
 import config.FrontendAppConfig
+import models.{Preview, RecentDeclaration}
 import play.api.mvc.{Action, AnyContent}
 import views.html.dashboard
 
@@ -34,6 +35,6 @@ class DashboardController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (authenticate) {
     implicit request =>
-      Ok(dashboard(appConfig,request.user))
+      Ok(dashboard(appConfig, RecentDeclaration.generatePageDeclarations(1), Preview))
   }
 }
