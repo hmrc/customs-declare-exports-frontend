@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Enumerable, Navigator}
 import views.html.selectRole
 
 import scala.concurrent.Future
@@ -59,9 +59,9 @@ class SelectRoleController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(selectRole(appConfig, formWithErrors, NormalMode))),
-        (value) =>
+        value =>
           dataCacheConnector.save[SelectRole](request.externalId, SelectRoleId.toString, value).map { cacheMap =>
-            Redirect(navigator.nextPage(SelectRoleId, NormalMode)(new UserAnswers(cacheMap)))
+            navigator.redirect(SelectRoleId, NormalMode, cacheMap)
           }
       )
   }

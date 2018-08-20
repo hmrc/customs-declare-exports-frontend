@@ -16,6 +16,4 @@
 
 package api.declaration
 
-import play.api.libs.json._
-
 case class Declarant(id: String) extends AnyVal

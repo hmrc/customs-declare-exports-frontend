@@ -44,7 +44,6 @@ class DeclarationSummaryController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData) {
     implicit request =>
-
       val declaration = request.userAnswers match {
         case None => DeclarationSummary()
         case Some(answers) => DeclarationSummary.buildFromAnswers(answers)

@@ -21,57 +21,77 @@ import org.scalatest.mockito.MockitoSugar
 import controllers.routes
 import identifiers._
 import models._
+import play.api.mvc.{Call, Result}
+import uk.gov.hmrc.http.cache.client.CacheMap
 
 class NavigatorSpec extends SpecBase with MockitoSugar {
 
   val navigator = new Navigator()
 
-  val userAnswers = mock[UserAnswers]
+  val cacheMap = mock[CacheMap]
+
+  private def convertResultToCall(result: Result): Call =
+    Call("GET", result.header.headers.get("Location").getOrElse(""))
 
   "Navigator" when {
 
     "in Normal mode" must {
       "go to Index from an identifier that doesn't exist in the route map" in {
-        case object UnknownIdentifier extends Identifier
-        navigator.nextPage(UnknownIdentifier, NormalMode)(userAnswers) mustBe routes.IndexController.onPageLoad()
+        val result = navigator.redirect(UnknownIdentifier, NormalMode, cacheMap)
+        val call = convertResultToCall(result)
+
+        call mustBe routes.IndexController.onPageLoad()
       }
 
       "go to Own description page after consignment has been submitted" in {
-        navigator.nextPage(ConsignmentId, NormalMode)(userAnswers) mustBe
-          routes.OwnDescriptionController.onPageLoad()
+        val result = navigator.redirect(ConsignmentId, NormalMode, cacheMap)
+        val call = convertResultToCall(result)
+
+        call mustBe routes.OwnDescriptionController.onPageLoad()
       }
 
       "go to Declaration question page after own description has been submitted" in {
-        navigator.nextPage(OwnDescriptionId, NormalMode)(userAnswers) mustBe
-          routes.WhoseDeclarationController.onPageLoad()
+        val result = navigator.redirect(OwnDescriptionId, NormalMode, cacheMap)
+        val call = convertResultToCall(result)
+
+        call mustBe routes.WhoseDeclarationController.onPageLoad()
       }
 
       "go to Have representative page after declaration has been submitted" in {
-        navigator.nextPage(WhoseDeclarationId, NormalMode)(userAnswers) mustBe
-          routes.HaveRepresentativeController.onPageLoad()
+        val result = navigator.redirect(WhoseDeclarationId, NormalMode, cacheMap)
+        val call = convertResultToCall(result)
+
+        call mustBe routes.HaveRepresentativeController.onPageLoad()
       }
 
       "go to Enter EORI page after have representative has been submitted" in {
-        navigator.nextPage(HaveRepresentativeId, NormalMode)(userAnswers) mustBe
-          routes.EnterEORIController.onPageLoad()
+        val result = navigator.redirect(HaveRepresentativeId, NormalMode, cacheMap)
+        val call = convertResultToCall(result)
+
+        call mustBe routes.EnterEORIController.onPageLoad()
       }
 
       "go to name and address page after EORI has been submitted" in {
-        navigator.nextPage(EnterEORIId, NormalMode)(userAnswers) mustBe
-          routes.RepresentativesAddressController.onPageLoad()
+        val result = navigator.redirect(EnterEORIId, NormalMode, cacheMap)
+        val call = convertResultToCall(result)
+
+        call mustBe routes.RepresentativesAddressController.onPageLoad()
       }
 
-      "got to summary page after name and address has been submitted" in {
-        navigator.nextPage(RepresentativesAddressId, NormalMode)(userAnswers) mustBe
-          routes.DeclarationSummaryController.onPageLoad()
+      "go to summary page after name and address has been submitted" in {
+        val result = navigator.redirect(RepresentativesAddressId, NormalMode, cacheMap)
+        val call = convertResultToCall(result)
+
+        call mustBe routes.DeclarationSummaryController.onPageLoad()
       }
     }
 
     "in Check mode" must {
       "go to CheckYourAnswers from an identifier that doesn't exist in the edit route map" in {
-        case object UnknownIdentifier extends Identifier
-        navigator.nextPage(UnknownIdentifier, CheckMode)(userAnswers) mustBe
-          routes.DeclarationSummaryController.onPageLoad()
+        val result = navigator.redirect(UnknownIdentifier, CheckMode, cacheMap)
+        val call = convertResultToCall(result)
+
+        call mustBe routes.DeclarationSummaryController.onPageLoad()
       }
     }
   }

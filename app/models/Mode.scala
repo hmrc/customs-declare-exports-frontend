@@ -18,6 +18,7 @@ package models
 
 import play.api.mvc.JavascriptLiteral
 
+// TODO CheckMode isn't used. Everything should be NormalMode. Try to get rid of them.
 sealed trait Mode
 
 case object CheckMode extends Mode

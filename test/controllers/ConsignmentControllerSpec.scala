@@ -32,7 +32,7 @@ import views.html.consignment
 
 class ConsignmentControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.OwnDescriptionController.onPageLoad()
 
   val formProvider = new ConsignmentFormProvider()
   val form = formProvider()

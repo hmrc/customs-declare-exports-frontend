@@ -46,9 +46,7 @@ class Navigator @Inject()() {
     RepresentativesAddressId -> (_ => routes.EnterEORIController.onPageLoad())
   )
 
-  // TODO this method should be private
-  // Please use redirect method instead of that
-  def nextPage(id: Identifier, mode: Mode): UserAnswers => Call = {
+  private def nextPage(id: Identifier, mode: Mode): UserAnswers => Call = {
     mode match {
       case NormalMode =>
         routeMap.getOrElse(id, _ => routes.IndexController.onPageLoad())

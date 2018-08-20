@@ -26,10 +26,10 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declarations
 
 class DeclarationsController @Inject()(
-   appConfig: FrontendAppConfig,
-   override val messagesApi: MessagesApi,
-   authenticate: AuthAction,
-   getData: DataRetrievalAction)
+    appConfig: FrontendAppConfig,
+    override val messagesApi: MessagesApi,
+    authenticate: AuthAction,
+    getData: DataRetrievalAction)
   extends FrontendController with I18nSupport {
 
   def onPageLoad(page: Int): Action[AnyContent] = (authenticate andThen getData){

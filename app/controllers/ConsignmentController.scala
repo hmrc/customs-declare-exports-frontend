@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Enumerable, Navigator}
 import views.html.consignment
 
 import scala.concurrent.Future
@@ -52,6 +52,7 @@ class ConsignmentController @Inject()(
         case None => form
         case Some(value) => form.fill(value)
       }
+
       Ok(consignment(appConfig, preparedForm, NormalMode))
   }
 
@@ -65,7 +66,7 @@ class ConsignmentController @Inject()(
 
           dataCacheConnector.save[ConsignmentData](request.externalId, ConsignmentId.toString, consignmentData)
             .map(cacheMap =>
-              Redirect(navigator.nextPage(ConsignmentId, NormalMode)(new UserAnswers(cacheMap)))
+              navigator.redirect(ConsignmentId, NormalMode, cacheMap)
             )
         }
       )

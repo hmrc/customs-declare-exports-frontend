@@ -41,6 +41,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
     authorised().retrieve(credentials and name and email and externalId and internalId  and affinityGroup and allEnrolments) {
       case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments =>
         val eori = allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber"))
+        // TODO add correct eori validation not only isEmpty
         if (eori.isEmpty) {
           throw InsufficientEnrolments()
         }

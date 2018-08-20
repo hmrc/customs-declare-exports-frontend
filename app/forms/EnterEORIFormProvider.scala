@@ -24,13 +24,9 @@ import play.api.data.Form
 class EnterEORIFormProvider @Inject() extends FormErrorHelper with Mappings {
 
   // TODO missing validation about EORI number
-  // Max length - default value from Scaffold
   def apply(): Form[String] = {
-    val maximumEoriLenght = 100
-
     Form(
       "value" -> text("enterEORI.error.required")
-        .verifying(maxLength(maximumEoriLenght, "enterEORI.error.length"))
     )
   }
 }

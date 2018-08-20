@@ -31,7 +31,7 @@ import views.html.ownDescription
 
 class OwnDescriptionControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.WhoseDeclarationController.onPageLoad()
 
   val formProvider = new OwnDescriptionFormProvider()
   val form = formProvider()

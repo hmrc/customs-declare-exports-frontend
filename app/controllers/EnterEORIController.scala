@@ -25,9 +25,9 @@ import controllers.actions._
 import config.FrontendAppConfig
 import forms.EnterEORIFormProvider
 import identifiers.EnterEORIId
-import models.{Mode, NormalMode}
+import models.NormalMode
 import play.api.mvc.{Action, AnyContent}
-import utils.{Navigator, UserAnswers}
+import utils.Navigator
 import views.html.enterEORI
 
 import scala.concurrent.Future
@@ -59,9 +59,9 @@ class EnterEORIController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(enterEORI(appConfig, formWithErrors, NormalMode))),
-        (value) =>
+        value =>
           dataCacheConnector.save[String](request.externalId, EnterEORIId.toString, value).map{ cacheMap =>
-            Redirect(navigator.nextPage(EnterEORIId, NormalMode)(new UserAnswers(cacheMap)))
+            navigator.redirect(EnterEORIId, NormalMode, cacheMap)
           }
       )
   }

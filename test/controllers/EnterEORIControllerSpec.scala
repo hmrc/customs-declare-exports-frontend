@@ -31,7 +31,7 @@ import views.html.enterEORI
 
 class EnterEORIControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.RepresentativesAddressController.onPageLoad()
 
   val formProvider = new EnterEORIFormProvider()
   val form = formProvider()

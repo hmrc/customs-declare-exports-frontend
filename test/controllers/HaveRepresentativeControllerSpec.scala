@@ -20,7 +20,7 @@ import connectors.FakeDataCacheConnector
 import controllers.actions._
 import forms.HaveRepresentativeFormProvider
 import identifiers.HaveRepresentativeId
-import models.{HaveRepresentative, NormalMode}
+import models.HaveRepresentative
 import play.api.data.Form
 import play.api.libs.json.JsString
 import play.api.mvc.Call
@@ -31,7 +31,7 @@ import views.html.haveRepresentative
 
 class HaveRepresentativeControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.EnterEORIController.onPageLoad()
 
   val formProvider = new HaveRepresentativeFormProvider(FakeDataCacheConnector)
   val form = formProvider()

@@ -23,7 +23,6 @@ class EnterEORIFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "enterEORI.error.required"
   val lengthKey = "enterEORI.error.length"
-  val maxLength = 100
 
   val form = new EnterEORIFormProvider()()
 
@@ -34,14 +33,7 @@ class EnterEORIFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      nonEmptyString
     )
 
     behave like mandatoryField(

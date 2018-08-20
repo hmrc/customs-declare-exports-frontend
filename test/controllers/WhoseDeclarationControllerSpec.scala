@@ -32,7 +32,7 @@ import views.html.whoseDeclaration
 
 class WhoseDeclarationControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call  = routes.IndexController.onPageLoad()
+  def onwardRoute: Call  = routes.HaveRepresentativeController.onPageLoad()
 
   val formProvider = new WhoseDeclarationFormProvider()
   val form = formProvider()

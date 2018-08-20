@@ -28,7 +28,7 @@ import views.html.representativesAddress
 
 class RepresentativesAddressControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.DeclarationSummaryController.onPageLoad()
 
   val formProvider = new RepresentativesAddressFormProvider()
   val form = formProvider()

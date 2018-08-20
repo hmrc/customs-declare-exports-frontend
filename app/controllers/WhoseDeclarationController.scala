@@ -25,9 +25,9 @@ import controllers.actions._
 import config.FrontendAppConfig
 import forms.WhoseDeclarationFormProvider
 import identifiers.WhoseDeclarationId
-import models.{Mode, NormalMode, WhoseDeclaration}
+import models.{NormalMode, WhoseDeclaration}
 import play.api.mvc.{Action, AnyContent}
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Enumerable, Navigator}
 import views.html.whoseDeclaration
 
 import scala.concurrent.Future
@@ -60,9 +60,9 @@ class WhoseDeclarationController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(whoseDeclaration(appConfig, formWithErrors, NormalMode))),
-        (value) =>
+        value =>
           dataCacheConnector.save[WhoseDeclaration](request.externalId, WhoseDeclarationId.toString, value).map {
-            cacheMap => Redirect(navigator.nextPage(WhoseDeclarationId, NormalMode)(new UserAnswers(cacheMap)))
+            cacheMap => navigator.redirect(WhoseDeclarationId, NormalMode, cacheMap)
           }
       )
   }

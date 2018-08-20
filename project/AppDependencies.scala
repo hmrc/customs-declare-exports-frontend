@@ -29,5 +29,5 @@ object AppDependencies {
     "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
   )
 
-  def apply() = compile ++ test
+  def apply(): Seq[ModuleID] = compile ++ test
 }

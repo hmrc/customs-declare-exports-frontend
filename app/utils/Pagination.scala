@@ -54,11 +54,10 @@ class Pagination[A](results: List[A], currentPage: Int, maxPerPage: Int) extends
 	override def currentPageResult: Page[A] = Page(currentResults, currentPageNo, noOfPages, getMaxPerPage, noOfResults)
 }
 
-//scalastyle:off magic.number
 object Pagination {
+	val maxAmountOfElementsPerPage = 10
 
-	def apply[A](results: List[A], currentPage: Int = 1, maxPerPage: Int = 10): Pagination[A] =
+	def apply[A](results: List[A], currentPage: Int = 1, maxPerPage: Int = maxAmountOfElementsPerPage): Pagination[A] =
 		if(currentPage < 1 || maxPerPage < 1) throw new Exception("Incorrect values for pagination")
 		else new Pagination(results, currentPage, maxPerPage)
 }
-//scalastyle:on magic.number

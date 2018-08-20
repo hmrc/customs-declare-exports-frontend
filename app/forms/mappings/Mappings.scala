@@ -20,7 +20,7 @@ import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import utils.Enumerable
 
-trait Mappings extends Formatters with Constraints {
+trait Mappings extends Formatters {
 
   protected def text(errorKey: String = "error.required"): FieldMapping[String] = of(stringFormatter(errorKey))
 
