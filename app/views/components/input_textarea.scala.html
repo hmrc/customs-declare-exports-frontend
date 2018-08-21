@@ -35,16 +35,16 @@
     </label>
     <div class="form-control-wrapper char-counter" data-char-counter>
         <textarea
-        class="form-control form-control--full-width @inputClass"
-        id="@{field.id}"
-        name="@{field.id}"
-        value="@{field.value}"
-        aria-describedby="error-message-@{field.id}-input"
-            @if(charLimit.isDefined){maxLength="@{charLimit}"}
-        data-char-field
-        cols="30"
-        rows="20"
-        ></textarea>
+            class="form-control form-control--full-width @inputClass"
+            id="@{field.id}"
+            name="@{field.id}"
+            value="@{field.value}"
+            aria-describedby="error-message-@{field.id}-input"
+                @if(charLimit.isDefined){maxLength="@{charLimit}"}
+            data-char-field
+            cols="30"
+            rows="20"
+        />
         @if(charLimit.isDefined){
             <noscript>
                 <p class="char-counter-text flush">@messages("site.textarea.char_limit", charLimit.get)</p>
