@@ -44,7 +44,7 @@ object ConsignmentChoice {
   class ConsignmentFormatter extends Formatter[Consignment] {
     import play.api.data.FormError
 
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Consignment] = try{
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Consignment] = try {
       Right(
         data(key) match {
           case "consolidation" => Consolidation

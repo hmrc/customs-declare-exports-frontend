@@ -35,7 +35,6 @@ trait BooleanFieldBehaviours extends FieldBehaviours {
     }
 
     "not bind non-booleans" in {
-
       forAll(nonBooleans -> "nonBoolean") {
         nonBoolean =>
           val result = form.bind(Map(fieldName -> nonBoolean)).apply(fieldName)
