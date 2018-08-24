@@ -23,12 +23,15 @@ import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.{Schema, SchemaFactory}
 
-import scala.xml.{Elem, SAXException}
+import models.wco.MetaData
+
+import scala.xml.{XML, Elem, SAXException}
 
 trait XmlBehaviours {
   this: CustomsPlaySpec =>
 
-  val importDeclarationSchemaResources = Seq("/DocumentMetaData_2_DMS.xsd", "/WCO_DEC_2_DMS.xsd")
+  val importDeclarationSchemaResources = Seq("/wco-declaration-schemas/declaration/DocumentMetaData_2_DMS.xsd",
+    "/wco-declaration-schemas/declaration/WCO_DEC_2_DMS.xsd")
 
   def validXmlScenario(schemas: Seq[String] = Seq.empty)(test: => Elem): Unit = {
     validateAgainstSchemaResources(test.mkString, schemas)
@@ -54,5 +57,14 @@ trait XmlBehaviours {
     val validator = schema.newValidator()
     validator.validate(new StreamSource(new StringReader(xml)))
   }
+
+  def hasExpectedOutput[T](meta: MetaData, expected: T)(extractor: Elem => T): Elem = {
+    val xml = XML.loadString(meta.toXml)
+    extractor(xml) must be(expected)
+    xml
+  }
+
+  def hasExpectedInput[T](meta: MetaData, expected: T)(extractor: MetaData => T): Unit =
+    extractor(MetaData.fromXml(meta.toXml)) must be(expected)
 
 }

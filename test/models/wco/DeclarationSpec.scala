@@ -1541,13 +1541,5 @@ class DeclarationSpec extends CustomsPlaySpec with XmlBehaviours {
 
   }
 
-  def hasExpectedOutput[T](meta: MetaData, expected: T)(extractor: Elem => T): Elem = {
-    val xml = XML.loadString(meta.toXml)
-    extractor(xml) must be(expected)
-    xml
-  }
-
-  def hasExpectedInput[T](meta: MetaData, expected: T)(extractor: MetaData => T): Unit =
-    extractor(MetaData.fromXml(meta.toXml)) must be(expected)
 
 }
