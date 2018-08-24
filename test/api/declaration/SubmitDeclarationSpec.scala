@@ -16,15 +16,21 @@
 
 package api.declaration
 
+import config.FrontendAppConfig
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{Matchers, WordSpec}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.inject.Injector
 import play.api.mvc._
 import play.api.routing.sird._
 import play.api.test._
 import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST}
 import play.core.server.Server
 
-class SubmitDeclarationSpec extends WordSpec with Matchers with ScalaFutures with IntegrationPatience {
+class SubmitDeclarationSpec extends WordSpec with Matchers with ScalaFutures with IntegrationPatience with GuiceOneAppPerSuite {
+  val injector: Injector = app.injector
+
+  val frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   "Submit declaration" should {
     "return HTTP Status 400 (Bad request) for missing declarant" in {
@@ -37,7 +43,7 @@ class SubmitDeclarationSpec extends WordSpec with Matchers with ScalaFutures wit
         }
       } { implicit port =>
         WsTestClient.withClient { client =>
-          val submitter = new SubmitDeclaration(client, "")
+          val submitter = new SubmitDeclaration(frontendAppConfig, client, "")
           whenReady(submitter.submit(Declaration(Declarant("")), "Non CSP")) {
             _ shouldEqual BAD_REQUEST
           }
@@ -55,7 +61,7 @@ class SubmitDeclarationSpec extends WordSpec with Matchers with ScalaFutures wit
         }
       } { implicit port =>
         WsTestClient.withClient { client =>
-          val submitter = new SubmitDeclaration(client, "")
+          val submitter = new SubmitDeclaration(frontendAppConfig, client, "")
           whenReady(submitter.submit(Declaration(Declarant("testDecId")), "Non CSP")) {
             _ shouldEqual ACCEPTED
           }
