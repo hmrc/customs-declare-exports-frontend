@@ -24,11 +24,11 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
 
-class SubmitDeclaration (appConfig: FrontendAppConfig, ws: WSClient) {
-  @Inject def this(appConfig: FrontendAppConfig, ws: WSClient, env: Environment) = this(appConfig, ws)
+class SubmitDeclaration (appConfig: FrontendAppConfig, ws: WSClient, baseUrl: String) {
+  @Inject def this(appConfig: FrontendAppConfig, ws: WSClient, env: Environment) = this(appConfig, ws, appConfig.customsDeclarationsUrl)
 
   def submit(declaration: Declaration, bearerToken: String): Future[Int] = {
-    ws.url(s"${appConfig.customsDeclarationsUrl}/")
+    ws.url(s"$baseUrl/")
       .withHeaders(
         "Accept" -> "application/vnd.hmrc.2.0+xml",
         "Content-Type" -> "application/xml; charset=UTF-8",
