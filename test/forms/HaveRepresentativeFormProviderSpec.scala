@@ -58,9 +58,9 @@ class HaveRepresentativeFormProviderSpec extends OptionFieldBehaviours with Scal
       val cacheMap = CacheMap("id", data)
 
       whenReady(formProvider.clearRepresentativeCache(cacheMap)){ result =>
-        result.getEntry[String]("testId").isDefined shouldBe true
-        result.getEntry[String]("enterEORI").isDefined shouldBe false
-        result.getEntry[String]("representativesAddress").isDefined shouldBe false
+        result.getEntry[String]("testId") shouldBe Some("Test value")
+        result.getEntry[String]("enterEORI") shouldBe None
+        result.getEntry[String]("representativesAddress") shouldBe None
       }
     }
   }

@@ -16,19 +16,19 @@
 
 package api.declaration
 
+import config.FrontendAppConfig
 import javax.inject.Inject
-import play.api.{Environment, Play}
+import play.api.Environment
 import play.api.libs.ws._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
 
-class SubmitDeclaration (ws: WSClient, baseUrl: String) {
-  @Inject def this(ws: WSClient, env: Environment) = this(ws, "https://customs-declarations.protected.mdtp")
-  //@Inject def this(ws: WSClient, env: Environment) = this(ws, "http://localhost:9820")
+class SubmitDeclaration (appConfig: FrontendAppConfig, ws: WSClient) {
+  @Inject def this(appConfig: FrontendAppConfig, ws: WSClient, env: Environment) = this(appConfig, ws)
 
   def submit(declaration: Declaration, bearerToken: String): Future[Int] = {
-    ws.url(s"$baseUrl/")
+    ws.url(s"${appConfig.customsDeclarationsUrl}/")
       .withHeaders(
         "Accept" -> "application/vnd.hmrc.2.0+xml",
         "Content-Type" -> "application/xml; charset=UTF-8",
