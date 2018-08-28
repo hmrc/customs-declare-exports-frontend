@@ -21,14 +21,18 @@ import play.api.{Configuration, Environment}
 import play.api.i18n.Lang
 import play.api.Mode.Mode
 import controllers.routes
+import features.Feature.Feature
+import features.{Feature, FeatureStatus}
+import features.FeatureStatus.FeatureStatus
 import play.api.mvc.Call
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 
 @Singleton
 class FrontendAppConfig @Inject() (override val runModeConfiguration: Configuration, environment: Environment)
-  extends ServicesConfig {
+  extends ServicesConfig with AppName {
 
   override protected def mode: Mode = environment.mode
+  override protected def appNameConfiguration: Configuration = runModeConfiguration
 
   private def loadConfig(key: String): String =
     runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
@@ -56,4 +60,23 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
     "cymraeg" -> Lang("cy")
   )
   def routeToSwitchLanguage: String => Call = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
+
+  lazy val defaultFeatureStatus: features.FeatureStatus.Value =
+    FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
+
+  def featureStatus(feature: Feature): FeatureStatus =
+    sys.props.get(feature2Key(feature)).map(str2FeatureStatus).getOrElse(
+      runModeConfiguration.getString(feature2Key(feature)).map(str2FeatureStatus).getOrElse(
+        defaultFeatureStatus
+      )
+    )
+
+  def isFeatureOn(feature: Feature): Boolean = featureStatus(feature) == FeatureStatus.enabled
+
+  def setFeatureStatus(feature: Feature, status: FeatureStatus): Unit =
+    sys.props += (feature2Key(feature) -> status.toString)
+
+  private def feature2Key(feature: Feature): String = s"microservice.services.$appName.features.$feature"
+
+  private def str2FeatureStatus(str: String): FeatureStatus = FeatureStatus.withName(str)
 }
