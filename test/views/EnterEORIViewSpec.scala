@@ -29,9 +29,9 @@ class EnterEORIViewSpec extends StringViewBehaviours {
 
   val form = new EnterEORIFormProvider()()
 
-  def createView = () => enterEORI(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView = () => enterEORI(appConfig, form, NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[String]) => enterEORI(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[String]) => enterEORI(appConfig, form, NormalMode)(fakeRequest, messages)
 
   "EnterEORI view" must {
     behave like normalPage(createView, messageKeyPrefix)

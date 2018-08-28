@@ -31,7 +31,7 @@ class DeclarationSummaryControllerSpec extends ControllerSpecBase with MockitoSu
 
     def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
       new DeclarationSummaryController(
-        frontendAppConfig,
+        appConfig,
         messagesApi,
         FakeDataCacheConnector,
         mockFakeNavigator,

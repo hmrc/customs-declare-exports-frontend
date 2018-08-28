@@ -21,7 +21,7 @@ import org.scalatest.WordSpec
 
 class DeclarationSpec extends WordSpec {
 
-  "Declaration" should{
+  "Declaration" should {
 
     "produce declarant id as XML" in {
       val freightForwarder = Declarant("ZZ123456789000")

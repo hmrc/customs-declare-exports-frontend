@@ -28,9 +28,9 @@ class DeclarationSummaryViewSpec extends ViewBehaviours {
 
   val summary = DeclarationSummary()
 
-  def createView = () => declarationSummary(frontendAppConfig, summary, NormalMode)(fakeRequest, messages)
+  def createView = () => declarationSummary(appConfig, summary, NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[String]) => declarationSummary(frontendAppConfig, summary, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[String]) => declarationSummary(appConfig, summary, NormalMode)(fakeRequest, messages)
 
   "Declaration summary view" must {
     behave like normalPage(createView, messageKeyPrefix)

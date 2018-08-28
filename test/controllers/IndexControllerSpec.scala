@@ -23,15 +23,15 @@ class IndexControllerSpec extends ControllerSpecBase {
 
   "Index Controller" must {
     "return 200 for a GET" in {
-      val result = new IndexController(frontendAppConfig, messagesApi).onPageLoad()(fakeRequest)
+      val result = new IndexController(appConfig, messagesApi).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
     }
 
     "return the correct view for a GET" in {
-      val result = new IndexController(frontendAppConfig, messagesApi).onPageLoad()(fakeRequest)
+      val result = new IndexController(appConfig, messagesApi).onPageLoad()(fakeRequest)
 
-      contentAsString(result) mustBe index(frontendAppConfig)(fakeRequest, messages).toString
+      contentAsString(result) mustBe index(appConfig)(fakeRequest, messages).toString
     }
   }
 }

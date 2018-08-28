@@ -38,31 +38,31 @@ class AuthActionSpec extends SpecBase {
     "the user hasn't logged in" must {
       "redirect the user to log in " in {
         val fakeFailingAuthConnector = new FakeFailingAuthConnector(new MissingBearerToken)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, frontendAppConfig)
+        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
+        redirectLocation(result).get must startWith(appConfig.loginUrl)
       }
     }
 
     "the user's session has expired" must {
       "redirect the user to log in " in {
         val fakeFailingAuthConnector = new FakeFailingAuthConnector(new BearerTokenExpired)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, frontendAppConfig)
+        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
+        redirectLocation(result).get must startWith(appConfig.loginUrl)
       }
     }
 
     "the user doesn't have sufficient enrolments" must {
       "redirect the user to the unauthorised page" in {
         val fakeFailingAuthConnector = new FakeFailingAuthConnector(new InsufficientEnrolments)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, frontendAppConfig)
+        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -74,7 +74,7 @@ class AuthActionSpec extends SpecBase {
     "the user doesn't have sufficient confidence level" must {
       "redirect the user to the unauthorised page" in {
         val fakeFailingAuthConnector = new FakeFailingAuthConnector(new InsufficientConfidenceLevel)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, frontendAppConfig)
+        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -86,7 +86,7 @@ class AuthActionSpec extends SpecBase {
     "the user used an unaccepted auth provider" must {
       "redirect the user to the unauthorised page" in {
         val fakeFailingAuthConnector = new FakeFailingAuthConnector(new UnsupportedAuthProvider)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, frontendAppConfig)
+        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -98,7 +98,7 @@ class AuthActionSpec extends SpecBase {
     "the user has an unsupported affinity group" must {
       "redirect the user to the unauthorised page" in {
         val fakeFailingAuthConnector = new FakeFailingAuthConnector(new UnsupportedAffinityGroup)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, frontendAppConfig)
+        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -110,7 +110,7 @@ class AuthActionSpec extends SpecBase {
     "the user has an unsupported credential role" must {
       "redirect the user to the unauthorised page" in {
         val fakeFailingAuthConnector = new FakeFailingAuthConnector(new UnsupportedCredentialRole)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, frontendAppConfig)
+        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
 

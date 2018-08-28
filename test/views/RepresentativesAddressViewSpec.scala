@@ -28,9 +28,9 @@ class RepresentativesAddressViewSpec extends ViewBehaviours {
 
   val form: Form[Address] = new RepresentativesAddressFormProvider()()
 
-  def createView = () => representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView = () => representativesAddress(appConfig, form, NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[Address]) => representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[Address]) => representativesAddress(appConfig, form, NormalMode)(fakeRequest, messages)
 
   "RepresentativesAddress view" must {
     behave like normalPage(createView, messageKeyPrefix)

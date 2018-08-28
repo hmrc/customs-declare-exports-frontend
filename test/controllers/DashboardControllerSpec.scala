@@ -25,13 +25,13 @@ import views.html.dashboard
 class DashboardControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new DashboardController(frontendAppConfig, messagesApi, FakeAuthAction,
+    new DashboardController(appConfig, messagesApi, FakeAuthAction,
       dataRetrievalAction, new DataRequiredActionImpl)
 
   val page = Page[RecentDeclaration](List.empty, 1, 1, 1, 1)
 
   def viewAsString(): String =
-    dashboard(frontendAppConfig, page, Preview)(fakeRequest, messages).toString()
+    dashboard(appConfig, page, Preview)(fakeRequest, messages).toString()
 
   "Dashboard Controller" must {
 

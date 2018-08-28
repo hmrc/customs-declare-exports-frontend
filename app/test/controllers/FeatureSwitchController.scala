@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package controllers
+package test.controllers
 
-import javax.inject.Inject
-
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import config.AppConfig
-import views.html.index
+import features.Feature.Feature
+import features.FeatureStatus.FeatureStatus
+import javax.inject.{Inject, Singleton}
+import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.BaseController
 
-class IndexController @Inject()(
-    val appConfig: AppConfig,
-    val messagesApi: MessagesApi)
-  extends FrontendController with I18nSupport {
+import scala.concurrent.Future
 
-  def onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(index(appConfig))
+@Singleton
+class FeatureSwitchController @Inject()(implicit val appConfig: AppConfig) extends BaseController {
+
+  def set(feature: Feature, status: FeatureStatus): Action[AnyContent] = Action.async { implicit req =>
+    appConfig.setFeatureStatus(feature, status)
+    Future.successful(Ok(s"${feature} ${status}"))
   }
 }

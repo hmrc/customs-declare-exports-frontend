@@ -15,7 +15,7 @@
  */
 
 package handlers
-import config.FrontendAppConfig
+import config.AppConfig
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.MessagesApi
@@ -26,10 +26,10 @@ class ErrorHandlerSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
 
   val injector: Injector = app.injector
 
-  val frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  val appConfig: AppConfig = injector.instanceOf[AppConfig]
   val messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
-  val errorHandler = new ErrorHandler(frontendAppConfig, messagesApi)
+  val errorHandler = new ErrorHandler(appConfig, messagesApi)
 
   "ErrorHandlerSpec" should {
     "standardErrorTemplate" in {

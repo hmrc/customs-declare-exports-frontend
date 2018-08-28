@@ -30,9 +30,9 @@ class HaveRepresentativeViewSpec extends ViewBehaviours {
 
   val form = new HaveRepresentativeFormProvider(FakeDataCacheConnector)()
 
-  def createView = () => haveRepresentative(frontendAppConfig, form)(fakeRequest, messages)
+  def createView = () => haveRepresentative(appConfig, form)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => haveRepresentative(frontendAppConfig, form)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[_]) => haveRepresentative(appConfig, form)(fakeRequest, messages)
 
   "HaveRepresentative view" must {
     behave like normalPage(createView, messageKeyPrefix)

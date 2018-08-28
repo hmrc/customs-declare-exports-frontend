@@ -38,7 +38,7 @@ class OwnDescriptionControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new OwnDescriptionController(
-      frontendAppConfig,
+      appConfig,
       messagesApi,
       FakeDataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -49,7 +49,7 @@ class OwnDescriptionControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[_] = form): String =
-    ownDescription(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+    ownDescription(appConfig, form, NormalMode)(fakeRequest, messages).toString
 
   "OwnDescription Controller" must {
 

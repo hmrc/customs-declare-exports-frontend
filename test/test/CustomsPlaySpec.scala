@@ -17,7 +17,7 @@
 package test
 
 import akka.stream.Materializer
-import config.FrontendAppConfig
+import config.AppConfig
 import models.wco.Declaration
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -33,7 +33,7 @@ trait CustomsPlaySpec extends PlaySpec with OneAppPerSuite with MockitoSugar wit
 
   implicit val mat: Materializer = app.materializer
   implicit val ec: ExecutionContext = Implicits.defaultContext
-  implicit val appConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val patience: PatienceConfig = PatienceConfig(timeout = 5.seconds, interval = 50.milliseconds) // be more patient than the default
 
   protected val contextPath: String = "/customs-declare-imports"
