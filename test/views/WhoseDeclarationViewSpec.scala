@@ -29,9 +29,9 @@ class WhoseDeclarationViewSpec extends ViewBehaviours {
 
   val form = new WhoseDeclarationFormProvider()()
 
-  def createView = () => whoseDeclaration(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView = () => whoseDeclaration(appConfig, form, NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => whoseDeclaration(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[_]) => whoseDeclaration(appConfig, form, NormalMode)(fakeRequest, messages)
 
   "DeclarationForYourselfOrSomeoneElse view" must {
     behave like normalPage(createView, messageKeyPrefix)

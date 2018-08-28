@@ -39,7 +39,7 @@ class SelectRoleControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new SelectRoleController(
-      frontendAppConfig,
+      appConfig,
       messagesApi,
       FakeDataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -50,7 +50,7 @@ class SelectRoleControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[_] = form): String =
-    selectRole(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+    selectRole(appConfig, form, NormalMode)(fakeRequest, messages).toString
 
   "SelectRole Controller" must {
 

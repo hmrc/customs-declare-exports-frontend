@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.FrontendAppConfig
+import config.AppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.SelectRoleFormProvider
@@ -33,7 +33,7 @@ import views.html.selectRole
 import scala.concurrent.Future
 
 class SelectRoleController @Inject()(
-    appConfig: FrontendAppConfig,
+    appConfig: AppConfig,
     override val messagesApi: MessagesApi,
     dataCacheConnector: DataCacheConnector,
     navigator: Navigator,

@@ -35,7 +35,7 @@ class RepresentativesAddressControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new RepresentativesAddressController(
-      frontendAppConfig,
+      appConfig,
       messagesApi,
       FakeDataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -46,7 +46,7 @@ class RepresentativesAddressControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[_] = form): String =
-    representativesAddress(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+    representativesAddress(appConfig, form, NormalMode)(fakeRequest, messages).toString
 
   val testAnswer = Address("Fullname", "Building", "Street", "town", None, "postcode", "country")
 

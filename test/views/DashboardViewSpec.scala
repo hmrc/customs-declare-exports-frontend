@@ -27,7 +27,7 @@ class DashboardViewSpec extends ViewBehaviours {
 
   val page = Page[RecentDeclaration](List.empty, 1, 1, 1, 1)
 
-  def createView = () => dashboard(frontendAppConfig, page, Preview)(fakeRequest, messages)
+  def createView = () => dashboard(appConfig, page, Preview)(fakeRequest, messages)
 
   "Dashboard view" must {
     behave like normalPage(createView, messageKeyPrefix)

@@ -20,13 +20,13 @@ import com.google.inject.Inject
 import play.api.Configuration
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, Controller}
-import config.FrontendAppConfig
+import config.AppConfig
 import uk.gov.hmrc.play.language.LanguageUtils
 
 // TODO, upstream this into play-language
 class LanguageSwitchController @Inject() (
     configuration: Configuration,
-    appConfig: FrontendAppConfig,
+    appConfig: AppConfig,
     implicit val messagesApi: MessagesApi)
   extends Controller with I18nSupport {
 

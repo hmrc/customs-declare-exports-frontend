@@ -38,7 +38,7 @@ class HaveRepresentativeControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new HaveRepresentativeController(
-      frontendAppConfig,
+      appConfig,
       messagesApi,
       FakeDataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -49,7 +49,7 @@ class HaveRepresentativeControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[_] = form): String =
-    haveRepresentative(frontendAppConfig, form)(fakeRequest, messages).toString
+    haveRepresentative(appConfig, form)(fakeRequest, messages).toString
 
   "HaveRepresentative Controller" must {
 

@@ -20,7 +20,7 @@ import com.google.inject.{ImplementedBy, Inject}
 import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
 import play.api.mvc.Results._
 import uk.gov.hmrc.auth.core.{NoActiveSession, _}
-import config.FrontendAppConfig
+import config.AppConfig
 import controllers.routes
 import models.SignedInUser
 import models.requests.AuthenticatedRequest
@@ -32,7 +32,7 @@ import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig)
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: AppConfig)
                               (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {

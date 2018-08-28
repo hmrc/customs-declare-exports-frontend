@@ -21,7 +21,7 @@ import views.html.unauthorised
 
 class UnauthorisedViewSpec extends ViewBehaviours {
 
-  def view = () => unauthorised(frontendAppConfig)(fakeRequest, messages)
+  def view = () => unauthorised(appConfig)(fakeRequest, messages)
 
   "Unauthorised view" must {
 

@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.FrontendAppConfig
+import config.AppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.HaveRepresentativeFormProvider
@@ -34,7 +34,7 @@ import views.html.haveRepresentative
 import scala.concurrent.Future
 
 class HaveRepresentativeController @Inject()(
-    appConfig: FrontendAppConfig,
+    appConfig: AppConfig,
     override val messagesApi: MessagesApi,
     dataCacheConnector: DataCacheConnector,
     navigator: Navigator,

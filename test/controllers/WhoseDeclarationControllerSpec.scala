@@ -39,7 +39,7 @@ class WhoseDeclarationControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new WhoseDeclarationController(
-      frontendAppConfig,
+      appConfig,
       messagesApi,
       FakeDataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -50,7 +50,7 @@ class WhoseDeclarationControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[_] = form): String =
-    whoseDeclaration(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+    whoseDeclaration(appConfig, form, NormalMode)(fakeRequest, messages).toString
 
   "DeclarationForYourselfOrSomeoneElse Controller" must {
 

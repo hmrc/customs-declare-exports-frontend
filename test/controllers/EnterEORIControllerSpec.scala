@@ -38,7 +38,7 @@ class EnterEORIControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new EnterEORIController(
-      frontendAppConfig,
+      appConfig,
       messagesApi,
       FakeDataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -49,7 +49,7 @@ class EnterEORIControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[_] = form): String =
-    enterEORI(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+    enterEORI(appConfig, form, NormalMode)(fakeRequest, messages).toString
 
   val testAnswer = "answer"
 

@@ -16,7 +16,7 @@
 
 package base
 
-import config.FrontendAppConfig
+import config.AppConfig
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.i18n.{Messages, MessagesApi}
@@ -28,7 +28,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
   def injector: Injector = app.injector
 
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  def appConfig: AppConfig = injector.instanceOf[AppConfig]
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 

@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
+@import config.AppConfig
 @import models.SignedInUser
 @import models.RecentDeclaration
 @import utils.Page
 
-@(appConfig: FrontendAppConfig, page: Page[RecentDeclaration], mode: RecentDeclarationMode)(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, page: Page[RecentDeclaration], mode: RecentDeclarationMode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("dashboard.title"),

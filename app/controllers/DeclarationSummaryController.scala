@@ -17,7 +17,7 @@
 package controllers
 
 import api.declaration.{Declarant, Declaration, SubmitDeclaration}
-import config.FrontendAppConfig
+import config.AppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.DeclarationSummary
@@ -31,7 +31,7 @@ import utils.Navigator
 import views.html.declarationSummary
 
 class DeclarationSummaryController @Inject()(
-    appConfig: FrontendAppConfig,
+    appConfig: AppConfig,
     override val messagesApi: MessagesApi,
     dataCacheConnector: DataCacheConnector,
     navigator: Navigator,

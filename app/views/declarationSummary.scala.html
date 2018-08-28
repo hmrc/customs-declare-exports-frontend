@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
+@import config.AppConfig
 @import uk.gov.hmrc.play.views.html._
 @import controllers.routes._
 @import models.Mode
 @import forms.DeclarationSummary
 
-@(appConfig: FrontendAppConfig, summary: DeclarationSummary, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, summary: DeclarationSummary, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("declarationSummary.title"),

@@ -29,9 +29,9 @@ class SelectRoleViewSpec extends ViewBehaviours {
 
   val form = new SelectRoleFormProvider()()
 
-  def createView = () => selectRole(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createView = () => selectRole(appConfig, form, NormalMode)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => selectRole(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[_]) => selectRole(appConfig, form, NormalMode)(fakeRequest, messages)
 
   "SelectRole view" must {
     behave like normalPage(createView, messageKeyPrefix)

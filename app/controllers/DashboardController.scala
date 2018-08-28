@@ -20,13 +20,13 @@ import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
-import config.FrontendAppConfig
+import config.AppConfig
 import models.{Preview, RecentDeclaration}
 import play.api.mvc.{Action, AnyContent}
 import views.html.dashboard
 
 class DashboardController @Inject()(
-    appConfig: FrontendAppConfig,
+    appConfig: AppConfig,
     override val messagesApi: MessagesApi,
     authenticate: AuthAction,
     getData: DataRetrievalAction,

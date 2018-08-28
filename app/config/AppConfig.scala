@@ -28,7 +28,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 
 @Singleton
-class FrontendAppConfig @Inject() (override val runModeConfiguration: Configuration, environment: Environment)
+class AppConfig @Inject() (override val runModeConfiguration: Configuration, environment: Environment)
   extends ServicesConfig with AppName {
 
   override protected def mode: Mode = environment.mode
@@ -76,7 +76,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   def setFeatureStatus(feature: Feature, status: FeatureStatus): Unit =
     sys.props += (feature2Key(feature) -> status.toString)
 
-  private def feature2Key(feature: Feature): String = s"microservice.services.$appName.features.$feature"
+  private def feature2Key(feature: Feature): String = s"microservice.services.features.$feature"
 
   private def str2FeatureStatus(str: String): FeatureStatus = FeatureStatus.withName(str)
 }

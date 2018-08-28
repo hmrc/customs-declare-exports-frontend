@@ -16,7 +16,7 @@
 
 package api.declaration
 
-import config.FrontendAppConfig
+import config.AppConfig
 import javax.inject.Inject
 import play.api.Environment
 import play.api.libs.ws._
@@ -24,8 +24,8 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
 
-class SubmitDeclaration (appConfig: FrontendAppConfig, ws: WSClient, baseUrl: String) {
-  @Inject def this(appConfig: FrontendAppConfig, ws: WSClient, env: Environment) = this(appConfig, ws, appConfig.customsDeclarationsUrl)
+class SubmitDeclaration (appConfig: AppConfig, ws: WSClient, baseUrl: String) {
+  @Inject def this(appConfig: AppConfig, ws: WSClient, env: Environment) = this(appConfig, ws, appConfig.customsDeclarationsUrl)
 
   def submit(declaration: Declaration, bearerToken: String): Future[Int] = {
     ws.url(s"$baseUrl/")

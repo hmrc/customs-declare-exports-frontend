@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.FrontendAppConfig
+import config.AppConfig
 import controllers.actions.{AuthAction, DataRetrievalAction}
 import javax.inject.Inject
 import models.{Normal, RecentDeclaration}
@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declarations
 
 class DeclarationsController @Inject()(
-    appConfig: FrontendAppConfig,
+    appConfig: AppConfig,
     override val messagesApi: MessagesApi,
     authenticate: AuthAction,
     getData: DataRetrievalAction)
