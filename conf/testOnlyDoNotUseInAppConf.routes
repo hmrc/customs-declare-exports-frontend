@@ -12,4 +12,4 @@
 # Add all the application routes to the prod.routes file
 ->         /                          prod.Routes
 
-GET        /customs-declare-imports/test-only/feature/:feature/:status  test.controllers.FeatureSwitchController.set(feature: features.Feature.Feature, status: features.FeatureStatus.FeatureStatus)
+GET        /customs-declare-exports/test-only/feature/:feature/:status  test.controllers.FeatureSwitchController.set(feature: features.Feature.Feature, status: features.FeatureStatus.FeatureStatus)
