@@ -4,6 +4,8 @@ import sbt._
 
 object AppDependencies {
 
+  val jacksonVersion = "2.9.6"
+
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "play-reactivemongo" % "6.0.0",
@@ -15,7 +17,12 @@ object AppDependencies {
     "uk.gov.hmrc" %% "play-conditional-form-mapping" % "0.2.0",
     "uk.gov.hmrc" %% "bootstrap-play-25" % "1.7.0",
     "uk.gov.hmrc" %% "play-language" % "3.4.0",
-    "com.thoughtworks.xstream" % "xstream" % "1.4.10"
+    "com.thoughtworks.xstream" % "xstream" % "1.4.10",
+    "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
+    "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
+    "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonVersion,
+    "com.fasterxml.jackson.dataformat" % "jackson-dataformat-xml" % jacksonVersion,
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion
   )
 
   val test = Seq(
