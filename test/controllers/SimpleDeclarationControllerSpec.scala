@@ -30,7 +30,7 @@ class SimpleDeclarationControllerSpec extends SpecBase{
     }
     "return 200 with a success" in {
       val result = (route(app,getRequest(uri)))
-      result.map( res => status(res) must be (200))
+      result.map( res => status(res) must be (OK))
     }
 
     "display Simple- declaration" in {
