@@ -17,12 +17,12 @@
 package controllers
 
 import javax.inject.Inject
-
 import config.AppConfig
-import controllers.actions.{ AuthAction}
+import controllers.actions.AuthAction
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Action
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.simpleDeclaration
 
 import scala.concurrent.Future
 
@@ -35,7 +35,7 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
   extends FrontendController with I18nSupport {
 
   def displayForm = Action.async {
-    Future.successful(Ok(SimpleDeclaration(appConfig)))
+    Future.successful(Ok(simpleDeclaration(appConfig)))
   }
 
 }
