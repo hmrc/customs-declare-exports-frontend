@@ -96,7 +96,7 @@ case class Declaration(@JacksonXmlProperty(localName = "AcceptanceDateTime", nam
 
                        @JacksonXmlProperty(localName = "FunctionCode", namespace = NS.dec)
                        functionCode: Option[Int] = None, // unsigned int in enumeration of [9, 13, 14]
-
+                       //MUCR-LRN
                        @JacksonXmlProperty(localName = "FunctionalReferenceID", namespace = NS.dec)
                        functionalReferenceId: Option[String] = None, // max 35 chars
 

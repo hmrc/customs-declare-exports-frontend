@@ -48,3 +48,8 @@ object FakeAuthAction extends AuthAction {
     block(AuthenticatedRequest(request, defaultUser))
 }
 
+class TestAuthAction extends AuthAction {
+  override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
+    block(AuthenticatedRequest(request, FakeAuthAction.defaultUser))
+}
+

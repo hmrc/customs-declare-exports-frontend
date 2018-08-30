@@ -63,3 +63,5 @@ POST       /representativesAddress                      controllers.Representati
 GET        /declarationSummary                          controllers.DeclarationSummaryController.onPageLoad()
 
 POST       /declarationSummary                          controllers.DeclarationSummaryController.onSubmit()
+
+GET   /simple-declaration                               controllers.SimpleDeclarationController.displayForm()

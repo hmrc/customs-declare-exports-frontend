@@ -8,7 +8,8 @@ object AppDependencies {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "play-reactivemongo" % "6.0.0",
+    "uk.gov.hmrc" %% "play-conditional-form-mapping" % "0.2.0",
+  "uk.gov.hmrc" %% "play-reactivemongo" % "6.0.0",
     "uk.gov.hmrc" %% "logback-json-logger" % "3.1.0",
     "uk.gov.hmrc" %% "govuk-template" % "5.3.0",
     "uk.gov.hmrc" %% "play-health" % "2.1.0",
