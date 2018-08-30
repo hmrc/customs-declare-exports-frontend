@@ -6,24 +6,24 @@ import play.api.data.validation.Constraints._
 import uk.gov.voa.play.form.ConditionalMappings._
 
 case class SimpleDeclarationForm(
-    ducr: String,
-    isConsolidateDucrtoWiderShipment: Boolean,
-    mucr: Option[String],
-    isDeclarationForSomeoneElse: Boolean,
-    isAddressAndEORICorrect: Boolean,
-    haveRepresentative: Boolean,
-    isConsignorAddressAndEORICorrect: Boolean,
-    consigneeAddress: Address,
-    isFinalDestination: Boolean,
-    goodsPackage: GoodsPackage,
-    doYouKnowCustomsProcedureCode: Boolean,
-    customsProcedure: String,
-    wasPreviousCustomsProcedure: Boolean,
-    additionalCustomsProcedure: String,
-    doYouWantAddAdditionalInformation: Boolean,
-    addAnotherItem: Boolean,
-    officeOfExit: String,
-    knowConsignmentDispatchCountry: Boolean)
+    ducr: String = "",
+    isConsolidateDucrtoWiderShipment: Boolean = false,
+    mucr: Option[String] = None,
+    isDeclarationForSomeoneElse: Boolean = false,
+    isAddressAndEORICorrect: Boolean = false,
+    haveRepresentative: Boolean = false,
+    isConsignorAddressAndEORICorrect: Boolean = false,
+    consigneeAddress: Address = Address(),
+    isFinalDestination: Boolean = false,
+    goodsPackage: GoodsPackage = GoodsPackage(),
+    doYouKnowCustomsProcedureCode: Boolean = false,
+    customsProcedure: String = "",
+    wasPreviousCustomsProcedure: Boolean = false,
+    additionalCustomsProcedure: String = "",
+    doYouWantAddAdditionalInformation: Boolean = false,
+    addAnotherItem: Boolean = false,
+    officeOfExit: String = "",
+    knowConsignmentDispatchCountry: Boolean = false)
   extends DataFormats {
 
   def apply(): Form[SimpleDeclarationForm] =
@@ -65,12 +65,12 @@ trait DataFormats {
 }
 
 case class Address(
-  fullName: Option[String],
-  building: Option[String],
-  street: Option[String],
-  townOrCity: Option[String],
-  postCode: Option[String],
-  country: Option[String]
+  fullName: Option[String] = None,
+  building: Option[String] = None,
+  street: Option[String] = None,
+  townOrCity: Option[String] = None,
+  postCode: Option[String] = None,
+  country: Option[String] = None
 )
 
 object Address {
@@ -85,14 +85,14 @@ object Address {
 }
 
 case class GoodsPackage(
-  commodityCode: String,
-  isDescriptionOfYourGoodsCorrect: Boolean,
-  isItemOnUNDGList: Boolean,
-  addLicenceForItem: Boolean,
-  noOfPackages: String,
-  packageType: String,
-  goodsInContainer: Boolean,
-  addAnotherPackage: Boolean
+  commodityCode: String = "",
+  isDescriptionOfYourGoodsCorrect: Boolean = false,
+  isItemOnUNDGList: Boolean = false,
+  addLicenceForItem: Boolean = false,
+  noOfPackages: String = "",
+  packageType: String = "",
+  goodsInContainer: Boolean = false,
+  addAnotherPackage: Boolean = false
 )
 
 object GoodsPackage {

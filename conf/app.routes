@@ -64,4 +64,8 @@ GET        /declarationSummary                          controllers.DeclarationS
 
 POST       /declarationSummary                          controllers.DeclarationSummaryController.onSubmit()
 
-GET   /simple-declaration                               controllers.SimpleDeclarationController.displayForm()
+# Simple declaration
+
+GET        /simple-declaration                          controllers.SimpleDeclarationController.displayForm()
+
+POST       /simple-declaration                          controllers.SimpleDeclarationController.onSubmit()

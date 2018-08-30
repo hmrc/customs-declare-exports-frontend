@@ -19,8 +19,9 @@ package controllers
 import javax.inject.Inject
 import config.AppConfig
 import controllers.actions.AuthAction
+import forms.SimpleDeclarationForm
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Action
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.simpleDeclaration
 
@@ -28,15 +29,18 @@ import scala.concurrent.Future
 
 
 class SimpleDeclarationController @Inject()(appConfig: AppConfig,
-                                             override val messagesApi: MessagesApi,
                                              authenticate: AuthAction
-                                             )
+                                             )(implicit val messagesApi: MessagesApi)
 
   extends FrontendController with I18nSupport {
 
-  def displayForm = Action.async {
-    Future.successful(Ok(simpleDeclaration(appConfig)))
+  val form = SimpleDeclarationForm()()
+
+  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
+    Future.successful(Ok(simpleDeclaration(appConfig, form)))
   }
+
+  def onSubmit(): Action[AnyContent] = Action.async(_ => Future.successful(Ok))
 
 }
 
