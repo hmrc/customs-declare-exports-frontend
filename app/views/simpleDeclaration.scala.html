@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import controllers.routes._
 @import models.Mode
+@import utils.RadioOption
 
 @(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
 
@@ -32,7 +33,120 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("consignment.title", "consignment.heading")
+        @components.heading("simpleDeclaration.title", "simpleDeclaration.heading")
+
+        @components.input_text(
+            field = form("ducr"),
+            label = messages("consignment.ducr")
+        )
+
+        @components.input_radio(
+            field = form("isConsolidateDucrToWiderShipment"),
+            legend = "Is consolidate DUCR to wider shipment?",
+            inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
+        )
+
+        @components.input_text(
+            field = form("mucr"),
+            label = messages("consignment.mucr")
+        )
+
+        @components.input_radio(
+            field = form("isDeclarationForSomeoneElse"),
+            legend = "Are you making this declaration for someone else?",
+            inputs = Seq(RadioOption("site", "yes"), RadioOption("isDeclarationForSomeoneElse", "no"))
+        )
+
+        Scanda Pottery Supplies<br>
+        Unit 20 Scanda Road Industrial Estate<br>
+        Scanda Road<br>
+        Manchester<br>
+        MA1 3QD<br>
+        United Kingdom<br><br>
+
+        GB123456789<br><br>
+
+        @components.input_radio(
+            field = form("isAddressAndEORICorrect"),
+            legend = "Are these correct?",
+            inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
+        )
+
+        @components.input_radio(
+            field = form("haveRepresentative"),
+            legend = "Do you have a representative?",
+            inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
+        )
+
+        Scanda Pottery Supplies<br>
+        Unit 20 Scanda Road Industrial Estate<br>
+        Scanda Road<br>
+        Manchester<br>
+        MA1 3QD<br>
+        United Kingdom<br><br>
+
+        GB123456789<br><br>
+
+        @components.input_radio(
+            field = form("isConsignorAddressAndEORICorrect"),
+            legend = "Are these correct?",
+            inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
+        )
+
+        @components.address(form)
+
+        @components.input_radio(
+            field = form("isFinalDestination"),
+            legend = "Is this the final destination of your goods?",
+            inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
+        )
+
+        @components.goods_package(form)
+
+        @components.input_radio(
+            field = form("doYouKnowCustomsProcedureCode"),
+            legend = "Do you know customs procedure code?",
+            inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
+        )
+
+        @components.input_text(
+            field = form("customsProcedure"),
+            label = messages("Customs Procedure")
+        )
+
+        @components.input_radio(
+            field = form("wasPreviousCustomsProcedure"),
+            legend = "Was previous customs procedure?",
+            inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
+        )
+
+        @components.input_text(
+            field = form("additionalCustomsProcedure"),
+            label = messages("Additional customs procedure")
+        )
+
+        @components.input_radio(
+            field = form("doYouWantAddAdditionalInformation"),
+            legend = "Was previous customs procedure?",
+            inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
+        )
+
+        @components.input_radio(
+            field = form("addAnotherItem"),
+            legend = "Do you want to add another item?",
+            inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
+        )
+
+        @components.input_text(
+            field = form("officeOfExit"),
+            label = messages("Where is office of exit?")
+        )
+
+        @components.input_radio(
+            field = form("knowConsignmentDispatchCountry"),
+            legend = "Do you know consignment dispatch country?",
+            inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
+        )
 
         @components.submit_button()
     }

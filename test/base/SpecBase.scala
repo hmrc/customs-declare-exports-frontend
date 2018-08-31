@@ -52,9 +52,9 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
   def authenticate: AuthAction = injector.instanceOf[TestAuthAction]
 
-  def cfg:CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
+  def cfg: CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
 
-  def token = injector.instanceOf[CSRFFilter].tokenProvider.generateToken
+  def token: String = injector.instanceOf[CSRFFilter].tokenProvider.generateToken
 
   def wsClient: WSClient = injector.instanceOf[WSClient]
 
@@ -64,8 +64,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
   protected def uriWithContextPath(path: String): String = s"$contextPath$path"
 
-  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty):
-  FakeRequest[AnyContentAsEmpty.type] = {
+  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty): FakeRequest[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.internalId.get
@@ -78,6 +77,4 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
       withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*).
       withSession(session.toSeq: _*).copyFakeRequest(tags = tags)
   }
-
-
 }
