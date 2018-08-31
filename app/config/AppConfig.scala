@@ -21,18 +21,14 @@ import play.api.{Configuration, Environment}
 import play.api.i18n.Lang
 import play.api.Mode.Mode
 import controllers.routes
-import features.Feature.Feature
-import features.{Feature, FeatureStatus}
-import features.FeatureStatus.FeatureStatus
 import play.api.mvc.Call
-import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
+import uk.gov.hmrc.play.config.ServicesConfig
 
 @Singleton
-class AppConfig @Inject() (override val runModeConfiguration: Configuration, environment: Environment)
-  extends ServicesConfig with AppName {
+class FrontendAppConfig @Inject() (override val runModeConfiguration: Configuration, environment: Environment)
+  extends ServicesConfig {
 
   override protected def mode: Mode = environment.mode
-  override protected def appNameConfiguration: Configuration = runModeConfiguration
 
   private def loadConfig(key: String): String =
     runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
