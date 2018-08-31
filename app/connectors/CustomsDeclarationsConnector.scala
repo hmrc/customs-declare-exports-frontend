@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.AppConfig
 import javax.inject.Singleton
 import models.{CustomsDeclarationsResponse, SignedInUser}
-import models.wco.MetaData
+import uk.gov.hmrc.wco.dec.MetaData
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}

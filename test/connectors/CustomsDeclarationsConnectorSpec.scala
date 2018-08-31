@@ -20,7 +20,7 @@ import java.util.UUID
 
 import base.SpecBase
 import models.{CustomsDeclarationsResponse, SignedInUser}
-import models.wco.{Declaration, MetaData}
+import uk.gov.hmrc.wco.dec.{Declaration, MetaData}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status._

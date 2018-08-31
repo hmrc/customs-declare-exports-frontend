@@ -16,12 +16,12 @@
 
 package config
 
+import base.SpecBase
 import features.{Feature, FeatureStatus}
 import play.api.mvc.Call
-import test.CustomsPlaySpec
 
 class
-AppConfigSpec extends CustomsPlaySpec {
+AppConfigSpec extends SpecBase {
 
   val config = app.injector.instanceOf[AppConfig]
 
