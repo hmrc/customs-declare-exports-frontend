@@ -52,6 +52,14 @@ class AppConfig @Inject() (override val runModeConfiguration: Configuration, env
   lazy val loginContinueUrl = loadConfig("urls.loginContinue")
   lazy val customsDeclarationsUrl = loadConfig("urls.customsDeclarations")
 
+  lazy val customsDeclarationsEndpoint = baseUrl("customs-declarations")
+  lazy val submitImportDeclarationUri = getConfString("customs-declarations.submit-uri",
+    throw new IllegalStateException("Missing configuration for Customs Declarations submission URI"))
+  lazy val developerHubClientId = appName
+  lazy val customsDeclarationsApiVersion = getConfString("customs-declarations.api-version",
+    throw new IllegalStateException("Missing configuration for Customs Declarations API version"))
+
+
   lazy val languageTranslationEnabled =
     runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
 

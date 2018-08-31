@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package forms
 
 import play.api.data.Form
@@ -6,24 +22,24 @@ import play.api.data.validation.Constraints._
 import uk.gov.voa.play.form.ConditionalMappings._
 
 case class SimpleDeclarationForm(
-    ducr: String = "",
-    isConsolidateDucrtoWiderShipment: Boolean = false,
-    mucr: Option[String] = None,
-    isDeclarationForSomeoneElse: Boolean = false,
-    isAddressAndEORICorrect: Boolean = false,
-    haveRepresentative: Boolean = false,
-    isConsignorAddressAndEORICorrect: Boolean = false,
-    consigneeAddress: Address = Address(),
-    isFinalDestination: Boolean = false,
-    goodsPackage: GoodsPackage = GoodsPackage(),
-    doYouKnowCustomsProcedureCode: Boolean = false,
-    customsProcedure: String = "",
-    wasPreviousCustomsProcedure: Boolean = false,
-    additionalCustomsProcedure: String = "",
-    doYouWantAddAdditionalInformation: Boolean = false,
-    addAnotherItem: Boolean = false,
-    officeOfExit: String = "",
-    knowConsignmentDispatchCountry: Boolean = false)
+                                  ducr: String = "",
+                                  isConsolidateDucrtoWiderShipment: Boolean = false,
+                                  mucr: Option[String] = None,
+                                  isDeclarationForSomeoneElse: Boolean = false,
+                                  isAddressAndEORICorrect: Boolean = false,
+                                  haveRepresentative: Boolean = false,
+                                  isConsignorAddressAndEORICorrect: Boolean = false,
+                                  consigneeAddress: SimpleAddress = SimpleAddress(),
+                                  isFinalDestination: Boolean = false,
+                                  goodsPackage: GoodsPackage = GoodsPackage(),
+                                  doYouKnowCustomsProcedureCode: Boolean = false,
+                                  customsProcedure: String = "",
+                                  wasPreviousCustomsProcedure: Boolean = false,
+                                  additionalCustomsProcedure: String = "",
+                                  doYouWantAddAdditionalInformation: Boolean = false,
+                                  addAnotherItem: Boolean = false,
+                                  officeOfExit: String = "",
+                                  knowConsignmentDispatchCountry: Boolean = false)
   extends DataFormats {
 
   def apply(): Form[SimpleDeclarationForm] =
@@ -37,7 +53,7 @@ case class SimpleDeclarationForm(
         "isAddressAndEORICorrect" -> boolean,
         "haveRepresentative" -> boolean,
         "isConsignorAddressAndEORICorrect" -> boolean,
-        "consigneeAddress" -> Address.addressMapping,
+        "consigneeAddress" -> SimpleAddress.addressMapping,
         "isFinalDestination" -> boolean,
         "goodsPackage" -> GoodsPackage.packageMapping,
         "doYouKnowCustomsProcedureCode" -> boolean,
@@ -64,7 +80,7 @@ trait DataFormats {
   )
 }
 
-case class Address(
+case class SimpleAddress(
   fullName: Option[String] = None,
   building: Option[String] = None,
   street: Option[String] = None,
@@ -73,7 +89,7 @@ case class Address(
   country: Option[String] = None
 )
 
-object Address {
+object SimpleAddress {
   val addressMapping = mapping(
     "fullName" -> optional(text),
     "building" -> optional(text),
@@ -81,7 +97,7 @@ object Address {
     "townOrCity" -> optional(text),
     "postCode" -> optional(text),
     "country" -> optional(text)
-  )(Address.apply)(Address.unapply)
+  )(SimpleAddress.apply)(SimpleAddress.unapply)
 }
 
 case class GoodsPackage(

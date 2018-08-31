@@ -26,10 +26,12 @@ class SimpleDeclarationControllerSpec extends SpecBase{
 
   "SimpleDeclarationSpec" should {
     "process only authenticated user requests " in {
+      authroizedUser()
       val result = (route(app, getRequest(uri)))
-      result.map(status(_) must be (UNAUTHORIZED))
+      result.map(status(_) must be (OK))
     }
     "return 200 with a success" in {
+      authroizedUser()
       val result = (route(app, getRequest(uri)))
       result.map(status(_) must be (OK))
     }

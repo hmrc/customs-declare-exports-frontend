@@ -20,7 +20,8 @@ import features.{Feature, FeatureStatus}
 import play.api.mvc.Call
 import test.CustomsPlaySpec
 
-class AppConfigSpec extends CustomsPlaySpec {
+class
+AppConfigSpec extends CustomsPlaySpec {
 
   val config = app.injector.instanceOf[AppConfig]
 
@@ -94,6 +95,21 @@ class AppConfigSpec extends CustomsPlaySpec {
 
     "return correct value for isFeatureOn method" in {
       config.isFeatureOn(Feature.default) must be (false)
+    }
+    "have a submit import declarations uri" in {
+      config.submitImportDeclarationUri must be ("/")
+    }
+
+    "have customs declarations endpoint" in {
+      config.customsDeclarationsEndpoint must be ("http://localhost:6790")
+    }
+
+    "have customs declarations API version" in {
+      config.customsDeclarationsApiVersion must be ("2.0")
+    }
+
+    "have HMRC Developer Hub Client ID" in {
+      config.developerHubClientId must be (config.appName)
     }
   }
 }

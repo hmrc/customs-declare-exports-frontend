@@ -33,7 +33,7 @@ object AppDependencies {
     "org.pegdown" % "pegdown" % "1.6.0" % "test",
     "org.jsoup" % "jsoup" % "1.10.3" % "test",
     "com.typesafe.play" %% "play-test" % PlayVersion.current % "test",
-    "org.mockito" % "mockito-all" % "1.10.19" % "test",
+    "org.mockito" % "mockito-core" % "2.13.0" % "test",
     "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
   )
 

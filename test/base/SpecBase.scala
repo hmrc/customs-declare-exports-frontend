@@ -16,11 +16,22 @@
 
 package base
 
+import java.io.StringReader
 import java.util.UUID
 
 import akka.stream.Materializer
 import config.AppConfig
-import controllers.actions.{TestAuthAction, FakeAuthAction, AuthAction}
+import controllers.actions.FakeAuthAction.defaultUser
+import controllers.actions.{AuthAction, AuthActionImpl, FakeAuthAction}
+import javax.xml.XMLConstants
+import javax.xml.transform.Source
+import javax.xml.transform.stream.StreamSource
+import javax.xml.validation.{Schema, SchemaFactory}
+import models.SignedInUser
+import models.requests.AuthenticatedRequest
+import org.mockito.{ArgumentMatcher, ArgumentMatchers}
+import org.mockito.Mockito.when
+import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.Application
@@ -29,18 +40,33 @@ import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.concurrent.Execution.Implicits
 import play.api.libs.ws.WSClient
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.Token
-import play.filters.csrf.{CSRFConfig, CSRFFilter, CSRFConfigProvider}
-import uk.gov.hmrc.http.SessionKeys
+import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
+import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.retrieve.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, Retrieval, ~}
+import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Random
 
-trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
+trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
   protected val contextPath: String = "/customs-declare-exports"
 
-  override lazy val app: Application = GuiceApplicationBuilder().build()
+  class TestAuthAction extends AuthAction {
+    override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
+      block(AuthenticatedRequest(request, FakeAuthAction.defaultUser))
+  }
+  val testAuthAction = new TestAuthAction
+
+  lazy val mockAuthConnector:AuthConnector = mock[AuthConnector]
+//  lazy val mockAuthAction:AuthActionImpl = mock[AuthActionImpl]
+
+  override lazy val app: Application = GuiceApplicationBuilder().overrides(bind[AuthConnector].to(mockAuthConnector),
+    bind[AuthAction].to(testAuthAction)).build()
 
   implicit val mat: Materializer = app.materializer
   implicit val ec: ExecutionContext = Implicits.defaultContext
@@ -50,8 +76,9 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
-  def authenticate: AuthAction = injector.instanceOf[TestAuthAction]
+  def authenticate: AuthActionImpl = injector.instanceOf[AuthActionImpl]
 
+//  def authConnector:AuthConnector = injector.instanceOf[AuthConnector]
   def cfg:CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
 
   def token = injector.instanceOf[CSRFFilter].tokenProvider.generateToken
@@ -78,6 +105,47 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
       withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*).
       withSession(session.toSeq: _*).copyFakeRequest(tags = tags)
   }
+
+
+  val enrolment:Predicate = Enrolment("HMRC-CUS-ORG")
+
+  def cdsEnrollmentMatcher(user: SignedInUser): ArgumentMatcher[Predicate] = new ArgumentMatcher[Predicate] {
+    override  def matches(p: Predicate): Boolean = p ==  enrolment && user.enrolments.getEnrolment("HMRC-CUS-ORG").isDefined
+  }
+
+  //noinspection ConvertExpressionToSAM
+  val noBearerTokenMatcher: ArgumentMatcher[HeaderCarrier] = new ArgumentMatcher[HeaderCarrier] {
+    override def matches(hc: HeaderCarrier): Boolean = hc != null && hc.authorization.isEmpty
+  }
+
+  def authroizedUser(user: SignedInUser = newUser("12345","external1")): Unit = {
+    when(
+      mockAuthConnector.authorise(
+          ArgumentMatchers.argThat(cdsEnrollmentMatcher(user)),
+          ArgumentMatchers.eq(credentials and name and email and affinityGroup and internalId and allEnrolments))(
+          ArgumentMatchers.any(), ArgumentMatchers.any())
+    ).thenReturn(
+      Future.successful(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email), user.affinityGroup),
+        user.internalId), user.enrolments))
+    )
+  }
+
+  protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
+
+  def newUser(eori: String, externalId: String): SignedInUser = SignedInUser(
+    Credentials("2345235235","GovernmentGateway"),
+    Name(Some("Aldo"),Some("Rain")),
+    Some("amina@hmrc.co.uk"),
+    eori,
+    externalId,
+    Some("Int-ba17b467-90f3-42b6-9570-73be7b78eb2b"),
+    Some(AffinityGroup.Individual),
+    Enrolments(Set(
+      Enrolment("IR-SA",List(EnrolmentIdentifier("UTR","111111111")),"Activated",None),
+      Enrolment("IR-CT",List(EnrolmentIdentifier("UTR","222222222")),"Activated",None),
+      Enrolment("HMRC-CUS-ORG",List(EnrolmentIdentifier("EORINumber", eori)),"Activated",None)
+    ))
+  )
 
 
 }
