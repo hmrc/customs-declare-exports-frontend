@@ -20,8 +20,7 @@ import base.SpecBase
 import features.{Feature, FeatureStatus}
 import play.api.mvc.Call
 
-class
-AppConfigSpec extends SpecBase {
+class AppConfigSpec extends SpecBase {
 
   val config = app.injector.instanceOf[AppConfig]
 
@@ -36,12 +35,12 @@ AppConfigSpec extends SpecBase {
 
     "have report a problem partial url" in {
       config.reportAProblemPartialUrl must be
-      ("http://localhost:9250/contact/problem_reports_ajax?service=customsdecexfrontend")
+        ("http://localhost:9250/contact/problem_reports_ajax?service=customsdecexfrontend")
     }
 
     "have report a problem non js url" in {
       config.reportAProblemNonJSUrl must be
-      ("http://localhost:9250/contact/problem_reports_nonjs?service=customsdecexfrontend")
+        ("http://localhost:9250/contact/problem_reports_nonjs?service=customsdecexfrontend")
     }
 
     "have beta feedback url" in {
@@ -82,7 +81,7 @@ AppConfigSpec extends SpecBase {
 
     "route to swich language for English should correct call" in {
       config.routeToSwitchLanguage("english") must be
-      (Call("GET", "/customs-declare-exports-frontend/language/english"))
+        (Call("GET", "/customs-declare-exports-frontend/language/english"))
     }
 
     "have default feature status" in {

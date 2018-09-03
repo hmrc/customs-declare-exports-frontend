@@ -59,7 +59,6 @@ class AppConfig @Inject() (override val runModeConfiguration: Configuration, env
   lazy val customsDeclarationsApiVersion = getConfString("customs-declarations.api-version",
     throw new IllegalStateException("Missing configuration for Customs Declarations API version"))
 
-
   lazy val languageTranslationEnabled =
     runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
 

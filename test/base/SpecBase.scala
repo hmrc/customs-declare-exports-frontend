@@ -16,21 +16,15 @@
 
 package base
 
-import java.io.StringReader
 import java.util.UUID
 
 import akka.stream.Materializer
 import config.AppConfig
-import controllers.actions.FakeAuthAction.defaultUser
 import controllers.actions.{AuthAction, AuthActionImpl, FakeAuthAction}
-import javax.xml.XMLConstants
-import javax.xml.transform.Source
-import javax.xml.transform.stream.StreamSource
-import javax.xml.validation.{Schema, SchemaFactory}
 import models.SignedInUser
 import models.requests.AuthenticatedRequest
-import org.mockito.{ArgumentMatcher, ArgumentMatchers}
 import org.mockito.Mockito.when
+import org.mockito.{ArgumentMatcher, ArgumentMatchers}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
@@ -44,10 +38,10 @@ import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrievals._
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, Retrieval, ~}
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -62,8 +56,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
   }
   val testAuthAction = new TestAuthAction
 
-  lazy val mockAuthConnector:AuthConnector = mock[AuthConnector]
-//  lazy val mockAuthAction:AuthActionImpl = mock[AuthActionImpl]
+  lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
   override lazy val app: Application = GuiceApplicationBuilder().overrides(bind[AuthConnector].to(mockAuthConnector),
     bind[AuthAction].to(testAuthAction)).build()
@@ -78,7 +71,6 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
   def authenticate: AuthActionImpl = injector.instanceOf[AuthActionImpl]
 
-//  def authConnector:AuthConnector = injector.instanceOf[AuthConnector]
   def cfg:CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
 
   def token = injector.instanceOf[CSRFFilter].tokenProvider.generateToken

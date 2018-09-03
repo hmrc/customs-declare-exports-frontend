@@ -28,15 +28,12 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
-
 @Singleton
 class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
   def submitImportDeclaration(metaData: MetaData, badgeIdentifier: Option[String] = None)
                              (implicit hc: HeaderCarrier, ec: ExecutionContext, user: SignedInUser): Future[CustomsDeclarationsResponse] =
     postMetaData(appConfig.submitImportDeclarationUri, metaData, badgeIdentifier)
-
 
   private def postMetaData(uri: String,
                            metaData: MetaData,
@@ -45,13 +42,11 @@ class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: H
     post(uri, metaData.toXml, badgeIdentifier)
 
   //noinspection ConvertExpressionToSAM
-  private implicit val responseReader: HttpReads[CustomsDeclarationsResponse] = new HttpReads[CustomsDeclarationsResponse] {
-    override def read(method: String, url: String, response: HttpResponse): CustomsDeclarationsResponse = CustomsDeclarationsResponse(
-      response.status,
-      response.header("X-Conversation-ID")
-    )
-  }
-
+  private implicit val responseReader: HttpReads[CustomsDeclarationsResponse] =
+    new HttpReads[CustomsDeclarationsResponse] {
+      override def read(method: String, url: String, response: HttpResponse): CustomsDeclarationsResponse =
+        CustomsDeclarationsResponse(response.status, response.header("X-Conversation-ID"))
+    }
 
   private[connectors] def post(uri: String, body: String, badgeIdentifier: Option[String] = None)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] = {
     val headers: Seq[(String, String)] = Seq(
@@ -61,5 +56,4 @@ class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: H
     ) ++ badgeIdentifier.map(id => "X-Badge-Identifier" -> id)
     httpClient.POSTString[CustomsDeclarationsResponse](s"${appConfig.customsDeclarationsEndpoint}$uri", body, headers)(responseReader, hc, ec)
   }
-
 }

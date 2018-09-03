@@ -19,7 +19,6 @@ package controllers
 import base.SpecBase
 import play.api.test.Helpers._
 
-
 class SimpleDeclarationControllerSpec extends SpecBase{
 
   val uri = uriWithContextPath("/simple-declaration")

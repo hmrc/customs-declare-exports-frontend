@@ -85,16 +85,17 @@ class CustomsDeclarationsConnectorSpec extends SpecBase with BeforeAndAfterEach 
                               (implicit rds: HttpReads[O],
                                hc: HeaderCarrier,
                                ec: ExecutionContext): Future[O] = (url, body, headers) match {
-      case _ if !isValidImportDeclarationXml(body) => throw new BadRequestException(s"Expected: valid XML: $expectedBody. \nGot: invalid XML: $body")
-      case _ if !isAuthenticated(headers.toMap, hc) => throw new UnauthorizedException("Submission declaration request was not authenticated")
+      case _ if !isValidImportDeclarationXml(body) =>
+        throw new BadRequestException(s"Expected: valid XML: $expectedBody. \nGot: invalid XML: $body")
+      case _ if !isAuthenticated(headers.toMap, hc) =>
+        throw new UnauthorizedException("Submission declaration request was not authenticated")
       case _ if forceServerError => throw new InternalServerException("Customs Declarations has gone bad.")
       case _ if url == expectedUrl && body == expectedBody && headers.toMap == expectedHeaders =>
         Future.successful(CustomsDeclarationsResponse(202, Some(conversationId)).asInstanceOf[O])
-      case _ => throw new BadRequestException(s"Expected: \nurl = '$expectedUrl', \nbody = '$expectedBody', \nheaders = '$expectedHeaders'.\nGot: \nurl = '$url', \nbody = '$body', \nheaders = '$headers'.")
+      case _ =>
+        throw new BadRequestException(s"Expected: \nurl = '$expectedUrl', \nbody = '$expectedBody', \nheaders = '$expectedHeaders'.\nGot: \nurl = '$url', \nbody = '$body', \nheaders = '$headers'.")
     }
 
     private def isAuthenticated(headers: Map[String, String], hc: HeaderCarrier): Boolean = hc.authorization.isDefined
-
   }
-
 }
