@@ -71,7 +71,7 @@ class CustomsDeclarationsConnectorSpec extends SpecBase with BeforeAndAfterEach 
     ) ++ badgeIdentifier.map(id => "X-Badge-Identifier" -> id)
     val http = new MockHttpClient(expectedUrl, expectedBody, expectedHeaders, forceServerError, conversationId)
     val client = new CustomsDeclarationsConnector(appConfig, http)
-    test(client.submitImportDeclaration(metaData, badgeIdentifier)(hc, ec, user))
+    test(client.submitExportDeclaration(metaData, badgeIdentifier)(hc, ec, user))
   }
 
   class MockHttpClient(expectedUrl: String, expectedBody: String, expectedHeaders: Map[String, String],

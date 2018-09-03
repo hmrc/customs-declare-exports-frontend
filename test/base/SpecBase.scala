@@ -20,11 +20,13 @@ import java.util.UUID
 
 import akka.stream.Materializer
 import config.AppConfig
+import connectors.CustomsDeclarationsConnector
 import controllers.actions.{AuthAction, AuthActionImpl, FakeAuthAction}
-import models.SignedInUser
+import models.{CustomsDeclarationsResponse, SignedInUser}
 import models.requests.AuthenticatedRequest
 import org.mockito.Mockito.when
 import org.mockito.{ArgumentMatcher, ArgumentMatchers}
+import org.mockito.ArgumentMatchers.any
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
@@ -58,9 +60,10 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
   val testAuthAction = new TestAuthAction
 
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  lazy val mockCustomsDeclarationsConnector: CustomsDeclarationsConnector = mock[CustomsDeclarationsConnector]
 
   override lazy val app: Application = GuiceApplicationBuilder().overrides(bind[AuthConnector].to(mockAuthConnector),
-    bind[AuthAction].to(testAuthAction)).build()
+    bind[AuthAction].to(testAuthAction),bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector)).build()
 
   implicit val mat: Materializer = app.materializer
   implicit val ec: ExecutionContext = Implicits.defaultContext
@@ -130,7 +133,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
       mockAuthConnector.authorise(
           ArgumentMatchers.argThat(cdsEnrollmentMatcher(user)),
           ArgumentMatchers.eq(credentials and name and email and affinityGroup and internalId and allEnrolments))(
-          ArgumentMatchers.any(), ArgumentMatchers.any())
+          any(), any())
     ).thenReturn(
       Future.successful(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email), user.affinityGroup),
         user.internalId), user.enrolments))
@@ -153,6 +156,11 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
       Enrolment("HMRC-CUS-ORG",List(EnrolmentIdentifier("EORINumber", eori)),"Activated",None)
     ))
   )
+
+  def succesfulCustomsDeclarationReponse() = {
+    when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(),
+      any())(any(), any(),any())).thenReturn(Future.successful(CustomsDeclarationsResponse(202,Some("1234"))))
+  }
 
 
 }

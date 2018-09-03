@@ -17,13 +17,16 @@
 package controllers
 
 import config.AppConfig
+import connectors.CustomsDeclarationsConnector
 import controllers.actions.AuthAction
 import forms.{SimpleDeclarationForm, SimpleDeclarationFormProvider}
 import javax.inject.Inject
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.wco.dec.{Declaration, GoodsShipment, MetaData, Ucr}
 import views.html.simpleDeclaration
 
 import scala.concurrent.Future
@@ -31,7 +34,8 @@ import scala.concurrent.Future
 
 class SimpleDeclarationController @Inject()(appConfig: AppConfig,
                                              authenticate: AuthAction,
-                                            formProvider: SimpleDeclarationFormProvider
+                                            formProvider: SimpleDeclarationFormProvider,
+                                            customsDeclarationsConnector: CustomsDeclarationsConnector
                                              )(implicit val messagesApi: MessagesApi)
 
   extends FrontendController with I18nSupport {
@@ -43,12 +47,24 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
   }
 
   def onSubmit(): Action[AnyContent] = authenticate.async { implicit request =>
+    implicit val signedInUser = request.user
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(simpleDeclaration(appConfig, formWithErrors))),
-      value =>
-        Future.successful(Ok("Declaration has been submitted successfully."))
-    )
+      form => {
+        customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{
+          resp =>
+            resp.status match  {
+            case ACCEPTED => Future.successful(Ok("Declaration has been submitted successfully."))
+            case _ => Logger.error(s"Error from Customs declarations api ${resp.toString}");
+              Future.successful(Ok("Declaration Submission unsuccessful."))
+          }
+        }
+      })
+  }
+
+  private def createMetadataDeclaration(form:SimpleDeclarationForm) : MetaData = {
+          MetaData(declaration=Declaration(goodsShipment = Some(GoodsShipment(ucr = Some(Ucr(traderAssignedReferenceId = Some("1234")))))))
   }
 
 }

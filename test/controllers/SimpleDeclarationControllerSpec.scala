@@ -104,16 +104,18 @@ class SimpleDeclarationControllerSpec extends SpecBase{
     "should validate form submitted" in {
       authorizedUser()
       val result = route(app, postRequest(uri, wrongJson))
-
+      succesfulCustomsDeclarationReponse()
       result.map(contentAsString(_) must not be ("Declaration has been submitted successfully."))
     }
 
     "should redirect to next page" in {
       authorizedUser()
       val result = route(app, postRequest(uri, jsonBody))
-
+      succesfulCustomsDeclarationReponse()
       result.map(status(_) must be(OK))
       result.map(contentAsString(_) must be ("Declaration has been submitted successfully."))
     }
   }
+
+
 }
