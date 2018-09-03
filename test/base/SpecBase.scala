@@ -33,8 +33,9 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.concurrent.Execution.Implicits
+import play.api.libs.json.JsValue
 import play.api.libs.ws.WSClient
-import play.api.mvc.{AnyContentAsEmpty, Request, Result}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson, Request, Result}
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
@@ -71,9 +72,9 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
   def authenticate: AuthActionImpl = injector.instanceOf[AuthActionImpl]
 
-  def cfg:CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
+  val cfg: CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
 
-  def token = injector.instanceOf[CSRFFilter].tokenProvider.generateToken
+  val token = injector.instanceOf[CSRFFilter].tokenProvider.generateToken
 
   def wsClient: WSClient = injector.instanceOf[WSClient]
 
@@ -93,11 +94,25 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
       Token.NameRequestTag -> cfg.tokenName,
       Token.RequestTag -> token
     )
-    FakeRequest("GET", uri).
-      withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*).
-      withSession(session.toSeq: _*).copyFakeRequest(tags = tags)
+    FakeRequest("GET", uri)
+      .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
+      .withSession(session.toSeq: _*).copyFakeRequest(tags = tags)
   }
 
+  protected def postRequest(uri: String, body: JsValue, headers: Map[String, String] = Map.empty): FakeRequest[AnyContentAsJson] = {
+    val session: Map[String, String] = Map(
+      SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
+      SessionKeys.userId -> FakeAuthAction.defaultUser.internalId.get
+    )
+    val tags = Map(
+      Token.NameRequestTag -> cfg.tokenName,
+      Token.RequestTag -> token
+    )
+    FakeRequest("POST", uri)
+      .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
+      .withSession(session.toSeq: _*).copyFakeRequest(tags = tags)
+      .withJsonBody(body)
+  }
 
   val enrolment:Predicate = Enrolment("HMRC-CUS-ORG")
 
@@ -110,7 +125,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
     override def matches(hc: HeaderCarrier): Boolean = hc != null && hc.authorization.isEmpty
   }
 
-  def authroizedUser(user: SignedInUser = newUser("12345","external1")): Unit = {
+  def authorizedUser(user: SignedInUser = newUser("12345","external1")): Unit = {
     when(
       mockAuthConnector.authorise(
           ArgumentMatchers.argThat(cdsEnrollmentMatcher(user)),
