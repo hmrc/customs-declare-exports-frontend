@@ -16,11 +16,11 @@
 
 package config
 
+import base.SpecBase
 import features.{Feature, FeatureStatus}
 import play.api.mvc.Call
-import test.CustomsPlaySpec
 
-class AppConfigSpec extends CustomsPlaySpec {
+class AppConfigSpec extends SpecBase {
 
   val config = app.injector.instanceOf[AppConfig]
 
@@ -35,12 +35,12 @@ class AppConfigSpec extends CustomsPlaySpec {
 
     "have report a problem partial url" in {
       config.reportAProblemPartialUrl must be
-      ("http://localhost:9250/contact/problem_reports_ajax?service=customsdecexfrontend")
+        ("http://localhost:9250/contact/problem_reports_ajax?service=customsdecexfrontend")
     }
 
     "have report a problem non js url" in {
       config.reportAProblemNonJSUrl must be
-      ("http://localhost:9250/contact/problem_reports_nonjs?service=customsdecexfrontend")
+        ("http://localhost:9250/contact/problem_reports_nonjs?service=customsdecexfrontend")
     }
 
     "have beta feedback url" in {
@@ -81,7 +81,7 @@ class AppConfigSpec extends CustomsPlaySpec {
 
     "route to swich language for English should correct call" in {
       config.routeToSwitchLanguage("english") must be
-      (Call("GET", "/customs-declare-exports-frontend/language/english"))
+        (Call("GET", "/customs-declare-exports-frontend/language/english"))
     }
 
     "have default feature status" in {
@@ -94,6 +94,21 @@ class AppConfigSpec extends CustomsPlaySpec {
 
     "return correct value for isFeatureOn method" in {
       config.isFeatureOn(Feature.default) must be (false)
+    }
+    "have a submit import declarations uri" in {
+      config.submitImportDeclarationUri must be ("/")
+    }
+
+    "have customs declarations endpoint" in {
+      config.customsDeclarationsEndpoint must be ("http://localhost:6790")
+    }
+
+    "have customs declarations API version" in {
+      config.customsDeclarationsApiVersion must be ("2.0")
+    }
+
+    "have HMRC Developer Hub Client ID" in {
+      config.developerHubClientId must be (config.appName)
     }
   }
 }

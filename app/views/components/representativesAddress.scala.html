@@ -22,11 +22,13 @@
             <label class="form-label" for="fullNameInput">
                 @messages("address.fullName")
             </label>
-            <input class="form-control"
-                   name="address.fullName"
-                   type="text"
-                   id="fullNameInput"
-                   value=@{form("address.fullName").value}>
+            <input
+                class="form-control"
+                name="fullName"
+                type="text"
+                id="fullNameInput"
+                value=@{form("fullName").value}
+            >
         </div>
 
         <br>
@@ -35,16 +37,20 @@
             <label class="form-label" for="buildingAndStreetInput">
                 @messages("address.buildingAndStreet")
             </label>
-            <input class="form-control compound"
-                   name="address.building"
-                   type="text"
-                   id="buildingAndStreetInput"
-                   value=@{form("address.building").value}>
-            <input class="form-control"
-                   name="address.street"
-                   type="text"
-                   id="buildingAndStreetSecondInput"
-                   value=@{form("address.street").value}>
+            <input
+                class="form-control compound"
+                name="building"
+                type="text"
+                id="buildingAndStreetInput"
+                value=@{form("building").value}
+            >
+            <input
+                class="form-control"
+                name="street"
+                type="text"
+                id="buildingAndStreetSecondInput"
+                value=@{form("street").value}
+            >
         </div>
 
         <br>
@@ -53,11 +59,28 @@
             <label class="form-label" for="townOrCityInput">
                 @messages("address.city")
             </label>
-            <input class="form-control"
-                   name="address.townOrCity"
-                   type="text"
-                   id="townOrCityInput"
-                   value=@{form("address.townOrCity").value}>
+            <input
+                class="form-control"
+                name="townOrCity"
+                type="text"
+                id="townOrCityInput"
+                value=@{form("townOrCity").value}
+            >
+        </div>
+
+        <br>
+
+        <div className="panel panel-border-narrow" id="county">
+            <label class="form-label" for="county-input">
+                @messages("address.county")
+            </label>
+            <input
+                class="form-control"
+                name="county"
+                type="text"
+                id="county-input"
+                value=@{form("county").value}
+            >
         </div>
 
         <br>
@@ -66,11 +89,13 @@
             <label class="form-label" for="postcode-input">
                 @messages("address.postcode")
             </label>
-            <input class="form-control form-control-1-4"
-                   name="address.postcode"
-                   type="text"
-                   id="postcode-input"
-                   value=@{form("address.postcode").value}>
+            <input
+                class="form-control form-control-1-4"
+                name="postcode"
+                type="text"
+                id="postcode-input"
+                value=@{form("postcode").value}
+            >
         </div>
 
         <br>
@@ -79,13 +104,14 @@
             <label class="form-label" for="country-input">
                 @messages("address.country")
             </label>
-            <input class="form-control"
-                   name="address.country"
-                   type="text"
-                   id="country-input"
-                   value=@{form("address.country").value}>
+            <input
+                class="form-control"
+                name="country"
+                type="text"
+                id="country-input"
+                value=@{form("country").value}
+            >
         </div>
     </fieldset>
-
     <br>
 </div>

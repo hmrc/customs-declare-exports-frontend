@@ -37,3 +37,5 @@ object WhoseDeclaration {
   implicit val enumerable: Enumerable[WhoseDeclaration] =
     Enumerable(values.toSeq.map(v => v.toString -> v): _*)
 }
+
+case class CustomsDeclarationsResponse(status: Int, conversationId: Option[String])

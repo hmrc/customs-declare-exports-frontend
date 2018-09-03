@@ -22,13 +22,12 @@ import javax.xml.XMLConstants
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.{Schema, SchemaFactory}
+import uk.gov.hmrc.wco.dec.MetaData
+import org.scalatestplus.play.PlaySpec
 
-import models.wco.MetaData
+import scala.xml.{Elem, SAXException, XML}
 
-import scala.xml.{XML, Elem, SAXException}
-
-trait XmlBehaviours {
-  this: CustomsPlaySpec =>
+trait XmlBehaviours extends PlaySpec {
 
   val importDeclarationSchemaResources = Seq("/wco-declaration-schemas/declaration/DocumentMetaData_2_DMS.xsd",
     "/wco-declaration-schemas/declaration/WCO_DEC_2_DMS.xsd")

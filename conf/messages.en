@@ -176,3 +176,7 @@ address.error.required.country = Enter country
 
 pagination.prev = Prev
 pagination.next = Next
+
+simpleDeclaration.title = Simple declaration
+simpleDeclaration.heading = Simple declaration
+isDeclarationForSomeoneElse.no = No - I'm making this declaration for myself

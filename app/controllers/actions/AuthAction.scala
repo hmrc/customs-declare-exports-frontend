@@ -38,7 +38,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised().retrieve(credentials and name and email and externalId and internalId  and affinityGroup and allEnrolments) {
+    authorised(Enrolment("HMRC-CUS-ORG")).retrieve(credentials and name and email and externalId and internalId  and affinityGroup and allEnrolments) {
       case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments =>
         val eori = allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber"))
         // TODO add correct eori validation not only isEmpty
