@@ -23,7 +23,7 @@
                 @messages("address.fullName")
             </label>
             <input class="form-control"
-                   name="fullName"
+                   name="address.fullName"
                    type="text"
                    id="fullNameInput"
                    value=@{form("address.fullName").value}>
@@ -36,12 +36,12 @@
                 @messages("address.buildingAndStreet")
             </label>
             <input class="form-control compound"
-                   name="building"
+                   name="address.building"
                    type="text"
                    id="buildingAndStreetInput"
                    value=@{form("address.building").value}>
             <input class="form-control"
-                   name="street"
+                   name="address.street"
                    type="text"
                    id="buildingAndStreetSecondInput"
                    value=@{form("address.street").value}>
@@ -54,7 +54,7 @@
                 @messages("address.city")
             </label>
             <input class="form-control"
-                   name="townOrCity"
+                   name="address.townOrCity"
                    type="text"
                    id="townOrCityInput"
                    value=@{form("address.townOrCity").value}>
@@ -67,7 +67,7 @@
                 @messages("address.postcode")
             </label>
             <input class="form-control form-control-1-4"
-                   name="postcode"
+                   name="address.postcode"
                    type="text"
                    id="postcode-input"
                    value=@{form("address.postcode").value}>
@@ -80,7 +80,7 @@
                 @messages("address.country")
             </label>
             <input class="form-control"
-                   name="country"
+                   name="address.country"
                    type="text"
                    id="country-input"
                    value=@{form("address.country").value}>

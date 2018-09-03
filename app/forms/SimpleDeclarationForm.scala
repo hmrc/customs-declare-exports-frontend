@@ -22,25 +22,27 @@ import play.api.data.validation.Constraints._
 import uk.gov.voa.play.form.ConditionalMappings._
 
 case class SimpleDeclarationForm(
-                                  ducr: String = "",
-                                  isConsolidateDucrtoWiderShipment: Boolean = false,
-                                  mucr: Option[String] = None,
-                                  isDeclarationForSomeoneElse: Boolean = false,
-                                  isAddressAndEORICorrect: Boolean = false,
-                                  haveRepresentative: Boolean = false,
-                                  isConsignorAddressAndEORICorrect: Boolean = false,
-                                  consigneeAddress: SimpleAddress = SimpleAddress(),
-                                  isFinalDestination: Boolean = false,
-                                  goodsPackage: GoodsPackage = GoodsPackage(),
-                                  doYouKnowCustomsProcedureCode: Boolean = false,
-                                  customsProcedure: String = "",
-                                  wasPreviousCustomsProcedure: Boolean = false,
-                                  additionalCustomsProcedure: String = "",
-                                  doYouWantAddAdditionalInformation: Boolean = false,
-                                  addAnotherItem: Boolean = false,
-                                  officeOfExit: String = "",
-                                  knowConsignmentDispatchCountry: Boolean = false)
-  extends DataFormats {
+                                  ducr: String,
+                                  isConsolidateDucrtoWiderShipment: Boolean,
+                                  mucr: Option[String],
+                                  isDeclarationForSomeoneElse: Boolean,
+                                  isAddressAndEORICorrect: Boolean,
+                                  haveRepresentative: Boolean,
+                                  isConsignorAddressAndEORICorrect: Boolean,
+                                  address: SimpleAddress,
+                                  isFinalDestination: Boolean,
+                                  goodsPackage: GoodsPackage,
+                                  doYouKnowCustomsProcedureCode: Boolean,
+                                  customsProcedure: String,
+                                  wasPreviousCustomsProcedure: Boolean,
+                                  additionalCustomsProcedure: String,
+                                  doYouWantAddAdditionalInformation: Boolean,
+                                  addAnotherItem: Boolean,
+                                  officeOfExit: String,
+                                  knowConsignmentDispatchCountry: Boolean)
+
+class SimpleDeclarationFormProvider {
+  val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
 
   def apply(): Form[SimpleDeclarationForm] =
     Form(
@@ -53,7 +55,7 @@ case class SimpleDeclarationForm(
         "isAddressAndEORICorrect" -> boolean,
         "haveRepresentative" -> boolean,
         "isConsignorAddressAndEORICorrect" -> boolean,
-        "consigneeAddress" -> SimpleAddress.addressMapping,
+        "address" -> SimpleAddress.addressMapping,
         "isFinalDestination" -> boolean,
         "goodsPackage" -> GoodsPackage.packageMapping,
         "doYouKnowCustomsProcedureCode" -> boolean,
@@ -81,34 +83,34 @@ trait DataFormats {
 }
 
 case class SimpleAddress(
-  fullName: Option[String] = None,
-  building: Option[String] = None,
-  street: Option[String] = None,
-  townOrCity: Option[String] = None,
-  postCode: Option[String] = None,
-  country: Option[String] = None
+  fullName: Option[String],
+  building: Option[String],
+  street: Option[String],
+  townOrCity: Option[String],
+  postcode: Option[String],
+  country: Option[String]
 )
 
 object SimpleAddress {
   val addressMapping = mapping(
-    "fullName" -> optional(text),
-    "building" -> optional(text),
-    "street" -> optional(text),
-    "townOrCity" -> optional(text),
-    "postCode" -> optional(text),
-    "country" -> optional(text)
+    "fullName" -> optional(text()),
+    "building" -> optional(text()),
+    "street" -> optional(text()),
+    "townOrCity" -> optional(text()),
+    "postcode" -> optional(text()),
+    "country" -> optional(text())
   )(SimpleAddress.apply)(SimpleAddress.unapply)
 }
 
 case class GoodsPackage(
-  commodityCode: String = "",
-  isDescriptionOfYourGoodsCorrect: Boolean = false,
-  isItemOnUNDGList: Boolean = false,
-  addLicenceForItem: Boolean = false,
-  noOfPackages: String = "",
-  packageType: String = "",
-  goodsInContainer: Boolean = false,
-  addAnotherPackage: Boolean = false
+  commodityCode: String,
+  isDescriptionOfYourGoodsCorrect: Boolean,
+  isItemOnUNDGList: Boolean,
+  addLicenceForItem: Boolean,
+  noOfPackages: String,
+  packageType: String,
+  goodsInContainer: Boolean,
+  addAnotherPackage: Boolean
 )
 
 object GoodsPackage {
