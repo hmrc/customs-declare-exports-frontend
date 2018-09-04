@@ -116,6 +116,4 @@ class SimpleDeclarationControllerSpec extends SpecBase{
       result.map(contentAsString(_) must be ("Declaration has been submitted successfully."))
     }
   }
-
-
 }

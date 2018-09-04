@@ -66,6 +66,7 @@ class AppConfig @Inject() (override val runModeConfiguration: Configuration, env
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")
   )
+
   def routeToSwitchLanguage: String => Call = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =

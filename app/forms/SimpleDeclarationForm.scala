@@ -22,24 +22,25 @@ import play.api.data.validation.Constraints._
 import uk.gov.voa.play.form.ConditionalMappings._
 
 case class SimpleDeclarationForm(
-                                  ducr: String,
-                                  isConsolidateDucrtoWiderShipment: Boolean,
-                                  mucr: Option[String],
-                                  isDeclarationForSomeoneElse: Boolean,
-                                  isAddressAndEORICorrect: Boolean,
-                                  haveRepresentative: Boolean,
-                                  isConsignorAddressAndEORICorrect: Boolean,
-                                  address: SimpleAddress,
-                                  isFinalDestination: Boolean,
-                                  goodsPackage: GoodsPackage,
-                                  doYouKnowCustomsProcedureCode: Boolean,
-                                  customsProcedure: String,
-                                  wasPreviousCustomsProcedure: Boolean,
-                                  additionalCustomsProcedure: String,
-                                  doYouWantAddAdditionalInformation: Boolean,
-                                  addAnotherItem: Boolean,
-                                  officeOfExit: String,
-                                  knowConsignmentDispatchCountry: Boolean)
+  ducr: String,
+  isConsolidateDucrToWiderShipment: Boolean,
+  mucr: Option[String],
+  isDeclarationForSomeoneElse: Boolean,
+  isAddressAndEORICorrect: Boolean,
+  haveRepresentative: Boolean,
+  isConsignorAddressAndEORICorrect: Boolean,
+  address: SimpleAddress,
+  isFinalDestination: Boolean,
+  goodsPackage: GoodsPackage,
+  doYouKnowCustomsProcedureCode: Boolean,
+  customsProcedure: String,
+  wasPreviousCustomsProcedure: Boolean,
+  additionalCustomsProcedure: String,
+  doYouWantAddAdditionalInformation: Boolean,
+  addAnotherItem: Boolean,
+  officeOfExit: String,
+  knowConsignmentDispatchCountry: Boolean
+)
 
 class SimpleDeclarationFormProvider {
   val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
@@ -48,8 +49,8 @@ class SimpleDeclarationFormProvider {
     Form(
       mapping(
         "ducr" -> nonEmptyText.verifying(pattern(correctDucrFormat.r, error="error.ducr")),
-        "isConsolidateDucrtoWiderShipment" -> boolean,
-        "mucr" -> mandatoryIfTrue("isConsolidateDucrtoWiderShipment",
+        "isConsolidateDucrToWiderShipment" -> boolean,
+        "mucr" -> mandatoryIfTrue("isConsolidateDucrToWiderShipment",
           nonEmptyText.verifying(pattern("""^[A-Za-z0-9 \-,.&'\/]{1,65}$""".r, error="error.ducr"))),
         "isDeclarationForSomeoneElse" -> boolean,
         "isAddressAndEORICorrect" -> boolean,

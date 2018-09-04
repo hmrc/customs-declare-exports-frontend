@@ -87,8 +87,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
   protected def uriWithContextPath(path: String): String = s"$contextPath$path"
 
-  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty):
-  FakeRequest[AnyContentAsEmpty.type] = {
+  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty): FakeRequest[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.internalId.get
@@ -128,7 +127,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
     override def matches(hc: HeaderCarrier): Boolean = hc != null && hc.authorization.isEmpty
   }
 
-  def authorizedUser(user: SignedInUser = newUser("12345","external1")): Unit = {
+  def authorizedUser(user: SignedInUser = newUser("12345","external1")): Unit =
     when(
       mockAuthConnector.authorise(
           ArgumentMatchers.argThat(cdsEnrollmentMatcher(user)),
@@ -138,7 +137,6 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
       Future.successful(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email), user.affinityGroup),
         user.internalId), user.enrolments))
     )
-  }
 
   protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
 
@@ -157,10 +155,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
     ))
   )
 
-  def succesfulCustomsDeclarationReponse() = {
+  def succesfulCustomsDeclarationReponse() =
     when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(),
       any())(any(), any(),any())).thenReturn(Future.successful(CustomsDeclarationsResponse(202,Some("1234"))))
-  }
-
-
 }

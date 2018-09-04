@@ -36,7 +36,7 @@ import uk.gov.hmrc.play.http.ws._
 import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-class CustomsDeclarationsConnectorSpec extends SpecBase with BeforeAndAfterEach with XmlBehaviours  with ScalaFutures{
+class CustomsDeclarationsConnectorSpec extends SpecBase with BeforeAndAfterEach with XmlBehaviours  with ScalaFutures {
 
   val eori = Some(randomString(16))
   val lrn = Some(randomString(35))
@@ -52,8 +52,8 @@ class CustomsDeclarationsConnectorSpec extends SpecBase with BeforeAndAfterEach 
     "save declaration on acceptance" in submitDeclarationScenario(metaData = MetaData(declaration = Declaration(
       functionalReferenceId = lrn
     )), conversationId = conversationId) { resp =>
-      Await.result(resp, 1.second)}
-
+      Await.result(resp, 1.second)
+    }
   }
 
   def submitDeclarationScenario(metaData: MetaData,

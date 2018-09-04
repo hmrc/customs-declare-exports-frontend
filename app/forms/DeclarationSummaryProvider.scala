@@ -23,13 +23,13 @@ import models.Address
 import utils.UserAnswers
 
 case class ConsignmentAnswers(
-                               reference: Option[String] = None,
-                               ownDescription: Option[String] = None,
-                               timeOfDeclaration: Option[String] = None,
-                               whoseDeclaration: Option[String] = None,
-                               eoriNumber: Option[String] = None,
-                               representativesAddress: Option[Address] = None,
-                               representative: Option[String] = None
+  reference: Option[String] = None,
+  ownDescription: Option[String] = None,
+  timeOfDeclaration: Option[String] = None,
+  whoseDeclaration: Option[String] = None,
+  eoriNumber: Option[String] = None,
+  representativesAddress: Option[Address] = None,
+  representative: Option[String] = None
 )
 
 case class ItemsAnswers()

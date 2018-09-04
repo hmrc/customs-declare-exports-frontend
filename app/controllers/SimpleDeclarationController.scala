@@ -31,13 +31,11 @@ import views.html.simpleDeclaration
 
 import scala.concurrent.Future
 
-
 class SimpleDeclarationController @Inject()(appConfig: AppConfig,
-                                             authenticate: AuthAction,
+                                            authenticate: AuthAction,
                                             formProvider: SimpleDeclarationFormProvider,
-                                            customsDeclarationsConnector: CustomsDeclarationsConnector
-                                             )(implicit val messagesApi: MessagesApi)
-
+                                            customsDeclarationsConnector: CustomsDeclarationsConnector)
+                                           (implicit val messagesApi: MessagesApi)
   extends FrontendController with I18nSupport {
 
   val form: Form[SimpleDeclarationForm] = formProvider()
@@ -48,6 +46,7 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
 
   def onSubmit(): Action[AnyContent] = authenticate.async { implicit request =>
     implicit val signedInUser = request.user
+
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(simpleDeclaration(appConfig, formWithErrors))),
@@ -55,18 +54,19 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
         customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{
           resp =>
             resp.status match  {
-            case ACCEPTED => Future.successful(Ok("Declaration has been submitted successfully."))
-            case _ => Logger.error(s"Error from Customs declarations api ${resp.toString}");
-              Future.successful(Ok("Declaration Submission unsuccessful."))
+              case ACCEPTED => Future.successful(Ok("Declaration has been submitted successfully."))
+              case _ => Logger.error(s"Error from Customs declarations api ${resp.toString}")
+                Future.successful(Ok("Declaration Submission unsuccessful."))
           }
         }
-      })
+      }
+    )
   }
 
-  private def createMetadataDeclaration(form:SimpleDeclarationForm) : MetaData = {
-          MetaData(declaration=Declaration(goodsShipment = Some(GoodsShipment(ucr = Some(Ucr(traderAssignedReferenceId = Some("1234")))))))
-  }
-
+  private def createMetadataDeclaration(form:SimpleDeclarationForm) : MetaData =
+    MetaData(
+      declaration = Declaration(goodsShipment = Some(GoodsShipment(ucr = Some(Ucr(traderAssignedReferenceId = Some("1234"))))))
+    )
 }
 
 
