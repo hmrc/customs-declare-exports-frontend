@@ -16,7 +16,6 @@
 
 package controllers
 
-import api.declaration.{Declarant, Declaration, SubmitDeclaration}
 import config.AppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
@@ -37,8 +36,7 @@ class DeclarationSummaryController @Inject()(
     navigator: Navigator,
     authenticate: AuthAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    submitDeclaration: SubmitDeclaration)
+    requireData: DataRequiredAction)
   extends FrontendController
   with I18nSupport {
 
@@ -52,18 +50,9 @@ class DeclarationSummaryController @Inject()(
       Ok(declarationSummary(appConfig, declaration, NormalMode))
   }
 
-  def onSubmit(): Action[AnyContent] = (authenticate andThen getData).async {
-    implicit request =>
-      // Below declaration from users answers
-      // val declaration = DeclarationSummary.buildFromAnswers(request.userAnswers)
-      // TODO No CSP is only for test purposes, we should throw exception here
-      val bearerToken = hc.authorization.map(_.value).getOrElse("Non CSP")
-
-      // TODO generate declaration based on user answers
-      submitDeclaration.submit(new Declaration(new Declarant("123")), bearerToken).flatMap{ _ =>
-        dataCacheConnector.clearAndRetrieveCache(request.externalId).map{ cache =>
-          navigator.redirect(SubmitDeclarationId, NormalMode, cache)
-        }
-      }
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData).async { implicit request =>
+    dataCacheConnector.clearAndRetrieveCache(request.externalId).map { cache =>
+      navigator.redirect(SubmitDeclarationId, NormalMode, cache)
+    }
   }
 }

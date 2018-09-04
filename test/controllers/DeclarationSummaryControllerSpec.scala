@@ -16,7 +16,6 @@
 
 package controllers
 
-import api.declaration.SubmitDeclaration
 import connectors.FakeDataCacheConnector
 import controllers.actions._
 import org.scalatest.mockito.MockitoSugar
@@ -27,7 +26,6 @@ class DeclarationSummaryControllerSpec extends ControllerSpecBase with MockitoSu
 
   trait Scope {
     val mockFakeNavigator = mock[FakeNavigator]
-    val mockSubmitDeclaration = mock[SubmitDeclaration]
 
     def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
       new DeclarationSummaryController(
@@ -37,8 +35,7 @@ class DeclarationSummaryControllerSpec extends ControllerSpecBase with MockitoSu
         mockFakeNavigator,
         FakeAuthAction,
         dataRetrievalAction,
-        new DataRequiredActionImpl,
-        mockSubmitDeclaration
+        new DataRequiredActionImpl
       )
   }
 
