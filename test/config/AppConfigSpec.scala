@@ -108,7 +108,7 @@ class AppConfigSpec extends SpecBase {
     }
 
     "have HMRC Developer Hub Client ID" in {
-      config.developerHubClientId must be (config.appName)
+      config.developerHubClientId must be ("clientid1")
     }
   }
 }
