@@ -96,9 +96,9 @@ class SimpleDeclarationControllerSpec extends SpecBase{
       authorizedUser()
       val result = route(app, getRequest(uri))
 
-      result.map(contentAsString(_).contains("Do you have a representative?") must be (true))
-      result.map(contentAsString(_).contains("Is consolidate DUCR to wider shipment?") must be (true))
-      result.map(contentAsString(_).contains("Building and street") must be (true))
+      result.map(contentAsString(_) must include ("Do you have a representative?"))
+      result.map(contentAsString(_) must include ("Is consolidate DUCR to wider shipment?"))
+      result.map(contentAsString(_) must include ("Building and street"))
     }
 
     "should validate form submitted" in {
