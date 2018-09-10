@@ -19,7 +19,59 @@ package forms
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
+import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings._
+
+
+
+case class SimpleAddress(
+                          fullName: Option[String],
+                          building: Option[String],
+                          street: Option[String],
+                          townOrCity: Option[String],
+                          postcode: Option[String],
+                          country: Option[String]
+                        )
+
+object SimpleAddress {
+  val addressMapping = mapping(
+    "fullName" -> optional(text()),
+    "building" -> optional(text()),
+    "street" -> optional(text()),
+    "townOrCity" -> optional(text()),
+    "postcode" -> optional(text()),
+    "country" -> optional(text())
+  )(SimpleAddress.apply)(SimpleAddress.unapply)
+  implicit val formats = Json.format[SimpleAddress]
+
+}
+
+case class GoodsPackage(
+                         commodityCode: String,
+                         isDescriptionOfYourGoodsCorrect: Boolean,
+                         isItemOnUNDGList: Boolean,
+                         addLicenceForItem: Boolean,
+                         noOfPackages: String,
+                         packageType: String,
+                         goodsInContainer: Boolean,
+                         addAnotherPackage: Boolean
+                       )
+
+object GoodsPackage {
+  val packageMapping = mapping(
+    "commodityCode" -> text,
+    "isDescriptionOfYourGoodsCorrect" -> boolean,
+    "isItemOnUNDGList" -> boolean,
+    "addLicenceForItem" -> boolean,
+    "noOfPackages" -> text,
+    "packageType" -> text,
+    "goodsInContainer" -> boolean,
+    "addAnotherPackage" -> boolean
+  )(GoodsPackage.apply)(GoodsPackage.unapply)
+  implicit val formats = Json.format[GoodsPackage]
+
+}
+
 
 case class SimpleDeclarationForm(
                                   ducr: String,
@@ -41,7 +93,7 @@ case class SimpleDeclarationForm(
                                   officeOfExit: String,
                                   knowConsignmentDispatchCountry: Boolean)
 
-class SimpleDeclarationFormProvider {
+class SimpleDeclarationFormMapping {
   val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
 
   def apply(): Form[SimpleDeclarationForm] =
@@ -68,6 +120,8 @@ class SimpleDeclarationFormProvider {
         "knowConsignmentDispatchCountry" -> boolean
       )(SimpleDeclarationForm.apply)(SimpleDeclarationForm.unapply)
     )
+
+  implicit val formats = Json.format[SimpleDeclarationForm]
 }
 
 trait DataFormats {
@@ -80,48 +134,4 @@ trait DataFormats {
     "^[A-Z]{2}\\/[A-Z]{4}-[0-9A-Z]{5,}",
     "^[A-Z]{2}\\/[0-9]{12}-[0-9A-Z]{1,}"
   )
-}
-
-case class SimpleAddress(
-  fullName: Option[String],
-  building: Option[String],
-  street: Option[String],
-  townOrCity: Option[String],
-  postcode: Option[String],
-  country: Option[String]
-)
-
-object SimpleAddress {
-  val addressMapping = mapping(
-    "fullName" -> optional(text()),
-    "building" -> optional(text()),
-    "street" -> optional(text()),
-    "townOrCity" -> optional(text()),
-    "postcode" -> optional(text()),
-    "country" -> optional(text())
-  )(SimpleAddress.apply)(SimpleAddress.unapply)
-}
-
-case class GoodsPackage(
-  commodityCode: String,
-  isDescriptionOfYourGoodsCorrect: Boolean,
-  isItemOnUNDGList: Boolean,
-  addLicenceForItem: Boolean,
-  noOfPackages: String,
-  packageType: String,
-  goodsInContainer: Boolean,
-  addAnotherPackage: Boolean
-)
-
-object GoodsPackage {
-  val packageMapping = mapping(
-    "commodityCode" -> text,
-    "isDescriptionOfYourGoodsCorrect" -> boolean,
-    "isItemOnUNDGList" -> boolean,
-    "addLicenceForItem" -> boolean,
-    "noOfPackages" -> text,
-    "packageType" -> text,
-    "goodsInContainer" -> boolean,
-    "addAnotherPackage" -> boolean
-  )(GoodsPackage.apply)(GoodsPackage.unapply)
 }

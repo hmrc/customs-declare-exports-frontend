@@ -21,14 +21,14 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import base.SpecBase
+import base.CustomExportsBaseSpec
 import controllers.routes
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class AuthActionSpec extends SpecBase {
+class AuthActionSpec extends CustomExportsBaseSpec {
 
   class Harness(authAction: AuthAction) extends Controller {
     def onPageLoad() = authAction { _ => Ok }

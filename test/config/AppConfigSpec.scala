@@ -16,11 +16,11 @@
 
 package config
 
-import base.SpecBase
+import base.CustomExportsBaseSpec
 import features.{Feature, FeatureStatus}
 import play.api.mvc.Call
 
-class AppConfigSpec extends SpecBase {
+class AppConfigSpec extends CustomExportsBaseSpec {
 
   val config = app.injector.instanceOf[AppConfig]
 
@@ -79,11 +79,6 @@ class AppConfigSpec extends SpecBase {
       config.languageMap.get("cymraeg").isDefined must be (true)
     }
 
-    "route to swich language for English should correct call" in {
-      config.routeToSwitchLanguage("english") must be
-        (Call("GET", "/customs-declare-exports-frontend/language/english"))
-    }
-
     "have default feature status" in {
       config.defaultFeatureStatus must be (FeatureStatus.disabled)
     }
@@ -108,7 +103,7 @@ class AppConfigSpec extends SpecBase {
     }
 
     "have HMRC Developer Hub Client ID" in {
-      config.developerHubClientId must be (config.appName)
+      config.developerHubClientId must be ("customs-declare-imports-frontend")
     }
   }
 }

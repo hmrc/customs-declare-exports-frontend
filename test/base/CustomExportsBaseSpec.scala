@@ -48,9 +48,15 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.reflect.ClassTag
 import scala.util.Random
+import org.scalatest.concurrent.ScalaFutures
+import play.api.data.Form
+import services.CustomsCacheService
+import uk.gov.hmrc.http.cache.client.CacheMap
 
-trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
+
+trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures{
   protected val contextPath: String = "/customs-declare-exports"
 
   class TestAuthAction extends AuthAction {
@@ -61,9 +67,12 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
   lazy val mockCustomsDeclarationsConnector: CustomsDeclarationsConnector = mock[CustomsDeclarationsConnector]
+  lazy val mockCustomsCacheService:CustomsCacheService = mock[CustomsCacheService]
 
   override lazy val app: Application = GuiceApplicationBuilder().overrides(bind[AuthConnector].to(mockAuthConnector),
-    bind[AuthAction].to(testAuthAction),bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector)).build()
+    bind[AuthAction].to(testAuthAction),
+    bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector),
+    bind[CustomsCacheService].to(mockCustomsCacheService)).build()
 
   implicit val mat: Materializer = app.materializer
   implicit val ec: ExecutionContext = Implicits.defaultContext
@@ -86,6 +95,9 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
   def messages: Messages = messagesApi.preferred(fakeRequest)
 
   protected def uriWithContextPath(path: String): String = s"$contextPath$path"
+
+  protected def component[T: ClassTag]: T = app.injector.instanceOf[T]
+
 
   protected def getRequest(uri: String, headers: Map[String, String] = Map.empty):
   FakeRequest[AnyContentAsEmpty.type] = {
@@ -162,5 +174,13 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
       any())(any(), any(),any())).thenReturn(Future.successful(CustomsDeclarationsResponse(202,Some("1234"))))
   }
 
+  def withCaching[T](form:Form[T]) = {
+    when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(),
+      any())(any(), any(),any())).thenReturn(Future.successful(Some(form)))
+
+    when(mockCustomsCacheService.cache[T](any(),
+      any(),any())(any(), any(),any())).thenReturn(Future.successful(CacheMap("id1",Map.empty)))
+
+  }
 
 }

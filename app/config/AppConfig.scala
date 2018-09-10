@@ -24,7 +24,6 @@ import controllers.routes
 import features.Feature.Feature
 import features.{Feature, FeatureStatus}
 import features.FeatureStatus.FeatureStatus
-import play.api.mvc.Call
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 
 @Singleton
@@ -39,6 +38,10 @@ class AppConfig @Inject() (override val runModeConfiguration: Configuration, env
 
   private lazy val contactHost = runModeConfiguration.getString("contact-frontend.host").getOrElse("")
   private val contactFormServiceIdentifier = "customsdecexfrontend"
+
+  lazy val keyStoreSource: String = appName
+  lazy val keyStoreUrl: String = baseUrl("keystore")
+  lazy val sessionCacheDomain: String = getConfString("cachable.session-cache.domain", throw new Exception(s"Could not find config 'cachable.session-cache.domain'"))
 
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
   lazy val analyticsHost = loadConfig(s"google-analytics.host")
@@ -55,7 +58,8 @@ class AppConfig @Inject() (override val runModeConfiguration: Configuration, env
   lazy val customsDeclarationsEndpoint = baseUrl("customs-declarations")
   lazy val submitImportDeclarationUri = getConfString("customs-declarations.submit-uri",
     throw new IllegalStateException("Missing configuration for Customs Declarations submission URI"))
-  lazy val developerHubClientId = appName
+lazy val developerHubClientId: String = loadConfig("hmrc-developers-hub.client-id")
+
   lazy val customsDeclarationsApiVersion = getConfString("customs-declarations.api-version",
     throw new IllegalStateException("Missing configuration for Customs Declarations API version"))
 
@@ -66,7 +70,6 @@ class AppConfig @Inject() (override val runModeConfiguration: Configuration, env
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")
   )
-  def routeToSwitchLanguage: String => Call = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))

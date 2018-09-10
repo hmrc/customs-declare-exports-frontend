@@ -71,13 +71,6 @@
 
 @mainContentHeader = {
 
-    @if(appConfig.languageTranslationEnabled) {
-        @views.html.language_selection(
-            appConfig.languageMap,
-            appConfig.routeToSwitchLanguage,
-            Some("translate u-align--right"))
-    }
-
     @if(contentHeader.isDefined) {
         @uiLayouts.main_content_header(contentHeader = contentHeader.get)
     }
