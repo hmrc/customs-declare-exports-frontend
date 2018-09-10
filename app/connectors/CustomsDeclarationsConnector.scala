@@ -34,7 +34,8 @@ class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: H
 
   def submitExportDeclaration(metaData: MetaData, badgeIdentifier: Option[String] = None)
                              (implicit hc: HeaderCarrier, ec: ExecutionContext, user: SignedInUser): Future[CustomsDeclarationsResponse] =
-    postMetaData(appConfig.submitImportDeclarationUri, metaData, badgeIdentifier).map{ res=> Logger.debug(s"CUSTOMS_DECLARATIONS response is  --> ${res.toString} " ); res}
+    postMetaData(appConfig.submitImportDeclarationUri, metaData, badgeIdentifier)
+      .map{ res=> Logger.debug(s"CUSTOMS_DECLARATIONS response is  --> ${res.toString} " ); res}
 
   private def postMetaData(uri: String,
                            metaData: MetaData,
@@ -49,7 +50,8 @@ class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: H
         CustomsDeclarationsResponse(response.status, response.header("X-Conversation-ID"))
     }
 
-  private[connectors] def post(uri: String, body: String, badgeIdentifier: Option[String] = None)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] = {
+  private[connectors] def post(uri: String, body: String, badgeIdentifier: Option[String] = None)
+                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] = {
     val headers: Seq[(String, String)] = Seq(
       "X-Client-ID" -> appConfig.developerHubClientId,
       HeaderNames.ACCEPT -> s"application/vnd.hmrc.${appConfig.customsDeclarationsApiVersion}+xml",
