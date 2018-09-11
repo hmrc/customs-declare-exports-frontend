@@ -36,7 +36,6 @@ import views.html.simpleDeclaration
 
 import scala.concurrent.Future
 
-
 class SimpleDeclarationController @Inject()(appConfig: AppConfig,
                                             authenticate: AuthAction,
                                             customsDeclarationsConnector: CustomsDeclarationsConnector,
@@ -46,7 +45,9 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
   extends FrontendController with I18nSupport {
 
   val formId = "SimpleDeclarationForm"
+
   implicit val formats = Json.format[SimpleDeclarationForm]
+
   val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
 
   val form = Form(mapping(
@@ -74,7 +75,7 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
 
     customsCacheService.fetchAndGetEntry[SimpleDeclarationForm](appConfig.appName, formId).map{
-          case Some(data) => Ok(simpleDeclaration(appConfig, form.fill(data)))
+      case Some(data) => Ok(simpleDeclaration(appConfig, form.fill(data)))
       case _ =>  Ok(simpleDeclaration(appConfig, form))
     }
   }
@@ -88,23 +89,20 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
       form => {
         request.session
         customsCacheService.cache[SimpleDeclarationForm](appConfig.appName,formId,form).flatMap{ res =>
-          customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{
-            resp =>
-              resp.status match  {
-                case ACCEPTED => Future.successful(Ok("Declaration has been submitted successfully."))
-                case _ => Logger.error(s"Error from Customs declarations api ${resp.toString}");
-                  Future.successful(Ok("Declaration Submission unsuccessful."))
-              }
-
+          customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{ resp =>
+            resp.status match  {
+              case ACCEPTED => Future.successful(Ok("Declaration has been submitted successfully."))
+              case _ => Logger.error(s"Error from Customs declarations api ${resp.toString}");
+                Future.successful(Ok("Declaration Submission unsuccessful."))
+            }
+          }
         }
-        }
-      })
+      }
+    )
   }
 
-  private def createMetadataDeclaration(form:SimpleDeclarationForm) : MetaData = {
-          MetaData(declaration=Declaration(goodsShipment = Some(GoodsShipment(ucr = Some(Ucr(traderAssignedReferenceId = Some("1234")))))))
-  }
-
+  private def createMetadataDeclaration(form:SimpleDeclarationForm) : MetaData =
+    MetaData(declaration=Declaration(goodsShipment = Some(GoodsShipment(ucr = Some(Ucr(traderAssignedReferenceId = Some("1234")))))))
 }
 
 

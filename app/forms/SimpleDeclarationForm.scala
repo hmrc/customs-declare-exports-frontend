@@ -16,13 +16,8 @@
 
 package forms
 
-import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
-import play.api.data.validation.Constraints._
 import play.api.libs.json.Json
-import uk.gov.voa.play.form.ConditionalMappings._
-
-
 
 case class SimpleAddress(
                           fullName: Option[String],
@@ -42,8 +37,8 @@ object SimpleAddress {
     "postcode" -> optional(text()),
     "country" -> optional(text())
   )(SimpleAddress.apply)(SimpleAddress.unapply)
-  implicit val formats = Json.format[SimpleAddress]
 
+  implicit val formats = Json.format[SimpleAddress]
 }
 
 case class GoodsPackage(
@@ -68,10 +63,9 @@ object GoodsPackage {
     "goodsInContainer" -> boolean,
     "addAnotherPackage" -> boolean
   )(GoodsPackage.apply)(GoodsPackage.unapply)
+
   implicit val formats = Json.format[GoodsPackage]
-
 }
-
 
 case class SimpleDeclarationForm(
   ducr: String,

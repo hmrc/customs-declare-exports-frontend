@@ -25,7 +25,6 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec{
 
   val uri = uriWithContextPath("/simple-declaration")
 
-
   "SimpleDeclarationSpec" should {
     "process only authenticated user requests " in {
       authorizedUser()
@@ -74,7 +73,4 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec{
       result.map(contentAsString(_) must be ("Declaration has been submitted successfully."))
     }
   }
-
-
-
 }
