@@ -60,7 +60,17 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec{
       succesfulCustomsDeclarationReponse()
 
       val result = route(app, postRequest(uri, wrongJson))
-      result.map(contentAsString(_) must not be ("Declaration has been submitted successfully."))
+      result.map(contentAsString(_) must include ("Incorrect DUCR"))
+    }
+
+    "should redirect to error page when submission failed in customs declarations" in {
+      authorizedUser()
+      withCaching(None)
+      customsDeclaration400Reponse()
+
+      val result = route(app, postRequest(uri, jsonBody))
+      result.map(contentAsString(_) must include ("There is a problem with a service"))
+      result.map(contentAsString(_) must include ("Please try again later."))
     }
 
     "should redirect to next page" in {
@@ -70,7 +80,8 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec{
 
       val result = route(app, postRequest(uri, jsonBody))
       result.map(status(_) must be(OK))
-      result.map(contentAsString(_) must be ("Declaration has been submitted successfully."))
+      result.map(contentAsString(_) must include ("Confirmation page"))
+      result.map(contentAsString(_) must include ("Your reference number is"))
     }
   }
 }

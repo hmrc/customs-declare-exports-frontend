@@ -21,6 +21,7 @@ error.required = Please enter a value
 error.summary.title = There’s been a problem
 error.summary.text = Check the following
 error.consignment = Please answer on the question
+error.ducr = Incorrect DUCR
 error.ducr.empty = DUCR number can not be empty
 error.ducr.format = DUCR number is in incorrect format
 error.mucr.format = MUCR number is in incorrect format
