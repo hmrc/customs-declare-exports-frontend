@@ -180,3 +180,9 @@ pagination.next = Next
 simpleDeclaration.title = Simple declaration
 simpleDeclaration.heading = Simple declaration
 isDeclarationForSomeoneElse.no = No - I'm making this declaration for myself
+
+global.error.title = There is a problem - Declare customs exports for customs exports - GOV.UK
+global.error.heading = There is a problem with a service
+global.error.message = Please try again later.
+
+confirmationPage.title = Confirmation page
