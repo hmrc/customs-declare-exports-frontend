@@ -19,44 +19,82 @@ package controllers
 import config.AppConfig
 import connectors.CustomsDeclarationsConnector
 import controllers.actions.AuthAction
-import forms.{SimpleDeclarationForm, SimpleDeclarationFormProvider}
+import forms.{GoodsPackage, SimpleAddress, SimpleDeclarationForm}
 import javax.inject.Inject
 import play.api.Logger
 import play.api.data.Form
+import play.api.data.Forms.{mapping, nonEmptyText, boolean, text}
+import play.api.data.validation.Constraints.pattern
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
+import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.{Declaration, GoodsShipment, MetaData, Ucr}
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfTrue
 import views.html.simpleDeclaration
 
 import scala.concurrent.Future
 
 class SimpleDeclarationController @Inject()(appConfig: AppConfig,
                                             authenticate: AuthAction,
-                                            formProvider: SimpleDeclarationFormProvider,
-                                            customsDeclarationsConnector: CustomsDeclarationsConnector)
-                                           (implicit val messagesApi: MessagesApi)
+                                            customsDeclarationsConnector: CustomsDeclarationsConnector,
+                                            customsCacheService:CustomsCacheService
+                                             )(implicit val messagesApi: MessagesApi)
+
   extends FrontendController with I18nSupport {
 
-  val form: Form[SimpleDeclarationForm] = formProvider()
+  val formId = "SimpleDeclarationForm"
+
+  implicit val formats = Json.format[SimpleDeclarationForm]
+
+  val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
+
+  val form = Form(mapping(
+      "ducr" -> nonEmptyText.verifying(pattern(correctDucrFormat.r, error = "error.ducr")),
+      "isConsolidateDucrToWiderShipment" -> boolean,
+      "mucr" -> mandatoryIfTrue("isConsolidateDucrToWiderShipment",
+        nonEmptyText.verifying(pattern("""^[A-Za-z0-9 \-,.&'\/]{1,65}$""".r, error = "error.ducr"))),
+      "isDeclarationForSomeoneElse" -> boolean,
+      "isAddressAndEORICorrect" -> boolean,
+      "haveRepresentative" -> boolean,
+      "isConsignorAddressAndEORICorrect" -> boolean,
+      "address" -> SimpleAddress.addressMapping,
+      "isFinalDestination" -> boolean,
+      "goodsPackage" -> GoodsPackage.packageMapping,
+      "doYouKnowCustomsProcedureCode" -> boolean,
+      "customsProcedure" -> text,
+      "wasPreviousCustomsProcedure" -> boolean,
+      "additionalCustomsProcedure" -> text,
+      "doYouWantAddAdditionalInformation" -> boolean,
+      "addAnotherItem" -> boolean,
+      "officeOfExit" -> text,
+      "knowConsignmentDispatchCountry" -> boolean
+    )(SimpleDeclarationForm.apply)(SimpleDeclarationForm.unapply))
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    Future.successful(Ok(simpleDeclaration(appConfig, form)))
+
+    customsCacheService.fetchAndGetEntry[SimpleDeclarationForm](appConfig.appName, formId).map{
+      case Some(data) => Ok(simpleDeclaration(appConfig, form.fill(data)))
+      case _ =>  Ok(simpleDeclaration(appConfig, form))
+    }
   }
 
   def onSubmit(): Action[AnyContent] = authenticate.async { implicit request =>
     implicit val signedInUser = request.user
 
     form.bindFromRequest().fold(
-      (formWithErrors: Form[_]) =>
+      (formWithErrors: Form[SimpleDeclarationForm]) =>
         Future.successful(BadRequest(simpleDeclaration(appConfig, formWithErrors))),
       form => {
-        customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{
-          resp =>
+        request.session
+        customsCacheService.cache[SimpleDeclarationForm](appConfig.appName,formId,form).flatMap{ res =>
+          customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{ resp =>
             resp.status match  {
               case ACCEPTED => Future.successful(Ok("Declaration has been submitted successfully."))
-              case _ => Logger.error(s"Error from Customs declarations api ${resp.toString}")
+              case _ => Logger.error(s"Error from Customs declarations api ${resp.toString}");
                 Future.successful(Ok("Declaration Submission unsuccessful."))
+            }
           }
         }
       }
@@ -64,9 +102,7 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
   }
 
   private def createMetadataDeclaration(form:SimpleDeclarationForm) : MetaData =
-    MetaData(
-      declaration = Declaration(goodsShipment = Some(GoodsShipment(ucr = Some(Ucr(traderAssignedReferenceId = Some("1234"))))))
-    )
+    MetaData(declaration=Declaration(goodsShipment = Some(GoodsShipment(ucr = Some(Ucr(traderAssignedReferenceId = Some("1234")))))))
 }
 
 

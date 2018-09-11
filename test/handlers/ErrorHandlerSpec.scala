@@ -15,19 +15,10 @@
  */
 
 package handlers
-import config.AppConfig
-import org.scalatest.{Matchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.MessagesApi
-import play.api.inject.Injector
+import base.CustomExportsBaseSpec
 import play.api.test.FakeRequest
 
-class ErrorHandlerSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
-
-  val injector: Injector = app.injector
-
-  val appConfig: AppConfig = injector.instanceOf[AppConfig]
-  val messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+class ErrorHandlerSpec extends CustomExportsBaseSpec {
 
   val errorHandler = new ErrorHandler(appConfig, messagesApi)
 
@@ -35,9 +26,9 @@ class ErrorHandlerSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
     "standardErrorTemplate" in {
       val result = errorHandler.standardErrorTemplate("Page Title", "Heading", "Message")(FakeRequest()).body
 
-      result should include ("Page Title")
-      result should include ("Heading")
-      result should include ("Message")
+      result must include ("Page Title")
+      result must include ("Heading")
+      result must include ("Message")
     }
   }
 }

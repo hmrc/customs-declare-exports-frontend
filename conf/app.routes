@@ -1,68 +1,9 @@
 # microservice specific routes
 
-GET        /                                            controllers.IndexController.onPageLoad
-
+GET        /                                            controllers.SimpleDeclarationController.displayForm()
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
-
-GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
-
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
-
-# Dashboard
-
-GET        /dashboard                                   controllers.DashboardController.onPageLoad()
-
-GET        /declarations/:page                          controllers.DeclarationsController.onPageLoad(page: Int)
-
-# Select role
-
-GET        /selectRole                                  controllers.SelectRoleController.onPageLoad()
-
-POST       /selectRole                                  controllers.SelectRoleController.onSubmit()
-
-# Consignment
-
-GET        /consignment                                 controllers.ConsignmentController.onPageLoad()
-
-POST       /consignment                                 controllers.ConsignmentController.onSubmit()
-
-# Own description
-
-GET        /ownDescription                              controllers.OwnDescriptionController.onPageLoad()
-
-POST       /ownDescription                              controllers.OwnDescriptionController.onSubmit()
-
-# Declaration for yourself or someone else
-
-GET        /whoseDeclaration                            controllers.WhoseDeclarationController.onPageLoad()
-
-POST       /whoseDeclaration                            controllers.WhoseDeclarationController.onSubmit()
-
-# Have representative
-
-GET        /haveRepresentative                          controllers.HaveRepresentativeController.onPageLoad()
-
-POST       /haveRepresentative                          controllers.HaveRepresentativeController.onSubmit()
-
-# Enter EORI
-
-GET        /enterEORI                                   controllers.EnterEORIController.onPageLoad()
-
-POST       /enterEORI                                   controllers.EnterEORIController.onSubmit()
-
-# Name and address
-
-GET        /representativesAddress                      controllers.RepresentativesAddressController.onPageLoad()
-
-POST       /representativesAddress                      controllers.RepresentativesAddressController.onSubmit()
-
-# Declaration summary
-
-GET        /declarationSummary                          controllers.DeclarationSummaryController.onPageLoad()
-
-POST       /declarationSummary                          controllers.DeclarationSummaryController.onSubmit()
 
 # Simple declaration
 

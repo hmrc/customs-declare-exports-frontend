@@ -19,9 +19,9 @@ package views
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
-import base.SpecBase
+import base.CustomExportsBaseSpec
 
-trait ViewSpecBase extends SpecBase {
+trait ViewSpecBase extends CustomExportsBaseSpec {
 
   def asDocument(html: Html): Document = Jsoup.parse(html.toString())
 

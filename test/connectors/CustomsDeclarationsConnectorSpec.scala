@@ -18,7 +18,7 @@ package connectors
 
 import java.util.UUID
 
-import base.SpecBase
+import base.CustomExportsBaseSpec
 import models.{CustomsDeclarationsResponse, SignedInUser}
 import uk.gov.hmrc.wco.dec.{Declaration, MetaData}
 import org.scalatest.BeforeAndAfterEach
@@ -36,7 +36,7 @@ import uk.gov.hmrc.play.http.ws._
 import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-class CustomsDeclarationsConnectorSpec extends SpecBase with BeforeAndAfterEach with XmlBehaviours  with ScalaFutures {
+class CustomsDeclarationsConnectorSpec extends CustomExportsBaseSpec with XmlBehaviours {
 
   val eori = Some(randomString(16))
   val lrn = Some(randomString(35))
@@ -52,8 +52,8 @@ class CustomsDeclarationsConnectorSpec extends SpecBase with BeforeAndAfterEach 
     "save declaration on acceptance" in submitDeclarationScenario(metaData = MetaData(declaration = Declaration(
       functionalReferenceId = lrn
     )), conversationId = conversationId) { resp =>
-      Await.result(resp, 1.second)
-    }
+      Await.result(resp, 1.second)}
+
   }
 
   def submitDeclarationScenario(metaData: MetaData,
@@ -79,9 +79,7 @@ class CustomsDeclarationsConnectorSpec extends SpecBase with BeforeAndAfterEach 
     extends HttpClient with WSGet with WSPut with WSPost with WSDelete with WSPatch {
     override val hooks: Seq[HttpHook] = Seq.empty
 
-    override def POSTString[O](url: String,
-                               body: String,
-                               headers: Seq[(String, String)])
+    override def POSTString[O](url: String, body: String,headers: Seq[(String, String)])
                               (implicit rds: HttpReads[O],
                                hc: HeaderCarrier,
                                ec: ExecutionContext): Future[O] = (url, body, headers) match {

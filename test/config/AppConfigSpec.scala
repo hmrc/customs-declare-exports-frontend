@@ -16,11 +16,11 @@
 
 package config
 
-import base.SpecBase
+import base.CustomExportsBaseSpec
 import features.{Feature, FeatureStatus}
 import play.api.mvc.Call
 
-class AppConfigSpec extends SpecBase {
+class AppConfigSpec extends CustomExportsBaseSpec {
 
   val config = app.injector.instanceOf[AppConfig]
 
@@ -77,11 +77,6 @@ class AppConfigSpec extends SpecBase {
 
     "have language map with Cymraeg" in {
       config.languageMap.get("cymraeg").isDefined must be (true)
-    }
-
-    "route to swich language for English should correct call" in {
-      config.routeToSwitchLanguage("english") must be
-        (Call("GET", "/customs-declare-exports-frontend/language/english"))
     }
 
     "have default feature status" in {

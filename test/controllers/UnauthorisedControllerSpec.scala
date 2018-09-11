@@ -16,10 +16,11 @@
 
 package controllers
 
+import base.CustomExportsBaseSpec
 import play.api.test.Helpers._
 import views.html.unauthorised
 
-class UnauthorisedControllerSpec extends ControllerSpecBase {
+class UnauthorisedControllerSpec extends CustomExportsBaseSpec {
 
   "Unauthorised Controller" must {
     "return 200 for a GET" in {

@@ -57,7 +57,8 @@ class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: H
       HeaderNames.ACCEPT -> s"application/vnd.hmrc.${appConfig.customsDeclarationsApiVersion}+xml",
       HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)
     ) ++ badgeIdentifier.map(id => "X-Badge-Identifier" -> id)
-    Logger.debug(s"CUSTOMS_DECLARATIONS request payload is -> ${body}")
+    Logger.debug(s"CUSTOMS_DECLARATIONS request payload is -> ${body}" )
+
     httpClient.POSTString[CustomsDeclarationsResponse](s"${appConfig.customsDeclarationsEndpoint}$uri", body, headers)(responseReader, hc, ec)
   }
 }

@@ -29,3 +29,5 @@ case class SignedInUser(
   affinityGroup: Option[AffinityGroup],
   enrolments: Enrolments
 )
+
+case class CustomsDeclarationsResponse(status: Int, conversationId: Option[String])

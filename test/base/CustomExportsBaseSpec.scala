@@ -48,9 +48,15 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.reflect.ClassTag
 import scala.util.Random
+import org.scalatest.concurrent.ScalaFutures
+import play.api.data.Form
+import services.CustomsCacheService
+import uk.gov.hmrc.http.cache.client.CacheMap
 
-trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
+
+trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures{
   protected val contextPath: String = "/customs-declare-exports"
 
   class TestAuthAction extends AuthAction {
@@ -61,9 +67,12 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
   lazy val mockCustomsDeclarationsConnector: CustomsDeclarationsConnector = mock[CustomsDeclarationsConnector]
+  lazy val mockCustomsCacheService:CustomsCacheService = mock[CustomsCacheService]
 
   override lazy val app: Application = GuiceApplicationBuilder().overrides(bind[AuthConnector].to(mockAuthConnector),
-    bind[AuthAction].to(testAuthAction),bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector)).build()
+    bind[AuthAction].to(testAuthAction),
+    bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector),
+    bind[CustomsCacheService].to(mockCustomsCacheService)).build()
 
   implicit val mat: Materializer = app.materializer
   implicit val ec: ExecutionContext = Implicits.defaultContext
@@ -87,7 +96,11 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
   protected def uriWithContextPath(path: String): String = s"$contextPath$path"
 
-  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty): FakeRequest[AnyContentAsEmpty.type] = {
+  protected def component[T: ClassTag]: T = app.injector.instanceOf[T]
+
+
+  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty):
+  FakeRequest[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.internalId.get
@@ -127,7 +140,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
     override def matches(hc: HeaderCarrier): Boolean = hc != null && hc.authorization.isEmpty
   }
 
-  def authorizedUser(user: SignedInUser = newUser("12345","external1")): Unit =
+  def authorizedUser(user: SignedInUser = newUser("12345","external1")): Unit = {
     when(
       mockAuthConnector.authorise(
           ArgumentMatchers.argThat(cdsEnrollmentMatcher(user)),
@@ -137,6 +150,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
       Future.successful(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email), user.affinityGroup),
         user.internalId), user.enrolments))
     )
+  }
 
   protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
 
@@ -155,7 +169,17 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
     ))
   )
 
-  def succesfulCustomsDeclarationReponse() =
+  def succesfulCustomsDeclarationReponse() = {
     when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(),
       any())(any(), any(),any())).thenReturn(Future.successful(CustomsDeclarationsResponse(202,Some("1234"))))
+  }
+
+  def withCaching[T](form: Option[Form[T]]) = {
+    when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(),
+      any())(any(), any(),any())).thenReturn(Future.successful(form))
+
+    when(mockCustomsCacheService.cache[T](any(),
+      any(),any())(any(), any(),any())).thenReturn(Future.successful(CacheMap("id1",Map.empty)))
+
+  }
 }
