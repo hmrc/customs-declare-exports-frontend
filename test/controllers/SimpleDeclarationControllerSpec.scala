@@ -29,7 +29,7 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec{
   "SimpleDeclarationSpec" should {
     "process only authenticated user requests " in {
       authorizedUser()
-      withCaching(createSimpleDecForm)
+      withCaching(None)
       val result = route(app, getRequest(uri))
 
       result.map(status(_) must be (OK))
@@ -37,7 +37,7 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec{
 
     "return 200 with a success" in {
       authorizedUser()
-      withCaching[SimpleDeclarationForm](createSimpleDecForm)
+      withCaching[SimpleDeclarationForm](None)
 
       val result = route(app, getRequest(uri))
 
@@ -46,7 +46,7 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec{
 
     "display Simple-declaration" in {
       authorizedUser()
-      withCaching(createSimpleDecForm)
+      withCaching(None)
 
       val result = route(app, getRequest(uri))
 
@@ -57,7 +57,7 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec{
 
     "should validate form submitted" in {
       authorizedUser()
-      withCaching(createSimpleDecForm)
+      withCaching(None)
       succesfulCustomsDeclarationReponse()
 
       val result = route(app, postRequest(uri, wrongJson))
@@ -66,7 +66,7 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec{
 
     "should redirect to next page" in {
       authorizedUser()
-      withCaching(createSimpleDecForm)
+      withCaching(None)
       succesfulCustomsDeclarationReponse()
 
       val result = route(app, postRequest(uri, jsonBody))

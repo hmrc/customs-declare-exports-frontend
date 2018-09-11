@@ -174,13 +174,12 @@ trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
       any())(any(), any(),any())).thenReturn(Future.successful(CustomsDeclarationsResponse(202,Some("1234"))))
   }
 
-  def withCaching[T](form:Form[T]) = {
+  def withCaching[T](form: Option[Form[T]]) = {
     when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(),
-      any())(any(), any(),any())).thenReturn(Future.successful(Some(form)))
+      any())(any(), any(),any())).thenReturn(Future.successful(form))
 
     when(mockCustomsCacheService.cache[T](any(),
       any(),any())(any(), any(),any())).thenReturn(Future.successful(CacheMap("id1",Map.empty)))
 
   }
-
 }

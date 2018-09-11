@@ -17,7 +17,7 @@
 package forms
 
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.{mapping, _}
 import play.api.data.validation.Constraints._
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings._
@@ -93,37 +93,6 @@ case class SimpleDeclarationForm(
   officeOfExit: String,
   knowConsignmentDispatchCountry: Boolean
 )
-
-class SimpleDeclarationFormMapping {
-  val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
-
-  def apply(): Form[SimpleDeclarationForm] =
-    Form(
-      mapping(
-        "ducr" -> nonEmptyText.verifying(pattern(correctDucrFormat.r, error="error.ducr")),
-        "isConsolidateDucrToWiderShipment" -> boolean,
-        "mucr" -> mandatoryIfTrue("isConsolidateDucrToWiderShipment",
-          nonEmptyText.verifying(pattern("""^[A-Za-z0-9 \-,.&'\/]{1,65}$""".r, error="error.ducr"))),
-        "isDeclarationForSomeoneElse" -> boolean,
-        "isAddressAndEORICorrect" -> boolean,
-        "haveRepresentative" -> boolean,
-        "isConsignorAddressAndEORICorrect" -> boolean,
-        "address" -> SimpleAddress.addressMapping,
-        "isFinalDestination" -> boolean,
-        "goodsPackage" -> GoodsPackage.packageMapping,
-        "doYouKnowCustomsProcedureCode" -> boolean,
-        "customsProcedure" -> text,
-        "wasPreviousCustomsProcedure" -> boolean,
-        "additionalCustomsProcedure" -> text,
-        "doYouWantAddAdditionalInformation" -> boolean,
-        "addAnotherItem" -> boolean,
-        "officeOfExit" -> text,
-        "knowConsignmentDispatchCountry" -> boolean
-      )(SimpleDeclarationForm.apply)(SimpleDeclarationForm.unapply)
-    )
-
-  implicit val formats = Json.format[SimpleDeclarationForm]
-}
 
 trait DataFormats {
   val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"

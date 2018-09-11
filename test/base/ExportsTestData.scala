@@ -16,10 +16,9 @@
 
 package base
 
-import forms.{SimpleDeclarationForm, SimpleDeclarationFormMapping}
+import forms.{GoodsPackage, SimpleAddress, SimpleDeclarationForm}
 import play.api.data.Form
 import play.api.libs.json.{JsBoolean, JsObject, JsString, JsValue}
-import play.api.test.FakeRequest
 
 object ExportsTestData {
 
@@ -77,12 +76,10 @@ object ExportsTestData {
   )
 
   def createSimpleDecForm() = {
-    val simleDeclarationFormMapping = new SimpleDeclarationFormMapping()
-    val form:Form[SimpleDeclarationForm] = simleDeclarationFormMapping()
-    form.bind(jsonBody)
-
+    val goodsPackage = GoodsPackage("commCode1", true, true, true, "1", "packageType", false, false)
+    val simpleAddress = SimpleAddress(None, None, None, None, None, None)
+    val form = Form
+    SimpleDeclarationForm("ducr1", false, Some("mucr"), false, false, false, false, simpleAddress, true, goodsPackage,
+      false, "customs procedure", false, "additional custom procedure", false, false, "Office of exit", true)
   }
-
-
-
 }
