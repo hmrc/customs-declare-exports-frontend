@@ -20,10 +20,12 @@ import config.AppConfig
 import connectors.CustomsDeclarationsConnector
 import controllers.actions.AuthAction
 import forms.{GoodsPackage, SimpleAddress, SimpleDeclarationForm}
+import handlers.ErrorHandler
 import javax.inject.Inject
+import models.CustomsDeclarationsResponse
 import play.api.Logger
 import play.api.data.Form
-import play.api.data.Forms.{mapping, nonEmptyText, boolean, text}
+import play.api.data.Forms.{boolean, mapping, nonEmptyText, text}
 import play.api.data.validation.Constraints.pattern
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -32,14 +34,15 @@ import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.{Declaration, GoodsShipment, MetaData, Ucr}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfTrue
-import views.html.simpleDeclaration
+import views.html.{simpleDeclaration, confirmation_page}
 
 import scala.concurrent.Future
 
 class SimpleDeclarationController @Inject()(appConfig: AppConfig,
                                             authenticate: AuthAction,
                                             customsDeclarationsConnector: CustomsDeclarationsConnector,
-                                            customsCacheService:CustomsCacheService
+                                            customsCacheService: CustomsCacheService,
+                                            errorHandler: ErrorHandler
                                              )(implicit val messagesApi: MessagesApi)
 
   extends FrontendController with I18nSupport {
@@ -88,21 +91,27 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
         Future.successful(BadRequest(simpleDeclaration(appConfig, formWithErrors))),
       form => {
         request.session
-        customsCacheService.cache[SimpleDeclarationForm](appConfig.appName,formId,form).flatMap{ res =>
-          customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{ resp =>
-            resp.status match  {
-              case ACCEPTED => Future.successful(Ok("Declaration has been submitted successfully."))
-              case _ => Logger.error(s"Error from Customs declarations api ${resp.toString}");
-                Future.successful(Ok("Declaration Submission unsuccessful."))
-            }
+        customsCacheService.cache[SimpleDeclarationForm](appConfig.appName,formId,form).flatMap{ _ =>
+          customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{
+            case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
+              Future.successful(Ok(confirmation_page(appConfig, conversationId)))
+            case error =>
+              Logger.error(s"Error from Customs declarations api ${error.toString}")
+              Future.successful(
+                BadRequest(
+                  errorHandler.standardErrorTemplate(
+                    pageTitle = messagesApi("global.error.title"),
+                    heading = messagesApi("global.error.heading"),
+                    message = messagesApi("global.error.message")
+                  )
+                )
+              )
           }
         }
       }
     )
   }
 
-  private def createMetadataDeclaration(form:SimpleDeclarationForm) : MetaData =
+  private def createMetadataDeclaration(form: SimpleDeclarationForm): MetaData =
     MetaData(declaration=Declaration(goodsShipment = Some(GoodsShipment(ucr = Some(Ucr(traderAssignedReferenceId = Some("1234")))))))
 }
-
-
