@@ -17,17 +17,28 @@
 package handlers
 
 import javax.inject.{Inject, Singleton}
-
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Request
+import play.api.mvc.{Request, RequestHeader, Result, Results}
 import play.twirl.api.Html
 import config.AppConfig
+import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
+import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
-
+import controllers.routes
+import play.api.{Configuration, Environment}
 @Singleton
 class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi)
-  extends FrontendErrorHandler with I18nSupport {
+  extends FrontendErrorHandler with I18nSupport with AuthRedirects{
+  override def config: Configuration = appConfig.runModeConfiguration
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
+  override def env: Environment = appConfig.environment
+
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
     views.html.error_template(pageTitle, heading, message, appConfig)
+
+  override def resolveError(rh: RequestHeader, ex: Throwable): Result = ex match {
+    case _: NoActiveSession => toGGLogin(rh.uri)
+    case _: InsufficientEnrolments => Results.SeeOther(routes.UnauthorisedController.onPageLoad().url)
+    case _ => super.resolveError(rh, ex)
+  }
 }

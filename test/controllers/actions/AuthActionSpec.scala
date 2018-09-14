@@ -16,118 +16,53 @@
 
 package controllers.actions
 
-import play.api.mvc.Controller
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import base.CustomExportsBaseSpec
 import controllers.routes
-import uk.gov.hmrc.http.HeaderCarrier
-
-import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class AuthActionSpec extends CustomExportsBaseSpec {
 
-  class Harness(authAction: AuthAction) extends Controller {
-    def onPageLoad() = authAction { _ => Ok }
-  }
+  val uri = uriWithContextPath("/simple-declaration")
 
   "Auth Action" when {
     "the user hasn't logged in" must {
       "redirect the user to log in " in {
-        val fakeFailingAuthConnector = new FakeFailingAuthConnector(new MissingBearerToken)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
-        val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(appConfig.loginUrl)
+        unAuthorizedUser(new MissingBearerToken)
+        val result = route(app, getRequest(uri))
+        result.map(status(_) mustBe SEE_OTHER)
+        result.map(redirectLocation(_).get must startWith(appConfig.loginUrl))
       }
     }
 
-    "the user's session has expired" must {
+        "the user's session has expired" must {
       "redirect the user to log in " in {
-        val fakeFailingAuthConnector = new FakeFailingAuthConnector(new BearerTokenExpired)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
-        val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must startWith(appConfig.loginUrl)
+        unAuthorizedUser(new BearerTokenExpired)
+        val result = route(app, getRequest(uri))
+        result.map(status(_) mustBe SEE_OTHER)
+        result.map(redirectLocation(_).get must startWith(appConfig.loginUrl))
       }
     }
 
     "the user doesn't have sufficient enrolments" must {
       "redirect the user to the unauthorised page" in {
-        val fakeFailingAuthConnector = new FakeFailingAuthConnector(new InsufficientEnrolments)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
-        val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
-      }
-    }
-
-    "the user doesn't have sufficient confidence level" must {
-      "redirect the user to the unauthorised page" in {
-        val fakeFailingAuthConnector = new FakeFailingAuthConnector(new InsufficientConfidenceLevel)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
-        val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        unAuthorizedUser(new InsufficientEnrolments())
+        val result = route(app, getRequest(uri))
+        result.map(status(_) mustBe SEE_OTHER)
+        result.map(redirectLocation(_).get must startWith(appConfig.loginUrl))
+        result.map(redirectLocation(_).get mustBe Some(routes.UnauthorisedController.onPageLoad().url))
       }
     }
 
     "the user used an unaccepted auth provider" must {
       "redirect the user to the unauthorised page" in {
-        val fakeFailingAuthConnector = new FakeFailingAuthConnector(new UnsupportedAuthProvider)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
-        val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        unAuthorizedUser(new UnsupportedAuthProvider())
+        val result = route(app, getRequest(uri))
+        result.map(status(_) mustBe SEE_OTHER)
+        result.map(redirectLocation(_).get must startWith(appConfig.loginUrl))
+        result.map(redirectLocation(_).get mustBe Some(routes.UnauthorisedController.onPageLoad().url))
       }
     }
 
-    "the user has an unsupported affinity group" must {
-      "redirect the user to the unauthorised page" in {
-        val fakeFailingAuthConnector = new FakeFailingAuthConnector(new UnsupportedAffinityGroup)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
-        val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
-      }
-    }
-
-    "the user has an unsupported credential role" must {
-      "redirect the user to the unauthorised page" in {
-        val fakeFailingAuthConnector = new FakeFailingAuthConnector(new UnsupportedCredentialRole)
-        val authAction = new AuthActionImpl(fakeFailingAuthConnector, appConfig)
-        val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
-      }
-    }
   }
 }
-
-class FakeFailingAuthConnector(exceptionToReturn: Throwable) extends AuthConnector {
-  val serviceUrl: String = ""
-
-  override def authorise[A](
-    predicate: Predicate,
-    retrieval: Retrieval[A]
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] = Future.failed(exceptionToReturn)
-}
-
-

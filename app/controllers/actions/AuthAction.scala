@@ -18,7 +18,6 @@ package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
 import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
-import play.api.mvc.Results._
 import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import config.AppConfig
 import controllers.routes
@@ -52,14 +51,6 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
           SignedInUser(credentials, name, email, eori.get.value, externalId.get, internalId, affinityGroup, allEnrolments)
 
         block(AuthenticatedRequest(request, cdsLoggedInUser))
-    } recover {
-      case _: NoActiveSession =>
-        Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
-      case _: InsufficientEnrolments =>
-        //TODO put in a redirect here to the Get an EORI page!
-        Redirect(routes.UnauthorisedController.onPageLoad)
-      case _ =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
     }
   }
 }
