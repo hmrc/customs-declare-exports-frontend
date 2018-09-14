@@ -59,11 +59,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures{
   protected val contextPath: String = "/customs-declare-exports"
 
-  class TestAuthAction extends AuthAction {
-    override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, FakeAuthAction.defaultUser))
-  }
-  val testAuthAction = new TestAuthAction
+val testAuthAction = mock[AuthActionImpl]
 
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
   lazy val mockCustomsDeclarationsConnector: CustomsDeclarationsConnector = mock[CustomsDeclarationsConnector]
@@ -151,6 +147,9 @@ trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
         user.internalId), user.enrolments))
     )
   }
+
+  def unAuthorizedUser(exceptionToReturn: Throwable): Unit =
+    when(mockAuthConnector.authorise(any(),any())(any(),any())).thenReturn(Future.failed(exceptionToReturn))
 
   protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
 

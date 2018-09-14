@@ -56,7 +56,7 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
   val form = Form(mapping(
       "ducr" -> nonEmptyText.verifying(pattern(correctDucrFormat.r, error = "error.ducr")),
       "isConsolidateDucrToWiderShipment" -> boolean,
-      "mucr" -> mandatoryIfTrue("isConsolidateDucrToWiderShipment",
+     "mucr" -> mandatoryIfTrue("isConsolidateDucrToWiderShipment",
         nonEmptyText.verifying(pattern("""^[A-Za-z0-9 \-,.&'\/]{1,65}$""".r, error = "error.ducr"))),
       "isDeclarationForSomeoneElse" -> boolean,
       "isAddressAndEORICorrect" -> boolean,
