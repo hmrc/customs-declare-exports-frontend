@@ -25,7 +25,7 @@ import javax.inject.Inject
 import models.CustomsDeclarationsResponse
 import play.api.Logger
 import play.api.data.Form
-import play.api.data.Forms.{boolean, mapping, nonEmptyText, text, optional,ignored}
+import play.api.data.Forms.{boolean, mapping, nonEmptyText, text}
 import play.api.data.validation.Constraints.pattern
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -58,7 +58,6 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
       "isConsolidateDucrToWiderShipment" -> boolean,
      "mucr" -> mandatoryIfTrue("isConsolidateDucrToWiderShipment",
         nonEmptyText.verifying(pattern("""^[A-Za-z0-9 \-,.&'\/]{1,65}$""".r, error = "error.ducr"))),
-//    "mucr" -> optional(text),
       "isDeclarationForSomeoneElse" -> boolean,
       "isAddressAndEORICorrect" -> boolean,
       "haveRepresentative" -> boolean,
