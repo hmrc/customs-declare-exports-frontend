@@ -19,13 +19,13 @@ package connectors
 import com.google.inject.Inject
 import config.AppConfig
 import javax.inject.Singleton
-import models.{CustomsDeclarationsResponse, SignedInUser}
+import models.CustomsDeclarationsResponse
 import play.api.Logger
-import uk.gov.hmrc.wco.dec.MetaData
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.wco.dec.MetaData
 
 import scala.concurrent.{ExecutionContext, Future}
 

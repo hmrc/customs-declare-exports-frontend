@@ -40,6 +40,7 @@ import play.api.libs.json.JsValue
 import play.api.libs.ws.WSClient
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson}
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST}
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services.CustomsCacheService
@@ -169,12 +170,12 @@ trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
 
   def succesfulCustomsDeclarationReponse() = {
     when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(),
-      any())(any(), any())).thenReturn(Future.successful(CustomsDeclarationsResponse(202,Some("1234"))))
+      any())(any(), any())).thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED,Some("1234"))))
   }
 
   def customsDeclaration400Reponse() = {
     when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(),
-      any())(any(), any())).thenReturn(Future.successful(CustomsDeclarationsResponse(400, None)))
+      any())(any(), any())).thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
   }
   def withCaching[T](form: Option[Form[T]]) = {
     when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(),
