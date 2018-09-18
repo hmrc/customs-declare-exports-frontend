@@ -63,6 +63,10 @@ class AppConfig @Inject() (override val runModeConfiguration: Configuration, val
     throw new IllegalStateException("Missing configuration for Customs Declarations submission URI"))
   lazy val developerHubClientId: String = loadConfig("hmrc-developers-hub.client-id")
 
+  lazy val customsDeclareExports = baseUrl("customs-declare-exports")
+  lazy val saveSubmissionResponse = getConfString("customs-declare-exports.save-response-uri",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports submission URI"))
+
   lazy val customsDeclarationsApiVersion = getConfString("customs-declarations.api-version",
     throw new IllegalStateException("Missing configuration for Customs Declarations API version"))
 

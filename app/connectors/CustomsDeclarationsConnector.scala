@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
   def submitExportDeclaration(metaData: MetaData, badgeIdentifier: Option[String] = None)
-                             (implicit hc: HeaderCarrier, ec: ExecutionContext, user: SignedInUser): Future[CustomsDeclarationsResponse] =
+                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
     postMetaData(appConfig.submitImportDeclarationUri, metaData, badgeIdentifier)
       .map{ res=> Logger.debug(s"CUSTOMS_DECLARATIONS response is  --> ${res.toString} " ); res}
 
@@ -57,8 +57,10 @@ class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: H
       HeaderNames.ACCEPT -> s"application/vnd.hmrc.${appConfig.customsDeclarationsApiVersion}+xml",
       HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)
     ) ++ badgeIdentifier.map(id => "X-Badge-Identifier" -> id)
-    Logger.debug(s"CUSTOMS_DECLARATIONS request payload is -> ${body}" )
+    Logger.debug(s"CUSTOMS_DECLARATIONS request payload is -> ${body}")
 
-    httpClient.POSTString[CustomsDeclarationsResponse](s"${appConfig.customsDeclarationsEndpoint}$uri", body, headers)(responseReader, hc, ec)
+    httpClient.POSTString[CustomsDeclarationsResponse](
+      s"${appConfig.customsDeclarationsEndpoint}$uri", body, headers
+    )(responseReader, hc, ec)
   }
 }

@@ -27,7 +27,7 @@ import org.scalatestplus.play.PlaySpec
 
 import scala.xml.{Elem, SAXException, XML}
 
-trait XmlBehaviours extends PlaySpec {
+object XmlBehaviours extends PlaySpec {
 
   val importDeclarationSchemaResources = Seq("/wco-declaration-schemas/declaration/DocumentMetaData_2_DMS.xsd",
     "/wco-declaration-schemas/declaration/WCO_DEC_2_DMS.xsd")
@@ -39,7 +39,7 @@ trait XmlBehaviours extends PlaySpec {
     validXmlScenario(importDeclarationSchemaResources)(test)
   }
 
-  protected def isValidImportDeclarationXml(xml: String): Boolean = {
+  def isValidImportDeclarationXml(xml: String): Boolean = {
     try {
       validateAgainstSchemaResources(xml, importDeclarationSchemaResources)
       true

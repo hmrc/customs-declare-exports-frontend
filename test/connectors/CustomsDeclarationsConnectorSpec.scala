@@ -18,30 +18,23 @@ package connectors
 
 import java.util.UUID
 
-import base.CustomExportsBaseSpec
-import models.{CustomsDeclarationsResponse, SignedInUser}
-import uk.gov.hmrc.wco.dec.{Declaration, MetaData}
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.ScalaFutures
+import base.{CustomExportsBaseSpec, MockHttpClient}
+import models.CustomsDeclarationsResponse
 import play.api.http.Status._
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
-import test.XmlBehaviours
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.hooks.HttpHook
 import uk.gov.hmrc.http.logging.Authorization
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.http.ws._
+import uk.gov.hmrc.wco.dec.{Declaration, MetaData}
 
 import scala.concurrent.duration._
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{Await, Future}
 
-class CustomsDeclarationsConnectorSpec extends CustomExportsBaseSpec with XmlBehaviours {
+class CustomsDeclarationsConnectorSpec extends CustomExportsBaseSpec {
 
   val eori = Some(randomString(16))
   val lrn = Some(randomString(35))
   val conversationId: String = randomString(80)
-  implicit val user: SignedInUser = newUser("3456","external2")
 
   "CustomsDeclarationsConnector " should {
 
@@ -71,29 +64,6 @@ class CustomsDeclarationsConnectorSpec extends CustomExportsBaseSpec with XmlBeh
     ) ++ badgeIdentifier.map(id => "X-Badge-Identifier" -> id)
     val http = new MockHttpClient(expectedUrl, expectedBody, expectedHeaders, forceServerError, conversationId)
     val client = new CustomsDeclarationsConnector(appConfig, http)
-    test(client.submitExportDeclaration(metaData, badgeIdentifier)(hc, ec, user))
-  }
-
-  class MockHttpClient(expectedUrl: String, expectedBody: String, expectedHeaders: Map[String, String],
-                       forceServerError: Boolean = false, conversationId: String = UUID.randomUUID().toString)
-    extends HttpClient with WSGet with WSPut with WSPost with WSDelete with WSPatch {
-    override val hooks: Seq[HttpHook] = Seq.empty
-
-    override def POSTString[O](url: String, body: String,headers: Seq[(String, String)])
-                              (implicit rds: HttpReads[O],
-                               hc: HeaderCarrier,
-                               ec: ExecutionContext): Future[O] = (url, body, headers) match {
-      case _ if !isValidImportDeclarationXml(body) =>
-        throw new BadRequestException(s"Expected: valid XML: $expectedBody. \nGot: invalid XML: $body")
-      case _ if !isAuthenticated(headers.toMap, hc) =>
-        throw new UnauthorizedException("Submission declaration request was not authenticated")
-      case _ if forceServerError => throw new InternalServerException("Customs Declarations has gone bad.")
-      case _ if url == expectedUrl && body == expectedBody && headers.toMap == expectedHeaders =>
-        Future.successful(CustomsDeclarationsResponse(202, Some(conversationId)).asInstanceOf[O])
-      case _ =>
-        throw new BadRequestException(s"Expected: \nurl = '$expectedUrl', \nbody = '$expectedBody', \nheaders = '$expectedHeaders'.\nGot: \nurl = '$url', \nbody = '$body', \nheaders = '$headers'.")
-    }
-
-    private def isAuthenticated(headers: Map[String, String], hc: HeaderCarrier): Boolean = hc.authorization.isDefined
+    test(client.submitExportDeclaration(metaData, badgeIdentifier)(hc, ec))
   }
 }
