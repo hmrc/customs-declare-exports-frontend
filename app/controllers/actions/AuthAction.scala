@@ -17,17 +17,15 @@
 package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
-import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
-import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import config.AppConfig
-import controllers.routes
 import models.SignedInUser
 import models.requests.AuthenticatedRequest
+import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
+import uk.gov.hmrc.auth.core.{NoActiveSession, _}
+import uk.gov.hmrc.auth.core.retrieve.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 
 import scala.concurrent.{ExecutionContext, Future}
 

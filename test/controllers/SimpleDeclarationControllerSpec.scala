@@ -21,7 +21,7 @@ import play.api.test.Helpers._
 import base.ExportsTestData._
 import forms.SimpleDeclarationForm
 
-class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec{
+class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/simple-declaration")
 

@@ -23,52 +23,53 @@ import config.AppConfig
 import connectors.CustomsDeclarationsConnector
 import controllers.actions.{AuthAction, AuthActionImpl, FakeAuthAction}
 import models.{CustomsDeclarationsResponse, SignedInUser}
-import models.requests.AuthenticatedRequest
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.{ArgumentMatcher, ArgumentMatchers}
-import org.mockito.ArgumentMatchers.any
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.Application
+import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.concurrent.Execution.Implicits
 import play.api.libs.json.JsValue
 import play.api.libs.ws.WSClient
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson, Request, Result}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson}
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
+import services.CustomsCacheService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, ~}
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 import scala.util.Random
-import org.scalatest.concurrent.ScalaFutures
-import play.api.data.Form
-import services.CustomsCacheService
-import uk.gov.hmrc.http.cache.client.CacheMap
 
 
 trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures{
   protected val contextPath: String = "/customs-declare-exports"
 
-val testAuthAction = mock[AuthActionImpl]
+  val testAuthAction = mock[AuthActionImpl]
 
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
   lazy val mockCustomsDeclarationsConnector: CustomsDeclarationsConnector = mock[CustomsDeclarationsConnector]
-  lazy val mockCustomsCacheService:CustomsCacheService = mock[CustomsCacheService]
+  lazy val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
 
-  override lazy val app: Application = GuiceApplicationBuilder().overrides(bind[AuthConnector].to(mockAuthConnector),
+  override lazy val app: Application = GuiceApplicationBuilder().overrides(
+    bind[AuthConnector].to(mockAuthConnector),
     bind[AuthAction].to(testAuthAction),
     bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector),
-    bind[CustomsCacheService].to(mockCustomsCacheService)).build()
+    bind[CustomsCacheService].to(mockCustomsCacheService)
+  ).build()
 
   implicit val mat: Materializer = app.materializer
   implicit val ec: ExecutionContext = Implicits.defaultContext
@@ -94,9 +95,7 @@ val testAuthAction = mock[AuthActionImpl]
 
   protected def component[T: ClassTag]: T = app.injector.instanceOf[T]
 
-
-  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty):
-  FakeRequest[AnyContentAsEmpty.type] = {
+  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty): FakeRequest[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.internalId.get
