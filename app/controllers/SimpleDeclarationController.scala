@@ -91,7 +91,7 @@ class SimpleDeclarationController @Inject()(
         customsCacheService.cache[SimpleDeclarationForm](appConfig.appName,formId,form).flatMap{ _ =>
           customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{
             case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
-              val submission = Submission(request.user.eori, conversationId)
+              val submission = new Submission(request.user.eori, conversationId)
               customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap{ _ =>
                 Future.successful(Ok(confirmation_page(appConfig, conversationId)))
               }.recover{

@@ -56,7 +56,7 @@ class MockHttpClient[A](expectedUrl: String, expectedBody: A, expectedHeaders: M
       case _ if !isAuthenticated(Map.empty, hc) =>
         throw new UnauthorizedException("Submission request was not authenticated")
       case _ if url == expectedUrl && body == expectedBody && headers == Seq.empty =>
-        Future.successful(CustomsDeclareExportsResponse(OK).asInstanceOf[O])
+        Future.successful(CustomsDeclareExportsResponse(OK,"success").asInstanceOf[O])
       case _ =>
         throw new BadRequestException(s"Expected: \nurl = '$expectedUrl', \nbody = '$expectedBody'.\nGot: \nurl = '$url', \nbody = '$body'.")
     }

@@ -33,7 +33,7 @@ case class SignedInUser(
 
 case class CustomsDeclarationsResponse(status: Int, conversationId: Option[String])
 
-case class CustomsDeclareExportsResponse(status: Int)
+case class CustomsDeclareExportsResponse(status: Int, message:String)
 
 object CustomsDeclareExportsResponse {
   implicit val format = Json.format[CustomsDeclareExportsResponse]
