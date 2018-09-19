@@ -17,7 +17,7 @@
 package controllers
 
 import config.AppConfig
-import connectors.CustomsDeclarationsConnector
+import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, Submission}
 import controllers.actions.AuthAction
 import forms.{GoodsPackage, SimpleAddress, SimpleDeclarationForm}
 import handlers.ErrorHandler
@@ -34,18 +34,18 @@ import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.{Declaration, GoodsShipment, MetaData, Ucr}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfTrue
-import views.html.{simpleDeclaration, confirmation_page}
+import views.html.{confirmation_page, simpleDeclaration}
 
 import scala.concurrent.Future
 
-class SimpleDeclarationController @Inject()(appConfig: AppConfig,
-                                            authenticate: AuthAction,
-                                            customsDeclarationsConnector: CustomsDeclarationsConnector,
-                                            customsCacheService: CustomsCacheService,
-                                            errorHandler: ErrorHandler
-                                             )(implicit val messagesApi: MessagesApi)
-
-  extends FrontendController with I18nSupport {
+class SimpleDeclarationController @Inject()(
+  appConfig: AppConfig,
+  authenticate: AuthAction,
+  customsDeclarationsConnector: CustomsDeclarationsConnector,
+  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
+  customsCacheService: CustomsCacheService,
+  errorHandler: ErrorHandler
+)(implicit val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
 
   val formId = "SimpleDeclarationForm"
 
@@ -76,7 +76,6 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
     )(SimpleDeclarationForm.apply)(SimpleDeclarationForm.unapply))
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-
     customsCacheService.fetchAndGetEntry[SimpleDeclarationForm](appConfig.appName, formId).map{
       case Some(data) => Ok(simpleDeclaration(appConfig, form.fill(data)))
       case _ =>  Ok(simpleDeclaration(appConfig, form))
@@ -84,8 +83,6 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
   }
 
   def onSubmit(): Action[AnyContent] = authenticate.async { implicit request =>
-    implicit val signedInUser = request.user
-
     form.bindFromRequest().fold(
       (formWithErrors: Form[SimpleDeclarationForm]) =>
         Future.successful(BadRequest(simpleDeclaration(appConfig, formWithErrors))),
@@ -94,7 +91,20 @@ class SimpleDeclarationController @Inject()(appConfig: AppConfig,
         customsCacheService.cache[SimpleDeclarationForm](appConfig.appName,formId,form).flatMap{ _ =>
           customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{
             case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
-              Future.successful(Ok(confirmation_page(appConfig, conversationId)))
+              val submission = new Submission(request.user.eori, conversationId)
+              customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap{ _ =>
+                Future.successful(Ok(confirmation_page(appConfig, conversationId)))
+              }.recover{
+                case error: Throwable =>
+                  Logger.error(s"Error from Customs Declare Exports ${error.toString}")
+                  BadRequest(
+                    errorHandler.standardErrorTemplate(
+                      pageTitle = messagesApi("global.error.title"),
+                      heading = messagesApi("global.error.heading"),
+                      message = messagesApi("global.error.message")
+                    )
+                  )
+              }
             case error =>
               Logger.error(s"Error from Customs declarations api ${error.toString}")
               Future.successful(

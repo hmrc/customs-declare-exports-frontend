@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package connectors
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 
-case class SignedInUser(
-  credentials: Credentials,
-  name: Name,
-  email: Option[String],
+case class Submission(
   eori: String,
-  externalId: String,
-  internalId: Option[String],
-  affinityGroup: Option[AffinityGroup],
-  enrolments: Enrolments
+  conversationId: String,
+  lrn: Option[String] = None,
+  mrn: Option[String] = None
 )
 
-case class CustomsDeclarationsResponse(status: Int, conversationId: Option[String])
-
-case class CustomsDeclareExportsResponse(status: Int, message:String)
-
-object CustomsDeclareExportsResponse {
-  implicit val format = Json.format[CustomsDeclareExportsResponse]
+object Submission {
+  implicit val format = Json.format[Submission]
 }
