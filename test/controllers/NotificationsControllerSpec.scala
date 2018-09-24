@@ -14,32 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package controllers
 
 import base.CustomExportsBaseSpec
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
-class AuthActionSpec extends CustomExportsBaseSpec {
+class NotificationsControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/simple-declaration")
+  val uri = uriWithContextPath("/notifications")
 
-  "Auth Action" should {
-    "return InsufficientEnrolments when EORI number is missing" in {
-      userWithoutEori()
+  "NotificationController" should {
+    "return list of notification" in {
+      authorizedUser()
+      val result = route(app, getRequest(uri)).get
 
-      val result = route(app, FakeRequest("GET", uri)).get
-
-      intercept[InsufficientEnrolments](status(result))
-    }
-
-    "return NoExternalId when External Id is missing" in {
-      userWithoutExternalId()
-
-      val result = route(app, FakeRequest("GET", uri)).get
-
-      intercept[NoExternalId](status(result))
+      contentAsString(result) must include ("List of notifications")
     }
   }
 }

@@ -10,3 +10,7 @@ GET        /unauthorised                                controllers.Unauthorised
 GET        /simple-declaration                          controllers.SimpleDeclarationController.displayForm()
 
 POST       /simple-declaration                          controllers.SimpleDeclarationController.onSubmit()
+
+# Notifications
+
+GET        /notifications                               controllers.NotificationsController.listOfNotifications()

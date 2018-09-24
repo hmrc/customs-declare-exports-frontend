@@ -20,12 +20,12 @@ import java.util.UUID
 
 import akka.stream.Materializer
 import config.AppConfig
-import connectors.CustomsDeclarationsConnector
-import controllers.actions.{AuthAction, AuthActionImpl, FakeAuthAction}
-import models.{CustomsDeclarationsResponse, SignedInUser}
+import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
+import controllers.actions.FakeAuthAction
+import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse, SignedInUser}
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.mockito.{ArgumentMatcher, ArgumentMatchers}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
@@ -37,64 +37,56 @@ import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.concurrent.Execution.Implicits
 import play.api.libs.json.JsValue
-import play.api.libs.ws.WSClient
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST}
+import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST, OK}
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services.CustomsCacheService
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, ~}
+import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.reflect.ClassTag
 import scala.util.Random
 
 
 trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures{
   protected val contextPath: String = "/customs-declare-exports"
 
-  val testAuthAction = mock[AuthActionImpl]
-
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
   lazy val mockCustomsDeclarationsConnector: CustomsDeclarationsConnector = mock[CustomsDeclarationsConnector]
   lazy val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
+  lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
 
   override lazy val app: Application = GuiceApplicationBuilder().overrides(
     bind[AuthConnector].to(mockAuthConnector),
-    bind[AuthAction].to(testAuthAction),
     bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector),
-    bind[CustomsCacheService].to(mockCustomsCacheService)
+    bind[CustomsCacheService].to(mockCustomsCacheService),
+    bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector)
   ).build()
 
   implicit val mat: Materializer = app.materializer
+
   implicit val ec: ExecutionContext = Implicits.defaultContext
+
   def injector: Injector = app.injector
 
   def appConfig: AppConfig = injector.instanceOf[AppConfig]
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
-  def authenticate: AuthActionImpl = injector.instanceOf[AuthActionImpl]
-
   val cfg: CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
 
   val token = injector.instanceOf[CSRFFilter].tokenProvider.generateToken
-
-  def wsClient: WSClient = injector.instanceOf[WSClient]
 
   def fakeRequest = FakeRequest("", "")
 
   def messages: Messages = messagesApi.preferred(fakeRequest)
 
   protected def uriWithContextPath(path: String): String = s"$contextPath$path"
-
-  protected def component[T: ClassTag]: T = app.injector.instanceOf[T]
 
   protected def getRequest(uri: String, headers: Map[String, String] = Map.empty): FakeRequest[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
@@ -125,31 +117,44 @@ trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
       .withJsonBody(body)
   }
 
-  val enrolment:Predicate = Enrolment("HMRC-CUS-ORG")
-
-  def cdsEnrollmentMatcher(user: SignedInUser): ArgumentMatcher[Predicate] = new ArgumentMatcher[Predicate] {
-    override  def matches(p: Predicate): Boolean = p ==  enrolment && user.enrolments.getEnrolment("HMRC-CUS-ORG").isDefined
-  }
-
-  //noinspection ConvertExpressionToSAM
-  val noBearerTokenMatcher: ArgumentMatcher[HeaderCarrier] = new ArgumentMatcher[HeaderCarrier] {
-    override def matches(hc: HeaderCarrier): Boolean = hc != null && hc.authorization.isEmpty
-  }
-
   def authorizedUser(user: SignedInUser = newUser("12345","external1")): Unit = {
     when(
       mockAuthConnector.authorise(
-          ArgumentMatchers.argThat(cdsEnrollmentMatcher(user)),
-          ArgumentMatchers.eq(credentials and name and email and affinityGroup and internalId and allEnrolments))(
-          any(), any())
+          any(),
+          ArgumentMatchers.eq(credentials and name and email and externalId and internalId and affinityGroup and allEnrolments))
+      (any(), any())
     ).thenReturn(
-      Future.successful(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email), user.affinityGroup),
-        user.internalId), user.enrolments))
+      Future.successful(new ~(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email),
+        Some(user.externalId)), user.internalId), user.affinityGroup), user.enrolments))
+    )
+  }
+
+  def userWithoutEori(user: SignedInUser = newUser("12345","external1")): Unit = {
+    when(
+      mockAuthConnector.authorise(
+        any(),
+        ArgumentMatchers.eq(credentials and name and email and externalId and internalId and affinityGroup and allEnrolments))
+      (any(), any())
+    ).thenReturn(
+      Future.successful(new ~(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email),
+        Some(user.externalId)), user.internalId), user.affinityGroup), Enrolments(Set())))
+    )
+  }
+
+  def userWithoutExternalId(user: SignedInUser = newUser("12345","external1")): Unit = {
+    when(
+      mockAuthConnector.authorise(
+        any(),
+        ArgumentMatchers.eq(credentials and name and email and externalId and internalId and affinityGroup and allEnrolments))
+      (any(), any())
+    ).thenReturn(
+      Future.successful(new ~(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email),
+        None), user.internalId), user.affinityGroup), user.enrolments))
     )
   }
 
   def unAuthorizedUser(exceptionToReturn: Throwable): Unit =
-    when(mockAuthConnector.authorise(any(),any())(any(),any())).thenReturn(Future.failed(exceptionToReturn))
+    when(mockAuthConnector.authorise(any(), any())(any(), any())).thenReturn(Future.failed(exceptionToReturn))
 
   protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
 
@@ -162,27 +167,28 @@ trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
     Some("Int-ba17b467-90f3-42b6-9570-73be7b78eb2b"),
     Some(AffinityGroup.Individual),
     Enrolments(Set(
-      Enrolment("IR-SA",List(EnrolmentIdentifier("UTR","111111111")),"Activated",None),
-      Enrolment("IR-CT",List(EnrolmentIdentifier("UTR","222222222")),"Activated",None),
-      Enrolment("HMRC-CUS-ORG",List(EnrolmentIdentifier("EORINumber", eori)),"Activated",None)
+      Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori)
     ))
   )
 
-  def succesfulCustomsDeclarationReponse() = {
-    when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(),
-      any())(any(), any())).thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED,Some("1234"))))
+  def successfulCustomsDeclarationReponse() = {
+    when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
+      .thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED,Some("1234"))))
+
+    when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
+      .thenReturn(Future.successful(CustomsDeclareExportsResponse(OK, "message")))
   }
 
   def customsDeclaration400Reponse() = {
-    when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(),
-      any())(any(), any())).thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
+    when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
+      .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
   }
+
   def withCaching[T](form: Option[Form[T]]) = {
-    when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(),
-      any())(any(), any(),any())).thenReturn(Future.successful(form))
+    when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(),any()))
+      .thenReturn(Future.successful(form))
 
-    when(mockCustomsCacheService.cache[T](any(),
-      any(),any())(any(), any(),any())).thenReturn(Future.successful(CacheMap("id1",Map.empty)))
-
+    when(mockCustomsCacheService.cache[T](any(), any(),any())(any(), any(), any()))
+      .thenReturn(Future.successful(CacheMap("id1",Map.empty)))
   }
 }

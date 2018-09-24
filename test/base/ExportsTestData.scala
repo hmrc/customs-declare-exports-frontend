@@ -74,12 +74,4 @@ object ExportsTestData {
       "ducr" -> JsString("")
     )
   )
-
-  def createSimpleDecForm() = {
-    val goodsPackage = GoodsPackage("commCode1", true, true, true, "1", "packageType", false, false)
-    val simpleAddress = SimpleAddress(None, None, None, None, None, None)
-    val form = Form
-    SimpleDeclarationForm("ducr1", false, Some("mucr"), false, false, false, false, simpleAddress, true, goodsPackage,
-      false, "customs procedure", false, "additional custom procedure", false, false, "Office of exit", true)
-  }
 }
