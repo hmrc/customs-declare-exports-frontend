@@ -22,7 +22,6 @@ import akka.stream.Materializer
 import config.AppConfig
 import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
 import controllers.actions.FakeAuthAction
-import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -38,7 +37,6 @@ import play.api.libs.concurrent.Execution.Implicits
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST, OK}
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services.CustomsCacheService
@@ -49,15 +47,16 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
 
-
-trait CustomExportsBaseSpec
-  extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction {
+trait CustomExportsBaseSpec extends PlaySpec
+  with GuiceOneAppPerSuite
+  with MockitoSugar
+  with ScalaFutures
+  with MockAuthAction
+  with MockConnectors {
 
   protected val contextPath: String = "/customs-declare-exports"
 
-  lazy val mockCustomsDeclarationsConnector: CustomsDeclarationsConnector = mock[CustomsDeclarationsConnector]
   lazy val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
-  lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
 
   override lazy val app: Application = GuiceApplicationBuilder().overrides(
     bind[AuthConnector].to(mockAuthConnector),
@@ -116,19 +115,6 @@ trait CustomExportsBaseSpec
   }
 
   protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
-
-  def successfulCustomsDeclarationResponse() = {
-    when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
-      .thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED,Some("1234"))))
-
-    when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
-      .thenReturn(Future.successful(CustomsDeclareExportsResponse(OK, "message")))
-  }
-
-  def customsDeclaration400Response() = {
-    when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
-      .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
-  }
 
   def withCaching[T](form: Option[Form[T]]) = {
     when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(),any()))

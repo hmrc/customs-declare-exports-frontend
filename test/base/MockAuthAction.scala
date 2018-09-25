@@ -30,7 +30,7 @@ import scala.concurrent.Future
 trait MockAuthAction extends MockitoSugar {
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
-  def authorizedUser(user: SignedInUser = newUser("12345","external1")): Unit = {
+  def authorizedUser(user: SignedInUser = newUser("12345","external1")): Unit =
     when(
       mockAuthConnector.authorise(
         any(),
@@ -40,9 +40,8 @@ trait MockAuthAction extends MockitoSugar {
       Future.successful(new ~(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email),
         Some(user.externalId)), user.internalId), user.affinityGroup), user.enrolments))
     )
-  }
 
-  def userWithoutEori(user: SignedInUser = newUser("12345","external1")): Unit = {
+  def userWithoutEori(user: SignedInUser = newUser("12345","external1")): Unit =
     when(
       mockAuthConnector.authorise(
         any(),
@@ -52,9 +51,8 @@ trait MockAuthAction extends MockitoSugar {
       Future.successful(new ~(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email),
         Some(user.externalId)), user.internalId), user.affinityGroup), Enrolments(Set())))
     )
-  }
 
-  def userWithoutExternalId(user: SignedInUser = newUser("12345","external1")): Unit = {
+  def userWithoutExternalId(user: SignedInUser = newUser("12345","external1")): Unit =
     when(
       mockAuthConnector.authorise(
         any(),
@@ -64,7 +62,6 @@ trait MockAuthAction extends MockitoSugar {
       Future.successful(new ~(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email),
         None), user.internalId), user.affinityGroup), user.enrolments))
     )
-  }
 
   def newUser(eori: String, externalId: String): SignedInUser = SignedInUser(
     Credentials("2345235235","GovernmentGateway"),
