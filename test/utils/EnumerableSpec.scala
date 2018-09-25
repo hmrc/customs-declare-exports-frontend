@@ -27,7 +27,6 @@ object EnumerableSpec {
   case object Baz extends Foo
 
   object Foo {
-
     val values: Set[Foo] = Set(Bar, Baz)
 
     implicit val fooEnumerable: Enumerable[Foo] =
@@ -40,16 +39,14 @@ class EnumerableSpec extends WordSpec with MustMatchers with EitherValues with O
   import EnumerableSpec._
 
   ".reads" must {
-
     "be found implicitly" in {
       implicitly[Reads[Foo]]
     }
 
-    Foo.values.foreach {
-      value =>
-        s"bind correctly for: $value" in {
-          Json.fromJson[Foo](JsString(value.toString)).asEither.right.value mustEqual value
-        }
+    Foo.values.foreach { value =>
+      s"bind correctly for: $value" in {
+        Json.fromJson[Foo](JsString(value.toString)).asEither.right.value mustEqual value
+      }
     }
 
     "fail to bind for invalid values" in {
@@ -58,21 +55,18 @@ class EnumerableSpec extends WordSpec with MustMatchers with EitherValues with O
   }
 
   ".writes" must {
-
     "be found implicitly" in {
       implicitly[Writes[Foo]]
     }
 
-    Foo.values.foreach {
-      value =>
-        s"write $value" in {
-          Json.toJson(value) mustEqual JsString(value.toString)
-        }
+    Foo.values.foreach { value =>
+      s"write $value" in {
+        Json.toJson(value) mustEqual JsString(value.toString)
+      }
     }
   }
 
   ".formats" must {
-
     "be found implicitly" in {
       implicitly[Format[Foo]]
     }

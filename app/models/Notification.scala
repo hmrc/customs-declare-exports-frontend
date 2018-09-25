@@ -16,9 +16,11 @@
 
 package models
 
+import java.time.LocalDateTime
+
 import play.api.libs.json.Json
 
-case class Notification(id: String)
+case class Notification(id: String, name: String, dateAndTime: LocalDateTime, reference: String, status: Status)
 
 object Notification {
   implicit val format = Json.format[Notification]

@@ -16,9 +16,10 @@
 
 package base
 
+import java.time.LocalDateTime
 import java.util.UUID
 
-import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse, Notification, Notifications}
+import models._
 import play.api.libs.json.Writes
 import play.api.test.Helpers.{ACCEPTED, OK}
 import test.XmlBehaviours
@@ -49,7 +50,8 @@ class MockHttpClient[A](
       throw new UnauthorizedException("Get notifications request was not authenticated")
     case _ if forceServerError => throw new InternalServerException("Customs Declarations has gone bad.")
     case _ if url == expectedUrl && headers.toMap == expectedHeaders =>
-      Future.successful(Notifications(eori, List(Notification("1"))).asInstanceOf[O])
+      Future.successful(Notifications(eori, List(Notification("1", "Name", LocalDateTime.now(), "reference", PreLodged)))
+        .asInstanceOf[O])
     case _ =>
       throw new BadRequestException(s"error")
   }
