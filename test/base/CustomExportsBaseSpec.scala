@@ -22,8 +22,7 @@ import akka.stream.Materializer
 import config.AppConfig
 import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
 import controllers.actions.FakeAuthAction
-import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse, SignedInUser}
-import org.mockito.ArgumentMatchers
+import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -44,8 +43,6 @@ import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services.CustomsCacheService
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.Retrievals._
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name, ~}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -53,10 +50,11 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
 
 
-trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures{
+trait CustomExportsBaseSpec
+  extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction {
+
   protected val contextPath: String = "/customs-declare-exports"
 
-  lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
   lazy val mockCustomsDeclarationsConnector: CustomsDeclarationsConnector = mock[CustomsDeclarationsConnector]
   lazy val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
@@ -117,59 +115,7 @@ trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
       .withJsonBody(body)
   }
 
-  def authorizedUser(user: SignedInUser = newUser("12345","external1")): Unit = {
-    when(
-      mockAuthConnector.authorise(
-          any(),
-          ArgumentMatchers.eq(credentials and name and email and externalId and internalId and affinityGroup and allEnrolments))
-      (any(), any())
-    ).thenReturn(
-      Future.successful(new ~(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email),
-        Some(user.externalId)), user.internalId), user.affinityGroup), user.enrolments))
-    )
-  }
-
-  def userWithoutEori(user: SignedInUser = newUser("12345","external1")): Unit = {
-    when(
-      mockAuthConnector.authorise(
-        any(),
-        ArgumentMatchers.eq(credentials and name and email and externalId and internalId and affinityGroup and allEnrolments))
-      (any(), any())
-    ).thenReturn(
-      Future.successful(new ~(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email),
-        Some(user.externalId)), user.internalId), user.affinityGroup), Enrolments(Set())))
-    )
-  }
-
-  def userWithoutExternalId(user: SignedInUser = newUser("12345","external1")): Unit = {
-    when(
-      mockAuthConnector.authorise(
-        any(),
-        ArgumentMatchers.eq(credentials and name and email and externalId and internalId and affinityGroup and allEnrolments))
-      (any(), any())
-    ).thenReturn(
-      Future.successful(new ~(new ~(new ~(new ~(new ~(new ~(user.credentials, user.name), user.email),
-        None), user.internalId), user.affinityGroup), user.enrolments))
-    )
-  }
-
-  def unAuthorizedUser(exceptionToReturn: Throwable): Unit =
-    when(mockAuthConnector.authorise(any(), any())(any(), any())).thenReturn(Future.failed(exceptionToReturn))
-
   protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
-
-  def newUser(eori: String, externalId: String): SignedInUser = SignedInUser(
-    Credentials("2345235235","GovernmentGateway"),
-    Name(Some("Aldo"),Some("Rain")),
-    Some("amina@hmrc.co.uk"),
-    eori,
-    externalId,
-    Some("Int-ba17b467-90f3-42b6-9570-73be7b78eb2b"),
-    Some(AffinityGroup.Individual),
-    Enrolments(Set(
-      Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori)
-    ))
-  )
 
   def successfulCustomsDeclarationResponse() = {
     when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
