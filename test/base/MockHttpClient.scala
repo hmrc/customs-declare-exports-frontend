@@ -16,9 +16,10 @@
 
 package base
 
+import java.time.LocalDateTime
 import java.util.UUID
 
-import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse}
+import models._
 import play.api.libs.json.Writes
 import play.api.test.Helpers.{ACCEPTED, OK}
 import test.XmlBehaviours
@@ -29,13 +30,33 @@ import uk.gov.hmrc.play.http.ws._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MockHttpClient[A](expectedUrl: String, expectedBody: A, expectedHeaders: Map[String, String],
-                     forceServerError: Boolean = false, conversationId: String = UUID.randomUUID().toString)
+class MockHttpClient[A](
+    expectedUrl: String,
+    expectedBody: A,
+    expectedHeaders: Map[String, String],
+    forceServerError: Boolean = false,
+    conversationId: String = UUID.randomUUID().toString,
+    eori: String = UUID.randomUUID().toString)
   extends HttpClient with WSGet with WSPut with WSPost with WSDelete with WSPatch {
+
   override val hooks: Seq[HttpHook] = Seq.empty
 
   //scalastyle:off method.name
-  override def POSTString[O](url: String, body: String,headers: Seq[(String, String)])
+  override def GET[O](url: String, headers: Seq[(String, String)])
+                     (implicit rds: HttpReads[O],
+                               hc: HeaderCarrier,
+                               ex: ExecutionContext): Future[O] = (url, headers) match {
+    case _ if !isAuthenticated(headers.toMap, hc) =>
+      throw new UnauthorizedException("Get notifications request was not authenticated")
+    case _ if forceServerError => throw new InternalServerException("Customs Declarations has gone bad.")
+    case _ if url == expectedUrl && headers.toMap == expectedHeaders =>
+      Future.successful(Notifications(eori, List(Notification("1", "Name", LocalDateTime.now(), "reference", PreLodged)))
+        .asInstanceOf[O])
+    case _ =>
+      throw new BadRequestException(s"error")
+  }
+
+  override def POSTString[O](url: String, body: String, headers: Seq[(String, String)])
                             (implicit rds: HttpReads[O],
                              hc: HeaderCarrier,
                              ec: ExecutionContext): Future[O] = (url, body, headers) match {
@@ -55,6 +76,7 @@ class MockHttpClient[A](expectedUrl: String, expectedBody: A, expectedHeaders: M
     (url, body, headers) match {
       case _ if !isAuthenticated(Map.empty, hc) =>
         throw new UnauthorizedException("Submission request was not authenticated")
+      case _ if forceServerError => throw new InternalServerException("Customs Declare Exports has gone bad.")
       case _ if url == expectedUrl && body == expectedBody && headers == Seq.empty =>
         Future.successful(CustomsDeclareExportsResponse(OK,"success").asInstanceOf[O])
       case _ =>

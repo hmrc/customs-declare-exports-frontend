@@ -34,8 +34,10 @@ class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: H
 
   def submitExportDeclaration(metaData: MetaData, badgeIdentifier: Option[String] = None)
                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
-    postMetaData(appConfig.submitImportDeclarationUri, metaData, badgeIdentifier)
-      .map{ res=> Logger.debug(s"CUSTOMS_DECLARATIONS response is  --> ${res.toString} " ); res}
+    postMetaData(appConfig.submitImportDeclarationUri, metaData, badgeIdentifier).map{ res =>
+      Logger.debug(s"CUSTOMS_DECLARATIONS response is  --> ${res.toString}")
+      res
+    }
 
   private def postMetaData(uri: String,
                            metaData: MetaData,

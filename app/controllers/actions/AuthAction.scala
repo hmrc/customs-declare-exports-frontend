@@ -17,39 +17,41 @@
 package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
-import config.AppConfig
 import models.SignedInUser
 import models.requests.AuthenticatedRequest
 import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
-import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: AppConfig)
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
                               (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised(Enrolment("HMRC-CUS-ORG")).retrieve(credentials and name and email and externalId and internalId  and affinityGroup and allEnrolments) {
-      case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments =>
-        val eori = allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber"))
-        // TODO add correct eori validation not only isEmpty
-        if (eori.isEmpty) {
-          throw InsufficientEnrolments()
-        }
-        if (externalId.isEmpty) {
-          throw NoExternalId()
-        }
-        val cdsLoggedInUser =
-          SignedInUser(credentials, name, email, eori.get.value, externalId.get, internalId, affinityGroup, allEnrolments)
+    authorised(Enrolment("HMRC-CUS-ORG"))
+      .retrieve(credentials and name and email and externalId and internalId  and affinityGroup and allEnrolments) {
+        case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments =>
+          val eori = allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber"))
+          // TODO add correct eori validation not only isEmpty
+          if (eori.isEmpty) {
+            throw new InsufficientEnrolments()
+          }
 
-        block(AuthenticatedRequest(request, cdsLoggedInUser))
-    }
+          if (externalId.isEmpty) {
+            throw NoExternalId()
+          }
+
+          val cdsLoggedInUser =
+            SignedInUser(credentials, name, email, eori.get.value, externalId.get, internalId, affinityGroup, allEnrolments)
+
+          block(AuthenticatedRequest(request, cdsLoggedInUser))
+      }
   }
 }
 

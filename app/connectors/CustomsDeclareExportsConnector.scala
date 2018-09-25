@@ -18,7 +18,7 @@ package connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models.CustomsDeclareExportsResponse
+import models.{CustomsDeclareExportsResponse, Notification, Notifications}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -28,16 +28,23 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
+  private[connectors] def get(url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext) =
+    httpClient.GET(url, Seq())
+
+  private[connectors] def postSubmission(
+    body: Submission
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
+    httpClient.POST[Submission, CustomsDeclareExportsResponse](
+      s"${appConfig.customsDeclareExports}${appConfig.saveSubmissionResponse}", body, Seq()
+    )
+
   def saveSubmissionResponse(body: Submission)
                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
-    post(body).map{ response =>
+    postSubmission(body).map { response =>
       Logger.debug(s"CUSTOMS_DECLARE_EXPORSTS response is --> ${response.toString}")
       response
     }
 
-  private[connectors] def post(body: Submission)
-                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
-    httpClient.POST[Submission, CustomsDeclareExportsResponse](
-      s"${appConfig.customsDeclareExports}${appConfig.saveSubmissionResponse}", body, Seq()
-    )
+  def fetchNotifications(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Notifications] =
+    httpClient.GET[Notifications](s"")
 }

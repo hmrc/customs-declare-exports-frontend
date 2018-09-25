@@ -17,71 +17,69 @@
 package controllers
 
 import base.CustomExportsBaseSpec
-import play.api.test.Helpers._
 import base.ExportsTestData._
 import forms.SimpleDeclarationForm
+import play.api.test.Helpers._
 
 class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/simple-declaration")
 
-  "SimpleDeclarationSpec" should {
-    "process only authenticated user requests " in {
-      authorizedUser()
-      withCaching(None)
-      val result = route(app, getRequest(uri))
-
-      result.map(status(_) must be (OK))
-    }
-
+  "SimpleDeclaration" should {
     "return 200 with a success" in {
       authorizedUser()
       withCaching[SimpleDeclarationForm](None)
 
-      val result = route(app, getRequest(uri))
+      val result = route(app, getRequest(uri)).get
 
-      result.map(status(_) must be (OK))
+      status(result) must be (OK)
     }
 
     "display Simple-declaration" in {
       authorizedUser()
       withCaching(None)
 
-      val result = route(app, getRequest(uri))
+      val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
 
-      result.map(contentAsString(_).contains("Do you have a representative?") must be (true))
-      result.map(contentAsString(_).contains("Is consolidate DUCR to wider shipment?") must be (true))
-      result.map(contentAsString(_).contains("Building and street") must be (true))
+      stringResult must include ("Do you have a representative?")
+      stringResult must include ("Is consolidate DUCR to wider shipment?")
+      stringResult must include ("Building and street")
     }
 
-    "should validate form submitted" in {
+    "validate form submitted" in {
       authorizedUser()
       withCaching(None)
-      succesfulCustomsDeclarationReponse()
+      successfulCustomsDeclarationResponse()
 
-      val result = route(app, postRequest(uri, wrongJson))
-      result.map(contentAsString(_) must include ("Incorrect DUCR"))
+      val result = route(app, postRequest(uri, wrongJson)).get
+      contentAsString(result) must include ("Incorrect DUCR")
     }
 
-    "should redirect to error page when submission failed in customs declarations" in {
+    "redirect to error page when submission failed in customs declarations" in {
       authorizedUser()
       withCaching(None)
-      customsDeclaration400Reponse()
+      customsDeclaration400Response()
 
-      val result = route(app, postRequest(uri, jsonBody))
-      result.map(contentAsString(_) must include ("There is a problem with a service"))
-      result.map(contentAsString(_) must include ("Please try again later."))
+      val result = route(app, postRequest(uri, jsonBody)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be (BAD_REQUEST)
+      stringResult must include ("There is a problem with a service")
+      stringResult must include ("Please try again later.")
     }
 
-    "should redirect to next page" in {
+    "redirect to next page" in {
       authorizedUser()
       withCaching(None)
-      succesfulCustomsDeclarationReponse()
+      successfulCustomsDeclarationResponse()
 
-      val result = route(app, postRequest(uri, jsonBody))
-      result.map(status(_) must be(OK))
-      result.map(contentAsString(_) must include ("Confirmation page"))
-      result.map(contentAsString(_) must include ("Your reference number is"))
+      val result = route(app, postRequest(uri, jsonBody)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(OK)
+      stringResult must include ("Confirmation page")
+      stringResult must include ("Your reference number is")
     }
   }
 }

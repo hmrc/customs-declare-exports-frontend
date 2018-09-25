@@ -17,13 +17,12 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import play.api.{Configuration, Environment}
-import play.api.i18n.Lang
-import play.api.Mode.Mode
-import controllers.routes
 import features.Feature.Feature
-import features.{Feature, FeatureStatus}
 import features.FeatureStatus.FeatureStatus
+import features.{Feature, FeatureStatus}
+import play.api.Mode.Mode
+import play.api.i18n.Lang
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 
 @Singleton
