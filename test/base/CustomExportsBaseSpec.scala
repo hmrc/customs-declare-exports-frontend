@@ -171,7 +171,7 @@ trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
     ))
   )
 
-  def successfulCustomsDeclarationReponse() = {
+  def successfulCustomsDeclarationResponse() = {
     when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
       .thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED,Some("1234"))))
 
@@ -179,7 +179,7 @@ trait CustomExportsBaseSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
       .thenReturn(Future.successful(CustomsDeclareExportsResponse(OK, "message")))
   }
 
-  def customsDeclaration400Reponse() = {
+  def customsDeclaration400Response() = {
     when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
       .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
   }

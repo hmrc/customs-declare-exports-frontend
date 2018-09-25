@@ -17,19 +17,18 @@
 package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject}
-import config.AppConfig
 import models.SignedInUser
 import models.requests.AuthenticatedRequest
 import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
-import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: AppConfig)
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
                               (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {

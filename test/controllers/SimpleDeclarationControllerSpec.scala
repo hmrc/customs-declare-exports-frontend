@@ -50,7 +50,7 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec {
     "validate form submitted" in {
       authorizedUser()
       withCaching(None)
-      successfulCustomsDeclarationReponse()
+      successfulCustomsDeclarationResponse()
 
       val result = route(app, postRequest(uri, wrongJson)).get
       contentAsString(result) must include ("Incorrect DUCR")
@@ -59,7 +59,7 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec {
     "redirect to error page when submission failed in customs declarations" in {
       authorizedUser()
       withCaching(None)
-      customsDeclaration400Reponse()
+      customsDeclaration400Response()
 
       val result = route(app, postRequest(uri, jsonBody)).get
       val stringResult = contentAsString(result)
@@ -72,7 +72,7 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec {
     "redirect to next page" in {
       authorizedUser()
       withCaching(None)
-      successfulCustomsDeclarationReponse()
+      successfulCustomsDeclarationResponse()
 
       val result = route(app, postRequest(uri, jsonBody)).get
       val stringResult = contentAsString(result)

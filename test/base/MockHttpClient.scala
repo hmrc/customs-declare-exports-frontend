@@ -74,7 +74,7 @@ class MockHttpClient[A](
     (url, body, headers) match {
       case _ if !isAuthenticated(Map.empty, hc) =>
         throw new UnauthorizedException("Submission request was not authenticated")
-      case _ if forceServerError => throw new InternalServerException("Customs Declarations has gone bad.")
+      case _ if forceServerError => throw new InternalServerException("Customs Declare Exports has gone bad.")
       case _ if url == expectedUrl && body == expectedBody && headers == Seq.empty =>
         Future.successful(CustomsDeclareExportsResponse(OK,"success").asInstanceOf[O])
       case _ =>
