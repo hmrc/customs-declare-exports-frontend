@@ -35,9 +35,6 @@ class AppConfig @Inject() (override val runModeConfiguration: Configuration, val
   private def loadConfig(key: String): String =
     runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private lazy val contactHost = runModeConfiguration.getString("contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = "customsdecexfrontend"
-
   lazy val keyStoreSource: String = appName
   lazy val keyStoreUrl: String = baseUrl("keystore")
   lazy val sessionCacheDomain: String = getConfString(
@@ -47,10 +44,6 @@ class AppConfig @Inject() (override val runModeConfiguration: Configuration, val
 
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
   lazy val analyticsHost = loadConfig(s"google-analytics.host")
-  lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
-  lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
 
   lazy val authUrl = baseUrl("auth")
   lazy val loginUrl = loadConfig("urls.login")
