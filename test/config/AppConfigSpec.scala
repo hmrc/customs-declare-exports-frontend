@@ -33,24 +33,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       config.analyticsHost must be ("auto")
     }
 
-    "have report a problem partial url" in {
-      config.reportAProblemPartialUrl must be
-        ("http://localhost:9250/contact/problem_reports_ajax?service=customsdecexfrontend")
-    }
-
-    "have report a problem non js url" in {
-      config.reportAProblemNonJSUrl must be
-        ("http://localhost:9250/contact/problem_reports_nonjs?service=customsdecexfrontend")
-    }
-
-    "have beta feedback url" in {
-      config.betaFeedbackUrl must be ("http://localhost:9250/contact/beta-feedback")
-    }
-
-    "have beta feedback unauthenticated url" in {
-      config.betaFeedbackUnauthenticatedUrl must be ("http://localhost:9250/contact/beta-feedback-unauthenticated")
-    }
-
     "have auth url" in {
       config.authUrl must be ("http://localhost:8500")
     }

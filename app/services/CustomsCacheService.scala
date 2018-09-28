@@ -19,11 +19,9 @@ package services
 import com.google.inject.{Inject, Singleton}
 import config.AppConfig
 import uk.gov.hmrc.crypto.{ApplicationCrypto, CompositeSymmetricCrypto}
-import uk.gov.hmrc.http.cache.client.{CacheMap, ShortLivedCache, ShortLivedHttpCaching}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpDelete, HttpGet, HttpPut}
+import uk.gov.hmrc.http.cache.client.{ShortLivedCache, ShortLivedHttpCaching}
+import uk.gov.hmrc.http.{HttpDelete, HttpGet, HttpPut}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-
-import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CustomsHttpCaching @Inject()(cfg: AppConfig, httpClient: HttpClient) extends ShortLivedHttpCaching {
@@ -35,7 +33,6 @@ class CustomsHttpCaching @Inject()(cfg: AppConfig, httpClient: HttpClient) exten
   override def domain: String = cfg.sessionCacheDomain
 
   override def http: HttpGet with HttpPut with HttpDelete = httpClient
-
 }
 
 @Singleton
@@ -44,5 +41,4 @@ class CustomsCacheService @Inject()(caching: CustomsHttpCaching, applicationCryp
   override implicit val crypto: CompositeSymmetricCrypto = applicationCrypto.JsonCrypto
 
   override def shortLiveCache: ShortLivedHttpCaching = caching
-
 }

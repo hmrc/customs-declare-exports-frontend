@@ -16,17 +16,17 @@
 
 package forms
 
-import play.api.data.Forms.{mapping, _}
+import play.api.data.Forms._
 import play.api.libs.json.Json
 
 case class SimpleAddress(
-                          fullName: Option[String],
-                          building: Option[String],
-                          street: Option[String],
-                          townOrCity: Option[String],
-                          postcode: Option[String],
-                          country: Option[String]
-                        )
+  fullName: Option[String],
+  building: Option[String],
+  street: Option[String],
+  townOrCity: Option[String],
+  postcode: Option[String],
+  country: Option[String]
+)
 
 object SimpleAddress {
   val addressMapping = mapping(
@@ -42,15 +42,15 @@ object SimpleAddress {
 }
 
 case class GoodsPackage(
-                         commodityCode: String,
-                         isDescriptionOfYourGoodsCorrect: Boolean,
-                         isItemOnUNDGList: Boolean,
-                         addLicenceForItem: Boolean,
-                         noOfPackages: String,
-                         packageType: String,
-                         goodsInContainer: Boolean,
-                         addAnotherPackage: Boolean
-                       )
+  commodityCode: String,
+  isDescriptionOfYourGoodsCorrect: Boolean,
+  isItemOnUNDGList: Boolean,
+  addLicenceForItem: Boolean,
+  noOfPackages: String,
+  packageType: String,
+  goodsInContainer: Boolean,
+  addAnotherPackage: Boolean
+)
 
 object GoodsPackage {
   val packageMapping = mapping(
