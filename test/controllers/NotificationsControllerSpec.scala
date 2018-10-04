@@ -26,9 +26,15 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
   "NotificationController" should {
     "return list of notification" in {
       authorizedUser()
+      listOfNotifications()
       val result = route(app, getRequest(uri)).get
+      val stringResult =contentAsString(result)
 
-      contentAsString(result) must include ("List of notifications")
+      stringResult must include ("Notifications")
+      stringResult must include ("Name")
+      stringResult must include ("Date and time")
+      stringResult must include ("Reference")
+      stringResult must include ("Status")
     }
   }
 }

@@ -58,6 +58,8 @@ class AppConfig @Inject() (override val runModeConfiguration: Configuration, val
   lazy val customsDeclareExports = baseUrl("customs-declare-exports")
   lazy val saveSubmissionResponse = getConfString("customs-declare-exports.save-response-uri",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports submission URI"))
+  lazy val fetchNotifications = getConfString("customs-declare-exports.fetch-notifications",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notification URI"))
 
   lazy val customsDeclarationsApiVersion = getConfString("customs-declarations.api-version",
     throw new IllegalStateException("Missing configuration for Customs Declarations API version"))

@@ -18,9 +18,9 @@ package connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models.{CustomsDeclareExportsResponse, Notifications}
+import models.{CustomsDeclareExportsResponse, ExportsNotification}
 import play.api.Logger
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
-  private[connectors] def get(url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext) =
+  private[connectors] def get(url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     httpClient.GET(url, Seq())
 
   private[connectors] def postSubmission(
@@ -45,6 +45,9 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       response
     }
 
-  def fetchNotifications(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Notifications] =
-    httpClient.GET[Notifications](s"")
+  def fetchNotifications(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsNotification]] = {
+    //httpClient.GET[ExportsNotification](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}/$eori")
+
+    Future.successful(Seq(ExportsNotification()))
+  }
 }

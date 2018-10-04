@@ -17,7 +17,7 @@
 package base
 
 import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
-import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse}
+import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse, ExportsNotification, Notification}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -40,4 +40,8 @@ trait MockConnectors extends MockitoSugar {
   def customsDeclaration400Response() =
     when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
       .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
+
+  def listOfNotifications() =
+    when(mockCustomsDeclareExportsConnector.fetchNotifications(any())(any(), any()))
+      .thenReturn(Future.successful(Seq(ExportsNotification())))
 }

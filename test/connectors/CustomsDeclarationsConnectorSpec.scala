@@ -38,13 +38,13 @@ class CustomsDeclarationsConnectorSpec extends CustomExportsBaseSpec {
 
   "CustomsDeclarationsConnector " should {
 
-    "POST metadata to Customs Declarations" in submitDeclarationScenario(MetaData(declaration = Declaration())) { resp =>
+    "POST metadata to Customs Declarations" in submitDeclarationScenario(MetaData(declaration = Some(Declaration()))) { resp =>
       resp.futureValue.status must be(ACCEPTED)
     }
 
-    "save declaration on acceptance" in submitDeclarationScenario(metaData = MetaData(declaration = Declaration(
+    "save declaration on acceptance" in submitDeclarationScenario(metaData = MetaData(declaration = Some(Declaration(
       functionalReferenceId = lrn
-    )), conversationId = conversationId) { resp =>
+    ))), conversationId = conversationId) { resp =>
       Await.result(resp, 1.second)}
 
   }
