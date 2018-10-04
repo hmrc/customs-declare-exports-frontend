@@ -123,5 +123,7 @@ class SimpleDeclarationController @Inject()(
   }
 
   private def createMetadataDeclaration(form: SimpleDeclarationForm): MetaData =
-    MetaData(declaration=Declaration(goodsShipment = Some(GoodsShipment(ucr = Some(Ucr(traderAssignedReferenceId = Some("1234")))))))
+    MetaData(declaration=Some(
+      Declaration(goodsShipment = Some(GoodsShipment(ucr = Some(Ucr(traderAssignedReferenceId = Some("1234"))))))
+    ))
 }

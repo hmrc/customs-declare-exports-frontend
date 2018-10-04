@@ -87,5 +87,17 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     "have HMRC Developer Hub Client ID" in {
       config.developerHubClientId must be ("customs-declare-imports-frontend")
     }
+
+    "have customs declare exports" in {
+      config.customsDeclareExports must be ("http://localhost:6792")
+    }
+
+    "have submission response" in {
+      config.saveSubmissionResponse must be ("/save-submission-response")
+    }
+
+    "have fetch notification" in {
+      config.fetchNotifications must be ("/customs-declare-exports/notifications/")
+    }
   }
 }

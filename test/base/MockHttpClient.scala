@@ -50,8 +50,7 @@ class MockHttpClient[A](
       throw new UnauthorizedException("Get notifications request was not authenticated")
     case _ if forceServerError => throw new InternalServerException("Customs Declarations has gone bad.")
     case _ if url == expectedUrl && headers.toMap == expectedHeaders =>
-      Future.successful(Notifications(eori, List(Notification("1", "Name", LocalDateTime.now(), "reference", PreLodged)))
-        .asInstanceOf[O])
+      Future.successful(Notification.randomNotifications().asInstanceOf[O])
     case _ =>
       throw new BadRequestException(s"error")
   }

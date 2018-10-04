@@ -17,19 +17,26 @@
 package controllers
 
 import config.AppConfig
+import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
+import models.Notification
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.Future
-
 class NotificationsController @Inject()(
   appConfig: AppConfig,
-  authenticate: AuthAction
-) extends FrontendController {
+  override val messagesApi: MessagesApi,
+  authenticate: AuthAction,
+  customsDeclareExportsConnector: CustomsDeclareExportsConnector
+) extends FrontendController with I18nSupport {
 
   def listOfNotifications(): Action[AnyContent] = authenticate.async { implicit request =>
-    Future.successful(Ok("List of notifications"))
+    val eori = request.user.eori
+    customsDeclareExportsConnector.fetchNotifications(eori).map { results =>
+      val notifications = Notification.randomNotifications()
+      Ok(views.html.notifications(appConfig, notifications))
+    }
   }
 }

@@ -187,3 +187,9 @@ global.error.heading = There is a problem with a service
 global.error.message = Please try again later.
 
 confirmationPage.title = Confirmation page
+
+notifications.title = Notifications
+notifications.name = Name
+notifications.dateAndTime = Date and time
+notifications.reference = Reference
+notifications.status = Status
