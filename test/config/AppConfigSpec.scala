@@ -97,7 +97,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     }
 
     "have fetch notification" in {
-      config.fetchNotifications must be ("/customs-declare-exports/notifications/")
+      config.fetchNotifications must be ("/customs-declare-exports/notifications")
     }
   }
 }
