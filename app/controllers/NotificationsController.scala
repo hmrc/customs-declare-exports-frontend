@@ -35,8 +35,7 @@ class NotificationsController @Inject()(
   def listOfNotifications(): Action[AnyContent] = authenticate.async { implicit request =>
     val eori = request.user.eori
     customsDeclareExportsConnector.fetchNotifications(eori).map { results =>
-      val notifications = Notification.randomNotifications()
-      Ok(views.html.notifications(appConfig, notifications))
+      Ok(views.html.notifications(appConfig, results))
     }
   }
 }
