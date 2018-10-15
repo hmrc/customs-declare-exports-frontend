@@ -61,8 +61,13 @@ class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: H
     ) ++ badgeIdentifier.map(id => "X-Badge-Identifier" -> id)
     Logger.debug(s"CUSTOMS_DECLARATIONS request payload is -> ${body}")
 
-    httpClient.POSTString[CustomsDeclarationsResponse](
+    (httpClient.POSTString[CustomsDeclarationsResponse](
       s"${appConfig.customsDeclarationsEndpoint}$uri", body, headers
-    )(responseReader, hc, ec)
+    )(responseReader, hc, ec)).recover{
+      case error: Throwable =>
+        Logger.error(s"Error to check development environment ${error.toString}")
+        Logger.error(s"Error to check development environment (GET MESSAGE) ${error.getMessage}")
+        CustomsDeclarationsResponse(500, None)
+    }
   }
 }
