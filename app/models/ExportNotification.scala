@@ -16,20 +16,34 @@
 
 package models
 
+import org.joda.time.DateTime
 import play.api.libs.json.Json
 import uk.gov.hmrc.wco.dec._
 
 import scala.util.Random
 
+
 case class ExportsNotification(
+  dateTimeReceived: DateTime = DateTime.now(),
+  conversationId: String,
+  eori: String,
+  badgeId: Option[String] = None,
+  metadata: DeclarationMetadata,
+  response: Seq[Response] = Seq.empty
+)
+
+case class DeclarationMetadata(
   wcoDataModelVersionCode: Option[String] = None,
   wcoTypeName: Option[String] = None,
   responsibleCountryCode: Option[String] = None,
   responsibleAgencyName: Option[String] = None,
   agencyAssignedCustomizationCode: Option[String] = None,
-  agencyAssignedCustomizationVersionCode: Option[String] = None,
-  response: Seq[Response] = Seq.empty
+  agencyAssignedCustomizationVersionCode: Option[String] = None
 )
+
+object DeclarationMetadata {
+  implicit val declarationMetadataFormats = Json.format[DeclarationMetadata]
+}
 
 object ExportsNotification {
   implicit val measureFormats = Json.format[Measure]

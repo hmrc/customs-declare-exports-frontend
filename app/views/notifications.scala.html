@@ -34,14 +34,15 @@
                 <th class="table-cell">@messages("notifications.status")</th>
             </tr>
 
-
             @for(notification <- notifications){
-                <tr class="table-row">
-                    <td class="table-cell">@notification.wcoDataModelVersionCode.getOrElse("WcoDataModelVersionCode")</td>
-                    <td class="table-cell">@notification.wcoTypeName.getOrElse("WcoTypeName")</td>
-                    <td class="table-cell">@notification.responsibleCountryCode.getOrElse("CountryCode")</td>
-                    <td class="table-cell">@notification.responsibleAgencyName.getOrElse("AgencyName")</td>
-                </tr>
+                @for(response <- notification.response){
+                    <tr class="table-row">
+                        <td class="table-cell">@response.functionCode</td>
+                        <td class="table-cell">@response.issueDateTime.getOrElse("IssueDateTime")</td>
+                        <td class="table-cell">@response.functionalReferenceId.getOrElse("FunctionalReferenceId")</td>
+                        <td class="table-cell">@response.functionalReferenceId.getOrElse("Status")</td>
+                    </tr>
+                }
             }
         </table>
     </div>
