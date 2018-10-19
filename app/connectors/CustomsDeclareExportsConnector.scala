@@ -41,7 +41,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   def saveSubmissionResponse(body: Submission)
                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
     postSubmission(body).map { response =>
-      Logger.debug(s"CUSTOMS_DECLARE_EXPORSTS response is --> ${response.toString}")
+      Logger.debug(s"CUSTOMS_DECLARE_EXPORTS response is --> ${response.toString}")
       response
     }
 

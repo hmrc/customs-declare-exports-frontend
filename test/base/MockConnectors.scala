@@ -17,7 +17,8 @@
 package base
 
 import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
-import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse, ExportsNotification, Notification}
+import models._
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -43,5 +44,5 @@ trait MockConnectors extends MockitoSugar {
 
   def listOfNotifications() =
     when(mockCustomsDeclareExportsConnector.fetchNotifications(any())(any(), any()))
-      .thenReturn(Future.successful(Seq(ExportsNotification())))
+      .thenReturn(Future.successful(Seq(ExportsNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty))))
 }
