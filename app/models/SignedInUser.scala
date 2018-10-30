@@ -16,9 +16,12 @@
 
 package models
 
+import forms.SimpleDeclarationForm
+import org.joda.time.DateTime
 import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Name}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import uk.gov.hmrc.http.logging.Authorization
 
 case class SignedInUser(
   credentials: Credentials,
@@ -37,4 +40,11 @@ case class CustomsDeclareExportsResponse(status: Int, message:String)
 
 object CustomsDeclareExportsResponse {
   implicit val format = Json.format[CustomsDeclareExportsResponse]
+}
+
+
+case class UserSession(sessionId:String, loggedInDateTime:DateTime = DateTime.now, simpleDeclarationForm: Option[SimpleDeclarationForm]= None)
+
+object UserSession {
+  implicit val formats = Json.format[UserSession]
 }
