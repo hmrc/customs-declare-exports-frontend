@@ -44,7 +44,7 @@ class SessionCachingRepositorySpec extends CustomExportsBaseSpec with BeforeAndA
   val sessionCaching = component[SessionCachingRepository]
   val repositories: Seq[ReactiveRepository[_, _]] = Seq(sessionCaching)
 
-  val form = SimpleDeclarationForm("ducr",false,None,true,
+  val form = SimpleDeclarationForm("DUCR1",false,None,true,
     false,
     true,
     true,
@@ -87,16 +87,17 @@ class SessionCachingRepositorySpec extends CustomExportsBaseSpec with BeforeAndA
     }
 
     "get the user session saved " in {
-      val res = sessionCaching.getSession[UserSession]()(hc, UserSession.formats)
+      val res = sessionCaching.getSession()(hc)
       res.futureValue.get must be (userSession)
     }
-
+    "get the form saved " in {
+      val res = sessionCaching.getForm[UserSession]("simpleDeclarationForm")(UserSession.formats,hc)
+      res.futureValue.get.simpleDeclarationForm must be (userSession.simpleDeclarationForm)
+    }
     "update the user session saved " in {
-      val userSessionNew: UserSession = UserSession(hc.sessionId.get.value, DateTime.now,Some(form))
-
       val res = sessionCaching.updateSession(updatedForm,"simpleDeclarationForm")(ec, SimpleDeclarationForm.formats, hc)
       res.futureValue must be (true)
-      val res1 = sessionCaching.getSession[UserSession]()(hc, UserSession.formats)
+      val res1 = sessionCaching.getSession()(hc)
       res1.futureValue.get.simpleDeclarationForm.get must be (updatedForm)
     }
   }

@@ -17,7 +17,7 @@
 package repositories
 
 import javax.inject.{Inject, Singleton}
-import models.{ UserSession}
+import models.UserSession
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.bson.{BSONDocument, BSONObjectID, _}
@@ -39,19 +39,23 @@ class SessionCachingRepository @Inject()(implicit mc: ReactiveMongoComponent, ec
     UserSession.formats, objectIdFormats) {
   implicit val objectIdFormats = ReactiveMongoFormats.objectIdFormats
 
+  val EXPORTS_SESSION_ID = "sessionId"
+
   override def indexes: Seq[Index] = Seq(
     Index(Seq("loggedInDateTime" -> IndexType.Ascending), name = Some("loggedInDateTimeIdx"),
       options = BSONDocument("expireAfterSeconds" -> 1200)),
     Index(Seq("sessionId" -> IndexType.Ascending), name = Some("sessionIdx"), unique = true)
   )
 
-  val EXPORTS_SESSION_ID = "sessionId"
-
-
-  def getSession[A]()(implicit hc: HeaderCarrier, format: Format[A]): Future[Option[A]] = {
+  def getSession()(implicit hc: HeaderCarrier): Future[Option[UserSession]] = {
     val query = BSONDocument(EXPORTS_SESSION_ID -> hc.sessionId.get.value)
-    collection.find(query).one[A].map { res => res }
+    collection.find(query).one[UserSession].map { res => res }
+  }
 
+  def getForm[A](formName : String)(implicit format: Format[A], hc: HeaderCarrier): Future[Option[A]] = {
+    val query = BSONDocument(EXPORTS_SESSION_ID -> hc.sessionId.get.value)
+    val projection =  BSONDocument(EXPORTS_SESSION_ID -> 1,"loggedInDateTime" -> 2 ,formName -> 3)
+    collection.find(query, projection).one[A].map { res => res }
   }
 
   def saveSession(userSession: UserSession)(
