@@ -99,5 +99,17 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     "have fetch notification" in {
       config.fetchNotifications must be ("/customs-declare-exports/notifications")
     }
+
+    "have customs inventory linking exports" in {
+      config.customsInventoryLinkingExports must be("http://localhost:9823")
+    }
+
+    "have submit arrival URI" in {
+      config.sendArrival must be ("/")
+    }
+
+    "have inventory Client Id" in {
+      config.clientIdInventory must be ("5c68d3b5-d8a7-4212-8688-6b67f18bbce7")
+    }
   }
 }

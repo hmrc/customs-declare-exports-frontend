@@ -193,3 +193,8 @@ notifications.name = Name
 notifications.dateAndTime = Date and time
 notifications.reference = Reference
 notifications.status = Status
+
+arrivals.confirmation = Arrival confirmation
+arrivals.title = Arrivals
+arrivals.heading = Arrivals
+arrivals.ducr = DUCR

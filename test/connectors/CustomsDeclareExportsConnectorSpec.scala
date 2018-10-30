@@ -17,7 +17,7 @@
 package connectors
 
 import base.{CustomExportsBaseSpec, MockHttpClient}
-import models.CustomsDeclareExportsResponse
+import models.{CustomsDeclareExportsResponse, Submission}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
 import play.api.http.Status.OK
