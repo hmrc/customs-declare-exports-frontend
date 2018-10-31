@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,24 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package connectors
+@import config.AppConfig
 
-import play.api.libs.json.Json
+@(appConfig: AppConfig, ducr: String)(implicit request: Request[_], messages: Messages)
 
-case class Submission(
-  eori: String,
-  conversationId: String,
-  lrn: Option[String] = None,
-  mrn: Option[String] = None
-)
+@main_template(
+    title = messages("arrivals.confirmation"),
+    appConfig = appConfig,
+    bodyClasses = None) {
 
-object Submission {
-  implicit val format = Json.format[Submission]
+    <div class="govuk-box-highlight">
+        <h1 class="heading-xlarge">
+            Arrival submitted
+        </h1>
+        <p class="font-large">
+            DUCR number is <br>
+            <strong class="bold">@ducr</strong>
+        </p>
+    </div>
 }

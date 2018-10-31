@@ -17,12 +17,12 @@
 package controllers
 
 import config.AppConfig
-import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, Submission}
+import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
 import controllers.actions.AuthAction
 import forms.{GoodsPackage, SimpleAddress, SimpleDeclarationForm}
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.CustomsDeclarationsResponse
+import models.{CustomsDeclarationsResponse, Submission}
 import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms.{boolean, mapping, nonEmptyText, text}

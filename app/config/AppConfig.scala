@@ -64,6 +64,12 @@ class AppConfig @Inject() (override val runModeConfiguration: Configuration, val
   lazy val customsDeclarationsApiVersion = getConfString("customs-declarations.api-version",
     throw new IllegalStateException("Missing configuration for Customs Declarations API version"))
 
+  lazy val customsInventoryLinkingExports = baseUrl("customs-inventory-linking-exports")
+  lazy val sendArrival = getConfString("customs-inventory-linking-exports.sendArrival",
+    throw new IllegalStateException("Missing configuration for Customs Inventory Linking send arrival URI"))
+  lazy val clientIdInventory = getConfString("customs-inventory-linking-exports.client-id",
+    throw new IllegalStateException("Missing configuration for Customs Inventory Linking Client Id"))
+
   lazy val languageTranslationEnabled =
     runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
 

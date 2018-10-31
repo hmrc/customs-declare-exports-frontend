@@ -18,7 +18,7 @@ package connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models.{CustomsDeclareExportsResponse, ExportsNotification}
+import models.{CustomsDeclareExportsResponse, ExportsNotification, Submission}
 import play.api.Logger
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient

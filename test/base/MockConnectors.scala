@@ -16,19 +16,22 @@
 
 package base
 
-import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
+import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector}
 import models._
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST, OK}
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
 trait MockConnectors extends MockitoSugar {
   lazy val mockCustomsDeclarationsConnector: CustomsDeclarationsConnector = mock[CustomsDeclarationsConnector]
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
+  lazy val mockCustomsInventoryLinkingExportsConnector: CustomsInventoryLinkingExportsConnector =
+    mock[CustomsInventoryLinkingExportsConnector]
 
   def successfulCustomsDeclarationResponse() = {
     when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
@@ -45,4 +48,8 @@ trait MockConnectors extends MockitoSugar {
   def listOfNotifications() =
     when(mockCustomsDeclareExportsConnector.fetchNotifications(any())(any(), any()))
       .thenReturn(Future.successful(Seq(ExportsNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty))))
+
+  def sendArrival() =
+    when(mockCustomsInventoryLinkingExportsConnector.sendArrival(any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 }
