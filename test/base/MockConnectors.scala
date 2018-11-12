@@ -37,14 +37,19 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
       .thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED,Some("1234"))))
 
+    when(mockCustomsDeclarationsConnector.submitCancellation(any(), any())(any(), any()))
+      .thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED,Some("1234"))))
     when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
       .thenReturn(Future.successful(CustomsDeclareExportsResponse(OK, "message")))
   }
 
-  def customsDeclaration400Response() =
+  def customsDeclaration400Response() = {
     when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
       .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
 
+    when(mockCustomsDeclarationsConnector.submitCancellation(any(), any())(any(), any()))
+      .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
+  }
   def listOfNotifications() =
     when(mockCustomsDeclareExportsConnector.fetchNotifications(any())(any(), any()))
       .thenReturn(Future.successful(Seq(ExportsNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty))))

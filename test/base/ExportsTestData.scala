@@ -16,8 +16,6 @@
 
 package base
 
-import forms.{GoodsPackage, SimpleAddress, SimpleDeclarationForm}
-import play.api.data.Form
 import play.api.libs.json.{JsBoolean, JsObject, JsString, JsValue}
 
 object ExportsTestData {
@@ -69,6 +67,20 @@ object ExportsTestData {
     )
   )
 
+  val cancelJsonBody: JsValue = JsObject(
+    Map(
+      "wcoDataModelVersionCode" -> JsString("werwr"),
+      "wcoTypeName" -> JsString("werewr-"),
+      "responsibleAgencyName" -> JsString("werewr"),
+      "functionalReferenceID" -> JsString("12"),
+      "id" -> JsString("12"),
+      "submitter.id" -> JsString("12"),
+      "additionalInformation.statementDescription" -> JsString("12"),
+      "additionalInformation.statementTypeCode" -> JsString("12"),
+      "additionalInformation.pointer.sequenceNumeric" -> JsString("12"),
+      "amendment.changeReasonCode" -> JsString("12")
+    )
+  )
   val wrongJson: JsValue = JsObject(
     Map(
       "ducr" -> JsString("")

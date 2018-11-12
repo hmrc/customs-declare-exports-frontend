@@ -21,3 +21,11 @@ GET        /notifications                               controllers.Notification
 GET        /arrival                                     controllers.ArrivalsController.displayForm()
 
 POST       /arrival                                     controllers.ArrivalsController.send()
+
+# Cancel declaration
+
+GET        /cancel-declaration                          controllers.CancelDeclarationController.displayForm()
+
+POST       /cancel-declaration                          controllers.CancelDeclarationController.onSubmit()
+
+
