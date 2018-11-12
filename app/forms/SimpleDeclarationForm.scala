@@ -91,6 +91,7 @@ case class SimpleDeclarationForm(
 object SimpleDeclarationForm {
   implicit val formats = Json.format[SimpleDeclarationForm]
 }
+
 trait DataFormats {
   val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
 

@@ -21,18 +21,88 @@
 @(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("arrivals.title"),
+    title = messages("movement.title"),
     appConfig: AppConfig,
     bodyClasses = None) {
 
     @helpers.form(action = ArrivalsController.send(), 'autoComplete -> "off") {
         @components.back_link("dashboard")
 
-        @components.heading("arrivals.title", "arrivals.heading")
+        @components.heading("movement.title", "movement.heading")
 
         @components.input_text(
-            field = form("ducr"),
-            label = messages("arrivals.ducr")
+            field = form("agentDetails.eori"),
+            label = messages("movement.eori")
+        )
+
+        @components.input_text(
+            field = form("agentDetails.agentLocation"),
+            label = messages("movement.agentLocation")
+        )
+
+        @components.input_text(
+            field = form("agentDetails.agentRole"),
+            label = messages("movement.agentRole")
+        )
+
+        @components.input_text(
+            field = form("ucrBlock.ucr"),
+            label = messages("movement.ucr")
+        )
+
+        @components.input_text(
+            field = form("ucrBlock.ucrType"),
+            label = messages("movement.ucrType")
+        )
+
+        @components.input_text(
+            field = form("goodsLocation"),
+            label = messages("movement.goodsLocation")
+        )
+
+        @components.input_text(
+            field = form("goodsArrivalDateTime"),
+            label = messages("movement.goodsArrivalDateTime")
+        )
+
+        @components.input_text(
+            field = form("goodsDepartureDateTime"),
+            label = messages("movement.goodsDepartureDateTime")
+        )
+
+        @components.input_text(
+            field = form("shedOPID"),
+            label = messages("movement.shedOPID")
+        )
+
+        @components.input_text(
+            field = form("masterUCR"),
+            label = messages("movement.masterUCR")
+        )
+
+        @components.input_text(
+            field = form("masterOpt"),
+            label = messages("movement.masterOpt")
+        )
+
+        @components.input_text(
+            field = form("movementReference"),
+            label = messages("movement.movementReference")
+        )
+
+        @components.input_text(
+            field = form("transportDetails.transportId"),
+            label = messages("movement.transportId")
+        )
+
+        @components.input_text(
+            field = form("transportDetails.transportMode"),
+            label = messages("movement.transportMode")
+        )
+
+        @components.input_text(
+            field = form("transportDetails.transportNationality"),
+            label = messages("movement.transportNationality")
         )
 
         @components.submit_button()

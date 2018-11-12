@@ -21,13 +21,15 @@ import connectors.CustomsInventoryLinkingExportsConnector
 import controllers.actions.AuthAction
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{Arrival, ArrivalForm}
 import play.api.Logger
 import play.api.data.Form
-import play.api.data.Forms.{mapping, nonEmptyText}
+import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
+import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 import views.html.{arrival_confirmation_page, arrivals}
 
 import scala.concurrent.Future
@@ -40,32 +42,41 @@ class ArrivalsController @Inject()(
   errorHandler: ErrorHandler
 ) extends FrontendController with I18nSupport {
 
-  val exampleXml: String =
-    """<?xml version="1.0" encoding="UTF-8"?>
-      |<inventoryLinkingMovementRequest xmlns="http://gov.uk/customs/inventoryLinking/v1">
-      |    <messageCode>EAL</messageCode>
-      |    <ucrBlock>
-      |        <ucr>GB/AAAA-00000</ucr>
-      |        <ucrType>M</ucrType>
-      |    </ucrBlock>
-      |    <goodsLocation>goodsLocation</goodsLocation>
-      |    <goodsArrivalDateTime>2001-12-31T12:00:00</goodsArrivalDateTime>
-      |    <goodsDepartureDateTime>2001-12-31T12:00:00</goodsDepartureDateTime>
-      |    <shedOPID>PID</shedOPID>
-      |    <masterUCR>GB/MAAM-01010</masterUCR>
-      |    <masterOpt>A</masterOpt>
-      |    <movementReference>movementReference</movementReference>
-      |    <transportDetails>
-      |        <transportID>transportID</transportID>
-      |        <transportMode>M</transportMode>
-      |        <transportNationality>ZZ</transportNationality>
-      |    </transportDetails>
-      |</inventoryLinkingMovementRequest>""".stripMargin
+  object ArrivalForm {
+    implicit val agentFormat = Json.format[AgentDetails]
+    implicit val ucrFormat = Json.format[UcrBlock]
+    implicit val transportFormat = Json.format[TransportDetails]
+    implicit val inventoryMovementFormat = Json.format[InventoryLinkingMovementRequest]
+  }
+
+  val correctUcrType = Seq("D", "M")
+  val correctMasterOpt = Seq("A", "F", "R", "X")
 
   val form = Form(
     mapping(
-      "ducr" -> nonEmptyText
-    )(ArrivalForm.apply)(ArrivalForm.unapply)
+      "messageCode" -> ignored("EAL"),
+      "agentDetails" -> optional(mapping(
+        "eori" -> optional(text(maxLength = 17)),
+        "agentLocation" -> optional(text(maxLength = 12)),
+        "agentRole" -> optional(text(maxLength = 3))
+      )(AgentDetails.apply)(AgentDetails.unapply)),
+      "ucrBlock" -> mapping(
+        "ucr" -> nonEmptyText(maxLength = 35),
+        "ucrType" -> nonEmptyText.verifying(correctUcrType.contains(_))
+      )(UcrBlock.apply)(UcrBlock.unapply),
+      "goodsLocation" -> nonEmptyText(maxLength = 17),
+      "goodsArrivalDateTime" -> optional(text),
+      "goodsDepartureDateTime" -> optional(text),
+      "shedOPID" -> optional(text(maxLength = 3)),
+      "masterUCR" -> optional(text(maxLength = 35)),
+      "masterOpt" -> optional(text.verifying(correctMasterOpt.contains(_))),
+      "movementReference" -> optional(text(maxLength = 25)),
+      "transportDetails" -> optional(mapping(
+        "transportId" -> optional(text(maxLength = 35)),
+        "transportMode" -> optional(text(maxLength = 1)),
+        "transportNationality" -> optional(text(maxLength = 2))
+      )(TransportDetails.apply)(TransportDetails.unapply))
+    )(InventoryLinkingMovementRequest.apply)(InventoryLinkingMovementRequest.unapply)
   )
 
   def displayForm(): Action[AnyContent] =  authenticate.async { implicit request =>
@@ -74,13 +85,13 @@ class ArrivalsController @Inject()(
 
   def send(): Action[AnyContent] = authenticate.async { implicit request =>
     form.bindFromRequest().fold(
-      (formWithErrors: Form[ArrivalForm]) =>
+      (formWithErrors: Form[InventoryLinkingMovementRequest]) =>
         Future.successful(BadRequest(arrivals(appConfig, formWithErrors))),
       form => {
         val eori = request.user.eori
-        val arrival = Arrival(eori, form.ducr, exampleXml)
-        customsInventoryLinkingExportsConnector.sendArrival(arrival).map {
-          case accepted if accepted.status == ACCEPTED => Ok(arrival_confirmation_page(appConfig, form.ducr))
+        customsInventoryLinkingExportsConnector.sendArrival(eori, form.toXml).map {
+          case accepted if accepted.status == ACCEPTED =>
+            Ok(arrival_confirmation_page(appConfig, form.movementReference.getOrElse("Movement reference")))
           case error =>
             Logger.error(s"Error from Customs Inventory Linking ${error.toString}")
             BadRequest(

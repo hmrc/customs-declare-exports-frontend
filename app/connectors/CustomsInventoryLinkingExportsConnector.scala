@@ -28,22 +28,22 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CustomsInventoryLinkingExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
-  def sendArrival(body: Arrival)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    postArrival(body).map { response =>
+  def sendArrival(eori: String, body: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    postArrival(eori, body).map { response =>
       Logger.debug(s"CUSTOMS_INVENTORY_LINKING_EXPORTS response is --> ${response.toString}")
       response
     }
 
-  private[connectors] def postArrival(body: Arrival)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  private[connectors] def postArrival(eori: String, body: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val headers: Seq[(String, String)] = Seq(
       "Accept" -> "application/vnd.hmrc.1.0+xml",
       "Content-Type" -> "application/xml;charset=utf-8",
       "X-Client-ID" -> appConfig.clientIdInventory,
-      "X-EORI-Identfier" -> body.eori
+      "X-EORI-Identfier" -> eori
     )
 
     httpClient.POSTString(
-      s"${appConfig.customsInventoryLinkingExports}${appConfig.sendArrival}", body.xml, headers
+      s"${appConfig.customsInventoryLinkingExports}${appConfig.sendArrival}", body, headers
     )
   }
 }

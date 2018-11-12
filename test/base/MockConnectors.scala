@@ -55,6 +55,6 @@ trait MockConnectors extends MockitoSugar {
       .thenReturn(Future.successful(Seq(ExportsNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty))))
 
   def sendArrival() =
-    when(mockCustomsInventoryLinkingExportsConnector.sendArrival(any())(any(), any()))
+    when(mockCustomsInventoryLinkingExportsConnector.sendArrival(any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 }

@@ -26,7 +26,8 @@ import scala.concurrent.Future
 
 class CustomsInventoryLinkingExportsConnectorSpec extends CustomExportsBaseSpec {
 
-  val arrival = Arrival("eori1","Ducr", "Arrival")
+  val eori = "eori1"
+  val xml = "Xml"
 
   val headers: Seq[(String, String)] = Seq(
     "Accept" -> "application/vnd.hmrc.1.0+xml",
@@ -36,20 +37,21 @@ class CustomsInventoryLinkingExportsConnectorSpec extends CustomExportsBaseSpec 
   )
 
   "CustomsInventoryLinkingExportsConnector" should {
-    "POST arrival to Customs Inventory Linking Exports" in sendArrival(arrival) { response =>
+    "POST arrival to Customs Inventory Linking Exports" in sendArrival(eori, xml) { response =>
       response.futureValue.status must be (ACCEPTED)
     }
   }
 
   def sendArrival(
-    arrival: Arrival,
+    eori: String,
+    body: String,
     hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(randomString(255))))
   )(test: Future[HttpResponse] => Unit): Unit = {
     val expectedUrl: String = s"${appConfig.customsInventoryLinkingExports}${appConfig.sendArrival}"
     val falseServerError: Boolean = false
     val expectedHeaders: Seq[(String, String)] = headers
-    val http = new MockInventoryHttpClient(expectedUrl, arrival, expectedHeaders, falseServerError)
+    val http = new MockInventoryHttpClient(expectedUrl, body, expectedHeaders, falseServerError)
     val client = new CustomsInventoryLinkingExportsConnector(appConfig, http)
-    test(client.sendArrival(arrival)(hc, ec))
+    test(client.sendArrival(eori, body)(hc, ec))
   }
 }
