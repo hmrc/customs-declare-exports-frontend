@@ -79,7 +79,7 @@ class ArrivalsController @Inject()(
     )(InventoryLinkingMovementRequest.apply)(InventoryLinkingMovementRequest.unapply)
   )
 
-  def displayForm(): Action[AnyContent] =  authenticate.async { implicit request =>
+  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     Future.successful(Ok(arrivals(appConfig, form)))
   }
 

@@ -86,4 +86,18 @@ object ExportsTestData {
       "ducr" -> JsString("")
     )
   )
+
+  val correctArrival: JsValue = JsObject(
+    Map(
+      "messageCode" -> JsString("EAL"),
+      "ucrBlock" -> JsObject(
+        Map(
+          "ucr" -> JsString("UCR"),
+          "ucrType" -> JsString("D")
+        )
+      ),
+      "goodsLocation" -> JsString("Location"),
+      "movementReference" -> JsString("Movement reference number")
+    )
+  )
 }

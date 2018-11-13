@@ -57,4 +57,8 @@ trait MockConnectors extends MockitoSugar {
   def sendArrival() =
     when(mockCustomsInventoryLinkingExportsConnector.sendArrival(any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+
+  def sendArrival400Response() =
+    when(mockCustomsInventoryLinkingExportsConnector.sendArrival(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 }

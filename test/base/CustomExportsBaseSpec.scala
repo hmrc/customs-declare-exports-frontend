@@ -20,7 +20,7 @@ import java.util.UUID
 
 import akka.stream.Materializer
 import config.AppConfig
-import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
+import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector}
 import controllers.actions.FakeAuthAction
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -63,7 +63,8 @@ trait CustomExportsBaseSpec extends PlaySpec
     bind[AuthConnector].to(mockAuthConnector),
     bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector),
     bind[CustomsCacheService].to(mockCustomsCacheService),
-    bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector)
+    bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
+    bind[CustomsInventoryLinkingExportsConnector].to(mockCustomsInventoryLinkingExportsConnector)
   ).build()
 
   implicit val mat: Materializer = app.materializer

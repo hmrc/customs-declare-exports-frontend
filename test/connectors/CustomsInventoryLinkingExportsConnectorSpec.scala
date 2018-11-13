@@ -17,10 +17,9 @@
 package connectors
 
 import base.{CustomExportsBaseSpec, MockInventoryHttpClient}
-import models.Arrival
 import play.api.http.Status.ACCEPTED
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.logging.Authorization
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
