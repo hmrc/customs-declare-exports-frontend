@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
+@@import config.AppConfig
 
 @(appConfig: AppConfig, movementReference: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("arrivals.confirmation"),
+    title = messages("movement.arrivals.confirmation"),
     appConfig = appConfig,
     bodyClasses = None) {
 

@@ -40,7 +40,7 @@ class ArrivalsControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include("Eori")
+      stringResult must include("EORI")
       stringResult must include("Goods arrival date time")
       stringResult must include("Movement reference")
     }
@@ -51,6 +51,7 @@ class ArrivalsControllerSpec extends CustomExportsBaseSpec {
       val emptyForm = JsObject(Map("eori" -> JsString("")))
       val result = route(app, postRequest(uri, emptyForm)).get
 
+      // TODO: Shouldn't that be removed?
       println(contentAsString(result))
 
       contentAsString(result) must include("Please enter a value")
