@@ -72,10 +72,12 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     "return correct value for isFeatureOn method" in {
       config.isFeatureOn(Feature.default) must be (false)
     }
-    "have a submit import declarations uri" in {
-      config.submitImportDeclarationUri must be ("/")
+    "have a submit export declarations uri" in {
+      config.submitExportDeclarationUri must be ("/")
     }
-
+    "have a submit cancellation uri" in {
+      config.submitCancellationUri must be ("/cancellation-requests")
+    }
     "have customs declarations endpoint" in {
       config.customsDeclarationsEndpoint must be ("http://localhost:6790")
     }
@@ -85,7 +87,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     }
 
     "have HMRC Developer Hub Client ID" in {
-      config.developerHubClientId must be ("customs-declare-imports-frontend")
+      config.developerHubClientId must be ("customs-declare-exports-frontend")
     }
 
     "have customs declare exports" in {

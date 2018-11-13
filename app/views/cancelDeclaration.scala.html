@@ -1,0 +1,102 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.routes._
+@import utils.RadioOption
+
+@(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("cancel.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
+
+    @helpers.form(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
+        @components.back_link("dashboard")
+
+        @components.error_summary(form.errors)
+
+        @components.heading("cancelDeclaration.title", "cancelDeclaration.heading")
+
+        @components.input_text(
+            field = form("wcoDataModelVersionCode"),
+            label = messages("WCODataModelVersionCode")
+        )
+
+        @components.input_text(
+        field = form("wcoTypeName"),
+        label = messages("wcoTypeName")
+        )
+
+        @components.input_text(
+        field = form("responsibleAgencyName"),
+        label = messages("ResponsibleAgencyName")
+        )
+
+        @components.input_text(
+        field = form("functionalReferenceID"),
+        label = messages("FunctionalReferenceID (Mandatory)")
+        )
+        @components.input_text(
+        field = form("id"),
+        label = messages("ID (Mandatory)")
+        )
+       Submitter Details
+
+        @components.input_text(
+        field = form("submitter.id"),
+        label = messages("Submitter ID (Mandatory)")
+        )
+
+        AdditionalInformation (Mandatory)
+        @components.input_text(
+        field = form("additionalInformation.statementCode"),
+        label = messages("StatementCode (Mandatory)")
+        )
+
+        @components.input_text(
+        field = form("additionalInformation.statementDescription"),
+        label = messages("StatementDescription (Mandatory)")
+        )
+
+        @components.input_text(
+        field = form("additionalInformation.statementTypeCode"),
+        label = messages("StatementTypeCode")
+        )
+
+            Pointer
+
+        @components.input_text(
+        field = form("additionalInformation.pointer.sequenceNumeric"),
+        label = messages("SequenceNumeric")
+        )
+
+        @components.input_text(
+        field = form("additionalInformation.pointer.documentSectionCode"),
+        label = messages("DocumentSectionCode")
+        )
+
+        Amendment (Mandatory)
+        @components.input_text(
+        field = form("amendment.changeReasonCode"),
+        label = messages("ChangeReasonCode (Mandatory)")
+        )
+
+        @components.submit_button()
+    }
+}

@@ -34,11 +34,17 @@ class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: H
 
   def submitExportDeclaration(metaData: MetaData, badgeIdentifier: Option[String] = None)
                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
-    postMetaData(appConfig.submitImportDeclarationUri, metaData, badgeIdentifier).map{ res =>
+    postMetaData(appConfig.submitExportDeclarationUri, metaData, badgeIdentifier).map{ res =>
       Logger.debug(s"CUSTOMS_DECLARATIONS response is  --> ${res.toString}")
       res
     }
 
+  def submitCancellation(metaData: MetaData, badgeIdentifier: Option[String] = None)
+                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
+    postMetaData(appConfig.submitCancellationUri, metaData, badgeIdentifier).map{ res =>
+      Logger.debug(s"CUSTOMS_DECLARATIONS cancellation response is  --> ${res.toString}")
+      res
+    }
   private def postMetaData(uri: String,
                            metaData: MetaData,
                            badgeIdentifier: Option[String] = None)
