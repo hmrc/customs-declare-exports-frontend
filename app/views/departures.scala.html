@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@@import components._
 @import config.AppConfig
 @import controllers.routes._
 @import uk.gov.hmrc.play.views.html._
@@ -21,90 +22,99 @@
 @(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("movement.arrivals.title"),
-    appConfig: AppConfig,
+    title = messages("movement.departures.title"),
+    appConfig = appConfig,
     bodyClasses = None) {
 
-    @helpers.form(action = ArrivalsController.send(), 'autoComplete -> "off") {
-        @components.back_link("dashboard")
+    @helpers.form(action = DeparturesController.submitForm(), 'autoComplete -> "off") {
+        @back_link("dashboard")
 
-        @components.heading("movement.arrivals.title", "movement.arrivals.heading")
+@*        @error_summary(form.errors)*@
 
-        @components.input_text(
-            field = form("agentDetails.eori"),
+        @heading("movement.departures.title", "movement.departures.heading")
+
+
+        @input_text(
+            field = form("agentDetails.EORI"),
             label = messages("movement.eori")
         )
 
-        @components.input_text(
+        @input_text(
             field = form("agentDetails.agentLocation"),
             label = messages("movement.agentLocation")
         )
 
-        @components.input_text(
+        @input_text(
             field = form("agentDetails.agentRole"),
             label = messages("movement.agentRole")
         )
 
-        @components.input_text(
+
+        @input_text(
             field = form("ucrBlock.ucr"),
             label = messages("movement.ucr")
         )
 
-        @components.input_text(
+        @input_text(
             field = form("ucrBlock.ucrType"),
             label = messages("movement.ucrType")
         )
 
-        @components.input_text(
+
+        @input_text(
             field = form("goodsLocation"),
             label = messages("movement.goodsLocation")
         )
 
-        @components.input_text(
+        @input_text(
             field = form("goodsArrivalDateTime"),
             label = messages("movement.goodsArrivalDateTime")
         )
 
-        @components.input_text(
+        @input_text(
             field = form("goodsDepartureDateTime"),
             label = messages("movement.goodsDepartureDateTime")
         )
 
-        @components.input_text(
+        @input_text(
             field = form("shedOPID"),
             label = messages("movement.shedOPID")
         )
 
-        @components.input_text(
+        @input_text(
             field = form("masterUCR"),
             label = messages("movement.masterUCR")
         )
 
-        @components.input_text(
+        @input_text(
             field = form("masterOpt"),
             label = messages("movement.masterOpt")
         )
 
-        @components.input_text(
+        @input_text(
             field = form("movementReference"),
             label = messages("movement.movementReference")
         )
 
-        @components.input_text(
-            field = form("transportDetails.transportId"),
-            label = messages("movement.transportId")
+
+        @input_text(
+            field = form("transportDetails.transportID"),
+            label = messages("movement.transportID")
         )
 
-        @components.input_text(
+        @input_text(
             field = form("transportDetails.transportMode"),
             label = messages("movement.transportMode")
         )
 
-        @components.input_text(
+        @input_text(
             field = form("transportDetails.transportNationality"),
             label = messages("movement.transportNationality")
         )
 
-        @components.submit_button()
+
+
+        @submit_button()
     }
+
 }

@@ -22,10 +22,14 @@ GET        /arrival                                     controllers.ArrivalsCont
 
 POST       /arrival                                     controllers.ArrivalsController.send()
 
+# Departures
+
+GET        /departure                                   controllers.DeparturesController.displayForm()
+
+POST       /departure                                   controllers.DeparturesController.submitForm()
+
 # Cancel declaration
 
 GET        /cancel-declaration                          controllers.CancelDeclarationController.displayForm()
 
 POST       /cancel-declaration                          controllers.CancelDeclarationController.onSubmit()
-
-
