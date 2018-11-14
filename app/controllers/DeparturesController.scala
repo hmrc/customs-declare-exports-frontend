@@ -52,7 +52,7 @@ class DeparturesController @Inject()(
         Future.successful(BadRequest(departures(appConfig, formWithErrors))),
       validForm => {
         val eori = request.user.eori
-        customsInventoryLinkingExportsConnector.sendArrival(eori, validForm.toXml).map {
+        customsInventoryLinkingExportsConnector.sendMovementRequest(eori, validForm.toXml).map {
           case accepted if accepted.status == ACCEPTED =>
             Ok(departure_confirmation_page(appConfig, validForm.ucrBlock.ucr))
           case error =>

@@ -51,15 +51,12 @@ class ArrivalsControllerSpec extends CustomExportsBaseSpec {
       val emptyForm = JsObject(Map("eori" -> JsString("")))
       val result = route(app, postRequest(uri, emptyForm)).get
 
-      // TODO: Shouldn't that be removed?
-      println(contentAsString(result))
-
       contentAsString(result) must include("Please enter a value")
     }
 
     "redirect to error page when arrival submission failed" in {
       authorizedUser()
-      sendArrival400Response()
+      sendMovementRequest400Response()
 
       val result = route(app, postRequest(uri, correctArrival)).get
       val stringResult = contentAsString(result)
@@ -71,7 +68,7 @@ class ArrivalsControllerSpec extends CustomExportsBaseSpec {
 
     "redirect to arrival confirmation page" in {
       authorizedUser()
-      sendArrival()
+      sendMovementRequest()
 
       val result = route(app, postRequest(uri, correctArrival)).get
       val stringResult = contentAsString(result)

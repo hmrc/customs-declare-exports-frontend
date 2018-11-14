@@ -89,7 +89,7 @@ class ArrivalsController @Inject()(
         Future.successful(BadRequest(arrivals(appConfig, formWithErrors))),
       form => {
         val eori = request.user.eori
-        customsInventoryLinkingExportsConnector.sendArrival(eori, form.toXml).map {
+        customsInventoryLinkingExportsConnector.sendMovementRequest(eori, form.toXml).map {
           case accepted if accepted.status == ACCEPTED =>
             Ok(arrival_confirmation_page(appConfig, form.movementReference.getOrElse("Movement reference")))
           case error =>

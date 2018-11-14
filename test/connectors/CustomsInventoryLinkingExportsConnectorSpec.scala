@@ -51,6 +51,6 @@ class CustomsInventoryLinkingExportsConnectorSpec extends CustomExportsBaseSpec 
     val expectedHeaders: Seq[(String, String)] = headers
     val http = new MockInventoryHttpClient(expectedUrl, body, expectedHeaders, falseServerError)
     val client = new CustomsInventoryLinkingExportsConnector(appConfig, http)
-    test(client.sendArrival(eori, body)(hc, ec))
+    test(client.sendMovementRequest(eori, body)(hc, ec))
   }
 }
