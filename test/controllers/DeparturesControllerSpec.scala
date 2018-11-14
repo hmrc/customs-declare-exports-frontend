@@ -56,7 +56,7 @@ class DeparturesControllerSpec extends CustomExportsBaseSpec {
       contentAsString(result) must include("Please enter a value")
     }
 
-    "redirect to arrival confirmation page" in {
+    "redirect to departure confirmation page" in {
       authorizedUser()
       sendMovementRequest()
 
@@ -64,8 +64,8 @@ class DeparturesControllerSpec extends CustomExportsBaseSpec {
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include("Arrival submitted")
-      stringResult must include("Movement reference number")
+      stringResult must include("Departure has been submitted")
+      stringResult must include("GB/NLA-0YH06GF0V3CUPJC9393")
     }
 
     "redirect to error page on failed submission" in {

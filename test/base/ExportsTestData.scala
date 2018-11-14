@@ -92,7 +92,7 @@ object ExportsTestData {
       "messageCode" -> JsString("EAL"),
       "ucrBlock" -> JsObject(
         Map(
-          "ucr" -> JsString("UCR"),
+          "ucr" -> JsString("GB/NLA-0YH06GF0V3CUPJC9393"),
           "ucrType" -> JsString("D")
         )
       ),
@@ -106,7 +106,7 @@ object ExportsTestData {
       "messageCode" -> JsString("EDL"),
       "ucrBlock" -> JsObject(
         Map(
-          "ucr" -> JsString("UCR"),
+          "ucr" -> JsString("GB/NLA-0YH06GF0V3CUPJC9393"),
           "ucrType" -> JsString("D")
         )
       ),

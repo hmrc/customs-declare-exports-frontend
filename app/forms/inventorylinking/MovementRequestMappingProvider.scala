@@ -30,7 +30,7 @@ object MovementRequestMappingProvider {
 
   private val ucrTypeAllowedValues = Set("D", "M")
   private val masterOptAllowedValues = Set("A", "F", "R", "X")
-  private val ucrValidationPattern = "[0-9][A-Z][A-Z][0-9A-Z\\(\\)\\-/]{6,32}|GB/[0-9A-Z]{3,4}-[0-9A-Z]{5,28}|GB/[0-9A-Z]{9,12}-[0-9A-Z]{1,23}|A:[0-9A-Z]{3}[0-9]{8}|C:[AZ]{3}[0-9A-Z]{3,30}"
+  private val ucrValidationPattern = "[0-9][A-Z][A-Z][0-9A-Z\\(\\)\\-/]{6,32}|GB/[0-9A-Z]{3,4}-[0-9A-Z]{5,28}|GB/[0-9A-Z]{9,12}-[0-9A-Z]{1,23}|A:[0-9A-Z]{3}[0-9]{8}|C:[AZ]{3}[0-9A-Z]{3,30}".r
 
   private val eoriMaxLength = 17
   private val agentLocationMaxLength = 12
@@ -50,7 +50,7 @@ object MovementRequestMappingProvider {
   )(AgentDetails.apply)(AgentDetails.unapply)
 
   private val ucrBlockMapping = mapping(
-    "ucr" -> nonEmptyText(maxLength = ucrMaxLength).verifying(pattern(ucrValidationPattern.r)),
+    "ucr" -> nonEmptyText(maxLength = ucrMaxLength).verifying(pattern(ucrValidationPattern)),
     "ucrType" -> nonEmptyText(maxLength = 1)
       .verifying("Allowed values are: \"D\", \"M\"", s => ucrTypeAllowedValues.contains(s))
   )(UcrBlock.apply)(UcrBlock.unapply)
@@ -75,7 +75,7 @@ object MovementRequestMappingProvider {
       "goodsArrivalDateTime" -> optional(text()),
       "goodsDepartureDateTime" -> optional(text()),
       "shedOPID" -> optional(text(maxLength = shedOPIDMaxLength)),
-      "masterUCR" -> optional(text(maxLength = masterUCRMaxLength).verifying(pattern(ucrValidationPattern.r))),
+      "masterUCR" -> optional(text(maxLength = masterUCRMaxLength).verifying(pattern(ucrValidationPattern))),
       "masterOpt" -> optional(text(maxLength = 1)
         .verifying("Allowed values are: \"A\", \"F\", \"R\", \"X\"", s => masterOptAllowedValues.contains(s))),
       "movementReference" -> optional(text(maxLength = movementReferenceMaxLength)),
