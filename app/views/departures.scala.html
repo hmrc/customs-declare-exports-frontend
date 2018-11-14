@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@@import components._
+@import components._
 @import config.AppConfig
 @import controllers.routes._
 @import uk.gov.hmrc.play.views.html._
@@ -28,8 +28,6 @@
 
     @helpers.form(action = DeparturesController.submitForm(), 'autoComplete -> "off") {
         @back_link("dashboard")
-
-@*        @error_summary(form.errors)*@
 
         @heading("movement.departures.title", "movement.departures.heading")
 
