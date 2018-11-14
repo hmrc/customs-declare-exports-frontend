@@ -25,16 +25,14 @@ import javax.inject.Inject
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-import views.html.{arrival_confirmation_page, arrivals}
+import views.html.{departure_confirmation_page, departures}
 
 import scala.concurrent.Future
 
-class ArrivalsController @Inject()(
+class DeparturesController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -42,30 +40,23 @@ class ArrivalsController @Inject()(
   errorHandler: ErrorHandler
 ) extends FrontendController with I18nSupport {
 
-  object ArrivalForm {
-    implicit val agentFormat = Json.format[AgentDetails]
-    implicit val ucrFormat = Json.format[UcrBlock]
-    implicit val transportFormat = Json.format[TransportDetails]
-    implicit val inventoryMovementFormat = Json.format[InventoryLinkingMovementRequest]
-  }
-
-  val form = Form(MovementRequestMappingProvider.provideMappingForArrival())
+  val departuresForm = Form(MovementRequestMappingProvider.provideMappingForDeparture())
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    Future.successful(Ok(arrivals(appConfig, form)))
+    Future.successful(Ok(departures(appConfig, departuresForm)))
   }
 
-  def send(): Action[AnyContent] = authenticate.async { implicit request =>
-    form.bindFromRequest().fold(
+  def submitForm(): Action[AnyContent] = authenticate.async { implicit request =>
+    departuresForm.bindFromRequest().fold(
       (formWithErrors: Form[InventoryLinkingMovementRequest]) =>
-        Future.successful(BadRequest(arrivals(appConfig, formWithErrors))),
-      form => {
+        Future.successful(BadRequest(departures(appConfig, formWithErrors))),
+      validForm => {
         val eori = request.user.eori
-        customsInventoryLinkingExportsConnector.sendMovementRequest(eori, form.toXml).map {
+        customsInventoryLinkingExportsConnector.sendMovementRequest(eori, validForm.toXml).map {
           case accepted if accepted.status == ACCEPTED =>
-            Ok(arrival_confirmation_page(appConfig, form.movementReference.getOrElse("Movement reference")))
+            Ok(departure_confirmation_page(appConfig, validForm.ucrBlock.ucr))
           case error =>
-            Logger.error(s"Error from Customs Inventory Linking ${error.toString}")
+            Logger.error(s"There was an error during departure form submission: ${error.toString}")
             BadRequest(
               errorHandler.standardErrorTemplate(
                 pageTitle = messagesApi("global.error.title"),
@@ -77,4 +68,5 @@ class ArrivalsController @Inject()(
       }
     )
   }
+
 }

@@ -54,7 +54,11 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsDeclareExportsConnector.fetchNotifications(any())(any(), any()))
       .thenReturn(Future.successful(Seq(ExportsNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty))))
 
-  def sendArrival() =
-    when(mockCustomsInventoryLinkingExportsConnector.sendArrival(any())(any(), any()))
+  def sendMovementRequest() =
+    when(mockCustomsInventoryLinkingExportsConnector.sendMovementRequest(any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+
+  def sendMovementRequest400Response() =
+    when(mockCustomsInventoryLinkingExportsConnector.sendMovementRequest(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 }

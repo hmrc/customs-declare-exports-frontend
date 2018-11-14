@@ -193,7 +193,7 @@ notifications.name = Name
 notifications.dateAndTime = Date and time
 notifications.reference = Reference
 notifications.status = Status
-
+        
 arrivals.confirmation = Arrival confirmation
 arrivals.title = Arrivals
 arrivals.heading = Arrivals
@@ -202,3 +202,25 @@ arrivals.ducr = DUCR
 cancel.title= Cancel Declaration
 cancelDeclaration.title= Cancel Declaration
 cancelDeclaration.heading= Cancel Declaration
+
+movement.arrivals.confirmation = Arrival confirmation
+movement.departures.confirmation = Departure confirmation
+movement.arrivals.title = Arrival
+movement.arrivals.heading = Arrival
+movement.departures.title = Departure
+movement.departures.heading = Departure
+movement.eori = EORI
+movement.agentLocation = Agent location
+movement.agentRole = Agent role
+movement.ucr = Ucr
+movement.ucrType = Ucr type
+movement.goodsLocation = Goods location
+movement.goodsArrivalDateTime = Goods arrival date time
+movement.goodsDepartureDateTime = Goods departure date time
+movement.shedOPID = Shed OPID
+movement.masterUCR = Master UCR
+movement.masterOpt = Master Opt
+movement.movementReference = Movement reference
+movement.transportID = Transport Id
+movement.transportMode = Transport Mode
+movement.transportNationality = Transport Nationality

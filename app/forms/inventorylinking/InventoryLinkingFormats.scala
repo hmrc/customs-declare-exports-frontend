@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package forms.inventorylinking
 
 import play.api.libs.json.Json
+import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
+import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
-case class Arrival(eori: String, ducr: String, xml: String)
-
-object Arrival {
-  implicit val format = Json.format[Arrival]
+object InventoryLinkingFormats {
+  implicit val agentFormat = Json.format[AgentDetails]
+  implicit val ucrBlockFormat = Json.format[UcrBlock]
+  implicit val transportDetailsFormat = Json.format[TransportDetails]
+  implicit val movementFormat = Json.format[InventoryLinkingMovementRequest]
 }
-
-case class ArrivalForm(ducr: String)
-
-object ArrivalForm {
-  implicit val format = Json.format[ArrivalForm]
-}
-

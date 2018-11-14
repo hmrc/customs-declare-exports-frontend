@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package forms.inventorylinking
 
-@(appConfig: AppConfig, movementReference: String)(implicit request: Request[_], messages: Messages)
+import org.scalatest.{Matchers, WordSpec}
 
-@main_template(
-    title = messages("movement.arrivals.confirmation"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+class MovementRequestMappingProviderTest extends WordSpec with Matchers {
 
-    <div class="govuk-box-highlight">
-        <h1 class="heading-xlarge">
-            Arrival submitted
-        </h1>
-        <p class="font-large">
-            Movement reference is<br>
-            <strong class="bold">@movementReference</strong>
-        </p>
-    </div>
+  "MovementRequestMappingProvider" when {
+
+    "calling provideMappingForArrival" should {
+      "return mapping with messageCode equal EAL" in {
+        // TODO
+      }
+    }
+
+    "calling provideMappingForDeparture" should {
+      "return mapping with messageCode equal EDL" in {
+        // TODO
+      }
+    }
+  }
+
+
 }

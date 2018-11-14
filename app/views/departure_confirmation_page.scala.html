@@ -16,20 +16,22 @@
 
 @import config.AppConfig
 
-@(appConfig: AppConfig, movementReference: String)(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, ducr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("movement.arrivals.confirmation"),
+    title = messages("movement.departures.confirmation"),
     appConfig = appConfig,
     bodyClasses = None) {
 
     <div class="govuk-box-highlight">
         <h1 class="heading-xlarge">
-            Arrival submitted
+            Departure has been submitted
         </h1>
         <p class="font-large">
-            Movement reference is<br>
-            <strong class="bold">@movementReference</strong>
+            DUCR number is <br>
+            <strong class="bold">@ducr</strong>
         </p>
     </div>
+
+
 }
