@@ -74,8 +74,8 @@ class ArrivalsControllerSpec extends CustomExportsBaseSpec {
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include("Arrival submitted")
-      stringResult must include("Movement reference number")
+      stringResult must include("Arrival has been submitted")
+      stringResult must include("GB/NLA-0YH06GF0V3CUPJC9393")
     }
   }
 

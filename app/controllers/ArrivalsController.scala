@@ -63,7 +63,7 @@ class ArrivalsController @Inject()(
         val eori = request.user.eori
         customsInventoryLinkingExportsConnector.sendMovementRequest(eori, form.toXml).map {
           case accepted if accepted.status == ACCEPTED =>
-            Ok(arrival_confirmation_page(appConfig, form.movementReference.getOrElse("Movement reference")))
+            Ok(arrival_confirmation_page(appConfig, form.ucrBlock.ucr))
           case error =>
             Logger.error(s"Error from Customs Inventory Linking ${error.toString}")
             BadRequest(
