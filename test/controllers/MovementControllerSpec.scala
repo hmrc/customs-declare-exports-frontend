@@ -154,6 +154,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         val emptyForm = JsObject(Map("" -> JsString("")))
         val result = route(app, postRequest(ducrUri, emptyForm)).get
 
+        // TODO: maybe check if the page is the form page as well?
         contentAsString(result) must include(messages("error.required"))
       }
 
