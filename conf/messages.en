@@ -224,3 +224,11 @@ movement.movementReference = Movement reference
 movement.transportID = Transport Id
 movement.transportMode = Transport Mode
 movement.transportNationality = Transport Nationality
+
+movement.choice.title = Movement
+movement.choice.heading = Movement
+movement.choice.description = Is this arrival or departure?
+movement.choice.arrival = Arrival
+movement.choice.departure = Departure
+
+movement.incorrectValue = Incorrect value

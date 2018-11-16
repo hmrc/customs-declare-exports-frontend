@@ -28,6 +28,14 @@ GET        /departure                                   controllers.DeparturesCo
 
 POST       /departure                                   controllers.DeparturesController.submitForm()
 
+# Movements
+
+GET        /movement                                    controllers.MovementController.displayChoiceForm()
+
+POST       /movement                                    controllers.MovementController.sendChoice()
+
+POST       /movement/:movementType                      controllers.MovementController.sendMovement(movementType: String)
+
 # Cancel declaration
 
 GET        /cancel-declaration                          controllers.CancelDeclarationController.displayForm()
