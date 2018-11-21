@@ -73,13 +73,6 @@ object MovementRequestMappingProvider {
       "movementReference" -> optional(text(maxLength = movementReferenceMaxLength)),
       "transportDetails" -> optional(transportDetailsMapping)
     )(InventoryLinkingMovementRequest.apply)(InventoryLinkingMovementRequest.unapply)
-
-  def convertToMessageCode(movementType: String): String = movementType match {
-    case "arrivals" => "EAL"
-    case "departures" => "EDL"
-    case "EAL" => "arrivals"
-    case "EDL" => "departures"
-  }
 }
 
 case class MovementChoiceForm(movement: String)

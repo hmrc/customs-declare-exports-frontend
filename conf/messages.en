@@ -193,22 +193,17 @@ notifications.name = Name
 notifications.dateAndTime = Date and time
 notifications.reference = Reference
 notifications.status = Status
-        
-arrivals.confirmation = Arrival confirmation
-arrivals.title = Arrivals
-arrivals.heading = Arrivals
-arrivals.ducr = DUCR
 
-cancel.title= Cancel Declaration
-cancelDeclaration.title= Cancel Declaration
-cancelDeclaration.heading= Cancel Declaration
+cancel.title = Cancel Declaration
+cancelDeclaration.title = Cancel Declaration
+cancelDeclaration.heading = Cancel Declaration
 
-movement.arrivals.confirmation = Arrival confirmation
-movement.departures.confirmation = Departure confirmation
-movement.arrivals.title = Arrival
-movement.arrivals.heading = Arrival
-movement.departures.title = Departure
-movement.departures.heading = Departure
+movement.EAL.confirmation = Arrival confirmation
+movement.EDL.confirmation = Departure confirmation
+movement.EAL.title = Arrival
+movement.EAL.heading = Arrival
+movement.EDL.title = Departure
+movement.EDL.heading = Departure
 movement.eori = EORI
 movement.agentLocation = Agent location
 movement.agentRole = Agent role
@@ -228,7 +223,7 @@ movement.transportNationality = Transport Nationality
 movement.choice.title = Movement
 movement.choice.heading = Movement
 movement.choice.description = Is this arrival or departure?
-movement.choice.arrival = Arrival
-movement.choice.departure = Departure
+movement.choice.EAL = Arrival
+movement.choice.EDL = Departure
 
 movement.incorrectValue = Incorrect value

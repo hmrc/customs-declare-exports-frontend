@@ -44,8 +44,8 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         val stringResult = contentAsString(result)
 
         stringResult must include(messages("movement.choice.title"))
-        stringResult must include(messages("movement.choice.arrival"))
-        stringResult must include(messages("movement.choice.departure"))
+        stringResult must include(messages("movement.choice.EAL"))
+        stringResult must include(messages("movement.choice.EDL"))
       }
 
       "validate user choice - no choice" in {

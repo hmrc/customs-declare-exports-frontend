@@ -53,7 +53,7 @@ class MovementController @Inject()(
         Future.successful(BadRequest(choose_movement(appConfig, formWithErrors))),
       validForm => {
         val mapping = MovementRequestMappingProvider.buildMapping(validForm.movement)
-        Future.successful(Ok(movement(appConfig, Form(mapping), MovementRequestMappingProvider.convertToMessageCode(validForm.movement))))
+        Future.successful(Ok(movement(appConfig, Form(mapping), validForm.movement)))
       }
     )
   }
@@ -61,14 +61,14 @@ class MovementController @Inject()(
   // TODO remove movementType as argument and start using mongo and retrieving data from database
   def sendMovement(movementType: String): Action[AnyContent] = authenticate.async { implicit request =>
     val movementForm = Form(MovementRequestMappingProvider.buildMapping(movementType))
-    val messageCode = MovementRequestMappingProvider.convertToMessageCode(movementType)
 
     movementForm.bindFromRequest().fold(
       (formWithErrors: Form[InventoryLinkingMovementRequest]) =>
-        Future.successful(BadRequest(movement(appConfig, formWithErrors, messageCode))),
+        Future.successful(BadRequest(movement(appConfig, formWithErrors, movementType))),
       form => {
         val eori = request.user.eori
-        val validForm = form.copy(messageCode = MovementRequestMappingProvider.convertToMessageCode(form.messageCode))
+
+        val validForm = form.copy(messageCode = form.messageCode)
         customsInventoryLinkingExportsConnector.sendMovementRequest(eori, validForm.toXml).map {
           case accepted if accepted.status == ACCEPTED =>
             Ok(movement_confirmation_page(appConfig, movementType, validForm.ucrBlock.ucr))
