@@ -29,11 +29,11 @@
     @helpers.form(MovementController.sendChoice(), 'autoComplete -> "off") {
         @components.back_link("dashboard")
 
-        @components.heading("movement.choice.title", "movement.choice.heading")
+        @components.heading("", "movement.choice.description")
 
         @components.input_radio(
             field = form("movement"),
-            legend = messages("movement.choice.description"),
+            legend = "",
             inputs = Seq(RadioOption("movement", "EAL", messages("movement.choice.EAL")), RadioOption("movement", "EDL", messages("movement.choice.EDL")))
         )
 

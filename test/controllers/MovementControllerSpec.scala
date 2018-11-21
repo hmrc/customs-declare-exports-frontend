@@ -43,7 +43,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         val result = route(app, getRequest(chooseMovementUri)).get
         val stringResult = contentAsString(result)
 
-        stringResult must include(messages("movement.choice.title"))
+        stringResult must include(messages("movement.choice.description"))
         stringResult must include(messages("movement.choice.EAL"))
         stringResult must include(messages("movement.choice.EDL"))
       }

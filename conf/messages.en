@@ -222,7 +222,7 @@ movement.transportNationality = Transport Nationality
 
 movement.choice.title = Movement
 movement.choice.heading = Movement
-movement.choice.description = Is this arrival or departure?
+movement.choice.description = What do you want to do?
 movement.choice.EAL = Arrival
 movement.choice.EDL = Departure
 
