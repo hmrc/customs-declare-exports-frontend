@@ -16,18 +16,6 @@ POST       /simple-declaration                          controllers.SimpleDeclar
 
 GET        /notifications                               controllers.NotificationsController.listOfNotifications()
 
-# Arrivals
-
-GET        /arrival                                     controllers.ArrivalsController.displayForm()
-
-POST       /arrival                                     controllers.ArrivalsController.send()
-
-# Departures
-
-GET        /departure                                   controllers.DeparturesController.displayForm()
-
-POST       /departure                                   controllers.DeparturesController.submitForm()
-
 # Movements
 
 GET        /movement                                    controllers.MovementController.displayChoiceForm()
