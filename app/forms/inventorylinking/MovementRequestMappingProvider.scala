@@ -17,14 +17,11 @@
 package forms.inventorylinking
 
 import play.api.data.Forms.{ignored, mapping, nonEmptyText, optional, text}
-import play.api.data.{Form, Mapping}
+import play.api.data.Mapping
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 object MovementRequestMappingProvider {
-
-  def provideMappingForArrival(): Mapping[InventoryLinkingMovementRequest] = buildMapping(Arrival)
-  def provideMappingForDeparture(): Mapping[InventoryLinkingMovementRequest] = buildMapping(Departure)
 
   private val ucrTypeAllowedValues = Set("D", "M")
   private val masterOptAllowedValues = Set("A", "F", "R", "X")
@@ -60,29 +57,6 @@ object MovementRequestMappingProvider {
     "transportNationality" -> optional(text(maxLength = 2))
   )(TransportDetails.apply)(TransportDetails.unapply)
 
-  private def buildMapping(movementType: MovementType): Mapping[InventoryLinkingMovementRequest] = {
-    val messageCodeValue = movementType match {
-      case Arrival => "EAL"
-      case Departure => "EDL"
-    }
-
-    mapping(
-      "messageCode" -> ignored(messageCodeValue),
-      "agentDetails" -> optional(agentDetailsMapping),
-      "ucrBlock" -> ucrBlockMapping,
-      "goodsLocation" -> nonEmptyText(maxLength = goodsLocationMaxLength),
-      "goodsArrivalDateTime" -> optional(text()),
-      "goodsDepartureDateTime" -> optional(text()),
-      "shedOPID" -> optional(text(maxLength = shedOPIDMaxLength)),
-      "masterUCR" -> optional(text(maxLength = masterUCRMaxLength)
-        .verifying("Please, provide valid UCR", ucr =>  ucr.matches(ucrValidationPattern))),
-      "masterOpt" -> optional(text(maxLength = 1)
-        .verifying("Allowed values are: \"A\", \"F\", \"R\", \"X\"", s => masterOptAllowedValues.contains(s))),
-      "movementReference" -> optional(text(maxLength = movementReferenceMaxLength)),
-      "transportDetails" -> optional(transportDetailsMapping)
-    )(InventoryLinkingMovementRequest.apply)(InventoryLinkingMovementRequest.unapply)
-  }
-
   def buildMapping(movementType: String): Mapping[InventoryLinkingMovementRequest] =
     mapping(
       "messageCode" -> ignored(movementType),
@@ -106,10 +80,6 @@ object MovementRequestMappingProvider {
     case "EAL" => "arrivals"
     case "EDL" => "departures"
   }
-
-  private trait MovementType
-  private case object Arrival extends MovementType
-  private case object Departure extends MovementType
 }
 
 case class MovementChoiceForm(movement: String)
