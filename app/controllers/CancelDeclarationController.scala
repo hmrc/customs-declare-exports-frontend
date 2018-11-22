@@ -22,6 +22,8 @@ import controllers.actions.AuthAction
 import forms._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import metrics.ExportsMetrics
+import metrics.MetricIdentifiers._
 import models.{CustomsDeclarationsResponse, Submission}
 import play.api.Logger
 import play.api.data.Form
@@ -42,7 +44,8 @@ class CancelDeclarationController @Inject()(
   customsDeclarationsConnector: CustomsDeclarationsConnector,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   customsCacheService: CustomsCacheService,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  exportsMetrics: ExportsMetrics
 )(implicit val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
 
   val formId = "cancelDeclarationForm"
@@ -73,15 +76,18 @@ class CancelDeclarationController @Inject()(
     (formWithErrors: Form[CancelDeclarationForm]) =>
       Future.successful(BadRequest(cancelDeclaration(appConfig, formWithErrors))),
     form => {
-      request.session
+
       customsCacheService.cache[CancelDeclarationForm](appConfig.appName,formId,form).flatMap{ _ =>
+        exportsMetrics.startTimer(cancelMetric)
         customsDeclarationsConnector.submitCancellation(createCancellationMetadata(form)).flatMap{
           case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
             val submission = new Submission(request.user.eori, conversationId)
             customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap{ _ =>
+              exportsMetrics.incrementCounter(cancelMetric)
               Future.successful(Ok(confirmation_page(appConfig, conversationId)))
             }.recover{
               case error: Throwable =>
+                exportsMetrics.incrementCounter(cancelMetric)
                 Logger.error(s"Error from Customs Declare Exports ${error.toString}")
                 BadRequest(
                   errorHandler.standardErrorTemplate(
@@ -92,6 +98,7 @@ class CancelDeclarationController @Inject()(
                 )
             }
           case error =>
+            exportsMetrics.incrementCounter(cancelMetric)
             Logger.error(s"Error from Customs declarations api ${error.toString}")
             Future.successful(
               BadRequest(
