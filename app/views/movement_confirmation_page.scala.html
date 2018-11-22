@@ -16,16 +16,18 @@
 
 @import config.AppConfig
 
-@(appConfig: AppConfig, ucr: String)(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, movementType: String, ucr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("movement.arrivals.confirmation"),
+    title = messages(s"movement.${movementType}.confirmation"),
     appConfig = appConfig,
     bodyClasses = None) {
 
+    @components.back_link("/customs-declare-exports/movement")
+
     <div class="govuk-box-highlight">
         <h1 class="heading-xlarge">
-            Arrival has been submitted
+            @messages(s"movement.choice.${movementType}") has been submitted
         </h1>
         <p class="font-large">
             UCR is<br>

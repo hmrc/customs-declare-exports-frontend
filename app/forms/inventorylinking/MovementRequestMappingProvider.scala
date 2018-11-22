@@ -23,10 +23,6 @@ import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMov
 
 object MovementRequestMappingProvider {
 
-  def provideMappingForArrival(): Mapping[InventoryLinkingMovementRequest] = buildMapping(Arrival)
-  def provideMappingForDeparture(): Mapping[InventoryLinkingMovementRequest] = buildMapping(Departure)
-
-
   private val ucrTypeAllowedValues = Set("D", "M")
   private val masterOptAllowedValues = Set("A", "F", "R", "X")
   private val ucrValidationPattern = "[0-9][A-Z][A-Z][0-9A-Z\\(\\)\\-/]{6,32}|GB/[0-9A-Z]{3,4}-[0-9A-Z]{5,28}|GB/[0-9A-Z]{9,12}-[0-9A-Z]{1,23}|A:[0-9A-Z]{3}[0-9]{8}|C:[AZ]{3}[0-9A-Z]{3,30}"
@@ -61,14 +57,9 @@ object MovementRequestMappingProvider {
     "transportNationality" -> optional(text(maxLength = 2))
   )(TransportDetails.apply)(TransportDetails.unapply)
 
-  private def buildMapping(movementType: MovementType): Mapping[InventoryLinkingMovementRequest] = {
-    val messageCodeValue = movementType match {
-      case Arrival => "EAL"
-      case Departure => "EDL"
-    }
-
+  def buildMapping(movementType: String): Mapping[InventoryLinkingMovementRequest] =
     mapping(
-      "messageCode" -> ignored(messageCodeValue),
+      "messageCode" -> ignored(movementType),
       "agentDetails" -> optional(agentDetailsMapping),
       "ucrBlock" -> ucrBlockMapping,
       "goodsLocation" -> nonEmptyText(maxLength = goodsLocationMaxLength),
@@ -82,10 +73,5 @@ object MovementRequestMappingProvider {
       "movementReference" -> optional(text(maxLength = movementReferenceMaxLength)),
       "transportDetails" -> optional(transportDetailsMapping)
     )(InventoryLinkingMovementRequest.apply)(InventoryLinkingMovementRequest.unapply)
-  }
-
-
-  private trait MovementType
-  private case object Arrival extends MovementType
-  private case object Departure extends MovementType
 }
+

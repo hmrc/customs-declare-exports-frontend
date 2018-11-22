@@ -81,29 +81,20 @@ object ExportsTestData {
       "amendment.changeReasonCode" -> JsString("12")
     )
   )
+
   val wrongJson: JsValue = JsObject(
     Map(
       "ducr" -> JsString("")
     )
   )
 
-  val correctArrival: JsValue = JsObject(
-    Map(
-      "messageCode" -> JsString("EAL"),
-      "ucrBlock" -> JsObject(
-        Map(
-          "ucr" -> JsString("GB/NLA-0YH06GF0V3CUPJC9393"),
-          "ucrType" -> JsString("D")
-        )
-      ),
-      "goodsLocation" -> JsString("Location"),
-      "movementReference" -> JsString("Movement reference number")
-    )
-  )
+  val correctArrival = correctMovement("EAL")
 
-  val correctDeparture: JsValue = JsObject(
+  val correctDeparture = correctMovement("EDL")
+
+  private def correctMovement(messageCode: String): JsValue = JsObject(
     Map(
-      "messageCode" -> JsString("EDL"),
+      "messageCode" -> JsString(messageCode),
       "ucrBlock" -> JsObject(
         Map(
           "ucr" -> JsString("GB/NLA-0YH06GF0V3CUPJC9393"),

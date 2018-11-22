@@ -16,17 +16,19 @@ POST       /simple-declaration                          controllers.SimpleDeclar
 
 GET        /notifications                               controllers.NotificationsController.listOfNotifications()
 
-# Arrivals
+# Movements
 
-GET        /arrival                                     controllers.ArrivalsController.displayForm()
+GET        /choice                                      controllers.MovementController.displayChoiceForm()
 
-POST       /arrival                                     controllers.ArrivalsController.send()
+POST       /choice                                      controllers.MovementController.sendChoice()
 
-# Departures
+# Enter DUCR page
 
-GET        /departure                                   controllers.DeparturesController.displayForm()
+GET        /movement/ducr                               controllers.MovementController.displayDucrPage()
 
-POST       /departure                                   controllers.DeparturesController.submitForm()
+POST       /movement/ducr                               controllers.MovementController.saveDucr()
+
+POST       /movement/:movementType                      controllers.MovementController.sendMovement(movementType: String)
 
 # Cancel declaration
 

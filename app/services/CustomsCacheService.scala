@@ -32,11 +32,14 @@ class CustomsHttpCaching @Inject()(cfg: AppConfig, httpClient: HttpClient) exten
 
   override def domain: String = cfg.sessionCacheDomain
 
-  override def http: HttpGet with HttpPut with HttpDelete = httpClient
+  override def http: HttpClient = httpClient
 }
 
 @Singleton
-class CustomsCacheService @Inject()(caching: CustomsHttpCaching, applicationCrypto: ApplicationCrypto) extends ShortLivedCache {
+class CustomsCacheService @Inject()(
+  caching: CustomsHttpCaching,
+  applicationCrypto: ApplicationCrypto
+) extends ShortLivedCache {
 
   override implicit val crypto: CompositeSymmetricCrypto = applicationCrypto.JsonCrypto
 

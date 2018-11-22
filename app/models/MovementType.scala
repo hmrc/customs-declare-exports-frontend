@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,26 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package models
 
-@(appConfig: AppConfig, ucr: String)(implicit request: Request[_], messages: Messages)
+sealed trait MovementType
 
-@main_template(
-    title = messages("movement.departures.confirmation"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+case object Arrival extends MovementType
 
-    <div class="govuk-box-highlight">
-        <h1 class="heading-xlarge">
-            Departure has been submitted
-        </h1>
-        <p class="font-large">
-            UCR is <br>
-            <strong class="bold">@ucr</strong>
-        </p>
-    </div>
-
-
-}
+case object Departure extends MovementType
