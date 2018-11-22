@@ -35,3 +35,7 @@ POST       /movement/:movementType                      controllers.MovementCont
 GET        /cancel-declaration                          controllers.CancelDeclarationController.displayForm()
 
 POST       /cancel-declaration                          controllers.CancelDeclarationController.onSubmit()
+
+# Start Page
+
+GET        /start-page                                  controllers.StartController.displayStartPage()
