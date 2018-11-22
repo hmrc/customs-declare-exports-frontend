@@ -19,10 +19,11 @@
 @import uk.gov.hmrc.play.views.html._
 
 @import utils.RadioOption
+
 @(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages(""),
+    title = messages("movement.choice.description"),
     appConfig = appConfig
 ) {
 
@@ -32,7 +33,7 @@
         @components.heading("", "movement.choice.description")
 
         @components.input_radio(
-            field = form("movement"),
+            field = form("choice"),
             legend = "",
             inputs = Seq(RadioOption("movement", "EAL", messages("movement.choice.EAL")), RadioOption("movement", "EDL", messages("movement.choice.EDL")))
         )

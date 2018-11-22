@@ -75,12 +75,3 @@ object MovementRequestMappingProvider {
     )(InventoryLinkingMovementRequest.apply)(InventoryLinkingMovementRequest.unapply)
 }
 
-case class MovementChoiceForm(movement: String)
-
-object MovementChoiceForm {
-  private val correctMovementChoice = Seq("EAL", "EDL")
-
-  val movementChoiceMapping = mapping(
-    "movement" -> text().verifying("Incorrect value", correctMovementChoice.contains(_))
-  )(MovementChoiceForm.apply)(MovementChoiceForm.unapply)
-}

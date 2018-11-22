@@ -19,16 +19,18 @@ package controllers
 import config.AppConfig
 import connectors.CustomsInventoryLinkingExportsConnector
 import controllers.actions.AuthAction
-import forms.inventorylinking.{MovementChoiceForm, MovementRequestMappingProvider}
+import forms.inventorylinking.MovementRequestMappingProvider
+import forms.{ChoiceForm, EnterDucrForm}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-import views.html.{choose_movement, movement, movement_confirmation_page}
+import views.html.{choice_page, enterDUCR, movement, movement_confirmation_page}
 
 import scala.concurrent.Future
 
@@ -37,23 +39,30 @@ class MovementController @Inject()(
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   customsInventoryLinkingExportsConnector: CustomsInventoryLinkingExportsConnector,
+  customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler
 ) extends FrontendController with I18nSupport {
 
-  val choiceForm = Form(MovementChoiceForm.movementChoiceMapping)
+  val choiceForm = Form(ChoiceForm.choiceMapping)
+  val choiceId = "Choice"
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    Future.successful(Ok(choose_movement(appConfig, choiceForm)))
+    customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).map {
+      case Some(data) => Ok(choice_page(appConfig, choiceForm.fill(data)))
+      case _          => Ok(choice_page(appConfig, choiceForm))
+    }
   }
 
   def sendChoice(): Action[AnyContent] = authenticate.async { implicit request =>
-    // TODO add saving choice and redirect to movement form
     choiceForm.bindFromRequest().fold(
-      (formWithErrors: Form[MovementChoiceForm]) =>
-        Future.successful(BadRequest(choose_movement(appConfig, formWithErrors))),
-      validForm => {
-        val mapping = MovementRequestMappingProvider.buildMapping(validForm.movement)
-        Future.successful(Ok(movement(appConfig, Form(mapping), validForm.movement)))
+      (formWithErrors: Form[ChoiceForm]) =>
+        Future.successful(BadRequest(choice_page(appConfig, formWithErrors))),
+      form => {
+        val mapping = MovementRequestMappingProvider.buildMapping(form.choice)
+
+        customsCacheService.cache[ChoiceForm](appConfig.appName, choiceId, form).map { _ =>
+          Ok(movement(appConfig, Form(mapping), form.choice))
+        }
       }
     )
   }
@@ -81,6 +90,29 @@ class MovementController @Inject()(
                 message = messagesApi("global.error.message")
               )
             )
+        }
+      }
+    )
+  }
+
+  val enterDucrForm = Form(EnterDucrForm.ducrMapping)
+  val enterDucrId = "EnterDucr"
+
+  // TODO on DUCR page you can have arrive or depart, please add handling for this
+  def displayDucrPage(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[EnterDucrForm](appConfig.appName, enterDucrId).map {
+      case Some(data) => Ok(enterDUCR(appConfig, enterDucrForm.fill(data)))
+      case _          => Ok(enterDUCR(appConfig, enterDucrForm))
+    }
+  }
+
+  def saveDucr(): Action[AnyContent] = authenticate.async { implicit request =>
+    enterDucrForm.bindFromRequest().fold(
+      (formWithErrors: Form[EnterDucrForm]) =>
+        Future.successful(BadRequest(enterDUCR(appConfig, formWithErrors))),
+      form => {
+        customsCacheService.cache[EnterDucrForm](appConfig.appName, enterDucrId, form).map { _ =>
+          Ok("DONE")
         }
       }
     )

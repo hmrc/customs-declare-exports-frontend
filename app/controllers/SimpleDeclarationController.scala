@@ -87,8 +87,7 @@ class SimpleDeclarationController @Inject()(
       (formWithErrors: Form[SimpleDeclarationForm]) =>
         Future.successful(BadRequest(simpleDeclaration(appConfig, formWithErrors))),
       form => {
-        request.session
-        customsCacheService.cache[SimpleDeclarationForm](appConfig.appName,formId,form).flatMap{ _ =>
+        customsCacheService.cache[SimpleDeclarationForm](appConfig.appName, formId, form).flatMap{ _ =>
           customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{
             case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
               val submission = new Submission(request.user.eori, conversationId)

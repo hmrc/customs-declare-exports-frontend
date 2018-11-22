@@ -18,9 +18,15 @@ GET        /notifications                               controllers.Notification
 
 # Movements
 
-GET        /movement                                    controllers.MovementController.displayChoiceForm()
+GET        /choice                                      controllers.MovementController.displayChoiceForm()
 
-POST       /movement                                    controllers.MovementController.sendChoice()
+POST       /choice                                      controllers.MovementController.sendChoice()
+
+# Enter DUCR page
+
+GET        /movement/ducr                               controllers.MovementController.displayDucrPage()
+
+POST       /movement/ducr                               controllers.MovementController.saveDucr()
 
 POST       /movement/:movementType                      controllers.MovementController.sendMovement(movementType: String)
 

@@ -225,5 +225,9 @@ movement.choice.heading = Movement
 movement.choice.description = What do you want to do?
 movement.choice.EAL = Arrival
 movement.choice.EDL = Departure
+movement.arriveGoods = Arrive goods
+movement.ducr = Enter DUCR of goods to arrive
+movement.ducr.label = Complete your DUCR
+movement.ducr.hint = Add your own reference. Excluding 8GB123456123456
 
 movement.incorrectValue = Incorrect value
