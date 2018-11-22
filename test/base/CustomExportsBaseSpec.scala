@@ -22,6 +22,7 @@ import akka.stream.Materializer
 import config.AppConfig
 import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector}
 import controllers.actions.FakeAuthAction
+import metrics.ExportsMetrics
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -58,13 +59,14 @@ trait CustomExportsBaseSpec extends PlaySpec
   protected val contextPath: String = "/customs-declare-exports"
 
   lazy val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
-
+    val mockMetrics : ExportsMetrics = mock[ExportsMetrics]
   override lazy val app: Application = GuiceApplicationBuilder().overrides(
     bind[AuthConnector].to(mockAuthConnector),
     bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector),
     bind[CustomsCacheService].to(mockCustomsCacheService),
     bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
-    bind[CustomsInventoryLinkingExportsConnector].to(mockCustomsInventoryLinkingExportsConnector)
+    bind[CustomsInventoryLinkingExportsConnector].to(mockCustomsInventoryLinkingExportsConnector),
+    bind[ExportsMetrics].to(mockMetrics)
   ).build()
 
   implicit val mat: Materializer = app.materializer

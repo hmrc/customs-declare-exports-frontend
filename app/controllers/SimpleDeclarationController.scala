@@ -22,6 +22,8 @@ import controllers.actions.AuthAction
 import forms.{GoodsPackage, SimpleAddress, SimpleDeclarationForm}
 import handlers.ErrorHandler
 import javax.inject.Inject
+import metrics.ExportsMetrics
+import metrics.MetricIdentifiers._
 import models.{CustomsDeclarationsResponse, Submission}
 import play.api.Logger
 import play.api.data.Form
@@ -44,7 +46,8 @@ class SimpleDeclarationController @Inject()(
   customsDeclarationsConnector: CustomsDeclarationsConnector,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   customsCacheService: CustomsCacheService,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  exportsMetrics: ExportsMetrics
 )(implicit val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
 
   val formId = "SimpleDeclarationForm"
@@ -88,13 +91,16 @@ class SimpleDeclarationController @Inject()(
         Future.successful(BadRequest(simpleDeclaration(appConfig, formWithErrors))),
       form => {
         customsCacheService.cache[SimpleDeclarationForm](appConfig.appName, formId, form).flatMap{ _ =>
+          exportsMetrics.startTimer(submissionMetric)
           customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{
             case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
               val submission = new Submission(request.user.eori, conversationId)
               customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap{ _ =>
+                exportsMetrics.incrementCounter(submissionMetric)
                 Future.successful(Ok(confirmation_page(appConfig, conversationId)))
               }.recover{
                 case error: Throwable =>
+                  exportsMetrics.incrementCounter(submissionMetric)
                   Logger.error(s"Error from Customs Declare Exports ${error.toString}")
                   BadRequest(
                     errorHandler.standardErrorTemplate(
