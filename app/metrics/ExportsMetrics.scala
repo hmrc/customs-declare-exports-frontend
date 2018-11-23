@@ -47,6 +47,6 @@ object MetricIdentifiers {
   val arrivalMetric = "movement.arrival"
   val departureMetric = "movement.departure"
   val consolidationMetric = "consolidation"
-  val cancelMetric = "consolidation"
+  val cancelMetric = "cancellation"
 
 }
