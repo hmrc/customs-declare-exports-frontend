@@ -231,3 +231,28 @@ movement.ducr.label = Complete your DUCR
 movement.ducr.hint = Add your own reference. Excluding 8GB123456123456
 
 movement.incorrectValue = Incorrect value
+
+startPage.heading = Make an export declaration
+startPage.description = An export declaration must be completed for any export leaving the UK. This includes goods being exported through the EU to a third (non-EU) country.
+startPage.listHeading = You will need:
+startPage.listItemOne = Your CHIEF ID
+startPage.listItemTwo = your Government Gateway details
+startPage.listItemThreePreUrl = your
+startPage.listItemThreePostUrl = number
+startPage.listItemThreeUrl = Economic Operator Registration and Identification (EORI)
+startPage.listItemFour = any licences you may need, for example, for military controlled items and highly sensitive dual-use goods
+startPage.listItemFive = details of where you’re sending the export
+startPage.listItemSix = a description of the item, including the value, weight, size and type of package it's in
+startPage.listItemSeven = your
+startPage.listItemSevenUrl = commodity code(s)
+startPage.listItemEightUrl = customs procedure code(s)
+startPage.listItemEight = for your item
+startPage.buttonName = Start now
+startPage.additionalInformation = Your information is saved automatically.
+startPage.referenceTitle = Help and support
+startPage.reference = If you are having problems registering, phone:
+startPage.reference.number = 0300 200 3700
+startPage.reference.text = Open 8am to 6pm, Monday to Friday (closed bank holidays)
+startPage.enquiries = General enquires help
+
+
