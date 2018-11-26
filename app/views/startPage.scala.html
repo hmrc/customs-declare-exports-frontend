@@ -27,31 +27,32 @@
 ) {
 <div class="grid-row">
  <div class="column-two-thirds, overflow: hidden;, white-space: nowrap;">
-  <h1 class="heading-xlarge">Make an export declaration</h1>
+  <h1 class="heading-xlarge">@messages("startPage.heading")</h1>
 
-  <p>An export declaration must be completed for any export leaving the UK. This includes goods being exported through the EU to a third (non-EU) country.</p>
-
-  <h3 class="heading-medium">You will need:</h3>
+  <p>@messages("startPage.description")</p>
+  <h3 class="heading-medium">@messages("startPage.listHeading")</h3>
   <ul class="list list-bullet">
-   <li>Your CHIEF ID</li>
-   <li>your Government Gateway details</li>
-   <li>your <a href="http://www.gov.uk/eori" target="_blank" rel="noopener noreferrer">Economic Operator Registration and Identification (EORI)</a> number</li>
-   <li>any licences you may need, for example, for military controlled items and highly sensitive dual-use goods</li>
-   <li>details of where you’re sending the export </li>
-   <li>a description of the item, including the value, weight, size and type of package it's in</li>
-   <li>your <a href="https://www.gov.uk/trade-tariff" target="_blank" rel="noopener noreferrer">commodity code(s)</a></li>
-   <li><a href="https://www.gov.uk/government/publications/uk-trade-tariff-customs-procedure-codes/customs-procedure-codes-box-37" target="_blank" rel="noopener noreferrer">customs procedure code(s)</a> for your item</li>
+   <li>@messages("startPage.listItemOne")</li>
+   <li>@messages("startPage.listItemTwo")</li>
+   <li>@messages("startPage.listItemThreePreUrl") <a href="http://www.gov.uk/eori" target="_blank" rel="noopener noreferrer">@messages("startPage.listItemThreeUrl")</a> @messages("startPage.listItemThreePostUrl")</li>
+   <li>@messages("startPage.listItemFour")</li>
+   <li>@messages("startPage.listItemFive") </li>
+   <li>@messages("startPage.listItemSix")</li>
+   <li>@messages("startPage.listItemSeven") <a href="https://www.gov.uk/trade-tariff" target="_blank" rel="noopener noreferrer">@messages("startPage.listItemSevenUrl")</a></li>
+   <li><a href="https://www.gov.uk/government/publications/uk-trade-tariff-customs-procedure-codes/customs-procedure-codes-box-37" target="_blank" rel="noopener noreferrer">@messages("startPage.listItemEightUrl")</a> @messages("startPage.listItemEight")</li>
   </ul>
 
-  <p><a class="button button-start" href="@MovementController.displayChoiceForm" role="button">Start now</a></p>
+  <p><a class="button button-start" href="@MovementController.displayChoiceForm" role="button">@messages("startPage.buttonName")</a></p>
 
-  <p>Your information is saved automatically.</p>
+  <p>@messages("startPage.additionalInformation")</p>
 
   <div class="form-group">
-   <h2 class="heading-medium">Help and support</h2>
-   <p>If you are having problems registering, phone: <b>0300 200 3700</b>.<br>
-    Open 8am to 6pm, Monday to Friday (closed bank holidays).</p>
-   <p><a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries" target="_blank" rel="noopener noreferrer">General enquires help</a></p>
+   <h2 class="heading-medium">@messages("startPage.referenceTitle")</h2>
+   <p>
+    @messages("startPage.reference") <b>@messages("startPage.reference.number")</b> <br>
+    @messages("startPage.reference.text")
+   </p>
+   <p><a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries" target="_blank" rel="noopener noreferrer">@messages("startPage.enquiries")</a></p>
   </div>
  </div>
 </div>

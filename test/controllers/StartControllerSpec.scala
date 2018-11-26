@@ -29,6 +29,14 @@ class StartControllerSpec extends CustomExportsBaseSpec{
 
       status(result) must be (OK)
     }
+    "display radio button to start now" in {
+      val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
+
+      stringResult must include(messages("details of where you’re sending the export"))
+      stringResult must include(messages("your Government Gateway details"))
+      stringResult must include(messages("Your CHIEF ID"))
+    }
   }
 
 }
