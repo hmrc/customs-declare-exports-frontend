@@ -19,18 +19,16 @@ package controllers
 import config.AppConfig
 import connectors.CustomsInventoryLinkingExportsConnector
 import controllers.actions.AuthAction
-import forms.inventorylinking.MovementRequestMappingProvider
-import forms.{ChoiceForm, EnterDucrForm}
+import forms._
+import forms.MovementFormsAndIds._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-import views.html.{choice_page, enterDUCR, movement, movement_confirmation_page}
+import views.html._
 
 import scala.concurrent.Future
 
@@ -43,9 +41,6 @@ class MovementController @Inject()(
   errorHandler: ErrorHandler
 ) extends FrontendController with I18nSupport {
 
-  val choiceForm = Form(ChoiceForm.choiceMapping)
-  val choiceId = "Choice"
-
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).map {
       case Some(data) => Ok(choice_page(appConfig, choiceForm.fill(data)))
@@ -57,64 +52,124 @@ class MovementController @Inject()(
     choiceForm.bindFromRequest().fold(
       (formWithErrors: Form[ChoiceForm]) =>
         Future.successful(BadRequest(choice_page(appConfig, formWithErrors))),
-      form => {
-        val mapping = MovementRequestMappingProvider.buildMapping(form.choice)
-
+      form =>
         customsCacheService.cache[ChoiceForm](appConfig.appName, choiceId, form).map { _ =>
-          Ok(movement(appConfig, Form(mapping), form.choice))
+          Redirect(controllers.routes.MovementController.displayDucrPage())
         }
-      }
     )
   }
 
-  // TODO remove movementType as argument and start using mongo and retrieving data from database
-  def sendMovement(movementType: String): Action[AnyContent] = authenticate.async { implicit request =>
-    val movementForm = Form(MovementRequestMappingProvider.buildMapping(movementType))
-
-    movementForm.bindFromRequest().fold(
-      (formWithErrors: Form[InventoryLinkingMovementRequest]) =>
-        Future.successful(BadRequest(movement(appConfig, formWithErrors, movementType))),
-      form => {
-        val eori = request.user.eori
-
-        val validForm = form.copy(messageCode = form.messageCode)
-        customsInventoryLinkingExportsConnector.sendMovementRequest(eori, validForm.toXml).map {
-          case accepted if accepted.status == ACCEPTED =>
-            Ok(movement_confirmation_page(appConfig, movementType, validForm.ucrBlock.ucr))
-          case error =>
-            Logger.error(s"Error from Customs Inventory Linking ${error.toString}")
-            BadRequest(
-              errorHandler.standardErrorTemplate(
-                pageTitle = messagesApi("global.error.title"),
-                heading = messagesApi("global.error.heading"),
-                message = messagesApi("global.error.message")
-              )
-            )
-        }
-      }
-    )
-  }
-
-  val enterDucrForm = Form(EnterDucrForm.ducrMapping)
-  val enterDucrId = "EnterDucr"
-
-  // TODO on DUCR page you can have arrive or depart, please add handling for this
   def displayDucrPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[EnterDucrForm](appConfig.appName, enterDucrId).map {
-      case Some(data) => Ok(enterDUCR(appConfig, enterDucrForm.fill(data)))
-      case _          => Ok(enterDUCR(appConfig, enterDucrForm))
+    customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).flatMap {
+      case Some(choice) if !choice.choice.isEmpty =>
+        customsCacheService.fetchAndGetEntry[EnterDucrForm](appConfig.appName, enterDucrId).map{
+          case Some(data) => Ok(enterDUCR(appConfig, enterDucrForm.fill(data), choice.choice))
+          case _          => Ok(enterDUCR(appConfig, enterDucrForm, choice.choice))
+        }
+      case _ =>
+        Future.successful(
+          BadRequest(
+            errorHandler.standardErrorTemplate(
+              pageTitle = messagesApi("global.error.title"),
+              heading = messagesApi("global.error.heading"),
+              message = messagesApi("global.error.message")
+            )
+          )
+        )
     }
   }
 
   def saveDucr(): Action[AnyContent] = authenticate.async { implicit request =>
     enterDucrForm.bindFromRequest().fold(
       (formWithErrors: Form[EnterDucrForm]) =>
-        Future.successful(BadRequest(enterDUCR(appConfig, formWithErrors))),
-      form => {
+        Future.successful(BadRequest(enterDUCR(appConfig, formWithErrors, ""))),
+      form =>
         customsCacheService.cache[EnterDucrForm](appConfig.appName, enterDucrId, form).map { _ =>
-          Ok("DONE")
-        }
+          Redirect(controllers.routes.MovementController.displayGoodsDate())
       }
+    )
+  }
+
+  def displayGoodsDate(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).flatMap {
+      case Some(choice) if !choice.choice.isEmpty =>
+        customsCacheService.fetchAndGetEntry[GoodsDateForm](appConfig.appName, goodsDateId).map{
+          case Some(data) => Ok(goods_date(appConfig, goodsDateForm.fill(data), choice.choice))
+          case _          => Ok(goods_date(appConfig, goodsDateForm, choice.choice))
+        }
+      case _ =>
+        Future.successful(
+          BadRequest(
+            errorHandler.standardErrorTemplate(
+              pageTitle = messagesApi("global.error.title"),
+              heading = messagesApi("global.error.heading"),
+              message = messagesApi("global.error.message")
+            )
+          )
+        )
+    }
+  }
+
+  def saveGoodsDate(): Action[AnyContent] = authenticate.async { implicit request =>
+    goodsDateForm.bindFromRequest().fold(
+      (formWithErrors: Form[GoodsDateForm]) =>
+        Future.successful(BadRequest(goods_date(appConfig, formWithErrors, ""))),
+      form =>
+        customsCacheService.cache[GoodsDateForm](appConfig.appName, goodsDateId, form).map { _ =>
+          Redirect(controllers.routes.MovementController.displayLocation())
+        }
+    )
+  }
+
+  def displayLocation(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).flatMap {
+      case Some(choice) if !choice.choice.isEmpty =>
+        customsCacheService.fetchAndGetEntry[LocationForm](appConfig.appName, locationId).map {
+          case Some(data) => Ok(goods_location(appConfig, locationForm.fill(data), choice.choice))
+          case _          => Ok(goods_location(appConfig, locationForm, choice.choice))
+        }
+      case _ =>
+        Future.successful(
+          BadRequest(
+            errorHandler.standardErrorTemplate(
+              pageTitle = messagesApi("global.error.title"),
+              heading = messagesApi("global.error.heading"),
+              message = messagesApi("global.error.message")
+            )
+          )
+        )
+    }
+  }
+
+  def saveLocation(): Action[AnyContent] = authenticate.async { implicit request =>
+    locationForm.bindFromRequest().fold(
+      (formWithErrors: Form[LocationForm]) =>
+        customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).map {
+          case Some(choice) => BadRequest(goods_location(appConfig, formWithErrors, choice.choice))
+          case _ => BadRequest(goods_location(appConfig, formWithErrors, "EAL"))
+        },
+      form =>
+        customsCacheService.cache[LocationForm](appConfig.appName, locationId, form).map { _ =>
+          Redirect(controllers.routes.MovementController.displayTransport())
+        }
+    )
+  }
+
+  def displayTransport(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[TransportForm](appConfig.appName, transportId).map {
+      case Some(data) => Ok(transport(appConfig, transportForm.fill(data)))
+      case _          => Ok(transport(appConfig, transportForm))
+    }
+  }
+
+  def saveTransport(): Action[AnyContent] = authenticate.async { implicit request =>
+    transportForm.bindFromRequest().fold(
+      (formWithErrors: Form[TransportForm]) =>
+        Future.successful(BadRequest(transport(appConfig, formWithErrors))),
+      form =>
+        customsCacheService.cache[TransportForm](appConfig.appName, transportId, form).map { _ =>
+          Ok("Done")
+        }
     )
   }
 }
