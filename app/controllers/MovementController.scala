@@ -19,8 +19,8 @@ package controllers
 import config.AppConfig
 import connectors.CustomsInventoryLinkingExportsConnector
 import controllers.actions.AuthAction
-import forms._
 import forms.MovementFormsAndIds._
+import forms._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.data.Form
@@ -32,7 +32,7 @@ import views.html._
 
 import scala.concurrent.Future
 
-class MovementController @Inject()(
+class  MovementController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -168,7 +168,7 @@ class MovementController @Inject()(
         Future.successful(BadRequest(transport(appConfig, formWithErrors))),
       form =>
         customsCacheService.cache[TransportForm](appConfig.appName, transportId, form).map { _ =>
-          Ok("Done")
+          Redirect(controllers.routes.MovementSummaryController.displaySummary())
         }
     )
   }
