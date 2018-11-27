@@ -123,4 +123,31 @@ object ExportsTestData {
       "minute" -> JsNumber(30)
     )
   )
+
+  val emptyLocation: JsValue = JsObject(Map("" -> JsString("")))
+
+  val location: JsValue = JsObject(
+    Map(
+      "agentLocation" -> JsString("Agent location"),
+      "agentRole" -> JsString("Agent role"),
+      "goodsLocation" -> JsString("Goods location"),
+      "shed" -> JsString("Shed")
+    )
+  )
+
+  val incorrectTransport: JsValue = JsObject(
+    Map(
+      "transportId" -> JsString("Transport Id"),
+      "transportMode" -> JsString("Transport mode"),
+      "transportNationality" -> JsString("Transport nationality")
+    )
+  )
+
+  val correctTransport: JsValue = JsObject(
+    Map(
+      "transportId" -> JsString("Transport Id"),
+      "transportMode" -> JsString("M"),
+      "transportNationality" -> JsString("PL")
+    )
+  )
 }
