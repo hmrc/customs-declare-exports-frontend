@@ -22,6 +22,7 @@ import akka.stream.Materializer
 import config.AppConfig
 import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector}
 import controllers.actions.FakeAuthAction
+import forms.{ChoiceForm, MovementFormsAndIds}
 import metrics.ExportsMetrics
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -45,9 +46,10 @@ import services.CustomsCacheService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
-
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
+
+import org.mockito.ArgumentMatchers
 
 trait CustomExportsBaseSpec extends PlaySpec
   with GuiceOneAppPerSuite
@@ -59,7 +61,9 @@ trait CustomExportsBaseSpec extends PlaySpec
   protected val contextPath: String = "/customs-declare-exports"
 
   lazy val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
-    val mockMetrics : ExportsMetrics = mock[ExportsMetrics]
+
+  val mockMetrics : ExportsMetrics = mock[ExportsMetrics]
+
   override lazy val app: Application = GuiceApplicationBuilder().overrides(
     bind[AuthConnector].to(mockAuthConnector),
     bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector),
@@ -127,6 +131,11 @@ trait CustomExportsBaseSpec extends PlaySpec
       .thenReturn(Future.successful(form))
 
     when(mockCustomsCacheService.cache[T](any(), any(),any())(any(), any(), any()))
-      .thenReturn(Future.successful(CacheMap("id1",Map.empty)))
+      .thenReturn(Future.successful(CacheMap("id1", Map.empty)))
   }
+
+  def withCaching[T](data: Option[T], id: String) =
+    when(mockCustomsCacheService.fetchAndGetEntry[T](ArgumentMatchers.eq(appConfig.appName), ArgumentMatchers.eq(id))(any(), any(), any()))
+      .thenReturn(Future.successful(data))
+
 }

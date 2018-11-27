@@ -31,8 +31,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
-
 @Singleton
 class SessionCachingRepository @Inject()(implicit mc: ReactiveMongoComponent, ec: ExecutionContext)
   extends ReactiveRepository[UserSession, BSONObjectID]("sessionCaching", mc.mongoConnector.db,
@@ -58,18 +56,20 @@ class SessionCachingRepository @Inject()(implicit mc: ReactiveMongoComponent, ec
     collection.find(query, projection).one[A].map { res => res }
   }
 
-  def saveSession(userSession: UserSession)(
-    implicit ec: ExecutionContext, hc: HeaderCarrier) =  insert(userSession).map(res => res.ok)
+  def saveSession(userSession: UserSession)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Boolean] =
+    insert(userSession).map(res => res.ok)
 
 
-  def updateSession[A](entity: A, formName: String)(
-    implicit ec: ExecutionContext, writes: Writer[A], hc: HeaderCarrier) = {
+  def updateSession[A](entity: A, formName: String)
+    (implicit ec: ExecutionContext, writes: Writer[A], hc: HeaderCarrier): Future[Boolean] = {
 
     val selector = BSONDocument(EXPORTS_SESSION_ID -> hc.sessionId.get.value)
 
-    val modifier = collection.updateModifier(BSONDocument("$set" -> BSONDocument(formName -> Json.toJson[A](entity)) ), upsert = true)
+    val modifier = collection.updateModifier(
+      BSONDocument("$set" -> BSONDocument(formName -> Json.toJson[A](entity))),
+      upsert = true
+    )
 
-    collection.findAndModify(selector, modifier).map { res => true }
+    collection.findAndModify(selector, modifier).map { _ => true }
   }
-
 }

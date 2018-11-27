@@ -16,7 +16,7 @@
 
 package base
 
-import play.api.libs.json.{JsBoolean, JsObject, JsString, JsValue}
+import play.api.libs.json._
 
 object ExportsTestData {
 
@@ -88,21 +88,39 @@ object ExportsTestData {
     )
   )
 
-  val correctArrival = correctMovement("EAL")
-
-  val correctDeparture = correctMovement("EDL")
-
-  private def correctMovement(messageCode: String): JsValue = JsObject(
+  val correctDucrJson: JsValue = JsObject(
     Map(
-      "messageCode" -> JsString(messageCode),
-      "ucrBlock" -> JsObject(
-        Map(
-          "ucr" -> JsString("GB/NLA-0YH06GF0V3CUPJC9393"),
-          "ucrType" -> JsString("D")
-        )
-      ),
-      "goodsLocation" -> JsString("Location"),
-      "movementReference" -> JsString("Movement reference number")
+      "ducr" -> JsString("5GB123456789000-123ABC456DEFIIIII")
+    )
+  )
+
+  val wrongMinimumGoodsDate: JsValue = JsObject(
+    Map(
+      "day" -> JsNumber(0),
+      "month" -> JsNumber(0),
+      "year" -> JsNumber(2017),
+      "hour" -> JsNumber(-1),
+      "minute" -> JsNumber(-1)
+    )
+  )
+
+  val wrongMaximumGoodsDate: JsValue = JsObject(
+    Map(
+      "day" -> JsNumber(40),
+      "month" -> JsNumber(113),
+      "year" -> JsNumber(2018),
+      "hour" -> JsNumber(25),
+      "minute" -> JsNumber(60)
+    )
+  )
+
+  val goodsDate: JsValue = JsObject(
+    Map(
+      "day" -> JsNumber(15),
+      "month" -> JsNumber(4),
+      "year" -> JsNumber(2018),
+      "hour" -> JsNumber(16),
+      "minute" -> JsNumber(30)
     )
   )
 }

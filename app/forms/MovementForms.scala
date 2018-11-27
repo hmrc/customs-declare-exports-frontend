@@ -16,8 +16,11 @@
 
 package forms
 
-import play.api.data.Forms.{mapping, text}
-import play.api.data.validation.Constraints.pattern
+import java.time.LocalDateTime
+
+import play.api.data.Form
+import play.api.data.Forms.{mapping, number, optional, text}
+import play.api.data.validation.Constraints._
 import play.api.libs.json.Json
 
 case class ChoiceForm(choice: String)
@@ -42,4 +45,82 @@ object EnterDucrForm {
   val ducrMapping = mapping(
     "ducr" -> text().verifying(pattern(ducrFormat.r, error = "error.ducr"))
   )(EnterDucrForm.apply)(EnterDucrForm.unapply)
+}
+
+case class GoodsDateForm(
+  day: String,
+  month: String,
+  year: String,
+  hour: Option[String],
+  minute: Option[String]
+)
+
+object GoodsDateForm {
+  implicit val format = Json.format[GoodsDateForm]
+
+  val days = (1 to 31).toList.map(_.toString)
+  val months = (1 to 12).toList.map(_.toString)
+  val hours = (0 to 23).toList.map(_.toString)
+  val minutes = (0 to 59).toList.map(_.toString)
+
+  //scalastyle:off magic.number
+  val goodsDateMapping = mapping(
+    "day" -> text().verifying("Day is incorrect", days.contains(_)),
+    "month" -> text().verifying("Month is incorrect", months.contains(_)),
+    "year" -> text().verifying("Year is incorrect", year => year.toInt >= LocalDateTime.now().getYear),
+    "hour" -> optional(text().verifying("Hour is incorrect", hours.contains(_))),
+    "minute" -> optional(text().verifying("Minutes are incorrect", minutes.contains(_)))
+  )(GoodsDateForm.apply)(GoodsDateForm.unapply)
+  //scalastyle:on magic.number
+}
+
+case class LocationForm(
+  agentLocation: Option[String],
+  agentRole: Option[String],
+  goodsLocation: Option[String],
+  shed: Option[String]
+)
+
+object LocationForm {
+  implicit val format = Json.format[LocationForm]
+
+  val locationMapping = mapping(
+    "agentLocation" -> optional(text()),
+    "agentRole" -> optional(text()),
+    "goodsLocation" -> optional(text()),
+    "shed" -> optional(text())
+  )(LocationForm.apply)(LocationForm.unapply)
+}
+
+case class TransportForm(
+  transportId: Option[String],
+  transportMode: Option[String],
+  transportNationality: Option[String]
+)
+
+object TransportForm {
+  implicit val format = Json.format[TransportForm]
+
+  val transportMapping = mapping(
+    "transportId" -> optional(text(maxLength = 35)),
+    "transportMode" -> optional(text(maxLength = 1)),
+    "transportNationality" -> optional(text(maxLength = 2))
+  )(TransportForm.apply)(TransportForm.unapply)
+}
+
+object MovementFormsAndIds {
+  val choiceForm = Form(ChoiceForm.choiceMapping)
+  val choiceId = "Choice"
+
+  val enterDucrForm = Form(EnterDucrForm.ducrMapping)
+  val enterDucrId = "EnterDucr"
+
+  val goodsDateForm = Form(GoodsDateForm.goodsDateMapping)
+  val goodsDateId = "GoodsDate"
+
+  val locationForm = Form(LocationForm.locationMapping)
+  val locationId = "Location"
+
+  val transportForm = Form(TransportForm.transportMapping)
+  val transportId = "Transport"
 }

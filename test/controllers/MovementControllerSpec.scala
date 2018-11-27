@@ -18,16 +18,18 @@ package controllers
 
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
-import forms.{ChoiceForm, EnterDucrForm}
+import forms.{ChoiceForm, EnterDucrForm, GoodsDateForm, MovementFormsAndIds}
+import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 
 class MovementControllerSpec extends CustomExportsBaseSpec {
 
-  val chooseMovementUri = uriWithContextPath("/choice")
-  val arrivalUri = uriWithContextPath("/movement/arrivals")
-  val departureUri = uriWithContextPath("/movement/departures")
+  val choiceUri = uriWithContextPath("/choice")
   val ducrUri = uriWithContextPath("/movement/ducr")
+  val goodsDateUri = uriWithContextPath("/movement/goodsDate")
+  val locationUri = uriWithContextPath("/movement/location")
+  val transportUri = uriWithContextPath("/movement/transport")
 
   "Movement controller" when {
     "choice screen" should {
@@ -35,7 +37,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         authorizedUser()
         withCaching[ChoiceForm](None)
 
-        val result = route(app, getRequest(chooseMovementUri)).get
+        val result = route(app, getRequest(choiceUri)).get
 
         status(result) must be(OK)
       }
@@ -44,7 +46,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         authorizedUser()
         withCaching[ChoiceForm](None)
 
-        val result = route(app, getRequest(chooseMovementUri)).get
+        val result = route(app, getRequest(choiceUri)).get
         val stringResult = contentAsString(result)
 
         stringResult must include(messages("movement.choice.description"))
@@ -57,7 +59,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         withCaching[ChoiceForm](None)
 
         val emptyForm = JsObject(Map("" -> JsString("")))
-        val result = route(app, postRequest(chooseMovementUri, emptyForm)).get
+        val result = route(app, postRequest(choiceUri, emptyForm)).get
 
         contentAsString(result) must include(messages("error.required"))
       }
@@ -67,161 +69,50 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         withCaching[ChoiceForm](None)
 
         val wrongForm = JsObject(Map("choice" -> JsString("movement")))
-        val result = route(app, postRequest(chooseMovementUri, wrongForm)).get
+        val result = route(app, postRequest(choiceUri, wrongForm)).get
 
         contentAsString(result) must include(messages("movement.incorrectValue"))
       }
 
-      "redirect to arrival when arrival chosen" in {
+      "redirect to ducr for arrival page when arrival chosen" in {
         authorizedUser()
-        withCaching[ChoiceForm](None)
+        val form = Form(ChoiceForm.choiceMapping).fill(ChoiceForm("EAL"))
+        withCaching[ChoiceForm](Some(form))
+        withCaching[EnterDucrForm](None)
 
         val correctForm = JsObject(Map("choice" -> JsString("EAL")))
-        val result = route(app, postRequest(chooseMovementUri, correctForm)).get
-        val stringResult = contentAsString(result)
+        val result = route(app, postRequest(choiceUri, correctForm)).get
 
-        status(result) must be(OK)
-        stringResult must include("Arrival")
+        status(result) must be(SEE_OTHER)
       }
 
-      "redirect to departure when departure chosen" in {
+      "redirect to next departure page when departure chosen" in {
         authorizedUser()
-        withCaching[ChoiceForm](None)
+        val form = Form(ChoiceForm.choiceMapping).fill(ChoiceForm("EDL"))
+        withCaching[ChoiceForm](Some(form))
+        withCaching[EnterDucrForm](None)
 
         val correctForm = JsObject(Map("choice" -> JsString("EDL")))
-        val result = route(app, postRequest(chooseMovementUri, correctForm)).get
-        val stringResult = contentAsString(result)
+        val result = route(app, postRequest(choiceUri, correctForm)).get
 
-        status(result) must be(OK)
-        stringResult must include("Departure")
+        status(result) must be(SEE_OTHER)
       }
     }
 
-    "arrival" should {
-      "return http code 200 with success" in {
+    "ducr screen " should {
+      "return http code 303 (redirection) with success" in {
         authorizedUser()
 
         val correctChoice = JsObject(Map("choice" -> JsString("EAL")))
-        val result = route(app, postRequest(chooseMovementUri, correctChoice)).get
+        val result = route(app, postRequest(choiceUri, correctChoice)).get
 
-        status(result) must be(OK)
+        status(result) must be(SEE_OTHER)
       }
 
-      "display form" in {
+      "display form for arrival" in {
         authorizedUser()
-
-        val correctChoice = JsObject(Map("choice" -> JsString("EAL")))
-        val result = route(app, postRequest(chooseMovementUri, correctChoice)).get
-        val stringResult = contentAsString(result)
-
-        stringResult must include(messages("movement.EAL.title"))
-        stringResult must include(messages("movement.eori"))
-        stringResult must include(messages("movement.agentLocation"))
-      }
-
-      "validated submitted form" in {
-        authorizedUser()
-
-        val emptyForm = JsObject(Map("" -> JsString("")))
-        val result = route(app, postRequest(arrivalUri, emptyForm)).get
-
-        contentAsString(result) must include(messages("error.required"))
-      }
-
-      "redirect to confirmation page" in {
-        authorizedUser()
-        sendMovementRequest()
-
-        val result = route(app, postRequest(arrivalUri, correctArrival)).get
-        val stringResult = contentAsString(result)
-
-        status(result) must be(OK)
-        //stringResult must include("Arrival has been submitted") //TODO fix problems with string - different one for arrival
-        stringResult must include("GB/NLA-0YH06GF0V3CUPJC9393")
-      }
-
-      "redirect to error page on failed submission" in {
-        authorizedUser()
-        sendMovementRequest400Response()
-
-        val result = route(app, postRequest(arrivalUri, correctArrival)).get
-        val stringResult = contentAsString(result)
-
-        status(result) must be(BAD_REQUEST)
-        stringResult must include(messages("global.error.heading"))
-        stringResult must include(messages("global.error.message"))
-      }
-    }
-
-    "departure" should {
-      "return http code 200 with success" in {
-        authorizedUser()
-
-        val correctChoice = JsObject(Map("choice" -> JsString("EDL")))
-        val result = route(app, postRequest(chooseMovementUri, correctChoice)).get
-
-        status(result) must be(OK)
-      }
-
-      "display form" in {
-        authorizedUser()
-
-        val correctChoice = JsObject(Map("choice" -> JsString("EDL")))
-        val result = route(app, postRequest(departureUri, correctChoice)).get
-        val stringResult = contentAsString(result)
-
-        stringResult must include(messages("movement.EDL.title"))
-        stringResult must include(messages("movement.eori"))
-        stringResult must include(messages("movement.agentLocation"))
-      }
-
-      "validated submitted form" in {
-        authorizedUser()
-
-        val emptyForm = JsObject(Map("" -> JsString("")))
-        val result = route(app, postRequest(departureUri, emptyForm)).get
-
-        contentAsString(result) must include(messages("error.required"))
-      }
-
-      "redirect to confirmation page" in {
-        authorizedUser()
-        sendMovementRequest()
-
-        val result = route(app, postRequest(departureUri, correctDeparture)).get
-        val stringResult = contentAsString(result)
-
-        status(result) must be(OK)
-        //stringResult must include("Departure has been submitted") //TODO fix problems with string - different one for arrival
-        stringResult must include("GB/NLA-0YH06GF0V3CUPJC9393")
-      }
-
-      "redirect to error page on failed submission" in {
-        authorizedUser()
-        sendMovementRequest400Response()
-
-        val result = route(app, postRequest(departureUri, correctDeparture)).get
-        val stringResult = contentAsString(result)
-
-        status(result) must be(BAD_REQUEST)
-        stringResult must include(messages("global.error.heading"))
-        stringResult must include(messages("global.error.message"))
-      }
-    }
-
-    "ducr" should {
-      "return http code 200 with success" in {
-        authorizedUser()
-        withCaching[EnterDucrForm](None)
-
-        val result = route(app, getRequest(ducrUri)).get
-
-        status(result) must be(OK)
-      }
-
-      "display form" in {
-        authorizedUser()
-        withCaching[EnterDucrForm](None)
+        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(None, MovementFormsAndIds.enterDucrId)
 
         val result = route(app, getRequest(ducrUri)).get
         val stringResult = contentAsString(result)
@@ -231,9 +122,23 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         stringResult must include(messages("movement.ducr.hint"))
       }
 
-      "validate user choice - no choice" in {
+      "display form for departure" in {
         authorizedUser()
-        withCaching[EnterDucrForm](None)
+        withCaching(Some(ChoiceForm("EDL")), MovementFormsAndIds.choiceId)
+        withCaching(None, MovementFormsAndIds.enterDucrId)
+
+        val result = route(app, getRequest(ducrUri)).get
+        val stringResult = contentAsString(result)
+
+        stringResult must include(messages("movement.ducr"))
+        stringResult must include(messages("movement.ducr.label"))
+        stringResult must include(messages("movement.ducr.hint"))
+      }
+
+      "validated submitted form for arrival" in {
+        authorizedUser()
+        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(None, MovementFormsAndIds.enterDucrId)
 
         val emptyForm = JsObject(Map("" -> JsString("")))
         val result = route(app, postRequest(ducrUri, emptyForm)).get
@@ -241,25 +146,89 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         contentAsString(result) must include(messages("error.required"))
       }
 
-      "validate user choice - wrong choice" in {
+      "validated submitted form for departure" in {
         authorizedUser()
-        withCaching[EnterDucrForm](None)
+        withCaching(Some(ChoiceForm("EDL")), MovementFormsAndIds.choiceId)
+        withCaching(None, MovementFormsAndIds.enterDucrId)
 
-        val wrongForm = JsObject(Map("ducr" -> JsString("ducr")))
-        val result = route(app, postRequest(ducrUri, wrongForm)).get
+        val emptyForm = JsObject(Map("" -> JsString("")))
+        val result = route(app, postRequest(ducrUri, emptyForm)).get
 
-        contentAsString(result) must include(messages("error.ducr"))
+        contentAsString(result) must include(messages("error.required"))
+      }
+
+      "redirect to goods date page" in {
+        authorizedUser()
+        sendMovementRequest()
+
+        val result = route(app, postRequest(ducrUri, correctDucrJson)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/goodsDate"))
+      }
+    }
+
+    "goods date" should {
+      "return http code 200 with success" in {
+        authorizedUser()
+        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(None, MovementFormsAndIds.goodsDateId)
+
+        val result = route(app, getRequest(goodsDateUri)).get
+
+        status(result) must be(OK)
+      }
+
+      "display form" in {
+        authorizedUser()
+        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(None, MovementFormsAndIds.goodsDateId)
+
+        val result = route(app, getRequest(goodsDateUri)).get
+        val stringResult = contentAsString(result)
+
+        stringResult must include(messages("movement.date.day"))
+        stringResult must include(messages("movement.date.month"))
+        stringResult must include(messages("movement.date.year"))
+        stringResult must include(messages("movement.date.hour"))
+        stringResult must include(messages("movement.date.minute"))
+      }
+
+      "validate form with minimum values - incorrect values" in {
+        authorizedUser()
+        withCaching[GoodsDateForm](None)
+
+        val result = route(app, postRequest(goodsDateUri, wrongMinimumGoodsDate)).get
+        val stringResult = contentAsString(result)
+
+        stringResult must include(messages("movement.date.incorrectDay"))
+        stringResult must include(messages("movement.date.incorrectMonth"))
+        stringResult must include(messages("movement.date.incorrectYear"))
+        stringResult must include(messages("movement.date.incorrectHour"))
+        stringResult must include(messages("movement.date.incorrectMinutes"))
+      }
+
+      "validate form with maximum values - incorrect values" in {
+        authorizedUser()
+        withCaching[GoodsDateForm](None)
+
+        val result = route(app, postRequest(goodsDateUri, wrongMaximumGoodsDate)).get
+        val stringResult = contentAsString(result)
+
+        stringResult must include(messages("movement.date.incorrectDay"))
+        stringResult must include(messages("movement.date.incorrectMonth"))
+        stringResult must include(messages("movement.date.incorrectHour"))
+        stringResult must include(messages("movement.date.incorrectMinutes"))
       }
 
       "redirect to the next page" in {
         authorizedUser()
-        withCaching[EnterDucrForm](None)
+        withCaching[GoodsDateForm](None)
 
-        val correctForm = JsObject(Map("ducr" -> JsString("5GB123456789000-123ABC456DEFIIIII")))
-        val result = route(app, postRequest(ducrUri, correctForm)).get
+        val result = route(app, postRequest(goodsDateUri, goodsDate)).get
 
-        status(result) must be(OK)
-        contentAsString(result) must include("DONE")
+        status(result) must be(SEE_OTHER)
       }
     }
   }

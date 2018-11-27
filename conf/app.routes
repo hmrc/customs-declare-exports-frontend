@@ -28,7 +28,23 @@ GET        /movement/ducr                               controllers.MovementCont
 
 POST       /movement/ducr                               controllers.MovementController.saveDucr()
 
-POST       /movement/:movementType                      controllers.MovementController.sendMovement(movementType: String)
+# Goods date page
+
+GET        /movement/goodsDate                          controllers.MovementController.displayGoodsDate()
+
+POST       /movement/goodsDate                          controllers.MovementController.saveGoodsDate()
+
+# Goods location page
+
+GET        /movement/location                           controllers.MovementController.displayLocation()
+
+POST       /movement/location                           controllers.MovementController.saveLocation()
+
+# Transport page
+
+GET        /movement/transport                          controllers.MovementController.displayTransport()
+
+POST       /movement/transport                          controllers.MovementController.saveTransport()
 
 # Cancel declaration
 

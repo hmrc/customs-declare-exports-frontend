@@ -1,0 +1,95 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@(name: String, form: Form[_])(implicit messages: Messages)
+
+<h2 class="heading-medium">Date and time of @messages("movement.choice." + name)</h2>
+
+<div class="form-group">
+    <fieldset>
+        <legend>
+            <span class = "form-label">Date of @messages("movement.choice." + name)</span>
+            <span class = "form-hint">For example, 31 3 1980</span>
+        </legend>
+        <div class = "form-group">
+            <div class = "form-date">
+                <div class = "form-group form-group-day">
+                    <label class = "form-label" for = "day">Day</label>
+                    <input
+                        class = "form-control"
+                        id = "day"
+                        name = "day"
+                        type = "number"
+                        value = @{form("day").value}
+                    >
+                </div>
+                <div class = "form-group form-group-month">
+                    <label class = "form-label" for = "month">Month</label>
+                    <input
+                        class = "form-control"
+                        id = "month"
+                        name = "month"
+                        type = "number"
+                        value = @{form("month").value}
+                    >
+                </div>
+                <div class = "form-group form-group-year">
+                    <label class = "form-label" for = "year">Year</label>
+                    <input
+                        class = "form-control"
+                        id = "year"
+                        name = "year"
+                        type = "number"
+                        value = @{form("year").value}
+                    >
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+<div class = "form-group">
+    <fieldset>
+        <legend>
+            <span class = "form-label">Time of @messages("movement.choice." + name)</span>
+            <span class = "form-hint">For example, 13 30</span>
+        </legend>
+        <div class = "form-group">
+            <div class = "form-date">
+                <div class = "form-group form-group-day">
+                    <label class = "form-label" for = "hour">Hour</label>
+                    <input
+                        class = "form-control"
+                        id = "hour"
+                        name = "hour"
+                        type = "number"
+                        value = @{form("hour").value}
+                    >
+                </div>
+                <div class = "form-group form-group-month">
+                    <label class = "form-label" for = "minute">Minute</label>
+                    <input
+                        class = "form-control"
+                        id = "minute"
+                        name = "minute"
+                        type = "number"
+                        value = @{form("minute").value}
+                    >
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
