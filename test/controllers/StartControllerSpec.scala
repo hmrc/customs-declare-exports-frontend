@@ -21,7 +21,7 @@ import play.api.test.Helpers._
 
 class StartControllerSpec extends CustomExportsBaseSpec{
 
-  val uri = uriWithContextPath("/start-page")
+  val uri = uriWithContextPath("/start")
 
   "StartController" should {
     "return 200 for a GET" in {
@@ -33,9 +33,9 @@ class StartControllerSpec extends CustomExportsBaseSpec{
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include(messages("details of where you’re sending the export"))
-      stringResult must include(messages("your Government Gateway details"))
-      stringResult must include(messages("Your CHIEF ID"))
+      stringResult must include(messages("startPage.listItemOne"))
+      stringResult must include(messages("startPage.listItemTwoUrl"))
+      stringResult must include(messages("startPage.listItemThree"))
     }
   }
 

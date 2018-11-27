@@ -38,4 +38,4 @@ POST       /cancel-declaration                          controllers.CancelDeclar
 
 # Start Page
 
-GET        /start-page                                  controllers.StartController.displayStartPage()
+GET        /start                                       controllers.StartController.displayStartPage()
