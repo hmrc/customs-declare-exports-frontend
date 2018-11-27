@@ -16,8 +16,21 @@
 
 package models
 
+import play.api.libs.json.Json
+
 sealed trait MovementType
 
 case object Arrival extends MovementType
 
 case object Departure extends MovementType
+
+case class MovementSubmission(eori: String,
+  conversationId: String,
+  ducr: String,
+  mucr: Option[String] = None,
+  movementType: String,
+  status: Option[String] = Some("Pending"))
+
+object MovementSubmission {
+  implicit val format = Json.format[MovementSubmission]
+}
