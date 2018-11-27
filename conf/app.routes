@@ -46,6 +46,12 @@ GET        /movement/transport                          controllers.MovementCont
 
 POST       /movement/transport                          controllers.MovementController.saveTransport()
 
+# Movements Summary
+
+GET        /movement/summary-page                        controllers.MovementSummaryController.displaySummary()
+
+POST       /movement/summary-page                        controllers.MovementSummaryController.submitMovementRequest()
+
 # Cancel declaration
 
 GET        /cancel-declaration                          controllers.CancelDeclarationController.displayForm()

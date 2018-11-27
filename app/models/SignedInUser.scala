@@ -43,7 +43,8 @@ object CustomsDeclareExportsResponse {
 }
 
 
-case class UserSession(sessionId:String, loggedInDateTime:DateTime = DateTime.now, simpleDeclarationForm: Option[SimpleDeclarationForm]= None)
+case class UserSession(sessionId:String, loggedInDateTime:DateTime = DateTime.now,
+  simpleDeclarationForm: Option[SimpleDeclarationForm]= None)
 
 object UserSession {
   implicit val formats = Json.format[UserSession]

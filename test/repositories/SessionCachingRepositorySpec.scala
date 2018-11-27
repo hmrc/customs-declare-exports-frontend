@@ -79,7 +79,7 @@ class SessionCachingRepositorySpec extends CustomExportsBaseSpec with BeforeAndA
   implicit val hc = HeaderCarrier(authorization = Some(Authorization("token1")), sessionId=Some(SessionId(randomString(3))))
 
   "SessionCaching" should {
-    val userSession: UserSession = UserSession(hc.sessionId.get.value, DateTime.now,Some(form))
+    val userSession: UserSession = UserSession(hc.sessionId.get.value, DateTime.now, Some(form))
 
     "save User session " in {
       val res = sessionCaching.saveSession(userSession)

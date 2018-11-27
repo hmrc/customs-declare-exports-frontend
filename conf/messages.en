@@ -50,6 +50,7 @@ site.save_and_continue = Save and continue
 site.save_and_come_back_later = Save and come back later
 site.service_name = Declare an Export
 site.textarea.char_limit = (Limit is {0} characters)
+site.submit = Submit
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -194,6 +195,11 @@ notifications.dateAndTime = Date and time
 notifications.reference = Reference
 notifications.status = Status
 
+arrivals.confirmation = Arrival confirmation
+arrivals.title = Arrivals
+arrivals.heading = Arrivals
+arrivals.ducr = DUCR
+
 cancel.title = Cancel Declaration
 cancelDeclaration.title = Cancel Declaration
 cancelDeclaration.heading = Cancel Declaration
@@ -249,6 +255,13 @@ movement.transport.mode = Transport mode
 movement.transport.nationality = Transport nationality
 
 movement.incorrectValue = Incorrect value
+
+movement.summaryPage.title = Summary
+movement.summaryPage.heading = Check your answers before submission
+movement.summaryPage.warningMessage = Please ensure that the information given is correct before submission
+movement.summaryPage.heading.secondary = Now submit your notice
+movement.summaryPage.confirmationNotice = By submitting this notice you are confirming that, to the best of your knowledge, the details you are providing are correct
+
 startPage.title = Register for customs services
 startPage.heading = Make an export declaration
 startPage.description = An export declaration must be completed for any export leaving the UK. This includes goods being exported through the EU to a third (non-EU) country.

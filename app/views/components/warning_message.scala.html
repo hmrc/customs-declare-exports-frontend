@@ -14,8 +14,11 @@
  * limitations under the License.
  *@
 
-@(messageKey: String = "site.save_and_continue")(implicit messages: Messages)
+@(messageKey: String = "Warning")(implicit messages: Messages)
 
-<div class="section">
-    <button id="submit" class="button">@messages(messageKey)</button>
+<div class="notice">
+  <i class="icon icon-important">
+    <span class="visually-hidden">Warning</span>
+  </i>
+  <strong class="bold-small">@messages(messageKey)</strong>
 </div>
