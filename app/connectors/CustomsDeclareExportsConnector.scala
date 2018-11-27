@@ -18,7 +18,7 @@ package connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models.{CustomsDeclareExportsResponse, ExportsNotification, Submission}
+import models.{CustomsDeclareExportsResponse, ExportsNotification, MovementSubmission, Submission}
 import play.api.Logger
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -47,4 +47,12 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   def fetchNotifications(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsNotification]] =
     httpClient.GET[Seq[ExportsNotification]](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}/$eori")
+
+  def saveMovementSubmission(body: MovementSubmission)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
+    httpClient.POST[MovementSubmission, CustomsDeclareExportsResponse](
+      s"${appConfig.customsDeclareExports}${appConfig.saveMovementSubmission}", body, Seq()).map { response =>
+      Logger.debug(s"CUSTOMS_DECLARE_EXPORTS save movement response is --> ${response.toString}")
+      response
+    }
 }
