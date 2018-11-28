@@ -124,7 +124,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
         stringResult must include(messages("movement.ducr"))
         stringResult must include(messages("movement.ducr.label"))
-        stringResult must include(messages("movement.ducr.hint"))
       }
 
       "display form for departure" in {
@@ -137,7 +136,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
         stringResult must include(messages("movement.ducr"))
         stringResult must include(messages("movement.ducr.label"))
-        stringResult must include(messages("movement.ducr.hint"))
       }
 
       "validated submitted form for arrival" in {
@@ -151,7 +149,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         stringResult must include(messages("error.required"))
         stringResult must include(messages("movement.ducr"))
         stringResult must include(messages("movement.ducr.label"))
-        stringResult must include(messages("movement.ducr.hint"))
       }
 
       "validated submitted form for departure" in {
@@ -165,7 +162,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         stringResult must include(messages("error.required"))
         stringResult must include(messages("movement.ducr"))
         stringResult must include(messages("movement.ducr.label"))
-        stringResult must include(messages("movement.ducr.hint"))
       }
 
       "redirect to goods date page" in {

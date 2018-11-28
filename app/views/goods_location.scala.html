@@ -21,11 +21,11 @@
 @(appConfig: AppConfig, form: Form[_], movementType: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages(""),
+    title = messages(s"movement.${movementType}"),
     appConfig = appConfig
 ) {
     @helpers.form(MovementController.saveLocation(), 'autoComplete -> "off") {
-        @components.back_link("/movement/goodsDate")
+        @components.back_link("goodsDate")
 
         @components.error_summary(form.errors)
 
