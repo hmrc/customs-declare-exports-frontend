@@ -55,7 +55,7 @@ class MovementSummaryController @Inject()(
   }
 
   def submitMovementRequest(): Action[AnyContent] = authenticator.async { implicit request =>
-    implicit val user =  request.user
+    implicit val user = request.user
     customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).flatMap {
       case Some(data) =>
         val metricIdentifier = getMetricIdentifierFrom(data)
@@ -92,7 +92,7 @@ class MovementSummaryController @Inject()(
     movementData.messageCode match {
       case "EAL" => MetricIdentifiers.arrivalMetric
       case "EDL" => MetricIdentifiers.departureMetric
-  }
+    }
 
 }
 
