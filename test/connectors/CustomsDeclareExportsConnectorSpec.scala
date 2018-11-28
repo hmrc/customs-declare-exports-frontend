@@ -17,7 +17,7 @@
 package connectors
 
 import base.{CustomExportsBaseSpec, MockHttpClient}
-import models.{CustomsDeclareExportsResponse, Submission}
+import models.{CustomsDeclareExportsResponse, MovementSubmission, Submission}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
 import play.api.http.Status.OK
@@ -27,22 +27,38 @@ import scala.concurrent.Future
 class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
 
   val submission = Submission("eori", "id", Some("lrn"), Some("mrn"))
+  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(randomString(255))))
+  val expectedHeaders: Map[String, String] = Map.empty
+  val falseServerError: Boolean = false
+  val movementSubmission = MovementSubmission("eori1", "convid1", "ducr1", None, "EAL")
+
 
   "CustomsDeclareExportsConnector" should {
-    "POST submission to Customs Declare Exports" in saveSubmission(submission) { response =>
-      response.futureValue.status must be (OK)
+    "POST submission to Customs Declare Exports" in saveSubmission() { response =>
+      response.futureValue.status must be(OK)
+    }
+
+    "POST to Customs Declare Exports to save movements" in saveMovementSubmission() { response =>
+      response.futureValue.status must be(OK)
     }
   }
 
-  def saveSubmission(
-    submission: Submission,
-    hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(randomString(255))))
-  )(test: Future[CustomsDeclareExportsResponse] => Unit): Unit = {
-    val expectedUrl: String = s"${appConfig.customsDeclareExports}${appConfig.saveSubmissionResponse}"
-    val falseServerError: Boolean = false
-    val expectedHeaders: Map[String, String] = Map.empty
-    val http = new MockHttpClient(expectedUrl, submission, expectedHeaders, falseServerError)
+  def saveSubmission()(test: Future[CustomsDeclareExportsResponse] => Unit): Unit = {
+    val http = new MockHttpClient(expectedUrl(appConfig.saveSubmissionResponse),
+      submission, expectedHeaders, falseServerError)
     val client = new CustomsDeclareExportsConnector(appConfig, http)
     test(client.saveSubmissionResponse(submission)(hc, ec))
   }
+
+  def saveMovementSubmission(
+  )(test: Future[CustomsDeclareExportsResponse] => Unit): Unit = {
+
+    val http = new MockHttpClient(expectedUrl(appConfig.saveMovementSubmission),
+      movementSubmission, expectedHeaders, falseServerError)
+    val client = new CustomsDeclareExportsConnector(appConfig, http)
+    test(client.saveMovementSubmission(movementSubmission)(hc, ec))
+  }
+
+  def expectedUrl(endpointUrl: String): String = s"${appConfig.customsDeclareExports}${endpointUrl}"
+
 }

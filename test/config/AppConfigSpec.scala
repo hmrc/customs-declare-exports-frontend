@@ -94,15 +94,19 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       config.customsDeclareExports must be ("http://localhost:6792")
     }
 
-    "have submission response" in {
+    "have submission response URL" in {
       config.saveSubmissionResponse must be ("/save-submission-response")
     }
 
-    "have fetch notification" in {
+    "have movement submission URL" in {
+      config.saveMovementSubmission must be ("/save-movement-submission")
+    }
+
+    "have fetch notification URL" in {
       config.fetchNotifications must be ("/customs-declare-exports/notifications")
     }
 
-    "have customs inventory linking exports" in {
+    "have customs inventory linking exports URL" in {
       config.customsInventoryLinkingExports must be("http://localhost:9823")
     }
 
