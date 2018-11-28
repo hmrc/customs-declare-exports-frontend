@@ -19,7 +19,6 @@ package controllers
 import config.AppConfig
 import connectors.CustomsInventoryLinkingExportsConnector
 import controllers.actions.AuthAction
-import forms.inventorylinking.InventoryLinkingFormats._
 import forms.inventorylinking.MovementRequestSummaryMappingProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -46,19 +45,18 @@ class MovementSummaryController @Inject()(
   exportsMetrics: ExportsMetrics
 ) extends FrontendController with I18nSupport {
 
-  val movementId = "Movement"
-
   private val form = Form(MovementRequestSummaryMappingProvider.provideMappingForMovementSummaryPage())
 
   def displaySummary(): Action[AnyContent] = authenticator.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[InventoryLinkingMovementRequest](appConfig.appName, movementId).map {
+    customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).map {
       case Some(data) => Ok(movement_summary_page(appConfig, form.fill(data)))
       case _ => handleError(s"Could not obtain data from DB")
     }
   }
 
   def submitMovementRequest(): Action[AnyContent] = authenticator.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[InventoryLinkingMovementRequest](appConfig.appName, movementId).flatMap {
+    implicit val user = request.user
+    customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).flatMap {
       case Some(data) =>
         val metricIdentifier = getMetricIdentifierFrom(data)
         exportsMetrics.startTimer(metricIdentifier)
@@ -94,7 +92,7 @@ class MovementSummaryController @Inject()(
     movementData.messageCode match {
       case "EAL" => MetricIdentifiers.arrivalMetric
       case "EDL" => MetricIdentifiers.departureMetric
-  }
+    }
 
 }
 

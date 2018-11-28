@@ -18,10 +18,14 @@ package services
 
 import com.google.inject.{Inject, Singleton}
 import config.AppConfig
+import forms._
 import uk.gov.hmrc.crypto.{ApplicationCrypto, CompositeSymmetricCrypto}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.{ShortLivedCache, ShortLivedHttpCaching}
-import uk.gov.hmrc.http.{HttpDelete, HttpGet, HttpPut}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CustomsHttpCaching @Inject()(cfg: AppConfig, httpClient: HttpClient) extends ShortLivedHttpCaching {
@@ -44,4 +48,13 @@ class CustomsCacheService @Inject()(
   override implicit val crypto: CompositeSymmetricCrypto = applicationCrypto.JsonCrypto
 
   override def shortLiveCache: ShortLivedHttpCaching = caching
+
+  def fetchMovementRequest(cacheId: String, eori: String)(implicit hc: HeaderCarrier,
+    executionContext: ExecutionContext): Future[Option[InventoryLinkingMovementRequest]] = {
+    fetch(cacheId).map {
+      case Some(cacheMap) =>
+        Some(Movement.createMovementRequest(cacheMap, eori))
+      case _ => None
+    }
+  }
 }

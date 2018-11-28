@@ -22,18 +22,20 @@ import org.mockito.Mockito.{atLeastOnce, verify, when}
 import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
-import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-
+import base.ExportsTestData._
 import scala.concurrent.Future
 
-class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class MovementSummaryControllerSpec
+  extends CustomExportsBaseSpec
+    with BeforeAndAfter {
 
   private val uri = uriWithContextPath("/movement/summary-page")
   private val emptyForm = JsObject(Map("" -> JsString("")))
-  
 
-  before { authorizedUser() }
+  before {
+    authorizedUser()
+  }
 
   "MovementSummaryController.displaySummary()" when {
 
@@ -41,7 +43,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
       "return 500 code" in {
         mockCacheServiceFetchAndGetEntryResultWith(None)
-        
+
         val result = route(app, getRequest(uri)).get
 
         status(result) must be(INTERNAL_SERVER_ERROR)
@@ -49,18 +51,19 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
       "display error page for DB problem" in {
         mockCacheServiceFetchAndGetEntryResultWith(None)
-        
+
         val result = route(app, getRequest(uri)).get
 
-        contentAsString(result) must include(messagesApi("global.error.heading"))
+        contentAsString(result) must include(
+          messagesApi("global.error.heading"))
       }
     }
-
 
     "can read data from DB" should {
 
       "return 200 code" in {
-        mockCacheServiceFetchAndGetEntryResultWith(Some(validMovementRequest("EAL")))
+        mockCacheServiceFetchAndGetEntryResultWith(
+          Some(validMovementRequest("EAL")))
 
         val result = route(app, getRequest(uri)).get
 
@@ -68,18 +71,21 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
       }
 
       "display summary page with warning" in {
-        mockCacheServiceFetchAndGetEntryResultWith(Some(validMovementRequest("EAL")))
+        mockCacheServiceFetchAndGetEntryResultWith(
+          Some(validMovementRequest("EAL")))
 
         val result = route(app, getRequest(uri)).get
         val stringResult = contentAsString(result)
 
         val warningIconTag = "<i class=\"icon icon-important\">"
         stringResult must include(warningIconTag)
-        stringResult must include(messages("movement.summaryPage.warningMessage"))
+        stringResult must include(
+          messages("movement.summaryPage.warningMessage"))
       }
 
       "display summary page with the data table" in {
-        mockCacheServiceFetchAndGetEntryResultWith(Some(validMovementRequest("EAL")))
+        mockCacheServiceFetchAndGetEntryResultWith(
+          Some(validMovementRequest("EAL")))
 
         val result = route(app, getRequest(uri)).get
         val stringResult = contentAsString(result)
@@ -96,15 +102,16 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
       }
 
       "display summary page with submission confirmation notice" in {
-        mockCacheServiceFetchAndGetEntryResultWith(Some(validMovementRequest("EAL")))
+        mockCacheServiceFetchAndGetEntryResultWith(
+          Some(validMovementRequest("EAL")))
 
         val result = route(app, getRequest(uri)).get
 
-        contentAsString(result) must include(messages("movement.summaryPage.confirmationNotice"))
+        contentAsString(result) must include(
+          messages("movement.summaryPage.confirmationNotice"))
       }
     }
   }
-
 
   "MovementSummaryController.submitMovementRequest" when {
 
@@ -123,15 +130,16 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
         val result = route(app, postRequest(uri, emptyForm)).get
 
-        contentAsString(result) must include(messagesApi("global.error.heading"))
+        contentAsString(result) must include(
+          messagesApi("global.error.heading"))
       }
     }
-
 
     "can read data from DB but submission failed" should {
 
       "return 500 code" in {
-        mockCacheServiceFetchAndGetEntryResultWith(Some(validMovementRequest("EAL")))
+        mockCacheServiceFetchAndGetEntryResultWith(
+          Some(validMovementRequest("EAL")))
         sendMovementRequest400Response()
 
         val result = route(app, postRequest(uri, emptyForm)).get
@@ -140,16 +148,19 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
       }
 
       "display error page" in {
-        mockCacheServiceFetchAndGetEntryResultWith(Some(validMovementRequest("EAL")))
+        mockCacheServiceFetchAndGetEntryResultWith(
+          Some(validMovementRequest("EAL")))
         sendMovementRequest400Response()
 
         val result = route(app, postRequest(uri, emptyForm)).get
 
-        contentAsString(result) must include(messagesApi("global.error.heading"))
+        contentAsString(result) must include(
+          messagesApi("global.error.heading"))
       }
 
       "clean the cache" in {
-        mockCacheServiceFetchAndGetEntryResultWith(Some(validMovementRequest("EAL")))
+        mockCacheServiceFetchAndGetEntryResultWith(
+          Some(validMovementRequest("EAL")))
         sendMovementRequest400Response()
 
         route(app, postRequest(uri, emptyForm)).get
@@ -158,11 +169,11 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
       }
     }
 
-
     "can read data from DB and submission succeeded" should {
 
       "return 200 code" in {
-        mockCacheServiceFetchAndGetEntryResultWith(Some(validMovementRequest("EAL")))
+        mockCacheServiceFetchAndGetEntryResultWith(
+          Some(validMovementRequest("EAL")))
         sendMovementRequest()
 
         val result = route(app, postRequest(uri, emptyForm)).get
@@ -171,26 +182,31 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
       }
 
       "display confirmation page for Arrival" in {
-        mockCacheServiceFetchAndGetEntryResultWith(Some(validMovementRequest("EAL")))
+        mockCacheServiceFetchAndGetEntryResultWith(
+          Some(validMovementRequest("EAL")))
         sendMovementRequest()
 
         val result = route(app, postRequest(uri, emptyForm)).get
 
-        contentAsString(result) must include(messagesApi("movement.choice.EAL") + " has been submitted")
+        contentAsString(result) must include(
+          messagesApi("movement.choice.EAL") + " has been submitted")
       }
 
       "display confirmation page for Departure" in {
-        mockCacheServiceFetchAndGetEntryResultWith(Some(validMovementRequest("EDL")))
+        mockCacheServiceFetchAndGetEntryResultWith(
+          Some(validMovementRequest("EDL")))
         sendMovementRequest()
 
         val result = route(app, postRequest(uri, emptyForm)).get
         result.value
 
-        contentAsString(result) must include(messagesApi("movement.choice.EDL") + " has been submitted")
+        contentAsString(result) must include(
+          messagesApi("movement.choice.EDL") + " has been submitted")
       }
 
       "clean the cache" in {
-        mockCacheServiceFetchAndGetEntryResultWith(Some(validMovementRequest("EAL")))
+        mockCacheServiceFetchAndGetEntryResultWith(
+          Some(validMovementRequest("EAL")))
         sendMovementRequest()
 
         route(app, postRequest(uri, emptyForm)).get
@@ -200,34 +216,10 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
   }
 
-
-  private def mockCacheServiceFetchAndGetEntryResultWith(desiredResult: Option[InventoryLinkingMovementRequest]) =
-    when(mockCustomsCacheService.fetchAndGetEntry[InventoryLinkingMovementRequest](any(), any())(any(), any(), any()))
+  private def mockCacheServiceFetchAndGetEntryResultWith(
+    desiredResult: Option[InventoryLinkingMovementRequest]) =
+    when(
+      mockCustomsCacheService.fetchMovementRequest(any(), any())(any(), any()))
       .thenReturn(Future.successful(desiredResult))
-
-  private def validMovementRequest(movementType: String) = InventoryLinkingMovementRequest(
-    messageCode = movementType,
-    agentDetails = Some(AgentDetails(
-      eori = Some("QWERTY123"),
-      agentLocation = Some("Location"),
-      agentRole = Some("ABC")
-    )),
-    ucrBlock = UcrBlock(
-      ucr = "GB/NLA-0YH06GF0V3CUPJC9393",
-      ucrType = "D"
-    ),
-    goodsLocation = "Location",
-    goodsArrivalDateTime = Some("2018-11-21T17:47:02"),
-    goodsDepartureDateTime = Some("2018-11-21T17:47:02"),
-    shedOPID = Some("ABC"),
-    masterUCR = Some("GB/NLA-0YH06GF0V3CUPJC9393"),
-    masterOpt = Some("A"),
-    movementReference = Some("Movement Reference"),
-    transportDetails = Some(TransportDetails(
-      transportID = Some("Transport ID"),
-      transportMode = Some("M"),
-      transportNationality = Some("UK")
-    ))
-  )
 
 }

@@ -22,12 +22,16 @@ import play.api.data.Form
 import play.api.data.Forms.{mapping, number, optional, text}
 import play.api.data.validation.Constraints._
 import play.api.libs.json.Json
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
+import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 case class ChoiceForm(choice: String)
 
 object ChoiceForm {
   implicit val format = Json.format[ChoiceForm]
 
+  //TODO change to enum
   private val correctChoice = Seq("EAL", "EDL")
 
   val choiceMapping = mapping(
@@ -124,4 +128,47 @@ object MovementFormsAndIds {
 
   val transportForm = Form(TransportForm.transportMapping)
   val transportId = "Transport"
+}
+
+object Movement {
+
+  def createMovementRequest(cacheMap: CacheMap, eori: String): InventoryLinkingMovementRequest = {
+    val choiceForm = cacheMap.getEntry[ChoiceForm](MovementFormsAndIds.choiceId).get
+    val ducrForm = cacheMap.getEntry[EnterDucrForm](MovementFormsAndIds.enterDucrId).get
+    val goodsDate = cacheMap.getEntry[GoodsDateForm](MovementFormsAndIds.goodsDateId)
+    val location = cacheMap.getEntry[LocationForm](MovementFormsAndIds.locationId).get
+    val transport = cacheMap.getEntry[TransportForm](MovementFormsAndIds.transportId).get
+
+    // TODO: ucrType is hardcoded need to UPDATE after we allow user input for mucr
+    InventoryLinkingMovementRequest(
+      messageCode = choiceForm.choice,
+      agentDetails = Some(AgentDetails(
+        eori = Some(eori),
+        agentLocation = location.agentLocation,
+        agentRole = location.agentRole
+      )),
+      ucrBlock = UcrBlock(
+        ucr = ducrForm.ducr,
+        ucrType = "D"
+      ),
+      goodsLocation = location.goodsLocation.get,
+
+      goodsArrivalDateTime = if (choiceForm.choice.equals("EAL") && goodsDate.isDefined) Some(extractDateTime(goodsDate.get)) else None,
+      goodsDepartureDateTime = if (choiceForm.choice.equals("EDL") && goodsDate.isDefined) Some(extractDateTime(goodsDate.get)) else None,
+      shedOPID = location.shed,
+      masterUCR = None,
+      masterOpt = None,
+      movementReference = None,
+      transportDetails = Some(TransportDetails(
+        transportID = transport.transportId,
+        transportMode = transport.transportMode,
+        transportNationality = transport.transportNationality
+      ))
+    )
+  }
+
+  private def extractDateTime(form: GoodsDateForm): String =
+    LocalDateTime.of(form.year.toInt, form.month.toInt, form.day.toInt,
+      form.hour.getOrElse("00").toInt, form.minute.getOrElse("00").toInt).toString + ":00"
+
 }
