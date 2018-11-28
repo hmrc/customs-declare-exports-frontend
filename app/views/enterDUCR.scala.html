@@ -21,7 +21,7 @@
 @(appConfig: AppConfig, form: Form[_], movementType: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages(messages("movement.arriveGoods")),
+    title = messages(s"movement.${movementType}"),
     appConfig = appConfig
 ) {
     @helpers.form(MovementController.saveDucr(), 'autoComplete -> "off") {
@@ -32,7 +32,7 @@
         @components.input_text(
             field = form("ducr"),
             label = messages("movement.ducr.label"),
-            hint = Some(messages("movement.ducr.hint"))
+            hint = Some(messages("movement.hint.todo"))
         )
 
         @components.submit_button()
