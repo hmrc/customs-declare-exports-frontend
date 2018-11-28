@@ -253,6 +253,7 @@ movement.transport.heading = Transport
 movement.transport.id = Transport Id
 movement.transport.mode = Transport mode
 movement.transport.nationality = Transport nationality
+movement.error = Invalid input
 
 movement.incorrectValue = Incorrect value
 

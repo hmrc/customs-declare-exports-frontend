@@ -82,7 +82,7 @@ class MovementController @Inject()(
   def saveDucr(): Action[AnyContent] = authenticate.async { implicit request =>
     enterDucrForm.bindFromRequest().fold(
       (formWithErrors: Form[EnterDucrForm]) =>
-        Future.successful(BadRequest(enterDUCR(appConfig, formWithErrors, ""))),
+        Future.successful(BadRequest(enterDUCR(appConfig, formWithErrors, "error"))),
       form =>
         customsCacheService.cache[EnterDucrForm](appConfig.appName, enterDucrId, form).map { _ =>
           Redirect(controllers.routes.MovementController.displayGoodsDate())
@@ -113,7 +113,7 @@ class MovementController @Inject()(
   def saveGoodsDate(): Action[AnyContent] = authenticate.async { implicit request =>
     goodsDateForm.bindFromRequest().fold(
       (formWithErrors: Form[GoodsDateForm]) =>
-        Future.successful(BadRequest(goods_date(appConfig, formWithErrors, ""))),
+        Future.successful(BadRequest(goods_date(appConfig, formWithErrors, "error"))),
       form =>
         customsCacheService.cache[GoodsDateForm](appConfig.appName, goodsDateId, form).map { _ =>
           Redirect(controllers.routes.MovementController.displayLocation())
@@ -146,7 +146,7 @@ class MovementController @Inject()(
       (formWithErrors: Form[LocationForm]) =>
         customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).map {
           case Some(choice) => BadRequest(goods_location(appConfig, formWithErrors, choice.choice))
-          case _ => BadRequest(goods_location(appConfig, formWithErrors, "EAL"))
+          case _ => BadRequest(goods_location(appConfig, formWithErrors, "error"))
         },
       form =>
         customsCacheService.cache[LocationForm](appConfig.appName, locationId, form).map { _ =>
