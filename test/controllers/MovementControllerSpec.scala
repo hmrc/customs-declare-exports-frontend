@@ -333,10 +333,10 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         withCaching(None, MovementFormsAndIds.transportId)
 
         val result = route(app, postRequest(transportUri, JsObject(Map("" -> JsString(""))))).get
-        val stringResult = contentAsString(result) //TODO add correct redirection
+        val header = result.futureValue.header
 
-        status(result) must be(OK)
-        stringResult must include("Done")
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/summary-page"))
       }
 
       "redirect to the next page with correct input data" in {
@@ -345,10 +345,10 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         withCaching(None, MovementFormsAndIds.transportId)
 
         val result = route(app, postRequest(transportUri, correctTransport)).get
-        val stringResult = contentAsString(result) //TODO add correct redirection
+        val header = result.futureValue.header
 
-        status(result) must be(OK)
-        stringResult must include("Done")
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/summary-page"))
       }
     }
   }
