@@ -45,9 +45,8 @@ class MovementSummaryController @Inject()(
   exportsMetrics: ExportsMetrics
 ) extends FrontendController with I18nSupport {
 
-  private val form = Form(MovementRequestSummaryMappingProvider.provideMappingForMovementSummaryPage())
-
   def displaySummary(): Action[AnyContent] = authenticator.async { implicit request =>
+    val form = Form(MovementRequestSummaryMappingProvider.provideMappingForMovementSummaryPage())
     customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).map {
       case Some(data) => Ok(movement_summary_page(appConfig, form.fill(data)))
       case _ => handleError(s"Could not obtain data from DB")
