@@ -16,7 +16,12 @@
 
 package base
 
+import forms.{ChoiceForm, GoodsDateForm}
+import forms.MovementFormsAndIds._
 import play.api.libs.json._
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
+import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 object ExportsTestData {
 
@@ -150,4 +155,43 @@ object ExportsTestData {
       "transportNationality" -> JsString("PL")
     )
   )
+
+  def validMovementRequest(movementType: String) = InventoryLinkingMovementRequest(
+    messageCode = movementType,
+    agentDetails = Some(AgentDetails(
+      eori = Some("QWERTY123"),
+      agentLocation = Some("Location"),
+      agentRole = Some("ABC")
+    )),
+    ucrBlock = UcrBlock(
+      ucr = "GB/NLA-0YH06GF0V3CUPJC9393",
+      ucrType = "D"
+    ),
+    goodsLocation = "Location",
+    goodsArrivalDateTime = Some("2018-11-21T17:47:02"),
+    goodsDepartureDateTime = Some("2018-11-21T17:47:02"),
+    shedOPID = Some("ABC"),
+    masterUCR = Some("GB/NLA-0YH06GF0V3CUPJC9393"),
+    masterOpt = Some("A"),
+    movementReference = Some("Movement Reference"),
+    transportDetails = Some(TransportDetails(
+      transportID = Some("Transport ID"),
+      transportMode = Some("M"),
+      transportNationality = Some("UK")
+    ))
+  )
+
+
+  val choiceForm = Json.toJson(ChoiceForm(("EAL")))
+
+  def getMovementCacheMap(id:String, movementType:String) = {
+
+    val data = Map(choiceId -> Json.toJson(ChoiceForm((movementType))),
+      enterDucrId -> correctDucrJson,
+      goodsDateId -> Json.toJson(GoodsDateForm("01","02","2020",None,None)),
+        locationId -> location,
+        transportId -> correctTransport)
+    CacheMap(id,data)
+  }
+
 }

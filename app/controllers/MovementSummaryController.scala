@@ -48,14 +48,15 @@ class MovementSummaryController @Inject()(
   private val form = Form(MovementRequestSummaryMappingProvider.provideMappingForMovementSummaryPage())
 
   def displaySummary(): Action[AnyContent] = authenticator.async { implicit request =>
-    customsCacheService.fetchMovementRequest(appConfig.appName).map {
+    customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).map {
       case Some(data) => Ok(movement_summary_page(appConfig, form.fill(data)))
       case _ => handleError(s"Could not obtain data from DB")
     }
   }
 
   def submitMovementRequest(): Action[AnyContent] = authenticator.async { implicit request =>
-    customsCacheService.fetchMovementRequest(appConfig.appName).flatMap {
+    implicit val user =  request.user
+    customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).flatMap {
       case Some(data) =>
         val metricIdentifier = getMetricIdentifierFrom(data)
         exportsMetrics.startTimer(metricIdentifier)
