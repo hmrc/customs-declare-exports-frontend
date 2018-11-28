@@ -17,13 +17,14 @@
 package controllers
 
 import base.CustomExportsBaseSpec
+import base.ExportsTestData._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{atLeastOnce, verify, when}
 import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-import base.ExportsTestData._
+
 import scala.concurrent.Future
 
 class MovementSummaryControllerSpec
@@ -156,16 +157,6 @@ class MovementSummaryControllerSpec
 
         contentAsString(result) must include(
           messagesApi("global.error.heading"))
-      }
-
-      "clean the cache" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
-        sendMovementRequest400Response()
-
-        route(app, postRequest(uri, emptyForm)).get
-
-        verify(mockCustomsCacheService, atLeastOnce).remove(any())(any(), any())
       }
     }
 

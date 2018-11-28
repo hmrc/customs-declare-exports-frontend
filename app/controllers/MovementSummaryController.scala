@@ -60,10 +60,10 @@ class MovementSummaryController @Inject()(
         val metricIdentifier = getMetricIdentifierFrom(data)
         exportsMetrics.startTimer(metricIdentifier)
 
-        customsCacheService.remove(appConfig.appName)
         customsInventoryLinkingExportsConnector.sendMovementRequest(request.user.eori, data.toXml).map {
           case accepted if accepted.status == ACCEPTED =>
             exportsMetrics.incrementCounter(metricIdentifier)
+            customsCacheService.remove(appConfig.appName)
             Ok(movement_confirmation_page(appConfig, data.messageCode, data.ucrBlock.ucr))
         }.recover {
           case error: Throwable =>
