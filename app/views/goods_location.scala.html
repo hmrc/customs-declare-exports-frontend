@@ -15,7 +15,6 @@
  *@
 
 @import config.AppConfig
-@import controllers.routes._
 @import uk.gov.hmrc.play.views.html._
 
 @(appConfig: AppConfig, form: Form[_], movementType: String)(implicit request: Request[_], messages: Messages)
@@ -24,8 +23,8 @@
     title = messages(s"movement.${movementType}"),
     appConfig = appConfig
 ) {
-    @helpers.form(MovementController.saveLocation(), 'autoComplete -> "off") {
-        @components.back_link("goodsDate")
+    @helpers.form(routes.MovementController.saveLocation(), 'autoComplete -> "off") {
+        @components.back_link("/customs-declare-exports/movement/goodsDate")
 
         @components.error_summary(form.errors)
 

@@ -15,7 +15,6 @@
  *@
 
 @import config.AppConfig
-@import controllers.routes._
 @import uk.gov.hmrc.play.views.html._
 
 @(appConfig: AppConfig, form: Form[_], movementType: String)(implicit request: Request[_], messages: Messages)
@@ -24,7 +23,7 @@
     title = messages(s"movement.${movementType}"),
     appConfig = appConfig
 ) {
-    @helpers.form(MovementController.saveDucr(), 'autoComplete -> "off") {
+    @helpers.form(routes.MovementController.saveDucr(), 'autoComplete -> "off") {
         @components.back_link("/customs-declare-exports/choice")
 
         @components.heading("", s"${messages("movement.ducr")}" + s" ${messages("movement.choice." + movementType)}")
