@@ -24,13 +24,15 @@ import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 import base.ExportsTestData._
+import uk.gov.hmrc.http.HttpResponse
+
 import scala.concurrent.Future
 
 class MovementSummaryControllerSpec
   extends CustomExportsBaseSpec
     with BeforeAndAfter {
 
-  private val uri = uriWithContextPath("/movement/summary-page")
+  private val uri = uriWithContextPath("/movement/summary")
   private val emptyForm = JsObject(Map("" -> JsString("")))
 
   before {
@@ -164,8 +166,6 @@ class MovementSummaryControllerSpec
         sendMovementRequest400Response()
 
         route(app, postRequest(uri, emptyForm)).get
-
-        verify(mockCustomsCacheService, atLeastOnce).remove(any())(any(), any())
       }
     }
 
@@ -175,7 +175,7 @@ class MovementSummaryControllerSpec
         mockCacheServiceFetchAndGetEntryResultWith(
           Some(validMovementRequest("EAL")))
         sendMovementRequest()
-
+        withcacheCleared()
         val result = route(app, postRequest(uri, emptyForm)).get
 
         status(result) must be(OK)
@@ -208,18 +208,21 @@ class MovementSummaryControllerSpec
         mockCacheServiceFetchAndGetEntryResultWith(
           Some(validMovementRequest("EAL")))
         sendMovementRequest()
-
+        withcacheCleared()
         route(app, postRequest(uri, emptyForm)).get
-
         verify(mockCustomsCacheService, atLeastOnce).remove(any())(any(), any())
       }
     }
   }
 
   private def mockCacheServiceFetchAndGetEntryResultWith(
-    desiredResult: Option[InventoryLinkingMovementRequest]) =
+    desiredResult: Option[InventoryLinkingMovementRequest]) = {
     when(
       mockCustomsCacheService.fetchMovementRequest(any(), any())(any(), any()))
       .thenReturn(Future.successful(desiredResult))
+  }
+  private def withcacheCleared() =         when(
+    mockCustomsCacheService.remove(any())(any(), any()))
+    .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 
 }

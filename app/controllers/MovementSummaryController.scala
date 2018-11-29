@@ -45,9 +45,8 @@ class MovementSummaryController @Inject()(
   exportsMetrics: ExportsMetrics
 ) extends FrontendController with I18nSupport {
 
-  private val form = Form(MovementRequestSummaryMappingProvider.provideMappingForMovementSummaryPage())
-
   def displaySummary(): Action[AnyContent] = authenticator.async { implicit request =>
+    val form = Form(MovementRequestSummaryMappingProvider.provideMappingForMovementSummaryPage())
     customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).map {
       case Some(data) => Ok(movement_summary_page(appConfig, form.fill(data)))
       case _ => handleError(s"Could not obtain data from DB")
@@ -55,17 +54,17 @@ class MovementSummaryController @Inject()(
   }
 
   def submitMovementRequest(): Action[AnyContent] = authenticator.async { implicit request =>
-    implicit val user = request.user
     customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).flatMap {
       case Some(data) =>
         val metricIdentifier = getMetricIdentifierFrom(data)
         exportsMetrics.startTimer(metricIdentifier)
 
-        customsCacheService.remove(appConfig.appName)
-        customsInventoryLinkingExportsConnector.sendMovementRequest(request.user.eori, data.toXml).map {
+        customsInventoryLinkingExportsConnector.sendMovementRequest(request.user.eori, data.toXml).flatMap {
           case accepted if accepted.status == ACCEPTED =>
             exportsMetrics.incrementCounter(metricIdentifier)
-            Ok(movement_confirmation_page(appConfig, data.messageCode, data.ucrBlock.ucr))
+            customsCacheService.remove(appConfig.appName).map(_ =>
+              Ok(movement_confirmation_page(appConfig, data.messageCode, data.ucrBlock.ucr)))
+
         }.recover {
           case error: Throwable =>
             exportsMetrics.incrementCounter(metricIdentifier)
@@ -75,7 +74,6 @@ class MovementSummaryController @Inject()(
         Future.successful(handleError(s"Could not obtain data from DB"))
     }
   }
-
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
     Logger.error(logMessage)

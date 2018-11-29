@@ -336,7 +336,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/summary-page"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/summary"))
       }
 
       "redirect to the next page with correct input data" in {
@@ -348,7 +348,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/summary-page"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/summary"))
       }
     }
   }
