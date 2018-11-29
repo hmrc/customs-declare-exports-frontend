@@ -59,11 +59,10 @@ class MovementSummaryController @Inject()(
         val metricIdentifier = getMetricIdentifierFrom(data)
         exportsMetrics.startTimer(metricIdentifier)
 
-        customsInventoryLinkingExportsConnector.sendMovementRequest(request.user.eori, data.toXml).flatMap {
+        customsInventoryLinkingExportsConnector.sendMovementRequest(request.user.eori, data.toXml).map {
           case accepted if accepted.status == ACCEPTED =>
             exportsMetrics.incrementCounter(metricIdentifier)
-            customsCacheService.remove(appConfig.appName).map(_ =>
-              Ok(movement_confirmation_page(appConfig, data.messageCode, data.ucrBlock.ucr)))
+            Redirect(controllers.routes.MovementSummaryController.displayConfirmation())
 
         }.recover {
           case error: Throwable =>
@@ -74,6 +73,19 @@ class MovementSummaryController @Inject()(
         Future.successful(handleError(s"Could not obtain data from DB"))
     }
   }
+
+  def displayConfirmation(): Action[AnyContent] = authenticator.async { implicit request =>
+    customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).flatMap {
+      case Some(data) =>
+        customsCacheService.remove(appConfig.appName).map { _ =>
+          Ok(movement_confirmation_page(appConfig, data.messageCode, data.ucrBlock.ucr))
+      }
+      case _ =>
+        Future.successful(handleError(s"Could not obtain data from DB"))
+    }
+  }
+
+
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
     Logger.error(logMessage)
