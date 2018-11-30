@@ -63,12 +63,12 @@ class MovementSummaryController @Inject()(
           case accepted if accepted.status == ACCEPTED =>
             exportsMetrics.incrementCounter(metricIdentifier)
             Redirect(controllers.routes.MovementSummaryController.displayConfirmation())
-
         }.recover {
           case error: Throwable =>
             exportsMetrics.incrementCounter(metricIdentifier)
             handleError(s"Error from Customs Inventory Linking ${error.toString}")
         }
+
       case _ =>
         Future.successful(handleError(s"Could not obtain data from DB"))
     }
