@@ -16,8 +16,8 @@
 
 package base
 
-import forms.{ChoiceForm, GoodsDateForm}
 import forms.MovementFormsAndIds._
+import forms.{ChoiceForm, GoodsDateForm}
 import play.api.libs.json._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
@@ -182,11 +182,11 @@ object ExportsTestData {
   )
 
 
-  val choiceForm = Json.toJson(ChoiceForm(("EAL")))
+  val choiceForm = Json.toJson(ChoiceForm("EAL"))
 
   def getMovementCacheMap(id:String, movementType:String) = {
 
-    val data = Map(choiceId -> Json.toJson(ChoiceForm((movementType))),
+    val data = Map(choiceId -> Json.toJson(ChoiceForm(movementType)),
       enterDucrId -> correctDucrJson,
       goodsDateId -> Json.toJson(GoodsDateForm("01","02","2020",None,None)),
         locationId -> location,

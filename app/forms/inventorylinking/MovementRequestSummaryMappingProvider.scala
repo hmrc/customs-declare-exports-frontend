@@ -21,6 +21,7 @@ import play.api.data.Mapping
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
+//noinspection ConvertibleToMethodValue
 object MovementRequestSummaryMappingProvider {
 
   def provideMappingForMovementSummaryPage(): Mapping[InventoryLinkingMovementRequest] = buildMapping()
@@ -49,9 +50,9 @@ object MovementRequestSummaryMappingProvider {
 
   private val ucrBlockMapping = mapping(
     "ucr" -> nonEmptyText(maxLength = ucrMaxLength)
-      .verifying("Please, provide valid UCR", ucr =>  ucr.matches(ucrValidationPattern)),
+      .verifying("Please, provide valid UCR", _.matches(ucrValidationPattern)),
     "ucrType" -> nonEmptyText(maxLength = 1)
-      .verifying("Allowed values are: \"D\", \"M\"", s => ucrTypeAllowedValues.contains(s))
+      .verifying("Allowed values are: \"D\", \"M\"", ucrTypeAllowedValues.contains(_))
   )(UcrBlock.apply)(UcrBlock.unapply)
 
   private val transportDetailsMapping = mapping(

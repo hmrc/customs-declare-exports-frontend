@@ -48,9 +48,13 @@ POST       /movement/transport                          controllers.MovementCont
 
 # Movements Summary
 
-GET        /movement/summary                        controllers.MovementSummaryController.displaySummary()
+GET        /movement/summary                            controllers.MovementSummaryController.displaySummary()
 
-POST       /movement/summary                       controllers.MovementSummaryController.submitMovementRequest()
+POST       /movement/summary                            controllers.MovementSummaryController.submitMovementRequest()
+
+# Movement Confirmation
+
+GET        /movement/confirmation                       controllers.MovementSummaryController.displayConfirmation()
 
 # Cancel declaration
 
