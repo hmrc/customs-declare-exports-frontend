@@ -63,6 +63,7 @@ class MovementSummaryController @Inject()(
           case accepted if accepted.status == ACCEPTED =>
             exportsMetrics.incrementCounter(metricIdentifier)
             Redirect(controllers.routes.MovementSummaryController.displayConfirmation())
+
         }.recover {
           case error: Throwable =>
             exportsMetrics.incrementCounter(metricIdentifier)
@@ -79,12 +80,11 @@ class MovementSummaryController @Inject()(
       case Some(data) =>
         customsCacheService.remove(appConfig.appName).map { _ =>
           Ok(movement_confirmation_page(appConfig, data.messageCode, data.ucrBlock.ucr))
-      }
+        }
       case _ =>
         Future.successful(handleError(s"Could not obtain data from DB"))
     }
   }
-
 
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {

@@ -168,7 +168,7 @@ class MovementSummaryControllerSpec
           Some(validMovementRequest("EAL")))
         sendMovementRequest()
 
-        route(app, postRequest(uriSummary, emptyForm)).get
+        route(app, postRequest(uriSummary, emptyForm)).get.futureValue
 
         verify(mockCustomsCacheService)
           .fetchMovementRequest(any(), any())(any(), any())
@@ -179,7 +179,7 @@ class MovementSummaryControllerSpec
           Some(validMovementRequest("EAL")))
         sendMovementRequest()
 
-        route(app, postRequest(uriSummary, emptyForm)).get
+        route(app, postRequest(uriSummary, emptyForm)).get.futureValue
 
         verify(mockCustomsInventoryLinkingExportsConnector)
           .sendMovementRequest(any(), any())(any(), any())
@@ -203,8 +203,9 @@ class MovementSummaryControllerSpec
       "fetch data from CustomsCacheService" in {
         mockCacheServiceFetchAndGetEntryResultWith(
           Some(validMovementRequest("EAL")))
+        mockCacheCleared()
 
-        route(app, getRequest(uriConfirmation)).get
+        route(app, getRequest(uriConfirmation)).get.futureValue
 
         verify(mockCustomsCacheService)
           .fetchMovementRequest(any(), any())(any(), any())
@@ -215,7 +216,7 @@ class MovementSummaryControllerSpec
           Some(validMovementRequest("EAL")))
         mockCacheCleared()
 
-        route(app, getRequest(uriConfirmation)).get
+        route(app, getRequest(uriConfirmation)).get.futureValue
 
         verify(mockCustomsCacheService).remove(any())(any(), any())
       }
