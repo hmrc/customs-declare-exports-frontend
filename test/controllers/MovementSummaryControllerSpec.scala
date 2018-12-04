@@ -28,9 +28,7 @@ import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMov
 
 import scala.concurrent.Future
 
-class MovementSummaryControllerSpec
-    extends CustomExportsBaseSpec
-    with BeforeAndAfter {
+class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   private val uriSummary = uriWithContextPath("/movement/summary")
   private val uriConfirmation = uriWithContextPath("/movement/confirmation")
@@ -47,27 +45,25 @@ class MovementSummaryControllerSpec
 
     "cannot read data from DB" should {
       "return 500 code" in {
-        mockCacheServiceFetchAndGetEntryResultWith(None)
+        mockCustomsCacheServiceFetchMovementRequestResultWith(None)
 
         val result = route(app, getRequest(uriSummary)).get
 
         status(result) must be(INTERNAL_SERVER_ERROR)
       }
 
-      "display error page for DB problem" in {
-        mockCacheServiceFetchAndGetEntryResultWith(None)
+      "display error page" in {
+        mockCustomsCacheServiceFetchMovementRequestResultWith(None)
 
         val result = route(app, getRequest(uriSummary)).get
 
-        contentAsString(result) must include(
-          messagesApi("global.error.heading"))
+        contentAsString(result) must include(messagesApi("global.error.heading"))
       }
     }
 
     "can read data from DB" should {
       "return 200 code" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
 
         val result = route(app, getRequest(uriSummary)).get
 
@@ -75,21 +71,18 @@ class MovementSummaryControllerSpec
       }
 
       "display summary page with warning" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
 
         val result = route(app, getRequest(uriSummary)).get
         val stringResult = contentAsString(result)
 
         val warningIconTag = "<i class=\"icon icon-important\">"
         stringResult must include(warningIconTag)
-        stringResult must include(
-          messages("movement.summaryPage.warningMessage"))
+        stringResult must include(messages("movement.summaryPage.warningMessage"))
       }
 
       "display summary page with the data table" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
 
         val result = route(app, getRequest(uriSummary)).get
         val stringResult = contentAsString(result)
@@ -106,13 +99,11 @@ class MovementSummaryControllerSpec
       }
 
       "display summary page with submission confirmation notice" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
 
         val result = route(app, getRequest(uriSummary)).get
 
-        contentAsString(result) must include(
-          messages("movement.summaryPage.confirmationNotice"))
+        contentAsString(result) must include(messages("movement.summaryPage.confirmationNotice"))
       }
     }
   }
@@ -121,7 +112,7 @@ class MovementSummaryControllerSpec
 
     "cannot read data from DB" should {
       "return 500 code" in {
-        mockCacheServiceFetchAndGetEntryResultWith(None)
+        mockCustomsCacheServiceFetchMovementRequestResultWith(None)
 
         val result = route(app, postRequest(uriSummary, emptyForm)).get
 
@@ -129,20 +120,18 @@ class MovementSummaryControllerSpec
       }
 
       "display error page for DB problem" in {
-        mockCacheServiceFetchAndGetEntryResultWith(None)
+        mockCustomsCacheServiceFetchMovementRequestResultWith(None)
 
         val result = route(app, postRequest(uriSummary, emptyForm)).get
 
-        contentAsString(result) must include(
-          messagesApi("global.error.heading"))
+        contentAsString(result) must include(messagesApi("global.error.heading"))
       }
     }
 
     "can read data from DB but submission failed" should {
 
       "return 500 code" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
         sendMovementRequest400Response()
 
         val result = route(app, postRequest(uriSummary, emptyForm)).get
@@ -151,70 +140,59 @@ class MovementSummaryControllerSpec
       }
 
       "display error page" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
         sendMovementRequest400Response()
 
         val result = route(app, postRequest(uriSummary, emptyForm)).get
 
-        contentAsString(result) must include(
-          messagesApi("global.error.heading"))
+        contentAsString(result) must include(messagesApi("global.error.heading"))
       }
     }
 
     "can read data from DB and submission succeeded" should {
       "fetch data from CustomsCacheService" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
         sendMovementRequest()
 
         route(app, postRequest(uriSummary, emptyForm)).get.futureValue
 
-        verify(mockCustomsCacheService)
-          .fetchMovementRequest(any(), any())(any(), any())
+        verify(mockCustomsCacheService).fetchMovementRequest(any(), any())(any(), any())
       }
 
       "call CustomsInventoryLinkingExportsConnector" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
         sendMovementRequest()
 
         route(app, postRequest(uriSummary, emptyForm)).get.futureValue
 
-        verify(mockCustomsInventoryLinkingExportsConnector)
-          .sendMovementRequest(any(), any())(any(), any())
+        verify(mockCustomsInventoryLinkingExportsConnector).sendMovementRequest(any(), any())(any(), any())
       }
 
       "redirect to confirmation page" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
         sendMovementRequest()
 
         val result = route(app, postRequest(uriSummary, emptyForm)).get
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(
-          Some("/customs-declare-exports/movement/confirmation"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/confirmation"))
       }
     }
 
     "MovementSummaryController.displayConfirmation" should {
       "fetch data from CustomsCacheService" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
-        mockCacheCleared()
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
+        mockCustomsCacheServiceClearedSuccessfully()
 
         route(app, getRequest(uriConfirmation)).get.futureValue
 
-        verify(mockCustomsCacheService)
-          .fetchMovementRequest(any(), any())(any(), any())
+        verify(mockCustomsCacheService).fetchMovementRequest(any(), any())(any(), any())
       }
 
       "clean the cache" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
-        mockCacheCleared()
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
+        mockCustomsCacheServiceClearedSuccessfully()
 
         route(app, getRequest(uriConfirmation)).get.futureValue
 
@@ -222,37 +200,31 @@ class MovementSummaryControllerSpec
       }
 
       "display confirmation page for Arrival" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EAL")))
-        mockCacheCleared()
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
+        mockCustomsCacheServiceClearedSuccessfully()
 
         val result = route(app, getRequest(uriConfirmation)).get
 
-        contentAsString(result) must include(
-          messagesApi("movement.choice.EAL") + " has been submitted")
+        contentAsString(result) must include(messagesApi("movement.choice.EAL") + " has been submitted")
       }
 
       "display confirmation page for Departure" in {
-        mockCacheServiceFetchAndGetEntryResultWith(
-          Some(validMovementRequest("EDL")))
-        mockCacheCleared()
+        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EDL")))
+        mockCustomsCacheServiceClearedSuccessfully()
 
         val result = route(app, getRequest(uriConfirmation)).get
 
-        contentAsString(result) must include(
-          messagesApi("movement.choice.EDL") + " has been submitted")
+        contentAsString(result) must include(messagesApi("movement.choice.EDL") + " has been submitted")
       }
     }
 
   }
 
-  private def mockCacheServiceFetchAndGetEntryResultWith(
-      desiredResult: Option[InventoryLinkingMovementRequest]) =
-    when(
-      mockCustomsCacheService.fetchMovementRequest(any(), any())(any(), any()))
+  private def mockCustomsCacheServiceFetchMovementRequestResultWith(desiredResult: Option[InventoryLinkingMovementRequest]) =
+    when(mockCustomsCacheService.fetchMovementRequest(any(), any())(any(), any()))
       .thenReturn(Future.successful(desiredResult))
 
-  private def mockCacheCleared() =
+  private def mockCustomsCacheServiceClearedSuccessfully() =
     when(mockCustomsCacheService.remove(any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 
