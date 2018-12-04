@@ -17,13 +17,15 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("messages.consignor.add"))
-      stringResult must include(messages("messages.consignor.eori"))
-      stringResult must include(messages("messages.consignor.fullName"))
-      stringResult must include(messages("messages.consignor.address"))
-      stringResult must include(messages("messages.consignor.townOrCity"))
-      stringResult must include(messages("messages.consignor.postCode"))
-      stringResult must include(messages("messages.consignor.country"))
+      stringResult must include(messages("supplementary.consignor.add"))
+      stringResult must include(messages("supplementary.consignor.add.hint"))
+      stringResult must include(messages("supplementary.consignor.nameAndAddress"))
+      stringResult must include(messages("supplementary.consignor.eori"))
+      stringResult must include(messages("supplementary.consignor.fullName"))
+      stringResult must include(messages("supplementary.consignor.address"))
+      stringResult must include(messages("supplementary.consignor.townOrCity"))
+      stringResult must include(messages("supplementary.consignor.postCode"))
+      stringResult must include(messages("supplementary.consignor.country"))
     }
 
     "validate form - incorrect values" in {
@@ -32,12 +34,12 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, incorrectConsignorAddress)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include(messages("messages.consignor.eori.error"))
-      stringResult must include(messages("messages.consignor.fullName.error"))
-      stringResult must include(messages("messages.consignor.address.error"))
-      stringResult must include(messages("messages.consignor.townOrCity.error"))
-      stringResult must include(messages("messages.consignor.postCode.error"))
-      stringResult must include(messages("messages.consignor.country.error"))
+      stringResult must include(messages("supplementary.consignor.eori.error"))
+      stringResult must include(messages("supplementary.consignor.fullName.error"))
+      stringResult must include(messages("supplementary.consignor.address.error"))
+      stringResult must include(messages("supplementary.consignor.townOrCity.error"))
+      stringResult must include(messages("supplementary.consignor.postCode.error"))
+      stringResult must include(messages("supplementary.consignor.country.error"))
     }
 
     "validate form - mandatory fields" in {
@@ -52,12 +54,12 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, emptyForm)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include(messages("messages.confignor.eori.mandatory"))
-      stringResult must include(messages("messages.confignor.fullName.mandatory"))
-      stringResult must include(messages("messages.confignor.address.mandatory"))
-      stringResult must include(messages("messages.confignor.townOrCity.mandatory"))
-      stringResult must include(messages("messages.confignor.postCode.mandatory"))
-      stringResult must include(messages("messages.confignor.country.mandatory"))
+      stringResult must include(messages("supplementary.confignor.eori.mandatory"))
+      stringResult must include(messages("supplementary.confignor.fullName.mandatory"))
+      stringResult must include(messages("supplementary.confignor.address.mandatory"))
+      stringResult must include(messages("supplementary.confignor.townOrCity.mandatory"))
+      stringResult must include(messages("supplementary.confignor.postCode.mandatory"))
+      stringResult must include(messages("supplementary.confignor.country.mandatory"))
     }
 
     "validate form - correct values" in {

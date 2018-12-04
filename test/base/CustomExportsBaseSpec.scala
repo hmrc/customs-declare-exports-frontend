@@ -89,6 +89,7 @@ trait CustomExportsBaseSpec extends PlaySpec
   def fakeRequest = FakeRequest("", "")
 
   def messages: Messages = messagesApi.preferred(fakeRequest)
+
   implicit val defaultPatience =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 

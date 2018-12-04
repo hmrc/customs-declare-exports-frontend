@@ -286,4 +286,15 @@ startPage.reference.number = 0300 200 3700
 startPage.reference.text = Open 8am to 6pm, Monday to Friday (closed bank holidays)
 startPage.enquiries = General enquires help
 
+supplementary.consignor.add = Add consignor
+supplementary.consignor.add.hint = The consignor is the registered trader sending the goods
+supplementary.consignor.nameAndAddress = Consignor's name and address
+supplementary.consignor.eori = EORI number
+supplementary.consignor.eori.hint = The number starts with a country code, for example FR or France, and is then followed by up to 15 digits
+supplementary.consignor.fullName = Full name
+supplementary.consignor.address = Address line 1
+supplementary.consignor.townOrCity = Town or city
+supplementary.consignor.postCode = Postcode
+supplementary.consignor.country = Country
+
 

@@ -19,7 +19,7 @@ package forms
 import java.time.LocalDateTime
 
 import play.api.data.Form
-import play.api.data.Forms.{mapping, number, optional, text}
+import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.validation.Constraints._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
