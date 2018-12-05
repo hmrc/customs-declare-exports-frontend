@@ -291,10 +291,22 @@ supplementary.consignor.add.hint = The consignor is the registered trader sendin
 supplementary.consignor.nameAndAddress = Consignor's name and address
 supplementary.consignor.eori = EORI number
 supplementary.consignor.eori.hint = The number starts with a country code, for example FR or France, and is then followed by up to 15 digits
+supplementary.consignor.eori.error = EORI number is incorrect
+supplementary.consignor.eori.empty = EORI number cannot be empty
 supplementary.consignor.fullName = Full name
+supplementary.consignor.fullName.error = Full name is incorrect
+supplementary.consignor.fullName.empty = Full name cannot be empty
 supplementary.consignor.address = Address line 1
+supplementary.consignor.address.error = Address line 1 is incorrect
+supplementary.consignor.address.empty = Address line 1 cannot be empty
 supplementary.consignor.townOrCity = Town or city
+supplementary.consignor.townOrCity.error = Town or city is incorrect
+supplementary.consignor.townOrCity.empty = Town or city cannot be empty
 supplementary.consignor.postCode = Postcode
+supplementary.consignor.postCode.error = Postcode is incorrect
+supplementary.consignor.postCode.empty = Postcode cannot be empty
 supplementary.consignor.country = Country
+supplementary.consignor.country.error = Country is incorrect
+supplementary.consignor.country.empty = Country cannot be empty
 
 

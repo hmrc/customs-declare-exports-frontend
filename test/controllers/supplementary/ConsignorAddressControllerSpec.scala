@@ -1,8 +1,24 @@
+/*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import forms.supplementary.ConsignorAddressForm
 import play.api.test.Helpers._
 
 class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
@@ -12,6 +28,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
   "Movement controller" should {
     "display consignor address form" in {
       authorizedUser()
+      withCaching[ConsignorAddressForm](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -30,6 +47,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - incorrect values" in {
       authorizedUser()
+      withCaching[ConsignorAddressForm](None)
 
       val result = route(app, postRequest(uri, incorrectConsignorAddress)).get
       val stringResult = contentAsString(result)
@@ -44,32 +62,28 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - mandatory fields" in {
       authorizedUser()
+      withCaching[ConsignorAddressForm](None)
 
-      val emptyForm: JsValue = JsObject(
-        Map(
-          "" -> JsString("")
-        )
-      )
-
-      val result = route(app, postRequest(uri, emptyForm)).get
+      val result = route(app, postRequest(uri, emptyConsignorAddress)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include(messages("supplementary.confignor.eori.mandatory"))
-      stringResult must include(messages("supplementary.confignor.fullName.mandatory"))
-      stringResult must include(messages("supplementary.confignor.address.mandatory"))
-      stringResult must include(messages("supplementary.confignor.townOrCity.mandatory"))
-      stringResult must include(messages("supplementary.confignor.postCode.mandatory"))
-      stringResult must include(messages("supplementary.confignor.country.mandatory"))
+      stringResult must include(messages("supplementary.consignor.eori.empty"))
+      stringResult must include(messages("supplementary.consignor.fullName.empty"))
+      stringResult must include(messages("supplementary.consignor.address.empty"))
+      stringResult must include(messages("supplementary.consignor.townOrCity.empty"))
+      stringResult must include(messages("supplementary.consignor.postCode.empty"))
+      stringResult must include(messages("supplementary.consignor.country.empty"))
     }
 
     "validate form - correct values" in {
       authorizedUser()
+      withCaching[ConsignorAddressForm](None)
 
       val result = route(app, postRequest(uri, correctConsignorAddress)).get
       val header = result.futureValue.header
 
-      status(result) mustBe(SEE_OTHER)
-      header.headers.get("Location") must be(Some(""))
+      status(result) mustBe(OK)
+      contentAsString(result) must include("Declarant identification and address")
     }
   }
 }

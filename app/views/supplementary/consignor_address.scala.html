@@ -28,37 +28,47 @@
     @helpers.form(ConsignorAddressController.saveAddress(), 'autoComplete -> "off") {
         @components.back_link("start")
 
-        @components.heading("supplementary.consignor.add.hint", "supplementary.consignor.add")
+        @components.error_summary(form.errors)
+
+        @components.page_title("supplementary.consignor.add.hint", "supplementary.consignor.add")
 
         @components.input_text(
             field = form("eori"),
             label = messages("supplementary.consignor.eori"),
-            hint = Some(messages("supplementary.consignor.eori.hint"))
+            hint = Some(messages("supplementary.consignor.eori.hint")),
+            labelClass = Some("font-weight: 400")
         )
+
+        <h3>@messages("supplementary.consignor.nameAndAddress")</h3>
 
         @components.input_text(
             field = form("fullName"),
-            label = messages("supplementary.consignor.fullName")
+            label = messages("supplementary.consignor.fullName"),
+            labelClass = Some("font-weight: 400")
         )
 
         @components.input_text(
             field = form("address"),
-            label = messages("supplementary.consignor.address")
+            label = messages("supplementary.consignor.address"),
+            labelClass = Some("font-weight: 400")
         )
 
         @components.input_text(
             field = form("townOrCity"),
-            label = messages("supplementary.consignor.townOrCity")
+            label = messages("supplementary.consignor.townOrCity"),
+            labelClass = Some("font-weight: 400")
         )
 
         @components.input_text(
             field = form("postCode"),
-            label = messages("supplementary.consignor.postCode")
+            label = messages("supplementary.consignor.postCode"),
+            labelClass = Some("font-weight: 400")
         )
 
         @components.input_text(
             field = form("country"),
-            label = messages("supplementary.consignor.country")
+            label = messages("supplementary.consignor.country"),
+            labelClass = Some("font-weight: 400")
         )
 
         @components.submit_button()

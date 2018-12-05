@@ -52,7 +52,7 @@ class ConsignorAddressController @Inject()(
         Future.successful(BadRequest(consignor_address(appConfig, formWithErrors))),
       form =>
         customsCacheService.cache[ConsignorAddressForm](appConfig.appName, formId, form).map { _ =>
-          Redirect(???)
+          Ok("Declarant identification and address")
         }
     )
   }

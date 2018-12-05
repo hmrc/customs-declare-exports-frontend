@@ -219,4 +219,15 @@ object ExportsTestData {
       "country" -> JsString(randomString(3))
     )
   )
+
+  val emptyConsignorAddress: JsValue = JsObject(
+    Map(
+      "eori" -> JsString(""),
+      "fullName" -> JsString(""),
+      "address" -> JsString(""),
+      "townOrCity" -> JsString(""),
+      "postCode" -> JsString(""),
+      "country" -> JsString("")
+    )
+  )
 }

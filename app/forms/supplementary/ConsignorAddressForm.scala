@@ -16,7 +16,7 @@
 
 package forms.supplementary
 
-import play.api.data.Forms.{mapping, text}
+import play.api.data.Forms.{mapping, nonEmptyText, text}
 import play.api.libs.json.Json
 
 case class ConsignorAddressForm(
@@ -32,11 +32,17 @@ object ConsignorAddressForm {
   implicit val format = Json.format[ConsignorAddressForm]
 
   val consignorAddressMapping = mapping(
-    "eori" -> text(maxLength = 17),
-    "fullName" -> text(maxLength = 70),
-    "address" -> text(maxLength = 70),
-    "townOrCity" -> text(maxLength = 35),
-    "postCode" -> text(maxLength = 9),
-    "country" -> text(minLength = 1, maxLength = 2)
+    "eori" -> text().verifying("supplementary.consignor.eori.empty", !_.isEmpty)
+      .verifying("supplementary.consignor.eori.error", _.length <= 17),
+    "fullName" -> text().verifying("supplementary.consignor.fullName.empty", !_.isEmpty)
+      .verifying("supplementary.consignor.fullName.error", _.length <= 70),
+    "address" -> text().verifying("supplementary.consignor.address.empty", !_.isEmpty)
+      .verifying("supplementary.consignor.address.error", _.length <= 70),
+    "townOrCity" -> text().verifying("supplementary.consignor.townOrCity.empty", !_.isEmpty)
+      .verifying("supplementary.consignor.townOrCity.error", _.length <= 35),
+    "postCode" -> text().verifying("supplementary.consignor.postCode.empty", !_.isEmpty)
+      .verifying("supplementary.consignor.postCode.error", _.length <= 9),
+    "country" -> text().verifying("supplementary.consignor.country.empty", !_.isEmpty)
+      .verifying("supplementary.consignor.country.error", _.length <= 2)
   )(ConsignorAddressForm.apply)(ConsignorAddressForm.unapply)
 }
