@@ -16,14 +16,21 @@
 
 package forms.supplementary
 
-import play.api.data.Forms.nonEmptyText
+import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
 case class DeclarationType(
-  declarationType: String,
-  additionalDeclarationType: String
-)
+  declarationType: String,    // 2 upper case alphabetic characters
+  additionalDeclarationType: String   // 1 upper case alphabetic character
+) {
+
+  def toMetadataProperties(): Map[String, String] = {
+    val propertiesKey = "declaration.typeCode"
+    val propertiesValue = declarationType + additionalDeclarationType
+    Map(propertiesKey -> propertiesValue)
+  }
+}
 
 object DeclarationType {
   implicit val format = Json.format[DeclarationType]
@@ -34,11 +41,13 @@ object DeclarationType {
   val formId = "DeclarationTypeId"
 
   val mapping = Forms.mapping(
-    "declarationType" -> nonEmptyText(maxLength = 2)
-      .verifying("Please, provide valid declaration type", declarationTypeAllowedValues(_)),
-    "additionalDeclarationType" -> nonEmptyText(maxLength = 1)
-      .verifying("Please, provide valid additional declaration type", additionalDeclarationTypeAllowedValues(_))
+    "declarationType" -> text(maxLength = 2)
+      .verifying("supplementary.declarationTypePage.inputText.declarationType.errorMessage",
+        input => input.nonEmpty && declarationTypeAllowedValues(input)),
+    "additionalDeclarationType" -> text(maxLength = 1)
+      .verifying("supplementary.declarationTypePage.inputText.additionalDeclarationType.errorMessage",
+        input => input.nonEmpty && additionalDeclarationTypeAllowedValues(input))
   )(DeclarationType.apply)(DeclarationType.unapply)
 
-  val form = Form(mapping)
+  def form(): Form[DeclarationType] = Form(mapping)
 }

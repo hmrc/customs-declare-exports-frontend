@@ -203,7 +203,7 @@ object ExportsTestData {
     )
   )
 
-  val correctConsignorAddress: JsValue = JsObject(
+  val correctAddress: JsValue = JsObject(
     Map(
       "eori" -> JsString("PL213472539481923"),
       "fullName" -> JsString("Full name"),

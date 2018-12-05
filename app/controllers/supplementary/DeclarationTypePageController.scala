@@ -18,12 +18,17 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import forms.supplementary.DeclarationType
 import handlers.ErrorHandler
 import javax.inject.Inject
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.supplementary.declaration_type
+
+import scala.concurrent.Future
 
 class DeclarationTypePageController @Inject()(
   appConfig: AppConfig,
@@ -33,8 +38,28 @@ class DeclarationTypePageController @Inject()(
   customsCacheService: CustomsCacheService
 ) extends FrontendController with I18nSupport {
 
-  def displayDeclarationTypePage(): Action[AnyContent] = ???
+  private val supplementaryDeclarationCacheId = appConfig.appName
 
-  def submitDeclarationType(): Action[AnyContent] = ???
+  def displayDeclarationTypePage(): Action[AnyContent] = authenticator.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[DeclarationType](supplementaryDeclarationCacheId, DeclarationType.formId).map {
+      case Some(data) => Ok(declaration_type(appConfig, DeclarationType.form().fill(data)))
+      case _          => Ok(declaration_type(appConfig, DeclarationType.form()))
+    }
+  }
+
+  def submitDeclarationType(): Action[AnyContent] = authenticator.async { implicit request =>
+    DeclarationType.form().bindFromRequest().fold(
+      (formWithErrors: Form[DeclarationType]) =>
+        Future.successful(BadRequest(declaration_type(appConfig, formWithErrors))),
+      validDeclarationType =>
+        customsCacheService.cache[DeclarationType](
+          supplementaryDeclarationCacheId,
+          DeclarationType.formId,
+          validDeclarationType
+        ).map { _ =>
+          Ok("Now you should be redirected to consignment-reference page")
+        }
+    )
+  }
 
 }

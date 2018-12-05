@@ -16,7 +16,7 @@
 
 package forms.supplementary
 
-import play.api.data.Forms.{mapping, nonEmptyText, text}
+import play.api.data.Forms.{mapping, text}
 import play.api.libs.json.Json
 
 case class Address(
@@ -32,17 +32,17 @@ object Address {
   implicit val format = Json.format[Address]
 
   val addressMapping = mapping(
-    "eori" -> text().verifying("supplementary.eori.empty", !_.isEmpty)
+    "eori" -> text().verifying("supplementary.eori.empty", _.nonEmpty)
       .verifying("supplementary.eori.error", _.length <= 17),
-    "fullName" -> text().verifying("supplementary.fullName.empty", !_.isEmpty)
+    "fullName" -> text().verifying("supplementary.fullName.empty", _.nonEmpty)
       .verifying("supplementary.fullName.error", _.length <= 70),
-    "addressLine" -> text().verifying("supplementary.addressLine.empty", !_.isEmpty)
+    "addressLine" -> text().verifying("supplementary.addressLine.empty", _.nonEmpty)
       .verifying("supplementary.addressLine.error", _.length <= 70),
-    "townOrCity" -> text().verifying("supplementary.townOrCity.empty", !_.isEmpty)
+    "townOrCity" -> text().verifying("supplementary.townOrCity.empty", _.nonEmpty)
       .verifying("supplementary.townOrCity.error", _.length <= 35),
-    "postCode" -> text().verifying("supplementary.postCode.empty", !_.isEmpty)
+    "postCode" -> text().verifying("supplementary.postCode.empty", _.nonEmpty)
       .verifying("supplementary.postCode.error", _.length <= 9),
-    "country" -> text().verifying("supplementary.country.empty", !_.isEmpty)
+    "country" -> text().verifying("supplementary.country.empty", _.nonEmpty)
       .verifying("supplementary.country.error", _.length <= 2)
   )(Address.apply)(Address.unapply)
 
