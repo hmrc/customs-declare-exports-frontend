@@ -23,6 +23,8 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
+import scala.util.Random
+
 object ExportsTestData {
 
   val addressJson: JsValue = JsObject(
@@ -194,4 +196,38 @@ object ExportsTestData {
     CacheMap(id,data)
   }
 
+  val correctConsignorAddress: JsValue = JsObject(
+    Map(
+      "eori" -> JsString("PL213472539481923"),
+      "fullName" -> JsString("Full name"),
+      "address" -> JsString("Address"),
+      "townOrCity" -> JsString("Town or city"),
+      "postCode" -> JsString("PostCode1"),
+      "country" -> JsString("PL")
+    )
+  )
+
+  protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
+
+  val incorrectConsignorAddress: JsValue = JsObject(
+    Map(
+      "eori" -> JsString(randomString(18)),
+      "fullName" -> JsString(randomString(71)),
+      "address" -> JsString(randomString(71)),
+      "townOrCity" -> JsString(randomString(36)),
+      "postCode" -> JsString(randomString(10)),
+      "country" -> JsString(randomString(3))
+    )
+  )
+
+  val emptyConsignorAddress: JsValue = JsObject(
+    Map(
+      "eori" -> JsString(""),
+      "fullName" -> JsString(""),
+      "address" -> JsString(""),
+      "townOrCity" -> JsString(""),
+      "postCode" -> JsString(""),
+      "country" -> JsString("")
+    )
+  )
 }

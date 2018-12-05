@@ -18,9 +18,9 @@ package controllers
 
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
-import forms.{ChoiceForm, EnterDucrForm, GoodsDateForm, MovementFormsAndIds}
+import forms.{ChoiceForm, EnterDucrForm, MovementFormsAndIds}
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 
 class MovementControllerSpec extends CustomExportsBaseSpec {

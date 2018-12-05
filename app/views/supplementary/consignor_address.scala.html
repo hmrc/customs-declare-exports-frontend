@@ -1,0 +1,74 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.supplementary.routes._
+@import forms.supplementary.ConsignorAddressForm
+@import uk.gov.hmrc.play.views.html._
+
+@(appConfig: AppConfig, form: Form[ConsignorAddressForm])(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("supplementary.consignor.add"),
+    appConfig = appConfig
+) {
+    @helpers.form(ConsignorAddressController.saveAddress(), 'autoComplete -> "off") {
+        @components.back_link("start")
+
+        @components.error_summary(form.errors)
+
+        @components.page_title("supplementary.consignor.add.hint", "supplementary.consignor.add")
+
+        @components.input_text(
+            field = form("eori"),
+            label = messages("supplementary.consignor.eori"),
+            hint = Some(messages("supplementary.consignor.eori.hint")),
+            labelClass = Some("font-weight: 400")
+        )
+
+        @components.input_text(
+            field = form("fullName"),
+            label = messages("supplementary.consignor.fullName"),
+            labelClass = Some("font-weight: 400")
+        )
+
+        @components.input_text(
+            field = form("address"),
+            label = messages("supplementary.consignor.address"),
+            labelClass = Some("font-weight: 400")
+        )
+
+        @components.input_text(
+            field = form("townOrCity"),
+            label = messages("supplementary.consignor.townOrCity"),
+            labelClass = Some("font-weight: 400")
+        )
+
+        @components.input_text(
+            field = form("postCode"),
+            label = messages("supplementary.consignor.postCode"),
+            labelClass = Some("font-weight: 400")
+        )
+
+        @components.input_text(
+            field = form("country"),
+            label = messages("supplementary.consignor.country"),
+            labelClass = Some("font-weight: 400")
+        )
+
+        @components.submit_button()
+    }
+}
