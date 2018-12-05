@@ -68,9 +68,9 @@ GET        /start                                       controllers.StartControl
 
 # Declaration type
 
-GET        /declaration/type                            controllers.DeclarationTypePageController.displayDeclarationTypePage()
+GET        /declaration/supplementary/type              controllers.supplementary.DeclarationTypePageController.displayDeclarationTypePage()
 
-POST       /declaration/type                            controllers.DeclarationTypePageController.submitDeclarationType()
+POST       /declaration/supplementary/type              controllers.supplementary.DeclarationTypePageController.submitDeclarationType()
 
 # Consignor address
 

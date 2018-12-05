@@ -311,3 +311,18 @@ supplementary.country.error = Country is incorrect
 supplementary.country.empty = Country cannot be empty
 
 
+declaration.supplementary.declarationTypePage.title = Supplementary Declaration Type
+declaration.supplementary.declarationTypePage.heading = Declaration Type
+declaration.supplementary.declarationTypePage.heading.secondary = Lead paragraph if needed, will change later
+
+declaration.supplementary.declarationTypePage.inputText.declarationType = 1/1 Where are the goods being dispatched to?
+declaration.supplementary.declarationTypePage.inputText.declarationType.hint = Hint text if needed
+declaration.supplementary.declarationTypePage.inputText.declarationType.ex = Outside the EU
+declaration.supplementary.declarationTypePage.inputText.declarationType.co = Fiscal territory of the EU or country with which the EU has formed a customs union
+declaration.supplementary.declarationTypePage.inputText.declarationType.errorMessage = Please, choose declaration type
+
+declaration.supplementary.declarationTypePage.inputText.additionalDeclarationType = 1/2 What type of declaration are you making?
+declaration.supplementary.declarationTypePage.inputText.additionalDeclarationType.hint = Hint text if needed
+declaration.supplementary.declarationTypePage.inputText.additionalDeclarationType.y = Simplified declaration
+declaration.supplementary.declarationTypePage.inputText.additionalDeclarationType.z = Standard declaration
+declaration.supplementary.declarationTypePage.inputText.additionalDeclarationType.errorMessage = Please, choose additional declaration type

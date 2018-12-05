@@ -196,7 +196,14 @@ object ExportsTestData {
     CacheMap(id,data)
   }
 
-  val correctAddress: JsValue = JsObject(
+  val correctDeclarationType: JsValue = JsObject(
+    Map(
+      "declarationType" -> JsString("EX"),
+      "additionalDeclarationType" -> JsString("Y")
+    )
+  )
+
+  val correctConsignorAddress: JsValue = JsObject(
     Map(
       "eori" -> JsString("PL213472539481923"),
       "fullName" -> JsString("Full name"),

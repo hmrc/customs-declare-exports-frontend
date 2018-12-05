@@ -130,7 +130,7 @@ trait CustomExportsBaseSpec extends PlaySpec
     when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(),any()))
       .thenReturn(Future.successful(form))
 
-    when(mockCustomsCacheService.cache[T](any(), any(),any())(any(), any(), any()))
+    when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(CacheMap("id1", Map.empty)))
   }
 

@@ -16,9 +16,13 @@
 
 package controllers.supplementary
 
-import base.CustomExportsBaseSpec
-import org.mockito.Mockito.reset
+import base.{CustomExportsBaseSpec, ExportsTestData}
+import forms.supplementary.DeclarationType
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify}
 import org.scalatest.BeforeAndAfter
+import play.api.libs.json.{JsObject, JsString}
+import play.api.test.Helpers._
 
 class DeclarationTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
@@ -26,57 +30,90 @@ class DeclarationTypePageControllerSpec extends CustomExportsBaseSpec with Befor
 
   before {
     authorizedUser()
-    reset(mockCustomsCacheService)
   }
 
-  "DeclarationTypePageController on displayDeclarationTypePage" when {
 
-    "cannot read data from cache" should {
-      "return 500 code" in {
+  "DeclarationTypePageController on displayDeclarationTypePage" should {
+    "return 200 code" in {
+      withCaching[DeclarationType](None, DeclarationType.formId)
 
-      }
+      val result = route(app, getRequest(uri)).get
 
-      "display error page" in {
-
-      }
+      status(result) must be(OK)
     }
 
-    "can read data from cache" should {
-      "return 200 code" in {
+    "display page title" in {
+      withCaching[DeclarationType](None, DeclarationType.formId)
 
-      }
+      val result = route(app, getRequest(uri)).get
 
-      "display page  title" in {
+      contentAsString(result) must include(
+        messagesApi("declaration.supplementary.declarationTypePage.title"))
+    }
 
-      }
+    "display page header" in {
+      withCaching[DeclarationType](None, DeclarationType.formId)
 
-      "display page  header" in {
+      val result = route(app, getRequest(uri)).get
 
-      }
+      contentAsString(result) must include(
+        messagesApi("declaration.supplementary.declarationTypePage.heading"))
+    }
 
-      "display radio button with question text for declaration type" in {
+    "display information content" in {
+      withCaching[DeclarationType](None, DeclarationType.formId)
 
-      }
+      val result = route(app, getRequest(uri)).get
 
-      "display radio button with question text for additional declaration type" in {
+      contentAsString(result) must include(
+        messagesApi("declaration.supplementary.declarationTypePage.heading.secondary"))
+    }
 
-      }
+    "display radio button with question text for declaration type" in {
+      withCaching[DeclarationType](None, DeclarationType.formId)
 
-      "display information content" in {
+      val result = route(app, getRequest(uri)).get
 
-      }
+      contentAsString(result) must include(
+        messagesApi("declaration.supplementary.declarationTypePage.inputText.declarationType"))
+      contentAsString(result) must include(
+        messagesApi("declaration.supplementary.declarationTypePage.inputText.declarationType.hint"))
+    }
 
-      "display \"Save and continue\" button" in {
+    "display radio button with question text for additional declaration type" in {
+      withCaching[DeclarationType](None, DeclarationType.formId)
 
-      }
+      val result = route(app, getRequest(uri)).get
 
-      "not populate the form fields if cache is empty" in {
+      contentAsString(result) must include(
+        messagesApi("declaration.supplementary.declarationTypePage.inputText.additionalDeclarationType"))
+      contentAsString(result) must include(
+        messagesApi("declaration.supplementary.declarationTypePage.inputText.additionalDeclarationType.hint"))
+    }
 
-      }
+    "display \"Save and continue\" button" in {
+      withCaching[DeclarationType](None, DeclarationType.formId)
 
-      "populate the form fields with data from cache" in {
+      val result = route(app, getRequest(uri)).get
 
-      }
+      contentAsString(result) must include(messagesApi("site.save_and_continue"))
+      contentAsString(result) must include("button id=\"submit\" class=\"button\"")
+    }
+
+    "not populate the form fields if cache is empty" in {
+      withCaching[DeclarationType](None, DeclarationType.formId)
+
+      val result = route(app, getRequest(uri)).get
+
+      contentAsString(result) mustNot include("checked=\"checked\"")
+    }
+
+    "populate the form fields with data from cache" in {
+      withCaching[DeclarationType](Some(DeclarationType("CO", "Y")), DeclarationType.formId)
+
+      val result = route(app, getRequest(uri)).get
+
+      contentAsString(result) must include("checked=\"checked\"")
     }
   }
 
@@ -85,31 +122,58 @@ class DeclarationTypePageControllerSpec extends CustomExportsBaseSpec with Befor
 
     "no value provided for declaration type" should {
       "display the form page with error" in {
+        withCaching[DeclarationType](None)
 
+        val formWithoutDeclarationType = JsObject(Map("additionalDeclarationType" -> JsString("Y")))
+        val result = route(app, postRequest(uri, formWithoutDeclarationType)).get
+
+        contentAsString(result) must include(
+          messagesApi("declaration.supplementary.declarationTypePage.inputText.declarationType.errorMessage"))
       }
     }
 
     "no value provided for additional declaration type" should {
       "display the form page with error" in {
+        withCaching[DeclarationType](None)
 
+        val formWithoutAdditionalDeclarationType = JsObject(Map("declarationType" -> JsString("EX")))
+        val result = route(app, postRequest(uri, formWithoutAdditionalDeclarationType)).get
+
+        contentAsString(result) must include(
+          messagesApi("declaration.supplementary.declarationTypePage.inputText.additionalDeclarationType.errorMessage"))
       }
     }
 
     "input data provided" should {
-      "map the data onto DeclarationTypePageForm" in {
-
-      }
-
       "save the data to the cache" in {
+        reset(mockCustomsCacheService)
+        withCaching[DeclarationType](None)
 
+        val validForm = ExportsTestData.correctDeclarationType
+        route(app, postRequest(uri, validForm)).get.futureValue
+
+        verify(mockCustomsCacheService)
+          .cache[DeclarationType](any(), DeclarationType.formId, any())(any(), any(), any())
       }
 
-      "return 200 code" in {
+      "return 303 code" in {
+        withCaching[DeclarationType](None)
 
+        val validForm = ExportsTestData.correctDeclarationType
+        val result = route(app, postRequest(uri, validForm)).get
+
+        status(result) must be(SEE_OTHER)
       }
 
       "redirect to \"Consignment Reference\" page" in {
+        withCaching[DeclarationType](None)
 
+        val validForm = ExportsTestData.correctDeclarationType
+        val result = route(app, postRequest(uri, validForm)).get
+        val header = result.futureValue.header
+
+        header.headers.get("Location") must be(
+          Some("/customs-declare-exports/declaration/supplementary/consignment-reference"))
       }
     }
   }
