@@ -36,7 +36,6 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
       status(result) must be(OK)
       stringResult must include(messages("supplementary.consignor.add"))
       stringResult must include(messages("supplementary.consignor.add.hint"))
-      stringResult must include(messages("supplementary.consignor.nameAndAddress"))
       stringResult must include(messages("supplementary.consignor.eori"))
       stringResult must include(messages("supplementary.consignor.fullName"))
       stringResult must include(messages("supplementary.consignor.address"))
@@ -80,7 +79,6 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
       withCaching[ConsignorAddressForm](None)
 
       val result = route(app, postRequest(uri, correctConsignorAddress)).get
-      val header = result.futureValue.header
 
       status(result) mustBe(OK)
       contentAsString(result) must include("Declarant identification and address")
