@@ -23,9 +23,9 @@ import play.api.test.Helpers._
 
 class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("declarant-address")
+  val uri = uriWithContextPath("/declarant-address")
 
-  "Declarant address" should {
+  "Declarant address controller" should {
     "display declarant address form" in {
       authorizedUser()
       withCaching[AddressForm](None)
@@ -35,7 +35,7 @@ class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(OK)
       stringResult must include(messages("supplementary.declarant.add"))
-      stringResult must include(messages("supplementary.add.hint"))
+      stringResult must include(messages("supplementary.declarant.add.hint"))
       stringResult must include(messages("supplementary.eori"))
       stringResult must include(messages("supplementary.fullName"))
       stringResult must include(messages("supplementary.address"))

@@ -14,78 +14,45 @@
  * limitations under the License.
  *@
 
-@(form: Form[_])(implicit messages: Messages)
+@import forms.supplementary.AddressForm
 
-<div class="field-group">
-    <fieldset>
-        <div className="panel panel-border-narrow" id="fullName">
-            <label class="form-label" for="fullNameInput">
-                @messages("address.fullName")
-            </label>
-            <input class="form-control"
-                   name="address.fullName"
-                   type="text"
-                   id="fullNameInput"
-                   value=@{form("address.fullName").value}>
-        </div>
+@(form: Form[AddressForm])(implicit messages: Messages)
 
-        <br>
+<div>
+    @components.input_text(
+        field = form("eori"),
+        label = messages("supplementary.eori"),
+        hint = Some(messages("supplementary.eori.hint")),
+        labelClass = Some("font-weight: 400")
+    )
 
-        <div className="panel panel-border-narrow" id="buildingAndStreet">
-            <label class="form-label" for="buildingAndStreetInput">
-                @messages("address.buildingAndStreet")
-            </label>
-            <input class="form-control compound"
-                   name="address.building"
-                   type="text"
-                   id="buildingAndStreetInput"
-                   value=@{form("address.building").value}>
-            <input class="form-control"
-                   name="address.street"
-                   type="text"
-                   id="buildingAndStreetSecondInput"
-                   value=@{form("address.street").value}>
-        </div>
+    @components.input_text(
+        field = form("fullName"),
+        label = messages("supplementary.fullName"),
+        labelClass = Some("font-weight: 400")
+    )
 
-        <br>
+    @components.input_text(
+        field = form("simpleDeclarationAddress"),
+        label = messages("supplementary.address"),
+        labelClass = Some("font-weight: 400")
+    )
 
-        <div className="panel panel-border-narrow" id="townOrCity">
-            <label class="form-label" for="townOrCityInput">
-                @messages("address.city")
-            </label>
-            <input class="form-control"
-                   name="address.townOrCity"
-                   type="text"
-                   id="townOrCityInput"
-                   value=@{form("address.townOrCity").value}>
-        </div>
+    @components.input_text(
+        field = form("townOrCity"),
+        label = messages("supplementary.townOrCity"),
+        labelClass = Some("font-weight: 400")
+    )
 
-        <br>
+    @components.input_text(
+        field = form("postCode"),
+        label = messages("supplementary.postCode"),
+        labelClass = Some("font-weight: 400")
+    )
 
-        <div className="panel panel-border-narrow" id="postcode">
-            <label class="form-label" for="postcode-input">
-                @messages("address.postcode")
-            </label>
-            <input class="form-control form-control-1-4"
-                   name="address.postcode"
-                   type="text"
-                   id="postcode-input"
-                   value=@{form("address.postcode").value}>
-        </div>
-
-        <br>
-
-        <div className="panel panel-border-narrow" id="country">
-            <label class="form-label" for="country-input">
-                @messages("address.country")
-            </label>
-            <input class="form-control"
-                   name="address.country"
-                   type="text"
-                   id="country-input"
-                   value=@{form("address.country").value}>
-        </div>
-    </fieldset>
-
-    <br>
+    @components.input_text(
+        field = form("country"),
+        label = messages("supplementary.country"),
+        labelClass = Some("font-weight: 400")
+    )
 </div>

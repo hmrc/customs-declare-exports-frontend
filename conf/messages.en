@@ -288,7 +288,8 @@ startPage.enquiries = General enquires help
 
 supplementary.consignor.add = Add consignor
 supplementary.declarant.add = Add declarant
-supplementary.add.hint = The consignor is the registered trader sending the goods
+supplementary.consignor.add.hint = The consignor is the registered trader sending the goods
+supplementary.declarant.add.hint = TODO
 supplementary.eori = EORI number
 supplementary.eori.hint = The number starts with a country code, for example FR or France, and is then followed by up to 15 digits
 supplementary.eori.error = EORI number is incorrect

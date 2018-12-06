@@ -25,7 +25,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/consignor-address")
 
-  "Consignor Address controller" should {
+  "Consignor address controller" should {
     "display consignor address form" in {
       authorizedUser()
       withCaching[AddressForm](None)
@@ -35,7 +35,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(OK)
       stringResult must include(messages("supplementary.consignor.add"))
-      stringResult must include(messages("supplementary.add.hint"))
+      stringResult must include(messages("supplementary.consignor.add.hint"))
       stringResult must include(messages("supplementary.eori"))
       stringResult must include(messages("supplementary.fullName"))
       stringResult must include(messages("supplementary.address"))
