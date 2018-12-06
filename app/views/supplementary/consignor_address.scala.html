@@ -16,10 +16,10 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
-@import forms.supplementary.ConsignorAddressForm
+@import forms.supplementary.AddressForm
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[ConsignorAddressForm])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[AddressForm])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.consignor.add"),
@@ -30,42 +30,42 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title("supplementary.consignor.add.hint", "supplementary.consignor.add")
+        @components.page_title("supplementary.add.hint", "supplementary.add")
 
         @components.input_text(
             field = form("eori"),
-            label = messages("supplementary.consignor.eori"),
-            hint = Some(messages("supplementary.consignor.eori.hint")),
+            label = messages("supplementary.eori"),
+            hint = Some(messages("supplementary.eori.hint")),
             labelClass = Some("font-weight: 400")
         )
 
         @components.input_text(
             field = form("fullName"),
-            label = messages("supplementary.consignor.fullName"),
+            label = messages("supplementary.fullName"),
             labelClass = Some("font-weight: 400")
         )
 
         @components.input_text(
             field = form("address"),
-            label = messages("supplementary.consignor.address"),
+            label = messages("supplementary.address"),
             labelClass = Some("font-weight: 400")
         )
 
         @components.input_text(
             field = form("townOrCity"),
-            label = messages("supplementary.consignor.townOrCity"),
+            label = messages("supplementary.townOrCity"),
             labelClass = Some("font-weight: 400")
         )
 
         @components.input_text(
             field = form("postCode"),
-            label = messages("supplementary.consignor.postCode"),
+            label = messages("supplementary.postCode"),
             labelClass = Some("font-weight: 400")
         )
 
         @components.input_text(
             field = form("country"),
-            label = messages("supplementary.consignor.country"),
+            label = messages("supplementary.country"),
             labelClass = Some("font-weight: 400")
         )
 
