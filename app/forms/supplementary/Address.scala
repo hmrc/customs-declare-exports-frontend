@@ -56,16 +56,6 @@ object Address {
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.countryCode" -> address.country
     )
 
-  def fromConsignorMetadataProperties(properties: Map[String, String]): Address =
-    Address(
-      eori = properties.get("declaration.goodsShipment.governmentAgencyGoodsItem.consignor.ID").get,
-      fullName = properties.get("declaration.goodsShipment.governmentAgencyGoodsItem.consignor.name").get,
-      addressLine = properties.get("declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.line").get,
-      townOrCity = properties.get("declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.cityName").get,
-      postCode = properties.get("declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postCodeID").get,
-      country = properties.get("declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.countryCode").get
-    )
-
   def toDeclarantMetadataProperties(address: Address): Map[String, String] =
     Map(
       "declaration.declarant.ID" -> address.eori,
@@ -74,15 +64,5 @@ object Address {
       "declaration.declarant.address.cityName" -> address.townOrCity,
       "declaration.declarant.address.postCodeID" -> address.postCode,
       "declaration.declarant.address.countryCode" -> address.country
-    )
-
-  def fromDeclarantMetadataProperties(properties: Map[String, String]): Address =
-    Address(
-      eori = properties.get("declaration.declarant.ID").get,
-      fullName = properties.get("declaration.declarant.name").get,
-      addressLine = properties.get("declaration.declarant.address.line").get,
-      townOrCity = properties.get("declaration.declarant.address.cityName").get,
-      postCode = properties.get("declaration.declarant.address.postCodeID").get,
-      country = properties.get("declaration.declarant.address.countryCode").get
     )
 }

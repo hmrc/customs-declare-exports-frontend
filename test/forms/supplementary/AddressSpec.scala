@@ -62,16 +62,8 @@ class AddressSpec extends WordSpec with MustMatchers {
       Address.toConsignorMetadataProperties(address) must be(consignorAddressProperties)
     }
 
-    "correctly convert consignor address properties to address" in {
-      Address.fromConsignorMetadataProperties(consignorAddressProperties) must be(address)
-    }
-
     "correctly convert address to declarant address properties" in {
       Address.toDeclarantMetadataProperties(address) must be(declarantAddressProperties)
-    }
-
-    "correctly convert declarant address properties to address" in {
-      Address.fromDeclarantMetadataProperties(declarantAddressProperties) must be(address)
     }
   }
 }

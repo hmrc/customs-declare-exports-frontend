@@ -40,8 +40,8 @@ class DeclarantAddressController @Inject()(
   val form = Form(Address.addressMapping)
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Map[String, String]](appConfig.appName, formId).map {
-      case Some(data) => Ok(declarant_address(appConfig, form.fill(Address.fromDeclarantMetadataProperties(data))))
+    customsCacheService.fetchAndGetEntry[Address](appConfig.appName, formId).map {
+      case Some(data) => Ok(declarant_address(appConfig, form.fill(data)))
       case _          => Ok(declarant_address(appConfig, form))
     }
   }
@@ -51,7 +51,7 @@ class DeclarantAddressController @Inject()(
       (formWithErrors: Form[Address]) =>
         Future.successful(BadRequest(declarant_address(appConfig, formWithErrors))),
       form =>
-        customsCacheService.cache[Map[String, String]](appConfig.appName, formId, Address.toDeclarantMetadataProperties(form)).map { _ =>
+        customsCacheService.cache[Address](appConfig.appName, formId, form).map { _ =>
           Ok("Representative identification and address")
         }
     )

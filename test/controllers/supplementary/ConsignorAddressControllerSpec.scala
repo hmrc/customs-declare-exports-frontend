@@ -28,7 +28,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
   "Consignor address controller" should {
     "display consignor address form" in {
       authorizedUser()
-      withCaching[Map[String, String]](None)
+      withCaching[Address](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -46,7 +46,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - incorrect values" in {
       authorizedUser()
-      withCaching[Map[String, String]](None)
+      withCaching[Address](None)
 
       val result = route(app, postRequest(uri, incorrectAddress)).get
       val stringResult = contentAsString(result)
@@ -61,7 +61,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - mandatory fields" in {
       authorizedUser()
-      withCaching[Map[String, String]](None)
+      withCaching[Address](None)
 
       val result = route(app, postRequest(uri, emptyAddress)).get
       val stringResult = contentAsString(result)
@@ -76,7 +76,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - correct values" in {
       authorizedUser()
-      withCaching[Map[String, String]](None)
+      withCaching[Address](None)
 
       val result = route(app, postRequest(uri, correctAddress)).get
       val header = result.futureValue.header
