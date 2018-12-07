@@ -66,6 +66,12 @@ POST       /cancel-declaration                          controllers.CancelDeclar
 
 GET        /start                                       controllers.StartController.displayStartPage()
 
+# Declaration type
+
+GET        /declaration/supplementary/type              controllers.supplementary.DeclarationTypePageController.displayDeclarationTypePage()
+
+POST       /declaration/supplementary/type              controllers.supplementary.DeclarationTypePageController.submitDeclarationType()
+
 # Consignor address
 
 GET        /consignor-address                           controllers.supplementary.ConsignorAddressController.displayForm()

@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
-@(title: String, heading: String)(implicit messages: Messages)
+@(title: String, subtitle: String)(implicit messages: Messages)
 
 <fieldset>
     <legend class="heading-large" role="heading" aria="" level="1">
-        <h1 style="margin:0">@messages(heading)</h1>
-        <span class="form-hint">@messages(title)</span>
+        <h1 style="margin:0">@messages(title)</h1>
+        <span class="form-hint">@messages(subtitle)</span>
     </legend>
 </fieldset>

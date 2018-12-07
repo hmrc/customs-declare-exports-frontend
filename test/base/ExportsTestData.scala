@@ -196,6 +196,13 @@ object ExportsTestData {
     CacheMap(id,data)
   }
 
+  val correctDeclarationType: JsValue = JsObject(
+    Map(
+      "declarationType" -> JsString("EX"),
+      "additionalDeclarationType" -> JsString("Y")
+    )
+  )
+
   val correctAddress: JsValue = JsObject(
     Map(
       "eori" -> JsString("PL213472539481923"),
