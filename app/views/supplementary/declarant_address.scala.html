@@ -25,12 +25,12 @@
     title = messages("supplementary.consignor.add"),
     appConfig = appConfig
 ) {
-    @helpers.form(ConsignorAddressController.saveAddress(), 'autoComplete -> "off") {
-        @components.back_link("start")
+    @helpers.form(DeclarantAddressController.saveAddress(), 'autoComplete -> "off") {
+        @components.back_link("consignor_address")
 
         @components.error_summary(form.errors)
 
-        @components.page_title("supplementary.consignor.add.hint", "supplementary.consignor.add")
+        @components.page_title("supplementary.declarant.add.hint", "supplementary.declarant.add")
 
         @components.address(form)
 

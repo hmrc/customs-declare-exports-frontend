@@ -196,11 +196,11 @@ object ExportsTestData {
     CacheMap(id,data)
   }
 
-  val correctConsignorAddress: JsValue = JsObject(
+  val correctAddress: JsValue = JsObject(
     Map(
       "eori" -> JsString("PL213472539481923"),
       "fullName" -> JsString("Full name"),
-      "address" -> JsString("Address"),
+      "addressLine" -> JsString("Address"),
       "townOrCity" -> JsString("Town or city"),
       "postCode" -> JsString("PostCode1"),
       "country" -> JsString("PL")
@@ -209,22 +209,22 @@ object ExportsTestData {
 
   protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
 
-  val incorrectConsignorAddress: JsValue = JsObject(
+  val incorrectAddress: JsValue = JsObject(
     Map(
       "eori" -> JsString(randomString(18)),
       "fullName" -> JsString(randomString(71)),
-      "address" -> JsString(randomString(71)),
+      "addressLine" -> JsString(randomString(71)),
       "townOrCity" -> JsString(randomString(36)),
       "postCode" -> JsString(randomString(10)),
       "country" -> JsString(randomString(3))
     )
   )
 
-  val emptyConsignorAddress: JsValue = JsObject(
+  val emptyAddress: JsValue = JsObject(
     Map(
       "eori" -> JsString(""),
       "fullName" -> JsString(""),
-      "address" -> JsString(""),
+      "addressLine" -> JsString(""),
       "townOrCity" -> JsString(""),
       "postCode" -> JsString(""),
       "country" -> JsString("")

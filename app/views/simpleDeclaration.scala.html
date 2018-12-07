@@ -92,7 +92,7 @@
             inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
         )
 
-        @components.address(form)
+        @components.simpleDeclarationAddress(form)
 
         @components.input_radio(
             field = form("isFinalDestination"),

@@ -17,16 +17,16 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
-import base.ExportsTestData._
+import base.ExportsTestData.{correctAddress, emptyAddress, incorrectAddress}
 import forms.supplementary.Address
 import play.api.test.Helpers._
 
-class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
+class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/consignor-address")
+  val uri = uriWithContextPath("/declarant-address")
 
-  "Consignor address controller" should {
-    "display consignor address form" in {
+  "Declarant address controller" should {
+    "display declarant address form" in {
       authorizedUser()
       withCaching[Address](None)
 
@@ -34,8 +34,8 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.consignor.add"))
-      stringResult must include(messages("supplementary.consignor.add.hint"))
+      stringResult must include(messages("supplementary.declarant.add"))
+      stringResult must include(messages("supplementary.declarant.add.hint"))
       stringResult must include(messages("supplementary.eori"))
       stringResult must include(messages("supplementary.fullName"))
       stringResult must include(messages("supplementary.addressLine"))
@@ -79,10 +79,9 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
       withCaching[Address](None)
 
       val result = route(app, postRequest(uri, correctAddress)).get
-      val header = result.futureValue.header
 
-      status(result) mustBe(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declarant-address"))
+      status(result) mustBe(OK)
+      contentAsString(result) must include("Representative identification and address")
     }
   }
 }

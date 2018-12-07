@@ -25,34 +25,34 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.consignor_address
+import views.html.supplementary.declarant_address
 
 import scala.concurrent.Future
 
-class ConsignorAddressController @Inject()(
+class DeclarantAddressController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   customsCacheService: CustomsCacheService
 ) extends FrontendController with I18nSupport {
 
-  val formId = "ConsignorAddress"
+  val formId = "DeclarantAddress"
   val form = Form(Address.addressMapping)
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Address](appConfig.appName, formId).map {
-      case Some(data) => Ok(consignor_address(appConfig, form.fill(data)))
-      case _          => Ok(consignor_address(appConfig, form))
+      case Some(data) => Ok(declarant_address(appConfig, form.fill(data)))
+      case _          => Ok(declarant_address(appConfig, form))
     }
   }
 
   def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
     form.bindFromRequest().fold(
       (formWithErrors: Form[Address]) =>
-        Future.successful(BadRequest(consignor_address(appConfig, formWithErrors))),
+        Future.successful(BadRequest(declarant_address(appConfig, formWithErrors))),
       form =>
         customsCacheService.cache[Address](appConfig.appName, formId, form).map { _ =>
-          Redirect(controllers.supplementary.routes.DeclarantAddressController.displayForm())
+          Ok("Representative identification and address")
         }
     )
   }

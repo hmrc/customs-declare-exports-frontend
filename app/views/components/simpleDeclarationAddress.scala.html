@@ -1,0 +1,91 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@(form: Form[_])(implicit messages: Messages)
+
+<div class="field-group">
+    <fieldset>
+        <div className="panel panel-border-narrow" id="fullName">
+            <label class="form-label" for="fullNameInput">
+                @messages("address.fullName")
+            </label>
+            <input class="form-control"
+                   name="address.fullName"
+                   type="text"
+                   id="fullNameInput"
+                   value=@{form("address.fullName").value}>
+        </div>
+
+        <br>
+
+        <div className="panel panel-border-narrow" id="buildingAndStreet">
+            <label class="form-label" for="buildingAndStreetInput">
+                @messages("address.buildingAndStreet")
+            </label>
+            <input class="form-control compound"
+                   name="address.building"
+                   type="text"
+                   id="buildingAndStreetInput"
+                   value=@{form("address.building").value}>
+            <input class="form-control"
+                   name="address.street"
+                   type="text"
+                   id="buildingAndStreetSecondInput"
+                   value=@{form("address.street").value}>
+        </div>
+
+        <br>
+
+        <div className="panel panel-border-narrow" id="townOrCity">
+            <label class="form-label" for="townOrCityInput">
+                @messages("address.city")
+            </label>
+            <input class="form-control"
+                   name="address.townOrCity"
+                   type="text"
+                   id="townOrCityInput"
+                   value=@{form("address.townOrCity").value}>
+        </div>
+
+        <br>
+
+        <div className="panel panel-border-narrow" id="postcode">
+            <label class="form-label" for="postcode-input">
+                @messages("address.postcode")
+            </label>
+            <input class="form-control form-control-1-4"
+                   name="address.postcode"
+                   type="text"
+                   id="postcode-input"
+                   value=@{form("address.postcode").value}>
+        </div>
+
+        <br>
+
+        <div className="panel panel-border-narrow" id="country">
+            <label class="form-label" for="country-input">
+                @messages("address.country")
+            </label>
+            <input class="form-control"
+                   name="address.country"
+                   type="text"
+                   id="country-input"
+                   value=@{form("address.country").value}>
+        </div>
+    </fieldset>
+
+    <br>
+</div>

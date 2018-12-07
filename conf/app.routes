@@ -71,3 +71,9 @@ GET        /start                                       controllers.StartControl
 GET        /consignor-address                           controllers.supplementary.ConsignorAddressController.displayForm()
 
 POST       /consignor-address                           controllers.supplementary.ConsignorAddressController.saveAddress()
+
+# Declarant address
+
+GET        /declarant-address                           controllers.supplementary.DeclarantAddressController.displayForm()
+
+POST       /declarant-address                           controllers.supplementary.DeclarantAddressController.saveAddress()
