@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.AddressForm
+import forms.supplementary.Address
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -37,21 +37,21 @@ class ConsignorAddressController @Inject()(
 ) extends FrontendController with I18nSupport {
 
   val formId = "ConsignorAddress"
-  val form = Form(AddressForm.addressMapping)
+  val form = Form(Address.addressMapping)
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[AddressForm](appConfig.appName, formId).map {
-      case Some(data) => Ok(consignor_address(appConfig, form.fill(data)))
+    customsCacheService.fetchAndGetEntry[Map[String, String]](appConfig.appName, formId).map {
+      case Some(data) => Ok(consignor_address(appConfig, form.fill(Address.fromConsignorMetadataProperties(data))))
       case _          => Ok(consignor_address(appConfig, form))
     }
   }
 
   def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
     form.bindFromRequest().fold(
-      (formWithErrors: Form[AddressForm]) =>
+      (formWithErrors: Form[Address]) =>
         Future.successful(BadRequest(consignor_address(appConfig, formWithErrors))),
       form =>
-        customsCacheService.cache[AddressForm](appConfig.appName, formId, form).map { _ =>
+        customsCacheService.cache[Map[String, String]](appConfig.appName, formId, Address.toConsignorMetadataProperties(form)).map { _ =>
           Redirect(controllers.supplementary.routes.DeclarantAddressController.displayForm())
         }
     )

@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
-import forms.supplementary.AddressForm
+import forms.supplementary.Address
 import play.api.test.Helpers._
 
 class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
@@ -28,7 +28,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
   "Consignor address controller" should {
     "display consignor address form" in {
       authorizedUser()
-      withCaching[AddressForm](None)
+      withCaching[Map[String, String]](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -38,7 +38,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.consignor.add.hint"))
       stringResult must include(messages("supplementary.eori"))
       stringResult must include(messages("supplementary.fullName"))
-      stringResult must include(messages("supplementary.address"))
+      stringResult must include(messages("supplementary.addressLine"))
       stringResult must include(messages("supplementary.townOrCity"))
       stringResult must include(messages("supplementary.postCode"))
       stringResult must include(messages("supplementary.country"))
@@ -46,14 +46,14 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - incorrect values" in {
       authorizedUser()
-      withCaching[AddressForm](None)
+      withCaching[Map[String, String]](None)
 
       val result = route(app, postRequest(uri, incorrectAddress)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("supplementary.eori.error"))
       stringResult must include(messages("supplementary.fullName.error"))
-      stringResult must include(messages("supplementary.address.error"))
+      stringResult must include(messages("supplementary.addressLine.error"))
       stringResult must include(messages("supplementary.townOrCity.error"))
       stringResult must include(messages("supplementary.postCode.error"))
       stringResult must include(messages("supplementary.country.error"))
@@ -61,14 +61,14 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - mandatory fields" in {
       authorizedUser()
-      withCaching[AddressForm](None)
+      withCaching[Map[String, String]](None)
 
       val result = route(app, postRequest(uri, emptyAddress)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("supplementary.eori.empty"))
       stringResult must include(messages("supplementary.fullName.empty"))
-      stringResult must include(messages("supplementary.address.empty"))
+      stringResult must include(messages("supplementary.addressLine.empty"))
       stringResult must include(messages("supplementary.townOrCity.empty"))
       stringResult must include(messages("supplementary.postCode.empty"))
       stringResult must include(messages("supplementary.country.empty"))
@@ -76,7 +76,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - correct values" in {
       authorizedUser()
-      withCaching[AddressForm](None)
+      withCaching[Map[String, String]](None)
 
       val result = route(app, postRequest(uri, correctAddress)).get
       val header = result.futureValue.header
