@@ -27,12 +27,12 @@ import metrics.MetricIdentifiers._
 import models.{CustomsDeclarationsResponse, Submission}
 import play.api.Logger
 import play.api.data.Form
-import play.api.data.Forms.{boolean, mapping, nonEmptyText, text}
+import play.api.data.Forms.{boolean, mapping, nonEmptyText, optional, text}
 import play.api.data.validation.Constraints.pattern
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
-import services.CustomsCacheService
+import services.{Countries, CustomsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.{Declaration, GoodsShipment, MetaData, Ucr}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfTrue
@@ -47,7 +47,8 @@ class SimpleDeclarationController @Inject()(
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
-  exportsMetrics: ExportsMetrics
+  exportsMetrics: ExportsMetrics,
+  countries:Countries
 )(implicit val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
 
   val formId = "SimpleDeclarationForm"
@@ -57,7 +58,8 @@ class SimpleDeclarationController @Inject()(
   val correctDucrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
 
   val form = Form(mapping(
-      "ducr" -> nonEmptyText.verifying(pattern(correctDucrFormat.r, error = "error.ducr")),
+    "countryCode" -> optional(text()),
+  "ducr" -> nonEmptyText.verifying(pattern(correctDucrFormat.r, error = "error.ducr")),
       "isConsolidateDucrToWiderShipment" -> boolean,
      "mucr" -> mandatoryIfTrue("isConsolidateDucrToWiderShipment",
         nonEmptyText.verifying(pattern("""^[A-Za-z0-9 \-,.&'\/]{1,65}$""".r, error = "error.ducr"))),
@@ -80,15 +82,15 @@ class SimpleDeclarationController @Inject()(
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[SimpleDeclarationForm](appConfig.appName, formId).map{
-      case Some(data) => Ok(simpleDeclaration(appConfig, form.fill(data)))
-      case _ =>  Ok(simpleDeclaration(appConfig, form))
+      case Some(data) => Ok(simpleDeclaration(appConfig, form.fill(data), countries.all))
+      case _ =>  Ok(simpleDeclaration(appConfig, form,countries.all))
     }
   }
 
   def onSubmit(): Action[AnyContent] = authenticate.async { implicit request =>
     form.bindFromRequest().fold(
       (formWithErrors: Form[SimpleDeclarationForm]) =>
-        Future.successful(BadRequest(simpleDeclaration(appConfig, formWithErrors))),
+        Future.successful(BadRequest(simpleDeclaration(appConfig, formWithErrors, countries.all))),
       form => {
         customsCacheService.cache[SimpleDeclarationForm](appConfig.appName, formId, form).flatMap{ _ =>
           exportsMetrics.startTimer(submissionMetric)

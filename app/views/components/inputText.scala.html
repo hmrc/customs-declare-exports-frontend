@@ -1,0 +1,44 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@(form: Form[_])(field: String, label: String, args: (Symbol, Any)*)(implicit request: Request[_], messages: Messages)
+
+@argsOrNone(kv: (Symbol, Any)) = @{
+    args.find(_._1 == kv._1) match {
+        case None => Some(kv)
+        case _ => None
+    }
+}
+@withOtherErrors = @{
+    import views.html.helper.FieldElements
+    def fieldErrors(fld: String) = FieldElements(id = fld, form(fld), Html(""), Map.empty, messages).errors
+
+    args.map {
+        case ('otherErrorFields, otherErrorFields: Seq[_]) => 'otherErrors -> otherErrorFields.flatMap(fld => fieldErrors(fld.toString))
+        case tuple => tuple
+    }
+}
+@defining(Seq(
+    argsOrNone('_label -> Html(messages(label))),
+    argsOrNone('_labelClass -> "form-label-bold"),
+    argsOrNone('_divClass -> "form-group"),
+    argsOrNone('_inputClass -> "form-control")).flatten ++ withOtherErrors) { args =>
+
+    @input_autocomplete(
+        form(field),
+        args: _*
+    )
+}

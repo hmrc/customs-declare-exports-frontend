@@ -1,0 +1,57 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import services.Country
+@import views.html.helper._
+
+@(form: Form[_], field: String, label: String, countries: List[Country], args: (Symbol, Any)*)(implicit messages: Messages)
+
+@elements = @{
+    FieldElements(form(field).id, form(field), null, args.toMap, messages)
+}
+@allErrors = @{
+    elements.errors ++ args.flatMap {
+        case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
+        case _ => Seq.empty
+    }
+}
+
+@selectedValue = @{ form(field).value match { case Some(x) => x case None => "" case x => x }}
+
+<div id="country-outer" class="form-group @if(allErrors.nonEmpty) {error}">
+    <label for="@field">@messages(label)</label>
+    @allErrors.map { error => <span style="display: block" class="error-notification">@Messages(error)</span>}
+    <select id="@field" name="@field" class="form-control">
+        <option value="">@messages("Pick a country")</option>
+        @for(option <- countries.map(c => (c.countryCode, c.countryName))) {
+        <option id="@field-@option._1"
+                value="@option._1"
+                @if(selectedValue==option._1){selected="selected"}>@option._2</option>
+        }
+    </select>
+</div>
+
+<script type="text/javascript">
+    var selectElement = document.getElementsByTagName('select');
+
+    openregisterLocationPicker({
+        defaultValue: '',
+        selectElement: selectElement[selectElement.length - 1],
+        url: '@routes.Assets.versioned("javascripts/location-autocomplete-graph.json")'
+    })
+
+    document.querySelector('.autocomplete__wrapper input').setAttribute('autocomplete', 'new-password')
+</script>
