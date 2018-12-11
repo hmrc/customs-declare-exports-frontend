@@ -114,8 +114,18 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       config.sendArrival must be ("/")
     }
 
+    "have countryCodesJsonFilename" in {
+      config.countryCodesJsonFilename must be ("location-autocomplete-canonical-list.json")
+    }
+
+    "have countriesCsvFilename" in {
+      config.countriesCsvFilename must be ("mdg-country-codes.csv")
+    }
+
     "have inventory Client Id" in {
       config.clientIdInventory must be ("5c68d3b5-d8a7-4212-8688-6b67f18bbce7")
     }
+
+
   }
 }
