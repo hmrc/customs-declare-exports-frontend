@@ -18,8 +18,13 @@
 @import uk.gov.hmrc.play.views.html._
 @import controllers.routes._
 @import utils.RadioOption
+@import services.Country
 
-@(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[_], countries:List[Country])(implicit request: Request[_], messages: Messages)
+
+@inputText(field: String, label: String, args: (Symbol, Any)*) = {
+@components.inputText(form)(field, label, args:_*)
+}
 
 @main_template(
     title = messages("consignment.title"),
@@ -33,6 +38,19 @@
         @components.error_summary(form.errors)
 
         @components.heading("simpleDeclaration.title", "simpleDeclaration.heading")
+
+        @components.countryField(form, "countryCode", "Country", countries)
+
+        @inputText("countryCode-auto-complete",
+        "cds.matching.individual.countryCode-auto-complete",
+        'autocomplete -> "off",
+        '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
+        'spellcheck -> "false",
+        'ariaautocomplete -> "list",
+        'ariahaspopup -> "true",
+        'ariaowns -> "suggestions-list",
+        'ariaactivedescendant -> "true",
+        'otherErrorFields -> Seq("countryCode"))
 
         @components.input_text(
             field = form("ducr"),
@@ -150,3 +168,5 @@
         @components.submit_button()
     }
 }
+
+<script src="@routes.Assets.versioned("javascripts/countries.js")" type="application/javascript"></script>

@@ -79,6 +79,10 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   lazy val languageTranslationEnabled =
     runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
 
+   lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
+
+   lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
+
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")

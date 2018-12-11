@@ -68,6 +68,7 @@ object GoodsPackage {
 }
 
 case class SimpleDeclarationForm(
+  country : Option[String],
   ducr: String,
   isConsolidateDucrToWiderShipment: Boolean,
   mucr: Option[String],
