@@ -32,16 +32,17 @@ case object Country {
 @Singleton
 class Countries @Inject()(appConfig: AppConfig) {
 
-  private val mdgCountryCodes: List[String] = Source.fromInputStream(
-      getClass.getResourceAsStream("/mdg-country-codes.csv"))
-    .getLines()
-    .mkString
-    .split(',')
-    .map(_.replace("\"", ""))
-    .toList
+  private val mdgCountryCodes: List[String] =
+    Source.fromInputStream(getClass.getResourceAsStream("/mdg-country-codes.csv"))
+      .getLines()
+      .mkString
+      .split(',')
+      .map(_.replace("\"", ""))
+      .toList
 
   private val countries: List[Country] = {
     val jsonFile = getClass.getResourceAsStream("/location-autocomplete-canonical-list.json")
+
     def fromJsonFile: List[Country] = {
       Json.parse(jsonFile) match {
         case JsArray(cs) =>
@@ -59,6 +60,5 @@ class Countries @Inject()(appConfig: AppConfig) {
 
   private def countryCode: String => String = cc => cc.split(":")(1).trim
 
-  val all: List[Country] = countries filter (c =>
-    mdgCountryCodes contains c.countryCode)
+  val all: List[Country] = countries.filter(c => mdgCountryCodes contains c.countryCode)
 }

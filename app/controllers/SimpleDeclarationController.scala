@@ -48,7 +48,7 @@ class SimpleDeclarationController @Inject()(
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
   exportsMetrics: ExportsMetrics,
-  countries:Countries
+  countries: Countries
 )(implicit val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
 
   val formId = "SimpleDeclarationForm"
@@ -59,31 +59,31 @@ class SimpleDeclarationController @Inject()(
 
   val form = Form(mapping(
     "countryCode" -> optional(text()),
-  "ducr" -> nonEmptyText.verifying(pattern(correctDucrFormat.r, error = "error.ducr")),
-      "isConsolidateDucrToWiderShipment" -> boolean,
-     "mucr" -> mandatoryIfTrue("isConsolidateDucrToWiderShipment",
-        nonEmptyText.verifying(pattern("""^[A-Za-z0-9 \-,.&'\/]{1,65}$""".r, error = "error.ducr"))),
-      "isDeclarationForSomeoneElse" -> boolean,
-      "isAddressAndEORICorrect" -> boolean,
-      "haveRepresentative" -> boolean,
-      "isConsignorAddressAndEORICorrect" -> boolean,
-      "address" -> SimpleAddress.addressMapping,
-      "isFinalDestination" -> boolean,
-      "goodsPackage" -> GoodsPackage.packageMapping,
-      "doYouKnowCustomsProcedureCode" -> boolean,
-      "customsProcedure" -> text,
-      "wasPreviousCustomsProcedure" -> boolean,
-      "additionalCustomsProcedure" -> text,
-      "doYouWantAddAdditionalInformation" -> boolean,
-      "addAnotherItem" -> boolean,
-      "officeOfExit" -> text,
-      "knowConsignmentDispatchCountry" -> boolean
-    )(SimpleDeclarationForm.apply)(SimpleDeclarationForm.unapply))
+    "ducr" -> nonEmptyText.verifying(pattern(correctDucrFormat.r, error = "error.ducr")),
+    "isConsolidateDucrToWiderShipment" -> boolean,
+    "mucr" -> mandatoryIfTrue("isConsolidateDucrToWiderShipment",
+      nonEmptyText.verifying(pattern("""^[A-Za-z0-9 \-,.&'\/]{1,65}$""".r, error = "error.ducr"))),
+    "isDeclarationForSomeoneElse" -> boolean,
+    "isAddressAndEORICorrect" -> boolean,
+    "haveRepresentative" -> boolean,
+    "isConsignorAddressAndEORICorrect" -> boolean,
+    "address" -> SimpleAddress.addressMapping,
+    "isFinalDestination" -> boolean,
+    "goodsPackage" -> GoodsPackage.packageMapping,
+    "doYouKnowCustomsProcedureCode" -> boolean,
+    "customsProcedure" -> text,
+    "wasPreviousCustomsProcedure" -> boolean,
+    "additionalCustomsProcedure" -> text,
+    "doYouWantAddAdditionalInformation" -> boolean,
+    "addAnotherItem" -> boolean,
+    "officeOfExit" -> text,
+    "knowConsignmentDispatchCountry" -> boolean
+  )(SimpleDeclarationForm.apply)(SimpleDeclarationForm.unapply))
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[SimpleDeclarationForm](appConfig.appName, formId).map{
+    customsCacheService.fetchAndGetEntry[SimpleDeclarationForm](appConfig.appName, formId).map {
       case Some(data) => Ok(simpleDeclaration(appConfig, form.fill(data), countries.all))
-      case _ =>  Ok(simpleDeclaration(appConfig, form,countries.all))
+      case _ => Ok(simpleDeclaration(appConfig, form, countries.all))
     }
   }
 
@@ -92,15 +92,15 @@ class SimpleDeclarationController @Inject()(
       (formWithErrors: Form[SimpleDeclarationForm]) =>
         Future.successful(BadRequest(simpleDeclaration(appConfig, formWithErrors, countries.all))),
       form => {
-        customsCacheService.cache[SimpleDeclarationForm](appConfig.appName, formId, form).flatMap{ _ =>
+        customsCacheService.cache[SimpleDeclarationForm](appConfig.appName, formId, form).flatMap { _ =>
           exportsMetrics.startTimer(submissionMetric)
-          customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap{
+          customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap {
             case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
               val submission = new Submission(request.user.eori, conversationId)
-              customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap{ _ =>
+              customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap { _ =>
                 exportsMetrics.incrementCounter(submissionMetric)
                 Future.successful(Ok(confirmation_page(appConfig, conversationId)))
-              }.recover{
+              }.recover {
                 case error: Throwable =>
                   exportsMetrics.incrementCounter(submissionMetric)
                   Logger.error(s"Error from Customs Declare Exports ${error.toString}")
@@ -130,7 +130,7 @@ class SimpleDeclarationController @Inject()(
   }
 
   private def createMetadataDeclaration(form: SimpleDeclarationForm): MetaData =
-    MetaData(declaration=Some(
+    MetaData(declaration = Some(
       Declaration(goodsShipment = Some(GoodsShipment(ucr = Some(Ucr(traderAssignedReferenceId = Some("1234"))))))
     ))
 }
