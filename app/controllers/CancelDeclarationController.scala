@@ -59,36 +59,47 @@ class CancelDeclarationController @Inject()(
     "responsibleAgencyName" -> optional(text()),
     "functionalReferenceID" -> optional(text()),
     "id" -> nonEmptyText,
-     "submitter" -> Submitter.formMapping,
-     "additionalInformation" -> AdditionalInformation.formMapping,
-      "amendment" -> Amendment.formMapping
-    )(CancelDeclarationForm.apply)(CancelDeclarationForm.unapply))
+    "submitter" -> Submitter.formMapping,
+    "additionalInformation" -> AdditionalInformation.formMapping,
+    "amendment" -> Amendment.formMapping
+  )(CancelDeclarationForm.apply)(CancelDeclarationForm.unapply))
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[CancelDeclarationForm](appConfig.appName, formId).map{
+    customsCacheService.fetchAndGetEntry[CancelDeclarationForm](appConfig.appName, formId).map {
       case Some(data) => Ok(cancelDeclaration(appConfig, form.fill(data)))
-      case _ =>  Ok(cancelDeclaration(appConfig, form))
+      case _ => Ok(cancelDeclaration(appConfig, form))
     }
   }
 
   def onSubmit(): Action[AnyContent] = authenticate.async { implicit request =>
-  form.bindFromRequest().fold(
-    (formWithErrors: Form[CancelDeclarationForm]) =>
-      Future.successful(BadRequest(cancelDeclaration(appConfig, formWithErrors))),
-    form => {
-
-      customsCacheService.cache[CancelDeclarationForm](appConfig.appName,formId,form).flatMap{ _ =>
-        exportsMetrics.startTimer(cancelMetric)
-        customsDeclarationsConnector.submitCancellation(createCancellationMetadata(form)).flatMap{
-          case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
-            val submission = new Submission(request.user.eori, conversationId)
-            customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap{ _ =>
-              exportsMetrics.incrementCounter(cancelMetric)
-              Future.successful(Ok(confirmation_page(appConfig, conversationId)))
-            }.recover{
-              case error: Throwable =>
+    form.bindFromRequest().fold(
+      (formWithErrors: Form[CancelDeclarationForm]) =>
+        Future.successful(BadRequest(cancelDeclaration(appConfig, formWithErrors))),
+      form => {
+        customsCacheService.cache[CancelDeclarationForm](appConfig.appName, formId, form).flatMap { _ =>
+          exportsMetrics.startTimer(cancelMetric)
+          customsDeclarationsConnector.submitCancellation(createCancellationMetadata(form)).flatMap {
+            case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
+              val submission = new Submission(request.user.eori, conversationId)
+              customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap { _ =>
                 exportsMetrics.incrementCounter(cancelMetric)
-                Logger.error(s"Error from Customs Declare Exports ${error.toString}")
+                Future.successful(Ok(confirmation_page(appConfig, conversationId)))
+              }.recover {
+                case error: Throwable =>
+                  exportsMetrics.incrementCounter(cancelMetric)
+                  Logger.error(s"Error from Customs Declare Exports ${error.toString}")
+                  BadRequest(
+                    errorHandler.standardErrorTemplate(
+                      pageTitle = messagesApi("global.error.title"),
+                      heading = messagesApi("global.error.heading"),
+                      message = messagesApi("global.error.message")
+                    )
+                  )
+              }
+            case error =>
+              exportsMetrics.incrementCounter(cancelMetric)
+              Logger.error(s"Error from Customs declarations api ${error.toString}")
+              Future.successful(
                 BadRequest(
                   errorHandler.standardErrorTemplate(
                     pageTitle = messagesApi("global.error.title"),
@@ -96,38 +107,31 @@ class CancelDeclarationController @Inject()(
                     message = messagesApi("global.error.message")
                   )
                 )
-            }
-          case error =>
-            exportsMetrics.incrementCounter(cancelMetric)
-            Logger.error(s"Error from Customs declarations api ${error.toString}")
-            Future.successful(
-              BadRequest(
-                errorHandler.standardErrorTemplate(
-                  pageTitle = messagesApi("global.error.title"),
-                  heading = messagesApi("global.error.heading"),
-                  message = messagesApi("global.error.message")
-                )
               )
-            )
+          }
         }
       }
-    }
-  )
-}
+    )
+  }
 
-  private def createCancellationMetadata(form:CancelDeclarationForm):MetaData =
-    MetaData(wcoDataModelVersionCode = form.wcoDataModelVersionCode,
-    wcoTypeName = form.wcoTypeName,
+  private def createCancellationMetadata(form: CancelDeclarationForm): MetaData =
+    MetaData(
+      wcoDataModelVersionCode = form.wcoDataModelVersionCode,
+      wcoTypeName = form.wcoTypeName,
       responsibleAgencyName = form.responsibleAgencyName,
       declaration = Some(Declaration(functionCode = Some(CANCEL_FUNCTION_CODE),
         functionalReferenceId = form.functionalReferenceID,
-        id=Some(CANCEL_FUNCTION_CODE.toString),
+        id = Some(CANCEL_FUNCTION_CODE.toString),
         typeCode = Some("INV"),
         submitter = Some(NamedEntityWithAddress(id = Some(form.submitter.id))),
-        additionalInformations = Seq(uk.gov.hmrc.wco.dec.AdditionalInformation(form.additionalInformation.statementCode,
-          Some(form.additionalInformation.statementDescription),statementTypeCode = Some(form.additionalInformation.statementTypeCode),
-          pointers = Seq(uk.gov.hmrc.wco.dec.Pointer(Some(form.additionalInformation.pointer.sequenceNumeric))))),
+        additionalInformations = Seq(
+          uk.gov.hmrc.wco.dec.AdditionalInformation(
+            form.additionalInformation.statementCode,
+            Some(form.additionalInformation.statementDescription),
+            statementTypeCode = Some(form.additionalInformation.statementTypeCode),
+            pointers = Seq(uk.gov.hmrc.wco.dec.Pointer(Some(form.additionalInformation.pointer.sequenceNumeric))))
+        ),
         amendments = Seq(uk.gov.hmrc.wco.dec.Amendment(Some(form.amendment.changeReasonCode))))
-      ))
-
+      )
+    )
 }

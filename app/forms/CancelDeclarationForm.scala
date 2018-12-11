@@ -15,43 +15,44 @@
  */
 
 package forms
+
 import play.api.data.Forms._
 import play.api.libs.json.Json
 
 case class CancelDeclarationForm(
-                              wcoDataModelVersionCode: Option[String] = None,
-                              wcoTypeName: Option[String] = None,
-                              responsibleAgencyName: Option[String] = None,
-                              functionalReferenceID:Option[String]= None,
-                              id:String,
-                              submitter:  Submitter,
-                              additionalInformation: AdditionalInformation,
-                              amendment: Amendment
-                            )
+  wcoDataModelVersionCode: Option[String] = None,
+  wcoTypeName: Option[String] = None,
+  responsibleAgencyName: Option[String] = None,
+  functionalReferenceID: Option[String] = None,
+  id: String,
+  submitter: Submitter,
+  additionalInformation: AdditionalInformation,
+  amendment: Amendment
+)
 
-case class Submitter (id:String)
-object Submitter
-{
+case class Submitter(id: String)
+
+object Submitter {
   val formMapping = mapping("id" -> nonEmptyText)(Submitter.apply)(Submitter.unapply)
 
   implicit val formats = Json.format[Submitter]
-
 }
 
-case class Pointer(sequenceNumeric:Int, documentSectionCode:Option[String])
-object Pointer
-{
+case class Pointer(sequenceNumeric: Int, documentSectionCode: Option[String])
+
+object Pointer {
   val formMapping = mapping(
     "sequenceNumeric" -> number,
-    "changeReasonCode" -> optional(text))(Pointer.apply)(Pointer.unapply)
-  implicit val formats = Json.format[Pointer]
+    "changeReasonCode" -> optional(text)
+  )(Pointer.apply)(Pointer.unapply)
 
+  implicit val formats = Json.format[Pointer]
 }
 
 //changeReasonCode = length 6 and should be number and is mandatory
-case class AdditionalInformation(statementCode:Option[String], statementDescription:String, statementTypeCode:String, pointer: Pointer)
-object AdditionalInformation
-{
+case class AdditionalInformation(statementCode: Option[String], statementDescription: String, statementTypeCode: String, pointer: Pointer)
+
+object AdditionalInformation {
   val formMapping = mapping(
     "statementCode" -> optional(text),
     "statementDescription" -> nonEmptyText,
@@ -63,10 +64,10 @@ object AdditionalInformation
 }
 
 //TODO validations on changeReasonCode length 3 and is a number
-case class Amendment(changeReasonCode:String)
-object Amendment
-{
-  val formMapping = mapping("changeReasonCode" -> nonEmptyText)(Amendment.apply)(Amendment.unapply)
-  implicit val formats = Json.format[Amendment]
+case class Amendment(changeReasonCode: String)
 
+object Amendment {
+  val formMapping = mapping("changeReasonCode" -> nonEmptyText)(Amendment.apply)(Amendment.unapply)
+
+  implicit val formats = Json.format[Amendment]
 }
