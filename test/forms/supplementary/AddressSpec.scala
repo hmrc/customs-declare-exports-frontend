@@ -39,21 +39,21 @@ class AddressSpec extends WordSpec with MustMatchers {
 
   val consignorAddressProperties: Map[String, String] =
     Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.ID" -> eori,
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.id" -> eori,
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.name" -> fullName,
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.line" -> addressLine,
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.cityName" -> townOrCity,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postCodeID" -> postCode,
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postcodeId" -> postCode,
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.countryCode" -> country
     )
 
   val declarantAddressProperties: Map[String, String] =
     Map(
-      "declaration.declarant.ID" -> eori,
+      "declaration.declarant.id" -> eori,
       "declaration.declarant.name" -> fullName,
       "declaration.declarant.address.line" -> addressLine,
       "declaration.declarant.address.cityName" -> townOrCity,
-      "declaration.declarant.address.postCodeID" -> postCode,
+      "declaration.declarant.address.postcodeId" -> postCode,
       "declaration.declarant.address.countryCode" -> country
     )
 
