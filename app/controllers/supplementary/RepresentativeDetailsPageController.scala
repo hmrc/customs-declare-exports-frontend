@@ -16,6 +16,6 @@
 
 package controllers.supplementary
 
-class RepresentativeAddressController {
+class RepresentativeDetailsPageController {
 
 }
