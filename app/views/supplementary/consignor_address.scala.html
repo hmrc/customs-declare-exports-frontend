@@ -22,7 +22,7 @@
 @(appConfig: AppConfig, form: Form[Address])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.consignor.add"),
+    title = messages("supplementary.consignor.title"),
     appConfig = appConfig
 ) {
     @helpers.form(ConsignorAddressController.saveAddress(), 'autoComplete -> "off") {
@@ -30,7 +30,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title("supplementary.consignor.add", "supplementary.consignor.add.hint")
+        @components.page_title("supplementary.consignor.title", "supplementary.consignor.title.hint")
 
         @components.address(form)
 

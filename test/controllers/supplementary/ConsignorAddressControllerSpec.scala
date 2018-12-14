@@ -34,8 +34,8 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.consignor.add"))
-      stringResult must include(messages("supplementary.consignor.add.hint"))
+      stringResult must include(messages("supplementary.consignor.title"))
+      stringResult must include(messages("supplementary.consignor.title.hint"))
       stringResult must include(messages("supplementary.eori"))
       stringResult must include(messages("supplementary.fullName"))
       stringResult must include(messages("supplementary.addressLine"))

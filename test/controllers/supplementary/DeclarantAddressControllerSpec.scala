@@ -34,8 +34,8 @@ class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.declarant.add"))
-      stringResult must include(messages("supplementary.declarant.add.hint"))
+      stringResult must include(messages("supplementary.declarant.title"))
+      stringResult must include(messages("supplementary.declarant.title.hint"))
       stringResult must include(messages("supplementary.eori"))
       stringResult must include(messages("supplementary.fullName"))
       stringResult must include(messages("supplementary.addressLine"))

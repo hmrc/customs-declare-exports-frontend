@@ -51,5 +51,4 @@ object RepresentativeAddress {
   )(RepresentativeAddress.apply)(RepresentativeAddress.unapply)
 
   def form(): Form[RepresentativeAddress] = Form(mapping)
-
 }

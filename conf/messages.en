@@ -286,10 +286,19 @@ startPage.reference.number = 0300 200 3700
 startPage.reference.text = Open 8am to 6pm, Monday to Friday (closed bank holidays)
 startPage.enquiries = General enquires help
 
-supplementary.consignor.add = Add consignor
-supplementary.declarant.add = Add declarant
-supplementary.consignor.add.hint = The consignor is the registered trader sending the goods
-supplementary.declarant.add.hint = TODO
+supplementary.consignor.title = Add consignor
+supplementary.consignor.title.hint = The consignor is the registered trader sending the goods
+supplementary.declarant.title = Add declarant
+supplementary.declarant.title.hint = TODO
+supplementary.representative.title = Add representative
+supplementary.representative.title.hint = TODO
+supplementary.representative.header = 3/19 - 3/20 Enter the representative’s details
+supplementary.representative.eori.info = Enter the EORI number or business details
+supplementary.representative.address.info = Enter representative’s name and address
+supplementary.representative.representationType.header = 3/21 What type of representation is being used?
+supplementary.representative.representationType.direct = Direct representative - The representative is accepting legal responsibility for the exporter
+supplementary.representative.representationType.indirect = Indirect representative - The representative is sharing legal responsibility with the exporter
+
 supplementary.eori = EORI number
 supplementary.eori.hint = The number starts with a country code, for example FR or France, and is then followed by up to 15 digits
 supplementary.eori.error = EORI number is incorrect
