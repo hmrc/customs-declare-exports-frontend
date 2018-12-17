@@ -18,15 +18,21 @@ package controllers.supplementary
 
 
 import base.CustomExportsBaseSpec
-import forms.supplementary.{Address, RepresentativeAddress}
+import forms.supplementary.{Address, RepresentativeDetails}
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify}
 import org.scalatest.BeforeAndAfter
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
+import scala.util.Random
 
 class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
+  import RepresentativeDetailsPageControllerSpec._
   private val uri = uriWithContextPath("/declaration/supplementary/representative")
 
   before {
@@ -87,7 +93,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       contentAsString(result) must include(messages("supplementary.townOrCity"))
     }
 
-    "display element to enter post code" in {
+    "display element to enter postcode" in {
       val result = displayPageTestScenario()
       contentAsString(result) must include(messages("supplementary.postCode"))
     }
@@ -120,7 +126,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     }
 
     "populate the form fields with data from cache" in {
-      val representativeAddress = RepresentativeAddress(
+      val representativeAddress = RepresentativeDetails(
         address = Address(
           eori = "GB111222333444",
           fullName = "Full Name",
@@ -136,8 +142,8 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     }
 
 
-    def displayPageTestScenario(cacheValue: Option[RepresentativeAddress] = None): Future[Result] = {
-      withCaching[RepresentativeAddress](cacheValue, RepresentativeAddress.formId)
+    def displayPageTestScenario(cacheValue: Option[RepresentativeDetails] = None): Future[Result] = {
+      withCaching[RepresentativeDetails](cacheValue, RepresentativeDetails.formId)
       route(app, getRequest(uri)).get
     }
 
@@ -145,7 +151,201 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
 
   "RepresentativeAddressController on submitRepresentativeData" should {
-    // TODO: Write tests similar to DeclarationTypePageControllerSpec
-  }
 
+    "display the form page with error for empty field" when {
+      "No value provided for EORI" in {
+        withCaching[RepresentativeDetails](None)
+
+        val emptyFormData = emptyRepresentativeDetails
+        val result = route(app, postRequest(uri, emptyFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.eori.empty"))
+      }
+
+      "No value provided for full name" in {
+        withCaching[RepresentativeDetails](None)
+
+        val emptyFormData = emptyRepresentativeDetails
+        val result = route(app, postRequest(uri, emptyFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.fullName.empty"))
+      }
+
+      "No value provided for first address line" in {
+        withCaching[RepresentativeDetails](None)
+
+        val emptyFormData = emptyRepresentativeDetails
+        val result = route(app, postRequest(uri, emptyFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.addressLine.empty"))
+      }
+
+      "No value provided for city" in {
+        withCaching[RepresentativeDetails](None)
+
+        val emptyFormData = emptyRepresentativeDetails
+        val result = route(app, postRequest(uri, emptyFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.townOrCity.empty"))
+      }
+
+      "No value provided for postcode" in {
+        withCaching[RepresentativeDetails](None)
+
+        val emptyFormData = emptyRepresentativeDetails
+        val result = route(app, postRequest(uri, emptyFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.postCode.empty"))
+      }
+
+      "No value provided for country" in {
+        withCaching[RepresentativeDetails](None)
+
+        val emptyFormData = emptyRepresentativeDetails
+        val result = route(app, postRequest(uri, emptyFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.country.empty"))
+      }
+
+      "No value provided for status code" in {
+        withCaching[RepresentativeDetails](None)
+
+        val emptyFormData = emptyRepresentativeDetails
+        val result = route(app, postRequest(uri, emptyFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.representative.representationType.error.empty"))
+//        contentAsString(result) must include("Please enter a value")
+      }
+    }
+
+    "display the form page with error for wrong value" when {
+      "Wrong value provided for EORI" in {
+        withCaching[RepresentativeDetails](None)
+
+        val incorrectFormData = incorrectRepresentativeDetails
+        val result = route(app, postRequest(uri, incorrectFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.eori.error"))
+      }
+
+      "Wrong value provided for full name" in {
+        withCaching[RepresentativeDetails](None)
+
+        val incorrectFormData = incorrectRepresentativeDetails
+        val result = route(app, postRequest(uri, incorrectFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.fullName.error"))
+      }
+
+      "Wrong value provided for first address line" in {
+        withCaching[RepresentativeDetails](None)
+
+        val incorrectFormData = incorrectRepresentativeDetails
+        val result = route(app, postRequest(uri, incorrectFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.addressLine.error"))
+      }
+
+      "Wrong value provided for city" in {
+        withCaching[RepresentativeDetails](None)
+
+        val incorrectFormData = incorrectRepresentativeDetails
+        val result = route(app, postRequest(uri, incorrectFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.townOrCity.error"))
+      }
+
+      "Wrong value provided for postcode" in {
+        withCaching[RepresentativeDetails](None)
+
+        val incorrectFormData = incorrectRepresentativeDetails
+        val result = route(app, postRequest(uri, incorrectFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.postCode.error"))
+      }
+
+      "Wrong value provided for country" in {
+        withCaching[RepresentativeDetails](None)
+
+        val incorrectFormData = incorrectRepresentativeDetails
+        val result = route(app, postRequest(uri, incorrectFormData)).get
+
+        contentAsString(result) must include(messages("supplementary.country.error"))
+      }
+    }
+
+    "save the data to the cache" in {
+      reset(mockCustomsCacheService)
+      withCaching[RepresentativeDetails](None)
+
+      route(app, postRequest(uri, correctRepresentativeDetails)).get.futureValue
+
+      verify(mockCustomsCacheService)
+        .cache[RepresentativeDetails](any(), ArgumentMatchers.eq(RepresentativeDetails.formId), any())(any(), any(), any())
+    }
+
+    pending
+    "return 303 code" in {
+      withCaching[RepresentativeDetails](None)
+
+      val result = route(app, postRequest(uri, correctRepresentativeDetails)).get
+
+      status(result) must be(SEE_OTHER)
+    }
+
+    pending
+    "redirect to \"Authorisations/additional-actors\" page" in {
+      withCaching[RepresentativeDetails](None)
+
+      val result = route(app, postRequest(uri, correctRepresentativeDetails)).get
+      val header = result.futureValue.header
+
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
+      )
+    }
+
+  }
+}
+
+
+object RepresentativeDetailsPageControllerSpec {
+
+  val correctRepresentativeDetails: JsValue = JsObject(
+    Map(
+      "address.eori" -> JsString("PL213472539481923"),
+      "address.fullName" -> JsString("Full name"),
+      "address.addressLine" -> JsString("Address"),
+      "address.townOrCity" -> JsString("Town or city"),
+      "address.postCode" -> JsString("PostCode1"),
+      "address.country" -> JsString("PL"),
+      "statusCode" -> JsString("2")
+    )
+  )
+
+  val incorrectRepresentativeDetails: JsValue = JsObject(
+    Map(
+      "address.eori" -> JsString(randomString(18)),
+      "address.fullName" -> JsString(randomString(71)),
+      "address.addressLine" -> JsString(randomString(71)),
+      "address.townOrCity" -> JsString(randomString(36)),
+      "address.postCode" -> JsString(randomString(10)),
+      "address.country" -> JsString(randomString(3)),
+      "statusCode" -> JsString("")
+    )
+  )
+
+  val emptyRepresentativeDetails: JsValue = JsObject(
+    Map(
+      "address.eori" -> JsString(""),
+      "address.fullName" -> JsString(""),
+      "address.addressLine" -> JsString(""),
+      "address.townOrCity" -> JsString(""),
+      "address.postCode" -> JsString(""),
+      "address.country" -> JsString(""),
+      "statusCode" -> JsString("")
+    )
+  )
+
+  private def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
 }

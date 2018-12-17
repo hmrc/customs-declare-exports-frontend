@@ -296,6 +296,7 @@ supplementary.representative.header = 3/19 - 3/20 Enter the representative’s d
 supplementary.representative.eori.info = Enter the EORI number or business details
 supplementary.representative.address.info = Enter representative’s name and address
 supplementary.representative.representationType.header = 3/21 What type of representation is being used?
+supplementary.representative.representationType.error.empty = Please, choose your representative status
 supplementary.representative.representationType.direct = Direct representative - The representative is accepting legal responsibility for the exporter
 supplementary.representative.representationType.indirect = Indirect representative - The representative is sharing legal responsibility with the exporter
 
@@ -318,6 +319,7 @@ supplementary.postCode.empty = Postcode cannot be empty
 supplementary.country = Country
 supplementary.country.error = Country is incorrect
 supplementary.country.empty = Country cannot be empty
+
 supplementary.additionalActors.title = Add other party
 supplementary.partyType = Party type
 supplementary.partyType.CS = Consolidator
@@ -329,13 +331,11 @@ supplementary.partyType.error = Party type is incorrect
 supplementary.declarationTypePage.title = Supplementary Declaration Type
 supplementary.declarationTypePage.heading = Declaration Type
 supplementary.declarationTypePage.heading.secondary = Lead paragraph if needed, will change later
-
 supplementary.declarationTypePage.inputText.declarationType = 1/1 Where are the goods being dispatched to?
 supplementary.declarationTypePage.inputText.declarationType.hint = Hint text if needed
 supplementary.declarationTypePage.inputText.declarationType.ex = Outside the EU
 supplementary.declarationTypePage.inputText.declarationType.co = Fiscal territory of the EU or country with which the EU has formed a customs union
 supplementary.declarationTypePage.inputText.declarationType.errorMessage = Please, choose declaration type
-
 supplementary.declarationTypePage.inputText.additionalDeclarationType = 1/2 What type of declaration are you making?
 supplementary.declarationTypePage.inputText.additionalDeclarationType.hint = Hint text if needed
 supplementary.declarationTypePage.inputText.additionalDeclarationType.y = Simplified declaration

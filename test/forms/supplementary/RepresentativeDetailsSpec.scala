@@ -18,7 +18,7 @@ package forms.supplementary
 
 import org.scalatest.{MustMatchers, WordSpec}
 
-class RepresentativeAddressSpec extends WordSpec with MustMatchers {
+class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
 
   private val eori = "GB111222333444"
   private val fullName = "Full name"
@@ -28,7 +28,7 @@ class RepresentativeAddressSpec extends WordSpec with MustMatchers {
   private val country = "UK"
   private val statusCode = "2"
 
-  private val representativeAddress: RepresentativeAddress = RepresentativeAddress(
+  private val representativeAddress: RepresentativeDetails = RepresentativeDetails(
     address = Address(
       eori = eori,
       fullName = fullName,
