@@ -34,7 +34,7 @@ object DeclarationAdditionalActors {
 
   val mapping = Forms.mapping(
     "eori" -> optional(
-      text().verifying("supplementary.eori.error", input => input.length <= 2)
+      text().verifying("supplementary.eori.error", input => input.length <= 17)
     ),
     "partyType" -> optional(
       text().verifying("supplementary.partyType.error", input => allowedDeclarationAdditionalActorsValues(input))

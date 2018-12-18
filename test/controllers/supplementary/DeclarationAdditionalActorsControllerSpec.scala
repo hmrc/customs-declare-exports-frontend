@@ -56,6 +56,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - optional data allowed" in {
+      pending
       authorizedUser()
       withCaching[DeclarationAdditionalActors](None)
 
@@ -67,6 +68,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - correct values" in {
+      pending
       authorizedUser()
       withCaching[DeclarationAdditionalActors](None)
 
