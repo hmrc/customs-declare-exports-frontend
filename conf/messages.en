@@ -291,7 +291,6 @@ supplementary.consignor.title.hint = The consignor is the registered trader send
 supplementary.declarant.title = Add declarant
 supplementary.declarant.title.hint = TODO
 supplementary.representative.title = Add representative
-supplementary.representative.title.hint = TODO
 supplementary.representative.header = 3/19 - 3/20 Enter the representative’s details
 supplementary.representative.eori.info = Enter the EORI number or business details
 supplementary.representative.address.info = Enter representative’s name and address

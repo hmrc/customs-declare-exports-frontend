@@ -52,7 +52,7 @@ class DeclarantAddressController @Inject()(
         Future.successful(BadRequest(declarant_address(appConfig, formWithErrors))),
       form =>
         customsCacheService.cache[Address](appConfig.appName, formId, form).map { _ =>
-          Ok("Representative identification and address")
+          Redirect(controllers.supplementary.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage())
         }
     )
   }

@@ -79,9 +79,11 @@ class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
       withCaching[Address](None)
 
       val result = route(app, postRequest(uri, correctAddress)).get
+      val header = result.futureValue.header
 
-      status(result) mustBe(OK)
-      contentAsString(result) must include("Representative identification and address")
+      status(result) mustBe(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/representative"))
     }
   }
 }

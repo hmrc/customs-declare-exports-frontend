@@ -46,15 +46,15 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       status(result) must be(OK)
     }
 
-    "display page title with hint" in {
+    "display page title" in {
       val result = displayPageTestScenario()
       contentAsString(result) must include(messages("supplementary.representative.title"))
-      contentAsString(result) must include(messages("supplementary.representative.title.hint"))
     }
 
     "display \"back\" button that links to declarant address page" in {
       val result = displayPageTestScenario()
       contentAsString(result) must include(messages("site.back"))
+      contentAsString(result) must include("declarant-address")
     }
 
     "display page header" in {
@@ -69,8 +69,9 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
     "display element to enter EORI number" in {
       val result = displayPageTestScenario()
-      contentAsString(result) must include(messages("supplementary.representative.eori"))
-      contentAsString(result) must include(messages("supplementary.representative.eori.hint"))
+      contentAsString(result) must include(messages("supplementary.representative.eori.info"))
+      contentAsString(result) must include(messages("supplementary.eori"))
+      contentAsString(result) must include(messages("supplementary.eori.hint"))
     }
 
     "display information to enter representatives name and address" in {

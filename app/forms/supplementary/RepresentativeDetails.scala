@@ -34,7 +34,6 @@ case class RepresentativeDetails(
     "declaration.agent.address.countryCode" -> address.country,
     "declaration.agent.functionCode" -> statusCode
   )
-
 }
 
 object RepresentativeDetails {
@@ -42,7 +41,7 @@ object RepresentativeDetails {
 
   private val representativeStatusCodeAllowedValues = Set("2", "3")
 
-  val formId = "RepresentativeStatusCodeId"
+  val formId = "RepresentativeDetails"
 
   val mapping = Forms.mapping(
     "address" -> Address.addressMapping,

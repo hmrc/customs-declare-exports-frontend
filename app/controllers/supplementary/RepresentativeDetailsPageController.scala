@@ -16,6 +16,51 @@
 
 package controllers.supplementary
 
-class RepresentativeDetailsPageController {
+import config.AppConfig
+import controllers.actions.AuthAction
+import forms.supplementary.RepresentativeDetails
+import handlers.ErrorHandler
+import javax.inject.Inject
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import services.CustomsCacheService
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.supplementary.representative_details
+
+import scala.concurrent.Future
+
+class RepresentativeDetailsPageController @Inject()(
+  appConfig: AppConfig,
+  override val messagesApi: MessagesApi,
+  authenticator: AuthAction,
+  errorHandler: ErrorHandler,
+  customsCacheService: CustomsCacheService
+) extends FrontendController with I18nSupport {
+
+  private val supplementaryDeclarationCacheId = appConfig.appName
+
+  def displayRepresentativeDetailsPage(): Action[AnyContent] = authenticator.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[RepresentativeDetails](
+      supplementaryDeclarationCacheId, RepresentativeDetails.formId).map {
+        case Some(data) => Ok(representative_details(appConfig, RepresentativeDetails.form().fill(data)))
+        case _          => Ok(representative_details(appConfig, RepresentativeDetails.form()))
+    }
+  }
+
+  def submitRepresentativeDetails(): Action[AnyContent] = authenticator.async { implicit request =>
+    RepresentativeDetails.form().bindFromRequest().fold(
+      (formWithErrors: Form[RepresentativeDetails]) =>
+        Future.successful(BadRequest(representative_details(appConfig, formWithErrors))),
+      validRepresentativeDetails =>
+        customsCacheService.cache[RepresentativeDetails](
+          supplementaryDeclarationCacheId,
+          RepresentativeDetails.formId,
+          validRepresentativeDetails
+        ).map { _ =>
+          Ok("Now you should be redirected to additional-actors page")
+        }
+    )
+  }
 
 }

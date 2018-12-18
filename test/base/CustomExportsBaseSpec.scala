@@ -134,8 +134,11 @@ trait CustomExportsBaseSpec extends PlaySpec
       .thenReturn(Future.successful(CacheMap("id1", Map.empty)))
   }
 
-  def withCaching[T](data: Option[T], id: String) =
+  def withCaching[T](data: Option[T], id: String) = {
     when(mockCustomsCacheService.fetchAndGetEntry[T](ArgumentMatchers.eq(appConfig.appName), ArgumentMatchers.eq(id))(any(), any(), any()))
       .thenReturn(Future.successful(data))
 
+    when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
+      .thenReturn(Future.successful(CacheMap(id, Map.empty)))
+  }
 }
