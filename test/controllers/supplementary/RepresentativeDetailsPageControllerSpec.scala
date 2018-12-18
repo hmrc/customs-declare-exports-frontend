@@ -18,6 +18,7 @@ package controllers.supplementary
 
 
 import base.CustomExportsBaseSpec
+import forms.supplementary.RepresentativeDetails.StatusCodes._
 import forms.supplementary.{Address, RepresentativeDetails}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -136,7 +137,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
           postCode = "PostCode",
           country = "UK"
         ),
-        statusCode = "2"
+        statusCode = DirectRepresentative
       )
       val result = displayPageTestScenario(Some(representativeAddress))
       contentAsString(result) must include("checked=\"checked\"")
@@ -147,7 +148,6 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       withCaching[RepresentativeDetails](cacheValue, RepresentativeDetails.formId)
       route(app, getRequest(uri)).get
     }
-
   }
 
 
@@ -215,7 +215,6 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
         val result = route(app, postRequest(uri, emptyFormData)).get
 
         contentAsString(result) must include(messages("supplementary.representative.representationType.error.empty"))
-//        contentAsString(result) must include("Please enter a value")
       }
     }
 

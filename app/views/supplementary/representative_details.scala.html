@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import controllers.supplementary.routes._
 @import forms.supplementary.RepresentativeDetails
+@import forms.supplementary.RepresentativeDetails.StatusCodes._
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
@@ -82,8 +83,8 @@
             field = form("statusCode"),
             legend = "",
             inputs = Seq(
-                RadioOption("statusCode", "2", messages("supplementary.representative.representationType.direct")),
-                RadioOption("statusCode", "3", messages("supplementary.representative.representationType.indirect"))
+                RadioOption("statusCode", DirectRepresentative, messages("supplementary.representative.representationType.direct")),
+                RadioOption("statusCode", IndirectRepresentative, messages("supplementary.representative.representationType.indirect"))
             )
         )
 

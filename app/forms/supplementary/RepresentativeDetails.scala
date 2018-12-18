@@ -39,7 +39,10 @@ case class RepresentativeDetails(
 object RepresentativeDetails {
   implicit val format = Json.format[RepresentativeDetails]
 
-  private val representativeStatusCodeAllowedValues = Set("2", "3")
+  private val representativeStatusCodeAllowedValues = Set(
+    StatusCodes.DirectRepresentative,
+    StatusCodes.IndirectRepresentative
+  )
 
   val formId = "RepresentativeDetails"
 
@@ -50,4 +53,9 @@ object RepresentativeDetails {
   )(RepresentativeDetails.apply)(RepresentativeDetails.unapply)
 
   def form(): Form[RepresentativeDetails] = Form(mapping)
+
+  object StatusCodes {
+    val DirectRepresentative = "2"
+    val IndirectRepresentative = "3"
+  }
 }
