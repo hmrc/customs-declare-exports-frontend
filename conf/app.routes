@@ -83,3 +83,9 @@ POST       /consignor-address                           controllers.supplementar
 GET        /declarant-address                           controllers.supplementary.DeclarantAddressController.displayForm()
 
 POST       /declarant-address                           controllers.supplementary.DeclarantAddressController.saveAddress()
+
+# Declaration additional address
+
+GET        /additional-actors                           controllers.supplementary.DeclarationAdditionalActorsController.displayForm()
+
+POST       /additional-actors                           controllers.supplementary.DeclarationAdditionalActorsController.saveAdditionalActors()
