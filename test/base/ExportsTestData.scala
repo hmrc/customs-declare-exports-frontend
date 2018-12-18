@@ -237,4 +237,25 @@ object ExportsTestData {
       "country" -> JsString("")
     )
   )
+
+  val incorrectAdditionalActors: JsValue = JsObject(
+    Map(
+      "eori" -> JsString("123456789123456789"),
+      "partyType" -> JsString("Incorrect")
+    )
+  )
+
+  val emptyAdditionalActors: JsValue = JsObject(
+    Map(
+      "eori" -> JsString(""),
+      "partyType" -> JsString("")
+    )
+  )
+
+  val correctAdditionalActors: JsValue = JsObject(
+    Map(
+      "eori" -> JsString("eori1"),
+      "partyType" -> JsString("CS")
+    )
+  )
 }

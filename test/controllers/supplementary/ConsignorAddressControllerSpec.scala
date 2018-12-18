@@ -81,7 +81,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, correctAddress)).get
       val header = result.futureValue.header
 
-      status(result) mustBe(SEE_OTHER)
+      status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declarant-address"))
     }
   }

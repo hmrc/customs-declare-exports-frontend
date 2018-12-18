@@ -309,7 +309,13 @@ supplementary.postCode.empty = Postcode cannot be empty
 supplementary.country = Country
 supplementary.country.error = Country is incorrect
 supplementary.country.empty = Country cannot be empty
-
+supplementary.additionalActors.title = Add other party
+supplementary.partyType = Party type
+supplementary.partyType.CS = Consolidator
+supplementary.partyType.MF = Manufacturer
+supplementary.partyType.FW = Freight forwarder
+supplementary.partyType.WH = Warehouse keeper
+supplementary.partyType.error = Party type is incorrect
 
 supplementary.declarationTypePage.title = Supplementary Declaration Type
 supplementary.declarationTypePage.heading = Declaration Type
