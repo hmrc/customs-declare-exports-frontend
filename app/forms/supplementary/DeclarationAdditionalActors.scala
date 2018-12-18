@@ -19,6 +19,7 @@ package forms.supplementary
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfNot
 
 case class DeclarationAdditionalActors(
   eori: Option[String],
@@ -28,7 +29,12 @@ case class DeclarationAdditionalActors(
 object DeclarationAdditionalActors {
   implicit val format = Json.format[DeclarationAdditionalActors]
 
-  private val allowedDeclarationAdditionalActorsValues = Set("CS", "MF", "FW", "WH")
+  private val allowedPartyTypes = Set(
+    PartyType.Consolidator,
+    PartyType.Manufacturer,
+    PartyType.FreightForwarder,
+    PartyType.WarehouseKeeper
+  )
 
   val formId = "DeclarationAdditionalActors"
 
@@ -36,10 +42,28 @@ object DeclarationAdditionalActors {
     "eori" -> optional(
       text().verifying("supplementary.eori.error", input => input.length <= 17)
     ),
-    "partyType" -> optional(
-      text().verifying("supplementary.partyType.error", input => allowedDeclarationAdditionalActorsValues(input))
+    "partyType" -> mandatoryIfNot(
+      "eori",
+      "",
+      text().verifying("supplementary.partyType.error", input => allowedPartyTypes(input))
     )
   )(DeclarationAdditionalActors.apply)(DeclarationAdditionalActors.unapply)
 
   def form(): Form[DeclarationAdditionalActors] = Form(mapping)
+
+  def toMetadataProperties(actors: DeclarationAdditionalActors): Map[String, String] =
+    Map(
+      "declaration.goodsShipment.AEOMutualRecognitionParty.ID" -> actors.eori.getOrElse(""),
+      "declaration.goodsShipment.AEOMutualRecognitionParty.roleCode" -> actors.partyType.getOrElse("")
+    )
+}
+
+object PartyType {
+  val Consolidator = "CS"
+
+  val Manufacturer = "MF"
+
+  val FreightForwarder = "FW"
+
+  val WarehouseKeeper = "WH"
 }

@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import controllers.supplementary.routes._
 @import forms.supplementary.DeclarationAdditionalActors
+@import forms.supplementary.PartyType._
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
@@ -46,10 +47,10 @@
             field = form("partyType"),
             legend = "",
             inputs = Seq(
-                RadioOption("supplementary.partyType", "CS"),
-                RadioOption("supplementary.partyType", "MF"),
-                RadioOption("supplementary.partyType", "FW"),
-                RadioOption("supplementary.partyType", "WH")
+                RadioOption("supplementary.partyType", Consolidator),
+                RadioOption("supplementary.partyType", Manufacturer),
+                RadioOption("supplementary.partyType", FreightForwarder),
+                RadioOption("supplementary.partyType", WarehouseKeeper)
             )
         )
 
