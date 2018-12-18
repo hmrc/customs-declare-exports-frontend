@@ -284,7 +284,6 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
         .cache[RepresentativeDetails](any(), ArgumentMatchers.eq(RepresentativeDetails.formId), any())(any(), any(), any())
     }
 
-    pending
     "return 303 code" in {
       withCaching[RepresentativeDetails](None)
 
@@ -293,15 +292,14 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       status(result) must be(SEE_OTHER)
     }
 
-    pending
-    "redirect to \"Authorisations/additional-actors\" page" in {
+    "redirect to \"additional-actors\" page" in {
       withCaching[RepresentativeDetails](None)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetails)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
+        Some("/customs-declare-exports/additional-actors")
       )
     }
 

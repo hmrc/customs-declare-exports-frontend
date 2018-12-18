@@ -58,7 +58,7 @@ class RepresentativeDetailsPageController @Inject()(
           RepresentativeDetails.formId,
           validRepresentativeDetails
         ).map { _ =>
-          Ok("Now you should be redirected to additional-actors page")
+          Redirect(controllers.supplementary.routes.DeclarationAdditionalActorsController.displayForm())
         }
     )
   }
