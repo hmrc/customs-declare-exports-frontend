@@ -48,7 +48,6 @@ import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Random
 
 trait CustomExportsBaseSpec extends PlaySpec
   with GuiceOneAppPerSuite
@@ -124,8 +123,6 @@ trait CustomExportsBaseSpec extends PlaySpec
       .withJsonBody(body)
   }
 
-  protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
-
   def withCaching[T](form: Option[Form[T]]) = {
     when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(),any()))
       .thenReturn(Future.successful(form))
@@ -134,8 +131,11 @@ trait CustomExportsBaseSpec extends PlaySpec
       .thenReturn(Future.successful(CacheMap("id1", Map.empty)))
   }
 
-  def withCaching[T](data: Option[T], id: String) =
+  def withCaching[T](data: Option[T], id: String) = {
     when(mockCustomsCacheService.fetchAndGetEntry[T](ArgumentMatchers.eq(appConfig.appName), ArgumentMatchers.eq(id))(any(), any(), any()))
       .thenReturn(Future.successful(data))
 
+    when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
+      .thenReturn(Future.successful(CacheMap(id, Map.empty)))
+  }
 }

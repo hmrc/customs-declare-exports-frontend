@@ -89,3 +89,9 @@ POST       /declarant-address                           controllers.supplementar
 GET        /additional-actors                           controllers.supplementary.DeclarationAdditionalActorsController.displayForm()
 
 POST       /additional-actors                           controllers.supplementary.DeclarationAdditionalActorsController.saveAdditionalActors()
+
+# Representative details
+
+GET        /declaration/supplementary/representative    controllers.supplementary.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
+
+POST       /declaration/supplementary/representative    controllers.supplementary.RepresentativeDetailsPageController.submitRepresentativeDetails()

@@ -16,14 +16,13 @@
 
 package base
 
+import base.TestHelper._
 import forms.MovementFormsAndIds._
 import forms.{ChoiceForm, GoodsDateForm}
 import play.api.libs.json._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-
-import scala.util.Random
 
 object ExportsTestData {
 
@@ -213,8 +212,6 @@ object ExportsTestData {
       "country" -> JsString("PL")
     )
   )
-
-  protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
 
   val incorrectAddress: JsValue = JsObject(
     Map(

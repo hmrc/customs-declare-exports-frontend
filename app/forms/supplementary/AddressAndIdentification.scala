@@ -19,7 +19,7 @@ package forms.supplementary
 import play.api.data.Forms.{mapping, text}
 import play.api.libs.json.Json
 
-case class Address(
+case class AddressAndIdentification(
   eori: String, // alphanumeric, max length 17 characters
   fullName: String, // alphanumeric length 1 - 70
   addressLine: String, // alphanumeric length 1 - 70
@@ -28,8 +28,8 @@ case class Address(
   country: String // 2 upper case alphabetic characters
 )
 
-object Address {
-  implicit val format = Json.format[Address]
+object AddressAndIdentification {
+  implicit val format = Json.format[AddressAndIdentification]
 
   val addressMapping = mapping(
     "eori" -> text().verifying("supplementary.eori.empty", _.nonEmpty)
@@ -44,25 +44,25 @@ object Address {
       .verifying("supplementary.postCode.error", _.length <= 9),
     "country" -> text().verifying("supplementary.country.empty", _.nonEmpty)
       .verifying("supplementary.country.error", _.length <= 2)
-  )(Address.apply)(Address.unapply)
+  )(AddressAndIdentification.apply)(AddressAndIdentification.unapply)
 
-  def toConsignorMetadataProperties(address: Address): Map[String, String] =
+  def toConsignorMetadataProperties(address: AddressAndIdentification): Map[String, String] =
     Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.ID" -> address.eori,
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.id" -> address.eori,
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.name" -> address.fullName,
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.line" -> address.addressLine,
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.cityName" -> address.townOrCity,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postCodeID" -> address.postCode,
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postcodeId" -> address.postCode,
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.countryCode" -> address.country
     )
 
-  def toDeclarantMetadataProperties(address: Address): Map[String, String] =
+  def toDeclarantMetadataProperties(address: AddressAndIdentification): Map[String, String] =
     Map(
-      "declaration.declarant.ID" -> address.eori,
+      "declaration.declarant.id" -> address.eori,
       "declaration.declarant.name" -> address.fullName,
       "declaration.declarant.address.line" -> address.addressLine,
       "declaration.declarant.address.cityName" -> address.townOrCity,
-      "declaration.declarant.address.postCodeID" -> address.postCode,
+      "declaration.declarant.address.postcodeId" -> address.postCode,
       "declaration.declarant.address.countryCode" -> address.country
     )
 }

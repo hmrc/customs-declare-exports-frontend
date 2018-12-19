@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
-import forms.supplementary.Address
+import forms.supplementary.AddressAndIdentification
 import play.api.test.Helpers._
 
 class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
@@ -28,14 +28,14 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
   "Consignor address controller" should {
     "display consignor address form" in {
       authorizedUser()
-      withCaching[Address](None)
+      withCaching[AddressAndIdentification](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.consignor.add"))
-      stringResult must include(messages("supplementary.consignor.add.hint"))
+      stringResult must include(messages("supplementary.consignor.title"))
+      stringResult must include(messages("supplementary.consignor.title.hint"))
       stringResult must include(messages("supplementary.eori"))
       stringResult must include(messages("supplementary.fullName"))
       stringResult must include(messages("supplementary.addressLine"))
@@ -46,7 +46,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - incorrect values" in {
       authorizedUser()
-      withCaching[Address](None)
+      withCaching[AddressAndIdentification](None)
 
       val result = route(app, postRequest(uri, incorrectAddress)).get
       val stringResult = contentAsString(result)
@@ -61,7 +61,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - mandatory fields" in {
       authorizedUser()
-      withCaching[Address](None)
+      withCaching[AddressAndIdentification](None)
 
       val result = route(app, postRequest(uri, emptyAddress)).get
       val stringResult = contentAsString(result)
@@ -76,7 +76,7 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - correct values" in {
       authorizedUser()
-      withCaching[Address](None)
+      withCaching[AddressAndIdentification](None)
 
       val result = route(app, postRequest(uri, correctAddress)).get
       val header = result.futureValue.header

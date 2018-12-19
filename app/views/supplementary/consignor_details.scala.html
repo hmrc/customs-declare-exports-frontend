@@ -16,13 +16,13 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
-@import forms.supplementary.Address
+@import forms.supplementary.AddressAndIdentification
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[Address])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[AddressAndIdentification])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.consignor.add"),
+    title = messages("supplementary.consignor.title"),
     appConfig = appConfig
 ) {
     @helpers.form(ConsignorAddressController.saveAddress(), 'autoComplete -> "off") {
@@ -30,7 +30,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title("supplementary.consignor.add", "supplementary.consignor.add.hint")
+        @components.page_title("supplementary.consignor.title", "supplementary.consignor.title.hint")
 
         @components.address(form)
 
