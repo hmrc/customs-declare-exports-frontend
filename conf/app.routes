@@ -83,3 +83,7 @@ POST       /consignor-address                           controllers.supplementar
 GET        /declarant-address                           controllers.supplementary.DeclarantAddressController.displayForm()
 
 POST       /declarant-address                           controllers.supplementary.DeclarantAddressController.saveAddress()
+
+# Not
+
+GET        /not-eligible-page                           controllers.NotEligibleController.displayPage()
