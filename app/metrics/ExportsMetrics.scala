@@ -18,8 +18,7 @@ package metrics
 
 import com.codahale.metrics.Timer.Context
 import com.kenshoo.play.metrics.Metrics
-import javax.inject.Inject
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 import metrics.MetricIdentifiers._
 
 @Singleton

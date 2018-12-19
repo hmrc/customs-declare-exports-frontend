@@ -19,11 +19,15 @@ package controllers
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
 import forms.SimpleDeclarationForm
+import org.joda.time.DateTime
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.Authorization
 
 class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/simple-declaration")
+  implicit val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(randomString(255))), nsStamp = DateTime.now().getMillis)
 
   "SimpleDeclaration" should {
     "return 200 with a success" in {
@@ -32,7 +36,7 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec {
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be (OK)
+      status(result) must be(OK)
     }
 
     "display Simple-declaration" in {
@@ -42,18 +46,19 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include ("Do you have a representative?")
-      stringResult must include ("Is consolidate DUCR to wider shipment?")
-      stringResult must include ("Building and street")
+      stringResult must include("Do you have a representative?")
+      stringResult must include("Is consolidate DUCR to wider shipment?")
+      stringResult must include("Building and street")
     }
 
     "validate form submitted" in {
       authorizedUser()
       withCaching(None)
       successfulCustomsDeclarationResponse()
+      withNrsSubmission()
 
       val result = route(app, postRequest(uri, wrongJson)).get
-      contentAsString(result) must include ("Incorrect DUCR")
+      contentAsString(result) must include("Incorrect DUCR")
     }
 
     "redirect to error page when submission failed in customs declarations" in {
@@ -64,22 +69,23 @@ class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, jsonBody)).get
       val stringResult = contentAsString(result)
 
-      status(result) must be (BAD_REQUEST)
-      stringResult must include ("There is a problem with a service")
-      stringResult must include ("Please try again later.")
+      status(result) must be(BAD_REQUEST)
+      stringResult must include("There is a problem with a service")
+      stringResult must include("Please try again later.")
     }
 
     "redirect to next page" in {
       authorizedUser()
       withCaching(None)
       successfulCustomsDeclarationResponse()
+      withNrsSubmission()
 
       val result = route(app, postRequest(uri, jsonBody)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include ("Confirmation page")
-      stringResult must include ("Your reference number is")
+      stringResult must include("Confirmation page")
+      stringResult must include("Your reference number is")
     }
   }
 }

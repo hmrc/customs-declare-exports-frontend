@@ -27,6 +27,7 @@ object Feature extends Enumeration {
     _.toString,
     (k: String, e: Exception) => "Cannot parse %s as Feature: %s".format(k, e.getMessage())
   )
+
 }
 
 object FeatureStatus extends Enumeration {
@@ -38,4 +39,5 @@ object FeatureStatus extends Enumeration {
     _.toString,
     (k: String, e: Exception) => "Cannot parse %s as FeatureStatus: %s".format(k, e.getMessage())
   )
+
 }

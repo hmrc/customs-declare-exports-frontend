@@ -16,16 +16,16 @@
 
 package handlers
 
+import config.AppConfig
+import controllers.routes
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Request, RequestHeader, Result, Results}
+import play.api.{Configuration, Environment}
 import play.twirl.api.Html
-import config.AppConfig
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
-import controllers.routes
-import play.api.{Configuration, Environment}
 
 @Singleton
 class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi)

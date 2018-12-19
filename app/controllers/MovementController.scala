@@ -32,7 +32,7 @@ import views.html.movement._
 
 import scala.concurrent.Future
 
-class  MovementController @Inject()(
+class MovementController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -62,7 +62,7 @@ class  MovementController @Inject()(
   def displayDucrPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
-        customsCacheService.fetchAndGetEntry[EnterDucrForm](appConfig.appName, enterDucrId).map{
+        customsCacheService.fetchAndGetEntry[EnterDucrForm](appConfig.appName, enterDucrId).map {
           case Some(data) => Ok(enterDUCR(appConfig, enterDucrForm.fill(data), choice.choice))
           case _          => Ok(enterDUCR(appConfig, enterDucrForm, choice.choice))
         }
@@ -86,14 +86,14 @@ class  MovementController @Inject()(
       form =>
         customsCacheService.cache[EnterDucrForm](appConfig.appName, enterDucrId, form).map { _ =>
           Redirect(controllers.routes.MovementController.displayGoodsDate())
-      }
+        }
     )
   }
 
   def displayGoodsDate(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
-        customsCacheService.fetchAndGetEntry[GoodsDateForm](appConfig.appName, goodsDateId).map{
+        customsCacheService.fetchAndGetEntry[GoodsDateForm](appConfig.appName, goodsDateId).map {
           case Some(data) => Ok(goods_date(appConfig, goodsDateForm.fill(data), choice.choice))
           case _          => Ok(goods_date(appConfig, goodsDateForm, choice.choice))
         }
@@ -146,7 +146,7 @@ class  MovementController @Inject()(
       (formWithErrors: Form[LocationForm]) =>
         customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).map {
           case Some(choice) => BadRequest(goods_location(appConfig, formWithErrors, choice.choice))
-          case _ => BadRequest(goods_location(appConfig, formWithErrors, "error"))
+          case _            => BadRequest(goods_location(appConfig, formWithErrors, "error"))
         },
       form =>
         customsCacheService.cache[LocationForm](appConfig.appName, locationId, form).map { _ =>

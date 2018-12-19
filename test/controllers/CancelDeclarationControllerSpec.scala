@@ -32,7 +32,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be (OK)
+      status(result) must be(OK)
     }
 
     "display cancel-declaration view" in {
@@ -42,9 +42,9 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include ("WCODataModelVersionCode")
-      stringResult must include ("ResponsibleAgencyName")
-      stringResult must include ("Submitter ID (Mandatory)")
+      stringResult must include("WCODataModelVersionCode")
+      stringResult must include("ResponsibleAgencyName")
+      stringResult must include("Submitter ID (Mandatory)")
     }
 
     "validate cancellation form submitted" in {
@@ -53,7 +53,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
       successfulCustomsDeclarationResponse()
 
       val result = route(app, postRequest(uri, wrongJson)).get
-      contentAsString(result) must include ("Please enter a value")
+      contentAsString(result) must include("Please enter a value")
     }
 
     "redirect to error page when cancellation failed in customs declarations" in {
@@ -64,9 +64,9 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, cancelJsonBody)).get
       val stringResult = contentAsString(result)
 
-      status(result) must be (BAD_REQUEST)
-      stringResult must include ("There is a problem with a service")
-      stringResult must include ("Please try again later.")
+      status(result) must be(BAD_REQUEST)
+      stringResult must include("There is a problem with a service")
+      stringResult must include("Please try again later.")
     }
 
     "redirect to next page" in {
@@ -78,8 +78,8 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include ("Confirmation page")
-      stringResult must include ("Your reference number is")
+      stringResult must include("Confirmation page")
+      stringResult must include("Your reference number is")
     }
   }
 }

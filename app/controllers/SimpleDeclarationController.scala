@@ -32,13 +32,14 @@ import play.api.data.validation.Constraints.pattern
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
-import services.{Countries, CustomsCacheService}
+import services.{Countries, CustomsCacheService, NRSService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.{Declaration, GoodsShipment, MetaData, Ucr}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfTrue
 import views.html.{confirmation_page, simpleDeclaration}
 
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 class SimpleDeclarationController @Inject()(
   appConfig: AppConfig,
@@ -48,7 +49,8 @@ class SimpleDeclarationController @Inject()(
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
   exportsMetrics: ExportsMetrics,
-  countries: Countries
+  countries: Countries,
+  nrsService: NRSService
 )(implicit val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
 
   val formId = "SimpleDeclarationForm"
@@ -97,6 +99,11 @@ class SimpleDeclarationController @Inject()(
           customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap {
             case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
               val submission = new Submission(request.user.eori, conversationId)
+              implicit val signedInUser = request.user
+              nrsService.submit(conversationId, form.toString, form.ducr).onComplete {
+                case Success(nrsResponse) => Logger.warn("NrsRequest Success and submissionId  => " + nrsResponse)
+                case Failure(ex) => Logger.error("Error submitting NRS request with the error => " + ex.getMessage)
+              }
               customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap { _ =>
                 exportsMetrics.incrementCounter(submissionMetric)
                 Future.successful(Ok(confirmation_page(appConfig, conversationId)))

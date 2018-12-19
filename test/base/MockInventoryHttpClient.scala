@@ -35,7 +35,7 @@ class MockInventoryHttpClient[A](
 
   //scalastyle:off method.name
   override def POSTString[O](url: String, body: String, headers: Seq[(String, String)])
-                         (implicit rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
+    (implicit rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
     (url, body, headers) match {
       case _ if !isAuthenticated(Map.empty, hc) =>
         throw new UnauthorizedException("Arrival request was not authenticated")
@@ -44,6 +44,7 @@ class MockInventoryHttpClient[A](
         Future.successful(HttpResponse(ACCEPTED).asInstanceOf[O])
       case error => throw new BadRequestException(error.toString)
     }
+
   //scalastyle:on method.name
 
   private def isAuthenticated(headers: Map[String, String], hc: HeaderCarrier): Boolean = hc.authorization.isDefined

@@ -17,42 +17,42 @@
 @(form: Form[_])(implicit messages: Messages)
 
 @tableRow(field: Field, label: String) = {
-    <tr class="section">
-        <td class="previous-question-title bold">@label</td>
-        <td class="previous-question-body">@field.value</td>
-        <td class="link-right">
-            <a href="">Change</a>
-        </td>
-    </tr>
+<tr class="section">
+    <td class="previous-question-title bold">@label</td>
+    <td class="previous-question-body">@field.value</td>
+    <td class="link-right">
+        <a href="">Change</a>
+    </td>
+</tr>
 }
 
 
 <div class="previous-answers">
-  <div class="done-questions">
-    <article>
-      <table>
-        <tbody>
-          @tableRow(form("messageCode"), "Message Code")
-          @tableRow(form("agentDetails.EORI"), messages("movement.eori"))
-          @tableRow(form("agentDetails.agentLocation"), messages("movement.agentLocation"))
-          @tableRow(form("agentDetails.agentRole"), messages("movement.agentRole"))
+    <div class="done-questions">
+        <article>
+            <table>
+                <tbody>
+                @tableRow(form("messageCode"), "Message Code")
+                @tableRow(form("agentDetails.EORI"), messages("movement.eori"))
+                @tableRow(form("agentDetails.agentLocation"), messages("movement.agentLocation"))
+                @tableRow(form("agentDetails.agentRole"), messages("movement.agentRole"))
 
-          @tableRow(form("ucrBlock.ucr"), messages("movement.ucr"))
-          @tableRow(form("ucrBlock.ucrType"), messages("movement.ucrType"))
+                @tableRow(form("ucrBlock.ucr"), messages("movement.ucr"))
+                @tableRow(form("ucrBlock.ucrType"), messages("movement.ucrType"))
 
-          @tableRow(form("goodsLocation"), messages("movement.goodsLocation"))
-          @tableRow(form("goodsArrivalDateTime"), messages("movement.goodsArrivalDateTime"))
-          @tableRow(form("goodsDepartureDateTime"), messages("movement.goodsDepartureDateTime"))
-          @tableRow(form("shedOPID"), messages("movement.shedOPID"))
-          @tableRow(form("masterUCR"), messages("movement.masterUCR"))
-          @tableRow(form("masterOpt"), messages("movement.masterOpt"))
-          @tableRow(form("movementReference"), messages("movement.movementReference"))
+                @tableRow(form("goodsLocation"), messages("movement.goodsLocation"))
+                @tableRow(form("goodsArrivalDateTime"), messages("movement.goodsArrivalDateTime"))
+                @tableRow(form("goodsDepartureDateTime"), messages("movement.goodsDepartureDateTime"))
+                @tableRow(form("shedOPID"), messages("movement.shedOPID"))
+                @tableRow(form("masterUCR"), messages("movement.masterUCR"))
+                @tableRow(form("masterOpt"), messages("movement.masterOpt"))
+                @tableRow(form("movementReference"), messages("movement.movementReference"))
 
-          @tableRow(form("transportDetails.transportID"), messages("movement.transportID"))
-          @tableRow(form("transportDetails.transportMode"), messages("movement.transportMode"))
-          @tableRow(form("transportDetails.transportNationality"), messages("movement.transportNationality"))
-        </tbody>
-      </table>
-    </article>
-  </div>
+                @tableRow(form("transportDetails.transportID"), messages("movement.transportID"))
+                @tableRow(form("transportDetails.transportMode"), messages("movement.transportMode"))
+                @tableRow(form("transportDetails.transportNationality"), messages("movement.transportNationality"))
+                </tbody>
+            </table>
+        </article>
+    </div>
 </div>

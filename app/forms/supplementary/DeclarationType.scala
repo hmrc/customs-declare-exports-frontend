@@ -21,8 +21,8 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
 case class DeclarationType(
-  declarationType: String,    // 2 upper case alphabetic characters
-  additionalDeclarationType: String   // 1 upper case alphabetic character
+  declarationType: String, // 2 upper case alphabetic characters
+  additionalDeclarationType: String // 1 upper case alphabetic character
 ) {
 
   def toMetadataProperties(): Map[String, String] = {
