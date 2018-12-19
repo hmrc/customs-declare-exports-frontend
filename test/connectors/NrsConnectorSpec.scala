@@ -17,7 +17,7 @@
 package connectors
 
 import base.ExportsTestData._
-import base.{CustomExportsBaseSpec, MockHttpClient}
+import base.{CustomExportsBaseSpec, MockHttpClient, TestHelper}
 import models._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 class NrsConnectorSpec extends CustomExportsBaseSpec {
 
   val submission = Submission("eori", "id", Some("lrn"), Some("mrn"))
-  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(randomString(255))))
+  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.randomString(255))))
   val expectedHeaders: Map[String, String] = Map("Content-Type" -> "application/json", "X-API-Key" -> appConfig.nrsApiKey)
   val nrsMetadata = Metadata("cds", "cds-exports", "application/json",
     Some("248857ca67c92e1c18459ff287139fd8409372221e32d245ad8cc470dd5c80d5"), nrsTimeStamp,
