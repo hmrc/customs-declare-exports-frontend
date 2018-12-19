@@ -18,41 +18,42 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.AddressAndIdentification
+import forms.supplementary.DeclarationAdditionalActors
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.consignor_details
+import views.html.supplementary.declaration_additional_actors
 
 import scala.concurrent.Future
 
-class ConsignorAddressController @Inject()(
+class DeclarationAdditionalActorsController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   customsCacheService: CustomsCacheService
 ) extends FrontendController with I18nSupport {
 
-  val formId = "ConsignorAddress"
-  val form = Form(AddressAndIdentification.addressMapping)
+  import DeclarationAdditionalActors._
+
+  val additionalActorsForm = form()
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[AddressAndIdentification](appConfig.appName, formId).map {
-      case Some(data) => Ok(consignor_details(appConfig, form.fill(data)))
-      case _          => Ok(consignor_details(appConfig, form))
+    customsCacheService.fetchAndGetEntry[DeclarationAdditionalActors](appConfig.appName, formId).map {
+      case Some(data) => Ok(declaration_additional_actors(appConfig, additionalActorsForm.fill(data)))
+      case _          => Ok(declaration_additional_actors(appConfig, additionalActorsForm))
     }
   }
 
-  def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveAdditionalActors(): Action[AnyContent] = authenticate.async { implicit request =>
     form.bindFromRequest().fold(
-      (formWithErrors: Form[AddressAndIdentification]) =>
-        Future.successful(BadRequest(consignor_details(appConfig, formWithErrors))),
+      (formWithErrors: Form[DeclarationAdditionalActors]) =>
+        Future.successful(BadRequest(declaration_additional_actors(appConfig, formWithErrors))),
       form =>
-        customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
-          Redirect(controllers.supplementary.routes.DeclarantAddressController.displayForm())
+        customsCacheService.cache[DeclarationAdditionalActors](appConfig.appName, formId, form).map { _ =>
+          Ok("Declaration holder of authorisation")
         }
     )
   }

@@ -16,6 +16,7 @@
 
 package base
 
+import base.TestHelper._
 import forms.MovementFormsAndIds._
 import forms.{ChoiceForm, GoodsDateForm}
 import models.{IdentityData, SignedInUser}
@@ -29,8 +30,6 @@ import uk.gov.hmrc.auth.core.{Enrolment, Enrolments, User}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-
-import scala.util.Random
 
 object ExportsTestData {
 
@@ -271,8 +270,6 @@ object ExportsTestData {
     )
   )
 
-  protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
-
   val incorrectAddress: JsValue = JsObject(
     Map(
       "eori" -> JsString(randomString(18)),
@@ -292,6 +289,27 @@ object ExportsTestData {
       "townOrCity" -> JsString(""),
       "postCode" -> JsString(""),
       "country" -> JsString("")
+    )
+  )
+
+  val incorrectAdditionalActors: JsValue = JsObject(
+    Map(
+      "eori" -> JsString("123456789123456789"),
+      "partyType" -> JsString("Incorrect")
+    )
+  )
+
+  val emptyAdditionalActors: JsValue = JsObject(
+    Map(
+      "eori" -> JsString(""),
+      "partyType" -> JsString("")
+    )
+  )
+
+  val correctAdditionalActors: JsValue = JsObject(
+    Map(
+      "eori" -> JsString("eori1"),
+      "partyType" -> JsString("CS")
     )
   )
 }

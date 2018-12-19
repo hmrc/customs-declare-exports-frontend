@@ -16,6 +16,7 @@
 
 package connectors
 
+import base.TestHelper._
 import base.{CustomExportsBaseSpec, MockHttpClient}
 import models.{CustomsDeclareExportsResponse, MovementSubmission, Submission}
 import play.api.http.Status.OK

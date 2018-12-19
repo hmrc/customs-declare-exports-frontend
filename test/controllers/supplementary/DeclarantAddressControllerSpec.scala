@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import base.ExportsTestData.{correctAddress, emptyAddress, incorrectAddress}
-import forms.supplementary.Address
+import forms.supplementary.AddressAndIdentification
 import play.api.test.Helpers._
 
 class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
@@ -28,14 +28,14 @@ class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
   "Declarant address controller" should {
     "display declarant address form" in {
       authorizedUser()
-      withCaching[Address](None)
+      withCaching[AddressAndIdentification](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.declarant.add"))
-      stringResult must include(messages("supplementary.declarant.add.hint"))
+      stringResult must include(messages("supplementary.declarant.title"))
+      stringResult must include(messages("supplementary.declarant.title.hint"))
       stringResult must include(messages("supplementary.eori"))
       stringResult must include(messages("supplementary.fullName"))
       stringResult must include(messages("supplementary.addressLine"))
@@ -46,7 +46,7 @@ class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - incorrect values" in {
       authorizedUser()
-      withCaching[Address](None)
+      withCaching[AddressAndIdentification](None)
 
       val result = route(app, postRequest(uri, incorrectAddress)).get
       val stringResult = contentAsString(result)
@@ -61,7 +61,7 @@ class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - mandatory fields" in {
       authorizedUser()
-      withCaching[Address](None)
+      withCaching[AddressAndIdentification](None)
 
       val result = route(app, postRequest(uri, emptyAddress)).get
       val stringResult = contentAsString(result)
@@ -76,12 +76,14 @@ class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - correct values" in {
       authorizedUser()
-      withCaching[Address](None)
+      withCaching[AddressAndIdentification](None)
 
       val result = route(app, postRequest(uri, correctAddress)).get
+      val header = result.futureValue.header
 
-      status(result) mustBe (OK)
-      contentAsString(result) must include("Representative identification and address")
+      status(result) mustBe(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/representative"))
     }
   }
 }

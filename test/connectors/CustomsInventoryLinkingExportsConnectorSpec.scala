@@ -16,6 +16,7 @@
 
 package connectors
 
+import base.TestHelper._
 import base.{CustomExportsBaseSpec, MockInventoryHttpClient}
 import play.api.http.Status.ACCEPTED
 import uk.gov.hmrc.http.logging.Authorization
