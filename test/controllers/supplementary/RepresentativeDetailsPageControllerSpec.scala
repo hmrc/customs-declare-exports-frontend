@@ -41,7 +41,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
   }
 
 
-  "RepresentativeAddressController on displayForm" should {
+  "RepresentativeAddressController on displayRepresentativeDetailsPage" should {
     "return 200 code" in {
       val result = displayPageTestScenario()
       status(result) must be(OK)

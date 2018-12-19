@@ -37,7 +37,7 @@ object DeclarationType {
 
   private val declarationTypeAllowedValues = Set(
     AllowedTypes.OutsideEU,
-    AllowedTypes.FiscalTerritory
+    AllowedTypes.SpecialFiscalTerritory
   )
   private val additionalDeclarationTypeAllowedValues = Set(
     AllowedAdditionalTypes.Simplified,
@@ -59,7 +59,7 @@ object DeclarationType {
 
   object AllowedTypes {
     val OutsideEU = "EX"
-    val FiscalTerritory = "CO"
+    val SpecialFiscalTerritory = "CO"
   }
 
   object AllowedAdditionalTypes {

@@ -336,16 +336,18 @@ supplementary.partyType.FW = Freight forwarder
 supplementary.partyType.WH = Warehouse keeper
 supplementary.partyType.error = Party type is incorrect
 
-supplementary.declarationTypePage.title = Supplementary Declaration Type
-supplementary.declarationTypePage.heading = Declaration Type
-supplementary.declarationTypePage.heading.secondary = Lead paragraph if needed, will change later
-supplementary.declarationTypePage.inputText.declarationType = 1/1 Where are the goods being dispatched to?
-supplementary.declarationTypePage.inputText.declarationType.hint = Hint text if needed
-supplementary.declarationTypePage.inputText.declarationType.ex = Outside the EU
-supplementary.declarationTypePage.inputText.declarationType.co = Fiscal territory of the EU or country with which the EU has formed a customs union
-supplementary.declarationTypePage.inputText.declarationType.errorMessage = Please, choose declaration type
-supplementary.declarationTypePage.inputText.additionalDeclarationType = 1/2 What type of declaration are you making?
-supplementary.declarationTypePage.inputText.additionalDeclarationType.hint = Hint text if needed
-supplementary.declarationTypePage.inputText.additionalDeclarationType.y = Simplified declaration
-supplementary.declarationTypePage.inputText.additionalDeclarationType.z = Standard declaration
-supplementary.declarationTypePage.inputText.additionalDeclarationType.errorMessage = Please, choose additional declaration type
+supplementary.dispatchLocation.title = Dispatch Location
+supplementary.dispatchLocation.header = Where are the goods being dispatched to?
+supplementary.dispatchLocation.header.hint = Hint text if needed here
+supplementary.dispatchLocation.inputText.outsideEU = Outside the EU
+supplementary.dispatchLocation.inputText.specialFiscalTerritory = Fiscal territory of the EU or country with which the EU has formed a customs union
+supplementary.dispatchLocation.inputText.errorMessage = Please, choose dispatch location
+
+supplementary.declarationType.title = Declaration Type
+supplementary.declarationType.header = What type of declaration are you making?
+supplementary.declarationType.header.hint = Hint text if needed here
+supplementary.declarationType.inputText.simplified = Pre-authorized simplified declaration
+supplementary.declarationType.inputText.standard = Entry in Declarants Records (EIDR)
+supplementary.declarationType.inputText.errorMessage = Please, choose declaration type
+
+

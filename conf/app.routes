@@ -68,9 +68,13 @@ GET        /start                                       controllers.StartControl
 
 # Declaration type
 
-GET        /declaration/supplementary/type              controllers.supplementary.DeclarationTypePageController.displayDeclarationTypePage()
+GET        /declaration/supplementary/dispatch-location     controllers.supplementary.DeclarationTypeController.displayDispatchLocationPage()
 
-POST       /declaration/supplementary/type              controllers.supplementary.DeclarationTypePageController.submitDeclarationType()
+POST       /declaration/supplementary/dispatch-location     controllers.supplementary.DeclarationTypeController.submitDispatchLocation()
+
+GET        /declaration/supplementary/type                  controllers.supplementary.DeclarationTypeController.displayDeclarationTypePage()
+
+POST       /declaration/supplementary/type                  controllers.supplementary.DeclarationTypeController.submitDeclarationTypePage()
 
 # Consignor address
 

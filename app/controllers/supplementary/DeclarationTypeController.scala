@@ -30,7 +30,7 @@ import views.html.supplementary.declaration_type
 
 import scala.concurrent.Future
 
-class DeclarationTypePageController @Inject()(
+class DeclarationTypeController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticator: AuthAction,
@@ -40,14 +40,14 @@ class DeclarationTypePageController @Inject()(
 
   private val supplementaryDeclarationCacheId = appConfig.appName
 
-  def displayDeclarationTypePage(): Action[AnyContent] = authenticator.async { implicit request =>
+  def displayDispatchLocationPage(): Action[AnyContent] = authenticator.async { implicit request =>
     customsCacheService.fetchAndGetEntry[DeclarationType](supplementaryDeclarationCacheId, DeclarationType.formId).map {
       case Some(data) => Ok(declaration_type(appConfig, DeclarationType.form().fill(data)))
       case _          => Ok(declaration_type(appConfig, DeclarationType.form()))
     }
   }
 
-  def submitDeclarationType(): Action[AnyContent] = authenticator.async { implicit request =>
+  def submitDispatchLocation(): Action[AnyContent] = authenticator.async { implicit request =>
     DeclarationType.form().bindFromRequest().fold(
       (formWithErrors: Form[DeclarationType]) =>
         Future.successful(BadRequest(declaration_type(appConfig, formWithErrors))),
@@ -61,5 +61,9 @@ class DeclarationTypePageController @Inject()(
         }
     )
   }
+
+  def displayDeclarationTypePage(): Action[AnyContent] = ???
+
+  def submitDeclarationTypePage(): Action[AnyContent] = ???
 
 }
