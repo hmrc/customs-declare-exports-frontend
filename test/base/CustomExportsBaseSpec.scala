@@ -127,19 +127,21 @@ trait CustomExportsBaseSpec extends PlaySpec
       .withJsonBody(body).copyFakeRequest(tags = tags)
   }
 
-  protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
-
   def withCaching[T](form: Option[Form[T]]) = {
-    when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(), any()))
+    when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(),any()))
       .thenReturn(Future.successful(form))
 
     when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(CacheMap("id1", Map.empty)))
   }
 
-  def withCaching[T](data: Option[T], id: String) =
+  def withCaching[T](data: Option[T], id: String) = {
     when(mockCustomsCacheService.fetchAndGetEntry[T](ArgumentMatchers.eq(appConfig.appName), ArgumentMatchers.eq(id))(any(), any(), any()))
       .thenReturn(Future.successful(data))
+
+    when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
+      .thenReturn(Future.successful(CacheMap(id, Map.empty)))
+  }
 
   def withNrsSubmission() =
     when(mockNrsService.submit(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))

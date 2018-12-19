@@ -27,7 +27,6 @@ import uk.gov.hmrc.http.logging.Authorization
 class SimpleDeclarationControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/simple-declaration")
-  implicit val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(randomString(255))), nsStamp = DateTime.now().getMillis)
 
   "SimpleDeclaration" should {
     "return 200 with a success" in {
