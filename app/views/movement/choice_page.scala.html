@@ -22,21 +22,21 @@
 @(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("movement.choice.description"),
-appConfig = appConfig
+    title = messages("movement.choice.description"),
+    appConfig = appConfig
 ) {
 
-@helpers.form(MovementController.sendChoice(), 'autoComplete -> "off") {
-@components.back_link("start")
+    @helpers.form(MovementController.sendChoice(), 'autoComplete -> "off") {
+        @components.back_link("start")
 
-@components.heading("", "movement.choice.description")
+        @components.heading("", "movement.choice.description")
 
-@components.input_radio(
-field = form("choice"),
-legend = "",
-inputs = Seq(RadioOption("arrival", "EAL", messages("movement.choice.EAL")), RadioOption("departure", "EDL", messages("movement.choice.EDL")))
-)
+        @components.input_radio(
+            field = form("choice"),
+            legend = "",
+            inputs = Seq(RadioOption("arrival", "EAL", messages("movement.choice.EAL")), RadioOption("departure", "EDL", messages("movement.choice.EDL")))
+        )
 
-@components.submit_button()
-}
+        @components.submit_button()
+    }
 }

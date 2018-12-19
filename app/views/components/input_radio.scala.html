@@ -17,12 +17,12 @@
 @import utils.RadioOption
 
 @(
-field: Field,
-legend: String,
-legendClass: Option[String] = None,
-hint: Option[String] = None,
-trackGa: Boolean = false,
-inputs: Seq[RadioOption]
+    field: Field,
+    legend: String,
+    legendClass: Option[String] = None,
+    hint: Option[String] = None,
+    trackGa: Boolean = false,
+    inputs: Seq[RadioOption]
 )(implicit messages: Messages)
 
 <div class="form-field @if(field.hasErrors){form-field--error}">

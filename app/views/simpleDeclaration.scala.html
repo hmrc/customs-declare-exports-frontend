@@ -27,146 +27,146 @@
 }
 
 @main_template(
-title = messages("consignment.title"),
-appConfig = appConfig,
-bodyClasses = None) {
+    title = messages("consignment.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
 
 
-@helpers.form(action = SimpleDeclarationController.onSubmit(), 'autoComplete -> "off") {
-@components.back_link("dashboard")
+    @helpers.form(action = SimpleDeclarationController.onSubmit(), 'autoComplete -> "off") {
+        @components.back_link("dashboard")
 
-@components.error_summary(form.errors)
+        @components.error_summary(form.errors)
 
-@components.heading("simpleDeclaration.title", "simpleDeclaration.heading")
+        @components.heading("simpleDeclaration.title", "simpleDeclaration.heading")
 
-@components.countryField(form, "countryCode", "Country", countries)
+        @components.countryField(form, "countryCode", "Country", countries)
 
-@inputText("countryCode-auto-complete",
-"cds.matching.individual.countryCode-auto-complete",
-'autocomplete -> "off",
-'_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
-'spellcheck -> "false",
-'ariaautocomplete -> "list",
-'ariahaspopup -> "true",
-'ariaowns -> "suggestions-list",
-'ariaactivedescendant -> "true",
-'otherErrorFields -> Seq("countryCode"))
+        @inputText("countryCode-auto-complete",
+        "cds.matching.individual.countryCode-auto-complete",
+        'autocomplete -> "off",
+        '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
+        'spellcheck -> "false",
+        'ariaautocomplete -> "list",
+        'ariahaspopup -> "true",
+        'ariaowns -> "suggestions-list",
+        'ariaactivedescendant -> "true",
+        'otherErrorFields -> Seq("countryCode"))
 
-@components.input_text(
-field = form("ducr"),
-label = messages("consignment.ducr")
-)
+        @components.input_text(
+            field = form("ducr"),
+            label = messages("consignment.ducr")
+        )
 
-@components.input_radio(
-field = form("isConsolidateDucrToWiderShipment"),
-legend = "Is consolidate DUCR to wider shipment?",
-inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
-)
+        @components.input_radio(
+            field = form("isConsolidateDucrToWiderShipment"),
+            legend = "Is consolidate DUCR to wider shipment?",
+            inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
+        )
 
-@components.input_text(
-field = form("mucr"),
-label = messages("consignment.mucr")
-)
+        @components.input_text(
+            field = form("mucr"),
+            label = messages("consignment.mucr")
+        )
 
-@components.input_radio(
-field = form("isDeclarationForSomeoneElse"),
-legend = "Are you making this declaration for someone else?",
-inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("isDeclarationForSomeoneElse", "false", "No"))
-)
+        @components.input_radio(
+            field = form("isDeclarationForSomeoneElse"),
+            legend = "Are you making this declaration for someone else?",
+            inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("isDeclarationForSomeoneElse", "false", "No"))
+        )
 
-Scanda Pottery Supplies<br>
-Unit 20 Scanda Road Industrial Estate<br>
-Scanda Road<br>
-Manchester<br>
-MA1 3QD<br>
-United Kingdom<br><br>
+        Scanda Pottery Supplies<br>
+        Unit 20 Scanda Road Industrial Estate<br>
+        Scanda Road<br>
+        Manchester<br>
+        MA1 3QD<br>
+        United Kingdom<br><br>
 
-GB123456789<br><br>
+        GB123456789<br><br>
 
-@components.input_radio(
-field = form("isAddressAndEORICorrect"),
-legend = "Are these correct?",
-inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
-)
+        @components.input_radio(
+            field = form("isAddressAndEORICorrect"),
+            legend = "Are these correct?",
+            inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
+        )
 
-@components.input_radio(
-field = form("haveRepresentative"),
-legend = "Do you have a representative?",
-inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
-)
+        @components.input_radio(
+            field = form("haveRepresentative"),
+            legend = "Do you have a representative?",
+            inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
+        )
 
-Scanda Pottery Supplies<br>
-Unit 20 Scanda Road Industrial Estate<br>
-Scanda Road<br>
-Manchester<br>
-MA1 3QD<br>
-United Kingdom<br><br>
+        Scanda Pottery Supplies<br>
+        Unit 20 Scanda Road Industrial Estate<br>
+        Scanda Road<br>
+        Manchester<br>
+        MA1 3QD<br>
+        United Kingdom<br><br>
 
-GB123456789<br><br>
+        GB123456789<br><br>
 
-@components.input_radio(
-field = form("isConsignorAddressAndEORICorrect"),
-legend = "Are these correct?",
-inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
-)
+        @components.input_radio(
+            field = form("isConsignorAddressAndEORICorrect"),
+            legend = "Are these correct?",
+            inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
+        )
 
-@components.simpleDeclarationAddress(form)
+        @components.simpleDeclarationAddress(form)
 
-@components.input_radio(
-field = form("isFinalDestination"),
-legend = "Is this the final destination of your goods?",
-inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
-)
+        @components.input_radio(
+            field = form("isFinalDestination"),
+            legend = "Is this the final destination of your goods?",
+            inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
+        )
 
-@components.goods_package(form)
+        @components.goods_package(form)
 
-@components.input_radio(
-field = form("doYouKnowCustomsProcedureCode"),
-legend = "Do you know customs procedure code?",
-inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
-)
+        @components.input_radio(
+            field = form("doYouKnowCustomsProcedureCode"),
+            legend = "Do you know customs procedure code?",
+            inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
+        )
 
-@components.input_text(
-field = form("customsProcedure"),
-label = messages("Customs Procedure")
-)
+        @components.input_text(
+            field = form("customsProcedure"),
+            label = messages("Customs Procedure")
+        )
 
-@components.input_radio(
-field = form("wasPreviousCustomsProcedure"),
-legend = "Was previous customs procedure?",
-inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
-)
+        @components.input_radio(
+            field = form("wasPreviousCustomsProcedure"),
+            legend = "Was previous customs procedure?",
+            inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
+        )
 
-@components.input_text(
-field = form("additionalCustomsProcedure"),
-label = messages("Additional customs procedure")
-)
+        @components.input_text(
+            field = form("additionalCustomsProcedure"),
+            label = messages("Additional customs procedure")
+        )
 
-@components.input_radio(
-field = form("doYouWantAddAdditionalInformation"),
-legend = "Was previous customs procedure?",
-inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
-)
+        @components.input_radio(
+            field = form("doYouWantAddAdditionalInformation"),
+            legend = "Was previous customs procedure?",
+            inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
+        )
 
-@components.input_radio(
-field = form("addAnotherItem"),
-legend = "Do you want to add another item?",
-inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
-)
+        @components.input_radio(
+            field = form("addAnotherItem"),
+            legend = "Do you want to add another item?",
+            inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
+        )
 
-@components.input_text(
-field = form("officeOfExit"),
-label = messages("Where is office of exit?")
-)
+        @components.input_text(
+            field = form("officeOfExit"),
+            label = messages("Where is office of exit?")
+        )
 
-@components.input_radio(
-field = form("knowConsignmentDispatchCountry"),
-legend = "Do you know consignment dispatch country?",
-inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
-)
+        @components.input_radio(
+            field = form("knowConsignmentDispatchCountry"),
+            legend = "Do you know consignment dispatch country?",
+            inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
+        )
 
-@components.submit_button()
+        @components.submit_button()
+    }
 }
-}
 
-<script src="@routes.Assets.versioned(" javascripts/countries.js")" type="application/javascript"></script>
+<script src="@routes.Assets.versioned("javascripts/countries.js")" type="application/javascript"></script>

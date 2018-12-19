@@ -15,12 +15,12 @@
  *@
 
 @(
-field: Field,
-label: String,
-secondaryLabel: Option[String] = None,
-inputClass: Option[String] = None,
-hint: Option[String] = None,
-charLimit: Option[Int] = None
+    field: Field,
+    label: String,
+    secondaryLabel: Option[String] = None,
+    inputClass: Option[String] = None,
+    hint: Option[String] = None,
+    charLimit: Option[Int] = None
 )(implicit messages: Messages)
 
 <div class="form-field @if(field.hasErrors){form-field--error}">

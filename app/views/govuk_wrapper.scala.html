@@ -15,78 +15,78 @@
  *@
 
 @(appConfig: config.AppConfig,
-title: String,
-mainClass: Option[String] = None,
-mainDataAttributes: Option[Html] = None,
-bodyClasses: Option[String] = None,
-sidebar: Html = HtmlFormat.empty,
-contentHeader: Option[Html] = None,
-mainContent: Html = HtmlFormat.empty,
-serviceInfoContent: Html = HtmlFormat.empty,
-scriptElem: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+  title: String,
+  mainClass: Option[String] = None,
+  mainDataAttributes: Option[Html] = None,
+  bodyClasses: Option[String] = None,
+  sidebar: Html = HtmlFormat.empty,
+  contentHeader: Option[Html] = None,
+  mainContent: Html = HtmlFormat.empty,
+  serviceInfoContent: Html = HtmlFormat.empty,
+  scriptElem: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
 @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
 
 @head = {
-@uiLayouts.head(
-linkElem = None,
-headScripts = None)
-<meta name="format-detection" content="telephone=no"/>
-<link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/customsdecexfrontend-app.css")'/>
+    @uiLayouts.head(
+      linkElem = None,
+      headScripts = None)
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/customsdecexfrontend-app.css")' />
 }
 
 @headerNavLinks = {}
 
 @insideHeader = {
-@uiLayouts.header_nav(
-navTitle = Some(messages("site.service_name")),
-navTitleLink = None,
-showBetaLink = false,
-navLinks = Some(headerNavLinks))
+    @uiLayouts.header_nav(
+      navTitle = Some(messages("site.service_name")),
+      navTitleLink = None,
+      showBetaLink = false,
+      navLinks = Some(headerNavLinks))
 }
 
 @afterHeader = {}
 
 @bodyEnd = {
-@uiLayouts.footer(
-analyticsToken = Some(appConfig.analyticsToken),
-analyticsHost = appConfig.analyticsHost,
-ssoUrl = None,
-scriptElem = scriptElem,
-gaCalls = None)
-<script src='@routes.Assets.versioned("javascripts/customsdecexfrontend-app.min.js")'></script>
+    @uiLayouts.footer(
+      analyticsToken = Some(appConfig.analyticsToken),
+      analyticsHost = appConfig.analyticsHost,
+      ssoUrl = None,
+      scriptElem = scriptElem,
+      gaCalls = None)
+      <script src='@routes.Assets.versioned("javascripts/customsdecexfrontend-app.min.js")'> </script>
 }
 
 @footerTop = {}
 @footerLinks = {}
 
 @serviceInfo = {
-@uiLayouts.serviceInfo(
-betaBanner = HtmlFormat.empty,
-includeGridWrapper = false,
-serviceInfoContent = Some(serviceInfoContent))
+    @uiLayouts.serviceInfo(
+      betaBanner = HtmlFormat.empty,
+      includeGridWrapper = false,
+      serviceInfoContent = Some(serviceInfoContent))
 }
 
 @mainContentHeader = {
 
-@if(contentHeader.isDefined) {
-@uiLayouts.main_content_header(contentHeader = contentHeader.get)
-}
+    @if(contentHeader.isDefined) {
+        @uiLayouts.main_content_header(contentHeader = contentHeader.get)
+    }
 }
 
 @getHelpForm = @{HtmlFormat.empty}
 
 @content = {
-@uiLayouts.main_content(
-article = mainContent,
-mainClass = mainClass,
-mainDataAttributes = mainDataAttributes,
-mainContentHeader = mainContentHeader,
-serviceInfo = serviceInfo,
-getHelpForm = getHelpForm,
-sidebar = sidebar)
+    @uiLayouts.main_content(
+      article = mainContent,
+      mainClass = mainClass,
+      mainDataAttributes = mainDataAttributes,
+      mainContentHeader = mainContentHeader,
+      serviceInfo = serviceInfo,
+      getHelpForm = getHelpForm,
+      sidebar = sidebar)
 }
 
 @hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)

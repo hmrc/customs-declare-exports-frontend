@@ -19,47 +19,44 @@
 @(appConfig: AppConfig, conversationId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("confirmationPage.title"),
-appConfig = appConfig,
-bodyClasses = None) {
+    title = messages("confirmationPage.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
 
-<form class="form" action="dashboard">
+    <form class="form" action="dashboard">
 
-    <div class="phase-banner">
-        <p>
-            <strong class="phase-tag">ALPHA</strong>
-            <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
-        </p>
-    </div>
-
-    <div class="grid-row">
-        <div class="column-two-thirds">
-
-            <div class="govuk-box-highlight">
-                <h1 class="heading-xlarge">
-                    Full Declaration submitted
-                </h1>
-                <p class="font-large">
-                    Your reference number is <br>
-                    <strong class="bold">@conversationId</strong>
-                </p>
-            </div>
-
+        <div class="phase-banner">
             <p>
-                We have sent you a confirmation email.
+                <strong class="phase-tag">ALPHA</strong>
+                <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
             </p>
-
-            <h2 class="heading-medium">What happens next</h2>
-            <p>Your declaration will be checked by port authorities and the National Clearance Hub. They will contact
-                you if they require more information.</p>
-            <p><a href="https://www.gov.uk/service-manual/user-centred-design/resources/patterns/feedback-pages.html">What
-                did you think of this service?</a> (takes 30 seconds)</p>
-
-            <br>
-            <p><a class="button button-start" href="/customs-declare-exports/simple-declaration" role="button">Back to
-                dashboard</a></p>
         </div>
-    </div>
 
-</form>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+
+                <div class="govuk-box-highlight">
+                    <h1 class="heading-xlarge">
+                        Full Declaration submitted
+                    </h1>
+                    <p class="font-large">
+                        Your reference number is <br>
+                        <strong class="bold">@conversationId</strong>
+                    </p>
+                </div>
+
+                <p>
+                    We have sent you a confirmation email.
+                </p>
+
+                <h2 class="heading-medium">What happens next</h2>
+                <p>Your declaration will be checked by port authorities and the National Clearance Hub. They will contact you if they require more information.</p>
+                <p><a href="https://www.gov.uk/service-manual/user-centred-design/resources/patterns/feedback-pages.html">What did you think of this service?</a> (takes 30 seconds)</p>
+
+                <br>
+                <p><a class="button button-start" href="/customs-declare-exports/simple-declaration" role="button">Back to dashboard</a></p>
+            </div>
+        </div>
+
+    </form>
 }
