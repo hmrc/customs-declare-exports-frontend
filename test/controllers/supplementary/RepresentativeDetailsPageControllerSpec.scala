@@ -18,6 +18,7 @@ package controllers.supplementary
 
 
 import base.CustomExportsBaseSpec
+import base.TestHelper._
 import forms.supplementary.RepresentativeDetails.StatusCodes._
 import forms.supplementary.{AddressAndIdentification, RepresentativeDetails}
 import org.mockito.ArgumentMatchers
@@ -29,7 +30,6 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
-import scala.util.Random
 
 class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
@@ -344,6 +344,4 @@ object RepresentativeDetailsPageControllerSpec {
       "statusCode" -> JsString("")
     )
   )
-
-  private def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
 }

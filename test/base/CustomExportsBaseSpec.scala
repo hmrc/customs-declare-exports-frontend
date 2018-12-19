@@ -48,7 +48,6 @@ import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Random
 
 trait CustomExportsBaseSpec extends PlaySpec
   with GuiceOneAppPerSuite
@@ -123,8 +122,6 @@ trait CustomExportsBaseSpec extends PlaySpec
       .withSession(session.toSeq: _*).copyFakeRequest(tags = tags)
       .withJsonBody(body)
   }
-
-  protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
 
   def withCaching[T](form: Option[Form[T]]) = {
     when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(),any()))

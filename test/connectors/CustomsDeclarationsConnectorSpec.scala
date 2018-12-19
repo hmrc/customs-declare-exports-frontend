@@ -18,6 +18,7 @@ package connectors
 
 import java.util.UUID
 
+import base.TestHelper._
 import base.{CustomExportsBaseSpec, MockHttpClient}
 import models.CustomsDeclarationsResponse
 import play.api.http.Status._
