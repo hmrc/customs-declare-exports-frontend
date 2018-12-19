@@ -18,7 +18,7 @@ package forms.supplementary
 
 import org.scalatest.{MustMatchers, WordSpec}
 
-class AddressSpec extends WordSpec with MustMatchers {
+class AddressAndIdentificationSpec extends WordSpec with MustMatchers {
 
   val eori = "GB111222333444"
   val fullName = "Full name"
@@ -27,8 +27,8 @@ class AddressSpec extends WordSpec with MustMatchers {
   val postCode = "Postcode"
   val country = "UK"
 
-  val address: Address =
-    Address(
+  val address: AddressAndIdentification =
+    AddressAndIdentification(
       eori = eori,
       fullName = fullName,
       addressLine = addressLine,
@@ -59,11 +59,11 @@ class AddressSpec extends WordSpec with MustMatchers {
 
   "Address" should {
     "correctly convert address to consignor address properties" in {
-      Address.toConsignorMetadataProperties(address) must be(consignorAddressProperties)
+      AddressAndIdentification.toConsignorMetadataProperties(address) must be(consignorAddressProperties)
     }
 
     "correctly convert address to declarant address properties" in {
-      Address.toDeclarantMetadataProperties(address) must be(declarantAddressProperties)
+      AddressAndIdentification.toDeclarantMetadataProperties(address) must be(declarantAddressProperties)
     }
   }
 }

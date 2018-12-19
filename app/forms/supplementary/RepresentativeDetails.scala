@@ -21,7 +21,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
 case class RepresentativeDetails(
-  address: Address,
+  address: AddressAndIdentification,
   statusCode: String  //  numeric, [2] or [3]
 ) {
 
@@ -47,7 +47,7 @@ object RepresentativeDetails {
   val formId = "RepresentativeDetails"
 
   val mapping = Forms.mapping(
-    "address" -> Address.addressMapping,
+    "address" -> AddressAndIdentification.addressMapping,
     "statusCode" -> text().verifying("supplementary.representative.representationType.error.empty",
       input => input.nonEmpty && representativeStatusCodeAllowedValues(input))
   )(RepresentativeDetails.apply)(RepresentativeDetails.unapply)

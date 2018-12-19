@@ -29,7 +29,7 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
   private val statusCode = "2"
 
   private val representativeAddress: RepresentativeDetails = RepresentativeDetails(
-    address = Address(
+    address = AddressAndIdentification(
       eori = eori,
       fullName = fullName,
       addressLine = addressLine,

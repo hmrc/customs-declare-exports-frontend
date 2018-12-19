@@ -19,7 +19,7 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import forms.supplementary.RepresentativeDetails.StatusCodes._
-import forms.supplementary.{Address, RepresentativeDetails}
+import forms.supplementary.{AddressAndIdentification, RepresentativeDetails}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
@@ -129,7 +129,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
     "populate the form fields with data from cache" in {
       val representativeAddress = RepresentativeDetails(
-        address = Address(
+        address = AddressAndIdentification(
           eori = "GB111222333444",
           fullName = "Full Name",
           addressLine = "Address Line",
