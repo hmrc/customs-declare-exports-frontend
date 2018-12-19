@@ -18,6 +18,7 @@ package forms.supplementary
 
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
+import play.api.data.validation.Constraints.pattern
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfNot
 
@@ -38,9 +39,11 @@ object DeclarationAdditionalActors {
 
   val formId = "DeclarationAdditionalActors"
 
+  val eoriPattern = "[0-9a-zA-Z]{1,17}"
+
   val mapping = Forms.mapping(
     "eori" -> optional(
-      text().verifying("supplementary.eori.error", input => input.length <= 17)
+      text().verifying("supplementary.eori.error", _.matches(eoriPattern))
     ),
     "partyType" -> mandatoryIfNot(
       "eori",
