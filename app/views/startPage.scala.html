@@ -22,37 +22,49 @@
 @(appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("startPage.title"),
-    appConfig = appConfig
+title = messages("startPage.title"),
+appConfig = appConfig
 ) {
-      <div class="grid-row">
-       <div class="column-two-thirds, overflow: hidden;, white-space: nowrap;">
-       <h1 class="heading-xlarge">@messages("startPage.heading")</h1>
+<div class="grid-row">
+    <div class="column-two-thirds, overflow: hidden;, white-space: nowrap;">
+        <h1 class="heading-xlarge">@messages("startPage.heading")</h1>
 
-       <p>@messages("startPage.description")</p>
-       <h3 class="heading-medium">@messages("startPage.listHeading")</h3>
-       <ul class="list list-bullet">
-        <li>@messages("startPage.listItemOne")</li>
-        <li>@messages("startPage.listItemTwoPreUrl") <a href="http://www.gov.uk/eori" target="_blank" rel="noopener noreferrer">@messages("startPage.listItemTwoUrl")</a> @messages("startPage.listItemTwoPostUrl")</li>
-        <li>@messages("startPage.listItemThree")</li>
-        <li>@messages("startPage.listItemFour") </li>
-        <li>@messages("startPage.listItemFive")</li>
-        <li>@messages("startPage.listItemSix") <a href="https://www.gov.uk/trade-tariff" target="_blank" rel="noopener noreferrer">@messages("startPage.listItemSixUrl")</a></li>
-        <li><a href="https://www.gov.uk/government/publications/uk-trade-tariff-customs-procedure-codes/customs-procedure-codes-box-37" target="_blank" rel="noopener noreferrer">@messages("startPage.listItemSevenUrl")</a> @messages("startPage.listItemSeven")</li>
-       </ul>
+        <p>@messages("startPage.description")</p>
+        <h3 class="heading-medium">@messages("startPage.listHeading")</h3>
+        <ul class="list list-bullet">
+            <li>@messages("startPage.listItemOne")</li>
+            <li>@messages("startPage.listItemTwoPreUrl") <a href="http://www.gov.uk/eori" target="_blank"
+                                                            rel="noopener noreferrer">@messages("startPage.listItemTwoUrl")</a>
+                @messages("startPage.listItemTwoPostUrl")
+            </li>
+            <li>@messages("startPage.listItemThree")</li>
+            <li>@messages("startPage.listItemFour")</li>
+            <li>@messages("startPage.listItemFive")</li>
+            <li>@messages("startPage.listItemSix") <a href="https://www.gov.uk/trade-tariff" target="_blank"
+                                                      rel="noopener noreferrer">@messages("startPage.listItemSixUrl")</a>
+            </li>
+            <li>
+                <a href="https://www.gov.uk/government/publications/uk-trade-tariff-customs-procedure-codes/customs-procedure-codes-box-37"
+                   target="_blank" rel="noopener noreferrer">@messages("startPage.listItemSevenUrl")</a>
+                @messages("startPage.listItemSeven")
+            </li>
+        </ul>
 
-       <p><a class="button button-start" href="@MovementController.displayChoiceForm" role="button">@messages("startPage.buttonName")</a></p>
+        <p><a class="button button-start" href="@MovementController.displayChoiceForm" role="button">@messages("startPage.buttonName")</a>
+        </p>
 
-       <p>@messages("startPage.additionalInformation")</p>
+        <p>@messages("startPage.additionalInformation")</p>
 
-      <div class="form-group">
-      <h2 class="heading-medium">@messages("startPage.referenceTitle")</h2>
-      <p>
-          @messages("startPage.reference") <b>@messages("startPage.reference.number")</b> <br>
-          @messages("startPage.reference.text")
-      </p>
-          <p><a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries" target="_blank" rel="noopener noreferrer">@messages("startPage.enquiries")</a></p>
-      </div>
-     </div>
+        <div class="form-group">
+            <h2 class="heading-medium">@messages("startPage.referenceTitle")</h2>
+            <p>
+                @messages("startPage.reference") <b>@messages("startPage.reference.number")</b> <br>
+                @messages("startPage.reference.text")
+            </p>
+            <p>
+                <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries"
+                   target="_blank" rel="noopener noreferrer">@messages("startPage.enquiries")</a></p>
+        </div>
     </div>
+</div>
 }

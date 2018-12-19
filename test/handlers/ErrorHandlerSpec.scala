@@ -15,10 +15,12 @@
  */
 
 package handlers
+
 import base.CustomExportsBaseSpec
 import play.api.http.{HeaderNames, Status}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
+
 class ErrorHandlerSpec extends CustomExportsBaseSpec {
 
   val errorHandler = new ErrorHandler(appConfig, messagesApi)
@@ -27,9 +29,9 @@ class ErrorHandlerSpec extends CustomExportsBaseSpec {
     "standardErrorTemplate" in {
       val result = errorHandler.standardErrorTemplate("Page Title", "Heading", "Message")(FakeRequest()).body
 
-      result must include ("Page Title")
-      result must include ("Heading")
-      result must include ("Message")
+      result must include("Page Title")
+      result must include("Heading")
+      result must include("Message")
     }
   }
   "resolve error" should {

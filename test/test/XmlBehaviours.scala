@@ -22,8 +22,8 @@ import javax.xml.XMLConstants
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.{Schema, SchemaFactory}
-import uk.gov.hmrc.wco.dec.MetaData
 import org.scalatestplus.play.PlaySpec
+import uk.gov.hmrc.wco.dec.MetaData
 
 import scala.xml.{Elem, SAXException, XML}
 
@@ -35,6 +35,7 @@ object XmlBehaviours extends PlaySpec {
   def validXmlScenario(schemas: Seq[String] = Seq.empty)(test: => Elem): Unit = {
     validateAgainstSchemaResources(test.mkString, schemas)
   }
+
   def validDeclarationXmlScenario()(test: => Elem): Unit = {
     validXmlScenario(importDeclarationSchemaResources)(test)
   }

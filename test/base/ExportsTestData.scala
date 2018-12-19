@@ -18,7 +18,14 @@ package base
 
 import forms.MovementFormsAndIds._
 import forms.{ChoiceForm, GoodsDateForm}
+import models.{IdentityData, SignedInUser}
+import org.joda.time.DateTimeZone.UTC
+import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json._
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
+import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
+import uk.gov.hmrc.auth.core.retrieve._
+import uk.gov.hmrc.auth.core.{Enrolment, Enrolments, User}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
@@ -26,6 +33,56 @@ import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMov
 import scala.util.Random
 
 object ExportsTestData {
+
+  val nrsCredentials = Credentials(providerId = "providerId", providerType = "providerType")
+  val nrsGroupIdentifierValue = Some("groupIdentifierValue")
+  val nrsCredentialRole = Some(User)
+  val nrsMdtpInformation = MdtpInformation("deviceId", "sessionId")
+  val nrsItmpName = ItmpName(Some("givenName"),
+    Some("middleName"),
+    Some("familyName"))
+  val nrsItmpAddress = ItmpAddress(Some("line1"),
+    Some("line2"),
+    Some("line3"),
+    Some("line4"),
+    Some("line5"),
+    Some("postCode"),
+    Some("countryName"),
+    Some("countryCode"))
+  val nrsAffinityGroup = Some(Individual)
+  val nrsCredentialStrength = Some("STRONG")
+  val nrsDateOfBirth = Some(LocalDate.now().minusYears(25))
+
+  val currentLoginTime: DateTime = new DateTime(1530442800000L, UTC)
+  val previousLoginTime: DateTime = new DateTime(1530464400000L, UTC)
+  val nrsTimeStamp: DateTime = new DateTime(1530475200000L, UTC)
+
+  val nrsLoginTimes = LoginTimes(currentLoginTime, Some(previousLoginTime))
+
+
+  def newUser(eori: String, externalId: String): SignedInUser = SignedInUser(
+    eori,
+    Enrolments(Set(
+      Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori)
+    )),
+    IdentityData(
+      Some("Int-ba17b467-90f3-42b6-9570-73be7b78eb2b"),
+      Some(externalId),
+      None,
+      Some(nrsCredentials),
+      Some(L50),
+      None,
+      None,
+      Some(Name(Some("Aldo"), Some("Rain"))),
+      Some(LocalDate.now().minusYears(25)),
+      Some("amina@hmrc.co.uk"),
+      Some(AgentInformation(Some("agentId"),
+        Some("agentCode"),
+        Some("agentFriendlyName"))),
+      None, None, None, None, None, None, None,
+      Some("crdentialStrength 50"),
+      Some(LoginTimes(DateTime.now, None))
+    ))
 
   val addressJson: JsValue = JsObject(
     Map(
@@ -186,14 +243,14 @@ object ExportsTestData {
 
   val choiceForm = Json.toJson(ChoiceForm("EAL"))
 
-  def getMovementCacheMap(id:String, movementType:String) = {
+  def getMovementCacheMap(id: String, movementType: String) = {
 
     val data = Map(choiceId -> Json.toJson(ChoiceForm(movementType)),
       enterDucrId -> correctDucrJson,
-      goodsDateId -> Json.toJson(GoodsDateForm("01","02","2020",None,None)),
-        locationId -> location,
-        transportId -> correctTransport)
-    CacheMap(id,data)
+      goodsDateId -> Json.toJson(GoodsDateForm("01", "02", "2020", None, None)),
+      locationId -> location,
+      transportId -> correctTransport)
+    CacheMap(id, data)
   }
 
   val correctDeclarationType: JsValue = JsObject(
@@ -238,3 +295,4 @@ object ExportsTestData {
     )
   )
 }
+

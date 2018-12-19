@@ -72,7 +72,7 @@ object GoodsDateForm {
     "day" -> text().verifying("Day is incorrect", days.contains(_)),
     "month" -> text().verifying("Month is incorrect", months.contains(_)),
     "year" -> text().verifying("Year is incorrect",
-      year => if(year.isEmpty) false else year.toInt >= LocalDateTime.now().getYear),
+      year => if (year.isEmpty) false else year.toInt >= LocalDateTime.now().getYear),
     "hour" -> optional(text().verifying("Hour is incorrect", hours.contains(_))),
     "minute" -> optional(text().verifying("Minutes are incorrect", minutes.contains(_)))
   )(GoodsDateForm.apply)(GoodsDateForm.unapply)

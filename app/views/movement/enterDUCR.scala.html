@@ -21,20 +21,20 @@
 @(appConfig: AppConfig, form: Form[_], movementType: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages(s"movement.${movementType}"),
-    appConfig = appConfig
+title = messages(s"movement.${movementType}"),
+appConfig = appConfig
 ) {
-    @helpers.form(MovementController.saveDucr(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/choice")
+@helpers.form(MovementController.saveDucr(), 'autoComplete -> "off") {
+@components.back_link("/customs-declare-exports/choice")
 
-        @components.heading("", s"${messages("movement.ducr")}" + s" ${messages("movement.choice." + movementType)}")
+@components.heading("", s"${messages("movement.ducr")}" + s" ${messages("movement.choice." + movementType)}")
 
-        @components.input_text(
-            field = form("ducr"),
-            label = messages("movement.ducr.label"),
-            hint = Some(messages("movement.hint.todo"))
-        )
+@components.input_text(
+field = form("ducr"),
+label = messages("movement.ducr.label"),
+hint = Some(messages("movement.hint.todo"))
+)
 
-        @components.submit_button()
-    }
+@components.submit_button()
+}
 }

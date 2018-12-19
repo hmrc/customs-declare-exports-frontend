@@ -22,18 +22,18 @@
 @(appConfig: AppConfig, form: Form[Address])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.declarant.add"),
-    appConfig = appConfig
+title = messages("supplementary.declarant.add"),
+appConfig = appConfig
 ) {
-    @helpers.form(DeclarantAddressController.saveAddress(), 'autoComplete -> "off") {
-        @components.back_link("consignor-address")
+@helpers.form(DeclarantAddressController.saveAddress(), 'autoComplete -> "off") {
+@components.back_link("consignor-address")
 
-        @components.error_summary(form.errors)
+@components.error_summary(form.errors)
 
-        @components.page_title("supplementary.declarant.add", "supplementary.declarant.add.hint")
+@components.page_title("supplementary.declarant.add", "supplementary.declarant.add.hint")
 
-        @components.address(form)
+@components.address(form)
 
-        @components.submit_button()
-    }
+@components.submit_button()
+}
 }

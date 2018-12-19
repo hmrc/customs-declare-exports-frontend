@@ -26,15 +26,15 @@ class MovementSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
 
   val expected = InventoryLinkingMovementRequest("EAL",
-    Some(AgentDetails(Some("eori1"),Some("Agent location"),Some("Agent role"))),
-    UcrBlock("5GB123456789000-123ABC456DEFIIIII","D"),"Goods location",
-    Some("2020-02-01T00:00:00"),None,Some("Shed"),
-    None,None,None,
-    Some(TransportDetails(Some("Transport Id"),Some("M"),Some("PL"))))
+    Some(AgentDetails(Some("eori1"), Some("Agent location"), Some("Agent role"))),
+    UcrBlock("5GB123456789000-123ABC456DEFIIIII", "D"), "Goods location",
+    Some("2020-02-01T00:00:00"), None, Some("Shed"),
+    None, None, None,
+    Some(TransportDetails(Some("Transport Id"), Some("M"), Some("PL"))))
 
   "Movements form " should {
     "create MovementRequest for an input cacheMap" in {
-       val result = Movement.createMovementRequest(getMovementCacheMap("id1","EAL"),"eori1")
+      val result = Movement.createMovementRequest(getMovementCacheMap("id1", "EAL"), "eori1")
       result must be(expected)
     }
   }

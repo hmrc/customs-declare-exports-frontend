@@ -28,13 +28,13 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       listOfNotifications()
       val result = route(app, getRequest(uri)).get
-      val stringResult =contentAsString(result)
+      val stringResult = contentAsString(result)
 
-      stringResult must include ("Notifications")
-      stringResult must include ("Name")
-      stringResult must include ("Date and time")
-      stringResult must include ("Reference")
-      stringResult must include ("Status")
+      stringResult must include("Notifications")
+      stringResult must include("Name")
+      stringResult must include("Date and time")
+      stringResult must include("Reference")
+      stringResult must include("Status")
     }
   }
 }

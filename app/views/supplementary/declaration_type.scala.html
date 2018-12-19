@@ -22,42 +22,42 @@
 @(appConfig: AppConfig, form: Form[DeclarationType])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages("supplementary.declarationTypePage.title"),
-  appConfig = appConfig
+title = messages("supplementary.declarationTypePage.title"),
+appConfig = appConfig
 ) {
 
-  @components.back_link("/customs-declare-exports/start")
+@components.back_link("/customs-declare-exports/start")
 
-  @helpers.form(supplementary.routes.DeclarationTypePageController.submitDeclarationType(), 'autoComplete -> "off") {
+@helpers.form(supplementary.routes.DeclarationTypePageController.submitDeclarationType(), 'autoComplete -> "off") {
 
-    @components.error_summary(form.errors)
+@components.error_summary(form.errors)
 
-    @components.page_title(
-      "supplementary.declarationTypePage.heading",
-      "supplementary.declarationTypePage.heading.secondary"
-    )
+@components.page_title(
+"supplementary.declarationTypePage.heading",
+"supplementary.declarationTypePage.heading.secondary"
+)
 
-    @components.input_radio(
-      field = form("declarationType"),
-      legend = messages("supplementary.declarationTypePage.inputText.declarationType"),
-      hint = Some(messages("supplementary.declarationTypePage.inputText.declarationType.hint")),
-      inputs = Seq(
-        RadioOption("ex", "EX", messages("supplementary.declarationTypePage.inputText.declarationType.ex")),
-        RadioOption("co", "CO", messages("supplementary.declarationTypePage.inputText.declarationType.co"))
-      )
-    )
+@components.input_radio(
+field = form("declarationType"),
+legend = messages("supplementary.declarationTypePage.inputText.declarationType"),
+hint = Some(messages("supplementary.declarationTypePage.inputText.declarationType.hint")),
+inputs = Seq(
+RadioOption("ex", "EX", messages("supplementary.declarationTypePage.inputText.declarationType.ex")),
+RadioOption("co", "CO", messages("supplementary.declarationTypePage.inputText.declarationType.co"))
+)
+)
 
-    @components.input_radio(
-      field = form("additionalDeclarationType"),
-      legend = messages("supplementary.declarationTypePage.inputText.additionalDeclarationType"),
-      hint = Some(messages("supplementary.declarationTypePage.inputText.additionalDeclarationType.hint")),
-      inputs = Seq(
-        RadioOption("y", "Y", messages("supplementary.declarationTypePage.inputText.additionalDeclarationType.y")),
-        RadioOption("z", "Z", messages("supplementary.declarationTypePage.inputText.additionalDeclarationType.z"))
-      )
-    )
+@components.input_radio(
+field = form("additionalDeclarationType"),
+legend = messages("supplementary.declarationTypePage.inputText.additionalDeclarationType"),
+hint = Some(messages("supplementary.declarationTypePage.inputText.additionalDeclarationType.hint")),
+inputs = Seq(
+RadioOption("y", "Y", messages("supplementary.declarationTypePage.inputText.additionalDeclarationType.y")),
+RadioOption("z", "Z", messages("supplementary.declarationTypePage.inputText.additionalDeclarationType.z"))
+)
+)
 
-    @components.submit_button()
-  }
+@components.submit_button()
+}
 
 }

@@ -2,13 +2,13 @@ import com.typesafe.sbt.digest.Import._
 import com.typesafe.sbt.uglify.Import._
 import com.typesafe.sbt.web.Import._
 import net.ground5hark.sbt.concat.Import._
+import play.sbt.routes._
 import sbt.Keys._
 import sbt._
-import play.sbt.routes._
 import uk.gov.hmrc.DefaultBuildSettings._
-import uk.gov.hmrc.{SbtAutoBuildPlugin, SbtArtifactory}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning
+import uk.gov.hmrc.{SbtArtifactory, SbtAutoBuildPlugin}
 
 val appName = "customs-declare-exports-frontend"
 

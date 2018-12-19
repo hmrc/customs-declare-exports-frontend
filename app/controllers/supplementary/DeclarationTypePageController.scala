@@ -43,7 +43,7 @@ class DeclarationTypePageController @Inject()(
   def displayDeclarationTypePage(): Action[AnyContent] = authenticator.async { implicit request =>
     customsCacheService.fetchAndGetEntry[DeclarationType](supplementaryDeclarationCacheId, DeclarationType.formId).map {
       case Some(data) => Ok(declaration_type(appConfig, DeclarationType.form().fill(data)))
-      case _          => Ok(declaration_type(appConfig, DeclarationType.form()))
+      case _ => Ok(declaration_type(appConfig, DeclarationType.form()))
     }
   }
 

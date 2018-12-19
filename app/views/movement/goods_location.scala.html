@@ -21,21 +21,21 @@
 @(appConfig: AppConfig, form: Form[_], movementType: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages(s"movement.${movementType}"),
-    appConfig = appConfig
+title = messages(s"movement.${movementType}"),
+appConfig = appConfig
 ) {
-    @helpers.form(MovementController.saveLocation(), 'autoComplete -> "off") {
-        @components.back_link("goodsDate")
+@helpers.form(MovementController.saveLocation(), 'autoComplete -> "off") {
+@components.back_link("goodsDate")
 
-        @components.error_summary(form.errors)
+@components.error_summary(form.errors)
 
-        @components.heading("", s"${messages("movement.choice." + movementType + ".heading")}")
+@components.heading("", s"${messages("movement.choice." + movementType + ".heading")}")
 
-        Cali-Soul Crafts - 8GB123456123456 163278
+Cali-Soul Crafts - 8GB123456123456 163278
 
-        @components.location(form)
+@components.location(form)
 
-        @components.submit_button()
-    }
+@components.submit_button()
+}
 
 }

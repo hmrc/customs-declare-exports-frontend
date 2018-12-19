@@ -80,7 +80,7 @@ class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
 
       val result = route(app, postRequest(uri, correctAddress)).get
 
-      status(result) mustBe(OK)
+      status(result) mustBe (OK)
       contentAsString(result) must include("Representative identification and address")
     }
   }

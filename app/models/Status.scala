@@ -21,24 +21,26 @@ import play.api.libs.json._
 sealed trait Status
 
 object Status {
+
   implicit object StatusFormat extends Format[Status] {
     def reads(status: JsValue): JsResult[Status] = status match {
-      case JsString("Accepted")   => JsSuccess(Accepted)
-      case JsString("Arrived")    => JsSuccess(Arrived)
-      case JsString("Departed")   => JsSuccess(Departed)
-      case JsString("PreLodged")  => JsSuccess(PreLodged)
-      case JsString("Query")      => JsSuccess(Query)
-      case _                      => JsError("Incorrect value")
+      case JsString("Accepted") => JsSuccess(Accepted)
+      case JsString("Arrived") => JsSuccess(Arrived)
+      case JsString("Departed") => JsSuccess(Departed)
+      case JsString("PreLodged") => JsSuccess(PreLodged)
+      case JsString("Query") => JsSuccess(Query)
+      case _ => JsError("Incorrect value")
     }
 
     def writes(status: Status): JsValue = status match {
-      case Accepted               => JsString("Accepted")
-      case Arrived                => JsString("Arrived")
-      case Departed               => JsString("Departed")
-      case PreLodged              => JsString("PreLodged")
-      case Query                  => JsString("Query")
+      case Accepted => JsString("Accepted")
+      case Arrived => JsString("Arrived")
+      case Departed => JsString("Departed")
+      case PreLodged => JsString("PreLodged")
+      case Query => JsString("Query")
     }
   }
+
 }
 
 case object Accepted extends Status

@@ -19,10 +19,10 @@
 @(appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("unauthorised.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+title = messages("unauthorised.title"),
+appConfig = appConfig,
+bodyClasses = None) {
 
-    @components.error_heading("unauthorised.heading")
+@components.error_heading("unauthorised.heading")
 
 }

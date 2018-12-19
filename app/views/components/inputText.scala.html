@@ -17,28 +17,28 @@
 @(form: Form[_])(field: String, label: String, args: (Symbol, Any)*)(implicit request: Request[_], messages: Messages)
 
 @argsOrNone(kv: (Symbol, Any)) = @{
-    args.find(_._1 == kv._1) match {
-        case None => Some(kv)
-        case _ => None
-    }
+args.find(_._1 == kv._1) match {
+case None => Some(kv)
+case _ => None
+}
 }
 @withOtherErrors = @{
-    import views.html.helper.FieldElements
-    def fieldErrors(fld: String) = FieldElements(id = fld, form(fld), Html(""), Map.empty, messages).errors
+import views.html.helper.FieldElements
+def fieldErrors(fld: String) = FieldElements(id = fld, form(fld), Html(""), Map.empty, messages).errors
 
-    args.map {
-        case ('otherErrorFields, otherErrorFields: Seq[_]) => 'otherErrors -> otherErrorFields.flatMap(fld => fieldErrors(fld.toString))
-        case tuple => tuple
-    }
+args.map {
+case ('otherErrorFields, otherErrorFields: Seq[_]) => 'otherErrors -> otherErrorFields.flatMap(fld => fieldErrors(fld.toString))
+case tuple => tuple
+}
 }
 @defining(Seq(
-    argsOrNone('_label -> Html(messages(label))),
-    argsOrNone('_labelClass -> "form-label-bold"),
-    argsOrNone('_divClass -> "form-group"),
-    argsOrNone('_inputClass -> "form-control")).flatten ++ withOtherErrors) { args =>
+argsOrNone('_label -> Html(messages(label))),
+argsOrNone('_labelClass -> "form-label-bold"),
+argsOrNone('_divClass -> "form-group"),
+argsOrNone('_inputClass -> "form-control")).flatten ++ withOtherErrors) { args =>
 
-    @input_autocomplete(
-        form(field),
-        args: _*
-    )
+@input_autocomplete(
+form(field),
+args: _*
+)
 }

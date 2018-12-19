@@ -42,7 +42,7 @@ class DeclarantAddressController @Inject()(
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Address](appConfig.appName, formId).map {
       case Some(data) => Ok(declarant_address(appConfig, form.fill(data)))
-      case _          => Ok(declarant_address(appConfig, form))
+      case _ => Ok(declarant_address(appConfig, form))
     }
   }
 

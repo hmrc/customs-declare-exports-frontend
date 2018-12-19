@@ -20,38 +20,40 @@
 @import views.html.helper._
 
 @elements = @{
-    FieldElements(field.id, field, null, args.toMap, lang)
+FieldElements(field.id, field, null, args.toMap, lang)
 }
 @parentField = @{
-    args.toMap.get('parentField).asInstanceOf[Option[Field]]
+args.toMap.get('parentField).asInstanceOf[Option[Field]]
 }
 
 @parentElements = @{
-    parentField.map(pf => FieldElements(pf.id, pf, null, Map(), lang))
+parentField.map(pf => FieldElements(pf.id, pf, null, Map(), lang))
 }
 
 @allErrors = @{elements.errors ++ args.flatMap {
-        case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
-        case _ => Seq.empty
-    }
+case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
+case _ => Seq.empty
+}
 }
 
 @outputAttributes(elements: FieldElements)(attributeMappings: (Symbol, String)*) = @{
-    attributeMappings.flatMap{
-        case (symbol, attributeName) =>
-            elements.args.get(symbol).map(value => Html(attributeName + "=" + "\"" + value + "\" "))
-    }
+attributeMappings.flatMap{
+case (symbol, attributeName) =>
+elements.args.get(symbol).map(value => Html(attributeName + "=" + "\"" + value + "\" "))
+}
 }
 
-<div id="@elements.field.name-outer" class="@elements.args.get('_divClass) @if(allErrors.nonEmpty || (parentElements.isDefined && parentElements.get.hasErrors)) {error}">
+<div id="@elements.field.name-outer"
+     class="@elements.args.get('_divClass) @if(allErrors.nonEmpty || (parentElements.isDefined && parentElements.get.hasErrors)) {error}">
 
     <label for="@elements.field.name" @if(elements.args.get('_labelClass)) { class="@elements.args.get('_labelClass)" }>
-        @elements.label
-        @if( elements.args.get('_hintText) ) { <span class="form-hint" id="@(field.id)-hint">@elements.args.get('_hintText)</span> }
+    @elements.label
+    @if( elements.args.get('_hintText) ) { <span class="form-hint"
+                                                 id="@(field.id)-hint">@elements.args.get('_hintText)</span> }
     </label>
 
     @if(allErrors.nonEmpty) {
-        <span class="error-message">@allErrors.map { error => <span class="error-notification">@lang(error)</span> }
+    <span class="error-message">@allErrors.map { error => <span class="error-notification">@lang(error)</span> }
             @if(parentElements.isDefined) {
                 @parentElements.get.errors.map { error => <span class="error-notification">@lang(error)</span> }
             }
@@ -59,29 +61,29 @@
     }
 
     @elements.args.get('ariaautocomplete).map { _ =>
-        <div class="suggestions-input-container"> }
-            <input
+    <div class="suggestions-input-container"> }
+        <input
                 @if(elements.args.contains('_type)) {
-                    type="@elements.args.get('_type)"
-                } else {
-                    type="text"
-                }
-                @outputAttributes(elements)(
-                    '_inputClass -> "class",
-                    'autocomplete -> "autocomplete",
-                    'spellcheck -> "spellcheck",
-                    'ariaautocomplete -> "aria-autocomplete",
-                    'ariahaspopup -> "aria-haspopup",
-                    'ariaowns -> "aria-owns")
-                name="@elements.field.name"
-                id="@elements.field.name"
-                value="@elements.field.value" />
+        type="@elements.args.get('_type)"
+        } else {
+        type="text"
+        }
+        @outputAttributes(elements)(
+        '_inputClass -> "class",
+        'autocomplete -> "autocomplete",
+        'spellcheck -> "spellcheck",
+        'ariaautocomplete -> "aria-autocomplete",
+        'ariahaspopup -> "aria-haspopup",
+        'ariaowns -> "aria-owns")
+        name="@elements.field.name"
+        id="@elements.field.name"
+        value="@elements.field.value" />
 
-            @elements.args.get('ariaautocomplete).map { _ =>
-            <i class="suggestions-clear js-suggestions-clear"></i>
-            <span role="status" aria-live="polite" class="visuallyhidden js-suggestions-status-message"></span>
-            <div id="suggestions-list" class="suggestions js-suggestions"></div>
-        </div>
+        @elements.args.get('ariaautocomplete).map { _ =>
+        <i class="suggestions-clear js-suggestions-clear"></i>
+        <span role="status" aria-live="polite" class="visuallyhidden js-suggestions-status-message"></span>
+        <div id="suggestions-list" class="suggestions js-suggestions"></div>
+    </div>
     }
 
 </div>

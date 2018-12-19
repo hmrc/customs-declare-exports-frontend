@@ -19,19 +19,19 @@
 @(appConfig: AppConfig, movementType: String, ucr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages(s"movement.${movementType}.confirmation"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+title = messages(s"movement.${movementType}.confirmation"),
+appConfig = appConfig,
+bodyClasses = None) {
 
-    @components.back_link("/customs-declare-exports/choice")
+@components.back_link("/customs-declare-exports/choice")
 
-    <div class="govuk-box-highlight">
-        <h1 class="heading-xlarge">
-            @messages(s"movement.choice.${movementType}") has been submitted
-        </h1>
-        <p class="font-large">
-            UCR is<br>
-            <strong class="bold">@ucr</strong>
-        </p>
-    </div>
+<div class="govuk-box-highlight">
+    <h1 class="heading-xlarge">
+        @messages(s"movement.choice.${movementType}") has been submitted
+    </h1>
+    <p class="font-large">
+        UCR is<br>
+        <strong class="bold">@ucr</strong>
+    </p>
+</div>
 }

@@ -21,16 +21,16 @@
 
 <div class="pagination">
     <div class="pagination-summary">
-         Showing @elementsFrom - @elementsTo of @elementsNo agents
+        Showing @elementsFrom - @elementsTo of @elementsNo agents
     </div>
     <div class="pagination-buttons">
         @if(currentPage > 5){<a href="@prev5Pages" id="prev">@messages("pagination.prev")</a>}
         @for(i <- pagesFrom to pagesTo){
-            @if(i != currentPage){
-                <a href="@i" id="numbers">@i</a>
-            } else {
-                <span id="numbers">@i</span>
-            }
+        @if(i != currentPage){
+        <a href="@i" id="numbers">@i</a>
+        } else {
+        <span id="numbers">@i</span>
+        }
         }
 
         @if(noOfPages > pagesTo){<a href="@next5Pages" id="next">@messages("pagination.next")</a>}

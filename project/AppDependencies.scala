@@ -4,7 +4,7 @@ import sbt._
 
 object AppDependencies {
 
-  val jacksonVersion = "2.9.6"
+  val jacksonVersion = "2.9.7"
 
   val compile = Seq(
     ws,
@@ -23,8 +23,7 @@ object AppDependencies {
     "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
     "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonVersion,
     "com.fasterxml.jackson.dataformat" % "jackson-dataformat-xml" % jacksonVersion,
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion
-  )
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion)
 
   val test = Seq(
     "uk.gov.hmrc" %% "hmrctest" % "3.0.0" % "test",

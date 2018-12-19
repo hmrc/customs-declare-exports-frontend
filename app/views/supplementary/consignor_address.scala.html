@@ -22,18 +22,18 @@
 @(appConfig: AppConfig, form: Form[Address])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.consignor.add"),
-    appConfig = appConfig
+title = messages("supplementary.consignor.add"),
+appConfig = appConfig
 ) {
-    @helpers.form(ConsignorAddressController.saveAddress(), 'autoComplete -> "off") {
-        @components.back_link("start")
+@helpers.form(ConsignorAddressController.saveAddress(), 'autoComplete -> "off") {
+@components.back_link("start")
 
-        @components.error_summary(form.errors)
+@components.error_summary(form.errors)
 
-        @components.page_title("supplementary.consignor.add", "supplementary.consignor.add.hint")
+@components.page_title("supplementary.consignor.add", "supplementary.consignor.add.hint")
 
-        @components.address(form)
+@components.address(form)
 
-        @components.submit_button()
-    }
+@components.submit_button()
+}
 }

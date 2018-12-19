@@ -32,7 +32,7 @@ import views.html.movement._
 
 import scala.concurrent.Future
 
-class  MovementController @Inject()(
+class MovementController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -44,7 +44,7 @@ class  MovementController @Inject()(
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).map {
       case Some(data) => Ok(choice_page(appConfig, choiceForm.fill(data)))
-      case _          => Ok(choice_page(appConfig, choiceForm))
+      case _ => Ok(choice_page(appConfig, choiceForm))
     }
   }
 
@@ -62,9 +62,9 @@ class  MovementController @Inject()(
   def displayDucrPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
-        customsCacheService.fetchAndGetEntry[EnterDucrForm](appConfig.appName, enterDucrId).map{
+        customsCacheService.fetchAndGetEntry[EnterDucrForm](appConfig.appName, enterDucrId).map {
           case Some(data) => Ok(enterDUCR(appConfig, enterDucrForm.fill(data), choice.choice))
-          case _          => Ok(enterDUCR(appConfig, enterDucrForm, choice.choice))
+          case _ => Ok(enterDUCR(appConfig, enterDucrForm, choice.choice))
         }
       case _ =>
         Future.successful(
@@ -86,16 +86,16 @@ class  MovementController @Inject()(
       form =>
         customsCacheService.cache[EnterDucrForm](appConfig.appName, enterDucrId, form).map { _ =>
           Redirect(controllers.routes.MovementController.displayGoodsDate())
-      }
+        }
     )
   }
 
   def displayGoodsDate(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
-        customsCacheService.fetchAndGetEntry[GoodsDateForm](appConfig.appName, goodsDateId).map{
+        customsCacheService.fetchAndGetEntry[GoodsDateForm](appConfig.appName, goodsDateId).map {
           case Some(data) => Ok(goods_date(appConfig, goodsDateForm.fill(data), choice.choice))
-          case _          => Ok(goods_date(appConfig, goodsDateForm, choice.choice))
+          case _ => Ok(goods_date(appConfig, goodsDateForm, choice.choice))
         }
       case _ =>
         Future.successful(
@@ -126,7 +126,7 @@ class  MovementController @Inject()(
       case Some(choice) if !choice.choice.isEmpty =>
         customsCacheService.fetchAndGetEntry[LocationForm](appConfig.appName, locationId).map {
           case Some(data) => Ok(goods_location(appConfig, locationForm.fill(data), choice.choice))
-          case _          => Ok(goods_location(appConfig, locationForm, choice.choice))
+          case _ => Ok(goods_location(appConfig, locationForm, choice.choice))
         }
       case _ =>
         Future.successful(
@@ -158,7 +158,7 @@ class  MovementController @Inject()(
   def displayTransport(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[TransportForm](appConfig.appName, transportId).map {
       case Some(data) => Ok(transport(appConfig, transportForm.fill(data)))
-      case _          => Ok(transport(appConfig, transportForm))
+      case _ => Ok(transport(appConfig, transportForm))
     }
   }
 

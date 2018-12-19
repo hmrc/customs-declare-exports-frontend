@@ -30,21 +30,22 @@ import uk.gov.hmrc.play.http.ws._
 import scala.concurrent.{ExecutionContext, Future}
 
 class MockHttpClient[A](
-    expectedUrl: String,
-    expectedBody: A,
-    expectedHeaders: Map[String, String],
-    forceServerError: Boolean = false,
-    conversationId: String = UUID.randomUUID().toString,
-    eori: String = UUID.randomUUID().toString)
+  expectedUrl: String,
+  expectedBody: A,
+  expectedHeaders: Map[String, String],
+  forceServerError: Boolean = false,
+  conversationId: String = UUID.randomUUID().toString,
+  eori: String = UUID.randomUUID().toString,
+  nrsRequest: Boolean = false)
   extends HttpClient with WSGet with WSPut with WSPost with WSDelete with WSPatch {
 
   override val hooks: Seq[HttpHook] = Seq.empty
 
   //scalastyle:off method.name
   override def GET[O](url: String, headers: Seq[(String, String)])
-                     (implicit rds: HttpReads[O],
-                               hc: HeaderCarrier,
-                               ex: ExecutionContext): Future[O] = (url, headers) match {
+    (implicit rds: HttpReads[O],
+      hc: HeaderCarrier,
+      ex: ExecutionContext): Future[O] = (url, headers) match {
     case _ if !isAuthenticated(headers.toMap, hc) =>
       throw new UnauthorizedException("Get notifications request was not authenticated")
     case _ if forceServerError => throw new InternalServerException("Customs Declarations has gone bad.")
@@ -55,9 +56,9 @@ class MockHttpClient[A](
   }
 
   override def POSTString[O](url: String, body: String, headers: Seq[(String, String)])
-                            (implicit rds: HttpReads[O],
-                             hc: HeaderCarrier,
-                             ec: ExecutionContext): Future[O] = (url, body, headers) match {
+    (implicit rds: HttpReads[O],
+      hc: HeaderCarrier,
+      ec: ExecutionContext): Future[O] = (url, body, headers) match {
     case _ if !XmlBehaviours.isValidImportDeclarationXml(body) =>
       throw new BadRequestException(s"Expected: valid XML: $expectedBody. \nGot: invalid XML: $body")
     case _ if !isAuthenticated(headers.toMap, hc) =>
@@ -66,20 +67,24 @@ class MockHttpClient[A](
     case _ if url == expectedUrl && body == expectedBody && headers.toMap == expectedHeaders =>
       Future.successful(CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)).asInstanceOf[O])
     case _ =>
-      throw new BadRequestException(s"Expected: \nurl = '$expectedUrl', \nbody = '$expectedBody', \nheaders = '$expectedHeaders'.\nGot: \nurl = '$url', \nbody = '$body', \nheaders = '$headers'.")
+      throw new BadRequestException(s"Expected: \nurl = '$expectedUrl', \nbody = '$expectedBody'," +
+        s" \nheaders = '$expectedHeaders'.\nGot: \nurl = '$url', \nbody = '$body', \nheaders = '$headers'.")
   }
 
   override def POST[I, O](url: String, body: I, headers: Seq[(String, String)])
-                         (implicit wts: Writes[I], rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
+    (implicit wts: Writes[I], rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
     (url, body, headers) match {
       case _ if !isAuthenticated(Map.empty, hc) =>
         throw new UnauthorizedException("Submission request was not authenticated")
       case _ if forceServerError => throw new InternalServerException("Customs Declare Exports has gone bad.")
-      case _ if url == expectedUrl && body == expectedBody && headers == Seq.empty =>
-        Future.successful(CustomsDeclareExportsResponse(OK,"success").asInstanceOf[O])
+      case _ if url == expectedUrl && body == expectedBody && headers == expectedHeaders.toSeq && nrsRequest =>
+        Future.successful(NrsSubmissionResponse("submissionId1").asInstanceOf[O])
+      case _ if url == expectedUrl && body == expectedBody && headers == expectedHeaders.toSeq && !nrsRequest =>
+        Future.successful(CustomsDeclareExportsResponse(OK, "success").asInstanceOf[O])
       case _ =>
         throw new BadRequestException(s"Expected: \nurl = '$expectedUrl', \nbody = '$expectedBody'.\nGot: \nurl = '$url', \nbody = '$body'.")
     }
+
   //scalastyle:on method.name
 
   private def isAuthenticated(headers: Map[String, String], hc: HeaderCarrier): Boolean = hc.authorization.isDefined
