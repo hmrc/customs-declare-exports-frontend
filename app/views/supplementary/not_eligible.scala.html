@@ -1,0 +1,40 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.routes._
+@import utils.RadioOption
+
+@(appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
+
+@main_template(
+title = messages("notEligible.title"),
+appConfig = appConfig
+) {
+@components.back_link("/customs-declare-exports/start")
+@components.heading("simpleDeclaration.title", "simpleDeclaration.heading")
+
+<h1 style="margin-top: 5px;">@messages("notEligible.title")<br>@messages("notEligible.titleLineTwo")</h1>
+
+<p>@messages("notEligible.descriptionPreUrl")
+    <a href="https://secure.hmce.gov.uk/ecom/login/index.html" target="_blank" rel="noopener noreferrer"> @messages("notEligible.descriptionUrl") </a>
+    @messages("notEligible.descriptionPostUrl")</p>
+
+<h3>@messages("notEligible.referenceTitle")</h3>
+
+<p>@messages("notEligible.reference.text")</p>
+}
