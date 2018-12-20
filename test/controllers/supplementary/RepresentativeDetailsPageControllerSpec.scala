@@ -316,7 +316,7 @@ object RepresentativeDetailsPageControllerSpec {
       "address.addressLine" -> JsString("Address"),
       "address.townOrCity" -> JsString("Town or city"),
       "address.postCode" -> JsString("PostCode1"),
-      "address.country" -> JsString("PL"),
+      "address.country" -> JsString("Poland"),
       "statusCode" -> JsString("2")
     )
   )

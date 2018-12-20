@@ -16,9 +16,6 @@
 
 package services
 
-import com.google.inject.Inject
-import config.AppConfig
-import javax.inject.Singleton
 import play.api.libs.json._
 
 import scala.io.Source
@@ -29,8 +26,7 @@ case object Country {
   implicit val formats = Json.format[Country]
 }
 
-@Singleton
-class Countries @Inject()(appConfig: AppConfig) {
+object Countries {
 
   private val mdgCountryCodes: List[String] =
     Source.fromInputStream(getClass.getResourceAsStream("/mdg-country-codes.csv"))
@@ -60,5 +56,5 @@ class Countries @Inject()(appConfig: AppConfig) {
 
   private def countryCode: String => String = cc => cc.split(":")(1).trim
 
-  val all: List[Country] = countries.filter(c => mdgCountryCodes contains c.countryCode)
+  val allCountries: List[Country] = countries.filter(c => mdgCountryCodes contains c.countryCode)
 }

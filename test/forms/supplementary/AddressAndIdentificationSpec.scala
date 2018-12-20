@@ -25,7 +25,8 @@ class AddressAndIdentificationSpec extends WordSpec with MustMatchers {
   val addressLine = "Address line"
   val townOrCity = "Town or City"
   val postCode = "Postcode"
-  val country = "UK"
+  val country = "Poland"
+  val countryCode = "PL"
 
   val address: AddressAndIdentification =
     AddressAndIdentification(
@@ -44,7 +45,7 @@ class AddressAndIdentificationSpec extends WordSpec with MustMatchers {
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.line" -> addressLine,
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.cityName" -> townOrCity,
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postcodeId" -> postCode,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.countryCode" -> country
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.countryCode" -> countryCode
     )
 
   val declarantAddressProperties: Map[String, String] =
@@ -54,7 +55,7 @@ class AddressAndIdentificationSpec extends WordSpec with MustMatchers {
       "declaration.declarant.address.line" -> addressLine,
       "declaration.declarant.address.cityName" -> townOrCity,
       "declaration.declarant.address.postcodeId" -> postCode,
-      "declaration.declarant.address.countryCode" -> country
+      "declaration.declarant.address.countryCode" -> countryCode
     )
 
   "Address" should {
