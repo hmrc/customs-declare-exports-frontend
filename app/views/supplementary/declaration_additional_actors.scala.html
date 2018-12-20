@@ -32,7 +32,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title("supplementary.additionalActors.title", "")
+        @components.page_title(Some("supplementary.additionalActors.title"), Some(""))
 
         @components.input_text(
             field = form("eori"),
@@ -41,7 +41,7 @@
             labelClass = Some("font-weight: 400")
         )
 
-        @components.page_title("supplementary.partyType", "")
+        @components.page_title(Some("supplementary.partyType"), Some(""))
 
         @components.input_radio(
             field = form("partyType"),

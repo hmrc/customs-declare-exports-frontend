@@ -34,7 +34,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title("supplementary.representative.header", "supplementary.representative.eori.info")
+        @components.page_title(Some("supplementary.representative.header"), Some("supplementary.representative.eori.info"))
 
         @components.input_text(
             field = form("address.eori"),
@@ -43,7 +43,7 @@
         )
 
 
-        @components.page_title("", "supplementary.representative.address.info")
+        @components.page_title(subtitle = Some("supplementary.representative.address.info"))
 
         @components.input_text(
             field = form("address.fullName"),
@@ -71,14 +71,14 @@
         )
 
 
-        @components.page_title("supplementary.representative.representationType.header", "")
+        @components.page_title(title = Some("supplementary.representative.representationType.header"))
 
         @components.input_radio(
             field = form("statusCode"),
             legend = "",
             inputs = Seq(
-                RadioOption("statusCode", DirectRepresentative, messages("supplementary.representative.representationType.direct")),
-                RadioOption("statusCode", IndirectRepresentative, messages("supplementary.representative.representationType.indirect"))
+                RadioOption("statusCode_direct", DirectRepresentative, messages("supplementary.representative.representationType.direct")),
+                RadioOption("statusCode_indirect", IndirectRepresentative, messages("supplementary.representative.representationType.indirect"))
             )
         )
 
