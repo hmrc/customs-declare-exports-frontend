@@ -17,8 +17,11 @@
 @import config.AppConfig
 @import controllers._
 @import forms.supplementary.DeclarationType
+@import forms.supplementary.DeclarationType.AllowedAdditionalTypes._
+@import forms.supplementary.DeclarationType.AllowedTypes._
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
+
 @(appConfig: AppConfig, form: Form[DeclarationType])(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -42,8 +45,8 @@
       legend = messages("supplementary.declarationTypePage.inputText.declarationType"),
       hint = Some(messages("supplementary.declarationTypePage.inputText.declarationType.hint")),
       inputs = Seq(
-        RadioOption("ex", "EX", messages("supplementary.declarationTypePage.inputText.declarationType.ex")),
-        RadioOption("co", "CO", messages("supplementary.declarationTypePage.inputText.declarationType.co"))
+        RadioOption("ex", OutsideEU, messages("supplementary.declarationTypePage.inputText.declarationType.ex")),
+        RadioOption("co", FiscalTerritory, messages("supplementary.declarationTypePage.inputText.declarationType.co"))
       )
     )
 
@@ -52,8 +55,8 @@
       legend = messages("supplementary.declarationTypePage.inputText.additionalDeclarationType"),
       hint = Some(messages("supplementary.declarationTypePage.inputText.additionalDeclarationType.hint")),
       inputs = Seq(
-        RadioOption("y", "Y", messages("supplementary.declarationTypePage.inputText.additionalDeclarationType.y")),
-        RadioOption("z", "Z", messages("supplementary.declarationTypePage.inputText.additionalDeclarationType.z"))
+        RadioOption("y", Simplified, messages("supplementary.declarationTypePage.inputText.additionalDeclarationType.y")),
+        RadioOption("z", Standard, messages("supplementary.declarationTypePage.inputText.additionalDeclarationType.z"))
       )
     )
 

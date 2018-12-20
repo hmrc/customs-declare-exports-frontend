@@ -18,6 +18,7 @@ package connectors
 
 import java.util.UUID
 
+import base.TestHelper._
 import base.{CustomExportsBaseSpec, MockHttpClient}
 import models.CustomsDeclarationsResponse
 import play.api.http.Status._
@@ -50,20 +51,21 @@ class CustomsDeclarationsConnectorSpec extends CustomExportsBaseSpec {
 
     "update declaration status on acceptance of declaration" in submitDeclarationScenario(metaData =
       MetaData(declaration = Some(Declaration(
-      functionalReferenceId = lrn
-    ))), conversationId = conversationId) { resp =>
-      Await.result(resp, 1.second)}
+        functionalReferenceId = lrn
+      ))), conversationId = conversationId) { resp =>
+      Await.result(resp, 1.second)
+    }
 
   }
 
   def submitDeclarationScenario(metaData: MetaData,
-                                badgeIdentifier: Option[String] = None,
-                                forceServerError: Boolean = false,
-                                hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(randomString(255)))),
-                                conversationId: String = UUID.randomUUID().toString,
-                                postURL : String = appConfig.submitExportDeclarationUri)
-                               (test: Future[CustomsDeclarationsResponse] => Unit): Unit = {
-    val expectedUrl : String = s"${appConfig.customsDeclarationsEndpoint}${postURL}"
+    badgeIdentifier: Option[String] = None,
+    forceServerError: Boolean = false,
+    hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(randomString(255)))),
+    conversationId: String = UUID.randomUUID().toString,
+    postURL: String = appConfig.submitExportDeclarationUri)
+    (test: Future[CustomsDeclarationsResponse] => Unit): Unit = {
+    val expectedUrl: String = s"${appConfig.customsDeclarationsEndpoint}${postURL}"
     val expectedBody: String = metaData.toXml
     val expectedHeaders: Map[String, String] = Map(
       "X-Client-ID" -> appConfig.developerHubClientId,
@@ -72,9 +74,9 @@ class CustomsDeclarationsConnectorSpec extends CustomExportsBaseSpec {
     ) ++ badgeIdentifier.map(id => "X-Badge-Identifier" -> id)
     val http = new MockHttpClient(expectedUrl, expectedBody, expectedHeaders, forceServerError, conversationId)
     val client = new CustomsDeclarationsConnector(appConfig, http)
-    postURL.contains("cancellation") match  {
+    postURL.contains("cancellation") match {
       case true => test(client.submitCancellation(metaData, badgeIdentifier)(hc, ec))
-      case _ =>     test(client.submitExportDeclaration(metaData, badgeIdentifier)(hc, ec))
+      case _ => test(client.submitExportDeclaration(metaData, badgeIdentifier)(hc, ec))
     }
   }
 }

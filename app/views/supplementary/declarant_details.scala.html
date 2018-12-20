@@ -16,13 +16,13 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
-@import forms.supplementary.Address
+@import forms.supplementary.AddressAndIdentification
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[Address])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[AddressAndIdentification])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.declarant.add"),
+    title = messages("supplementary.declarant.title"),
     appConfig = appConfig
 ) {
     @helpers.form(DeclarantAddressController.saveAddress(), 'autoComplete -> "off") {
@@ -30,7 +30,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title("supplementary.declarant.add", "supplementary.declarant.add.hint")
+        @components.page_title("supplementary.declarant.title", "supplementary.declarant.title.hint")
 
         @components.address(form)
 

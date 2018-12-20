@@ -286,6 +286,7 @@ startPage.reference.number = 0300 200 3700
 startPage.reference.text = Open 8am to 6pm, Monday to Friday (closed bank holidays)
 startPage.enquiries = General enquires help
 
+
 notEligible.title = You need to use a different
 notEligible.titleLineTwo = service
 notEligible.descriptionPreUrl = This service is only for exports being dispatched outside the EU. You will need to use
@@ -294,10 +295,19 @@ notEligible.descriptionPostUrl = to make your declaration.
 notEligible.referenceTitle = Help and support
 notEligible.reference.text = If you are having problems with making a declaration, phone: 0300 333 3333. Open 8am to 6pm, Monday to Friday (closed bank holidays).
 
-supplementary.consignor.add = Add consignor
-supplementary.declarant.add = Add declarant
-supplementary.consignor.add.hint = The consignor is the registered trader sending the goods
-supplementary.declarant.add.hint = TODO
+supplementary.consignor.title = Add consignor
+supplementary.consignor.title.hint = The consignor is the registered trader sending the goods
+supplementary.declarant.title = Add declarant
+supplementary.declarant.title.hint = TODO
+supplementary.representative.title = Add representative
+supplementary.representative.header = 3/19 - 3/20 Enter the representative’s details
+supplementary.representative.eori.info = Enter the EORI number or business details
+supplementary.representative.address.info = Enter representative’s name and address
+supplementary.representative.representationType.header = 3/21 What type of representation is being used?
+supplementary.representative.representationType.error.empty = Please, choose your representative status
+supplementary.representative.representationType.direct = Direct representative - The representative is accepting legal responsibility for the exporter
+supplementary.representative.representationType.indirect = Indirect representative - The representative is sharing legal responsibility with the exporter
+
 supplementary.eori = EORI number
 supplementary.eori.hint = The number starts with a country code, for example FR or France, and is then followed by up to 15 digits
 supplementary.eori.error = EORI number is incorrect
@@ -318,17 +328,22 @@ supplementary.country = Country
 supplementary.country.error = Country is incorrect
 supplementary.country.empty = Country cannot be empty
 
+supplementary.additionalActors.title = Add other party
+supplementary.partyType = Party type
+supplementary.partyType.CS = Consolidator
+supplementary.partyType.MF = Manufacturer
+supplementary.partyType.FW = Freight forwarder
+supplementary.partyType.WH = Warehouse keeper
+supplementary.partyType.error = Party type is incorrect
 
 supplementary.declarationTypePage.title = Supplementary Declaration Type
 supplementary.declarationTypePage.heading = Declaration Type
 supplementary.declarationTypePage.heading.secondary = Lead paragraph if needed, will change later
-
 supplementary.declarationTypePage.inputText.declarationType = 1/1 Where are the goods being dispatched to?
 supplementary.declarationTypePage.inputText.declarationType.hint = Hint text if needed
 supplementary.declarationTypePage.inputText.declarationType.ex = Outside the EU
 supplementary.declarationTypePage.inputText.declarationType.co = Fiscal territory of the EU or country with which the EU has formed a customs union
 supplementary.declarationTypePage.inputText.declarationType.errorMessage = Please, choose declaration type
-
 supplementary.declarationTypePage.inputText.additionalDeclarationType = 1/2 What type of declaration are you making?
 supplementary.declarationTypePage.inputText.additionalDeclarationType.hint = Hint text if needed
 supplementary.declarationTypePage.inputText.additionalDeclarationType.y = Simplified declaration

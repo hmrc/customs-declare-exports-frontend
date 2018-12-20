@@ -39,7 +39,8 @@
         @for(option <- countries.map(c => (c.countryCode, c.countryName))) {
         <option id="@field-@option._1"
                 value="@option._1"
-                @if(selectedValue==option._1){selected="selected"}>@option._2</option>
+                @if(selectedValue==option._1){selected="selected"}>@option._2
+        </option>
         }
     </select>
 </div>
@@ -54,4 +55,5 @@
     })
 
     document.querySelector('.autocomplete__wrapper input').setAttribute('autocomplete', 'new-password')
+
 </script>

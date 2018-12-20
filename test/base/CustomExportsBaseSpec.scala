@@ -20,9 +20,10 @@ import java.util.UUID
 
 import akka.stream.Materializer
 import config.AppConfig
-import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector}
+import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
+import models.NrsSubmissionResponse
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -42,7 +43,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson}
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
-import services.CustomsCacheService
+import services.{CustomsCacheService, NRSService}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -60,8 +61,8 @@ trait CustomExportsBaseSpec extends PlaySpec
   protected val contextPath: String = "/customs-declare-exports"
 
   val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
-
-  val mockMetrics : ExportsMetrics = mock[ExportsMetrics]
+  val mockNrsService: NRSService = mock[NRSService]
+  val mockMetrics: ExportsMetrics = mock[ExportsMetrics]
 
   override lazy val app: Application = GuiceApplicationBuilder().overrides(
     bind[AuthConnector].to(mockAuthConnector),
@@ -69,6 +70,8 @@ trait CustomExportsBaseSpec extends PlaySpec
     bind[CustomsCacheService].to(mockCustomsCacheService),
     bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
     bind[CustomsInventoryLinkingExportsConnector].to(mockCustomsInventoryLinkingExportsConnector),
+    bind[NrsConnector].to(mockNrsConnector),
+    bind[NRSService].to(mockNrsService),
     bind[ExportsMetrics].to(mockMetrics)
   ).build()
 
@@ -98,7 +101,7 @@ trait CustomExportsBaseSpec extends PlaySpec
   protected def getRequest(uri: String, headers: Map[String, String] = Map.empty): FakeRequest[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
-      SessionKeys.userId -> FakeAuthAction.defaultUser.internalId.get
+      SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
     val tags = Map(
       Token.NameRequestTag -> cfg.tokenName,
@@ -112,7 +115,7 @@ trait CustomExportsBaseSpec extends PlaySpec
   protected def postRequest(uri: String, body: JsValue, headers: Map[String, String] = Map.empty): FakeRequest[AnyContentAsJson] = {
     val session: Map[String, String] = Map(
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
-      SessionKeys.userId -> FakeAuthAction.defaultUser.internalId.get
+      SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
     val tags = Map(
       Token.NameRequestTag -> cfg.tokenName,
@@ -120,11 +123,9 @@ trait CustomExportsBaseSpec extends PlaySpec
     )
     FakeRequest("POST", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
-      .withSession(session.toSeq: _*).copyFakeRequest(tags = tags)
-      .withJsonBody(body)
+      .withSession(session.toSeq: _*)
+      .withJsonBody(body).copyFakeRequest(tags = tags)
   }
-
-  protected def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
 
   def withCaching[T](form: Option[Form[T]]) = {
     when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(),any()))
@@ -134,8 +135,14 @@ trait CustomExportsBaseSpec extends PlaySpec
       .thenReturn(Future.successful(CacheMap("id1", Map.empty)))
   }
 
-  def withCaching[T](data: Option[T], id: String) =
+  def withCaching[T](data: Option[T], id: String) = {
     when(mockCustomsCacheService.fetchAndGetEntry[T](ArgumentMatchers.eq(appConfig.appName), ArgumentMatchers.eq(id))(any(), any(), any()))
       .thenReturn(Future.successful(data))
 
+    when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
+      .thenReturn(Future.successful(CacheMap(id, Map.empty)))
+  }
+
+  def withNrsSubmission() =
+    when(mockNrsService.submit(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
 }

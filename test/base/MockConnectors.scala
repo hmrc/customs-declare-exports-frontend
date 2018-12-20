@@ -16,7 +16,7 @@
 
 package base
 
-import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector}
+import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
 import models._
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
@@ -32,13 +32,14 @@ trait MockConnectors extends MockitoSugar {
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
   lazy val mockCustomsInventoryLinkingExportsConnector: CustomsInventoryLinkingExportsConnector =
     mock[CustomsInventoryLinkingExportsConnector]
+  lazy val mockNrsConnector: NrsConnector = mock[NrsConnector]
 
   def successfulCustomsDeclarationResponse() = {
     when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
-      .thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED,Some("1234"))))
+      .thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED, Some("1234"))))
 
     when(mockCustomsDeclarationsConnector.submitCancellation(any(), any())(any(), any()))
-      .thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED,Some("1234"))))
+      .thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED, Some("1234"))))
     when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
       .thenReturn(Future.successful(CustomsDeclareExportsResponse(OK, "message")))
   }
@@ -50,6 +51,7 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsDeclarationsConnector.submitCancellation(any(), any())(any(), any()))
       .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
   }
+
   def listOfNotifications() =
     when(mockCustomsDeclareExportsConnector.fetchNotifications(any())(any(), any()))
       .thenReturn(Future.successful(Seq(ExportsNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty))))
@@ -61,4 +63,8 @@ trait MockConnectors extends MockitoSugar {
   def sendMovementRequest400Response() =
     when(mockCustomsInventoryLinkingExportsConnector.sendMovementRequest(any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
+
+  def submitNrsRequest() = when(mockNrsConnector.submitNonRepudiation(any())(any(),
+    any())).thenReturn(Future.successful(NrsSubmissionResponse("submissionId1")))
+
 }

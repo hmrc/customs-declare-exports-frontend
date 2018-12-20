@@ -1,5 +1,5 @@
-import sbt.{ForkOptions, TestDefinition}
 import sbt.Tests.{Group, SubProcess}
+import sbt.{ForkOptions, TestDefinition}
 
 object TestPhases {
   def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] =

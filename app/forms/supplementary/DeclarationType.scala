@@ -21,8 +21,8 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
 case class DeclarationType(
-  declarationType: String,    // 2 upper case alphabetic characters
-  additionalDeclarationType: String   // 1 upper case alphabetic character
+  declarationType: String, // 2 upper case alphabetic characters
+  additionalDeclarationType: String // 1 upper case alphabetic character
 ) {
 
   def toMetadataProperties(): Map[String, String] = {
@@ -35,8 +35,14 @@ case class DeclarationType(
 object DeclarationType {
   implicit val format = Json.format[DeclarationType]
 
-  private val declarationTypeAllowedValues = Set("CO", "EX")
-  private val additionalDeclarationTypeAllowedValues = Set("Y", "Z")
+  private val declarationTypeAllowedValues = Set(
+    AllowedTypes.OutsideEU,
+    AllowedTypes.FiscalTerritory
+  )
+  private val additionalDeclarationTypeAllowedValues = Set(
+    AllowedAdditionalTypes.Simplified,
+    AllowedAdditionalTypes.Standard
+  )
 
   val formId = "DeclarationTypeId"
 
@@ -50,4 +56,14 @@ object DeclarationType {
   )(DeclarationType.apply)(DeclarationType.unapply)
 
   def form(): Form[DeclarationType] = Form(mapping)
+
+  object AllowedTypes {
+    val OutsideEU = "EX"
+    val FiscalTerritory = "CO"
+  }
+
+  object AllowedAdditionalTypes {
+    val Simplified = "Y"
+    val Standard = "Z"
+  }
 }

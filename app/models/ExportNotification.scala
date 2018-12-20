@@ -86,6 +86,7 @@ object Notification {
   implicit val format = Json.format[Notification]
 
   private def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
+
   private val Ten = 10
 
   // Only to generate random data

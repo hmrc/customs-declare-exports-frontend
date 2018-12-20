@@ -33,22 +33,23 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
   def submitExportDeclaration(metaData: MetaData, badgeIdentifier: Option[String] = None)
-                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
-    postMetaData(appConfig.submitExportDeclarationUri, metaData, badgeIdentifier).map{ res =>
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
+    postMetaData(appConfig.submitExportDeclarationUri, metaData, badgeIdentifier).map { res =>
       Logger.debug(s"CUSTOMS_DECLARATIONS response is  --> ${res.toString}")
       res
     }
 
   def submitCancellation(metaData: MetaData, badgeIdentifier: Option[String] = None)
-                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
-    postMetaData(appConfig.submitCancellationUri, metaData, badgeIdentifier).map{ res =>
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
+    postMetaData(appConfig.submitCancellationUri, metaData, badgeIdentifier).map { res =>
       Logger.debug(s"CUSTOMS_DECLARATIONS cancellation response is  --> ${res.toString}")
       res
     }
+
   private def postMetaData(uri: String,
-                           metaData: MetaData,
-                           badgeIdentifier: Option[String] = None)
-                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
+    metaData: MetaData,
+    badgeIdentifier: Option[String] = None)
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
     post(uri, metaData.toXml, badgeIdentifier)
 
   //noinspection ConvertExpressionToSAM
@@ -59,7 +60,7 @@ class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: H
     }
 
   private[connectors] def post(uri: String, body: String, badgeIdentifier: Option[String] = None)
-                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] = {
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] = {
     val headers: Seq[(String, String)] = Seq(
       "X-Client-ID" -> appConfig.developerHubClientId,
       HeaderNames.ACCEPT -> s"application/vnd.hmrc.${appConfig.customsDeclarationsApiVersion}+xml",
@@ -69,7 +70,7 @@ class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: H
 
     (httpClient.POSTString[CustomsDeclarationsResponse](
       s"${appConfig.customsDeclarationsEndpoint}$uri", body, headers
-    )(responseReader, hc, ec)).recover{
+    )(responseReader, hc, ec)).recover {
       case error: Throwable =>
         Logger.error(s"Error to check development environment ${error.toString}")
         Logger.error(s"Error to check development environment (GET MESSAGE) ${error.getMessage}")

@@ -19,7 +19,7 @@ package controllers
 import base.CustomExportsBaseSpec
 import play.api.test.Helpers._
 
-class StartControllerSpec extends CustomExportsBaseSpec{
+class StartControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/start")
 
@@ -27,7 +27,7 @@ class StartControllerSpec extends CustomExportsBaseSpec{
     "return 200 for a GET" in {
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be (OK)
+      status(result) must be(OK)
     }
     "display radio button to start now" in {
       val result = route(app, getRequest(uri)).get

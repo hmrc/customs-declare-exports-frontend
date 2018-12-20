@@ -71,7 +71,7 @@ object MovementRequestSummaryMappingProvider {
       "goodsDepartureDateTime" -> optional(text()),
       "shedOPID" -> optional(text(maxLength = shedOPIDMaxLength)),
       "masterUCR" -> optional(text(maxLength = masterUCRMaxLength)
-        .verifying("Please, provide valid UCR", ucr =>  ucr.matches(ucrValidationPattern))),
+        .verifying("Please, provide valid UCR", ucr => ucr.matches(ucrValidationPattern))),
       "masterOpt" -> optional(text(maxLength = 1)
         .verifying("Allowed values are: \"A\", \"F\", \"R\", \"X\"", s => masterOptAllowedValues.contains(s))),
       "movementReference" -> optional(text(maxLength = movementReferenceMaxLength)),
