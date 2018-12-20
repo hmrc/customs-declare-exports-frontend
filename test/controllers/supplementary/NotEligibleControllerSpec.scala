@@ -33,7 +33,7 @@ class NotEligibleControllerSpec extends CustomExportsBaseSpec {
     }
     "display page content" in {
       authorizedUser()
-      
+
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
