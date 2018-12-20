@@ -93,6 +93,11 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
         val input = "1234567890"
         isNumeric(input) must be(true)
       }
+
+      "provided with empty String" in {
+        val input = ""
+        isNumeric(input) must be(true)
+      }
     }
   }
 
@@ -131,6 +136,11 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
         val input = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         isAlphabetic(input) must be(true)
       }
+
+      "provided with empty String" in {
+        val input = ""
+        isAlphabetic(input) must be(true)
+      }
     }
   }
 
@@ -162,6 +172,11 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
 
       "provided with both numeric and alphabetic characters" in {
         val input = "ABCD2358"
+        isAlphanumeric(input) must be(true)
+      }
+
+      "provided with empty String" in {
+        val input = ""
         isAlphanumeric(input) must be(true)
       }
     }

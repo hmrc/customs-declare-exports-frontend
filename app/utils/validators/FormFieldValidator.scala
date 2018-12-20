@@ -18,9 +18,9 @@ package utils.validators
 
 object FormFieldValidator {
 
-  private val numericRegexValue = "[0-9]+"
-  private val alphabeticRegexValue = "[a-zA-Z]+"
-  private val alphanumericRegexValue = "[a-zA-Z0-9]+"
+  private val numericRegexValue = "[0-9]*"
+  private val alphabeticRegexValue = "[a-zA-Z]*"
+  private val alphanumericRegexValue = "[a-zA-Z0-9]*"
 
   def noLongerThan(input: String, length: Int): Boolean = input.length <= length
 
