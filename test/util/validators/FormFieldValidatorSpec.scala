@@ -27,14 +27,12 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
       "provided with negative length value" in {
         val input = "Any String"
         val length = -1
-
         noLongerThan(input, length) must be(false)
       }
 
       "provided with String longer than provided length value" in {
         val input = "Any String"
         val length = 1
-
         noLongerThan(input, length) must be(false)
       }
     }
@@ -43,21 +41,18 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
       "provided with String shorter than provided length value" in {
         val input = "Any String"
         val length = 20
-
         noLongerThan(input, length) must be(true)
       }
 
       "provided with String with length equal to provided value" in {
         val input = "Any String"
         val length = 10
-
         noLongerThan(input, length) must be(true)
       }
 
       "provided with empty String and length value equal 0" in {
         val input = ""
         val length = 0
-
         noLongerThan(input, length) must be(true)
       }
     }

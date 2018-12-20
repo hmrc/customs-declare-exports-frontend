@@ -18,12 +18,16 @@ package utils.validators
 
 object FormFieldValidator {
 
-  def noLongerThan(input: String, length: Int): Boolean = ???
+  private val numericRegexValue = "[0-9]+"
+  private val alphabeticRegexValue = "[a-zA-Z]+"
+  private val alphanumericRegexValue = "[a-zA-Z0-9]+"
 
-  def isNumeric(input: String): Boolean = ???
+  def noLongerThan(input: String, length: Int): Boolean = input.length <= length
 
-  def isAlphabetic(input: String): Boolean = ???
+  def isNumeric(input: String): Boolean = input.matches(numericRegexValue)
 
-  def isAlphanumeric(input: String): Boolean = ???
+  def isAlphabetic(input: String): Boolean = input.matches(alphabeticRegexValue)
+
+  def isAlphanumeric(input: String): Boolean = input.matches(alphanumericRegexValue)
 
 }
