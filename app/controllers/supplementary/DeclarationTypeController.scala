@@ -18,52 +18,78 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.DeclarationType
+import forms.supplementary.DispatchLocation.AllowedDispatchLocations
+import forms.supplementary.{AdditionalDeclarationType, DispatchLocation}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Call}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.declaration_type
+import views.html.supplementary.{declaration_type, dispatch_location}
 
 import scala.concurrent.Future
 
 class DeclarationTypeController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticator: AuthAction,
+  authenticate: AuthAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 ) extends FrontendController with I18nSupport {
 
   private val supplementaryDeclarationCacheId = appConfig.appName
 
-  def displayDispatchLocationPage(): Action[AnyContent] = authenticator.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DeclarationType](supplementaryDeclarationCacheId, DeclarationType.formId).map {
-      case Some(data) => Ok(declaration_type(appConfig, DeclarationType.form().fill(data)))
-      case _          => Ok(declaration_type(appConfig, DeclarationType.form()))
+  def displayDispatchLocationPage(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[DispatchLocation](supplementaryDeclarationCacheId, DispatchLocation.formId).map {
+      case Some(data) => Ok(dispatch_location(appConfig, DispatchLocation.form().fill(data)))
+      case _          => Ok(dispatch_location(appConfig, DispatchLocation.form()))
     }
   }
 
-  def submitDispatchLocation(): Action[AnyContent] = authenticator.async { implicit request =>
-    DeclarationType.form().bindFromRequest().fold(
-      (formWithErrors: Form[DeclarationType]) =>
-        Future.successful(BadRequest(declaration_type(appConfig, formWithErrors))),
-      validDeclarationType =>
-        customsCacheService.cache[DeclarationType](
+  def submitDispatchLocation(): Action[AnyContent] = authenticate.async { implicit request =>
+    DispatchLocation.form().bindFromRequest().fold(
+      (formWithErrors: Form[DispatchLocation]) =>
+        Future.successful(BadRequest(dispatch_location(appConfig, formWithErrors))),
+      validDispatchLocation =>
+        customsCacheService.cache[DispatchLocation](
           supplementaryDeclarationCacheId,
-          DeclarationType.formId,
-          validDeclarationType
+          DispatchLocation.formId,
+          validDispatchLocation
         ).map { _ =>
-          Ok("Now you should be redirected to consignment-reference page")
+          Redirect(specifyNextPage(validDispatchLocation))
         }
     )
   }
 
-  def displayDeclarationTypePage(): Action[AnyContent] = ???
+  private def specifyNextPage(providedDispatchLocation: DispatchLocation): Call = providedDispatchLocation.value match {
+    case AllowedDispatchLocations.OutsideEU =>
+      controllers.supplementary.routes.DeclarationTypeController.displayDeclarationTypePage()
+    case AllowedDispatchLocations.SpecialFiscalTerritory =>
+      controllers.supplementary.routes.NotEligibleController.displayPage()
+  }
 
-  def submitDeclarationTypePage(): Action[AnyContent] = ???
+  def displayDeclarationTypePage(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[AdditionalDeclarationType](supplementaryDeclarationCacheId, AdditionalDeclarationType.formId).map {
+      case Some(data) => Ok(declaration_type(appConfig, AdditionalDeclarationType.form().fill(data)))
+      case _          => Ok(declaration_type(appConfig, AdditionalDeclarationType.form()))
+    }
+  }
+
+  def submitDeclarationType(): Action[AnyContent] = authenticate.async { implicit request =>
+    AdditionalDeclarationType.form().bindFromRequest().fold(
+      (formWithErrors: Form[AdditionalDeclarationType]) =>
+        Future.successful(BadRequest(declaration_type(appConfig, formWithErrors))),
+      validAdditionalDeclarationType =>
+        customsCacheService.cache[AdditionalDeclarationType](
+          supplementaryDeclarationCacheId,
+          AdditionalDeclarationType.formId,
+          validAdditionalDeclarationType
+        ).map { _ =>
+          Ok("You should be now redirected to \"Consignment References\" page")
+        }
+    )
+  }
 
 }

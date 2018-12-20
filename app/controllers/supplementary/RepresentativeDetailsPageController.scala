@@ -33,7 +33,7 @@ import scala.concurrent.Future
 class RepresentativeDetailsPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticator: AuthAction,
+  authenticate: AuthAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 ) extends FrontendController with I18nSupport {
@@ -41,7 +41,7 @@ class RepresentativeDetailsPageController @Inject()(
   implicit val countries = services.Countries.allCountries
   private val supplementaryDeclarationCacheId = appConfig.appName
 
-  def displayRepresentativeDetailsPage(): Action[AnyContent] = authenticator.async { implicit request =>
+  def displayRepresentativeDetailsPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[RepresentativeDetails](
       supplementaryDeclarationCacheId, RepresentativeDetails.formId).map {
         case Some(data) => Ok(representative_details(appConfig, RepresentativeDetails.form().fill(data)))
@@ -49,7 +49,7 @@ class RepresentativeDetailsPageController @Inject()(
     }
   }
 
-  def submitRepresentativeDetails(): Action[AnyContent] = authenticator.async { implicit request =>
+  def submitRepresentativeDetails(): Action[AnyContent] = authenticate.async { implicit request =>
     RepresentativeDetails.form().bindFromRequest().fold(
       (formWithErrors: Form[RepresentativeDetails]) =>
         Future.successful(BadRequest(representative_details(appConfig, formWithErrors))),

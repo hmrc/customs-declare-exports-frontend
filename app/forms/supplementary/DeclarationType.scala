@@ -17,52 +17,84 @@
 package forms.supplementary
 
 import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 
-case class DeclarationType(
-  declarationType: String, // 2 upper case alphabetic characters
-  additionalDeclarationType: String // 1 upper case alphabetic character
-) {
 
-  def toMetadataProperties(): Map[String, String] = {
-    val propertiesKey = "declaration.typeCode"
-    val propertiesValue = declarationType + additionalDeclarationType
-    Map(propertiesKey -> propertiesValue)
+object DeclarationType {
+
+  def toMetadataProperties(
+    dispatchLocation: DispatchLocation,
+    additionalDeclarationType: AdditionalDeclarationType): Map[String, String] = {
+      val propertiesKey = "declaration.typeCode"
+      val propertiesValue = dispatchLocation.value + additionalDeclarationType.value
+      Map(propertiesKey -> propertiesValue)
   }
 }
 
-object DeclarationType {
-  implicit val format = Json.format[DeclarationType]
 
-  private val declarationTypeAllowedValues = Set(
-    AllowedTypes.OutsideEU,
-    AllowedTypes.SpecialFiscalTerritory
+case class DispatchLocation(
+  value: String    // 2 upper case alphabetic characters
+)
+
+object DispatchLocation {
+  implicit val format = Json.format[DispatchLocation]
+
+  private val allowedValues = Set(
+    AllowedDispatchLocations.OutsideEU,
+    AllowedDispatchLocations.SpecialFiscalTerritory
   )
-  private val additionalDeclarationTypeAllowedValues = Set(
-    AllowedAdditionalTypes.Simplified,
-    AllowedAdditionalTypes.Standard
+
+  val formMapping: Mapping[DispatchLocation] = Forms.single(
+    "dispatchLocation" -> text(maxLength = 2).verifying(
+      "supplementary.dispatchLocation.inputText.errorMessage",
+      input => input.nonEmpty && allowedValues(input)
+    )
+    .transform[DispatchLocation](
+      value => DispatchLocation(value),
+      dispatchLocation => dispatchLocation.value
+    )
   )
 
-  val formId = "DeclarationTypeId"
+  val formId: String = "DispatchLocation"
 
-  val mapping = Forms.mapping(
-    "declarationType" -> text(maxLength = 2)
-      .verifying("supplementary.declarationTypePage.inputText.declarationType.errorMessage",
-        input => input.nonEmpty && declarationTypeAllowedValues(input)),
-    "additionalDeclarationType" -> text(maxLength = 1)
-      .verifying("supplementary.declarationTypePage.inputText.additionalDeclarationType.errorMessage",
-        input => input.nonEmpty && additionalDeclarationTypeAllowedValues(input))
-  )(DeclarationType.apply)(DeclarationType.unapply)
+  def form(): Form[DispatchLocation] = Form(formMapping)
 
-  def form(): Form[DeclarationType] = Form(mapping)
-
-  object AllowedTypes {
+  object AllowedDispatchLocations {
     val OutsideEU = "EX"
     val SpecialFiscalTerritory = "CO"
   }
+}
 
-  object AllowedAdditionalTypes {
+
+case class AdditionalDeclarationType(
+  value: String   // 1 upper case alphabetic character
+)
+
+object AdditionalDeclarationType {
+  implicit val format = Json.format[AdditionalDeclarationType]
+
+  private val allowedValues = Set(
+    AllowedAdditionalDeclarationTypes.Simplified,
+    AllowedAdditionalDeclarationTypes.Standard
+  )
+
+  val formMapping: Mapping[AdditionalDeclarationType] = Forms.single(
+    "additionalDeclarationType" -> text(maxLength = 1).verifying(
+      "supplementary.declarationType.inputText.errorMessage",
+      input => input.nonEmpty && allowedValues(input)
+    )
+        .transform[AdditionalDeclarationType](
+      value => AdditionalDeclarationType(value),
+      additionalDeclarationType => additionalDeclarationType.value
+    )
+  )
+
+  val formId = "AdditionalDeclarationType"
+
+  def form(): Form[AdditionalDeclarationType] = Form(formMapping)
+
+  object AllowedAdditionalDeclarationTypes {
     val Simplified = "Y"
     val Standard = "Z"
   }

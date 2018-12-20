@@ -74,7 +74,11 @@ POST       /declaration/supplementary/dispatch-location     controllers.suppleme
 
 GET        /declaration/supplementary/type                  controllers.supplementary.DeclarationTypeController.displayDeclarationTypePage()
 
-POST       /declaration/supplementary/type                  controllers.supplementary.DeclarationTypeController.submitDeclarationTypePage()
+POST       /declaration/supplementary/type                  controllers.supplementary.DeclarationTypeController.submitDeclarationType()
+
+# Not Eligible
+
+GET        /declaration/supplementary/not-eligible      controllers.supplementary.NotEligibleController.displayPage()
 
 # Consignor address
 
@@ -99,7 +103,3 @@ POST       /additional-actors                           controllers.supplementar
 GET        /declaration/supplementary/representative    controllers.supplementary.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
 
 POST       /declaration/supplementary/representative    controllers.supplementary.RepresentativeDetailsPageController.submitRepresentativeDetails()
-
-# Not Eligible
-
-GET        /declaration/supplementary/not-eligible      controllers.supplementary.NotEligibleController.displayPage()

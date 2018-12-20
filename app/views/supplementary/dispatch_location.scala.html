@@ -16,35 +16,43 @@
 
 @import config.AppConfig
 @import controllers._
-@import forms.supplementary.AdditionalDeclarationType
-@import forms.supplementary.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes._
+@import forms.supplementary.DispatchLocation
+@import forms.supplementary.DispatchLocation.AllowedDispatchLocations._
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
-@(appConfig: AppConfig, form: Form[AdditionalDeclarationType])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[DispatchLocation])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages("supplementary.declarationType.title"),
+  title = messages("supplementary.dispatchLocation.title"),
   appConfig = appConfig
 ) {
 
-  @components.back_link("dispatch-location")
+  @components.back_link("choice")
 
-  @helpers.form(supplementary.routes.DeclarationTypeController.submitDeclarationType(), 'autoComplete -> "off") {
+  @helpers.form(supplementary.routes.DeclarationTypeController.submitDispatchLocation(), 'autoComplete -> "off") {
 
     @components.error_summary(form.errors)
 
     @components.page_title(
-      Some(messages("supplementary.declarationType.header")),
-      Some(messages("supplementary.declarationType.header.hint"))
+      Some(messages("supplementary.dispatchLocation.header")),
+      Some(messages("supplementary.dispatchLocation.header.hint"))
     )
 
     @components.input_radio(
-      field = form("additionalDeclarationType"),
+      field = form("dispatchLocation"),
       legend = "",
       inputs = Seq(
-        RadioOption("Simplified", Simplified, messages("supplementary.declarationType.inputText.simplified")),
-        RadioOption("Standard", Standard, messages("supplementary.declarationType.inputText.standard"))
+        RadioOption(
+          "OutsideEU",
+          OutsideEU,
+          messages("supplementary.dispatchLocation.inputText.outsideEU")
+        ),
+        RadioOption(
+          "SpecialFiscalTerritory",
+          SpecialFiscalTerritory,
+          messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory")
+        )
       )
     )
 
