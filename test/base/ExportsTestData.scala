@@ -266,7 +266,7 @@ object ExportsTestData {
       "addressLine" -> JsString("Address"),
       "townOrCity" -> JsString("Town or city"),
       "postCode" -> JsString("PostCode1"),
-      "country" -> JsString("PL")
+      "country" -> JsString("Poland")
     )
   )
 

@@ -39,6 +39,8 @@ class DeclarantAddressController @Inject()(
   val formId = "DeclarantAddress"
   val form = Form(AddressAndIdentification.addressMapping)
 
+  implicit val countries = services.Countries.allCountries
+
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[AddressAndIdentification](appConfig.appName, formId).map {
       case Some(data) => Ok(declarant_details(appConfig, form.fill(data)))

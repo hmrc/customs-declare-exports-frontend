@@ -18,8 +18,9 @@
 @import controllers.supplementary.routes._
 @import forms.supplementary.AddressAndIdentification
 @import uk.gov.hmrc.play.views.html._
+@import services.Country
 
-@(appConfig: AppConfig, form: Form[AddressAndIdentification])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[AddressAndIdentification])(implicit request: Request[_], messages: Messages, countries: List[Country])
 
 @main_template(
     title = messages("supplementary.consignor.title"),

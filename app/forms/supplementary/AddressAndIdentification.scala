@@ -18,6 +18,7 @@ package forms.supplementary
 
 import play.api.data.Forms.{mapping, text}
 import play.api.libs.json.Json
+import services.Countries.allCountries
 
 case class AddressAndIdentification(
   eori: String, // alphanumeric, max length 17 characters
@@ -43,7 +44,10 @@ object AddressAndIdentification {
     "postCode" -> text().verifying("supplementary.postCode.empty", _.nonEmpty)
       .verifying("supplementary.postCode.error", _.length <= 9),
     "country" -> text().verifying("supplementary.country.empty", _.nonEmpty)
-      .verifying("supplementary.country.error", _.length <= 2)
+      .verifying(
+        "supplementary.country.error",
+        input => input.isEmpty || !allCountries.filter(country => country.countryName == input).isEmpty
+      )
   )(AddressAndIdentification.apply)(AddressAndIdentification.unapply)
 
   def toConsignorMetadataProperties(address: AddressAndIdentification): Map[String, String] =
@@ -53,7 +57,8 @@ object AddressAndIdentification {
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.line" -> address.addressLine,
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.cityName" -> address.townOrCity,
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postcodeId" -> address.postCode,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.countryCode" -> address.country
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.countryCode" ->
+        allCountries.find(country => country.countryName == address.country).map(_.countryCode).getOrElse("")
     )
 
   def toDeclarantMetadataProperties(address: AddressAndIdentification): Map[String, String] =
@@ -63,6 +68,7 @@ object AddressAndIdentification {
       "declaration.declarant.address.line" -> address.addressLine,
       "declaration.declarant.address.cityName" -> address.townOrCity,
       "declaration.declarant.address.postcodeId" -> address.postCode,
-      "declaration.declarant.address.countryCode" -> address.country
+      "declaration.declarant.address.countryCode" ->
+        allCountries.find(country => country.countryName == address.country).map(_.countryCode).getOrElse("")
     )
 }

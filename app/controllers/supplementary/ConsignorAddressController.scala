@@ -24,6 +24,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
+import services.Countries.allCountries
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.supplementary.consignor_details
 
@@ -38,6 +39,8 @@ class ConsignorAddressController @Inject()(
 
   val formId = "ConsignorAddress"
   val form = Form(AddressAndIdentification.addressMapping)
+
+  implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[AddressAndIdentification](appConfig.appName, formId).map {

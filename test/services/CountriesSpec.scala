@@ -17,18 +17,17 @@
 package services
 
 import base.CustomExportsBaseSpec
+import services.Countries.allCountries
 
 class CountriesSpec extends CustomExportsBaseSpec {
 
-  val countries = new Countries(appConfig)
-
   "Countries" should {
     "give all countries with codes in alphabetical order of country name with filtering according to permitted MDG values" in {
-      countries.all.contains(Country("Afghanistan", "AF")) must be(true)
-      countries.all.contains(Country("Curaçao", "CW")) must be(true)
-      countries.all.contains(Country("Réunion", "RE")) must be(true)
-      countries.all.contains(Country("Zimbabwe", "ZW")) must be(true)
-      countries.all.contains(Country("Åland Islands", "AX")) must be(true)
+      allCountries.contains(Country("Afghanistan", "AF")) must be(true)
+      allCountries.contains(Country("Curaçao", "CW")) must be(true)
+      allCountries.contains(Country("Réunion", "RE")) must be(true)
+      allCountries.contains(Country("Zimbabwe", "ZW")) must be(true)
+      allCountries.contains(Country("Åland Islands", "AX")) must be(true)
     }
   }
 }
