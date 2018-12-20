@@ -25,7 +25,8 @@
 title = messages("notEligible.title"),
 appConfig = appConfig
 ) {
-@components.back_link("notEligible.back")
+@components.back_link("/customs-declare-exports/start")
+@components.heading("simpleDeclaration.title", "simpleDeclaration.heading")
 
 <h1 style="margin-top: 5px;">@messages("notEligible.title")<br>@messages("notEligible.titleLineTwo")</h1>
 
@@ -36,5 +37,4 @@ appConfig = appConfig
 <h3>@messages("notEligible.referenceTitle")</h3>
 
 <p>@messages("notEligible.reference.text")</p>
-</div>
 }

@@ -293,8 +293,6 @@ notEligible.descriptionUrl = CHIEF
 notEligible.descriptionPostUrl = to make your declaration.
 notEligible.referenceTitle = Help and support
 notEligible.reference.text = If you are having problems with making a declaration, phone: 0300 333 3333. Open 8am to 6pm, Monday to Friday (closed bank holidays).
-notEligible.back = Back
-notEligible.hint =
 
 supplementary.consignor.add = Add consignor
 supplementary.declarant.add = Add declarant

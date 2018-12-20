@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import play.api.test.Helpers._
 
 class NotEligibleControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/not-eligible-page")
+  val uri = uriWithContextPath("/declaration/supplementary/not-eligible")
 
   "NotEligible" should {
     "return 200 with a success" in {

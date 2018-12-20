@@ -14,29 +14,25 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.not_eligible
+import views.html.supplementary.not_eligible
 
 import scala.concurrent.Future
 
 class NotEligibleController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticator: AuthAction,
-  errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService
+  authenticate: AuthAction
 ) extends FrontendController with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = authenticator.async { implicit request =>
+  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     Future.successful(Ok(not_eligible(appConfig)))
   }
 }

@@ -84,6 +84,6 @@ GET        /declarant-address                           controllers.supplementar
 
 POST       /declarant-address                           controllers.supplementary.DeclarantAddressController.saveAddress()
 
-# Not
+# Not Eligible
 
-GET        /not-eligible-page                           controllers.NotEligibleController.displayPage()
+GET        /declaration/supplementary/not-eligible      controllers.supplementary.NotEligibleController.displayPage()
