@@ -24,7 +24,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
-import services.Countries.allCountries
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.supplementary.declarant_details
 
@@ -40,17 +39,19 @@ class DeclarantAddressController @Inject()(
   val formId = "DeclarantAddress"
   val form = Form(AddressAndIdentification.addressMapping)
 
+  implicit val countries = services.Countries.allCountries
+
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[AddressAndIdentification](appConfig.appName, formId).map {
-      case Some(data) => Ok(declarant_details(appConfig, form.fill(data), allCountries))
-      case _          => Ok(declarant_details(appConfig, form, allCountries))
+      case Some(data) => Ok(declarant_details(appConfig, form.fill(data)))
+      case _          => Ok(declarant_details(appConfig, form))
     }
   }
 
   def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
     form.bindFromRequest().fold(
       (formWithErrors: Form[AddressAndIdentification]) =>
-        Future.successful(BadRequest(declarant_details(appConfig, formWithErrors, allCountries))),
+        Future.successful(BadRequest(declarant_details(appConfig, formWithErrors))),
       form =>
         customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
           Redirect(controllers.supplementary.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage())

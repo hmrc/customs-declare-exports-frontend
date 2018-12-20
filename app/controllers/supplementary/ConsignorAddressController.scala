@@ -40,17 +40,19 @@ class ConsignorAddressController @Inject()(
   val formId = "ConsignorAddress"
   val form = Form(AddressAndIdentification.addressMapping)
 
+  implicit val countries = services.Countries.allCountries
+
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[AddressAndIdentification](appConfig.appName, formId).map {
-      case Some(data) => Ok(consignor_details(appConfig, form.fill(data), allCountries))
-      case _          => Ok(consignor_details(appConfig, form, allCountries))
+      case Some(data) => Ok(consignor_details(appConfig, form.fill(data)))
+      case _          => Ok(consignor_details(appConfig, form))
     }
   }
 
   def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
     form.bindFromRequest().fold(
       (formWithErrors: Form[AddressAndIdentification]) =>
-        Future.successful(BadRequest(consignor_details(appConfig, formWithErrors, allCountries))),
+        Future.successful(BadRequest(consignor_details(appConfig, formWithErrors))),
       form =>
         customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
           Redirect(controllers.supplementary.routes.DeclarantAddressController.displayForm())

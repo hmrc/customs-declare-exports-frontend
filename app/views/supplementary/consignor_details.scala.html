@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import services.Country
 
-@(appConfig: AppConfig, form: Form[AddressAndIdentification], countries: List[Country])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[AddressAndIdentification])(implicit request: Request[_], messages: Messages, countries: List[Country])
 
 @main_template(
     title = messages("supplementary.consignor.title"),
@@ -33,7 +33,7 @@
 
         @components.page_title("supplementary.consignor.title", "supplementary.consignor.title.hint")
 
-        @components.address(form, countries)
+        @components.address(form)
 
         @components.submit_button()
     }
