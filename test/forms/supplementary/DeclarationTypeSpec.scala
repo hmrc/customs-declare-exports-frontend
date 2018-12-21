@@ -16,32 +16,30 @@
 
 package forms.supplementary
 
+import forms.supplementary.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes.Simplified
+import forms.supplementary.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import org.scalatest.{MustMatchers, WordSpec}
 
 class DeclarationTypeSpec extends WordSpec with MustMatchers {
 
   "toMetadataProperties" should {
     "contain key from wco-dec domain" in {
-      val userInput = DeclarationType(
-        declarationType = "EX",
-        additionalDeclarationType = "Y"
-      )
+      val dispatchLocation = DispatchLocation(OutsideEU)
+      val additionalDeclarationType = AdditionalDeclarationType(Simplified)
+
+      val properties = DeclarationType.toMetadataProperties(dispatchLocation, additionalDeclarationType)
+
       val expectedPropertiesKey = "declaration.typeCode"
-
-      val properties = userInput.toMetadataProperties()
-
       properties.keySet must contain(expectedPropertiesKey)
     }
 
     "contain value from DeclarationType fields combined" in {
-      val userInput = DeclarationType(
-        declarationType = "EX",
-        additionalDeclarationType = "Y"
-      )
-      val expectedPropertiesValue = "EXY"
+      val dispatchLocation = DispatchLocation(OutsideEU)
+      val additionalDeclarationType = AdditionalDeclarationType(Simplified)
 
-      val properties = userInput.toMetadataProperties()
+      val properties = DeclarationType.toMetadataProperties(dispatchLocation, additionalDeclarationType)
 
+      val expectedPropertiesValue = OutsideEU + Simplified
       properties.values must contain(expectedPropertiesValue)
     }
   }

@@ -38,14 +38,14 @@ import scala.concurrent.Future
 class MovementSummaryController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticator: AuthAction,
+  authenticate: AuthAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   customsInventoryLinkingExportsConnector: CustomsInventoryLinkingExportsConnector,
   exportsMetrics: ExportsMetrics
 ) extends FrontendController with I18nSupport {
 
-  def displaySummary(): Action[AnyContent] = authenticator.async { implicit request =>
+  def displaySummary(): Action[AnyContent] = authenticate.async { implicit request =>
     val form = Form(MovementRequestSummaryMappingProvider.provideMappingForMovementSummaryPage())
     customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).map {
       case Some(data) => Ok(movement_summary_page(appConfig, form.fill(data)))
@@ -53,7 +53,7 @@ class MovementSummaryController @Inject()(
     }
   }
 
-  def submitMovementRequest(): Action[AnyContent] = authenticator.async { implicit request =>
+  def submitMovementRequest(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).flatMap {
       case Some(data) =>
         val metricIdentifier = getMetricIdentifierFrom(data)
@@ -75,7 +75,7 @@ class MovementSummaryController @Inject()(
     }
   }
 
-  def displayConfirmation(): Action[AnyContent] = authenticator.async { implicit request =>
+  def displayConfirmation(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).flatMap {
       case Some(data) =>
         customsCacheService.remove(appConfig.appName).map { _ =>
