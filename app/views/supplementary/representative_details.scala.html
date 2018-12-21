@@ -18,10 +18,11 @@
 @import controllers.supplementary.routes._
 @import forms.supplementary.RepresentativeDetails
 @import forms.supplementary.RepresentativeDetails.StatusCodes._
+@import services.Country
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
-@(appConfig: AppConfig, form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages, countries: List[Country])
 
 @main_template(
     title = messages("supplementary.representative.title"),
@@ -34,7 +35,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title("supplementary.representative.header", "supplementary.representative.eori.info")
+        @components.page_title(Some("supplementary.representative.header"), Some("supplementary.representative.eori.info"))
 
         @components.input_text(
             field = form("address.eori"),
@@ -43,7 +44,7 @@
         )
 
 
-        @components.page_title("", "supplementary.representative.address.info")
+        @components.page_title(subtitle = Some("supplementary.representative.address.info"))
 
         @components.input_text(
             field = form("address.fullName"),
@@ -65,25 +66,31 @@
             label = messages("supplementary.postCode")
         )
 
-        @components.input_text(
-            field = form("address.country"),
-            label = messages("supplementary.country")
+        @components.input_text_autocomplete(form)(
+          field = form("address.country"),
+          label = messages("supplementary.country"),
+          'autocomplete -> "off",
+          '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
+          'spellcheck -> "false",
+          'ariaautocomplete -> "list",
+          'ariahaspopup -> "true",
+          'ariaowns -> "suggestions-list",
+          'ariaactivedescendant -> "true",
+          'otherErrorFields -> Seq("countryCode")
         )
 
 
-        @components.page_title("supplementary.representative.representationType.header", "")
+        @components.page_title(title = Some("supplementary.representative.representationType.header"))
 
         @components.input_radio(
             field = form("statusCode"),
             legend = "",
             inputs = Seq(
-                RadioOption("statusCode", DirectRepresentative, messages("supplementary.representative.representationType.direct")),
-                RadioOption("statusCode", IndirectRepresentative, messages("supplementary.representative.representationType.indirect"))
+                RadioOption("statusCode_direct", DirectRepresentative, messages("supplementary.representative.representationType.direct")),
+                RadioOption("statusCode_indirect", IndirectRepresentative, messages("supplementary.representative.representationType.indirect"))
             )
         )
 
         @components.submit_button()
     }
 }
-
-

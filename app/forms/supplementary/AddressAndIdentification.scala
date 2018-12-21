@@ -19,6 +19,7 @@ package forms.supplementary
 import play.api.data.Forms.{mapping, text}
 import play.api.libs.json.Json
 import services.Countries.allCountries
+import utils.validators.FormFieldValidator.{isAlphanumeric, noLongerThan}
 
 case class AddressAndIdentification(
   eori: String, // alphanumeric, max length 17 characters
@@ -33,22 +34,25 @@ object AddressAndIdentification {
   implicit val format = Json.format[AddressAndIdentification]
 
   val addressMapping = mapping(
-    "eori" -> text().verifying("supplementary.eori.empty", _.nonEmpty)
-      .verifying("supplementary.eori.error", _.length <= 17),
-    "fullName" -> text().verifying("supplementary.fullName.empty", _.nonEmpty)
-      .verifying("supplementary.fullName.error", _.length <= 70),
-    "addressLine" -> text().verifying("supplementary.addressLine.empty", _.nonEmpty)
-      .verifying("supplementary.addressLine.error", _.length <= 70),
-    "townOrCity" -> text().verifying("supplementary.townOrCity.empty", _.nonEmpty)
-      .verifying("supplementary.townOrCity.error", _.length <= 35),
-    "postCode" -> text().verifying("supplementary.postCode.empty", _.nonEmpty)
-      .verifying("supplementary.postCode.error", _.length <= 9),
-    "country" -> text().verifying("supplementary.country.empty", _.nonEmpty)
+    "eori" -> text().verifying("supplementary.eori.empty", _.trim.nonEmpty)
+      .verifying("supplementary.eori.error", validateField(_, 17)),
+    "fullName" -> text().verifying("supplementary.fullName.empty", _.trim.nonEmpty)
+      .verifying("supplementary.fullName.error", validateField(_, 70)),
+    "addressLine" -> text().verifying("supplementary.addressLine.empty", _.trim.nonEmpty)
+      .verifying("supplementary.addressLine.error", validateField(_, 70)),
+    "townOrCity" -> text().verifying("supplementary.townOrCity.empty", _.trim.nonEmpty)
+      .verifying("supplementary.townOrCity.error", validateField(_, 35)),
+    "postCode" -> text().verifying("supplementary.postCode.empty", _.trim.nonEmpty)
+      .verifying("supplementary.postCode.error", validateField(_, 9)),
+    "country" -> text().verifying("supplementary.country.empty", _.trim.nonEmpty)
       .verifying(
         "supplementary.country.error",
         input => input.isEmpty || !allCountries.filter(country => country.countryName == input).isEmpty
       )
   )(AddressAndIdentification.apply)(AddressAndIdentification.unapply)
+
+  private def validateField(input: String, maxLength: Int): Boolean =
+    noLongerThan(input, maxLength) && isAlphanumeric(input.replaceAll(" ", ""))
 
   def toConsignorMetadataProperties(address: AddressAndIdentification): Map[String, String] =
     Map(

@@ -38,6 +38,7 @@ class RepresentativeDetailsPageController @Inject()(
   customsCacheService: CustomsCacheService
 ) extends FrontendController with I18nSupport {
 
+  implicit val countries = services.Countries.allCountries
   private val supplementaryDeclarationCacheId = appConfig.appName
 
   def displayRepresentativeDetailsPage(): Action[AnyContent] = authenticator.async { implicit request =>

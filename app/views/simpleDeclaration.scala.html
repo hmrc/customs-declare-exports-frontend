@@ -15,16 +15,12 @@
  *@
 
 @import config.AppConfig
-@import uk.gov.hmrc.play.views.html._
 @import controllers.routes._
-@import utils.RadioOption
 @import services.Country
+@import uk.gov.hmrc.play.views.html._
+@import utils.RadioOption
 
 @(appConfig: AppConfig, form: Form[_], countries:List[Country])(implicit request: Request[_], messages: Messages)
-
-@inputText(field: String, label: String, args: (Symbol, Any)*) = {
-@components.inputText(form)(field, label, args:_*)
-}
 
 @main_template(
     title = messages("consignment.title"),
@@ -41,7 +37,7 @@
 
         @components.countryField(form, "countryCode", "Country", countries)
 
-        @inputText("countryCode-auto-complete",
+        @components.input_text_autocomplete(form)(form("countryCode-auto-complete"),
         "cds.matching.individual.countryCode-auto-complete",
         'autocomplete -> "off",
         '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",

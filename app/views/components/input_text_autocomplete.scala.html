@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@(form: Form[_])(field: String, label: String, args: (Symbol, Any)*)(implicit request: Request[_], messages: Messages)
+@(form: Form[_])(field: Field, label: String, args: (Symbol, Any)*)(implicit request: Request[_], messages: Messages)
 
 @argsOrNone(kv: (Symbol, Any)) = @{
     args.find(_._1 == kv._1) match {
@@ -33,12 +33,14 @@
 }
 @defining(Seq(
     argsOrNone('_label -> Html(messages(label))),
-    argsOrNone('_labelClass -> "form-label-bold"),
-    argsOrNone('_divClass -> "form-group"),
+    argsOrNone('_labelClass -> "form-label"),
+    argsOrNone('_divClass -> ( if(field.hasErrors) "form-field form-field--error" else "form-field") ),
     argsOrNone('_inputClass -> "form-control")).flatten ++ withOtherErrors) { args =>
 
     @input_autocomplete(
-        form(field),
+        form(field.name),
         args: _*
     )
 }
+
+<script src="@routes.Assets.versioned("javascripts/countries.js")" type="application/javascript"></script>
