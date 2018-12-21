@@ -14,14 +14,9 @@
  * limitations under the License.
  *@
 
-@import forms.supplementary.AddressAndIdentification
 @import services.Country
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages, countries: List[Country])
-
-@inputText(field: String, label: String, args: (Symbol, Any)*) = {
-    @components.inputText(form)(field, label, args:_*)
-}
 
 <div>
     @components.input_text(
@@ -50,9 +45,9 @@
         label = messages("supplementary.postCode")
     )
 
-    @inputText(
-        "country",
-        messages("supplementary.country"),
+    @components.input_text_autocomplete(form)(
+        field = form("country"),
+        label = messages("supplementary.country"),
         'autocomplete -> "off",
         '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
         'spellcheck -> "false",
@@ -63,5 +58,3 @@
         'otherErrorFields -> Seq("countryCode")
     )
 </div>
-
-<script src="@routes.Assets.versioned("javascripts/countries.js")" type="application/javascript"></script>
