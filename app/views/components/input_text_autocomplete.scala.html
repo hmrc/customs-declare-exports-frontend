@@ -23,7 +23,7 @@
     }
 }
 @withOtherErrors = @{
-    @import views.html.helper.FieldElements
+    import views.html.helper.FieldElements
     def fieldErrors(fld: String) = FieldElements(id = fld, form(fld), Html(""), Map.empty, messages).errors
 
     args.map {
