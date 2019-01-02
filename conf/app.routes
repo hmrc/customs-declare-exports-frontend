@@ -107,3 +107,8 @@ POST       /additional-actors                           controllers.supplementar
 GET        /declaration/supplementary/representative    controllers.supplementary.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
 
 POST       /declaration/supplementary/representative    controllers.supplementary.RepresentativeDetailsPageController.submitRepresentativeDetails()
+
+# Role Page
+
+GET /role                                               controllers.MovementController.rolePage()
+

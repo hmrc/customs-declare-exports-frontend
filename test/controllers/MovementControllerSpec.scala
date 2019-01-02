@@ -42,7 +42,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         status(result) must be(OK)
       }
 
-      "display radio button to choose arrival or departure" in {
+      "display radio button to choose simplified declaration or standard declaration or arrival or departure" in {
         authorizedUser()
         withCaching[ChoiceForm](None)
 
@@ -50,6 +50,8 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         val stringResult = contentAsString(result)
 
         stringResult must include(messages("movement.choice.description"))
+        stringResult must include(messages("movement.choice.SMP.declaration"))
+        stringResult must include(messages("movement.choice.STD.declaration"))
         stringResult must include(messages("movement.choice.EAL"))
         stringResult must include(messages("movement.choice.EDL"))
       }
@@ -72,6 +74,34 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         val result = route(app, postRequest(choiceUri, wrongForm)).get
 
         contentAsString(result) must include(messages("movement.incorrectValue"))
+      }
+
+      "redirect to ducr for arrival page when simplified declaration chosen" in {
+        authorizedUser()
+        val form = Form(ChoiceForm.choiceMapping).fill(ChoiceForm("SMP"))
+        withCaching[ChoiceForm](Some(form))
+        withCaching[EnterDucrForm](None)
+
+        val correctForm = JsObject(Map("choice" -> JsString("SMP")))
+        val result = route(app, postRequest(choiceUri, correctForm)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/ducr"))
+      }
+
+      "redirect to ducr for arrival page when standard declaration chosen" in {
+        authorizedUser()
+        val form = Form(ChoiceForm.choiceMapping).fill(ChoiceForm("STD"))
+        withCaching[ChoiceForm](Some(form))
+        withCaching[EnterDucrForm](None)
+
+        val correctForm = JsObject(Map("choice" -> JsString("STD")))
+        val result = route(app, postRequest(choiceUri, correctForm)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/ducr"))
       }
 
       "redirect to ducr for arrival page when arrival chosen" in {

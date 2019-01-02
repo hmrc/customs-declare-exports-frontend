@@ -32,11 +32,24 @@ object ChoiceForm {
   implicit val format = Json.format[ChoiceForm]
 
   //TODO change to enum
-  private val correctChoice = Seq("EAL", "EDL")
+  private val correctChoice = Seq("SMP", "STD", "EAL", "EDL")
 
   val choiceMapping = mapping("choice" -> text().verifying("Incorrect value", correctChoice.contains(_)))(
     ChoiceForm.apply
   )(ChoiceForm.unapply)
+}
+
+case class RoleForm(roleForm: String)
+
+object RoleForm {
+  implicit val format = Json.format[RoleForm]
+
+  //TODO change to enum
+  private val correctRole = Seq("DEC", "DREP", "IREP")
+
+  val roleMapping = mapping(
+    "roleForm" -> text().verifying("Incorrect value", correctRole.contains(_))
+  )(RoleForm.apply)(RoleForm.unapply)
 }
 
 case class EnterDucrForm(ducr: String)
@@ -123,6 +136,9 @@ object MovementFormsAndIds {
 
   val transportForm = Form(TransportForm.transportMapping)
   val transportId = "Transport"
+
+  val roleForm = Form(RoleForm.roleMapping)
+  val roleId = "Role"
 }
 
 object Movement {
