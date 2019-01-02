@@ -49,8 +49,12 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("submissions.title"))
       stringResult must include(messages("submissions.eori"))
       stringResult must include(messages("submissions.conversationId"))
+      stringResult must include(messages("submissions.ducr"))
       stringResult must include(messages("submissions.lrn"))
       stringResult must include(messages("submissions.mrn"))
+      stringResult must include(messages("submissions.submittedTimestamp"))
+      stringResult must include(messages("submissions.status"))
+      stringResult must include(messages("submissions.noOfNotifications"))
     }
   }
 }

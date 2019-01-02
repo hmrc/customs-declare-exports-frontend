@@ -161,7 +161,7 @@ object ExportsTestData {
     Map(
       "day" -> JsNumber(0),
       "month" -> JsNumber(0),
-      "year" -> JsNumber(2017),
+      "year" -> JsNumber(LocalDate.now().getYear - 1),
       "hour" -> JsNumber(-1),
       "minute" -> JsNumber(-1)
     )
@@ -171,7 +171,7 @@ object ExportsTestData {
     Map(
       "day" -> JsNumber(40),
       "month" -> JsNumber(113),
-      "year" -> JsNumber(2018),
+      "year" -> JsNumber(LocalDate.now().getYear),
       "hour" -> JsNumber(25),
       "minute" -> JsNumber(60)
     )
@@ -181,7 +181,7 @@ object ExportsTestData {
     Map(
       "day" -> JsNumber(15),
       "month" -> JsNumber(4),
-      "year" -> JsNumber(2018),
+      "year" -> JsNumber(LocalDate.now().getYear),
       "hour" -> JsNumber(16),
       "minute" -> JsNumber(30)
     )
