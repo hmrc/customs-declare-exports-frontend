@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,17 +34,23 @@ object AddressAndIdentification {
   implicit val format = Json.format[AddressAndIdentification]
 
   val addressMapping = mapping(
-    "eori" -> text().verifying("supplementary.eori.empty", _.trim.nonEmpty)
+    "eori" -> text()
+      .verifying("supplementary.eori.empty", _.trim.nonEmpty)
       .verifying("supplementary.eori.error", validateField(_, 17)),
-    "fullName" -> text().verifying("supplementary.fullName.empty", _.trim.nonEmpty)
+    "fullName" -> text()
+      .verifying("supplementary.fullName.empty", _.trim.nonEmpty)
       .verifying("supplementary.fullName.error", validateField(_, 70)),
-    "addressLine" -> text().verifying("supplementary.addressLine.empty", _.trim.nonEmpty)
+    "addressLine" -> text()
+      .verifying("supplementary.addressLine.empty", _.trim.nonEmpty)
       .verifying("supplementary.addressLine.error", validateField(_, 70)),
-    "townOrCity" -> text().verifying("supplementary.townOrCity.empty", _.trim.nonEmpty)
+    "townOrCity" -> text()
+      .verifying("supplementary.townOrCity.empty", _.trim.nonEmpty)
       .verifying("supplementary.townOrCity.error", validateField(_, 35)),
-    "postCode" -> text().verifying("supplementary.postCode.empty", _.trim.nonEmpty)
+    "postCode" -> text()
+      .verifying("supplementary.postCode.empty", _.trim.nonEmpty)
       .verifying("supplementary.postCode.error", validateField(_, 9)),
-    "country" -> text().verifying("supplementary.country.empty", _.trim.nonEmpty)
+    "country" -> text()
+      .verifying("supplementary.country.empty", _.trim.nonEmpty)
       .verifying(
         "supplementary.country.error",
         input => input.isEmpty || !allCountries.filter(country => country.countryName == input).isEmpty

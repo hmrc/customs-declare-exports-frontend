@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import uk.gov.hmrc.http.logging.Authorization
 
 class NrsServiceSpec extends CustomExportsBaseSpec {
 
-  implicit val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(
-    TestHelper.randomString(255))), nsStamp = DateTime.now().getMillis)
+  implicit val hc: HeaderCarrier =
+    HeaderCarrier(authorization = Some(Authorization(TestHelper.randomString(255))), nsStamp = DateTime.now().getMillis)
   val nrsService = new NRSService(appConfig, mockNrsConnector)
   implicit val signedInUser = newUser("12345", "external1")
   "NrsService " should {

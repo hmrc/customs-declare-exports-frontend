@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,17 +37,17 @@ object ExportsTestData {
   val nrsGroupIdentifierValue = Some("groupIdentifierValue")
   val nrsCredentialRole = Some(User)
   val nrsMdtpInformation = MdtpInformation("deviceId", "sessionId")
-  val nrsItmpName = ItmpName(Some("givenName"),
-    Some("middleName"),
-    Some("familyName"))
-  val nrsItmpAddress = ItmpAddress(Some("line1"),
+  val nrsItmpName = ItmpName(Some("givenName"), Some("middleName"), Some("familyName"))
+  val nrsItmpAddress = ItmpAddress(
+    Some("line1"),
     Some("line2"),
     Some("line3"),
     Some("line4"),
     Some("line5"),
     Some("postCode"),
     Some("countryName"),
-    Some("countryCode"))
+    Some("countryCode")
+  )
   val nrsAffinityGroup = Some(Individual)
   val nrsCredentialStrength = Some("STRONG")
   val nrsDateOfBirth = Some(LocalDate.now().minusYears(25))
@@ -58,30 +58,33 @@ object ExportsTestData {
 
   val nrsLoginTimes = LoginTimes(currentLoginTime, Some(previousLoginTime))
 
-
-  def newUser(eori: String, externalId: String): SignedInUser = SignedInUser(
-    eori,
-    Enrolments(Set(
-      Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori)
-    )),
-    IdentityData(
-      Some("Int-ba17b467-90f3-42b6-9570-73be7b78eb2b"),
-      Some(externalId),
-      None,
-      Some(nrsCredentials),
-      Some(L50),
-      None,
-      None,
-      Some(Name(Some("Aldo"), Some("Rain"))),
-      Some(LocalDate.now().minusYears(25)),
-      Some("amina@hmrc.co.uk"),
-      Some(AgentInformation(Some("agentId"),
-        Some("agentCode"),
-        Some("agentFriendlyName"))),
-      None, None, None, None, None, None, None,
-      Some("crdentialStrength 50"),
-      Some(LoginTimes(DateTime.now, None))
-    ))
+  def newUser(eori: String, externalId: String): SignedInUser =
+    SignedInUser(
+      eori,
+      Enrolments(Set(Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori))),
+      IdentityData(
+        Some("Int-ba17b467-90f3-42b6-9570-73be7b78eb2b"),
+        Some(externalId),
+        None,
+        Some(nrsCredentials),
+        Some(L50),
+        None,
+        None,
+        Some(Name(Some("Aldo"), Some("Rain"))),
+        Some(LocalDate.now().minusYears(25)),
+        Some("amina@hmrc.co.uk"),
+        Some(AgentInformation(Some("agentId"), Some("agentCode"), Some("agentFriendlyName"))),
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        Some("crdentialStrength 50"),
+        Some(LoginTimes(DateTime.now, None))
+      )
+    )
 
   val addressJson: JsValue = JsObject(
     Map(
@@ -145,23 +148,15 @@ object ExportsTestData {
     )
   )
 
-  val wrongJson: JsValue = JsObject(
-    Map(
-      "ducr" -> JsString("")
-    )
-  )
+  val wrongJson: JsValue = JsObject(Map("ducr" -> JsString("")))
 
-  val correctDucrJson: JsValue = JsObject(
-    Map(
-      "ducr" -> JsString("5GB123456789000-123ABC456DEFIIIII")
-    )
-  )
+  val correctDucrJson: JsValue = JsObject(Map("ducr" -> JsString("5GB123456789000-123ABC456DEFIIIII")))
 
   val wrongMinimumGoodsDate: JsValue = JsObject(
     Map(
       "day" -> JsNumber(0),
       "month" -> JsNumber(0),
-      "year" -> JsNumber(2017),
+      "year" -> JsNumber(LocalDate.now().getYear - 1),
       "hour" -> JsNumber(-1),
       "minute" -> JsNumber(-1)
     )
@@ -171,7 +166,7 @@ object ExportsTestData {
     Map(
       "day" -> JsNumber(40),
       "month" -> JsNumber(113),
-      "year" -> JsNumber(2018),
+      "year" -> JsNumber(LocalDate.now().getYear),
       "hour" -> JsNumber(25),
       "minute" -> JsNumber(60)
     )
@@ -181,7 +176,7 @@ object ExportsTestData {
     Map(
       "day" -> JsNumber(15),
       "month" -> JsNumber(4),
-      "year" -> JsNumber(2018),
+      "year" -> JsNumber(LocalDate.now().getYear),
       "hour" -> JsNumber(16),
       "minute" -> JsNumber(30)
     )
@@ -214,41 +209,39 @@ object ExportsTestData {
     )
   )
 
-  def validMovementRequest(movementType: String) = InventoryLinkingMovementRequest(
-    messageCode = movementType,
-    agentDetails = Some(AgentDetails(
-      eori = Some("QWERTY123"),
-      agentLocation = Some("Location"),
-      agentRole = Some("ABC")
-    )),
-    ucrBlock = UcrBlock(
-      ucr = "GB/NLA-0YH06GF0V3CUPJC9393",
-      ucrType = "D"
-    ),
-    goodsLocation = "Location",
-    goodsArrivalDateTime = Some("2018-11-21T17:47:02"),
-    goodsDepartureDateTime = Some("2018-11-21T17:47:02"),
-    shedOPID = Some("ABC"),
-    masterUCR = Some("GB/NLA-0YH06GF0V3CUPJC9393"),
-    masterOpt = Some("A"),
-    movementReference = Some("Movement Reference"),
-    transportDetails = Some(TransportDetails(
-      transportID = Some("Transport ID"),
-      transportMode = Some("M"),
-      transportNationality = Some("UK")
-    ))
-  )
-
+  def validMovementRequest(movementType: String) =
+    InventoryLinkingMovementRequest(
+      messageCode = movementType,
+      agentDetails =
+        Some(AgentDetails(eori = Some("QWERTY123"), agentLocation = Some("Location"), agentRole = Some("ABC"))),
+      ucrBlock = UcrBlock(ucr = "GB/NLA-0YH06GF0V3CUPJC9393", ucrType = "D"),
+      goodsLocation = "Location",
+      goodsArrivalDateTime = Some("2018-11-21T17:47:02"),
+      goodsDepartureDateTime = Some("2018-11-21T17:47:02"),
+      shedOPID = Some("ABC"),
+      masterUCR = Some("GB/NLA-0YH06GF0V3CUPJC9393"),
+      masterOpt = Some("A"),
+      movementReference = Some("Movement Reference"),
+      transportDetails = Some(
+        TransportDetails(
+          transportID = Some("Transport ID"),
+          transportMode = Some("M"),
+          transportNationality = Some("UK")
+        )
+      )
+    )
 
   val choiceForm = Json.toJson(ChoiceForm("EAL"))
 
   def getMovementCacheMap(id: String, movementType: String) = {
 
-    val data = Map(choiceId -> Json.toJson(ChoiceForm(movementType)),
+    val data = Map(
+      choiceId -> Json.toJson(ChoiceForm(movementType)),
       enterDucrId -> correctDucrJson,
       goodsDateId -> Json.toJson(GoodsDateForm("01", "02", "2020", None, None)),
       locationId -> location,
-      transportId -> correctTransport)
+      transportId -> correctTransport
+    )
     CacheMap(id, data)
   }
 
@@ -286,24 +279,10 @@ object ExportsTestData {
   )
 
   val incorrectAdditionalActors: JsValue = JsObject(
-    Map(
-      "eori" -> JsString("123456789123456789"),
-      "partyType" -> JsString("Incorrect")
-    )
+    Map("eori" -> JsString("123456789123456789"), "partyType" -> JsString("Incorrect"))
   )
 
-  val emptyAdditionalActors: JsValue = JsObject(
-    Map(
-      "eori" -> JsString(""),
-      "partyType" -> JsString("")
-    )
-  )
+  val emptyAdditionalActors: JsValue = JsObject(Map("eori" -> JsString(""), "partyType" -> JsString("")))
 
-  val correctAdditionalActors: JsValue = JsObject(
-    Map(
-      "eori" -> JsString("eori1"),
-      "partyType" -> JsString("CS")
-    )
-  )
+  val correctAdditionalActors: JsValue = JsObject(Map("eori" -> JsString("eori1"), "partyType" -> JsString("CS")))
 }
-

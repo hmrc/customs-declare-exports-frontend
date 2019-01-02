@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,6 @@ package utils
 case class RadioOption(id: String, value: String, messageKey: String)
 
 object RadioOption {
-  def apply(keyPrefix: String, option: String): RadioOption = RadioOption(
-    s"$keyPrefix.$option",
-    option,
-    s"$keyPrefix.$option"
-  )
+  def apply(keyPrefix: String, option: String): RadioOption =
+    RadioOption(s"$keyPrefix.$option", option, s"$keyPrefix.$option")
 }

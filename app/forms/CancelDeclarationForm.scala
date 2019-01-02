@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,24 +41,28 @@ object Submitter {
 case class Pointer(sequenceNumeric: Int, documentSectionCode: Option[String])
 
 object Pointer {
-  val formMapping = mapping(
-    "sequenceNumeric" -> number,
-    "changeReasonCode" -> optional(text)
-  )(Pointer.apply)(Pointer.unapply)
+  val formMapping =
+    mapping("sequenceNumeric" -> number, "changeReasonCode" -> optional(text))(Pointer.apply)(Pointer.unapply)
 
   implicit val formats = Json.format[Pointer]
 }
 
 //changeReasonCode = length 6 and should be number and is mandatory
-case class AdditionalInformation(statementCode: Option[String], statementDescription: String, statementTypeCode: String, pointer: Pointer)
+case class AdditionalInformation(
+  statementCode: Option[String],
+  statementDescription: String,
+  statementTypeCode: String,
+  pointer: Pointer
+)
 
 object AdditionalInformation {
-  val formMapping = mapping(
-    "statementCode" -> optional(text),
-    "statementDescription" -> nonEmptyText,
-    "statementTypeCode" -> text,
-    "pointer" -> Pointer.formMapping
-  )(AdditionalInformation.apply)(AdditionalInformation.unapply)
+  val formMapping =
+    mapping(
+      "statementCode" -> optional(text),
+      "statementDescription" -> nonEmptyText,
+      "statementTypeCode" -> text,
+      "pointer" -> Pointer.formMapping
+    )(AdditionalInformation.apply)(AdditionalInformation.unapply)
 
   implicit val formats = Json.format[AdditionalInformation]
 }

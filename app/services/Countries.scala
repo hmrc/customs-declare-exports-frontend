@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,8 @@ case object Country {
 object Countries {
 
   private val mdgCountryCodes: List[String] =
-    Source.fromInputStream(getClass.getResourceAsStream("/mdg-country-codes.csv"))
+    Source
+      .fromInputStream(getClass.getResourceAsStream("/mdg-country-codes.csv"))
       .getLines()
       .mkString
       .split(',')
@@ -39,7 +40,7 @@ object Countries {
   private val countries: List[Country] = {
     val jsonFile = getClass.getResourceAsStream("/location-autocomplete-canonical-list.json")
 
-    def fromJsonFile: List[Country] = {
+    def fromJsonFile: List[Country] =
       Json.parse(jsonFile) match {
         case JsArray(cs) =>
           cs.toList.collect {
@@ -49,7 +50,6 @@ object Countries {
         case _ =>
           throw new IllegalArgumentException("Could not read JSON array of countries from : " + jsonFile)
       }
-    }
 
     fromJsonFile.sortBy(_.countryName)
   }

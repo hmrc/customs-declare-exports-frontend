@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,26 @@ import play.api.libs.json.Json
 case class Submission(
   eori: String,
   conversationId: String,
+  ducr: String,
   lrn: Option[String] = None,
   mrn: Option[String] = None
 )
 
 object Submission {
   implicit val format = Json.format[Submission]
+}
+
+case class SubmissionData(
+  eori: String,
+  conversationId: String,
+  ducr: String,
+  mrn: Option[String],
+  lrn: Option[String],
+  submittedTimestamp: Long,
+  status: Option[String],
+  noOfNotifications: Int
+)
+
+object SubmissionData {
+  implicit val format = Json.format[SubmissionData]
 }

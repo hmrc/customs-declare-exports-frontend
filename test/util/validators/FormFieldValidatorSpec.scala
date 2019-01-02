@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,6 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-
   "FormFieldValidator on isNumeric" should {
 
     "return false" when {
@@ -101,7 +100,6 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-
   "FormFieldValidator on isAlphabetic" should {
 
     "return false" when {
@@ -143,7 +141,6 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
       }
     }
   }
-
 
   "FormFieldValidator on isAlphaNumeric" should {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,19 @@ import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMov
 
 class MovementSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
-
-  val expected = InventoryLinkingMovementRequest("EAL",
+  val expected = InventoryLinkingMovementRequest(
+    "EAL",
     Some(AgentDetails(Some("eori1"), Some("Agent location"), Some("Agent role"))),
-    UcrBlock("5GB123456789000-123ABC456DEFIIIII", "D"), "Goods location",
-    Some("2020-02-01T00:00:00"), None, Some("Shed"),
-    None, None, None,
-    Some(TransportDetails(Some("Transport Id"), Some("M"), Some("PL"))))
+    UcrBlock("5GB123456789000-123ABC456DEFIIIII", "D"),
+    "Goods location",
+    Some("2020-02-01T00:00:00"),
+    None,
+    Some("Shed"),
+    None,
+    None,
+    None,
+    Some(TransportDetails(Some("Transport Id"), Some("M"), Some("PL")))
+  )
 
   "Movements form " should {
     "create MovementRequest for an input cacheMap" in {

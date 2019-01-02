@@ -26,20 +26,25 @@ lazy val microservice = Project(appName, file("."))
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(
     Keys.fork in IntegrationTest := false,
-    unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest) (base => Seq(base / "it")),
+    unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest)(base => Seq(base / "it")),
     addTestReportOption(IntegrationTest, "int-test-reports"),
     testGrouping in IntegrationTest := TestPhases.oneForkedJvmPerTest((definedTests in IntegrationTest).value),
-    parallelExecution in IntegrationTest := false)
-  .settings(resolvers ++= Seq(
-    Resolver.bintrayRepo("hmrc", "releases"),
-    Resolver.jcenterRepo,
-    Resolver.bintrayRepo("emueller", "maven")
-  ))
+    parallelExecution in IntegrationTest := false
+  )
+  .settings(
+    resolvers ++= Seq(
+      Resolver.bintrayRepo("hmrc", "releases"),
+      Resolver.jcenterRepo,
+      Resolver.bintrayRepo("emueller", "maven")
+    )
+  )
   .settings(publishingSettings: _*)
   .settings(
     // concatenate js
     Concat.groups := Seq(
-      "javascripts/customsdecexfrontend-app.js" -> group(Seq("javascripts/show-hide-content.js", "javascripts/customsdecexfrontend.js"))
+      "javascripts/customsdecexfrontend-app.js" -> group(
+        Seq("javascripts/show-hide-content.js", "javascripts/customsdecexfrontend.js")
+      )
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
     UglifyKeys.compressOptions := Seq("unused=false", "dead_code=false"),

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import views.html.movement.{movement_confirmation_page, movement_summary_page}
 
 import scala.concurrent.Future
 
-
 class MovementSummaryController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
@@ -49,7 +48,7 @@ class MovementSummaryController @Inject()(
     val form = Form(MovementRequestSummaryMappingProvider.provideMappingForMovementSummaryPage())
     customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).map {
       case Some(data) => Ok(movement_summary_page(appConfig, form.fill(data)))
-      case _ => handleError(s"Could not obtain data from DB")
+      case _          => handleError(s"Could not obtain data from DB")
     }
   }
 
@@ -59,16 +58,19 @@ class MovementSummaryController @Inject()(
         val metricIdentifier = getMetricIdentifierFrom(data)
         exportsMetrics.startTimer(metricIdentifier)
 
-        customsInventoryLinkingExportsConnector.sendMovementRequest(request.user.eori, data.toXml).map {
-          case accepted if accepted.status == ACCEPTED =>
-            exportsMetrics.incrementCounter(metricIdentifier)
-            Redirect(controllers.routes.MovementSummaryController.displayConfirmation())
+        customsInventoryLinkingExportsConnector
+          .sendMovementRequest(request.user.eori, data.toXml)
+          .map {
+            case accepted if accepted.status == ACCEPTED =>
+              exportsMetrics.incrementCounter(metricIdentifier)
+              Redirect(controllers.routes.MovementSummaryController.displayConfirmation())
 
-        }.recover {
-          case error: Throwable =>
-            exportsMetrics.incrementCounter(metricIdentifier)
-            handleError(s"Error from Customs Inventory Linking ${error.toString}")
-        }
+          }
+          .recover {
+            case error: Throwable =>
+              exportsMetrics.incrementCounter(metricIdentifier)
+              handleError(s"Error from Customs Inventory Linking ${error.toString}")
+          }
 
       case _ =>
         Future.successful(handleError(s"Could not obtain data from DB"))
@@ -85,7 +87,6 @@ class MovementSummaryController @Inject()(
         Future.successful(handleError(s"Could not obtain data from DB"))
     }
   }
-
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
     Logger.error(logMessage)
@@ -105,4 +106,3 @@ class MovementSummaryController @Inject()(
     }
 
 }
-

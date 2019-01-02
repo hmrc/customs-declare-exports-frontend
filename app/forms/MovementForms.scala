@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,9 @@ object ChoiceForm {
   //TODO change to enum
   private val correctChoice = Seq("EAL", "EDL")
 
-  val choiceMapping = mapping(
-    "choice" -> text().verifying("Incorrect value", correctChoice.contains(_))
-  )(ChoiceForm.apply)(ChoiceForm.unapply)
+  val choiceMapping = mapping("choice" -> text().verifying("Incorrect value", correctChoice.contains(_)))(
+    ChoiceForm.apply
+  )(ChoiceForm.unapply)
 }
 
 case class EnterDucrForm(ducr: String)
@@ -46,18 +46,12 @@ object EnterDucrForm {
 
   private val ducrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
 
-  val ducrMapping = mapping(
-    "ducr" -> text().verifying(pattern(ducrFormat.r, error = "error.ducr"))
-  )(EnterDucrForm.apply)(EnterDucrForm.unapply)
+  val ducrMapping = mapping("ducr" -> text().verifying(pattern(ducrFormat.r, error = "error.ducr")))(
+    EnterDucrForm.apply
+  )(EnterDucrForm.unapply)
 }
 
-case class GoodsDateForm(
-  day: String,
-  month: String,
-  year: String,
-  hour: Option[String],
-  minute: Option[String]
-)
+case class GoodsDateForm(day: String, month: String, year: String, hour: Option[String], minute: Option[String])
 
 object GoodsDateForm {
   implicit val format = Json.format[GoodsDateForm]
@@ -71,8 +65,8 @@ object GoodsDateForm {
   val goodsDateMapping = mapping(
     "day" -> text().verifying("Day is incorrect", days.contains(_)),
     "month" -> text().verifying("Month is incorrect", months.contains(_)),
-    "year" -> text().verifying("Year is incorrect",
-      year => if (year.isEmpty) false else year.toInt >= LocalDateTime.now().getYear),
+    "year" -> text()
+      .verifying("Year is incorrect", year => if (year.isEmpty) false else year.toInt >= LocalDateTime.now().getYear),
     "hour" -> optional(text().verifying("Hour is incorrect", hours.contains(_))),
     "minute" -> optional(text().verifying("Minutes are incorrect", minutes.contains(_)))
   )(GoodsDateForm.apply)(GoodsDateForm.unapply)
@@ -106,11 +100,12 @@ case class TransportForm(
 object TransportForm {
   implicit val format = Json.format[TransportForm]
 
-  val transportMapping = mapping(
-    "transportId" -> optional(text(maxLength = 35)),
-    "transportMode" -> optional(text(maxLength = 1)),
-    "transportNationality" -> optional(text(maxLength = 2))
-  )(TransportForm.apply)(TransportForm.unapply)
+  val transportMapping =
+    mapping(
+      "transportId" -> optional(text(maxLength = 35)),
+      "transportMode" -> optional(text(maxLength = 1)),
+      "transportNationality" -> optional(text(maxLength = 2))
+    )(TransportForm.apply)(TransportForm.unapply)
 }
 
 object MovementFormsAndIds {
@@ -142,33 +137,41 @@ object Movement {
     // TODO: ucrType is hardcoded need to UPDATE after we allow user input for mucr
     InventoryLinkingMovementRequest(
       messageCode = choiceForm.choice,
-      agentDetails = Some(AgentDetails(
-        eori = Some(eori),
-        agentLocation = location.agentLocation,
-        agentRole = location.agentRole
-      )),
-      ucrBlock = UcrBlock(
-        ucr = ducrForm.ducr,
-        ucrType = "D"
-      ),
+      agentDetails =
+        Some(AgentDetails(eori = Some(eori), agentLocation = location.agentLocation, agentRole = location.agentRole)),
+      ucrBlock = UcrBlock(ucr = ducrForm.ducr, ucrType = "D"),
       goodsLocation = location.goodsLocation.get,
-
-      goodsArrivalDateTime = if (choiceForm.choice.equals("EAL") && goodsDate.isDefined) Some(extractDateTime(goodsDate.get)) else None,
-      goodsDepartureDateTime = if (choiceForm.choice.equals("EDL") && goodsDate.isDefined) Some(extractDateTime(goodsDate.get)) else None,
+      goodsArrivalDateTime =
+        if (choiceForm.choice.equals("EAL") && goodsDate.isDefined)
+          Some(extractDateTime(goodsDate.get))
+        else None,
+      goodsDepartureDateTime =
+        if (choiceForm.choice.equals("EDL") && goodsDate.isDefined)
+          Some(extractDateTime(goodsDate.get))
+        else None,
       shedOPID = location.shed,
       masterUCR = None,
       masterOpt = None,
       movementReference = None,
-      transportDetails = Some(TransportDetails(
-        transportID = transport.transportId,
-        transportMode = transport.transportMode,
-        transportNationality = transport.transportNationality
-      ))
+      transportDetails = Some(
+        TransportDetails(
+          transportID = transport.transportId,
+          transportMode = transport.transportMode,
+          transportNationality = transport.transportNationality
+        )
+      )
     )
   }
 
   private def extractDateTime(form: GoodsDateForm): String =
-    LocalDateTime.of(form.year.toInt, form.month.toInt, form.day.toInt,
-      form.hour.getOrElse("00").toInt, form.minute.getOrElse("00").toInt).toString + ":00"
+    LocalDateTime
+      .of(
+        form.year.toInt,
+        form.month.toInt,
+        form.day.toInt,
+        form.hour.getOrElse("00").toInt,
+        form.minute.getOrElse("00").toInt
+      )
+      .toString + ":00"
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,13 +48,15 @@ class DeclarationAdditionalActorsController @Inject()(
   }
 
   def saveAdditionalActors(): Action[AnyContent] = authenticate.async { implicit request =>
-    form.bindFromRequest().fold(
-      (formWithErrors: Form[DeclarationAdditionalActors]) =>
-        Future.successful(BadRequest(declaration_additional_actors(appConfig, formWithErrors))),
-      form =>
-        customsCacheService.cache[DeclarationAdditionalActors](appConfig.appName, formId, form).map { _ =>
-          Ok("Declaration holder of authorisation")
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[DeclarationAdditionalActors]) =>
+          Future.successful(BadRequest(declaration_additional_actors(appConfig, formWithErrors))),
+        form =>
+          customsCacheService.cache[DeclarationAdditionalActors](appConfig.appName, formId, form).map { _ =>
+            Ok("Declaration holder of authorisation")
         }
-    )
+      )
   }
 }

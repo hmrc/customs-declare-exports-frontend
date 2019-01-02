@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 
 @Singleton
 class AppConfig @Inject()(override val runModeConfiguration: Configuration, val environment: Environment)
-  extends ServicesConfig with AppName {
+    extends ServicesConfig with AppName {
 
   override protected def mode: Mode = environment.mode
 
@@ -52,29 +52,49 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   lazy val customsDeclarationsUrl = loadConfig("urls.customsDeclarations")
 
   lazy val customsDeclarationsEndpoint = baseUrl("customs-declarations")
-  lazy val submitExportDeclarationUri = getConfString("customs-declarations.submit-uri",
-    throw new IllegalStateException("Missing configuration for Customs Declarations submission URI"))
-  lazy val submitCancellationUri = getConfString("customs-declarations.cancel-uri",
-    throw new IllegalStateException("Missing configuration for Customs Declarations cancellation URI"))
+  lazy val submitExportDeclarationUri = getConfString(
+    "customs-declarations.submit-uri",
+    throw new IllegalStateException("Missing configuration for Customs Declarations submission URI")
+  )
+  lazy val submitCancellationUri = getConfString(
+    "customs-declarations.cancel-uri",
+    throw new IllegalStateException("Missing configuration for Customs Declarations cancellation URI")
+  )
   lazy val developerHubClientId: String = loadConfig("hmrc-developers-hub.client-id")
 
   lazy val customsDeclareExports = baseUrl("customs-declare-exports")
-  lazy val saveSubmissionResponse = getConfString("customs-declare-exports.save-response-uri",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports submission URI"))
-  lazy val saveMovementSubmission = getConfString("customs-declare-exports.save-movement-uri",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports submission URI"))
+  lazy val saveSubmissionResponse = getConfString(
+    "customs-declare-exports.save-response-uri",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports submission URI")
+  )
+  lazy val saveMovementSubmission = getConfString(
+    "customs-declare-exports.save-movement-uri",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports submission URI")
+  )
+  lazy val fetchSubmissions = getConfString(
+    "customs-declare-exports.fetch-submissions",
+    throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch submission URI")
+  )
 
-  lazy val fetchNotifications = getConfString("customs-declare-exports.fetch-notifications",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notification URI"))
+  lazy val fetchNotifications = getConfString(
+    "customs-declare-exports.fetch-notifications",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notification URI")
+  )
 
-  lazy val customsDeclarationsApiVersion = getConfString("customs-declarations.api-version",
-    throw new IllegalStateException("Missing configuration for Customs Declarations API version"))
+  lazy val customsDeclarationsApiVersion = getConfString(
+    "customs-declarations.api-version",
+    throw new IllegalStateException("Missing configuration for Customs Declarations API version")
+  )
 
   lazy val customsInventoryLinkingExports = baseUrl("customs-inventory-linking-exports")
-  lazy val sendArrival = getConfString("customs-inventory-linking-exports.sendArrival",
-    throw new IllegalStateException("Missing configuration for Customs Inventory Linking send arrival URI"))
-  lazy val clientIdInventory = getConfString("customs-inventory-linking-exports.client-id",
-    throw new IllegalStateException("Missing configuration for Customs Inventory Linking Client Id"))
+  lazy val sendArrival = getConfString(
+    "customs-inventory-linking-exports.sendArrival",
+    throw new IllegalStateException("Missing configuration for Customs Inventory Linking send arrival URI")
+  )
+  lazy val clientIdInventory = getConfString(
+    "customs-inventory-linking-exports.client-id",
+    throw new IllegalStateException("Missing configuration for Customs Inventory Linking Client Id")
+  )
 
   lazy val languageTranslationEnabled =
     runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
@@ -85,22 +105,21 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
 
   lazy val nrsServiceUrl: String = baseUrl("nrs")
 
-  lazy val nrsApiKey = getConfString("nrs.apikey", throw new IllegalStateException("Missing configuration for nrs apikey"))
+  lazy val nrsApiKey =
+    getConfString("nrs.apikey", throw new IllegalStateException("Missing configuration for nrs apikey"))
 
-  def languageMap: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy")
-  )
+  def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
 
   def featureStatus(feature: Feature): FeatureStatus =
-    sys.props.get(feature2Key(feature)).map(str2FeatureStatus).getOrElse(
-      runModeConfiguration.getString(feature2Key(feature)).map(str2FeatureStatus).getOrElse(
-        defaultFeatureStatus
+    sys.props
+      .get(feature2Key(feature))
+      .map(str2FeatureStatus)
+      .getOrElse(
+        runModeConfiguration.getString(feature2Key(feature)).map(str2FeatureStatus).getOrElse(defaultFeatureStatus)
       )
-    )
 
   def isFeatureOn(feature: Feature): Boolean = featureStatus(feature) == FeatureStatus.enabled
 

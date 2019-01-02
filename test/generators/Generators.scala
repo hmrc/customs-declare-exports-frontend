@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,7 @@ trait Generators {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
 
-  def genIntersperseString(gen: Gen[String],
-    value: String,
-    frequencyV: Int = 1,
-    frequencyN: Int = 10): Gen[String] = {
+  def genIntersperseString(gen: Gen[String], value: String, frequencyV: Int = 1, frequencyN: Int = 10): Gen[String] = {
 
     val genValue: Gen[Option[String]] = Gen.frequency(frequencyN -> None, frequencyV -> Gen.const(Some(value)))
 

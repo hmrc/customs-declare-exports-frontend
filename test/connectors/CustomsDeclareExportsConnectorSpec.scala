@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,11 @@ import scala.concurrent.Future
 
 class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
 
-  val submission = Submission("eori", "id", Some("lrn"), Some("mrn"))
+  val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"))
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(randomString(255))))
   val expectedHeaders: Map[String, String] = Map.empty
   val falseServerError: Boolean = false
   val movementSubmission = MovementSubmission("eori1", "convid1", "ducr1", None, "EAL")
-
 
   "CustomsDeclareExportsConnector" should {
     "POST submission to Customs Declare Exports" in saveSubmission() { response =>
@@ -45,17 +44,20 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
   }
 
   def saveSubmission()(test: Future[CustomsDeclareExportsResponse] => Unit): Unit = {
-    val http = new MockHttpClient(expectedUrl(appConfig.saveSubmissionResponse),
-      submission, expectedHeaders, falseServerError)
+    val http =
+      new MockHttpClient(expectedUrl(appConfig.saveSubmissionResponse), submission, expectedHeaders, falseServerError)
     val client = new CustomsDeclareExportsConnector(appConfig, http)
     test(client.saveSubmissionResponse(submission)(hc, ec))
   }
 
-  def saveMovementSubmission(
-  )(test: Future[CustomsDeclareExportsResponse] => Unit): Unit = {
+  def saveMovementSubmission()(test: Future[CustomsDeclareExportsResponse] => Unit): Unit = {
 
-    val http = new MockHttpClient(expectedUrl(appConfig.saveMovementSubmission),
-      movementSubmission, expectedHeaders, falseServerError)
+    val http = new MockHttpClient(
+      expectedUrl(appConfig.saveMovementSubmission),
+      movementSubmission,
+      expectedHeaders,
+      falseServerError
+    )
     val client = new CustomsDeclareExportsConnector(appConfig, http)
     test(client.saveMovementSubmission(movementSubmission)(hc, ec))
   }

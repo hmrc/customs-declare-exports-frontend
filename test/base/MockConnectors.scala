@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,12 @@
 
 package base
 
-import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
+import connectors.{
+  CustomsDeclarationsConnector,
+  CustomsDeclareExportsConnector,
+  CustomsInventoryLinkingExportsConnector,
+  NrsConnector
+}
 import models._
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
@@ -54,7 +59,28 @@ trait MockConnectors extends MockitoSugar {
 
   def listOfNotifications() =
     when(mockCustomsDeclareExportsConnector.fetchNotifications(any())(any(), any()))
-      .thenReturn(Future.successful(Seq(ExportsNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty))))
+      .thenReturn(
+        Future.successful(Seq(ExportsNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty)))
+      )
+
+  def listOfSubmissions() =
+    when(mockCustomsDeclareExportsConnector.fetchSubmissions()(any(), any()))
+      .thenReturn(
+        Future.successful(
+          Seq(
+            SubmissionData(
+              eori = "eori",
+              conversationId = "conversationId",
+              ducr = "ducr",
+              mrn = None,
+              lrn = None,
+              submittedTimestamp = System.currentTimeMillis(),
+              status = None,
+              noOfNotifications = 0
+            )
+          )
+        )
+      )
 
   def sendMovementRequest() =
     when(mockCustomsInventoryLinkingExportsConnector.sendMovementRequest(any(), any())(any(), any()))
@@ -64,7 +90,8 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsInventoryLinkingExportsConnector.sendMovementRequest(any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
-  def submitNrsRequest() = when(mockNrsConnector.submitNonRepudiation(any())(any(),
-    any())).thenReturn(Future.successful(NrsSubmissionResponse("submissionId1")))
+  def submitNrsRequest() =
+    when(mockNrsConnector.submitNonRepudiation(any())(any(), any()))
+      .thenReturn(Future.successful(NrsSubmissionResponse("submissionId1")))
 
 }

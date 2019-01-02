@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,9 +81,8 @@ class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, correctAddress)).get
       val header = result.futureValue.header
 
-      status(result) mustBe(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/representative"))
+      status(result) mustBe (SEE_OTHER)
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/representative"))
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,17 +29,19 @@ import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 
 @Singleton
 class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi)
-  extends FrontendErrorHandler with I18nSupport with AuthRedirects {
+    extends FrontendErrorHandler with I18nSupport with AuthRedirects {
   override def config: Configuration = appConfig.runModeConfiguration
 
   override def env: Environment = appConfig.environment
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(
+    implicit request: Request[_]
+  ): Html =
     views.html.error_template(pageTitle, heading, message, appConfig)
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result = ex match {
-    case _: NoActiveSession => toGGLogin(rh.uri)
+    case _: NoActiveSession        => toGGLogin(rh.uri)
     case _: InsufficientEnrolments => Results.SeeOther(routes.UnauthorisedController.onPageLoad().url)
-    case _ => super.resolveError(rh, ex)
+    case _                         => super.resolveError(rh, ex)
   }
 }

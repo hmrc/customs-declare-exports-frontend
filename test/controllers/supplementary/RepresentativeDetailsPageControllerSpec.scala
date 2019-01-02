@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 
 package controllers.supplementary
-
 
 import base.CustomExportsBaseSpec
 import base.TestHelper._
@@ -39,7 +38,6 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
   before {
     authorizedUser()
   }
-
 
   "RepresentativeAddressController on displayRepresentativeDetailsPage" should {
     "return 200 code" in {
@@ -143,13 +141,11 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       contentAsString(result) must include("checked=\"checked\"")
     }
 
-
     def displayPageTestScenario(cacheValue: Option[RepresentativeDetails] = None): Future[Result] = {
       withCaching[RepresentativeDetails](cacheValue, RepresentativeDetails.formId)
       route(app, getRequest(uri)).get
     }
   }
-
 
   "RepresentativeAddressController on submitRepresentativeData" should {
 
@@ -281,7 +277,11 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       route(app, postRequest(uri, correctRepresentativeDetails)).get.futureValue
 
       verify(mockCustomsCacheService)
-        .cache[RepresentativeDetails](any(), ArgumentMatchers.eq(RepresentativeDetails.formId), any())(any(), any(), any())
+        .cache[RepresentativeDetails](any(), ArgumentMatchers.eq(RepresentativeDetails.formId), any())(
+          any(),
+          any(),
+          any()
+        )
     }
 
     "return 303 code" in {
@@ -298,14 +298,11 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       val result = route(app, postRequest(uri, correctRepresentativeDetails)).get
       val header = result.futureValue.header
 
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/additional-actors")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/additional-actors"))
     }
 
   }
 }
-
 
 object RepresentativeDetailsPageControllerSpec {
 

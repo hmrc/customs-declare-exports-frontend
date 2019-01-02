@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,20 +24,20 @@ object Status {
 
   implicit object StatusFormat extends Format[Status] {
     def reads(status: JsValue): JsResult[Status] = status match {
-      case JsString("Accepted") => JsSuccess(Accepted)
-      case JsString("Arrived") => JsSuccess(Arrived)
-      case JsString("Departed") => JsSuccess(Departed)
+      case JsString("Accepted")  => JsSuccess(Accepted)
+      case JsString("Arrived")   => JsSuccess(Arrived)
+      case JsString("Departed")  => JsSuccess(Departed)
       case JsString("PreLodged") => JsSuccess(PreLodged)
-      case JsString("Query") => JsSuccess(Query)
-      case _ => JsError("Incorrect value")
+      case JsString("Query")     => JsSuccess(Query)
+      case _                     => JsError("Incorrect value")
     }
 
     def writes(status: Status): JsValue = status match {
-      case Accepted => JsString("Accepted")
-      case Arrived => JsString("Arrived")
-      case Departed => JsString("Departed")
+      case Accepted  => JsString("Accepted")
+      case Arrived   => JsString("Arrived")
+      case Departed  => JsString("Departed")
       case PreLodged => JsString("PreLodged")
-      case Query => JsString("Query")
+      case Query     => JsString("Query")
     }
   }
 
@@ -52,4 +52,3 @@ case object Departed extends Status
 case object PreLodged extends Status
 
 case object Query extends Status
-

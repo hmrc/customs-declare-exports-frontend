@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,13 +49,17 @@ class DeclarantAddressController @Inject()(
   }
 
   def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
-    form.bindFromRequest().fold(
-      (formWithErrors: Form[AddressAndIdentification]) =>
-        Future.successful(BadRequest(declarant_details(appConfig, formWithErrors))),
-      form =>
-        customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
-          Redirect(controllers.supplementary.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage())
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[AddressAndIdentification]) =>
+          Future.successful(BadRequest(declarant_details(appConfig, formWithErrors))),
+        form =>
+          customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
+            Redirect(
+              controllers.supplementary.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
+            )
         }
-    )
+      )
   }
 }

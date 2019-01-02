@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,26 +42,32 @@ class RepresentativeDetailsPageController @Inject()(
   private val supplementaryDeclarationCacheId = appConfig.appName
 
   def displayRepresentativeDetailsPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[RepresentativeDetails](
-      supplementaryDeclarationCacheId, RepresentativeDetails.formId).map {
+    customsCacheService
+      .fetchAndGetEntry[RepresentativeDetails](supplementaryDeclarationCacheId, RepresentativeDetails.formId)
+      .map {
         case Some(data) => Ok(representative_details(appConfig, RepresentativeDetails.form().fill(data)))
         case _          => Ok(representative_details(appConfig, RepresentativeDetails.form()))
-    }
+      }
   }
 
   def submitRepresentativeDetails(): Action[AnyContent] = authenticate.async { implicit request =>
-    RepresentativeDetails.form().bindFromRequest().fold(
-      (formWithErrors: Form[RepresentativeDetails]) =>
-        Future.successful(BadRequest(representative_details(appConfig, formWithErrors))),
-      validRepresentativeDetails =>
-        customsCacheService.cache[RepresentativeDetails](
-          supplementaryDeclarationCacheId,
-          RepresentativeDetails.formId,
-          validRepresentativeDetails
-        ).map { _ =>
-          Redirect(controllers.supplementary.routes.DeclarationAdditionalActorsController.displayForm())
-        }
-    )
+    RepresentativeDetails
+      .form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[RepresentativeDetails]) =>
+          Future.successful(BadRequest(representative_details(appConfig, formWithErrors))),
+        validRepresentativeDetails =>
+          customsCacheService
+            .cache[RepresentativeDetails](
+              supplementaryDeclarationCacheId,
+              RepresentativeDetails.formId,
+              validRepresentativeDetails
+            )
+            .map { _ =>
+              Redirect(controllers.supplementary.routes.DeclarationAdditionalActorsController.displayForm())
+          }
+      )
   }
 
 }

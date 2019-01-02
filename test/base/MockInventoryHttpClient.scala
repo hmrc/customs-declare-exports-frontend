@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,11 @@ class MockInventoryHttpClient[A](
   override val hooks: Seq[HttpHook] = Seq.empty
 
   //scalastyle:off method.name
-  override def POSTString[O](url: String, body: String, headers: Seq[(String, String)])
-    (implicit rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
+  override def POSTString[O](
+    url: String,
+    body: String,
+    headers: Seq[(String, String)]
+  )(implicit rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
     (url, body, headers) match {
       case _ if !isAuthenticated(Map.empty, hc) =>
         throw new UnauthorizedException("Arrival request was not authenticated")

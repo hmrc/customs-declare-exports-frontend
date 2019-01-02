@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, emptyAdditionalActors)).get
       val header = result.futureValue.header
 
-      status(result) mustBe(SEE_OTHER)
+      status(result) mustBe (SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration-holder-of-authorization"))
     }
 

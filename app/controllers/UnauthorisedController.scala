@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.unauthorised
 
 class UnauthorisedController @Inject()(val appConfig: AppConfig, val messagesApi: MessagesApi)
-  extends FrontendController with I18nSupport {
+    extends FrontendController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>
     Ok(unauthorised(appConfig))

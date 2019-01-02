@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models.{CustomsDeclareExportsResponse, ExportsNotification, MovementSubmission, Submission}
+import models._
 import play.api.Logger
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -35,24 +35,42 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     body: Submission
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
     httpClient.POST[Submission, CustomsDeclareExportsResponse](
-      s"${appConfig.customsDeclareExports}${appConfig.saveSubmissionResponse}", body, Seq()
+      s"${appConfig.customsDeclareExports}${appConfig.saveSubmissionResponse}",
+      body,
+      Seq()
     )
 
-  def saveSubmissionResponse(body: Submission)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
+  def saveSubmissionResponse(
+    body: Submission
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
     postSubmission(body).map { response =>
       Logger.debug(s"CUSTOMS_DECLARE_EXPORTS response is --> ${response.toString}")
       response
     }
 
-  def fetchNotifications(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsNotification]] =
+  def fetchNotifications(
+    eori: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsNotification]] =
     httpClient.GET[Seq[ExportsNotification]](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}/$eori")
 
-  def saveMovementSubmission(body: MovementSubmission)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
-    httpClient.POST[MovementSubmission, CustomsDeclareExportsResponse](
-      s"${appConfig.customsDeclareExports}${appConfig.saveMovementSubmission}", body, Seq()).map { response =>
-      Logger.debug(s"CUSTOMS_DECLARE_EXPORTS save movement response is --> ${response.toString}")
-      response
+  def saveMovementSubmission(
+    body: MovementSubmission
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
+    httpClient
+      .POST[MovementSubmission, CustomsDeclareExportsResponse](
+        s"${appConfig.customsDeclareExports}${appConfig.saveMovementSubmission}",
+        body,
+        Seq()
+      )
+      .map { response =>
+        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS save movement response is --> ${response.toString}")
+        response
+      }
+
+  def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionData]] =
+    httpClient.GET[Seq[SubmissionData]](s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissions}").map {
+      response =>
+        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
+        response
     }
 }

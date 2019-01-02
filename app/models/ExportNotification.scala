@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.wco.dec._
 
 import scala.util.Random
-
 
 case class ExportsNotification(
   dateTimeReceived: DateTime = DateTime.now(),
@@ -75,12 +74,7 @@ object ExportsNotification {
 }
 
 // Case class for view notifications - TODO use ExportsNotification directly and map fields
-case class Notification(
-  name: String,
-  dateAndTime: String,
-  reference: String,
-  status: Status
-)
+case class Notification(name: String, dateAndTime: String, reference: String, status: Status)
 
 object Notification {
   implicit val format = Json.format[Notification]

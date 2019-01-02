@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,14 @@ case object Arrival extends MovementType
 
 case object Departure extends MovementType
 
-case class MovementSubmission(eori: String,
+case class MovementSubmission(
+  eori: String,
   conversationId: String,
   ducr: String,
   mucr: Option[String] = None,
   movementType: String,
-  status: Option[String] = Some("Pending"))
+  status: Option[String] = Some("Pending")
+)
 
 object MovementSubmission {
   implicit val format = Json.format[MovementSubmission]

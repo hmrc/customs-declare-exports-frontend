@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,29 +22,20 @@ import play.api.data.validation.Constraints.pattern
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfNot
 
-case class DeclarationAdditionalActors(
-  eori: Option[String],
-  partyType: Option[String]
-)
+case class DeclarationAdditionalActors(eori: Option[String], partyType: Option[String])
 
 object DeclarationAdditionalActors {
   implicit val format = Json.format[DeclarationAdditionalActors]
 
-  private val allowedPartyTypes = Set(
-    PartyType.Consolidator,
-    PartyType.Manufacturer,
-    PartyType.FreightForwarder,
-    PartyType.WarehouseKeeper
-  )
+  private val allowedPartyTypes =
+    Set(PartyType.Consolidator, PartyType.Manufacturer, PartyType.FreightForwarder, PartyType.WarehouseKeeper)
 
   val formId = "DeclarationAdditionalActors"
 
   val eoriPattern = "[0-9a-zA-Z]{1,17}"
 
   val mapping = Forms.mapping(
-    "eori" -> optional(
-      text().verifying("supplementary.eori.error", _.matches(eoriPattern))
-    ),
+    "eori" -> optional(text().verifying("supplementary.eori.error", _.matches(eoriPattern))),
     "partyType" -> mandatoryIfNot(
       "eori",
       "",

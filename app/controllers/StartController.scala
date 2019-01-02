@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,8 @@ import views.html.startPage
 
 import scala.concurrent.Future
 
-class StartController @Inject()(
-  appConfig: AppConfig,
-  override val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
+class StartController @Inject()(appConfig: AppConfig, override val messagesApi: MessagesApi)
+    extends FrontendController with I18nSupport {
 
   def displayStartPage(): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(startPage(appConfig)))
