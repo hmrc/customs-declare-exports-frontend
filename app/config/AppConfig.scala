@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,8 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports submission URI"))
   lazy val saveMovementSubmission = getConfString("customs-declare-exports.save-movement-uri",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports submission URI"))
+  lazy val fetchSubmissions = getConfString("customs-declare-exports.fetch-submissions",
+    throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch submission URI"))
 
   lazy val fetchNotifications = getConfString("customs-declare-exports.fetch-notifications",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notification URI"))

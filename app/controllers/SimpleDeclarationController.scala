@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,7 +98,7 @@ class SimpleDeclarationController @Inject()(
           exportsMetrics.startTimer(submissionMetric)
           customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap {
             case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
-              val submission = new Submission(request.user.eori, conversationId)
+              val submission = new Submission(request.user.eori, conversationId, form.ducr)
               implicit val signedInUser = request.user
               nrsService.submit(conversationId, form.toString, form.ducr).onComplete {
                 case Success(nrsResponse) => Logger.warn("NrsRequest Success and submissionId  => " + nrsResponse)

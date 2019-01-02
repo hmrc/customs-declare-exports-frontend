@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
 
-  val submission = Submission("eori", "id", Some("lrn"), Some("mrn"))
+  val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"))
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(randomString(255))))
   val expectedHeaders: Map[String, String] = Map.empty
   val falseServerError: Boolean = false

@@ -350,4 +350,14 @@ supplementary.declarationType.inputText.simplified = Pre-authorized simplified d
 supplementary.declarationType.inputText.standard = Entry in Declarants Records (EIDR)
 supplementary.declarationType.inputText.errorMessage = Please, choose declaration type
 
+submissions.title = Submissions
+submissions.eori = Eori
+submissions.conversationId = ConversationId
+submissions.ducr = Ducr
+submissions.lrn = Lrn
+submissions.mrn = Mrn
+submissions.submittedTimestamp = Timestamp
+submissions.status = Status
+submissions.noOfNotifications = Number of notifications
+
 

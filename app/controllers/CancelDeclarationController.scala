@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,8 @@ class CancelDeclarationController @Inject()(
           exportsMetrics.startTimer(cancelMetric)
           customsDeclarationsConnector.submitCancellation(createCancellationMetadata(form)).flatMap {
             case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
-              val submission = new Submission(request.user.eori, conversationId)
+              val submission = new Submission(request.user.eori, form.id, conversationId)
+              //TODO ^^ Submission has ducr number, this form doesn't have it, should we use different model for cancellation?
               customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap { _ =>
                 exportsMetrics.incrementCounter(cancelMetric)
                 Future.successful(Ok(confirmation_page(appConfig, conversationId)))

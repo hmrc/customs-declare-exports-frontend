@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import scala.concurrent.Future
 
 class NrsConnectorSpec extends CustomExportsBaseSpec {
 
-  val submission = Submission("eori", "id", Some("lrn"), Some("mrn"))
+  val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"))
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.randomString(255))))
   val expectedHeaders: Map[String, String] = Map("Content-Type" -> "application/json", "X-API-Key" -> appConfig.nrsApiKey)
   val nrsMetadata = Metadata("cds", "cds-exports", "application/json",

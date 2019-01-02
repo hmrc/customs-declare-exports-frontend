@@ -1,0 +1,56 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import java.time.Instant
+
+@(appConfig: AppConfig, submissions: Seq[SubmissionData])(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("submissions.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
+
+    <h1>@messages("submissions.title")</h1>
+
+    <div>
+        <table>
+            <tr class="table-row table-head">
+                <th class="table-cell">@messages("submissions.eori")</th>
+                <th class="table-cell">@messages("submissions.conversationId")</th>
+                <th class="table-cell">@messages("submissions.ducr")</th>
+                <th class="table-cell">@messages("submissions.lrn")</th>
+                <th class="table-cell">@messages("submissions.mrn")</th>
+                <th class="table-cell">@messages("submissions.submittedTimestamp")</th>
+                <th class="table-cell">@messages("submissions.status")</th>
+                <th class="table-cell">@messages("submissions.noOfNotifications")</th>
+            </tr>
+
+            @for(submission <- submissions){
+                <tr class="table-row">
+                    <td class="table-cell">@submission.eori</td>
+                    <td class="table-cell">@submission.conversationId</td>
+                    <td class="table-cell">@submission.ducr</td>
+                    <td class="table-cell">@submission.lrn.getOrElse("")</td>
+                    <td class="table-cell">@submission.mrn.getOrElse("")</td>
+                    <td class="table-cell">@Instant.ofEpochMilli(submission.submittedTimestamp)</td>
+                    <td class="table-cell">@submission.status.getOrElse("")</td>
+                    <td class="table-cell">@submission.noOfNotifications</td>
+                </tr>
+            }
+        </table>
+    </div>
+}

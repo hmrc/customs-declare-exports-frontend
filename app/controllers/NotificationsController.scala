@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,12 @@ class NotificationsController @Inject()(
     val eori = request.user.eori
     customsDeclareExportsConnector.fetchNotifications(eori).map { results =>
       Ok(views.html.notifications(appConfig, results))
+    }
+  }
+
+  def listOfSubmissions(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsDeclareExportsConnector.fetchSubmissions().map { results =>
+      Ok(views.html.submissions(appConfig, results))
     }
   }
 }
