@@ -41,7 +41,6 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     authorizedUser()
   }
 
-
   "DeclarationTypeController on displayDispatchLocationPage" should {
     "return 200 code" in {
       val result = displayDispatchLocationPageTestScenario()
@@ -67,10 +66,8 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
     "display radio button with question text for declaration type" in {
       val result = displayDispatchLocationPageTestScenario()
-      contentAsString(result) must include(
-        messages("supplementary.dispatchLocation.inputText.outsideEU"))
-      contentAsString(result) must include(
-        messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory"))
+      contentAsString(result) must include(messages("supplementary.dispatchLocation.inputText.outsideEU"))
+      contentAsString(result) must include(messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory"))
     }
 
     "display \"Save and continue\" button" in {
@@ -136,8 +133,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
         val result = route(app, postRequest(dispatchLocationUri, validForm)).get
         val header = result.futureValue.header
 
-        header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/supplementary/type"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/type"))
       }
     }
 
@@ -149,12 +145,10 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
         val result = route(app, postRequest(dispatchLocationUri, validForm)).get
         val header = result.futureValue.header
 
-        header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/supplementary/not-eligible"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/not-eligible"))
       }
     }
   }
-
 
   "DeclarationTypeController on displayDeclarationTypePage" should {
     "return 200 code" in {
@@ -181,10 +175,8 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
     "display radio button with question text for declaration type" in {
       val result = displayDeclarationTypePageTestScenario()
-      contentAsString(result) must include(
-        messages("supplementary.declarationType.inputText.simplified"))
-      contentAsString(result) must include(
-        messages("supplementary.declarationType.inputText.standard"))
+      contentAsString(result) must include(messages("supplementary.declarationType.inputText.simplified"))
+      contentAsString(result) must include(messages("supplementary.declarationType.inputText.standard"))
     }
 
     "display \"Save and continue\" button" in {
@@ -230,7 +222,11 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
       route(app, postRequest(declarationTypeUri, validForm)).get.futureValue
 
       verify(mockCustomsCacheService)
-        .cache[AdditionalDeclarationType](any(), ArgumentMatchers.eq(AdditionalDeclarationType.formId), any())(any(), any(), any())
+        .cache[AdditionalDeclarationType](any(), ArgumentMatchers.eq(AdditionalDeclarationType.formId), any())(
+          any(),
+          any(),
+          any()
+        )
     }
 
     pending
@@ -252,7 +248,8 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/consignment-references"))
+        Some("/customs-declare-exports/declaration/supplementary/consignment-references")
+      )
     }
   }
 
@@ -260,9 +257,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
 object DeclarationTypeControllerSpec {
 
-  def buildDispatchLocationTestData(value: String = ""): JsValue = JsObject(
-    Map("dispatchLocation" -> JsString(value))
-  )
+  def buildDispatchLocationTestData(value: String = ""): JsValue = JsObject(Map("dispatchLocation" -> JsString(value)))
 
   def buildAdditionalDeclarationTypeTestData(value: String = ""): JsValue = JsObject(
     Map("additionalDeclarationType" -> JsString(value))

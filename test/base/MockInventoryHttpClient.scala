@@ -34,8 +34,11 @@ class MockInventoryHttpClient[A](
   override val hooks: Seq[HttpHook] = Seq.empty
 
   //scalastyle:off method.name
-  override def POSTString[O](url: String, body: String, headers: Seq[(String, String)])
-    (implicit rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
+  override def POSTString[O](
+    url: String,
+    body: String,
+    headers: Seq[(String, String)]
+  )(implicit rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
     (url, body, headers) match {
       case _ if !isAuthenticated(Map.empty, hc) =>
         throw new UnauthorizedException("Arrival request was not authenticated")

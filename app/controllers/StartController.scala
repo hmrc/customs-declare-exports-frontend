@@ -25,9 +25,8 @@ import views.html.startPage
 
 import scala.concurrent.Future
 
-class StartController @Inject()(
-  appConfig: AppConfig,
-  override val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
+class StartController @Inject()(appConfig: AppConfig, override val messagesApi: MessagesApi)
+    extends FrontendController with I18nSupport {
 
   def displayStartPage(): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(startPage(appConfig)))

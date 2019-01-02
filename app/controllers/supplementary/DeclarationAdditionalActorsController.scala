@@ -48,13 +48,15 @@ class DeclarationAdditionalActorsController @Inject()(
   }
 
   def saveAdditionalActors(): Action[AnyContent] = authenticate.async { implicit request =>
-    form.bindFromRequest().fold(
-      (formWithErrors: Form[DeclarationAdditionalActors]) =>
-        Future.successful(BadRequest(declaration_additional_actors(appConfig, formWithErrors))),
-      form =>
-        customsCacheService.cache[DeclarationAdditionalActors](appConfig.appName, formId, form).map { _ =>
-          Ok("Declaration holder of authorisation")
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[DeclarationAdditionalActors]) =>
+          Future.successful(BadRequest(declaration_additional_actors(appConfig, formWithErrors))),
+        form =>
+          customsCacheService.cache[DeclarationAdditionalActors](appConfig.appName, formId, form).map { _ =>
+            Ok("Declaration holder of authorisation")
         }
-    )
+      )
   }
 }

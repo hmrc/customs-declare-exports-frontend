@@ -24,12 +24,14 @@ case object Arrival extends MovementType
 
 case object Departure extends MovementType
 
-case class MovementSubmission(eori: String,
+case class MovementSubmission(
+  eori: String,
   conversationId: String,
   ducr: String,
   mucr: Option[String] = None,
   movementType: String,
-  status: Option[String] = Some("Pending"))
+  status: Option[String] = Some("Pending")
+)
 
 object MovementSubmission {
   implicit val format = Json.format[MovementSubmission]

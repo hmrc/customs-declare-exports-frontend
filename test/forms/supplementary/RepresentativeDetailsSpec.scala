@@ -50,7 +50,6 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
     "declaration.agent.functionCode" -> statusCode
   )
 
-
   "RepresentativeAddress" should {
     "convert itself to representative address properties" in {
       representativeAddress.toMetadataProperties() must equal(expectedRepresentativeAddressProperties)

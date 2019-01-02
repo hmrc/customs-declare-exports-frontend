@@ -21,11 +21,7 @@ import org.joda.time.DateTime
 import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.Enrolments
 
-case class SignedInUser(
-  eori: String,
-  enrolments: Enrolments,
-  identityData: IdentityData
-)
+case class SignedInUser(eori: String, enrolments: Enrolments, identityData: IdentityData)
 
 case class CustomsDeclarationsResponse(status: Int, conversationId: Option[String])
 
@@ -35,8 +31,11 @@ object CustomsDeclareExportsResponse {
   implicit val format = Json.format[CustomsDeclareExportsResponse]
 }
 
-case class UserSession(sessionId: String, loggedInDateTime: DateTime = DateTime.now,
-  simpleDeclarationForm: Option[SimpleDeclarationForm] = None)
+case class UserSession(
+  sessionId: String,
+  loggedInDateTime: DateTime = DateTime.now,
+  simpleDeclarationForm: Option[SimpleDeclarationForm] = None
+)
 
 object UserSession {
   implicit val formats = Json.format[UserSession]

@@ -39,7 +39,9 @@ class ErrorHandlerSpec extends CustomExportsBaseSpec {
     "handle no active session authorisation exception" in {
       val res = errorHandler.resolveError(req, new NoActiveSession("A user is not logged in") {})
       res.header.status must be(Status.SEE_OTHER)
-      res.header.headers.get(HeaderNames.LOCATION) must be(Some("/gg/sign-in?continue=%2Ffoo&origin=customs-declare-exports-frontend"))
+      res.header.headers.get(HeaderNames.LOCATION) must be(
+        Some("/gg/sign-in?continue=%2Ffoo&origin=customs-declare-exports-frontend")
+      )
     }
 
     "handle insufficient enrolments authorisation exception" in {

@@ -35,32 +35,42 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     body: Submission
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
     httpClient.POST[Submission, CustomsDeclareExportsResponse](
-      s"${appConfig.customsDeclareExports}${appConfig.saveSubmissionResponse}", body, Seq()
+      s"${appConfig.customsDeclareExports}${appConfig.saveSubmissionResponse}",
+      body,
+      Seq()
     )
 
-  def saveSubmissionResponse(body: Submission)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
+  def saveSubmissionResponse(
+    body: Submission
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
     postSubmission(body).map { response =>
       Logger.debug(s"CUSTOMS_DECLARE_EXPORTS response is --> ${response.toString}")
       response
     }
 
-  def fetchNotifications(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsNotification]] =
+  def fetchNotifications(
+    eori: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsNotification]] =
     httpClient.GET[Seq[ExportsNotification]](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}/$eori")
 
-  def saveMovementSubmission(body: MovementSubmission)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
-    httpClient.POST[MovementSubmission, CustomsDeclareExportsResponse](
-      s"${appConfig.customsDeclareExports}${appConfig.saveMovementSubmission}", body, Seq()
-    ).map { response =>
-      Logger.debug(s"CUSTOMS_DECLARE_EXPORTS save movement response is --> ${response.toString}")
-      response
-    }
-
-  def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionData]] =
-    httpClient.GET[Seq[SubmissionData]](s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissions}")
+  def saveMovementSubmission(
+    body: MovementSubmission
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
+    httpClient
+      .POST[MovementSubmission, CustomsDeclareExportsResponse](
+        s"${appConfig.customsDeclareExports}${appConfig.saveMovementSubmission}",
+        body,
+        Seq()
+      )
       .map { response =>
-        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
+        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS save movement response is --> ${response.toString}")
         response
       }
+
+  def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionData]] =
+    httpClient.GET[Seq[SubmissionData]](s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissions}").map {
+      response =>
+        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
+        response
+    }
 }

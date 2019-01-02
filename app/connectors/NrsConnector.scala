@@ -33,13 +33,19 @@ class NrsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
   val nrsSubmissionUrl: String = s"${appConfig.nrsServiceUrl}/submission"
 
-  def submitNonRepudiation(nrsSubmission: NRSSubmission)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[NrsSubmissionResponse] = {
-
-    httpClient.POST[NRSSubmission, NrsSubmissionResponse](nrsSubmissionUrl, nrsSubmission,
-      Seq[(String, String)](("Content-Type", "application/json"), (xApiKeyHeader, appConfig.nrsApiKey))).map { res =>
-      logger.info(s"Response received from nrs service submission id: $res")
-      res
-    }
+  def submitNonRepudiation(
+    nrsSubmission: NRSSubmission
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[NrsSubmissionResponse] =
+    httpClient
+      .POST[NRSSubmission, NrsSubmissionResponse](
+        nrsSubmissionUrl,
+        nrsSubmission,
+        Seq[(String, String)](("Content-Type", "application/json"), (xApiKeyHeader, appConfig.nrsApiKey))
+      )
+      .map { res =>
+        logger.info(s"Response received from nrs service submission id: $res")
+        res
+      }
       .recoverWith {
         case httpError: HttpException =>
           logger.error(s"Call to nrs service failed url=$nrsSubmissionUrl, HttpException=$httpError")
@@ -48,5 +54,4 @@ class NrsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
           logger.error(s"Call to nrs service failed url=$nrsSubmissionUrl, exception=$e")
           Future.failed(e)
       }
-  }
 }

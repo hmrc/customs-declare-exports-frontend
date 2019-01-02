@@ -20,7 +20,12 @@ import java.util.UUID
 
 import akka.stream.Materializer
 import config.AppConfig
-import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
+import connectors.{
+  CustomsDeclarationsConnector,
+  CustomsDeclareExportsConnector,
+  CustomsInventoryLinkingExportsConnector,
+  NrsConnector
+}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
@@ -51,12 +56,9 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
 
-trait CustomExportsBaseSpec extends PlaySpec
-  with GuiceOneAppPerSuite
-  with MockitoSugar
-  with ScalaFutures
-  with MockAuthAction
-  with MockConnectors {
+trait CustomExportsBaseSpec
+    extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction
+    with MockConnectors {
 
   protected val contextPath: String = "/customs-declare-exports"
 
@@ -64,16 +66,18 @@ trait CustomExportsBaseSpec extends PlaySpec
   val mockNrsService: NRSService = mock[NRSService]
   val mockMetrics: ExportsMetrics = mock[ExportsMetrics]
 
-  override lazy val app: Application = GuiceApplicationBuilder().overrides(
-    bind[AuthConnector].to(mockAuthConnector),
-    bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector),
-    bind[CustomsCacheService].to(mockCustomsCacheService),
-    bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
-    bind[CustomsInventoryLinkingExportsConnector].to(mockCustomsInventoryLinkingExportsConnector),
-    bind[NrsConnector].to(mockNrsConnector),
-    bind[NRSService].to(mockNrsService),
-    bind[ExportsMetrics].to(mockMetrics)
-  ).build()
+  override lazy val app: Application = GuiceApplicationBuilder()
+    .overrides(
+      bind[AuthConnector].to(mockAuthConnector),
+      bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector),
+      bind[CustomsCacheService].to(mockCustomsCacheService),
+      bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
+      bind[CustomsInventoryLinkingExportsConnector].to(mockCustomsInventoryLinkingExportsConnector),
+      bind[NrsConnector].to(mockNrsConnector),
+      bind[NRSService].to(mockNrsService),
+      bind[ExportsMetrics].to(mockMetrics)
+    )
+    .build()
 
   implicit val mat: Materializer = app.materializer
 
@@ -98,37 +102,40 @@ trait CustomExportsBaseSpec extends PlaySpec
 
   protected def uriWithContextPath(path: String): String = s"$contextPath$path"
 
-  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty): FakeRequest[AnyContentAsEmpty.type] = {
+  protected def getRequest(
+    uri: String,
+    headers: Map[String, String] = Map.empty
+  ): FakeRequest[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(
-      Token.NameRequestTag -> cfg.tokenName,
-      Token.RequestTag -> token
-    )
+    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
     FakeRequest("GET", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
-      .withSession(session.toSeq: _*).copyFakeRequest(tags = tags)
+      .withSession(session.toSeq: _*)
+      .copyFakeRequest(tags = tags)
   }
 
-  protected def postRequest(uri: String, body: JsValue, headers: Map[String, String] = Map.empty): FakeRequest[AnyContentAsJson] = {
+  protected def postRequest(
+    uri: String,
+    body: JsValue,
+    headers: Map[String, String] = Map.empty
+  ): FakeRequest[AnyContentAsJson] = {
     val session: Map[String, String] = Map(
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(
-      Token.NameRequestTag -> cfg.tokenName,
-      Token.RequestTag -> token
-    )
+    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
     FakeRequest("POST", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
-      .withJsonBody(body).copyFakeRequest(tags = tags)
+      .withJsonBody(body)
+      .copyFakeRequest(tags = tags)
   }
 
   def withCaching[T](form: Option[Form[T]]) = {
-    when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(),any()))
+    when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(form))
 
     when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
@@ -136,13 +143,16 @@ trait CustomExportsBaseSpec extends PlaySpec
   }
 
   def withCaching[T](data: Option[T], id: String) = {
-    when(mockCustomsCacheService.fetchAndGetEntry[T](ArgumentMatchers.eq(appConfig.appName), ArgumentMatchers.eq(id))(any(), any(), any()))
-      .thenReturn(Future.successful(data))
+    when(
+      mockCustomsCacheService
+        .fetchAndGetEntry[T](ArgumentMatchers.eq(appConfig.appName), ArgumentMatchers.eq(id))(any(), any(), any())
+    ).thenReturn(Future.successful(data))
 
     when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(CacheMap(id, Map.empty)))
   }
 
   def withNrsSubmission() =
-    when(mockNrsService.submit(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
+    when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
+      .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
 }

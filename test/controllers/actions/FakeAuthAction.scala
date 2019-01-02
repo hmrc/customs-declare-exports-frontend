@@ -28,26 +28,29 @@ object FakeAuthAction extends AuthAction {
 
   val defaultUser = newUser("0771123680108", "Ext-1234-5678")
 
-  def newUser(eori: String, externalId: String): SignedInUser = SignedInUser(
-    eori,
-    Enrolments(Set(
-      Enrolment("IR-SA", List(EnrolmentIdentifier("UTR", "111111111")), "Activated", None),
-      Enrolment("IR-CT", List(EnrolmentIdentifier("UTR", "222222222")), "Activated", None),
-      Enrolment("HMRC-CUS-ORG", List(EnrolmentIdentifier("EORINumber", eori)), "Activated", None)
-    )),
-    IdentityData(
-      Some("Int-1234-5678"),
-      Some(externalId),
-      agentCode = None,
-      credentials = Some(Credentials("2345235235", "GovernmentGateway")),
-      confidenceLevel = None,
-      nino = None,
-      saUtr = None,
-      name = None,
-      dateOfBirth = None,
-      email = Some("amina@hmrc.co.uk"))
-  )
-
+  def newUser(eori: String, externalId: String): SignedInUser =
+    SignedInUser(
+      eori,
+      Enrolments(
+        Set(
+          Enrolment("IR-SA", List(EnrolmentIdentifier("UTR", "111111111")), "Activated", None),
+          Enrolment("IR-CT", List(EnrolmentIdentifier("UTR", "222222222")), "Activated", None),
+          Enrolment("HMRC-CUS-ORG", List(EnrolmentIdentifier("EORINumber", eori)), "Activated", None)
+        )
+      ),
+      IdentityData(
+        Some("Int-1234-5678"),
+        Some(externalId),
+        agentCode = None,
+        credentials = Some(Credentials("2345235235", "GovernmentGateway")),
+        confidenceLevel = None,
+        nino = None,
+        saUtr = None,
+        name = None,
+        dateOfBirth = None,
+        email = Some("amina@hmrc.co.uk")
+      )
+    )
 
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
     block(AuthenticatedRequest(request, defaultUser))
@@ -57,4 +60,3 @@ class TestAuthAction extends AuthAction {
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
     block(AuthenticatedRequest(request, FakeAuthAction.defaultUser))
 }
-

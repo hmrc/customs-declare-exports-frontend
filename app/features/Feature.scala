@@ -22,11 +22,12 @@ object Feature extends Enumeration {
   type Feature = Value
   val default = Value
 
-  implicit object featurePathStringBinder extends PathBindable.Parsing[Feature.Feature](
-    withName(_),
-    _.toString,
-    (k: String, e: Exception) => "Cannot parse %s as Feature: %s".format(k, e.getMessage())
-  )
+  implicit object featurePathStringBinder
+      extends PathBindable.Parsing[Feature.Feature](
+        withName(_),
+        _.toString,
+        (k: String, e: Exception) => "Cannot parse %s as Feature: %s".format(k, e.getMessage())
+      )
 
 }
 
@@ -34,10 +35,11 @@ object FeatureStatus extends Enumeration {
   type FeatureStatus = Value
   val enabled, disabled, suspended = Value
 
-  implicit object featureStatusPathStringBinder extends PathBindable.Parsing[FeatureStatus.FeatureStatus](
-    withName(_),
-    _.toString,
-    (k: String, e: Exception) => "Cannot parse %s as FeatureStatus: %s".format(k, e.getMessage())
-  )
+  implicit object featureStatusPathStringBinder
+      extends PathBindable.Parsing[FeatureStatus.FeatureStatus](
+        withName(_),
+        _.toString,
+        (k: String, e: Exception) => "Cannot parse %s as FeatureStatus: %s".format(k, e.getMessage())
+      )
 
 }

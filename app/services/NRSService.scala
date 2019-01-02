@@ -34,14 +34,19 @@ import scala.concurrent.{ExecutionContext, Future}
 class NRSService @Inject()(appConfig: AppConfig, connector: NrsConnector) {
   val logger: Logger = Logger(this.getClass)
 
-  def submit(conversationId: String, payload: String, ducr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext,
-    signedInUser: SignedInUser): Future[NrsSubmissionResponse] = {
+  def submit(
+    conversationId: String,
+    payload: String,
+    ducr: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, signedInUser: SignedInUser): Future[NrsSubmissionResponse] = {
     logger.debug(s"[NRSService][submit] - Submitting payload to NRS")
     connector.submitNonRepudiation(convertToNrsSubmission(conversationId, payload, ducr))
   }
 
-  private def convertToNrsSubmission(conversationId: String, payload: String, ducr: String)(implicit hc: HeaderCarrier,
-    signedInUser: SignedInUser): NRSSubmission = {
+  private def convertToNrsSubmission(conversationId: String, payload: String, ducr: String)(
+    implicit hc: HeaderCarrier,
+    signedInUser: SignedInUser
+  ): NRSSubmission = {
 
     val encoder = Base64.getEncoder
     NRSSubmission(
@@ -55,17 +60,24 @@ class NRSService @Inject()(appConfig: AppConfig, connector: NrsConnector) {
         identityData = signedInUser.identityData,
         userAuthToken = hc.authorization.get.value,
         headerData = createHeaderData(),
-        searchKeys = SearchKeys(Some(conversationId),
+        searchKeys = SearchKeys(
+          Some(conversationId),
           //TODO update to populate correct ducr/mucr value.
-          Some(ducr))
+          Some(ducr)
+        )
       )
     )
   }
 
   private def createHeaderData()(implicit hc: HeaderCarrier) =
-  //TODO update/revisit for correct details.
-    HeaderData(hc.trueClientIp, hc.trueClientPort, hc.deviceID, hc.userId.map(_.value), Some(hc.nsStamp.toString), hc.trueClientIp, None)
+    //TODO update/revisit for correct details.
+    HeaderData(
+      hc.trueClientIp,
+      hc.trueClientPort,
+      hc.deviceID,
+      hc.userId.map(_.value),
+      Some(hc.nsStamp.toString),
+      hc.trueClientIp,
+      None
+    )
 }
-
-
-

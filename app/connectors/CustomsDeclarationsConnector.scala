@@ -32,24 +32,28 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
-  def submitExportDeclaration(metaData: MetaData, badgeIdentifier: Option[String] = None)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
+  def submitExportDeclaration(
+    metaData: MetaData,
+    badgeIdentifier: Option[String] = None
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
     postMetaData(appConfig.submitExportDeclarationUri, metaData, badgeIdentifier).map { res =>
       Logger.debug(s"CUSTOMS_DECLARATIONS response is  --> ${res.toString}")
       res
     }
 
-  def submitCancellation(metaData: MetaData, badgeIdentifier: Option[String] = None)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
+  def submitCancellation(
+    metaData: MetaData,
+    badgeIdentifier: Option[String] = None
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
     postMetaData(appConfig.submitCancellationUri, metaData, badgeIdentifier).map { res =>
       Logger.debug(s"CUSTOMS_DECLARATIONS cancellation response is  --> ${res.toString}")
       res
     }
 
-  private def postMetaData(uri: String,
-    metaData: MetaData,
-    badgeIdentifier: Option[String] = None)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] =
+  private def postMetaData(uri: String, metaData: MetaData, badgeIdentifier: Option[String] = None)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[CustomsDeclarationsResponse] =
     post(uri, metaData.toXml, badgeIdentifier)
 
   //noinspection ConvertExpressionToSAM
@@ -59,22 +63,29 @@ class CustomsDeclarationsConnector @Inject()(appConfig: AppConfig, httpClient: H
         CustomsDeclarationsResponse(response.status, response.header("X-Conversation-ID"))
     }
 
-  private[connectors] def post(uri: String, body: String, badgeIdentifier: Option[String] = None)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclarationsResponse] = {
+  private[connectors] def post(uri: String, body: String, badgeIdentifier: Option[String] = None)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[CustomsDeclarationsResponse] = {
     val headers: Seq[(String, String)] = Seq(
       "X-Client-ID" -> appConfig.developerHubClientId,
       HeaderNames.ACCEPT -> s"application/vnd.hmrc.${appConfig.customsDeclarationsApiVersion}+xml",
-      HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)
+      HeaderNames.CONTENT_TYPE -> ContentTypes
+        .XML(Codec.utf_8)
     ) ++ badgeIdentifier.map(id => "X-Badge-Identifier" -> id)
     Logger.debug(s"CUSTOMS_DECLARATIONS request payload is -> ${body}")
 
-    (httpClient.POSTString[CustomsDeclarationsResponse](
-      s"${appConfig.customsDeclarationsEndpoint}$uri", body, headers
-    )(responseReader, hc, ec)).recover {
-      case error: Throwable =>
-        Logger.error(s"Error to check development environment ${error.toString}")
-        Logger.error(s"Error to check development environment (GET MESSAGE) ${error.getMessage}")
-        CustomsDeclarationsResponse(500, None)
-    }
+    (httpClient
+      .POSTString[CustomsDeclarationsResponse](s"${appConfig.customsDeclarationsEndpoint}$uri", body, headers)(
+        responseReader,
+        hc,
+        ec
+      ))
+      .recover {
+        case error: Throwable =>
+          Logger.error(s"Error to check development environment ${error.toString}")
+          Logger.error(s"Error to check development environment (GET MESSAGE) ${error.getMessage}")
+          CustomsDeclarationsResponse(500, None)
+      }
   }
 }

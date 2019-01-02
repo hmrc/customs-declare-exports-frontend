@@ -40,21 +40,20 @@ class CustomsHttpCaching @Inject()(cfg: AppConfig, httpClient: HttpClient) exten
 }
 
 @Singleton
-class CustomsCacheService @Inject()(
-  caching: CustomsHttpCaching,
-  applicationCrypto: ApplicationCrypto
-) extends ShortLivedCache {
+class CustomsCacheService @Inject()(caching: CustomsHttpCaching, applicationCrypto: ApplicationCrypto)
+    extends ShortLivedCache {
 
   override implicit val crypto: CompositeSymmetricCrypto = applicationCrypto.JsonCrypto
 
   override def shortLiveCache: ShortLivedHttpCaching = caching
 
-  def fetchMovementRequest(cacheId: String, eori: String)(implicit hc: HeaderCarrier,
-    executionContext: ExecutionContext): Future[Option[InventoryLinkingMovementRequest]] = {
+  def fetchMovementRequest(
+    cacheId: String,
+    eori: String
+  )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[InventoryLinkingMovementRequest]] =
     fetch(cacheId).map {
       case Some(cacheMap) =>
         Some(Movement.createMovementRequest(cacheMap, eori))
       case _ => None
     }
-  }
 }

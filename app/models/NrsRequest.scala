@@ -23,22 +23,21 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, LoginTimes, Name, _}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 import uk.gov.hmrc.http.controllers.RestFormats
 
-
 case class NrsSubmissionResponse(nrSubmissionId: String)
 
 object NrsSubmissionResponse {
   implicit val format: OFormat[NrsSubmissionResponse] = Json.format[NrsSubmissionResponse]
 }
 
-case class NRSSubmission(payload: String,
-  metadata: Metadata)
+case class NRSSubmission(payload: String, metadata: Metadata)
 
 object NRSSubmission {
   implicit val mdFormat: OFormat[Metadata] = Metadata.format
   implicit val format: OFormat[NRSSubmission] = Json.format[NRSSubmission]
 }
 
-case class Metadata(businessId: String,
+case class Metadata(
+  businessId: String,
   notableEvent: String,
   payloadContentType: String,
   payloadSha256Checksum: Option[String],
@@ -46,7 +45,8 @@ case class Metadata(businessId: String,
   identityData: IdentityData,
   userAuthToken: String,
   headerData: HeaderData,
-  searchKeys: SearchKeys)
+  searchKeys: SearchKeys
+)
 
 object Metadata {
   implicit val idformat: OFormat[IdentityData] = IdentityData.format
@@ -55,8 +55,8 @@ object Metadata {
   implicit val format: OFormat[Metadata] = Json.format[Metadata]
 }
 
-
-case class IdentityData(internalId: Option[String] = None,
+case class IdentityData(
+  internalId: Option[String] = None,
   externalId: Option[String] = None,
   agentCode: Option[String] = None,
   credentials: Option[Credentials] = None,
@@ -75,7 +75,8 @@ case class IdentityData(internalId: Option[String] = None,
   itmpAddress: Option[ItmpAddress] = None,
   affinityGroup: Option[AffinityGroup] = None,
   credentialStrength: Option[String] = None,
-  loginTimes: Option[LoginTimes] = None)
+  loginTimes: Option[LoginTimes] = None
+)
 
 object IdentityData {
   implicit val localDateFormat: Format[LocalDate] = RestFormats.localDateFormats
@@ -91,7 +92,8 @@ object IdentityData {
   implicit val format: OFormat[IdentityData] = Json.format[IdentityData]
 }
 
-case class HeaderData(publicIp: Option[String] = None,
+case class HeaderData(
+  publicIp: Option[String] = None,
   port: Option[String] = None,
   deviceId: Option[String] = None,
   userId: Option[String] = None,
@@ -99,7 +101,8 @@ case class HeaderData(publicIp: Option[String] = None,
   localIp: Option[String] = None,
   screenResolution: Option[String] = None,
   windowSize: Option[String] = None,
-  colourDepth: Option[String] = None)
+  colourDepth: Option[String] = None
+)
 
 object HeaderData {
   implicit val writes: Writes[HeaderData] = (
@@ -112,7 +115,7 @@ object HeaderData {
       (__ \ "Gov-Client-Screen-Resolution").writeNullable[String] and
       (__ \ "Gov-Client-Window-Size").writeNullable[String] and
       (__ \ "Gov-Client-Colour-Depth").writeNullable[String]
-    ) (unlift(HeaderData.unapply))
+  )(unlift(HeaderData.unapply))
 
   implicit val reads: Reads[HeaderData] = (
     (__ \ "Gov-Client-Public-IP").readNullable[String] and
@@ -124,11 +127,10 @@ object HeaderData {
       (__ \ "Gov-Client-Screen-Resolution").readNullable[String] and
       (__ \ "Gov-Client-Window-Size").readNullable[String] and
       (__ \ "Gov-Client-Colour-Depth").readNullable[String]
-    ) (HeaderData.apply _)
+  )(HeaderData.apply _)
 }
 
-case class SearchKeys(conversationId: Option[String],
-  ducr: Option[String])
+case class SearchKeys(conversationId: Option[String], ducr: Option[String])
 
 object SearchKeys {
   implicit val localDateFormat: Format[LocalDate] = RestFormats.localDateFormats

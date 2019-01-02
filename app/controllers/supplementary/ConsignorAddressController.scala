@@ -50,13 +50,15 @@ class ConsignorAddressController @Inject()(
   }
 
   def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
-    form.bindFromRequest().fold(
-      (formWithErrors: Form[AddressAndIdentification]) =>
-        Future.successful(BadRequest(consignor_details(appConfig, formWithErrors))),
-      form =>
-        customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
-          Redirect(controllers.supplementary.routes.DeclarantAddressController.displayForm())
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[AddressAndIdentification]) =>
+          Future.successful(BadRequest(consignor_details(appConfig, formWithErrors))),
+        form =>
+          customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
+            Redirect(controllers.supplementary.routes.DeclarantAddressController.displayForm())
         }
-    )
+      )
   }
 }

@@ -42,25 +42,28 @@ class DeclarationTypeController @Inject()(
   private val supplementaryDeclarationCacheId = appConfig.appName
 
   def displayDispatchLocationPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DispatchLocation](supplementaryDeclarationCacheId, DispatchLocation.formId).map {
-      case Some(data) => Ok(dispatch_location(appConfig, DispatchLocation.form().fill(data)))
-      case _          => Ok(dispatch_location(appConfig, DispatchLocation.form()))
-    }
+    customsCacheService
+      .fetchAndGetEntry[DispatchLocation](supplementaryDeclarationCacheId, DispatchLocation.formId)
+      .map {
+        case Some(data) => Ok(dispatch_location(appConfig, DispatchLocation.form().fill(data)))
+        case _          => Ok(dispatch_location(appConfig, DispatchLocation.form()))
+      }
   }
 
   def submitDispatchLocation(): Action[AnyContent] = authenticate.async { implicit request =>
-    DispatchLocation.form().bindFromRequest().fold(
-      (formWithErrors: Form[DispatchLocation]) =>
-        Future.successful(BadRequest(dispatch_location(appConfig, formWithErrors))),
-      validDispatchLocation =>
-        customsCacheService.cache[DispatchLocation](
-          supplementaryDeclarationCacheId,
-          DispatchLocation.formId,
-          validDispatchLocation
-        ).map { _ =>
-          Redirect(specifyNextPage(validDispatchLocation))
-        }
-    )
+    DispatchLocation
+      .form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[DispatchLocation]) =>
+          Future.successful(BadRequest(dispatch_location(appConfig, formWithErrors))),
+        validDispatchLocation =>
+          customsCacheService
+            .cache[DispatchLocation](supplementaryDeclarationCacheId, DispatchLocation.formId, validDispatchLocation)
+            .map { _ =>
+              Redirect(specifyNextPage(validDispatchLocation))
+          }
+      )
   }
 
   private def specifyNextPage(providedDispatchLocation: DispatchLocation): Call = providedDispatchLocation.value match {
@@ -71,25 +74,32 @@ class DeclarationTypeController @Inject()(
   }
 
   def displayDeclarationTypePage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[AdditionalDeclarationType](supplementaryDeclarationCacheId, AdditionalDeclarationType.formId).map {
-      case Some(data) => Ok(declaration_type(appConfig, AdditionalDeclarationType.form().fill(data)))
-      case _          => Ok(declaration_type(appConfig, AdditionalDeclarationType.form()))
-    }
+    customsCacheService
+      .fetchAndGetEntry[AdditionalDeclarationType](supplementaryDeclarationCacheId, AdditionalDeclarationType.formId)
+      .map {
+        case Some(data) => Ok(declaration_type(appConfig, AdditionalDeclarationType.form().fill(data)))
+        case _          => Ok(declaration_type(appConfig, AdditionalDeclarationType.form()))
+      }
   }
 
   def submitDeclarationType(): Action[AnyContent] = authenticate.async { implicit request =>
-    AdditionalDeclarationType.form().bindFromRequest().fold(
-      (formWithErrors: Form[AdditionalDeclarationType]) =>
-        Future.successful(BadRequest(declaration_type(appConfig, formWithErrors))),
-      validAdditionalDeclarationType =>
-        customsCacheService.cache[AdditionalDeclarationType](
-          supplementaryDeclarationCacheId,
-          AdditionalDeclarationType.formId,
-          validAdditionalDeclarationType
-        ).map { _ =>
-          Ok("You should be now redirected to \"Consignment References\" page")
-        }
-    )
+    AdditionalDeclarationType
+      .form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[AdditionalDeclarationType]) =>
+          Future.successful(BadRequest(declaration_type(appConfig, formWithErrors))),
+        validAdditionalDeclarationType =>
+          customsCacheService
+            .cache[AdditionalDeclarationType](
+              supplementaryDeclarationCacheId,
+              AdditionalDeclarationType.formId,
+              validAdditionalDeclarationType
+            )
+            .map { _ =>
+              Ok("You should be now redirected to \"Consignment References\" page")
+          }
+      )
   }
 
 }

@@ -63,7 +63,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, emptyAdditionalActors)).get
       val header = result.futureValue.header
 
-      status(result) mustBe(SEE_OTHER)
+      status(result) mustBe (SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration-holder-of-authorization"))
     }
 

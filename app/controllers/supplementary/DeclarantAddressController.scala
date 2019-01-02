@@ -49,13 +49,17 @@ class DeclarantAddressController @Inject()(
   }
 
   def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
-    form.bindFromRequest().fold(
-      (formWithErrors: Form[AddressAndIdentification]) =>
-        Future.successful(BadRequest(declarant_details(appConfig, formWithErrors))),
-      form =>
-        customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
-          Redirect(controllers.supplementary.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage())
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[AddressAndIdentification]) =>
+          Future.successful(BadRequest(declarant_details(appConfig, formWithErrors))),
+        form =>
+          customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
+            Redirect(
+              controllers.supplementary.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
+            )
         }
-    )
+      )
   }
 }

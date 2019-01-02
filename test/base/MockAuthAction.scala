@@ -31,56 +31,223 @@ import scala.concurrent.Future
 trait MockAuthAction extends MockitoSugar {
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
-
   def authorizedUser(user: SignedInUser = newUser("12345", "external1")): Unit =
     when(
       mockAuthConnector.authorise(
         any(),
-        ArgumentMatchers.eq(credentials and name and email and externalId and internalId and affinityGroup and allEnrolments
-          and agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
-          credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes))
-      (any(), any())
+        ArgumentMatchers.eq(
+          credentials and name and email and externalId and internalId and affinityGroup and allEnrolments
+            and agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
+            credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
+        )
+      )(any(), any())
     ).thenReturn(
-      Future.successful(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new
-          ~(user.identityData.credentials.get, user.identityData.name.get), user.identityData.email),
-        user.identityData.externalId), user.identityData.internalId), user.identityData.affinityGroup), user.enrolments),
-        user.identityData.agentCode), user.identityData.confidenceLevel.get), user.identityData.nino), user.identityData.saUtr),
-        user.identityData.dateOfBirth), user.identityData.agentInformation.get), nrsGroupIdentifierValue),
-        nrsCredentialRole), Some(nrsMdtpInformation)), nrsItmpName), nrsDateOfBirth), nrsItmpAddress), nrsCredentialStrength), nrsLoginTimes)
-      ))
+      Future.successful(
+        new ~(
+          new ~(
+            new ~(
+              new ~(
+                new ~(
+                  new ~(
+                    new ~(
+                      new ~(
+                        new ~(
+                          new ~(
+                            new ~(
+                              new ~(
+                                new ~(
+                                  new ~(
+                                    new ~(
+                                      new ~(
+                                        new ~(
+                                          new ~(
+                                            new ~(
+                                              new ~(user.identityData.credentials.get, user.identityData.name.get),
+                                              user.identityData.email
+                                            ),
+                                            user.identityData.externalId
+                                          ),
+                                          user.identityData.internalId
+                                        ),
+                                        user.identityData.affinityGroup
+                                      ),
+                                      user.enrolments
+                                    ),
+                                    user.identityData.agentCode
+                                  ),
+                                  user.identityData.confidenceLevel.get
+                                ),
+                                user.identityData.nino
+                              ),
+                              user.identityData.saUtr
+                            ),
+                            user.identityData.dateOfBirth
+                          ),
+                          user.identityData.agentInformation.get
+                        ),
+                        nrsGroupIdentifierValue
+                      ),
+                      nrsCredentialRole
+                    ),
+                    Some(nrsMdtpInformation)
+                  ),
+                  nrsItmpName
+                ),
+                nrsDateOfBirth
+              ),
+              nrsItmpAddress
+            ),
+            nrsCredentialStrength
+          ),
+          nrsLoginTimes
+        )
+      )
+    )
 
   def userWithoutEori(user: SignedInUser = newUser("12345", "external1")): Unit =
     when(
       mockAuthConnector.authorise(
         any(),
-        ArgumentMatchers.eq(credentials and name and email and externalId and internalId and affinityGroup and allEnrolments
-          and agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
-          credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes))
-      (any(), any())
+        ArgumentMatchers.eq(
+          credentials and name and email and externalId and internalId and affinityGroup and allEnrolments
+            and agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
+            credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
+        )
+      )(any(), any())
     ).thenReturn(
-      Future.successful(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new
-          ~(user.identityData.credentials.get, user.identityData.name.get), user.identityData.email),
-        user.identityData.externalId), user.identityData.internalId), user.identityData.affinityGroup), Enrolments(Set())),
-        user.identityData.agentCode), user.identityData.confidenceLevel.get), user.identityData.nino), user.identityData.saUtr),
-        user.identityData.dateOfBirth), user.identityData.agentInformation.get), nrsGroupIdentifierValue),
-        nrsCredentialRole), Some(nrsMdtpInformation)), nrsItmpName), nrsDateOfBirth), nrsItmpAddress), nrsCredentialStrength), nrsLoginTimes)
-      ))
+      Future.successful(
+        new ~(
+          new ~(
+            new ~(
+              new ~(
+                new ~(
+                  new ~(
+                    new ~(
+                      new ~(
+                        new ~(
+                          new ~(
+                            new ~(
+                              new ~(
+                                new ~(
+                                  new ~(
+                                    new ~(
+                                      new ~(
+                                        new ~(
+                                          new ~(
+                                            new ~(
+                                              new ~(user.identityData.credentials.get, user.identityData.name.get),
+                                              user.identityData.email
+                                            ),
+                                            user.identityData.externalId
+                                          ),
+                                          user.identityData.internalId
+                                        ),
+                                        user.identityData.affinityGroup
+                                      ),
+                                      Enrolments(Set())
+                                    ),
+                                    user.identityData.agentCode
+                                  ),
+                                  user.identityData.confidenceLevel.get
+                                ),
+                                user.identityData.nino
+                              ),
+                              user.identityData.saUtr
+                            ),
+                            user.identityData.dateOfBirth
+                          ),
+                          user.identityData.agentInformation.get
+                        ),
+                        nrsGroupIdentifierValue
+                      ),
+                      nrsCredentialRole
+                    ),
+                    Some(nrsMdtpInformation)
+                  ),
+                  nrsItmpName
+                ),
+                nrsDateOfBirth
+              ),
+              nrsItmpAddress
+            ),
+            nrsCredentialStrength
+          ),
+          nrsLoginTimes
+        )
+      )
+    )
 
   def userWithoutExternalId(user: SignedInUser = newUser("12345", "external1")): Unit =
     when(
       mockAuthConnector.authorise(
         any(),
-        ArgumentMatchers.eq(credentials and name and email and externalId and internalId and affinityGroup and allEnrolments
-          and agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
-          credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes))
-      (any(), any())
+        ArgumentMatchers.eq(
+          credentials and name and email and externalId and internalId and affinityGroup and allEnrolments
+            and agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
+            credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
+        )
+      )(any(), any())
     ).thenReturn(
-      Future.successful(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new ~(new
-          ~(user.identityData.credentials.get, user.identityData.name.get), user.identityData.email),
-        None), user.identityData.internalId), user.identityData.affinityGroup), user.enrolments),
-        user.identityData.agentCode), user.identityData.confidenceLevel.get), user.identityData.nino), user.identityData.saUtr),
-        user.identityData.dateOfBirth), user.identityData.agentInformation.get), nrsGroupIdentifierValue),
-        nrsCredentialRole), Some(nrsMdtpInformation)), nrsItmpName), nrsDateOfBirth), nrsItmpAddress), nrsCredentialStrength), nrsLoginTimes)
-      ))
+      Future.successful(
+        new ~(
+          new ~(
+            new ~(
+              new ~(
+                new ~(
+                  new ~(
+                    new ~(
+                      new ~(
+                        new ~(
+                          new ~(
+                            new ~(
+                              new ~(
+                                new ~(
+                                  new ~(
+                                    new ~(
+                                      new ~(
+                                        new ~(
+                                          new ~(
+                                            new ~(
+                                              new ~(user.identityData.credentials.get, user.identityData.name.get),
+                                              user.identityData.email
+                                            ),
+                                            None
+                                          ),
+                                          user.identityData.internalId
+                                        ),
+                                        user.identityData.affinityGroup
+                                      ),
+                                      user.enrolments
+                                    ),
+                                    user.identityData.agentCode
+                                  ),
+                                  user.identityData.confidenceLevel.get
+                                ),
+                                user.identityData.nino
+                              ),
+                              user.identityData.saUtr
+                            ),
+                            user.identityData.dateOfBirth
+                          ),
+                          user.identityData.agentInformation.get
+                        ),
+                        nrsGroupIdentifierValue
+                      ),
+                      nrsCredentialRole
+                    ),
+                    Some(nrsMdtpInformation)
+                  ),
+                  nrsItmpName
+                ),
+                nrsDateOfBirth
+              ),
+              nrsItmpAddress
+            ),
+            nrsCredentialStrength
+          ),
+          nrsLoginTimes
+        )
+      )
+    )
 
 }

@@ -22,7 +22,6 @@ import uk.gov.hmrc.wco.dec._
 
 import scala.util.Random
 
-
 case class ExportsNotification(
   dateTimeReceived: DateTime = DateTime.now(),
   conversationId: String,
@@ -75,12 +74,7 @@ object ExportsNotification {
 }
 
 // Case class for view notifications - TODO use ExportsNotification directly and map fields
-case class Notification(
-  name: String,
-  dateAndTime: String,
-  reference: String,
-  status: Status
-)
+case class Notification(name: String, dateAndTime: String, reference: String, status: Status)
 
 object Notification {
   implicit val format = Json.format[Notification]

@@ -28,12 +28,19 @@ class NrsConnectorSpec extends CustomExportsBaseSpec {
 
   val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"))
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.randomString(255))))
-  val expectedHeaders: Map[String, String] = Map("Content-Type" -> "application/json", "X-API-Key" -> appConfig.nrsApiKey)
-  val nrsMetadata = Metadata("cds", "cds-exports", "application/json",
-    Some("248857ca67c92e1c18459ff287139fd8409372221e32d245ad8cc470dd5c80d5"), nrsTimeStamp,
-    newUser("12345", "external1").identityData, "bearer-token",
+  val expectedHeaders: Map[String, String] =
+    Map("Content-Type" -> "application/json", "X-API-Key" -> appConfig.nrsApiKey)
+  val nrsMetadata = Metadata(
+    "cds",
+    "cds-exports",
+    "application/json",
+    Some("248857ca67c92e1c18459ff287139fd8409372221e32d245ad8cc470dd5c80d5"),
+    nrsTimeStamp,
+    newUser("12345", "external1").identityData,
+    "bearer-token",
     HeaderData(),
-    SearchKeys(Some("converstionId1"), Some("ducr1")))
+    SearchKeys(Some("converstionId1"), Some("ducr1"))
+  )
 
   "NrsConnector" should {
     "submit non repudiation request successfully" in submitNonRepudiation() { response =>

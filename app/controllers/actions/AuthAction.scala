@@ -28,20 +28,25 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
-  (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector)(implicit ec: ExecutionContext)
+    extends AuthAction with AuthorisedFunctions {
 
-  override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+  override def invokeBlock[A](
+    request: Request[A],
+    block: (AuthenticatedRequest[A]) => Future[Result]
+  ): Future[Result] = {
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     authorised(Enrolment("HMRC-CUS-ORG"))
-      .retrieve(credentials and name and email and externalId and internalId and affinityGroup and allEnrolments and
-        agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
-        credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes) {
+      .retrieve(
+        credentials and name and email and externalId and internalId and affinityGroup and allEnrolments and
+          agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
+          credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
+      ) {
         case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments ~ agentCode ~
-          confidenceLevel ~ authNino ~ saUtr ~ dateOfBirth ~ agentInformation ~ groupIdentifier ~
-          credentialRole ~ mdtpInformation ~ itmpName ~ itmpDateOfBirth ~ itmpAddress ~ credentialStrength ~ loginTimes =>
-
+              confidenceLevel ~ authNino ~ saUtr ~ dateOfBirth ~ agentInformation ~ groupIdentifier ~
+              credentialRole ~ mdtpInformation ~ itmpName ~ itmpDateOfBirth ~ itmpAddress ~ credentialStrength ~ loginTimes =>
           val eori = allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber"))
 
           if (eori.isEmpty) {
@@ -52,7 +57,10 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
             throw NoExternalId()
           }
 
-          val identityData = IdentityData(internalId, externalId, agentCode,
+          val identityData = IdentityData(
+            internalId,
+            externalId,
+            agentCode,
             Some(credentials),
             Some(confidenceLevel),
             authNino,
@@ -69,7 +77,8 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
             Some(itmpAddress),
             affinityGroup,
             credentialStrength,
-            Some(loginTimes))
+            Some(loginTimes)
+          )
 
           val cdsLoggedInUser =
             SignedInUser(eori.get.value, allEnrolments, identityData)

@@ -58,7 +58,6 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-
   "FormFieldValidator on isNumeric" should {
 
     "return false" when {
@@ -101,7 +100,6 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-
   "FormFieldValidator on isAlphabetic" should {
 
     "return false" when {
@@ -143,7 +141,6 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
       }
     }
   }
-
 
   "FormFieldValidator on isAlphaNumeric" should {
 

@@ -27,13 +27,19 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CustomsInventoryLinkingExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
-  def sendMovementRequest(eori: String, body: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+  def sendMovementRequest(
+    eori: String,
+    body: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     postMovementRequest(eori, body).map { response =>
       Logger.debug(s"CUSTOMS_INVENTORY_LINKING_EXPORTS response is --> ${response.toString}")
       response
     }
 
-  private[connectors] def postMovementRequest(eori: String, body: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  private[connectors] def postMovementRequest(
+    eori: String,
+    body: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val headers: Seq[(String, String)] = Seq(
       "Accept" -> "application/vnd.hmrc.1.0+xml",
       "Content-Type" -> "application/xml;charset=utf-8",
@@ -41,8 +47,6 @@ class CustomsInventoryLinkingExportsConnector @Inject()(appConfig: AppConfig, ht
       "X-EORI-Identfier" -> eori
     )
 
-    httpClient.POSTString(
-      s"${appConfig.customsInventoryLinkingExports}${appConfig.sendArrival}", body, headers
-    )
+    httpClient.POSTString(s"${appConfig.customsInventoryLinkingExports}${appConfig.sendArrival}", body, headers)
   }
 }

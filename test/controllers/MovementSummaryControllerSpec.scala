@@ -220,7 +220,9 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
   }
 
-  private def mockCustomsCacheServiceFetchMovementRequestResultWith(desiredResult: Option[InventoryLinkingMovementRequest]) =
+  private def mockCustomsCacheServiceFetchMovementRequestResultWith(
+    desiredResult: Option[InventoryLinkingMovementRequest]
+  ) =
     when(mockCustomsCacheService.fetchMovementRequest(any(), any())(any(), any()))
       .thenReturn(Future.successful(desiredResult))
 
