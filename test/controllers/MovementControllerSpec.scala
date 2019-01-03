@@ -76,7 +76,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         contentAsString(result) must include(messages("movement.incorrectValue"))
       }
 
-      "redirect to ducr for arrival page when simplified declaration chosen" in {
+      "redirect to role page when simplified declaration chosen" in {
         authorizedUser()
         val form = Form(ChoiceForm.choiceMapping).fill(ChoiceForm("SMP"))
         withCaching[ChoiceForm](Some(form))
@@ -87,7 +87,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/ducr"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/role"))
       }
 
       "redirect to ducr for arrival page when standard declaration chosen" in {

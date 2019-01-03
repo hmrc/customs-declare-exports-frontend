@@ -49,19 +49,18 @@ class MovementController @Inject()(
   }
 
   def sendChoice(): Action[AnyContent] = authenticate.async { implicit request =>
-    choiceForm.bindFromRequest().fold(
-      (formWithErrors: Form[ChoiceForm]) =>
-        Future.successful(BadRequest(choice_page(appConfig, formWithErrors))),
-      form =>
-        customsCacheService.cache[ChoiceForm](appConfig.appName, choiceId, form).map { _ =>
-            if(form.choice.toString == "SMP") {
-              Redirect(controllers.routes.MovementController.rolePage() )
-            }
-            else {
-              Redirect(controllers.routes.MovementController.displayDucrPage())
+    choiceForm
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[ChoiceForm]) => Future.successful(BadRequest(choice_page(appConfig, formWithErrors))),
+        form =>
+          customsCacheService.cache[ChoiceForm](appConfig.appName, choiceId, form).map { _ =>
+            form.choice match {
+              case "SMP" => Redirect(controllers.routes.MovementController.rolePage())
+              case _     => Redirect(controllers.routes.MovementController.displayDucrPage())
             }
         }
-    )
+      )
   }
 
   def displayDucrPage(): Action[AnyContent] = authenticate.async { implicit request =>
@@ -85,14 +84,16 @@ class MovementController @Inject()(
   }
 
   def saveDucr(): Action[AnyContent] = authenticate.async { implicit request =>
-    enterDucrForm.bindFromRequest().fold(
-      (formWithErrors: Form[EnterDucrForm]) =>
-        Future.successful(BadRequest(enterDUCR(appConfig, formWithErrors, "error"))),
-      form =>
-        customsCacheService.cache[EnterDucrForm](appConfig.appName, enterDucrId, form).map { _ =>
-          Redirect(controllers.routes.MovementController.displayGoodsDate())
+    enterDucrForm
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[EnterDucrForm]) =>
+          Future.successful(BadRequest(enterDUCR(appConfig, formWithErrors, "error"))),
+        form =>
+          customsCacheService.cache[EnterDucrForm](appConfig.appName, enterDucrId, form).map { _ =>
+            Redirect(controllers.routes.MovementController.displayGoodsDate())
         }
-    )
+      )
   }
 
   def displayGoodsDate(): Action[AnyContent] = authenticate.async { implicit request =>
@@ -116,14 +117,16 @@ class MovementController @Inject()(
   }
 
   def saveGoodsDate(): Action[AnyContent] = authenticate.async { implicit request =>
-    goodsDateForm.bindFromRequest().fold(
-      (formWithErrors: Form[GoodsDateForm]) =>
-        Future.successful(BadRequest(goods_date(appConfig, formWithErrors, "error"))),
-      form =>
-        customsCacheService.cache[GoodsDateForm](appConfig.appName, goodsDateId, form).map { _ =>
-          Redirect(controllers.routes.MovementController.displayLocation())
+    goodsDateForm
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[GoodsDateForm]) =>
+          Future.successful(BadRequest(goods_date(appConfig, formWithErrors, "error"))),
+        form =>
+          customsCacheService.cache[GoodsDateForm](appConfig.appName, goodsDateId, form).map { _ =>
+            Redirect(controllers.routes.MovementController.displayLocation())
         }
-    )
+      )
   }
 
   def displayLocation(): Action[AnyContent] = authenticate.async { implicit request =>
@@ -147,17 +150,19 @@ class MovementController @Inject()(
   }
 
   def saveLocation(): Action[AnyContent] = authenticate.async { implicit request =>
-    locationForm.bindFromRequest().fold(
-      (formWithErrors: Form[LocationForm]) =>
-        customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).map {
-          case Some(choice) => BadRequest(goods_location(appConfig, formWithErrors, choice.choice))
-          case _            => BadRequest(goods_location(appConfig, formWithErrors, "error"))
+    locationForm
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[LocationForm]) =>
+          customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).map {
+            case Some(choice) => BadRequest(goods_location(appConfig, formWithErrors, choice.choice))
+            case _            => BadRequest(goods_location(appConfig, formWithErrors, "error"))
         },
-      form =>
-        customsCacheService.cache[LocationForm](appConfig.appName, locationId, form).map { _ =>
-          Redirect(controllers.routes.MovementController.displayTransport())
+        form =>
+          customsCacheService.cache[LocationForm](appConfig.appName, locationId, form).map { _ =>
+            Redirect(controllers.routes.MovementController.displayTransport())
         }
-    )
+      )
   }
 
   def displayTransport(): Action[AnyContent] = authenticate.async { implicit request =>
@@ -168,14 +173,15 @@ class MovementController @Inject()(
   }
 
   def saveTransport(): Action[AnyContent] = authenticate.async { implicit request =>
-    transportForm.bindFromRequest().fold(
-      (formWithErrors: Form[TransportForm]) =>
-        Future.successful(BadRequest(transport(appConfig, formWithErrors))),
-      form =>
-        customsCacheService.cache[TransportForm](appConfig.appName, transportId, form).map { _ =>
-          Redirect(controllers.routes.MovementSummaryController.displaySummary())
+    transportForm
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[TransportForm]) => Future.successful(BadRequest(transport(appConfig, formWithErrors))),
+        form =>
+          customsCacheService.cache[TransportForm](appConfig.appName, transportId, form).map { _ =>
+            Redirect(controllers.routes.MovementSummaryController.displaySummary())
         }
-    )
+      )
   }
 
   def rolePage(): Action[AnyContent] = authenticate.async { implicit request =>

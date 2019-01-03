@@ -44,12 +44,11 @@ case class RoleForm(roleForm: String)
 object RoleForm {
   implicit val format = Json.format[RoleForm]
 
-  //TODO change to enum
   private val correctRole = Seq("DEC", "DREP", "IREP")
 
-  val roleMapping = mapping(
-    "roleForm" -> text().verifying("Incorrect value", correctRole.contains(_))
-  )(RoleForm.apply)(RoleForm.unapply)
+  val roleMapping = mapping("roleForm" -> text().verifying("Incorrect value", correctRole.contains(_)))(RoleForm.apply)(
+    RoleForm.unapply
+  )
 }
 
 case class EnterDucrForm(ducr: String)
