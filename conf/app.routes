@@ -16,6 +16,8 @@ POST       /simple-declaration                          controllers.SimpleDeclar
 
 GET        /notifications                               controllers.NotificationsController.listOfNotifications()
 
+GET        /notifications/:conversationId               controllers.NotificationsController.listOfNotificationsForSubmission(conversationId: String)
+
 # Submissions
 
 GET        /submissions                                 controllers.NotificationsController.listOfSubmissions()

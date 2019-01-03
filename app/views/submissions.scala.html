@@ -48,7 +48,11 @@
                     <td class="table-cell">@submission.mrn.getOrElse("")</td>
                     <td class="table-cell">@Instant.ofEpochMilli(submission.submittedTimestamp)</td>
                     <td class="table-cell">@submission.status.getOrElse("")</td>
-                    <td class="table-cell">@submission.noOfNotifications</td>
+                    <td class="table-cell">
+                        <a href="/customs-declare-exports/notifications/@submission.conversationId">
+                            @submission.noOfNotifications
+                        </a>
+                    </td>
                 </tr>
             }
         </table>

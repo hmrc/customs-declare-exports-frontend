@@ -63,6 +63,20 @@ trait MockConnectors extends MockitoSugar {
         Future.successful(Seq(ExportsNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty)))
       )
 
+  def listOfSubmissionNotifications() =
+    when(mockCustomsDeclareExportsConnector.fetchNotificationsByConversationId(any())(any(), any()))
+      .thenReturn(
+        Future.successful(
+          Some(
+            ExportsNotification(
+              conversationId = "1234",
+              eori = "eori",
+              metadata = DeclarationMetadata()
+            )
+          )
+        )
+      )
+
   def listOfSubmissions() =
     when(mockCustomsDeclareExportsConnector.fetchSubmissions()(any(), any()))
       .thenReturn(

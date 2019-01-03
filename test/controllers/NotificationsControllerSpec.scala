@@ -23,6 +23,7 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
 
   val notificationsUri = uriWithContextPath("/notifications")
   val submissionsUri = uriWithContextPath("/submissions")
+  val submissionNotificationsUri = uriWithContextPath("/notifications/1234")
 
   "NotificationController" should {
     "return list of notification" in {
@@ -32,6 +33,22 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, getRequest(notificationsUri)).get
       val stringResult = contentAsString(result)
 
+      status(result) must be(OK)
+      stringResult must include(messages("notifications.title"))
+      stringResult must include(messages("notifications.name"))
+      stringResult must include(messages("notifications.dateAndTime"))
+      stringResult must include(messages("notifications.reference"))
+      stringResult must include(messages("notifications.status"))
+    }
+
+    "return list of notifications for submission" in {
+      authorizedUser()
+      listOfSubmissionNotifications
+
+      val result = route(app, getRequest(submissionNotificationsUri)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(OK)
       stringResult must include(messages("notifications.title"))
       stringResult must include(messages("notifications.name"))
       stringResult must include(messages("notifications.dateAndTime"))
@@ -46,6 +63,7 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, getRequest(submissionsUri)).get
       val stringResult = contentAsString(result)
 
+      status(result) must be(OK)
       stringResult must include(messages("submissions.title"))
       stringResult must include(messages("submissions.eori"))
       stringResult must include(messages("submissions.conversationId"))
