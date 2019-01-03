@@ -55,7 +55,10 @@ class MovementController @Inject()(
         (formWithErrors: Form[ChoiceForm]) => Future.successful(BadRequest(choice_page(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[ChoiceForm](appConfig.appName, choiceId, form).map { _ =>
-            Redirect(controllers.routes.MovementController.displayDucrPage())
+            form.choice match {
+              case "SMP" => Redirect(controllers.routes.MovementController.rolePage())
+              case _     => Redirect(controllers.routes.MovementController.displayDucrPage())
+            }
         }
       )
   }
@@ -179,5 +182,12 @@ class MovementController @Inject()(
             Redirect(controllers.routes.MovementSummaryController.displaySummary())
         }
       )
+  }
+
+  def rolePage(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[RoleForm](appConfig.appName, roleId).map {
+      case Some(data) => Ok(role_page(appConfig, roleForm.fill(data)))
+      case _          => Ok(role_page(appConfig, roleForm))
+    }
   }
 }
