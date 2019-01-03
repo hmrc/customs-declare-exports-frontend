@@ -42,7 +42,6 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
       response.futureValue.status must be(OK)
     }
   }
-
   def saveSubmission()(test: Future[CustomsDeclareExportsResponse] => Unit): Unit = {
     val http =
       new MockHttpClient(expectedUrl(appConfig.saveSubmissionResponse), submission, expectedHeaders, falseServerError)
@@ -51,7 +50,6 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
   }
 
   def saveMovementSubmission()(test: Future[CustomsDeclareExportsResponse] => Unit): Unit = {
-
     val http = new MockHttpClient(
       expectedUrl(appConfig.saveMovementSubmission),
       movementSubmission,

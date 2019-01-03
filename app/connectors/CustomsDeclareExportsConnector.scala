@@ -53,6 +53,11 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsNotification]] =
     httpClient.GET[Seq[ExportsNotification]](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}/$eori")
 
+  def fetchNotificationsByConversationId(
+    conversationId: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsNotification]] =
+    httpClient.GET[Option[ExportsNotification]](s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissionNotifications}/$conversationId")
+
   def saveMovementSubmission(
     body: MovementSubmission
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =

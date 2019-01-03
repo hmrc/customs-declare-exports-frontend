@@ -38,6 +38,13 @@ class NotificationsController @Inject()(
     }
   }
 
+  def listOfNotificationsForSubmission(conversationId: String): Action[AnyContent] =
+    authenticate.async { implicit request =>
+      customsDeclareExportsConnector.fetchNotificationsByConversationId(conversationId).map { results =>
+        Ok(views.html.submission_notifications(appConfig, results))
+      }
+    }
+
   def listOfSubmissions(): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.fetchSubmissions().map { results =>
       Ok(views.html.submissions(appConfig, results))
