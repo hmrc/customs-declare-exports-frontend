@@ -28,7 +28,7 @@ import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.supplementary.representative_details
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class RepresentativeDetailsPageController @Inject()(
   appConfig: AppConfig,
@@ -36,7 +36,8 @@ class RepresentativeDetailsPageController @Inject()(
   authenticate: AuthAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
-) extends FrontendController with I18nSupport {
+)(implicit ec: ExecutionContext)
+    extends FrontendController with I18nSupport {
 
   implicit val countries = services.Countries.allCountries
   private val supplementaryDeclarationCacheId = appConfig.appName

@@ -29,7 +29,7 @@ import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.supplementary.{declaration_type, dispatch_location}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationTypeController @Inject()(
   appConfig: AppConfig,
@@ -37,7 +37,8 @@ class DeclarationTypeController @Inject()(
   authenticate: AuthAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
-) extends FrontendController with I18nSupport {
+)(implicit ec: ExecutionContext)
+    extends FrontendController with I18nSupport {
 
   private val supplementaryDeclarationCacheId = appConfig.appName
 

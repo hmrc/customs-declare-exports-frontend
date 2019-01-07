@@ -23,10 +23,11 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.startPage
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class StartController @Inject()(appConfig: AppConfig, override val messagesApi: MessagesApi)
-    extends FrontendController with I18nSupport {
+class StartController @Inject()(appConfig: AppConfig, override val messagesApi: MessagesApi)(
+  implicit ec: ExecutionContext
+) extends FrontendController with I18nSupport {
 
   def displayStartPage(): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(startPage(appConfig)))

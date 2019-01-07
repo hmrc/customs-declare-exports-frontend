@@ -30,7 +30,7 @@ import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.movement._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class MovementController @Inject()(
   appConfig: AppConfig,
@@ -39,7 +39,8 @@ class MovementController @Inject()(
   customsInventoryLinkingExportsConnector: CustomsInventoryLinkingExportsConnector,
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler
-) extends FrontendController with I18nSupport {
+)(implicit ec: ExecutionContext)
+    extends FrontendController with I18nSupport {
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).map {

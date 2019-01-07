@@ -18,6 +18,8 @@ package base
 
 import java.util.UUID
 
+import akka.actor.ActorSystem
+import com.typesafe.config.Config
 import models._
 import play.api.libs.json.Writes
 import play.api.test.Helpers.{ACCEPTED, OK}
@@ -40,6 +42,8 @@ class MockHttpClient[A](
 ) extends HttpClient with WSGet with WSPut with WSPost with WSDelete with WSPatch {
 
   override val hooks: Seq[HttpHook] = Seq.empty
+  override val actorSystem = ActorSystem("HttpClient")
+  override val configuration: Option[Config] = None
 
   //scalastyle:off method.name
   override def GET[O](

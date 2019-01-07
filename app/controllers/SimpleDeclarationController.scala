@@ -39,7 +39,7 @@ import uk.gov.hmrc.wco.dec.{Declaration, GoodsShipment, MetaData, Ucr}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfTrue
 import views.html.{confirmation_page, simpleDeclaration}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 class SimpleDeclarationController @Inject()(
@@ -51,7 +51,7 @@ class SimpleDeclarationController @Inject()(
   errorHandler: ErrorHandler,
   exportsMetrics: ExportsMetrics,
   nrsService: NRSService
-)(implicit val messagesApi: MessagesApi)
+)(implicit val messagesApi: MessagesApi, ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
   val formId = "SimpleDeclarationForm"

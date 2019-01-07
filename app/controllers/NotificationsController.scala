@@ -24,12 +24,15 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
+import scala.concurrent.ExecutionContext
+
 class NotificationsController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector
-) extends FrontendController with I18nSupport {
+)(implicit ec: ExecutionContext)
+    extends FrontendController with I18nSupport {
 
   def listOfNotifications(): Action[AnyContent] = authenticate.async { implicit request =>
     val eori = request.user.eori

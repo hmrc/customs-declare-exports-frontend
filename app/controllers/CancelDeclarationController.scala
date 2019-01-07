@@ -36,7 +36,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.{Declaration, MetaData, NamedEntityWithAddress}
 import views.html.{cancelDeclaration, confirmation_page}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class CancelDeclarationController @Inject()(
   appConfig: AppConfig,
@@ -46,7 +46,7 @@ class CancelDeclarationController @Inject()(
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
   exportsMetrics: ExportsMetrics
-)(implicit val messagesApi: MessagesApi)
+)(implicit val messagesApi: MessagesApi, ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
   val formId = "cancelDeclarationForm"
