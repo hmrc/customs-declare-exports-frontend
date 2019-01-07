@@ -16,6 +16,8 @@
 
 package base
 
+import akka.actor.ActorSystem
+import com.typesafe.config.Config
 import play.api.http.Status.ACCEPTED
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.hooks.HttpHook
@@ -32,6 +34,8 @@ class MockInventoryHttpClient[A](
 ) extends HttpClient with WSGet with WSPut with WSPost with WSDelete with WSPatch {
 
   override val hooks: Seq[HttpHook] = Seq.empty
+  override val actorSystem = ActorSystem("InventoryHttpClient")
+  override val configuration: Option[Config] = None
 
   //scalastyle:off method.name
   override def POSTString[O](

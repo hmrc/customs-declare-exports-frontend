@@ -56,7 +56,9 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   def fetchNotificationsByConversationId(
     conversationId: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsNotification]] =
-    httpClient.GET[Option[ExportsNotification]](s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissionNotifications}/$conversationId")
+    httpClient.GET[Option[ExportsNotification]](
+      s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissionNotifications}/$conversationId"
+    )
 
   def saveMovementSubmission(
     body: MovementSubmission

@@ -32,7 +32,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 import views.html.movement.{movement_confirmation_page, movement_summary_page}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class MovementSummaryController @Inject()(
   appConfig: AppConfig,
@@ -42,7 +42,8 @@ class MovementSummaryController @Inject()(
   customsCacheService: CustomsCacheService,
   customsInventoryLinkingExportsConnector: CustomsInventoryLinkingExportsConnector,
   exportsMetrics: ExportsMetrics
-) extends FrontendController with I18nSupport {
+)(implicit ec: ExecutionContext)
+    extends FrontendController with I18nSupport {
 
   def displaySummary(): Action[AnyContent] = authenticate.async { implicit request =>
     val form = Form(MovementRequestSummaryMappingProvider.provideMappingForMovementSummaryPage())

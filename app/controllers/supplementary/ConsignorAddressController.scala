@@ -28,14 +28,15 @@ import services.Countries.allCountries
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.supplementary.consignor_details
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignorAddressController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   customsCacheService: CustomsCacheService
-) extends FrontendController with I18nSupport {
+)(implicit ec: ExecutionContext)
+    extends FrontendController with I18nSupport {
 
   val formId = "ConsignorAddress"
   val form = Form(AddressAndIdentification.addressMapping)
