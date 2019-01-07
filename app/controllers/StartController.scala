@@ -21,7 +21,7 @@ import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.startPage
+import views.html.start_page
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +30,7 @@ class StartController @Inject()(appConfig: AppConfig, override val messagesApi: 
 ) extends FrontendController with I18nSupport {
 
   def displayStartPage(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(startPage(appConfig)))
+    Future.successful(Ok(start_page(appConfig)))
   }
 
 }

@@ -68,8 +68,8 @@ class MovementController @Inject()(
     customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
         customsCacheService.fetchAndGetEntry[EnterDucrForm](appConfig.appName, enterDucrId).map {
-          case Some(data) => Ok(enterDUCR(appConfig, enterDucrForm.fill(data), choice.choice))
-          case _          => Ok(enterDUCR(appConfig, enterDucrForm, choice.choice))
+          case Some(data) => Ok(enter_ducr(appConfig, enterDucrForm.fill(data), choice.choice))
+          case _          => Ok(enter_ducr(appConfig, enterDucrForm, choice.choice))
         }
       case _ =>
         Future.successful(
@@ -89,7 +89,7 @@ class MovementController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[EnterDucrForm]) =>
-          Future.successful(BadRequest(enterDUCR(appConfig, formWithErrors, "error"))),
+          Future.successful(BadRequest(enter_ducr(appConfig, formWithErrors, "error"))),
         form =>
           customsCacheService.cache[EnterDucrForm](appConfig.appName, enterDucrId, form).map { _ =>
             Redirect(controllers.movement.routes.MovementController.displayGoodsDate())

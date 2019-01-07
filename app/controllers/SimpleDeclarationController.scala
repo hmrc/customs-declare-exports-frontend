@@ -32,12 +32,12 @@ import play.api.data.validation.Constraints.pattern
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
-import services.{CustomsCacheService, NRSService}
 import services.Countries.allCountries
+import services.{CustomsCacheService, NRSService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.{Declaration, GoodsShipment, MetaData, Ucr}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfTrue
-import views.html.{confirmation_page, simpleDeclaration}
+import views.html.{confirmation_page, simple_declaration}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -91,8 +91,8 @@ class SimpleDeclarationController @Inject()(
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[SimpleDeclarationForm](appConfig.appName, formId).map {
-      case Some(data) => Ok(simpleDeclaration(appConfig, form.fill(data), allCountries))
-      case _          => Ok(simpleDeclaration(appConfig, form, allCountries))
+      case Some(data) => Ok(simple_declaration(appConfig, form.fill(data), allCountries))
+      case _          => Ok(simple_declaration(appConfig, form, allCountries))
     }
   }
 
@@ -101,7 +101,7 @@ class SimpleDeclarationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[SimpleDeclarationForm]) =>
-          Future.successful(BadRequest(simpleDeclaration(appConfig, formWithErrors, allCountries))),
+          Future.successful(BadRequest(simple_declaration(appConfig, formWithErrors, allCountries))),
         form => {
           customsCacheService.cache[SimpleDeclarationForm](appConfig.appName, formId, form).flatMap {
             _ =>
