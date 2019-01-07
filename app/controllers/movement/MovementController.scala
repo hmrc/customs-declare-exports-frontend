@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movement
 
 import config.AppConfig
 import connectors.CustomsInventoryLinkingExportsConnector
@@ -57,8 +57,8 @@ class MovementController @Inject()(
         form =>
           customsCacheService.cache[ChoiceForm](appConfig.appName, choiceId, form).map { _ =>
             form.choice match {
-              case "SMP" => Redirect(controllers.routes.MovementController.rolePage())
-              case _     => Redirect(controllers.routes.MovementController.displayDucrPage())
+              case "SMP" => Redirect(controllers.movement.routes.MovementController.rolePage())
+              case _     => Redirect(controllers.movement.routes.MovementController.displayDucrPage())
             }
         }
       )
@@ -92,7 +92,7 @@ class MovementController @Inject()(
           Future.successful(BadRequest(enterDUCR(appConfig, formWithErrors, "error"))),
         form =>
           customsCacheService.cache[EnterDucrForm](appConfig.appName, enterDucrId, form).map { _ =>
-            Redirect(controllers.routes.MovementController.displayGoodsDate())
+            Redirect(controllers.movement.routes.MovementController.displayGoodsDate())
         }
       )
   }
@@ -125,7 +125,7 @@ class MovementController @Inject()(
           Future.successful(BadRequest(goods_date(appConfig, formWithErrors, "error"))),
         form =>
           customsCacheService.cache[GoodsDateForm](appConfig.appName, goodsDateId, form).map { _ =>
-            Redirect(controllers.routes.MovementController.displayLocation())
+            Redirect(controllers.movement.routes.MovementController.displayLocation())
         }
       )
   }
@@ -161,7 +161,7 @@ class MovementController @Inject()(
         },
         form =>
           customsCacheService.cache[LocationForm](appConfig.appName, locationId, form).map { _ =>
-            Redirect(controllers.routes.MovementController.displayTransport())
+            Redirect(controllers.movement.routes.MovementController.displayTransport())
         }
       )
   }
@@ -180,7 +180,7 @@ class MovementController @Inject()(
         (formWithErrors: Form[TransportForm]) => Future.successful(BadRequest(transport(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[TransportForm](appConfig.appName, transportId, form).map { _ =>
-            Redirect(controllers.routes.MovementSummaryController.displaySummary())
+            Redirect(controllers.movement.routes.MovementSummaryController.displaySummary())
         }
       )
   }

@@ -15,6 +15,7 @@
  *@
 
 @import config.AppConfig
+@import controllers.movement.routes._
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
@@ -39,7 +40,7 @@
 
   <p class="text">@messages("movement.summaryPage.confirmationNotice")</p>
 
-  @helpers.form(action = routes.MovementSummaryController.submitMovementRequest()) {
+  @helpers.form(action = MovementSummaryController.submitMovementRequest()) {
     @components.submit_button("site.submit")
   }
 }

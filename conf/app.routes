@@ -34,47 +34,47 @@ GET        /start                                       controllers.StartControl
 
 # Movements
 
-GET        /choice                                      controllers.MovementController.displayChoiceForm()
+GET        /choice                                      controllers.movement.MovementController.displayChoiceForm()
 
-POST       /choice                                      controllers.MovementController.sendChoice()
+POST       /choice                                      controllers.movement.MovementController.sendChoice()
 
 # Role Page
 
-GET        /role                                        controllers.MovementController.rolePage()
+GET        /role                                        controllers.movement.MovementController.rolePage()
 
 # Enter DUCR page
 
-GET        /movement/ducr                               controllers.MovementController.displayDucrPage()
+GET        /movement/ducr                               controllers.movement.MovementController.displayDucrPage()
 
-POST       /movement/ducr                               controllers.MovementController.saveDucr()
+POST       /movement/ducr                               controllers.movement.MovementController.saveDucr()
 
 # Goods date page
 
-GET        /movement/goodsDate                          controllers.MovementController.displayGoodsDate()
+GET        /movement/goodsDate                          controllers.movement.MovementController.displayGoodsDate()
 
-POST       /movement/goodsDate                          controllers.MovementController.saveGoodsDate()
+POST       /movement/goodsDate                          controllers.movement.MovementController.saveGoodsDate()
 
 # Goods location page
 
-GET        /movement/location                           controllers.MovementController.displayLocation()
+GET        /movement/location                           controllers.movement.MovementController.displayLocation()
 
-POST       /movement/location                           controllers.MovementController.saveLocation()
+POST       /movement/location                           controllers.movement.MovementController.saveLocation()
 
 # Transport page
 
-GET        /movement/transport                          controllers.MovementController.displayTransport()
+GET        /movement/transport                          controllers.movement.MovementController.displayTransport()
 
-POST       /movement/transport                          controllers.MovementController.saveTransport()
+POST       /movement/transport                          controllers.movement.MovementController.saveTransport()
 
 # Movements Summary
 
-GET        /movement/summary                            controllers.MovementSummaryController.displaySummary()
+GET        /movement/summary                            controllers.movement.MovementSummaryController.displaySummary()
 
-POST       /movement/summary                            controllers.MovementSummaryController.submitMovementRequest()
+POST       /movement/summary                            controllers.movement.MovementSummaryController.submitMovementRequest()
 
 # Movement Confirmation
 
-GET        /movement/confirmation                       controllers.MovementSummaryController.displayConfirmation()
+GET        /movement/confirmation                       controllers.movement.MovementSummaryController.displayConfirmation()
 
 # Declaration type
 
