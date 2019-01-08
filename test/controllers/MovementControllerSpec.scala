@@ -25,7 +25,7 @@ import play.api.test.Helpers._
 
 class MovementControllerSpec extends CustomExportsBaseSpec {
 
-  val choiceUri = uriWithContextPath("/choice")
+  val choiceUri = uriWithContextPath("/movement/choice")
   val ducrUri = uriWithContextPath("/movement/ducr")
   val goodsDateUri = uriWithContextPath("/movement/goodsDate")
   val locationUri = uriWithContextPath("/movement/location")
@@ -87,7 +87,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/role"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/role"))
       }
 
       "redirect to ducr for arrival page when standard declaration chosen" in {
