@@ -42,3 +42,7 @@ GET        /start                                       controllers.StartControl
 GET        /choice                                      controllers.ChoiceController.displayChoiceForm()
 
 POST       /choice                                      controllers.ChoiceController.submitChoice()
+
+# Role Page
+
+GET        /role                                        controllers.RoleController.displayRolePage()

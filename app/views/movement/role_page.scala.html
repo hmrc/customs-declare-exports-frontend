@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@@import config.AppConfig
+@import config.AppConfig
 @import controllers.routes._
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
@@ -34,7 +34,10 @@ appConfig = appConfig
 @components.input_radio(
 field = form("choice"),
 legend = "",
-inputs = Seq(RadioOption("Declare", "DEC", messages("movement.role.dec")), RadioOption("direct rep", "DREP", messages("movement.role.drep")), RadioOption("indirect rep", "IREP", messages("movement.role.irep")))
+inputs = Seq(
+ RadioOption("Declare", "DEC", messages("movement.role.dec")),
+ RadioOption("direct rep", "DREP", messages("movement.role.drep")),
+ RadioOption("indirect rep", "IREP", messages("movement.role.irep")))
 )
 
 @components.submit_button()

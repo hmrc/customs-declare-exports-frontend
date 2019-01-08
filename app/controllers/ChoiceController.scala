@@ -57,7 +57,7 @@ class ChoiceController @Inject()(
           customsCacheService.cache[Choice](appConfig.appName, choiceId, validChoice).map { _ =>
             validChoice.choice match {
               case AllowedChoiceValues.SimplifiedDec =>
-                Redirect(controllers.movement.routes.MovementController.rolePage())
+                Redirect(controllers.routes.RoleController.displayRolePage())
               case _ => Redirect(controllers.movement.routes.MovementController.displayDucrPage())
             }
         }

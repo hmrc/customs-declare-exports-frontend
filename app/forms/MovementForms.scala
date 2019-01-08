@@ -28,18 +28,6 @@ import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetai
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 
-case class RoleForm(roleForm: String)
-
-object RoleForm {
-  implicit val format = Json.format[RoleForm]
-
-  private val correctRole = Seq("DEC", "DREP", "IREP")
-
-  val roleMapping = mapping("roleForm" -> text().verifying("Incorrect value", correctRole.contains(_)))(RoleForm.apply)(
-    RoleForm.unapply
-  )
-}
-
 case class EnterDucrForm(ducr: String)
 
 object EnterDucrForm {
@@ -121,9 +109,6 @@ object MovementFormsAndIds {
 
   val transportForm = Form(TransportForm.transportMapping)
   val transportId = "Transport"
-
-  val roleForm = Form(RoleForm.roleMapping)
-  val roleId = "Role"
 }
 
 object Movement {

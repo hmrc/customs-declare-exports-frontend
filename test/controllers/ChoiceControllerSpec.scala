@@ -98,7 +98,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/movement/role"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/role"))
     }
 
     "redirect to ducr page when standard declaration chosen" in {

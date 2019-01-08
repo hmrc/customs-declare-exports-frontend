@@ -162,11 +162,4 @@ class MovementController @Inject()(
         }
       )
   }
-
-  def rolePage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[RoleForm](appConfig.appName, roleId).map {
-      case Some(data) => Ok(role_page(appConfig, roleForm.fill(data)))
-      case _          => Ok(role_page(appConfig, roleForm))
-    }
-  }
 }

@@ -20,30 +20,29 @@ import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
 import play.api.libs.json.Json
 
-case class Choice(choice: String)
+case class Role(role: String)
 
-object Choice {
-  implicit val format = Json.format[Choice]
+object Role {
+  implicit val format = Json.format[Role]
 
-  private val correctChoice = Set(
-    AllowedChoiceValues.SimplifiedDec,
-    AllowedChoiceValues.StandardDec,
-    AllowedChoiceValues.Arrival,
-    AllowedChoiceValues.Departure
+  private val correctRole = Set(
+    AllowedRoles.Declarant,
+    AllowedRoles.DirectRepresentative,
+    AllowedRoles.IndirectRepresentative
   )
 
-  val choiceMapping = mapping(
-    "choice" -> text().verifying("Incorrect value", correctChoice.contains(_))
-  )(Choice.apply)(Choice.unapply)
+  val roleMapping = mapping(
+    "roleForm" -> text().verifying("Incorrect value", correctRole.contains(_))
+  )(Role.apply)(Role.unapply)
+  
+  val roleId = "Role"
 
-  val choiceId = "Choice"
+  def form() = Form(roleMapping)
 
-  def form(): Form[Choice] = Form(choiceMapping)
-
-  object AllowedChoiceValues {
-    val SimplifiedDec = "SMP"
-    val StandardDec = "STD"
-    val Arrival = "EAL"
-    val Departure = "EDL"
+  object AllowedRoles {
+    val Declarant = "DEC"
+    val DirectRepresentative = "DREP"
+    val IndirectRepresentative = "IREP"
   }
 }
+
