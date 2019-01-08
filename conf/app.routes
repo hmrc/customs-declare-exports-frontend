@@ -1,7 +1,7 @@
 
-->         /movement                                   movement.Routes
+->         /movement                                    movement.Routes
 
-->         /declaration/supplementary                  supplementary.Routes
+->         /declaration/supplementary                   supplementary.Routes
 
 # microservice specific routes
 
@@ -36,3 +36,9 @@ POST       /cancel-declaration                          controllers.CancelDeclar
 # Start Page
 
 GET        /start                                       controllers.StartController.displayStartPage()
+
+# Declaration Choice Page
+
+GET        /choice                                      controllers.ChoiceController.displayChoiceForm()
+
+POST       /choice                                      controllers.ChoiceController.submitChoice()

@@ -1,10 +1,4 @@
 
-# Movements
-
-GET        /choice                             controllers.movement.MovementController.displayChoiceForm()
-
-POST       /choice                             controllers.movement.MovementController.sendChoice()
-
 # Role Page
 
 GET        /role                               controllers.movement.MovementController.rolePage()

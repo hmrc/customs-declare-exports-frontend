@@ -42,30 +42,8 @@ class MovementController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).map {
-      case Some(data) => Ok(choice_page(appConfig, choiceForm.fill(data)))
-      case _          => Ok(choice_page(appConfig, choiceForm))
-    }
-  }
-
-  def sendChoice(): Action[AnyContent] = authenticate.async { implicit request =>
-    choiceForm
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[ChoiceForm]) => Future.successful(BadRequest(choice_page(appConfig, formWithErrors))),
-        form =>
-          customsCacheService.cache[ChoiceForm](appConfig.appName, choiceId, form).map { _ =>
-            form.choice match {
-              case "SMP" => Redirect(controllers.movement.routes.MovementController.rolePage())
-              case _     => Redirect(controllers.movement.routes.MovementController.displayDucrPage())
-            }
-        }
-      )
-  }
-
   def displayDucrPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).flatMap {
+    customsCacheService.fetchAndGetEntry[Choice](appConfig.appName, Choice.choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
         customsCacheService.fetchAndGetEntry[EnterDucrForm](appConfig.appName, enterDucrId).map {
           case Some(data) => Ok(enter_ducr(appConfig, enterDucrForm.fill(data), choice.choice))
@@ -98,7 +76,7 @@ class MovementController @Inject()(
   }
 
   def displayGoodsDate(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).flatMap {
+    customsCacheService.fetchAndGetEntry[Choice](appConfig.appName, Choice.choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
         customsCacheService.fetchAndGetEntry[GoodsDateForm](appConfig.appName, goodsDateId).map {
           case Some(data) => Ok(goods_date(appConfig, goodsDateForm.fill(data), choice.choice))
@@ -131,7 +109,7 @@ class MovementController @Inject()(
   }
 
   def displayLocation(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).flatMap {
+    customsCacheService.fetchAndGetEntry[Choice](appConfig.appName, Choice.choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
         customsCacheService.fetchAndGetEntry[LocationForm](appConfig.appName, locationId).map {
           case Some(data) => Ok(goods_location(appConfig, locationForm.fill(data), choice.choice))
@@ -155,7 +133,7 @@ class MovementController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[LocationForm]) =>
-          customsCacheService.fetchAndGetEntry[ChoiceForm](appConfig.appName, choiceId).map {
+          customsCacheService.fetchAndGetEntry[Choice](appConfig.appName, Choice.choiceId).map {
             case Some(choice) => BadRequest(goods_location(appConfig, formWithErrors, choice.choice))
             case _            => BadRequest(goods_location(appConfig, formWithErrors, "error"))
         },

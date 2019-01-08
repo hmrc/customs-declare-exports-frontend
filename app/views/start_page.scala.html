@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.movement.routes._
+@import controllers.routes._
 
 @(appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
 
@@ -39,7 +39,7 @@
                 <li><a href="https://www.gov.uk/government/publications/uk-trade-tariff-customs-procedure-codes/customs-procedure-codes-box-37" target="_blank" rel="noopener noreferrer">@messages("startPage.listItemSevenUrl")</a> @messages("startPage.listItemSeven")</li>
             </ul>
 
-            <p><a class="button button-start" href="@MovementController.displayChoiceForm" role="button">@messages("startPage.buttonName")</a></p>
+            <p><a class="button button-start" href="@ChoiceController.displayChoiceForm" role="button">@messages("startPage.buttonName")</a></p>
 
             <p>@messages("startPage.additionalInformation")</p>
 

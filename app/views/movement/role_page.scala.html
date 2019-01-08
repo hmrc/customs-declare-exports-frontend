@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-@import controllers.movement.routes._
+@@import config.AppConfig
+@import controllers.routes._
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
@@ -26,7 +26,7 @@ title = messages("movement.role.description"),
 appConfig = appConfig
 ) {
 
-@helpers.form(MovementController.sendChoice(), 'autoComplete -> "off") {
+@helpers.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
 @components.back_link("choice")
 
 @components.heading("", "movement.role.description")

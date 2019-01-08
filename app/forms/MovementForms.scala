@@ -18,6 +18,7 @@ package forms
 
 import java.time.LocalDateTime
 
+import forms.Choice.AllowedChoiceValues
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.validation.Constraints._
@@ -26,18 +27,6 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
-case class ChoiceForm(choice: String)
-
-object ChoiceForm {
-  implicit val format = Json.format[ChoiceForm]
-
-  //TODO change to enum
-  private val correctChoice = Seq("SMP", "STD", "EAL", "EDL")
-
-  val choiceMapping = mapping("choice" -> text().verifying("Incorrect value", correctChoice.contains(_)))(
-    ChoiceForm.apply
-  )(ChoiceForm.unapply)
-}
 
 case class RoleForm(roleForm: String)
 
@@ -121,9 +110,6 @@ object TransportForm {
 }
 
 object MovementFormsAndIds {
-  val choiceForm = Form(ChoiceForm.choiceMapping)
-  val choiceId = "Choice"
-
   val enterDucrForm = Form(EnterDucrForm.ducrMapping)
   val enterDucrId = "EnterDucr"
 
@@ -143,7 +129,7 @@ object MovementFormsAndIds {
 object Movement {
 
   def createMovementRequest(cacheMap: CacheMap, eori: String): InventoryLinkingMovementRequest = {
-    val choiceForm = cacheMap.getEntry[ChoiceForm](MovementFormsAndIds.choiceId).get
+    val choiceForm = cacheMap.getEntry[Choice](Choice.choiceId).get
     val ducrForm = cacheMap.getEntry[EnterDucrForm](MovementFormsAndIds.enterDucrId).get
     val goodsDate = cacheMap.getEntry[GoodsDateForm](MovementFormsAndIds.goodsDateId)
     val location = cacheMap.getEntry[LocationForm](MovementFormsAndIds.locationId).get
@@ -151,7 +137,11 @@ object Movement {
 
     // TODO: ucrType is hardcoded need to UPDATE after we allow user input for mucr
     InventoryLinkingMovementRequest(
-      messageCode = choiceForm.choice,
+      messageCode =
+        if (choiceForm.choice.equals(AllowedChoiceValues.Arrival) || choiceForm.choice
+              .equals(AllowedChoiceValues.Departure))
+          choiceForm.choice
+        else "",
       agentDetails =
         Some(AgentDetails(eori = Some(eori), agentLocation = location.agentLocation, agentRole = location.agentRole)),
       ucrBlock = UcrBlock(ucr = ducrForm.ducr, ucrType = "D"),

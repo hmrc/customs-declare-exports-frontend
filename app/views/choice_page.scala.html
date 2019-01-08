@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-@import controllers.movement.routes._
+@@import config.AppConfig
+@import controllers.routes._
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
@@ -26,7 +26,7 @@
     appConfig = appConfig
 ) {
 
-    @helpers.form(MovementController.sendChoice(), 'autoComplete -> "off") {
+    @helpers.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
         @components.back_link("start")
 
         @components.heading("", "movement.choice.description")
@@ -34,7 +34,11 @@
         @components.input_radio(
             field = form("choice"),
             legend = "",
-            inputs = Seq(RadioOption("Simplified declaration", "SMP", messages("movement.choice.SMP.declaration")), RadioOption("Standard declaration", "STD", messages("movement.choice.STD.declaration")), RadioOption("arrival", "EAL", messages("movement.choice.EAL")), RadioOption("departure", "EDL", messages("movement.choice.EDL")))
+            inputs = Seq(
+              RadioOption("Simplified declaration", "SMP", messages("movement.choice.SMP.declaration")),
+              RadioOption("Standard declaration", "STD", messages("movement.choice.STD.declaration")),
+              RadioOption("arrival", "EAL", messages("movement.choice.EAL")),
+              RadioOption("departure", "EDL", messages("movement.choice.EDL")))
         )
 
         @components.submit_button()

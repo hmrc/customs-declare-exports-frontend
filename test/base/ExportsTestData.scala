@@ -17,8 +17,9 @@
 package base
 
 import base.TestHelper._
+import forms.Choice._
 import forms.MovementFormsAndIds._
-import forms.{ChoiceForm, GoodsDateForm}
+import forms.{Choice, GoodsDateForm}
 import models.{IdentityData, SignedInUser}
 import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, LocalDate}
@@ -231,12 +232,12 @@ object ExportsTestData {
       )
     )
 
-  val choiceForm = Json.toJson(ChoiceForm("EAL"))
+  val choiceForm = Json.toJson(Choice("EAL"))
 
   def getMovementCacheMap(id: String, movementType: String) = {
 
     val data = Map(
-      choiceId -> Json.toJson(ChoiceForm(movementType)),
+      choiceId -> Json.toJson(Choice(movementType)),
       enterDucrId -> correctDucrJson,
       goodsDateId -> Json.toJson(GoodsDateForm("01", "02", "2020", None, None)),
       locationId -> location,
