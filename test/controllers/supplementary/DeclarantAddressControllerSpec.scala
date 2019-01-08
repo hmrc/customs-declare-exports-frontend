@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 
 class DeclarantAddressControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/declarant-address")
+  val uri = uriWithContextPath("/declaration/supplementary/declarant-address")
 
   "Declarant address controller" should {
     "display declarant address form" in {
