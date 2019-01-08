@@ -16,6 +16,8 @@
 
 @import config.AppConfig
 @import java.time.Instant
+@import java.time.ZoneId
+@import java.time.format.DateTimeFormatter
 
 @(appConfig: AppConfig, submissions: Seq[SubmissionData])(implicit request: Request[_], messages: Messages)
 
@@ -46,7 +48,7 @@
                     <td class="table-cell">@submission.ducr</td>
                     <td class="table-cell">@submission.lrn.getOrElse("")</td>
                     <td class="table-cell">@submission.mrn.getOrElse("")</td>
-                    <td class="table-cell">@Instant.ofEpochMilli(submission.submittedTimestamp)</td>
+                    <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:MM:ss").withZone(ZoneId.systemDefault()).format(Instant.ofEpochMilli(submission.submittedTimestamp))</td>
                     <td class="table-cell">@submission.status.getOrElse("")</td>
                     <td class="table-cell">
                         <a href="/customs-declare-exports/notifications/@submission.conversationId">

@@ -64,6 +64,16 @@
             label = messages("consignment.mucr")
         )
 
+        @components.input_text(
+          field = form("lrn"),
+          label = messages("submissions.lrn")
+        )
+
+        @components.input_text(
+            field = form("mrn"),
+            label = messages("submissions.mrn")
+        )
+
         @components.input_radio(
             field = form("isDeclarationForSomeoneElse"),
             legend = "Are you making this declaration for someone else?",
