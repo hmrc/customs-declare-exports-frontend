@@ -1,0 +1,44 @@
+
+# Movements
+
+GET        /choice                                      controllers.movement.MovementController.displayChoiceForm()
+
+POST       /choice                                      controllers.movement.MovementController.sendChoice()
+
+# Role Page
+
+GET        /role                                        controllers.movement.MovementController.rolePage()
+
+# Enter DUCR page
+
+GET        /movement/ducr                               controllers.movement.MovementController.displayDucrPage()
+
+POST       /movement/ducr                               controllers.movement.MovementController.saveDucr()
+
+# Goods date page
+
+GET        /movement/goodsDate                          controllers.movement.MovementController.displayGoodsDate()
+
+POST       /movement/goodsDate                          controllers.movement.MovementController.saveGoodsDate()
+
+# Goods location page
+
+GET        /movement/location                           controllers.movement.MovementController.displayLocation()
+
+POST       /movement/location                           controllers.movement.MovementController.saveLocation()
+
+# Transport page
+
+GET        /movement/transport                          controllers.movement.MovementController.displayTransport()
+
+POST       /movement/transport                          controllers.movement.MovementController.saveTransport()
+
+# Movements Summary
+
+GET        /movement/summary                            controllers.movement.MovementSummaryController.displaySummary()
+
+POST       /movement/summary                            controllers.movement.MovementSummaryController.submitMovementRequest()
+
+# Movement Confirmation
+
+GET        /movement/confirmation                       controllers.movement.MovementSummaryController.displayConfirmation()
