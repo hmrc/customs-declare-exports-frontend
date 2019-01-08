@@ -15,6 +15,9 @@
  *@
 
 @import config.AppConfig
+@import java.time.Instant
+@import java.time.ZoneId
+@import java.time.format.DateTimeFormatter
 
 @(appConfig: AppConfig, notifications: Option[ExportsNotification])(implicit request: Request[_], messages: Messages)
 
@@ -40,13 +43,12 @@
                 @for(response <- notifications.get.response){
                     <tr class="table-row">
                         <td class="table-cell">@response.functionCode</td>
-                        <td class="table-cell">@response.issueDateTime.getOrElse("IssueDateTime")</td>
-                        <td class="table-cell">@response.functionalReferenceId.getOrElse("FunctionalReferenceId")</td>
-                        <td class="table-cell">@response.functionalReferenceId.getOrElse("Status")</td>
+                        <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:MM:ss").withZone(ZoneId.systemDefault()).format(Instant.from(DateTimeFormatter.ofPattern("yyyyMMddkkmmssX").parse(response.issueDateTime.map(_.dateTimeString.value).getOrElse(""))))</td>
+                        <td class="table-cell">@response.functionalReferenceId.getOrElse("")</td>
+                        <td class="table-cell">@response.status.head.nameCode.getOrElse("")</td>
                     </tr>
                 }
             }
-
         </table>
     </div>
 }

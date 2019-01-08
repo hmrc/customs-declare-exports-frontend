@@ -72,6 +72,8 @@ case class SimpleDeclarationForm(
   ducr: String,
   isConsolidateDucrToWiderShipment: Boolean,
   mucr: Option[String],
+  lrn: Option[String],
+  mrn: Option[String],
   isDeclarationForSomeoneElse: Boolean,
   isAddressAndEORICorrect: Boolean,
   haveRepresentative: Boolean,

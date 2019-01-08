@@ -69,6 +69,8 @@ class SimpleDeclarationController @Inject()(
         "isConsolidateDucrToWiderShipment",
         nonEmptyText.verifying(pattern("""^[A-Za-z0-9 \-,.&'\/]{1,65}$""".r, error = "error.ducr"))
       ),
+      "lrn" -> optional(nonEmptyText),
+      "mrn" -> optional(nonEmptyText),
       "isDeclarationForSomeoneElse" -> boolean,
       "isAddressAndEORICorrect" -> boolean,
       "haveRepresentative" -> boolean,
@@ -106,7 +108,7 @@ class SimpleDeclarationController @Inject()(
               exportsMetrics.startTimer(submissionMetric)
               customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap {
                 case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
-                  val submission = new Submission(request.user.eori, conversationId, form.ducr)
+                  val submission = new Submission(request.user.eori, conversationId, form.ducr, form.lrn, form.mrn)
                   implicit val signedInUser = request.user
                   nrsService.submit(conversationId, form.toString, form.ducr).onComplete {
                     case Success(nrsResponse) => Logger.warn("NrsRequest Success and submissionId  => " + nrsResponse)
