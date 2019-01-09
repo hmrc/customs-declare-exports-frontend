@@ -16,6 +16,7 @@
 
 @import config.AppConfig
 @import controllers.routes._
+@import forms.Choice.AllowedChoiceValues._
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
@@ -35,10 +36,10 @@
             field = form("choice"),
             legend = "",
             inputs = Seq(
-              RadioOption("Simplified declaration", "SMP", messages("movement.choice.SMP.declaration")),
-              RadioOption("Standard declaration", "STD", messages("movement.choice.STD.declaration")),
-              RadioOption("arrival", "EAL", messages("movement.choice.EAL")),
-              RadioOption("departure", "EDL", messages("movement.choice.EDL")))
+              RadioOption("Simplified declaration", SimplifiedDec, messages("movement.choice.SMP.declaration")),
+              RadioOption("Standard declaration", StandardDec, messages("movement.choice.STD.declaration")),
+              RadioOption("arrival", Arrival, messages("movement.choice.EAL")),
+              RadioOption("departure", Departure, messages("movement.choice.EDL")))
         )
 
         @components.submit_button()
