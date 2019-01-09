@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 
 class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/consignor-address")
+  val uri = uriWithContextPath("/declaration/supplementary/consignor-address")
 
   "Consignor address controller" should {
     "display consignor address form" in {
@@ -82,7 +82,9 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declarant-address"))
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/declarant-address")
+      )
     }
   }
 }

@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 
 class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/additional-actors")
+  val uri = uriWithContextPath("/declaration/supplementary/additional-actors")
 
   "Declaration additional actors controller" should {
     "display declaration additional actors form" in {

@@ -1,0 +1,34 @@
+
+# Enter DUCR page
+
+GET        /ducr                               controllers.movement.MovementController.displayDucrPage()
+
+POST       /ducr                               controllers.movement.MovementController.saveDucr()
+
+# Goods date page
+
+GET        /goodsDate                          controllers.movement.MovementController.displayGoodsDate()
+
+POST       /goodsDate                          controllers.movement.MovementController.saveGoodsDate()
+
+# Goods location page
+
+GET        /location                           controllers.movement.MovementController.displayLocation()
+
+POST       /location                           controllers.movement.MovementController.saveLocation()
+
+# Transport page
+
+GET        /transport                          controllers.movement.MovementController.displayTransport()
+
+POST       /transport                          controllers.movement.MovementController.saveTransport()
+
+# Movements Summary
+
+GET        /summary                            controllers.movement.MovementSummaryController.displaySummary()
+
+POST       /summary                            controllers.movement.MovementSummaryController.submitMovementRequest()
+
+# Movement Confirmation
+
+GET        /confirmation                       controllers.movement.MovementSummaryController.displayConfirmation()

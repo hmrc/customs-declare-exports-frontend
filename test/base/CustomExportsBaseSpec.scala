@@ -20,12 +20,7 @@ import java.util.UUID
 
 import akka.stream.Materializer
 import config.AppConfig
-import connectors.{
-  CustomsDeclarationsConnector,
-  CustomsDeclareExportsConnector,
-  CustomsInventoryLinkingExportsConnector,
-  NrsConnector
-}
+import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
@@ -54,7 +49,6 @@ import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Random
 
 trait CustomExportsBaseSpec
     extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction
@@ -142,11 +136,11 @@ trait CustomExportsBaseSpec
       .thenReturn(Future.successful(CacheMap("id1", Map.empty)))
   }
 
-  def withCaching[T](data: Option[T], id: String) = {
+  def withCaching[T](dataToReturn: Option[T], id: String) = {
     when(
       mockCustomsCacheService
         .fetchAndGetEntry[T](ArgumentMatchers.eq(appConfig.appName), ArgumentMatchers.eq(id))(any(), any(), any())
-    ).thenReturn(Future.successful(data))
+    ).thenReturn(Future.successful(dataToReturn))
 
     when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(CacheMap(id, Map.empty)))

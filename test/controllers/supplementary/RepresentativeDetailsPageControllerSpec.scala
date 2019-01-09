@@ -298,7 +298,9 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       val result = route(app, postRequest(uri, correctRepresentativeDetails)).get
       val header = result.futureValue.header
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/additional-actors"))
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
+      )
     }
 
   }

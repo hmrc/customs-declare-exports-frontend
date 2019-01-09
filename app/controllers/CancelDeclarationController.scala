@@ -34,7 +34,7 @@ import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.{Declaration, MetaData, NamedEntityWithAddress}
-import views.html.{cancelDeclaration, confirmation_page}
+import views.html.{cancel_declaration, confirmation_page}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -69,8 +69,8 @@ class CancelDeclarationController @Inject()(
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[CancelDeclarationForm](appConfig.appName, formId).map {
-      case Some(data) => Ok(cancelDeclaration(appConfig, form.fill(data)))
-      case _          => Ok(cancelDeclaration(appConfig, form))
+      case Some(data) => Ok(cancel_declaration(appConfig, form.fill(data)))
+      case _          => Ok(cancel_declaration(appConfig, form))
     }
   }
 
@@ -79,7 +79,7 @@ class CancelDeclarationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[CancelDeclarationForm]) =>
-          Future.successful(BadRequest(cancelDeclaration(appConfig, formWithErrors))),
+          Future.successful(BadRequest(cancel_declaration(appConfig, formWithErrors))),
         form => {
           customsCacheService.cache[CancelDeclarationForm](appConfig.appName, formId, form).flatMap {
             _ =>

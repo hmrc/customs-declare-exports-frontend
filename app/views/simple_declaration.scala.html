@@ -35,7 +35,7 @@
 
         @components.heading("simpleDeclaration.title", "simpleDeclaration.heading")
 
-        @components.countryField(form, "countryCode", "Country", countries)
+        @components.country_field(form, "countryCode", "Country", countries)
 
         @components.input_text_autocomplete(form)(form("countryCode-auto-complete"),
         "cds.matching.individual.countryCode-auto-complete",
@@ -116,7 +116,7 @@
             inputs = Seq(RadioOption("site", "true", "Yes"), RadioOption("site", "false", "No"))
         )
 
-        @components.simpleDeclarationAddress(form)
+        @components.simple_declaration_address(form)
 
         @components.input_radio(
             field = form("isFinalDestination"),

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.movement
 
 import config.AppConfig
 import connectors.CustomsInventoryLinkingExportsConnector
@@ -64,7 +64,7 @@ class MovementSummaryController @Inject()(
           .map {
             case accepted if accepted.status == ACCEPTED =>
               exportsMetrics.incrementCounter(metricIdentifier)
-              Redirect(controllers.routes.MovementSummaryController.displayConfirmation())
+              Redirect(controllers.movement.routes.MovementSummaryController.displayConfirmation())
 
           }
           .recover {

@@ -17,20 +17,31 @@
 package controllers
 
 import config.AppConfig
+import controllers.actions.AuthAction
+import forms.Role
+import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.start_page
+import views.html.role_page
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-class StartController @Inject()(appConfig: AppConfig, override val messagesApi: MessagesApi)(
-  implicit ec: ExecutionContext
-) extends FrontendController with I18nSupport {
+class RoleController @Inject()(
+  appConfig: AppConfig,
+  override val messagesApi: MessagesApi,
+  authenticate: AuthAction,
+  customsCacheService: CustomsCacheService,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendController with I18nSupport{
 
-  def displayStartPage(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(start_page(appConfig)))
+  def displayRolePage(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[Role](appConfig.appName, Role.roleId).map {
+      case Some(data) => Ok(role_page(appConfig, Role.form().fill(data)))
+      case _          => Ok(role_page(appConfig, Role.form()))
+    }
   }
-
 }

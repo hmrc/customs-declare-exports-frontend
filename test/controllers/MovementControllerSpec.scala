@@ -18,135 +18,33 @@ package controllers
 
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
-import forms.{ChoiceForm, EnterDucrForm, MovementFormsAndIds}
-import play.api.data.Form
+import forms.{Choice, MovementFormsAndIds}
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 
 class MovementControllerSpec extends CustomExportsBaseSpec {
 
-  val choiceUri = uriWithContextPath("/choice")
   val ducrUri = uriWithContextPath("/movement/ducr")
   val goodsDateUri = uriWithContextPath("/movement/goodsDate")
   val locationUri = uriWithContextPath("/movement/location")
   val transportUri = uriWithContextPath("/movement/transport")
 
   "Movement controller" when {
-    "choice screen" should {
-      "return http code 200 with success" in {
-        authorizedUser()
-        withCaching[ChoiceForm](None)
-
-        val result = route(app, getRequest(choiceUri)).get
-
-        status(result) must be(OK)
-      }
-
-      "display radio button to choose simplified declaration or standard declaration or arrival or departure" in {
-        authorizedUser()
-        withCaching[ChoiceForm](None)
-
-        val result = route(app, getRequest(choiceUri)).get
-        val stringResult = contentAsString(result)
-
-        stringResult must include(messages("movement.choice.description"))
-        stringResult must include(messages("movement.choice.SMP.declaration"))
-        stringResult must include(messages("movement.choice.STD.declaration"))
-        stringResult must include(messages("movement.choice.EAL"))
-        stringResult must include(messages("movement.choice.EDL"))
-      }
-
-      "validate user choice - no choice" in {
-        authorizedUser()
-        withCaching[ChoiceForm](None)
-
-        val emptyForm = JsObject(Map("" -> JsString("")))
-        val result = route(app, postRequest(choiceUri, emptyForm)).get
-
-        contentAsString(result) must include(messages("error.required"))
-      }
-
-      "validate user choice - wrong choice" in {
-        authorizedUser()
-        withCaching[ChoiceForm](None)
-
-        val wrongForm = JsObject(Map("choice" -> JsString("movement")))
-        val result = route(app, postRequest(choiceUri, wrongForm)).get
-
-        contentAsString(result) must include(messages("movement.incorrectValue"))
-      }
-
-      "redirect to role page when simplified declaration chosen" in {
-        authorizedUser()
-        val form = Form(ChoiceForm.choiceMapping).fill(ChoiceForm("SMP"))
-        withCaching[ChoiceForm](Some(form))
-        withCaching[EnterDucrForm](None)
-
-        val correctForm = JsObject(Map("choice" -> JsString("SMP")))
-        val result = route(app, postRequest(choiceUri, correctForm)).get
-        val header = result.futureValue.header
-
-        status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/role"))
-      }
-
-      "redirect to ducr for arrival page when standard declaration chosen" in {
-        authorizedUser()
-        val form = Form(ChoiceForm.choiceMapping).fill(ChoiceForm("STD"))
-        withCaching[ChoiceForm](Some(form))
-        withCaching[EnterDucrForm](None)
-
-        val correctForm = JsObject(Map("choice" -> JsString("STD")))
-        val result = route(app, postRequest(choiceUri, correctForm)).get
-        val header = result.futureValue.header
-
-        status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/ducr"))
-      }
-
-      "redirect to ducr for arrival page when arrival chosen" in {
-        authorizedUser()
-        val form = Form(ChoiceForm.choiceMapping).fill(ChoiceForm("EAL"))
-        withCaching[ChoiceForm](Some(form))
-        withCaching[EnterDucrForm](None)
-
-        val correctForm = JsObject(Map("choice" -> JsString("EAL")))
-        val result = route(app, postRequest(choiceUri, correctForm)).get
-        val header = result.futureValue.header
-
-        status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/ducr"))
-      }
-
-      "redirect to next departure page when departure chosen" in {
-        authorizedUser()
-        val form = Form(ChoiceForm.choiceMapping).fill(ChoiceForm("EDL"))
-        withCaching[ChoiceForm](Some(form))
-        withCaching[EnterDucrForm](None)
-
-        val correctForm = JsObject(Map("choice" -> JsString("EDL")))
-        val result = route(app, postRequest(choiceUri, correctForm)).get
-        val header = result.futureValue.header
-
-        status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/movement/ducr"))
-      }
-    }
 
     "ducr screen " should {
       "return http code 200 with success" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.enterDucrId)
 
-        val result = route(app, getRequest(choiceUri)).get
+        val result = route(app, getRequest(ducrUri)).get
 
         status(result) must be(OK)
       }
 
       "display form for arrival" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.enterDucrId)
 
         val result = route(app, getRequest(ducrUri)).get
@@ -158,7 +56,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
       "display form for departure" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EDL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EDL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.enterDucrId)
 
         val result = route(app, getRequest(ducrUri)).get
@@ -209,7 +107,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
     "goods date" should {
       "return http code 200 with success" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.goodsDateId)
 
         val result = route(app, getRequest(goodsDateUri)).get
@@ -219,7 +117,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
       "display form" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.goodsDateId)
 
         val result = route(app, getRequest(goodsDateUri)).get
@@ -274,7 +172,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
     "location" should {
       "return http code 200 with success" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.locationId)
 
         val result = route(app, getRequest(locationUri)).get
@@ -284,7 +182,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
       "display form" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.locationId)
 
         val result = route(app, getRequest(locationUri)).get
@@ -298,7 +196,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
       "redirect to the next page with empty input data" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.locationId)
 
         val result = route(app, postRequest(locationUri, emptyLocation)).get
@@ -310,7 +208,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
       "redirect to the next page with correct input data" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.locationId)
 
         val result = route(app, postRequest(locationUri, location)).get
@@ -324,7 +222,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
     "transport" should {
       "return http code 200 with success" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.transportId)
 
         val result = route(app, getRequest(transportUri)).get
@@ -334,7 +232,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
       "display form" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.transportId)
 
         val result = route(app, getRequest(transportUri)).get
@@ -347,7 +245,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
       "validate input data - incorrect input data" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.transportId)
 
         val result = route(app, postRequest(transportUri, incorrectTransport)).get
@@ -359,7 +257,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
       "redirect to the next page with empty input data" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.transportId)
 
         val result = route(app, postRequest(transportUri, JsObject(Map("" -> JsString(""))))).get
@@ -371,7 +269,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
       "redirect to the next page with correct input data" in {
         authorizedUser()
-        withCaching(Some(ChoiceForm("EAL")), MovementFormsAndIds.choiceId)
+        withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.transportId)
 
         val result = route(app, postRequest(transportUri, correctTransport)).get
