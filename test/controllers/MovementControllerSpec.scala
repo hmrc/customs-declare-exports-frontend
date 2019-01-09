@@ -18,7 +18,7 @@ package controllers
 
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
-import forms.{Choice, MovementFormsAndIds}
+import forms.{Choice, Ducr, MovementFormsAndIds}
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 
@@ -35,7 +35,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       "return http code 200 with success" in {
         authorizedUser()
         withCaching(Some(Choice("EAL")), Choice.choiceId)
-        withCaching(None, MovementFormsAndIds.enterDucrId)
+        withCaching(None, Ducr.id)
 
         val result = route(app, getRequest(ducrUri)).get
 
@@ -45,7 +45,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       "display form for arrival" in {
         authorizedUser()
         withCaching(Some(Choice("EAL")), Choice.choiceId)
-        withCaching(None, MovementFormsAndIds.enterDucrId)
+        withCaching(None, Ducr.id)
 
         val result = route(app, getRequest(ducrUri)).get
         val stringResult = contentAsString(result)
@@ -57,7 +57,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       "display form for departure" in {
         authorizedUser()
         withCaching(Some(Choice("EDL")), Choice.choiceId)
-        withCaching(None, MovementFormsAndIds.enterDucrId)
+        withCaching(None, Ducr.id)
 
         val result = route(app, getRequest(ducrUri)).get
         val stringResult = contentAsString(result)
@@ -68,7 +68,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
       "validated submitted form for arrival" in {
         authorizedUser()
-        withCaching(None, MovementFormsAndIds.enterDucrId)
+        withCaching(None, Ducr.id)
 
         val emptyForm = JsObject(Map("" -> JsString("")))
         val result = route(app, postRequest(ducrUri, emptyForm)).get
@@ -81,7 +81,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
       "validated submitted form for departure" in {
         authorizedUser()
-        withCaching(None, MovementFormsAndIds.enterDucrId)
+        withCaching(None, Ducr.id)
 
         val emptyForm = JsObject(Map("" -> JsString("")))
         val result = route(app, postRequest(ducrUri, emptyForm)).get
@@ -94,7 +94,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
 
       "redirect to goods date page" in {
         authorizedUser()
-        withCaching(None, MovementFormsAndIds.enterDucrId)
+        withCaching(None, Ducr.id)
 
         val result = route(app, postRequest(ducrUri, correctDucrJson)).get
         val header = result.futureValue.header
