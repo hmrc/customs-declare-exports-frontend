@@ -16,20 +16,20 @@
 
 package forms.supplementary
 
-import forms.Ducr
-import play.api.data.Forms.text
+import play.api.data.Forms.{nonEmptyText, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator.{isAlphanumeric, noLongerThan}
 
 case class ConsignmentReferences(
-  ucr: Ducr,
-  lrn: String     // alphanumeric, up to 22 characters
+  prepopulatedPart: String, // year and country of the DUCR + eori + "-"
+  userEnteredUcr: String,
+  lrn: String // alphanumeric, up to 22 characters
 ) {
 
   def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.goodsShipment.ucr.traderAssignedReferenceId" -> ucr.ducr,
+      "declaration.goodsShipment.ucr.traderAssignedReferenceId" -> (prepopulatedPart + userEnteredUcr),
       "declaration.functionalReferenceId" -> lrn
     )
 }
@@ -37,13 +37,16 @@ case class ConsignmentReferences(
 object ConsignmentReferences {
   implicit val format = Json.format[ConsignmentReferences]
 
+  private val ucrMaxLength = 19
   private val lrnMaxLength = 22
   val mapping = Forms.mapping(
-    "ucr" -> Ducr.ducrMapping,
+    "prepopulatedPart" -> nonEmptyText(),
+    "userEnteredUcr" -> text()
+      .verifying("supplementary.consignmentReferences.ucr.error.length", noLongerThan(_, ucrMaxLength)),
     "lrn" -> text()
-        .verifying("supplementary.consignmentReferences.lrn.error.empty", _.trim.nonEmpty)
-        .verifying("supplementary.consignmentReferences.lrn.error.length", noLongerThan(_, lrnMaxLength))
-        .verifying("supplementary.consignmentReferences.lrn.error.specialCharacter", isAlphanumeric(_))
+      .verifying("supplementary.consignmentReferences.lrn.error.empty", _.trim.nonEmpty)
+      .verifying("supplementary.consignmentReferences.lrn.error.length", noLongerThan(_, lrnMaxLength))
+      .verifying("supplementary.consignmentReferences.lrn.error.specialCharacter", isAlphanumeric(_))
   )(ConsignmentReferences.apply)(ConsignmentReferences.unapply)
 
   val id = "ConsignmentReferences"

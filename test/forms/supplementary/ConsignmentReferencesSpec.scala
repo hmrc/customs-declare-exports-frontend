@@ -16,21 +16,19 @@
 
 package forms.supplementary
 
-import forms.Ducr
 import org.scalatest.{MustMatchers, WordSpec}
 
 class ConsignmentReferencesSpec extends WordSpec with MustMatchers {
 
-  private val ducr = "8GB123456123456-1234567890QWERTYUIO"
-  private  val lrn = "1234567890123456789012"
+  private val prepopulatedPart = "8GB123456123456-"
+  private val userEnteredUcr = "1234567890QWERTYUIO"
+  private val lrn = "1234567890123456789012"
 
-  private val consignmentReferences = ConsignmentReferences(
-    ucr = Ducr(ducr = ducr),
-    lrn = lrn
-  )
+  private val consignmentReferences =
+    ConsignmentReferences(prepopulatedPart = prepopulatedPart, userEnteredUcr = userEnteredUcr, lrn = lrn)
 
   private val expectedConsignmentReferencesProperties: Map[String, String] = Map(
-    "declaration.goodsShipment.ucr.traderAssignedReferenceId" -> ducr,
+    "declaration.goodsShipment.ucr.traderAssignedReferenceId" -> (prepopulatedPart + userEnteredUcr),
     "declaration.functionalReferenceId" -> lrn
   )
 

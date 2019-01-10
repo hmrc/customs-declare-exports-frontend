@@ -26,7 +26,6 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
-
 case class GoodsDateForm(day: String, month: String, year: String, hour: Option[String], minute: Option[String])
 
 object GoodsDateForm {

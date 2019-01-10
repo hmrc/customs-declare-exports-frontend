@@ -66,8 +66,7 @@ class MovementController @Inject()(
     Ducr.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Ducr]) =>
-          Future.successful(BadRequest(enter_ducr(appConfig, formWithErrors, "error"))),
+        (formWithErrors: Form[Ducr]) => Future.successful(BadRequest(enter_ducr(appConfig, formWithErrors, "error"))),
         form =>
           customsCacheService.cache[Ducr](appConfig.appName, Ducr.id, form).map { _ =>
             Redirect(controllers.movement.routes.MovementController.displayGoodsDate())

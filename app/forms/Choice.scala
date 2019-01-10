@@ -25,12 +25,8 @@ case class Choice(choice: String)
 object Choice {
   implicit val format = Json.format[Choice]
 
-  private val correctChoice = Set(
-    AllowedChoiceValues.SimplifiedDec,
-    AllowedChoiceValues.StandardDec,
-    AllowedChoiceValues.Arrival,
-    AllowedChoiceValues.Departure
-  )
+  import AllowedChoiceValues._
+  private val correctChoice = Set(SimplifiedDec, StandardDec, Arrival, Departure)
 
   val choiceMapping =
     mapping("choice" -> text().verifying("Incorrect value", correctChoice.contains(_)))(Choice.apply)(Choice.unapply)

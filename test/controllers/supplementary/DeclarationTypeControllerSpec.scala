@@ -229,7 +229,6 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
         )
     }
 
-    pending
     "return 303 code" in {
       withCaching[AdditionalDeclarationType](None, AdditionalDeclarationType.formId)
 
@@ -239,7 +238,6 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
       status(result) must be(SEE_OTHER)
     }
 
-    pending
     "redirect to \"Consignment references\" page" in {
       withCaching[AdditionalDeclarationType](None, AdditionalDeclarationType.formId)
 
