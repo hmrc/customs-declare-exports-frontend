@@ -368,4 +368,9 @@ submissions.submittedTimestamp = Timestamp
 submissions.status = Status
 submissions.noOfNotifications = Number of notifications
 
+supplementary.declarationHolder.title = Declaration holder of authorisation
+supplementary.declarationHolder.authorisationCode = 3/39 Enter the authorisation code
+supplementary.declarationHolder.authorisationCode.hint = This is a 4 digit code
+supplementary.declarationHolder.authorisationCode.error = Authorisation code is incorrect
+
 

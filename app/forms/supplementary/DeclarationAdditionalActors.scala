@@ -18,7 +18,6 @@ package forms.supplementary
 
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
-import play.api.data.validation.Constraints.pattern
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfNot
 

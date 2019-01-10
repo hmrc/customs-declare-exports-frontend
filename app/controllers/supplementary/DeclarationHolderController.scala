@@ -18,18 +18,18 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.DeclarationAdditionalActors
+import forms.supplementary.DeclarationHolder
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.declaration_additional_actors
+import views.html.supplementary.declaration_holder
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationAdditionalActorsController @Inject()(
+class DeclarationHolderController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -37,26 +37,24 @@ class DeclarationAdditionalActorsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  import DeclarationAdditionalActors._
-
-  val additionalActorsForm = form()
+  import forms.supplementary.DeclarationHolder._
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DeclarationAdditionalActors](appConfig.appName, formId).map {
-      case Some(data) => Ok(declaration_additional_actors(appConfig, additionalActorsForm.fill(data)))
-      case _          => Ok(declaration_additional_actors(appConfig, additionalActorsForm))
+    customsCacheService.fetchAndGetEntry[DeclarationHolder](appConfig.appName, formId).map {
+      case Some(data) => Ok(declaration_holder(appConfig, form.fill(data)))
+      case _          => Ok(declaration_holder(appConfig, form))
     }
   }
 
-  def saveAdditionalActors(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveHolderOfAuthorisation(): Action[AnyContent] = authenticate.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DeclarationAdditionalActors]) =>
-          Future.successful(BadRequest(declaration_additional_actors(appConfig, formWithErrors))),
+        (formWithErrors: Form[DeclarationHolder]) =>
+          Future.successful(BadRequest(declaration_holder(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[DeclarationAdditionalActors](appConfig.appName, formId, form).map { _ =>
-            Redirect(controllers.supplementary.routes.DeclarationHolderController.displayForm())
+          customsCacheService.cache[DeclarationHolder](appConfig.appName, formId, form).map { _ =>
+            Ok("Country dispatch")
         }
       )
   }
