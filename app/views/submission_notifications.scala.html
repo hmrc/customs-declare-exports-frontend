@@ -45,7 +45,7 @@
                         <td class="table-cell">@response.functionCode</td>
                         <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:MM:ss").withZone(ZoneId.systemDefault()).format(Instant.from(DateTimeFormatter.ofPattern("yyyyMMddkkmmssX").parse(response.issueDateTime.map(_.dateTimeString.value).getOrElse(""))))</td>
                         <td class="table-cell">@response.functionalReferenceId.getOrElse("")</td>
-                        <td class="table-cell">@response.status.head.nameCode.getOrElse("")</td>
+                        <td class="table-cell">@response.status.headOption.flatMap(_.nameCode).getOrElse("")</td>
                     </tr>
                 }
             }
