@@ -25,11 +25,11 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.consignor_details
+import views.html.supplementary.consignee_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignorAddressController @Inject()(
+class ConsigneeAddressController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -37,15 +37,15 @@ class ConsignorAddressController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  val formId = "ConsignorAddress"
+  val formId = "ConsigneeAddress"
   val form = Form(AddressAndIdentification.addressMapping)
 
   implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[AddressAndIdentification](appConfig.appName, formId).map {
-      case Some(data) => Ok(consignor_details(appConfig, form.fill(data)))
-      case _          => Ok(consignor_details(appConfig, form))
+      case Some(data) => Ok(consignee_details(appConfig, form.fill(data)))
+      case _          => Ok(consignee_details(appConfig, form))
     }
   }
 
@@ -54,10 +54,10 @@ class ConsignorAddressController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[AddressAndIdentification]) =>
-          Future.successful(BadRequest(consignor_details(appConfig, formWithErrors))),
+          Future.successful(BadRequest(consignee_details(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
-            Redirect(controllers.supplementary.routes.DeclarantAddressController.displayForm())
+            Redirect(controllers.supplementary.routes.DeclarationAdditionalActorsController.displayForm())
         }
       )
   }

@@ -36,7 +36,7 @@ class RoleController @Inject()(
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
-    extends FrontendController with I18nSupport{
+    extends FrontendController with I18nSupport {
 
   def displayRolePage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Role](appConfig.appName, Role.roleId).map {

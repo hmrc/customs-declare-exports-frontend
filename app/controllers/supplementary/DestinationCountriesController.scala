@@ -15,21 +15,20 @@
  */
 
 package controllers.supplementary
-
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.AddressAndIdentification
+import forms.supplementary.DestinationCountries
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.consignor_details
+import views.html.supplementary.destination_countries
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignorAddressController @Inject()(
+class DestinationCountriesController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -37,27 +36,26 @@ class ConsignorAddressController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  val formId = "ConsignorAddress"
-  val form = Form(AddressAndIdentification.addressMapping)
+  import forms.supplementary.DestinationCountries._
 
   implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[AddressAndIdentification](appConfig.appName, formId).map {
-      case Some(data) => Ok(consignor_details(appConfig, form.fill(data)))
-      case _          => Ok(consignor_details(appConfig, form))
+    customsCacheService.fetchAndGetEntry[DestinationCountries](appConfig.appName, formId).map {
+      case Some(data) => Ok(destination_countries(appConfig, form.fill(data)))
+      case _          => Ok(destination_countries(appConfig, form))
     }
   }
 
-  def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveCountries(): Action[AnyContent] = authenticate.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[AddressAndIdentification]) =>
-          Future.successful(BadRequest(consignor_details(appConfig, formWithErrors))),
+        (formWithErrors: Form[DestinationCountries]) =>
+          Future.successful(BadRequest(destination_countries(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
-            Redirect(controllers.supplementary.routes.DeclarantAddressController.displayForm())
+          customsCacheService.cache[DestinationCountries](appConfig.appName, formId, form).map { _ =>
+            Ok("Goods location")
         }
       )
   }

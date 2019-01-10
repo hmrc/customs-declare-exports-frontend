@@ -23,15 +23,15 @@
 @(appConfig: AppConfig, form: Form[AddressAndIdentification])(implicit request: Request[_], messages: Messages, countries: List[Country])
 
 @main_template(
-    title = messages("supplementary.consignor.title"),
+    title = messages("supplementary.consignee.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(ConsignorAddressController.saveAddress(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/start")
+    @helpers.form(ConsigneeAddressController.saveAddress(), 'autoComplete -> "off") {
+        @components.back_link("/customs-declare-exports/declaration/supplementary/representative")
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("supplementary.consignor.title"), Some("supplementary.consignor.title.hint"))
+        @components.page_title(Some("supplementary.consignee.title"), Some("supplementary.consignee.title.hint"))
 
         @components.address(form)
 

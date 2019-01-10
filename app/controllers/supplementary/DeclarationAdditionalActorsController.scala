@@ -56,7 +56,7 @@ class DeclarationAdditionalActorsController @Inject()(
           Future.successful(BadRequest(declaration_additional_actors(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[DeclarationAdditionalActors](appConfig.appName, formId, form).map { _ =>
-            Ok("Declaration holder of authorisation")
+            Redirect(controllers.supplementary.routes.DeclarationHolderController.displayForm())
         }
       )
   }

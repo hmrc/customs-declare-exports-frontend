@@ -81,4 +81,6 @@ object AddressAndIdentification {
       "declaration.declarant.address.countryCode" ->
         allCountries.find(country => country.countryName == address.country).map(_.countryCode).getOrElse("")
     )
+
+  def toConsigneeMetadataProperties(address: AddressAndIdentification): Map[String, String] = ???
 }

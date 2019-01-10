@@ -1,37 +1,55 @@
 # Declaration type
 
-GET        /dispatch-location     controllers.supplementary.DeclarationTypeController.displayDispatchLocationPage()
+GET         /dispatch-location              controllers.supplementary.DeclarationTypeController.displayDispatchLocationPage()
 
-POST       /dispatch-location     controllers.supplementary.DeclarationTypeController.submitDispatchLocation()
+POST        /dispatch-location              controllers.supplementary.DeclarationTypeController.submitDispatchLocation()
 
-GET        /type                  controllers.supplementary.DeclarationTypeController.displayDeclarationTypePage()
+GET         /type                           controllers.supplementary.DeclarationTypeController.displayDeclarationTypePage()
 
-POST       /type                  controllers.supplementary.DeclarationTypeController.submitDeclarationType()
+POST        /type                           controllers.supplementary.DeclarationTypeController.submitDeclarationType()
 
 # Not Eligible
 
-GET        /not-eligible          controllers.supplementary.NotEligibleController.displayPage()
+GET         /not-eligible                   controllers.supplementary.NotEligibleController.displayPage()
 
 # Consignor address
 
-GET        /consignor-address     controllers.supplementary.ConsignorAddressController.displayForm()
+GET         /consignor-address              controllers.supplementary.ConsignorAddressController.displayForm()
 
-POST       /consignor-address     controllers.supplementary.ConsignorAddressController.saveAddress()
+POST        /consignor-address              controllers.supplementary.ConsignorAddressController.saveAddress()
 
 # Declarant address
 
-GET        /declarant-address     controllers.supplementary.DeclarantAddressController.displayForm()
+GET         /declarant-address              controllers.supplementary.DeclarantAddressController.displayForm()
 
-POST       /declarant-address     controllers.supplementary.DeclarantAddressController.saveAddress()
+POST        /declarant-address              controllers.supplementary.DeclarantAddressController.saveAddress()
 
 # Declaration additional address
 
-GET        /additional-actors     controllers.supplementary.DeclarationAdditionalActorsController.displayForm()
+GET         /additional-actors              controllers.supplementary.DeclarationAdditionalActorsController.displayForm()
 
-POST       /additional-actors     controllers.supplementary.DeclarationAdditionalActorsController.saveAdditionalActors()
+POST        /additional-actors              controllers.supplementary.DeclarationAdditionalActorsController.saveAdditionalActors()
 
 # Representative details
 
-GET        /representative        controllers.supplementary.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
+GET         /representative                 controllers.supplementary.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
 
-POST       /representative        controllers.supplementary.RepresentativeDetailsPageController.submitRepresentativeDetails()
+POST        /representative                 controllers.supplementary.RepresentativeDetailsPageController.submitRepresentativeDetails()
+
+# Consignee address
+
+GET         /consignee-address              controllers.supplementary.ConsigneeAddressController.displayForm()
+
+POST        /consignee-address              controllers.supplementary.ConsigneeAddressController.saveAddress()
+
+# Declaration holder of authorisation
+
+GET         /holder-of-authorisation        controllers.supplementary.DeclarationHolderController.displayForm()
+
+POST        /holder-of-authorisation        controllers.supplementary.DeclarationHolderController.saveHolderOfAuthorisation()
+
+# Destination countries
+
+GET         /destination-countries          controllers.supplementary.DestinationCountriesController.displayForm()
+
+POST        /destination-countries          controllers.supplementary.DestinationCountriesController.saveCountries()
