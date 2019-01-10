@@ -301,9 +301,9 @@ notEligible.descriptionPostUrl = to make your declaration.
 notEligible.referenceTitle = Help and support
 notEligible.reference.text = If you are having problems with making a declaration, phone: 0300 333 3333. Open 8am to 6pm, Monday to Friday (closed bank holidays).
 
-supplementary.consignor.title = Add consignor
+supplementary.consignor.title = 3/1 - 3/2 Add consignor
 supplementary.consignor.title.hint = The consignor is the registered trader sending the goods
-supplementary.declarant.title = Add declarant
+supplementary.declarant.title = 3/17 - 3/18 Add declarant
 supplementary.declarant.title.hint = TODO
 supplementary.representative.title = Add representative
 supplementary.representative.header = 3/19 - 3/20 Enter the representative’s details
@@ -334,7 +334,7 @@ supplementary.country = Country
 supplementary.country.error = Country is incorrect
 supplementary.country.empty = Country cannot be empty
 
-supplementary.additionalActors.title = Add other party
+supplementary.additionalActors.title = 3/37 Add other party
 supplementary.partyType = Party type
 supplementary.partyType.CS = Consolidator
 supplementary.partyType.MF = Manufacturer
@@ -343,14 +343,14 @@ supplementary.partyType.WH = Warehouse keeper
 supplementary.partyType.error = Party type is incorrect
 
 supplementary.dispatchLocation.title = Dispatch Location
-supplementary.dispatchLocation.header = Where are the goods being dispatched to?
+supplementary.dispatchLocation.header = 1/1 Where are the goods being dispatched to?
 supplementary.dispatchLocation.header.hint = Hint text if needed here
 supplementary.dispatchLocation.inputText.outsideEU = Outside the EU
 supplementary.dispatchLocation.inputText.specialFiscalTerritory = Fiscal territory of the EU or country with which the EU has formed a customs union
 supplementary.dispatchLocation.inputText.errorMessage = Please, choose dispatch location
 
 supplementary.declarationType.title = Declaration Type
-supplementary.declarationType.header = What type of declaration are you making?
+supplementary.declarationType.header = 1/2 What type of declaration are you making?
 supplementary.declarationType.header.hint = Hint text if needed here
 supplementary.declarationType.inputText.simplified = Pre-authorized simplified declaration
 supplementary.declarationType.inputText.standard = Entry in Declarants Records (EIDR)
