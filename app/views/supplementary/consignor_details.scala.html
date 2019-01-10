@@ -27,7 +27,7 @@
     appConfig = appConfig
 ) {
     @helpers.form(ConsignorAddressController.saveAddress(), 'autoComplete -> "off") {
-        @components.back_link("start")
+        @components.back_link("/customs-declare-exports/start")
 
         @components.error_summary(form.errors)
 

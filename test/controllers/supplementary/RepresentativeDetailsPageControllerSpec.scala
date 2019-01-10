@@ -299,7 +299,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
+        Some("/customs-declare-exports/declaration/supplementary/consignee-address")
       )
     }
 
