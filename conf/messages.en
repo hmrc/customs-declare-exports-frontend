@@ -303,6 +303,8 @@ notEligible.reference.text = If you are having problems with making a declaratio
 
 supplementary.consignor.title = 3/1 - 3/2 Add consignor
 supplementary.consignor.title.hint = The consignor is the registered trader sending the goods
+supplementary.consignee.title = 3/9 - 3/10 Add consignee
+supplementary.consignee.title.hint = TODO
 supplementary.declarant.title = 3/17 - 3/18 Add declarant
 supplementary.declarant.title.hint = TODO
 supplementary.representative.title = Add representative

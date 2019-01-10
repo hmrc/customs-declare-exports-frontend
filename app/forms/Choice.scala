@@ -32,9 +32,8 @@ object Choice {
     AllowedChoiceValues.Departure
   )
 
-  val choiceMapping = mapping(
-    "choice" -> text().verifying("Incorrect value", correctChoice.contains(_))
-  )(Choice.apply)(Choice.unapply)
+  val choiceMapping =
+    mapping("choice" -> text().verifying("Incorrect value", correctChoice.contains(_)))(Choice.apply)(Choice.unapply)
 
   val choiceId = "Choice"
 

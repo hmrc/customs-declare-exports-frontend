@@ -35,3 +35,9 @@ POST       /additional-actors     controllers.supplementary.DeclarationAdditiona
 GET        /representative        controllers.supplementary.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
 
 POST       /representative        controllers.supplementary.RepresentativeDetailsPageController.submitRepresentativeDetails()
+
+# Consignee address
+
+GET        /consignee-address     controllers.supplementary.ConsigneeAddressController.displayForm()
+
+POST       /consignee-address     controllers.supplementary.ConsigneeAddressController.saveAddress()
