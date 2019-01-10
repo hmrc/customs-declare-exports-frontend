@@ -47,3 +47,9 @@ POST        /consignee-address              controllers.supplementary.ConsigneeA
 GET         /holder-of-authorisation        controllers.supplementary.DeclarationHolderController.displayForm()
 
 POST        /holder-of-authorisation        controllers.supplementary.DeclarationHolderController.saveHolderOfAuthorisation()
+
+# Destination countries
+
+GET         /destination-countries          controllers.supplementary.DestinationCountriesController.displayForm()
+
+POST        /destination-countries          controllers.supplementary.DestinationCountriesController.saveCountries()

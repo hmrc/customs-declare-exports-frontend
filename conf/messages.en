@@ -373,4 +373,9 @@ supplementary.declarationHolder.authorisationCode = 3/39 Enter the authorisation
 supplementary.declarationHolder.authorisationCode.hint = This is a 4 digit code
 supplementary.declarationHolder.authorisationCode.error = Authorisation code is incorrect
 
-
+supplementary.destinationCountries.title = Declaration countries of dispatch/destination
+supplementary.destinationCountries.countryOfDestination = 5/8 Enter the country of destination
+supplementary.destinationCountries.countryOfDestination.error = Country of destination is incorrect
+supplementary.destinationCountries.countryOfDispatch = 5/14 Enter the country of dispatch
+supplementary.destinationCountries.countryOfDispatch.empty = Country of dispatch cannot be empty
+supplementary.destinationCountries.countryOfDispatch.error = Country of dispatch is incorrect

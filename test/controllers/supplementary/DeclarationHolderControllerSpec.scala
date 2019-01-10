@@ -55,7 +55,6 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - no answers" in {
-      pending
       authorizedUser()
       withCaching[DeclarationHolder](None)
 
@@ -65,11 +64,12 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplemetary/dispatch-country"))
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/destination-countries")
+      )
     }
 
     "validate form - correct values" in {
-      pending
       authorizedUser()
       withCaching[DeclarationHolder](None)
 
@@ -79,7 +79,9 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplemetary/dispatch-country"))
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/destination-countries")
+      )
     }
   }
 }

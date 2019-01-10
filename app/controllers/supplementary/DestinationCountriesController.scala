@@ -15,21 +15,20 @@
  */
 
 package controllers.supplementary
-
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.DeclarationHolder
+import forms.supplementary.DestinationCountries
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.declaration_holder
+import views.html.supplementary.destination_countries
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationHolderController @Inject()(
+class DestinationCountriesController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -37,24 +36,26 @@ class DeclarationHolderController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  import forms.supplementary.DeclarationHolder._
+  import forms.supplementary.DestinationCountries._
+
+  implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DeclarationHolder](appConfig.appName, formId).map {
-      case Some(data) => Ok(declaration_holder(appConfig, form.fill(data)))
-      case _          => Ok(declaration_holder(appConfig, form))
+    customsCacheService.fetchAndGetEntry[DestinationCountries](appConfig.appName, formId).map {
+      case Some(data) => Ok(destination_countries(appConfig, form.fill(data)))
+      case _          => Ok(destination_countries(appConfig, form))
     }
   }
 
-  def saveHolderOfAuthorisation(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveCountries(): Action[AnyContent] = authenticate.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DeclarationHolder]) =>
-          Future.successful(BadRequest(declaration_holder(appConfig, formWithErrors))),
+        (formWithErrors: Form[DestinationCountries]) =>
+          Future.successful(BadRequest(destination_countries(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[DeclarationHolder](appConfig.appName, formId, form).map { _ =>
-            Redirect(controllers.supplementary.routes.DestinationCountriesController.displayForm())
+          customsCacheService.cache[DestinationCountries](appConfig.appName, formId, form).map { _ =>
+            Ok("Goods location")
         }
       )
   }
