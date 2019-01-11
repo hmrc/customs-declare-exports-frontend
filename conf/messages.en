@@ -379,3 +379,9 @@ supplementary.destinationCountries.countryOfDestination.error = Country of desti
 supplementary.destinationCountries.countryOfDispatch = 5/14 Enter the country of dispatch
 supplementary.destinationCountries.countryOfDispatch.empty = Country of dispatch cannot be empty
 supplementary.destinationCountries.countryOfDispatch.error = Country of dispatch is incorrect
+
+supplementary.supervisingCustomsOffice.title = Supervising customs office
+supplementary.supervisingCustomsOffice = 5/27 Where is the supervising customs office?
+supplementary.supervisingCustomsOffice.hint = This is an 8 digit code
+supplementary.supervisingCustomsOffice.error = Supervising customs office is incorrect
+supplementary.supervisingCustomsOffice.empty = Supervising customs office cannot be empty

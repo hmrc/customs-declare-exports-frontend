@@ -53,3 +53,9 @@ POST        /holder-of-authorisation        controllers.supplementary.Declaratio
 GET         /destination-countries          controllers.supplementary.DestinationCountriesController.displayForm()
 
 POST        /destination-countries          controllers.supplementary.DestinationCountriesController.saveCountries()
+
+# Supervising customs office
+
+GET         /supervising-office            controllers.supplementary.SupervisingCustomsOfficeController.displayForm()
+
+POST        /supervising-office            controllers.supplementary.SupervisingCustomsOfficeController.saveSupervisingOffice()
