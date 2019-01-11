@@ -27,7 +27,7 @@ import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMov
 
 import scala.concurrent.{ExecutionContext, Future}
 
-// $COVERAGE-OFF$Trivial and never going to be called by a test that uses it's own object implementation
+// $COVERAGE-OFF$Trivial
 
 @Singleton
 class CustomsHttpCaching @Inject()(cfg: AppConfig, httpClient: HttpClient) extends ShortLivedHttpCaching {
