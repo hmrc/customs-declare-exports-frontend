@@ -27,6 +27,8 @@ import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMov
 
 import scala.concurrent.{ExecutionContext, Future}
 
+// $COVERAGE-OFF$Trivial
+
 @Singleton
 class CustomsHttpCaching @Inject()(cfg: AppConfig, httpClient: HttpClient) extends ShortLivedHttpCaching {
 
@@ -46,6 +48,7 @@ class CustomsCacheService @Inject()(caching: CustomsHttpCaching, applicationCryp
   override implicit val crypto: CompositeSymmetricCrypto = applicationCrypto.JsonCrypto
 
   override def shortLiveCache: ShortLivedHttpCaching = caching
+  // $COVERAGE-ON$
 
   def fetchMovementRequest(
     cacheId: String,
