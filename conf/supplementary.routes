@@ -83,7 +83,11 @@ POST        /office-of-exit                controllers.supplementary.OfficeOfExi
 GET         /warehouse                     controllers.supplementary.WarehouseIdentificationController.displayForm()
 
 POST        /warehouse                     controllers.supplementary.WarehouseIdentificationController.saveWarehouse()
+# Procedure codes
 
+GET         /procedure-codes                controllers.supplementary.ProcedureCodesPageController.displayPage()
+
+POST        /procedure-codes                controllers.supplementary.ProcedureCodesPageController.submitProcedureCodes()
 
 # Add Documents
 
