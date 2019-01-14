@@ -18,27 +18,20 @@ package forms
 
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
+import play.api.data.validation.Constraints.pattern
 import play.api.libs.json.Json
 
-case class Choice(choice: String)
+case class Ducr(ducr: String)
 
-object Choice {
-  implicit val format = Json.format[Choice]
+object Ducr {
+  implicit val format = Json.format[Ducr]
 
-  import AllowedChoiceValues._
-  private val correctChoice = Set(SimplifiedDec, StandardDec, Arrival, Departure)
+  private val ducrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
 
-  val choiceMapping =
-    mapping("choice" -> text().verifying("Incorrect value", correctChoice.contains(_)))(Choice.apply)(Choice.unapply)
+  val ducrMapping =
+    mapping("ducr" -> text().verifying(pattern(ducrFormat.r, error = "error.ducr")))(Ducr.apply)(Ducr.unapply)
 
-  val choiceId = "Choice"
+  val id = "DUCR"
 
-  def form(): Form[Choice] = Form(choiceMapping)
-
-  object AllowedChoiceValues {
-    val SimplifiedDec = "SMP"
-    val StandardDec = "STD"
-    val Arrival = "EAL"
-    val Departure = "EDL"
-  }
+  def form(): Form[Ducr] = Form(ducrMapping)
 }

@@ -19,7 +19,7 @@ package base
 import base.TestHelper._
 import forms.Choice._
 import forms.MovementFormsAndIds._
-import forms.{Choice, GoodsDateForm}
+import forms.{Choice, Ducr, GoodsDateForm}
 import models.{IdentityData, SignedInUser}
 import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, LocalDate}
@@ -238,7 +238,7 @@ object ExportsTestData {
 
     val data = Map(
       choiceId -> Json.toJson(Choice(movementType)),
-      enterDucrId -> correctDucrJson,
+      Ducr.id -> correctDucrJson,
       goodsDateId -> Json.toJson(GoodsDateForm("01", "02", "2020", None, None)),
       locationId -> location,
       transportId -> correctTransport

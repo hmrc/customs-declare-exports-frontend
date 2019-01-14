@@ -98,7 +98,7 @@ class DeclarationTypeController @Inject()(
               validAdditionalDeclarationType
             )
             .map { _ =>
-              Ok("You should be now redirected to \"Consignment References\" page")
+              Redirect(controllers.supplementary.routes.ConsignmentReferencesController.displayPage())
           }
       )
   }

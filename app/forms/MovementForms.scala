@@ -21,23 +21,10 @@ import java.time.LocalDateTime
 import forms.Choice.AllowedChoiceValues
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
-import play.api.data.validation.Constraints._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
 import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
-
-case class EnterDucrForm(ducr: String)
-
-object EnterDucrForm {
-  implicit val format = Json.format[EnterDucrForm]
-
-  private val ducrFormat = "^\\d[A-Z]{2}\\d{12}-[0-9A-Z]{1,19}$"
-
-  val ducrMapping = mapping("ducr" -> text().verifying(pattern(ducrFormat.r, error = "error.ducr")))(
-    EnterDucrForm.apply
-  )(EnterDucrForm.unapply)
-}
 
 case class GoodsDateForm(day: String, month: String, year: String, hour: Option[String], minute: Option[String])
 
@@ -97,9 +84,6 @@ object TransportForm {
 }
 
 object MovementFormsAndIds {
-  val enterDucrForm = Form(EnterDucrForm.ducrMapping)
-  val enterDucrId = "EnterDucr"
-
   val goodsDateForm = Form(GoodsDateForm.goodsDateMapping)
   val goodsDateId = "GoodsDate"
 
@@ -114,7 +98,7 @@ object Movement {
 
   def createMovementRequest(cacheMap: CacheMap, eori: String): InventoryLinkingMovementRequest = {
     val choiceForm = cacheMap.getEntry[Choice](Choice.choiceId).get
-    val ducrForm = cacheMap.getEntry[EnterDucrForm](MovementFormsAndIds.enterDucrId).get
+    val ducrForm = cacheMap.getEntry[Ducr](Ducr.id).get
     val goodsDate = cacheMap.getEntry[GoodsDateForm](MovementFormsAndIds.goodsDateId)
     val location = cacheMap.getEntry[LocationForm](MovementFormsAndIds.locationId).get
     val transport = cacheMap.getEntry[TransportForm](MovementFormsAndIds.transportId).get

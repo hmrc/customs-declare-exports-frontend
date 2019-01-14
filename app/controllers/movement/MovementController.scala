@@ -45,9 +45,9 @@ class MovementController @Inject()(
   def displayDucrPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Choice](appConfig.appName, Choice.choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
-        customsCacheService.fetchAndGetEntry[EnterDucrForm](appConfig.appName, enterDucrId).map {
-          case Some(data) => Ok(enter_ducr(appConfig, enterDucrForm.fill(data), choice.choice))
-          case _          => Ok(enter_ducr(appConfig, enterDucrForm, choice.choice))
+        customsCacheService.fetchAndGetEntry[Ducr](appConfig.appName, Ducr.id).map {
+          case Some(data) => Ok(enter_ducr(appConfig, Ducr.form.fill(data), choice.choice))
+          case _          => Ok(enter_ducr(appConfig, Ducr.form, choice.choice))
         }
       case _ =>
         Future.successful(
@@ -63,13 +63,12 @@ class MovementController @Inject()(
   }
 
   def saveDucr(): Action[AnyContent] = authenticate.async { implicit request =>
-    enterDucrForm
+    Ducr.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[EnterDucrForm]) =>
-          Future.successful(BadRequest(enter_ducr(appConfig, formWithErrors, "error"))),
+        (formWithErrors: Form[Ducr]) => Future.successful(BadRequest(enter_ducr(appConfig, formWithErrors, "error"))),
         form =>
-          customsCacheService.cache[EnterDucrForm](appConfig.appName, enterDucrId, form).map { _ =>
+          customsCacheService.cache[Ducr](appConfig.appName, Ducr.id, form).map { _ =>
             Redirect(controllers.movement.routes.MovementController.displayGoodsDate())
         }
       )
