@@ -17,6 +17,7 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
+import forms.Ducr
 import forms.supplementary.ConsignmentReferences
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -65,11 +66,6 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
       contentAsString(result) must include(messages("supplementary.consignmentReferences.ucr.hint"))
     }
 
-    "populate first part of reference number/UCR with eori" in {
-      val result = displayConsignmentReferencesPageTestScenario()
-      contentAsString(result).replaceAll(" ", "") must include("name=\"prepopulatedPart\"\nvalue=\"12345-\"")
-    }
-
     "display input text with question and hint for LRN" in {
       val result = displayConsignmentReferencesPageTestScenario()
       contentAsString(result) must include(messages("supplementary.consignmentReferences.lrn.info"))
@@ -84,18 +80,16 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
 
     "not populate the form fields if cache is empty" in {
       val result = displayConsignmentReferencesPageTestScenario()
-      contentAsString(result).replaceAll(" ", "") must include("name=\"prepopulatedPart\"\nvalue=\"12345-\"")
-      contentAsString(result).replaceAll(" ", "") must include("name=\"userEnteredUcr\"\nvalue=\"\"")
+      contentAsString(result).replaceAll(" ", "") must include("name=\"ducr.ducr\"\nvalue=\"\"")
       contentAsString(result).replaceAll(" ", "") must include("name=\"lrn\"\nvalue=\"\"")
     }
 
     "populate the form fields with data from cache" in {
       val result = displayConsignmentReferencesPageTestScenario(
-        Some(ConsignmentReferences(prepopulatedPart = "12345-", userEnteredUcr = "123ABC", lrn = "1234ABCD"))
+        Some(ConsignmentReferences(ducr = Some(Ducr(exemplaryDucr)), lrn = "1234ABCD"))
       )
 
-      contentAsString(result).replaceAll(" ", "") must include("name=\"prepopulatedPart\"\nvalue=\"12345-\"")
-      contentAsString(result).replaceAll(" ", "") must include("name=\"userEnteredUcr\"\nvalue=\"123ABC\"")
+      contentAsString(result).replaceAll(" ", "") must include("name=\"ducr.ducr\"\nvalue=\"" + exemplaryDucr + "\"")
       contentAsString(result).replaceAll(" ", "") must include("name=\"lrn\"\nvalue=\"1234ABCD\"")
     }
 
@@ -110,20 +104,20 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
   "ConsignmentReferencesController on submitConsignmentReferences" should {
 
     "display the form page with error" when {
-      "provided UCR is longer than 19 characters" in {
+      "provided DUCR is longer than 35 characters" in {
         withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
         val form =
-          buildConsignmentReferencesTestData(userEnteredUcr = "12345678901234567890QWERTY", lrn = "123456QWERTY")
+          buildConsignmentReferencesTestData(ducr = "8GB123456789012-1234567890123456789ABCD", lrn = "123456QWERTY")
         val result = route(app, postRequest(consignmentReferencesUri, form)).get
 
-        contentAsString(result) must include(messages("supplementary.consignmentReferences.ucr.error.length"))
+        contentAsString(result) must include(messages("error.ducr"))
       }
 
       "no value provided for LRN" in {
         withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-        val form = buildConsignmentReferencesTestData(userEnteredUcr = "123ABC")
+        val form = buildConsignmentReferencesTestData(ducr = exemplaryDucr)
         val result = route(app, postRequest(consignmentReferencesUri, form)).get
 
         contentAsString(result) must include(messages("supplementary.consignmentReferences.lrn.error.empty"))
@@ -132,7 +126,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
       "provided LRN contains special characters" in {
         withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-        val form = buildConsignmentReferencesTestData(userEnteredUcr = "123ABC", lrn = "123$%&ABC")
+        val form = buildConsignmentReferencesTestData(ducr = exemplaryDucr, lrn = "123$%&ABC")
         val result = route(app, postRequest(consignmentReferencesUri, form)).get
 
         contentAsString(result) must include(messages("supplementary.consignmentReferences.lrn.error.specialCharacter"))
@@ -141,7 +135,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
       "provided LRN is longer than 22 characters" in {
         withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-        val form = buildConsignmentReferencesTestData(userEnteredUcr = "123ABC", lrn = "1234567890123456789012QWERTY")
+        val form = buildConsignmentReferencesTestData(ducr = exemplaryDucr, lrn = "1234567890123456789012QWERTY")
         val result = route(app, postRequest(consignmentReferencesUri, form)).get
 
         contentAsString(result) must include(messages("supplementary.consignmentReferences.lrn.error.length"))
@@ -151,7 +145,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
     "proceed when no ucr provided by user" in {
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-      val validForm = buildConsignmentReferencesTestData(userEnteredUcr = "", lrn = "123ABC")
+      val validForm = buildConsignmentReferencesTestData(lrn = "123ABC")
       val result = route(app, postRequest(consignmentReferencesUri, validForm)).get
 
       contentAsString(result) mustNot include(messages("error.ducr"))
@@ -161,7 +155,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
       reset(mockCustomsCacheService)
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-      val validForm = buildConsignmentReferencesTestData(userEnteredUcr = "123ABC", lrn = "123ABC")
+      val validForm = buildConsignmentReferencesTestData(ducr = exemplaryDucr, lrn = "123ABC")
       route(app, postRequest(consignmentReferencesUri, validForm)).get.map { _ =>
         verify(mockCustomsCacheService)
           .cache[ConsignmentReferences](any(), ArgumentMatchers.eq(ConsignmentReferences.id), any())(
@@ -176,7 +170,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
     "return 303 code" in {
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-      val validForm = buildConsignmentReferencesTestData(userEnteredUcr = "123ABC", lrn = "123ABC")
+      val validForm = buildConsignmentReferencesTestData(ducr = exemplaryDucr, lrn = "123ABC")
       val result = route(app, postRequest(consignmentReferencesUri, validForm)).get
 
       status(result) must be(SEE_OTHER)
@@ -186,7 +180,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
     "redirect to \"Exporter ID\" page" in {
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-      val validForm = buildConsignmentReferencesTestData(userEnteredUcr = "123ABC", lrn = "123ABC")
+      val validForm = buildConsignmentReferencesTestData(ducr = exemplaryDucr, lrn = "123ABC")
       route(app, postRequest(consignmentReferencesUri, validForm)).get.map { resultValue =>
         resultValue.header.headers.get("Location") must be(
           Some("/customs-declare-exports/declaration/supplementary/exporter-id")
@@ -197,7 +191,9 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
 }
 
 object ConsignmentReferencesControllerSpec {
-  def buildConsignmentReferencesTestData(userEnteredUcr: String = "", lrn: String = ""): JsValue = JsObject(
-    Map("prepopulatedPart" -> JsString("12345-"), "userEnteredUcr" -> JsString(userEnteredUcr), "lrn" -> JsString(lrn))
+  val exemplaryDucr = "8GB123456789012-1234567890123456789"
+
+  def buildConsignmentReferencesTestData(ducr: String = "", lrn: String = ""): JsValue = JsObject(
+    Map("ducr.ducr" -> JsString(ducr), "lrn" -> JsString(lrn))
   )
 }
