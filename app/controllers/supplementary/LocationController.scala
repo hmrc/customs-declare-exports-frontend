@@ -15,6 +15,7 @@
  */
 
 package controllers.supplementary
+
 import config.AppConfig
 import controllers.actions.AuthAction
 import forms.supplementary.GoodsLocation
@@ -41,21 +42,20 @@ class LocationController @Inject()(
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[GoodsLocation](appConfig.appName, formId).map {
-      case Some(data) => Ok(goods_location(appConfig, form.fill(data)))
-      case _          => Ok(goods_location(appConfig, form))
+      case Some(data) => Ok(goods_location(appConfig, form().fill(data)))
+      case _          => Ok(goods_location(appConfig, form()))
     }
   }
 
   def saveLocation(): Action[AnyContent] = authenticate.async { implicit request =>
-    form
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[GoodsLocation]) =>
           Future.successful(BadRequest(goods_location(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[GoodsLocation](appConfig.appName, formId, form).map { _ =>
-//          Redirect(controllers.supplementary.routes.???.displayForm())
-            Ok("Procedure page")
+          Redirect(controllers.supplementary.routes.ProcedureCodesPageController.displayPage())
         }
       )
   }

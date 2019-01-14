@@ -53,8 +53,7 @@ class SupervisingCustomsOfficeController @Inject()(
           Future.successful(BadRequest(supervising_office(appConfig, formWithErrors))),
         validForm =>
           customsCacheService.cache[SupervisingCustomsOffice](appConfig.appName, formId, validForm).map { _ =>
-            //Redirect(controllers.supplementary.routes.WarehouseController.displayForm())
-            Ok("ID of warehouse")
+            Redirect(controllers.supplementary.routes.WarehouseIdentificationController.displayForm())
         }
       )
   }

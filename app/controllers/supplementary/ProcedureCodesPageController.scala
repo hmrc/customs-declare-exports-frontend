@@ -18,14 +18,17 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import forms.supplementary.ProcedureCodes
 import handlers.ErrorHandler
 import javax.inject.Inject
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.supplementary.procedure_codes
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ProcedureCodesPageController @Inject()(
   appConfig: AppConfig,
@@ -36,8 +39,25 @@ class ProcedureCodesPageController @Inject()(
 )(implicit ec: ExecutionContext)
   extends FrontendController with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = ???
+  private val supplementaryDeclarationCacheId = appConfig.appName
 
-  def submitProcedureCodes(): Action[AnyContent] = ???
+  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[ProcedureCodes](supplementaryDeclarationCacheId, ProcedureCodes.id)
+      .map {
+        case Some(data) => Ok(procedure_codes(appConfig, ProcedureCodes.form().fill(data)))
+        case _          => Ok(procedure_codes(appConfig, ProcedureCodes.form()))
+      }
+  }
+
+  def submitProcedureCodes(): Action[AnyContent] = authenticate.async { implicit request =>
+    ProcedureCodes.form().bindFromRequest().fold(
+      (formWithErrors: Form[ProcedureCodes]) =>
+        Future.successful(BadRequest(procedure_codes(appConfig, formWithErrors))),
+      validProcedureCodes =>
+        customsCacheService.cache[ProcedureCodes](supplementaryDeclarationCacheId, ProcedureCodes.id, validProcedureCodes).map { _ =>
+          Redirect(controllers.supplementary.routes.SupervisingCustomsOfficeController.displayForm())
+        }
+    )
+  }
 
 }

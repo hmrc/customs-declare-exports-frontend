@@ -60,34 +60,35 @@ GET         /destination-countries          controllers.supplementary.Destinatio
 
 POST        /destination-countries          controllers.supplementary.DestinationCountriesController.saveCountries()
 
-# Supervising customs office
-
-GET         /supervising-office            controllers.supplementary.SupervisingCustomsOfficeController.displayForm()
-
-POST        /supervising-office            controllers.supplementary.SupervisingCustomsOfficeController.saveSupervisingOffice()
-
 # Location of goods
 
 GET         /location-of-goods             controllers.supplementary.LocationController.displayForm()
 
 POST        /location-of-goods             controllers.supplementary.LocationController.saveLocation()
 
-# Office of exit
+# Procedure codes
 
-GET         /office-of-exit                controllers.supplementary.OfficeOfExitController.displayForm()
+GET         /procedure-codes                controllers.supplementary.ProcedureCodesPageController.displayPage()
 
-POST        /office-of-exit                controllers.supplementary.OfficeOfExitController.saveOffice()
+POST        /procedure-codes                controllers.supplementary.ProcedureCodesPageController.submitProcedureCodes()
+
+# Supervising customs office
+
+GET         /supervising-office            controllers.supplementary.SupervisingCustomsOfficeController.displayForm()
+
+POST        /supervising-office            controllers.supplementary.SupervisingCustomsOfficeController.saveSupervisingOffice()
 
 # Identification of a Warehouse
 
 GET         /warehouse                     controllers.supplementary.WarehouseIdentificationController.displayForm()
 
 POST        /warehouse                     controllers.supplementary.WarehouseIdentificationController.saveWarehouse()
-# Procedure codes
 
-GET         /procedure-codes                controllers.supplementary.ProcedureCodesPageController.displayPage()
+# Office of exit
 
-POST        /procedure-codes                controllers.supplementary.ProcedureCodesPageController.submitProcedureCodes()
+GET         /office-of-exit                controllers.supplementary.OfficeOfExitController.displayForm()
+
+POST        /office-of-exit                controllers.supplementary.OfficeOfExitController.saveOffice()
 
 # Add Documents
 

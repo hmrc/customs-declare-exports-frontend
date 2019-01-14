@@ -44,15 +44,14 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       contentAsString(result) must include(messages("supplementary.procedureCodes.procedureCode.header.hint"))
       contentAsString(result) must include(messages("supplementary.procedureCodes.additionalProcedureCode.header"))
       contentAsString(result) must include(messages("supplementary.procedureCodes.additionalProcedureCode.header.hint"))
-      contentAsString(result) must include(messages("supplementary.procedureCodes.additionalProcedureCode.addCode"))
     }
 
-    "display \"back\" button that links to ___________" in {
+    "display \"back\" button that links to location-of-goods page" in {
       withCaching[ProcedureCodes](None, ProcedureCodes.id)
       val result = route(app, getRequest(uri)).get
 
       contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("/declaration/supplementary/___________")
+      contentAsString(result) must include("/declaration/supplementary/location-of-goods")
     }
   }
 
@@ -93,7 +92,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
         val emptyForm = buildProcedureCodes()
         val result = route(app, postRequest(uri, emptyForm)).get
 
-        contentAsString(result) must include(messages("supplementary.procedureCodes.additionalProcedureCode.error.empty"))
+        contentAsString(result) must include(messages("supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty"))
       }
 
       "any additional procedure code is longer than 3 characters" in {
@@ -130,7 +129,6 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
         .cache[ProcedureCodes](any(), ArgumentMatchers.eq(ProcedureCodes.id), any())(any(), any(), any())
     }
 
-    pending
     "return 303 code" in {
       withCaching[ProcedureCodes](None, ProcedureCodes.id)
       val form = buildProcedureCodes(
@@ -142,8 +140,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       status(result) must be(SEE_OTHER)
     }
 
-    pending
-    "redirect to \"#################\" page" in {
+    "redirect to \"Supervising Office\" page" in {
       withCaching[ProcedureCodes](None, ProcedureCodes.id)
       val form = buildProcedureCodes(
         procedureCode = "1234",
@@ -154,7 +151,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/#################")
+        Some("/customs-declare-exports/declaration/supplementary/supervising-office")
       )
     }
   }

@@ -31,17 +31,19 @@ object FormFieldValidator {
 
   val isEmpty: String => Boolean = (input: String) => input.isEmpty
 
+  val nonEmpty: String => Boolean = (input: String) => input.nonEmpty
+
   val noLongerThan: Int => String => Boolean = (length: Int) => (input: String) => input.length <= length
 
   val noShorterThan: Int => String => Boolean = (length: Int) => (input: String) => input.length >= length
+
+  val hasSpecificLength: Int => String => Boolean = (length: Int) => (input: String) => input.length == length
 
   val isNumeric: String => Boolean = (input: String) => input.matches(numericRegexValue)
 
   val isAlphabetic: String => Boolean = (input: String) => input.matches(alphabeticRegexValue)
 
   val isAlphanumeric: String => Boolean = (input: String) => input.matches(alphanumericRegexValue)
-
-  val hasSpecificLength: Int => String => Boolean = (length: Int) => (input: String) => input.length == length
 
   val forbiddenZero: String => Boolean = (input: String) => !input.matches(zeros)
 }

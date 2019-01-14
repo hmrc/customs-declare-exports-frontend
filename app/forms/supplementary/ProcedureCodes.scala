@@ -26,33 +26,40 @@ case class ProcedureCodes(
   additionalProcedureCodes: Seq[String]     // max 99 codes, each is max 3 alphanumeric characters
 ) {
 
-  def toMetadataProperties(): Map[String, String] = ???
+  def toMetadataProperties(): Map[String, String] = {
+    val procedureCodeMapping = Map(
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].currentCode" -> procedureCode.substring(0, 2),
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].previousCode" -> procedureCode.substring(2, 4)
+    )
+
+    val additionalProcedureCodesMapping = additionalProcedureCodes.zipWithIndex
+      .map { codeWithIdx =>
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[" + (codeWithIdx._2 + 1) + "].currentCode" -> codeWithIdx._1
+      }
+
+    procedureCodeMapping ++ additionalProcedureCodesMapping
+  }
 }
 
 object ProcedureCodes {
   implicit val format = Json.format[ProcedureCodes]
 
-  private val procedureCodeMaxLength = 4
-  private val additionalProcedureCodeMaxLength = 3
+  private val procedureCodeLength = 4
+  private val additionalProcedureCodeLength = 3
   val mapping = Forms.mapping(
     "procedureCode" -> text()
     .verifying("supplementary.procedureCodes.procedureCode.error.empty", _.trim.nonEmpty)
-    .verifying("supplementary.procedureCodes.procedureCode.error.length", noLongerThan(_, procedureCodeMaxLength))
-    .verifying("supplementary.procedureCodes.procedureCode.error.specialCharacters", isAlphanumeric(_)),
-//    "additionalProcedureCodes" -> seq(text())
-//        .verifying("supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty", _.forall(_.trim.nonEmpty))
-//        .verifying("supplementary.procedureCodes.additionalProcedureCode.error.length", _.forall(noLongerThan(_, additionalProcedureCodeMaxLength)))
-//        .verifying("supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters", _.forall(isAlphanumeric(_)))
-
+    .verifying("supplementary.procedureCodes.procedureCode.error.length", isEmpty or hasSpecificLength(procedureCodeLength))
+    .verifying("supplementary.procedureCodes.procedureCode.error.specialCharacters", isAlphanumeric),
   "additionalProcedureCodes" -> seq(text()
-    .verifying("supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty", _.trim.nonEmpty)
-    .verifying("supplementary.procedureCodes.additionalProcedureCode.error.length", noLongerThan(_, additionalProcedureCodeMaxLength))
-    .verifying("supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters", isAlphanumeric(_))
+    .verifying("supplementary.procedureCodes.additionalProcedureCode.error.length", isEmpty or hasSpecificLength(additionalProcedureCodeLength))
+    .verifying("supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters", isAlphanumeric)
   )
+    .verifying("supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty", _.exists(_.trim.nonEmpty))
   )(ProcedureCodes.apply)(ProcedureCodes.unapply)
 
   val id = "ProcedureCodes"
 
-  def form(): Form[ProcedureCodes] = ???
+  def form(): Form[ProcedureCodes] = Form(mapping)
 
 }
