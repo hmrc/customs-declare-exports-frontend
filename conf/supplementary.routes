@@ -59,3 +59,9 @@ POST        /destination-countries          controllers.supplementary.Destinatio
 GET         /supervising-office            controllers.supplementary.SupervisingCustomsOfficeController.displayForm()
 
 POST        /supervising-office            controllers.supplementary.SupervisingCustomsOfficeController.saveSupervisingOffice()
+
+# Location of goods
+
+GET         /location-of-goods             controllers.supplementary.LocationController.displayForm()
+
+POST        /location-of-goods             controllers.supplementary.LocationController.saveLocation()

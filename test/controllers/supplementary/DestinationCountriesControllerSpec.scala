@@ -63,7 +63,6 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - correct values" in {
-      pending
       authorizedUser()
       withCaching[DestinationCountries](None)
 
@@ -73,7 +72,9 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/goods-location"))
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/location-of-goods")
+      )
     }
   }
 }
