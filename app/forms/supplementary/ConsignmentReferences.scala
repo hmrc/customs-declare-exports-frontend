@@ -24,7 +24,7 @@ import utils.validators.FormFieldValidator.{isAlphanumeric, noLongerThan}
 
 case class ConsignmentReferences(
   ducr: Option[Ducr],
-  lrn: String     // alphanumeric, up to 22 characters
+  lrn: String // alphanumeric, up to 22 characters
 ) {
 
   def toMetadataProperties(): Map[String, String] =

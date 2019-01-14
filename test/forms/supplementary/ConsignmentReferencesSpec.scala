@@ -27,10 +27,8 @@ class ConsignmentReferencesSpec extends WordSpec with MustMatchers {
   private val consignmentReferences =
     ConsignmentReferences(ducr = Some(Ducr(ducr)), lrn = lrn)
 
-  private val expectedConsignmentReferencesProperties: Map[String, String] = Map(
-    "declaration.goodsShipment.ucr.traderAssignedReferenceId" -> ducr,
-    "declaration.functionalReferenceId" -> lrn
-  )
+  private val expectedConsignmentReferencesProperties: Map[String, String] =
+    Map("declaration.goodsShipment.ucr.traderAssignedReferenceId" -> ducr, "declaration.functionalReferenceId" -> lrn)
 
   "ConsignmentReferences" should {
     "convert itself to consignment references properties" in {

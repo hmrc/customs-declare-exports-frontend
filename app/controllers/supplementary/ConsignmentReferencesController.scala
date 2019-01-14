@@ -60,7 +60,10 @@ class ConsignmentReferencesController @Inject()(
         validConsignmentReferences => {
           customsCacheService
             .cache[ConsignmentReferences](
-              supplementaryDeclarationCacheId, ConsignmentReferences.id, validConsignmentReferences)
+              supplementaryDeclarationCacheId,
+              ConsignmentReferences.id,
+              validConsignmentReferences
+            )
             .map { _ =>
               Ok("You should be now redirected to \"Exporter ID\" page")
             }
