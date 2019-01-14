@@ -35,10 +35,9 @@
 
     @components.page_title(Some("supplementary.consignmentReferences.header"))
 
-    @components.part_populated_input_text(
+    @components.input_text(
+      field = form("ducr.ducr"),
       label = messages("supplementary.consignmentReferences.ucr.info"),
-      populatedField = form("prepopulatedPart"),
-      field = form("userEnteredUcr"),
       hint = Some(messages("supplementary.consignmentReferences.ucr.hint"))
     )
 

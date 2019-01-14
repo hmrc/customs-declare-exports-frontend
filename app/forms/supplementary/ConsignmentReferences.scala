@@ -16,20 +16,20 @@
 
 package forms.supplementary
 
-import play.api.data.Forms.{nonEmptyText, text}
+import forms.Ducr
+import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator.{isAlphanumeric, noLongerThan}
 
 case class ConsignmentReferences(
-  prepopulatedPart: String, // year and country of the DUCR + eori + "-"
-  userEnteredUcr: String,
-  lrn: String // alphanumeric, up to 22 characters
+  ducr: Option[Ducr],
+  lrn: String     // alphanumeric, up to 22 characters
 ) {
 
   def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.goodsShipment.ucr.traderAssignedReferenceId" -> (prepopulatedPart + userEnteredUcr),
+      "declaration.goodsShipment.ucr.traderAssignedReferenceId" -> ducr.getOrElse(Ducr("")).ducr,
       "declaration.functionalReferenceId" -> lrn
     )
 }
@@ -37,12 +37,9 @@ case class ConsignmentReferences(
 object ConsignmentReferences {
   implicit val format = Json.format[ConsignmentReferences]
 
-  private val ucrMaxLength = 19
   private val lrnMaxLength = 22
   val mapping = Forms.mapping(
-    "prepopulatedPart" -> nonEmptyText(),
-    "userEnteredUcr" -> text()
-      .verifying("supplementary.consignmentReferences.ucr.error.length", noLongerThan(_, ucrMaxLength)),
+    "ducr" -> optional(Ducr.ducrMapping),
     "lrn" -> text()
       .verifying("supplementary.consignmentReferences.lrn.error.empty", _.trim.nonEmpty)
       .verifying("supplementary.consignmentReferences.lrn.error.length", noLongerThan(_, lrnMaxLength))

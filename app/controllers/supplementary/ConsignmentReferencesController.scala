@@ -21,7 +21,6 @@ import controllers.actions.AuthAction
 import forms.supplementary.ConsignmentReferences
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.requests.AuthenticatedRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -47,9 +46,7 @@ class ConsignmentReferencesController @Inject()(
       .fetchAndGetEntry[ConsignmentReferences](supplementaryDeclarationCacheId, ConsignmentReferences.id)
       .map {
         case Some(data) => Ok(consignment_references(appConfig, ConsignmentReferences.form().fill(data)))
-        case _ =>
-          val initialData = buildConsignmentReferences()
-          Ok(consignment_references(appConfig, ConsignmentReferences.form().fill(initialData)))
+        case _          => Ok(consignment_references(appConfig, ConsignmentReferences.form()))
       }
   }
 
@@ -61,25 +58,14 @@ class ConsignmentReferencesController @Inject()(
         (formWithErrors: Form[ConsignmentReferences]) =>
           Future.successful(BadRequest(consignment_references(appConfig, formWithErrors))),
         validConsignmentReferences => {
-          val consignmentReferencesToSave = buildConsignmentReferences(
-            userEnteredUcr = validConsignmentReferences.userEnteredUcr,
-            lrn = validConsignmentReferences.lrn
-          )
           customsCacheService
             .cache[ConsignmentReferences](
-              supplementaryDeclarationCacheId,
-              ConsignmentReferences.id,
-              consignmentReferencesToSave
-            )
+              supplementaryDeclarationCacheId, ConsignmentReferences.id, validConsignmentReferences)
             .map { _ =>
               Ok("You should be now redirected to \"Exporter ID\" page")
             }
         }
       )
   }
-
-  private def buildConsignmentReferences(userEnteredUcr: String = "", lrn: String = "")(
-    implicit request: AuthenticatedRequest[_]
-  ) = ConsignmentReferences(prepopulatedPart = request.user.eori + "-", userEnteredUcr = userEnteredUcr, lrn = lrn)
 
 }
