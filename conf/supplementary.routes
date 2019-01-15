@@ -71,3 +71,9 @@ POST        /supervising-office            controllers.supplementary.Supervising
 GET         /location-of-goods             controllers.supplementary.LocationController.displayForm()
 
 POST        /location-of-goods             controllers.supplementary.LocationController.saveLocation()
+
+# Identification of a Warehouse
+
+GET         /warehouse                     controllers.supplementary.WarehouseIdentificationController.displayForm()
+
+POST        /warehouse                     controllers.supplementary.WarehouseIdentificationController.saveWarehouse()

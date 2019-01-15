@@ -412,3 +412,10 @@ supplementary.goodsLocation.postCode = Postcode
 supplementary.goodsLocation.postCode.error = Postcode is incorrect
 supplementary.goodsLocation.city = City
 supplementary.goodsLocation.city.error = City is incorrect
+
+supplementary.warehouse.title =  2/7 Enter the warehouse identification number
+supplementary.warehouse.typeCode = Type Code
+supplementary.warehouse.typeCode.error = Incorrect type code
+supplementary.warehouse.identificationNumber.error = Incorrect identification Number
+supplementary.warehouse.identificationNumber.hint = For example, R1234567GB
+supplementary.warehouse.identificationNumber = Identification Number
