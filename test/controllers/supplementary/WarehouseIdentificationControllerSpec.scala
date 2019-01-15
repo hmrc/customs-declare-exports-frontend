@@ -59,7 +59,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
   }
 
   "validate form - no answers" in {
-    pending
     authorizedUser()
     withCaching[WarehouseIdentification](None)
 
@@ -74,7 +73,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
   }
 
   "validate form - correct values" in {
-    pending
     authorizedUser()
     withCaching[WarehouseIdentification](None)
 
