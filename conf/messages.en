@@ -389,3 +389,26 @@ supplementary.destinationCountries.countryOfDestination.error = Country of desti
 supplementary.destinationCountries.countryOfDispatch = 5/14 Enter the country of dispatch
 supplementary.destinationCountries.countryOfDispatch.empty = Country of dispatch cannot be empty
 supplementary.destinationCountries.countryOfDispatch.error = Country of dispatch is incorrect
+
+supplementary.supervisingCustomsOffice.title = Supervising customs office
+supplementary.supervisingCustomsOffice = 5/27 Where is the supervising customs office?
+supplementary.supervisingCustomsOffice.hint = This is an 8 digit code
+supplementary.supervisingCustomsOffice.error = Supervising customs office is incorrect
+supplementary.supervisingCustomsOffice.empty = Supervising customs office cannot be empty
+
+supplementary.goodsLocation = Location of goods
+supplementary.goodsLocation.title = 5/23 What is the location of the goods?
+supplementary.goodsLocation.typeOfLocation = Type of location
+supplementary.goodsLocation.typeOfLocation.error = Type of location is incorrect
+supplementary.goodsLocation.qualifierOfIdentification = Qualifier of the identification
+supplementary.goodsLocation.qualifierOfIdentification.error = Qualifier of the identification is incorrect
+supplementary.goodsLocation.identificationOfLocation = Identification of location
+supplementary.goodsLocation.identificationOfLocation.error = Identification of location is incorrect
+supplementary.goodsLocation.additionalIdentifier = Additional identifier
+supplementary.goodsLocation.additionalIdentifier.error = Additional identifier is incorrect
+supplementary.goodsLocation.streetAndNumber = Street and number
+supplementary.goodsLocation.streetAndNumber.error = Street and number is in correct
+supplementary.goodsLocation.postCode = Postcode
+supplementary.goodsLocation.postCode.error = Postcode is incorrect
+supplementary.goodsLocation.city = City
+supplementary.goodsLocation.city.error = City is incorrect

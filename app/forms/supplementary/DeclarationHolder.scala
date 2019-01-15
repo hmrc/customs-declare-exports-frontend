@@ -25,7 +25,7 @@ case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option
 object DeclarationHolder {
   implicit val format = Json.format[DeclarationHolder]
 
-  val formId = "DeclarationHolderController"
+  val formId = "DeclarationHolder"
 
   val authorizationCodePattern = "[0-9A-Z]{1,4}"
   val eoriPattern = "[0-9a-zA-Z]{1,17}"

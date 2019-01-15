@@ -17,18 +17,18 @@
 package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.DestinationCountries
+import forms.supplementary.SupervisingCustomsOffice
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.destination_countries
+import views.html.supplementary.supervising_office
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DestinationCountriesController @Inject()(
+class SupervisingCustomsOfficeController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -36,26 +36,25 @@ class DestinationCountriesController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  import forms.supplementary.DestinationCountries._
-
-  implicit val countries = services.Countries.allCountries
+  import forms.supplementary.SupervisingCustomsOffice._
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DestinationCountries](appConfig.appName, formId).map {
-      case Some(data) => Ok(destination_countries(appConfig, form.fill(data)))
-      case _          => Ok(destination_countries(appConfig, form))
+    customsCacheService.fetchAndGetEntry[SupervisingCustomsOffice](appConfig.appName, formId).map {
+      case Some(data) => Ok(supervising_office(appConfig, form.fill(data)))
+      case _          => Ok(supervising_office(appConfig, form))
     }
   }
 
-  def saveCountries(): Action[AnyContent] = authenticate.async { implicit request =>
-    form
+  def saveSupervisingOffice(): Action[AnyContent] = authenticate.async { implicit request =>
+    form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DestinationCountries]) =>
-          Future.successful(BadRequest(destination_countries(appConfig, formWithErrors))),
-        form =>
-          customsCacheService.cache[DestinationCountries](appConfig.appName, formId, form).map { _ =>
-            Redirect(controllers.supplementary.routes.LocationController.displayForm())
+        (formWithErrors: Form[SupervisingCustomsOffice]) =>
+          Future.successful(BadRequest(supervising_office(appConfig, formWithErrors))),
+        validForm =>
+          customsCacheService.cache[SupervisingCustomsOffice](appConfig.appName, formId, validForm).map { _ =>
+            //Redirect(controllers.supplementary.routes.WarehouseController.displayForm())
+            Ok("ID of warehouse")
         }
       )
   }
