@@ -54,8 +54,7 @@ class WarehouseIdentificationController @Inject()(
           Future.successful(BadRequest(warehouse_identification(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[WarehouseIdentification](appConfig.appName, formId, form).map { _ =>
-//            Redirect(controllers.supplementary.routes.OfficeOfExitController.displayForm())
-            Ok("Office Of Exit (to be implemented)")
+            Redirect(controllers.supplementary.routes.OfficeOfExitController.displayForm())
         }
       )
   }
