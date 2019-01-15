@@ -83,3 +83,9 @@ POST        /office-of-exit                controllers.supplementary.OfficeOfExi
 GET         /warehouse                     controllers.supplementary.WarehouseIdentificationController.displayForm()
 
 POST        /warehouse                     controllers.supplementary.WarehouseIdentificationController.saveWarehouse()
+
+# Add Documents
+
+GET         /add-document                  controllers.supplementary.AddDocumentController.displayPage()
+
+POST        /add-document                  controllers.supplementary.AddDocumentController.saveForm()

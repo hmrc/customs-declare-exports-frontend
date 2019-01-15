@@ -1,0 +1,66 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.supplementary.routes._
+@import forms.supplementary.AddDocument
+@import uk.gov.hmrc.play.views.html._
+
+@(appConfig: AppConfig, form: Form[AddDocument])(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("supplementary.addDocument.title"),
+    appConfig = appConfig
+) {
+
+  @helpers.form(AddDocumentController.saveForm(), 'autoComplete -> "off") {
+
+      @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
+
+      @components.input_text(
+       field = form("enterDocumentTypeCode"),
+       label = messages("supplementary.addDocument.enterDocumentTypeOfCode")
+      )
+      @components.input_text(
+       field = form("identifier"),
+       label = messages("supplementary.addDocument.identifier")
+      )
+      @components.input_text(
+       field = form("status"),
+       label = messages("supplementary.addDocument.status")
+      )
+      @components.input_text(
+       field = form("issuingAuthority"),
+       label = messages("supplementary.addDocument.IssuingAuthority")
+      )
+      @components.input_text(
+       field = form("dateOfValidity"),
+       label = messages("supplementary.addDocument.dateOfValidity")
+      )
+
+      @components.input_text(
+       field = form("measurementUnitAndQualifier"),
+       label = messages("supplementary.addDocument.MeasurementUnitAndQualifier")
+      )
+
+      @components.input_checkbox(
+       field = form("additionalInformation"),
+       label = messages("supplementary.addDocument.checkbox")
+      )
+
+      @components.submit_button()
+     }
+}
