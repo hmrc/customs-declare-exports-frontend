@@ -77,3 +77,9 @@ POST        /location-of-goods             controllers.supplementary.LocationCon
 GET         /office-of-exit                controllers.supplementary.OfficeOfExitController.displayForm()
 
 POST        /office-of-exit                controllers.supplementary.OfficeOfExitController.saveOffice()
+
+# Identification of a Warehouse
+
+GET         /warehouse                     controllers.supplementary.WarehouseIdentificationController.displayForm()
+
+POST        /warehouse                     controllers.supplementary.WarehouseIdentificationController.saveWarehouse()
