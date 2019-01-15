@@ -59,6 +59,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
   }
 
   "validate form - no answers" in {
+    pending
     authorizedUser()
     withCaching[WarehouseIdentification](None)
 
@@ -67,15 +68,13 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
     val result = route(app, postRequest(uri, emptyWarehouseIdentification)).get
     val header = result.futureValue.header
 
-    status(result) must be(OK)
+    status(result) must be(SEE_OTHER)
 
-//    *** awaits for implementation ***
-//    header.headers.get("Location") must be(
-//      Some("/customs-declare-exports/declaration/supplementary/office-of-exit")
-//    )
+    header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/office-of-exit"))
   }
 
   "validate form - correct values" in {
+    pending
     authorizedUser()
     withCaching[WarehouseIdentification](None)
 
@@ -83,14 +82,9 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
       JsObject(Map("typeCode" -> JsString("CorrectTypeCodeExample"), "identificationNumber" -> JsString("R1234567GB")))
     val result = route(app, postRequest(uri, correctWarehouseIdentification)).get
     val header = result.futureValue.header
-//
-    status(result) must be(OK)
 
-//    //    *** awaits for implementation ***
-//    //    header.headers.get("Location") must be(
-//    //      Some("/customs-declare-exports/declaration/supplementary/office-of-exit")
-//    //    )
-//
+    status(result) must be(SEE_OTHER)
+
+    header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/office-of-exit"))
   }
-
 }

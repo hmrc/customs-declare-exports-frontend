@@ -30,16 +30,14 @@ import views.html.supplementary.warehouse_identification
 import scala.concurrent.{ExecutionContext, Future}
 
 class WarehouseIdentificationController @Inject()(
-                                                     appConfig: AppConfig,
-                                                     override val messagesApi: MessagesApi,
-                                                     authenticate: AuthAction,
-                                                     customsCacheService: CustomsCacheService
-                                                   )(implicit ec: ExecutionContext)
-extends FrontendController with I18nSupport {
-
+  appConfig: AppConfig,
+  override val messagesApi: MessagesApi,
+  authenticate: AuthAction,
+  customsCacheService: CustomsCacheService
+)(implicit ec: ExecutionContext)
+    extends FrontendController with I18nSupport {
 
   import forms.supplementary.WarehouseIdentification._
-
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[WarehouseIdentification](appConfig.appName, formId).map {
@@ -58,7 +56,7 @@ extends FrontendController with I18nSupport {
           customsCacheService.cache[WarehouseIdentification](appConfig.appName, formId, form).map { _ =>
 //            Redirect(controllers.supplementary.routes.OfficeOfExitController.displayForm())
             Ok("Office Of Exit (to be implemented)")
-          }
+        }
       )
   }
 }

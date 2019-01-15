@@ -29,10 +29,9 @@ object WarehouseIdentification {
   val formId = "IdentificationOfWarehouse"
 
   val mapping = Forms.mapping(
-    "typeCode" -> optional(
-      text().verifying("supplementary.warehouse.typeCode.error", noLongerThan(_, 35))
-    ), "identificationNumber" -> optional(
-      text().verifying("supplementary.warehouse.identificationNumber.error", noLongerThan(_, 35))
+    "typeCode" -> optional(text().verifying("supplementary.warehouse.typeCode.error", noLongerThan(35))),
+    "identificationNumber" -> optional(
+      text().verifying("supplementary.warehouse.identificationNumber.error", noLongerThan(35))
     )
   )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
 
