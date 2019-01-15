@@ -19,7 +19,7 @@ package forms.supplementary
 import play.api.data.Forms.{mapping, text}
 import play.api.libs.json.Json
 import services.Countries.allCountries
-import utils.validators.FormFieldValidator.{isAlphanumeric, noLongerThan}
+import utils.validators.FormFieldValidator.isAlphanumeric
 
 case class AddressAndIdentification(
   eori: String, // alphanumeric, max length 17 characters
@@ -36,19 +36,19 @@ object AddressAndIdentification {
   val addressMapping = mapping(
     "eori" -> text()
       .verifying("supplementary.eori.empty", _.trim.nonEmpty)
-      .verifying("supplementary.eori.error", validateField(_, 17)),
+      .verifying("supplementary.eori.error", validateField(17)),
     "fullName" -> text()
       .verifying("supplementary.fullName.empty", _.trim.nonEmpty)
-      .verifying("supplementary.fullName.error", validateField(_, 70)),
+      .verifying("supplementary.fullName.error", validateField(70)),
     "addressLine" -> text()
       .verifying("supplementary.addressLine.empty", _.trim.nonEmpty)
-      .verifying("supplementary.addressLine.error", validateField(_, 70)),
+      .verifying("supplementary.addressLine.error", validateField(70)),
     "townOrCity" -> text()
       .verifying("supplementary.townOrCity.empty", _.trim.nonEmpty)
-      .verifying("supplementary.townOrCity.error", validateField(_, 35)),
+      .verifying("supplementary.townOrCity.error", validateField(35)),
     "postCode" -> text()
       .verifying("supplementary.postCode.empty", _.trim.nonEmpty)
-      .verifying("supplementary.postCode.error", validateField(_, 9)),
+      .verifying("supplementary.postCode.error", validateField(9)),
     "country" -> text()
       .verifying("supplementary.country.empty", _.trim.nonEmpty)
       .verifying(
@@ -57,8 +57,8 @@ object AddressAndIdentification {
       )
   )(AddressAndIdentification.apply)(AddressAndIdentification.unapply)
 
-  private def validateField(input: String, maxLength: Int): Boolean =
-    noLongerThan(input, maxLength) && isAlphanumeric(input.replaceAll(" ", ""))
+  private def validateField: Int => String => Boolean =
+    (length: Int) => (input: String) => input.length <= length && isAlphanumeric(input.replaceAll(" ", ""))
 
   def toConsignorMetadataProperties(address: AddressAndIdentification): Map[String, String] =
     Map(

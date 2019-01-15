@@ -18,16 +18,25 @@ package utils.validators
 
 object FormFieldValidator {
 
+  implicit class PredicateOps[A](first: A => Boolean) {
+    def and(second: A => Boolean): A => Boolean = (arg: A) => first(arg) && second(arg)
+
+    def or(second: A => Boolean): A => Boolean = (arg: A) => first(arg) || second(arg)
+  }
+
   private val numericRegexValue = "[0-9]*"
   private val alphabeticRegexValue = "[a-zA-Z]*"
   private val alphanumericRegexValue = "[a-zA-Z0-9]*"
 
-  def noLongerThan(input: String, length: Int): Boolean = input.length <= length
+  val isEmpty: String => Boolean = (input: String) => input.isEmpty
 
-  def isNumeric(input: String): Boolean = input.matches(numericRegexValue)
+  val noLongerThan: Int => String => Boolean = (length: Int) => (input: String) => input.length <= length
 
-  def isAlphabetic(input: String): Boolean = input.matches(alphabeticRegexValue)
+  val isNumeric: String => Boolean = (input: String) => input.matches(numericRegexValue)
 
-  def isAlphanumeric(input: String): Boolean = input.matches(alphanumericRegexValue)
+  val isAlphabetic: String => Boolean = (input: String) => input.matches(alphabeticRegexValue)
 
+  val isAlphanumeric: String => Boolean = (input: String) => input.matches(alphanumericRegexValue)
+
+  val hasSpecificLength: Int => String => Boolean = (length: Int) => (input: String) => input.length == length
 }

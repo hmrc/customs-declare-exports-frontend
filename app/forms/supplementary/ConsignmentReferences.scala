@@ -42,8 +42,8 @@ object ConsignmentReferences {
     "ducr" -> optional(Ducr.ducrMapping),
     "lrn" -> text()
       .verifying("supplementary.consignmentReferences.lrn.error.empty", _.trim.nonEmpty)
-      .verifying("supplementary.consignmentReferences.lrn.error.length", noLongerThan(_, lrnMaxLength))
-      .verifying("supplementary.consignmentReferences.lrn.error.specialCharacter", isAlphanumeric(_))
+      .verifying("supplementary.consignmentReferences.lrn.error.length", noLongerThan(lrnMaxLength))
+      .verifying("supplementary.consignmentReferences.lrn.error.specialCharacter", isAlphanumeric)
   )(ConsignmentReferences.apply)(ConsignmentReferences.unapply)
 
   val id = "ConsignmentReferences"

@@ -412,3 +412,9 @@ supplementary.goodsLocation.postCode = Postcode
 supplementary.goodsLocation.postCode.error = Postcode is incorrect
 supplementary.goodsLocation.city = City
 supplementary.goodsLocation.city.error = City is incorrect
+
+supplementary.officeOfExit.title = Office of exit
+supplementary.officeOfExit = 5/12 Where is the office of exit?
+supplementary.officeOfExit.hint = This is an 8 digit code
+supplementary.officeOfExit.empty = Office of exit cannot be empty
+supplementary.officeOfExit.error = Office of exit is incorrect
