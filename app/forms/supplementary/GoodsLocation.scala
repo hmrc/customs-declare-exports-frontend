@@ -21,7 +21,7 @@ import play.api.data.Forms
 import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
 import services.Countries.allCountries
-import utils.validators.FormFieldValidator.noLongerThan
+import utils.validators.FormFieldValidator._
 
 case class GoodsLocation(
   country: Option[String],
@@ -49,22 +49,31 @@ object GoodsLocation {
         )
     ),
     "typeOfLocation" -> optional(
-      text().verifying("supplementary.goodsLocation.typeOfLocation.error", noLongerThan(_, 1))
+      text().verifying("supplementary.goodsLocation.typeOfLocation.error", isAlphabetic and hasSpecificLength(1))
     ),
     "qualifierOfIdentification" -> optional(
-      text().verifying("supplementary.goodsLocation.qualifierOfIdentification.error", noLongerThan(_, 1))
+      text()
+        .verifying("supplementary.goodsLocation.qualifierOfIdentification.error", isAlphabetic and hasSpecificLength(1))
     ),
     "identificationOfLocation" -> optional(
-      text().verifying("supplementary.goodsLocation.identificationOfLocation.error", noLongerThan(_, 3))
+      text().verifying(
+        "supplementary.goodsLocation.identificationOfLocation.error",
+        isAlphanumeric and hasSpecificLength(3)
+      )
     ),
     "additionalIdentifier" -> optional(
-      text().verifying("supplementary.goodsLocation.additionalIdentifier.error", noLongerThan(_, 32))
+      text().verifying("supplementary.goodsLocation.additionalIdentifier.error", isAlphanumeric and noLongerThan(32))
     ),
     "streetAndNumber" -> optional(
-      text().verifying("supplementary.goodsLocation.streetAndNumber.error", noLongerThan(_, 70))
+      text().verifying("supplementary.goodsLocation.streetAndNumber.error", isAlphanumeric and noLongerThan(70))
     ),
-    "postCode" -> optional(text().verifying("supplementary.goodsLocation.postCode.error", noLongerThan(_, 9))),
-    "city" -> optional(text().verifying("supplementary.goodsLocation.city.error", noLongerThan(_, 35)))
+    "postCode" -> optional(
+      text().verifying("supplementary.goodsLocation.postCode.error", isAlphanumeric and noLongerThan(9))
+    ),
+    "city" -> optional(
+      text()
+        .verifying("supplementary.goodsLocation.city.error", isAlphanumeric and noLongerThan(35))
+    )
   )(GoodsLocation.apply)(GoodsLocation.unapply)
 
   def form(): Form[GoodsLocation] = Form(mapping)

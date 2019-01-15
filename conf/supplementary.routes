@@ -71,3 +71,9 @@ POST        /supervising-office            controllers.supplementary.Supervising
 GET         /location-of-goods             controllers.supplementary.LocationController.displayForm()
 
 POST        /location-of-goods             controllers.supplementary.LocationController.saveLocation()
+
+# Office of exit
+
+GET         /office-of-exit                controllers.supplementary.OfficeOfExitController.displayForm()
+
+POST        /office-of-exit                controllers.supplementary.OfficeOfExitController.saveOffice()

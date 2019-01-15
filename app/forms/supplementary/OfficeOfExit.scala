@@ -16,22 +16,23 @@
 
 package forms.supplementary
 
-import play.api.data.Forms.{optional, text}
+import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.FormFieldValidator.noLongerThan
+import utils.validators.FormFieldValidator._
 
-case class SupervisingCustomsOffice(office: Option[String])
+case class OfficeOfExit(id: String)
 
-object SupervisingCustomsOffice {
-  implicit val format = Json.format[SupervisingCustomsOffice]
+object OfficeOfExit {
+  implicit val format = Json.format[OfficeOfExit]
+
+  val formId = "OfficeOfExit"
 
   val mapping = Forms.mapping(
-    "supervisingCustomsOffice" -> optional(
-      text().verifying("supplementary.supervisingCustomsOffice.error", noLongerThan(8))
-    )
-  )(SupervisingCustomsOffice.apply)(SupervisingCustomsOffice.unapply)
+    "officeId" -> text()
+      .verifying("supplementary.officeOfExit.empty", _.trim.nonEmpty)
+      .verifying("supplementary.officeOfExit.error", isEmpty or (isAlphanumeric and hasSpecificLength(8)))
+  )(OfficeOfExit.apply)(OfficeOfExit.unapply)
 
-  val formId = "SupervisingCustomsOffice"
-  def form(): Form[SupervisingCustomsOffice] = Form(mapping)
+  def form(): Form[OfficeOfExit] = Form(mapping)
 }
