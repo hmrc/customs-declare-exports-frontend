@@ -425,3 +425,13 @@ supplementary.warehouse.typeCode.error = Incorrect type code
 supplementary.warehouse.identificationNumber.error = Incorrect identification Number
 supplementary.warehouse.identificationNumber.hint = For example, R1234567GB
 supplementary.warehouse.identificationNumber = Identification Number
+
+supplementary.addDocument.title = Do you need to add any documents?
+supplementary.addDocument.hint = Including certificates, authorisations or additional references
+supplementary.addDocument.enterDocumentTypeOfCode = Enter document type code
+supplementary.addDocument.identifier = Identifier
+supplementary.addDocument.status = Status
+supplementary.addDocument.issuingAuthority = Issuing authority
+supplementary.addDocument.dateOfValidity = Date of validity
+supplementary.addDocument.measurementUnitAndQualifier = Measurement unit and qualifier, if applicable
+supplementary.addDocument.checkbox = I don’t need to enter additional information
