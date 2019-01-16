@@ -78,8 +78,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include("Confirmation page")
-      stringResult must include("Your reference number is")
+      stringResult must include(messages("cancellation.confirmationPage.message"))
     }
   }
 }

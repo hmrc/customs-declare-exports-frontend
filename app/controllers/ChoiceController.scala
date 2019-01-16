@@ -58,7 +58,10 @@ class ChoiceController @Inject()(
             validChoice.choice match {
               case AllowedChoiceValues.SimplifiedDec =>
                 Redirect(controllers.routes.RoleController.displayRolePage())
-              case _ => Redirect(controllers.movement.routes.MovementController.displayDucrPage())
+              case AllowedChoiceValues.CancelDec =>
+                Redirect(controllers.routes.CancelDeclarationController.displayForm())
+              case _ =>
+                Redirect(controllers.movement.routes.MovementController.displayDucrPage())
             }
         }
       )

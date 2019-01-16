@@ -50,8 +50,9 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("movement.choice.description"))
-      stringResult must include(messages("movement.choice.SMP.declaration"))
-      stringResult must include(messages("movement.choice.STD.declaration"))
+      stringResult must include(messages("declaration.choice.SMP"))
+      stringResult must include(messages("declaration.choice.STD"))
+      stringResult must include(messages("declaration.choice.CAN"))
       stringResult must include(messages("movement.choice.EAL"))
       stringResult must include(messages("movement.choice.EDL"))
     }

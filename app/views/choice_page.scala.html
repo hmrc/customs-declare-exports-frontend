@@ -22,26 +22,28 @@
 
 @(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("movement.choice.description"),
-    appConfig = appConfig
-) {
+    @main_template(
+        title = messages("movement.choice.description"),
+        appConfig = appConfig
+    ) {
 
-    @helpers.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
-        @components.back_link("start")
+        @helpers.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
+            @components.back_link("start")
 
-        @components.heading("", "movement.choice.description")
+            @components.heading("", "movement.choice.description")
 
-        @components.input_radio(
-            field = form("choice"),
-            legend = "",
-            inputs = Seq(
-              RadioOption("Simplified declaration", SimplifiedDec, messages("movement.choice.SMP.declaration")),
-              RadioOption("Standard declaration", StandardDec, messages("movement.choice.STD.declaration")),
-              RadioOption("arrival", Arrival, messages("movement.choice.EAL")),
-              RadioOption("departure", Departure, messages("movement.choice.EDL")))
-        )
+            @components.input_radio(
+                field = form("choice"),
+                legend = "",
+                inputs = Seq(
+                    RadioOption("Simplified declaration", SimplifiedDec, messages("declaration.choice.SMP")),
+                    RadioOption("Standard declaration", StandardDec, messages("declaration.choice.STD")),
+                    RadioOption("Arrival", Arrival, messages("movement.choice.EAL")),
+                    RadioOption("Departure", Departure, messages("movement.choice.EDL")),
+                    RadioOption("Cancel declaration", CancelDec, messages("declaration.choice.CAN"))
+                )
+            )
 
-        @components.submit_button()
+            @components.submit_button()
+        }
     }
-}
