@@ -334,7 +334,7 @@ supplementary.representative.representationType.direct = Direct representative -
 supplementary.representative.representationType.indirect = Indirect representative - The representative is sharing legal responsibility with the exporter
 
 supplementary.eori = EORI number
-supplementary.eori.hint = The number starts with a country code, for example FR or France, and is then followed by up to 15 digits
+supplementary.eori.hint = Enter the EORI number or business details
 supplementary.eori.error = EORI number is incorrect
 supplementary.eori.empty = EORI number cannot be empty
 supplementary.fullName = Full name
