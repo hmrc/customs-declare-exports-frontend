@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.helpers.ControllersHelper._
 import forms.supplementary.TransportInformation
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -53,7 +54,7 @@ class TransportInformationPageController @Inject()(
 
   def submitTransportInformation(): Action[AnyContent] = authenticate.async { implicit request =>
     TransportInformation.form
-      .bindFromRequest()
+      .bindFromRequest(trimFormData(request))
       .fold(
         (formWithErrors: Form[TransportInformation]) =>
           Future.successful(BadRequest(transport_information(appConfig, formWithErrors))),

@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.helpers.ControllersHelper._
 import forms.supplementary.RepresentativeDetails
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -53,7 +54,7 @@ class RepresentativeDetailsPageController @Inject()(
 
   def submitRepresentativeDetails(): Action[AnyContent] = authenticate.async { implicit request =>
     RepresentativeDetails.form
-      .bindFromRequest()
+      .bindFromRequest(trimFormData(request))
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>
           Future.successful(BadRequest(representative_details(appConfig, formWithErrors))),

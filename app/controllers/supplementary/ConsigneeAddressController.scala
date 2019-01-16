@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.helpers.ControllersHelper._
 import forms.supplementary.AddressAndIdentification
 import javax.inject.Inject
 import play.api.data.Form
@@ -51,7 +52,7 @@ class ConsigneeAddressController @Inject()(
 
   def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
     form
-      .bindFromRequest()
+      .bindFromRequest(trimFormData(request))
       .fold(
         (formWithErrors: Form[AddressAndIdentification]) =>
           Future.successful(BadRequest(consignee_details(appConfig, formWithErrors))),

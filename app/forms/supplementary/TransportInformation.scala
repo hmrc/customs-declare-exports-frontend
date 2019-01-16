@@ -73,10 +73,10 @@ object TransportInformation {
         .verifying("supplementary.transportInfo.error.incorrect", isContainedIn(allowedModeOfTransportCodes))
     ),
     "borderModeOfTransportCode" -> text()
-      .verifying("supplementary.transportInfo.error.empty", _.trim.nonEmpty)
+      .verifying("supplementary.transportInfo.error.empty", nonEmpty)
       .verifying("supplementary.transportInfo.error.incorrect", isEmpty or isContainedIn(allowedModeOfTransportCodes)),
     "meansOfTransportOnDepartureType" -> text()
-      .verifying("supplementary.transportInfo.error.empty", _.trim.nonEmpty)
+      .verifying("supplementary.transportInfo.error.empty", nonEmpty)
       .verifying(
         "supplementary.transportInfo.error.incorrect",
         isEmpty or isContainedIn(allowedMeansOfTransportTypeCodes)

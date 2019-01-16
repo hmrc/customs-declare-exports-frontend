@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers._
+@import controllers.supplementary.routes._
 @import forms.supplementary.AdditionalDeclarationType
 @import forms.supplementary.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes._
 @import uk.gov.hmrc.play.views.html._
@@ -30,7 +30,7 @@
 
   @components.back_link("/customs-declare-exports/declaration/supplementary/dispatch-location")
 
-  @helpers.form(supplementary.routes.DeclarationTypeController.submitDeclarationType(), 'autoComplete -> "off") {
+  @helpers.form(DeclarationTypeController.submitDeclarationType(), 'autoComplete -> "off") {
 
     @components.error_summary(form.errors)
 

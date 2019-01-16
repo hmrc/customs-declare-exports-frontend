@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers._
+@import controllers.supplementary.routes._
 @import forms.supplementary.DispatchLocation
 @import forms.supplementary.DispatchLocation.AllowedDispatchLocations._
 @import uk.gov.hmrc.play.views.html._
@@ -30,7 +30,7 @@
 
   @components.back_link("/customs-declare-exports/role")
 
-  @helpers.form(supplementary.routes.DeclarationTypeController.submitDispatchLocation(), 'autoComplete -> "off") {
+  @helpers.form(DeclarationTypeController.submitDispatchLocation(), 'autoComplete -> "off") {
 
     @components.error_summary(form.errors)
 

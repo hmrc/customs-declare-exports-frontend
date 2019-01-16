@@ -19,6 +19,7 @@ package forms.supplementary
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import utils.validators.FormFieldValidator._
 
 case class RepresentativeDetails(
   address: AddressAndIdentification,
@@ -49,7 +50,7 @@ object RepresentativeDetails {
     "address" -> AddressAndIdentification.addressMapping,
     "statusCode" -> text().verifying(
       "supplementary.representative.representationType.error.empty",
-      input => input.nonEmpty && representativeStatusCodeAllowedValues(input)
+      nonEmpty and isContainedIn(representativeStatusCodeAllowedValues)
     )
   )(RepresentativeDetails.apply)(RepresentativeDetails.unapply)
 
