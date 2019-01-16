@@ -33,5 +33,9 @@ object SupervisingCustomsOffice {
   )(SupervisingCustomsOffice.apply)(SupervisingCustomsOffice.unapply)
 
   val formId = "SupervisingCustomsOffice"
+
   def form(): Form[SupervisingCustomsOffice] = Form(mapping)
+
+  def toMetadataProperties(office: SupervisingCustomsOffice): Map[String, String] =
+    Map("declaration.supervisingOffice.ID" -> office.office.getOrElse(""))
 }
