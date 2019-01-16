@@ -420,9 +420,7 @@ supplementary.officeOfExit.empty = Office of exit cannot be empty
 supplementary.officeOfExit.error = Office of exit is incorrect
 
 supplementary.warehouse.title =  2/7 Enter the warehouse identification number
-supplementary.warehouse.typeCode = Type Code
-supplementary.warehouse.typeCode.error = Incorrect type code
-supplementary.warehouse.identificationNumber.error = Incorrect identification Number
+supplementary.warehouse.identificationNumber.error = Incorrect Identification Number
 supplementary.warehouse.identificationNumber.hint = For example, R1234567GB
 supplementary.warehouse.identificationNumber = Identification Number
 
