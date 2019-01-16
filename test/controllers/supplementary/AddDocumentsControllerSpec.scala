@@ -17,8 +17,7 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
-import base.ExportsTestData.{correctAddress, incorrectAddress}
-import forms.supplementary.{AddDocument, AddressAndIdentification}
+import forms.supplementary.Document
 import play.api.libs.json.{JsBoolean, JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
@@ -29,7 +28,7 @@ class AddDocumentsControllerSpec extends CustomExportsBaseSpec {
   "AddDocument" should {
     "return 200 with a success" in {
       authorizedUser()
-      withCaching[AddDocument](None)
+      withCaching[Document](None)
 
       val result = route(app, getRequest(uri)).get
       status(result) must be(OK)
@@ -37,7 +36,7 @@ class AddDocumentsControllerSpec extends CustomExportsBaseSpec {
 
     "display add document form" in {
       authorizedUser()
-      withCaching[AddDocument](None)
+      withCaching[Document](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -57,7 +56,7 @@ class AddDocumentsControllerSpec extends CustomExportsBaseSpec {
     "validate form - empty form" in {
       pending
       authorizedUser()
-      withCaching[AddDocument](None)
+      withCaching[Document](None)
 
       val emptyForm: JsValue = JsObject(
         Map(
@@ -82,7 +81,7 @@ class AddDocumentsControllerSpec extends CustomExportsBaseSpec {
     "validate form - correct values" in {
       pending
       authorizedUser()
-      withCaching[AddDocument](None)
+      withCaching[Document](None)
 
       val correctForm: JsValue = JsObject(
         Map(

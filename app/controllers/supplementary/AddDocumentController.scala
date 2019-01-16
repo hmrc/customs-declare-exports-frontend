@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.AddDocument
+import forms.supplementary.Document
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -40,7 +40,7 @@ class AddDocumentController @Inject()(
   import forms.supplementary.Document._
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[AddDocument](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[Document](appConfig.appName, formId).map {
       case Some(data) => Ok(add_document(appConfig, form.fill(data)))
       case _          => Ok(add_document(appConfig, form))
     }
@@ -50,9 +50,9 @@ class AddDocumentController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[AddDocument]) => Future.successful(BadRequest(add_document(appConfig, formWithErrors))),
+        (formWithErrors: Form[Document]) => Future.successful(BadRequest(add_document(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[AddDocument](appConfig.appName, formId, form).map { _ =>
+          customsCacheService.cache[Document](appConfig.appName, formId, form).map { _ =>
             //Redirect(controllers.supplementary.routes.???.displayRepresentativeDetailsPage())
             Ok("Summary page")
         }

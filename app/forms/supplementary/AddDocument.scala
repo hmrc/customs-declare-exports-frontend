@@ -20,7 +20,7 @@ import play.api.data.{Form, Forms}
 import play.api.data.Forms._
 import play.api.libs.json.Json
 
-case class AddDocument(
+case class Document(
   enterDocumentTypeCode: String,
   identifier: String,
   status: String,
@@ -31,9 +31,9 @@ case class AddDocument(
 )
 
 object Document {
-  implicit val format = Json.format[AddDocument]
+  implicit val format = Json.format[Document]
 
-  val formId = "AddDocument"
+  val formId = "Document"
 
   val mapping = Forms.mapping(
     "enterDocumentTypeCode" -> text(),
@@ -43,9 +43,9 @@ object Document {
     "dateOfValidity" -> text(),
     "measurementUnitAndQualifier" -> text(),
     "additionalInformation" -> boolean
-  )(AddDocument.apply)(AddDocument.unapply)
+  )(Document.apply)(Document.unapply)
 
-  def form(): Form[AddDocument] = Form(mapping)
+  def form(): Form[Document] = Form(mapping)
 
-  def toMetadataProperties(document: AddDocument): Map[String, String] = ???
+  def toMetadataProperties(document: Document): Map[String, String] = ???
 }
