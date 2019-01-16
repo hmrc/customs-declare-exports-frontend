@@ -22,20 +22,21 @@ import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
 case class ProcedureCodes(
-  procedureCode: String,      // max 4 alphanumeric characters
-  additionalProcedureCodes: Seq[String]     // max 99 codes, each is max 3 alphanumeric characters
+  procedureCode: String, // max 4 alphanumeric characters
+  additionalProcedureCodes: Seq[String] // max 99 codes, each is max 3 alphanumeric characters
 ) {
 
   def toMetadataProperties(): Map[String, String] = {
     val procedureCodeMapping = Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].currentCode" -> procedureCode.substring(0, 2),
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].previousCode" -> procedureCode.substring(2, 4)
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].currentCode" -> procedureCode
+        .substring(0, 2),
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].previousCode" -> procedureCode
+        .substring(2, 4)
     )
 
-    val additionalProcedureCodesMapping = additionalProcedureCodes.zipWithIndex
-      .map { codeWithIdx =>
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[" + (codeWithIdx._2 + 1) + "].currentCode" -> codeWithIdx._1
-      }
+    val additionalProcedureCodesMapping = additionalProcedureCodes.zipWithIndex.map { codeWithIdx =>
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[" + (codeWithIdx._2 + 1) + "].currentCode" -> codeWithIdx._1
+    }
 
     procedureCodeMapping ++ additionalProcedureCodesMapping
   }
@@ -48,14 +49,20 @@ object ProcedureCodes {
   private val additionalProcedureCodeLength = 3
   val mapping = Forms.mapping(
     "procedureCode" -> text()
-    .verifying("supplementary.procedureCodes.procedureCode.error.empty", _.trim.nonEmpty)
-    .verifying("supplementary.procedureCodes.procedureCode.error.length", isEmpty or hasSpecificLength(procedureCodeLength))
-    .verifying("supplementary.procedureCodes.procedureCode.error.specialCharacters", isAlphanumeric),
-  "additionalProcedureCodes" -> seq(text()
-    .verifying("supplementary.procedureCodes.additionalProcedureCode.error.length", isEmpty or hasSpecificLength(additionalProcedureCodeLength))
-    .verifying("supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters", isAlphanumeric)
-  )
-    .verifying("supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty", _.exists(_.trim.nonEmpty))
+      .verifying("supplementary.procedureCodes.procedureCode.error.empty", _.trim.nonEmpty)
+      .verifying(
+        "supplementary.procedureCodes.procedureCode.error.length",
+        isEmpty or hasSpecificLength(procedureCodeLength)
+      )
+      .verifying("supplementary.procedureCodes.procedureCode.error.specialCharacters", isAlphanumeric),
+    "additionalProcedureCodes" -> seq(
+      text()
+        .verifying(
+          "supplementary.procedureCodes.additionalProcedureCode.error.length",
+          isEmpty or hasSpecificLength(additionalProcedureCodeLength)
+        )
+        .verifying("supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters", isAlphanumeric)
+    ).verifying("supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty", _.exists(_.trim.nonEmpty))
   )(ProcedureCodes.apply)(ProcedureCodes.unapply)
 
   val id = "ProcedureCodes"

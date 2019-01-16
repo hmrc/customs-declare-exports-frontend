@@ -31,9 +31,15 @@ class ProcedureCodesSpec extends WordSpec with MustMatchers {
   private val expectedProcedureCodesProperties: Map[String, String] = Map(
     "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].currentCode" -> procedureCode_1,
     "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].previousCode" -> procedureCode_2,
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[1].currentCode" -> additionalProcedureCodes(0),
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[2].currentCode" -> additionalProcedureCodes(1),
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[3].currentCode" -> additionalProcedureCodes(2)
+    "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[1].currentCode" -> additionalProcedureCodes(
+      0
+    ),
+    "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[2].currentCode" -> additionalProcedureCodes(
+      1
+    ),
+    "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[3].currentCode" -> additionalProcedureCodes(
+      2
+    )
   )
 
   "ProcedureCodes" should {
@@ -41,6 +47,5 @@ class ProcedureCodesSpec extends WordSpec with MustMatchers {
       procedureCodes.toMetadataProperties() must equal(expectedProcedureCodesProperties)
     }
   }
-
 
 }

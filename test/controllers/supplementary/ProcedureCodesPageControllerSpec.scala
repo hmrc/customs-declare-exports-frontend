@@ -55,7 +55,6 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
     }
   }
 
-
   "ProcedureCodesPageController on submitProcedureCodes" should {
 
     "display the form page with error" when {
@@ -69,9 +68,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "procedure code is longer than 4 characters" in {
         withCaching[ProcedureCodes](None, ProcedureCodes.id)
-        val form = buildProcedureCodes(
-          procedureCode = "12345"
-        )
+        val form = buildProcedureCodes(procedureCode = "12345")
         val result = route(app, postRequest(uri, form)).get
 
         contentAsString(result) must include(messages("supplementary.procedureCodes.procedureCode.error.length"))
@@ -79,12 +76,12 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "procedure code contains special characters" in {
         withCaching[ProcedureCodes](None, ProcedureCodes.id)
-        val form = buildProcedureCodes(
-          procedureCode = "123$"
-        )
+        val form = buildProcedureCodes(procedureCode = "123$")
         val result = route(app, postRequest(uri, form)).get
 
-        contentAsString(result) must include(messages("supplementary.procedureCodes.procedureCode.error.specialCharacters"))
+        contentAsString(result) must include(
+          messages("supplementary.procedureCodes.procedureCode.error.specialCharacters")
+        )
       }
 
       "no value provided for additional procedure codes" in {
@@ -92,37 +89,36 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
         val emptyForm = buildProcedureCodes()
         val result = route(app, postRequest(uri, emptyForm)).get
 
-        contentAsString(result) must include(messages("supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty"))
+        contentAsString(result) must include(
+          messages("supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty")
+        )
       }
 
       "any additional procedure code is longer than 3 characters" in {
         withCaching[ProcedureCodes](None, ProcedureCodes.id)
-        val form = buildProcedureCodes(
-          additionalProcedureCodes = Seq("1234")
-        )
+        val form = buildProcedureCodes(additionalProcedureCodes = Seq("1234"))
         val result = route(app, postRequest(uri, form)).get
 
-        contentAsString(result) must include(messages("supplementary.procedureCodes.additionalProcedureCode.error.length"))
+        contentAsString(result) must include(
+          messages("supplementary.procedureCodes.additionalProcedureCode.error.length")
+        )
       }
 
       "any additional procedure code contains special characters" in {
         withCaching[ProcedureCodes](None, ProcedureCodes.id)
-        val form = buildProcedureCodes(
-          additionalProcedureCodes = Seq("12#")
-        )
+        val form = buildProcedureCodes(additionalProcedureCodes = Seq("12#"))
         val result = route(app, postRequest(uri, form)).get
 
-        contentAsString(result) must include(messages("supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters"))
+        contentAsString(result) must include(
+          messages("supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters")
+        )
       }
     }
 
     "save the data to the cache" in {
       reset(mockCustomsCacheService)
       withCaching[ProcedureCodes](None, ProcedureCodes.id)
-      val form = buildProcedureCodes(
-        procedureCode = "1234",
-        additionalProcedureCodes = Seq("111", "222", "333")
-      )
+      val form = buildProcedureCodes(procedureCode = "1234", additionalProcedureCodes = Seq("111", "222", "333"))
       route(app, postRequest(uri, form)).get.futureValue
 
       verify(mockCustomsCacheService)
@@ -131,10 +127,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
     "return 303 code" in {
       withCaching[ProcedureCodes](None, ProcedureCodes.id)
-      val form = buildProcedureCodes(
-        procedureCode = "1234",
-        additionalProcedureCodes = Seq("111", "222", "333")
-      )
+      val form = buildProcedureCodes(procedureCode = "1234", additionalProcedureCodes = Seq("111", "222", "333"))
       val result = route(app, postRequest(uri, form)).get
 
       status(result) must be(SEE_OTHER)
@@ -142,13 +135,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
     "redirect to \"Supervising Office\" page" in {
       withCaching[ProcedureCodes](None, ProcedureCodes.id)
-      val form = buildProcedureCodes(
-        procedureCode = "1234",
-        additionalProcedureCodes = Seq("111", "222", "333")
-      )
+      val form = buildProcedureCodes(procedureCode = "1234", additionalProcedureCodes = Seq("111", "222", "333"))
       val result = route(app, postRequest(uri, form)).get
       val header = result.futureValue.header
-
 
       header.headers.get("Location") must be(
         Some("/customs-declare-exports/declaration/supplementary/supervising-office")
@@ -160,7 +149,10 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
 object ProcedureCodesPageControllerSpec {
 
-  def buildProcedureCodes(procedureCode: String = "", additionalProcedureCodes: Seq[String] = Seq.empty[String]): JsValue = JsObject(
+  def buildProcedureCodes(
+    procedureCode: String = "",
+    additionalProcedureCodes: Seq[String] = Seq.empty[String]
+  ): JsValue = JsObject(
     Map(
       "procedureCode" -> JsString(procedureCode),
       "additionalProcedureCodes" -> JsArray(additionalProcedureCodes.map(JsString))

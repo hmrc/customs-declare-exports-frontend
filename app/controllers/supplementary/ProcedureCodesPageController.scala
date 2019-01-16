@@ -37,27 +37,31 @@ class ProcedureCodesPageController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
-  extends FrontendController with I18nSupport {
+    extends FrontendController with I18nSupport {
 
   private val supplementaryDeclarationCacheId = appConfig.appName
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ProcedureCodes](supplementaryDeclarationCacheId, ProcedureCodes.id)
-      .map {
-        case Some(data) => Ok(procedure_codes(appConfig, ProcedureCodes.form().fill(data)))
-        case _          => Ok(procedure_codes(appConfig, ProcedureCodes.form()))
-      }
+    customsCacheService.fetchAndGetEntry[ProcedureCodes](supplementaryDeclarationCacheId, ProcedureCodes.id).map {
+      case Some(data) => Ok(procedure_codes(appConfig, ProcedureCodes.form().fill(data)))
+      case _          => Ok(procedure_codes(appConfig, ProcedureCodes.form()))
+    }
   }
 
   def submitProcedureCodes(): Action[AnyContent] = authenticate.async { implicit request =>
-    ProcedureCodes.form().bindFromRequest().fold(
-      (formWithErrors: Form[ProcedureCodes]) =>
-        Future.successful(BadRequest(procedure_codes(appConfig, formWithErrors))),
-      validProcedureCodes =>
-        customsCacheService.cache[ProcedureCodes](supplementaryDeclarationCacheId, ProcedureCodes.id, validProcedureCodes).map { _ =>
-          Redirect(controllers.supplementary.routes.SupervisingCustomsOfficeController.displayForm())
-        }
-    )
+    ProcedureCodes
+      .form()
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[ProcedureCodes]) =>
+          Future.successful(BadRequest(procedure_codes(appConfig, formWithErrors))),
+        validProcedureCodes =>
+          customsCacheService
+            .cache[ProcedureCodes](supplementaryDeclarationCacheId, ProcedureCodes.id, validProcedureCodes)
+            .map { _ =>
+              Redirect(controllers.supplementary.routes.SupervisingCustomsOfficeController.displayForm())
+          }
+      )
   }
 
 }

@@ -62,7 +62,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
     stringResult must include(messages("supplementary.warehouse.identificationNumber.error"))
   }
 
-
   "validate form - no answers" in {
     authorizedUser()
     withCaching[WarehouseIdentification](None)
