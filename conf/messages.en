@@ -413,6 +413,18 @@ supplementary.goodsLocation.postCode.error = Postcode is incorrect
 supplementary.goodsLocation.city = City
 supplementary.goodsLocation.city.error = City is incorrect
 
+supplementary.procedureCodes.title = Procedure Codes
+supplementary.procedureCodes.procedureCode.header = 1/10 Enter the procedure code
+supplementary.procedureCodes.procedureCode.header.hint = A 4 digit code, made up of the requested procedure and the previous procedure
+supplementary.procedureCodes.procedureCode.error.empty = Procedure code cannot be empty
+supplementary.procedureCodes.procedureCode.error.length = Procedure code must be exactly 4 characters long
+supplementary.procedureCodes.procedureCode.error.specialCharacters = Procedure code cannot contain special characters
+supplementary.procedureCodes.additionalProcedureCode.header = 1/11 Do you need to enter additional procedure codes?
+supplementary.procedureCodes.additionalProcedureCode.header.hint = A 3 digit code. Up to 99 may be declared for each goods item.
+supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty = You have to enter at least one additional procedure code
+supplementary.procedureCodes.additionalProcedureCode.error.length = Additional procedure code must be exactly 3 characters long
+supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters = Additional procedure code cannot contain special characters
+
 supplementary.officeOfExit.title = Office of exit
 supplementary.officeOfExit = 5/12 Where is the office of exit?
 supplementary.officeOfExit.hint = This is an 8 digit code
@@ -423,7 +435,6 @@ supplementary.warehouse.title =  2/7 Enter the warehouse identification number
 supplementary.warehouse.identificationNumber.error = Incorrect Identification Number
 supplementary.warehouse.identificationNumber.hint = For example, R1234567GB
 supplementary.warehouse.identificationNumber = Identification Number
-
 
 supplementary.addDocument.title = Do you need to add any documents?
 supplementary.addDocument.hint = Including certificates, authorisations or additional references

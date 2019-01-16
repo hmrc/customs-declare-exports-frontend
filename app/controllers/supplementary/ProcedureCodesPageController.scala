@@ -15,46 +15,53 @@
  */
 
 package controllers.supplementary
+
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.SupervisingCustomsOffice
+import forms.supplementary.ProcedureCodes
+import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.supervising_office
+import views.html.supplementary.procedure_codes
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SupervisingCustomsOfficeController @Inject()(
+class ProcedureCodesPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  import forms.supplementary.SupervisingCustomsOffice._
+  private val supplementaryDeclarationCacheId = appConfig.appName
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[SupervisingCustomsOffice](appConfig.appName, formId).map {
-      case Some(data) => Ok(supervising_office(appConfig, form.fill(data)))
-      case _          => Ok(supervising_office(appConfig, form))
+  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[ProcedureCodes](supplementaryDeclarationCacheId, ProcedureCodes.id).map {
+      case Some(data) => Ok(procedure_codes(appConfig, ProcedureCodes.form().fill(data)))
+      case _          => Ok(procedure_codes(appConfig, ProcedureCodes.form()))
     }
   }
 
-  def saveSupervisingOffice(): Action[AnyContent] = authenticate.async { implicit request =>
-    form()
+  def submitProcedureCodes(): Action[AnyContent] = authenticate.async { implicit request =>
+    ProcedureCodes
+      .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[SupervisingCustomsOffice]) =>
-          Future.successful(BadRequest(supervising_office(appConfig, formWithErrors))),
-        validForm =>
-          customsCacheService.cache[SupervisingCustomsOffice](appConfig.appName, formId, validForm).map { _ =>
-            Redirect(controllers.supplementary.routes.WarehouseIdentificationController.displayForm())
-        }
+        (formWithErrors: Form[ProcedureCodes]) =>
+          Future.successful(BadRequest(procedure_codes(appConfig, formWithErrors))),
+        validProcedureCodes =>
+          customsCacheService
+            .cache[ProcedureCodes](supplementaryDeclarationCacheId, ProcedureCodes.id, validProcedureCodes)
+            .map { _ =>
+              Redirect(controllers.supplementary.routes.SupervisingCustomsOfficeController.displayForm())
+          }
       )
   }
+
 }

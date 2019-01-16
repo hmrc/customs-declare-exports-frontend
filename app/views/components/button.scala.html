@@ -15,10 +15,11 @@
  *@
 
 @(
-messageKey: String = "",
-inputType: String = "button"
+  messageKey: String = "",
+  inputType: String = "button",
+  id: String = ""
 )(implicit messages: Messages)
 
 <div class="section">
-    <input type="@inputType" class="button" value="@messages(messageKey)"/>
+  <input type="@inputType" class="button" id="@id" value="@messages(messageKey)"/>
 </div>

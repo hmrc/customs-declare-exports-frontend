@@ -16,8 +16,8 @@
 
 package forms.supplementary
 
-import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
@@ -30,7 +30,7 @@ object TotalNumberOfItems {
 
   val mapping = Forms.mapping(
     "items" -> text()
-      .verifying("supplementary.totalNumberOfItems.error", isNumeric and noLongerThan(3) and forbiddenZero)
+      .verifying("supplementary.totalNumberOfItems.error", isNumeric and noLongerThan(3) and containsNotOnlyZeros)
   )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
 
   def form(): Form[TotalNumberOfItems] = Form(mapping)

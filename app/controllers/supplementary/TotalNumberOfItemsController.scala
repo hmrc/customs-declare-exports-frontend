@@ -40,7 +40,7 @@ class TotalNumberOfItemsController @Inject()(
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[TotalNumberOfItems](appConfig.appName, formId).map {
       case Some(data) => Ok(total_number_of_items(appConfig, form.fill(data)))
-      case _ => Ok(total_number_of_items(appConfig, form))
+      case _          => Ok(total_number_of_items(appConfig, form))
     }
   }
 
@@ -49,11 +49,11 @@ class TotalNumberOfItemsController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[TotalNumberOfItems]) =>
-        Future.successful(BadRequest(total_number_of_items(appConfig, formWithErrors))),
+          Future.successful(BadRequest(total_number_of_items(appConfig, formWithErrors))),
         form =>
-        customsCacheService.cache[TotalNumberOfItems](appConfig.appName, formId, form).map { _ =>
-          //Redirect(controllers.supplementary.routes.NatureOfTransactionController.displayForm())
-          Ok("Nature of transaction")
+          customsCacheService.cache[TotalNumberOfItems](appConfig.appName, formId, form).map { _ =>
+            //Redirect(controllers.supplementary.routes.NatureOfTransactionController.displayForm())
+            Ok("Nature of transaction")
         }
       )
   }
