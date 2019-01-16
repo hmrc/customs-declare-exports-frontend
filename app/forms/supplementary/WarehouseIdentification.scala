@@ -19,7 +19,7 @@ package forms.supplementary
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.FormFieldValidator.noLongerThan
+import utils.validators.FormFieldValidator._
 
 case class WarehouseIdentification(id: Option[String])
 
@@ -28,9 +28,9 @@ object WarehouseIdentification {
 
   val formId = "IdentificationOfWarehouse"
 
-  val mapping = Forms.mapping( 
+  val mapping = Forms.mapping(
     "identificationNumber" -> optional(
-      text().verifying("supplementary.warehouse.identificationNumber.error", noLongerThan(35))
+      text().verifying("supplementary.warehouse.identificationNumber.error", noShorterThan(2) and noLongerThan(36))
     )
   )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
 

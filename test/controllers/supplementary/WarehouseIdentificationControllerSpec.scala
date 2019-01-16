@@ -38,17 +38,30 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
     }
   }
 
-  "validate form - incorrect values" in { 
+  "validate form - too many characters" in {
     authorizedUser()
     withCaching[WarehouseIdentification](None)
 
     val incorrectWarehouseIdentification: JsValue =
-      JsObject(Map("identificationNumber" -> JsString(TestHelper.randomString(36))))
+      JsObject(Map("identificationNumber" -> JsString(TestHelper.randomString(37))))
     val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
     val stringResult = contentAsString(result)
 
     stringResult must include(messages("supplementary.warehouse.identificationNumber.error"))
   }
+
+  "validate form - less than two characters" in {
+    authorizedUser()
+    withCaching[WarehouseIdentification](None)
+
+    val incorrectWarehouseIdentification: JsValue =
+      JsObject(Map("identificationNumber" -> JsString(TestHelper.randomString(1))))
+    val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
+    val stringResult = contentAsString(result)
+
+    stringResult must include(messages("supplementary.warehouse.identificationNumber.error"))
+  }
+
 
   "validate form - no answers" in {
     authorizedUser()
