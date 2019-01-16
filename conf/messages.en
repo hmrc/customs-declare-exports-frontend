@@ -439,3 +439,8 @@ supplementary.totalNumberOfItems.title = 1/9 What is the total number of items?
 supplementary.totalNumberOfItems = Total number of items
 supplementary.totalNumberOfItems.hint = Up to a maximum of 999 items
 supplementary.totalNumberOfItems.error = Total number of items is incorrect
+supplementary.totalAmountInvoiced.error = Total amount of invoiced items is incorrect
+supplementary.totalAmountInvoiced = 4/11 Total Amount of invoiced items
+supplementary.exchangeRate.error = Exchange rate is incorrect
+supplementary.exchangeRate = 4/15 Exchange rate
+

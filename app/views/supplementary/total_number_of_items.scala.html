@@ -38,6 +38,16 @@
             hint = Some(messages("supplementary.totalNumberOfItems.hint"))
         )
 
+        @components.input_text(
+        field = form("items"),
+        label = messages("supplementary.totalAmountInvoiced")
+        )
+
+        @components.input_text(
+        field = form("items"),
+        label = messages("supplementary.exchangeRate")
+)
+
         @components.submit_button()
     }
 }
