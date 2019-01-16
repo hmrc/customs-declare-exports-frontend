@@ -35,4 +35,6 @@ object OfficeOfExit {
   )(OfficeOfExit.apply)(OfficeOfExit.unapply)
 
   def form(): Form[OfficeOfExit] = Form(mapping)
+
+  def toMetadataProperties(office: OfficeOfExit): Map[String, String] = Map("declaration.exitOffice.ID" -> office.id)
 }
