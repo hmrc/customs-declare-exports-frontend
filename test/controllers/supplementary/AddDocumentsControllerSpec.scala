@@ -19,7 +19,7 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import base.ExportsTestData.{correctAddress, incorrectAddress}
 import forms.supplementary.{AddDocument, AddressAndIdentification}
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsBoolean, JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
 class AddDocumentsControllerSpec extends CustomExportsBaseSpec {
@@ -48,9 +48,9 @@ class AddDocumentsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.addDocument.enterDocumentTypeOfCode"))
       stringResult must include(messages("supplementary.addDocument.identifier"))
       stringResult must include(messages("supplementary.addDocument.status"))
-      stringResult must include(messages("supplementary.addDocument.IssuingAuthority"))
+      stringResult must include(messages("supplementary.addDocument.issuingAuthority"))
       stringResult must include(messages("supplementary.addDocument.dateOfValidity"))
-      stringResult must include(messages("supplementary.addDocument.MeasurementUnitAndQualifier"))
+      stringResult must include(messages("supplementary.addDocument.measurementUnitAndQualifier"))
       stringResult must include(messages("supplementary.addDocument.checkbox"))
     }
 
@@ -59,10 +59,17 @@ class AddDocumentsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[AddDocument](None)
 
-      val emptyForm: JsValue = JsObject(Map("enterDocumentTypeCode" -> JsString(""),"identifier" -> JsString(""),
-        "status" -> JsString(""),"issuingAuthority" -> JsString(""),
-        "dateOfValidity" -> JsString(""),"measurementUnitAndQualifier" -> JsString(""),
-        "additonalInformation" -> JsString("")))
+      val emptyForm: JsValue = JsObject(
+        Map(
+          "enterDocumentTypeCode" -> JsString(""),
+          "identifier" -> JsString(""),
+          "status" -> JsString(""),
+          "issuingAuthority" -> JsString(""),
+          "dateOfValidity" -> JsString(""),
+          "measurementUnitAndQualifier" -> JsString(""),
+          "additionalInformation" -> JsBoolean(false)
+        )
+      )
 
       val result = route(app, postRequest(uri, emptyForm)).get
       val header = result.futureValue.header
@@ -71,16 +78,23 @@ class AddDocumentsControllerSpec extends CustomExportsBaseSpec {
       header.headers.get("Location") must be(Some(""))
 
     }
-    
+
     "validate form - correct values" in {
       pending
       authorizedUser()
       withCaching[AddDocument](None)
 
-      val correctForm: JsValue = JsObject(Map("enterDocumentTypeCode" -> JsString(""),"identifier" -> JsString(""),
-        "status" -> JsString(""),"issuingAuthority" -> JsString(""),
-        "dateOfValidity" -> JsString(""),"measurementUnitAndQualifier" -> JsString(""),
-        "additonalInformation" -> JsString("") ))
+      val correctForm: JsValue = JsObject(
+        Map(
+          "enterDocumentTypeCode" -> JsString(""),
+          "identifier" -> JsString(""),
+          "status" -> JsString(""),
+          "issuingAuthority" -> JsString(""),
+          "dateOfValidity" -> JsString(""),
+          "measurementUnitAndQualifier" -> JsString(""),
+          "additionalInformation" -> JsBoolean(false)
+        )
+      )
 
       val result = route(app, postRequest(uri, correctForm)).get
       val header = result.futureValue.header

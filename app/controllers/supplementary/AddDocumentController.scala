@@ -35,9 +35,9 @@ class AddDocumentController @Inject()(
   authenticate: AuthAction,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
-  extends FrontendController with I18nSupport {
+    extends FrontendController with I18nSupport {
 
-  import forms.supplementary.AddDocument._
+  import forms.supplementary.Document._
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[AddDocument](appConfig.appName, formId).map {
@@ -50,13 +50,12 @@ class AddDocumentController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[AddDocument]) =>
-          Future.successful(BadRequest(add_document(appConfig, formWithErrors))),
+        (formWithErrors: Form[AddDocument]) => Future.successful(BadRequest(add_document(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[AddDocument](appConfig.appName, formId, form).map { _ =>
-            //Redirect(controllers.supplementary.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage())
+            //Redirect(controllers.supplementary.routes.???.displayRepresentativeDetailsPage())
             Ok("Summary page")
-          }
+        }
       )
   }
 

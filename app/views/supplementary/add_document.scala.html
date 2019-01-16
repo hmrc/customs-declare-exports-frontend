@@ -28,6 +28,8 @@
 
   @helpers.form(AddDocumentController.saveForm(), 'autoComplete -> "off") {
 
+      @components.back_link("") //TODO
+
       @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
 
       @components.input_text(
@@ -44,7 +46,7 @@
       )
       @components.input_text(
        field = form("issuingAuthority"),
-       label = messages("supplementary.addDocument.IssuingAuthority")
+       label = messages("supplementary.addDocument.issuingAuthority")
       )
       @components.input_text(
        field = form("dateOfValidity"),
@@ -53,7 +55,7 @@
 
       @components.input_text(
        field = form("measurementUnitAndQualifier"),
-       label = messages("supplementary.addDocument.MeasurementUnitAndQualifier")
+       label = messages("supplementary.addDocument.measurementUnitAndQualifier")
       )
 
       @components.input_checkbox(

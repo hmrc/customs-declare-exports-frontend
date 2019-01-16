@@ -27,11 +27,10 @@ case class AddDocument(
   issuingAuthority: String,
   dateOfValidity: String,
   measurementUnitAndQualifier: String,
-  additonalInformation: Boolean
-
+  additionalInformation: Boolean
 )
 
-object AddDocument{
+object Document {
   implicit val format = Json.format[AddDocument]
 
   val formId = "AddDocument"
@@ -47,4 +46,6 @@ object AddDocument{
   )(AddDocument.apply)(AddDocument.unapply)
 
   def form(): Form[AddDocument] = Form(mapping)
+
+  def toMetadataProperties(document: AddDocument): Map[String, String] = ???
 }
