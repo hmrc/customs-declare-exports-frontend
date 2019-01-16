@@ -19,7 +19,7 @@ package forms.supplementary
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.FormFieldValidator.noLongerThan
+import utils.validators.FormFieldValidator._
 
 case class SupervisingCustomsOffice(office: Option[String])
 
@@ -28,7 +28,7 @@ object SupervisingCustomsOffice {
 
   val mapping = Forms.mapping(
     "supervisingCustomsOffice" -> optional(
-      text().verifying("supplementary.supervisingCustomsOffice.error", noLongerThan(8))
+      text().verifying("supplementary.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
     )
   )(SupervisingCustomsOffice.apply)(SupervisingCustomsOffice.unapply)
 
