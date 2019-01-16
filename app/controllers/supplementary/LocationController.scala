@@ -42,13 +42,13 @@ class LocationController @Inject()(
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[GoodsLocation](appConfig.appName, formId).map {
-      case Some(data) => Ok(goods_location(appConfig, form().fill(data)))
-      case _          => Ok(goods_location(appConfig, form()))
+      case Some(data) => Ok(goods_location(appConfig, form.fill(data)))
+      case _          => Ok(goods_location(appConfig, form))
     }
   }
 
   def saveLocation(): Action[AnyContent] = authenticate.async { implicit request =>
-    form()
+    form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[GoodsLocation]) =>

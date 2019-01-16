@@ -20,7 +20,7 @@ import forms.Ducr
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.FormFieldValidator.{hasSpecificLength, isAlphanumeric}
+import utils.validators.FormFieldValidator.{isAlphanumeric, noLongerThan}
 
 case class ConsignmentReferences(
   ducr: Option[Ducr],
@@ -42,7 +42,7 @@ object ConsignmentReferences {
     "ducr" -> optional(Ducr.ducrMapping),
     "lrn" -> text()
       .verifying("supplementary.consignmentReferences.lrn.error.empty", _.trim.nonEmpty)
-      .verifying("supplementary.consignmentReferences.lrn.error.length", hasSpecificLength(lrnMaxLength))
+      .verifying("supplementary.consignmentReferences.lrn.error.length", noLongerThan(lrnMaxLength))
       .verifying("supplementary.consignmentReferences.lrn.error.specialCharacter", isAlphanumeric)
   )(ConsignmentReferences.apply)(ConsignmentReferences.unapply)
 
