@@ -19,9 +19,9 @@ package forms.supplementary
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.FormFieldValidator.noLongerThan
+import utils.validators.FormFieldValidator._
 
-case class WarehouseIdentification(typeCode: Option[String], id: Option[String])
+case class WarehouseIdentification(id: Option[String])
 
 object WarehouseIdentification {
   implicit val format = Json.format[WarehouseIdentification]
@@ -29,17 +29,16 @@ object WarehouseIdentification {
   val formId = "IdentificationOfWarehouse"
 
   val mapping = Forms.mapping(
-    "typeCode" -> optional(text().verifying("supplementary.warehouse.typeCode.error", noLongerThan(35))),
     "identificationNumber" -> optional(
-      text().verifying("supplementary.warehouse.identificationNumber.error", noLongerThan(35))
+      text().verifying("supplementary.warehouse.identificationNumber.error", noShorterThan(2) and noLongerThan(36))
     )
   )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
 
   def form(): Form[WarehouseIdentification] = Form(mapping)
 
-  def toMetadataProperties(holder: DeclarationHolder): Map[String, String] =
+  def toMetadataProperties(identification: WarehouseIdentification): Map[String, String] =
     Map(
-      "declaration.goodsShipment.warehouse.typeCode" -> holder.authorisationTypeCode.getOrElse(""),
-      "declaration.goodsShipment.warehouse.ID" -> holder.eori.getOrElse("")
+      "declaration.goodsShipment.warehouse.ID" -> identification.id.map(_.head.toString).getOrElse(""),
+      "declaration.goodsShipment.warehouse.typeCode" -> identification.id.map(_.tail).getOrElse("")
     )
 }

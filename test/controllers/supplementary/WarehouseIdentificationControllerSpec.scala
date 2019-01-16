@@ -33,37 +33,42 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(OK)
       stringResult must include(messages("supplementary.warehouse.title"))
-      stringResult must include(messages("supplementary.warehouse.typeCode"))
       stringResult must include(messages("supplementary.warehouse.identificationNumber"))
       stringResult must include(messages("supplementary.warehouse.identificationNumber.hint"))
     }
-
   }
 
-  "validate form - incorrect values" in {
+  "validate form - too many characters" in {
     authorizedUser()
     withCaching[WarehouseIdentification](None)
 
     val incorrectWarehouseIdentification: JsValue =
-      JsObject(
-        Map(
-          "typeCode" -> JsString(TestHelper.randomString(36)),
-          "identificationNumber" -> JsString(TestHelper.randomString(36))
-        )
-      )
+      JsObject(Map("identificationNumber" -> JsString(TestHelper.randomString(37))))
     val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
     val stringResult = contentAsString(result)
 
-    stringResult must include(messages("supplementary.warehouse.typeCode.error"))
     stringResult must include(messages("supplementary.warehouse.identificationNumber.error"))
   }
+
+  "validate form - less than two characters" in {
+    authorizedUser()
+    withCaching[WarehouseIdentification](None)
+
+    val incorrectWarehouseIdentification: JsValue =
+      JsObject(Map("identificationNumber" -> JsString(TestHelper.randomString(1))))
+    val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
+    val stringResult = contentAsString(result)
+
+    stringResult must include(messages("supplementary.warehouse.identificationNumber.error"))
+  }
+
 
   "validate form - no answers" in {
     authorizedUser()
     withCaching[WarehouseIdentification](None)
 
     val emptyWarehouseIdentification: JsValue =
-      JsObject(Map("typeCode" -> JsString(""), "identificationNumber" -> JsString("")))
+      JsObject(Map("identificationNumber" -> JsString("")))
     val result = route(app, postRequest(uri, emptyWarehouseIdentification)).get
     val header = result.futureValue.header
 
@@ -77,7 +82,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
     withCaching[WarehouseIdentification](None)
 
     val correctWarehouseIdentification: JsValue =
-      JsObject(Map("typeCode" -> JsString("CorrectTypeCodeExample"), "identificationNumber" -> JsString("R1234567GB")))
+      JsObject(Map("identificationNumber" -> JsString("R1234567GB")))
     val result = route(app, postRequest(uri, correctWarehouseIdentification)).get
     val header = result.futureValue.header
 

@@ -32,6 +32,8 @@ object FormFieldValidator {
 
   val noLongerThan: Int => String => Boolean = (length: Int) => (input: String) => input.length <= length
 
+  val noShorterThan: Int => String => Boolean = (length: Int) => (input: String) => input.length >= length
+
   val isNumeric: String => Boolean = (input: String) => input.matches(numericRegexValue)
 
   val isAlphabetic: String => Boolean = (input: String) => input.matches(alphabeticRegexValue)
