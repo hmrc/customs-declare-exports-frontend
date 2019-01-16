@@ -407,7 +407,7 @@ supplementary.goodsLocation.identificationOfLocation.error = Identification of l
 supplementary.goodsLocation.additionalIdentifier = Additional identifier
 supplementary.goodsLocation.additionalIdentifier.error = Additional identifier is incorrect
 supplementary.goodsLocation.streetAndNumber = Street and number
-supplementary.goodsLocation.streetAndNumber.error = Street and number is in correct
+supplementary.goodsLocation.streetAndNumber.error = Street and number is incorrect
 supplementary.goodsLocation.postCode = Postcode
 supplementary.goodsLocation.postCode.error = Postcode is incorrect
 supplementary.goodsLocation.city = City
@@ -424,6 +424,7 @@ supplementary.warehouse.identificationNumber.error = Incorrect Identification Nu
 supplementary.warehouse.identificationNumber.hint = For example, R1234567GB
 supplementary.warehouse.identificationNumber = Identification Number
 
+
 supplementary.addDocument.title = Do you need to add any documents?
 supplementary.addDocument.hint = Including certificates, authorisations or additional references
 supplementary.addDocument.enterDocumentTypeOfCode = Enter document type code
@@ -433,3 +434,8 @@ supplementary.addDocument.issuingAuthority = Issuing authority
 supplementary.addDocument.dateOfValidity = Date of validity
 supplementary.addDocument.measurementUnitAndQualifier = Measurement unit and qualifier, if applicable
 supplementary.addDocument.checkbox = I don’t need to enter additional information
+
+supplementary.totalNumberOfItems.title = 1/9 What is the total number of items?
+supplementary.totalNumberOfItems = Total number of items
+supplementary.totalNumberOfItems.hint = Up to a maximum of 999 items
+supplementary.totalNumberOfItems.error = Total number of items is incorrect

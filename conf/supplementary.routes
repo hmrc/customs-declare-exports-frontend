@@ -84,8 +84,15 @@ GET         /warehouse                     controllers.supplementary.WarehouseId
 
 POST        /warehouse                     controllers.supplementary.WarehouseIdentificationController.saveWarehouse()
 
+
 # Add Documents
 
 GET         /add-document                  controllers.supplementary.AddDocumentController.displayPage()
 
 POST        /add-document                  controllers.supplementary.AddDocumentController.saveForm()
+
+# Total number of items
+
+GET         /total-numbers-of-items        controllers.supplementary.TotalNumberOfItemsController.displayForm()
+
+POST        /total-numbers-of-items        controllers.supplementary.TotalNumberOfItemsController.saveNoOfItems()
