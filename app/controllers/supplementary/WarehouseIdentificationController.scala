@@ -58,4 +58,5 @@ class WarehouseIdentificationController @Inject()(
         }
       )
   }
+
 }

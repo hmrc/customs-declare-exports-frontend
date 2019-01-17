@@ -89,4 +89,17 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
 
     header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/office-of-exit"))
   }
+
+  "validate form - first letter is not capital" in {
+    authorizedUser()
+    withCaching[WarehouseIdentification](None)
+
+    val incorrectWarehouseIdentification: JsValue =
+      JsObject(Map("identificationNumber" -> JsString("r1234567GB")))
+    val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
+    val stringResult = contentAsString(result)
+
+    stringResult must include(messages("supplementary.warehouse.identificationNumber.error"))
+  }
+
 }

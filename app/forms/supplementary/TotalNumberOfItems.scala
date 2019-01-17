@@ -48,4 +48,5 @@ object TotalNumberOfItems {
       "declaration.invoiceAmount" -> numberOfItems.totalAmountInvoiced.getOrElse(""),
       "declaration.currencyExchange.rateNumeric" -> numberOfItems.exchangeRate.getOrElse("")
     )
+
 }
