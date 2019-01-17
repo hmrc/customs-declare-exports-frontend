@@ -65,7 +65,7 @@ class ConsignmentReferencesController @Inject()(
               validConsignmentReferences
             )
             .map { _ =>
-              Ok("You should be now redirected to \"Exporter ID\" page")
+              Redirect(controllers.supplementary.routes.ExporterAddressController.displayForm())
             }
         }
       )

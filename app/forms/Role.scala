@@ -23,13 +23,14 @@ import play.api.libs.json.Json
 case class Role(role: String)
 
 object Role {
-  implicit val format = Json.format[Role]
-
   import AllowedRoles._
+
+  implicit val format = Json.format[Role]
   private val correctRole = Set(Declarant, DirectRepresentative, IndirectRepresentative)
 
-  val roleMapping =
-    mapping("roleForm" -> text().verifying("Incorrect value", correctRole.contains(_)))(Role.apply)(Role.unapply)
+  val roleMapping = mapping(
+    "roleForm" -> text().verifying("Incorrect value", correctRole.contains(_))
+  )(Role.apply)(Role.unapply)
 
   val roleId = "Role"
 

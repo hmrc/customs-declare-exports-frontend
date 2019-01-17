@@ -19,29 +19,41 @@ package controllers
 import config.AppConfig
 import controllers.actions.AuthAction
 import forms.Role
-import handlers.ErrorHandler
 import javax.inject.Inject
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.role_page
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class RoleController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
-  customsCacheService: CustomsCacheService,
-  errorHandler: ErrorHandler
+  customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
+  import forms.Role._
 
   def displayRolePage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Role](appConfig.appName, Role.roleId).map {
-      case Some(data) => Ok(role_page(appConfig, Role.form().fill(data)))
-      case _          => Ok(role_page(appConfig, Role.form()))
+    customsCacheService.fetchAndGetEntry[Role](appConfig.appName, roleId).map {
+      case Some(data) => Ok(role_page(appConfig, form.fill(data)))
+      case _          => Ok(role_page(appConfig, form))
     }
+  }
+
+  def submitRole(): Action[AnyContent] = authenticate.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[Role]) => Future.successful(BadRequest(role_page(appConfig, formWithErrors))),
+        validForm =>
+          customsCacheService.cache[Role](appConfig.appName, roleId, validForm).map { _ =>
+            Redirect(controllers.supplementary.routes.DeclarationTypeController.displayDispatchLocationPage())
+        }
+      )
   }
 }

@@ -20,6 +20,7 @@ import config.AppConfig
 import controllers.actions.AuthAction
 import forms.Choice
 import forms.Choice._
+import forms.Choice.AllowedChoiceValues._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.data.Form
@@ -56,12 +57,16 @@ class ChoiceController @Inject()(
         validChoice =>
           customsCacheService.cache[Choice](appConfig.appName, choiceId, validChoice).map { _ =>
             validChoice.choice match {
-              case AllowedChoiceValues.SimplifiedDec =>
+              case SupplementaryDec =>
                 Redirect(controllers.routes.RoleController.displayRolePage())
-              case AllowedChoiceValues.CancelDec =>
+              case StandardDec =>
+                // TODO Standard declaration is not supported now
+                Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+              case Arrival | Departure => Redirect(controllers.movement.routes.MovementController.displayDucrPage())
+              case CancelDec =>
                 Redirect(controllers.routes.CancelDeclarationController.displayForm())
               case _ =>
-                Redirect(controllers.movement.routes.MovementController.displayDucrPage())
+                Redirect(controllers.routes.ChoiceController.displayChoiceForm())
             }
         }
       )

@@ -26,11 +26,12 @@
   appConfig = appConfig
 ) {
 
-  @components.back_link("/customs-declare-exports/declaration/supplementary/location-of-goods")
-
   @helpers.form(ProcedureCodesPageController.submitProcedureCodes(), 'autoComplete -> "off") {
-
+      @components.back_link("/customs-declare-exports/declaration/supplementary/location-of-goods")
+    
     @components.error_summary(form.errors)
+
+    @components.page_title(Some("supplementary.procedureCodes.title"))
 
     @components.input_text(
       field = form("procedureCode"),

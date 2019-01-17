@@ -94,7 +94,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
     "redirect to role page when simplified declaration chosen" in {
       withCaching[Choice](None, choiceId)
 
-      val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.SimplifiedDec)))
+      val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.SupplementaryDec)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
 
@@ -102,7 +102,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       header.headers.get("Location") must be(Some("/customs-declare-exports/role"))
     }
 
-    "redirect to ducr page when standard declaration chosen" in {
+    "redirect to choice page when standard declaration chosen" in {
       withCaching[Choice](None, choiceId)
 
       val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.StandardDec)))
@@ -110,7 +110,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/movement/ducr"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/choice"))
     }
 
     "redirect to ducr for arrival page when arrival chosen" in {

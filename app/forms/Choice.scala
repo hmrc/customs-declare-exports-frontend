@@ -26,7 +26,7 @@ object Choice {
   implicit val format = Json.format[Choice]
 
   import AllowedChoiceValues._
-  private val correctChoice = Set(SimplifiedDec, StandardDec, Arrival, Departure, CancelDec)
+  private val correctChoice = Set(SupplementaryDec, StandardDec, Arrival, Departure, CancelDec)
 
   val choiceMapping =
     mapping("choice" -> text().verifying("Incorrect value", correctChoice.contains(_)))(Choice.apply)(Choice.unapply)
@@ -36,7 +36,7 @@ object Choice {
   def form(): Form[Choice] = Form(choiceMapping)
 
   object AllowedChoiceValues {
-    val SimplifiedDec = "SMP"
+    val SupplementaryDec = "SMP"
     val StandardDec = "STD"
     val Arrival = "EAL"
     val Departure = "EDL"

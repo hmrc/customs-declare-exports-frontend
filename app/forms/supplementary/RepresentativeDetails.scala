@@ -27,12 +27,12 @@ case class RepresentativeDetails(
 
   def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.agent.id" -> address.eori,
-      "declaration.agent.name" -> address.fullName,
-      "declaration.agent.address.line" -> address.addressLine,
-      "declaration.agent.address.cityName" -> address.townOrCity,
-      "declaration.agent.address.postcodeId" -> address.postCode,
-      "declaration.agent.address.countryCode" -> address.country,
+      "declaration.agent.id" -> address.eori.getOrElse(""),
+      "declaration.agent.name" -> address.fullName.getOrElse(""),
+      "declaration.agent.address.line" -> address.addressLine.getOrElse(""),
+      "declaration.agent.address.cityName" -> address.townOrCity.getOrElse(""),
+      "declaration.agent.address.postcodeId" -> address.postCode.getOrElse(""),
+      "declaration.agent.address.countryCode" -> address.country.getOrElse(""),
       "declaration.agent.functionCode" -> statusCode
     )
 }

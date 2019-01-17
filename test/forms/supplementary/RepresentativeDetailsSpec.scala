@@ -30,12 +30,12 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
 
   private val representativeAddress: RepresentativeDetails = RepresentativeDetails(
     address = AddressAndIdentification(
-      eori = eori,
-      fullName = fullName,
-      addressLine = addressLine,
-      townOrCity = townOrCity,
-      postCode = postCode,
-      country = country
+      eori = Some(eori),
+      fullName = Some(fullName),
+      addressLine = Some(addressLine),
+      townOrCity = Some(townOrCity),
+      postCode = Some(postCode),
+      country = Some(country)
     ),
     statusCode = statusCode
   )
