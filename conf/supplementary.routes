@@ -1,46 +1,46 @@
 # Declaration type
 
-GET         /dispatch-location              controllers.supplementary.DeclarationTypeController.displayDispatchLocationPage()
+GET         /dispatch-location            controllers.supplementary.DeclarationTypeController.displayDispatchLocationPage()
 
-POST        /dispatch-location              controllers.supplementary.DeclarationTypeController.submitDispatchLocation()
+POST        /dispatch-location            controllers.supplementary.DeclarationTypeController.submitDispatchLocation()
 
-GET         /type                           controllers.supplementary.DeclarationTypeController.displayDeclarationTypePage()
+GET         /type                         controllers.supplementary.DeclarationTypeController.displayDeclarationTypePage()
 
-POST        /type                           controllers.supplementary.DeclarationTypeController.submitDeclarationType()
+POST        /type                         controllers.supplementary.DeclarationTypeController.submitDeclarationType()
 
 # Not Eligible
 
-GET         /not-eligible                   controllers.supplementary.NotEligibleController.displayPage()
+GET         /not-eligible                 controllers.supplementary.NotEligibleController.displayPage()
 
 # Consignment references
 
-GET         /consignment-references         controllers.supplementary.ConsignmentReferencesController.displayPage()
+GET         /consignment-references       controllers.supplementary.ConsignmentReferencesController.displayPage()
 
-POST        /consignment-references         controllers.supplementary.ConsignmentReferencesController.submitConsignmentReferences()
+POST        /consignment-references       controllers.supplementary.ConsignmentReferencesController.submitConsignmentReferences()
 
-# Exporter address
+# Consignor address
 
-GET         /exporter-address               controllers.supplementary.ExporterAddressController.displayForm()
+GET         /consignor-address            controllers.supplementary.ConsignorAddressController.displayForm()
 
-POST        /exporter-address               controllers.supplementary.ExporterAddressController.saveAddress()
+POST        /consignor-address            controllers.supplementary.ConsignorAddressController.saveAddress()
 
 # Declarant address
 
-GET         /declarant-address              controllers.supplementary.DeclarantAddressController.displayForm()
+GET         /declarant-address            controllers.supplementary.DeclarantAddressController.displayForm()
 
-POST        /declarant-address              controllers.supplementary.DeclarantAddressController.saveAddress()
+POST        /declarant-address            controllers.supplementary.DeclarantAddressController.saveAddress()
 
 # Declaration additional address
 
-GET         /additional-actors              controllers.supplementary.DeclarationAdditionalActorsController.displayForm()
+GET         /additional-actors            controllers.supplementary.DeclarationAdditionalActorsController.displayForm()
 
-POST        /additional-actors              controllers.supplementary.DeclarationAdditionalActorsController.saveAdditionalActors()
+POST        /additional-actors            controllers.supplementary.DeclarationAdditionalActorsController.saveAdditionalActors()
 
 # Representative details
 
-GET         /representative                 controllers.supplementary.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
+GET         /representative               controllers.supplementary.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
 
-POST        /representative                 controllers.supplementary.RepresentativeDetailsPageController.submitRepresentativeDetails()
+POST        /representative               controllers.supplementary.RepresentativeDetailsPageController.submitRepresentativeDetails()
 
 # Consignee address
 
@@ -62,9 +62,9 @@ POST        /destination-countries          controllers.supplementary.Destinatio
 
 # Location of goods
 
-GET         /location-of-goods              controllers.supplementary.LocationController.displayForm()
+GET         /location-of-goods             controllers.supplementary.LocationController.displayForm()
 
-POST        /location-of-goods              controllers.supplementary.LocationController.saveLocation()
+POST        /location-of-goods             controllers.supplementary.LocationController.saveLocation()
 
 # Procedure codes
 
@@ -74,30 +74,37 @@ POST        /procedure-codes                controllers.supplementary.ProcedureC
 
 # Supervising customs office
 
-GET         /supervising-office             controllers.supplementary.SupervisingCustomsOfficeController.displayForm()
+GET         /supervising-office            controllers.supplementary.SupervisingCustomsOfficeController.displayForm()
 
-POST        /supervising-office             controllers.supplementary.SupervisingCustomsOfficeController.saveSupervisingOffice()
+POST        /supervising-office            controllers.supplementary.SupervisingCustomsOfficeController.saveSupervisingOffice()
 
 # Identification of a Warehouse
 
-GET         /warehouse                      controllers.supplementary.WarehouseIdentificationController.displayForm()
+GET         /warehouse                     controllers.supplementary.WarehouseIdentificationController.displayForm()
 
-POST        /warehouse                      controllers.supplementary.WarehouseIdentificationController.saveWarehouse()
+POST        /warehouse                     controllers.supplementary.WarehouseIdentificationController.saveWarehouse()
 
 # Office of exit
 
-GET         /office-of-exit                 controllers.supplementary.OfficeOfExitController.displayForm()
+GET         /office-of-exit                controllers.supplementary.OfficeOfExitController.displayForm()
 
-POST        /office-of-exit                 controllers.supplementary.OfficeOfExitController.saveOffice()
+POST        /office-of-exit                controllers.supplementary.OfficeOfExitController.saveOffice()
 
-# Add Documents
+# Transport Information
 
-GET         /add-document                   controllers.supplementary.AddDocumentController.displayPage()
+GET         /transport-information         controllers.supplementary.TransportInformationPageController.displayPage()
 
-POST        /add-document                   controllers.supplementary.AddDocumentController.saveForm()
+POST        /transport-information         controllers.supplementary.TransportInformationPageController.submitTransportInformation()
 
 # Total number of items
 
-GET         /total-numbers-of-items         controllers.supplementary.TotalNumberOfItemsController.displayForm()
+GET         /total-numbers-of-items        controllers.supplementary.TotalNumberOfItemsController.displayForm()
 
-POST        /total-numbers-of-items         controllers.supplementary.TotalNumberOfItemsController.saveNoOfItems()
+POST        /total-numbers-of-items        controllers.supplementary.TotalNumberOfItemsController.saveNoOfItems()
+
+# Add Documents
+
+GET         /add-document                  controllers.supplementary.AddDocumentController.displayPage()
+
+POST        /add-document                  controllers.supplementary.AddDocumentController.saveForm()
+
