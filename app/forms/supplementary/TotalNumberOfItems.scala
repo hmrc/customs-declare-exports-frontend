@@ -33,9 +33,9 @@ object TotalNumberOfItems {
 
   val mapping = Forms.mapping(
     "items" -> text()
-      .verifying("supplementary.totalNumberOfItems.error", isNumeric and noLongerThan(3) and forbiddenZero),
+      .verifying("supplementary.totalNumberOfItems.error", isNumeric and noLongerThan(3) and containsNotOnlyZeros),
     "totalAmountInvoiced" -> optional(
-      text().verifying("supplementary.totalAmountInvoiced.error", x => x.matches(totalAmountInvoicedPattern))
+      text().verifying("supplementary.totalAmountInvoiced.error", _.matches(totalAmountInvoicedPattern))
     ),
     "exchangeRate" -> optional(text().verifying("supplementary.exchangeRate.error", _.matches(exchangeRatePattern)))
   )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
@@ -48,5 +48,4 @@ object TotalNumberOfItems {
       "declaration.invoiceAmount" -> numberOfItems.totalAmountInvoiced.getOrElse(""),
       "declaration.currencyExchange.rateNumeric" -> numberOfItems.exchangeRate.getOrElse("")
     )
-
 }
