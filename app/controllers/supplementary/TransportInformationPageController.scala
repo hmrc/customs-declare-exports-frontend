@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.RepresentativeDetails
+import forms.supplementary.TransportInformation
 import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.data.Form
@@ -26,11 +26,11 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.representative_details
+import views.html.supplementary.transport_information
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RepresentativeDetailsPageController @Inject()(
+class TransportInformationPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -42,30 +42,30 @@ class RepresentativeDetailsPageController @Inject()(
   implicit val countries = services.Countries.allCountries
   private val supplementaryDeclarationCacheId = appConfig.appName
 
-  def displayRepresentativeDetailsPage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[RepresentativeDetails](supplementaryDeclarationCacheId, RepresentativeDetails.formId)
+      .fetchAndGetEntry[TransportInformation](supplementaryDeclarationCacheId, TransportInformation.id)
       .map {
-        case Some(data) => Ok(representative_details(appConfig, RepresentativeDetails.form.fill(data)))
-        case _          => Ok(representative_details(appConfig, RepresentativeDetails.form))
+        case Some(data) => Ok(transport_information(appConfig, TransportInformation.form.fill(data)))
+        case _          => Ok(transport_information(appConfig, TransportInformation.form))
       }
   }
 
-  def submitRepresentativeDetails(): Action[AnyContent] = authenticate.async { implicit request =>
-    RepresentativeDetails.form
+  def submitTransportInformation(): Action[AnyContent] = authenticate.async { implicit request =>
+    TransportInformation.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[RepresentativeDetails]) =>
-          Future.successful(BadRequest(representative_details(appConfig, formWithErrors))),
-        validRepresentativeDetails =>
+        (formWithErrors: Form[TransportInformation]) =>
+          Future.successful(BadRequest(transport_information(appConfig, formWithErrors))),
+        validTransportInformation =>
           customsCacheService
-            .cache[RepresentativeDetails](
+            .cache[TransportInformation](
               supplementaryDeclarationCacheId,
-              RepresentativeDetails.formId,
-              validRepresentativeDetails
+              TransportInformation.id,
+              validTransportInformation
             )
             .map { _ =>
-              Redirect(controllers.supplementary.routes.ConsigneeAddressController.displayForm())
+              Redirect(controllers.supplementary.routes.TotalNumberOfItemsController.displayForm())
           }
       )
   }

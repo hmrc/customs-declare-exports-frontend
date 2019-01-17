@@ -67,9 +67,6 @@ object TransportInformation {
       NameOfInlandWaterwayVessel
     )
 
-  private val meansOfTransportOnDepartureIDNumberMaxLength = 27
-  private val meansOfTransportCrossingTheBorderIDNumberMaxLength = 35
-
   val mapping = Forms.mapping(
     "inlandModeOfTransportCode" -> optional(
       text()
@@ -86,10 +83,7 @@ object TransportInformation {
       ),
     "meansOfTransportOnDepartureIDNumber" -> optional(
       text()
-        .verifying(
-          "supplementary.transportInfo.meansOfTransport.idNumber.error.length",
-          noLongerThan(meansOfTransportOnDepartureIDNumberMaxLength)
-        )
+        .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.length", noLongerThan(27))
         .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters", isAlphanumeric)
     ),
     "meansOfTransportCrossingTheBorderType" -> text()
@@ -100,10 +94,7 @@ object TransportInformation {
       ),
     "meansOfTransportCrossingTheBorderIDNumber" -> optional(
       text()
-        .verifying(
-          "supplementary.transportInfo.meansOfTransport.idNumber.error.length",
-          noLongerThan(meansOfTransportCrossingTheBorderIDNumberMaxLength)
-        )
+        .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.length", noLongerThan(35))
         .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters", isAlphanumeric)
     ),
     "meansOfTransportCrossingTheBorderNationality" -> optional(
