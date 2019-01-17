@@ -30,7 +30,10 @@ object WarehouseIdentification {
 
   val mapping = Forms.mapping(
     "identificationNumber" -> optional(
-      text().verifying("supplementary.warehouse.identificationNumber.error", noShorterThan(2) and noLongerThan(36))
+      text().verifying(
+        "supplementary.warehouse.identificationNumber.error",
+        startsWithCapitalLetter and noShorterThan(2) and noLongerThan(36)
+      )
     )
   )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
 

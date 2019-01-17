@@ -37,6 +37,8 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.totalNumberOfItems.title"))
       stringResult must include(messages("supplementary.totalNumberOfItems"))
       stringResult must include(messages("supplementary.totalNumberOfItems.hint"))
+      stringResult must include(messages("supplementary.totalAmountInvoiced"))
+      stringResult must include(messages("supplementary.exchangeRate"))
     }
 
     "validate form - incorrect values - alphabetic" in {
@@ -69,7 +71,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       contentAsString(result) must include(messages("supplementary.totalNumberOfItems.error"))
     }
 
-    "validate form - correct values" in {
+    "validate form - correct value for mandatory field" in {
       pending
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
@@ -82,6 +84,102 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       header.headers.get("Location") must be(
         Some("/customs-declare-exports/declaration/supplementary/nature-of-transaction")
       )
+    }
+
+    "validate form - correct values for every field using integers for optional ones" in {
+      pending
+      authorizedUser()
+      withCaching[TotalNumberOfItems](None)
+
+      val correctTotalNumber: JsValue = JsObject(
+        Map(
+          "items" -> JsString("100"),
+          "totalAmountInvoiced" -> JsString("12312312312312"),
+          "exchangeRate" -> JsString("123123123123")
+        )
+      )
+      val result = route(app, postRequest(uri, correctTotalNumber)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/nature-of-transaction")
+      )
+    }
+
+    "validate form - correct values for every field using decimals for optional ones" in {
+      pending
+      authorizedUser()
+      withCaching[TotalNumberOfItems](None)
+
+      val correctTotalNumber: JsValue = JsObject(
+        Map(
+          "items" -> JsString("100"),
+          "totalAmountInvoiced" -> JsString("12312312312312.12"),
+          "exchangeRate" -> JsString("1212121.12345")
+        )
+      )
+      val result = route(app, postRequest(uri, correctTotalNumber)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/nature-of-transaction")
+      )
+    }
+
+    "validate form - correct mandatory field with incorrect optional due to too many digits after coma" in {
+      authorizedUser()
+      withCaching[TotalNumberOfItems](None)
+
+      val incorrectOptionalFields: JsValue = JsObject(
+        Map(
+          "items" -> JsString("100"),
+          "totalAmountInvoiced" -> JsString("12312312312312.122"),
+          "exchangeRate" -> JsString("1212121.123456")
+        )
+      )
+
+      val result = route(app, postRequest(uri, incorrectOptionalFields)).get
+
+      contentAsString(result) must include(messages("supplementary.totalAmountInvoiced.error"))
+      contentAsString(result) must include(messages("supplementary.exchangeRate.error"))
+    }
+
+    "validate form - correct mandatory field with incorrect optional due to too many digits before coma" in {
+      authorizedUser()
+      withCaching[TotalNumberOfItems](None)
+
+      val incorrectOptionalFields: JsValue = JsObject(
+        Map(
+          "items" -> JsString("100"),
+          "totalAmountInvoiced" -> JsString("12312312312312123.12"),
+          "exchangeRate" -> JsString("1212121231.12345")
+        )
+      )
+
+      val result = route(app, postRequest(uri, incorrectOptionalFields)).get
+
+      contentAsString(result) must include(messages("supplementary.totalAmountInvoiced.error"))
+      contentAsString(result) must include(messages("supplementary.exchangeRate.error"))
+    }
+
+    "validate form - correct mandatory field with incorrect optional due to too long integers" in {
+      authorizedUser()
+      withCaching[TotalNumberOfItems](None)
+
+      val incorrectOptionalFields: JsValue = JsObject(
+        Map(
+          "items" -> JsString("100"),
+          "totalAmountInvoiced" -> JsString("12312312312312123"),
+          "exchangeRate" -> JsString("1212121231123123")
+        )
+      )
+
+      val result = route(app, postRequest(uri, incorrectOptionalFields)).get
+
+      contentAsString(result) must include(messages("supplementary.totalAmountInvoiced.error"))
+      contentAsString(result) must include(messages("supplementary.exchangeRate.error"))
     }
   }
 }
