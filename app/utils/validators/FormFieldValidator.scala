@@ -29,8 +29,11 @@ object FormFieldValidator {
   private val alphanumericRegexValue = "[a-zA-Z0-9]*"
   private val zeros = "[0]{1,3}"
   private val firstCapitalLetter = "[A-Z]{1}(.*)"
+  private val zerosOnlyRegexValue = "[0]*"
 
   val isEmpty: String => Boolean = (input: String) => input.isEmpty
+
+  val nonEmpty: String => Boolean = (input: String) => input.nonEmpty
 
   val noLongerThan: Int => String => Boolean = (length: Int) => (input: String) => input.length <= length
 
@@ -47,4 +50,6 @@ object FormFieldValidator {
   val forbiddenZero: String => Boolean = (input: String) => !input.matches(zeros)
 
   val startsWithCapitalLetter: String => Boolean = (input: String) => input.matches(firstCapitalLetter)
+
+  val containsNotOnlyZeros: String => Boolean = (input: String) => !input.matches(zerosOnlyRegexValue)
 }

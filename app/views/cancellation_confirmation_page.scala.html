@@ -14,12 +14,20 @@
  * limitations under the License.
  *@
 
-@(
-  messageKey: String = "",
-  inputType: String = "button",
-  id: String = ""
-)(implicit messages: Messages)
+@import config.AppConfig
 
-<div class="section">
-  <input type="@inputType" class="button" id="@id" value="@messages(messageKey)"/>
-</div>
+@(appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
+
+@main_template(
+  title = messages("cancellation.confirmationPage.title"),
+    appConfig = appConfig
+) {
+  <div>
+      <div class="govuk-box-highlight">
+          <h1 class="heading-xlarge">
+              @messages("cancellation.confirmationPage.message")
+          </h1>
+      </div>
+      @components.button_link("site.backToChoice", "/customs-declare-exports/choice")
+  </div>
+}

@@ -51,6 +51,7 @@ site.save_and_come_back_later = Save and come back later
 site.service_name = Declare an Export
 site.textarea.char_limit = (Limit is {0} characters)
 site.submit = Submit
+site.backToChoice = Back to choice page
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -229,8 +230,9 @@ movement.choice.description = What do you want to do?
 movement.choice.EAL = Arrival
 movement.choice.EAL.heading = Arrive
 movement.choice.EDL = Departure
-movement.choice.SMP.declaration= Simplified declaration
-movement.choice.STD.declaration = Standard declaration
+declaration.choice.SMP = Simplified declaration
+declaration.choice.STD = Standard declaration
+declaration.choice.CAN = Cancel declaration
 movement.choice.EDL.heading = Depart
 movement.role.description = What is your role?
 movement.role.dec = I am declaring for the company I work for or own
@@ -413,6 +415,18 @@ supplementary.goodsLocation.postCode.error = Postcode is incorrect
 supplementary.goodsLocation.city = City
 supplementary.goodsLocation.city.error = City is incorrect
 
+supplementary.procedureCodes.title = Procedure Codes
+supplementary.procedureCodes.procedureCode.header = 1/10 Enter the procedure code
+supplementary.procedureCodes.procedureCode.header.hint = A 4 digit code, made up of the requested procedure and the previous procedure
+supplementary.procedureCodes.procedureCode.error.empty = Procedure code cannot be empty
+supplementary.procedureCodes.procedureCode.error.length = Procedure code must be exactly 4 characters long
+supplementary.procedureCodes.procedureCode.error.specialCharacters = Procedure code cannot contain special characters
+supplementary.procedureCodes.additionalProcedureCode.header = 1/11 Do you need to enter additional procedure codes?
+supplementary.procedureCodes.additionalProcedureCode.header.hint = A 3 digit code. Up to 99 may be declared for each goods item.
+supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty = You have to enter at least one additional procedure code
+supplementary.procedureCodes.additionalProcedureCode.error.length = Additional procedure code must be exactly 3 characters long
+supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters = Additional procedure code cannot contain special characters
+
 supplementary.officeOfExit.title = Office of exit
 supplementary.officeOfExit = 5/12 Where is the office of exit?
 supplementary.officeOfExit.hint = This is an 8 digit code
@@ -423,7 +437,6 @@ supplementary.warehouse.title =  2/7 Enter the warehouse identification number
 supplementary.warehouse.identificationNumber.error = Incorrect Identification Number
 supplementary.warehouse.identificationNumber.hint = For example, R1234567GB
 supplementary.warehouse.identificationNumber = Identification Number
-
 
 supplementary.addDocument.title = Do you need to add any documents?
 supplementary.addDocument.hint = Including certificates, authorisations or additional references
@@ -439,8 +452,11 @@ supplementary.totalNumberOfItems.title = 1/9 What is the total number of items?
 supplementary.totalNumberOfItems = Total number of items
 supplementary.totalNumberOfItems.hint = Up to a maximum of 999 items
 supplementary.totalNumberOfItems.error = Total number of items is incorrect
+
 supplementary.totalAmountInvoiced.error = Total amount of invoiced items is incorrect
 supplementary.totalAmountInvoiced = 4/11 Total Amount of invoiced items
 supplementary.exchangeRate.error = Exchange rate is incorrect
 supplementary.exchangeRate = 4/15 Exchange rate
 
+cancellation.confirmationPage.title = Cancellation confirmation page
+cancellation.confirmationPage.message = Cancellation request has been submitted

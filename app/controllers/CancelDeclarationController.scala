@@ -34,7 +34,7 @@ import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.{Declaration, MetaData, NamedEntityWithAddress}
-import views.html.{cancel_declaration, confirmation_page}
+import views.html.{cancel_declaration, cancellation_confirmation_page}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -92,7 +92,7 @@ class CancelDeclarationController @Inject()(
                     .saveSubmissionResponse(submission)
                     .flatMap { _ =>
                       exportsMetrics.incrementCounter(cancelMetric)
-                      Future.successful(Ok(confirmation_page(appConfig, conversationId)))
+                      Future.successful(Ok(cancellation_confirmation_page(appConfig)))
                     }
                     .recover {
                       case error: Throwable =>
