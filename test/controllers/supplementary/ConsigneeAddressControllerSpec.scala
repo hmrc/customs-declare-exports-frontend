@@ -59,19 +59,17 @@ class ConsigneeAddressControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.country.error"))
     }
 
-    "validate form - mandatory fields" in {
+    "validate form - optional fields" in {
       authorizedUser()
       withCaching[AddressAndIdentification](None)
 
       val result = route(app, postRequest(uri, emptyAddress)).get
-      val stringResult = contentAsString(result)
+      val header = result.futureValue.header
 
-      stringResult must include(messages("supplementary.eori.empty"))
-      stringResult must include(messages("supplementary.fullName.empty"))
-      stringResult must include(messages("supplementary.addressLine.empty"))
-      stringResult must include(messages("supplementary.townOrCity.empty"))
-      stringResult must include(messages("supplementary.postCode.empty"))
-      stringResult must include(messages("supplementary.country.empty"))
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
+      )
     }
 
     "validate form - correct values" in {

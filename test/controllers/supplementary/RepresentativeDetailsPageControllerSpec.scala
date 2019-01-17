@@ -128,12 +128,12 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     "populate the form fields with data from cache" in {
       val representativeAddress = RepresentativeDetails(
         address = AddressAndIdentification(
-          eori = "GB111222333444",
-          fullName = "Full Name",
-          addressLine = "Address Line",
-          townOrCity = "Town or City",
-          postCode = "PostCode",
-          country = "UK"
+          eori = Some("GB111222333444"),
+          fullName = Some("Full Name"),
+          addressLine = Some("Address Line"),
+          townOrCity = Some("Town or City"),
+          postCode = Some("PostCode"),
+          country = Some("UK")
         ),
         statusCode = DirectRepresentative
       )
@@ -149,69 +149,26 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
   "RepresentativeAddressController on submitRepresentativeData" should {
 
-    "display the form page with error for empty field" when {
-      "No value provided for EORI" in {
-        withCaching[RepresentativeDetails](None)
+    "accept empty form" in {
+      withCaching[RepresentativeDetails](None)
 
-        val emptyFormData = emptyRepresentativeDetails
-        val result = route(app, postRequest(uri, emptyFormData)).get
+      val emptyFormWithStatus = emptyRepresentativeDetailsWithStatus
+      val result = route(app, postRequest(uri, emptyFormWithStatus)).get
+      val header = result.futureValue.header
 
-        contentAsString(result) must include(messages("supplementary.eori.empty"))
-      }
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/consignee-address")
+      )
+    }
 
-      "No value provided for full name" in {
-        withCaching[RepresentativeDetails](None)
+    "return error when status is missing" in {
+      withCaching[RepresentativeDetails](None)
 
-        val emptyFormData = emptyRepresentativeDetails
-        val result = route(app, postRequest(uri, emptyFormData)).get
+      val emptyForm = emptyRepresentativeDetails
+      val result = route(app, postRequest(uri, emptyForm)).get
 
-        contentAsString(result) must include(messages("supplementary.fullName.empty"))
-      }
-
-      "No value provided for first address line" in {
-        withCaching[RepresentativeDetails](None)
-
-        val emptyFormData = emptyRepresentativeDetails
-        val result = route(app, postRequest(uri, emptyFormData)).get
-
-        contentAsString(result) must include(messages("supplementary.addressLine.empty"))
-      }
-
-      "No value provided for city" in {
-        withCaching[RepresentativeDetails](None)
-
-        val emptyFormData = emptyRepresentativeDetails
-        val result = route(app, postRequest(uri, emptyFormData)).get
-
-        contentAsString(result) must include(messages("supplementary.townOrCity.empty"))
-      }
-
-      "No value provided for postcode" in {
-        withCaching[RepresentativeDetails](None)
-
-        val emptyFormData = emptyRepresentativeDetails
-        val result = route(app, postRequest(uri, emptyFormData)).get
-
-        contentAsString(result) must include(messages("supplementary.postCode.empty"))
-      }
-
-      "No value provided for country" in {
-        withCaching[RepresentativeDetails](None)
-
-        val emptyFormData = emptyRepresentativeDetails
-        val result = route(app, postRequest(uri, emptyFormData)).get
-
-        contentAsString(result) must include(messages("supplementary.country.empty"))
-      }
-
-      "No value provided for status code" in {
-        withCaching[RepresentativeDetails](None)
-
-        val emptyFormData = emptyRepresentativeDetails
-        val result = route(app, postRequest(uri, emptyFormData)).get
-
-        contentAsString(result) must include(messages("supplementary.representative.representationType.error.empty"))
-      }
+      contentAsString(result) must include(messages("supplementary.representative.representationType.error.empty"))
     }
 
     "display the form page with error for wrong value" when {
@@ -341,6 +298,18 @@ object RepresentativeDetailsPageControllerSpec {
       "address.postCode" -> JsString(""),
       "address.country" -> JsString(""),
       "statusCode" -> JsString("")
+    )
+  )
+
+  val emptyRepresentativeDetailsWithStatus: JsValue = JsObject(
+    Map(
+      "address.eori" -> JsString(""),
+      "address.fullName" -> JsString(""),
+      "address.addressLine" -> JsString(""),
+      "address.townOrCity" -> JsString(""),
+      "address.postCode" -> JsString(""),
+      "address.country" -> JsString(""),
+      "statusCode" -> JsString("2")
     )
   )
 }

@@ -21,9 +21,9 @@ import base.ExportsTestData._
 import forms.supplementary.AddressAndIdentification
 import play.api.test.Helpers._
 
-class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
+class ExporterAddressControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/declaration/supplementary/consignor-address")
+  val uri = uriWithContextPath("/declaration/supplementary/exporter-address")
 
   "Consignor address controller" should {
     "display consignor address form" in {
@@ -59,19 +59,17 @@ class ConsignorAddressControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.country.error"))
     }
 
-    "validate form - mandatory fields" in {
+    "validate form - optional fields" in {
       authorizedUser()
       withCaching[AddressAndIdentification](None)
 
       val result = route(app, postRequest(uri, emptyAddress)).get
-      val stringResult = contentAsString(result)
+      val header = result.futureValue.header
 
-      stringResult must include(messages("supplementary.eori.empty"))
-      stringResult must include(messages("supplementary.fullName.empty"))
-      stringResult must include(messages("supplementary.addressLine.empty"))
-      stringResult must include(messages("supplementary.townOrCity.empty"))
-      stringResult must include(messages("supplementary.postCode.empty"))
-      stringResult must include(messages("supplementary.country.empty"))
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/declarant-address")
+      )
     }
 
     "validate form - correct values" in {

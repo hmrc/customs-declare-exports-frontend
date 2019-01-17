@@ -46,3 +46,5 @@ POST       /choice                                      controllers.ChoiceContro
 # Role Page
 
 GET        /role                                        controllers.RoleController.displayRolePage()
+
+POST       /role                                        controllers.RoleController.submitRole()

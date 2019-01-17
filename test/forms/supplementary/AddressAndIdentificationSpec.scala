@@ -30,12 +30,12 @@ class AddressAndIdentificationSpec extends WordSpec with MustMatchers {
 
   val address: AddressAndIdentification =
     AddressAndIdentification(
-      eori = eori,
-      fullName = fullName,
-      addressLine = addressLine,
-      townOrCity = townOrCity,
-      postCode = postCode,
-      country = country
+      eori = Some(eori),
+      fullName = Some(fullName),
+      addressLine = Some(addressLine),
+      townOrCity = Some(townOrCity),
+      postCode = Some(postCode),
+      country = Some(country)
     )
 
   val consignorAddressProperties: Map[String, String] =

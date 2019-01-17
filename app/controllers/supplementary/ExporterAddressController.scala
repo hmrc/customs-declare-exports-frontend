@@ -25,11 +25,11 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.consignor_details
+import views.html.supplementary.exporter_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignorAddressController @Inject()(
+class ExporterAddressController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -44,8 +44,8 @@ class ConsignorAddressController @Inject()(
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[AddressAndIdentification](appConfig.appName, formId).map {
-      case Some(data) => Ok(consignor_details(appConfig, form.fill(data)))
-      case _          => Ok(consignor_details(appConfig, form))
+      case Some(data) => Ok(exporter_details(appConfig, form.fill(data)))
+      case _          => Ok(exporter_details(appConfig, form))
     }
   }
 
@@ -54,7 +54,7 @@ class ConsignorAddressController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[AddressAndIdentification]) =>
-          Future.successful(BadRequest(consignor_details(appConfig, formWithErrors))),
+          Future.successful(BadRequest(exporter_details(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
             Redirect(controllers.supplementary.routes.DeclarantAddressController.displayForm())

@@ -38,7 +38,9 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.totalNumberOfItems"))
       stringResult must include(messages("supplementary.totalNumberOfItems.hint"))
       stringResult must include(messages("supplementary.totalAmountInvoiced"))
+      stringResult must include(messages("supplementary.totalAmountInvoiced.hint"))
       stringResult must include(messages("supplementary.exchangeRate"))
+      stringResult must include(messages("supplementary.exchangeRate.hint"))
     }
 
     "validate form - incorrect values - alphabetic" in {

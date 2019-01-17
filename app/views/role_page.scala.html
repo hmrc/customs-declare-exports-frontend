@@ -23,24 +23,24 @@
 @(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages("movement.role.description"),
-  appConfig = appConfig
+    title = messages("movement.role.description"),
+    appConfig = appConfig
 ) {
 
-  @helpers.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
-    @components.back_link("choice")
+    @helpers.form(RoleController.submitRole(), 'autoComplete -> "off") {
+        @components.back_link("/customs-declare-exports/choice")
 
-    @components.heading("", "movement.role.description")
+        @components.heading("", "movement.role.description")
 
-    @components.input_radio(
-      field = form("choice"),
-      legend = "",
-      inputs = Seq(
-        RadioOption("Declare", Declarant, messages("movement.role.dec")),
-        RadioOption("Direct rep", DirectRepresentative, messages("movement.role.drep")),
-        RadioOption("Indirect rep", IndirectRepresentative, messages("movement.role.irep")))
-    )
+        @components.input_radio(
+            field = form("roleForm"),
+            legend = "",
+            inputs = Seq(
+                RadioOption("Declarant", Declarant, messages("movement.role.dec")),
+                RadioOption("Direct rep", DirectRepresentative, messages("movement.role.drep")),
+                RadioOption("Indirect rep", IndirectRepresentative, messages("movement.role.irep")))
+        )
 
-    @components.submit_button()
-  }
+        @components.submit_button()
+    }
 }

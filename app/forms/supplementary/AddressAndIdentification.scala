@@ -16,45 +16,45 @@
 
 package forms.supplementary
 
-import play.api.data.Forms.{mapping, text}
+import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.Json
 import services.Countries.allCountries
 import utils.validators.FormFieldValidator.isAlphanumeric
 
 case class AddressAndIdentification(
-  eori: String, // alphanumeric, max length 17 characters
-  fullName: String, // alphanumeric length 1 - 70
-  addressLine: String, // alphanumeric length 1 - 70
-  townOrCity: String, // alphanumeric length 1 - 35
-  postCode: String, // alphanumeric length 1 - 9
-  country: String // 2 upper case alphabetic characters
+  eori: Option[String], // alphanumeric, max length 17 characters
+  fullName: Option[String], // alphanumeric length 1 - 70
+  addressLine: Option[String], // alphanumeric length 1 - 70
+  townOrCity: Option[String], // alphanumeric length 1 - 35
+  postCode: Option[String], // alphanumeric length 1 - 9
+  country: Option[String] // 2 upper case alphabetic characters
 )
 
 object AddressAndIdentification {
   implicit val format = Json.format[AddressAndIdentification]
 
   val addressMapping = mapping(
-    "eori" -> text()
+    "eori" -> optional(text()
       .verifying("supplementary.eori.empty", _.trim.nonEmpty)
-      .verifying("supplementary.eori.error", validateField(17)),
-    "fullName" -> text()
+      .verifying("supplementary.eori.error", validateField(17))),
+    "fullName" -> optional(text()
       .verifying("supplementary.fullName.empty", _.trim.nonEmpty)
-      .verifying("supplementary.fullName.error", validateField(70)),
-    "addressLine" -> text()
+      .verifying("supplementary.fullName.error", validateField(70))),
+    "addressLine" -> optional(text()
       .verifying("supplementary.addressLine.empty", _.trim.nonEmpty)
-      .verifying("supplementary.addressLine.error", validateField(70)),
-    "townOrCity" -> text()
+      .verifying("supplementary.addressLine.error", validateField(70))),
+    "townOrCity" -> optional(text()
       .verifying("supplementary.townOrCity.empty", _.trim.nonEmpty)
-      .verifying("supplementary.townOrCity.error", validateField(35)),
-    "postCode" -> text()
+      .verifying("supplementary.townOrCity.error", validateField(35))),
+    "postCode" -> optional(text()
       .verifying("supplementary.postCode.empty", _.trim.nonEmpty)
-      .verifying("supplementary.postCode.error", validateField(9)),
-    "country" -> text()
+      .verifying("supplementary.postCode.error", validateField(9))),
+    "country" -> optional(text()
       .verifying("supplementary.country.empty", _.trim.nonEmpty)
       .verifying(
         "supplementary.country.error",
         input => input.isEmpty || !allCountries.filter(country => country.countryName == input).isEmpty
-      )
+      ))
   )(AddressAndIdentification.apply)(AddressAndIdentification.unapply)
 
   private def validateField: Int => String => Boolean =
@@ -62,24 +62,24 @@ object AddressAndIdentification {
 
   def toConsignorMetadataProperties(address: AddressAndIdentification): Map[String, String] =
     Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.id" -> address.eori,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.name" -> address.fullName,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.line" -> address.addressLine,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.cityName" -> address.townOrCity,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postcodeId" -> address.postCode,
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.id" -> address.eori.getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.name" -> address.fullName.getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.line" -> address.addressLine.getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.cityName" -> address.townOrCity.getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postcodeId" -> address.postCode.getOrElse(""),
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.countryCode" ->
-        allCountries.find(country => country.countryName == address.country).map(_.countryCode).getOrElse("")
+        allCountries.find(country => Some(country.countryName) == address.country).map(_.countryCode).getOrElse("")
     )
 
   def toDeclarantMetadataProperties(address: AddressAndIdentification): Map[String, String] =
     Map(
-      "declaration.declarant.id" -> address.eori,
-      "declaration.declarant.name" -> address.fullName,
-      "declaration.declarant.address.line" -> address.addressLine,
-      "declaration.declarant.address.cityName" -> address.townOrCity,
-      "declaration.declarant.address.postcodeId" -> address.postCode,
+      "declaration.declarant.id" -> address.eori.getOrElse(""),
+      "declaration.declarant.name" -> address.fullName.getOrElse(""),
+      "declaration.declarant.address.line" -> address.addressLine.getOrElse(""),
+      "declaration.declarant.address.cityName" -> address.townOrCity.getOrElse(""),
+      "declaration.declarant.address.postcodeId" -> address.postCode.getOrElse(""),
       "declaration.declarant.address.countryCode" ->
-        allCountries.find(country => country.countryName == address.country).map(_.countryCode).getOrElse("")
+        allCountries.find(country => Some(country.countryName) == address.country).map(_.countryCode).getOrElse("")
     )
 
   def toConsigneeMetadataProperties(address: AddressAndIdentification): Map[String, String] = ???
