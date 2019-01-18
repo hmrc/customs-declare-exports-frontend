@@ -1,0 +1,64 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.supplementary.routes._
+@import forms.supplementary.PreviousDocuments
+@import forms.supplementary.PreviousDocuments.AllowedValues._
+@import uk.gov.hmrc.play.views.html._
+@import utils.RadioOption
+
+@(appConfig: AppConfig, form: Form[PreviousDocuments])(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("supplementary.previousDocuments.title"),
+    appConfig = appConfig
+) {
+    @helpers.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
+        @components.back_link("/customs-declare-exports/declaration/supplementary/package-information")
+
+        @components.error_summary(form.errors)
+
+        @components.page_title(Some("supplementary.previousDocuments.title"))
+
+        @components.input_radio(
+            field = form("documentCategory"),
+            legend = messages("supplementary.previousDocuments.documentCategory"),
+            inputs = Seq(
+                RadioOption("Temporary storage", TemporaryStorage, messages("supplementary.previousDocuments.temporaryStorage")),
+                RadioOption("Simplified declaration", SimplifiedDeclaration, messages("supplementary.previousDocuments.simplifiedDeclaration")),
+                RadioOption("Previous document", PreviousDocument, messages("supplementary.previousDocuments.previousDocument"))
+            )
+        )
+
+        @components.input_text(
+            field = form("documentType"),
+            label = messages("supplementary.previousDocuments.documentType")
+        )
+
+        @components.input_text(
+            field = form("documentReference"),
+            label = messages("supplementary.previousDocuments.documentReference")
+        )
+
+        @components.input_text(
+            field = form("goodsItemIdentifier"),
+            label = messages("supplementary.previousDocuments.goodsItemIdentifier")
+        )
+
+        @components.submit_button()
+    }
+}

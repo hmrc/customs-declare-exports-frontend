@@ -68,5 +68,4 @@ object ProcedureCodes {
   val id = "ProcedureCodes"
 
   def form(): Form[ProcedureCodes] = Form(mapping)
-
 }
