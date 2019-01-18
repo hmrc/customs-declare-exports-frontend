@@ -60,7 +60,6 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - correct values" in {
-      pending
       authorizedUser()
       withCaching[OfficeOfExit](None)
 
@@ -70,7 +69,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/transport-inland")
+        Some("/customs-declare-exports/declaration/supplementary/transport-information")
       )
     }
   }
