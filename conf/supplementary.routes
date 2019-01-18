@@ -18,11 +18,11 @@ GET         /consignment-references       controllers.supplementary.ConsignmentR
 
 POST        /consignment-references       controllers.supplementary.ConsignmentReferencesController.submitConsignmentReferences()
 
-# Consignor address
+# Exporter address
 
-GET         /consignor-address            controllers.supplementary.ConsignorAddressController.displayForm()
+GET         /exporter-address            controllers.supplementary.ExporterAddressController.displayForm()
 
-POST        /consignor-address            controllers.supplementary.ConsignorAddressController.saveAddress()
+POST        /exporter-address            controllers.supplementary.ExporterAddressController.saveAddress()
 
 # Declarant address
 
