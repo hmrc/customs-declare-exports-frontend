@@ -38,15 +38,18 @@ object FormFieldValidator {
 
   val noShorterThan: Int => String => Boolean = (length: Int) => (input: String) => input.length >= length
 
+  val hasSpecificLength: Int => String => Boolean = (length: Int) => (input: String) => input.length == length
+
   val isNumeric: String => Boolean = (input: String) => input.matches(numericRegexValue)
 
   val isAlphabetic: String => Boolean = (input: String) => input.matches(alphabeticRegexValue)
 
   val isAlphanumeric: String => Boolean = (input: String) => input.matches(alphanumericRegexValue)
 
-  val hasSpecificLength: Int => String => Boolean = (length: Int) => (input: String) => input.length == length
-
   val startsWithCapitalLetter: String => Boolean = (input: String) => input.matches(firstCapitalLetter)
+
+  val isContainedIn: Iterable[String] => String => Boolean =
+    (iterable: Iterable[String]) => (input: String) => iterable.exists(_ == input)
 
   val containsNotOnlyZeros: String => Boolean = (input: String) => !input.matches(zerosOnlyRegexValue)
 }

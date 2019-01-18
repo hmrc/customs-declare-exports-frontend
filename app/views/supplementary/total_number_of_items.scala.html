@@ -21,35 +21,35 @@
 
 @(appConfig: AppConfig, form: Form[TotalNumberOfItems])(implicit request: Request[_], messages: Messages)
 
-    @main_template(
-        title = messages("supplementary.totalNumberOfItems.title"),
-        appConfig = appConfig
-    ) {
-        @helpers.form(TotalNumberOfItemsController.saveNoOfItems(), 'autoComplete -> "off") {
-            @components.back_link("/customs-declare-exports/declaration/supplementary/transport")
+@main_template(
+    title = messages("supplementary.totalNumberOfItems.title"),
+    appConfig = appConfig
+) {
+    @helpers.form(TotalNumberOfItemsController.saveNoOfItems(), 'autoComplete -> "off") {
+        @components.back_link("/customs-declare-exports/declaration/supplementary/transport-information")
 
-            @components.error_summary(form.errors)
+        @components.error_summary(form.errors)
 
-            @components.page_title(Some("supplementary.totalNumberOfItems.title"))
+        @components.page_title(Some("supplementary.totalNumberOfItems.title"))
 
-            @components.input_text(
-                field = form("items"),
-                label = messages("supplementary.totalNumberOfItems"),
-                hint = Some(messages("supplementary.totalNumberOfItems.hint"))
-            )
+        @components.input_text(
+            field = form("items"),
+            label = messages("supplementary.totalNumberOfItems"),
+            hint = Some(messages("supplementary.totalNumberOfItems.hint"))
+        )
 
-            @components.input_text(
-                field = form("totalAmountInvoiced"),
-                label = messages("supplementary.totalAmountInvoiced"),
-                hint = Some(messages("supplementary.totalAmountInvoiced.hint"))
-            )
+        @components.input_text(
+            field = form("totalAmountInvoiced"),
+            label = messages("supplementary.totalAmountInvoiced"),
+            hint = Some(messages("supplementary.totalAmountInvoiced.hint"))
+        )
 
-            @components.input_text(
-                field = form("exchangeRate"),
-                label = messages("supplementary.exchangeRate"),
-                hint = Some(messages("supplementary.exchangeRate.hint"))
-            )
+        @components.input_text(
+            field = form("exchangeRate"),
+            label = messages("supplementary.exchangeRate"),
+            hint = Some(messages("supplementary.exchangeRate.hint"))
+        )
 
-            @components.submit_button()
-        }
+        @components.submit_button()
     }
+}

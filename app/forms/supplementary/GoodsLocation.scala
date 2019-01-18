@@ -16,9 +16,8 @@
 
 package forms.supplementary
 
-import play.api.data.Form
-import play.api.data.Forms
 import play.api.data.Forms.{optional, text}
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.Countries.allCountries
 import utils.validators.FormFieldValidator._
@@ -45,7 +44,7 @@ object GoodsLocation {
         .verifying("supplementary.country.empty", _.trim.nonEmpty)
         .verifying(
           "supplementary.country.error",
-          input => input.trim.isEmpty || allCountries.filter(country => country.countryName == input).nonEmpty
+          input => input.trim.isEmpty || allCountries.exists(country => country.countryName == input)
         )
     ),
     "typeOfLocation" -> optional(

@@ -52,8 +52,7 @@ class OfficeOfExitController @Inject()(
           Future.successful(BadRequest(office_of_exit(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[OfficeOfExit](appConfig.appName, formId, form).map { _ =>
-            //Redirect(controllers.supplementary.routes.???.displayRepresentativeDetailsPage())
-            Ok("Transport inland")
+            Redirect(controllers.supplementary.routes.TransportInformationPageController.displayPage())
         }
       )
   }
