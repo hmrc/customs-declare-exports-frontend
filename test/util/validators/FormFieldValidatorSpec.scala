@@ -179,4 +179,59 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
+  "FormFieldValidator on hasNoMoreDecimalPlacesThan" should {
+
+    "return false" when {
+      "input contains non-numeric characters" in {
+        val input = "123A"
+        val decimalPlaces = 1
+        isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) must be(false)
+      }
+
+      "input contains decimal separator other than \".\"" in {
+        val input = "123,1"
+        val decimalPlaces = 1
+        isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) must be(false)
+      }
+
+      "input contains double decimal separator" in {
+        val input = "123.4.5"
+        val decimalPlaces = 4
+        isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) must be(false)
+      }
+
+      "input contains more digits after decimal place than required" in {
+        val input = "123.45"
+        val decimalPlaces = 1
+        isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) must be(false)
+      }
+    }
+
+    "return true" when {
+      "input contains less digits after decimal place than required" in {
+        val input = "123.4"
+        val decimalPlaces = 3
+        isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) must be(true)
+      }
+
+      "input contains the exact number of digits after decimal place to what is required" in {
+        val input = "123.456"
+        val decimalPlaces = 3
+        isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) must be(true)
+      }
+
+      "input contains no decimal separator" in {
+        val input = "12345"
+        val decimalPlaces = 3
+        isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) must be(true)
+      }
+
+      "input contains no digit before decimal place" in {
+    val input = ".123"
+    val decimalPlaces = 3
+    isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) must be(true)
+  }
+    }
+  }
+
 }
