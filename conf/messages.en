@@ -493,5 +493,10 @@ supplementary.exchangeRate.error = Exchange rate is incorrect
 supplementary.exchangeRate = 4/15 What was the exchange rate used?
 supplementary.exchangeRate.hint = The rate of exchange fixed in advance by a contract between the parties e.g. 1234567.12345
 
+supplementary.goodItemNumber.title = Good item number
+supplementary.goodItemNumber.error = Incorrect item number
+supplementary.goodItemNumber = 1/6 Enter the item number
+supplementary.goodItemNumber.hint = The number assigned to the item in the declaration
+
 cancellation.confirmationPage.title = Cancellation confirmation page
 cancellation.confirmationPage.message = Cancellation request has been submitted
