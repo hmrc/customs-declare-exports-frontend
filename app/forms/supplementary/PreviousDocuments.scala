@@ -38,13 +38,19 @@ object PreviousDocuments {
   val mapping = Forms.mapping(
     "documentCategory" -> text()
       .verifying("supplementary.previousDocuments.documentCategory.empty", nonEmpty)
-      .verifying("supplementary.previousDocuments.documentCategory.error", isEmpty or isContainedIn(correctDocumentCategories)),
+      .verifying(
+        "supplementary.previousDocuments.documentCategory.error",
+        isEmpty or isContainedIn(correctDocumentCategories)
+      ),
     "documentType" -> text()
       .verifying("supplementary.previousDocuments.documentType.empty", nonEmpty)
       .verifying("supplementary.previousDocuments.documentType.error", isEmpty or (isAlphanumeric and noLongerThan(3))),
     "documentReference" -> text()
       .verifying("supplementary.previousDocuments.documentReference.empty", nonEmpty)
-      .verifying("supplementary.previousDocuments.documentReference.error", isEmpty or (isAlphanumeric and noLongerThan(35))),
+      .verifying(
+        "supplementary.previousDocuments.documentReference.error",
+        isEmpty or (isAlphanumeric and noLongerThan(35))
+      ),
     "goodsItemIdentifier" -> optional(
       text().verifying("supplementary.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3))
     )
