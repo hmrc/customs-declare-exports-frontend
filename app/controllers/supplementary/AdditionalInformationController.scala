@@ -15,22 +15,21 @@
  */
 
 package controllers.supplementary
-
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.PreviousDocuments
-import forms.supplementary.PreviousDocuments._
+import forms.supplementary.AdditionalInformation
+import forms.supplementary.AdditionalInformation._
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.previous_documents
+import views.html.supplementary.additional_information
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PreviousDocumentsController @Inject()(
+class AdditionalInformationController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -39,21 +38,22 @@ class PreviousDocumentsController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[PreviousDocuments](appConfig.appName, formId).map {
-      case Some(data) => Ok(previous_documents(appConfig, form.fill(data)))
-      case _          => Ok(previous_documents(appConfig, form))
+    customsCacheService.fetchAndGetEntry[AdditionalInformation](appConfig.appName, formId).map {
+      case Some(data) => Ok(additional_information(appConfig, form.fill(data)))
+      case _          => Ok(additional_information(appConfig, form))
     }
   }
 
-  def savePreviousDocuments(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveAdditionalInfo(): Action[AnyContent] = authenticate.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[PreviousDocuments]) =>
-          Future.successful(BadRequest(previous_documents(appConfig, formWithErrors))),
+        (formWithErrors: Form[AdditionalInformation]) =>
+          Future.successful(Ok(additional_information(appConfig, formWithErrors))),
         validForm =>
-          customsCacheService.cache[PreviousDocuments](appConfig.appName, formId, validForm).map { _ =>
-            Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm())
+          customsCacheService.cache[AdditionalInformation](appConfig.appName, formId, validForm).map { _ =>
+            //Redirect(controllers.supplementary.routes.???.displayForm
+            Ok("Documents produced")
         }
       )
   }

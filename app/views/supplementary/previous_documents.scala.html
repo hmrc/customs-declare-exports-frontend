@@ -24,7 +24,7 @@
 @(appConfig: AppConfig, form: Form[PreviousDocuments])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.previousDocuments.title"),
+    title = messages("supplementary.previousDocuments"),
     appConfig = appConfig
 ) {
     @helpers.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
