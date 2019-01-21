@@ -449,10 +449,15 @@ supplementary.addDocument.dateOfValidity = Date of validity
 supplementary.addDocument.measurementUnitAndQualifier = Measurement unit and qualifier, if applicable
 supplementary.addDocument.checkbox = I don’t need to enter additional information
 
-supplementary.totalNumberOfItems.title = 1/9 What is the total number of items?
-supplementary.totalNumberOfItems = Total number of items
+supplementary.totalNumberOfItems = 1/9 What is the total number of items?
+supplementary.totalNumberOfItems.title = Total number of items
 supplementary.totalNumberOfItems.hint = Up to a maximum of 999 items
+supplementary.totalNumberOfItems.empty = Total number of items cannot be empty
 supplementary.totalNumberOfItems.error = Total number of items is incorrect
+supplementary.totalPackageQuantity = 6/18 Total number of packages
+supplementary.totalPackageQuantity.hint = Include all items in this shipment
+supplementary.totalPackageQuantity.empty = Total number of packages cannot be empty
+supplementary.totalPackageQuantity.error = Total number of packages is incorrect
 
 supplementary.transportInfo.title = Declaration Transport Information
 supplementary.transportInfo.inlandTransportMode.header = 7/5 What is the inland mode of transport?

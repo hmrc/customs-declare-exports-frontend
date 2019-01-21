@@ -30,7 +30,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("supplementary.totalNumberOfItems.title"))
+        @components.page_title(Some("supplementary.totalNumberOfItems"))
 
         @components.input_text(
             field = form("items"),
@@ -48,6 +48,12 @@
             field = form("exchangeRate"),
             label = messages("supplementary.exchangeRate"),
             hint = Some(messages("supplementary.exchangeRate.hint"))
+        )
+
+        @components.input_text(
+            field = form("totalPackage"),
+            label = messages("supplementary.totalPackageQuantity"),
+            hint = Some(messages("supplementary.totalPackageQuantity.hint"))
         )
 
         @components.submit_button()

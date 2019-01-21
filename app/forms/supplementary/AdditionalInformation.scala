@@ -45,4 +45,5 @@ object AdditionalInformation {
   )(AdditionalInformation.apply)(AdditionalInformation.unapply)
 
   def form(): Form[AdditionalInformation] = Form(mapping)
+
 }

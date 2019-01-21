@@ -58,7 +58,7 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[AdditionalInformation](None)
 
-      val emptyAdditionalInformation: JsValue = JsObject(Map("code" -> JsString(""), "description" -> JsString("")))
+      val emptyAdditionalInformation: JsValue = JsObject(Map[String, JsString]())
       val result = route(app, postRequest(uri, emptyAdditionalInformation)).get
       val header = result.futureValue.header
 
