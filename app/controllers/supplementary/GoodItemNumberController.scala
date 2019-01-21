@@ -49,8 +49,11 @@ class GoodItemNumberController @Inject()(
   def submit(): Action[AnyContent] = authenticate.async { implicit request =>
     form
       .bindFromRequest()
-      .fold( (formWithErrors: Form[GoodItemNumber]) => Future.successful(BadRequest(good_item_number(appConfig, formWithErrors))), form =>
-        customsCacheService.cache[GoodItemNumber](appConfig.appName, formId, form).map { _ =>
+      .fold(
+        (formWithErrors: Form[GoodItemNumber]) =>
+          Future.successful(BadRequest(good_item_number(appConfig, formWithErrors))),
+        form =>
+          customsCacheService.cache[GoodItemNumber](appConfig.appName, formId, form).map { _ =>
             //Redirect(controllers.supplementary.???.???.???())
             Ok("Next page in progress")
         }
