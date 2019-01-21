@@ -495,3 +495,19 @@ supplementary.exchangeRate.hint = The rate of exchange fixed in advance by a con
 
 cancellation.confirmationPage.title = Cancellation confirmation page
 cancellation.confirmationPage.message = Cancellation request has been submitted
+
+supplementary.previousDocuments.title = 2/1 Previous documents
+supplementary.previousDocuments.documentCategory = What is the previous document category?
+supplementary.previousDocuments.documentCategory.error = Document category is incorrect
+supplementary.previousDocuments.documentCategory.empty = Document category cannot be empty
+supplementary.previousDocuments.temporaryStorage = Temporary storage
+supplementary.previousDocuments.simplifiedDeclaration = Simplified declaration
+supplementary.previousDocuments.previousDocument = Previous document
+supplementary.previousDocuments.documentType = Enter previous document code
+supplementary.previousDocuments.documentType.error = Previous document code is incorrect
+supplementary.previousDocuments.documentType.empty = Previous document code cannot be empty
+supplementary.previousDocuments.documentReference = Enter the reference for the previous document
+supplementary.previousDocuments.documentReference.error = Reference for the previous document is incorrect
+supplementary.previousDocuments.documentReference.empty = Reference for the previous document cannot be empty
+supplementary.previousDocuments.goodsItemIdentifier = Enter the goods item this previous document relates to
+supplementary.previousDocuments.goodsItemIdentifier.error = This fields is incorrect

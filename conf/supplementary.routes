@@ -108,3 +108,8 @@ GET         /add-document                  controllers.supplementary.AddDocument
 
 POST        /add-document                  controllers.supplementary.AddDocumentController.saveForm()
 
+# Previous documents
+
+GET         /previous-documents             controllers.supplementary.PreviousDocumentsController.displayForm()
+
+POST        /previous-documents             controllers.supplementary.PreviousDocumentsController.savePreviousDocuments()
