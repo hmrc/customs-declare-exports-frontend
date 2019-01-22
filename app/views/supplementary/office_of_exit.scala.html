@@ -22,49 +22,20 @@
 @(appConfig: AppConfig, form: Form[OfficeOfExit])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.packageInformation.title"),
+    title = messages("supplementary.officeOfExit.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(PackageInformationController.submit(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/declaration/supplementary/item-type")
+    @helpers.form(OfficeOfExitController.saveOffice(), 'autoComplete -> "off") {
+        @components.back_link("/customs-declare-exports/declaration/supplementary/warehouse")
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("supplementary.packageInformation.title"))
+        @components.page_title(Some("supplementary.officeOfExit.title"))
 
         @components.input_text(
-            field = form("PackageInformation"),
-            label = messages("supplementary.packageInformation.typesOfPackages"),
-            hint = Some(messages("supplementary.packageInformation.typesOfPackages.hint"))
-        )
-
-        @components.input_text(
-            field = form("PackageInformation"),
-            label = messages("supplementary.packageInformation.numberOfPackages")
-        )
-
-        @components.input_text(
-            field = form("PackageInformation"),
-            label = messages("supplementary.packageInformation.supplementaryUnits"),
-            hint = Some(messages("supplementary.packageInformation.supplementaryUnits.hint"))
-        )
-
-        @components.input_text(
-            field = form("PackageInformation"),
-            label = messages("supplementary.packageInformation.shippingMarks"),
-            hint = Some(messages("supplementary.packageInformation.shippingMarks.hint"))
-        )
-
-        @components.input_text(
-            field = form("PackageInformation"),
-            label = messages("supplementary.packageInformation.netMass"),
-            hint = Some(messages("supplementary.packageInformation.netMass.hint"))
-        )
-
-        @components.input_text(
-            field = form("PackageInformation"),
-            label = messages("supplementary.packageInformation.grossMass"),
-            hint = Some(messages("supplementary.packageInformation.grossMass.hint"))
+            field = form("officeId"),
+            label = messages("supplementary.officeOfExit"),
+            hint = Some(messages("supplementary.officeOfExit.hint"))
         )
 
         @components.submit_button()
