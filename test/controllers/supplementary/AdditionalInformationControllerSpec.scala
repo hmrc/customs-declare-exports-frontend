@@ -45,7 +45,7 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec {
       withCaching[AdditionalInformation](None)
 
       val incorrectAdditionalInformation: JsValue =
-        JsObject(Map("code" -> JsString(randomString(6)), "description" -> JsString(randomString(71))))
+        JsObject(Map("code" -> JsString(createRandomString(6)), "description" -> JsString(createRandomString(71))))
       val result = route(app, postRequest(uri, incorrectAdditionalInformation)).get
       val stringResult = contentAsString(result)
 
@@ -74,7 +74,7 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec {
       withCaching[AdditionalInformation](None)
 
       val correctAdditionalInformation: JsValue =
-        JsObject(Map("code" -> JsString("12345"), "description" -> JsString(randomString(70))))
+        JsObject(Map("code" -> JsString("12345"), "description" -> JsString(createRandomString(70))))
 
       val result = route(app, postRequest(uri, correctAdditionalInformation)).get
       val header = result.futureValue.header

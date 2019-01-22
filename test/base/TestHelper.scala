@@ -20,6 +20,6 @@ import scala.util.Random
 
 object TestHelper {
 
-  def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
+  def createRandomString(length: Int): String = Random.alphanumeric.take(length).mkString
 
 }

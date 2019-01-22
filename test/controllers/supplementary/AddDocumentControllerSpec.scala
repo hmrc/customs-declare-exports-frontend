@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.supplementary.Document
-import play.api.libs.json.{JsBoolean, JsObject, JsString, JsValue}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
 class AddDocumentControllerSpec extends CustomExportsBaseSpec {
@@ -84,7 +84,7 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
       withCaching[Document](None)
 
       val incorrectDocumentStatusReason: JsValue =
-        JsObject(Map("documentStatusReason" -> JsString(TestHelper.randomString(36))))
+        JsObject(Map("documentStatusReason" -> JsString(TestHelper.createRandomString(36))))
 
       val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
       status(result) must be(BAD_REQUEST)
@@ -96,7 +96,7 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
       withCaching[Document](None)
 
       val incorrectDocumentStatusReason: JsValue =
-        JsObject(Map("documentIdentifier" -> JsString(TestHelper.randomString(31))))
+        JsObject(Map("documentIdentifier" -> JsString(TestHelper.createRandomString(31))))
 
       val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
       status(result) must be(BAD_REQUEST)
@@ -107,7 +107,7 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[Document](None)
 
-      val incorrectDocumentStatusReason: JsValue = JsObject(Map("documentPart" -> JsString(TestHelper.randomString(6))))
+      val incorrectDocumentStatusReason: JsValue = JsObject(Map("documentPart" -> JsString(TestHelper.createRandomString(6))))
 
       val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
       status(result) must be(BAD_REQUEST)
@@ -121,11 +121,11 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
 
       val correctForm: JsValue = JsObject(
         Map(
-          "documentTypeCode" -> JsString("a123"),
-          "documentIdentifier" -> JsString(TestHelper.randomString(30)),
-          "documentPart" -> JsString(TestHelper.randomString(5)),
+          "documentTypeCode" -> JsString("A123"),
+          "documentIdentifier" -> JsString(TestHelper.createRandomString(30)),
+          "documentPart" -> JsString(TestHelper.createRandomString(5)),
           "documentStatus" -> JsString("AB"),
-          "documentStatusReason" -> JsString(TestHelper.randomString(35))
+          "documentStatusReason" -> JsString(TestHelper.createRandomString(35))
         )
       )
 

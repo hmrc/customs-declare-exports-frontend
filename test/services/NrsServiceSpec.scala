@@ -16,8 +16,8 @@
 
 package services
 
-import base.{CustomExportsBaseSpec, TestHelper}
 import base.ExportsTestData.newUser
+import base.{CustomExportsBaseSpec, TestHelper}
 import org.joda.time.DateTime
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
@@ -25,7 +25,10 @@ import uk.gov.hmrc.http.logging.Authorization
 class NrsServiceSpec extends CustomExportsBaseSpec {
 
   implicit val hc: HeaderCarrier =
-    HeaderCarrier(authorization = Some(Authorization(TestHelper.randomString(255))), nsStamp = DateTime.now().getMillis)
+    HeaderCarrier(
+    authorization = Some(Authorization(TestHelper.createRandomString(255))),
+    nsStamp = DateTime.now().getMillis
+  )
   val nrsService = new NRSService(appConfig, mockNrsConnector)
   implicit val signedInUser = newUser("12345", "external1")
   "NrsService " should {

@@ -28,7 +28,7 @@ import scala.concurrent.Future
 class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
 
   val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"))
-  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(randomString(255))))
+  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomString(255))))
   val expectedHeaders: Map[String, String] = Map.empty
   val falseServerError: Boolean = false
   val movementSubmission = MovementSubmission("eori1", "convid1", "ducr1", None, "EAL")

@@ -51,14 +51,14 @@ class LocationControllerSpec extends CustomExportsBaseSpec {
 
       val incorrectGoodsLocation: JsValue = JsObject(
         Map(
-          "country" -> JsString(TestHelper.randomString(3)),
-          "typeOfLocation" -> JsString(TestHelper.randomString(2)),
-          "qualifierOfIdentification" -> JsString(TestHelper.randomString(2)),
-          "identificationOfLocation" -> JsString(TestHelper.randomString(4)),
-          "additionalIdentifier" -> JsString(TestHelper.randomString(33)),
-          "streetAndNumber" -> JsString(TestHelper.randomString(71)),
-          "postCode" -> JsString(TestHelper.randomString(10)),
-          "city" -> JsString(TestHelper.randomString(36))
+          "country" -> JsString(TestHelper.createRandomString(3)),
+          "typeOfLocation" -> JsString(TestHelper.createRandomString(2)),
+          "qualifierOfIdentification" -> JsString(TestHelper.createRandomString(2)),
+          "identificationOfLocation" -> JsString(TestHelper.createRandomString(4)),
+          "additionalIdentifier" -> JsString(TestHelper.createRandomString(33)),
+          "streetAndNumber" -> JsString(TestHelper.createRandomString(71)),
+          "postCode" -> JsString(TestHelper.createRandomString(10)),
+          "city" -> JsString(TestHelper.createRandomString(36))
         )
       )
       val result = route(app, postRequest(uri, incorrectGoodsLocation)).get

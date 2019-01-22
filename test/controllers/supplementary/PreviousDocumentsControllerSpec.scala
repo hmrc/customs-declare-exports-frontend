@@ -73,7 +73,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
         Map(
           "documentCategory" -> JsString("Incorrect category"),
           "documentType" -> JsString("Incorrect type"),
-          "documentReference" -> JsString(TestHelper.randomString(36)),
+          "documentReference" -> JsString(TestHelper.createRandomString(36)),
           "goodsItemIdentifier" -> JsString("Incorrect identifier")
         )
       )

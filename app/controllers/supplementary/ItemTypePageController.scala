@@ -15,47 +15,49 @@
  */
 
 package controllers.supplementary
-
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.GoodItemNumber
+import forms.supplementary.ItemType
+import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.good_item_number
+import views.html.supplementary.item_type
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class GoodItemNumberController @Inject()(
+class ItemTypePageController @Inject()(
   appConfig: AppConfig,
-  val messagesApi: MessagesApi,
+  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  import forms.supplementary.GoodItemNumber._
+  private val supplementaryDeclarationCacheId = appConfig.appName
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[GoodItemNumber](appConfig.appName, formId).map {
-      case Some(data) => Ok(good_item_number(appConfig, form.fill(data)))
-      case _          => Ok(good_item_number(appConfig, form))
+  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[ItemType](supplementaryDeclarationCacheId, ItemType.id).map {
+      case Some(data) => Ok(item_type(appConfig, ItemType.form.fill(data)))
+      case _          => Ok(item_type(appConfig, ItemType.form))
     }
   }
 
-  def submit(): Action[AnyContent] = authenticate.async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[GoodItemNumber]) =>
-          Future.successful(BadRequest(good_item_number(appConfig, formWithErrors))),
-        form =>
-          customsCacheService.cache[GoodItemNumber](appConfig.appName, formId, form).map { _ =>
-            Redirect(controllers.supplementary.routes.ItemTypePageController.displayPage())
+  def submitItemType(): Action[AnyContent] = authenticate.async { implicit request =>
+    ItemType.form.bindFromRequest().fold(
+      (formWithErrors: Form[ItemType]) =>
+        Future.successful(BadRequest(item_type(appConfig, formWithErrors))),
+      validItemType =>
+        customsCacheService.cache[ItemType](supplementaryDeclarationCacheId, ItemType.id, validItemType).map { _ =>
+//          Redirect(controllers.supplementary.routes.???.???())
+          Ok("You should now be redirected to Package Information page")
         }
-      )
+
+    )
   }
+
 }

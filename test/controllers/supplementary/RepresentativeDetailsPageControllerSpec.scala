@@ -279,12 +279,12 @@ object RepresentativeDetailsPageControllerSpec {
 
   val incorrectRepresentativeDetails: JsValue = JsObject(
     Map(
-      "address.eori" -> JsString(randomString(18)),
-      "address.fullName" -> JsString(randomString(71)),
-      "address.addressLine" -> JsString(randomString(71)),
-      "address.townOrCity" -> JsString(randomString(36)),
-      "address.postCode" -> JsString(randomString(10)),
-      "address.country" -> JsString(randomString(3)),
+      "address.eori" -> JsString(createRandomString(18)),
+      "address.fullName" -> JsString(createRandomString(71)),
+      "address.addressLine" -> JsString(createRandomString(71)),
+      "address.townOrCity" -> JsString(createRandomString(36)),
+      "address.postCode" -> JsString(createRandomString(10)),
+      "address.country" -> JsString(createRandomString(3)),
       "statusCode" -> JsString("")
     )
   )
