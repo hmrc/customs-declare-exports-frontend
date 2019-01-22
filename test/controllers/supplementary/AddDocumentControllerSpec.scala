@@ -52,6 +52,7 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - empty form" in {
+      pending
       authorizedUser()
       withCaching[Document](None)
 
@@ -64,7 +65,6 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
       header.headers.get("Location") must be(
         Some("/customs-declare-exports/declaration/supplementary/good-item-number")
       )
-
     }
 
     "validate form - incorrect document status" in {
