@@ -26,43 +26,37 @@
     appConfig = appConfig
 ) {
 
-  @helpers.form(AddDocumentController.saveForm(), 'autoComplete -> "off") {
+    @helpers.form(AddDocumentController.saveForm(), 'autoComplete -> "off") {
 
-      @components.back_link("")
+        @components.back_link("/customs-declare-exports/declaration/supplementary/total-numbers-of-items")
 
-      @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
+        @components.error_summary(form.errors)
 
-      @components.input_text(
-       field = form("enterDocumentTypeCode"),
-       label = messages("supplementary.addDocument.enterDocumentTypeOfCode")
-      )
-      @components.input_text(
-       field = form("identifier"),
-       label = messages("supplementary.addDocument.identifier")
-      )
-      @components.input_text(
-       field = form("status"),
-       label = messages("supplementary.addDocument.status")
-      )
-      @components.input_text(
-       field = form("issuingAuthority"),
-       label = messages("supplementary.addDocument.issuingAuthority")
-      )
-      @components.input_text(
-       field = form("dateOfValidity"),
-       label = messages("supplementary.addDocument.dateOfValidity")
-      )
+        @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
 
-      @components.input_text(
-       field = form("measurementUnitAndQualifier"),
-       label = messages("supplementary.addDocument.measurementUnitAndQualifier")
-      )
+        @components.input_text(
+            field = form("documentTypeCode"),
+            label = messages("supplementary.addDocument.documentTypeCode")
+        )
 
-      @components.input_checkbox(
-       field = form("additionalInformation"),
-       label = messages("supplementary.addDocument.checkbox")
-      )
+        @components.input_text(
+            field = form("documentIdentifier"),
+            label = messages("supplementary.addDocument.documentIdentifier")
+        )
 
-      @components.submit_button()
-     }
+        @components.input_text(
+            field = form("documentPart"),
+            label = messages("supplementary.addDocument.documentPart")
+        )
+
+        @components.input_text(
+            field = form("documentStatus"),
+            label = messages("supplementary.addDocument.documentStatus")
+        )
+        @components.input_text(
+            field = form("documentStatusReason"),
+            label = messages("supplementary.addDocument.documentStatusReason")
+        )
+        @components.submit_button()
+    }
 }

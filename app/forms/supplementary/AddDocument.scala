@@ -19,16 +19,15 @@ package forms.supplementary
 import play.api.data.{Form, Forms}
 import play.api.data.Forms._
 import play.api.libs.json.Json
+import utils.validators.FormFieldValidator._
 
 case class Document(
-  enterDocumentTypeCode: String,
-  identifier: String,
-  status: String,
-  issuingAuthority: String,
-  dateOfValidity: String,
-  measurementUnitAndQualifier: String,
-  additionalInformation: Boolean
-)
+                     documentTypeCode: Option[String],
+                     documentIdentifier: Option[String],
+                     documentPart: Option[String],
+                     documentStatus: Option[String],
+                     documentStatusReason: Option[String]
+                   )
 
 object Document {
   implicit val format = Json.format[Document]
@@ -36,16 +35,39 @@ object Document {
   val formId = "Document"
 
   val mapping = Forms.mapping(
-    "enterDocumentTypeCode" -> text(),
-    "identifier" -> text(),
-    "status" -> text(),
-    "issuingAuthority" -> text(),
-    "dateOfValidity" -> text(),
-    "measurementUnitAndQualifier" -> text(),
-    "additionalInformation" -> boolean
+    "documentTypeCode" -> optional(
+      text().verifying(
+        "supplementary.addDocument.documentTypeCode.error",
+        startsWithCapitalLetter and noLongerThan(4) and isTailNumeric
+      )
+    ),
+    "documentIdentifier" -> optional(
+      text().verifying("supplementary.addDocument.documentIdentifier.error", isAlphanumeric and noLongerThan(30))
+    ),
+    "documentPart" -> optional(
+      text().verifying("supplementary.addDocument.documentPart.error", isAlphanumeric and noLongerThan(5))
+    ),
+    "documentStatus" -> optional(
+      text().verifying("supplementary.addDocument.documentStatus.error", noLongerThan(2) and isAllCapitalLetter)
+    ),
+    "documentStatusReason" -> optional(
+      text().verifying("supplementary.addDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumeric)
+    )
   )(Document.apply)(Document.unapply)
 
   def form(): Form[Document] = Form(mapping)
 
-  def toMetadataProperties(document: Document): Map[String, String] = ???
+  def toMetadataProperties(document: Document): Map[String, String] =
+    Map(
+      "declaration.goodsShipment.government.agencyGoodsItem.additionalDocument.categoryCode" ->
+        document.documentTypeCode.flatMap(_.headOption).fold("")(_.toString),
+      "declaration.goodsShipment.government.agencyGoodsItem.additionalDocument.typeCode" ->
+        document.documentTypeCode.map(_.drop(1).toString).getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItem.additionalDocument.ID" ->
+        (document.documentIdentifier.getOrElse("") + document.documentPart.getOrElse("")),
+      "declaration.goodsShipment.government.AgencyGoodsItem.additionalDocument.lpcoExemptionCode" ->
+        document.documentStatus.getOrElse(""),
+      "declaration.goodsShipment.government.AgencyGoodsItem.additionalDocument.name" ->
+        document.documentStatusReason.getOrElse("")
+    )
 }

@@ -28,6 +28,8 @@
 ) {
     @helpers.form(GoodItemNumberController.submit(), 'autoComplete -> "off") {
 
+        @components.back_link("/customs-declare-exports/declaration/supplementary/add-document")
+
         @components.error_summary(form.errors)
 
         @components.page_title(Some("supplementary.goodItemNumber.title"))
@@ -38,6 +40,6 @@
             hint = Some(messages("supplementary.goodItemNumber.hint"))
         )
 
-        @components.submit_button
+        @components.submit_button()
     }
 }
