@@ -33,9 +33,9 @@ import scala.concurrent.{Await, Future}
 
 class CustomsDeclarationsConnectorSpec extends CustomExportsBaseSpec {
 
-  val eori = Some(randomString(16))
-  val lrn = Some(randomString(35))
-  val conversationId: String = randomString(80)
+  val eori = Some(createRandomString(16))
+  val lrn = Some(createRandomString(35))
+  val conversationId: String = createRandomString(80)
 
   "CustomsDeclarationsConnector " should {
 
@@ -63,7 +63,7 @@ class CustomsDeclarationsConnectorSpec extends CustomExportsBaseSpec {
     metaData: MetaData,
     badgeIdentifier: Option[String] = None,
     forceServerError: Boolean = false,
-    hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(randomString(255)))),
+    hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomString(255)))),
     conversationId: String = UUID.randomUUID().toString,
     postURL: String = appConfig.submitExportDeclarationUri
   )(test: Future[CustomsDeclarationsResponse] => Unit): Unit = {

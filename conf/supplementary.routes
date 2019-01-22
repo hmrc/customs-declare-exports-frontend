@@ -114,6 +114,12 @@ GET         /good-item-number               controllers.supplementary.GoodItemNu
 
 POST        /good-item-number               controllers.supplementary.GoodItemNumberController.submit()
 
+# Item Type
+
+GET         /item-type                      controllers.supplementary.ItemTypePageController.displayPage()
+
+POST        /item-type                      controllers.supplementary.ItemTypePageController.submitItemType()
+
 # Previous documents
 
 GET         /previous-documents             controllers.supplementary.PreviousDocumentsController.displayForm()
@@ -124,4 +130,4 @@ POST        /previous-documents             controllers.supplementary.PreviousDo
 
 GET         /additional-information         controllers.supplementary.AdditionalInformationController.displayForm()
 
-POST        /additional-information         controllers.supplementary.AdditionalInformationController.saveAdditionalInfo()
+POST /additional-information controllers.supplementary.AdditionalInformationController.saveAdditionalInfo()

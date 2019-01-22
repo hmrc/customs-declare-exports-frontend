@@ -1,0 +1,75 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.supplementary.routes._
+@import forms.supplementary.ItemType
+@import uk.gov.hmrc.play.views.html._
+
+@(appConfig: AppConfig, form: Form[ItemType])(implicit request: Request[_], messages: Messages)
+
+@main_template(
+  title = messages("supplementary.itemType.title"),
+  appConfig = appConfig
+) {
+
+  @helpers.form(ItemTypePageController.submitItemType(), 'autocomplete -> "off") {
+    @components.back_link("/customs-declare-exports/declaration/supplementary/good-item-number")
+
+    @components.error_summary(form.errors)
+
+    @components.page_title(Some("supplementary.itemType.title"))
+
+    @components.input_text(
+      field = form("combinedNomenclatureCode"),
+      label = messages("supplementary.itemType.combinedNomenclatureCode.header"),
+      hint = Some(messages("supplementary.itemType.combinedNomenclatureCode.header.hint"))
+    )
+
+    @components.input_text(
+      field = form("taricAdditionalCode"),
+      label = messages("supplementary.itemType.taricAdditionalCodes.header"),
+      hint = Some(messages("supplementary.itemType.taricAdditionalCodes.header.hint"))
+    )
+
+    @components.input_text(
+      field = form("nationalAdditionalCode"),
+      label = messages("supplementary.itemType.nationalAdditionalCode.header"),
+      hint = Some(messages("supplementary.itemType.nationalAdditionalCode.header.hint"))
+    )
+
+    @components.input_text(
+      field = form("descriptionOfGoods"),
+      label = messages("supplementary.itemType.description.header"),
+      hint = Some(messages("supplementary.itemType.description.header.hint"))
+    )
+
+    @components.input_text(
+      field = form("cusCode"),
+      label = messages("supplementary.itemType.cusCode.header"),
+      hint = Some(messages("supplementary.itemType.cusCode.header.hint"))
+    )
+
+    @components.input_text(
+      field = form("statisticalValue"),
+      label = messages("supplementary.itemType.statisticalValue.header"),
+      hint = Some(messages("supplementary.itemType.statisticalValue.header.hint"))
+    )
+
+    @components.submit_button()
+  }
+
+}

@@ -259,12 +259,12 @@ object ExportsTestData {
 
   val incorrectAddress: JsValue = JsObject(
     Map(
-      "eori" -> JsString(randomString(18)),
-      "fullName" -> JsString(randomString(71)),
-      "addressLine" -> JsString(randomString(71)),
-      "townOrCity" -> JsString(randomString(36)),
-      "postCode" -> JsString(randomString(10)),
-      "country" -> JsString(randomString(3))
+      "eori" -> JsString(createRandomString(18)),
+      "fullName" -> JsString(createRandomString(71)),
+      "addressLine" -> JsString(createRandomString(71)),
+      "townOrCity" -> JsString(createRandomString(36)),
+      "postCode" -> JsString(createRandomString(10)),
+      "country" -> JsString(createRandomString(3))
     )
   )
 

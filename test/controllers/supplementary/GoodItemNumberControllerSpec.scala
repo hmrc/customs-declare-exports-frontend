@@ -75,7 +75,6 @@ class GoodItemNumberControllerSpec extends CustomExportsBaseSpec {
   }
 
   "validate form - correct answer" in {
-    pending
     authorizedUser()
     withCaching[GoodItemNumber](None)
 
@@ -87,7 +86,7 @@ class GoodItemNumberControllerSpec extends CustomExportsBaseSpec {
     status(result) must be(SEE_OTHER)
 
     header.headers.get("Location") must be(
-      Some("/customs-declare-exports/declaration/supplementary/???item-details???")
+      Some("/customs-declare-exports/declaration/supplementary/item-type")
     )
   }
 }

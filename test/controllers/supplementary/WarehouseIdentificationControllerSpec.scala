@@ -43,7 +43,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
     withCaching[WarehouseIdentification](None)
 
     val incorrectWarehouseIdentification: JsValue =
-      JsObject(Map("identificationNumber" -> JsString(TestHelper.randomString(37))))
+      JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomString(37))))
     val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
     val stringResult = contentAsString(result)
 
@@ -55,7 +55,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
     withCaching[WarehouseIdentification](None)
 
     val incorrectWarehouseIdentification: JsValue =
-      JsObject(Map("identificationNumber" -> JsString(TestHelper.randomString(1))))
+      JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomString(1))))
     val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
     val stringResult = contentAsString(result)
 

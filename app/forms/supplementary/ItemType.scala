@@ -114,7 +114,7 @@ object ItemType {
       .verifying("supplementary.itemType.statisticalValue.error.empty", nonEmpty)
       .verifying(
         "supplementary.itemType.statisticalValue.error.length",
-        input => input.isEmpty || noLongerThan(statisticalValueMaxLength)(input.replaceAll(".", ""))
+        input => input.isEmpty || noLongerThan(statisticalValueMaxLength)(input.replaceAll("\\.", ""))
       )
       .verifying(
         "supplementary.itemType.statisticalValue.error.wrongFormat",
