@@ -46,7 +46,9 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec {
       withCaching[DeclarationHolder](None)
 
       val incorrectDeclarationHolder: JsValue =
-        JsObject(Map("authorisationTypeCode" -> JsString("12345"), "eori" -> JsString(TestHelper.createRandomString(18))))
+        JsObject(
+          Map("authorisationTypeCode" -> JsString("12345"), "eori" -> JsString(TestHelper.createRandomString(18)))
+        )
       val result = route(app, postRequest(uri, incorrectDeclarationHolder)).get
       val stringResult = contentAsString(result)
 

@@ -107,7 +107,8 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[Document](None)
 
-      val incorrectDocumentStatusReason: JsValue = JsObject(Map("documentPart" -> JsString(TestHelper.createRandomString(6))))
+      val incorrectDocumentStatusReason: JsValue =
+        JsObject(Map("documentPart" -> JsString(TestHelper.createRandomString(6))))
 
       val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
       status(result) must be(BAD_REQUEST)

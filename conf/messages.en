@@ -563,3 +563,12 @@ supplementary.additionalInformation.code = Enter the union or national code
 supplementary.additionalInformation.code.error = Code is incorrect
 supplementary.additionalInformation.description = Enter the information required
 supplementary.additionalInformation.description.error = Information is incorrect
+
+supplementary.transactionType.documentTypeCode.title = Transaction type
+supplementary.transactionType.documentTypeCode.header = 8/5 Transaction type
+supplementary.transactionType.documentTypeCode = What kind of transaction are you making?
+supplementary.transactionType.hint = This is single digit numerical character
+supplementary.transactionType.documentTypeCode.empty = Document type code connot be empty
+supplementary.transactionType.documentTypeCode.error = Document type code is incorrect
+supplementary.transactionType.identifier = Further information on this transaction
+supplementary.transactionType.identifier.error = Further information on this transaction are incorrect
