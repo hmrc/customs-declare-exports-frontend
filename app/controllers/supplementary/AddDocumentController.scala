@@ -30,12 +30,12 @@ import views.html.supplementary.add_document
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddDocumentController @Inject()(
-                                       appConfig: AppConfig,
-                                       override val messagesApi: MessagesApi,
-                                       authenticate: AuthAction,
-                                       customsCacheService: CustomsCacheService
-                                     )(implicit ec: ExecutionContext)
-  extends FrontendController with I18nSupport {
+  appConfig: AppConfig,
+  override val messagesApi: MessagesApi,
+  authenticate: AuthAction,
+  customsCacheService: CustomsCacheService
+)(implicit ec: ExecutionContext)
+    extends FrontendController with I18nSupport {
 
   import forms.supplementary.Document._
 
@@ -54,7 +54,7 @@ class AddDocumentController @Inject()(
         form =>
           customsCacheService.cache[Document](appConfig.appName, formId, form).map { _ =>
             Redirect(controllers.supplementary.routes.GoodItemNumberController.displayForm())
-          }
+        }
       )
   }
 }

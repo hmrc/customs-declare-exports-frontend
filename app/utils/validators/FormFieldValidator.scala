@@ -60,7 +60,7 @@ object FormFieldValidator {
     Try(input.tails) match {
       case Success(value) => isNumeric(value.toString())
       case _              => false
-    }
+  }
 
   val isAllCapitalLetter: String => Boolean = (input: String) => input.matches(allCapitalLettersRegex)
 }

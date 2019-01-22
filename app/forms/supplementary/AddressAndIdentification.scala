@@ -21,7 +21,7 @@ import play.api.libs.json.Json
 import services.Countries.allCountries
 import utils.validators.FormFieldValidator.isAlphanumeric
 
-case class  AddressAndIdentification(
+case class AddressAndIdentification(
   eori: Option[String], // alphanumeric, max length 17 characters
   fullName: Option[String], // alphanumeric length 1 - 70
   addressLine: Option[String], // alphanumeric length 1 - 70

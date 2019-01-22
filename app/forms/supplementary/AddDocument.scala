@@ -22,12 +22,12 @@ import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
 case class Document(
-                     documentTypeCode: Option[String],
-                     documentIdentifier: Option[String],
-                     documentPart: Option[String],
-                     documentStatus: Option[String],
-                     documentStatusReason: Option[String]
-                   )
+  documentTypeCode: Option[String],
+  documentIdentifier: Option[String],
+  documentPart: Option[String],
+  documentStatus: Option[String],
+  documentStatusReason: Option[String]
+)
 
 object Document {
   implicit val format = Json.format[Document]
