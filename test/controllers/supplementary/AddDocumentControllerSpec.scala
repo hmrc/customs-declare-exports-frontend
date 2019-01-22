@@ -21,7 +21,7 @@ import forms.supplementary.Document
 import play.api.libs.json.{JsBoolean, JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class AddDocumentsControllerSpec extends CustomExportsBaseSpec {
+class AddDocumentControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/declaration/supplementary/add-document")
 
@@ -121,7 +121,7 @@ class AddDocumentsControllerSpec extends CustomExportsBaseSpec {
 
       val correctForm: JsValue = JsObject(
         Map(
-          "documentTypeCode" -> JsString("A123"),
+          "documentTypeCode" -> JsString("a123"),
           "documentIdentifier" -> JsString(TestHelper.randomString(30)),
           "documentPart" -> JsString(TestHelper.randomString(5)),
           "documentStatus" -> JsString("AB"),
