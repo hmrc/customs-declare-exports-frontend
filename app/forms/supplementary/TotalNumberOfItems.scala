@@ -21,7 +21,12 @@ import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
-case class TotalNumberOfItems(itemsNo: String, totalAmountInvoiced: Option[String], exchangeRate: Option[String])
+case class TotalNumberOfItems(
+  itemsNo: String,
+  totalAmountInvoiced: Option[String],
+  exchangeRate: Option[String],
+  totalPackage: String
+)
 
 object TotalNumberOfItems {
   implicit val format = Json.format[TotalNumberOfItems]
@@ -33,11 +38,18 @@ object TotalNumberOfItems {
 
   val mapping = Forms.mapping(
     "items" -> text()
-      .verifying("supplementary.totalNumberOfItems.error", isNumeric and noLongerThan(3) and containsNotOnlyZeros),
+      .verifying("supplementary.totalNumberOfItems.empty", nonEmpty)
+      .verifying(
+        "supplementary.totalNumberOfItems.error",
+        isEmpty or (isNumeric and noLongerThan(3) and containsNotOnlyZeros)
+      ),
     "totalAmountInvoiced" -> optional(
       text().verifying("supplementary.totalAmountInvoiced.error", _.matches(totalAmountInvoicedPattern))
     ),
-    "exchangeRate" -> optional(text().verifying("supplementary.exchangeRate.error", _.matches(exchangeRatePattern)))
+    "exchangeRate" -> optional(text().verifying("supplementary.exchangeRate.error", _.matches(exchangeRatePattern))),
+    "totalPackage" -> text()
+      .verifying("supplementary.totalPackageQuantity.empty", nonEmpty)
+      .verifying("supplementary.totalPackageQuantity.error", isEmpty or (isNumeric and noLongerThan(8)))
   )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
 
   def form(): Form[TotalNumberOfItems] = Form(mapping)
@@ -46,6 +58,7 @@ object TotalNumberOfItems {
     Map(
       "declaration.goodsItemQuantity" -> numberOfItems.itemsNo,
       "declaration.invoiceAmount" -> numberOfItems.totalAmountInvoiced.getOrElse(""),
-      "declaration.currencyExchange.rateNumeric" -> numberOfItems.exchangeRate.getOrElse("")
+      "declaration.currencyExchange.rateNumeric" -> numberOfItems.exchangeRate.getOrElse(""),
+      "declaration.totalPackageQuantity" -> numberOfItems.totalPackage
     )
 }

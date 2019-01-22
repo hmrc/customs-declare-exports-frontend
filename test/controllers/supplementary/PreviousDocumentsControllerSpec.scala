@@ -49,7 +49,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[PreviousDocuments](None)
 
-      val incorrectProcedureDocuments: JsValue = JsObject(
+      val incorrectPreviousDocuments: JsValue = JsObject(
         Map(
           "documentCategory" -> JsString(""),
           "documentType" -> JsString(""),
@@ -57,7 +57,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
           "goodsItemIdentifier" -> JsString("")
         )
       )
-      val result = route(app, postRequest(uri, incorrectProcedureDocuments)).get
+      val result = route(app, postRequest(uri, incorrectPreviousDocuments)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("supplementary.previousDocuments.documentCategory.empty"))
@@ -69,7 +69,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[PreviousDocuments](None)
 
-      val incorrectProcedureDocuments: JsValue = JsObject(
+      val incorrectPreviousDocuments: JsValue = JsObject(
         Map(
           "documentCategory" -> JsString("Incorrect category"),
           "documentType" -> JsString("Incorrect type"),
@@ -77,7 +77,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
           "goodsItemIdentifier" -> JsString("Incorrect identifier")
         )
       )
-      val result = route(app, postRequest(uri, incorrectProcedureDocuments)).get
+      val result = route(app, postRequest(uri, incorrectPreviousDocuments)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("supplementary.previousDocuments.documentCategory.error"))
@@ -87,19 +87,18 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
     }
 
     "valid form - correct values" in {
-      pending
       authorizedUser()
       withCaching[PreviousDocuments](None)
 
-      val correctProdecureDocuments: JsValue = JsObject(
+      val correctPreviousDocuments: JsValue = JsObject(
         Map(
           "documentCategory" -> JsString(TemporaryStorage),
-          "documentType" -> JsString(TestHelper.randomString(3)),
-          "documentReference" -> JsString(TestHelper.randomString(32)),
-          "goodsItemIdentifier" -> JsString(TestHelper.randomString(3))
+          "documentType" -> JsString("ABC"),
+          "documentReference" -> JsString("DocumentReference"),
+          "goodsItemIdentifier" -> JsString("123")
         )
       )
-      val result = route(app, postRequest(uri, correctProdecureDocuments)).get
+      val result = route(app, postRequest(uri, correctPreviousDocuments)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

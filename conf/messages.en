@@ -449,10 +449,15 @@ supplementary.addDocument.dateOfValidity = Date of validity
 supplementary.addDocument.measurementUnitAndQualifier = Measurement unit and qualifier, if applicable
 supplementary.addDocument.checkbox = I don’t need to enter additional information
 
-supplementary.totalNumberOfItems.title = 1/9 What is the total number of items?
-supplementary.totalNumberOfItems = Total number of items
+supplementary.totalNumberOfItems = 1/9 What is the total number of items?
+supplementary.totalNumberOfItems.title = Total number of items
 supplementary.totalNumberOfItems.hint = Up to a maximum of 999 items
+supplementary.totalNumberOfItems.empty = Total number of items cannot be empty
 supplementary.totalNumberOfItems.error = Total number of items is incorrect
+supplementary.totalPackageQuantity = 6/18 Total number of packages
+supplementary.totalPackageQuantity.hint = Include all items in this shipment
+supplementary.totalPackageQuantity.empty = Total number of packages cannot be empty
+supplementary.totalPackageQuantity.error = Total number of packages is incorrect
 
 supplementary.transportInfo.title = Declaration Transport Information
 supplementary.transportInfo.inlandTransportMode.header = 7/5 What is the inland mode of transport?
@@ -501,6 +506,7 @@ supplementary.goodItemNumber.hint = The number assigned to the item in the decla
 cancellation.confirmationPage.title = Cancellation confirmation page
 cancellation.confirmationPage.message = Cancellation request has been submitted
 
+supplementary.previousDocuments = Previous documents
 supplementary.previousDocuments.title = 2/1 Previous documents
 supplementary.previousDocuments.documentCategory = What is the previous document category?
 supplementary.previousDocuments.documentCategory.error = Document category is incorrect
@@ -516,3 +522,12 @@ supplementary.previousDocuments.documentReference.error = Reference for the prev
 supplementary.previousDocuments.documentReference.empty = Reference for the previous document cannot be empty
 supplementary.previousDocuments.goodsItemIdentifier = Enter the goods item this previous document relates to
 supplementary.previousDocuments.goodsItemIdentifier.error = This fields is incorrect
+
+supplementary.additionalInformation = Additional information
+supplementary.additionalInformation.title = 2/2 Additional information
+supplementary.additionalInformation.code = Enter the union or national code
+supplementary.additionalInformation.code.error = Code is incorrect
+supplementary.additionalInformation.description = Enter the information required
+supplementary.additionalInformation.description.error = Information is incorrect
+
+
