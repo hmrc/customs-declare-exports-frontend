@@ -113,3 +113,9 @@ POST        /add-document                  controllers.supplementary.AddDocument
 GET         /good-item-number              controllers.supplementary.GoodItemNumberController.displayForm()
 
 POST        /good-item-number              controllers.supplementary.GoodItemNumberController.submit()
+
+# Previous documents
+
+GET         /previous-documents             controllers.supplementary.PreviousDocumentsController.displayForm()
+
+POST        /previous-documents             controllers.supplementary.PreviousDocumentsController.savePreviousDocuments()

@@ -21,7 +21,7 @@ import play.api.libs.json.Json
 import services.Countries.allCountries
 import utils.validators.FormFieldValidator.isAlphanumeric
 
-case class AddressAndIdentification(
+case class  AddressAndIdentification(
   eori: Option[String], // alphanumeric, max length 17 characters
   fullName: Option[String], // alphanumeric length 1 - 70
   addressLine: Option[String], // alphanumeric length 1 - 70
@@ -34,27 +34,39 @@ object AddressAndIdentification {
   implicit val format = Json.format[AddressAndIdentification]
 
   val addressMapping = mapping(
-    "eori" -> optional(text()
-      .verifying("supplementary.eori.empty", _.trim.nonEmpty)
-      .verifying("supplementary.eori.error", validateField(17))),
-    "fullName" -> optional(text()
-      .verifying("supplementary.fullName.empty", _.trim.nonEmpty)
-      .verifying("supplementary.fullName.error", validateField(70))),
-    "addressLine" -> optional(text()
-      .verifying("supplementary.addressLine.empty", _.trim.nonEmpty)
-      .verifying("supplementary.addressLine.error", validateField(70))),
-    "townOrCity" -> optional(text()
-      .verifying("supplementary.townOrCity.empty", _.trim.nonEmpty)
-      .verifying("supplementary.townOrCity.error", validateField(35))),
-    "postCode" -> optional(text()
-      .verifying("supplementary.postCode.empty", _.trim.nonEmpty)
-      .verifying("supplementary.postCode.error", validateField(9))),
-    "country" -> optional(text()
-      .verifying("supplementary.country.empty", _.trim.nonEmpty)
-      .verifying(
-        "supplementary.country.error",
-        input => input.isEmpty || !allCountries.filter(country => country.countryName == input).isEmpty
-      ))
+    "eori" -> optional(
+      text()
+        .verifying("supplementary.eori.empty", _.trim.nonEmpty)
+        .verifying("supplementary.eori.error", validateField(17))
+    ),
+    "fullName" -> optional(
+      text()
+        .verifying("supplementary.fullName.empty", _.trim.nonEmpty)
+        .verifying("supplementary.fullName.error", validateField(70))
+    ),
+    "addressLine" -> optional(
+      text()
+        .verifying("supplementary.addressLine.empty", _.trim.nonEmpty)
+        .verifying("supplementary.addressLine.error", validateField(70))
+    ),
+    "townOrCity" -> optional(
+      text()
+        .verifying("supplementary.townOrCity.empty", _.trim.nonEmpty)
+        .verifying("supplementary.townOrCity.error", validateField(35))
+    ),
+    "postCode" -> optional(
+      text()
+        .verifying("supplementary.postCode.empty", _.trim.nonEmpty)
+        .verifying("supplementary.postCode.error", validateField(9))
+    ),
+    "country" -> optional(
+      text()
+        .verifying("supplementary.country.empty", _.trim.nonEmpty)
+        .verifying(
+          "supplementary.country.error",
+          input => input.isEmpty || !allCountries.filter(country => country.countryName == input).isEmpty
+        )
+    )
   )(AddressAndIdentification.apply)(AddressAndIdentification.unapply)
 
   private def validateField: Int => String => Boolean =
@@ -65,8 +77,10 @@ object AddressAndIdentification {
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.id" -> address.eori.getOrElse(""),
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.name" -> address.fullName.getOrElse(""),
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.line" -> address.addressLine.getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.cityName" -> address.townOrCity.getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postcodeId" -> address.postCode.getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.cityName" -> address.townOrCity
+        .getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postcodeId" -> address.postCode
+        .getOrElse(""),
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.countryCode" ->
         allCountries.find(country => Some(country.countryName) == address.country).map(_.countryCode).getOrElse("")
     )
