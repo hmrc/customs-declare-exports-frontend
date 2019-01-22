@@ -227,10 +227,10 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "input contains no digit before decimal place" in {
-    val input = ".123"
-    val decimalPlaces = 3
-    isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) must be(true)
-  }
+        val input = ".123"
+        val decimalPlaces = 3
+        isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) must be(true)
+      }
     }
   }
 

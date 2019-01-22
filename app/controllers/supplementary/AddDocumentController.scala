@@ -39,7 +39,7 @@ class AddDocumentController @Inject()(
 
   import forms.supplementary.Document._
 
-  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Document](appConfig.appName, formId).map {
       case Some(data) => Ok(add_document(appConfig, form.fill(data)))
       case _          => Ok(add_document(appConfig, form))

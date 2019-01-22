@@ -104,7 +104,7 @@ POST        /total-numbers-of-items         controllers.supplementary.TotalNumbe
 
 # Add Documents
 
-GET         /add-document                   controllers.supplementary.AddDocumentController.displayPage()
+GET         /add-document                   controllers.supplementary.AddDocumentController.displayForm()
 
 POST        /add-document                   controllers.supplementary.AddDocumentController.saveForm()
 
@@ -130,4 +130,10 @@ POST        /previous-documents             controllers.supplementary.PreviousDo
 
 GET         /additional-information         controllers.supplementary.AdditionalInformationController.displayForm()
 
-POST /additional-information controllers.supplementary.AdditionalInformationController.saveAdditionalInfo()
+POST        /additional-information         controllers.supplementary.AdditionalInformationController.saveAdditionalInfo()
+
+# Transaction type
+
+GET         /transaction-type               controllers.supplementary.TransactionTypeController.displayForm()
+
+POST        /transaction-type               controllers.supplementary.TransactionTypeController.saveTransactionType()

@@ -52,8 +52,7 @@ class AdditionalInformationController @Inject()(
           Future.successful(Ok(additional_information(appConfig, formWithErrors))),
         validForm =>
           customsCacheService.cache[AdditionalInformation](appConfig.appName, formId, validForm).map { _ =>
-            //Redirect(controllers.supplementary.routes.???.displayForm
-            Ok("Documents produced")
+            Redirect(controllers.supplementary.routes.AddDocumentController.displayForm())
         }
       )
   }

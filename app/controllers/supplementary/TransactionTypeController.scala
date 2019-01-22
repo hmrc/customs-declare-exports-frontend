@@ -15,49 +15,45 @@
  */
 
 package controllers.supplementary
+
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.ItemType
-import handlers.ErrorHandler
+import forms.supplementary.TransactionType
+import forms.supplementary.TransactionType.{form, formId}
+import services.CustomsCacheService
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.item_type
+import views.html.supplementary.transaction_type
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ItemTypePageController @Inject()(
+class TransactionTypeController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
-  errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  private val supplementaryDeclarationCacheId = appConfig.appName
-
-  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ItemType](supplementaryDeclarationCacheId, ItemType.id).map {
-      case Some(data) => Ok(item_type(appConfig, ItemType.form.fill(data)))
-      case _          => Ok(item_type(appConfig, ItemType.form))
+  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetchAndGetEntry[TransactionType](appConfig.appName, formId).map {
+      case Some(data) => Ok(transaction_type(appConfig, form.fill(data)))
+      case _          => Ok(transaction_type(appConfig, form))
     }
   }
 
-  def submitItemType(): Action[AnyContent] = authenticate.async { implicit request =>
-    ItemType.form
-      .bindFromRequest()
+  def saveTransactionType(): Action[AnyContent] = authenticate.async { implicit request =>
+    form.bindFromRequest
       .fold(
-        (formWithErrors: Form[ItemType]) => Future.successful(BadRequest(item_type(appConfig, formWithErrors))),
-        validItemType =>
-          customsCacheService.cache[ItemType](supplementaryDeclarationCacheId, ItemType.id, validItemType).map { _ =>
-//          Redirect(controllers.supplementary.routes.???.???())
-            Ok("You should now be redirected to Package Information page")
+        (formWithErrors: Form[TransactionType]) =>
+          Future.successful(BadRequest(transaction_type(appConfig, formWithErrors))),
+        form =>
+          customsCacheService.cache[TransactionType](appConfig.appName, formId, form).map { _ =>
+            Redirect(controllers.supplementary.routes.GoodItemNumberController.displayForm())
         }
       )
   }
-
 }

@@ -15,6 +15,7 @@
  */
 
 package controllers.supplementary
+
 import config.AppConfig
 import controllers.actions.AuthAction
 import forms.supplementary.TotalNumberOfItems
@@ -52,8 +53,7 @@ class TotalNumberOfItemsController @Inject()(
           Future.successful(BadRequest(total_number_of_items(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[TotalNumberOfItems](appConfig.appName, formId, form).map { _ =>
-            //Redirect(controllers.supplementary.routes.NatureOfTransactionController.displayForm())
-            Ok("Nature of transaction")
+            Redirect(controllers.supplementary.routes.TransactionTypeController.displayForm())
         }
       )
   }
