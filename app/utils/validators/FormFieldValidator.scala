@@ -16,6 +16,8 @@
 
 package utils.validators
 
+import scala.util.{Success, Try}
+
 object FormFieldValidator {
 
   implicit class PredicateOps[A](first: A => Boolean) {
@@ -29,6 +31,7 @@ object FormFieldValidator {
   private val alphanumericRegexValue = "[a-zA-Z0-9]*"
   private val firstCapitalLetter = "[A-Z]{1}(.*)"
   private val zerosOnlyRegexValue = "[0]*"
+  private val allCapitalLettersRegex = "[A-Z]*"
 
   val isEmpty: String => Boolean = (input: String) => input.isEmpty
 
@@ -52,4 +55,12 @@ object FormFieldValidator {
     (iterable: Iterable[String]) => (input: String) => iterable.exists(_ == input)
 
   val containsNotOnlyZeros: String => Boolean = (input: String) => !input.matches(zerosOnlyRegexValue)
+
+  val isTailNumeric: String => Boolean = (input: String) =>
+    Try(input.tails) match {
+      case Success(value) => isNumeric(value.toString())
+      case _              => false
+  }
+
+  val isAllCapitalLetter: String => Boolean = (input: String) => input.matches(allCapitalLettersRegex)
 }

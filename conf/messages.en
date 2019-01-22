@@ -439,15 +439,18 @@ supplementary.warehouse.identificationNumber.error = Incorrect Identification Nu
 supplementary.warehouse.identificationNumber.hint = For example, R1234567GB
 supplementary.warehouse.identificationNumber = Identification Number
 
-supplementary.addDocument.title = Do you need to add any documents?
+supplementary.addDocument.title = 2/3 Do you need to add any documents?
 supplementary.addDocument.hint = Including certificates, authorisations or additional references
-supplementary.addDocument.enterDocumentTypeOfCode = Enter document type code
-supplementary.addDocument.identifier = Identifier
-supplementary.addDocument.status = Status
-supplementary.addDocument.issuingAuthority = Issuing authority
-supplementary.addDocument.dateOfValidity = Date of validity
-supplementary.addDocument.measurementUnitAndQualifier = Measurement unit and qualifier, if applicable
-supplementary.addDocument.checkbox = I don’t need to enter additional information
+supplementary.addDocument.documentTypeCode = Document type code
+supplementary.addDocument.documentTypeCode.error = Incorrect document type code
+supplementary.addDocument.documentIdentifier = Document identifier
+supplementary.addDocument.documentIdentifier.error = Incorrect document identifier
+supplementary.addDocument.documentPart = Document part
+supplementary.addDocument.documentPart.error = Incorrect document part
+supplementary.addDocument.documentStatus = Document status
+supplementary.addDocument.documentStatus.error = Incorrect document status
+supplementary.addDocument.documentStatusReason = Document status reason
+supplementary.addDocument.documentStatusReason.error = Incorrect document status reason
 
 supplementary.totalNumberOfItems = 1/9 What is the total number of items?
 supplementary.totalNumberOfItems.title = Total number of items

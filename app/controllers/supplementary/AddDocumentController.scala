@@ -53,10 +53,8 @@ class AddDocumentController @Inject()(
         (formWithErrors: Form[Document]) => Future.successful(BadRequest(add_document(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[Document](appConfig.appName, formId, form).map { _ =>
-            //Redirect(controllers.supplementary.routes.???.displayRepresentativeDetailsPage())
-            Ok("Summary page")
+            Redirect(controllers.supplementary.routes.GoodItemNumberController.displayForm())
         }
       )
   }
-
 }
