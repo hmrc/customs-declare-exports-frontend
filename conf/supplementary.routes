@@ -137,3 +137,9 @@ POST        /additional-information         controllers.supplementary.Additional
 GET         /transaction-type               controllers.supplementary.TransactionTypeController.displayForm()
 
 POST        /transaction-type               controllers.supplementary.TransactionTypeController.saveTransactionType()
+
+# Package Information
+
+GET         /package-information            controllers.supplementary.PackageInformationController.displayForm()
+
+POST        /package-information            controllers.supplementary.PackageInformationController.submit()

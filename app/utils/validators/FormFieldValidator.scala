@@ -34,6 +34,7 @@ object FormFieldValidator {
   private val allCapitalLettersRegex = "[A-Z]*"
   private val noMoreDecimalPlacesThanRegexValue: Int => String = (decimalPlaces: Int) =>
     s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$"
+  private val decimalRegex = "^-?[0-9]+[\\.]([0-9]+)?$"
 
   val isEmpty: String => Boolean = (input: String) => input.isEmpty
 
@@ -68,4 +69,9 @@ object FormFieldValidator {
   }
 
   val isAllCapitalLetter: String => Boolean = (input: String) => input.matches(allCapitalLettersRegex)
+
+  val isDecimal: String => Boolean = (input: String) => input.matches(decimalRegex)
+
+  val isDecimalNoLongerThan: Int => String => Boolean = (length: Int) =>
+    (input: String) => input.filter(_.isDigit).length <= length
 }
