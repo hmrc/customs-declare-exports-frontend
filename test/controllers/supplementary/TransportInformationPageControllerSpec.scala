@@ -15,7 +15,7 @@
  */
 
 package controllers.supplementary
-import base.CustomExportsBaseSpec
+import base.{CustomExportsBaseSpec, TestHelper}
 import forms.supplementary.TransportInformation
 import forms.supplementary.TransportInformation.MeansOfTransportTypeCodes.NameOfVessel
 import forms.supplementary.TransportInformation.ModeOfTransportCodes.Road
@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import org.scalatest.BeforeAndAfter
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsBoolean, JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
 class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
@@ -158,6 +158,20 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
           messages("supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters")
         )
       }
+
+      "choose container and not provide container ID" in {
+        val emptyForm = buildTransportInformationForm(container = true)
+        val result = route(app, postRequest(uri, emptyForm)).get
+
+        contentAsString(result) must include(messages("supplementary.transportInfo.containerId.empty"))
+      }
+
+      "choose container and provide incorrect container ID" in {
+        val emptyForm = buildTransportInformationForm(container = true, containerId = TestHelper.createRandomString(18))
+        val result = route(app, postRequest(uri, emptyForm)).get
+
+        contentAsString(result) must include(messages("supplementary.transportInfo.containerId.error"))
+      }
     }
 
     "save the data to the cache" in {
@@ -202,7 +216,9 @@ object TransportInformationPageControllerSpec {
     meansOfTransportOnDepartureIDNumber: String = "",
     meansOfTransportCrossingTheBorderType: String = "",
     meansOfTransportCrossingTheBorderIDNumber: String = "",
-    meansOfTransportCrossingTheBorderNationality: String = ""
+    meansOfTransportCrossingTheBorderNationality: String = "",
+    container: Boolean = false,
+    containerId: String = ""
   ): JsValue = JsObject(
     Map(
       "inlandModeOfTransportCode" -> JsString(inlandModeOfTransportCode),
@@ -211,7 +227,9 @@ object TransportInformationPageControllerSpec {
       "meansOfTransportOnDepartureIDNumber" -> JsString(meansOfTransportOnDepartureIDNumber),
       "meansOfTransportCrossingTheBorderType" -> JsString(meansOfTransportCrossingTheBorderType),
       "meansOfTransportCrossingTheBorderIDNumber" -> JsString(meansOfTransportCrossingTheBorderIDNumber),
-      "meansOfTransportCrossingTheBorderNationality" -> JsString(meansOfTransportCrossingTheBorderNationality)
+      "meansOfTransportCrossingTheBorderNationality" -> JsString(meansOfTransportCrossingTheBorderNationality),
+      "container" -> JsBoolean(container),
+      "containerId" -> JsString(containerId)
     )
   )
 

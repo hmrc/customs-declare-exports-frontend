@@ -294,7 +294,6 @@ startPage.reference.number = 0300 200 3700
 startPage.reference.text = Open 8am to 6pm, Monday to Friday (closed bank holidays)
 startPage.enquiries = General enquires help
 
-
 supplementary.declarationType.title = Declaration Type
 supplementary.declarationType.header = What type of declaration are you making?
 supplementary.declarationType.header.hint = Hint text if needed here
@@ -493,6 +492,10 @@ supplementary.transportInfo.meansOfTransport.idNumber.error.length = Reference i
 supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters = Reference cannot contain special characters
 supplementary.transportInfo.error.incorrect = This field is incorrect
 supplementary.transportInfo.error.empty = This field cannot be empty
+supplementary.transportInfo.container = 7/2 Will the goods be in a container?
+supplementary.transportInfo.containerId = 7/10 Enter the container ID
+supplementary.transportInfo.containerId.empty = Container ID cannot be empty
+supplementary.transportInfo.containerId.error = Container ID is incorrect
 
 supplementary.totalAmountInvoiced.error = Total amount of invoiced items is incorrect
 supplementary.totalAmountInvoiced = 4/11 What is the total amount invoiced?
@@ -560,5 +563,3 @@ supplementary.additionalInformation.code = Enter the union or national code
 supplementary.additionalInformation.code.error = Code is incorrect
 supplementary.additionalInformation.description = Enter the information required
 supplementary.additionalInformation.description.error = Information is incorrect
-
-

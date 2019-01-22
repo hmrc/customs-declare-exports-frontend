@@ -16,10 +16,11 @@
 
 package forms.supplementary
 
-import play.api.data.Forms.{optional, text}
+import play.api.data.Forms.{boolean, optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.Countries.allCountries
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfTrue
 import utils.validators.FormFieldValidator._
 
 case class TransportInformation(
@@ -29,7 +30,9 @@ case class TransportInformation(
   meansOfTransportOnDepartureIDNumber: Option[String],
   meansOfTransportCrossingTheBorderType: String,
   meansOfTransportCrossingTheBorderIDNumber: Option[String],
-  meansOfTransportCrossingTheBorderNationality: Option[String]
+  meansOfTransportCrossingTheBorderNationality: Option[String],
+  container: Boolean,
+  containerId: Option[String]
 ) {
 
   def toMetadataProperties(): Map[String, String] =
@@ -40,7 +43,9 @@ case class TransportInformation(
         allCountries
           .find(country => meansOfTransportCrossingTheBorderNationality.contains(country.countryName))
           .map(_.countryCode)
-          .getOrElse("")
+          .getOrElse(""),
+      "declaration.goodsShipment.consignment.containerCode" -> container.toString,
+      "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.transportEquipment.id" -> containerId.getOrElse("")
     )
 }
 
@@ -100,6 +105,13 @@ object TransportInformation {
     "meansOfTransportCrossingTheBorderNationality" -> optional(
       text()
         .verifying("supplementary.transportInfo.error.incorrect", isContainedIn(allCountries.map(_.countryName)))
+    ),
+    "container" -> boolean,
+    "containerId" -> mandatoryIfTrue(
+      "container",
+      text()
+        .verifying("supplementary.transportInfo.containerId.empty", nonEmpty)
+        .verifying("supplementary.transportInfo.containerId.error", isEmpty or (isAlphanumeric and noLongerThan(17)))
     )
   )(TransportInformation.apply)(TransportInformation.unapply)
 

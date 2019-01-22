@@ -27,6 +27,8 @@ class TransportInformationSpec extends WordSpec with MustMatchers {
   private val meansOfTransportCrossingTheBorderIDNumber = Some("ABCDEFGHIJK1234567890")
   private val meansOfTransportCrossingTheBorderNationality = Some("United Kingdom")
   private val meansOfTransportCrossingTheBorderNationalityCode = Some("GB")
+  private val container = true
+  private val containerId = Some("1234")
 
   private val transportInformation = TransportInformation(
     inlandModeOfTransportCode = inlandModeOfTransportCode,
@@ -35,13 +37,17 @@ class TransportInformationSpec extends WordSpec with MustMatchers {
     meansOfTransportOnDepartureIDNumber = meansOfTransportOnDepartureIDNumber,
     meansOfTransportCrossingTheBorderType = meansOfTransportCrossingTheBorderType,
     meansOfTransportCrossingTheBorderIDNumber = meansOfTransportCrossingTheBorderIDNumber,
-    meansOfTransportCrossingTheBorderNationality = meansOfTransportCrossingTheBorderNationality
+    meansOfTransportCrossingTheBorderNationality = meansOfTransportCrossingTheBorderNationality,
+    container = container,
+    containerId = containerId
   )
 
   private val expectedTransportInformationProperties: Map[String, String] = Map(
     "declaration.goodsShipment.consignment.arrivalTransportMeans.modeCode" -> inlandModeOfTransportCode.get,
     "declaration.borderTransportMeans.modeCode" -> borderModeOfTransportCode,
-    "declaration.borderTransportMeans.registrationNationalityCode" -> meansOfTransportCrossingTheBorderNationalityCode.get
+    "declaration.borderTransportMeans.registrationNationalityCode" -> meansOfTransportCrossingTheBorderNationalityCode.get,
+    "declaration.goodsShipment.consignment.containerCode" -> container.toString,
+    "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.transportEquipment.id" -> containerId.get
   )
 
   "TransportInformation" should {

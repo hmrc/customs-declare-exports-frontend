@@ -35,8 +35,8 @@
         @components.page_title(Some("supplementary.destinationCountries.title"))
 
         @components.input_text_autocomplete(form)(
-            field = form("countryOfDestination"),
-            label = messages("supplementary.destinationCountries.countryOfDestination"),
+            field = form("countryOfDispatch"),
+            label = messages("supplementary.destinationCountries.countryOfDispatch"),
             'autocomplete -> "off",
             '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
             'spellcheck -> "false",
@@ -48,8 +48,8 @@
         )
 
         @components.input_text_autocomplete(form)(
-            field = form("countryOfDispatch"),
-            label = messages("supplementary.destinationCountries.countryOfDispatch"),
+            field = form("countryOfDestination"),
+            label = messages("supplementary.destinationCountries.countryOfDestination"),
             'autocomplete -> "off",
             '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
             'spellcheck -> "false",
