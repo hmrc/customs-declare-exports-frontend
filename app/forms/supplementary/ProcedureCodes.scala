@@ -49,7 +49,7 @@ object ProcedureCodes {
   private val additionalProcedureCodeLength = 3
   val mapping = Forms.mapping(
     "procedureCode" -> text()
-      .verifying("supplementary.procedureCodes.procedureCode.error.empty", _.trim.nonEmpty)
+      .verifying("supplementary.procedureCodes.procedureCode.error.empty", nonEmpty)
       .verifying(
         "supplementary.procedureCodes.procedureCode.error.length",
         isEmpty or hasSpecificLength(procedureCodeLength)
@@ -62,7 +62,7 @@ object ProcedureCodes {
           isEmpty or hasSpecificLength(additionalProcedureCodeLength)
         )
         .verifying("supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters", isAlphanumeric)
-    ).verifying("supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty", _.exists(_.trim.nonEmpty))
+    ).verifying("supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty", _.exists(_.nonEmpty))
   )(ProcedureCodes.apply)(ProcedureCodes.unapply)
 
   val id = "ProcedureCodes"

@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.helpers.ControllersHelper._
 import forms.supplementary.AddressAndIdentification
 import javax.inject.Inject
 import play.api.data.Form
@@ -50,8 +51,9 @@ class DeclarantAddressController @Inject()(
   }
 
   def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
+    val trimmedFormInput = trimRequestBody(request)
     form
-      .bindFromRequest()
+      .bindFromRequest(trimmedFormInput)
       .fold(
         (formWithErrors: Form[AddressAndIdentification]) =>
           Future.successful(BadRequest(declarant_details(appConfig, formWithErrors))),

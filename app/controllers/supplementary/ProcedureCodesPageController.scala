@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.helpers.ControllersHelper._
 import forms.supplementary.ProcedureCodes
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -49,9 +50,10 @@ class ProcedureCodesPageController @Inject()(
   }
 
   def submitProcedureCodes(): Action[AnyContent] = authenticate.async { implicit request =>
+    val trimmedFormInput = trimRequestBody(request)
     ProcedureCodes
       .form()
-      .bindFromRequest()
+      .bindFromRequest(trimmedFormInput)
       .fold(
         (formWithErrors: Form[ProcedureCodes]) =>
           Future.successful(BadRequest(procedure_codes(appConfig, formWithErrors))),
