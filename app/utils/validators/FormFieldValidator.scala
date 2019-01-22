@@ -57,8 +57,8 @@ object FormFieldValidator {
   val containsNotOnlyZeros: String => Boolean = (input: String) => !input.matches(zerosOnlyRegexValue)
 
   val isTailNumeric: String => Boolean = (input: String) =>
-    Try(input.tails) match {
-      case Success(value) => isNumeric(value.toString())
+    Try(input.tail) match {
+      case Success(value) => isNumeric(value)
       case _              => false
   }
 
