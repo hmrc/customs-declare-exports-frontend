@@ -16,12 +16,17 @@
 
 package forms.supplementary
 
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
-case class SupervisingCustomsOffice(office: Option[String])
+case class SupervisingCustomsOffice(office: Option[String]) extends MetadataPropertiesConvertable {
+
+  override def toMetadataProperties(): Map[String, String] =
+    Map("declaration.supervisingOffice.ID" -> office.getOrElse(""))
+}
 
 object SupervisingCustomsOffice {
   implicit val format = Json.format[SupervisingCustomsOffice]
@@ -35,7 +40,4 @@ object SupervisingCustomsOffice {
   val formId = "SupervisingCustomsOffice"
 
   def form(): Form[SupervisingCustomsOffice] = Form(mapping)
-
-  def toMetadataProperties(office: SupervisingCustomsOffice): Map[String, String] =
-    Map("declaration.supervisingOffice.ID" -> office.office.getOrElse(""))
 }

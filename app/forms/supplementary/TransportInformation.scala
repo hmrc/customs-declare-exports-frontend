@@ -16,6 +16,7 @@
 
 package forms.supplementary
 
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{boolean, optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -33,9 +34,9 @@ case class TransportInformation(
   meansOfTransportCrossingTheBorderNationality: Option[String],
   container: Boolean,
   containerId: Option[String]
-) {
+) extends MetadataPropertiesConvertable {
 
-  def toMetadataProperties(): Map[String, String] =
+  override def toMetadataProperties(): Map[String, String] =
     Map(
       "declaration.goodsShipment.consignment.arrivalTransportMeans.modeCode" -> inlandModeOfTransportCode.getOrElse(""),
       "declaration.borderTransportMeans.modeCode" -> borderModeOfTransportCode,
@@ -59,6 +60,7 @@ object TransportInformation {
   import ModeOfTransportCodes._
   private val allowedModeOfTransportCodes =
     Set(Maritime, Rail, Road, Air, PostalConsignment, FixedTransportInstallations, InlandWaterway, Unknown)
+
   import MeansOfTransportTypeCodes._
   private val allowedMeansOfTransportTypeCodes =
     Set(

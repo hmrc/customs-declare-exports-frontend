@@ -16,12 +16,21 @@
 
 package forms.supplementary
 
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfNot
 
 case class DeclarationAdditionalActors(eori: Option[String], partyType: Option[String])
+    extends MetadataPropertiesConvertable {
+
+  override def toMetadataProperties(): Map[String, String] =
+    Map(
+      "declaration.goodsShipment.AEOMutualRecognitionParty.ID" -> eori.getOrElse(""),
+      "declaration.goodsShipment.AEOMutualRecognitionParty.roleCode" -> partyType.getOrElse("")
+    )
+}
 
 object DeclarationAdditionalActors {
   implicit val format = Json.format[DeclarationAdditionalActors]
@@ -43,12 +52,6 @@ object DeclarationAdditionalActors {
   )(DeclarationAdditionalActors.apply)(DeclarationAdditionalActors.unapply)
 
   def form(): Form[DeclarationAdditionalActors] = Form(mapping)
-
-  def toMetadataProperties(actors: DeclarationAdditionalActors): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.AEOMutualRecognitionParty.ID" -> actors.eori.getOrElse(""),
-      "declaration.goodsShipment.AEOMutualRecognitionParty.roleCode" -> actors.partyType.getOrElse("")
-    )
 }
 
 object PartyType {

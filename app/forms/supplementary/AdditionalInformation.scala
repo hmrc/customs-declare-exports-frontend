@@ -16,13 +16,16 @@
 
 package forms.supplementary
 
-import play.api.data.{Form, Forms}
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms._
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
-case class AdditionalInformation(code: Option[String], description: Option[String]) {
-  def toMetadataProperties(): Map[String, String] =
+case class AdditionalInformation(code: Option[String], description: Option[String])
+    extends MetadataPropertiesConvertable {
+
+  override def toMetadataProperties(): Map[String, String] =
     Map(
       "declaration.goodsShipment.governmentAgencyGoodsItem.additionalInformation.statementCode" -> code.getOrElse(""),
       "declaration.goodsShipment.governmentAgencyGoodsItem.additionalInformation.statementDescription" -> description
@@ -48,5 +51,4 @@ object AdditionalInformation {
   )(AdditionalInformation.apply)(AdditionalInformation.unapply)
 
   def form(): Form[AdditionalInformation] = Form(mapping)
-
 }

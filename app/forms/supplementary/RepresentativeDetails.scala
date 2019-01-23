@@ -16,6 +16,7 @@
 
 package forms.supplementary
 
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -23,9 +24,9 @@ import play.api.libs.json.Json
 case class RepresentativeDetails(
   address: AddressAndIdentification,
   statusCode: String //  numeric, [2] or [3]
-) {
+) extends MetadataPropertiesConvertable {
 
-  def toMetadataProperties(): Map[String, String] =
+  override def toMetadataProperties(): Map[String, String] =
     Map(
       "declaration.agent.id" -> address.eori.getOrElse(""),
       "declaration.agent.name" -> address.fullName.getOrElse(""),

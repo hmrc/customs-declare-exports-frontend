@@ -16,6 +16,7 @@
 
 package forms.supplementary
 
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -26,7 +27,16 @@ case class PreviousDocuments(
   documentType: String,
   documentReference: String,
   goodsItemIdentifier: Option[String]
-)
+) extends MetadataPropertiesConvertable {
+
+  override def toMetadataProperties(): Map[String, String] =
+    Map(
+      "declaration.goodsShipment.previousDocument.categoryCode" -> documentCategory,
+      "declaration.goodsShipment.previousDocument.typeCode" -> documentType,
+      "declaration.goodsShipment.previousDocument.ID" -> documentReference,
+      "declaration.goodsShipment.previousDocument.lineNumeric" -> goodsItemIdentifier.getOrElse("")
+    )
+}
 
 object PreviousDocuments {
   implicit val format = Json.format[PreviousDocuments]
@@ -57,14 +67,6 @@ object PreviousDocuments {
   )(PreviousDocuments.apply)(PreviousDocuments.unapply)
 
   def form(): Form[PreviousDocuments] = Form(mapping)
-
-  def toMetadataProperties(previousDocuments: PreviousDocuments): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.previousDocument.categoryCode" -> previousDocuments.documentCategory,
-      "declaration.goodsShipment.previousDocument.typeCode" -> previousDocuments.documentType,
-      "declaration.goodsShipment.previousDocument.ID" -> previousDocuments.documentReference,
-      "declaration.goodsShipment.previousDocument.lineNumeric" -> previousDocuments.goodsItemIdentifier.getOrElse("")
-    )
 
   object AllowedValues {
     val TemporaryStorage = "X"

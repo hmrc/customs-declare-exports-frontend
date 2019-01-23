@@ -64,7 +64,7 @@ object AddressAndIdentification {
         .verifying("supplementary.country.empty", _.trim.nonEmpty)
         .verifying(
           "supplementary.country.error",
-          input => input.isEmpty || !allCountries.filter(country => country.countryName == input).isEmpty
+          input => input.isEmpty || allCountries.exists(country => country.countryName == input)
         )
     )
   )(AddressAndIdentification.apply)(AddressAndIdentification.unapply)
@@ -82,7 +82,7 @@ object AddressAndIdentification {
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postcodeId" -> address.postCode
         .getOrElse(""),
       "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.countryCode" ->
-        allCountries.find(country => Some(country.countryName) == address.country).map(_.countryCode).getOrElse("")
+        allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
     )
 
   def toDeclarantMetadataProperties(address: AddressAndIdentification): Map[String, String] =
@@ -93,7 +93,7 @@ object AddressAndIdentification {
       "declaration.declarant.address.cityName" -> address.townOrCity.getOrElse(""),
       "declaration.declarant.address.postcodeId" -> address.postCode.getOrElse(""),
       "declaration.declarant.address.countryCode" ->
-        allCountries.find(country => Some(country.countryName) == address.country).map(_.countryCode).getOrElse("")
+        allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
     )
 
   def toConsigneeMetadataProperties(address: AddressAndIdentification): Map[String, String] = ???

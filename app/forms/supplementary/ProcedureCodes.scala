@@ -16,6 +16,7 @@
 
 package forms.supplementary
 
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{seq, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -24,9 +25,9 @@ import utils.validators.FormFieldValidator._
 case class ProcedureCodes(
   procedureCode: String, // max 4 alphanumeric characters
   additionalProcedureCodes: Seq[String] // max 99 codes, each is max 3 alphanumeric characters
-) {
+) extends MetadataPropertiesConvertable {
 
-  def toMetadataProperties(): Map[String, String] = {
+  override def toMetadataProperties(): Map[String, String] = {
     val procedureCodeMapping = Map(
       "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].currentCode" -> procedureCode
         .substring(0, 2),

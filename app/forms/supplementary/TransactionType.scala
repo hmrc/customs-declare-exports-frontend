@@ -16,12 +16,17 @@
 
 package forms.supplementary
 
-import play.api.data.{Form, Forms}
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms._
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
-case class TransactionType(documentTypeCode: String, identifier: Option[String])
+case class TransactionType(documentTypeCode: String, identifier: Option[String]) extends MetadataPropertiesConvertable {
+
+  override def toMetadataProperties(): Map[String, String] =
+    Map("declaration.goodsShipment.transactionNatureCode" -> (documentTypeCode + identifier))
+}
 
 object TransactionType {
   implicit val format = Json.format[TransactionType]
@@ -42,9 +47,4 @@ object TransactionType {
   )(TransactionType.apply)(TransactionType.unapply)
 
   def form(): Form[TransactionType] = Form(mapping)
-
-  def toMetadataProperties(transactionType: TransactionType): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.transactionNatureCode" -> (transactionType.documentTypeCode + transactionType.identifier)
-    )
 }

@@ -16,8 +16,9 @@
 
 package forms.supplementary
 
-import play.api.data.{Form, Forms}
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms._
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
@@ -27,7 +28,22 @@ case class Document(
   documentPart: Option[String],
   documentStatus: Option[String],
   documentStatusReason: Option[String]
-)
+) extends MetadataPropertiesConvertable {
+
+  override def toMetadataProperties(): Map[String, String] =
+    Map(
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].categoryCode" ->
+        documentTypeCode.flatMap(_.headOption).fold("")(_.toString),
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].typeCode" ->
+        documentTypeCode.map(_.drop(1).toString).getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].id" ->
+        (documentIdentifier.getOrElse("") + documentPart.getOrElse("")),
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].lpcoExemptionCode" ->
+        documentStatus.getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].name" ->
+        documentStatusReason.getOrElse("")
+    )
+}
 
 object Document {
   implicit val format = Json.format[Document]
@@ -53,18 +69,4 @@ object Document {
   )(Document.apply)(Document.unapply)
 
   def form(): Form[Document] = Form(mapping)
-
-  def toMetadataProperties(document: Document): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.government.agencyGoodsItem.additionalDocument.categoryCode" ->
-        document.documentTypeCode.flatMap(_.headOption).fold("")(_.toString),
-      "declaration.goodsShipment.government.agencyGoodsItem.additionalDocument.typeCode" ->
-        document.documentTypeCode.map(_.drop(1).toString).getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItem.additionalDocument.ID" ->
-        (document.documentIdentifier.getOrElse("") + document.documentPart.getOrElse("")),
-      "declaration.goodsShipment.government.AgencyGoodsItem.additionalDocument.lpcoExemptionCode" ->
-        document.documentStatus.getOrElse(""),
-      "declaration.goodsShipment.government.AgencyGoodsItem.additionalDocument.name" ->
-        document.documentStatusReason.getOrElse("")
-    )
 }
