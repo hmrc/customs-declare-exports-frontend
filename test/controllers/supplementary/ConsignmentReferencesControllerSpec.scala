@@ -166,7 +166,6 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
       }
     }
 
-    pending
     "return 303 code" in {
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
@@ -176,16 +175,16 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
       status(result) must be(SEE_OTHER)
     }
 
-    pending
-    "redirect to \"Exporter ID\" page" in {
+    "redirect to \"Exporter Address\" page" in {
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
       val validForm = buildConsignmentReferencesTestData(ducr = exemplaryDucr, lrn = "123ABC")
-      route(app, postRequest(consignmentReferencesUri, validForm)).get.map { resultValue =>
-        resultValue.header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/supplementary/exporter-id")
-        )
-      }
+      val result = route(app, postRequest(consignmentReferencesUri, validForm)).get
+      val header = result.futureValue.header
+
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/exporter-address")
+      )
     }
   }
 }

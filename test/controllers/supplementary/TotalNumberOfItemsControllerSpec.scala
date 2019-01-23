@@ -76,7 +76,6 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - correct value for mandatory field" in {
-      pending
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
 
@@ -86,12 +85,11 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/nature-of-transaction")
+        Some("/customs-declare-exports/declaration/supplementary/transaction-type")
       )
     }
 
     "validate form - correct values for every field using integers for optional ones" in {
-      pending
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
 
@@ -108,12 +106,11 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/nature-of-transaction")
+        Some("/customs-declare-exports/declaration/supplementary/transaction-type")
       )
     }
 
     "validate form - correct values for every field using decimals for optional ones" in {
-      pending
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
 
@@ -130,7 +127,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/nature-of-transaction")
+        Some("/customs-declare-exports/declaration/supplementary/transaction-type")
       )
     }
 
