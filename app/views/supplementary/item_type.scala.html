@@ -52,12 +52,6 @@
     )
 
     @components.input_text(
-      field = form("descriptionOfGoods"),
-      label = messages("supplementary.itemType.description.header"),
-      hint = Some(messages("supplementary.itemType.description.header.hint"))
-    )
-
-    @components.input_text(
       field = form("cusCode"),
       label = messages("supplementary.itemType.cusCode.header"),
       hint = Some(messages("supplementary.itemType.cusCode.header.hint"))
@@ -67,6 +61,12 @@
       field = form("statisticalValue"),
       label = messages("supplementary.itemType.statisticalValue.header"),
       hint = Some(messages("supplementary.itemType.statisticalValue.header.hint"))
+    )
+
+    @components.input_textarea(
+      field = form("descriptionOfGoods"),
+      label = messages("supplementary.itemType.description.header"),
+      hint = Some(messages("supplementary.itemType.description.header.hint"))
     )
 
     @components.submit_button()
