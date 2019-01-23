@@ -25,7 +25,7 @@
 
 <div class="form-group @if(field.hasErrors){form-group-error}">
     <label class="form-label" for="@{field.id}">
-        <span class="bold @labelClass">@label</span>
+        <span class="@labelClass">@label</span>
         @hint.map { hint =>
             <span class="form-hint">@hint</span>
         }
