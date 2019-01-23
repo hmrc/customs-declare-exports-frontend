@@ -15,6 +15,7 @@
  */
 
 package controllers.supplementary
+
 import config.AppConfig
 import controllers.actions.AuthAction
 import forms.supplementary.ItemType
@@ -54,8 +55,7 @@ class ItemTypePageController @Inject()(
         (formWithErrors: Form[ItemType]) => Future.successful(BadRequest(item_type(appConfig, formWithErrors))),
         validItemType =>
           customsCacheService.cache[ItemType](supplementaryDeclarationCacheId, ItemType.id, validItemType).map { _ =>
-//          Redirect(controllers.supplementary.routes.???.???())
-            Ok("You should now be redirected to Package Information page")
+            Redirect(controllers.supplementary.routes.PackageInformationController.displayForm())
         }
       )
   }

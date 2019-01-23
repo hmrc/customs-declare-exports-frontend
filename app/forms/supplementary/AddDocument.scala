@@ -36,7 +36,7 @@ object Document {
 
   val mapping = Forms.mapping(
     "documentTypeCode" -> optional(
-      text().verifying("supplementary.addDocument.documentTypeCode.error", hasSpecificLength(4) and isTailNumeric)
+      text().verifying("supplementary.addDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)
     ),
     "documentIdentifier" -> optional(
       text().verifying("supplementary.addDocument.documentIdentifier.error", isAlphanumeric and noLongerThan(30))
