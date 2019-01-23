@@ -37,7 +37,7 @@ object PackageInformation {
   val formId = "PackageInformation"
 
   val mapping = Forms.mapping(
-    "typesOfPackages" -> nonEmptyText()
+    "typesOfPackages" -> text()
       .verifying(
         "supplementary.packageInformation.typesOfPackages.error",
         isAlphanumeric and hasSpecificLength(2) and nonEmpty
@@ -85,13 +85,13 @@ object PackageInformation {
         document.typesOfPackages,
       "declaration.goodsShipment.governmentAgencyGoodsItem.packaging.quantityQuantity" ->
         document.numberOfPackages,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.packaging.tariffQuantity" ->
+      "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.goodsMeasure.tariffQuantity" ->
         document.supplementaryUnits,
       "declaration.goodsShipment.governmentAgencyGoodsItem.packaging.marksNumbersID" ->
         document.shippingMarks,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.packaging.netNetWeightMeasure" ->
+      "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.GoodsMeasure.netNetWeightMeasure" ->
         document.netMass,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.packaging.grossMassMeasure" ->
+      "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.GoodsMeasure.grossMassMeasure" ->
         document.grossMass
     )
 }
