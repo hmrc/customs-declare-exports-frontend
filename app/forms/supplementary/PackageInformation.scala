@@ -92,6 +92,6 @@ object PackageInformation {
       "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.GoodsMeasure.netNetWeightMeasure" ->
         document.netMass,
       "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.GoodsMeasure.grossMassMeasure" ->
-      document.grossMass
+        document.grossMass
     )
 }
