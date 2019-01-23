@@ -174,7 +174,6 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
         .cache[ItemType](any(), ArgumentMatchers.eq(ItemType.id), any())(any(), any(), any())
     }
 
-    pending
     "return 303 code" in {
       val form = buildItemTypeJsonInput(
         combinedNomenclatureCode = "12345678",
@@ -189,7 +188,6 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
       status(result) must be(SEE_OTHER)
     }
 
-    pending
     "redirect to \"Add Package Information\" page" in {
       val form = buildItemTypeJsonInput(
         combinedNomenclatureCode = "12345678",
@@ -203,7 +201,7 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/add-package-information")
+        Some("/customs-declare-exports/declaration/supplementary/package-information")
       )
     }
   }

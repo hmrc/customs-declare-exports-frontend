@@ -75,7 +75,6 @@ class LocationControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - empty form" in {
-      pending
       authorizedUser()
       withCaching[GoodsLocation](None)
 
@@ -95,20 +94,19 @@ class LocationControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/procedure"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/procedure-codes"))
     }
 
     "validate form - correct values" in {
-      pending
       authorizedUser()
       withCaching[GoodsLocation](None)
 
       val emptyGoodsLocation: JsValue = JsObject(
         Map(
-          "country" -> JsString("PL"),
+          "country" -> JsString("United Kingdom"),
           "typeOfLocation" -> JsString("T"),
           "qualifierOfIdentification" -> JsString("Q"),
-          "identificationOfLocation" -> JsString("ID"),
+          "identificationOfLocation" -> JsString("LOC"),
           "additionalIdentifier" -> JsString("Additional identifier"),
           "streetAndNumber" -> JsString("Street and number"),
           "postCode" -> JsString("Postcode"),
@@ -119,7 +117,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/procedure"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/procedure-codes"))
     }
   }
 }

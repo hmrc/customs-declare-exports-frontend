@@ -56,19 +56,19 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - optional data allowed" in {
-      pending
       authorizedUser()
       withCaching[DeclarationAdditionalActors](None)
 
       val result = route(app, postRequest(uri, emptyAdditionalActors)).get
       val header = result.futureValue.header
 
-      status(result) mustBe (SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration-holder-of-authorization"))
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/holder-of-authorisation")
+      )
     }
 
     "validate form - correct values" in {
-      pending
       authorizedUser()
       withCaching[DeclarationAdditionalActors](None)
 
@@ -76,7 +76,9 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration-holder-of-authorization"))
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/holder-of-authorisation")
+      )
     }
   }
 }

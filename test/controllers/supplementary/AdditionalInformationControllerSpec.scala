@@ -54,7 +54,6 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - empty form" in {
-      pending
       authorizedUser()
       withCaching[AdditionalInformation](None)
 
@@ -64,12 +63,11 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/document-produced")
+        Some("/customs-declare-exports/declaration/supplementary/add-document")
       )
     }
 
     "validate form - correct values" in {
-      pending
       authorizedUser()
       withCaching[AdditionalInformation](None)
 
@@ -81,7 +79,7 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/document-produced")
+        Some("/customs-declare-exports/declaration/supplementary/add-document")
       )
     }
   }

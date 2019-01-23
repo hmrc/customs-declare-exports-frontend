@@ -50,7 +50,6 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - no answer" in {
-      pending
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
 
@@ -63,11 +62,10 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - correct value" in {
-      pending
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
 
-      val correctSupervisingOffice: JsValue = JsObject(Map("supervisingCustomsOffice" -> JsString("12345")))
+      val correctSupervisingOffice: JsValue = JsObject(Map("supervisingCustomsOffice" -> JsString("12345678")))
       val result = route(app, postRequest(uri, correctSupervisingOffice)).get
       val header = result.futureValue.header
 
