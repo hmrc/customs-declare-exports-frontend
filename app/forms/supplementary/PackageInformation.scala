@@ -17,14 +17,14 @@
 package forms.supplementary
 
 import play.api.data.{Form, Forms}
-import play.api.data.Forms.{nonEmptyText, text}
+import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
 case class PackageInformation(
   typesOfPackages: String,
   numberOfPackages: String,
-  supplementaryUnits: String,
+  supplementaryUnits: Option[String],
   shippingMarks: String,
   netMass: String,
   grossMass: String
@@ -44,9 +44,9 @@ object PackageInformation {
       ),
     "numberOfPackages" -> text()
       .verifying("supplementary.packageInformation.numberOfPackages.error", isNumeric and noLongerThan(5) and nonEmpty),
-    "supplementaryUnits" -> text().verifying(
-      "supplementary.packageInformation.supplementaryUnits.error",
-      nonEmpty and (
+    "supplementaryUnits" -> optional(
+      text().verifying(
+        "supplementary.packageInformation.supplementaryUnits.error",
         (isDecimal and isDecimalNoLongerThan(16) and isDecimalWithNoMoreDecimalPlacesThan(6)) or (isNumeric and noLongerThan(
           10
         ))
@@ -86,7 +86,7 @@ object PackageInformation {
       "declaration.goodsShipment.governmentAgencyGoodsItem.packaging.quantityQuantity" ->
         document.numberOfPackages,
       "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.goodsMeasure.tariffQuantity" ->
-        document.supplementaryUnits,
+        document.supplementaryUnits.getOrElse(""),
       "declaration.goodsShipment.governmentAgencyGoodsItem.packaging.marksNumbersID" ->
         document.shippingMarks,
       "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.GoodsMeasure.netNetWeightMeasure" ->

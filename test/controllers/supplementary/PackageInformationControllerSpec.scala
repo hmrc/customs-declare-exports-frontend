@@ -71,7 +71,6 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
 
     contentAsString(result) must include(messages("supplementary.packageInformation.typesOfPackages.error"))
     contentAsString(result) must include(messages("supplementary.packageInformation.numberOfPackages.error"))
-    contentAsString(result) must include(messages("supplementary.packageInformation.supplementaryUnits.error"))
     contentAsString(result) must include(messages("supplementary.packageInformation.shippingMarks.error"))
     contentAsString(result) must include(messages("supplementary.packageInformation.netMass.error"))
     contentAsString(result) must include(messages("supplementary.packageInformation.grossMass.error"))
@@ -126,7 +125,6 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
     header.headers.get("Location") must be(
       Some("/customs-declare-exports/declaration/supplementary/previous-documents")
     )
-
   }
 
   "validate form - too short type of packages" in {
