@@ -69,11 +69,17 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
 
     status(result) must be(BAD_REQUEST)
 
-    contentAsString(result) must include(messages("supplementary.packageInformation.typesOfPackages.error"))
-    contentAsString(result) must include(messages("supplementary.packageInformation.numberOfPackages.error"))
-    contentAsString(result) must include(messages("supplementary.packageInformation.shippingMarks.error"))
-    contentAsString(result) must include(messages("supplementary.packageInformation.netMass.error"))
-    contentAsString(result) must include(messages("supplementary.packageInformation.grossMass.error"))
+    contentAsString(result) must include (messages("supplementary.packageInformation.typesOfPackages.empty"))
+    contentAsString(result) must include (messages("supplementary.packageInformation.numberOfPackages.empty"))
+    contentAsString(result) must include (messages("supplementary.packageInformation.shippingMarks.empty"))
+    contentAsString(result) must include (messages("supplementary.packageInformation.netMass.empty"))
+    contentAsString(result) must include (messages("supplementary.packageInformation.grossMass.empty"))
+
+    contentAsString(result) must not include messages("supplementary.packageInformation.typesOfPackages.error")
+    contentAsString(result) must not include messages("supplementary.packageInformation.numberOfPackages.error")
+    contentAsString(result) must not include messages("supplementary.packageInformation.shippingMarks.error")
+    contentAsString(result) must not include messages("supplementary.packageInformation.netMass.error")
+    contentAsString(result) must not include messages("supplementary.packageInformation.grossMass.error")
   }
 
   "validate form - correct values" in {
@@ -223,7 +229,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5)),
+          "numberOfPackages" -> JsString("12334"),
           "supplementaryUnits" -> JsString("12345678910.123456"),
           "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
           "netMass" -> JsString("12345678.123"),
@@ -234,7 +240,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
     val result = route(app, postRequest(uri, incorrectSupplementaryUnits)).get
 
     status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.numberOfPackages.error"))
+    contentAsString(result) must include(messages("supplementary.packageInformation.supplementaryUnits.error"))
   }
 
   "validate form - too many digits after comma on supplementary units" in {
@@ -244,9 +250,9 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
     val incorrectSupplementaryUnits: JsValue =
       JsObject(
         Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5)),
-          "supplementaryUnits" -> JsString("12345.123456"),
+          "typesOfPackages" -> JsString(TestHelper.createRandomString(2)),
+          "numberOfPackages" -> JsString("1234"),
+          "supplementaryUnits" -> JsString("12345.1234567"),
           "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
           "netMass" -> JsString("12345678.123"),
           "grossMass" -> JsString("1234567890.123456")
@@ -256,7 +262,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
     val result = route(app, postRequest(uri, incorrectSupplementaryUnits)).get
 
     status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.numberOfPackages.error"))
+    contentAsString(result) must include(messages("supplementary.packageInformation.supplementaryUnits.error"))
   }
 
   "validate form - too large integer value on supplementary units" in {
@@ -267,7 +273,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5)),
+          "numberOfPackages" -> JsString("1234"),
           "supplementaryUnits" -> JsString("12345678901"),
           "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
           "netMass" -> JsString("12345678.123"),
@@ -278,7 +284,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
     val result = route(app, postRequest(uri, incorrectSupplementaryUnits)).get
 
     status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.numberOfPackages.error"))
+    contentAsString(result) must include(messages("supplementary.packageInformation.supplementaryUnits.error"))
   }
 
   "validate form - too long shipping marks" in {

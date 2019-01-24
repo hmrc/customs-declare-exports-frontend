@@ -40,10 +40,12 @@ object PackageInformation {
     "typesOfPackages" -> text()
       .verifying(
         "supplementary.packageInformation.typesOfPackages.error",
-        isAlphanumeric and hasSpecificLength(2) and nonEmpty
-      ),
+        isEmpty or (isAlphanumeric and hasSpecificLength(2))
+      )
+      .verifying("supplementary.packageInformation.typesOfPackages.empty", _.trim.nonEmpty),
     "numberOfPackages" -> text()
-      .verifying("supplementary.packageInformation.numberOfPackages.error", isNumeric and noLongerThan(5) and nonEmpty),
+      .verifying("supplementary.packageInformation.numberOfPackages.error", isEmpty or (isNumeric and noLongerThan(5)))
+      .verifying("supplementary.packageInformation.numberOfPackages.empty", _.trim.nonEmpty),
     "supplementaryUnits" -> optional(
       text().verifying(
         "supplementary.packageInformation.supplementaryUnits.error",
@@ -55,26 +57,29 @@ object PackageInformation {
     "shippingMarks" -> text()
       .verifying(
         "supplementary.packageInformation.shippingMarks.error",
-        isAlphanumeric and noLongerThan(42) and nonEmpty
-      ),
+        isEmpty or (isAlphanumeric and noLongerThan(42))
+      )
+      .verifying("supplementary.packageInformation.shippingMarks.empty", _.trim.nonEmpty),
     "netMass" -> text()
       .verifying(
         "supplementary.packageInformation.netMass.error",
-        nonEmpty and (
+        isEmpty or (
           (isDecimal and isDecimalNoLongerThan(11) and isDecimalWithNoMoreDecimalPlacesThan(3)) or (isNumeric and noLongerThan(
             8
           ))
         )
-      ),
+      )
+      .verifying("supplementary.packageInformation.netMass.empty", _.trim.nonEmpty),
     "grossMass" -> text()
       .verifying(
         "supplementary.packageInformation.grossMass.error",
-        nonEmpty and (
+        isEmpty or (
           (isDecimal and isDecimalNoLongerThan(16) and isDecimalWithNoMoreDecimalPlacesThan(6)) or (isNumeric and noLongerThan(
             10
           ))
         )
       )
+      .verifying("supplementary.packageInformation.grossMass.empty", _.trim.nonEmpty)
   )(PackageInformation.apply)(PackageInformation.unapply)
 
   def form(): Form[PackageInformation] = Form(mapping)
