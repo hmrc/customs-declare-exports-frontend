@@ -40,7 +40,10 @@ object AdditionalInformation {
       text().verifying("supplementary.additionalInformation.code.error", isAlphanumeric and hasSpecificLength(5))
     ),
     "description" -> optional(
-      text().verifying("supplementary.additionalInformation.description.error", noLongerThan(70))
+      text().verifying(
+        "supplementary.additionalInformation.description.error",
+        noLongerThan(70) and isAlphanumericWithAllowedSpecialCharacters
+      )
     )
   )(AdditionalInformation.apply)(AdditionalInformation.unapply)
 
