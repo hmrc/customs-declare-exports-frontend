@@ -38,21 +38,21 @@ object Address {
 
   val mapping = Forms.mapping(
     "fullName" -> text()
-      .verifying("supplementary.fullName.empty", nonEmpty)
-      .verifying("supplementary.fullName.error", validateAddressField(70)),
+      .verifying("supplementary.address.fullName.empty", nonEmpty)
+      .verifying("supplementary.address.fullName.error", validateAddressField(70)),
     "addressLine" -> text()
-      .verifying("supplementary.addressLine.empty", nonEmpty)
-      .verifying("supplementary.addressLine.error", validateAddressField(70)),
+      .verifying("supplementary.address.addressLine.empty", nonEmpty)
+      .verifying("supplementary.address.addressLine.error", validateAddressField(70)),
     "townOrCity" -> text()
-      .verifying("supplementary.townOrCity.empty", nonEmpty)
-      .verifying("supplementary.townOrCity.error", validateAddressField(35)),
+      .verifying("supplementary.address.townOrCity.empty", nonEmpty)
+      .verifying("supplementary.address.townOrCity.error", validateAddressField(35)),
     "postCode" -> text()
-      .verifying("supplementary.postCode.empty", nonEmpty)
-      .verifying("supplementary.postCode.error", validateAddressField(9)),
+      .verifying("supplementary.address.postCode.empty", nonEmpty)
+      .verifying("supplementary.address.postCode.error", validateAddressField(9)),
     "country" -> text()
-      .verifying("supplementary.country.empty", nonEmpty)
+      .verifying("supplementary.address.country.empty", nonEmpty)
       .verifying(
-        "supplementary.country.error",
+        "supplementary.address.country.error",
         input => input.isEmpty || allCountries.exists(country => country.countryName == input)
       )
   )(Address.apply)(Address.unapply)

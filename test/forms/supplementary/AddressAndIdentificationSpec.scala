@@ -40,12 +40,12 @@ class AddressAndIdentificationSpec extends WordSpec with MustMatchers {
 
   val consignorAddressProperties: Map[String, String] =
     Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.id" -> eori,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.name" -> fullName,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.line" -> addressLine,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.cityName" -> townOrCity,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.postcodeId" -> postCode,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.consignor.address.countryCode" -> countryCode
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.id" -> eori,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.name" -> fullName,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.line" -> addressLine,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.cityName" -> townOrCity,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.postcodeId" -> postCode,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.countryCode" -> countryCode
     )
 
   val declarantAddressProperties: Map[String, String] =
@@ -60,7 +60,7 @@ class AddressAndIdentificationSpec extends WordSpec with MustMatchers {
 
   "Address" should {
     "correctly convert address to consignor address properties" in {
-      AddressAndIdentification.toConsignorMetadataProperties(address) must be(consignorAddressProperties)
+      AddressAndIdentification.toExporterMetadataProperties(address) must be(consignorAddressProperties)
     }
 
     "correctly convert address to declarant address properties" in {

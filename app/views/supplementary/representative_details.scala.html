@@ -29,7 +29,7 @@
     appConfig = appConfig
 ) {
 
-    @components.back_link("/customs-declare-exports/declaration/supplementary/declarant-address")
+    @components.back_link("/customs-declare-exports/declaration/supplementary/declarant-details")
 
     @helpers.form(RepresentativeDetailsPageController.submitRepresentativeDetails(), 'autoComplete -> "off") {
 
@@ -38,7 +38,7 @@
         @components.page_title(Some("supplementary.representative.header"), None)
 
         @components.input_text(
-            field = form("address.eori"),
+            field = form("details.eori"),
             label = messages("supplementary.eori"),
             hint = Some(messages("supplementary.eori.hint"))
         )
@@ -47,28 +47,28 @@
         @components.page_title(subtitle = Some("supplementary.representative.address.info"))
 
         @components.input_text(
-            field = form("address.fullName"),
-            label = messages("supplementary.fullName")
+            field = form("details.address.fullName"),
+            label = messages("supplementary.address.fullName")
         )
 
         @components.input_text(
-            field = form("address.addressLine"),
-            label = messages("supplementary.addressLine")
+            field = form("details.address.addressLine"),
+            label = messages("supplementary.address.addressLine")
         )
 
         @components.input_text(
-            field = form("address.townOrCity"),
-            label = messages("supplementary.townOrCity")
+            field = form("details.address.townOrCity"),
+            label = messages("supplementary.address.townOrCity")
         )
 
         @components.input_text(
-            field = form("address.postCode"),
-            label = messages("supplementary.postCode")
+            field = form("details.address.postCode"),
+            label = messages("supplementary.address.postCode")
         )
 
         @components.input_text_autocomplete(form)(
-          field = form("address.country"),
-          label = messages("supplementary.country"),
+          field = form("details.address.country"),
+          label = messages("supplementary.address.country"),
           'autocomplete -> "off",
           '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
           'spellcheck -> "false",

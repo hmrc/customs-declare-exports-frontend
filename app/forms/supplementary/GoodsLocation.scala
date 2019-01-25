@@ -55,9 +55,9 @@ object GoodsLocation {
   val mapping = Forms.mapping(
     "country" -> optional(
       text()
-        .verifying("supplementary.country.empty", _.trim.nonEmpty)
+        .verifying("supplementary.address.country.empty", _.trim.nonEmpty)
         .verifying(
-          "supplementary.country.error",
+          "supplementary.address.country.error",
           input => input.trim.isEmpty || allCountries.exists(country => country.countryName == input)
         )
     ),

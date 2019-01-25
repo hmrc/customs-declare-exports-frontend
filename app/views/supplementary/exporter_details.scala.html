@@ -16,24 +16,62 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
-@import forms.supplementary.AddressAndIdentification
-@import uk.gov.hmrc.play.views.html._
+@import forms.supplementary.ExporterDetails
 @import services.Country
+@import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[AddressAndIdentification])(implicit request: Request[_], messages: Messages, countries: List[Country])
+@(appConfig: AppConfig, form: Form[ExporterDetails])(implicit request: Request[_], messages: Messages, countries: List[Country])
 
 @main_template(
     title = messages("supplementary.consignor.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(ExporterAddressController.saveAddress(), 'autoComplete -> "off") {
+    @helpers.form(ExporterDetailsPageController.saveAddress(), 'autoComplete -> "off") {
         @components.back_link("/customs-declare-exports/declaration/supplementary/consignment-references")
 
         @components.error_summary(form.errors)
 
         @components.page_title(Some("supplementary.consignor.title"), Some("supplementary.consignor.title.hint"))
 
-        @components.address(form)
+        @components.input_text(
+            field = form("details.eori"),
+            label = messages("supplementary.eori"),
+            hint = Some(messages("supplementary.eori.hint"))
+        )
+
+        @components.input_text(
+            field = form("details.address.fullName"),
+            label = messages("supplementary.address.fullName")
+        )
+
+        @components.input_text(
+            field = form("details.address.addressLine"),
+            label = messages("supplementary.address.addressLine")
+        )
+
+        @components.input_text(
+            field = form("details.address.townOrCity"),
+            label = messages("supplementary.address.townOrCity")
+        )
+
+        @components.input_text(
+            field = form("details.address.postCode"),
+            label = messages("supplementary.address.postCode")
+        )
+
+        @components.input_text_autocomplete(form)(
+            field = form("details.address.country"),
+            label = messages("supplementary.address.country"),
+            'autocomplete -> "off",
+            '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
+            'spellcheck -> "false",
+            'ariaautocomplete -> "list",
+            'ariahaspopup -> "true",
+            'ariaowns -> "suggestions-list",
+            'ariaactivedescendant -> "true",
+            'otherErrorFields -> Seq("countryCode")
+        )
+
 
         @components.submit_button()
     }

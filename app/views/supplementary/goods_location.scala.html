@@ -17,9 +17,8 @@
 @import config.AppConfig
 @import controllers.supplementary.routes._
 @import forms.supplementary.GoodsLocation
-@import uk.gov.hmrc.play.views.html._
-
 @import services.Country
+@import uk.gov.hmrc.play.views.html._
 
 @(appConfig: AppConfig, form: Form[GoodsLocation])(implicit request: Request[_], messages: Messages, countries: List[Country])
 
@@ -36,7 +35,7 @@
 
             @components.input_text_autocomplete(form)(
                 field = form("country"),
-                label = messages("supplementary.country"),
+                label = messages("supplementary.address.country"),
                 'autocomplete -> "off",
                 '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
                 'spellcheck -> "false",

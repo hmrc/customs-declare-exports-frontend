@@ -35,7 +35,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(OK)
       stringResult must include(messages("supplementary.goodsLocation.title"))
-      stringResult must include(messages("supplementary.country"))
+      stringResult must include(messages("supplementary.address.country"))
       stringResult must include(messages("supplementary.goodsLocation.typeOfLocation"))
       stringResult must include(messages("supplementary.goodsLocation.qualifierOfIdentification"))
       stringResult must include(messages("supplementary.goodsLocation.identificationOfLocation"))

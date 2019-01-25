@@ -18,17 +18,17 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
-import forms.supplementary.AddressAndIdentification
+import forms.supplementary.ConsigneeDetails
 import play.api.test.Helpers._
 
-class ConsigneeAddressControllerSpec extends CustomExportsBaseSpec {
+class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/declaration/supplementary/consignee-address")
+  val uri = uriWithContextPath("/declaration/supplementary/consignee-details")
 
   "Consignee address controller" should {
     "display consignee address form" in {
       authorizedUser()
-      withCaching[AddressAndIdentification](None)
+      withCaching[ConsigneeDetails](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -37,33 +37,33 @@ class ConsigneeAddressControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.consignee.title"))
       stringResult must include(messages("supplementary.consignee.title.hint"))
       stringResult must include(messages("supplementary.eori"))
-      stringResult must include(messages("supplementary.fullName"))
-      stringResult must include(messages("supplementary.addressLine"))
-      stringResult must include(messages("supplementary.townOrCity"))
-      stringResult must include(messages("supplementary.postCode"))
-      stringResult must include(messages("supplementary.country"))
+      stringResult must include(messages("supplementary.address.fullName"))
+      stringResult must include(messages("supplementary.address.addressLine"))
+      stringResult must include(messages("supplementary.address.townOrCity"))
+      stringResult must include(messages("supplementary.address.postCode"))
+      stringResult must include(messages("supplementary.address.country"))
     }
 
     "validate form - incorrect values" in {
       authorizedUser()
-      withCaching[AddressAndIdentification](None)
+      withCaching[ConsigneeDetails](None)
 
-      val result = route(app, postRequest(uri, incorrectAddress)).get
+      val result = route(app, postRequest(uri, incorrectEntityDetails)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("supplementary.eori.error"))
-      stringResult must include(messages("supplementary.fullName.error"))
-      stringResult must include(messages("supplementary.addressLine.error"))
-      stringResult must include(messages("supplementary.townOrCity.error"))
-      stringResult must include(messages("supplementary.postCode.error"))
-      stringResult must include(messages("supplementary.country.error"))
+      stringResult must include(messages("supplementary.address.fullName.error"))
+      stringResult must include(messages("supplementary.address.addressLine.error"))
+      stringResult must include(messages("supplementary.address.townOrCity.error"))
+      stringResult must include(messages("supplementary.address.postCode.error"))
+      stringResult must include(messages("supplementary.address.country.error"))
     }
 
-    "validate form - optional fields" in {
+    "validate form - only eori provided" in {
       authorizedUser()
-      withCaching[AddressAndIdentification](None)
+      withCaching[ConsigneeDetails](None)
 
-      val result = route(app, postRequest(uri, emptyAddress)).get
+      val result = route(app, postRequest(uri, entityDetailsEORIOnly)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -72,11 +72,24 @@ class ConsigneeAddressControllerSpec extends CustomExportsBaseSpec {
       )
     }
 
-    "validate form - correct values" in {
+    "validate form - only address provided" in {
       authorizedUser()
-      withCaching[AddressAndIdentification](None)
+      withCaching[ConsigneeDetails](None)
 
-      val result = route(app, postRequest(uri, correctAddress)).get
+      val result = route(app, postRequest(uri, entityDetailsAddressOnly)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
+      )
+    }
+
+    "validate form - all values provided" in {
+      authorizedUser()
+      withCaching[ConsigneeDetails](None)
+
+      val result = route(app, postRequest(uri, entityDetailsAllValues)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

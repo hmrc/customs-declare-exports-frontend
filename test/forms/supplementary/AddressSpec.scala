@@ -25,152 +25,152 @@ class AddressSpec extends WordSpec with MustMatchers {
 
     "contain errors for fullName" when {
       "provided with empty input" in {
-        val input = buildAddressInput()
+        val input = buildAddressInputMap()
         val form = Address.form().bind(input)
 
         val fullNameError = form.errors.find(_.key == "fullName")
         fullNameError must be(defined)
-        fullNameError.get.message must equal("supplementary.fullName.empty")
+        fullNameError.get.message must equal("supplementary.address.fullName.empty")
       }
 
       "provided with input longer than 70 characters" in {
-        val input = buildAddressInput(fullName = createRandomString(71))
+        val input = buildAddressInputMap(fullName = createRandomString(71))
         val form = Address.form().bind(input)
 
         val fullNameError = form.errors.find(_.key == "fullName")
         fullNameError must be(defined)
-        fullNameError.get.message must equal("supplementary.fullName.error")
+        fullNameError.get.message must equal("supplementary.address.fullName.error")
       }
 
       "provided with input containing special characters" in {
-        val input = buildAddressInput(fullName = "FullName!@#")
+        val input = buildAddressInputMap(fullName = "FullName!@#")
         val form = Address.form().bind(input)
 
         val fullNameError = form.errors.find(_.key == "fullName")
         fullNameError must be(defined)
-        fullNameError.get.message must equal("supplementary.fullName.error")
+        fullNameError.get.message must equal("supplementary.address.fullName.error")
       }
     }
 
     "contain errors for addressLine" when {
       "provided with empty input" in {
-        val input = buildAddressInput()
+        val input = buildAddressInputMap()
         val form = Address.form().bind(input)
 
         val addressLineError = form.errors.find(_.key == "addressLine")
         addressLineError must be(defined)
-        addressLineError.get.message must equal("supplementary.addressLine.empty")
+        addressLineError.get.message must equal("supplementary.address.addressLine.empty")
       }
 
       "provided with input longer than 70 characters" in {
-        val input = buildAddressInput(addressLine = createRandomString(71))
+        val input = buildAddressInputMap(addressLine = createRandomString(71))
         val form = Address.form().bind(input)
 
         val addressLineError = form.errors.find(_.key == "addressLine")
         addressLineError must be(defined)
-        addressLineError.get.message must equal("supplementary.addressLine.error")
+        addressLineError.get.message must equal("supplementary.address.addressLine.error")
       }
 
       "provided with input containing special characters" in {
-        val input = buildAddressInput(addressLine = "Address!@#")
+        val input = buildAddressInputMap(addressLine = "Address!@#")
         val form = Address.form().bind(input)
 
         val addressLineError = form.errors.find(_.key == "addressLine")
         addressLineError must be(defined)
-        addressLineError.get.message must equal("supplementary.addressLine.error")
+        addressLineError.get.message must equal("supplementary.address.addressLine.error")
       }
     }
 
     "contain errors for townOrCity" when {
       "provided with empty input" in {
-        val input = buildAddressInput()
+        val input = buildAddressInputMap()
         val form = Address.form().bind(input)
 
         val townOrCityError = form.errors.find(_.key == "townOrCity")
         townOrCityError must be(defined)
-        townOrCityError.get.message must equal("supplementary.townOrCity.empty")
+        townOrCityError.get.message must equal("supplementary.address.townOrCity.empty")
       }
 
       "provided with input longer than 35 characters" in {
-        val input = buildAddressInput(townOrCity = createRandomString(36))
+        val input = buildAddressInputMap(townOrCity = createRandomString(36))
         val form = Address.form().bind(input)
 
         val townOrCityError = form.errors.find(_.key == "townOrCity")
         townOrCityError must be(defined)
-        townOrCityError.get.message must equal("supplementary.townOrCity.error")
+        townOrCityError.get.message must equal("supplementary.address.townOrCity.error")
       }
 
       "provided with input containing special characters" in {
-        val input = buildAddressInput(townOrCity = "City%$#")
+        val input = buildAddressInputMap(townOrCity = "City%$#")
         val form = Address.form().bind(input)
 
         val townOrCityError = form.errors.find(_.key == "townOrCity")
         townOrCityError must be(defined)
-        townOrCityError.get.message must equal("supplementary.townOrCity.error")
+        townOrCityError.get.message must equal("supplementary.address.townOrCity.error")
       }
     }
 
     "contain errors for postCode" when {
       "provided with empty input" in {
-        val input = buildAddressInput()
+        val input = buildAddressInputMap()
         val form = Address.form().bind(input)
 
         val postCodeError = form.errors.find(_.key == "postCode")
         postCodeError must be(defined)
-        postCodeError.get.message must equal("supplementary.postCode.empty")
+        postCodeError.get.message must equal("supplementary.address.postCode.empty")
       }
 
       "provided with input in wrong format" in {
-        val input = buildAddressInput(postCode = "AB 12 CD 345")
+        val input = buildAddressInputMap(postCode = "AB 12 CD 345")
         val form = Address.form().bind(input)
 
         val postCodeError = form.errors.find(_.key == "postCode")
         postCodeError must be(defined)
-        postCodeError.get.message must equal("supplementary.postCode.error")
+        postCodeError.get.message must equal("supplementary.address.postCode.error")
       }
 
       "provided with input containing special characters" in {
-        val input = buildAddressInput(postCode = "AB*^ $%7")
+        val input = buildAddressInputMap(postCode = "AB*^ $%7")
         val form = Address.form().bind(input)
 
         val postCodeError = form.errors.find(_.key == "postCode")
         postCodeError must be(defined)
-        postCodeError.get.message must equal("supplementary.postCode.error")
+        postCodeError.get.message must equal("supplementary.address.postCode.error")
       }
     }
 
     "contain errors for country" when {
       "provided with empty input" in {
-        val input = buildAddressInput()
+        val input = buildAddressInputMap()
         val form = Address.form().bind(input)
 
         val countryError = form.errors.find(_.key == "country")
         countryError must be(defined)
-        countryError.get.message must equal("supplementary.country.empty")
+        countryError.get.message must equal("supplementary.address.country.empty")
       }
 
       "provided with non-existing country name" in {
-        val input = buildAddressInput(country = "Non Existing Country")
+        val input = buildAddressInputMap(country = "Non Existing Country")
         val form = Address.form().bind(input)
 
         val countryError = form.errors.find(_.key == "country")
         countryError must be(defined)
-        countryError.get.message must equal("supplementary.country.error")
+        countryError.get.message must equal("supplementary.address.country.error")
       }
 
       "provided with input containing special characters" in {
-        val input = buildAddressInput(country = "United King@#$")
+        val input = buildAddressInputMap(country = "United King@#$")
         val form = Address.form().bind(input)
 
         val countryError = form.errors.find(_.key == "country")
         countryError must be(defined)
-        countryError.get.message must equal("supplementary.country.error")
+        countryError.get.message must equal("supplementary.address.country.error")
       }
     }
 
     "contain all the data with no errors" when {
       "provided with full input" in {
-        val input = buildAddressInput(
+        val input = buildAddressInputMap(
           fullName = "FullName",
           addressLine = "AddressLine",
           townOrCity = "City",
@@ -193,7 +193,7 @@ class AddressSpec extends WordSpec with MustMatchers {
       }
 
       "provided with full input, containing spaces in fields" in {
-        val input = buildAddressInput(
+        val input = buildAddressInputMap(
           fullName = "Full Name",
           addressLine = "Address Line",
           townOrCity = "Town Or City",
@@ -221,7 +221,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
 object AddressSpec {
 
-  def buildAddressInput(
+  def buildAddressInputMap(
     fullName: String = "",
     addressLine: String = "",
     townOrCity: String = "",

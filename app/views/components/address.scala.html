@@ -27,27 +27,27 @@
 
     @components.input_text(
         field = form("fullName"),
-        label = messages("supplementary.fullName")
+        label = messages("supplementary.address.fullName")
     )
 
     @components.input_text(
         field = form("addressLine"),
-        label = messages("supplementary.addressLine")
+        label = messages("supplementary.address.addressLine")
     )
 
     @components.input_text(
         field = form("townOrCity"),
-        label = messages("supplementary.townOrCity")
+        label = messages("supplementary.address.townOrCity")
     )
 
     @components.input_text(
         field = form("postCode"),
-        label = messages("supplementary.postCode")
+        label = messages("supplementary.address.postCode")
     )
 
     @components.input_text_autocomplete(form)(
         field = form("country"),
-        label = messages("supplementary.country"),
+        label = messages("supplementary.address.country"),
         'autocomplete -> "off",
         '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
         'spellcheck -> "false",

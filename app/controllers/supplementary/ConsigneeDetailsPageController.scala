@@ -18,18 +18,18 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.AddressAndIdentification
+import forms.supplementary.ConsigneeDetails
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.declarant_details
+import views.html.supplementary.consignee_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarantAddressController @Inject()(
+class ConsigneeDetailsPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -37,29 +37,24 @@ class DeclarantAddressController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  val formId = "DeclarantAddress"
-  val form = Form(AddressAndIdentification.addressMapping)
-
   implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[AddressAndIdentification](appConfig.appName, formId).map {
-      case Some(data) => Ok(declarant_details(appConfig, form.fill(data)))
-      case _          => Ok(declarant_details(appConfig, form))
+    customsCacheService.fetchAndGetEntry[ConsigneeDetails](appConfig.appName, ConsigneeDetails.id).map {
+      case Some(data) => Ok(consignee_details(appConfig, ConsigneeDetails.form.fill(data)))
+      case _          => Ok(consignee_details(appConfig, ConsigneeDetails.form))
     }
   }
 
   def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
-    form
+    ConsigneeDetails.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[AddressAndIdentification]) =>
-          Future.successful(BadRequest(declarant_details(appConfig, formWithErrors))),
+        (formWithErrors: Form[ConsigneeDetails]) =>
+          Future.successful(BadRequest(consignee_details(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[AddressAndIdentification](appConfig.appName, formId, form).map { _ =>
-            Redirect(
-              controllers.supplementary.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
-            )
+          customsCacheService.cache[ConsigneeDetails](appConfig.appName, ConsigneeDetails.id, form).map { _ =>
+            Redirect(controllers.supplementary.routes.DeclarationAdditionalActorsController.displayForm())
         }
       )
   }
