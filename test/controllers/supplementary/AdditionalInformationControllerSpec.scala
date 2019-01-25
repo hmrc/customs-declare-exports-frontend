@@ -67,6 +67,20 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec {
       )
     }
 
+    "validate form - special characters" in {
+      authorizedUser()
+      withCaching[AdditionalInformation](None)
+
+      val additionalInformationWithSpecialChars: JsValue = JsObject(
+        Map(
+          "code" -> JsString("12345"),
+          "decription" -> JsString("Description with ,. /'")
+        )
+
+
+      )
+    }
+
     "validate form - correct values" in {
       authorizedUser()
       withCaching[AdditionalInformation](None)

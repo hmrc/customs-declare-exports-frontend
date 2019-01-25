@@ -20,21 +20,30 @@ import scala.util.{Success, Try}
 
 object FormFieldValidator {
 
-  implicit class PredicateOps[A](first: A => Boolean) {
+  implicit class PredicateOpsForFunctions[A](first: A => Boolean) {
     def and(second: A => Boolean): A => Boolean = (arg: A) => first(arg) && second(arg)
 
+    def and(second: Boolean): A => Boolean = (arg: A) => first(arg) && second
+
     def or(second: A => Boolean): A => Boolean = (arg: A) => first(arg) || second(arg)
+
+    def or(second: Boolean): A => Boolean = (arg: A) => first(arg) || second
   }
 
-  private val numericRegexValue = "[0-9]*"
-  private val alphabeticRegexValue = "[a-zA-Z]*"
-  private val alphanumericRegexValue = "[a-zA-Z0-9]*"
-  private val firstCapitalLetter = "[A-Z]{1}(.*)"
-  private val zerosOnlyRegexValue = "[0]*"
-  private val allCapitalLettersRegex = "[A-Z]*"
+  implicit class PredicateOpsForBooleans[A](first: Boolean) {
+    def and(second: A => Boolean): A => Boolean = (arg: A) => first && second(arg)
+
+    def and(second: Boolean): Boolean = first && second
+
+    def or(second: A => Boolean): A => Boolean = (arg: A) => first || second(arg)
+
+    def or(second: Boolean): Boolean = first || second
+  }
+
+  private val zerosOnlyRegexValue = "[0]+"
   private val noMoreDecimalPlacesThanRegexValue: Int => String = (decimalPlaces: Int) =>
     s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$"
-  private val decimalRegex = "^-?[0-9]+[\\.]([0-9]+)?$"
+  private val allowedSpecialChars = Set(',', '.', '-', '\'', '/', ' ')
 
   val isEmpty: String => Boolean = (input: String) => input.isEmpty
 
@@ -46,16 +55,21 @@ object FormFieldValidator {
 
   val hasSpecificLength: Int => String => Boolean = (length: Int) => (input: String) => input.length == length
 
-  val isNumeric: String => Boolean = (input: String) => input.matches(numericRegexValue)
+  val isNumeric: String => Boolean = (input: String) => input.forall(_.isDigit)
 
-  val isDecimalWithNoMoreDecimalPlacesThan: Int => String => Boolean = (decimalPlaces: Int) =>
-    (input: String) => input.matches(noMoreDecimalPlacesThanRegexValue(decimalPlaces))
+  val isAllCapitalLetter: String => Boolean = (input: String) => input.forall(_.isUpper)
 
-  val isAlphabetic: String => Boolean = (input: String) => input.matches(alphabeticRegexValue)
+  val isAlphabetic: String => Boolean = (input: String) => input.forall(_.isLetter)
 
-  val isAlphanumeric: String => Boolean = (input: String) => input.matches(alphanumericRegexValue)
+  val isAlphanumeric: String => Boolean = (input: String) => input.forall(_.isLetterOrDigit)
 
-  val startsWithCapitalLetter: String => Boolean = (input: String) => input.matches(firstCapitalLetter)
+  val isAlphanumericWithSpecialCharacters: Set[Char] => String => Boolean = (allowedChars: Set[Char]) => (input: String) =>
+    input.filter(!_.isLetterOrDigit).forall(allowedChars)
+
+  val isAlphanumericWithAllowedSpecialCharacters: String => Boolean = (input: String) =>
+    input.filter(!_.isLetterOrDigit).forall(allowedSpecialChars)
+
+  val startsWithCapitalLetter: String => Boolean = (input: String) => input.headOption.exists(_.isUpper)
 
   val isContainedIn: Iterable[String] => String => Boolean =
     (iterable: Iterable[String]) => (input: String) => iterable.exists(_ == input)
@@ -68,10 +82,13 @@ object FormFieldValidator {
       case _              => false
   }
 
-  val isAllCapitalLetter: String => Boolean = (input: String) => input.matches(allCapitalLettersRegex)
+  val isDecimalWithNoMoreDecimalPlacesThan: Int => String => Boolean = (decimalPlaces: Int) =>
+    (input: String) => input.matches(noMoreDecimalPlacesThanRegexValue(decimalPlaces))
 
-  val isDecimal: String => Boolean = (input: String) => input.matches(decimalRegex)
-
-  val isDecimalNoLongerThan: Int => String => Boolean = (length: Int) =>
-    (input: String) => input.filter(_.isDigit).length <= length
+  val validateDecimal: Int => Int => String => Boolean = (totalLength: Int) => (decimalPlaces: Int) => (input: String) =>
+    input.split('.') match {
+      case Array(a, b) if isNumeric(a) && isNumeric(b) => b.length <= decimalPlaces && (a + b).length <= totalLength
+      case Array(a) if isNumeric(a) => a.length <= totalLength
+      case _ => false
+    }
 }

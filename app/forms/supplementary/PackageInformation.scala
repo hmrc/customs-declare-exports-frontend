@@ -49,9 +49,7 @@ object PackageInformation {
     "supplementaryUnits" -> optional(
       text().verifying(
         "supplementary.packageInformation.supplementaryUnits.error",
-        (isDecimal and isDecimalNoLongerThan(16) and isDecimalWithNoMoreDecimalPlacesThan(6)) or (isNumeric and noLongerThan(
-          10
-        ))
+        validateDecimal(16)(6)
       )
     ),
     "shippingMarks" -> text()
@@ -63,21 +61,13 @@ object PackageInformation {
     "netMass" -> text()
       .verifying(
         "supplementary.packageInformation.netMass.error",
-        isEmpty or (
-          (isDecimal and isDecimalNoLongerThan(11) and isDecimalWithNoMoreDecimalPlacesThan(3)) or (isNumeric and noLongerThan(
-            8
-          ))
-        )
+        isEmpty or validateDecimal(11)(3)
       )
       .verifying("supplementary.packageInformation.netMass.empty", _.trim.nonEmpty),
     "grossMass" -> text()
       .verifying(
         "supplementary.packageInformation.grossMass.error",
-        isEmpty or (
-          (isDecimal and isDecimalNoLongerThan(16) and isDecimalWithNoMoreDecimalPlacesThan(6)) or (isNumeric and noLongerThan(
-            10
-          ))
-        )
+        isEmpty or validateDecimal(16)(6)
       )
       .verifying("supplementary.packageInformation.grossMass.empty", _.trim.nonEmpty)
   )(PackageInformation.apply)(PackageInformation.unapply)

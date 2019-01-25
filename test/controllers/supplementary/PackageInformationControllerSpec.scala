@@ -265,7 +265,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
     contentAsString(result) must include(messages("supplementary.packageInformation.supplementaryUnits.error"))
   }
 
-  "validate form - too large integer value on supplementary units" in {
+  "validate form - too large numeric value on supplementary units" in {
     authorizedUser()
     withCaching[PackageInformation](None)
 
@@ -274,7 +274,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
           "numberOfPackages" -> JsString("1234"),
-          "supplementaryUnits" -> JsString("12345678901"),
+          "supplementaryUnits" -> JsString("12345678901234567"),
           "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
           "netMass" -> JsString("12345678.123"),
           "grossMass" -> JsString("1234567890.123456")
@@ -353,7 +353,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
     contentAsString(result) must include(messages("supplementary.packageInformation.netMass.error"))
   }
 
-  "validate form - too large integer value on net mass" in {
+  "validate form - too large numeric value on net mass" in {
     authorizedUser()
     withCaching[PackageInformation](None)
 
@@ -364,7 +364,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
           "numberOfPackages" -> JsString(TestHelper.createRandomString(5)),
           "supplementaryUnits" -> JsString("1234567890.123456"),
           "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("123456789"),
+          "netMass" -> JsString("123456789012"),
           "grossMass" -> JsString("1234567890.123456")
         )
       )
@@ -419,7 +419,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
     contentAsString(result) must include(messages("supplementary.packageInformation.grossMass.error"))
   }
 
-  "validate form - too large integer value on gross mass" in {
+  "validate form - too large numeric value on gross mass" in {
     authorizedUser()
     withCaching[PackageInformation](None)
 
@@ -431,7 +431,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
           "supplementaryUnits" -> JsString("1234567890.123456"),
           "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
           "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("12345678901")
+          "grossMass" -> JsString("12345678901234567")
         )
       )
 
