@@ -201,9 +201,25 @@ arrivals.title = Arrivals
 arrivals.heading = Arrivals
 arrivals.ducr = DUCR
 
-cancel.title = Cancel Declaration
-cancelDeclaration.title = Cancel Declaration
-cancelDeclaration.heading = Cancel Declaration
+cancellation.title = Cancel Declaration
+cancellation.functionalReferenceId = Enter the DUCR
+cancellation.functionalReferenceId.empty = Enter the DUCR
+cancellation.functionalReferenceId.tooLong = THE DUCR must be 35 digits or less
+cancellation.functionalReferenceId.tooShort = The DUCR must be 23 digits or more
+cancellation.functionalReferenceId.wrongFormat = Enter a DUCR in the correct format
+cancellation.declarationId = Enter the MRN
+cancellation.declarationId.empty = Enter the MRN
+cancellation.declarationId.tooLong = The MRN must be 70 digits or less
+cancellation.declarationId.tooShort = The MRN must be X digits or more
+cancellation.declarationId.wrongFormat = Enter a MRN in the correct format
+cancellation.statementDescription = Enter the reason for cancellation
+cancellation.statementDescription.empty = Enter a description
+cancellation.statementDescription.tooLong = The description must be 512 digits or less
+cancellation.statementDescription.tooShort = The description must be X digits or more
+cancellation.statementDescription.wrongFormat = Enter a description in the correct format
+cancellation.confirmationPage.title = Cancellation confirmation page
+cancellation.confirmationPage.message = Cancellation request has been submitted
+cancellation.submitButton = Submit
 
 movement.EAL.confirmation = Arrival confirmation
 movement.EDL.confirmation = Departure confirmation
@@ -536,9 +552,6 @@ supplementary.itemType.statisticalValue.header.hint = The approximate value of t
 supplementary.itemType.statisticalValue.error.empty = The statistical value cannot be empty
 supplementary.itemType.statisticalValue.error.length = Entered statistical value is too long
 supplementary.itemType.statisticalValue.error.wrongFormat = Format of this value is incorrect
-
-cancellation.confirmationPage.title = Cancellation confirmation page
-cancellation.confirmationPage.message = Cancellation request has been submitted
 
 supplementary.previousDocuments = Previous documents
 supplementary.previousDocuments.title = 2/1 Previous documents

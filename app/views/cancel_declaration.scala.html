@@ -16,86 +16,38 @@
 
 @import config.AppConfig
 @import controllers.routes._
+@import forms.CancelDeclaration
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[CancelDeclaration])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("cancel.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("cancellation.title"),
+    appConfig = appConfig
+) {
 
     @helpers.form(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
         @components.back_link("/customs-declare-exports/choice")
 
         @components.error_summary(form.errors)
 
-        @components.heading("cancelDeclaration.title", "cancelDeclaration.heading")
+        @components.page_title(Some("cancellation.title"))
 
         @components.input_text(
-            field = form("wcoDataModelVersionCode"),
-            label = messages("WCODataModelVersionCode")
+            field = form("functionalReferenceId"),
+            label = messages("cancellation.functionalReferenceId")
         )
 
         @components.input_text(
-            field = form("wcoTypeName"),
-            label = messages("wcoTypeName")
+            field = form("declarationId"),
+            label = messages("cancellation.declarationId")
         )
 
-        @components.input_text(
-            field = form("responsibleAgencyName"),
-            label = messages("ResponsibleAgencyName")
+        @components.input_textarea(
+            field = form("statementDescription"),
+            label = messages("cancellation.statementDescription")
         )
 
-        @components.input_text(
-            field = form("functionalReferenceID"),
-            label = messages("FunctionalReferenceID (Mandatory)")
-        )
-        @components.input_text(
-            field = form("id"),
-            label = messages("ID (Mandatory)")
-        )
-       Submitter Details
-
-        @components.input_text(
-            field = form("submitter.id"),
-            label = messages("Submitter ID (Mandatory)")
-        )
-
-        AdditionalInformation (Mandatory)
-        @components.input_text(
-            field = form("additionalInformation.statementCode"),
-            label = messages("StatementCode (Mandatory)")
-        )
-
-        @components.input_text(
-            field = form("additionalInformation.statementDescription"),
-            label = messages("StatementDescription (Mandatory)")
-        )
-
-        @components.input_text(
-            field = form("additionalInformation.statementTypeCode"),
-            label = messages("StatementTypeCode")
-        )
-
-            Pointer
-
-        @components.input_text(
-            field = form("additionalInformation.pointer.sequenceNumeric"),
-            label = messages("SequenceNumeric")
-        )
-
-        @components.input_text(
-            field = form("additionalInformation.pointer.documentSectionCode"),
-            label = messages("DocumentSectionCode")
-        )
-
-        Amendment (Mandatory)
-        @components.input_text(
-            field = form("amendment.changeReasonCode"),
-            label = messages("ChangeReasonCode (Mandatory)")
-        )
-
-        @components.submit_button()
+        @components.submit_button("cancellation.submitButton")
     }
 }

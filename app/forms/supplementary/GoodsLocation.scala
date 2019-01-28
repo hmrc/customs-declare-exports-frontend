@@ -61,12 +61,16 @@ object GoodsLocation {
       )
     ),
     "additionalIdentifier" -> optional(
-      text().verifying("supplementary.goodsLocation.additionalIdentifier.error",
-        input => isAlphanumeric(input.replaceAll(" ", "")) && noLongerThan(32)(input))
+      text().verifying(
+        "supplementary.goodsLocation.additionalIdentifier.error",
+        input => isAlphanumeric(input.replaceAll(" ", "")) && noLongerThan(32)(input)
+      )
     ),
     "streetAndNumber" -> optional(
-      text().verifying("supplementary.goodsLocation.streetAndNumber.error",
-        input => isAlphanumeric(input.replaceAll(" ", "")) && noLongerThan(70)(input))
+      text().verifying(
+        "supplementary.goodsLocation.streetAndNumber.error",
+        input => isAlphanumeric(input.replaceAll(" ", "")) && noLongerThan(70)(input)
+      )
     ),
     "postCode" -> optional(
       text().verifying("supplementary.goodsLocation.postCode.error", isAlphanumeric and noLongerThan(9))

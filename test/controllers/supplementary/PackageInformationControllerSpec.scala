@@ -69,11 +69,11 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
 
     status(result) must be(BAD_REQUEST)
 
-    contentAsString(result) must include (messages("supplementary.packageInformation.typesOfPackages.empty"))
-    contentAsString(result) must include (messages("supplementary.packageInformation.numberOfPackages.empty"))
-    contentAsString(result) must include (messages("supplementary.packageInformation.shippingMarks.empty"))
-    contentAsString(result) must include (messages("supplementary.packageInformation.netMass.empty"))
-    contentAsString(result) must include (messages("supplementary.packageInformation.grossMass.empty"))
+    contentAsString(result) must include(messages("supplementary.packageInformation.typesOfPackages.empty"))
+    contentAsString(result) must include(messages("supplementary.packageInformation.numberOfPackages.empty"))
+    contentAsString(result) must include(messages("supplementary.packageInformation.shippingMarks.empty"))
+    contentAsString(result) must include(messages("supplementary.packageInformation.netMass.empty"))
+    contentAsString(result) must include(messages("supplementary.packageInformation.grossMass.empty"))
 
     contentAsString(result) must not include messages("supplementary.packageInformation.typesOfPackages.error")
     contentAsString(result) must not include messages("supplementary.packageInformation.numberOfPackages.error")
