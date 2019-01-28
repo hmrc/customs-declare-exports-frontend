@@ -23,7 +23,7 @@
     hint: Option[String] = None
 )(implicit messages: Messages)
 
-<div class="form-group @if(field.hasErrors){form-group-error}">
+<div class="form-field @if(field.hasErrors){form-field--error}">
     <label class="form-label" for="@{field.id}">
         <span class="@labelClass">@label</span>
         @hint.map { hint =>
@@ -34,11 +34,12 @@
         }
     </label>
 
-    <textarea class="form-control w-95 @inputClass"
-              id="@{field.id}"
-              name="@{field.id}"
-              aria-describedby="error-message-@{field.id}-input"
-              rows="5">@{field.value}</textarea>
-
+    <div class="form-control-wrapper">
+        <textarea class="form-control @inputClass"
+            id="@{field.id}"
+            name="@{field.id}"
+            aria-describedby="error-message-@{field.id}-input"
+            rows="5">@{field.value}</textarea>
+    </div>
 </div>
 

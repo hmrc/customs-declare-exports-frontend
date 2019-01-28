@@ -49,8 +49,7 @@ class ChoiceController @Inject()(
   }
 
   def submitChoice(): Action[AnyContent] = authenticate.async { implicit request =>
-    Choice
-      .form()
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choice_page(appConfig, formWithErrors))),

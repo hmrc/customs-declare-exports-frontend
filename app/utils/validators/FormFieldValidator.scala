@@ -63,8 +63,8 @@ object FormFieldValidator {
 
   val isAlphanumeric: String => Boolean = (input: String) => input.forall(_.isLetterOrDigit)
 
-  val isAlphanumericWithSpecialCharacters: Set[Char] => String => Boolean = (allowedChars: Set[Char]) => (input: String) =>
-    input.filter(!_.isLetterOrDigit).forall(allowedChars)
+  val isAlphanumericWithSpecialCharacters: Set[Char] => String => Boolean = (allowedChars: Set[Char]) =>
+    (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedChars)
 
   val isAlphanumericWithAllowedSpecialCharacters: String => Boolean = (input: String) =>
     input.filter(!_.isLetterOrDigit).forall(allowedSpecialChars)
@@ -85,10 +85,12 @@ object FormFieldValidator {
   val isDecimalWithNoMoreDecimalPlacesThan: Int => String => Boolean = (decimalPlaces: Int) =>
     (input: String) => input.matches(noMoreDecimalPlacesThanRegexValue(decimalPlaces))
 
-  val validateDecimal: Int => Int => String => Boolean = (totalLength: Int) => (decimalPlaces: Int) => (input: String) =>
-    input.split('.') match {
-      case Array(a, b) if isNumeric(a) && isNumeric(b) => b.length <= decimalPlaces && (a + b).length <= totalLength
-      case Array(a) if isNumeric(a) => a.length <= totalLength
-      case _ => false
-    }
+  val validateDecimal: Int => Int => String => Boolean = (totalLength: Int) =>
+    (decimalPlaces: Int) =>
+      (input: String) =>
+        input.split('.') match {
+          case Array(a, b) if isNumeric(a) && isNumeric(b) => b.length <= decimalPlaces && (a + b).length <= totalLength
+          case Array(a) if isNumeric(a)                    => a.length <= totalLength
+          case _                                           => false
+  }
 }

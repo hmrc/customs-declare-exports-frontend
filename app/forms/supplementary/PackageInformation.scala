@@ -47,10 +47,7 @@ object PackageInformation {
       .verifying("supplementary.packageInformation.numberOfPackages.error", isEmpty or (isNumeric and noLongerThan(5)))
       .verifying("supplementary.packageInformation.numberOfPackages.empty", _.trim.nonEmpty),
     "supplementaryUnits" -> optional(
-      text().verifying(
-        "supplementary.packageInformation.supplementaryUnits.error",
-        validateDecimal(16)(6)
-      )
+      text().verifying("supplementary.packageInformation.supplementaryUnits.error", validateDecimal(16)(6))
     ),
     "shippingMarks" -> text()
       .verifying(
@@ -59,16 +56,10 @@ object PackageInformation {
       )
       .verifying("supplementary.packageInformation.shippingMarks.empty", _.trim.nonEmpty),
     "netMass" -> text()
-      .verifying(
-        "supplementary.packageInformation.netMass.error",
-        isEmpty or validateDecimal(11)(3)
-      )
+      .verifying("supplementary.packageInformation.netMass.error", isEmpty or validateDecimal(11)(3))
       .verifying("supplementary.packageInformation.netMass.empty", _.trim.nonEmpty),
     "grossMass" -> text()
-      .verifying(
-        "supplementary.packageInformation.grossMass.error",
-        isEmpty or validateDecimal(16)(6)
-      )
+      .verifying("supplementary.packageInformation.grossMass.error", isEmpty or validateDecimal(16)(6))
       .verifying("supplementary.packageInformation.grossMass.empty", _.trim.nonEmpty)
   )(PackageInformation.apply)(PackageInformation.unapply)
 

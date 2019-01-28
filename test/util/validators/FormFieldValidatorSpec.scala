@@ -426,7 +426,7 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
   }
 
   "FormFieldValidator startsWithCapitalLetter" should {
-    "return false"  when {
+    "return false" when {
       "input start with lowercase" in {
         val input = "lowercaseString"
 

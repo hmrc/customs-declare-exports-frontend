@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import base.TestHelper._
-import forms.AdditionalInformation
+import forms.supplementary.AdditionalInformation
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
@@ -62,23 +62,15 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/add-document")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/add-document"))
     }
 
     "validate form - special characters" in {
       authorizedUser()
       withCaching[AdditionalInformation](None)
 
-      val additionalInformationWithSpecialChars: JsValue = JsObject(
-        Map(
-          "code" -> JsString("12345"),
-          "decription" -> JsString("Description with ,. /'")
-        )
-
-
-      )
+      val additionalInformationWithSpecialChars: JsValue =
+        JsObject(Map("code" -> JsString("12345"), "decription" -> JsString("Description with ,. /'")))
     }
 
     "validate form - correct values" in {
@@ -92,9 +84,7 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/add-document")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/add-document"))
     }
   }
 }

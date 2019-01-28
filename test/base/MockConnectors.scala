@@ -45,6 +45,7 @@ trait MockConnectors extends MockitoSugar {
 
     when(mockCustomsDeclarationsConnector.submitCancellation(any(), any())(any(), any()))
       .thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED, Some("1234"))))
+
     when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
       .thenReturn(Future.successful(CustomsDeclareExportsResponse(OK, "message")))
   }
