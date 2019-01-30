@@ -35,11 +35,15 @@
     </label>
 
     <div class="form-control-wrapper">
-        <textarea class="form-control @inputClass"
-            id="@{field.id}"
-            name="@{field.id}"
-            aria-describedby="error-message-@{field.id}-input"
-            rows="5">@{field.value}</textarea>
+        <textarea
+                class="form-control @inputClass"
+                type="text"
+                id="@{field.id}"
+                name="@{field.id}"
+                aria-describedby="error-message-@{field.id}-input"
+                rows="5">
+            @{field.value}
+        </textarea>
     </div>
 </div>
 
