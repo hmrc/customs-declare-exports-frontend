@@ -16,37 +16,31 @@
 
 @import services.Country
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages, countries: List[Country])
+@(form: Form[_], addressPrefix: String = "")(implicit request: Request[_], messages: Messages, countries: List[Country])
 
-<div>
+<div class="form-field">
     @components.input_text(
-        field = form("eori"),
-        label = messages("supplementary.eori"),
-        hint = Some(messages("supplementary.eori.hint"))
-    )
-
-    @components.input_text(
-        field = form("fullName"),
+        field = form(s"$addressPrefix.fullName"),
         label = messages("supplementary.address.fullName")
     )
 
     @components.input_text(
-        field = form("addressLine"),
+        field = form(s"$addressPrefix.addressLine"),
         label = messages("supplementary.address.addressLine")
     )
 
     @components.input_text(
-        field = form("townOrCity"),
+        field = form(s"$addressPrefix.townOrCity"),
         label = messages("supplementary.address.townOrCity")
     )
 
     @components.input_text(
-        field = form("postCode"),
+        field = form(s"$addressPrefix.postCode"),
         label = messages("supplementary.address.postCode")
     )
 
     @components.input_text_autocomplete(form)(
-        field = form("country"),
+        field = form(s"$addressPrefix.country"),
         label = messages("supplementary.address.country"),
         'autocomplete -> "off",
         '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",

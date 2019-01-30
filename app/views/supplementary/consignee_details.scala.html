@@ -42,38 +42,7 @@
                 hint = Some(messages("supplementary.eori.hint"))
             )
 
-            @components.input_text(
-                field = form("details.address.fullName"),
-                label = messages("supplementary.address.fullName")
-            )
-
-            @components.input_text(
-                field = form("details.address.addressLine"),
-                label = messages("supplementary.address.addressLine")
-            )
-
-            @components.input_text(
-                field = form("details.address.townOrCity"),
-                label = messages("supplementary.address.townOrCity")
-            )
-
-            @components.input_text(
-                field = form("details.address.postCode"),
-                label = messages("supplementary.address.postCode")
-            )
-
-            @components.input_text_autocomplete(form)(
-                field = form("details.address.country"),
-                label = messages("supplementary.address.country"),
-                'autocomplete -> "off",
-                '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
-                'spellcheck -> "false",
-                'ariaautocomplete -> "list",
-                'ariahaspopup -> "true",
-                'ariaowns -> "suggestions-list",
-                'ariaactivedescendant -> "true",
-                'otherErrorFields -> Seq("countryCode")
-            )
+            @components.address(form, "details.address")
         }
 
         @components.submit_button()
