@@ -15,28 +15,26 @@
  */
 
 package forms.supplementary
-
 import forms.MetadataPropertiesConvertable
-import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.FormFieldValidator._
 
-case class OfficeOfExit(id: String) extends MetadataPropertiesConvertable {
+case class ConsigneeDetails(
+  details: EntityDetails
+) extends MetadataPropertiesConvertable {
 
-  override def toMetadataProperties(): Map[String, String] = Map("declaration.exitOffice.ID" -> id)
+  override def toMetadataProperties(): Map[String, String] = ???
+
 }
 
-object OfficeOfExit {
-  implicit val format = Json.format[OfficeOfExit]
+object ConsigneeDetails {
+  implicit val format = Json.format[ConsigneeDetails]
 
-  val formId = "OfficeOfExit"
+  val id = "ConsigneeDetails"
 
   val mapping = Forms.mapping(
-    "officeId" -> text()
-      .verifying("supplementary.officeOfExit.empty", _.trim.nonEmpty)
-      .verifying("supplementary.officeOfExit.error", isEmpty or (isAlphanumeric and hasSpecificLength(8)))
-  )(OfficeOfExit.apply)(OfficeOfExit.unapply)
+    "details" -> EntityDetails.mapping
+  )(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
 
-  def form(): Form[OfficeOfExit] = Form(mapping)
+  def form(): Form[ConsigneeDetails] = Form(mapping)
 }

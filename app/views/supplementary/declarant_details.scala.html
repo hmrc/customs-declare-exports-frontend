@@ -16,24 +16,34 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
-@import forms.supplementary.AddressAndIdentification
-@import uk.gov.hmrc.play.views.html._
+@import forms.supplementary.DeclarantDetails
 @import services.Country
+@import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[AddressAndIdentification])(implicit request: Request[_], messages: Messages, countries: List[Country])
+@(appConfig: AppConfig, form: Form[DeclarantDetails])(implicit request: Request[_], messages: Messages, countries: List[Country])
 
 @main_template(
     title = messages("supplementary.declarant.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(DeclarantAddressController.saveAddress(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/declaration/supplementary/exporter-address")
+    @helpers.form(DeclarantDetailsPageController.saveAddress(), 'autoComplete -> "off") {
+        @components.back_link("/customs-declare-exports/declaration/supplementary/exporter-details")
 
         @components.error_summary(form.errors)
 
         @components.page_title(Some("supplementary.declarant.title"), Some("supplementary.declarant.title.hint"))
 
-        @components.address(form)
+
+        @components.form_fields_wrapper(field = form("details")) {
+
+            @components.input_text(
+                field = form("details.eori"),
+                label = messages("supplementary.eori"),
+                hint = Some(messages("supplementary.eori.hint"))
+            )
+
+            @components.address(form, "details.address")
+        }
 
         @components.submit_button()
     }

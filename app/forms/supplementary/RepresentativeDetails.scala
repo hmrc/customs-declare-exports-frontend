@@ -16,25 +16,33 @@
 
 package forms.supplementary
 
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import services.Countries.allCountries
 
 case class RepresentativeDetails(
-  address: AddressAndIdentification,
+  details: EntityDetails,
   statusCode: String //  numeric, [2] or [3]
-) {
+) extends MetadataPropertiesConvertable {
 
-  def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.agent.id" -> address.eori.getOrElse(""),
-      "declaration.agent.name" -> address.fullName.getOrElse(""),
-      "declaration.agent.address.line" -> address.addressLine.getOrElse(""),
-      "declaration.agent.address.cityName" -> address.townOrCity.getOrElse(""),
-      "declaration.agent.address.postcodeId" -> address.postCode.getOrElse(""),
-      "declaration.agent.address.countryCode" -> address.country.getOrElse(""),
-      "declaration.agent.functionCode" -> statusCode
-    )
+  override def toMetadataProperties(): Map[String, String] =
+    Map("declaration.agent.id" -> details.eori.getOrElse(""), "declaration.agent.functionCode" -> statusCode) ++ buildAddressProperties()
+
+  private def buildAddressProperties(): Map[String, String] = details.address match {
+    case Some(address) =>
+      Map(
+        "declaration.agent.name" -> address.fullName,
+        "declaration.agent.address.line" -> address.addressLine,
+        "declaration.agent.address.cityName" -> address.townOrCity,
+        "declaration.agent.address.postcodeId" -> address.postCode,
+        "declaration.agent.address.countryCode" ->
+          allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
+      )
+    case None => Map.empty
+  }
+
 }
 
 object RepresentativeDetails {
@@ -46,7 +54,7 @@ object RepresentativeDetails {
   val formId = "RepresentativeDetails"
 
   val mapping = Forms.mapping(
-    "address" -> AddressAndIdentification.addressMapping,
+    "details" -> EntityDetails.mapping,
     "statusCode" -> text().verifying(
       "supplementary.representative.representationType.error.empty",
       input => input.nonEmpty && representativeStatusCodeAllowedValues(input)

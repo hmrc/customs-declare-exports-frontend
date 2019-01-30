@@ -16,12 +16,20 @@
 
 package forms.supplementary
 
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
-case class WarehouseIdentification(id: Option[String])
+case class WarehouseIdentification(id: Option[String]) extends MetadataPropertiesConvertable {
+
+  override def toMetadataProperties(): Map[String, String] =
+    Map(
+      "declaration.goodsShipment.warehouse.id" -> id.flatMap(_.headOption).fold("")(_.toString),
+      "declaration.goodsShipment.warehouse.typeCode" -> id.map(_.drop(1).toString).getOrElse("")
+    )
+}
 
 object WarehouseIdentification {
   implicit val format = Json.format[WarehouseIdentification]
@@ -38,10 +46,4 @@ object WarehouseIdentification {
   )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
 
   def form(): Form[WarehouseIdentification] = Form(mapping)
-
-  def toMetadataProperties(identification: WarehouseIdentification): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.warehouse.ID" -> identification.id.map(_.head.toString).getOrElse(""),
-      "declaration.goodsShipment.warehouse.typeCode" -> identification.id.map(_.tail).getOrElse("")
-    )
 }

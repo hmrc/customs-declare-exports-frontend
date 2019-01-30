@@ -16,12 +16,18 @@
 
 package forms.supplementary
 
-import play.api.data.{Form, Forms}
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
-case class GoodItemNumber(goodItemNumber: String)
+case class GoodItemNumber(goodItemNumber: String) extends MetadataPropertiesConvertable {
+
+  override def toMetadataProperties(): Map[String, String] = Map(
+    "declaration.goodsShipment.governmentAgencyGoodsItems[0].sequenceNumeric" -> goodItemNumber
+  )
+}
 
 object GoodItemNumber {
   implicit val format = Json.format[GoodItemNumber]
@@ -34,8 +40,4 @@ object GoodItemNumber {
   )(GoodItemNumber.apply)(GoodItemNumber.unapply)
 
   def form(): Form[GoodItemNumber] = Form(mapping)
-
-  def toMetadataProperties(goodItemNumber: GoodItemNumber): Map[String, String] = Map(
-    "declaration.goodsShipment.governmentAgencyGoodsItem.sequenceNumeric" -> goodItemNumber.goodItemNumber
-  )
 }

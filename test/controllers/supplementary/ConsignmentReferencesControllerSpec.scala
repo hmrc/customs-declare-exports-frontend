@@ -175,7 +175,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
       status(result) must be(SEE_OTHER)
     }
 
-    "redirect to \"Exporter Address\" page" in {
+    "redirect to \"Exporter Details\" page" in {
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
       val validForm = buildConsignmentReferencesTestData(ducr = exemplaryDucr, lrn = "123ABC")
@@ -183,7 +183,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/exporter-address")
+        Some("/customs-declare-exports/declaration/supplementary/exporter-details")
       )
     }
   }

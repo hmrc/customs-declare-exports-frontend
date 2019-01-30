@@ -16,6 +16,8 @@
 
 package forms.supplementary
 
+import forms.MetadataPropertiesConvertable
+import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.{optional, text}
 import play.api.libs.json.Json
@@ -28,7 +30,18 @@ case class PackageInformation(
   shippingMarks: String,
   netMass: String,
   grossMass: String
-)
+) extends MetadataPropertiesConvertable {
+
+  override def toMetadataProperties(): Map[String, String] =
+    Map(
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packaging.typeCode" -> typesOfPackages,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packaging.quantityQuantity" -> numberOfPackages,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.tariffQuantity" -> supplementaryUnits.getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packaging.marksNumbersID" -> shippingMarks,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.GoodsMeasure.netNetWeightMeasure" -> netMass,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.GoodsMeasure.grossMassMeasure" -> grossMass
+    )
+}
 
 object PackageInformation {
 
@@ -42,10 +55,10 @@ object PackageInformation {
         "supplementary.packageInformation.typesOfPackages.error",
         isEmpty or (isAlphanumeric and hasSpecificLength(2))
       )
-      .verifying("supplementary.packageInformation.typesOfPackages.empty", _.trim.nonEmpty),
+      .verifying("supplementary.packageInformation.typesOfPackages.empty", nonEmpty),
     "numberOfPackages" -> text()
       .verifying("supplementary.packageInformation.numberOfPackages.error", isEmpty or (isNumeric and noLongerThan(5)))
-      .verifying("supplementary.packageInformation.numberOfPackages.empty", _.trim.nonEmpty),
+      .verifying("supplementary.packageInformation.numberOfPackages.empty", nonEmpty),
     "supplementaryUnits" -> optional(
       text().verifying("supplementary.packageInformation.supplementaryUnits.error", validateDecimal(16)(6))
     ),
@@ -54,30 +67,14 @@ object PackageInformation {
         "supplementary.packageInformation.shippingMarks.error",
         isEmpty or (isAlphanumeric and noLongerThan(42))
       )
-      .verifying("supplementary.packageInformation.shippingMarks.empty", _.trim.nonEmpty),
+      .verifying("supplementary.packageInformation.shippingMarks.empty", nonEmpty),
     "netMass" -> text()
       .verifying("supplementary.packageInformation.netMass.error", isEmpty or validateDecimal(11)(3))
-      .verifying("supplementary.packageInformation.netMass.empty", _.trim.nonEmpty),
+      .verifying("supplementary.packageInformation.netMass.empty", nonEmpty),
     "grossMass" -> text()
       .verifying("supplementary.packageInformation.grossMass.error", isEmpty or validateDecimal(16)(6))
-      .verifying("supplementary.packageInformation.grossMass.empty", _.trim.nonEmpty)
+      .verifying("supplementary.packageInformation.grossMass.empty", nonEmpty)
   )(PackageInformation.apply)(PackageInformation.unapply)
 
   def form(): Form[PackageInformation] = Form(mapping)
-
-  def toMetadataProperties(document: PackageInformation): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItem.packaging.typeCode" ->
-        document.typesOfPackages,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.packaging.quantityQuantity" ->
-        document.numberOfPackages,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.goodsMeasure.tariffQuantity" ->
-        document.supplementaryUnits.getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItem.packaging.marksNumbersID" ->
-        document.shippingMarks,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.GoodsMeasure.netNetWeightMeasure" ->
-        document.netMass,
-      "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.GoodsMeasure.grossMassMeasure" ->
-        document.grossMass
-    )
 }

@@ -45,14 +45,13 @@ class ConsignmentReferencesController @Inject()(
     customsCacheService
       .fetchAndGetEntry[ConsignmentReferences](supplementaryDeclarationCacheId, ConsignmentReferences.id)
       .map {
-        case Some(data) => Ok(consignment_references(appConfig, ConsignmentReferences.form().fill(data)))
-        case _          => Ok(consignment_references(appConfig, ConsignmentReferences.form()))
+        case Some(data) => Ok(consignment_references(appConfig, ConsignmentReferences.form.fill(data)))
+        case _          => Ok(consignment_references(appConfig, ConsignmentReferences.form))
       }
   }
 
   def submitConsignmentReferences(): Action[AnyContent] = authenticate.async { implicit request =>
-    ConsignmentReferences
-      .form()
+    ConsignmentReferences.form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsignmentReferences]) =>
@@ -65,7 +64,7 @@ class ConsignmentReferencesController @Inject()(
               validConsignmentReferences
             )
             .map { _ =>
-              Redirect(controllers.supplementary.routes.ExporterAddressController.displayForm())
+              Redirect(controllers.supplementary.routes.ExporterDetailsPageController.displayForm())
             }
         }
       )

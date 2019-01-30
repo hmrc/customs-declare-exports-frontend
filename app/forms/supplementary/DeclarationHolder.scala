@@ -16,11 +16,20 @@
 
 package forms.supplementary
 
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 
 case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[String])
+    extends MetadataPropertiesConvertable {
+
+  override def toMetadataProperties(): Map[String, String] =
+    Map(
+      "declaration.authorisationHolder.categoryCode" -> authorisationTypeCode.getOrElse(""),
+      "declaration.authorisationHolder.ID" -> eori.getOrElse("")
+    )
+}
 
 object DeclarationHolder {
   implicit val format = Json.format[DeclarationHolder]
@@ -38,10 +47,4 @@ object DeclarationHolder {
   )(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
   def form(): Form[DeclarationHolder] = Form(mapping)
-
-  def toMetadataProperties(holder: DeclarationHolder): Map[String, String] =
-    Map(
-      "declaration.authorisationHolder.categoryCode" -> holder.authorisationTypeCode.getOrElse(""),
-      "declaration.authorisationHolder.ID" -> holder.eori.getOrElse("")
-    )
 }

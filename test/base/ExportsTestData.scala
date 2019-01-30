@@ -246,36 +246,58 @@ object ExportsTestData {
     CacheMap(id, data)
   }
 
-  val correctAddress: JsValue = JsObject(
+  val entityDetailsAllValues: JsValue = JsObject(
     Map(
-      "eori" -> JsString("PL213472539481923"),
-      "fullName" -> JsString("Full name"),
-      "addressLine" -> JsString("Address"),
-      "townOrCity" -> JsString("Town or city"),
-      "postCode" -> JsString("PostCode1"),
-      "country" -> JsString("Poland")
+      "details.eori" -> JsString("PL213472539481923"),
+      "details.address.fullName" -> JsString("Full name"),
+      "details.address.addressLine" -> JsString("Address"),
+      "details.address.townOrCity" -> JsString("Town or city"),
+      "details.address.postCode" -> JsString("PostCode1"),
+      "details.address.country" -> JsString("Poland")
     )
   )
 
-  val incorrectAddress: JsValue = JsObject(
+  val incorrectEntityDetails: JsValue = JsObject(
     Map(
-      "eori" -> JsString(createRandomString(18)),
-      "fullName" -> JsString(createRandomString(71)),
-      "addressLine" -> JsString(createRandomString(71)),
-      "townOrCity" -> JsString(createRandomString(36)),
-      "postCode" -> JsString(createRandomString(10)),
-      "country" -> JsString(createRandomString(3))
+      "details.eori" -> JsString(createRandomString(18)),
+      "details.address.fullName" -> JsString(createRandomString(71)),
+      "details.address.addressLine" -> JsString(createRandomString(71)),
+      "details.address.townOrCity" -> JsString(createRandomString(36)),
+      "details.address.postCode" -> JsString(createRandomString(10)),
+      "details.address.country" -> JsString(createRandomString(3))
     )
   )
 
-  val emptyAddress: JsValue = JsObject(
+  val entityDetailsEORIOnly: JsValue = JsObject(
     Map(
-      "eori" -> JsString(""),
-      "fullName" -> JsString(""),
-      "addressLine" -> JsString(""),
-      "townOrCity" -> JsString(""),
-      "postCode" -> JsString(""),
-      "country" -> JsString("")
+      "details.eori" -> JsString("PL213472539481923"),
+      "details.address.fullName" -> JsString(""),
+      "details.address.addressLine" -> JsString(""),
+      "details.address.townOrCity" -> JsString(""),
+      "details.address.postCode" -> JsString(""),
+      "details.address.country" -> JsString("")
+    )
+  )
+
+  val entityDetailsAddressOnly: JsValue = JsObject(
+    Map(
+      "details.eori" -> JsString(""),
+      "details.address.fullName" -> JsString("Full name"),
+      "details.address.addressLine" -> JsString("Address"),
+      "details.address.townOrCity" -> JsString("Town or city"),
+      "details.address.postCode" -> JsString("PostCode1"),
+      "details.address.country" -> JsString("Poland")
+    )
+  )
+
+  val emptyEntityDetails: JsValue = JsObject(
+    Map(
+      "details.eori" -> JsString(""),
+      "details.address.fullName" -> JsString(""),
+      "details.address.addressLine" -> JsString(""),
+      "details.address.townOrCity" -> JsString(""),
+      "details.address.postCode" -> JsString(""),
+      "details.address.country" -> JsString("")
     )
   )
 

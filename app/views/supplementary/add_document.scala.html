@@ -53,10 +53,12 @@
             field = form("documentStatus"),
             label = messages("supplementary.addDocument.documentStatus")
         )
+
         @components.input_text(
             field = form("documentStatusReason"),
             label = messages("supplementary.addDocument.documentStatusReason")
         )
+
         @components.submit_button()
     }
 }

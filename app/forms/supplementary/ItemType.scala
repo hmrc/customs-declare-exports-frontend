@@ -16,6 +16,7 @@
 
 package forms.supplementary
 
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -28,10 +29,10 @@ case class ItemType(
   descriptionOfGoods: String,
   cusCode: Option[String],
   statisticalValue: String
-) {
+) extends MetadataPropertiesConvertable {
   import ItemType.IdentificationTypeCodes
 
-  def toMetadataProperties(): Map[String, String] = {
+  override def toMetadataProperties(): Map[String, String] = {
     val codeFieldsProperties = buildListOfProvidedCodesWithIdentifiers().zipWithIndex
       .foldLeft(Map.empty[String, String]) { (properties, newElem) =>
         newElem match {

@@ -16,28 +16,31 @@
 
 package forms.supplementary
 
-import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
-case class SupervisingCustomsOffice(office: Option[String]) extends MetadataPropertiesConvertable {
+case class EntityDetails(
+  eori: Option[String], // alphanumeric, max length 17 characters
+  address: Option[Address]
+)
 
-  override def toMetadataProperties(): Map[String, String] =
-    Map("declaration.supervisingOffice.ID" -> office.getOrElse(""))
-}
-
-object SupervisingCustomsOffice {
-  implicit val format = Json.format[SupervisingCustomsOffice]
+object EntityDetails {
+  implicit val format = Json.format[EntityDetails]
 
   val mapping = Forms.mapping(
-    "supervisingCustomsOffice" -> optional(
-      text().verifying("supplementary.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
-    )
-  )(SupervisingCustomsOffice.apply)(SupervisingCustomsOffice.unapply)
+      "eori" -> optional(
+        text()
+          .verifying("supplementary.eori.empty", nonEmpty)
+          .verifying("supplementary.eori.error", noLongerThan(17) and isAlphanumeric)
+      ),
+      "address" -> optional(Address.mapping)
+    )(EntityDetails.apply)(EntityDetails.unapply)
+    .verifying("supplementary.namedEntityDetails.error", validateNamedEntityDetails(_))
 
-  val formId = "SupervisingCustomsOffice"
+  private def validateNamedEntityDetails(namedEntity: EntityDetails): Boolean =
+    !(namedEntity.eori.isEmpty && namedEntity.address.isEmpty)
 
-  def form(): Form[SupervisingCustomsOffice] = Form(mapping)
+  def form(): Form[EntityDetails] = Form(mapping)
 }

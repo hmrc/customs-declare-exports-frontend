@@ -29,7 +29,7 @@
     appConfig = appConfig
 ) {
 
-    @components.back_link("/customs-declare-exports/declaration/supplementary/declarant-address")
+    @components.back_link("/customs-declare-exports/declaration/supplementary/declarant-details")
 
     @helpers.form(RepresentativeDetailsPageController.submitRepresentativeDetails(), 'autoComplete -> "off") {
 
@@ -37,47 +37,19 @@
 
         @components.page_title(Some("supplementary.representative.header"), None)
 
-        @components.input_text(
-            field = form("address.eori"),
-            label = messages("supplementary.eori"),
-            hint = Some(messages("supplementary.eori.hint"))
-        )
 
+        @components.form_fields_wrapper(field = form("details")) {
 
-        @components.page_title(subtitle = Some("supplementary.representative.address.info"))
+            @components.input_text(
+                field = form("details.eori"),
+                label = messages("supplementary.eori"),
+                hint = Some(messages("supplementary.eori.hint"))
+            )
 
-        @components.input_text(
-            field = form("address.fullName"),
-            label = messages("supplementary.fullName")
-        )
+            @components.page_title(subtitle = Some("supplementary.representative.address.info"))
 
-        @components.input_text(
-            field = form("address.addressLine"),
-            label = messages("supplementary.addressLine")
-        )
-
-        @components.input_text(
-            field = form("address.townOrCity"),
-            label = messages("supplementary.townOrCity")
-        )
-
-        @components.input_text(
-            field = form("address.postCode"),
-            label = messages("supplementary.postCode")
-        )
-
-        @components.input_text_autocomplete(form)(
-          field = form("address.country"),
-          label = messages("supplementary.country"),
-          'autocomplete -> "off",
-          '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
-          'spellcheck -> "false",
-          'ariaautocomplete -> "list",
-          'ariahaspopup -> "true",
-          'ariaowns -> "suggestions-list",
-          'ariaactivedescendant -> "true",
-          'otherErrorFields -> Seq("countryCode")
-        )
+            @components.address(form, "details.address")
+        }
 
 
         @components.page_title(title = Some("supplementary.representative.representationType.header"))

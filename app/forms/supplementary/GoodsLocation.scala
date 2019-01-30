@@ -16,6 +16,7 @@
 
 package forms.supplementary
 
+import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -31,7 +32,20 @@ case class GoodsLocation(
   streetAndNumber: Option[String],
   postCode: Option[String],
   city: Option[String]
-)
+) extends MetadataPropertiesConvertable {
+
+  override def toMetadataProperties(): Map[String, String] =
+    Map(
+      "declaration.goodsShipment.consignment.goodsLocation.address.countryCode" -> country.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.typeCode" -> typeOfLocation.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.address.typeCode" -> qualifierOfIdentification.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.name" -> identificationOfLocation.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.ID" -> additionalIdentifier.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.address.line" -> streetAndNumber.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.address.postCodeID" -> postCode.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.address.cityName" -> city.getOrElse("")
+    )
+}
 
 object GoodsLocation {
   implicit val format = Json.format[GoodsLocation]
@@ -41,9 +55,9 @@ object GoodsLocation {
   val mapping = Forms.mapping(
     "country" -> optional(
       text()
-        .verifying("supplementary.country.empty", _.trim.nonEmpty)
+        .verifying("supplementary.address.country.empty", _.trim.nonEmpty)
         .verifying(
-          "supplementary.country.error",
+          "supplementary.address.country.error",
           input => input.trim.isEmpty || allCountries.exists(country => country.countryName == input)
         )
     ),
@@ -82,17 +96,4 @@ object GoodsLocation {
   )(GoodsLocation.apply)(GoodsLocation.unapply)
 
   def form(): Form[GoodsLocation] = Form(mapping)
-
-  def toMetadataProperties(location: GoodsLocation): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.consignment.goodsLocation.address.countryCode" -> location.country.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.typeCode" -> location.typeOfLocation.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.address.typeCode" -> location.qualifierOfIdentification
-        .getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.name" -> location.identificationOfLocation.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.ID" -> location.additionalIdentifier.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.address.line" -> location.streetAndNumber.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.address.postCodeID" -> location.postCode.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.address.cityName" -> location.city.getOrElse("")
-    )
 }

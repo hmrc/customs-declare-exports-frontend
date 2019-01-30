@@ -18,18 +18,17 @@ package forms.supplementary
 
 import org.scalatest.{MustMatchers, WordSpec}
 
-class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
+class DeclarantDetailsSpec extends WordSpec with MustMatchers {
 
-  private val eori = "GB111222333444"
-  private val fullName = "Full name"
-  private val addressLine = "Address line"
+  private val eori = "PL213472539481923"
+  private val fullName = "Full Name"
+  private val addressLine = "Address Line"
   private val townOrCity = "Town or City"
-  private val postCode = "Postcode"
+  private val postCode = "AB12 3CD"
   private val country = "United Kingdom"
   private val countryCode = "GB"
-  private val statusCode = "2"
 
-  private val representativeAddress: RepresentativeDetails = RepresentativeDetails(
+  private val declarantDetails = DeclarantDetails(
     details = EntityDetails(
       eori = Some(eori),
       address = Some(
@@ -41,23 +40,22 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
           country = country
         )
       )
-    ),
-    statusCode = statusCode
+    )
   )
 
-  private val expectedRepresentativeAddressProperties: Map[String, String] = Map(
-    "declaration.agent.id" -> eori,
-    "declaration.agent.name" -> fullName,
-    "declaration.agent.address.line" -> addressLine,
-    "declaration.agent.address.cityName" -> townOrCity,
-    "declaration.agent.address.postcodeId" -> postCode,
-    "declaration.agent.address.countryCode" -> countryCode,
-    "declaration.agent.functionCode" -> statusCode
+  private val expectedDeclarantDetailsProperties: Map[String, String] = Map(
+    "declaration.declarant.id" -> eori,
+    "declaration.declarant.name" -> fullName,
+    "declaration.declarant.address.line" -> addressLine,
+    "declaration.declarant.address.cityName" -> townOrCity,
+    "declaration.declarant.address.postcodeId" -> postCode,
+    "declaration.declarant.address.countryCode" -> countryCode
   )
 
-  "RepresentativeAddress" should {
-    "convert itself to representative address properties" in {
-      representativeAddress.toMetadataProperties() must equal(expectedRepresentativeAddressProperties)
+  "DeclarantDetails on toMetadataProperties" should {
+    "convert itself to declarant details properties" in {
+      declarantDetails.toMetadataProperties() must equal(expectedDeclarantDetailsProperties)
     }
   }
+
 }

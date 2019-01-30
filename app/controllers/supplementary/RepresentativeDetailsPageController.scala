@@ -65,7 +65,7 @@ class RepresentativeDetailsPageController @Inject()(
               validRepresentativeDetails
             )
             .map { _ =>
-              Redirect(controllers.supplementary.routes.ConsigneeAddressController.displayForm())
+              Redirect(controllers.supplementary.routes.ConsigneeDetailsPageController.displayForm())
           }
       )
   }

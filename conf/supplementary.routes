@@ -20,33 +20,33 @@ POST        /consignment-references         controllers.supplementary.Consignmen
 
 # Exporter address
 
-GET         /exporter-address               controllers.supplementary.ExporterAddressController.displayForm()
+GET         /exporter-details               controllers.supplementary.ExporterDetailsPageController.displayForm()
 
-POST        /exporter-address               controllers.supplementary.ExporterAddressController.saveAddress()
+POST        /exporter-details               controllers.supplementary.ExporterDetailsPageController.saveAddress()
 
 # Declarant address
 
-GET         /declarant-address              controllers.supplementary.DeclarantAddressController.displayForm()
+GET         /declarant-details              controllers.supplementary.DeclarantDetailsPageController.displayForm()
 
-POST        /declarant-address              controllers.supplementary.DeclarantAddressController.saveAddress()
+POST        /declarant-details              controllers.supplementary.DeclarantDetailsPageController.saveAddress()
+
+# Representative details
+
+GET         /representative-details         controllers.supplementary.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
+
+POST        /representative-details         controllers.supplementary.RepresentativeDetailsPageController.submitRepresentativeDetails()
+
+# Consignee address
+
+GET         /consignee-details              controllers.supplementary.ConsigneeDetailsPageController.displayForm()
+
+POST        /consignee-details              controllers.supplementary.ConsigneeDetailsPageController.saveAddress()
 
 # Declaration additional address
 
 GET         /additional-actors              controllers.supplementary.DeclarationAdditionalActorsController.displayForm()
 
 POST        /additional-actors              controllers.supplementary.DeclarationAdditionalActorsController.saveAdditionalActors()
-
-# Representative details
-
-GET         /representative                 controllers.supplementary.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
-
-POST        /representative                 controllers.supplementary.RepresentativeDetailsPageController.submitRepresentativeDetails()
-
-# Consignee address
-
-GET         /consignee-address              controllers.supplementary.ConsigneeAddressController.displayForm()
-
-POST        /consignee-address              controllers.supplementary.ConsigneeAddressController.saveAddress()
 
 # Declaration holder of authorisation
 
