@@ -63,7 +63,17 @@ class CancelDeclarationController @Inject()(
           customsDeclarationsConnector.submitCancellation(metadata).flatMap {
             case CustomsDeclarationsResponse(ACCEPTED, Some(_)) =>
               exportsMetrics.incrementCounter(cancelMetric)
-              Future.successful(Ok(cancellation_confirmation_page(appConfig)))
+              customsDeclareExportsConnector.cancelDeclaration(form.declarationId).map { response =>
+                exportsMetrics.incrementCounter(cancelMetric)
+                if(response) Ok(cancellation_confirmation_page(appConfig))
+                else BadRequest(
+                  errorHandler.standardErrorTemplate(
+                    pageTitle = messagesApi("cancellation.error.title"),
+                    heading = messagesApi("cancellation.error.heading"),
+                    message = messagesApi("cancellation.error.message")
+                  )
+                )
+              }
             case error =>
               exportsMetrics.incrementCounter(cancelMetric)
               Logger.error(s"Error from Customs declarations api ${error.toString}")
@@ -80,5 +90,4 @@ class CancelDeclarationController @Inject()(
         }
       )
   }
-
 }

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@()(implicit messages: Messages)
+package models.requests
 
-<div class="all-declarations js-visible">
-    <a href="declarations/1">@messages("dashboard.all.declarations")</a>
-</div>
+import play.api.libs.json.Json
+
+case class CancellationRequest(mrn: String)
+
+object CancellationRequest {
+  implicit val format = Json.format[CancellationRequest]
+}

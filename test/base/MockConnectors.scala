@@ -16,12 +16,7 @@
 
 package base
 
-import connectors.{
-  CustomsDeclarationsConnector,
-  CustomsDeclareExportsConnector,
-  CustomsInventoryLinkingExportsConnector,
-  NrsConnector
-}
+import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
 import models._
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
@@ -59,7 +54,7 @@ trait MockConnectors extends MockitoSugar {
   }
 
   def listOfNotifications() =
-    when(mockCustomsDeclareExportsConnector.fetchNotifications(any())(any(), any()))
+    when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
       .thenReturn(
         Future.successful(Seq(ExportsNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty)))
       )
@@ -103,4 +98,7 @@ trait MockConnectors extends MockitoSugar {
     when(mockNrsConnector.submitNonRepudiation(any())(any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionId1")))
 
+  def successfulCancelDeclarationResponse(response: Boolean) =
+    when(mockCustomsDeclareExportsConnector.cancelDeclaration(any())(any(), any()))
+      .thenReturn(Future.successful(response))
 }

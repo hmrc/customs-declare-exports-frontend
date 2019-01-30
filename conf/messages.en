@@ -1,7 +1,3 @@
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
-checkYourAnswers.guidance = Guidance for check your answers
-
 date.day = Day
 date.month = Month
 date.year = Year
@@ -56,114 +52,6 @@ site.backToChoice = Back to choice page
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-selectRole.title = Select role
-selectRole.heading = Export declaration service
-selectRole.hint = Please choose a role
-selectRole.webLoaderArrivingGoods = Web loader arriving goods
-selectRole.webLoaderDepartingGoods = Web loader departing goods
-selectRole.exporterMakingDeclaration = Exporter making declaration
-selectRole.checkYourAnswersLabel = Select role
-selectRole.error.required = Enter a correct role
-
-consignment.title = Consignment
-consignment.heading = Is this part of consolidation or a signal shipment?
-consignment.consolidation = Consolidation
-consignment.singleShipment = Single shipment
-consignment.checkYourAnswersLabel = Consignment
-consignment.mucr = Enter Master Unique Consignment Reference (MUCR)
-consignment.mucrHint = Alphanumeric, max 35 characters, eg A:GBP23
-consignment.ducr = Enter Declaration Unique Consignment Reference (DUCR)
-consignment.ducrHint = Alphanumeric, max 35 characters, eg 5GB123456789000-123ABC456DEFIIIIIII
-
-dashboard.title = EDS dashboard
-dashboard.heading = Dashboard
-dashboard.declarations = Declarations
-dashboard.noDeclarationsSubmitted = No declarations submitted
-dashboard.createSimplifiedDeclaration = Create a Simplified declaration
-dashboard.createFullDeclaration = Create a Full declaration
-dashboard.useATemplate = Use a template
-dashboard.messages = Messages
-dashboard.noNewMessages = No new messages
-dashboard.viewMessagesArea = View messages area
-dashboard.search = Search
-dashboard.mainDetail = Main detail
-dashboard.descriptiveText = Descriptive text
-dashboard.searchForDeclarations = Search for declarations
-dashboard.archive = Archive
-dashboard.noArchivedItems = No archived items
-dashboard.createNewDeclaration = Create a new declaration
-dashboard.useTemplate = Use a template
-dashboard.licencesAndPermissions = Licences and permissions
-dashboard.noLicences = You hold no licences
-dashboard.checkLicence = Check if you need a licence
-dashboard.applyForLicence = Apply for a new licence
-dashboard.checkLicenceApplication = Check a licence application
-dashboard.reports = Reports
-dashboard.link = A link
-dashboard.all.declarations = View all declarations
-
-recentDeclarations.title = Recent declarations
-recentDeclarations.name = Name
-recentDeclarations.date = Date and time
-recentDeclarations.ducr = DUCR
-recentDeclarations.status = Status
-recentDeclarations.messages = Messages
-recentDeclarations.action = Action
-recentDeclarations.status.prelodged = Pre-lodged
-recentDeclarations.status.arrived = Arrived
-recentDeclarations.status.accepted = Accepted
-recentDeclarations.status.query = Query
-recentDeclarations.status.departed = Departed
-
-declarationSummary.title = New export declaration
-declarationSummary.heading = Declaration summary
-declarationSummary.checkYourAnswersLabel = declarationSummary
-declarationSummary.submit = Submit declaration
-declarationSummary.error.required = Enter declarationSummary
-declarationSummary.error.length = declarationSummary must be 100 characters or less
-
-whoseDeclaration.title = Declaration for yourself or someone else?
-whoseDeclaration.heading = Is this declaration for yourself or someone else?
-whoseDeclaration.yourself = Yourself
-whoseDeclaration.someoneElse = Someone Else
-whoseDeclaration.checkYourAnswersLabel = whoseDeclaration
-whoseDeclaration.error.required = Please give an answer for the question below
-
-ownDescription.title = Own description
-ownDescription.heading = Would you like to add your own description to the declaration?
-ownDescription.checkYourAnswersLabel = ownDescription
-ownDescription.error.required = Please give an answer for question below
-ownDescription.description = Enter your description
-ownDescription.descriptionHint = This is just for your own records
-
-haveRepresentative.title = Exporter representative
-haveRepresentative.heading = Do you have a representative?
-haveRepresentative.yes = Yes
-haveRepresentative.no = No
-haveRepresentative.checkYourAnswersLabel = haveRepresentative
-haveRepresentative.error.required = Please give an answer for question below
-
-enterEORI.title = enterEORI
-enterEORI.heading = Enter representative''s Economic Operator Registration and Identification (EORI) number
-enterEORI.checkYourAnswersLabel = enterEORI
-enterEORI.form.label = EORI number
-enterEORI.form.hint = Usually a country code and 12 digits, for example GB111222333444
-enterEORI.error.required = Enter enter EORI number
-enterEORI.error.length = EnterEORI must be 100 characters or less
-
-consignmentSummary.change = Change
-consignmentSummary.reference = Declaration Unique Consignment Reference
-consignmentSummary.ownDescription = Own description of declaration
-consignmentSummary.timeOfDeclaration = Time and date of declaration
-consignmentSummary.yourselfOrSomeoneElse = Declaring yourself or for someone else
-consignmentSummary.eoriNumber = Declarant''s EORI number
-consignmentSummary.representativesAddress = Declarant''s name and address
-consignmentSummary.representative = Do you have a representative?
-
-representativesAddress.title = Full export declaration
-representativesAddress.heading = Enter representative's address
-representativesAddress.secondaryHeading = Consignment
-
 address.fullName = Full name
 address.buildingAndStreet = Building and street
 address.city = Town or city
@@ -176,9 +64,6 @@ address.error.required.street = Enter street
 address.error.required.townOrCity = Enter town or city
 address.error.required.postcode = Enter postcode
 address.error.required.country = Enter country
-
-pagination.prev = Prev
-pagination.next = Next
 
 simpleDeclaration.title = Simple declaration
 simpleDeclaration.heading = Simple declaration
@@ -220,6 +105,9 @@ cancellation.statementDescription.wrongFormat = Enter a description in the corre
 cancellation.confirmationPage.title = Cancellation confirmation page
 cancellation.confirmationPage.message = Cancellation request has been submitted
 cancellation.submitButton = Submit
+cancellation.error.title = There is a problem
+cancellation.error.heading = You can only request to cancel declarations submitted using this service
+cancellation.error.message = Please try again with correct data
 
 movement.EAL.confirmation = Arrival confirmation
 movement.EDL.confirmation = Departure confirmation

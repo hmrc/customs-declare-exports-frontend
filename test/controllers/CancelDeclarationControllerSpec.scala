@@ -18,13 +18,17 @@ package controllers
 
 import base.CustomExportsBaseSpec
 import base.TestHelper._
-import forms.CancelDeclaration
+import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
+class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   val uri = uriWithContextPath("/cancel-declaration")
+
+  before {
+    authorizedUser()
+  }
 
   val correctCancelJson: JsValue = JsObject(
     Map(
@@ -36,9 +40,6 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
 
   "CancelDeclarationController" should {
     "return 200 with a success" in {
-      authorizedUser()
-      withCaching[CancelDeclaration](None)
-
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
@@ -49,9 +50,6 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - empty json" in {
-      authorizedUser()
-      withCaching[CancelDeclaration](None)
-
       val emptyJson: JsValue = JsObject(
         Map(
           "functionalReferenceId" -> JsString(""),
@@ -70,9 +68,6 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - too long answers" in {
-      authorizedUser()
-      withCaching[CancelDeclaration](None)
-
       val wrongCancelJson: JsValue = JsObject(
         Map(
           "functionalReferenceId" -> JsString(createRandomString(36)),
@@ -91,9 +86,6 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - too short answers" in {
-      authorizedUser()
-      withCaching[CancelDeclaration](None)
-
       val wrongCancelJson: JsValue = JsObject(Map("functionalReferenceId" -> JsString(createRandomString(10))))
 
       val result = route(app, postRequest(uri, wrongCancelJson)).get
@@ -102,29 +94,44 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
       contentAsString(result) must include(messages("cancellation.functionalReferenceId.tooShort"))
     }
 
-    "redirect to error page when cancellation failed in customs declarations" in {
-      authorizedUser()
-      withCaching[CancelDeclaration](None)
-      customsDeclaration400Response()
+    "redirect to error page" when {
+      "cancellation failed in customs declarations" in {
+        customsDeclaration400Response()
 
-      val result = route(app, postRequest(uri, correctCancelJson)).get
-      val stringResult = contentAsString(result)
+        val result = route(app, postRequest(uri, correctCancelJson)).get
+        val stringResult = contentAsString(result)
 
-      status(result) must be(BAD_REQUEST)
-      stringResult must include("There is a problem with a service")
-      stringResult must include("Please try again later.")
+        status(result) must be(BAD_REQUEST)
+        stringResult must include(messages("global.error.heading"))
+        stringResult must include(messages("global.error.message"))
+      }
     }
 
-    "redirect to next page" in {
-      authorizedUser()
-      withCaching[CancelDeclaration](None)
-      successfulCustomsDeclarationResponse()
+    "redirect to not existing declaration error page" when {
+      "user try to cancel not existing declaration" in {
+        successfulCustomsDeclarationResponse()
+        successfulCancelDeclarationResponse(false)
 
-      val result = route(app, postRequest(uri, correctCancelJson)).get
-      val stringResult = contentAsString(result)
+        val result = route(app, postRequest(uri, correctCancelJson)).get
+        val stringResult = contentAsString(result)
 
-      status(result) must be(OK)
-      stringResult must include(messages("cancellation.confirmationPage.message"))
+        status(result) must be(BAD_REQUEST)
+        stringResult must include(messages("cancellation.error.heading"))
+        stringResult must include(messages("cancellation.error.message"))
+      }
+    }
+
+    "redirect to confirmation page" when {
+      "provided data is correct" in {
+        successfulCustomsDeclarationResponse()
+        successfulCancelDeclarationResponse(true)
+
+        val result = route(app, postRequest(uri, correctCancelJson)).get
+        val stringResult = contentAsString(result)
+
+        status(result) must be(OK)
+        stringResult must include(messages("cancellation.confirmationPage.message"))
+      }
     }
   }
 }

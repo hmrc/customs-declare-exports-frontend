@@ -35,8 +35,7 @@ class NotificationsController @Inject()(
     extends FrontendController with I18nSupport {
 
   def listOfNotifications(): Action[AnyContent] = authenticate.async { implicit request =>
-    val eori = request.user.eori
-    customsDeclareExportsConnector.fetchNotifications(eori).map { results =>
+    customsDeclareExportsConnector.fetchNotifications().map { results =>
       Ok(views.html.notifications(appConfig, results))
     }
   }

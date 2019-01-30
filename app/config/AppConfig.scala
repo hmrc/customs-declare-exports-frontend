@@ -88,6 +88,11 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
     )
   )
 
+  lazy val cancelDeclaration = getConfString(
+    "customs-declare-exports.cancel-declaration",
+    throw new IllegalStateException("Missing configuration for Customs Declaration Export cancel declaration URI")
+  )
+
   lazy val customsDeclarationsApiVersion = getConfString(
     "customs-declarations.api-version",
     throw new IllegalStateException("Missing configuration for Customs Declarations API version")
