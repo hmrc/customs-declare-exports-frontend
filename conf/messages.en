@@ -108,6 +108,8 @@ cancellation.submitButton = Submit
 cancellation.error.title = There is a problem
 cancellation.error.heading = You can only request to cancel declarations submitted using this service
 cancellation.error.message = Please try again with correct data
+cancellation.exists.error.heading = You have already requested the cancellation of this declaration
+cancellation.exists.error.message = Please try with different data
 
 movement.EAL.confirmation = Arrival confirmation
 movement.EDL.confirmation = Departure confirmation

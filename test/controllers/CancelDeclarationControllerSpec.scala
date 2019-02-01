@@ -18,6 +18,7 @@ package controllers
 
 import base.CustomExportsBaseSpec
 import base.TestHelper._
+import models.requests.{CancellationRequestExists, CancellationRequested, MissingDeclaration}
 import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
@@ -110,7 +111,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
     "redirect to not existing declaration error page" when {
       "user try to cancel not existing declaration" in {
         successfulCustomsDeclarationResponse()
-        successfulCancelDeclarationResponse(false)
+        successfulCancelDeclarationResponse(MissingDeclaration)
 
         val result = route(app, postRequest(uri, correctCancelJson)).get
         val stringResult = contentAsString(result)
@@ -121,10 +122,24 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
       }
     }
 
+    "redirect to cancellation request exists page" when {
+      "user try to cancel declaration once again" in {
+        successfulCustomsDeclarationResponse()
+        successfulCancelDeclarationResponse(CancellationRequestExists)
+
+        val result = route(app, postRequest(uri, correctCancelJson)).get
+        val stringResult = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+        stringResult must include(messages("cancellation.exists.error.heading"))
+        stringResult must include(messages("cancellation.exists.error.message"))
+      }
+    }
+
     "redirect to confirmation page" when {
       "provided data is correct" in {
         successfulCustomsDeclarationResponse()
-        successfulCancelDeclarationResponse(true)
+        successfulCancelDeclarationResponse(CancellationRequested)
 
         val result = route(app, postRequest(uri, correctCancelJson)).get
         val stringResult = contentAsString(result)

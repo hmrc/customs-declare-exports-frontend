@@ -18,6 +18,7 @@ package base
 
 import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
 import models._
+import models.requests.CancellationStatus
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -98,7 +99,7 @@ trait MockConnectors extends MockitoSugar {
     when(mockNrsConnector.submitNonRepudiation(any())(any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionId1")))
 
-  def successfulCancelDeclarationResponse(response: Boolean) =
+  def successfulCancelDeclarationResponse(status: CancellationStatus) =
     when(mockCustomsDeclareExportsConnector.cancelDeclaration(any())(any(), any()))
-      .thenReturn(Future.successful(response))
+      .thenReturn(Future.successful(status))
 }
