@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models._
-import models.requests.CancellationRequest
+import models.requests.{CancellationRequest, CancellationStatus}
 import play.api.Logger
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -80,8 +80,12 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
         response
     }
 
-  def cancelDeclaration(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
-    httpClient.POST[CancellationRequest, Boolean](s"${appConfig.customsDeclareExports}${appConfig.cancelDeclaration}", CancellationRequest(mrn))
+  def cancelDeclaration(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CancellationStatus] =
+    httpClient
+      .POST[CancellationRequest, CancellationStatus](
+        s"${appConfig.customsDeclareExports}${appConfig.cancelDeclaration}",
+        CancellationRequest(mrn)
+      )
       .map { response =>
         Logger.debug(s"CUSTOMS_DECLARE_EXPORTS cancel declaration response is --> ${response.toString}")
         response

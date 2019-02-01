@@ -16,10 +16,40 @@
 
 package models.requests
 
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 
 case class CancellationRequest(mrn: String)
 
 object CancellationRequest {
   implicit val format = Json.format[CancellationRequest]
+}
+
+sealed trait CancellationStatus
+
+case object CancellationRequestExists extends CancellationStatus
+
+case object CancellationRequested extends CancellationStatus
+
+case object MissingDeclaration extends CancellationStatus
+
+object CancellationStatus {
+
+  def unapply(status: CancellationStatus): Option[(String, JsValue)] = {
+    val (prod: Product, sub) = status match {
+      case CancellationRequestExists => (CancellationRequestExists, Json.toJson(CancellationRequestExists.toString))
+      case CancellationRequested => (CancellationRequested, Json.toJson(CancellationRequested.toString))
+      case MissingDeclaration => (MissingDeclaration, Json.toJson(MissingDeclaration.toString))
+    }
+    Some(prod.productPrefix -> sub)
+  }
+
+  def apply(`class`: String, data: JsValue): CancellationStatus = {
+    (`class` match {
+      case "CancellationRequestExists" => CancellationRequestExists
+      case "CancellationRequested" => CancellationRequested
+      case "MissingDeclaration" => MissingDeclaration
+    })
+  }
+
+  implicit val format = Json.format[CancellationStatus]
 }

@@ -26,6 +26,7 @@ import javax.inject.Inject
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
 import models.CustomsDeclarationsResponse
+import models.requests.{CancellationRequestExists, CancellationRequested, MissingDeclaration}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -65,14 +66,25 @@ class CancelDeclarationController @Inject()(
               exportsMetrics.incrementCounter(cancelMetric)
               customsDeclareExportsConnector.cancelDeclaration(form.declarationId).map { response =>
                 exportsMetrics.incrementCounter(cancelMetric)
-                if(response) Ok(cancellation_confirmation_page(appConfig))
-                else BadRequest(
-                  errorHandler.standardErrorTemplate(
-                    pageTitle = messagesApi("cancellation.error.title"),
-                    heading = messagesApi("cancellation.error.heading"),
-                    message = messagesApi("cancellation.error.message")
-                  )
-                )
+                response match {
+                  case CancellationRequested => Ok(cancellation_confirmation_page(appConfig))
+                  case CancellationRequestExists =>
+                    BadRequest(
+                      errorHandler.standardErrorTemplate(
+                        pageTitle = messagesApi("cancellation.error.title"),
+                        heading = messagesApi("cancellation.exists.error.heading"),
+                        message = messagesApi("cancellation.exists.error.message")
+                      )
+                    )
+                  case MissingDeclaration =>
+                    BadRequest(
+                      errorHandler.standardErrorTemplate(
+                        pageTitle = messagesApi("cancellation.error.title"),
+                        heading = messagesApi("cancellation.error.heading"),
+                        message = messagesApi("cancellation.error.message")
+                      )
+                    )
+                }
               }
             case error =>
               exportsMetrics.incrementCounter(cancelMetric)
