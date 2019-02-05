@@ -26,8 +26,9 @@ class DeclarationTypeSpec extends WordSpec with MustMatchers {
     "contain key from wco-dec domain" in {
       val dispatchLocation = DispatchLocation(OutsideEU)
       val additionalDeclarationType = AdditionalDeclarationType(Simplified)
+      val declarationType = DeclarationType(dispatchLocation, additionalDeclarationType)
 
-      val properties = DeclarationType.toMetadataProperties(dispatchLocation, additionalDeclarationType)
+      val properties = declarationType.toMetadataProperties()
 
       val expectedPropertiesKey = "declaration.typeCode"
       properties.keySet must contain(expectedPropertiesKey)
@@ -36,8 +37,9 @@ class DeclarationTypeSpec extends WordSpec with MustMatchers {
     "contain value from DeclarationType fields combined" in {
       val dispatchLocation = DispatchLocation(OutsideEU)
       val additionalDeclarationType = AdditionalDeclarationType(Simplified)
+      val declarationType = DeclarationType(dispatchLocation, additionalDeclarationType)
 
-      val properties = DeclarationType.toMetadataProperties(dispatchLocation, additionalDeclarationType)
+      val properties = declarationType.toMetadataProperties()
 
       val expectedPropertiesValue = OutsideEU + Simplified
       properties.values must contain(expectedPropertiesValue)
