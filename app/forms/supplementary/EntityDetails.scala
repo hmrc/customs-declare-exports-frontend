@@ -29,7 +29,8 @@ case class EntityDetails(
 object EntityDetails {
   implicit val format = Json.format[EntityDetails]
 
-  val mapping = Forms.mapping(
+  val mapping = Forms
+    .mapping(
       "eori" -> optional(
         text()
           .verifying("supplementary.eori.empty", nonEmpty)

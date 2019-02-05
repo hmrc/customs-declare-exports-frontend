@@ -68,26 +68,30 @@ object TransportInformationSpec {
     containerId = None
   )
 
-  val correctTransportInformationJSON: JsValue = JsObject(Map(
-    "inlandModeOfTransportCode" -> JsString(Road),
-    "borderModeOfTransportCode" -> JsString(Road),
-    "meansOfTransportOnDepartureType" -> JsString(NameOfVessel),
-    "meansOfTransportOnDepartureIDNumber" -> JsString("123ABC"),
-    "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel),
-    "meansOfTransportCrossingTheBorderIDNumber" -> JsString("QWERTY"),
-    "meansOfTransportCrossingTheBorderNationality" -> JsString("United Kingdom"),
-    "container" -> JsBoolean(true),
-    "containerId" -> JsString("ContainerID")
-  ))
-  val emptyTransportInformationJSON: JsValue = JsObject(Map(
-    "inlandModeOfTransportCode" -> JsString(""),
-    "borderModeOfTransportCode" -> JsString(""),
-    "meansOfTransportOnDepartureType" -> JsString(""),
-    "meansOfTransportOnDepartureIDNumber" -> JsString(""),
-    "meansOfTransportCrossingTheBorderType" -> JsString(""),
-    "meansOfTransportCrossingTheBorderIDNumber" -> JsString(""),
-    "meansOfTransportCrossingTheBorderNationality" -> JsString(""),
-    "container" -> JsBoolean(false),
-    "containerId" -> JsString("")
-  ))
+  val correctTransportInformationJSON: JsValue = JsObject(
+    Map(
+      "inlandModeOfTransportCode" -> JsString(Road),
+      "borderModeOfTransportCode" -> JsString(Road),
+      "meansOfTransportOnDepartureType" -> JsString(NameOfVessel),
+      "meansOfTransportOnDepartureIDNumber" -> JsString("123ABC"),
+      "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel),
+      "meansOfTransportCrossingTheBorderIDNumber" -> JsString("QWERTY"),
+      "meansOfTransportCrossingTheBorderNationality" -> JsString("United Kingdom"),
+      "container" -> JsBoolean(true),
+      "containerId" -> JsString("ContainerID")
+    )
+  )
+  val emptyTransportInformationJSON: JsValue = JsObject(
+    Map(
+      "inlandModeOfTransportCode" -> JsString(""),
+      "borderModeOfTransportCode" -> JsString(""),
+      "meansOfTransportOnDepartureType" -> JsString(""),
+      "meansOfTransportOnDepartureIDNumber" -> JsString(""),
+      "meansOfTransportCrossingTheBorderType" -> JsString(""),
+      "meansOfTransportCrossingTheBorderIDNumber" -> JsString(""),
+      "meansOfTransportCrossingTheBorderNationality" -> JsString(""),
+      "container" -> JsBoolean(false),
+      "containerId" -> JsString("")
+    )
+  )
 }

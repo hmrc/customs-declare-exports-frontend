@@ -50,7 +50,8 @@ class DocumentsProducedController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DocumentsProduced]) => Future.successful(BadRequest(documents_produced(appConfig, formWithErrors))),
+        (formWithErrors: Form[DocumentsProduced]) =>
+          Future.successful(BadRequest(documents_produced(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[DocumentsProduced](appConfig.appName, formId, form).map { _ =>
 //            Redirect(controllers.supplementary.routes.???.displayForm())

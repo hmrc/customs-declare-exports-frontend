@@ -44,7 +44,7 @@ import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.concurrent.Execution.Implicits
 import play.api.libs.json.JsValue
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson}
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson}
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
@@ -130,6 +130,22 @@ trait CustomExportsBaseSpec
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
       .withJsonBody(body)
+      .copyFakeRequest(tags = tags)
+  }
+
+  protected def postRequestFormUrlEncoded(
+    uri: String,
+    body: (String, String)*
+  ): FakeRequest[AnyContentAsFormUrlEncoded] = {
+    val session: Map[String, String] = Map(
+      SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
+      SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
+    )
+    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+    FakeRequest("POST", uri)
+      .withHeaders(Map(cfg.headerName -> token).toSeq: _*)
+      .withSession(session.toSeq: _*)
+      .withFormUrlEncodedBody(body: _*)
       .copyFakeRequest(tags = tags)
   }
 

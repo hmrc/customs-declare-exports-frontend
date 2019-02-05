@@ -94,7 +94,6 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
 
-
       val result = route(app, postRequest(uri, correctTotalNumberOfItemsIntegerValuesJSON)).get
       val header = result.futureValue.header
 

@@ -24,9 +24,8 @@ class SupervisingCustomsOfficeSpec extends WordSpec with MustMatchers {
   "Method toMetadataProperties" should {
     "return proper Metadata Properties" in {
       val supervisingCustomsOffice = correctSupervisingCustomsOffice
-      val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.supervisingOffice.id" -> supervisingCustomsOffice.office.get
-      )
+      val expectedMetadataProperties: Map[String, String] =
+        Map("declaration.supervisingOffice.id" -> supervisingCustomsOffice.office.get)
 
       supervisingCustomsOffice.toMetadataProperties() must equal(expectedMetadataProperties)
     }
@@ -41,5 +40,7 @@ object SupervisingCustomsOfficeSpec {
 
   val correctSupervisingCustomsOfficeJSON: JsValue = JsObject(Map("supervisingCustomsOffice" -> JsString("12345678")))
   val emptySupervisingCustomsOfficeJSON: JsValue = JsObject(Map("supervisingCustomsOffice" -> JsString("")))
-  val incorrectSupervisingCustomsOfficeJSON: JsValue = JsObject(Map("supervisingCustomsOffice" -> JsString("123456789")))
+  val incorrectSupervisingCustomsOfficeJSON: JsValue = JsObject(
+    Map("supervisingCustomsOffice" -> JsString("123456789"))
+  )
 }

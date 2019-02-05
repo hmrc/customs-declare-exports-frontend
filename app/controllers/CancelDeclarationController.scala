@@ -64,27 +64,28 @@ class CancelDeclarationController @Inject()(
           customsDeclarationsConnector.submitCancellation(metadata).flatMap {
             case CustomsDeclarationsResponse(ACCEPTED, Some(_)) =>
               exportsMetrics.incrementCounter(cancelMetric)
-              customsDeclareExportsConnector.cancelDeclaration(form.declarationId).map { response =>
-                exportsMetrics.incrementCounter(cancelMetric)
-                response match {
-                  case CancellationRequested => Ok(cancellation_confirmation_page(appConfig))
-                  case CancellationRequestExists =>
-                    BadRequest(
-                      errorHandler.standardErrorTemplate(
-                        pageTitle = messagesApi("cancellation.error.title"),
-                        heading = messagesApi("cancellation.exists.error.heading"),
-                        message = messagesApi("cancellation.exists.error.message")
+              customsDeclareExportsConnector.cancelDeclaration(form.declarationId).map {
+                response =>
+                  exportsMetrics.incrementCounter(cancelMetric)
+                  response match {
+                    case CancellationRequested => Ok(cancellation_confirmation_page(appConfig))
+                    case CancellationRequestExists =>
+                      BadRequest(
+                        errorHandler.standardErrorTemplate(
+                          pageTitle = messagesApi("cancellation.error.title"),
+                          heading = messagesApi("cancellation.exists.error.heading"),
+                          message = messagesApi("cancellation.exists.error.message")
+                        )
                       )
-                    )
-                  case MissingDeclaration =>
-                    BadRequest(
-                      errorHandler.standardErrorTemplate(
-                        pageTitle = messagesApi("cancellation.error.title"),
-                        heading = messagesApi("cancellation.error.heading"),
-                        message = messagesApi("cancellation.error.message")
+                    case MissingDeclaration =>
+                      BadRequest(
+                        errorHandler.standardErrorTemplate(
+                          pageTitle = messagesApi("cancellation.error.title"),
+                          heading = messagesApi("cancellation.error.heading"),
+                          message = messagesApi("cancellation.error.message")
+                        )
                       )
-                    )
-                }
+                  }
               }
             case error =>
               exportsMetrics.incrementCounter(cancelMetric)

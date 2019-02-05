@@ -37,19 +37,18 @@ object CancellationStatus {
   def unapply(status: CancellationStatus): Option[(String, JsValue)] = {
     val (prod: Product, sub) = status match {
       case CancellationRequestExists => (CancellationRequestExists, Json.toJson(CancellationRequestExists.toString))
-      case CancellationRequested => (CancellationRequested, Json.toJson(CancellationRequested.toString))
-      case MissingDeclaration => (MissingDeclaration, Json.toJson(MissingDeclaration.toString))
+      case CancellationRequested     => (CancellationRequested, Json.toJson(CancellationRequested.toString))
+      case MissingDeclaration        => (MissingDeclaration, Json.toJson(MissingDeclaration.toString))
     }
     Some(prod.productPrefix -> sub)
   }
 
-  def apply(`class`: String, data: JsValue): CancellationStatus = {
+  def apply(`class`: String, data: JsValue): CancellationStatus =
     (`class` match {
       case "CancellationRequestExists" => CancellationRequestExists
-      case "CancellationRequested" => CancellationRequested
-      case "MissingDeclaration" => MissingDeclaration
+      case "CancellationRequested"     => CancellationRequested
+      case "MissingDeclaration"        => MissingDeclaration
     })
-  }
 
   implicit val format = Json.format[CancellationStatus]
 }

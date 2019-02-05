@@ -60,4 +60,3 @@ object DeclarationAdditionalActors {
     val WarehouseKeeper = "WH"
   }
 }
-

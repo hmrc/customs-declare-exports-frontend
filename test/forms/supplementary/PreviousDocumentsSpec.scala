@@ -48,19 +48,14 @@ object PreviousDocumentsSpec {
     documentReference = "DocumentReference",
     goodsItemIdentifier = Some("123")
   )
-  val emptyPreviousDocuments = PreviousDocuments(
-    documentCategory = "",
-    documentType = "",
-    documentReference = "",
-    goodsItemIdentifier = None
-  )
+  val emptyPreviousDocuments =
+    PreviousDocuments(documentCategory = "", documentType = "", documentReference = "", goodsItemIdentifier = None)
   val incorrectPreviousDocuments = PreviousDocuments(
     documentCategory = "Incorrect category",
     documentType = "Incorrect type",
     documentReference = TestHelper.createRandomString(36),
     goodsItemIdentifier = Some("Incorrect identifier")
   )
-
 
   val correctPreviousDocumentsJSON: JsValue = JsObject(
     Map(

@@ -36,7 +36,8 @@ case class PackageInformation(
       "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[0].typeCode" -> typesOfPackages,
       "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[0].quantity" -> numberOfPackages,
       "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[0].marksNumbersId" -> shippingMarks,
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.tariffQuantity" -> supplementaryUnits.getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.tariffQuantity" -> supplementaryUnits
+        .getOrElse(""),
       "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.netWeightMeasure" -> netMass,
       "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.grossMassMeasure" -> grossMass
     )

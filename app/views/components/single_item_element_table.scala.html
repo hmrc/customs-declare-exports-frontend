@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms.supplementary
-import forms.MetadataPropertiesConvertable
-import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+@(
+    additionalProcedureCodes: Seq[String],
+    buttonMessage: String = "site.remove"
+)(implicit messages: Messages)
+@if(additionalProcedureCodes.nonEmpty) {
 
-case class ConsigneeDetails(details: EntityDetails) extends MetadataPropertiesConvertable {
+    <div class="field-group">
+        <table >
+        @for(code <- additionalProcedureCodes) {
+            <tr>
+                <th>@code</th>
+                <th>
+                    <button name="action" class="button" value="@messages(buttonMessage):@code">Remove</button>
+                </th>
 
-  override def toMetadataProperties(): Map[String, String] = ???
-
-}
-
-object ConsigneeDetails {
-  implicit val format = Json.format[ConsigneeDetails]
-
-  val id = "ConsigneeDetails"
-
-  val mapping = Forms.mapping("details" -> EntityDetails.mapping)(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
-
-  def form(): Form[ConsigneeDetails] = Form(mapping)
+            </tr>
+        }
+        </table>
+        <br><br>
+    </div>
 }

@@ -16,6 +16,4 @@
 
 package forms.supplementary
 
-class SupplementaryDeclarationData {
-
-}
+class SupplementaryDeclarationData {}
