@@ -17,45 +17,41 @@
 package forms.supplementary
 
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.libs.json.{JsObject, JsValue}
 
 class DeclarantDetailsSpec extends WordSpec with MustMatchers {
+  import DeclarantDetailsSpec._
 
-  private val eori = "PL213472539481923"
-  private val fullName = "Full Name"
-  private val addressLine = "Address Line"
-  private val townOrCity = "Town or City"
-  private val postCode = "AB12 3CD"
-  private val country = "United Kingdom"
-  private val countryCode = "GB"
-
-  private val declarantDetails = DeclarantDetails(
-    details = EntityDetails(
-      eori = Some(eori),
-      address = Some(
-        Address(
-          fullName = fullName,
-          addressLine = addressLine,
-          townOrCity = townOrCity,
-          postCode = postCode,
-          country = country
-        )
+  "Method toMetadataProperties" should {
+    "return proper Metadata Properties" in {
+      val declarantDetails = correctDeclarantDetails
+      val countryCode = "PL"
+      val expectedDeclarantDetailsProperties: Map[String, String] = Map(
+        "declaration.declarant.id" -> declarantDetails.details.eori.get,
+        "declaration.declarant.name" -> declarantDetails.details.address.get.fullName,
+        "declaration.declarant.address.line" -> declarantDetails.details.address.get.addressLine,
+        "declaration.declarant.address.cityName" -> declarantDetails.details.address.get.townOrCity,
+        "declaration.declarant.address.postcodeId" -> declarantDetails.details.address.get.postCode,
+        "declaration.declarant.address.countryCode" -> countryCode
       )
-    )
-  )
 
-  private val expectedDeclarantDetailsProperties: Map[String, String] = Map(
-    "declaration.declarant.id" -> eori,
-    "declaration.declarant.name" -> fullName,
-    "declaration.declarant.address.line" -> addressLine,
-    "declaration.declarant.address.cityName" -> townOrCity,
-    "declaration.declarant.address.postcodeId" -> postCode,
-    "declaration.declarant.address.countryCode" -> countryCode
-  )
-
-  "DeclarantDetails on toMetadataProperties" should {
-    "convert itself to declarant details properties" in {
       declarantDetails.toMetadataProperties() must equal(expectedDeclarantDetailsProperties)
     }
   }
+
+}
+
+object DeclarantDetailsSpec {
+  import forms.supplementary.EntityDetailsSpec._
+
+  val correctDeclarantDetails = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetails)
+  val correctDeclarantDetailsEORIOnly = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
+  val correctDeclarantDetailsAddressOnly = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly)
+  val emptyDeclarantDetails = DeclarantDetails(details = EntityDetailsSpec.emptyEntityDetails)
+
+  val correctDeclarantDetailsJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON))
+  val correctDeclarantDetailsEORIOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsEORIOnlyJSON))
+  val correctDeclarantDetailsAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))
+  val emptyDeclarantDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 
 }

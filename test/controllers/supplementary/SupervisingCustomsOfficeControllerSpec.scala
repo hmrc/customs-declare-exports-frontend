@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import forms.supplementary.SupervisingCustomsOffice
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import forms.supplementary.SupervisingCustomsOfficeSpec._
 import play.api.test.Helpers._
 
 class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
@@ -43,8 +43,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
 
-      val incorrectSupervisingOffice: JsValue = JsObject(Map("supervisingCustomsOffice" -> JsString("123456789")))
-      val result = route(app, postRequest(uri, incorrectSupervisingOffice)).get
+      val result = route(app, postRequest(uri, incorrectSupervisingCustomsOfficeJSON)).get
 
       contentAsString(result) must include(messages("supplementary.supervisingCustomsOffice.error"))
     }
@@ -53,8 +52,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
 
-      val emptySupervisingOffice: JsValue = JsObject(Map("supervisingCustomsOffice" -> JsString("")))
-      val result = route(app, postRequest(uri, emptySupervisingOffice)).get
+      val result = route(app, postRequest(uri, emptySupervisingCustomsOfficeJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -65,8 +63,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
 
-      val correctSupervisingOffice: JsValue = JsObject(Map("supervisingCustomsOffice" -> JsString("12345678")))
-      val result = route(app, postRequest(uri, correctSupervisingOffice)).get
+      val result = route(app, postRequest(uri, correctSupervisingCustomsOfficeJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

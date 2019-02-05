@@ -19,6 +19,7 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
 import forms.supplementary.ExporterDetails
+import forms.supplementary.ExporterDetailsSpec._
 import play.api.test.Helpers._
 
 class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec {
@@ -63,7 +64,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[ExporterDetails](None)
 
-      val result = route(app, postRequest(uri, entityDetailsEORIOnly)).get
+      val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -76,7 +77,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[ExporterDetails](None)
 
-      val result = route(app, postRequest(uri, entityDetailsAddressOnly)).get
+      val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -89,7 +90,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[ExporterDetails](None)
 
-      val result = route(app, postRequest(uri, entityDetailsAllValues)).get
+      val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

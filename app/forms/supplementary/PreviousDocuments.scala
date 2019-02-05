@@ -31,10 +31,10 @@ case class PreviousDocuments(
 
   override def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.goodsShipment.previousDocument.categoryCode" -> documentCategory,
-      "declaration.goodsShipment.previousDocument.typeCode" -> documentType,
-      "declaration.goodsShipment.previousDocument.ID" -> documentReference,
-      "declaration.goodsShipment.previousDocument.lineNumeric" -> goodsItemIdentifier.getOrElse("")
+      "declaration.goodsShipment.previousDocuments[0].categoryCode" -> documentCategory,
+      "declaration.goodsShipment.previousDocuments[0].typeCode" -> documentType,
+      "declaration.goodsShipment.previousDocuments[0].id" -> documentReference,
+      "declaration.goodsShipment.previousDocuments[0].lineNumeric" -> goodsItemIdentifier.getOrElse("")
     )
 }
 

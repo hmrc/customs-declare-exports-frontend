@@ -15,10 +15,12 @@
  */
 
 package controllers.supplementary
+
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.supplementary.TransportInformation
 import forms.supplementary.TransportInformation.MeansOfTransportTypeCodes.NameOfVessel
 import forms.supplementary.TransportInformation.ModeOfTransportCodes.Road
+import forms.supplementary.TransportInformationSpec._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
@@ -177,26 +179,19 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
     "save the data to the cache" in {
       reset(mockCustomsCacheService)
       withCaching[TransportInformation](None, TransportInformation.id)
-      val form =
-        buildTransportInformationForm(Road, Road, NameOfVessel, "123ABC", NameOfVessel, "QWERTY", "United Kingdom")
-      route(app, postRequest(uri, form)).get.futureValue
+      route(app, postRequest(uri, correctTransportInformationJSON)).get.futureValue
 
       verify(mockCustomsCacheService)
         .cache[TransportInformation](any(), ArgumentMatchers.eq(TransportInformation.id), any())(any(), any(), any())
     }
 
     "return 303 code" in {
-      val form =
-        buildTransportInformationForm(Road, Road, NameOfVessel, "123ABC", NameOfVessel, "QWERTY", "United Kingdom")
-      val result = route(app, postRequest(uri, form)).get
-
+      val result = route(app, postRequest(uri, correctTransportInformationJSON)).get
       status(result) must be(SEE_OTHER)
     }
 
     "redirect to \"Total number of items\" page" in {
-      val form =
-        buildTransportInformationForm(Road, Road, NameOfVessel, "123ABC", NameOfVessel, "QWERTY", "United Kingdom")
-      val result = route(app, postRequest(uri, form)).get
+      val result = route(app, postRequest(uri, correctTransportInformationJSON)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(

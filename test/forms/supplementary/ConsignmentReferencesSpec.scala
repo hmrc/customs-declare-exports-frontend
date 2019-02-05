@@ -18,22 +18,39 @@ package forms.supplementary
 
 import forms.Ducr
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class ConsignmentReferencesSpec extends WordSpec with MustMatchers {
-
-  private val ducr = "8GB123456123456-1234567890QWERTYUIO"
-  private val lrn = "1234567890123456789012"
-
-  private val consignmentReferences =
-    ConsignmentReferences(ducr = Some(Ducr(ducr)), lrn = lrn)
-
-  private val expectedConsignmentReferencesProperties: Map[String, String] =
-    Map("declaration.goodsShipment.ucr.traderAssignedReferenceId" -> ducr, "declaration.functionalReferenceId" -> lrn)
+  import ConsignmentReferencesSpec._
 
   "ConsignmentReferences" should {
     "convert itself to consignment references properties" in {
+      val consignmentReferences = correctConsignmentReferences
+      val expectedConsignmentReferencesProperties: Map[String, String] =
+        Map(
+          "declaration.goodsShipment.ucr.traderAssignedReferenceId" -> consignmentReferences.ducr.get.ducr,
+          "declaration.functionalReferenceId" -> consignmentReferences.lrn
+        )
+
       consignmentReferences.toMetadataProperties() must equal(expectedConsignmentReferencesProperties)
     }
   }
+
+}
+
+object ConsignmentReferencesSpec {
+  val exemplaryDucr = "8GB123456789012-1234567890QWERTYUIO"
+
+  val correctConsignmentReferences = ConsignmentReferences(ducr = Some(Ducr(ducr = exemplaryDucr)), lrn = "123ABC")
+  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = None, lrn = "123ABC")
+  val emptyConsignmentReferences = ConsignmentReferences(ducr = None, lrn = "")
+
+  val correctConsignmentReferencesJSON: JsValue = JsObject(
+    Map("ducr.ducr" -> JsString(exemplaryDucr), "lrn" -> JsString("123ABC"))
+  )
+  val correctConsignmentReferencesNoDucrJSON: JsValue = JsObject(
+    Map("ducr.ducr" -> JsString(""), "lrn" -> JsString("123ABC"))
+  )
+  val emptyConsignmentReferencesJSON: JsValue = JsObject(Map("ducr.ducr" -> JsString(""), "lrn" -> JsString("")))
 
 }

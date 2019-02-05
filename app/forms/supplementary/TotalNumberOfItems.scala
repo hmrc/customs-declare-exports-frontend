@@ -33,7 +33,7 @@ case class TotalNumberOfItems(
     Map(
       "declaration.goodsItemQuantity" -> itemsNo,
       "declaration.invoiceAmount" -> totalAmountInvoiced.getOrElse(""),
-      "declaration.currencyExchange.rateNumeric" -> exchangeRate.getOrElse(""),
+      "declaration.currencyExchanges[0].rateNumeric" -> exchangeRate.getOrElse(""),
       "declaration.totalPackageQuantity" -> totalPackage
     )
 }

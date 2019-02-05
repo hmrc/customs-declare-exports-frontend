@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
+package controllers.supplementary
+
 import base.CustomExportsBaseSpec
-import forms.supplementary.GoodItemNumber
+import forms.supplementary.GoodsItemNumber
+import forms.supplementary.GoodsItemNumberSpec._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class GoodItemNumberControllerSpec extends CustomExportsBaseSpec {
+class GoodsItemNumberControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/declaration/supplementary/good-item-number")
 
   "Good item number controller" should {
     "display good item number declaration form" in {
       authorizedUser()
-      withCaching[GoodItemNumber](None)
+      withCaching[GoodsItemNumber](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -40,7 +43,7 @@ class GoodItemNumberControllerSpec extends CustomExportsBaseSpec {
 
   "validate form - too many characters" in {
     authorizedUser()
-    withCaching[GoodItemNumber](None)
+    withCaching[GoodsItemNumber](None)
 
     val incorrectGoodItemNumber: JsValue =
       JsObject(Map("goodItemNumber" -> JsString("4563")))
@@ -50,9 +53,9 @@ class GoodItemNumberControllerSpec extends CustomExportsBaseSpec {
     stringResult must include(messages("supplementary.goodItemNumber.error"))
   }
 
-  "validate form - can not contain zeros" in {
+  "validate form - cannot contain zeros" in {
     authorizedUser()
-    withCaching[GoodItemNumber](None)
+    withCaching[GoodsItemNumber](None)
 
     val incorrectGoodItemNumber: JsValue =
       JsObject(Map("goodItemNumber" -> JsString("0.00")))
@@ -64,7 +67,7 @@ class GoodItemNumberControllerSpec extends CustomExportsBaseSpec {
 
   "validate form - contains alphabetic" in {
     authorizedUser()
-    withCaching[GoodItemNumber](None)
+    withCaching[GoodsItemNumber](None)
 
     val alphabeticGoodItemNumber: JsValue =
       JsObject(Map("goodItemNumber" -> JsString("RGB")))
@@ -76,11 +79,9 @@ class GoodItemNumberControllerSpec extends CustomExportsBaseSpec {
 
   "validate form - correct answer" in {
     authorizedUser()
-    withCaching[GoodItemNumber](None)
+    withCaching[GoodsItemNumber](None)
 
-    val correctGoodItemNumber: JsValue =
-      JsObject(Map("goodItemNumber" -> JsString("123")))
-    val result = route(app, postRequest(uri, correctGoodItemNumber)).get
+    val result = route(app, postRequest(uri, correctGoodsItemNumberJSON)).get
     val header = result.futureValue.header
 
     status(result) must be(SEE_OTHER)

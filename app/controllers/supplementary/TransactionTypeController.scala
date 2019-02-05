@@ -20,11 +20,11 @@ import config.AppConfig
 import controllers.actions.AuthAction
 import forms.supplementary.TransactionType
 import forms.supplementary.TransactionType.{form, formId}
-import services.CustomsCacheService
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.supplementary.transaction_type
 
@@ -52,7 +52,7 @@ class TransactionTypeController @Inject()(
           Future.successful(BadRequest(transaction_type(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[TransactionType](appConfig.appName, formId, form).map { _ =>
-            Redirect(controllers.supplementary.routes.GoodItemNumberController.displayForm())
+            Redirect(controllers.supplementary.routes.GoodsItemNumberController.displayForm())
         }
       )
   }

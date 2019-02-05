@@ -15,45 +15,79 @@
  */
 
 package forms.supplementary
+import forms.supplementary.TransportInformation.MeansOfTransportTypeCodes.NameOfVessel
+import forms.supplementary.TransportInformation.ModeOfTransportCodes.Road
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.libs.json.{JsBoolean, JsObject, JsString, JsValue}
 
 class TransportInformationSpec extends WordSpec with MustMatchers {
+  import TransportInformationSpec._
 
-  private val inlandModeOfTransportCode = Some("1")
-  private val borderModeOfTransportCode = "2"
-  private val meansOfTransportOnDepartureType = "10"
-  private val meansOfTransportOnDepartureIDNumber = Some("QWERTY1234567890")
-  private val meansOfTransportCrossingTheBorderType = "20"
-  private val meansOfTransportCrossingTheBorderIDNumber = Some("ABCDEFGHIJK1234567890")
-  private val meansOfTransportCrossingTheBorderNationality = Some("United Kingdom")
-  private val meansOfTransportCrossingTheBorderNationalityCode = Some("GB")
-  private val container = true
-  private val containerId = Some("1234")
+  "Method toMetadataProperties" should {
+    "return proper Metadata Properties" in {
+      val transportInformation = correctTransportInformation
+      val expectedTransportInformationProperties: Map[String, String] = Map(
+        "declaration.goodsShipment.consignment.arrivalTransportMeans.modeCode" -> transportInformation.inlandModeOfTransportCode.get,
+        "declaration.borderTransportMeans.modeCode" -> transportInformation.borderModeOfTransportCode,
+        "declaration.goodsShipment.consignment.departureTransportMeans.identificationTypeCode" -> transportInformation.meansOfTransportOnDepartureType,
+        "declaration.goodsShipment.consignment.departureTransportMeans.id" -> transportInformation.meansOfTransportOnDepartureIDNumber.get,
+        "declaration.borderTransportMeans.identificationTypeCode" -> transportInformation.meansOfTransportCrossingTheBorderType,
+        "declaration.borderTransportMeans.id" -> transportInformation.meansOfTransportCrossingTheBorderIDNumber.get,
+        "declaration.borderTransportMeans.registrationNationalityCode" -> "GB",
+        "declaration.goodsShipment.consignment.containerCode" -> transportInformation.container.toString,
+        "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.transportEquipment.id" -> transportInformation.containerId.get
+      )
 
-  private val transportInformation = TransportInformation(
-    inlandModeOfTransportCode = inlandModeOfTransportCode,
-    borderModeOfTransportCode = borderModeOfTransportCode,
-    meansOfTransportOnDepartureType = meansOfTransportOnDepartureType,
-    meansOfTransportOnDepartureIDNumber = meansOfTransportOnDepartureIDNumber,
-    meansOfTransportCrossingTheBorderType = meansOfTransportCrossingTheBorderType,
-    meansOfTransportCrossingTheBorderIDNumber = meansOfTransportCrossingTheBorderIDNumber,
-    meansOfTransportCrossingTheBorderNationality = meansOfTransportCrossingTheBorderNationality,
-    container = container,
-    containerId = containerId
-  )
-
-  private val expectedTransportInformationProperties: Map[String, String] = Map(
-    "declaration.goodsShipment.consignment.arrivalTransportMeans.modeCode" -> inlandModeOfTransportCode.get,
-    "declaration.borderTransportMeans.modeCode" -> borderModeOfTransportCode,
-    "declaration.borderTransportMeans.registrationNationalityCode" -> meansOfTransportCrossingTheBorderNationalityCode.get,
-    "declaration.goodsShipment.consignment.containerCode" -> container.toString,
-    "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.transportEquipment.id" -> containerId.get
-  )
-
-  "TransportInformation" should {
-    "convert itself into transport information properties" in {
       transportInformation.toMetadataProperties() must equal(expectedTransportInformationProperties)
     }
   }
 
+}
+
+object TransportInformationSpec {
+  val correctTransportInformation = TransportInformation(
+    inlandModeOfTransportCode = Some(Road),
+    borderModeOfTransportCode = Road,
+    meansOfTransportOnDepartureType = NameOfVessel,
+    meansOfTransportOnDepartureIDNumber = Some("123ABC"),
+    meansOfTransportCrossingTheBorderType = NameOfVessel,
+    meansOfTransportCrossingTheBorderIDNumber = Some("QWERTY"),
+    meansOfTransportCrossingTheBorderNationality = Some("United Kingdom"),
+    container = true,
+    containerId = Some("ContainerID")
+  )
+  val emptyTransportInformation = TransportInformation(
+    inlandModeOfTransportCode = None,
+    borderModeOfTransportCode = "",
+    meansOfTransportOnDepartureType = "",
+    meansOfTransportOnDepartureIDNumber = None,
+    meansOfTransportCrossingTheBorderType = "",
+    meansOfTransportCrossingTheBorderIDNumber = None,
+    meansOfTransportCrossingTheBorderNationality = None,
+    container = false,
+    containerId = None
+  )
+
+  val correctTransportInformationJSON: JsValue = JsObject(Map(
+    "inlandModeOfTransportCode" -> JsString(Road),
+    "borderModeOfTransportCode" -> JsString(Road),
+    "meansOfTransportOnDepartureType" -> JsString(NameOfVessel),
+    "meansOfTransportOnDepartureIDNumber" -> JsString("123ABC"),
+    "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel),
+    "meansOfTransportCrossingTheBorderIDNumber" -> JsString("QWERTY"),
+    "meansOfTransportCrossingTheBorderNationality" -> JsString("United Kingdom"),
+    "container" -> JsBoolean(true),
+    "containerId" -> JsString("ContainerID")
+  ))
+  val emptyTransportInformationJSON: JsValue = JsObject(Map(
+    "inlandModeOfTransportCode" -> JsString(""),
+    "borderModeOfTransportCode" -> JsString(""),
+    "meansOfTransportOnDepartureType" -> JsString(""),
+    "meansOfTransportOnDepartureIDNumber" -> JsString(""),
+    "meansOfTransportCrossingTheBorderType" -> JsString(""),
+    "meansOfTransportCrossingTheBorderIDNumber" -> JsString(""),
+    "meansOfTransportCrossingTheBorderNationality" -> JsString(""),
+    "container" -> JsBoolean(false),
+    "containerId" -> JsString("")
+  ))
 }

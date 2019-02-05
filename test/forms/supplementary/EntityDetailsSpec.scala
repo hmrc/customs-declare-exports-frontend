@@ -17,6 +17,7 @@
 package forms.supplementary
 
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class EntityDetailsSpec extends WordSpec with MustMatchers {
   import EntityDetailsSpec._
@@ -25,7 +26,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
     "contain errors for entity details only" when {
       "both EORI and Address are empty" in {
-        val input = buildNamedEntityInputMap()
+        val input = buildEntityInputMap()
 
         val form = EntityDetails.form().bind(input)
 
@@ -40,7 +41,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
     "contain errors for EORI only" when {
       "Address is empty & EORI is longer than 17 characters" in {
         val eori = "123456789012345678"
-        val input = buildNamedEntityInputMap(eori = eori)
+        val input = buildEntityInputMap(eori = eori)
 
         val form = EntityDetails.form().bind(input)
 
@@ -52,7 +53,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
       "Address is empty & EORI contains special characters" in {
         val eori = "12!@#$"
-        val input = buildNamedEntityInputMap(eori = eori)
+        val input = buildEntityInputMap(eori = eori)
 
         val form = EntityDetails.form().bind(input)
 
@@ -71,7 +72,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
           postCode = "AB12 CD3",
           country = "United Kingdom"
         )
-        val input = buildNamedEntityInputMap(eori, address)
+        val input = buildEntityInputMap(eori, address)
 
         val form = EntityDetails.form().bind(input)
 
@@ -91,7 +92,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
           postCode = "AB12 CD3",
           country = "United Kingdom"
         )
-        val input = buildNamedEntityInputMap(address = address)
+        val input = buildEntityInputMap(address = address)
 
         val form = EntityDetails.form().bind(input)
 
@@ -110,7 +111,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
           postCode = "AB12 CD34 1235 1346",
           country = "Any Country you can imagine"
         )
-        val input = buildNamedEntityInputMap(address = address)
+        val input = buildEntityInputMap(address = address)
 
         val form = EntityDetails.form().bind(input)
 
@@ -133,7 +134,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
           postCode = "AB12 CD34 1235 1346",
           country = "Any Country you can imagine"
         )
-        val input = buildNamedEntityInputMap(eori, address)
+        val input = buildEntityInputMap(eori, address)
 
         val form = EntityDetails.form().bind(input)
 
@@ -158,7 +159,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
           postCode = "AB12 CD34 1235 1346",
           country = "Any Country you can imagine"
         )
-        val input = buildNamedEntityInputMap(eori, address)
+        val input = buildEntityInputMap(eori, address)
 
         val form = EntityDetails.form().bind(input)
 
@@ -180,54 +181,38 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
     "contain all the data with no errors" when {
       "EORI is correct & Address is empty" in {
-        val eori = "9GB1234567ABCDEF"
-        val input = buildNamedEntityInputMap(eori)
+        val input = buildEntityInputMap(correctEntityDetails)
 
         val form = EntityDetails.form().bind(input)
 
         form.errors must be(empty)
         form.value must be(defined)
         form.value.get.eori must be(defined)
-        form.value.get.eori.get must equal(eori)
+        form.value.get.eori.get must equal(correctEntityDetails.eori.get)
       }
 
       "EORI is empty & Address is correct" in {
-        val address = Address(
-          fullName = "Full Name",
-          addressLine = "Address Line",
-          townOrCity = "City",
-          postCode = "AB12 CD3",
-          country = "United Kingdom"
-        )
-        val input = buildNamedEntityInputMap(address = address)
+        val input = buildEntityInputMap(correctEntityDetails)
 
         val form = EntityDetails.form().bind(input)
 
         form.errors must be(empty)
         form.value must be(defined)
         form.value.get.address must be(defined)
-        form.value.get.address.get must equal(address)
+        form.value.get.address.get must equal(correctEntityDetails.address.get)
       }
 
       "Both EORI & Address are correct" in {
-        val eori = "9GB1234567ABCDEF"
-        val address = Address(
-          fullName = "Full Name",
-          addressLine = "Address Line",
-          townOrCity = "City",
-          postCode = "AB12 CD3",
-          country = "United Kingdom"
-        )
-        val input = buildNamedEntityInputMap(eori, address)
+        val input = buildEntityInputMap(correctEntityDetails)
 
         val form = EntityDetails.form().bind(input)
 
         form.errors must be(empty)
         form.value must be(defined)
         form.value.get.eori must be(defined)
-        form.value.get.eori.get must equal(eori)
+        form.value.get.eori.get must equal(correctEntityDetails.eori.get)
         form.value.get.address must be(defined)
-        form.value.get.address.get must equal(address)
+        form.value.get.address.get must equal(correctEntityDetails.address.get)
       }
     }
   }
@@ -236,8 +221,43 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
 
 object EntityDetailsSpec {
+  val correctEntityDetails = EntityDetails(
+    eori = Some("9GB1234567ABCDEF"),
+    address = Some(AddressSpec.correctAddress)
+  )
+  val correctEntityDetailsEORIOnly = EntityDetails(
+    eori = Some("9GB1234567ABCDEF"),
+    address = None
+  )
+  val correctEntityDetailsAddressOnly = EntityDetails(
+    eori = None,
+    address = Some(AddressSpec.correctAddress)
+  )
+  val emptyEntityDetails = EntityDetails(None, None)
 
-  def buildNamedEntityInputMap(
+  val correctEntityDetailsJSON: JsValue = JsObject(Map(
+    "eori" -> JsString("9GB1234567ABCDEF"),
+    "address" -> AddressSpec.correctAddressJSON
+  ))
+  val correctEntityDetailsEORIOnlyJSON: JsValue = JsObject(Map(
+    "eori" -> JsString("9GB1234567ABCDEF"),
+    "address" -> JsString("")
+  ))
+  val correctEntityDetailsAddressOnlyJSON: JsValue = JsObject(Map(
+    "eori" -> JsString(""),
+    "address" -> AddressSpec.correctAddressJSON
+  ))
+  val emptyEntityDetailsJSON: JsValue = JsObject(Map(
+    "eori" -> JsString(""),
+    "address" -> JsString("")
+  ))
+
+  def buildEntityInputMap(entityDetails: EntityDetails): Map[String, String] = buildEntityInputMap(
+    eori = entityDetails.eori.getOrElse(""),
+    address = entityDetails.address.getOrElse(buildAddress())
+  )
+
+  def buildEntityInputMap(
     eori: String = "",
     address: Address = buildAddress()
   ): Map[String, String] = Map(

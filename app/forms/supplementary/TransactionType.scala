@@ -25,7 +25,7 @@ import utils.validators.FormFieldValidator._
 case class TransactionType(documentTypeCode: String, identifier: Option[String]) extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
-    Map("declaration.goodsShipment.transactionNatureCode" -> (documentTypeCode + identifier))
+    Map("declaration.goodsShipment.transactionNatureCode" -> (documentTypeCode + identifier.getOrElse("")))
 }
 
 object TransactionType {

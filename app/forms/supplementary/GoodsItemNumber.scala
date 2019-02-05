@@ -22,22 +22,22 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
-case class GoodItemNumber(goodItemNumber: String) extends MetadataPropertiesConvertable {
+case class GoodsItemNumber(goodItemNumber: String) extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] = Map(
     "declaration.goodsShipment.governmentAgencyGoodsItems[0].sequenceNumeric" -> goodItemNumber
   )
 }
 
-object GoodItemNumber {
-  implicit val format = Json.format[GoodItemNumber]
+object GoodsItemNumber {
+  implicit val format = Json.format[GoodsItemNumber]
 
   val formId = "GoodItemNumber"
 
   val mapping = Forms.mapping(
     "goodItemNumber" -> text()
       .verifying("supplementary.goodItemNumber.error", noLongerThan(3) and containsNotOnlyZeros and isNumeric)
-  )(GoodItemNumber.apply)(GoodItemNumber.unapply)
+  )(GoodsItemNumber.apply)(GoodsItemNumber.unapply)
 
-  def form(): Form[GoodItemNumber] = Form(mapping)
+  def form(): Form[GoodsItemNumber] = Form(mapping)
 }

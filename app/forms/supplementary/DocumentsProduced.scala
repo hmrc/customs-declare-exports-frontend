@@ -22,7 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
-case class Document(
+case class DocumentsProduced(
   documentTypeCode: Option[String],
   documentIdentifier: Option[String],
   documentPart: Option[String],
@@ -45,8 +45,8 @@ case class Document(
     )
 }
 
-object Document {
-  implicit val format = Json.format[Document]
+object DocumentsProduced {
+  implicit val format = Json.format[DocumentsProduced]
 
   val formId = "Document"
 
@@ -66,7 +66,7 @@ object Document {
     "documentStatusReason" -> optional(
       text().verifying("supplementary.addDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumeric)
     )
-  )(Document.apply)(Document.unapply)
+  )(DocumentsProduced.apply)(DocumentsProduced.unapply)
 
-  def form(): Form[Document] = Form(mapping)
+  def form(): Form[DocumentsProduced] = Form(mapping)
 }

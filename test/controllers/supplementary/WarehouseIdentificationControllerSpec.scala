@@ -15,8 +15,10 @@
  */
 
 package controllers.supplementary
+
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.supplementary.WarehouseIdentification
+import forms.supplementary.WarehouseIdentificationSpec._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
@@ -62,13 +64,23 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
     stringResult must include(messages("supplementary.warehouse.identificationNumber.error"))
   }
 
+  "validate form - first letter is not capital" in {
+    authorizedUser()
+    withCaching[WarehouseIdentification](None)
+
+    val incorrectWarehouseIdentification: JsValue =
+      JsObject(Map("identificationNumber" -> JsString("r1234567GB")))
+    val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
+    val stringResult = contentAsString(result)
+
+    stringResult must include(messages("supplementary.warehouse.identificationNumber.error"))
+  }
+
   "validate form - no answers" in {
     authorizedUser()
     withCaching[WarehouseIdentification](None)
 
-    val emptyWarehouseIdentification: JsValue =
-      JsObject(Map("identificationNumber" -> JsString("")))
-    val result = route(app, postRequest(uri, emptyWarehouseIdentification)).get
+    val result = route(app, postRequest(uri, emptyWarehouseIdentificationJSON)).get
     val header = result.futureValue.header
 
     status(result) must be(SEE_OTHER)
@@ -80,26 +92,12 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
     authorizedUser()
     withCaching[WarehouseIdentification](None)
 
-    val correctWarehouseIdentification: JsValue =
-      JsObject(Map("identificationNumber" -> JsString("R1234567GB")))
-    val result = route(app, postRequest(uri, correctWarehouseIdentification)).get
+    val result = route(app, postRequest(uri, correctWarehouseIdentificationJSON)).get
     val header = result.futureValue.header
 
     status(result) must be(SEE_OTHER)
 
     header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/office-of-exit"))
-  }
-
-  "validate form - first letter is not capital" in {
-    authorizedUser()
-    withCaching[WarehouseIdentification](None)
-
-    val incorrectWarehouseIdentification: JsValue =
-      JsObject(Map("identificationNumber" -> JsString("r1234567GB")))
-    val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
-    val stringResult = contentAsString(result)
-
-    stringResult must include(messages("supplementary.warehouse.identificationNumber.error"))
   }
 
 }

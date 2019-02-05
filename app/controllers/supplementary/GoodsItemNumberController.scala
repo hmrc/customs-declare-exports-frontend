@@ -18,43 +18,43 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.Document
+import forms.supplementary.GoodsItemNumber
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.add_document
+import views.html.supplementary.good_item_number
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddDocumentController @Inject()(
+class GoodsItemNumberController @Inject()(
   appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
+  val messagesApi: MessagesApi,
   authenticate: AuthAction,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  import forms.supplementary.Document._
+  import forms.supplementary.GoodsItemNumber._
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Document](appConfig.appName, formId).map {
-      case Some(data) => Ok(add_document(appConfig, form.fill(data)))
-      case _          => Ok(add_document(appConfig, form))
+    customsCacheService.fetchAndGetEntry[GoodsItemNumber](appConfig.appName, formId).map {
+      case Some(data) => Ok(good_item_number(appConfig, form.fill(data)))
+      case _          => Ok(good_item_number(appConfig, form))
     }
   }
 
-  def saveForm(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submit(): Action[AnyContent] = authenticate.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Document]) => Future.successful(BadRequest(add_document(appConfig, formWithErrors))),
+        (formWithErrors: Form[GoodsItemNumber]) =>
+          Future.successful(BadRequest(good_item_number(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[Document](appConfig.appName, formId, form).map { _ =>
-//            Redirect(controllers.supplementary.routes.???.displayForm())
-            Ok("Summary Page")
+          customsCacheService.cache[GoodsItemNumber](appConfig.appName, formId, form).map { _ =>
+            Redirect(controllers.supplementary.routes.ItemTypePageController.displayPage())
         }
       )
   }

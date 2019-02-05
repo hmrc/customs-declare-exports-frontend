@@ -17,9 +17,8 @@
 package forms.supplementary
 
 import forms.MetadataPropertiesConvertable
-import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
 import play.api.data.Forms.{optional, text}
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
@@ -34,12 +33,12 @@ case class PackageInformation(
 
   override def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packaging.typeCode" -> typesOfPackages,
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packaging.quantityQuantity" -> numberOfPackages,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[0].typeCode" -> typesOfPackages,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[0].quantity" -> numberOfPackages,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[0].marksNumbersId" -> shippingMarks,
       "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.tariffQuantity" -> supplementaryUnits.getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packaging.marksNumbersID" -> shippingMarks,
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.GoodsMeasure.netNetWeightMeasure" -> netMass,
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.GoodsMeasure.grossMassMeasure" -> grossMass
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.netWeightMeasure" -> netMass,
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.grossMassMeasure" -> grossMass
     )
 }
 

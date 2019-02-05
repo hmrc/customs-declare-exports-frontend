@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import forms.supplementary.OfficeOfExit
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import forms.supplementary.OfficeOfExitSpec._
 import play.api.test.Helpers._
 
 class OfficeOfExitControllerSpec extends CustomExportsBaseSpec {
@@ -43,8 +43,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[OfficeOfExit](None)
 
-      val incorrectOfficeForm: JsValue = JsObject(Map("officeId" -> JsString("office")))
-      val result = route(app, postRequest(uri, incorrectOfficeForm)).get
+      val result = route(app, postRequest(uri, incorrectOfficeOfExitJSON)).get
 
       contentAsString(result) must include(messages("supplementary.officeOfExit.error"))
     }
@@ -53,8 +52,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[OfficeOfExit](None)
 
-      val emptyOfficeForm: JsValue = JsObject(Map("officeId" -> JsString("")))
-      val result = route(app, postRequest(uri, emptyOfficeForm)).get
+      val result = route(app, postRequest(uri, emptyOfficeOfExitJSON)).get
 
       contentAsString(result) must include(messages("supplementary.officeOfExit.empty"))
     }
@@ -63,8 +61,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[OfficeOfExit](None)
 
-      val correctOfficeForm: JsValue = JsObject(Map("officeId" -> JsString("123qwe12")))
-      val result = route(app, postRequest(uri, correctOfficeForm)).get
+      val result = route(app, postRequest(uri, correctOfficeOfExitJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

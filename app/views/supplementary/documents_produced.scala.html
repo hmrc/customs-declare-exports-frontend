@@ -16,17 +16,17 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
-@import forms.supplementary.Document
+@import forms.supplementary.DocumentsProduced
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[Document])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[DocumentsProduced])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.addDocument.title"),
     appConfig = appConfig
 ) {
 
-    @helpers.form(AddDocumentController.saveForm(), 'autoComplete -> "off") {
+    @helpers.form(DocumentsProducedController.saveForm(), 'autoComplete -> "off") {
 
         @components.back_link("/customs-declare-exports/declaration/supplementary/additional-information")
 

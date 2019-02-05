@@ -16,48 +16,54 @@
 
 package forms.supplementary
 
+import forms.supplementary.RepresentativeDetails.StatusCodes.DirectRepresentative
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
-
-  private val eori = "GB111222333444"
-  private val fullName = "Full name"
-  private val addressLine = "Address line"
-  private val townOrCity = "Town or City"
-  private val postCode = "Postcode"
-  private val country = "United Kingdom"
-  private val countryCode = "GB"
-  private val statusCode = "2"
-
-  private val representativeAddress: RepresentativeDetails = RepresentativeDetails(
-    details = EntityDetails(
-      eori = Some(eori),
-      address = Some(
-        Address(
-          fullName = fullName,
-          addressLine = addressLine,
-          townOrCity = townOrCity,
-          postCode = postCode,
-          country = country
-        )
-      )
-    ),
-    statusCode = statusCode
-  )
-
-  private val expectedRepresentativeAddressProperties: Map[String, String] = Map(
-    "declaration.agent.id" -> eori,
-    "declaration.agent.name" -> fullName,
-    "declaration.agent.address.line" -> addressLine,
-    "declaration.agent.address.cityName" -> townOrCity,
-    "declaration.agent.address.postcodeId" -> postCode,
-    "declaration.agent.address.countryCode" -> countryCode,
-    "declaration.agent.functionCode" -> statusCode
-  )
+  import RepresentativeDetailsSpec._
 
   "RepresentativeAddress" should {
     "convert itself to representative address properties" in {
-      representativeAddress.toMetadataProperties() must equal(expectedRepresentativeAddressProperties)
+      val representativeDetails = correctRepresentativeDetails
+      val countryCode = "PL"
+      val expectedRepresentativeAddressProperties: Map[String, String] = Map(
+        "declaration.agent.id" -> representativeDetails.details.eori.get,
+        "declaration.agent.name" -> representativeDetails.details.address.get.fullName,
+        "declaration.agent.address.line" -> representativeDetails.details.address.get.addressLine,
+        "declaration.agent.address.cityName" -> representativeDetails.details.address.get.townOrCity,
+        "declaration.agent.address.postcodeId" -> representativeDetails.details.address.get.postCode,
+        "declaration.agent.address.countryCode" -> countryCode,
+        "declaration.agent.functionCode" -> representativeDetails.statusCode
+      )
+
+      representativeDetails.toMetadataProperties() must equal(expectedRepresentativeAddressProperties)
     }
   }
+}
+
+object RepresentativeDetailsSpec {
+  import forms.supplementary.EntityDetailsSpec._
+
+  val correctRepresentativeDetails = RepresentativeDetails(details = EntityDetailsSpec.correctEntityDetails, statusCode = DirectRepresentative)
+  val correctRepresentativeDetailsEORIOnly = RepresentativeDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly, statusCode = DirectRepresentative)
+  val correctRepresentativeDetailsAddressOnly = RepresentativeDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly, statusCode = DirectRepresentative)
+  val emptyRepresentativeDetails = RepresentativeDetails(details = EntityDetailsSpec.emptyEntityDetails, statusCode = "")
+
+  val correctRepresentativeDetailsJSON: JsValue = JsObject(Map(
+    "details" -> correctEntityDetailsJSON,
+    "statusCode" -> JsString(DirectRepresentative)
+  ))
+  val correctRepresentativeDetailsEORIOnlyJSON: JsValue = JsObject(Map(
+    "details" -> correctEntityDetailsEORIOnlyJSON,
+    "statusCode" -> JsString(DirectRepresentative)
+  ))
+  val correctRepresentativeDetailsAddressOnlyJSON: JsValue = JsObject(Map(
+    "details" -> correctEntityDetailsAddressOnlyJSON,
+    "statusCode" -> JsString(DirectRepresentative)
+  ))
+  val emptyRepresentativeDetailsJSON: JsValue = JsObject(Map(
+    "details" -> emptyEntityDetailsJSON,
+    "statusCode" -> JsString(DirectRepresentative)
+  ))
 }

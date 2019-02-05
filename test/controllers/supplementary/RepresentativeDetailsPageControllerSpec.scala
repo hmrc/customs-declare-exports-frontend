@@ -18,8 +18,8 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import base.TestHelper._
-import forms.supplementary.RepresentativeDetails.StatusCodes._
-import forms.supplementary.{Address, EntityDetails, RepresentativeDetails}
+import forms.supplementary.RepresentativeDetails
+import forms.supplementary.RepresentativeDetailsSpec._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
@@ -126,22 +126,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     }
 
     "populate the form fields with data from cache" in {
-      val representativeAddress = RepresentativeDetails(
-        details = EntityDetails(
-          eori = Some("GB111222333444"),
-          address = Some(
-            Address(
-              fullName = "Full Name",
-              addressLine = "Address Line",
-              townOrCity = "Town or City",
-              postCode = "PostCode",
-              country = "United Kingdom"
-            )
-          )
-        ),
-        statusCode = DirectRepresentative
-      )
-      val result = displayPageTestScenario(Some(representativeAddress))
+      val result = displayPageTestScenario(Some(correctRepresentativeDetails))
       contentAsString(result) must include("checked=\"checked\"")
     }
 
@@ -232,8 +217,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     "accept form with status and EORI only" in {
       withCaching[RepresentativeDetails](None)
 
-      val form = buildRepresentativeDetailsJsonInput(status = "2", eori = "PL213472539481923")
-      val result = route(app, postRequest(uri, form)).get
+      val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -245,15 +229,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     "accept form with status and address only" in {
       withCaching[RepresentativeDetails](None)
 
-      val form = buildRepresentativeDetailsJsonInput(
-        status = "2",
-        fullName = "Full Name",
-        addressLine = "Address Line",
-        townOrCity = "Town or City",
-        postCode = "AB12 3CD",
-        country = "United Kingdom"
-      )
-      val result = route(app, postRequest(uri, form)).get
+      val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -266,7 +242,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       reset(mockCustomsCacheService)
       withCaching[RepresentativeDetails](None)
 
-      route(app, postRequest(uri, correctRepresentativeDetails)).get.futureValue
+      route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get.futureValue
 
       verify(mockCustomsCacheService)
         .cache[RepresentativeDetails](any(), ArgumentMatchers.eq(RepresentativeDetails.formId), any())(
@@ -279,7 +255,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     "return 303 code" in {
       withCaching[RepresentativeDetails](None)
 
-      val result = route(app, postRequest(uri, correctRepresentativeDetails)).get
+      val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
 
       status(result) must be(SEE_OTHER)
     }
@@ -287,7 +263,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     "redirect to \"Consignee Details\" page" in {
       withCaching[RepresentativeDetails](None)
 
-      val result = route(app, postRequest(uri, correctRepresentativeDetails)).get
+      val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
@@ -299,6 +275,15 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 }
 
 object RepresentativeDetailsPageControllerSpec {
+
+  val incorrectRepresentativeDetails: JsValue = buildRepresentativeDetailsJsonInput(
+    eori = createRandomString(18),
+    fullName = createRandomString(71),
+    addressLine = createRandomString(71),
+    townOrCity = createRandomString(36),
+    postCode = createRandomString(10),
+    country = createRandomString(3)
+  )
 
   def buildRepresentativeDetailsJsonInput(
     eori: String = "",
@@ -318,26 +303,6 @@ object RepresentativeDetailsPageControllerSpec {
       "details.address.country" -> JsString(country),
       "statusCode" -> JsString(status)
     )
-  )
-
-
-  val correctRepresentativeDetails: JsValue = buildRepresentativeDetailsJsonInput(
-    status = "2",
-    eori = "PL213472539481923",
-    fullName = "Full Name",
-    addressLine = "Address Line",
-    townOrCity = "Town or City",
-    postCode = "AB12 3CD",
-    country = "United Kingdom"
-  )
-
-  val incorrectRepresentativeDetails: JsValue = buildRepresentativeDetailsJsonInput(
-    eori = createRandomString(18),
-    fullName = createRandomString(71),
-    addressLine = createRandomString(71),
-    townOrCity = createRandomString(36),
-    postCode = createRandomString(10),
-    country = createRandomString(3)
   )
 
 }
