@@ -19,31 +19,42 @@ package forms.supplementary
 import forms.supplementary.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes.Simplified
 import forms.supplementary.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class DeclarationTypeSpec extends WordSpec with MustMatchers {
+  import DeclarationTypeSpec._
 
-  "toMetadataProperties" should {
-    "contain key from wco-dec domain" in {
-      val dispatchLocation = DispatchLocation(OutsideEU)
-      val additionalDeclarationType = AdditionalDeclarationType(Simplified)
-      val declarationType = DeclarationType(dispatchLocation, additionalDeclarationType)
+  "Method toMetadataProperties" should {
+    "return proper Metadata Properties" in {
+      val declarationType = correctDeclarationType
+      val expectedMetadataProperties: Map[String, String] = Map(
+        "declaration.typeCode" -> (declarationType.dispatchLocation + declarationType.additionalDeclarationType)
+      )
 
-      val properties = declarationType.toMetadataProperties()
-
-      val expectedPropertiesKey = "declaration.typeCode"
-      properties.keySet must contain(expectedPropertiesKey)
-    }
-
-    "contain value from DeclarationType fields combined" in {
-      val dispatchLocation = DispatchLocation(OutsideEU)
-      val additionalDeclarationType = AdditionalDeclarationType(Simplified)
-      val declarationType = DeclarationType(dispatchLocation, additionalDeclarationType)
-
-      val properties = declarationType.toMetadataProperties()
-
-      val expectedPropertiesValue = OutsideEU + Simplified
-      properties.values must contain(expectedPropertiesValue)
+      declarationType.toMetadataProperties() must equal(expectedMetadataProperties)
     }
   }
 
+}
+
+object DeclarationTypeSpec {
+  val correctDispatchLocation = DispatchLocation(OutsideEU)
+  val correctAdditionalDeclarationType = AdditionalDeclarationType(Simplified)
+  val correctDeclarationType = DeclarationType(correctDispatchLocation, correctAdditionalDeclarationType)
+  val emptyDispatchLocation = DispatchLocation("")
+  val emptyAdditionalDeclarationType = AdditionalDeclarationType("")
+  val emptyDeclarationType = DeclarationType(emptyDispatchLocation, emptyAdditionalDeclarationType)
+
+  val correctDispatchLocationJSON: JsValue = JsObject(Map("dispatchLocation" -> JsString(OutsideEU)))
+  val correctAdditionalDeclarationJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString(Simplified)))
+  val correctDeclarationTypeJSON: JsValue = JsObject(Map(
+    "dispatchLocation" -> JsString(OutsideEU),
+    "additionalDeclarationType" -> JsString(Simplified)
+  ))
+  val emptyDispatchLocationJSON: JsValue = JsObject(Map("dispatchLocation" -> JsString("")))
+  val emptyAdditionalDeclarationJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString("")))
+  val emptyDeclarationTypeJSON: JsValue = JsObject(Map(
+    "dispatchLocation" -> JsString(""),
+    "additionalDeclarationType" -> JsString("")
+  ))
 }

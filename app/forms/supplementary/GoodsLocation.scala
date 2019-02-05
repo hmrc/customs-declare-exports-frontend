@@ -36,15 +36,16 @@ case class GoodsLocation(
 
   override def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.goodsShipment.consignment.goodsLocation.address.countryCode" -> country.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.typeCode" -> typeOfLocation.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.typeCode" -> qualifierOfIdentification.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.name" -> identificationOfLocation.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.ID" -> additionalIdentifier.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.id" -> additionalIdentifier.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.line" -> streetAndNumber.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.address.postCodeID" -> postCode.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.address.cityName" -> city.getOrElse("")
-    )
+      "declaration.goodsShipment.consignment.goodsLocation.address.postcodeId" -> postCode.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.address.cityName" -> city.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.address.countryCode" ->
+        allCountries.find(c => country.contains(c.countryName)).map(_.countryCode).getOrElse("")
+  )
 }
 
 object GoodsLocation {

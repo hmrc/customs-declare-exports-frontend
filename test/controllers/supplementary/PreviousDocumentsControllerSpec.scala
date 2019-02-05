@@ -16,9 +16,10 @@
 
 package controllers.supplementary
 
-import base.{CustomExportsBaseSpec, TestHelper}
+import base.CustomExportsBaseSpec
 import forms.supplementary.PreviousDocuments
 import forms.supplementary.PreviousDocuments.AllowedValues.TemporaryStorage
+import forms.supplementary.PreviousDocumentsSpec._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
@@ -49,15 +50,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[PreviousDocuments](None)
 
-      val incorrectPreviousDocuments: JsValue = JsObject(
-        Map(
-          "documentCategory" -> JsString(""),
-          "documentType" -> JsString(""),
-          "documentReference" -> JsString(""),
-          "goodsItemIdentifier" -> JsString("")
-        )
-      )
-      val result = route(app, postRequest(uri, incorrectPreviousDocuments)).get
+      val result = route(app, postRequest(uri, emptyPreviousDocumentsJSON)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("supplementary.previousDocuments.documentCategory.empty"))
@@ -69,15 +62,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[PreviousDocuments](None)
 
-      val incorrectPreviousDocuments: JsValue = JsObject(
-        Map(
-          "documentCategory" -> JsString("Incorrect category"),
-          "documentType" -> JsString("Incorrect type"),
-          "documentReference" -> JsString(TestHelper.createRandomString(36)),
-          "goodsItemIdentifier" -> JsString("Incorrect identifier")
-        )
-      )
-      val result = route(app, postRequest(uri, incorrectPreviousDocuments)).get
+      val result = route(app, postRequest(uri, incorrectPreviousDocumentsJSON)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("supplementary.previousDocuments.documentCategory.error"))
@@ -98,7 +83,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
           "goodsItemIdentifier" -> JsString("123")
         )
       )
-      val result = route(app, postRequest(uri, correctPreviousDocuments)).get
+      val result = route(app, postRequest(uri, correctPreviousDocumentsJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

@@ -17,8 +17,8 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
-import forms.Ducr
 import forms.supplementary.ConsignmentReferences
+import forms.supplementary.ConsignmentReferencesSpec._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
@@ -51,8 +51,10 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
 
     "display \"back\" button that links to \"Declaration Type\" page" in {
       val result = displayConsignmentReferencesPageTestScenario()
-      contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include(messages("/declaration/supplementary/type"))
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.back"))
+      resultAsString must include(messages("/declaration/supplementary/type"))
     }
 
     "display page header" in {
@@ -62,35 +64,44 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
 
     "display input text with question and hint for reference number/UCR" in {
       val result = displayConsignmentReferencesPageTestScenario()
-      contentAsString(result) must include(messages("supplementary.consignmentReferences.ucr.info"))
-      contentAsString(result) must include(messages("supplementary.consignmentReferences.ucr.hint"))
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("supplementary.consignmentReferences.ucr.info"))
+      resultAsString must include(messages("supplementary.consignmentReferences.ucr.hint"))
     }
 
     "display input text with question and hint for LRN" in {
       val result = displayConsignmentReferencesPageTestScenario()
-      contentAsString(result) must include(messages("supplementary.consignmentReferences.lrn.info"))
-      contentAsString(result) must include(messages("supplementary.consignmentReferences.lrn.hint"))
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("supplementary.consignmentReferences.lrn.info"))
+      resultAsString must include(messages("supplementary.consignmentReferences.lrn.hint"))
     }
 
     "display \"Save and continue\" button" in {
       val result = displayConsignmentReferencesPageTestScenario()
-      contentAsString(result) must include(messages("site.save_and_continue"))
-      contentAsString(result) must include("button id=\"submit\" class=\"button\"")
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.save_and_continue"))
+      resultAsString must include("button id=\"submit\" class=\"button\"")
     }
 
     "not populate the form fields if cache is empty" in {
       val result = displayConsignmentReferencesPageTestScenario()
-      contentAsString(result).replaceAll(" ", "") must include("name=\"ducr.ducr\"\nvalue=\"\"")
-      contentAsString(result).replaceAll(" ", "") must include("name=\"lrn\"\nvalue=\"\"")
+      val resultAsString = contentAsString(result)
+
+      resultAsString.replaceAll(" ", "") must include("name=\"ducr.ducr\"\nvalue=\"\"")
+      resultAsString.replaceAll(" ", "") must include("name=\"lrn\"\nvalue=\"\"")
     }
 
     "populate the form fields with data from cache" in {
-      val result = displayConsignmentReferencesPageTestScenario(
-        Some(ConsignmentReferences(ducr = Some(Ducr(exemplaryDucr)), lrn = "1234ABCD"))
-      )
+      val result = displayConsignmentReferencesPageTestScenario(Some(correctConsignmentReferences))
+      val resultAsString = contentAsString(result)
 
-      contentAsString(result).replaceAll(" ", "") must include("name=\"ducr.ducr\"\nvalue=\"" + exemplaryDucr + "\"")
-      contentAsString(result).replaceAll(" ", "") must include("name=\"lrn\"\nvalue=\"1234ABCD\"")
+      resultAsString.replaceAll(" ", "") must include("name=\"ducr.ducr\"\nvalue=\"" + exemplaryDucr + "\"")
+      resultAsString.replaceAll(" ", "") must include(
+        "name=\"lrn\"\nvalue=\"" + correctConsignmentReferences.lrn + "\""
+      )
     }
 
     def displayConsignmentReferencesPageTestScenario(
@@ -155,8 +166,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
       reset(mockCustomsCacheService)
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-      val validForm = buildConsignmentReferencesTestData(ducr = exemplaryDucr, lrn = "123ABC")
-      route(app, postRequest(consignmentReferencesUri, validForm)).get.map { _ =>
+      route(app, postRequest(consignmentReferencesUri, correctConsignmentReferencesJSON)).get.map { _ =>
         verify(mockCustomsCacheService)
           .cache[ConsignmentReferences](any(), ArgumentMatchers.eq(ConsignmentReferences.id), any())(
             any(),
@@ -169,8 +179,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
     "return 303 code" in {
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-      val validForm = buildConsignmentReferencesTestData(ducr = exemplaryDucr, lrn = "123ABC")
-      val result = route(app, postRequest(consignmentReferencesUri, validForm)).get
+      val result = route(app, postRequest(consignmentReferencesUri, correctConsignmentReferencesJSON)).get
 
       status(result) must be(SEE_OTHER)
     }
@@ -178,8 +187,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
     "redirect to \"Exporter Details\" page" in {
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-      val validForm = buildConsignmentReferencesTestData(ducr = exemplaryDucr, lrn = "123ABC")
-      val result = route(app, postRequest(consignmentReferencesUri, validForm)).get
+      val result = route(app, postRequest(consignmentReferencesUri, correctConsignmentReferencesJSON)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
@@ -190,8 +198,6 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
 }
 
 object ConsignmentReferencesControllerSpec {
-  val exemplaryDucr = "8GB123456789012-1234567890123456789"
-
   def buildConsignmentReferencesTestData(ducr: String = "", lrn: String = ""): JsValue = JsObject(
     Map("ducr.ducr" -> JsString(ducr), "lrn" -> JsString(lrn))
   )

@@ -16,17 +16,16 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
-@import forms.supplementary.GoodItemNumber
+@import forms.supplementary.GoodsItemNumber
 @import uk.gov.hmrc.play.views.html._
-@import services.Country
 
-@(appConfig: AppConfig, form: Form[GoodItemNumber])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[GoodsItemNumber])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.goodItemNumber.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(GoodItemNumberController.submit(), 'autoComplete -> "off") {
+    @helpers.form(GoodsItemNumberController.submit(), 'autoComplete -> "off") {
 
         @components.back_link("/customs-declare-exports/declaration/supplementary/transaction-type")
 

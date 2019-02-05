@@ -15,9 +15,10 @@
  */
 
 package controllers.supplementary
+
 import base.CustomExportsBaseSpec
 import forms.supplementary.DestinationCountries
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import forms.supplementary.DestinationCountriesSpec._
 import play.api.test.Helpers._
 
 class DestinationCountriesControllerSpec extends CustomExportsBaseSpec {
@@ -42,9 +43,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[DestinationCountries](None)
 
-      val incorrectDestinationCountries: JsValue =
-        JsObject(Map("countryOfDestination" -> JsString("Country"), "countryOfDispatch" -> JsString("Country")))
-      val result = route(app, postRequest(uri, incorrectDestinationCountries)).get
+      val result = route(app, postRequest(uri, incorrectDestinationCountriesJSON)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("supplementary.destinationCountries.countryOfDestination.error"))
@@ -55,9 +54,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[DestinationCountries](None)
 
-      val incorrectDestinationCountries: JsValue =
-        JsObject(Map("countryOfDestination" -> JsString(""), "countryOfDispatch" -> JsString("")))
-      val result = route(app, postRequest(uri, incorrectDestinationCountries)).get
+      val result = route(app, postRequest(uri, emptyDestinationCountriesJSON)).get
 
       contentAsString(result) must include(messages("supplementary.destinationCountries.countryOfDispatch.empty"))
     }
@@ -66,9 +63,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[DestinationCountries](None)
 
-      val correctDestinationCountries: JsValue =
-        JsObject(Map("countryOfDestination" -> JsString("Poland"), "countryOfDispatch" -> JsString("Poland")))
-      val result = route(app, postRequest(uri, correctDestinationCountries)).get
+      val result = route(app, postRequest(uri, correctDestinationCountriesJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

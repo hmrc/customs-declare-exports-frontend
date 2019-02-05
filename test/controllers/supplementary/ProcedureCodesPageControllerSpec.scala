@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import forms.supplementary.ProcedureCodes
+import forms.supplementary.ProcedureCodesSpec._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
@@ -60,8 +61,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
     "display the form page with error" when {
       "no value provided for procedure code" in {
         withCaching[ProcedureCodes](None, ProcedureCodes.id)
-        val emptyForm = buildProcedureCodes()
-        val result = route(app, postRequest(uri, emptyForm)).get
+        val result = route(app, postRequest(uri, emptyProcedureCodesJSON)).get
 
         contentAsString(result) must include(messages("supplementary.procedureCodes.procedureCode.error.empty"))
       }
@@ -118,8 +118,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
     "save the data to the cache" in {
       reset(mockCustomsCacheService)
       withCaching[ProcedureCodes](None, ProcedureCodes.id)
-      val form = buildProcedureCodes(procedureCode = "1234", additionalProcedureCodes = Seq("111", "222", "333"))
-      route(app, postRequest(uri, form)).get.futureValue
+      route(app, postRequest(uri, correctProcedureCodesJSON)).get.futureValue
 
       verify(mockCustomsCacheService)
         .cache[ProcedureCodes](any(), ArgumentMatchers.eq(ProcedureCodes.id), any())(any(), any(), any())
@@ -127,16 +126,14 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
     "return 303 code" in {
       withCaching[ProcedureCodes](None, ProcedureCodes.id)
-      val form = buildProcedureCodes(procedureCode = "1234", additionalProcedureCodes = Seq("111", "222", "333"))
-      val result = route(app, postRequest(uri, form)).get
+      val result = route(app, postRequest(uri, correctProcedureCodesJSON)).get
 
       status(result) must be(SEE_OTHER)
     }
 
     "redirect to \"Supervising Office\" page" in {
       withCaching[ProcedureCodes](None, ProcedureCodes.id)
-      val form = buildProcedureCodes(procedureCode = "1234", additionalProcedureCodes = Seq("111", "222", "333"))
-      val result = route(app, postRequest(uri, form)).get
+      val result = route(app, postRequest(uri, correctProcedureCodesJSON)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(

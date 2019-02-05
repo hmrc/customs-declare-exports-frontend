@@ -4,9 +4,9 @@ GET         /dispatch-location              controllers.supplementary.Declaratio
 
 POST        /dispatch-location              controllers.supplementary.DeclarationTypeController.submitDispatchLocation()
 
-GET         /type                           controllers.supplementary.DeclarationTypeController.displayDeclarationTypePage()
+GET         /type                           controllers.supplementary.DeclarationTypeController.displayAdditionalDeclarationTypePage()
 
-POST        /type                           controllers.supplementary.DeclarationTypeController.submitDeclarationType()
+POST        /type                           controllers.supplementary.DeclarationTypeController.submitAdditionalDeclarationType()
 
 # Not Eligible
 
@@ -104,15 +104,15 @@ POST        /total-numbers-of-items         controllers.supplementary.TotalNumbe
 
 # Add Documents
 
-GET         /add-document                   controllers.supplementary.AddDocumentController.displayForm()
+GET         /add-document                   controllers.supplementary.DocumentsProducedController.displayForm()
 
-POST        /add-document                   controllers.supplementary.AddDocumentController.saveForm()
+POST        /add-document                   controllers.supplementary.DocumentsProducedController.saveForm()
 
 # Good item number
 
-GET         /good-item-number               controllers.supplementary.GoodItemNumberController.displayForm()
+GET         /good-item-number               controllers.supplementary.GoodsItemNumberController.displayForm()
 
-POST        /good-item-number               controllers.supplementary.GoodItemNumberController.submit()
+POST        /good-item-number               controllers.supplementary.GoodsItemNumberController.submit()
 
 # Item Type
 

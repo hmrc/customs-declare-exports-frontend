@@ -26,8 +26,8 @@ case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option
 
   override def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.authorisationHolder.categoryCode" -> authorisationTypeCode.getOrElse(""),
-      "declaration.authorisationHolder.ID" -> eori.getOrElse("")
+      "declaration.authorisationHolders[0].categoryCode" -> authorisationTypeCode.getOrElse(""),
+      "declaration.authorisationHolders[0].id" -> eori.getOrElse("")
     )
 }
 

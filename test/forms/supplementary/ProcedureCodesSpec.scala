@@ -16,36 +16,56 @@
 
 package forms.supplementary
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
 class ProcedureCodesSpec extends WordSpec with MustMatchers {
+  import ProcedureCodesSpec._
 
-  private val procedureCode_1 = "12"
-  private val procedureCode_2 = "34"
-  private val additionalProcedureCodes = Seq("111", "222", "333")
+  "Method toMetadataProperties" should {
+    "return proper Metadata Properties" in {
+      val procedureCodes = correctProcedureCodes
+      val expectedProcedureCodesProperties: Map[String, String] = Map(
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].currentCode" -> procedureCode_1,
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].previousCode" -> procedureCode_2,
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[1].currentCode" -> procedureCodes.additionalProcedureCodes(
+          0
+        ),
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[2].currentCode" -> procedureCodes.additionalProcedureCodes(
+          1
+        ),
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[3].currentCode" -> procedureCodes.additionalProcedureCodes(
+          2
+        )
+      )
 
-  private val procedureCodes = ProcedureCodes(
-    procedureCode = procedureCode_1 + procedureCode_2,
-    additionalProcedureCodes = additionalProcedureCodes
-  )
-
-  private val expectedProcedureCodesProperties: Map[String, String] = Map(
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].currentCode" -> procedureCode_1,
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].previousCode" -> procedureCode_2,
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[1].currentCode" -> additionalProcedureCodes(
-      0
-    ),
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[2].currentCode" -> additionalProcedureCodes(
-      1
-    ),
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[3].currentCode" -> additionalProcedureCodes(
-      2
-    )
-  )
-
-  "ProcedureCodes" should {
-    "convert itself into procedure codes properties" in {
       procedureCodes.toMetadataProperties() must equal(expectedProcedureCodesProperties)
     }
   }
+
+}
+
+object ProcedureCodesSpec {
+  private val procedureCode_1 = "12"
+  private val procedureCode_2 = "34"
+
+  val correctProcedureCodes = ProcedureCodes(
+    procedureCode = procedureCode_1 + procedureCode_2,
+    additionalProcedureCodes = Seq("111", "222", "333")
+  )
+  val emptyProcedureCodes = ProcedureCodes(
+    procedureCode = "",
+    additionalProcedureCodes = Seq.empty
+  )
+
+  val correctProcedureCodesJSON: JsValue = JsObject(Map(
+    "procedureCode" -> JsString(procedureCode_1 + procedureCode_2),
+    "additionalProcedureCodes" -> JsArray(
+      Seq(JsString("111"), JsString("222"), JsString("333"))
+    )
+  ))
+  val emptyProcedureCodesJSON: JsValue = JsObject(Map(
+    "procedureCode" -> JsString(""),
+    "additionalProcedureCodes" -> JsArray()
+  ))
 
 }

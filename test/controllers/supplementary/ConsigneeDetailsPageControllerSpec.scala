@@ -19,6 +19,7 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
 import forms.supplementary.ConsigneeDetails
+import forms.supplementary.ConsigneeDetailsSpec._
 import play.api.test.Helpers._
 
 class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
@@ -63,7 +64,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[ConsigneeDetails](None)
 
-      val result = route(app, postRequest(uri, entityDetailsEORIOnly)).get
+      val result = route(app, postRequest(uri, correctConsigneeDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -76,7 +77,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[ConsigneeDetails](None)
 
-      val result = route(app, postRequest(uri, entityDetailsAddressOnly)).get
+      val result = route(app, postRequest(uri, correctConsigneeDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -89,7 +90,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[ConsigneeDetails](None)
 
-      val result = route(app, postRequest(uri, entityDetailsAllValues)).get
+      val result = route(app, postRequest(uri, correctConsigneeDetailsJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

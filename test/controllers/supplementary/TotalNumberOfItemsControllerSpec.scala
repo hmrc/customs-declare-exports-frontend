@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import forms.supplementary.TotalNumberOfItems
+import forms.supplementary.TotalNumberOfItemsSpec._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
@@ -93,15 +94,8 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
 
-      val correctTotalNumber: JsValue = JsObject(
-        Map(
-          "items" -> JsString("100"),
-          "totalAmountInvoiced" -> JsString("12312312312312"),
-          "exchangeRate" -> JsString("123123123123"),
-          "totalPackage" -> JsString("123")
-        )
-      )
-      val result = route(app, postRequest(uri, correctTotalNumber)).get
+
+      val result = route(app, postRequest(uri, correctTotalNumberOfItemsIntegerValuesJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -114,15 +108,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
 
-      val correctTotalNumber: JsValue = JsObject(
-        Map(
-          "items" -> JsString("100"),
-          "totalAmountInvoiced" -> JsString("12312312312312.12"),
-          "exchangeRate" -> JsString("1212121.12345"),
-          "totalPackage" -> JsString("123")
-        )
-      )
-      val result = route(app, postRequest(uri, correctTotalNumber)).get
+      val result = route(app, postRequest(uri, correctTotalNumberOfItemsDecimalValuesJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

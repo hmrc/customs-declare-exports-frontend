@@ -246,17 +246,6 @@ object ExportsTestData {
     CacheMap(id, data)
   }
 
-  val entityDetailsAllValues: JsValue = JsObject(
-    Map(
-      "details.eori" -> JsString("PL213472539481923"),
-      "details.address.fullName" -> JsString("Full name"),
-      "details.address.addressLine" -> JsString("Address"),
-      "details.address.townOrCity" -> JsString("Town or city"),
-      "details.address.postCode" -> JsString("PostCode1"),
-      "details.address.country" -> JsString("Poland")
-    )
-  )
-
   val incorrectEntityDetails: JsValue = JsObject(
     Map(
       "details.eori" -> JsString(createRandomString(18)),
@@ -267,45 +256,4 @@ object ExportsTestData {
       "details.address.country" -> JsString(createRandomString(3))
     )
   )
-
-  val entityDetailsEORIOnly: JsValue = JsObject(
-    Map(
-      "details.eori" -> JsString("PL213472539481923"),
-      "details.address.fullName" -> JsString(""),
-      "details.address.addressLine" -> JsString(""),
-      "details.address.townOrCity" -> JsString(""),
-      "details.address.postCode" -> JsString(""),
-      "details.address.country" -> JsString("")
-    )
-  )
-
-  val entityDetailsAddressOnly: JsValue = JsObject(
-    Map(
-      "details.eori" -> JsString(""),
-      "details.address.fullName" -> JsString("Full name"),
-      "details.address.addressLine" -> JsString("Address"),
-      "details.address.townOrCity" -> JsString("Town or city"),
-      "details.address.postCode" -> JsString("PostCode1"),
-      "details.address.country" -> JsString("Poland")
-    )
-  )
-
-  val emptyEntityDetails: JsValue = JsObject(
-    Map(
-      "details.eori" -> JsString(""),
-      "details.address.fullName" -> JsString(""),
-      "details.address.addressLine" -> JsString(""),
-      "details.address.townOrCity" -> JsString(""),
-      "details.address.postCode" -> JsString(""),
-      "details.address.country" -> JsString("")
-    )
-  )
-
-  val incorrectAdditionalActors: JsValue = JsObject(
-    Map("eori" -> JsString("123456789123456789"), "partyType" -> JsString("Incorrect"))
-  )
-
-  val emptyAdditionalActors: JsValue = JsObject(Map("eori" -> JsString(""), "partyType" -> JsString("")))
-
-  val correctAdditionalActors: JsValue = JsObject(Map("eori" -> JsString("eori1"), "partyType" -> JsString("CS")))
 }

@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.supplementary.PackageInformation
+import forms.supplementary.PackageInformationSpec._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
@@ -53,19 +54,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
     authorizedUser()
     withCaching[PackageInformation](None)
 
-    val emptyForm: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(""),
-          "numberOfPackages" -> JsString(""),
-          "supplementaryUnits" -> JsString(""),
-          "shippingMarks" -> JsString(""),
-          "netMass" -> JsString(""),
-          "grossMass" -> JsString("")
-        )
-      )
-
-    val result = route(app, postRequest(uri, emptyForm)).get
+    val result = route(app, postRequest(uri, emptyPackageInformationJSON)).get
 
     status(result) must be(BAD_REQUEST)
 
@@ -80,57 +69,6 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
     contentAsString(result) must not include messages("supplementary.packageInformation.shippingMarks.error")
     contentAsString(result) must not include messages("supplementary.packageInformation.netMass.error")
     contentAsString(result) must not include messages("supplementary.packageInformation.grossMass.error")
-  }
-
-  "validate form - correct values" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val correctForm: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(2)),
-          "numberOfPackages" -> JsString("12345"),
-          "supplementaryUnits" -> JsString("1234567890.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("1234567890.123456")
-        )
-      )
-
-    val result = route(app, postRequest(uri, correctForm)).get
-    val header = result.futureValue.header
-
-    status(result) must be(SEE_OTHER)
-    header.headers.get("Location") must be(
-      Some("/customs-declare-exports/declaration/supplementary/previous-documents")
-    )
-
-  }
-
-  "validate form - correct values using only integers" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val correctForm: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(2)),
-          "numberOfPackages" -> JsString("12345"),
-          "supplementaryUnits" -> JsString("1234567890"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("12345678"),
-          "grossMass" -> JsString("1234567890")
-        )
-      )
-
-    val result = route(app, postRequest(uri, correctForm)).get
-    val header = result.futureValue.header
-
-    status(result) must be(SEE_OTHER)
-    header.headers.get("Location") must be(
-      Some("/customs-declare-exports/declaration/supplementary/previous-documents")
-    )
   }
 
   "validate form - too short type of packages" in {
@@ -439,6 +377,33 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
 
     status(result) must be(BAD_REQUEST)
     contentAsString(result) must include(messages("supplementary.packageInformation.grossMass.error"))
+  }
+
+  "validate form - correct values" in {
+    authorizedUser()
+    withCaching[PackageInformation](None)
+
+    val result = route(app, postRequest(uri, correctPackageInformationDecimalValuesJSON)).get
+    val header = result.futureValue.header
+
+    status(result) must be(SEE_OTHER)
+    header.headers.get("Location") must be(
+      Some("/customs-declare-exports/declaration/supplementary/previous-documents")
+    )
+
+  }
+
+  "validate form - correct values using only integers" in {
+    authorizedUser()
+    withCaching[PackageInformation](None)
+
+    val result = route(app, postRequest(uri, correctPackageInformationIntegerValuesJSON)).get
+    val header = result.futureValue.header
+
+    status(result) must be(SEE_OTHER)
+    header.headers.get("Location") must be(
+      Some("/customs-declare-exports/declaration/supplementary/previous-documents")
+    )
   }
 
 }

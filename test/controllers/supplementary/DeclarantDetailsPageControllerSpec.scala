@@ -19,6 +19,7 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
 import forms.supplementary.DeclarantDetails
+import forms.supplementary.DeclarantDetailsSpec._
 import play.api.test.Helpers._
 
 class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
@@ -63,7 +64,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[DeclarantDetails](None)
 
-      val result = route(app, postRequest(uri, entityDetailsEORIOnly)).get
+      val result = route(app, postRequest(uri, correctDeclarantDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -76,7 +77,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[DeclarantDetails](None)
 
-      val result = route(app, postRequest(uri, entityDetailsAddressOnly)).get
+      val result = route(app, postRequest(uri, correctDeclarantDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -89,7 +90,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[DeclarantDetails](None)
 
-      val result = route(app, postRequest(uri, entityDetailsAllValues)).get
+      val result = route(app, postRequest(uri, correctDeclarantDetailsJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

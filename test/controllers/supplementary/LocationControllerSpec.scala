@@ -16,9 +16,9 @@
 
 package controllers.supplementary
 
-import base.{CustomExportsBaseSpec, TestHelper}
+import base.CustomExportsBaseSpec
 import forms.supplementary.GoodsLocation
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import forms.supplementary.GoodsLocationSpec._
 import play.api.test.Helpers._
 
 class LocationControllerSpec extends CustomExportsBaseSpec {
@@ -49,19 +49,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[GoodsLocation](None)
 
-      val incorrectGoodsLocation: JsValue = JsObject(
-        Map(
-          "country" -> JsString(TestHelper.createRandomString(3)),
-          "typeOfLocation" -> JsString(TestHelper.createRandomString(2)),
-          "qualifierOfIdentification" -> JsString(TestHelper.createRandomString(2)),
-          "identificationOfLocation" -> JsString(TestHelper.createRandomString(4)),
-          "additionalIdentifier" -> JsString(TestHelper.createRandomString(33)),
-          "streetAndNumber" -> JsString(TestHelper.createRandomString(71)),
-          "postCode" -> JsString(TestHelper.createRandomString(10)),
-          "city" -> JsString(TestHelper.createRandomString(36))
-        )
-      )
-      val result = route(app, postRequest(uri, incorrectGoodsLocation)).get
+      val result = route(app, postRequest(uri, incorrectGoodsLocationJSON)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
@@ -78,19 +66,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[GoodsLocation](None)
 
-      val emptyGoodsLocation: JsValue = JsObject(
-        Map(
-          "country" -> JsString(""),
-          "typeOfLocation" -> JsString(""),
-          "qualifierOfIdentification" -> JsString(""),
-          "identificationOfLocation" -> JsString(""),
-          "additionalIdentifier" -> JsString(""),
-          "streetAndNumber" -> JsString(""),
-          "postCode" -> JsString(""),
-          "city" -> JsString("")
-        )
-      )
-      val result = route(app, postRequest(uri, emptyGoodsLocation)).get
+      val result = route(app, postRequest(uri, emptyGoodsLocationJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -101,19 +77,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[GoodsLocation](None)
 
-      val emptyGoodsLocation: JsValue = JsObject(
-        Map(
-          "country" -> JsString("United Kingdom"),
-          "typeOfLocation" -> JsString("T"),
-          "qualifierOfIdentification" -> JsString("Q"),
-          "identificationOfLocation" -> JsString("LOC"),
-          "additionalIdentifier" -> JsString("Additional identifier"),
-          "streetAndNumber" -> JsString("Street and number"),
-          "postCode" -> JsString("Postcode"),
-          "city" -> JsString("City")
-        )
-      )
-      val result = route(app, postRequest(uri, emptyGoodsLocation)).get
+      val result = route(app, postRequest(uri, correctGoodsLocationJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

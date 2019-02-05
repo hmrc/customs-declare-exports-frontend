@@ -69,12 +69,12 @@ class DeclarationTypeController @Inject()(
 
   private def specifyNextPage(providedDispatchLocation: DispatchLocation): Call = providedDispatchLocation.value match {
     case AllowedDispatchLocations.OutsideEU =>
-      controllers.supplementary.routes.DeclarationTypeController.displayDeclarationTypePage()
+      controllers.supplementary.routes.DeclarationTypeController.displayAdditionalDeclarationTypePage()
     case AllowedDispatchLocations.SpecialFiscalTerritory =>
       controllers.supplementary.routes.NotEligibleController.displayPage()
   }
 
-  def displayDeclarationTypePage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayAdditionalDeclarationTypePage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[AdditionalDeclarationType](supplementaryDeclarationCacheId, AdditionalDeclarationType.formId)
       .map {
@@ -83,7 +83,7 @@ class DeclarationTypeController @Inject()(
       }
   }
 
-  def submitDeclarationType(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitAdditionalDeclarationType(): Action[AnyContent] = authenticate.async { implicit request =>
     AdditionalDeclarationType
       .form()
       .bindFromRequest()

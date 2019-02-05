@@ -17,18 +17,19 @@
 package controllers.supplementary
 
 import base.{CustomExportsBaseSpec, TestHelper}
-import forms.supplementary.Document
+import forms.supplementary.DocumentsProduced
+import forms.supplementary.DocumentsProducedSpec._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class AddDocumentControllerSpec extends CustomExportsBaseSpec {
+class DocumentsProducedControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/declaration/supplementary/add-document")
 
-  "AddDocument" should {
+  "DocumentsProducedController" should {
     "return 200 with a success" in {
       authorizedUser()
-      withCaching[Document](None)
+      withCaching[DocumentsProduced](None)
 
       val result = route(app, getRequest(uri)).get
       status(result) must be(OK)
@@ -36,7 +37,7 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
 
     "display add document form" in {
       authorizedUser()
-      withCaching[Document](None)
+      withCaching[DocumentsProduced](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -51,25 +52,9 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.addDocument.documentStatusReason"))
     }
 
-    "validate form - empty form" in {
-      pending
-      authorizedUser()
-      withCaching[Document](None)
-
-      val emptyForm: JsValue = JsObject(Map[String, JsString]())
-
-      val result = route(app, postRequest(uri, emptyForm)).get
-      val header = result.futureValue.header
-
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/good-item-number")
-      )
-    }
-
     "validate form - incorrect document status" in {
       authorizedUser()
-      withCaching[Document](None)
+      withCaching[DocumentsProduced](None)
 
       val incorrectDocumentStatus: JsValue = JsObject(Map("documentStatus" -> JsString("as")))
 
@@ -81,7 +66,7 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - incorrect Document status reason" in {
       authorizedUser()
-      withCaching[Document](None)
+      withCaching[DocumentsProduced](None)
 
       val incorrectDocumentStatusReason: JsValue =
         JsObject(Map("documentStatusReason" -> JsString(TestHelper.createRandomString(36))))
@@ -93,7 +78,7 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - incorrect document identifier" in {
       authorizedUser()
-      withCaching[Document](None)
+      withCaching[DocumentsProduced](None)
 
       val incorrectDocumentStatusReason: JsValue =
         JsObject(Map("documentIdentifier" -> JsString(TestHelper.createRandomString(31))))
@@ -105,7 +90,7 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
 
     "validate form - incorrect document part" in {
       authorizedUser()
-      withCaching[Document](None)
+      withCaching[DocumentsProduced](None)
 
       val incorrectDocumentStatusReason: JsValue =
         JsObject(Map("documentPart" -> JsString(TestHelper.createRandomString(6))))
@@ -115,26 +100,32 @@ class AddDocumentControllerSpec extends CustomExportsBaseSpec {
       contentAsString(result) must include(messages("supplementary.addDocument.documentPart.error"))
     }
 
-    "validate form - correct form" in {
+    "validate form - empty form" in {
       pending
       authorizedUser()
-      withCaching[Document](None)
+      withCaching[DocumentsProduced](None)
 
-      val correctForm: JsValue = JsObject(
-        Map(
-          "documentTypeCode" -> JsString("A123"),
-          "documentIdentifier" -> JsString(TestHelper.createRandomString(30)),
-          "documentPart" -> JsString(TestHelper.createRandomString(5)),
-          "documentStatus" -> JsString("AB"),
-          "documentStatusReason" -> JsString(TestHelper.createRandomString(35))
-        )
-      )
-
-      val result = route(app, postRequest(uri, correctForm)).get
+      val result = route(app, postRequest(uri, emptyDocumentsProducedJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some(""))
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/summary")
+      )
+    }
+
+    "validate form - correct form" in {
+      pending
+      authorizedUser()
+      withCaching[DocumentsProduced](None)
+
+      val result = route(app, postRequest(uri, correctDocumentsProducedJSON)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/summary")
+      )
     }
   }
 }

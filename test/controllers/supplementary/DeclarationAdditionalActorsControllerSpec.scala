@@ -17,8 +17,8 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
-import base.ExportsTestData._
 import forms.supplementary.DeclarationAdditionalActors
+import forms.supplementary.DeclarationAdditionalActorsSpec._
 import play.api.test.Helpers._
 
 class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
@@ -48,7 +48,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[DeclarationAdditionalActors](None)
 
-      val result = route(app, postRequest(uri, incorrectAdditionalActors)).get
+      val result = route(app, postRequest(uri, incorrectAdditionalActorsJSON)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("supplementary.eori.error"))
@@ -59,7 +59,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[DeclarationAdditionalActors](None)
 
-      val result = route(app, postRequest(uri, emptyAdditionalActors)).get
+      val result = route(app, postRequest(uri, emptyAdditionalActorsJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -72,7 +72,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[DeclarationAdditionalActors](None)
 
-      val result = route(app, postRequest(uri, correctAdditionalActors)).get
+      val result = route(app, postRequest(uri, correctAdditionalActorsJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

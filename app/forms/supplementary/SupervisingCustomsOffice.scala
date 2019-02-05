@@ -25,7 +25,7 @@ import utils.validators.FormFieldValidator._
 case class SupervisingCustomsOffice(office: Option[String]) extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
-    Map("declaration.supervisingOffice.ID" -> office.getOrElse(""))
+    Map("declaration.supervisingOffice.id" -> office.getOrElse(""))
 }
 
 object SupervisingCustomsOffice {

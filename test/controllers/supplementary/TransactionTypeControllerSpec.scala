@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import forms.supplementary.TransactionType
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import forms.supplementary.TransactionTypeSpec._
 import play.api.test.Helpers._
 
 class TransactionTypeControllerSpec extends CustomExportsBaseSpec {
@@ -44,8 +44,7 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[TransactionType](None)
 
-      val emptyForm: JsValue = JsObject(Map("documentTypeCode" -> JsString(""), "identifier" -> JsString("")))
-      val result = route(app, postRequest(uri, emptyForm)).get
+      val result = route(app, postRequest(uri, emptyTransactionTypeJSON)).get
 
       contentAsString(result) must include(messages("supplementary.transactionType.documentTypeCode.empty"))
     }
@@ -54,8 +53,7 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[TransactionType](None)
 
-      val incorrectForm: JsValue = JsObject(Map("documentTypeCode" -> JsString("123"), "identifier" -> JsString("123")))
-      val result = route(app, postRequest(uri, incorrectForm)).get
+      val result = route(app, postRequest(uri, incorrectTransactionTypeJSON)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("supplementary.transactionType.documentTypeCode.error"))
@@ -66,8 +64,7 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[TransactionType](None)
 
-      val correctForm: JsValue = JsObject(Map("documentTypeCode" -> JsString("1"), "identifier" -> JsString("1")))
-      val result = route(app, postRequest(uri, correctForm)).get
+      val result = route(app, postRequest(uri, correctTransactionTypeJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

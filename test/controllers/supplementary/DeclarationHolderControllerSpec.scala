@@ -16,9 +16,9 @@
 
 package controllers.supplementary
 
-import base.{CustomExportsBaseSpec, TestHelper}
+import base.CustomExportsBaseSpec
 import forms.supplementary.DeclarationHolder
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import forms.supplementary.DeclarationHolderSpec._
 import play.api.test.Helpers._
 
 class DeclarationHolderControllerSpec extends CustomExportsBaseSpec {
@@ -45,11 +45,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[DeclarationHolder](None)
 
-      val incorrectDeclarationHolder: JsValue =
-        JsObject(
-          Map("authorisationTypeCode" -> JsString("12345"), "eori" -> JsString(TestHelper.createRandomString(18)))
-        )
-      val result = route(app, postRequest(uri, incorrectDeclarationHolder)).get
+      val result = route(app, postRequest(uri, incorrectDeclarationHolderJSON)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("supplementary.declarationHolder.authorisationCode.error"))
@@ -60,9 +56,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[DeclarationHolder](None)
 
-      val emptyDeclarationHolder: JsValue =
-        JsObject(Map("authorisationTypeCode" -> JsString(""), "eori" -> JsString("")))
-      val result = route(app, postRequest(uri, emptyDeclarationHolder)).get
+      val result = route(app, postRequest(uri, emptyDeclarationHolderJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
@@ -75,9 +69,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[DeclarationHolder](None)
 
-      val correctDeclarationHolder: JsValue =
-        JsObject(Map("authorisationTypeCode" -> JsString("1234"), "eori" -> JsString("PL213472539481923")))
-      val result = route(app, postRequest(uri, correctDeclarationHolder)).get
+      val result = route(app, postRequest(uri, correctDeclarationHolderJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

@@ -27,8 +27,8 @@ case class DeclarationAdditionalActors(eori: Option[String], partyType: Option[S
 
   override def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.goodsShipment.AEOMutualRecognitionParty.ID" -> eori.getOrElse(""),
-      "declaration.goodsShipment.AEOMutualRecognitionParty.roleCode" -> partyType.getOrElse("")
+      "declaration.goodsShipment.aeoMutualRecognitionParties[0].id" -> eori.getOrElse(""),
+      "declaration.goodsShipment.aeoMutualRecognitionParties[0].roleCode" -> partyType.getOrElse("")
     )
 }
 
@@ -52,14 +52,12 @@ object DeclarationAdditionalActors {
   )(DeclarationAdditionalActors.apply)(DeclarationAdditionalActors.unapply)
 
   def form(): Form[DeclarationAdditionalActors] = Form(mapping)
+
+  object PartyType {
+    val Consolidator = "CS"
+    val Manufacturer = "MF"
+    val FreightForwarder = "FW"
+    val WarehouseKeeper = "WH"
+  }
 }
 
-object PartyType {
-  val Consolidator = "CS"
-
-  val Manufacturer = "MF"
-
-  val FreightForwarder = "FW"
-
-  val WarehouseKeeper = "WH"
-}

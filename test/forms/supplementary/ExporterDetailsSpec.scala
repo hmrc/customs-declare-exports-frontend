@@ -17,45 +17,40 @@
 package forms.supplementary
 
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.libs.json.{JsObject, JsValue}
 
 class ExporterDetailsSpec extends WordSpec with MustMatchers {
+  import ExporterDetailsSpec._
 
-  private val eori = "PL213472539481923"
-  private val fullName = "Full Name"
-  private val addressLine = "Address Line"
-  private val townOrCity = "Town or City"
-  private val postCode = "AB12 3CD"
-  private val country = "United Kingdom"
-  private val countryCode = "GB"
-
-  private val exporterDetails = ExporterDetails(
-    details = EntityDetails(
-      eori = Some(eori),
-      address = Some(
-        Address(
-          fullName = fullName,
-          addressLine = addressLine,
-          townOrCity = townOrCity,
-          postCode = postCode,
-          country = country
-        )
+  "Method toMetadataProperties" should {
+    "return proper Metadata Properties" in {
+      val exporterDetails = correctExporterDetails
+      val countryCode = "PL"
+      val expectedExporterDetailsProperties: Map[String, String] = Map(
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.id" -> exporterDetails.details.eori.get,
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.name" -> exporterDetails.details.address.get.fullName,
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.line" -> exporterDetails.details.address.get.addressLine,
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.cityName" -> exporterDetails.details.address.get.townOrCity,
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.postcodeId" -> exporterDetails.details.address.get.postCode,
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.countryCode" -> countryCode
       )
-    )
-  )
 
-  private val expectedExporterDetailsProperties: Map[String, String] = Map(
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.id" -> eori,
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.name" -> fullName,
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.line" -> addressLine,
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.cityName" -> townOrCity,
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.postcodeId" -> postCode,
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.countryCode" -> countryCode
-  )
-
-  "ExporterDetails on toMetadataProperties" should {
-    "convert itself to exporter details properties" in {
       exporterDetails.toMetadataProperties() must equal(expectedExporterDetailsProperties)
     }
   }
 
+}
+
+object ExporterDetailsSpec {
+  import forms.supplementary.EntityDetailsSpec._
+
+  val correctExporterDetails = ExporterDetails(details = EntityDetailsSpec.correctEntityDetails)
+  val correctExporterDetailsEORIOnly = ExporterDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
+  val correctExporterDetailsAddressOnly = ExporterDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly)
+  val emptyExporterDetails = ExporterDetails(details = EntityDetailsSpec.emptyEntityDetails)
+
+  val correctExporterDetailsJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON))
+  val correctExporterDetailsEORIOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsEORIOnlyJSON))
+  val correctExporterDetailsAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))
+  val emptyExporterDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 }
