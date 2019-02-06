@@ -25,7 +25,7 @@ class OfficeOfExitSpec extends WordSpec with MustMatchers {
   "Method toMetadataProperties" should {
     "return proper Metadata Properties" in {
       val officeOfExit = correctOfficeOfExit
-      val expectedMetadataProperties: Map[String, String] = Map("declaration.exitOffice.id" -> officeOfExit.id)
+      val expectedMetadataProperties: Map[String, String] = Map("declaration.exitOffice.id" -> officeOfExit.officeId)
 
       officeOfExit.toMetadataProperties() must equal(expectedMetadataProperties)
     }
@@ -34,9 +34,9 @@ class OfficeOfExitSpec extends WordSpec with MustMatchers {
 }
 
 object OfficeOfExitSpec {
-  val correctOfficeOfExit = OfficeOfExit(id = "123qwe12")
-  val emptyOfficeOfExit = OfficeOfExit(id = "")
-  val incorrectOfficeOfExit = OfficeOfExit(id = "office")
+  val correctOfficeOfExit = OfficeOfExit(officeId = "123qwe12")
+  val emptyOfficeOfExit = OfficeOfExit(officeId = "")
+  val incorrectOfficeOfExit = OfficeOfExit(officeId = "office")
 
   val correctOfficeOfExitJSON: JsValue = JsObject(Map("officeId" -> JsString("123qwe12")))
   val emptyOfficeOfExitJSON: JsValue = JsObject(Map("officeId" -> JsString("")))

@@ -14,25 +14,39 @@
  * limitations under the License.
  */
 
-package forms.supplementary
+package forms.supplementary.summary
 
 import forms.MetadataPropertiesConvertable
+import forms.supplementary.{AdditionalDeclarationType, DispatchLocation}
+import uk.gov.hmrc.http.cache.client.CacheMap
 
 case class DeclarationType(dispatchLocation: String, additionalDeclarationType: String)
-    extends MetadataPropertiesConvertable {
+    extends SummaryContainer with MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] = {
     val propertiesKey = "declaration.typeCode"
     val propertiesValue = dispatchLocation + additionalDeclarationType
     Map(propertiesKey -> propertiesValue)
   }
+
+  override def isEmpty: Boolean = dispatchLocation.isEmpty && additionalDeclarationType.isEmpty
 }
 
 object DeclarationType {
 
-  def apply(dispatchLocation: DispatchLocation, additionalDeclarationType: AdditionalDeclarationType): DeclarationType =
+  def apply(cacheMap: CacheMap): DeclarationType = DeclarationType(
+    dispatchLocation = cacheMap.getEntry[DispatchLocation](DispatchLocation.formId),
+    additionalDeclarationType = cacheMap.getEntry[AdditionalDeclarationType](AdditionalDeclarationType.formId)
+  )
+
+  def apply(
+    dispatchLocation: Option[DispatchLocation],
+    additionalDeclarationType: Option[AdditionalDeclarationType]
+  ): DeclarationType =
     new DeclarationType(
-      dispatchLocation = dispatchLocation.value,
-      additionalDeclarationType = additionalDeclarationType.value
+      dispatchLocation = dispatchLocation.map(_.dispatchLocation).getOrElse(""),
+      additionalDeclarationType = additionalDeclarationType.map(_.additionalDeclarationType).getOrElse("")
     )
+
+  val id = "DeclarationType"
 }

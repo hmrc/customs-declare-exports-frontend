@@ -67,12 +67,13 @@ class DeclarationTypeController @Inject()(
       )
   }
 
-  private def specifyNextPage(providedDispatchLocation: DispatchLocation): Call = providedDispatchLocation.value match {
-    case AllowedDispatchLocations.OutsideEU =>
-      controllers.supplementary.routes.DeclarationTypeController.displayAdditionalDeclarationTypePage()
-    case AllowedDispatchLocations.SpecialFiscalTerritory =>
-      controllers.supplementary.routes.NotEligibleController.displayPage()
-  }
+  private def specifyNextPage(providedDispatchLocation: DispatchLocation): Call =
+    providedDispatchLocation.dispatchLocation match {
+      case AllowedDispatchLocations.OutsideEU =>
+        controllers.supplementary.routes.DeclarationTypeController.displayAdditionalDeclarationTypePage()
+      case AllowedDispatchLocations.SpecialFiscalTerritory =>
+        controllers.supplementary.routes.NotEligibleController.displayPage()
+    }
 
   def displayAdditionalDeclarationTypePage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService

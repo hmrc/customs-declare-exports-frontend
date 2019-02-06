@@ -22,9 +22,9 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
-case class OfficeOfExit(id: String) extends MetadataPropertiesConvertable {
+case class OfficeOfExit(officeId: String) extends MetadataPropertiesConvertable {
 
-  override def toMetadataProperties(): Map[String, String] = Map("declaration.exitOffice.id" -> id)
+  override def toMetadataProperties(): Map[String, String] = Map("declaration.exitOffice.id" -> officeId)
 }
 
 object OfficeOfExit {

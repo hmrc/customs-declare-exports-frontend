@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.supplementary.ItemType
+import forms.supplementary.ItemTypeSpec.correctItemTypeJSON
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
@@ -160,44 +161,20 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
     "save data to the cache" in {
       reset(mockCustomsCacheService)
       withCaching[ItemType](None, ItemType.id)
-      val form = buildItemTypeJsonInput(
-        combinedNomenclatureCode = "12345678",
-        taricAdditionalCode = "1234",
-        nationalAdditionalCode = "123",
-        descriptionOfGoods = "Description of Goods.",
-        cusCode = "12345678",
-        statisticalValue = "12345.67"
-      )
-      route(app, postRequest(uri, form)).get.futureValue
+
+      route(app, postRequest(uri, correctItemTypeJSON)).get.futureValue
 
       verify(mockCustomsCacheService)
         .cache[ItemType](any(), ArgumentMatchers.eq(ItemType.id), any())(any(), any(), any())
     }
 
     "return 303 code" in {
-      val form = buildItemTypeJsonInput(
-        combinedNomenclatureCode = "12345678",
-        taricAdditionalCode = "1234",
-        nationalAdditionalCode = "123",
-        descriptionOfGoods = "Description of Goods.",
-        cusCode = "12345678",
-        statisticalValue = "12345.67"
-      )
-      val result = route(app, postRequest(uri, form)).get
-
+      val result = route(app, postRequest(uri, correctItemTypeJSON)).get
       status(result) must be(SEE_OTHER)
     }
 
     "redirect to \"Add Package Information\" page" in {
-      val form = buildItemTypeJsonInput(
-        combinedNomenclatureCode = "12345678",
-        taricAdditionalCode = "1234",
-        nationalAdditionalCode = "123",
-        descriptionOfGoods = "Description of Goods.",
-        cusCode = "12345678",
-        statisticalValue = "12345.67"
-      )
-      val result = route(app, postRequest(uri, form)).get
+      val result = route(app, postRequest(uri, correctItemTypeJSON)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
