@@ -21,7 +21,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 
 case class DispatchLocation(
-  value: String // 2 upper case alphabetic characters
+  dispatchLocation: String // 2 upper case alphabetic characters
 )
 
 object DispatchLocation {
@@ -29,14 +29,13 @@ object DispatchLocation {
 
   private val allowedValues = Set(AllowedDispatchLocations.OutsideEU, AllowedDispatchLocations.SpecialFiscalTerritory)
 
-  val formMapping: Mapping[DispatchLocation] = Forms.single(
+  val formMapping: Mapping[DispatchLocation] = Forms.mapping(
     "dispatchLocation" -> text(maxLength = 2)
       .verifying(
         "supplementary.dispatchLocation.inputText.errorMessage",
         input => input.nonEmpty && allowedValues(input)
       )
-      .transform[DispatchLocation](value => DispatchLocation(value), dispatchLocation => dispatchLocation.value)
-  )
+  )(DispatchLocation.apply)(DispatchLocation.unapply)
 
   val formId: String = "DispatchLocation"
 

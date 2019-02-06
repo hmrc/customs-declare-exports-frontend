@@ -17,8 +17,8 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
-import forms.supplementary.ProcedureCode._
 import forms.supplementary.ProcedureCodesData
+import forms.supplementary.ProcedureCodesData.formId
 import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 

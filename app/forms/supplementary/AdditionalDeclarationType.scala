@@ -21,7 +21,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 
 case class AdditionalDeclarationType(
-  value: String // 1 upper case alphabetic character
+  additionalDeclarationType: String // 1 upper case alphabetic character
 )
 
 object AdditionalDeclarationType {
@@ -30,17 +30,13 @@ object AdditionalDeclarationType {
   private val allowedValues =
     Set(AllowedAdditionalDeclarationTypes.Simplified, AllowedAdditionalDeclarationTypes.Standard)
 
-  val formMapping: Mapping[AdditionalDeclarationType] = Forms.single(
+  val formMapping: Mapping[AdditionalDeclarationType] = Forms.mapping(
     "additionalDeclarationType" -> text(maxLength = 1)
       .verifying(
         "supplementary.declarationType.inputText.errorMessage",
         input => input.nonEmpty && allowedValues(input)
       )
-      .transform[AdditionalDeclarationType](
-        value => AdditionalDeclarationType(value),
-        additionalDeclarationType => additionalDeclarationType.value
-      )
-  )
+  )(AdditionalDeclarationType.apply)(AdditionalDeclarationType.unapply)
 
   val formId = "AdditionalDeclarationType"
 

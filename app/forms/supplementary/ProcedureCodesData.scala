@@ -53,8 +53,6 @@ object ProcedureCode {
     )
   )(ProcedureCode.apply)(ProcedureCode.unapply)
 
-  val formId = "ProcedureCode"
-
   def form(): Form[ProcedureCode] = Form(mapping)
 }
 
@@ -86,5 +84,5 @@ case class ProcedureCodesData(procedureCode: Option[String], additionalProcedure
 object ProcedureCodesData {
   implicit val format = Json.format[ProcedureCodesData]
 
-  val cacheId = "ProcedureCodesData"
+  val formId = "ProcedureCodesData"
 }

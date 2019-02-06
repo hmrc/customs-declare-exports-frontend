@@ -18,15 +18,10 @@ package forms.supplementary
 
 import forms.supplementary.ItemType._
 import org.scalatest.{MustMatchers, WordSpec}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class ItemTypeSpec extends WordSpec with MustMatchers {
-
-  private val combinedNomenclatureCode = "ABCD1234"
-  private val taricAdditionalCode = "AB12"
-  private val nationalAdditionalCode = "CD34"
-  private val descriptionOfGoods = "Description of goods."
-  private val cusCode = "QWER0987"
-  private val statisticalValue = "1234567890123.45"
+  import ItemTypeSpec._
 
   "ItemType" should {
 
@@ -150,5 +145,53 @@ class ItemTypeSpec extends WordSpec with MustMatchers {
       }
     }
   }
+
+}
+
+object ItemTypeSpec {
+  private val combinedNomenclatureCode = "ABCD1234"
+  private val taricAdditionalCode = "AB12"
+  private val nationalAdditionalCode = "CD34"
+  private val descriptionOfGoods = "Description of goods."
+  private val cusCode = "QWER0987"
+  private val statisticalValue = "1234567890123.45"
+
+  val correctItemType = ItemType(
+    combinedNomenclatureCode = combinedNomenclatureCode,
+    taricAdditionalCode = Some(taricAdditionalCode),
+    nationalAdditionalCode = Some(nationalAdditionalCode),
+    descriptionOfGoods = descriptionOfGoods,
+    cusCode = Some(cusCode),
+    statisticalValue = statisticalValue
+  )
+  val emptyItemType = ItemType(
+    combinedNomenclatureCode = "",
+    taricAdditionalCode = None,
+    nationalAdditionalCode = None,
+    descriptionOfGoods = "",
+    cusCode = None,
+    statisticalValue = ""
+  )
+
+  val correctItemTypeJSON: JsValue = JsObject(
+    Map(
+      "combinedNomenclatureCode" -> JsString(combinedNomenclatureCode),
+      "taricAdditionalCode" -> JsString(taricAdditionalCode),
+      "nationalAdditionalCode" -> JsString(nationalAdditionalCode),
+      "descriptionOfGoods" -> JsString(descriptionOfGoods),
+      "cusCode" -> JsString(cusCode),
+      "statisticalValue" -> JsString(statisticalValue)
+    )
+  )
+  val emptyItemTypeJSON: JsValue = JsObject(
+    Map(
+      "combinedNomenclatureCode" -> JsString(""),
+      "taricAdditionalCode" -> JsString(""),
+      "nationalAdditionalCode" -> JsString(""),
+      "descriptionOfGoods" -> JsString(""),
+      "cusCode" -> JsString(""),
+      "statisticalValue" -> JsString("")
+    )
+  )
 
 }

@@ -49,7 +49,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       withCaching[TotalNumberOfItems](None)
 
       val incorrectTotalNumber: JsValue =
-        JsObject(Map("items" -> JsString("as3"), "totalPackage" -> JsString("asd12343")))
+        JsObject(Map("itemsQuantity" -> JsString("as3"), "totalPackage" -> JsString("asd12343")))
       val result = route(app, postRequest(uri, incorrectTotalNumber)).get
 
       contentAsString(result) must include(messages("supplementary.totalNumberOfItems.error"))
@@ -60,7 +60,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       withCaching[TotalNumberOfItems](None)
 
       val incorrectTotalNumber: JsValue =
-        JsObject(Map("items" -> JsString("1234"), "totalPackage" -> JsString("123456789")))
+        JsObject(Map("itemsQuantity" -> JsString("1234"), "totalPackage" -> JsString("123456789")))
       val result = route(app, postRequest(uri, incorrectTotalNumber)).get
 
       contentAsString(result) must include(messages("supplementary.totalNumberOfItems.error"))
@@ -70,7 +70,8 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
 
-      val incorrectTotalNumber: JsValue = JsObject(Map("items" -> JsString("000"), "totalPackage" -> JsString("123")))
+      val incorrectTotalNumber: JsValue =
+        JsObject(Map("itemsQuantity" -> JsString("000"), "totalPackage" -> JsString("123")))
       val result = route(app, postRequest(uri, incorrectTotalNumber)).get
 
       contentAsString(result) must include(messages("supplementary.totalNumberOfItems.error"))
@@ -80,7 +81,8 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
 
-      val correctTotalNumber: JsValue = JsObject(Map("items" -> JsString("100"), "totalPackage" -> JsString("123")))
+      val correctTotalNumber: JsValue =
+        JsObject(Map("itemsQuantity" -> JsString("100"), "totalPackage" -> JsString("123")))
       val result = route(app, postRequest(uri, correctTotalNumber)).get
       val header = result.futureValue.header
 
@@ -122,7 +124,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
       val incorrectOptionalFields: JsValue = JsObject(
         Map(
-          "items" -> JsString("100"),
+          "itemsQuantity" -> JsString("100"),
           "totalAmountInvoiced" -> JsString("12312312312312.122"),
           "exchangeRate" -> JsString("1212121.123456"),
           "totalPackage" -> JsString("123")
@@ -141,7 +143,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
       val incorrectOptionalFields: JsValue = JsObject(
         Map(
-          "items" -> JsString("100"),
+          "itemsQuantity" -> JsString("100"),
           "totalAmountInvoiced" -> JsString("12312312312312123.12"),
           "exchangeRate" -> JsString("1212121231.12345"),
           "totalPackage" -> JsString("123")
@@ -160,7 +162,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
       val incorrectOptionalFields: JsValue = JsObject(
         Map(
-          "items" -> JsString("100"),
+          "itemsQuantity" -> JsString("100"),
           "totalAmountInvoiced" -> JsString("12312312312312123"),
           "exchangeRate" -> JsString("1212121231123123"),
           "totalPackage" -> JsString("123")
