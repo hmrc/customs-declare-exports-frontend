@@ -52,7 +52,7 @@ class TransactionTypeController @Inject()(
           Future.successful(BadRequest(transaction_type(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[TransactionType](appConfig.appName, formId, form).map { _ =>
-            Redirect(controllers.supplementary.routes.GoodsItemNumberController.displayForm())
+            Redirect(controllers.supplementary.routes.PreviousDocumentsController.displayForm())
         }
       )
   }

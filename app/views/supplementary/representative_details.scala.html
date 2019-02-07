@@ -58,6 +58,7 @@
             field = form("statusCode"),
             legend = "",
             inputs = Seq(
+                RadioOption("statusCode_declarant", Declarant, messages("supplementary.representative.representationType.declarant")),
                 RadioOption("statusCode_direct", DirectRepresentative, messages("supplementary.representative.representationType.direct")),
                 RadioOption("statusCode_indirect", IndirectRepresentative, messages("supplementary.representative.representationType.indirect"))
             )

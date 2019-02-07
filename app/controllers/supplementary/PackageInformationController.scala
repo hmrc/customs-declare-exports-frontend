@@ -53,7 +53,7 @@ class PackageInformationController @Inject()(
           Future.successful(BadRequest(package_information(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[PackageInformation](appConfig.appName, formId, form).map { _ =>
-            Redirect(controllers.supplementary.routes.PreviousDocumentsController.displayForm())
+            Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm())
         }
       )
   }

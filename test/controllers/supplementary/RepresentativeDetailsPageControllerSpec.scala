@@ -222,7 +222,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/consignee-details")
+        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
       )
     }
 
@@ -234,7 +234,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/consignee-details")
+        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
       )
     }
 
@@ -260,14 +260,14 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       status(result) must be(SEE_OTHER)
     }
 
-    "redirect to \"Consignee Details\" page" in {
+    "redirect to \"Additional Actors\" page" in {
       withCaching[RepresentativeDetails](None)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/consignee-details")
+        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
       )
     }
   }

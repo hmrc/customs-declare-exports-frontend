@@ -36,11 +36,12 @@ GET         /representative-details         controllers.supplementary.Representa
 
 POST        /representative-details         controllers.supplementary.RepresentativeDetailsPageController.submitRepresentativeDetails()
 
-# Consignee address
+# Consignee details
 
 GET         /consignee-details              controllers.supplementary.ConsigneeDetailsPageController.displayForm()
 
 POST        /consignee-details              controllers.supplementary.ConsigneeDetailsPageController.saveAddress()
+
 
 # Declaration additional address
 

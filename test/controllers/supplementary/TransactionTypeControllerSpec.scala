@@ -69,7 +69,7 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/good-item-number")
+        Some("/customs-declare-exports/declaration/supplementary/previous-documents")
       )
     }
   }
