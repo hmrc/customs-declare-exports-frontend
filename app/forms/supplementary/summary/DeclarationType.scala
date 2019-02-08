@@ -20,12 +20,15 @@ import forms.MetadataPropertiesConvertable
 import forms.supplementary.{AdditionalDeclarationType, DispatchLocation}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-case class DeclarationType(dispatchLocation: String, additionalDeclarationType: String)
-    extends SummaryContainer with MetadataPropertiesConvertable {
+case class DeclarationType(
+  dispatchLocation: Option[DispatchLocation],
+  additionalDeclarationType: Option[AdditionalDeclarationType]
+) extends SummaryContainer with MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] = {
     val propertiesKey = "declaration.typeCode"
-    val propertiesValue = dispatchLocation + additionalDeclarationType
+    val propertiesValue = dispatchLocation.map(_.dispatchLocation).getOrElse("") +
+      additionalDeclarationType.map(_.additionalDeclarationType).getOrElse("")
     Map(propertiesKey -> propertiesValue)
   }
 
@@ -38,15 +41,6 @@ object DeclarationType {
     dispatchLocation = cacheMap.getEntry[DispatchLocation](DispatchLocation.formId),
     additionalDeclarationType = cacheMap.getEntry[AdditionalDeclarationType](AdditionalDeclarationType.formId)
   )
-
-  def apply(
-    dispatchLocation: Option[DispatchLocation],
-    additionalDeclarationType: Option[AdditionalDeclarationType]
-  ): DeclarationType =
-    new DeclarationType(
-      dispatchLocation = dispatchLocation.map(_.dispatchLocation).getOrElse(""),
-      additionalDeclarationType = additionalDeclarationType.map(_.additionalDeclarationType).getOrElse("")
-    )
 
   val id = "DeclarationType"
 }

@@ -29,7 +29,10 @@ class DeclarationTypeSpec extends WordSpec with MustMatchers {
     "return proper Metadata Properties" in {
       val declarationType = correctDeclarationType
       val expectedMetadataProperties: Map[String, String] =
-        Map("declaration.typeCode" -> (declarationType.dispatchLocation + declarationType.additionalDeclarationType))
+        Map(
+          "declaration.typeCode" -> (declarationType.dispatchLocation.get.dispatchLocation +
+            declarationType.additionalDeclarationType.get.additionalDeclarationType)
+        )
 
       declarationType.toMetadataProperties() must equal(expectedMetadataProperties)
     }
@@ -43,7 +46,7 @@ object DeclarationTypeSpec {
   val correctDeclarationType = DeclarationType(Some(correctDispatchLocation), Some(correctAdditionalDeclarationType))
   val emptyDispatchLocation = DispatchLocation("")
   val emptyAdditionalDeclarationType = AdditionalDeclarationType("")
-  val emptyDeclarationType = DeclarationType(Some(emptyDispatchLocation), Some(emptyAdditionalDeclarationType))
+  val emptyDeclarationType = DeclarationType(Some(correctDispatchLocation), Some(correctAdditionalDeclarationType))
 
   val correctDispatchLocationJSON: JsValue = JsObject(Map("dispatchLocation" -> JsString(OutsideEU)))
   val correctAdditionalDeclarationTypeJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString(Simplified)))
