@@ -87,10 +87,10 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
           supplementaryDeclarationData.declarationType must be(defined)
-          supplementaryDeclarationData.declarationType.get.dispatchLocation must equal(
+          supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(
             AllowedDispatchLocations.OutsideEU
           )
-          supplementaryDeclarationData.declarationType.get.additionalDeclarationType must equal("")
+          supplementaryDeclarationData.declarationType.get.additionalDeclarationType mustNot be(defined)
         }
 
         "CacheMap contains record for AdditionalDeclarationType only" in {
@@ -99,8 +99,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
           supplementaryDeclarationData.declarationType must be(defined)
-          supplementaryDeclarationData.declarationType.get.dispatchLocation must equal("")
-          supplementaryDeclarationData.declarationType.get.additionalDeclarationType must equal(
+          supplementaryDeclarationData.declarationType.get.dispatchLocation mustNot be(defined)
+          supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.additionalDeclarationType must equal(
             AllowedAdditionalDeclarationTypes.Simplified
           )
         }
@@ -117,10 +117,10 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
           supplementaryDeclarationData.declarationType must be(defined)
-          supplementaryDeclarationData.declarationType.get.dispatchLocation must equal(
+          supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(
             AllowedDispatchLocations.OutsideEU
           )
-          supplementaryDeclarationData.declarationType.get.additionalDeclarationType must equal(
+          supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.additionalDeclarationType must equal(
             AllowedAdditionalDeclarationTypes.Simplified
           )
         }
