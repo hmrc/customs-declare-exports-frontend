@@ -16,38 +16,38 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
-@import forms.supplementary.ProcedureCodes
+@import forms.supplementary.ProcedureCode
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[ProcedureCodes])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[ProcedureCode], codes: Seq[String])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-  title = messages("supplementary.procedureCodes.title"),
-  appConfig = appConfig
-) {
-
-  @helpers.form(ProcedureCodesPageController.submitProcedureCodes(), 'autoComplete -> "off") {
-    @components.back_link("/customs-declare-exports/declaration/supplementary/location-of-goods")
-    
-    @components.error_summary(form.errors)
-
-    @components.page_title(Some("supplementary.procedureCodes.title"))
-
-    @components.input_text(
-      field = form("procedureCode"),
-      label = messages("supplementary.procedureCodes.procedureCode.header"),
-      hint = Some(messages("supplementary.procedureCodes.procedureCode.header.hint"))
-    )
-
-    @components.input_text_multiple_elements(
-      fieldsContainer = form("additionalProcedureCodes"),
-      label = messages("supplementary.procedureCodes.additionalProcedureCode.header"),
-      hint = Some(messages("supplementary.procedureCodes.additionalProcedureCode.header.hint"))
-    )
+    @main_template(
+        title = messages("supplementary.procedureCodes.title"),
+        appConfig = appConfig
+    ) {
 
 
+        @helpers.form(ProcedureCodesPageController.submitProcedureCodes(), 'autoComplete -> "off") {
+            @components.back_link("/customs-declare-exports/declaration/supplementary/location-of-goods")
 
-    @components.submit_button()
-  }
+            @components.error_summary(form.errors)
 
-}
+            @components.page_title(Some("supplementary.procedureCodes.title"))
+
+            @components.input_text(
+                field = form("procedureCode"),
+                label = messages("supplementary.procedureCodes.procedureCode.header"),
+                hint = Some(messages("supplementary.procedureCodes.procedureCode.header.hint"))
+            )
+
+            @components.single_item_element_table(codes)
+
+            @components.input_text(
+                field = form("additionalProcedureCode"),
+                label = messages("supplementary.procedureCodes.additionalProcedureCode.header"),
+                hint = Some(messages("supplementary.procedureCodes.additionalProcedureCode.header.hint"))
+            )
+
+            @components.add_save_button()
+        }
+    }

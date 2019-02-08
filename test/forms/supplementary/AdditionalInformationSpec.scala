@@ -40,13 +40,9 @@ object AdditionalInformationSpec {
     AdditionalInformation(code = Some("12345"), description = Some("Description for Additional Information"))
   val emptyAdditionalInformation = AdditionalInformation(None, None)
 
-  val correctAdditionalInformationJSON: JsValue = JsObject(Map(
-    "code" -> JsString("12345"),
-    "description" -> JsString("Description for Additional Information")
-  ))
-  val emptyAdditionalInformationJSON: JsValue = JsObject(Map(
-    "code" -> JsString(""),
-    "description" -> JsString("")
-  ))
+  val correctAdditionalInformationJSON: JsValue = JsObject(
+    Map("code" -> JsString("12345"), "description" -> JsString("Description for Additional Information"))
+  )
+  val emptyAdditionalInformationJSON: JsValue = JsObject(Map("code" -> JsString(""), "description" -> JsString("")))
 
 }

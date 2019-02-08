@@ -41,7 +41,8 @@ case class TransportInformation(
       "declaration.goodsShipment.consignment.arrivalTransportMeans.modeCode" -> inlandModeOfTransportCode.getOrElse(""),
       "declaration.borderTransportMeans.modeCode" -> borderModeOfTransportCode,
       "declaration.goodsShipment.consignment.departureTransportMeans.identificationTypeCode" -> meansOfTransportOnDepartureType,
-      "declaration.goodsShipment.consignment.departureTransportMeans.id" -> meansOfTransportOnDepartureIDNumber.getOrElse(""),
+      "declaration.goodsShipment.consignment.departureTransportMeans.id" -> meansOfTransportOnDepartureIDNumber
+        .getOrElse(""),
       "declaration.borderTransportMeans.identificationTypeCode" -> meansOfTransportCrossingTheBorderType,
       "declaration.borderTransportMeans.id" -> meansOfTransportCrossingTheBorderIDNumber.getOrElse(""),
       "declaration.borderTransportMeans.registrationNationalityCode" ->

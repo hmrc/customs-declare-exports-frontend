@@ -45,7 +45,7 @@ case class GoodsLocation(
       "declaration.goodsShipment.consignment.goodsLocation.address.cityName" -> city.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.countryCode" ->
         allCountries.find(c => country.contains(c.countryName)).map(_.countryCode).getOrElse("")
-  )
+    )
 }
 
 object GoodsLocation {

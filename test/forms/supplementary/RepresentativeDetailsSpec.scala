@@ -45,25 +45,27 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
 object RepresentativeDetailsSpec {
   import forms.supplementary.EntityDetailsSpec._
 
-  val correctRepresentativeDetails = RepresentativeDetails(details = EntityDetailsSpec.correctEntityDetails, statusCode = DirectRepresentative)
-  val correctRepresentativeDetailsEORIOnly = RepresentativeDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly, statusCode = DirectRepresentative)
-  val correctRepresentativeDetailsAddressOnly = RepresentativeDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly, statusCode = DirectRepresentative)
-  val emptyRepresentativeDetails = RepresentativeDetails(details = EntityDetailsSpec.emptyEntityDetails, statusCode = "")
+  val correctRepresentativeDetails =
+    RepresentativeDetails(details = EntityDetailsSpec.correctEntityDetails, statusCode = DirectRepresentative)
+  val correctRepresentativeDetailsEORIOnly =
+    RepresentativeDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly, statusCode = DirectRepresentative)
+  val correctRepresentativeDetailsAddressOnly = RepresentativeDetails(
+    details = EntityDetailsSpec.correctEntityDetailsAddressOnly,
+    statusCode = DirectRepresentative
+  )
+  val emptyRepresentativeDetails =
+    RepresentativeDetails(details = EntityDetailsSpec.emptyEntityDetails, statusCode = "")
 
-  val correctRepresentativeDetailsJSON: JsValue = JsObject(Map(
-    "details" -> correctEntityDetailsJSON,
-    "statusCode" -> JsString(DirectRepresentative)
-  ))
-  val correctRepresentativeDetailsEORIOnlyJSON: JsValue = JsObject(Map(
-    "details" -> correctEntityDetailsEORIOnlyJSON,
-    "statusCode" -> JsString(DirectRepresentative)
-  ))
-  val correctRepresentativeDetailsAddressOnlyJSON: JsValue = JsObject(Map(
-    "details" -> correctEntityDetailsAddressOnlyJSON,
-    "statusCode" -> JsString(DirectRepresentative)
-  ))
-  val emptyRepresentativeDetailsJSON: JsValue = JsObject(Map(
-    "details" -> emptyEntityDetailsJSON,
-    "statusCode" -> JsString(DirectRepresentative)
-  ))
+  val correctRepresentativeDetailsJSON: JsValue = JsObject(
+    Map("details" -> correctEntityDetailsJSON, "statusCode" -> JsString(DirectRepresentative))
+  )
+  val correctRepresentativeDetailsEORIOnlyJSON: JsValue = JsObject(
+    Map("details" -> correctEntityDetailsEORIOnlyJSON, "statusCode" -> JsString(DirectRepresentative))
+  )
+  val correctRepresentativeDetailsAddressOnlyJSON: JsValue = JsObject(
+    Map("details" -> correctEntityDetailsAddressOnlyJSON, "statusCode" -> JsString(DirectRepresentative))
+  )
+  val emptyRepresentativeDetailsJSON: JsValue = JsObject(
+    Map("details" -> emptyEntityDetailsJSON, "statusCode" -> JsString(DirectRepresentative))
+  )
 }

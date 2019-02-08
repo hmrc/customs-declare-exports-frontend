@@ -206,20 +206,24 @@ object AddressSpec {
   )
   val emptyAddress = Address("", "", "", "", "")
 
-  val correctAddressJSON: JsValue = JsObject(Map(
-    "fullName" -> JsString("Full Name"),
-    "addressLine" -> JsString("Address Line"),
-    "townOrCity" -> JsString("Town or City"),
-    "postCode" -> JsString("AB12 34CD"),
-    "country" -> JsString("Poland")
-  ))
-  val emptyAddressJSON: JsValue = JsObject(Map(
-    "fullName" -> JsString(""),
-    "addressLine" -> JsString(""),
-    "townOrCity" -> JsString(""),
-    "postCode" -> JsString(""),
-    "country" -> JsString("")
-  ))
+  val correctAddressJSON: JsValue = JsObject(
+    Map(
+      "fullName" -> JsString("Full Name"),
+      "addressLine" -> JsString("Address Line"),
+      "townOrCity" -> JsString("Town or City"),
+      "postCode" -> JsString("AB12 34CD"),
+      "country" -> JsString("Poland")
+    )
+  )
+  val emptyAddressJSON: JsValue = JsObject(
+    Map(
+      "fullName" -> JsString(""),
+      "addressLine" -> JsString(""),
+      "townOrCity" -> JsString(""),
+      "postCode" -> JsString(""),
+      "country" -> JsString("")
+    )
+  )
 
   def buildAddressInputMap(address: Address): Map[String, String] = buildAddressInputMap(
     fullName = address.fullName,

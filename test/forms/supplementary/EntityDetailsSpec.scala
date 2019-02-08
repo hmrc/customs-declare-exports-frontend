@@ -149,7 +149,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
       }
     }
 
-    "contain errors for both EORI & Address" when  {
+    "contain errors for both EORI & Address" when {
       "both EORI & Address elements are wrong" in {
         val eori = "9GB!@#$%^&*"
         val address = Address(
@@ -219,48 +219,29 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
 }
 
-
 object EntityDetailsSpec {
-  val correctEntityDetails = EntityDetails(
-    eori = Some("9GB1234567ABCDEF"),
-    address = Some(AddressSpec.correctAddress)
-  )
-  val correctEntityDetailsEORIOnly = EntityDetails(
-    eori = Some("9GB1234567ABCDEF"),
-    address = None
-  )
-  val correctEntityDetailsAddressOnly = EntityDetails(
-    eori = None,
-    address = Some(AddressSpec.correctAddress)
-  )
+  val correctEntityDetails = EntityDetails(eori = Some("9GB1234567ABCDEF"), address = Some(AddressSpec.correctAddress))
+  val correctEntityDetailsEORIOnly = EntityDetails(eori = Some("9GB1234567ABCDEF"), address = None)
+  val correctEntityDetailsAddressOnly = EntityDetails(eori = None, address = Some(AddressSpec.correctAddress))
   val emptyEntityDetails = EntityDetails(None, None)
 
-  val correctEntityDetailsJSON: JsValue = JsObject(Map(
-    "eori" -> JsString("9GB1234567ABCDEF"),
-    "address" -> AddressSpec.correctAddressJSON
-  ))
-  val correctEntityDetailsEORIOnlyJSON: JsValue = JsObject(Map(
-    "eori" -> JsString("9GB1234567ABCDEF"),
-    "address" -> JsString("")
-  ))
-  val correctEntityDetailsAddressOnlyJSON: JsValue = JsObject(Map(
-    "eori" -> JsString(""),
-    "address" -> AddressSpec.correctAddressJSON
-  ))
-  val emptyEntityDetailsJSON: JsValue = JsObject(Map(
-    "eori" -> JsString(""),
-    "address" -> JsString("")
-  ))
+  val correctEntityDetailsJSON: JsValue = JsObject(
+    Map("eori" -> JsString("9GB1234567ABCDEF"), "address" -> AddressSpec.correctAddressJSON)
+  )
+  val correctEntityDetailsEORIOnlyJSON: JsValue = JsObject(
+    Map("eori" -> JsString("9GB1234567ABCDEF"), "address" -> JsString(""))
+  )
+  val correctEntityDetailsAddressOnlyJSON: JsValue = JsObject(
+    Map("eori" -> JsString(""), "address" -> AddressSpec.correctAddressJSON)
+  )
+  val emptyEntityDetailsJSON: JsValue = JsObject(Map("eori" -> JsString(""), "address" -> JsString("")))
 
   def buildEntityInputMap(entityDetails: EntityDetails): Map[String, String] = buildEntityInputMap(
     eori = entityDetails.eori.getOrElse(""),
     address = entityDetails.address.getOrElse(buildAddress())
   )
 
-  def buildEntityInputMap(
-    eori: String = "",
-    address: Address = buildAddress()
-  ): Map[String, String] = Map(
+  def buildEntityInputMap(eori: String = "", address: Address = buildAddress()): Map[String, String] = Map(
     "eori" -> eori,
     "address.fullName" -> address.fullName,
     "address.addressLine" -> address.addressLine,

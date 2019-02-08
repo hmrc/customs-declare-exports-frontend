@@ -50,12 +50,8 @@ object TotalNumberOfItemsSpec {
     exchangeRate = Some("123123123123"),
     totalPackage = "123"
   )
-  val emptyTotalNumberOfItems = TotalNumberOfItems(
-    itemsNo = "",
-    totalAmountInvoiced = None,
-    exchangeRate = None,
-    totalPackage = ""
-  )
+  val emptyTotalNumberOfItems =
+    TotalNumberOfItems(itemsNo = "", totalAmountInvoiced = None, exchangeRate = None, totalPackage = "")
 
   val correctTotalNumberOfItemsDecimalValuesJSON: JsValue = JsObject(
     Map(

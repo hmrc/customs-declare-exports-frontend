@@ -48,6 +48,8 @@ site.service_name = Declare an Export
 site.textarea.char_limit = (Limit is {0} characters)
 site.submit = Submit
 site.backToChoice = Back to choice page
+site.add = Add
+site.remove = Remove
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -331,9 +333,12 @@ supplementary.procedureCodes.procedureCode.error.length = Procedure code must be
 supplementary.procedureCodes.procedureCode.error.specialCharacters = Procedure code cannot contain special characters
 supplementary.procedureCodes.additionalProcedureCode.header = 1/11 Do you need to enter additional procedure codes?
 supplementary.procedureCodes.additionalProcedureCode.header.hint = A 3 digit code. Up to 99 may be declared for each goods item.
-supplementary.procedureCodes.additionalProcedureCode.error.singleEmpty = You have to enter at least one additional procedure code
 supplementary.procedureCodes.additionalProcedureCode.error.length = Additional procedure code must be exactly 3 characters long
 supplementary.procedureCodes.additionalProcedureCode.error.specialCharacters = Additional procedure code cannot contain special characters
+supplementary.procedureCodes.additionalProcedureCode.mandatory.error = You must have at least one additional procedure code
+supplementary.procedureCodes.additionalProcedureCode.maximumAmount.error = You can have up to 99 codes
+supplementary.procedureCodes.additionalProcedureCode.empty = You cannot add empty code
+supplementary.procedureCodes.additionalProcedureCode.duplication = You cannot add the same code like before
 
 supplementary.officeOfExit.title = Office of exit
 supplementary.officeOfExit = 5/12 Where is the office of exit?

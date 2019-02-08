@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package forms.supplementary
-import forms.MetadataPropertiesConvertable
-import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+@(
+    saveKey: String = "site.save_and_continue",
+    addKey: String = "site.add"
+)(implicit messages: Messages)
 
-case class ConsigneeDetails(details: EntityDetails) extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] = ???
-
-}
-
-object ConsigneeDetails {
-  implicit val format = Json.format[ConsigneeDetails]
-
-  val id = "ConsigneeDetails"
-
-  val mapping = Forms.mapping("details" -> EntityDetails.mapping)(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
-
-  def form(): Form[ConsigneeDetails] = Form(mapping)
-}
+<div class="section align='right'">
+    <button name="action" class="button" value="@messages(addKey)">@messages(addKey)</button>
+    <button name="action" class="button" value="@messages(saveKey)">@messages(saveKey)</button>
+</div>

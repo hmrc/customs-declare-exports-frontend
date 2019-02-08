@@ -16,7 +16,12 @@
 
 package base
 
-import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
+import connectors.{
+  CustomsDeclarationsConnector,
+  CustomsDeclareExportsConnector,
+  CustomsInventoryLinkingExportsConnector,
+  NrsConnector
+}
 import models._
 import models.requests.CancellationStatus
 import org.joda.time.DateTime

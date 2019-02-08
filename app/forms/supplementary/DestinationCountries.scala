@@ -28,7 +28,10 @@ case class DestinationCountries(countryOfDestination: Option[String], countryOfD
   override def toMetadataProperties(): Map[String, String] =
     Map(
       "declaration.goodsShipment.destination.countryCode" ->
-        allCountries.find(country => countryOfDestination.contains(country.countryName)).map(_.countryCode).getOrElse(""),
+        allCountries
+          .find(country => countryOfDestination.contains(country.countryName))
+          .map(_.countryCode)
+          .getOrElse(""),
       "declaration.goodsShipment.exportCountry.id" ->
         allCountries.find(country => countryOfDispatch.contains(country.countryName)).map(_.countryCode).getOrElse("")
     )

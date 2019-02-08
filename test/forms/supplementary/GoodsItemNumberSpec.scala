@@ -24,9 +24,8 @@ class GoodsItemNumberSpec extends WordSpec with MustMatchers {
   "Method toMetadataProperties" should {
     "return proper Metadata Properties" in {
       val goodsItemNumber = correctGoodsItemNumber
-      val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].sequenceNumeric" -> goodsItemNumber.goodItemNumber
-      )
+      val expectedMetadataProperties: Map[String, String] =
+        Map("declaration.goodsShipment.governmentAgencyGoodsItems[0].sequenceNumeric" -> goodsItemNumber.goodItemNumber)
 
       goodsItemNumber.toMetadataProperties() must equal(expectedMetadataProperties)
     }

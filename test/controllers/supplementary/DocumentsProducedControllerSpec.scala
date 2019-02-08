@@ -109,9 +109,7 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/summary")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/summary"))
     }
 
     "validate form - correct form" in {
@@ -123,9 +121,7 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/summary")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/summary"))
     }
   }
 }

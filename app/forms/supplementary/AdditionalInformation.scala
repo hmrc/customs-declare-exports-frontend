@@ -27,7 +27,8 @@ case class AdditionalInformation(code: Option[String], description: Option[Strin
 
   override def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementCode" -> code.getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementCode" -> code
+        .getOrElse(""),
       "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementDescription" -> description
         .getOrElse("")
     )
