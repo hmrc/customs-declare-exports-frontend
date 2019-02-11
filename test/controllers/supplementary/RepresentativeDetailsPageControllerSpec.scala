@@ -260,7 +260,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       status(result) must be(SEE_OTHER)
     }
 
-    "redirect to \"Additional Actors\" page" in {
+    "redirect to Additional Actors page" in {
       withCaching[RepresentativeDetails](None)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
