@@ -60,14 +60,14 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       stringResult must include(messages("site.remove"))
     }
 
-    "display \"back\" button that links to location-of-goods page" in {
+    "display \"back\" button that links to previous documents page" in {
       withCaching[ProcedureCodesData](None, formId)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages("site.back"))
-      stringResult must include("/declaration/supplementary/location-of-goods")
+      stringResult must include("/declaration/supplementary/previous-documents")
     }
   }
 

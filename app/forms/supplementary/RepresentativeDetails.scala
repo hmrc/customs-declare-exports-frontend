@@ -24,7 +24,7 @@ import services.Countries.allCountries
 
 case class RepresentativeDetails(
   details: EntityDetails,
-  statusCode: String //  numeric, [2] or [3]
+  statusCode: String //  numeric, [1] or [2] or [3]
 ) extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
@@ -46,10 +46,12 @@ case class RepresentativeDetails(
 }
 
 object RepresentativeDetails {
+  import StatusCodes._
+
   implicit val format = Json.format[RepresentativeDetails]
 
   private val representativeStatusCodeAllowedValues =
-    Set(StatusCodes.DirectRepresentative, StatusCodes.IndirectRepresentative)
+    Set(Declarant, DirectRepresentative, IndirectRepresentative)
 
   val formId = "RepresentativeDetails"
 
@@ -64,6 +66,7 @@ object RepresentativeDetails {
   def form(): Form[RepresentativeDetails] = Form(mapping)
 
   object StatusCodes {
+    val Declarant = "1"
     val DirectRepresentative = "2"
     val IndirectRepresentative = "3"
   }

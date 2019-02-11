@@ -57,7 +57,7 @@ class ChoiceController @Inject()(
           customsCacheService.cache[Choice](appConfig.appName, choiceId, validChoice).map { _ =>
             validChoice.choice match {
               case SupplementaryDec =>
-                Redirect(controllers.routes.RoleController.displayRolePage())
+                Redirect(controllers.supplementary.routes.DeclarationTypeController.displayDispatchLocationPage())
               case StandardDec =>
                 // TODO Standard declaration is not supported now
                 Redirect(controllers.routes.ChoiceController.displayChoiceForm())

@@ -28,15 +28,15 @@
     appConfig = appConfig
 ) {
     @helpers.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/declaration/supplementary/package-information")
+        @components.back_link("/customs-declare-exports/declaration/supplementary/transaction-type")
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("supplementary.previousDocuments.title"))
+        @components.page_title(Some("supplementary.previousDocuments.title"),Some("supplementary.previousDocuments.hint"))
 
         @components.input_radio(
             field = form("documentCategory"),
-            legend = messages("supplementary.previousDocuments.documentCategory"),
+            legend = messages(""),
             inputs = Seq(
                 RadioOption("Temporary storage", TemporaryStorage, messages("supplementary.previousDocuments.temporaryStorage")),
                 RadioOption("Simplified declaration", SimplifiedDeclaration, messages("supplementary.previousDocuments.simplifiedDeclaration")),

@@ -37,7 +37,6 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(OK)
       stringResult must include(messages("supplementary.previousDocuments.title"))
-      stringResult must include(messages("supplementary.previousDocuments.documentCategory"))
       stringResult must include(messages("supplementary.previousDocuments.temporaryStorage"))
       stringResult must include(messages("supplementary.previousDocuments.simplifiedDeclaration"))
       stringResult must include(messages("supplementary.previousDocuments.previousDocument"))
@@ -87,9 +86,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/additional-information")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/procedure-codes"))
     }
   }
 }

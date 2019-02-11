@@ -388,7 +388,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
 
     status(result) must be(SEE_OTHER)
     header.headers.get("Location") must be(
-      Some("/customs-declare-exports/declaration/supplementary/previous-documents")
+      Some("/customs-declare-exports/declaration/supplementary/additional-information")
     )
 
   }
@@ -402,7 +402,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
 
     status(result) must be(SEE_OTHER)
     header.headers.get("Location") must be(
-      Some("/customs-declare-exports/declaration/supplementary/previous-documents")
+      Some("/customs-declare-exports/declaration/supplementary/additional-information")
     )
   }
 

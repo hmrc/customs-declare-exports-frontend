@@ -55,7 +55,7 @@ class LocationController @Inject()(
           Future.successful(BadRequest(goods_location(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[GoodsLocation](appConfig.appName, formId, form).map { _ =>
-            Redirect(controllers.supplementary.routes.ProcedureCodesPageController.displayPage())
+            Redirect(controllers.supplementary.routes.OfficeOfExitController.displayForm())
         }
       )
   }
