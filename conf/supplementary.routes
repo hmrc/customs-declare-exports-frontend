@@ -144,3 +144,9 @@ POST        /transaction-type               controllers.supplementary.Transactio
 GET         /package-information            controllers.supplementary.PackageInformationController.displayForm()
 
 POST        /package-information            controllers.supplementary.PackageInformationController.submit()
+
+# Summary
+
+GET         /summary                        controllers.supplementary.SummaryPageController.displayPage()
+
+POST        /summary                        controllers.supplementary.SummaryPageController.submitSupplementaryDeclaration()
