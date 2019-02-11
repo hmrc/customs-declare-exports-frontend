@@ -37,6 +37,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
+      status(result) must be(OK)
       stringResult must include(messages("supplementary.procedureCodes.title"))
       stringResult must include(messages("supplementary.procedureCodes.procedureCode.header"))
       stringResult must include(messages("supplementary.procedureCodes.procedureCode.header.hint"))
@@ -51,6 +52,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
+      status(result) must be(OK)
       stringResult must include("123")
       stringResult must include("Remove:123")
       stringResult must include("234")
@@ -66,6 +68,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
+      status(result) must be(OK)
       stringResult must include(messages("site.back"))
       stringResult must include("/declaration/supplementary/good-item-number")
     }

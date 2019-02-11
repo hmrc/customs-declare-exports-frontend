@@ -39,6 +39,12 @@ class ProcedureCodesDataSpec extends WordSpec with MustMatchers {
     }
   }
 
+  "Procedure code limit" should {
+    "contains correct value" in {
+      ProcedureCodesData.limitOfCodes must be(99)
+    }
+  }
+
 }
 
 object ProcedureCodesDataSpec {

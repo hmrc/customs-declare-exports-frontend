@@ -85,4 +85,6 @@ object ProcedureCodesData {
   implicit val format = Json.format[ProcedureCodesData]
 
   val formId = "ProcedureCodesData"
+
+  val limitOfCodes = 99
 }

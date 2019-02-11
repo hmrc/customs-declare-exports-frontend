@@ -17,30 +17,36 @@
 package forms.supplementary
 import base.TestHelper
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
 class DeclarationHolderSpec extends WordSpec with MustMatchers {
   import DeclarationHolderSpec._
 
   "Method toMetadataProperties" should {
     "return proper Metadata Properties" in {
-      val declarationHolder = correctDeclarationHolder
+      val declarationHolders = correctDeclarationHolder
       val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.authorisationHolders[0].categoryCode" -> declarationHolder.authorisationTypeCode.get,
-        "declaration.authorisationHolders[0].id" -> declarationHolder.eori.get
+        "declaration.authorisationHolders[0].categoryCode" -> declarationHolders.holders.head.authorisationTypeCode.get,
+        "declaration.authorisationHolders[0].id" -> declarationHolders.holders.head.eori.get
       )
 
-      declarationHolder.toMetadataProperties() must equal(expectedMetadataProperties)
+      declarationHolders.toMetadataProperties() must equal(expectedMetadataProperties)
     }
   }
 
+  "Declaration object" should {
+    "contains correct limit value" in {
+      DeclarationHoldersData.limitOfHolders must be(99)
+    }
+  }
 }
 
 object DeclarationHolderSpec {
   private val eoriMaxLength = 17
 
-  val correctDeclarationHolder =
-    DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some("PL213472539481923"))
+  val correctDeclarationHolder = DeclarationHoldersData(
+    Seq(DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some("PL213472539481923")))
+  )
   val emptyDeclarationHolder = DeclarationHolder(authorisationTypeCode = None, eori = None)
   val incorrectDeclarationHolder =
     DeclarationHolder(
@@ -59,5 +65,9 @@ object DeclarationHolderSpec {
       "authorisationTypeCode" -> JsString("12345"),
       "eori" -> JsString(TestHelper.createRandomString(eoriMaxLength + 1))
     )
+  )
+
+  val correctDeclarationHoldersDataJSON: JsValue = JsObject(
+    Map("holders" -> JsArray(Seq(correctDeclarationHolderJSON)))
   )
 }

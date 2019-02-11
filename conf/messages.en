@@ -288,6 +288,9 @@ supplementary.declarationHolder.title = Declaration holder of authorisation
 supplementary.declarationHolder.authorisationCode = 3/39 Enter the authorisation code
 supplementary.declarationHolder.authorisationCode.hint = This is a 4 digit code
 supplementary.declarationHolder.authorisationCode.error = Authorisation code is incorrect
+supplementary.declarationHolder.authorisationCode.empty = Authorisation code cannot be empty
+supplementary.declarationHolders.maximumAmount.error = You cannot have more than 99 holders
+supplementary.declarationHolders.duplicated = You cannot add the same holder
 
 supplementary.destinationCountries.title = Declaration countries of dispatch/destination
 supplementary.destinationCountries.countryOfDestination = 5/8 Enter the country of destination

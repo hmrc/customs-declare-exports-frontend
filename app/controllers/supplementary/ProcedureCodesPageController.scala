@@ -19,7 +19,7 @@ package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
 import forms.supplementary.ProcedureCode.form
-import forms.supplementary.ProcedureCodesData.formId
+import forms.supplementary.ProcedureCodesData._
 import forms.supplementary.{ProcedureCode, ProcedureCodesData}
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -58,10 +58,9 @@ class ProcedureCodesPageController @Inject()(
     val actionType =
       request.body.asFormUrlEncoded.flatMap(_.get("action")).flatMap(_.headOption).getOrElse("Wrong action")
 
-    val cachedData =
-      customsCacheService
-        .fetchAndGetEntry[ProcedureCodesData](cacheId, formId)
-        .map(_.getOrElse(ProcedureCodesData(None, Seq())))
+    val cachedData = customsCacheService
+      .fetchAndGetEntry[ProcedureCodesData](cacheId, formId)
+      .map(_.getOrElse(ProcedureCodesData(None, Seq())))
 
     cachedData.flatMap { cache =>
       boundForm
@@ -73,7 +72,7 @@ class ProcedureCodesPageController @Inject()(
               case "Add"                             => addAnotherCodeHandler(validForm, cache)
               case "Save and continue"               => saveAndContinueHandler(validForm, cache)
               case value if value.contains("Remove") => removeCodeHandler(retrieveProcedureCode(value), cache)
-              case _                                 => displayErrorPage()
+              case _                                 => errorHandler.displayErrorPage()
             }
           }
         )
@@ -85,7 +84,7 @@ class ProcedureCodesPageController @Inject()(
     cachedData: ProcedureCodesData
   )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
     (userInput.additionalProcedureCode, cachedData.additionalProcedureCodes) match {
-      case (_, codes) if codes.length >= 99 =>
+      case (_, codes) if codes.length >= limitOfCodes =>
         handleErrorPage(
           Seq(("", "supplementary.procedureCodes.additionalProcedureCode.maximumAmount.error")),
           userInput,
@@ -125,7 +124,7 @@ class ProcedureCodesPageController @Inject()(
       customsCacheService.cache[ProcedureCodesData](cacheId, formId, updatedCache).map { _ =>
         Redirect(controllers.supplementary.routes.ProcedureCodesPageController.displayPage())
       }
-    } else displayErrorPage()
+    } else errorHandler.displayErrorPage()
 
   //scalastyle:off method.length
   private def saveAndContinueHandler(
@@ -163,7 +162,7 @@ class ProcedureCodesPageController @Inject()(
               cachedData.additionalProcedureCodes
             )
 
-          case ProcedureCode(_, Some(_)) if seq.length >= 99 =>
+          case ProcedureCode(_, Some(_)) if seq.length >= limitOfCodes =>
             handleErrorPage(
               Seq(("", "supplementary.procedureCodes.additionalProcedureCode.maximumAmount.error")),
               userInput,
@@ -191,17 +190,6 @@ class ProcedureCodesPageController @Inject()(
   //scalastyle:on methodLength
 
   private def retrieveProcedureCode(action: String): String = action.dropWhile(_ != ':').drop(1)
-
-  private def displayErrorPage()(implicit request: Request[_]): Future[Result] =
-    Future.successful(
-      BadRequest(
-        errorHandler.standardErrorTemplate(
-          pageTitle = messagesApi("global.error.title"),
-          heading = messagesApi("global.error.heading"),
-          message = messagesApi("global.error.message")
-        )
-      )
-    )
 
   private def handleErrorPage(
     fieldWithError: Seq[(String, String)],
