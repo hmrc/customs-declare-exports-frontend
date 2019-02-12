@@ -60,7 +60,7 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
       val result = route(app, getRequest(uri)).get
 
       contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("/declaration/supplementary/good-item-number")
+      contentAsString(result) must include("/declaration/supplementary/warehouse")
     }
   }
 

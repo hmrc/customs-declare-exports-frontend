@@ -54,7 +54,7 @@ class GoodsItemNumberController @Inject()(
           Future.successful(BadRequest(good_item_number(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[GoodsItemNumber](appConfig.appName, formId, form).map { _ =>
-            Redirect(controllers.supplementary.routes.ItemTypePageController.displayPage())
+            Redirect(controllers.supplementary.routes.ProcedureCodesPageController.displayPage())
         }
       )
   }

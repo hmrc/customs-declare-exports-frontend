@@ -86,7 +86,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/procedure-codes"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/good-item-number"))
     }
   }
 }

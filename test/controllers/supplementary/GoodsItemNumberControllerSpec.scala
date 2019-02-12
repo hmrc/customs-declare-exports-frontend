@@ -86,6 +86,6 @@ class GoodsItemNumberControllerSpec extends CustomExportsBaseSpec {
 
     status(result) must be(SEE_OTHER)
 
-    header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/item-type"))
+    header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/procedure-codes"))
   }
 }
