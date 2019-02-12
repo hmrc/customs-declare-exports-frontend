@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.supplementary.summary
+package models.declaration.supplementary
 
 import forms.supplementary.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes
 import forms.supplementary.AdditionalInformationSpec._
@@ -41,7 +41,7 @@ import forms.supplementary.TransactionTypeSpec._
 import forms.supplementary.TransportInformationSpec._
 import forms.supplementary.WarehouseIdentificationSpec._
 import forms.supplementary._
-import forms.supplementary.summary.DeclarationTypeSpec._
+import models.declaration.supplementary.DeclarationTypeSpec._
 import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsArray, JsObject, JsString, Json}

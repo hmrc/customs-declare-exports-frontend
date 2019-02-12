@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.supplementary.summary
+package models.declaration.supplementary
 
 import forms.MetadataPropertiesConvertable
 import forms.supplementary.{AdditionalDeclarationType, DispatchLocation}
@@ -36,11 +36,10 @@ case class DeclarationType(
 }
 
 object DeclarationType {
+  val id = "DeclarationType"
 
   def apply(cacheMap: CacheMap): DeclarationType = DeclarationType(
     dispatchLocation = cacheMap.getEntry[DispatchLocation](DispatchLocation.formId),
     additionalDeclarationType = cacheMap.getEntry[AdditionalDeclarationType](AdditionalDeclarationType.formId)
   )
-
-  val id = "DeclarationType"
 }
