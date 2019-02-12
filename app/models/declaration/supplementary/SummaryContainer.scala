@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.supplementary.summary
+package models.declaration.supplementary
 
 trait SummaryContainer {
   def isEmpty: Boolean

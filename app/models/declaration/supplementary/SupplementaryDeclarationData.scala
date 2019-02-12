@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.supplementary.summary
+package models.declaration.supplementary
 
 import forms.MetadataPropertiesConvertable
 import forms.supplementary._
@@ -79,5 +79,4 @@ object SupplementaryDeclarationData {
 
   private def flattenIfEmpty[A <: SummaryContainer](container: A): Option[A] =
     if (container.isEmpty) None else Some(container)
-
 }

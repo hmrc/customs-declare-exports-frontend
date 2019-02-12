@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.supplementary.summary
+package models.declaration.supplementary
 
 import forms.supplementary.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes.Simplified
 import forms.supplementary.DispatchLocation.AllowedDispatchLocations.OutsideEU

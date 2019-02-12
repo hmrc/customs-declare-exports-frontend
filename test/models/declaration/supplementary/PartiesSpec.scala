@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.supplementary.summary
+package models.declaration.supplementary
 
 import forms.supplementary._
 import org.mockito.Mockito.{mock, times, verify, when}
