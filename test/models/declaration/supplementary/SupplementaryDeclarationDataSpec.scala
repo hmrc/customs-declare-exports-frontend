@@ -44,7 +44,7 @@ import forms.supplementary._
 import models.declaration.supplementary.DeclarationTypeSpec._
 import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsArray, JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, JsString, Json}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
@@ -170,11 +170,11 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.parties.get.exporterDetails must be(defined)
           supplementaryDeclarationData.parties.get.exporterDetails.get must equal(exporterDetails)
           supplementaryDeclarationData.locations must be(defined)
-          supplementaryDeclarationData.locations.get.procedureCodes must be(defined)
-          supplementaryDeclarationData.locations.get.procedureCodes.get.procedureCode must equal(
+          supplementaryDeclarationData.locations.get.procedureCodesData must be(defined)
+          supplementaryDeclarationData.locations.get.procedureCodesData.get.procedureCode must equal(
             procedureCodes.procedureCode
           )
-          supplementaryDeclarationData.locations.get.procedureCodes.get.additionalProcedureCodes must equal(
+          supplementaryDeclarationData.locations.get.procedureCodesData.get.additionalProcedureCodes must equal(
             procedureCodes.additionalProcedureCodes
           )
         }
@@ -206,12 +206,12 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.parties.get.exporterDetails must be(defined)
           supplementaryDeclarationData.parties.get.exporterDetails.get must equal(exporterDetails)
           supplementaryDeclarationData.locations must be(defined)
-          supplementaryDeclarationData.locations.get.procedureCodes must be(defined)
-          supplementaryDeclarationData.locations.get.procedureCodes.get.procedureCode must be(defined)
-          supplementaryDeclarationData.locations.get.procedureCodes.get.procedureCode.get must equal(
+          supplementaryDeclarationData.locations.get.procedureCodesData must be(defined)
+          supplementaryDeclarationData.locations.get.procedureCodesData.get.procedureCode must be(defined)
+          supplementaryDeclarationData.locations.get.procedureCodesData.get.procedureCode.get must equal(
             procedureCodes.procedureCode.get
           )
-          supplementaryDeclarationData.locations.get.procedureCodes.get.additionalProcedureCodes must equal(
+          supplementaryDeclarationData.locations.get.procedureCodesData.get.additionalProcedureCodes must equal(
             procedureCodes.additionalProcedureCodes
           )
         }
@@ -232,7 +232,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.locations must be(defined)
           supplementaryDeclarationData.locations.get.destinationCountries must be(defined)
           supplementaryDeclarationData.locations.get.goodsLocation must be(defined)
-          supplementaryDeclarationData.locations.get.procedureCodes must be(defined)
+          supplementaryDeclarationData.locations.get.procedureCodesData must be(defined)
           supplementaryDeclarationData.locations.get.supervisingCustomsOffice must be(defined)
           supplementaryDeclarationData.locations.get.warehouseIdentification must be(defined)
           supplementaryDeclarationData.locations.get.officeOfExit must be(defined)
@@ -462,7 +462,7 @@ object SupplementaryDeclarationDataSpec {
       Locations(
         destinationCountries = Some(correctDestinationCountries),
         goodsLocation = Some(correctGoodsLocation),
-        procedureCodes = Some(correctProcedureCodes),
+        procedureCodesData = Some(correctProcedureCodes),
         supervisingCustomsOffice = Some(correctSupervisingCustomsOffice),
         warehouseIdentification = Some(correctWarehouseIdentification),
         officeOfExit = Some(correctOfficeOfExit)

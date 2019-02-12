@@ -16,10 +16,10 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
-@import forms.supplementary.ProcedureCode
+@import forms.supplementary.ProcedureCodes
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[ProcedureCode], codes: Seq[String])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[ProcedureCodes], codes: Seq[String])(implicit request: Request[_], messages: Messages)
 
     @main_template(
         title = messages("supplementary.procedureCodes.title"),

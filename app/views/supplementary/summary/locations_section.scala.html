@@ -1,0 +1,81 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.declaration.supplementary.Locations
+@import models.viewmodels.HtmlTableRow
+
+@(locations: Option[Locations])(implicit messages: Messages)
+
+@components.summary_list(Some(messages("supplementary.summary.locations.header"))) {
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.dispatchCountry"),
+        values = locations.flatMap(_.destinationCountries).map(_.countryOfDispatch)
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.destinationCountry"),
+        values = locations.flatMap(_.destinationCountries).flatMap(_.countryOfDestination)
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.goodsExaminationLocationType"),
+        values = locations.flatMap(_.goodsLocation).flatMap(_.typeOfLocation)
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.qualifierCode"),
+        values = locations.flatMap(_.goodsLocation).flatMap(_.qualifierOfIdentification)
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.locationCode"),
+        values = locations.flatMap(_.goodsLocation).flatMap(_.identificationOfLocation)
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.additionalQualifier"),
+        values = locations.flatMap(_.goodsLocation).flatMap(_.additionalIdentifier)
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.goodsExaminationAddress"),
+        values = Seq(
+            locations.flatMap(_.goodsLocation).flatMap(_.streetAndNumber),
+            locations.flatMap(_.goodsLocation).flatMap(_.city),
+            locations.flatMap(_.goodsLocation).flatMap(_.postCode),
+            locations.flatMap(_.goodsLocation).flatMap(_.country)
+        )
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.procedureCode"),
+        values = locations.flatMap(_.procedureCodesData).flatMap(_.procedureCode)
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.additionalProcedureCodes"),
+        values = Seq(Some("Not implemented yet"))
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.warehouseId"),
+        values = locations.flatMap(_.warehouseIdentification).flatMap(_.id)
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.supervisingCustomsOffice"),
+        values = locations.flatMap(_.supervisingCustomsOffice).flatMap(_.office)
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.officeOfExit"),
+        values = locations.flatMap(_.officeOfExit).map(_.officeId)
+    ))
+}

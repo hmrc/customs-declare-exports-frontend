@@ -32,7 +32,7 @@ class LocationsSpec extends WordSpec with MustMatchers {
     val locations = Locations(
       destinationCountries = Some(destinationCountriesMock),
       goodsLocation = Some(goodsLocationMock),
-      procedureCodes = Some(procedureCodesMock),
+      procedureCodesData = Some(procedureCodesMock),
       supervisingCustomsOffice = Some(supervisingCustomsOfficeMock),
       warehouseIdentification = Some(warehouseIdentificationMock),
       officeOfExit = Some(officeOfExitMock)

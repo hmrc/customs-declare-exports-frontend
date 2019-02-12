@@ -18,9 +18,10 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.{DeclarationHolder, DeclarationHoldersData}
+import forms.supplementary.DeclarationHolder
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.declaration.supplementary.DeclarationHoldersData
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -40,8 +41,8 @@ class DeclarationHolderController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  import forms.supplementary.DeclarationHolder._
-  import forms.supplementary.DeclarationHoldersData._
+  import forms.supplementary.DeclarationHolder.form
+  import models.declaration.supplementary.DeclarationHoldersData._
 
   val cacheId = appConfig.appName
 

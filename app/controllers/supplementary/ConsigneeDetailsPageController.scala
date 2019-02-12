@@ -29,6 +29,10 @@ import views.html.supplementary.consignee_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
+/**
+  * This controller is not used in supp dec journey
+  */
+
 class ConsigneeDetailsPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,

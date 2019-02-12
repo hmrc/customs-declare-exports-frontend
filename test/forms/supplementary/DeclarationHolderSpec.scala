@@ -16,6 +16,7 @@
 
 package forms.supplementary
 import base.TestHelper
+import models.declaration.supplementary.DeclarationHoldersData
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 

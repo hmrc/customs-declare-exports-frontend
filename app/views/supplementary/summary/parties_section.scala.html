@@ -1,0 +1,91 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.supplementary.Address
+@import models.declaration.supplementary.Parties
+@import models.viewmodels.HtmlTableRow
+
+@(parties: Option[Parties])(implicit messages: Messages)
+
+@extractAddressValues(address: Option[Address]) = @{
+    Seq(
+        address.map(_.fullName),
+        address.map(_.addressLine),
+        address.map(_.townOrCity),
+        address.map(_.postCode),
+        address.map(_.country)
+    )
+}
+
+@components.summary_list(Some(messages("supplementary.summary.parties.header"))) {
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.exporterId"),
+        values = parties.flatMap(_.exporterDetails).flatMap(_.details.eori)
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.exporterAddress"),
+        values = extractAddressValues(parties.flatMap(_.exporterDetails).flatMap(_.details.address))
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.declarantId"),
+        values = parties.flatMap(_.declarantDetails).flatMap(_.details.eori)
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.declarantAddress"),
+        values = extractAddressValues(parties.flatMap(_.declarantDetails).flatMap(_.details.address))
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.representativeId"),
+        values = parties.flatMap(_.representativeDetails).flatMap(_.details.eori)
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.representativeAddress"),
+        values = extractAddressValues(parties.flatMap(_.representativeDetails).flatMap(_.details.address))
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.representationType"),
+        values = parties.flatMap(_.representativeDetails).map(_.statusCode)
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.consigneeId"),
+        values = parties.flatMap(_.consigneeDetails).flatMap(_.details.eori)
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.consigneeAddress"),
+        values = extractAddressValues(parties.flatMap(_.consigneeDetails).flatMap(_.details.address))
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.additionalPartiesId"),
+        values = parties.flatMap(_.declarationAdditionalActors).flatMap(_.eori)
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.additionalPartiesType"),
+        values = parties.flatMap(_.declarationAdditionalActors).flatMap(_.partyType)
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.idStatusNumberAuthorisationCode"),
+        values = Seq(Some("Not implemented yet"))
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.authorizedPartyEori"),
+        values = Seq(Some("Not implemented yet"))
+    ))
+}
