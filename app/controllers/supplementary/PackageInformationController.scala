@@ -26,6 +26,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import forms.supplementary.PackageInformation
+import handlers.ErrorHandler
+import play.api.data.Form
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import views.html.supplementary.package_information
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,6 +38,7 @@ class PackageInformationController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
@@ -58,4 +63,47 @@ class PackageInformationController @Inject()(
         }
       )
   }
+//
+//  def submitProcedureCodes(): Action[AnyContent] = authenticate.async { implicit request =>
+//    val boundForm = form.bindFromRequest()
+//
+//    val actionType =
+//      request.body.asFormUrlEncoded.flatMap(_.get("action")).flatMap(_.headOption).getOrElse("Wrong action")
+//
+//    val cachedData =
+//      customsCacheService
+//        .fetchAndGetEntry[PackageInformation](cacheId, formId)
+//        .map(_.getOrElse(PackageInoformationData(None, Seq())))
+//
+//    cachedData.flatMap { cache =>
+//      boundForm
+//        .fold(
+//          (formWithErrors: Form[PackageInformation]) =>
+//            Future.successful(BadRequest(package_information(appConfig, formWithErrors, cache.additionalProcedureCodes))),
+//          validForm => {
+//            actionType match {
+//              case "Add"                             => addAnotherPackageAndTypeHandler(validForm, cache)
+//              case "Save and continue"               => saveAndContinueHandler(validForm, cache)
+//              case value if value.contains("Remove") => removeTypeHandler(retrieveProcedureCode(value), cache)
+//              case _                                 => displayErrorPage()
+//            }
+//          }
+//        )
+//    }
+//  }
+//
+//  private def addAnotherPackageAndTypeHandler(typesOfPackages: PackageInformation, numberOfPackages: PackageInformation)
+//
+//  private def displayErrorPage()(implicit request: Request[_]): Future[Result] =
+//    Future.successful(
+//      BadRequest(
+//        errorHandler.standardErrorTemplate(
+//          pageTitle = messagesApi("global.error.title"),
+//          heading = messagesApi("global.error.heading"),
+//          message = messagesApi("global.error.message")
+//        )
+//      )
+//    )
+//  private def removeTypeHandler()
+
 }
