@@ -1,0 +1,77 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import uk.gov.hmrc.play.views.html._
+@import controllers.supplementary.routes.SummaryPageController
+@import models.declaration.supplementary.SupplementaryDeclarationData
+@import models.declaration.supplementary.Parties
+@import models.viewmodels.HtmlTableRow
+@import views.html.supplementary.summary._
+
+@(appConfig: AppConfig, suppDecData: SupplementaryDeclarationData)(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("supplementary.summary.title"),
+    appConfig = appConfig) {
+
+
+    @components.back_link("/customs-declare-exports/declaration/supplementary/add-document")
+
+    @components.page_title(title = Some(messages("supplementary.summary.header")))
+
+
+    @components.summary_list(Some(messages("supplementary.summary.declarationType.header"))) {
+        @components.table_row_no_change_link(HtmlTableRow(
+            label = messages("supplementary.summary.declarationType.dispatchLocation"),
+            values = suppDecData.declarationType.flatMap(_.dispatchLocation).map(_.dispatchLocation)
+        ))
+        @components.table_row_no_change_link(HtmlTableRow(
+            label = messages("supplementary.summary.declarationType.supplementaryDeclarationType"),
+            values = suppDecData.declarationType.flatMap(_.additionalDeclarationType).map(_.additionalDeclarationType)
+        ))
+    }
+
+    @components.summary_list(Some(messages("supplementary.summary.yourReferences.header"))) {
+        @components.table_row_no_change_link(HtmlTableRow(
+            label = messages("supplementary.summary.yourReferences.ducr"),
+            values = Seq(suppDecData.consignmentReferences.flatMap(_.ducr.map(_.ducr)))
+        ))
+        @components.table_row_no_change_link(HtmlTableRow(
+            label = messages("supplementary.summary.yourReferences.lrn"),
+            values = Seq(suppDecData.consignmentReferences.map(_.lrn))
+        ))
+    }
+
+    @parties_section(suppDecData.parties)
+
+    @locations_section(suppDecData.locations)
+
+    @transport_section(suppDecData.transportInformation)
+
+    @items_section(suppDecData.items)
+
+    @previous_documents_section(suppDecData.previousDocuments)
+
+    @additional_information_section(suppDecData.additionalInformation)
+
+    @additional_documentation_section(suppDecData.documentsProduced)
+
+
+    @helpers.form(action = SummaryPageController.displayPage()) {
+        @components.submit_button("Accept and submit declaration")
+    }
+}

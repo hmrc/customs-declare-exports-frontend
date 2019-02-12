@@ -18,12 +18,13 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import models.{CustomsDeclarationsResponse, NrsSubmissionResponse, SignedInUser}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.verification.VerificationMode
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.MetaData
 
 import scala.concurrent.Future
@@ -31,11 +32,10 @@ import scala.concurrent.Future
 class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
   private trait test {
+    implicit val headerCarrierMock = mock[HeaderCarrier]
     val summaryPageUri = uriWithContextPath("/declaration/supplementary/summary")
-    authorizedUser()
-  }
-
-  private trait testUsingMocks extends test {
+    val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
+    val emptyMetadata: MetaData = MetaData()
     val onlyOnce: VerificationMode = times(1)
 
     reset(mockCustomsCacheService)
@@ -43,16 +43,12 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     reset(mockCustomsDeclarationsConnector)
     reset(mockCustomsDeclareExportsConnector)
     reset(mockMetrics)
-  }
 
-  private trait testSubmission extends testUsingMocks {
-    val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
-    val emptyMetadata: MetaData = MetaData()
-    implicit val headerCarrierMock = mock[HeaderCarrier]
-
+    authorizedUser()
     withCaching(None, appConfig.appName)
+    when(mockCustomsCacheService.fetch(anyString())(any(), any()))
+      .thenReturn(Future.successful(Some(CacheMap(appConfig.appName, Map.empty))))
   }
-
 
   "Summary page on displayPage" should {
     "return 200 code" in new test {
@@ -88,11 +84,16 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
       resultAsString must include(messages("supplementary.summary.parties.header"))
       resultAsString must include(messages("supplementary.summary.parties.exporterId"))
+      resultAsString must include(messages("supplementary.summary.parties.exporterAddress"))
       resultAsString must include(messages("supplementary.summary.parties.declarantId"))
+      resultAsString must include(messages("supplementary.summary.parties.declarantAddress"))
       resultAsString must include(messages("supplementary.summary.parties.representativeId"))
+      resultAsString must include(messages("supplementary.summary.parties.representativeAddress"))
       resultAsString must include(messages("supplementary.summary.parties.representationType"))
       resultAsString must include(messages("supplementary.summary.parties.consigneeId"))
-      resultAsString must include(messages("supplementary.summary.parties.additionalParties"))
+      resultAsString must include(messages("supplementary.summary.parties.consigneeAddress"))
+      resultAsString must include(messages("supplementary.summary.parties.additionalPartiesId"))
+      resultAsString must include(messages("supplementary.summary.parties.additionalPartiesType"))
       resultAsString must include(messages("supplementary.summary.parties.idStatusNumberAuthorisationCode"))
       resultAsString must include(messages("supplementary.summary.parties.authorizedPartyEori"))
     }
@@ -103,10 +104,10 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       resultAsString must include(messages("supplementary.summary.locations.header"))
       resultAsString must include(messages("supplementary.summary.locations.dispatchCountry"))
       resultAsString must include(messages("supplementary.summary.locations.destinationCountry"))
-      resultAsString must include(messages("supplementary.summary.locations.goodsExaminationCountry"))
+      resultAsString must include(messages("supplementary.summary.locations.goodsExaminationAddress"))
       resultAsString must include(messages("supplementary.summary.locations.goodsExaminationLocationType"))
       resultAsString must include(messages("supplementary.summary.locations.qualifierCode"))
-      resultAsString must include(messages("supplementary.summary.locations.locationCodeAdditionalQualifier"))
+      resultAsString must include(messages("supplementary.summary.locations.additionalQualifier"))
       resultAsString must include(messages("supplementary.summary.locations.procedureCode"))
       resultAsString must include(messages("supplementary.summary.locations.additionalProcedureCodes"))
       resultAsString must include(messages("supplementary.summary.locations.warehouseId"))
@@ -120,8 +121,12 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       resultAsString must include(messages("supplementary.summary.transport.header"))
       resultAsString must include(messages("supplementary.summary.transport.inlandTransportMode"))
       resultAsString must include(messages("supplementary.summary.transport.borderTransportMode"))
-      resultAsString must include(messages("supplementary.summary.transport.activeMeansOfTransport"))
-      resultAsString must include(messages("supplementary.summary.transport.activeMeansOfTransportNationality"))
+      resultAsString must include(messages("supplementary.summary.transport.meansOfTransportOnDepartureType"))
+      resultAsString must include(messages("supplementary.summary.transport.meansOfTransportOnDepartureId"))
+      resultAsString must include(messages("supplementary.summary.transport.meansOfTransportCrossingBorderType"))
+      resultAsString must include(messages("supplementary.summary.transport.meansOfTransportCrossingBorderId"))
+      resultAsString must include(messages("supplementary.summary.transport.meansOfTransportCrossingBorderNationality"))
+      resultAsString must include(messages("supplementary.summary.transport.containerId"))
     }
 
     "display content for Item module" in new test {
@@ -131,6 +136,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       resultAsString must include(messages("supplementary.summary.items.numberOfItems"))
       resultAsString must include(messages("supplementary.summary.items.amountInvoiced"))
       resultAsString must include(messages("supplementary.summary.items.exchangeRate"))
+      resultAsString must include(messages("supplementary.summary.items.numberOfPackages"))
       resultAsString must include(messages("supplementary.summary.items.transactionType"))
       resultAsString must include(messages("supplementary.summary.items.itemNumber"))
       resultAsString must include(messages("supplementary.summary.items.commodityCode"))
@@ -151,69 +157,77 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
       resultAsString must include(messages("supplementary.summary.previousDocuments.header"))
+      resultAsString must include(messages("supplementary.summary.previousDocuments.documentCategory"))
+      resultAsString must include(messages("supplementary.summary.previousDocuments.documentType"))
+      resultAsString must include(messages("supplementary.summary.previousDocuments.documentReference"))
+      resultAsString must include(messages("supplementary.summary.previousDocuments.goodsItemIdentifier"))
       resultAsString must include(messages("supplementary.summary.additionalInformation.header"))
+      resultAsString must include(messages("supplementary.summary.additionalInformation.code"))
+      resultAsString must include(messages("supplementary.summary.additionalInformation.description"))
       resultAsString must include(messages("supplementary.summary.additionalDocumentation.header"))
+      resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentTypeCode"))
+      resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentId"))
+      resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentPart"))
+      resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentStatus"))
+      resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentStatusReason"))
     }
 
-    "get the whole supplementary declaration data from cache" in new testUsingMocks {
-      withCaching(None, appConfig.appName)
-      implicit val hc = mock[HeaderCarrier]
-
+    "get the whole supplementary declaration data from cache" in new test {
       route(app, getRequest(summaryPageUri)).get.futureValue
-
-      verify(mockCustomsCacheService, onlyOnce).fetch(appConfig.appName)
+      verify(mockCustomsCacheService, onlyOnce).fetch(anyString())(any(), any())
     }
   }
 
-  "Summary Page on submitSupplementaryDeclaration" should {
-    "get the whole supplementary declaration data from cache" in new testSubmission {
-      route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-      verify(mockCustomsCacheService, onlyOnce).fetch(appConfig.appName)
-    }
+  "Summary Page on submitSupplementaryDeclaration" when {
 
-    "send declaration data to Customs Declarations" in new testSubmission {
-      route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-      verify(mockCustomsDeclarationsConnector, onlyOnce).submitExportDeclaration(emptyMetadata)
-    }
+    "everything is correct" should {
+      "get the whole supplementary declaration data from cache" in new test {
+        route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
+        verify(mockCustomsCacheService, onlyOnce).fetch(appConfig.appName)
+      }
 
-    "send declaration data to NRS" in new testSubmission {
-      route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
+      "send declaration data to Customs Declarations" in new test {
+        route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
+        verify(mockCustomsDeclarationsConnector, onlyOnce).submitExportDeclaration(emptyMetadata)
+      }
 
-      implicit val signedInUserMock = mock[SignedInUser]
-      verify(mockNrsService, onlyOnce).submit(any(), emptyForm.toString, any())
-    }
+      "send declaration data to NRS" in new test {
+        route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
 
-    "save submission response in customs-declare-exports service" in new testSubmission {
-      route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-      verify(mockCustomsDeclareExportsConnector, onlyOnce).saveSubmissionResponse(any())
-    }
+        implicit val signedInUserMock = mock[SignedInUser]
+        verify(mockNrsService, onlyOnce).submit(any(), emptyForm.toString, any())
+      }
 
-    "remove supplementary declaration data from cache" in new testSubmission {
-      route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-      verify(mockCustomsCacheService, onlyOnce).remove(appConfig.appName)
-    }
+      "save submission response in customs-declare-exports service" in new test {
+        route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
+        verify(mockCustomsDeclareExportsConnector, onlyOnce).saveSubmissionResponse(any())
+      }
 
-    pending
-    "return 303 code" in new testSubmission {
-      val result = route(app, postRequest(summaryPageUri, emptyForm)).get
-      status(result) must be(SEE_OTHER)
-    }
+      "remove supplementary declaration data from cache" in new test {
+        route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
+        verify(mockCustomsCacheService, onlyOnce).remove(appConfig.appName)
+      }
 
-    pending
-    "redirect to confirmation page" in new testSubmission {
-      val result = route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-      val header = result.header
+      pending
+      "return 303 code" in new test {
+        val result = route(app, postRequest(summaryPageUri, emptyForm)).get
+        status(result) must be(SEE_OTHER)
+      }
 
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/confirmation")
-      )
+      pending
+      "redirect to confirmation page" in new test {
+        val result = route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
+        val header = result.header
+
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/confirmation"))
+      }
     }
   }
 
   "Summary Page on submitSupplementaryDeclaration" when {
 
     "got error from Customs Declarations" should {
-      "display error page" in new testSubmission {
+      "display error page" in new test {
         when(mockCustomsDeclarationsConnector.submitExportDeclaration(emptyMetadata))
           .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
 
@@ -224,7 +238,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("global.error.message"))
       }
 
-      "not remove data from cache" in new testSubmission {
+      "not remove data from cache" in new test {
         when(mockCustomsDeclarationsConnector.submitExportDeclaration(emptyMetadata))
           .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
 
@@ -235,7 +249,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     }
 
     "got error from NRS" should {
-      "continue and save submission response in customs-declare-exports service" in new testSubmission {
+      "continue and save submission response in customs-declare-exports service" in new test {
         when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(NrsSubmissionResponse("")))
 
@@ -246,7 +260,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     }
 
     "got exception during saving submission response in customs-declare-exports service" should {
-      "display error page" in new testSubmission {
+      "display error page" in new test {
         when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
           .thenThrow(new RuntimeException())
 //          .thenReturn(Future.successful(CustomsDeclareExportsResponse(BAD_REQUEST, "")))
@@ -258,7 +272,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("global.error.message"))
       }
 
-      "remove data from cache" in new testSubmission {
+      "remove data from cache" in new test {
         when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
           .thenThrow(new RuntimeException())
 //          .thenReturn(Future.successful(CustomsDeclareExportsResponse(BAD_REQUEST, "")))
@@ -270,8 +284,5 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     }
 
   }
-
-
-
 
 }

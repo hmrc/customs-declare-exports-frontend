@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 case class Locations(
   destinationCountries: Option[DestinationCountries] = None,
   goodsLocation: Option[GoodsLocation] = None,
-  procedureCodes: Option[ProcedureCodesData] = None,
+  procedureCodesData: Option[ProcedureCodesData] = None,
   supervisingCustomsOffice: Option[SupervisingCustomsOffice] = None,
   warehouseIdentification: Option[WarehouseIdentification] = None,
   officeOfExit: Option[OfficeOfExit] = None
@@ -33,7 +33,7 @@ case class Locations(
     Seq(
       destinationCountries.map(_.toMetadataProperties()),
       goodsLocation.map(_.toMetadataProperties()),
-      procedureCodes.map(_.toMetadataProperties()),
+      procedureCodesData.map(_.toMetadataProperties()),
       supervisingCustomsOffice.map(_.toMetadataProperties()),
       warehouseIdentification.map(_.toMetadataProperties()),
       officeOfExit.map(_.toMetadataProperties())
@@ -42,7 +42,7 @@ case class Locations(
   def isEmpty: Boolean =
     destinationCountries.isEmpty &&
       goodsLocation.isEmpty &&
-      procedureCodes.isEmpty &&
+      procedureCodesData.isEmpty &&
       supervisingCustomsOffice.isEmpty &&
       warehouseIdentification.isEmpty &&
       officeOfExit.isEmpty
@@ -54,7 +54,7 @@ object Locations {
   def apply(cacheMap: CacheMap): Locations = Locations(
     destinationCountries = cacheMap.getEntry[DestinationCountries](DestinationCountries.formId),
     goodsLocation = cacheMap.getEntry[GoodsLocation](GoodsLocation.formId),
-    procedureCodes = cacheMap.getEntry[ProcedureCodesData](ProcedureCodesData.formId),
+    procedureCodesData = cacheMap.getEntry[ProcedureCodesData](ProcedureCodesData.formId),
     supervisingCustomsOffice = cacheMap.getEntry[SupervisingCustomsOffice](SupervisingCustomsOffice.formId),
     warehouseIdentification = cacheMap.getEntry[WarehouseIdentification](WarehouseIdentification.formId),
     officeOfExit = cacheMap.getEntry[OfficeOfExit](OfficeOfExit.formId)

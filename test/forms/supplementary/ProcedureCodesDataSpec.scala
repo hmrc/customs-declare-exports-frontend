@@ -15,6 +15,7 @@
  */
 
 package forms.supplementary
+import models.declaration.supplementary.ProcedureCodesData
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 

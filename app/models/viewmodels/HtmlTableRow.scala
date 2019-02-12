@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package models.viewmodels
 
-trait MetadataPropertiesConvertable { self =>
-  def toMetadataProperties(): Map[String, String]
+case class HtmlTableRow(label: String, values: Seq[Option[String]])
+
+object HtmlTableRow {
+
+  def apply(label: String, values: Option[String]): HtmlTableRow = new HtmlTableRow(label, Seq(values))
+
+  def apply(label: String, values: String): HtmlTableRow = new HtmlTableRow(label, Seq(Some(values)))
 }

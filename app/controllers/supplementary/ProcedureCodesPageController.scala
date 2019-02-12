@@ -18,11 +18,12 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import forms.supplementary.ProcedureCode.form
-import forms.supplementary.ProcedureCodesData._
-import forms.supplementary.{ProcedureCode, ProcedureCodesData}
+import forms.supplementary.ProcedureCodes
+import forms.supplementary.ProcedureCodes.form
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.declaration.supplementary.ProcedureCodesData
+import models.declaration.supplementary.ProcedureCodesData._
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -65,7 +66,7 @@ class ProcedureCodesPageController @Inject()(
     cachedData.flatMap { cache =>
       boundForm
         .fold(
-          (formWithErrors: Form[ProcedureCode]) =>
+          (formWithErrors: Form[ProcedureCodes]) =>
             Future.successful(BadRequest(procedure_codes(appConfig, formWithErrors, cache.additionalProcedureCodes))),
           validForm => {
             actionType match {
@@ -80,7 +81,7 @@ class ProcedureCodesPageController @Inject()(
   }
 
   private def addAnotherCodeHandler(
-    userInput: ProcedureCode,
+    userInput: ProcedureCodes,
     cachedData: ProcedureCodesData
   )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
     (userInput.additionalProcedureCode, cachedData.additionalProcedureCodes) match {
@@ -128,20 +129,20 @@ class ProcedureCodesPageController @Inject()(
 
   //scalastyle:off method.length
   private def saveAndContinueHandler(
-    userInput: ProcedureCode,
+    userInput: ProcedureCodes,
     cachedData: ProcedureCodesData
   )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.additionalProcedureCodes) match {
       case (procedureCode, Seq()) =>
         procedureCode match {
-          case ProcedureCode(Some(procedureCode), Some(additionalCode)) =>
+          case ProcedureCodes(Some(procedureCode), Some(additionalCode)) =>
             val procedureCodes = ProcedureCodesData(Some(procedureCode), Seq(additionalCode))
 
             customsCacheService.cache[ProcedureCodesData](cacheId, formId, procedureCodes).map { _ =>
               Redirect(controllers.supplementary.routes.SupervisingCustomsOfficeController.displayForm())
             }
 
-          case ProcedureCode(procedureCode, additionalCode) =>
+          case ProcedureCodes(procedureCode, additionalCode) =>
             val procedureCodeError = procedureCode.fold(
               Seq(("procedureCode", "supplementary.procedureCodes.procedureCode.error.empty"))
             )(_ => Seq[(String, String)]())
@@ -155,28 +156,28 @@ class ProcedureCodesPageController @Inject()(
 
       case (procedureCode, seq) =>
         procedureCode match {
-          case ProcedureCode(None, _) if !cachedData.procedureCode.isDefined =>
+          case ProcedureCodes(None, _) if cachedData.procedureCode.isEmpty =>
             handleErrorPage(
               Seq(("procedureCode", "supplementary.procedureCodes.procedureCode.error.empty")),
               userInput,
               cachedData.additionalProcedureCodes
             )
 
-          case ProcedureCode(_, Some(_)) if seq.length >= limitOfCodes =>
+          case ProcedureCodes(_, Some(_)) if seq.length >= limitOfCodes =>
             handleErrorPage(
               Seq(("", "supplementary.procedureCodes.additionalProcedureCode.maximumAmount.error")),
               userInput,
               cachedData.additionalProcedureCodes
             )
 
-          case ProcedureCode(_, Some(value)) if seq.contains(value) =>
+          case ProcedureCodes(_, Some(value)) if seq.contains(value) =>
             handleErrorPage(
               Seq(("additionalProcedureCode", "supplementary.procedureCodes.additionalProcedureCode.duplication")),
               userInput,
               cachedData.additionalProcedureCodes
             )
 
-          case ProcedureCode(Some(procedureCode), additionalCode) =>
+          case ProcedureCodes(Some(procedureCode), additionalCode) =>
             val updatedCache = ProcedureCodesData(
               Some(procedureCode),
               cachedData.additionalProcedureCodes ++ additionalCode.fold(Seq[String]())(Seq(_))
@@ -193,7 +194,7 @@ class ProcedureCodesPageController @Inject()(
 
   private def handleErrorPage(
     fieldWithError: Seq[(String, String)],
-    userInput: ProcedureCode,
+    userInput: ProcedureCodes,
     additionalProcedureCodes: Seq[String]
   )(implicit request: Request[_]): Future[Result] = {
     val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)

@@ -15,14 +15,17 @@
  */
 
 package controllers.supplementary
+
 import config.AppConfig
 import connectors.CustomsDeclarationsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
+import models.declaration.supplementary.SupplementaryDeclarationData
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.supplementary.summary.summary_page
 
 import scala.concurrent.ExecutionContext
 
@@ -35,7 +38,14 @@ class SummaryPageController @Inject()(
 )(implicit ec: ExecutionContext)
   extends FrontendController with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = ???
+  val suppDecCacheId = appConfig.appName
+
+  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetch(suppDecCacheId).map {
+      case Some(cacheMap) => Ok(summary_page(appConfig, SupplementaryDeclarationData(cacheMap)))
+      case None           => Ok(summary_page(appConfig, SupplementaryDeclarationData()))
+    }
+  }
 
   def submitSupplementaryDeclaration(): Action[AnyContent] = ???
 

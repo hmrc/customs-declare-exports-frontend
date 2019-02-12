@@ -16,7 +16,6 @@
 
 package forms.supplementary
 
-import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -46,25 +45,4 @@ object DeclarationHolder {
     else if (dividedString.length == 1) DeclarationHolder(Some(value.split('-')(0)), None)
     else DeclarationHolder(Some(value.split('-')(0)), Some(value.split('-')(1)))
   }
-}
-
-case class DeclarationHoldersData(holders: Seq[DeclarationHolder]) extends MetadataPropertiesConvertable {
-  override def toMetadataProperties(): Map[String, String] =
-    holders.zipWithIndex.map { holderWithId =>
-      Map(
-        "declaration.authorisationHolders[" + holderWithId._2 + "].categoryCode" -> holderWithId._1.authorisationTypeCode
-          .getOrElse(""),
-        "declaration.authorisationHolders[" + holderWithId._2 + "].id" -> holderWithId._1.eori.getOrElse("")
-      )
-    }.fold(Map.empty)(_ ++ _)
-
-  def containsHolder(holder: DeclarationHolder): Boolean = holders.contains(holder)
-}
-
-object DeclarationHoldersData {
-  implicit val format = Json.format[DeclarationHoldersData]
-
-  val formId = "DeclarationHoldersData"
-
-  val limitOfHolders = 99
 }

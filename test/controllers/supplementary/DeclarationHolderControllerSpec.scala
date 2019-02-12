@@ -18,8 +18,9 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import base.TestHelper.createRandomString
-import forms.supplementary.{DeclarationHolder, DeclarationHoldersData}
-import forms.supplementary.DeclarationHoldersData.formId
+import forms.supplementary.DeclarationHolder
+import models.declaration.supplementary.DeclarationHoldersData
+import models.declaration.supplementary.DeclarationHoldersData.formId
 import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
