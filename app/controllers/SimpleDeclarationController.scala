@@ -95,7 +95,7 @@ class SimpleDeclarationController @Inject()(
       case _          => Ok(simple_declaration(appConfig, form, allCountries))
     }
   }
-
+  //scalastyle:off method.length
   def onSubmit(): Action[AnyContent] = authenticate.async { implicit request =>
     form
       .bindFromRequest()
@@ -148,6 +148,7 @@ class SimpleDeclarationController @Inject()(
         }
       )
   }
+  //scalastyle:on method.length
 
   private def createMetadataDeclaration(form: SimpleDeclarationForm): MetaData =
     MetaData(

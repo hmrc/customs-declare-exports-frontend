@@ -21,11 +21,14 @@ import controllers.routes
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Request, RequestHeader, Result, Results}
+import play.api.mvc.Results.BadRequest
 import play.api.{Configuration, Environment}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
+
+import scala.concurrent.Future
 
 @Singleton
 class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi)
@@ -44,4 +47,15 @@ class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi)
     case _: InsufficientEnrolments => Results.SeeOther(routes.UnauthorisedController.onPageLoad().url)
     case _                         => super.resolveError(rh, ex)
   }
+
+  def displayErrorPage()(implicit request: Request[_]): Future[Result] =
+    Future.successful(
+      BadRequest(
+        standardErrorTemplate(
+          pageTitle = messagesApi("global.error.title"),
+          heading = messagesApi("global.error.heading"),
+          message = messagesApi("global.error.message")
+        )
+      )
+    )
 }

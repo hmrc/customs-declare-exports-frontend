@@ -20,31 +20,51 @@ import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import utils.validators.FormFieldValidator._
 
-case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[String])
-    extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.authorisationHolders[0].categoryCode" -> authorisationTypeCode.getOrElse(""),
-      "declaration.authorisationHolders[0].id" -> eori.getOrElse("")
-    )
+case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[String]) {
+  override def toString: String = s"${authorisationTypeCode.getOrElse("")}-${eori.getOrElse("")}"
 }
 
 object DeclarationHolder {
   implicit val format = Json.format[DeclarationHolder]
 
-  val formId = "DeclarationHolder"
-
-  val authorizationCodePattern = "[0-9A-Z]{1,4}"
-  val eoriPattern = "[0-9a-zA-Z]{1,17}"
-
   val mapping = Forms.mapping(
     "authorisationTypeCode" -> optional(
-      text().verifying("supplementary.declarationHolder.authorisationCode.error", _.matches(authorizationCodePattern))
+      text().verifying("supplementary.declarationHolder.authorisationCode.error", lengthInRange(1)(4) and isAlphanumeric)
     ),
-    "eori" -> optional(text().verifying("supplementary.eori.error", _.matches(eoriPattern)))
+    "eori" -> optional(text().verifying("supplementary.eori.error", lengthInRange(1)(17) and isAlphanumeric))
   )(DeclarationHolder.apply)(DeclarationHolder.unapply)
 
   def form(): Form[DeclarationHolder] = Form(mapping)
+
+  // Method for parse format typeCode-eori
+  def buildFromString(value: String): DeclarationHolder = {
+    val dividedString = value.split('-')
+
+    if (dividedString.length == 0) DeclarationHolder(None, None)
+    else if (dividedString.length == 1) DeclarationHolder(Some(value.split('-')(0)), None)
+    else DeclarationHolder(Some(value.split('-')(0)), Some(value.split('-')(1)))
+  }
+}
+
+case class DeclarationHoldersData(holders: Seq[DeclarationHolder]) extends MetadataPropertiesConvertable {
+  override def toMetadataProperties(): Map[String, String] =
+    holders.zipWithIndex.map { holderWithId =>
+      Map(
+        "declaration.authorisationHolders[" + holderWithId._2 + "].categoryCode" -> holderWithId._1.authorisationTypeCode
+          .getOrElse(""),
+        "declaration.authorisationHolders[" + holderWithId._2 + "].id" -> holderWithId._1.eori.getOrElse("")
+      )
+    }.fold(Map.empty)(_ ++ _)
+
+  def containsHolder(holder: DeclarationHolder): Boolean = holders.contains(holder)
+}
+
+object DeclarationHoldersData {
+  implicit val format = Json.format[DeclarationHoldersData]
+
+  val formId = "DeclarationHoldersData"
+
+  val limitOfHolders = 99
 }

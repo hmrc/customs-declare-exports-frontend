@@ -44,7 +44,7 @@ import forms.supplementary._
 import forms.supplementary.summary.DeclarationTypeSpec._
 import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsArray, JsObject, JsString, Json}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
@@ -140,8 +140,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
-          println(supplementaryDeclarationData)
-
           supplementaryDeclarationData.consignmentReferences must be(defined)
           supplementaryDeclarationData.consignmentReferences.get.lrn must equal(consignmentReferences.lrn)
           supplementaryDeclarationData.consignmentReferences.get.ducr must be(defined)
@@ -229,7 +227,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.parties.get.representativeDetails must be(defined)
           supplementaryDeclarationData.parties.get.consigneeDetails must be(defined)
           supplementaryDeclarationData.parties.get.declarationAdditionalActors must be(defined)
-          supplementaryDeclarationData.parties.get.declarationHolder must be(defined)
+
+          supplementaryDeclarationData.parties.get.declarationHoldersData must be(defined)
           supplementaryDeclarationData.locations must be(defined)
           supplementaryDeclarationData.locations.get.destinationCountries must be(defined)
           supplementaryDeclarationData.locations.get.goodsLocation must be(defined)
@@ -427,7 +426,7 @@ object SupplementaryDeclarationDataSpec {
       RepresentativeDetails.formId -> correctRepresentativeDetailsJSON,
       ConsigneeDetails.id -> correctConsigneeDetailsJSON,
       DeclarationAdditionalActors.formId -> correctAdditionalActorsJSON,
-      DeclarationHolder.formId -> correctDeclarationHolderJSON,
+      DeclarationHoldersData.formId -> correctDeclarationHoldersDataJSON,
       DestinationCountries.formId -> correctDestinationCountriesJSON,
       GoodsLocation.formId -> correctGoodsLocationJSON,
       ProcedureCodesData.formId -> correctProcedureCodesJSON,
@@ -456,7 +455,7 @@ object SupplementaryDeclarationDataSpec {
         representativeDetails = Some(correctRepresentativeDetails),
         consigneeDetails = Some(correctConsigneeDetails),
         declarationAdditionalActors = Some(correctAdditionalActors),
-        declarationHolder = Some(correctDeclarationHolder)
+        declarationHoldersData = Some(correctDeclarationHolder)
       )
     ),
     locations = Some(

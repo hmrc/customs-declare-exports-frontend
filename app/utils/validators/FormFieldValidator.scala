@@ -55,6 +55,9 @@ object FormFieldValidator {
 
   val hasSpecificLength: Int => String => Boolean = (length: Int) => (input: String) => input.length == length
 
+  val lengthInRange: Int => Int => String => Boolean = (min: Int) =>
+    (max: Int) => (input: String) => input.length >= min && input.length <= max
+
   val isNumeric: String => Boolean = (input: String) => input.forall(_.isDigit)
 
   val isAllCapitalLetter: String => Boolean = (input: String) => input.forall(_.isUpper)

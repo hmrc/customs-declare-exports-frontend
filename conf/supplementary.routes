@@ -53,7 +53,7 @@ POST        /additional-actors              controllers.supplementary.Declaratio
 
 GET         /holder-of-authorisation        controllers.supplementary.DeclarationHolderController.displayForm()
 
-POST        /holder-of-authorisation        controllers.supplementary.DeclarationHolderController.saveHolderOfAuthorisation()
+POST        /holder-of-authorisation        controllers.supplementary.DeclarationHolderController.submitHoldersOfAuthorisation()
 
 # Destination countries
 

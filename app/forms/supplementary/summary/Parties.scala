@@ -26,7 +26,7 @@ case class Parties(
   representativeDetails: Option[RepresentativeDetails] = None,
   consigneeDetails: Option[ConsigneeDetails] = None,
   declarationAdditionalActors: Option[DeclarationAdditionalActors] = None,
-  declarationHolder: Option[DeclarationHolder] = None
+  declarationHoldersData: Option[DeclarationHoldersData] = None
 ) extends SummaryContainer with MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
@@ -36,7 +36,7 @@ case class Parties(
       representativeDetails.map(_.toMetadataProperties()),
       consigneeDetails.map(_.toMetadataProperties()),
       declarationAdditionalActors.map(_.toMetadataProperties()),
-      declarationHolder.map(_.toMetadataProperties())
+      declarationHoldersData.map(_.toMetadataProperties())
     ).flatten.fold(Map.empty)(_ ++ _)
 
   def isEmpty: Boolean =
@@ -45,7 +45,7 @@ case class Parties(
       representativeDetails.isEmpty &&
       consigneeDetails.isEmpty &&
       declarationAdditionalActors.isEmpty &&
-      declarationHolder.isEmpty
+      declarationHoldersData.isEmpty
 }
 
 object Parties {
@@ -57,6 +57,6 @@ object Parties {
     representativeDetails = cacheMap.getEntry[RepresentativeDetails](RepresentativeDetails.formId),
     consigneeDetails = cacheMap.getEntry[ConsigneeDetails](ConsigneeDetails.id),
     declarationAdditionalActors = cacheMap.getEntry[DeclarationAdditionalActors](DeclarationAdditionalActors.formId),
-    declarationHolder = cacheMap.getEntry[DeclarationHolder](DeclarationHolder.formId)
+    declarationHoldersData = cacheMap.getEntry[DeclarationHoldersData](DeclarationHoldersData.formId)
   )
 }
