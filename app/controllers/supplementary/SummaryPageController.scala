@@ -72,8 +72,9 @@ class SummaryPageController @Inject()(
 
             customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap { _ =>
                 exportsMetrics.incrementCounter(submissionMetric)
-                customsCacheService.remove(suppDecCacheId)
-                Future.successful(Ok("Supplementary Declaration submitted"))
+                customsCacheService.remove(suppDecCacheId).map { _ =>
+                  Ok("Supplementary Declaration submitted")
+                }
               }
               .recover {
                 case error: Throwable =>

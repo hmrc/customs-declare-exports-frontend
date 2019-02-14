@@ -15,6 +15,7 @@
  *@
 
 @import config.AppConfig
+@import controllers.supplementary.routes._
 @import models.declaration.supplementary.SupplementaryDeclarationData
 @import models.viewmodels.HtmlTableRow
 @import uk.gov.hmrc.play.views.html._
@@ -72,4 +73,5 @@
     @helpers.form(action = SummaryPageController.submitSupplementaryDeclaration()) {
         @components.submit_button("Accept and submit declaration")
     }
+
 }

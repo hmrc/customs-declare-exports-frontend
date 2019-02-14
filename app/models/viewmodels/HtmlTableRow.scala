@@ -20,7 +20,7 @@ case class HtmlTableRow(label: String, values: Seq[Option[String]])
 
 object HtmlTableRow {
 
-  def apply(label: String, values: Option[String]): HtmlTableRow = new HtmlTableRow(label, Seq(values))
+  def apply(label: String, values: Option[String]): HtmlTableRow = HtmlTableRow(label, Seq(values))
 
-  def apply(label: String, values: String): HtmlTableRow = new HtmlTableRow(label, Seq(Some(values)))
+  def apply(label: String, values: String): HtmlTableRow = HtmlTableRow(label, Seq(Some(values)))
 }
