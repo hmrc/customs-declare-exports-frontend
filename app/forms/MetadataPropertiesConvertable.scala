@@ -16,6 +16,6 @@
 
 package forms
 
-trait MetadataPropertiesConvertable { self =>
+trait MetadataPropertiesConvertable {
   def toMetadataProperties(): Map[String, String]
 }
