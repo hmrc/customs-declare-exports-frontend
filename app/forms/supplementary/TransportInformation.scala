@@ -50,7 +50,7 @@ case class TransportInformation(
           .find(country => meansOfTransportCrossingTheBorderNationality.contains(country.countryName))
           .map(_.countryCode)
           .getOrElse(""),
-      "declaration.goodsShipment.consignment.containerCode" -> container.toString,
+      "declaration.goodsShipment.consignment.containerCode" -> (if(container) "1" else "0"),
       "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.transportEquipment.id" -> containerId.getOrElse("")
     )
 }

@@ -17,24 +17,34 @@
 package controllers.supplementary
 
 import config.AppConfig
-import connectors.CustomsDeclarationsConnector
+import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
 import controllers.actions.AuthAction
+import handlers.ErrorHandler
 import javax.inject.Inject
+import metrics.ExportsMetrics
+import metrics.MetricIdentifiers.submissionMetric
 import models.declaration.supplementary.SupplementaryDeclarationData
+import models.{CustomsDeclarationsResponse, Submission}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import services.CustomsCacheService
+import play.api.mvc.{Action, AnyContent, Request, Result}
+import services.{CustomsCacheService, NRSService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.wco.dec.MetaData
 import views.html.supplementary.summary.summary_page
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
-  customsDeclarationConnector: CustomsDeclarationsConnector
+  customsDeclarationConnector: CustomsDeclarationsConnector,
+  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
+  exportsMetrics: ExportsMetrics,
+  nrsService: NRSService
 )(implicit ec: ExecutionContext)
   extends FrontendController with I18nSupport {
 
@@ -47,6 +57,48 @@ class SummaryPageController @Inject()(
     }
   }
 
-  def submitSupplementaryDeclaration(): Action[AnyContent] = ???
+  def submitSupplementaryDeclaration(): Action[AnyContent] = authenticate.async { implicit request =>
+    customsCacheService.fetch(suppDecCacheId).flatMap {
+      case Some(cacheMap) =>
+        exportsMetrics.startTimer(submissionMetric)
+        val suppDecData = SupplementaryDeclarationData(cacheMap)
+        val metaData = MetaData.fromProperties(suppDecData.toMetadataProperties())
+
+        customsDeclarationConnector.submitExportDeclaration(metaData).flatMap {
+          case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
+            val ducr = suppDecData.consignmentReferences.flatMap(_.ducr)
+            val lrn = suppDecData.consignmentReferences.map(_.lrn)
+            val submission = new Submission(request.user.eori, conversationId, ducr.fold("")(_.ducr), lrn, None)
+
+            customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap { _ =>
+                exportsMetrics.incrementCounter(submissionMetric)
+                customsCacheService.remove(suppDecCacheId)
+                Future.successful(Ok("Supplementary Declaration submitted"))
+              }
+              .recover {
+                case error: Throwable =>
+                  exportsMetrics.incrementCounter(submissionMetric)
+                  handleError(s"Error from Customs Declare Exports ${error.toString}")
+              }
+
+          case error =>
+            Future.successful(handleError(s"Error from Customs Declarations API ${error.toString}"))
+        }
+
+      case None =>
+        Future.successful(handleError(s"Could not obtain data from DB"))
+    }
+  }
+
+  private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
+    Logger.error(logMessage)
+    InternalServerError(
+      errorHandler.standardErrorTemplate(
+        pageTitle = messagesApi("global.error.title"),
+        heading = messagesApi("global.error.heading"),
+        message = messagesApi("global.error.message")
+      )
+    )
+  }
 
 }
