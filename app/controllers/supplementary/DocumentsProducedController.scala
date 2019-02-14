@@ -54,8 +54,7 @@ class DocumentsProducedController @Inject()(
           Future.successful(BadRequest(documents_produced(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[DocumentsProduced](appConfig.appName, formId, form).map { _ =>
-//            Redirect(controllers.supplementary.routes.???.displayForm())
-            Ok("Summary Page")
+            Redirect(controllers.supplementary.routes.SummaryPageController.displayPage())
         }
       )
   }

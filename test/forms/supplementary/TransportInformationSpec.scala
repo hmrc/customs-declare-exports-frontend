@@ -15,6 +15,7 @@
  */
 
 package forms.supplementary
+
 import forms.supplementary.TransportInformation.MeansOfTransportTypeCodes.NameOfVessel
 import forms.supplementary.TransportInformation.ModeOfTransportCodes.Road
 import org.scalatest.{MustMatchers, WordSpec}
@@ -34,7 +35,7 @@ class TransportInformationSpec extends WordSpec with MustMatchers {
         "declaration.borderTransportMeans.identificationTypeCode" -> transportInformation.meansOfTransportCrossingTheBorderType,
         "declaration.borderTransportMeans.id" -> transportInformation.meansOfTransportCrossingTheBorderIDNumber.get,
         "declaration.borderTransportMeans.registrationNationalityCode" -> "GB",
-        "declaration.goodsShipment.consignment.containerCode" -> transportInformation.container.toString,
+        "declaration.goodsShipment.consignment.containerCode" -> "1",
         "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.transportEquipment.id" -> transportInformation.containerId.get
       )
 

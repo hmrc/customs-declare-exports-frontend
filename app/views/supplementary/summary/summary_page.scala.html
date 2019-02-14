@@ -15,11 +15,9 @@
  *@
 
 @import config.AppConfig
-@import uk.gov.hmrc.play.views.html._
-@import controllers.supplementary.routes.SummaryPageController
 @import models.declaration.supplementary.SupplementaryDeclarationData
-@import models.declaration.supplementary.Parties
 @import models.viewmodels.HtmlTableRow
+@import uk.gov.hmrc.play.views.html._
 @import views.html.supplementary.summary._
 
 @(appConfig: AppConfig, suppDecData: SupplementaryDeclarationData)(implicit request: Request[_], messages: Messages)
@@ -71,7 +69,7 @@
     @additional_documentation_section(suppDecData.documentsProduced)
 
 
-    @helpers.form(action = SummaryPageController.displayPage()) {
+    @helpers.form(action = SummaryPageController.submitSupplementaryDeclaration()) {
         @components.submit_button("Accept and submit declaration")
     }
 }
