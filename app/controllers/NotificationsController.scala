@@ -48,8 +48,6 @@ class NotificationsController @Inject()(
     }
 
   def listOfSubmissions(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsDeclareExportsConnector.fetchSubmissions().map { results =>
-      Ok(views.html.submissions(appConfig, results))
-    }
+    customsDeclareExportsConnector.fetchSubmissions().map(results => Ok(views.html.submissions(appConfig, results)))
   }
 }

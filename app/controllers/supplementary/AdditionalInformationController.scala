@@ -17,6 +17,7 @@
 package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.AdditionalInformation
 import forms.supplementary.AdditionalInformation._
 import javax.inject.Inject
@@ -38,7 +39,7 @@ class AdditionalInformationController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[AdditionalInformation](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[AdditionalInformation](supplementaryCacheId, formId).map {
       case Some(data) => Ok(additional_information(appConfig, form.fill(data)))
       case _          => Ok(additional_information(appConfig, form))
     }
@@ -51,7 +52,7 @@ class AdditionalInformationController @Inject()(
         (formWithErrors: Form[AdditionalInformation]) =>
           Future.successful(Ok(additional_information(appConfig, formWithErrors))),
         validForm =>
-          customsCacheService.cache[AdditionalInformation](appConfig.appName, formId, validForm).map { _ =>
+          customsCacheService.cache[AdditionalInformation](supplementaryCacheId, formId, validForm).map { _ =>
             Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm())
         }
       )

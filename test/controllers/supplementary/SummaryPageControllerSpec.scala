@@ -46,9 +46,9 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     reset(mockMetrics)
 
     authorizedUser()
-    withCaching(None, appConfig.appName)
+    withCaching(None, eoriForCache)
     when(mockCustomsCacheService.fetch(anyString())(any(), any()))
-      .thenReturn(Future.successful(Some(CacheMap(appConfig.appName, Map.empty))))
+      .thenReturn(Future.successful(Some(CacheMap(eoriForCache, Map.empty))))
     successfulCustomsDeclarationResponse()
   }
 
@@ -176,7 +176,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
     "get the whole supplementary declaration data from cache" in new test {
       route(app, getRequest(summaryPageUri)).get.futureValue
-      verify(mockCustomsCacheService, onlyOnce).fetch(ArgumentMatchers.eq(appConfig.appName))(any(), any())
+      verify(mockCustomsCacheService, onlyOnce).fetch(any())(any(), any())
     }
   }
 
@@ -185,7 +185,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     "everything is correct" should {
       "get the whole supplementary declaration data from cache" in new test {
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-        verify(mockCustomsCacheService, onlyOnce).fetch(ArgumentMatchers.eq(appConfig.appName))(any(), any())
+        verify(mockCustomsCacheService, onlyOnce).fetch(any())(any(), any())
       }
 
       "send declaration data to Customs Declarations" in new test {
@@ -239,7 +239,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
 
-        verify(mockCustomsCacheService, times(0)).remove(appConfig.appName)
+        verify(mockCustomsCacheService, times(0)).remove(eoriForCache)
       }
     }
 
@@ -247,7 +247,9 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       pending
       "display error page" in new test {
         when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
-          .thenReturn(Future.successful(CustomsDeclareExportsResponse(INTERNAL_SERVER_ERROR, "failed saving submission")))
+          .thenReturn(
+            Future.successful(CustomsDeclareExportsResponse(INTERNAL_SERVER_ERROR, "failed saving submission"))
+          )
 
         val resultAsString = contentAsString(route(app, postRequest(summaryPageUri, emptyForm)).get)
 
@@ -259,11 +261,13 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       pending
       "remove data from cache" in new test {
         when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
-          .thenReturn(Future.successful(CustomsDeclareExportsResponse(INTERNAL_SERVER_ERROR, "failed saving submission")))
+          .thenReturn(
+            Future.successful(CustomsDeclareExportsResponse(INTERNAL_SERVER_ERROR, "failed saving submission"))
+          )
 
         val resultAsString = contentAsString(route(app, postRequest(summaryPageUri, emptyForm)).get)
 
-        verify(mockCustomsCacheService, onlyOnce).remove(appConfig.appName)
+        verify(mockCustomsCacheService, onlyOnce).remove(eoriForCache)
       }
     }
 

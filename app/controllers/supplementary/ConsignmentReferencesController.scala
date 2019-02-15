@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.ConsignmentReferences
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -39,11 +40,9 @@ class ConsignmentReferencesController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  private val supplementaryDeclarationCacheId = appConfig.appName
-
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[ConsignmentReferences](supplementaryDeclarationCacheId, ConsignmentReferences.id)
+      .fetchAndGetEntry[ConsignmentReferences](supplementaryCacheId, ConsignmentReferences.id)
       .map {
         case Some(data) => Ok(consignment_references(appConfig, ConsignmentReferences.form.fill(data)))
         case _          => Ok(consignment_references(appConfig, ConsignmentReferences.form))
@@ -58,14 +57,8 @@ class ConsignmentReferencesController @Inject()(
           Future.successful(BadRequest(consignment_references(appConfig, formWithErrors))),
         validConsignmentReferences => {
           customsCacheService
-            .cache[ConsignmentReferences](
-              supplementaryDeclarationCacheId,
-              ConsignmentReferences.id,
-              validConsignmentReferences
-            )
-            .map { _ =>
-              Redirect(controllers.supplementary.routes.ExporterDetailsPageController.displayForm())
-            }
+            .cache[ConsignmentReferences](supplementaryCacheId, ConsignmentReferences.id, validConsignmentReferences)
+            .map(_ => Redirect(controllers.supplementary.routes.ExporterDetailsPageController.displayForm()))
         }
       )
   }

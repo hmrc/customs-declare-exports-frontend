@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.TotalNumberOfItems
 import javax.inject.Inject
 import play.api.data.Form
@@ -39,7 +40,7 @@ class TotalNumberOfItemsController @Inject()(
   import forms.supplementary.TotalNumberOfItems._
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[TotalNumberOfItems](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[TotalNumberOfItems](supplementaryCacheId, formId).map {
       case Some(data) => Ok(total_number_of_items(appConfig, form.fill(data)))
       case _          => Ok(total_number_of_items(appConfig, form))
     }
@@ -52,7 +53,7 @@ class TotalNumberOfItemsController @Inject()(
         (formWithErrors: Form[TotalNumberOfItems]) =>
           Future.successful(BadRequest(total_number_of_items(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[TotalNumberOfItems](appConfig.appName, formId, form).map { _ =>
+          customsCacheService.cache[TotalNumberOfItems](supplementaryCacheId, formId, form).map { _ =>
             Redirect(controllers.supplementary.routes.TransactionTypeController.displayForm())
         }
       )

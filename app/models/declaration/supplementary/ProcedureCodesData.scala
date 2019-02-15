@@ -21,7 +21,7 @@ import forms.supplementary.ProcedureCodes
 import play.api.libs.json.Json
 
 case class ProcedureCodesData(procedureCode: Option[String], additionalProcedureCodes: Seq[String])
-  extends MetadataPropertiesConvertable {
+    extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] = {
     val procedureCodeMapping = Map(

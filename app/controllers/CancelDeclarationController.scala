@@ -31,7 +31,6 @@ import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.{cancel_declaration, cancellation_confirmation_page}
 
@@ -42,7 +41,6 @@ class CancelDeclarationController @Inject()(
   authenticate: AuthAction,
   customsDeclarationsConnector: CustomsDeclarationsConnector,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
-  customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
   exportsMetrics: ExportsMetrics
 )(implicit val messagesApi: MessagesApi, ec: ExecutionContext)

@@ -30,7 +30,8 @@ object DeclarationHolder {
 
   val mapping = Forms.mapping(
     "authorisationTypeCode" -> optional(
-      text().verifying("supplementary.declarationHolder.authorisationCode.error", lengthInRange(1)(4) and isAlphanumeric)
+      text()
+        .verifying("supplementary.declarationHolder.authorisationCode.error", lengthInRange(1)(4) and isAlphanumeric)
     ),
     "eori" -> optional(text().verifying("supplementary.eori.error", lengthInRange(1)(17) and isAlphanumeric))
   )(DeclarationHolder.apply)(DeclarationHolder.unapply)

@@ -18,12 +18,14 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.ProcedureCodes
 import forms.supplementary.ProcedureCodes.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.supplementary.ProcedureCodesData
 import models.declaration.supplementary.ProcedureCodesData._
+import models.requests.AuthenticatedRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -43,10 +45,8 @@ class ProcedureCodesPageController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  private val cacheId = appConfig.appName
-
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ProcedureCodesData](cacheId, formId).map {
+    customsCacheService.fetchAndGetEntry[ProcedureCodesData](supplementaryCacheId, formId).map {
       case Some(data) =>
         Ok(procedure_codes(appConfig, form.fill(data.toProcedureCode()), data.additionalProcedureCodes))
       case _ => Ok(procedure_codes(appConfig, form, Seq()))
@@ -60,7 +60,7 @@ class ProcedureCodesPageController @Inject()(
       request.body.asFormUrlEncoded.flatMap(_.get("action")).flatMap(_.headOption).getOrElse("Wrong action")
 
     val cachedData = customsCacheService
-      .fetchAndGetEntry[ProcedureCodesData](cacheId, formId)
+      .fetchAndGetEntry[ProcedureCodesData](supplementaryCacheId, formId)
       .map(_.getOrElse(ProcedureCodesData(None, Seq())))
 
     cachedData.flatMap { cache =>
@@ -83,7 +83,7 @@ class ProcedureCodesPageController @Inject()(
   private def addAnotherCodeHandler(
     userInput: ProcedureCodes,
     cachedData: ProcedureCodesData
-  )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput.additionalProcedureCode, cachedData.additionalProcedureCodes) match {
       case (_, codes) if codes.length >= limitOfCodes =>
         handleErrorPage(
@@ -109,7 +109,7 @@ class ProcedureCodesPageController @Inject()(
       case (Some(code), seq) =>
         val updatedCache = ProcedureCodesData(userInput.procedureCode, seq :+ code)
 
-        customsCacheService.cache[ProcedureCodesData](cacheId, formId, updatedCache).map { _ =>
+        customsCacheService.cache[ProcedureCodesData](supplementaryCacheId, formId, updatedCache).map { _ =>
           Redirect(controllers.supplementary.routes.ProcedureCodesPageController.displayPage())
         }
     }
@@ -117,12 +117,12 @@ class ProcedureCodesPageController @Inject()(
   private def removeCodeHandler(
     code: String,
     cachedData: ProcedureCodesData
-  )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
     if (cachedData.containsAdditionalCode(code)) {
       val updatedCache =
         cachedData.copy(additionalProcedureCodes = cachedData.additionalProcedureCodes.filterNot(_ == code))
 
-      customsCacheService.cache[ProcedureCodesData](cacheId, formId, updatedCache).map { _ =>
+      customsCacheService.cache[ProcedureCodesData](supplementaryCacheId, formId, updatedCache).map { _ =>
         Redirect(controllers.supplementary.routes.ProcedureCodesPageController.displayPage())
       }
     } else errorHandler.displayErrorPage()
@@ -131,14 +131,14 @@ class ProcedureCodesPageController @Inject()(
   private def saveAndContinueHandler(
     userInput: ProcedureCodes,
     cachedData: ProcedureCodesData
-  )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.additionalProcedureCodes) match {
       case (procedureCode, Seq()) =>
         procedureCode match {
           case ProcedureCodes(Some(procedureCode), Some(additionalCode)) =>
             val procedureCodes = ProcedureCodesData(Some(procedureCode), Seq(additionalCode))
 
-            customsCacheService.cache[ProcedureCodesData](cacheId, formId, procedureCodes).map { _ =>
+            customsCacheService.cache[ProcedureCodesData](supplementaryCacheId, formId, procedureCodes).map { _ =>
               Redirect(controllers.supplementary.routes.SupervisingCustomsOfficeController.displayForm())
             }
 
@@ -183,7 +183,7 @@ class ProcedureCodesPageController @Inject()(
               cachedData.additionalProcedureCodes ++ additionalCode.fold(Seq[String]())(Seq(_))
             )
 
-            customsCacheService.cache[ProcedureCodesData](cacheId, formId, updatedCache).map { _ =>
+            customsCacheService.cache[ProcedureCodesData](supplementaryCacheId, formId, updatedCache).map { _ =>
               Redirect(controllers.supplementary.routes.SupervisingCustomsOfficeController.displayForm())
             }
         }

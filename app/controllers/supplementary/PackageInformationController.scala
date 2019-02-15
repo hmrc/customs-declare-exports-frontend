@@ -18,13 +18,14 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
+import forms.supplementary.PackageInformation
 import javax.inject.Inject
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import forms.supplementary.PackageInformation
-import play.api.data.Form
-import play.api.mvc.{Action, AnyContent}
 import views.html.supplementary.package_information
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +40,7 @@ class PackageInformationController @Inject()(
   import forms.supplementary.PackageInformation._
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[PackageInformation](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[PackageInformation](supplementaryCacheId, formId).map {
       case Some(data) => Ok(package_information(appConfig, form.fill(data)))
       case _          => Ok(package_information(appConfig, form))
     }
@@ -52,7 +53,7 @@ class PackageInformationController @Inject()(
         (formWithErrors: Form[PackageInformation]) =>
           Future.successful(BadRequest(package_information(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[PackageInformation](appConfig.appName, formId, form).map { _ =>
+          customsCacheService.cache[PackageInformation](supplementaryCacheId, formId, form).map { _ =>
             Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm())
         }
       )

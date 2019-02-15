@@ -17,6 +17,7 @@
 package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.DestinationCountries
 import javax.inject.Inject
 import play.api.data.Form
@@ -41,7 +42,7 @@ class DestinationCountriesController @Inject()(
   implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DestinationCountries](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[DestinationCountries](supplementaryCacheId, formId).map {
       case Some(data) => Ok(destination_countries(appConfig, form.fill(data)))
       case _          => Ok(destination_countries(appConfig, form))
     }
@@ -54,7 +55,7 @@ class DestinationCountriesController @Inject()(
         (formWithErrors: Form[DestinationCountries]) =>
           Future.successful(BadRequest(destination_countries(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[DestinationCountries](appConfig.appName, formId, form).map { _ =>
+          customsCacheService.cache[DestinationCountries](supplementaryCacheId, formId, form).map { _ =>
             Redirect(controllers.supplementary.routes.LocationController.displayForm())
         }
       )

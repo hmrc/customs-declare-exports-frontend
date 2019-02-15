@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.PreviousDocuments
 import forms.supplementary.PreviousDocuments._
 import javax.inject.Inject
@@ -39,7 +40,7 @@ class PreviousDocumentsController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[PreviousDocuments](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[PreviousDocuments](supplementaryCacheId, formId).map {
       case Some(data) => Ok(previous_documents(appConfig, form.fill(data)))
       case _          => Ok(previous_documents(appConfig, form))
     }
@@ -52,7 +53,7 @@ class PreviousDocumentsController @Inject()(
         (formWithErrors: Form[PreviousDocuments]) =>
           Future.successful(BadRequest(previous_documents(appConfig, formWithErrors))),
         validForm =>
-          customsCacheService.cache[PreviousDocuments](appConfig.appName, formId, validForm).map { _ =>
+          customsCacheService.cache[PreviousDocuments](supplementaryCacheId, formId, validForm).map { _ =>
             Redirect(controllers.supplementary.routes.GoodsItemNumberController.displayForm())
         }
       )

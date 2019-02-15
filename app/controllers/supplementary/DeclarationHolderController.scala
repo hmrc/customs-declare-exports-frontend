@@ -18,10 +18,12 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.DeclarationHolder
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.supplementary.DeclarationHoldersData
+import models.requests.AuthenticatedRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -44,10 +46,8 @@ class DeclarationHolderController @Inject()(
   import forms.supplementary.DeclarationHolder.form
   import models.declaration.supplementary.DeclarationHoldersData._
 
-  val cacheId = appConfig.appName
-
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DeclarationHoldersData](cacheId, formId).map {
+    customsCacheService.fetchAndGetEntry[DeclarationHoldersData](supplementaryCacheId, formId).map {
       case Some(data) => Ok(declaration_holder(appConfig, form, data.holders))
       case _          => Ok(declaration_holder(appConfig, form, Seq()))
     }
@@ -60,7 +60,7 @@ class DeclarationHolderController @Inject()(
       request.body.asFormUrlEncoded.flatMap(_.get("action")).flatMap(_.headOption).getOrElse("Wrong action")
 
     val cachedData = customsCacheService
-      .fetchAndGetEntry[DeclarationHoldersData](cacheId, formId)
+      .fetchAndGetEntry[DeclarationHoldersData](supplementaryCacheId, formId)
       .map(_.getOrElse(DeclarationHoldersData(Seq())))
 
     cachedData.flatMap { cache =>
@@ -82,7 +82,7 @@ class DeclarationHolderController @Inject()(
   private def addHolder(
     userInput: DeclarationHolder,
     cachedData: DeclarationHoldersData
-  )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.holders) match {
       case (_, holders) if holders.length >= limitOfHolders =>
         handleErrorPage(
@@ -97,7 +97,7 @@ class DeclarationHolderController @Inject()(
       case (holder, holders) if holder.authorisationTypeCode.isDefined && holder.eori.isDefined =>
         val updatedCache = DeclarationHoldersData(holders :+ holder)
 
-        customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache).map { _ =>
+        customsCacheService.cache[DeclarationHoldersData](supplementaryCacheId, formId, updatedCache).map { _ =>
           Redirect(controllers.supplementary.routes.DeclarationHolderController.displayForm())
         }
 
@@ -113,14 +113,14 @@ class DeclarationHolderController @Inject()(
   private def saveAndContinue(
     userInput: DeclarationHolder,
     cachedData: DeclarationHoldersData
-  )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.holders) match {
       case (holder, Seq()) =>
         holder match {
           case DeclarationHolder(Some(typeCode), Some(eori)) =>
             val updatedCache = DeclarationHoldersData(Seq(DeclarationHolder(Some(typeCode), Some(eori))))
 
-            customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache).map { _ =>
+            customsCacheService.cache[DeclarationHoldersData](supplementaryCacheId, formId, updatedCache).map { _ =>
               Redirect(controllers.supplementary.routes.DestinationCountriesController.displayForm())
             }
 
@@ -143,10 +143,10 @@ class DeclarationHolderController @Inject()(
             handleErrorPage(Seq(("", "supplementary.declarationHolders.duplicated")), userInput, holders)
 
           case _ if holder.authorisationTypeCode.isDefined == holder.eori.isDefined =>
-            val updatedHolders = if(holder.authorisationTypeCode.isDefined) holders :+ holder else holders
+            val updatedHolders = if (holder.authorisationTypeCode.isDefined) holders :+ holder else holders
             val updatedCache = DeclarationHoldersData(updatedHolders)
 
-            customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache).map { _ =>
+            customsCacheService.cache[DeclarationHoldersData](supplementaryCacheId, formId, updatedCache).map { _ =>
               Redirect(controllers.supplementary.routes.DestinationCountriesController.displayForm())
             }
 
@@ -164,11 +164,11 @@ class DeclarationHolderController @Inject()(
   private def removeHolder(
     holderToRemove: DeclarationHolder,
     cachedData: DeclarationHoldersData
-  )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
     if (cachedData.containsHolder(holderToRemove)) {
       val updatedCache = cachedData.copy(holders = cachedData.holders.filterNot(_ == holderToRemove))
 
-      customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache).map { _ =>
+      customsCacheService.cache[DeclarationHoldersData](supplementaryCacheId, formId, updatedCache).map { _ =>
         Redirect(controllers.supplementary.routes.DeclarationHolderController.displayForm())
       }
     } else errorHandler.displayErrorPage()

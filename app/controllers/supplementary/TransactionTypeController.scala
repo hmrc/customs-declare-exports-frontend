@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.TransactionType
 import forms.supplementary.TransactionType.{form, formId}
 import javax.inject.Inject
@@ -39,7 +40,7 @@ class TransactionTypeController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[TransactionType](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[TransactionType](supplementaryCacheId, formId).map {
       case Some(data) => Ok(transaction_type(appConfig, form.fill(data)))
       case _          => Ok(transaction_type(appConfig, form))
     }
@@ -51,7 +52,7 @@ class TransactionTypeController @Inject()(
         (formWithErrors: Form[TransactionType]) =>
           Future.successful(BadRequest(transaction_type(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[TransactionType](appConfig.appName, formId, form).map { _ =>
+          customsCacheService.cache[TransactionType](supplementaryCacheId, formId, form).map { _ =>
             Redirect(controllers.supplementary.routes.PreviousDocumentsController.displayForm())
         }
       )

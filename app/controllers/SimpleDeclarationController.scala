@@ -19,6 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.{GoodsPackage, SimpleAddress, SimpleDeclarationForm}
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -90,7 +91,7 @@ class SimpleDeclarationController @Inject()(
   )
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[SimpleDeclarationForm](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[SimpleDeclarationForm](supplementaryCacheId, formId).map {
       case Some(data) => Ok(simple_declaration(appConfig, form.fill(data), allCountries))
       case _          => Ok(simple_declaration(appConfig, form, allCountries))
     }
@@ -103,7 +104,7 @@ class SimpleDeclarationController @Inject()(
         (formWithErrors: Form[SimpleDeclarationForm]) =>
           Future.successful(BadRequest(simple_declaration(appConfig, formWithErrors, allCountries))),
         form => {
-          customsCacheService.cache[SimpleDeclarationForm](appConfig.appName, formId, form).flatMap {
+          customsCacheService.cache[SimpleDeclarationForm](supplementaryCacheId, formId, form).flatMap {
             _ =>
               exportsMetrics.startTimer(submissionMetric)
               customsDeclarationsConnector.submitExportDeclaration(createMetadataDeclaration(form)).flatMap {

@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.TransportInformation
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -40,11 +41,10 @@ class TransportInformationPageController @Inject()(
     extends FrontendController with I18nSupport {
 
   implicit val countries = services.Countries.allCountries
-  private val supplementaryDeclarationCacheId = appConfig.appName
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[TransportInformation](supplementaryDeclarationCacheId, TransportInformation.id)
+      .fetchAndGetEntry[TransportInformation](supplementaryCacheId, TransportInformation.id)
       .map {
         case Some(data) => Ok(transport_information(appConfig, TransportInformation.form.fill(data)))
         case _          => Ok(transport_information(appConfig, TransportInformation.form))
@@ -59,14 +59,8 @@ class TransportInformationPageController @Inject()(
           Future.successful(BadRequest(transport_information(appConfig, formWithErrors))),
         validTransportInformation =>
           customsCacheService
-            .cache[TransportInformation](
-              supplementaryDeclarationCacheId,
-              TransportInformation.id,
-              validTransportInformation
-            )
-            .map { _ =>
-              Redirect(controllers.supplementary.routes.TotalNumberOfItemsController.displayForm())
-          }
+            .cache[TransportInformation](supplementaryCacheId, TransportInformation.id, validTransportInformation)
+            .map(_ => Redirect(controllers.supplementary.routes.TotalNumberOfItemsController.displayForm()))
       )
   }
 
