@@ -56,6 +56,7 @@ class SummaryPageController @Inject()(
     }
   }
 
+  //scalastyle:off method.length
   def submitSupplementaryDeclaration(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetch(supplementaryCacheId).flatMap {
       case Some(cacheMap) =>
@@ -64,10 +65,22 @@ class SummaryPageController @Inject()(
         val metaData = MetaData.fromProperties(suppDecData.toMetadataProperties())
 
         customsDeclarationConnector.submitExportDeclaration(metaData).flatMap {
-          case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
+          case CustomsDeclarationsResponse(status, Some(conversationId)) =>
             val ducr = suppDecData.consignmentReferences.flatMap(_.ducr)
             val lrn = suppDecData.consignmentReferences.map(_.lrn)
-            val submission = new Submission(request.user.eori, conversationId, ducr.fold("")(_.ducr), lrn, None)
+            val declarationStatus = status match {
+              case ACCEPTED => models.Accepted
+              case _ => models.Rejected
+            }
+
+            val submission = new Submission(
+              request.user.eori,
+              conversationId,
+              ducr.fold("")(_.ducr),
+              lrn,
+              None,
+              declarationStatus
+            )
 
             customsDeclareExportsConnector
               .saveSubmissionResponse(submission)
@@ -77,8 +90,13 @@ class SummaryPageController @Inject()(
                   .remove(supplementaryCacheId)
                   .map(
                     _ =>
-                      Redirect(controllers.supplementary.routes.ConfirmationPageController.displayPage())
-                        .flashing(prepareFlashScope(lrn.getOrElse(""), conversationId))
+                    status match {
+                      case ACCEPTED =>
+                        Redirect(controllers.supplementary.routes.ConfirmationPageController.displayPage())
+                          .flashing(prepareFlashScope(lrn.getOrElse(""), conversationId))
+                      case _ =>
+                        Redirect(controllers.supplementary.routes.ConfirmationPageController.displayRejectionPage())
+                    }
                   )
               }
               .recover {
@@ -95,6 +113,7 @@ class SummaryPageController @Inject()(
         Future.successful(handleError(s"Could not obtain data from DB"))
     }
   }
+  //scalastyle:on method.length
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
     Logger.error(logMessage)

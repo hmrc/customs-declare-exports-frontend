@@ -18,7 +18,7 @@ package connectors
 
 import base.TestHelper._
 import base.{CustomExportsBaseSpec, MockHttpClient}
-import models.{CustomsDeclareExportsResponse, MovementSubmission, Submission}
+import models.{Accepted, CustomsDeclareExportsResponse, MovementSubmission, Submission}
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
 
-  val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"))
+  val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"), Accepted)
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomString(255))))
   val expectedHeaders: Map[String, String] = Map.empty
   val falseServerError: Boolean = false

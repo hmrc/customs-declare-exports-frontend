@@ -78,10 +78,10 @@ global.error.message = Please try again later.
 confirmationPage.title = Confirmation page
 
 notifications.title = Notifications
-notifications.name = Name
 notifications.dateAndTime = Date and time
 notifications.reference = Reference
 notifications.status = Status
+notifications.additionalInformation = Additional information
 
 arrivals.confirmation = Arrival confirmation
 arrivals.title = Arrivals
@@ -592,3 +592,4 @@ supplementary.confirmation.whatHappensNext = What happens next?
 supplementary.confirmation.explanation = Your MRN will be provided in a notification.
 supplementary.confirmation.explanation.linkText = Check your notification status in the dashboard.
 supplementary.confirmation.submitAnotherDeclaration = Submit another declaration
+supplementary.confirmation.rejection.header = Your declaration has been rejected

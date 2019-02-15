@@ -5,17 +5,9 @@
 
 # microservice specific routes
 
-GET        /                                            controllers.SimpleDeclarationController.displayForm()
-
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
-
-# Simple declaration
-
-GET        /simple-declaration                          controllers.SimpleDeclarationController.displayForm()
-
-POST       /simple-declaration                          controllers.SimpleDeclarationController.onSubmit()
 
 # Notifications
 

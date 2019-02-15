@@ -26,7 +26,7 @@ import scala.concurrent.Future
 
 class NrsConnectorSpec extends CustomExportsBaseSpec {
 
-  val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"))
+  val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"), Accepted)
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
   val expectedHeaders: Map[String, String] =
     Map("Content-Type" -> "application/json", "X-API-Key" -> appConfig.nrsApiKey)

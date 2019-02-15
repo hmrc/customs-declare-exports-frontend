@@ -69,7 +69,7 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsDeclareExportsConnector.fetchNotificationsByConversationId(any())(any(), any()))
       .thenReturn(
         Future.successful(
-          Some(ExportsNotification(conversationId = "1234", eori = "eori", metadata = DeclarationMetadata()))
+          Seq(ExportsNotification(conversationId = "1234", eori = "eori", metadata = DeclarationMetadata()))
         )
       )
 
@@ -85,7 +85,7 @@ trait MockConnectors extends MockitoSugar {
               mrn = None,
               lrn = None,
               submittedTimestamp = System.currentTimeMillis(),
-              status = None,
+              status = Accepted,
               noOfNotifications = 0
             )
           )

@@ -45,20 +45,6 @@ class MockHttpClient[A](
   override val actorSystem = ActorSystem("HttpClient")
   override val configuration: Option[Config] = None
 
-  //scalastyle:off method.name
-  override def GET[O](
-    url: String,
-    headers: Seq[(String, String)]
-  )(implicit rds: HttpReads[O], hc: HeaderCarrier, ex: ExecutionContext): Future[O] = (url, headers) match {
-    case _ if !isAuthenticated(headers.toMap, hc) =>
-      throw new UnauthorizedException("Get notifications request was not authenticated")
-    case _ if forceServerError => throw new InternalServerException("Customs Declarations has gone bad.")
-    case _ if url == expectedUrl && headers.toMap == expectedHeaders =>
-      Future.successful(Notification.randomNotifications().asInstanceOf[O])
-    case _ =>
-      throw new BadRequestException(s"error")
-  }
-
   override def POSTString[O](
     url: String,
     body: String,
