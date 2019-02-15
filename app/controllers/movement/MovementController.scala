@@ -19,7 +19,7 @@ package controllers.movement
 import config.AppConfig
 import connectors.CustomsInventoryLinkingExportsConnector
 import controllers.actions.AuthAction
-import controllers.utils.CacheIdGenerator.movementCacheId
+import controllers.util.CacheIdGenerator.movementCacheId
 import forms.MovementFormsAndIds._
 import forms._
 import handlers.ErrorHandler

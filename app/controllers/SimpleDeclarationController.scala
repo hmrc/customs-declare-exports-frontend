@@ -19,7 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
 import controllers.actions.AuthAction
-import controllers.utils.CacheIdGenerator.supplementaryCacheId
+import controllers.util.CacheIdGenerator.supplementaryCacheId
 import forms.{GoodsPackage, SimpleAddress, SimpleDeclarationForm}
 import handlers.ErrorHandler
 import javax.inject.Inject

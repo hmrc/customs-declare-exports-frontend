@@ -17,7 +17,7 @@
 package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.utils.CacheIdGenerator.supplementaryCacheId
+import controllers.util.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.AdditionalInformation
 import forms.supplementary.AdditionalInformation._
 import javax.inject.Inject

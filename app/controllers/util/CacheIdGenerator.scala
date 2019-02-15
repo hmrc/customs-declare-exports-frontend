@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.utils
+package controllers.util
 import models.requests.AuthenticatedRequest
 
 object CacheIdGenerator {
