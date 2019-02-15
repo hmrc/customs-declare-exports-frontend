@@ -32,8 +32,10 @@ case class SupplementaryDeclarationData(
   documentsProduced: Option[DocumentsProduced] = None
 ) extends SummaryContainer with MetadataPropertiesConvertable {
 
+  private val suppDecFunctionCode = "9"
+
   override def toMetadataProperties(): Map[String, String] =
-    this.toMap.values.foldLeft(Map.empty[String, String]) { (map, convertable) =>
+    this.toMap.values.foldLeft(Map("declaration.functionCode" -> suppDecFunctionCode)) { (map, convertable) =>
       map ++ convertable.toMetadataProperties()
     }
 
