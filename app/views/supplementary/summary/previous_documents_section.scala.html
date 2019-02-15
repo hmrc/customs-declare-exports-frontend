@@ -22,18 +22,18 @@
 @components.summary_list(Some(messages("supplementary.summary.previousDocuments.header"))) {
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.previousDocuments.documentCategory"),
-        values = previousDocuments.map(_.documentCategory)
+        value = previousDocuments.map(_.documentCategory)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.previousDocuments.documentType"),
-        values = previousDocuments.map(_.documentType)
+        value = previousDocuments.map(_.documentType)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.previousDocuments.documentReference"),
-        values = previousDocuments.map(_.documentReference)
+        value = previousDocuments.map(_.documentReference)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.previousDocuments.goodsItemIdentifier"),
-        values = previousDocuments.flatMap(_.goodsItemIdentifier)
+        value = previousDocuments.flatMap(_.goodsItemIdentifier)
     ))
 }

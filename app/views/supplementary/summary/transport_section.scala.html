@@ -22,34 +22,34 @@
 @components.summary_list(Some(messages("supplementary.summary.transport.header"))) {
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.transport.inlandTransportMode"),
-        values = transportInformation.flatMap(_.inlandModeOfTransportCode)
+        value = transportInformation.flatMap(_.inlandModeOfTransportCode)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.transport.borderTransportMode"),
-        values = transportInformation.map(_.borderModeOfTransportCode)
+        value = transportInformation.map(_.borderModeOfTransportCode)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.transport.meansOfTransportOnDepartureType"),
-        values = transportInformation.map(_.meansOfTransportOnDepartureType)
+        value = transportInformation.map(_.meansOfTransportOnDepartureType)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.transport.meansOfTransportOnDepartureId"),
-        values = transportInformation.flatMap(_.meansOfTransportOnDepartureIDNumber)
+        value = transportInformation.flatMap(_.meansOfTransportOnDepartureIDNumber)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.transport.meansOfTransportCrossingBorderType"),
-        values = transportInformation.map(_.meansOfTransportCrossingTheBorderType)
+        value = transportInformation.map(_.meansOfTransportCrossingTheBorderType)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.transport.meansOfTransportCrossingBorderId"),
-        values = transportInformation.flatMap(_.meansOfTransportCrossingTheBorderIDNumber)
+        value = transportInformation.flatMap(_.meansOfTransportCrossingTheBorderIDNumber)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.transport.meansOfTransportCrossingBorderNationality"),
-        values = transportInformation.flatMap(_.meansOfTransportCrossingTheBorderNationality)
+        value = transportInformation.flatMap(_.meansOfTransportCrossingTheBorderNationality)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.transport.containerId"),
-        values = transportInformation.flatMap(_.containerId)
+        value = transportInformation.flatMap(_.containerId)
     ))
 }

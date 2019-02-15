@@ -16,11 +16,32 @@
 
 package models.viewmodels
 
-case class HtmlTableRow(label: String, values: Seq[Option[String]])
+import scala.collection.Iterable
+
+class HtmlTableRow(val label: String, val values: Seq[Option[String]])
 
 object HtmlTableRow {
 
-  def apply(label: String, values: Option[String]): HtmlTableRow = HtmlTableRow(label, Seq(values))
+  def apply(label: String, value: String): HtmlTableRow = new HtmlTableRow(label, Seq(Some(value)))
 
-  def apply(label: String, values: String): HtmlTableRow = HtmlTableRow(label, Seq(Some(values)))
+  def apply(label: String, value: Option[_]): HtmlTableRow = new HtmlTableRow(label, adjust(value))
+
+  def apply(label: String, value: Iterable[_]): HtmlTableRow = new HtmlTableRow(label, adjust(value))
+
+  private def adjust(option: Option[_]): Seq[Option[String]] = option match {
+    case Some(str: String)           => Seq(Some(str))
+    case Some(iterable: Iterable[_]) => adjust(iterable)
+    case _                           => Seq(None)
+  }
+
+  private def adjust(iterable: Iterable[_]): Seq[Option[String]] = iterable match {
+    case Nil => Seq.empty
+    case _ =>
+      iterable.map {
+        case str: String       => Some(str)
+        case Some(str: String) => Some(str)
+        case _                 => None
+      }.filter(_.isDefined).toSeq
+  }
+
 }

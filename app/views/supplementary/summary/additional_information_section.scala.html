@@ -22,10 +22,10 @@
 @components.summary_list(Some(messages("supplementary.summary.additionalInformation.header"))) {
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalInformation.code"),
-        values = additionalInformation.flatMap(_.code)
+        value = additionalInformation.flatMap(_.code)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalInformation.description"),
-        values = additionalInformation.flatMap(_.description)
+        value = additionalInformation.flatMap(_.description)
     ))
 }

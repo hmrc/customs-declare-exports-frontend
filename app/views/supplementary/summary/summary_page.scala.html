@@ -36,22 +36,22 @@
     @components.summary_list(Some(messages("supplementary.summary.declarationType.header"))) {
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("supplementary.summary.declarationType.dispatchLocation"),
-            values = suppDecData.declarationType.flatMap(_.dispatchLocation).map(_.dispatchLocation)
+            value = suppDecData.declarationType.flatMap(_.dispatchLocation).map(_.dispatchLocation)
         ))
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("supplementary.summary.declarationType.supplementaryDeclarationType"),
-            values = suppDecData.declarationType.flatMap(_.additionalDeclarationType).map(_.additionalDeclarationType)
+            value = suppDecData.declarationType.flatMap(_.additionalDeclarationType).map(_.additionalDeclarationType)
         ))
     }
 
     @components.summary_list(Some(messages("supplementary.summary.yourReferences.header"))) {
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("supplementary.summary.yourReferences.ducr"),
-            values = Seq(suppDecData.consignmentReferences.flatMap(_.ducr.map(_.ducr)))
+            value = Seq(suppDecData.consignmentReferences.flatMap(_.ducr.map(_.ducr)))
         ))
         @components.table_row_no_change_link(HtmlTableRow(
             label = messages("supplementary.summary.yourReferences.lrn"),
-            values = Seq(suppDecData.consignmentReferences.map(_.lrn))
+            value = Seq(suppDecData.consignmentReferences.map(_.lrn))
         ))
     }
 

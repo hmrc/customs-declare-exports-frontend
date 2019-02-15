@@ -22,22 +22,22 @@
 @components.summary_list(Some(messages("supplementary.summary.additionalDocumentation.header"))) {
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalDocumentation.documentTypeCode"),
-        values = additionalDocumentation.flatMap(_.documentTypeCode)
+        value = additionalDocumentation.flatMap(_.documentTypeCode)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalDocumentation.documentId"),
-        values = additionalDocumentation.flatMap(_.documentIdentifier)
+        value = additionalDocumentation.flatMap(_.documentIdentifier)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalDocumentation.documentPart"),
-        values = additionalDocumentation.flatMap(_.documentPart)
+        value = additionalDocumentation.flatMap(_.documentPart)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalDocumentation.documentStatus"),
-        values = additionalDocumentation.flatMap(_.documentStatus)
+        value = additionalDocumentation.flatMap(_.documentStatus)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalDocumentation.documentStatusReason"),
-        values = additionalDocumentation.flatMap(_.documentStatusReason)
+        value = additionalDocumentation.flatMap(_.documentStatusReason)
     ))
 }
