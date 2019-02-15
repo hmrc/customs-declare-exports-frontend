@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.utils.CacheIdGenerator.fullDecCacheId
+import controllers.util.CacheIdGenerator.fullDecCacheId
 import forms.supplementary.ConsigneeDetails
 import javax.inject.Inject
 import play.api.data.Form

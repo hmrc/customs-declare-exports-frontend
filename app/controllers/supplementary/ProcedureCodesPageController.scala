@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.utils.CacheIdGenerator.supplementaryCacheId
+import controllers.util.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.ProcedureCodes
 import forms.supplementary.ProcedureCodes.form
 import handlers.ErrorHandler
