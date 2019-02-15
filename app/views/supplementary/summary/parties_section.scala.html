@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import forms.supplementary.Address
+@@import forms.supplementary.Address
 @import models.declaration.supplementary.Parties
 @import models.viewmodels.HtmlTableRow
 
@@ -33,50 +33,58 @@
 @components.summary_list(Some(messages("supplementary.summary.parties.header"))) {
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.exporterId"),
-        values = parties.flatMap(_.exporterDetails).flatMap(_.details.eori)
+        value = parties.flatMap(_.exporterDetails).flatMap(_.details.eori)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.exporterAddress"),
-        values = extractAddressValues(parties.flatMap(_.exporterDetails).flatMap(_.details.address))
+        value = extractAddressValues(parties.flatMap(_.exporterDetails).flatMap(_.details.address))
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.declarantId"),
-        values = parties.flatMap(_.declarantDetails).flatMap(_.details.eori)
+        value = parties.flatMap(_.declarantDetails).flatMap(_.details.eori)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.declarantAddress"),
-        values = extractAddressValues(parties.flatMap(_.declarantDetails).flatMap(_.details.address))
+        value = extractAddressValues(parties.flatMap(_.declarantDetails).flatMap(_.details.address))
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.representativeId"),
-        values = parties.flatMap(_.representativeDetails).flatMap(_.details.eori)
+        value = parties.flatMap(_.representativeDetails).flatMap(_.details.eori)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.representativeAddress"),
-        values = extractAddressValues(parties.flatMap(_.representativeDetails).flatMap(_.details.address))
+        value = extractAddressValues(parties.flatMap(_.representativeDetails).flatMap(_.details.address))
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.representationType"),
-        values = parties.flatMap(_.representativeDetails).map(_.statusCode)
+        value = parties.flatMap(_.representativeDetails).map(_.statusCode)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.additionalPartiesId"),
-        values = parties.flatMap(_.declarationAdditionalActors).flatMap(_.eori)
+        value = parties.flatMap(_.declarationAdditionalActors).flatMap(_.eori)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.additionalPartiesType"),
-        values = parties.flatMap(_.declarationAdditionalActors).flatMap(_.partyType)
+        value = parties.flatMap(_.declarationAdditionalActors).flatMap(_.partyType)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.idStatusNumberAuthorisationCode"),
-        values = Seq(Some("Not implemented yet"))
+        value = parties
+                .flatMap(_.declarationHoldersData)
+                .flatMap(data => Some(data.holders))
+                .getOrElse(Seq())
+                .map(_.authorisationTypeCode)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.authorizedPartyEori"),
-        values = Seq(Some("Not implemented yet"))
+        value = parties
+                .flatMap(_.declarationHoldersData)
+                .flatMap(data => Some(data.holders))
+                .getOrElse(Seq())
+                .map(_.eori)
     ))
 }

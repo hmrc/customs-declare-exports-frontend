@@ -26,24 +26,24 @@
 @components.summary_list(Some(messages("supplementary.summary.items.header"))) {
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.numberOfItems"),
-        values = items.flatMap(_.totalNumberOfItems).map(_.itemsQuantity)
+        value = items.flatMap(_.totalNumberOfItems).map(_.itemsQuantity)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.amountInvoiced"),
-        values = items.flatMap(_.totalNumberOfItems).flatMap(_.totalAmountInvoiced)
+        value = items.flatMap(_.totalNumberOfItems).flatMap(_.totalAmountInvoiced)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.exchangeRate"),
-        values = items.flatMap(_.totalNumberOfItems).flatMap(_.exchangeRate)
+        value = items.flatMap(_.totalNumberOfItems).flatMap(_.exchangeRate)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.numberOfPackages"),
-        values = items.flatMap(_.totalNumberOfItems).map(_.totalPackage)
+        value = items.flatMap(_.totalNumberOfItems).map(_.totalPackage)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.transactionType"),
-        values = concatenateOptions(
+        value = concatenateOptions(
             items.flatMap(_.transactionType).map(_.documentTypeCode),
             items.flatMap(_.transactionType).flatMap(_.identifier)
         )
@@ -51,56 +51,56 @@
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.itemNumber"),
-        values = items.flatMap(_.goodsItemNumber).map(_.goodItemNumber)
+        value = items.flatMap(_.goodsItemNumber).map(_.goodItemNumber)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.commodityCode"),
-        values = items.flatMap(_.itemType).map(_.combinedNomenclatureCode)
+        value = items.flatMap(_.itemType).map(_.combinedNomenclatureCode)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.taricAdditionalCodes"),
-        values = items.flatMap(_.itemType).flatMap(_.taricAdditionalCode)
+        value = items.flatMap(_.itemType).flatMap(_.taricAdditionalCode)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.nationalAdditionalCode"),
-        values = items.flatMap(_.itemType).flatMap(_.nationalAdditionalCode)
+        value = items.flatMap(_.itemType).flatMap(_.nationalAdditionalCode)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.tradeDescription"),
-        values = items.flatMap(_.itemType).map(_.descriptionOfGoods)
+        value = items.flatMap(_.itemType).map(_.descriptionOfGoods)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.cusCode"),
-        values = items.flatMap(_.itemType).flatMap(_.cusCode)
+        value = items.flatMap(_.itemType).flatMap(_.cusCode)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.statisticalValue"),
-        values = items.flatMap(_.itemType).map(_.statisticalValue)
+        value = items.flatMap(_.itemType).map(_.statisticalValue)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.itemPackaging"),
-        values = items.flatMap(_.packageInformation).map(_.numberOfPackages)
+        value = items.flatMap(_.packageInformation).map(_.numberOfPackages)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.packageType"),
-        values = items.flatMap(_.packageInformation).map(_.typesOfPackages)
+        value = items.flatMap(_.packageInformation).map(_.typesOfPackages)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.supplementaryUnits"),
-        values = items.flatMap(_.packageInformation).flatMap(_.supplementaryUnits)
+        value = items.flatMap(_.packageInformation).flatMap(_.supplementaryUnits)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.shippingMarks"),
-        values = items.flatMap(_.packageInformation).map(_.shippingMarks)
+        value = items.flatMap(_.packageInformation).map(_.shippingMarks)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.netWeight"),
-        values = items.flatMap(_.packageInformation).map(_.netMass)
+        value = items.flatMap(_.packageInformation).map(_.netMass)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.grossWeight"),
-        values = items.flatMap(_.packageInformation).map(_.grossMass)
+        value = items.flatMap(_.packageInformation).map(_.grossMass)
     ))
 }

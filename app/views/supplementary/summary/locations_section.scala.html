@@ -22,32 +22,32 @@
 @components.summary_list(Some(messages("supplementary.summary.locations.header"))) {
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.dispatchCountry"),
-        values = locations.flatMap(_.destinationCountries).map(_.countryOfDispatch)
+        value = locations.flatMap(_.destinationCountries).map(_.countryOfDispatch)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.destinationCountry"),
-        values = locations.flatMap(_.destinationCountries).flatMap(_.countryOfDestination)
+        value = locations.flatMap(_.destinationCountries).flatMap(_.countryOfDestination)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.goodsExaminationLocationType"),
-        values = locations.flatMap(_.goodsLocation).flatMap(_.typeOfLocation)
+        value = locations.flatMap(_.goodsLocation).flatMap(_.typeOfLocation)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.qualifierCode"),
-        values = locations.flatMap(_.goodsLocation).flatMap(_.qualifierOfIdentification)
+        value = locations.flatMap(_.goodsLocation).flatMap(_.qualifierOfIdentification)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.locationCode"),
-        values = locations.flatMap(_.goodsLocation).flatMap(_.identificationOfLocation)
+        value = locations.flatMap(_.goodsLocation).flatMap(_.identificationOfLocation)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.additionalQualifier"),
-        values = locations.flatMap(_.goodsLocation).flatMap(_.additionalIdentifier)
+        value = locations.flatMap(_.goodsLocation).flatMap(_.additionalIdentifier)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.goodsExaminationAddress"),
-        values = Seq(
+        value = Seq(
             locations.flatMap(_.goodsLocation).flatMap(_.streetAndNumber),
             locations.flatMap(_.goodsLocation).flatMap(_.city),
             locations.flatMap(_.goodsLocation).flatMap(_.postCode),
@@ -57,25 +57,25 @@
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.procedureCode"),
-        values = locations.flatMap(_.procedureCodesData).flatMap(_.procedureCode)
+        value = locations.flatMap(_.procedureCodesData).flatMap(_.procedureCode)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.additionalProcedureCodes"),
-        values = Seq(Some("Not implemented yet"))
+        value = locations.flatMap(_.procedureCodesData).map(_.additionalProcedureCodes)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.warehouseId"),
-        values = locations.flatMap(_.warehouseIdentification).flatMap(_.id)
+        value = locations.flatMap(_.warehouseIdentification).flatMap(_.id)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.supervisingCustomsOffice"),
-        values = locations.flatMap(_.supervisingCustomsOffice).flatMap(_.office)
+        value = locations.flatMap(_.supervisingCustomsOffice).flatMap(_.office)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.officeOfExit"),
-        values = locations.flatMap(_.officeOfExit).map(_.officeId)
+        value = locations.flatMap(_.officeOfExit).map(_.officeId)
     ))
 }
