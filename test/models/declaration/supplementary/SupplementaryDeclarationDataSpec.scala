@@ -226,7 +226,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.parties.get.exporterDetails must be(defined)
           supplementaryDeclarationData.parties.get.declarantDetails must be(defined)
           supplementaryDeclarationData.parties.get.representativeDetails must be(defined)
-          supplementaryDeclarationData.parties.get.consigneeDetails must be(defined)
           supplementaryDeclarationData.parties.get.declarationAdditionalActors must be(defined)
 
           supplementaryDeclarationData.parties.get.declarationHoldersData must be(defined)
@@ -455,7 +454,6 @@ object SupplementaryDeclarationDataSpec {
         exporterDetails = Some(correctExporterDetails),
         declarantDetails = Some(correctDeclarantDetails),
         representativeDetails = Some(correctRepresentativeDetails),
-        consigneeDetails = Some(correctConsigneeDetails),
         declarationAdditionalActors = Some(correctAdditionalActors),
         declarationHoldersData = Some(correctDeclarationHolder)
       )
