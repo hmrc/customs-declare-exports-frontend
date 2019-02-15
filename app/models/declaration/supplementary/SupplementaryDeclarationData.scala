@@ -31,8 +31,7 @@ case class SupplementaryDeclarationData(
   additionalInformation: Option[AdditionalInformation] = None,
   documentsProduced: Option[DocumentsProduced] = None
 ) extends SummaryContainer with MetadataPropertiesConvertable {
-
-  private val suppDecFunctionCode = "9"
+  import SupplementaryDeclarationData._
 
   override def toMetadataProperties(): Map[String, String] =
     this.toMap.values.foldLeft(Map("declaration.functionCode" -> suppDecFunctionCode)) { (map, convertable) =>
@@ -65,6 +64,7 @@ case class SupplementaryDeclarationData(
 }
 
 object SupplementaryDeclarationData {
+  val suppDecFunctionCode = "9"
 
   def apply(cacheMap: CacheMap): SupplementaryDeclarationData =
     SupplementaryDeclarationData(
