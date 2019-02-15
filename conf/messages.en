@@ -520,8 +520,6 @@ supplementary.summary.parties.declarantAddress = Declarant address
 supplementary.summary.parties.representativeId = Representative ID
 supplementary.summary.parties.representativeAddress = Representative address
 supplementary.summary.parties.representationType = Representation type
-supplementary.summary.parties.consigneeId = Consignee ID
-supplementary.summary.parties.consigneeAddress = Consignee address
 supplementary.summary.parties.additionalPartiesId = Additional parties ID
 supplementary.summary.parties.additionalPartiesType = Additional parties type
 supplementary.summary.parties.idStatusNumberAuthorisationCode = ID status number authorisation code
@@ -548,7 +546,6 @@ supplementary.summary.transport.meansOfTransportCrossingBorderType = Transport c
 supplementary.summary.transport.meansOfTransportCrossingBorderId = Transport crossing the border ID
 supplementary.summary.transport.meansOfTransportCrossingBorderNationality = Nationality of transport crossing the border
 supplementary.summary.transport.containerId = Container ID
-
 supplementary.summary.items.header = Item
 supplementary.summary.items.numberOfItems = Number of items
 supplementary.summary.items.amountInvoiced = Amount invoiced

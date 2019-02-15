@@ -18,7 +18,6 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse}
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.verification.VerificationMode
@@ -92,8 +91,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       resultAsString must include(messages("supplementary.summary.parties.representativeId"))
       resultAsString must include(messages("supplementary.summary.parties.representativeAddress"))
       resultAsString must include(messages("supplementary.summary.parties.representationType"))
-      resultAsString must include(messages("supplementary.summary.parties.consigneeId"))
-      resultAsString must include(messages("supplementary.summary.parties.consigneeAddress"))
       resultAsString must include(messages("supplementary.summary.parties.additionalPartiesId"))
       resultAsString must include(messages("supplementary.summary.parties.additionalPartiesType"))
       resultAsString must include(messages("supplementary.summary.parties.idStatusNumberAuthorisationCode"))
