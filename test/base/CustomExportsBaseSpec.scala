@@ -94,6 +94,9 @@ trait CustomExportsBaseSpec
 
   def fakeRequest = FakeRequest("", "")
 
+  // MockAuthAction has this value as default value... we need to use it to make cache working in tests
+  val eoriForCache = "12345"
+
   def messages: Messages = messagesApi.preferred(fakeRequest)
 
   implicit val defaultPatience =
@@ -160,7 +163,7 @@ trait CustomExportsBaseSpec
   def withCaching[T](dataToReturn: Option[T], id: String) = {
     when(
       mockCustomsCacheService
-        .fetchAndGetEntry[T](ArgumentMatchers.eq(appConfig.appName), ArgumentMatchers.eq(id))(any(), any(), any())
+        .fetchAndGetEntry[T](any(), ArgumentMatchers.eq(id))(any(), any(), any())
     ).thenReturn(Future.successful(dataToReturn))
 
     when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))

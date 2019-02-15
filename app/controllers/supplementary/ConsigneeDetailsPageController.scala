@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.fullDecCacheId
 import forms.supplementary.ConsigneeDetails
 import javax.inject.Inject
 import play.api.data.Form
@@ -32,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 /**
   * This controller is not used in supp dec journey
   */
-
 class ConsigneeDetailsPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
@@ -44,7 +44,7 @@ class ConsigneeDetailsPageController @Inject()(
   implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ConsigneeDetails](appConfig.appName, ConsigneeDetails.id).map {
+    customsCacheService.fetchAndGetEntry[ConsigneeDetails](fullDecCacheId, ConsigneeDetails.id).map {
       case Some(data) => Ok(consignee_details(appConfig, ConsigneeDetails.form.fill(data)))
       case _          => Ok(consignee_details(appConfig, ConsigneeDetails.form))
     }
@@ -57,7 +57,7 @@ class ConsigneeDetailsPageController @Inject()(
         (formWithErrors: Form[ConsigneeDetails]) =>
           Future.successful(BadRequest(consignee_details(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[ConsigneeDetails](appConfig.appName, ConsigneeDetails.id, form).map { _ =>
+          customsCacheService.cache[ConsigneeDetails](fullDecCacheId, ConsigneeDetails.id, form).map { _ =>
             Redirect(controllers.supplementary.routes.DeclarationAdditionalActorsController.displayForm())
         }
       )

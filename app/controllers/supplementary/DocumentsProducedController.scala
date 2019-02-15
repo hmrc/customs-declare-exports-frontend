@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.DocumentsProduced
 import javax.inject.Inject
 import play.api.data.Form
@@ -40,7 +41,7 @@ class DocumentsProducedController @Inject()(
   import forms.supplementary.DocumentsProduced._
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DocumentsProduced](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[DocumentsProduced](supplementaryCacheId, formId).map {
       case Some(data) => Ok(documents_produced(appConfig, form.fill(data)))
       case _          => Ok(documents_produced(appConfig, form))
     }
@@ -53,7 +54,7 @@ class DocumentsProducedController @Inject()(
         (formWithErrors: Form[DocumentsProduced]) =>
           Future.successful(BadRequest(documents_produced(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[DocumentsProduced](appConfig.appName, formId, form).map { _ =>
+          customsCacheService.cache[DocumentsProduced](supplementaryCacheId, formId, form).map { _ =>
             Redirect(controllers.supplementary.routes.SummaryPageController.displayPage())
         }
       )

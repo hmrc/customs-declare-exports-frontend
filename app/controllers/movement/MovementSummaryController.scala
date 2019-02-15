@@ -19,6 +19,7 @@ package controllers.movement
 import config.AppConfig
 import connectors.CustomsInventoryLinkingExportsConnector
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.movementCacheId
 import forms.inventorylinking.MovementRequestSummaryMappingProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -47,20 +48,20 @@ class MovementSummaryController @Inject()(
 
   def displaySummary(): Action[AnyContent] = authenticate.async { implicit request =>
     val form = Form(MovementRequestSummaryMappingProvider.provideMappingForMovementSummaryPage())
-    customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).map {
+    customsCacheService.fetchMovementRequest(movementCacheId, request.user.eori).map {
       case Some(data) => Ok(movement_summary_page(appConfig, form.fill(data)))
       case _          => handleError(s"Could not obtain data from DB")
     }
   }
 
   def submitMovementRequest(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).flatMap {
+    customsCacheService.fetchMovementRequest(movementCacheId, request.user.eori).flatMap {
       case Some(data) =>
         val metricIdentifier = getMetricIdentifierFrom(data)
         exportsMetrics.startTimer(metricIdentifier)
 
         customsInventoryLinkingExportsConnector
-          .sendMovementRequest(request.user.eori, data.toXml)
+          .sendMovementRequest(movementCacheId, data.toXml)
           .map {
             case accepted if accepted.status == ACCEPTED =>
               exportsMetrics.incrementCounter(metricIdentifier)
@@ -79,9 +80,9 @@ class MovementSummaryController @Inject()(
   }
 
   def displayConfirmation(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchMovementRequest(appConfig.appName, request.user.eori).flatMap {
+    customsCacheService.fetchMovementRequest(movementCacheId, request.user.eori).flatMap {
       case Some(data) =>
-        customsCacheService.remove(appConfig.appName).map { _ =>
+        customsCacheService.remove(movementCacheId).map { _ =>
           Ok(movement_confirmation_page(appConfig, data.messageCode, data.ucrBlock.ucr))
         }
       case _ =>

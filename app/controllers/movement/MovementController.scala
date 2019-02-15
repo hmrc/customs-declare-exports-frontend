@@ -19,6 +19,7 @@ package controllers.movement
 import config.AppConfig
 import connectors.CustomsInventoryLinkingExportsConnector
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.movementCacheId
 import forms.MovementFormsAndIds._
 import forms._
 import handlers.ErrorHandler
@@ -43,9 +44,9 @@ class MovementController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayDucrPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Choice](appConfig.appName, Choice.choiceId).flatMap {
+    customsCacheService.fetchAndGetEntry[Choice](movementCacheId, Choice.choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
-        customsCacheService.fetchAndGetEntry[Ducr](appConfig.appName, Ducr.id).map {
+        customsCacheService.fetchAndGetEntry[Ducr](movementCacheId, Ducr.id).map {
           case Some(data) => Ok(enter_ducr(appConfig, Ducr.form.fill(data), choice.choice))
           case _          => Ok(enter_ducr(appConfig, Ducr.form, choice.choice))
         }
@@ -68,16 +69,16 @@ class MovementController @Inject()(
       .fold(
         (formWithErrors: Form[Ducr]) => Future.successful(BadRequest(enter_ducr(appConfig, formWithErrors, "error"))),
         form =>
-          customsCacheService.cache[Ducr](appConfig.appName, Ducr.id, form).map { _ =>
+          customsCacheService.cache[Ducr](movementCacheId, Ducr.id, form).map { _ =>
             Redirect(controllers.movement.routes.MovementController.displayGoodsDate())
         }
       )
   }
 
   def displayGoodsDate(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Choice](appConfig.appName, Choice.choiceId).flatMap {
+    customsCacheService.fetchAndGetEntry[Choice](movementCacheId, Choice.choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
-        customsCacheService.fetchAndGetEntry[GoodsDateForm](appConfig.appName, goodsDateId).map {
+        customsCacheService.fetchAndGetEntry[GoodsDateForm](movementCacheId, goodsDateId).map {
           case Some(data) => Ok(goods_date(appConfig, goodsDateForm.fill(data), choice.choice))
           case _          => Ok(goods_date(appConfig, goodsDateForm, choice.choice))
         }
@@ -101,16 +102,16 @@ class MovementController @Inject()(
         (formWithErrors: Form[GoodsDateForm]) =>
           Future.successful(BadRequest(goods_date(appConfig, formWithErrors, "error"))),
         form =>
-          customsCacheService.cache[GoodsDateForm](appConfig.appName, goodsDateId, form).map { _ =>
+          customsCacheService.cache[GoodsDateForm](movementCacheId, goodsDateId, form).map { _ =>
             Redirect(controllers.movement.routes.MovementController.displayLocation())
         }
       )
   }
 
   def displayLocation(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Choice](appConfig.appName, Choice.choiceId).flatMap {
+    customsCacheService.fetchAndGetEntry[Choice](movementCacheId, Choice.choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
-        customsCacheService.fetchAndGetEntry[LocationForm](appConfig.appName, locationId).map {
+        customsCacheService.fetchAndGetEntry[LocationForm](movementCacheId, locationId).map {
           case Some(data) => Ok(goods_location(appConfig, locationForm.fill(data), choice.choice))
           case _          => Ok(goods_location(appConfig, locationForm, choice.choice))
         }
@@ -132,19 +133,19 @@ class MovementController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[LocationForm]) =>
-          customsCacheService.fetchAndGetEntry[Choice](appConfig.appName, Choice.choiceId).map {
+          customsCacheService.fetchAndGetEntry[Choice](movementCacheId, Choice.choiceId).map {
             case Some(choice) => BadRequest(goods_location(appConfig, formWithErrors, choice.choice))
             case _            => BadRequest(goods_location(appConfig, formWithErrors, "error"))
         },
         form =>
-          customsCacheService.cache[LocationForm](appConfig.appName, locationId, form).map { _ =>
+          customsCacheService.cache[LocationForm](movementCacheId, locationId, form).map { _ =>
             Redirect(controllers.movement.routes.MovementController.displayTransport())
         }
       )
   }
 
   def displayTransport(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[TransportForm](appConfig.appName, transportId).map {
+    customsCacheService.fetchAndGetEntry[TransportForm](movementCacheId, transportId).map {
       case Some(data) => Ok(transport(appConfig, transportForm.fill(data)))
       case _          => Ok(transport(appConfig, transportForm))
     }
@@ -156,7 +157,7 @@ class MovementController @Inject()(
       .fold(
         (formWithErrors: Form[TransportForm]) => Future.successful(BadRequest(transport(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[TransportForm](appConfig.appName, transportId, form).map { _ =>
+          customsCacheService.cache[TransportForm](movementCacheId, transportId, form).map { _ =>
             Redirect(controllers.movement.routes.MovementSummaryController.displaySummary())
         }
       )

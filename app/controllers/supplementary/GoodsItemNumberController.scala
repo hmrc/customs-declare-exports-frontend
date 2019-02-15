@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.GoodsItemNumber
 import javax.inject.Inject
 import play.api.data.Form
@@ -40,7 +41,7 @@ class GoodsItemNumberController @Inject()(
   import forms.supplementary.GoodsItemNumber._
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[GoodsItemNumber](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[GoodsItemNumber](supplementaryCacheId, formId).map {
       case Some(data) => Ok(good_item_number(appConfig, form.fill(data)))
       case _          => Ok(good_item_number(appConfig, form))
     }
@@ -53,7 +54,7 @@ class GoodsItemNumberController @Inject()(
         (formWithErrors: Form[GoodsItemNumber]) =>
           Future.successful(BadRequest(good_item_number(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[GoodsItemNumber](appConfig.appName, formId, form).map { _ =>
+          customsCacheService.cache[GoodsItemNumber](supplementaryCacheId, formId, form).map { _ =>
             Redirect(controllers.supplementary.routes.ProcedureCodesPageController.displayPage())
         }
       )

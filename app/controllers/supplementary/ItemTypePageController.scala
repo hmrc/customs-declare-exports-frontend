@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.ItemType
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -39,10 +40,8 @@ class ItemTypePageController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  private val supplementaryDeclarationCacheId = appConfig.appName
-
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ItemType](supplementaryDeclarationCacheId, ItemType.id).map {
+    customsCacheService.fetchAndGetEntry[ItemType](supplementaryCacheId, ItemType.id).map {
       case Some(data) => Ok(item_type(appConfig, ItemType.form.fill(data)))
       case _          => Ok(item_type(appConfig, ItemType.form))
     }
@@ -54,7 +53,7 @@ class ItemTypePageController @Inject()(
       .fold(
         (formWithErrors: Form[ItemType]) => Future.successful(BadRequest(item_type(appConfig, formWithErrors))),
         validItemType =>
-          customsCacheService.cache[ItemType](supplementaryDeclarationCacheId, ItemType.id, validItemType).map { _ =>
+          customsCacheService.cache[ItemType](supplementaryCacheId, ItemType.id, validItemType).map { _ =>
             Redirect(controllers.supplementary.routes.PackageInformationController.displayForm())
         }
       )

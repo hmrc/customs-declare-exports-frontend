@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.DeclarationAdditionalActors
 import javax.inject.Inject
 import play.api.data.Form
@@ -42,7 +43,7 @@ class DeclarationAdditionalActorsController @Inject()(
   val additionalActorsForm = form()
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DeclarationAdditionalActors](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[DeclarationAdditionalActors](supplementaryCacheId, formId).map {
       case Some(data) => Ok(declaration_additional_actors(appConfig, additionalActorsForm.fill(data)))
       case _          => Ok(declaration_additional_actors(appConfig, additionalActorsForm))
     }
@@ -55,7 +56,7 @@ class DeclarationAdditionalActorsController @Inject()(
         (formWithErrors: Form[DeclarationAdditionalActors]) =>
           Future.successful(BadRequest(declaration_additional_actors(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[DeclarationAdditionalActors](appConfig.appName, formId, form).map { _ =>
+          customsCacheService.cache[DeclarationAdditionalActors](supplementaryCacheId, formId, form).map { _ =>
             Redirect(controllers.supplementary.routes.DeclarationHolderController.displayForm())
         }
       )

@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.WarehouseIdentification
 import javax.inject.Inject
 import play.api.data.Form
@@ -40,7 +41,7 @@ class WarehouseIdentificationController @Inject()(
   import forms.supplementary.WarehouseIdentification._
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[WarehouseIdentification](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[WarehouseIdentification](supplementaryCacheId, formId).map {
       case Some(data) => Ok(warehouse_identification(appConfig, form.fill(data)))
       case _          => Ok(warehouse_identification(appConfig, form))
     }
@@ -53,7 +54,7 @@ class WarehouseIdentificationController @Inject()(
         (formWithErrors: Form[WarehouseIdentification]) =>
           Future.successful(BadRequest(warehouse_identification(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[WarehouseIdentification](appConfig.appName, formId, form).map { _ =>
+          customsCacheService.cache[WarehouseIdentification](supplementaryCacheId, formId, form).map { _ =>
             Redirect(controllers.supplementary.routes.ItemTypePageController.displayPage())
         }
       )

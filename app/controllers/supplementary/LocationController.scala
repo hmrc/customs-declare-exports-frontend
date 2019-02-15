@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.GoodsLocation
 import javax.inject.Inject
 import play.api.data.Form
@@ -41,7 +42,7 @@ class LocationController @Inject()(
   implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[GoodsLocation](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[GoodsLocation](supplementaryCacheId, formId).map {
       case Some(data) => Ok(goods_location(appConfig, form.fill(data)))
       case _          => Ok(goods_location(appConfig, form))
     }
@@ -54,7 +55,7 @@ class LocationController @Inject()(
         (formWithErrors: Form[GoodsLocation]) =>
           Future.successful(BadRequest(goods_location(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[GoodsLocation](appConfig.appName, formId, form).map { _ =>
+          customsCacheService.cache[GoodsLocation](supplementaryCacheId, formId, form).map { _ =>
             Redirect(controllers.supplementary.routes.OfficeOfExitController.displayForm())
         }
       )

@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.ExporterDetails
 import javax.inject.Inject
 import play.api.data.Form
@@ -40,7 +41,7 @@ class ExporterDetailsPageController @Inject()(
   implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ExporterDetails](appConfig.appName, ExporterDetails.id).map {
+    customsCacheService.fetchAndGetEntry[ExporterDetails](supplementaryCacheId, ExporterDetails.id).map {
       case Some(data) => Ok(exporter_details(appConfig, ExporterDetails.form.fill(data)))
       case _          => Ok(exporter_details(appConfig, ExporterDetails.form))
     }
@@ -53,7 +54,7 @@ class ExporterDetailsPageController @Inject()(
         (formWithErrors: Form[ExporterDetails]) =>
           Future.successful(BadRequest(exporter_details(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[ExporterDetails](appConfig.appName, ExporterDetails.id, form).map { _ =>
+          customsCacheService.cache[ExporterDetails](supplementaryCacheId, ExporterDetails.id, form).map { _ =>
             Redirect(controllers.supplementary.routes.DeclarantDetailsPageController.displayForm())
         }
       )

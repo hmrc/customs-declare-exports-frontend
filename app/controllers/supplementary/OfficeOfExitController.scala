@@ -17,6 +17,7 @@
 package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.OfficeOfExit
 import javax.inject.Inject
 import play.api.data.Form
@@ -38,7 +39,7 @@ class OfficeOfExitController @Inject()(
   import forms.supplementary.OfficeOfExit._
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[OfficeOfExit](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[OfficeOfExit](supplementaryCacheId, formId).map {
       case Some(data) => Ok(office_of_exit(appConfig, form.fill(data)))
       case _          => Ok(office_of_exit(appConfig, form))
     }
@@ -51,7 +52,7 @@ class OfficeOfExitController @Inject()(
         (formWithErrors: Form[OfficeOfExit]) =>
           Future.successful(BadRequest(office_of_exit(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[OfficeOfExit](appConfig.appName, formId, form).map { _ =>
+          customsCacheService.cache[OfficeOfExit](supplementaryCacheId, formId, form).map { _ =>
             Redirect(controllers.supplementary.routes.TransportInformationPageController.displayPage())
         }
       )

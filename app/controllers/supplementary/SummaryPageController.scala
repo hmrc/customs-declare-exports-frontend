@@ -19,6 +19,7 @@ package controllers.supplementary
 import config.AppConfig
 import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import handlers.ErrorHandler
 import javax.inject.Inject
 import metrics.ExportsMetrics
@@ -46,19 +47,17 @@ class SummaryPageController @Inject()(
   exportsMetrics: ExportsMetrics,
   nrsService: NRSService
 )(implicit ec: ExecutionContext)
-  extends FrontendController with I18nSupport {
-
-  val suppDecCacheId = appConfig.appName
+    extends FrontendController with I18nSupport {
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetch(suppDecCacheId).map {
+    customsCacheService.fetch(supplementaryCacheId).map {
       case Some(cacheMap) => Ok(summary_page(appConfig, SupplementaryDeclarationData(cacheMap)))
       case None           => Ok(summary_page(appConfig, SupplementaryDeclarationData()))
     }
   }
 
   def submitSupplementaryDeclaration(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetch(suppDecCacheId).flatMap {
+    customsCacheService.fetch(supplementaryCacheId).flatMap {
       case Some(cacheMap) =>
         exportsMetrics.startTimer(submissionMetric)
         val suppDecData = SupplementaryDeclarationData(cacheMap)
@@ -70,11 +69,11 @@ class SummaryPageController @Inject()(
             val lrn = suppDecData.consignmentReferences.map(_.lrn)
             val submission = new Submission(request.user.eori, conversationId, ducr.fold("")(_.ducr), lrn, None)
 
-            customsDeclareExportsConnector.saveSubmissionResponse(submission).flatMap { _ =>
+            customsDeclareExportsConnector
+              .saveSubmissionResponse(submission)
+              .flatMap { _ =>
                 exportsMetrics.incrementCounter(submissionMetric)
-                customsCacheService.remove(suppDecCacheId).map { _ =>
-                  Ok("Supplementary Declaration submitted")
-                }
+                customsCacheService.remove(supplementaryCacheId).map(_ => Ok("Supplementary Declaration submitted"))
               }
               .recover {
                 case error: Throwable =>

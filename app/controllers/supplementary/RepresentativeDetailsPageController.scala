@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.RepresentativeDetails
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -40,11 +41,10 @@ class RepresentativeDetailsPageController @Inject()(
     extends FrontendController with I18nSupport {
 
   implicit val countries = services.Countries.allCountries
-  private val supplementaryDeclarationCacheId = appConfig.appName
 
   def displayRepresentativeDetailsPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[RepresentativeDetails](supplementaryDeclarationCacheId, RepresentativeDetails.formId)
+      .fetchAndGetEntry[RepresentativeDetails](supplementaryCacheId, RepresentativeDetails.formId)
       .map {
         case Some(data) => Ok(representative_details(appConfig, RepresentativeDetails.form.fill(data)))
         case _          => Ok(representative_details(appConfig, RepresentativeDetails.form))
@@ -60,13 +60,11 @@ class RepresentativeDetailsPageController @Inject()(
         validRepresentativeDetails =>
           customsCacheService
             .cache[RepresentativeDetails](
-              supplementaryDeclarationCacheId,
+              supplementaryCacheId,
               RepresentativeDetails.formId,
               validRepresentativeDetails
             )
-            .map { _ =>
-              Redirect(controllers.supplementary.routes.DeclarationAdditionalActorsController.displayForm())
-          }
+            .map(_ => Redirect(controllers.supplementary.routes.DeclarationAdditionalActorsController.displayForm()))
       )
   }
 

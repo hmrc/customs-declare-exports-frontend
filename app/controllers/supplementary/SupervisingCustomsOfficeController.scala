@@ -17,6 +17,7 @@
 package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.SupervisingCustomsOffice
 import javax.inject.Inject
 import play.api.data.Form
@@ -39,7 +40,7 @@ class SupervisingCustomsOfficeController @Inject()(
   import forms.supplementary.SupervisingCustomsOffice._
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[SupervisingCustomsOffice](appConfig.appName, formId).map {
+    customsCacheService.fetchAndGetEntry[SupervisingCustomsOffice](supplementaryCacheId, formId).map {
       case Some(data) => Ok(supervising_office(appConfig, form.fill(data)))
       case _          => Ok(supervising_office(appConfig, form))
     }
@@ -52,7 +53,7 @@ class SupervisingCustomsOfficeController @Inject()(
         (formWithErrors: Form[SupervisingCustomsOffice]) =>
           Future.successful(BadRequest(supervising_office(appConfig, formWithErrors))),
         validForm =>
-          customsCacheService.cache[SupervisingCustomsOffice](appConfig.appName, formId, validForm).map { _ =>
+          customsCacheService.cache[SupervisingCustomsOffice](supplementaryCacheId, formId, validForm).map { _ =>
             Redirect(controllers.supplementary.routes.WarehouseIdentificationController.displayForm())
         }
       )

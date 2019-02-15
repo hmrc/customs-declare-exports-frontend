@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.DispatchLocation.AllowedDispatchLocations
 import forms.supplementary.{AdditionalDeclarationType, DispatchLocation}
 import handlers.ErrorHandler
@@ -40,11 +41,9 @@ class DeclarationTypeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  private val supplementaryDeclarationCacheId = appConfig.appName
-
   def displayDispatchLocationPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[DispatchLocation](supplementaryDeclarationCacheId, DispatchLocation.formId)
+      .fetchAndGetEntry[DispatchLocation](supplementaryCacheId, DispatchLocation.formId)
       .map {
         case Some(data) => Ok(dispatch_location(appConfig, DispatchLocation.form().fill(data)))
         case _          => Ok(dispatch_location(appConfig, DispatchLocation.form()))
@@ -60,7 +59,7 @@ class DeclarationTypeController @Inject()(
           Future.successful(BadRequest(dispatch_location(appConfig, formWithErrors))),
         validDispatchLocation =>
           customsCacheService
-            .cache[DispatchLocation](supplementaryDeclarationCacheId, DispatchLocation.formId, validDispatchLocation)
+            .cache[DispatchLocation](supplementaryCacheId, DispatchLocation.formId, validDispatchLocation)
             .map { _ =>
               Redirect(specifyNextPage(validDispatchLocation))
           }
@@ -77,7 +76,7 @@ class DeclarationTypeController @Inject()(
 
   def displayAdditionalDeclarationTypePage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[AdditionalDeclarationType](supplementaryDeclarationCacheId, AdditionalDeclarationType.formId)
+      .fetchAndGetEntry[AdditionalDeclarationType](supplementaryCacheId, AdditionalDeclarationType.formId)
       .map {
         case Some(data) => Ok(declaration_type(appConfig, AdditionalDeclarationType.form().fill(data)))
         case _          => Ok(declaration_type(appConfig, AdditionalDeclarationType.form()))
@@ -94,14 +93,11 @@ class DeclarationTypeController @Inject()(
         validAdditionalDeclarationType =>
           customsCacheService
             .cache[AdditionalDeclarationType](
-              supplementaryDeclarationCacheId,
+              supplementaryCacheId,
               AdditionalDeclarationType.formId,
               validAdditionalDeclarationType
             )
-            .map { _ =>
-              Redirect(controllers.supplementary.routes.ConsignmentReferencesController.displayPage())
-          }
+            .map(_ => Redirect(controllers.supplementary.routes.ConsignmentReferencesController.displayPage()))
       )
   }
-
 }

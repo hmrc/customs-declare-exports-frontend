@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.utils.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.DeclarantDetails
 import javax.inject.Inject
 import play.api.data.Form
@@ -40,7 +41,7 @@ class DeclarantDetailsPageController @Inject()(
   implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DeclarantDetails](appConfig.appName, DeclarantDetails.id).map {
+    customsCacheService.fetchAndGetEntry[DeclarantDetails](supplementaryCacheId, DeclarantDetails.id).map {
       case Some(data) => Ok(declarant_details(appConfig, DeclarantDetails.form.fill(data)))
       case _          => Ok(declarant_details(appConfig, DeclarantDetails.form))
     }
@@ -53,7 +54,7 @@ class DeclarantDetailsPageController @Inject()(
         (formWithErrors: Form[DeclarantDetails]) =>
           Future.successful(BadRequest(declarant_details(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[DeclarantDetails](appConfig.appName, DeclarantDetails.id, form).map { _ =>
+          customsCacheService.cache[DeclarantDetails](supplementaryCacheId, DeclarantDetails.id, form).map { _ =>
             Redirect(
               controllers.supplementary.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
             )
