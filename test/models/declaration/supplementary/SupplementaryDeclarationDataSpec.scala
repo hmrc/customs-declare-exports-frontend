@@ -42,6 +42,7 @@ import forms.supplementary.TransportInformationSpec._
 import forms.supplementary.WarehouseIdentificationSpec._
 import forms.supplementary._
 import models.declaration.supplementary.DeclarationTypeSpec._
+import models.declaration.supplementary.SupplementaryDeclarationData.suppDecFunctionCode
 import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, Json}
@@ -352,7 +353,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
     "return Map being summary of all data elements returned Maps" in new TestMapConcatenation {
       supplementaryDeclarationData.toMetadataProperties() must equal(
-        declarationTypeMap ++ consignmentReferencesMap ++ partiesMap ++ locationsMap ++ transportInformationMap ++ itemsMap ++ previousDocumentsMap ++ additionalInformationMap ++ documentsProducedMap
+        functionCodeMap ++ declarationTypeMap ++ consignmentReferencesMap ++ partiesMap ++ locationsMap ++ transportInformationMap ++ itemsMap ++ previousDocumentsMap ++ additionalInformationMap ++ documentsProducedMap
       )
     }
 
@@ -390,6 +391,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
     }
 
     trait TestMapConcatenation extends SimpleTest {
+      val functionCodeMap = Map("declaration.functionCode" -> suppDecFunctionCode)
       val declarationTypeMap = Map("DeclarationType" -> "DeclarationTypeValue")
       val consignmentReferencesMap = Map("ConsignmentReferences" -> "ConsignmentReferencesValue")
       val partiesMap = Map("Parties" -> "PartiesValue")
