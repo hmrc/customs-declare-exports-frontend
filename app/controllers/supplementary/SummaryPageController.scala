@@ -32,7 +32,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.{CustomsCacheService, NRSService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.MetaData
-import views.html.supplementary.summary.summary_page
+import views.html.supplementary.summary.{summary_page, summary_page_no_data}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -52,7 +52,7 @@ class SummaryPageController @Inject()(
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetch(supplementaryCacheId).map {
       case Some(cacheMap) => Ok(summary_page(appConfig, SupplementaryDeclarationData(cacheMap)))
-      case None           => Ok(summary_page(appConfig, SupplementaryDeclarationData()))
+      case None           => BadRequest(summary_page_no_data(appConfig))
     }
   }
 

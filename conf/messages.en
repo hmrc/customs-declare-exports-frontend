@@ -506,6 +506,8 @@ supplementary.packageInformation.grossMass.empty = Gross weight can not be empty
 
 supplementary.summary.title = Summary
 supplementary.summary.header = Check your answers before making this declaration
+supplementary.summary.noData.header = No information for supplementary declaration found
+supplementary.summary.noData.header.secondary = Please, go back and provide necessary information before proceeding
 supplementary.summary.declarationType.header = Declaration type
 supplementary.summary.declarationType.dispatchLocation = Dispatch location
 supplementary.summary.declarationType.supplementaryDeclarationType = Supplementary declaration type
