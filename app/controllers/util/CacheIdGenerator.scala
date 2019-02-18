@@ -18,6 +18,8 @@ package controllers.util
 import models.requests.AuthenticatedRequest
 
 object CacheIdGenerator {
+  def eoriCacheId()(implicit request: AuthenticatedRequest[_]): String = request.user.eori
+
   def supplementaryCacheId()(implicit request: AuthenticatedRequest[_]): String =
     s"supplementary-${request.user.eori}"
 

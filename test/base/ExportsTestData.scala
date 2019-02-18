@@ -234,10 +234,8 @@ object ExportsTestData {
 
   val choiceForm = Json.toJson(Choice("EAL"))
 
-  def getMovementCacheMap(id: String, movementType: String) = {
-
+  def getMovementCacheMap(id: String, movementType: String): CacheMap = {
     val data = Map(
-      choiceId -> Json.toJson(Choice(movementType)),
       Ducr.id -> correctDucrJson,
       goodsDateId -> Json.toJson(GoodsDateForm("01", "02", "2020", None, None)),
       locationId -> location,

@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.util.CacheIdGenerator.eoriCacheId
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
@@ -43,7 +43,7 @@ class ChoiceController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Choice](supplementaryCacheId, choiceId).map {
+    customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, choiceId).map {
       case Some(data) => Ok(choice_page(appConfig, Choice.form().fill(data)))
       case _          => Ok(choice_page(appConfig, Choice.form()))
     }
@@ -55,7 +55,7 @@ class ChoiceController @Inject()(
       .fold(
         (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choice_page(appConfig, formWithErrors))),
         validChoice =>
-          customsCacheService.cache[Choice](supplementaryCacheId, choiceId, validChoice).map { _ =>
+          customsCacheService.cache[Choice](eoriCacheId, choiceId, validChoice).map { _ =>
             validChoice.choice match {
               case SupplementaryDec =>
                 Redirect(controllers.supplementary.routes.DeclarationTypeController.displayDispatchLocationPage())
