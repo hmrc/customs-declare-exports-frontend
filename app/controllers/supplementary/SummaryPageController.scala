@@ -28,7 +28,7 @@ import models.declaration.supplementary.SupplementaryDeclarationData
 import models.{CustomsDeclarationsResponse, Submission}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import services.{CustomsCacheService, NRSService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.MetaData
@@ -52,7 +52,7 @@ class SummaryPageController @Inject()(
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetch(supplementaryCacheId).map {
       case Some(cacheMap) => Ok(summary_page(appConfig, SupplementaryDeclarationData(cacheMap)))
-      case None           => BadRequest(summary_page_no_data(appConfig))
+      case None           => Ok(summary_page_no_data(appConfig))
     }
   }
 
@@ -73,7 +73,13 @@ class SummaryPageController @Inject()(
               .saveSubmissionResponse(submission)
               .flatMap { _ =>
                 exportsMetrics.incrementCounter(submissionMetric)
-                customsCacheService.remove(supplementaryCacheId).map(_ => Ok("Supplementary Declaration submitted"))
+                customsCacheService
+                  .remove(supplementaryCacheId)
+                  .map(
+                    _ =>
+                      Redirect(controllers.supplementary.routes.ConfirmationPageController.displayPage())
+                        .flashing(prepareFlashScope(lrn.getOrElse(""), conversationId))
+                  )
               }
               .recover {
                 case error: Throwable =>
@@ -100,5 +106,8 @@ class SummaryPageController @Inject()(
       )
     )
   }
+
+  private def prepareFlashScope(lrn: String, conversationId: String) =
+    Flash(Map("LRN" -> lrn, "ConversationId" -> conversationId))
 
 }

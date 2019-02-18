@@ -581,3 +581,11 @@ supplementary.summary.additionalDocumentation.documentId = Identifier
 supplementary.summary.additionalDocumentation.documentPart = Document part
 supplementary.summary.additionalDocumentation.documentStatus = Status
 supplementary.summary.additionalDocumentation.documentStatusReason = Status reason
+
+supplementary.confirmation.title = Supplementary Declaration submission confirmation
+supplementary.confirmation.header = Your LRN is
+supplementary.confirmation.info = You declaration has been received.
+supplementary.confirmation.whatHappensNext = What happens next?
+supplementary.confirmation.explanation = Your MRN will be provided in a notification.
+supplementary.confirmation.explanation.linkText = Check your notification status in the dashboard.
+supplementary.confirmation.submitAnotherDeclaration = Submit another declaration

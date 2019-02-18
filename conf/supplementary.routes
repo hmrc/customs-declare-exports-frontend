@@ -150,3 +150,7 @@ POST        /package-information            controllers.supplementary.PackageInf
 GET         /summary                        controllers.supplementary.SummaryPageController.displayPage()
 
 POST        /summary                        controllers.supplementary.SummaryPageController.submitSupplementaryDeclaration()
+
+# Confirmation
+
+GET         /confirmation                   controllers.supplementary.ConfirmationPageController.displayPage()

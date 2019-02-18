@@ -17,21 +17,22 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
+import forms.supplementary.{ConsignmentReferences, ConsignmentReferencesSpec}
 import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse}
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.verification.VerificationMode
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.wco.dec.MetaData
 
 import scala.concurrent.Future
 
 class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
-  private trait test {
+  private trait Test {
     implicit val headerCarrierMock = mock[HeaderCarrier]
     val summaryPageUri = uriWithContextPath("/declaration/supplementary/summary")
     val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
@@ -48,25 +49,27 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     withCaching(None, eoriForCache)
     when(mockCustomsCacheService.fetch(anyString())(any(), any()))
       .thenReturn(Future.successful(Some(CacheMap(eoriForCache, Map.empty))))
+    when(mockCustomsCacheService.remove(anyString())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(OK)))
     successfulCustomsDeclarationResponse()
   }
 
   "Summary page on displayPage" when {
 
     "there is data in cache for supplementary declaration" should {
-      "return 200 code" in new test {
+      "return 200 code" in new Test {
         val result = route(app, getRequest(summaryPageUri)).get
         status(result) must be(OK)
       }
 
-      "display \"back\" button that links to Documents Produced page" in new test {
+      "display \"back\" button that links to Documents Produced page" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("site.back"))
         resultAsString must include("/declaration/supplementary/add-document")
       }
 
-      "display content for Declaration Type module" in new test {
+      "display content for Declaration Type module" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.declarationType.header"))
@@ -74,7 +77,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.declarationType.supplementaryDeclarationType"))
       }
 
-      "display content for Your References module" in new test {
+      "display content for Your References module" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.yourReferences.header"))
@@ -82,7 +85,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.yourReferences.lrn"))
       }
 
-      "display content for Parties module" in new test {
+      "display content for Parties module" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.parties.header"))
@@ -99,7 +102,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.parties.authorizedPartyEori"))
       }
 
-      "display content for Locations module" in new test {
+      "display content for Locations module" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.locations.header"))
@@ -116,7 +119,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.locations.officeOfExit"))
       }
 
-      "display content for Transport module" in new test {
+      "display content for Transport module" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.transport.header"))
@@ -132,7 +135,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.transport.containerId"))
       }
 
-      "display content for Item module" in new test {
+      "display content for Item module" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.items.header"))
@@ -156,7 +159,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.items.grossWeight"))
       }
 
-      "display content for Documents module" in new test {
+      "display content for Documents module" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.previousDocuments.header"))
@@ -175,14 +178,14 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentStatusReason"))
       }
 
-      "get the whole supplementary declaration data from cache" in new test {
+      "get the whole supplementary declaration data from cache" in new Test {
         route(app, getRequest(summaryPageUri)).get.futureValue
         verify(mockCustomsCacheService, onlyOnce).fetch(any())(any(), any())
       }
     }
 
     "there is no data in cache for supplementary declaration" should {
-      "display error page" in new test {
+      "display error page" in new Test {
         when(mockCustomsCacheService.fetch(anyString())(any(), any()))
           .thenReturn(Future.successful(None))
 
@@ -197,46 +200,55 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
   "Summary Page on submitSupplementaryDeclaration" when {
 
     "everything is correct" should {
-      "get the whole supplementary declaration data from cache" in new test {
+      "get the whole supplementary declaration data from cache" in new Test {
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         verify(mockCustomsCacheService, onlyOnce).fetch(any())(any(), any())
       }
 
-      "send declaration data to Customs Declarations" in new test {
+      "send declaration data to Customs Declarations" in new Test {
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         verify(mockCustomsDeclarationsConnector, onlyOnce).submitExportDeclaration(emptyMetadata)
       }
 
-      "save submission response in customs-declare-exports service" in new test {
+      "save submission response in customs-declare-exports service" in new Test {
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         verify(mockCustomsDeclareExportsConnector, onlyOnce).saveSubmissionResponse(any())(any(), any())
       }
 
-      "remove supplementary declaration data from cache" in new test {
+      "remove supplementary declaration data from cache" in new Test {
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         verify(mockCustomsCacheService, onlyOnce).remove(any())(any(), any())
       }
 
-      pending
-      "return 303 code" in new test {
+      "return 303 code" in new Test {
         val result = route(app, postRequest(summaryPageUri, emptyForm)).get
         status(result) must be(SEE_OTHER)
       }
 
-      pending
-      "redirect to confirmation page" in new test {
+      "redirect to confirmation page" in new Test {
         val result = route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         val header = result.header
 
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/confirmation"))
       }
-    }
-  }
 
-  "Summary Page on submitSupplementaryDeclaration" when {
+      "add flash scope with lrn and conversation ID" in new Test {
+        val cacheData = Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.correctConsignmentReferencesJSON)
+        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
+          .thenReturn(Future.successful(Some(CacheMap(eoriForCache, cacheData))))
+
+        val result = route(app, postRequest(summaryPageUri, emptyForm)).get
+
+        val f = flash(result)
+        f.get("LRN") must be(defined)
+        f("LRN") must equal("123ABC")
+        f.get("ConversationId") must be(defined)
+        f("ConversationId") must equal("1234")
+      }
+    }
 
     "got error from Customs Declarations" should {
-      "display error page" in new test {
+      "display error page" in new Test {
         when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
           .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
 
@@ -247,7 +259,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("global.error.message"))
       }
 
-      "not remove data from cache" in new test {
+      "not remove data from cache" in new Test {
         when(mockCustomsDeclarationsConnector.submitExportDeclaration(emptyMetadata))
           .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
 
@@ -259,7 +271,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
     "got exception during saving submission response in customs-declare-exports service" should {
       pending
-      "display error page" in new test {
+      "display error page" in new Test {
         when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
           .thenReturn(
             Future.successful(CustomsDeclareExportsResponse(INTERNAL_SERVER_ERROR, "failed saving submission"))
@@ -273,7 +285,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       }
 
       pending
-      "remove data from cache" in new test {
+      "remove data from cache" in new Test {
         when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
           .thenReturn(
             Future.successful(CustomsDeclareExportsResponse(INTERNAL_SERVER_ERROR, "failed saving submission"))
