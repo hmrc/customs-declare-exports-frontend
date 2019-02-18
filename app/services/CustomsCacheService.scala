@@ -53,10 +53,10 @@ class CustomsCacheService @Inject()(caching: CustomsHttpCaching, applicationCryp
   def fetchMovementRequest(
     cacheId: String,
     eori: String
-  )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[InventoryLinkingMovementRequest]] =
-    fetch(cacheId).map {
-      case Some(cacheMap) =>
-        Some(Movement.createMovementRequest(cacheMap, eori))
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[InventoryLinkingMovementRequest]] =
+    fetch(cacheId).zip(fetch(eori)).map {
+      case (Some(cacheMap), Some(choice)) if (choice.getEntry[Choice](Choice.choiceId).isDefined) =>
+        Some(Movement.createMovementRequest(cacheMap, eori, choice.getEntry[Choice](Choice.choiceId).get))
       case _ => None
     }
 }

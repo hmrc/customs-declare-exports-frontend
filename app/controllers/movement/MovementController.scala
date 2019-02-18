@@ -19,7 +19,7 @@ package controllers.movement
 import config.AppConfig
 import connectors.CustomsInventoryLinkingExportsConnector
 import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.movementCacheId
+import controllers.util.CacheIdGenerator.{eoriCacheId, movementCacheId}
 import forms.MovementFormsAndIds._
 import forms._
 import handlers.ErrorHandler
@@ -44,7 +44,7 @@ class MovementController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayDucrPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Choice](movementCacheId, Choice.choiceId).flatMap {
+    customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, Choice.choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
         customsCacheService.fetchAndGetEntry[Ducr](movementCacheId, Ducr.id).map {
           case Some(data) => Ok(enter_ducr(appConfig, Ducr.form.fill(data), choice.choice))
@@ -76,7 +76,7 @@ class MovementController @Inject()(
   }
 
   def displayGoodsDate(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Choice](movementCacheId, Choice.choiceId).flatMap {
+    customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, Choice.choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
         customsCacheService.fetchAndGetEntry[GoodsDateForm](movementCacheId, goodsDateId).map {
           case Some(data) => Ok(goods_date(appConfig, goodsDateForm.fill(data), choice.choice))
@@ -109,7 +109,7 @@ class MovementController @Inject()(
   }
 
   def displayLocation(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Choice](movementCacheId, Choice.choiceId).flatMap {
+    customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, Choice.choiceId).flatMap {
       case Some(choice) if !choice.choice.isEmpty =>
         customsCacheService.fetchAndGetEntry[LocationForm](movementCacheId, locationId).map {
           case Some(data) => Ok(goods_location(appConfig, locationForm.fill(data), choice.choice))
@@ -133,7 +133,7 @@ class MovementController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[LocationForm]) =>
-          customsCacheService.fetchAndGetEntry[Choice](movementCacheId, Choice.choiceId).map {
+          customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, Choice.choiceId).map {
             case Some(choice) => BadRequest(goods_location(appConfig, formWithErrors, choice.choice))
             case _            => BadRequest(goods_location(appConfig, formWithErrors, "error"))
         },

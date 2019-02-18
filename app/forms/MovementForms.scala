@@ -96,8 +96,7 @@ object MovementFormsAndIds {
 
 object Movement {
 
-  def createMovementRequest(cacheMap: CacheMap, eori: String): InventoryLinkingMovementRequest = {
-    val choiceForm = cacheMap.getEntry[Choice](Choice.choiceId).get
+  def createMovementRequest(cacheMap: CacheMap, eori: String, choice: Choice): InventoryLinkingMovementRequest = {
     val ducrForm = cacheMap.getEntry[Ducr](Ducr.id).get
     val goodsDate = cacheMap.getEntry[GoodsDateForm](MovementFormsAndIds.goodsDateId)
     val location = cacheMap.getEntry[LocationForm](MovementFormsAndIds.locationId).get
@@ -106,20 +105,20 @@ object Movement {
     // TODO: ucrType is hardcoded need to UPDATE after we allow user input for mucr
     InventoryLinkingMovementRequest(
       messageCode =
-        if (choiceForm.choice.equals(AllowedChoiceValues.Arrival) || choiceForm.choice
+        if (choice.choice.equals(AllowedChoiceValues.Arrival) || choice.choice
               .equals(AllowedChoiceValues.Departure))
-          choiceForm.choice
+          choice.choice
         else "",
       agentDetails =
         Some(AgentDetails(eori = Some(eori), agentLocation = location.agentLocation, agentRole = location.agentRole)),
       ucrBlock = UcrBlock(ucr = ducrForm.ducr, ucrType = "D"),
       goodsLocation = location.goodsLocation.get,
       goodsArrivalDateTime =
-        if (choiceForm.choice.equals("EAL") && goodsDate.isDefined)
+        if (choice.choice.equals("EAL") && goodsDate.isDefined)
           Some(extractDateTime(goodsDate.get))
         else None,
       goodsDepartureDateTime =
-        if (choiceForm.choice.equals("EDL") && goodsDate.isDefined)
+        if (choice.choice.equals("EDL") && goodsDate.isDefined)
           Some(extractDateTime(goodsDate.get))
         else None,
       shedOPID = location.shed,
