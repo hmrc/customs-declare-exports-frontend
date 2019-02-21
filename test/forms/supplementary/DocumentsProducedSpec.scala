@@ -31,7 +31,8 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].typeCode" -> typeCode,
         "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].id" -> expectedID,
         "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].lpcoExemptionCode" -> documentsProduced.documentStatus.get,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].name" -> documentsProduced.documentStatusReason.get
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].name" -> documentsProduced.documentStatusReason.get,
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].writeOff.quantity" -> documentsProduced.documentQuantity.get
       )
 
       documentsProduced.toMetadataProperties() must equal(expectedMetadataProperties)
@@ -49,14 +50,16 @@ object DocumentsProducedSpec {
     documentIdentifier = Some("ABCDEF1234567890"),
     documentPart = Some("ABC12"),
     documentStatus = Some("AB"),
-    documentStatusReason = Some("DocumentStatusReason")
+    documentStatusReason = Some("DocumentStatusReason"),
+    documentQuantity = Some("1234567890.123456")
   )
   val emptyDocumentsProduced = DocumentsProduced(
     documentTypeCode = None,
     documentIdentifier = None,
     documentPart = None,
     documentStatus = None,
-    documentStatusReason = None
+    documentStatusReason = None,
+    documentQuantity = None
   )
 
   val correctDocumentsProducedJSON: JsValue = JsObject(
@@ -65,7 +68,8 @@ object DocumentsProducedSpec {
       "documentIdentifier" -> JsString("ABCDEF1234567890"),
       "documentPart" -> JsString("ABC12"),
       "documentStatus" -> JsString("AB"),
-      "documentStatusReason" -> JsString("DocumentStatusReason")
+      "documentStatusReason" -> JsString("DocumentStatusReason"),
+      "documentQuantity" -> JsString("1234567890.123456")
     )
   )
   val emptyDocumentsProducedJSON: JsValue = JsObject(
@@ -74,7 +78,8 @@ object DocumentsProducedSpec {
       "documentIdentifier" -> JsString(""),
       "documentPart" -> JsString(""),
       "documentStatus" -> JsString(""),
-      "documentStatusReason" -> JsString("")
+      "documentStatusReason" -> JsString(""),
+      "documentQuantity" -> JsString("")
     )
   )
 
