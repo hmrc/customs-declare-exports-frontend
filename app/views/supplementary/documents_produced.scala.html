@@ -59,6 +59,11 @@
             label = messages("supplementary.addDocument.documentStatusReason")
         )
 
+        @components.input_text(
+            field = form("documentQuantity"),
+            label = messages("supplementary.addDocument.documentQuantity")
+        )
+
         @components.submit_button()
     }
 }

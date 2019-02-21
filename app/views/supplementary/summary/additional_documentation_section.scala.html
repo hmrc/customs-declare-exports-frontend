@@ -40,4 +40,8 @@
         label = messages("supplementary.summary.additionalDocumentation.documentStatusReason"),
         value = additionalDocumentation.flatMap(_.documentStatusReason)
     ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.additionalDocumentation.documentQuantity"),
+        value = additionalDocumentation.flatMap(_.documentQuantity)
+    ))
 }

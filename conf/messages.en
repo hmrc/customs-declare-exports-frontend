@@ -361,7 +361,7 @@ supplementary.addDocument.documentStatus.error = Incorrect document status
 supplementary.addDocument.documentStatusReason = Document status reason
 supplementary.addDocument.documentStatusReason.error = Incorrect document status reason
 supplementary.addDocument.documentQuantity = Quantity
-supplementary.addDocument.documentQuantity.error = Quantity is incorrect
+supplementary.addDocument.documentQuantity.error = Incorrect quantity value
 
 supplementary.totalNumberOfItems = 1/9 What is the total number of items?
 supplementary.totalNumberOfItems.title = Total number of items
@@ -583,6 +583,7 @@ supplementary.summary.additionalDocumentation.documentId = Identifier
 supplementary.summary.additionalDocumentation.documentPart = Document part
 supplementary.summary.additionalDocumentation.documentStatus = Status
 supplementary.summary.additionalDocumentation.documentStatusReason = Status reason
+supplementary.summary.additionalDocumentation.documentQuantity = Quantity
 
 supplementary.confirmation.title = Supplementary Declaration submission confirmation
 supplementary.confirmation.header = Your LRN is
