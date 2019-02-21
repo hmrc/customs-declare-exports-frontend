@@ -27,7 +27,8 @@ case class DocumentsProduced(
   documentIdentifier: Option[String],
   documentPart: Option[String],
   documentStatus: Option[String],
-  documentStatusReason: Option[String]
+  documentStatusReason: Option[String],
+  documentQuantity: Option[String]
 ) extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
@@ -41,7 +42,9 @@ case class DocumentsProduced(
       "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].lpcoExemptionCode" ->
         documentStatus.getOrElse(""),
       "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].name" ->
-        documentStatusReason.getOrElse("")
+        documentStatusReason.getOrElse(""),
+      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].writeOff.quantity" ->
+        documentQuantity.getOrElse("")
     )
 }
 
@@ -50,6 +53,8 @@ object DocumentsProduced {
 
   val formId = "Document"
 
+  private val documentQuantityMaxLength = 16
+  private val documentQuantityMaxDecimalPlaces = 6
   val mapping = Forms.mapping(
     "documentTypeCode" -> optional(
       text().verifying("supplementary.addDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)
@@ -65,6 +70,12 @@ object DocumentsProduced {
     ),
     "documentStatusReason" -> optional(
       text().verifying("supplementary.addDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumeric)
+    ),
+    "documentQuantity" -> optional(
+      text().verifying(
+        "supplementary.addDocument.documentQuantity.error",
+        validateDecimal(documentQuantityMaxLength)(documentQuantityMaxDecimalPlaces)
+      )
     )
   )(DocumentsProduced.apply)(DocumentsProduced.unapply)
 

@@ -360,6 +360,8 @@ supplementary.addDocument.documentStatus = Document status
 supplementary.addDocument.documentStatus.error = Incorrect document status
 supplementary.addDocument.documentStatusReason = Document status reason
 supplementary.addDocument.documentStatusReason.error = Incorrect document status reason
+supplementary.addDocument.documentQuantity = Quantity
+supplementary.addDocument.documentQuantity.error = Quantity is incorrect
 
 supplementary.totalNumberOfItems = 1/9 What is the total number of items?
 supplementary.totalNumberOfItems.title = Total number of items
