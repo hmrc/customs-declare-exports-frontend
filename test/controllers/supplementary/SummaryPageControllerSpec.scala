@@ -168,8 +168,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.previousDocuments.documentReference"))
         resultAsString must include(messages("supplementary.summary.previousDocuments.goodsItemIdentifier"))
         resultAsString must include(messages("supplementary.summary.additionalInformation.header"))
-        resultAsString must include(messages("supplementary.summary.additionalInformation.code"))
-        resultAsString must include(messages("supplementary.summary.additionalInformation.description"))
         resultAsString must include(messages("supplementary.summary.additionalDocumentation.header"))
         resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentTypeCode"))
         resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentId"))

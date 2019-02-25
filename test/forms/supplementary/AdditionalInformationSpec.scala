@@ -15,8 +15,9 @@
  */
 
 package forms.supplementary
+import models.declaration.supplementary.AdditionalInformationData
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
 class AdditionalInformationSpec extends WordSpec with MustMatchers {
   import AdditionalInformationSpec._
@@ -25,11 +26,17 @@ class AdditionalInformationSpec extends WordSpec with MustMatchers {
     "return proper Metadata Properties" in {
       val additionalInformation = correctAdditionalInformation
       val expectedProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementCode" -> additionalInformation.code.get,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementDescription" -> additionalInformation.description.get
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementCode" -> additionalInformation.items.head.code.get,
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementDescription" -> additionalInformation.items.head.description.get
       )
 
       additionalInformation.toMetadataProperties() must equal(expectedProperties)
+    }
+  }
+
+  "Declaration object" should {
+    "contains correct limit value" in {
+      AdditionalInformationData.maxNumberOfItems must be(99)
     }
   }
 
@@ -37,12 +44,19 @@ class AdditionalInformationSpec extends WordSpec with MustMatchers {
 
 object AdditionalInformationSpec {
   val correctAdditionalInformation =
-    AdditionalInformation(code = Some("12345"), description = Some("Description for Additional Information"))
+    AdditionalInformationData(
+      Seq(AdditionalInformation(code = Some("M1l3s"), description = Some("Description for Additional Information: Davis"))))
+
   val emptyAdditionalInformation = AdditionalInformation(None, None)
 
   val correctAdditionalInformationJSON: JsValue = JsObject(
-    Map("code" -> JsString("12345"), "description" -> JsString("Description for Additional Information"))
-  )
+    Map("code" -> JsString("M1l3s"), "description" -> JsString("Description for Additional Information: Davis")))
+
+  val incorrectAdditionalInformationJSON: JsValue = JsObject(
+    Map("code" -> JsString("Miles"), "description" -> JsString("Description for Additional Information: Davis")))
+
   val emptyAdditionalInformationJSON: JsValue = JsObject(Map("code" -> JsString(""), "description" -> JsString("")))
 
+  val correctAdditionalInformationDataJSON: JsValue = JsObject(
+    Map("items" -> JsArray(Seq(correctAdditionalInformationJSON))))
 }

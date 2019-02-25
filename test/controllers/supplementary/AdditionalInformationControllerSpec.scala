@@ -17,19 +17,29 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
-import base.TestHelper._
+import base.TestHelper.createRandomString
+import controllers.supplementary.AdditionalInformationControllerSpec.cacheWithMaximumAmountOfHolders
+import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.AdditionalInformation
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import models.declaration.supplementary.AdditionalInformationData
+import models.declaration.supplementary.AdditionalInformationData.formId
+import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class AdditionalInformationControllerSpec extends CustomExportsBaseSpec {
+class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
-  val uri = uriWithContextPath("/declaration/supplementary/additional-information")
+  val uri: String = uriWithContextPath("/declaration/supplementary/additional-information")
+  private val addActionUrlEncoded = (Add.toString, "")
+  private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
+  private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
-  "Additional Information Controller" should {
-    "display additional information form" in {
-      authorizedUser()
-      withCaching[AdditionalInformation](None)
+  before {
+    authorizedUser()
+  }
+
+  "Additional Information Controller when getting the page" should {
+    "display additional information form with no items" in {
+      withCaching[AdditionalInformationData](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -40,51 +50,261 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.additionalInformation.description"))
     }
 
-    "validate form - incorrect values" in {
-      authorizedUser()
-      withCaching[AdditionalInformation](None)
 
-      val incorrectAdditionalInformation: JsValue =
-        JsObject(Map("code" -> JsString(createRandomString(6)), "description" -> JsString(createRandomString(71))))
-      val result = route(app, postRequest(uri, incorrectAdditionalInformation)).get
+    "display additional information form with added items" in {
+      val cachedData = AdditionalInformationData(
+        Seq(AdditionalInformation(Some("M1l3s"), Some("Davis")), AdditionalInformation(Some("X4rlz"), Some("Mingus")))
+      )
+      withCaching[AdditionalInformationData](Some(cachedData), formId)
+
+      val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include(messages("supplementary.additionalInformation.code.error"))
-      stringResult must include(messages("supplementary.additionalInformation.description.error"))
+      status(result) must be(OK)
+      stringResult must include("M1l3s-Davis")
+      stringResult must include("X4rlz-Mingus")
+      stringResult must include(messages("supplementary.additionalInformation.title"))
+      stringResult must include(messages("supplementary.additionalInformation.code"))
+      stringResult must include(messages("supplementary.additionalInformation.description"))
     }
 
-    "validate form - empty form" in {
-      authorizedUser()
-      withCaching[AdditionalInformation](None)
+    "display back button that links to package information page" in {
+      withCaching[AdditionalInformationData](None, formId)
 
-      val emptyAdditionalInformation: JsValue = JsObject(Map[String, JsString]())
-      val result = route(app, postRequest(uri, emptyAdditionalInformation)).get
-      val header = result.futureValue.header
+      val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
 
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/add-document"))
-    }
-
-    "validate form - special characters" in {
-      authorizedUser()
-      withCaching[AdditionalInformation](None)
-
-      val additionalInformationWithSpecialChars: JsValue =
-        JsObject(Map("code" -> JsString("12345"), "decription" -> JsString("Description with ,. /'")))
-    }
-
-    "validate form - correct values" in {
-      authorizedUser()
-      withCaching[AdditionalInformation](None)
-
-      val correctAdditionalInformation: JsValue =
-        JsObject(Map("code" -> JsString("12345"), "description" -> JsString(createRandomString(70))))
-
-      val result = route(app, postRequest(uri, correctAdditionalInformation)).get
-      val header = result.futureValue.header
-
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/add-document"))
+      status(result) must be(OK)
+      stringResult must include(messages("site.back"))
+      stringResult must include(messages("/declaration/supplementary/package-information"))
     }
   }
+
+  "Additional Information controller handling a post" should {
+    "add an item sucessfully" when {
+      "with an empty cache" in {
+        withCaching[AdditionalInformationData](None, formId)
+        val body = Seq(("code", "J0ohn"), ("description", "Coltrane"), addActionUrlEncoded)
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(SEE_OTHER)
+      }
+
+      "that does not exist in cache" in {
+        val cachedData = AdditionalInformationData(
+          Seq(AdditionalInformation(Some("M1l3s"), Some("Davis"))))
+        withCaching[AdditionalInformationData](Some(cachedData), formId)
+        val body = Seq(("code", "x4rlz"), ("description", "Mingusss"), addActionUrlEncoded)
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(SEE_OTHER)
+      }
+    }
+
+    "remove an item successfully" when {
+      "exists in cache" in {
+        val cachedData = AdditionalInformationData(
+          Seq(AdditionalInformation(Some("M1l3s"), Some("Davis")), AdditionalInformation(Some("J00hn"), Some("Coltrane")))
+        )
+        withCaching[AdditionalInformationData](Some(cachedData), formId)
+        val body = removeActionUrlEncoded("M1l3s-Davis")
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+
+        status(result) must be(SEE_OTHER)
+      }
+    }
+
+    "display the form page with an error" when {
+      "try to add an item without any data" in {
+        withCaching[AdditionalInformationData](None, formId)
+
+        val result = route(app, postRequestFormUrlEncoded(uri, addActionUrlEncoded)).get
+        val stringResult = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+        stringResult must include(messages("supplementary.additionalInformation.code.empty"))
+        stringResult must include(messages("supplementary.additionalInformation.description.empty"))
+      }
+
+    "try to save and continue without any items" in {
+      withCaching[AdditionalInformationData](None, formId)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionUrlEncoded)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(BAD_REQUEST)
+      stringResult must include(messages("supplementary.additionalInformation.code.empty"))
+      stringResult must include(messages("supplementary.additionalInformation.description.empty"))
+    }
+
+    "try to add an item without code" in {
+      withCaching[AdditionalInformationData](None, formId)
+      val body = Seq(("description", "Davis"), addActionUrlEncoded)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages("supplementary.additionalInformation.code.empty"))
+    }
+
+    "try to add an item without a description" in {
+      withCaching[AdditionalInformationData](None, formId)
+      val body = Seq(("code", "M1l3s"), addActionUrlEncoded)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages("supplementary.additionalInformation.description.empty"))
+    }
+
+    "try to save and continue without providing a code" in {
+      withCaching[AdditionalInformationData](None, formId)
+      val body = Seq(("description", "Davis"), addActionUrlEncoded)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages("supplementary.additionalInformation.code.empty"))
+    }
+
+    "try to save and continue without a description" in {
+      withCaching[AdditionalInformationData](None, formId)
+      val body = Seq(("code", "123rt"), addActionUrlEncoded)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages("supplementary.additionalInformation.description.empty"))
+    }
+
+    "try to add a longer code" in {
+      withCaching[AdditionalInformationData](None, formId)
+      val body = Seq(("code", createRandomString(6)), addActionUrlEncoded)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages("supplementary.additionalInformation.code.error"))
+    }
+
+    "try to add a shorter code" in {
+      withCaching[AdditionalInformationData](None, formId)
+      val body = Seq(("code", createRandomString(3)), addActionUrlEncoded)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages("supplementary.additionalInformation.code.error"))
+    }
+
+    "try to add a longer description" in {
+      withCaching[AdditionalInformationData](None, formId)
+      val body = Seq(("code", "M1l3s"), ("description", createRandomString(100)), addActionUrlEncoded)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages("supplementary.additionalInformation.description.error"))
+    }
+
+    "try to add duplicated item" in {
+      val cachedData = AdditionalInformationData(Seq(AdditionalInformation(Some("M1l3s"), Some("Davis"))))
+      withCaching[AdditionalInformationData](Some(cachedData), formId)
+      val body = Seq(("code", "M1l3s"), ("description", "Davis"), addActionUrlEncoded)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages("supplementary.additionalInformation.duplicated"))
+    }
+
+
+    "try to add more than 99 items" in {
+      withCaching[AdditionalInformationData](Some(cacheWithMaximumAmountOfHolders), formId)
+      val body = Seq(("code", "M1l3s"), ("description", "Davis"), addActionUrlEncoded)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages("supplementary.additionalInformation.maximumAmount.error"))
+    }
+
+    "try to save more than 99 items" in {
+      withCaching[AdditionalInformationData](Some(cacheWithMaximumAmountOfHolders), formId)
+      val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionUrlEncoded)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages("supplementary.additionalInformation.maximumAmount.error"))
+    }
+
+    "try to remove a non existent code" in {
+      val cachedData = AdditionalInformationData(Seq(AdditionalInformation(Some("M1l3s"), Some("Davis"))))
+      withCaching[AdditionalInformationData](Some(cachedData), formId)
+      val body = ("action", "Remove:J0ohn-Coltrane")
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(BAD_REQUEST)
+      stringResult must include(messages("global.error.title"))
+      stringResult must include(messages("global.error.heading"))
+      stringResult must include(messages("global.error.message"))
+    }
+  }
+    "redirect to the next page" when {
+      "user provide item with empty cache" in {
+        withCaching[AdditionalInformationData](None, formId)
+        val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionUrlEncoded)
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(
+          Some("/customs-declare-exports/declaration/supplementary/add-document")
+        )
+      }
+
+      "user doesn't fill form but some items already exist in the cache" in {
+        val cachedData = AdditionalInformationData(Seq(AdditionalInformation(Some("Jo0hn"), Some("Coltrane"))))
+        withCaching[AdditionalInformationData](Some(cachedData), formId)
+
+        val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionUrlEncoded)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(
+          Some("/customs-declare-exports/declaration/supplementary/add-document")
+        )
+      }
+
+      "user provide holder with some different holder in cache" in {
+        val cachedData = AdditionalInformationData(Seq(AdditionalInformation(Some("x4rlz"), Some("Mingus"))))
+        withCaching[AdditionalInformationData](Some(cachedData), formId)
+        val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionUrlEncoded)
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(
+          Some("/customs-declare-exports/declaration/supplementary/add-document")
+        )
+      }
+    }
+  }
+
+}
+
+object AdditionalInformationControllerSpec {
+  val cacheWithMaximumAmountOfHolders = AdditionalInformationData(
+    Seq
+      .range[Int](100, 200, 1)
+      .map(elem => AdditionalInformation(Some(elem.toString), Some(elem.toString)))
+  )
 }
