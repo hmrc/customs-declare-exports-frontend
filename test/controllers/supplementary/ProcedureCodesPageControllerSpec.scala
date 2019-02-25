@@ -254,7 +254,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
     }
 
     "add code without errors" when {
-      "user provide additional code with empty sequence" in {
+      "user provides additional code when no codes in cache" in {
         val cachedData = ProcedureCodesData(Some("1234"), Seq())
         withCaching[ProcedureCodesData](Some(cachedData), formId)
         val body = Seq(("additionalProcedureCode", "123"), ("action", "Add"))
