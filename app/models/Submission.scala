@@ -23,7 +23,8 @@ case class Submission(
   conversationId: String,
   ducr: String,
   lrn: Option[String] = None,
-  mrn: Option[String] = None
+  mrn: Option[String] = None,
+  status: Status
 )
 
 object Submission {
@@ -37,7 +38,7 @@ case class SubmissionData(
   mrn: Option[String],
   lrn: Option[String],
   submittedTimestamp: Long,
-  status: Option[String],
+  status: Status,
   noOfNotifications: Int
 )
 

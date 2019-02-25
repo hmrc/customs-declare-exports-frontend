@@ -54,8 +54,8 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
 
   def fetchNotificationsByConversationId(
     conversationId: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsNotification]] =
-    httpClient.GET[Option[ExportsNotification]](
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsNotification]] =
+    httpClient.GET[Seq[ExportsNotification]](
       s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissionNotifications}/$conversationId"
     )
 

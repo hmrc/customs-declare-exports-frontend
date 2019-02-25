@@ -35,25 +35,25 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(OK)
       stringResult must include(messages("notifications.title"))
-      stringResult must include(messages("notifications.name"))
+      stringResult must include(messages("notifications.status"))
       stringResult must include(messages("notifications.dateAndTime"))
       stringResult must include(messages("notifications.reference"))
-      stringResult must include(messages("notifications.status"))
+      stringResult must include(messages("notifications.additionalInformation"))
     }
 
     "return list of notifications for submission" in {
       authorizedUser()
-      listOfSubmissionNotifications
+      listOfSubmissionNotifications()
 
       val result = route(app, getRequest(submissionNotificationsUri)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
       stringResult must include(messages("notifications.title"))
-      stringResult must include(messages("notifications.name"))
+      stringResult must include(messages("notifications.status"))
       stringResult must include(messages("notifications.dateAndTime"))
       stringResult must include(messages("notifications.reference"))
-      stringResult must include(messages("notifications.status"))
+      stringResult must include(messages("notifications.additionalInformation"))
     }
 
     "return list of submissions" in {

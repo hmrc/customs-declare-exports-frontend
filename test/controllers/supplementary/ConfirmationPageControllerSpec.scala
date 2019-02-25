@@ -17,11 +17,12 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
+import org.scalatest.BeforeAndAfter
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-class ConfirmationPageControllerSpec extends CustomExportsBaseSpec {
+class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   private val lrn = "1234567890"
   private val conversationId = "12QW-34ER-56TY-78UI-90OP"
@@ -31,19 +32,21 @@ class ConfirmationPageControllerSpec extends CustomExportsBaseSpec {
       .getRequest(uri)
       .withFlash("LRN" -> lrn, "ConversationId" -> conversationId)
 
-  private trait Test {
-    val confirmationPageUri = uriWithContextPath("/declaration/supplementary/confirmation")
+  before {
     authorizedUser()
   }
 
-  "ConfirmationPageController" should {
+  val confirmationPageUri = uriWithContextPath("/declaration/supplementary/confirmation")
+  val rejectionPageUri = uriWithContextPath("/declaration/supplementary/rejection")
 
-    "return 200 code" in new Test {
+  "ConfirmationPageController on display confirmation page" should {
+
+    "return 200 code" in {
       val result = route(app, getRequestWithFlash(confirmationPageUri)).get
       status(result) must be(OK)
     }
 
-    "display the whole content" in new Test {
+    "display the whole content" in {
       val resultAsString = contentAsString(route(app, getRequestWithFlash(confirmationPageUri)).get)
 
       resultAsString must include(messages("supplementary.confirmation.title"))
@@ -53,19 +56,19 @@ class ConfirmationPageControllerSpec extends CustomExportsBaseSpec {
       resultAsString must include(messages("supplementary.confirmation.explanation"))
     }
 
-    "display LRN from flash" in new Test {
+    "display LRN from flash" in {
       val resultAsString = contentAsString(route(app, getRequestWithFlash(confirmationPageUri)).get)
       resultAsString must include(lrn)
     }
 
-    "display a button that links to choice page" in new Test {
+    "display a button that links to choice page" in {
       val resultAsString = contentAsString(route(app, getRequestWithFlash(confirmationPageUri)).get)
 
       resultAsString must include(messages("supplementary.confirmation.submitAnotherDeclaration"))
       resultAsString must include("a href=\"/customs-declare-exports/choice\" role=\"button\" class=\"button\"")
     }
 
-    "display the link to the list of notifications for this submission" in new Test {
+    "display the link to the list of notifications for this submission" in {
       val resultAsString = contentAsString(route(app, getRequestWithFlash(confirmationPageUri)).get)
 
       resultAsString must include(messages("supplementary.confirmation.explanation.linkText"))
@@ -73,4 +76,27 @@ class ConfirmationPageControllerSpec extends CustomExportsBaseSpec {
     }
   }
 
+  "ConfirmationPageController on display rejected confirmation page" should {
+    "return 200 code" in {
+      val result = route(app, getRequest(rejectionPageUri)).get
+      status(result) must be(OK)
+    }
+
+    "display the whole content" in {
+      val result = route(app, getRequest(rejectionPageUri)).get
+      val stringResult = contentAsString(result)
+
+      stringResult must include(messages("supplementary.confirmation.header"))
+      stringResult must include(messages("supplementary.confirmation.rejection.header"))
+      stringResult must include(messages("supplementary.confirmation.whatHappensNext"))
+    }
+
+    "display a button links to choice page" in {
+      val result = route(app, getRequest(rejectionPageUri)).get
+      val stringResult = contentAsString(result)
+
+      stringResult must include(messages("supplementary.confirmation.submitAnotherDeclaration"))
+      stringResult must include("a href=\"/customs-declare-exports/choice\" role=\"button\" class=\"button\"")
+    }
+  }
 }

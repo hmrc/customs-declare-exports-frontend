@@ -22,7 +22,7 @@ import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.confirmation_page
+import views.html.supplementary.{confirmation_page, rejection_confirmation_page}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,4 +37,7 @@ class ConfirmationPageController @Inject()(
     Future.successful(Ok(confirmation_page(appConfig)))
   }
 
+  def displayRejectionPage(): Action[AnyContent] = authenticate.async { implicit request =>
+    Future.successful(Ok(rejection_confirmation_page(appConfig)))
+  }
 }

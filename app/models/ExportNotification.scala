@@ -20,8 +20,6 @@ import org.joda.time.DateTime
 import play.api.libs.json.Json
 import uk.gov.hmrc.wco.dec._
 
-import scala.util.Random
-
 case class ExportsNotification(
   dateTimeReceived: DateTime = DateTime.now(),
   conversationId: String,
@@ -71,19 +69,4 @@ object ExportsNotification {
 
   implicit val responseFormats = Json.format[Response]
   implicit val exportsNotificationFormats = Json.format[ExportsNotification]
-}
-
-// Case class for view notifications - TODO use ExportsNotification directly and map fields
-case class Notification(name: String, dateAndTime: String, reference: String, status: Status)
-
-object Notification {
-  implicit val format = Json.format[Notification]
-
-  private def randomString(length: Int): String = Random.alphanumeric.take(length).mkString
-
-  private val Ten = 10
-
-  // Only to generate random data
-  def randomNotifications(amount: Int = Ten): Seq[Notification] =
-    Seq.fill(amount)(Notification(randomString(Ten), randomString(Ten), randomString(Ten), Query))
 }

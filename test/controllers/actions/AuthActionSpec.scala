@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
 class AuthActionSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/simple-declaration")
+  val uri = uriWithContextPath("/choice")
 
   "Auth Action" should {
     "return InsufficientEnrolments when EORI number is missing" in {

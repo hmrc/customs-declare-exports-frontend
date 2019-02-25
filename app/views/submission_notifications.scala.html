@@ -15,11 +15,12 @@
  *@
 
 @import config.AppConfig
+@import models.Status
 @import java.time.Instant
 @import java.time.ZoneId
 @import java.time.format.DateTimeFormatter
 
-@(appConfig: AppConfig, notifications: Option[ExportsNotification])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, notifications: Seq[ExportsNotification])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("notifications.title"),
@@ -33,19 +34,19 @@
     <div>
         <table>
             <tr class="table-row table-head">
-                <th class="table-cell">@messages("notifications.name")</th>
+                <th class="table-cell">@messages("notifications.status")</th>
                 <th class="table-cell">@messages("notifications.dateAndTime")</th>
                 <th class="table-cell">@messages("notifications.reference")</th>
-                <th class="table-cell">@messages("notifications.status")</th>
+                <th class="table-cell">@messages("notifications.additionalInformation")</th>
             </tr>
 
-            @if(notifications.isDefined){
-                @for(response <- notifications.get.response){
+            @for(notification <- notifications){
+                @for(response <- notification.response){
                     <tr class="table-row">
-                        <td class="table-cell">@response.functionCode</td>
-                        <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:MM:ss").withZone(ZoneId.systemDefault()).format(Instant.from(DateTimeFormatter.ofPattern("yyyyMMddkkmmssX").parse(response.issueDateTime.map(_.dateTimeString.value).getOrElse(""))))</td>
+                        <td class="table-cell">@Status.retrieveFromResponse(response)</td>
+                        <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault()).format(Instant.from(DateTimeFormatter.ofPattern("yyyyMMddHHmmssX").parse(response.issueDateTime.map(_.dateTimeString.value).getOrElse(""))))</td>
                         <td class="table-cell">@response.functionalReferenceId.getOrElse("")</td>
-                        <td class="table-cell">@response.status.headOption.flatMap(_.nameCode).getOrElse("")</td>
+                        <td class="table-cell"></td>
                     </tr>
                 }
             }
