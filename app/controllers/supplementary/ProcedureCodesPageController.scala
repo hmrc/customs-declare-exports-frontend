@@ -19,6 +19,7 @@ package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.util._
 import forms.supplementary.ProcedureCodes
 import forms.supplementary.ProcedureCodes.form
 import handlers.ErrorHandler
@@ -56,8 +57,7 @@ class ProcedureCodesPageController @Inject()(
   def submitProcedureCodes(): Action[AnyContent] = authenticate.async { implicit request =>
     val boundForm = form.bindFromRequest()
 
-    val actionType =
-      request.body.asFormUrlEncoded.flatMap(_.get("action")).flatMap(_.headOption).getOrElse("Wrong action")
+    val actionTypeOpt = request.body.asFormUrlEncoded.flatMap(FormAction.fromUrlEncoded(_))
 
     val cachedData = customsCacheService
       .fetchAndGetEntry[ProcedureCodesData](supplementaryCacheId, formId)
@@ -69,11 +69,11 @@ class ProcedureCodesPageController @Inject()(
           (formWithErrors: Form[ProcedureCodes]) =>
             Future.successful(BadRequest(procedure_codes(appConfig, formWithErrors, cache.additionalProcedureCodes))),
           validForm => {
-            actionType match {
-              case "Add"                             => addAnotherCodeHandler(validForm, cache)
-              case "Save and continue"               => saveAndContinueHandler(validForm, cache)
-              case value if value.contains("Remove") => removeCodeHandler(retrieveProcedureCode(value), cache)
-              case _                                 => errorHandler.displayErrorPage()
+            actionTypeOpt match {
+              case Some(Add)             => addAnotherCodeHandler(validForm, cache)
+              case Some(SaveAndContinue) => saveAndContinueHandler(validForm, cache)
+              case Some(Remove(values))  => removeCodeHandler(retrieveProcedureCode(values), cache)
+              case _                     => errorHandler.displayErrorPage()
             }
           }
         )
@@ -190,7 +190,7 @@ class ProcedureCodesPageController @Inject()(
     }
   //scalastyle:on methodLength
 
-  private def retrieveProcedureCode(action: String): String = action.dropWhile(_ != ':').drop(1)
+  private def retrieveProcedureCode(values: Seq[String]): String = values.headOption.getOrElse("")
 
   private def handleErrorPage(
     fieldWithError: Seq[(String, String)],

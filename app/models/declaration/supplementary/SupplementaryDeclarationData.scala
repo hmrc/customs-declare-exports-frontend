@@ -34,9 +34,11 @@ case class SupplementaryDeclarationData(
   import SupplementaryDeclarationData._
 
   override def toMetadataProperties(): Map[String, String] =
-    this.toMap.values.foldLeft(Map("declaration.functionCode" -> suppDecFunctionCode)) { (map, convertable) =>
-      map ++ convertable.toMetadataProperties()
-    }.filter(_._2.nonEmpty)
+    this.toMap.values
+      .foldLeft(Map("declaration.functionCode" -> suppDecFunctionCode)) { (map, convertable) =>
+        map ++ convertable.toMetadataProperties()
+      }
+      .filter(_._2.nonEmpty)
 
   override def isEmpty: Boolean =
     declarationType.isEmpty &&

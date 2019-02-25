@@ -17,6 +17,7 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
+import controllers.util.{Add, Remove, SaveAndContinue}
 import models.declaration.supplementary.ProcedureCodesData
 import models.declaration.supplementary.ProcedureCodesData.formId
 import org.scalatest.BeforeAndAfter
@@ -24,7 +25,11 @@ import play.api.test.Helpers._
 
 class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
   import ProcedureCodesPageControllerSpec._
+
   private val uri = uriWithContextPath("/declaration/supplementary/procedure-codes")
+  private val addActionUrlEncoded = (Add.toString, "")
+  private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
+  private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   before {
     authorizedUser()
@@ -53,12 +58,10 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include("123")
-      stringResult must include("Remove:123")
-      stringResult must include("234")
-      stringResult must include("Remove:234")
-      stringResult must include("235")
-      stringResult must include("Remove:235")
+      stringResult must include("name=\"Remove\"")
+      stringResult must include("value=\"123\"")
+      stringResult must include("value=\"234\"")
+      stringResult must include("value=\"235\"")
       stringResult must include(messages("site.remove"))
     }
 
@@ -79,7 +82,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
     "display the form page with error" when {
       "try to save the data without procedure code" in {
         withCaching[ProcedureCodesData](None, formId)
-        val body = Seq(("additionalProcedureCode", "123"), ("action", "Save and continue"))
+        val body = Seq(("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -89,7 +92,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "try to save the data without additional procedure code" in {
         withCaching[ProcedureCodesData](None, formId)
-        val body = Seq(("procedureCode", "1234"), ("action", "Save and continue"))
+        val body = Seq(("procedureCode", "1234"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -101,7 +104,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "try to save the data with shorter procedure code" in {
         withCaching[ProcedureCodesData](None, formId)
-        val body = Seq(("procedureCode", "123"), ("action", "Save and continue"))
+        val body = Seq(("procedureCode", "123"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -111,7 +114,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "try to save the data with longer procedure code" in {
         withCaching[ProcedureCodesData](None, formId)
-        val body = Seq(("procedureCode", "12345"), ("action", "Save and continue"))
+        val body = Seq(("procedureCode", "12345"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -121,7 +124,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "try to save the data with special characters in procedure code" in {
         withCaching[ProcedureCodesData](None, formId)
-        val body = Seq(("procedureCode", "1@£4"), ("action", "Save and continue"))
+        val body = Seq(("procedureCode", "1@£4"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -133,7 +136,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "try to save the data with shorter additional code" in {
         withCaching[ProcedureCodesData](None, formId)
-        val body = Seq(("additionalProcedureCode", "12"), ("action", "Save and continue"))
+        val body = Seq(("additionalProcedureCode", "12"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -145,7 +148,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "try to save the data with longer additional code" in {
         withCaching[ProcedureCodesData](None, formId)
-        val body = Seq(("additionalProcedureCode", "1234"), ("action", "Save and continue"))
+        val body = Seq(("additionalProcedureCode", "1234"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -157,7 +160,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "try to save the data with special characters in additional procedure code" in {
         withCaching[ProcedureCodesData](None, formId)
-        val body = Seq(("additionalProcedureCode", "1@4"), ("action", "Save and continue"))
+        val body = Seq(("additionalProcedureCode", "1@4"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -169,7 +172,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "try to save more than 99 codes" in {
         withCaching[ProcedureCodesData](Some(cacheWithMaximumAmountOfAdditionalCodes), formId)
-        val body = Seq(("additionalProcedureCode", "200"), ("action", "Save and continue"))
+        val body = Seq(("additionalProcedureCode", "200"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -181,7 +184,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "try to add empty additional code" in {
         withCaching[ProcedureCodesData](None, formId)
-        val body = Seq(("action", "Add"))
+        val body = Seq(addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -191,7 +194,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "try to add too long additional code" in {
         withCaching[ProcedureCodesData](None, formId)
-        val body = Seq(("additionalProcedureCode", "2002"), ("action", "Add"))
+        val body = Seq(("additionalProcedureCode", "2002"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -203,7 +206,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "try to add additional code with special characters" in {
         withCaching[ProcedureCodesData](None, formId)
-        val body = Seq(("additionalProcedureCode", "2@2"), ("action", "Add"))
+        val body = Seq(("additionalProcedureCode", "2@2"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -216,7 +219,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       "try to add duplicated additional code" in {
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
         withCaching[ProcedureCodesData](Some(cachedData), formId)
-        val body = Seq(("additionalProcedureCode", "123"), ("action", "Add"))
+        val body = Seq(("additionalProcedureCode", "123"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -228,7 +231,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       "try to add more than 99 codes" in {
         withCaching[ProcedureCodesData](Some(cacheWithMaximumAmountOfAdditionalCodes), formId)
-        val body = Seq(("additionalProcedureCode", "200"), ("action", "Add"))
+        val body = Seq(("additionalProcedureCode", "200"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -241,7 +244,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       "try to remove not added additional code" in {
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
         withCaching[ProcedureCodesData](Some(cachedData), formId)
-        val body = ("action", "Remove:124")
+        val body = removeActionUrlEncoded("124")
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
         val stringResult = contentAsString(result)
@@ -257,7 +260,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       "user provides additional code when no codes in cache" in {
         val cachedData = ProcedureCodesData(Some("1234"), Seq())
         withCaching[ProcedureCodesData](Some(cachedData), formId)
-        val body = Seq(("additionalProcedureCode", "123"), ("action", "Add"))
+        val body = Seq(("additionalProcedureCode", "123"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -267,7 +270,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       "user provide additional code that not exists in cache " in {
         val cachedData = ProcedureCodesData(Some("1234"), Seq("100"))
         withCaching[ProcedureCodesData](Some(cachedData), formId)
-        val body = Seq(("additionalProcedureCode", "123"), ("action", "Add"))
+        val body = Seq(("additionalProcedureCode", "123"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -279,7 +282,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       "code exists in cache" in {
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123", "234", "235"))
         withCaching[ProcedureCodesData](Some(cachedData), formId)
-        val body = ("action", "Remove:123")
+        val body = removeActionUrlEncoded("123")
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
@@ -290,7 +293,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
     "redirect to next page" when {
       "user fill both inputs with empty cache" in {
         withCaching[ProcedureCodesData](None, formId)
-        val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), ("action", "Save and continue"))
+        val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
@@ -304,7 +307,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       "user fill only procedure code with some additional codes already added" in {
         val cachedData = ProcedureCodesData(None, Seq("123"))
         withCaching[ProcedureCodesData](Some(cachedData), formId)
-        val body = Seq(("procedureCode", "1234"), ("action", "Save and continue"))
+        val body = Seq(("procedureCode", "1234"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header

@@ -14,19 +14,21 @@
  * limitations under the License.
  *@
 
+@import controllers.util.Remove
+
 @(
-    additionalProcedureCodes: Seq[String],
-    buttonMessage: String = "site.remove"
+    elements: Seq[String],
+    buttonMessagesKey: String = "site.remove"
 )(implicit messages: Messages)
-@if(additionalProcedureCodes.nonEmpty) {
+@if(elements.nonEmpty) {
 
     <div class="field-group">
         <table >
-        @for(code <- additionalProcedureCodes) {
+        @for(elem <- elements) {
             <tr>
-                <th>@code</th>
+                <th>@elem</th>
                 <th>
-                    <button name="action" class="button" value="@messages(buttonMessage):@code">Remove</button>
+                    <button class="button" name="@Remove.toString" value="@elem">@messages(buttonMessagesKey)</button>
                 </th>
             </tr>
         }

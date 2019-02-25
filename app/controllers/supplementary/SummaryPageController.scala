@@ -70,17 +70,11 @@ class SummaryPageController @Inject()(
             val lrn = suppDecData.consignmentReferences.map(_.lrn)
             val declarationStatus = status match {
               case ACCEPTED => models.Accepted
-              case _ => models.Rejected
+              case _        => models.Rejected
             }
 
-            val submission = new Submission(
-              request.user.eori,
-              conversationId,
-              ducr.fold("")(_.ducr),
-              lrn,
-              None,
-              declarationStatus
-            )
+            val submission =
+              new Submission(request.user.eori, conversationId, ducr.fold("")(_.ducr), lrn, None, declarationStatus)
 
             customsDeclareExportsConnector
               .saveSubmissionResponse(submission)
@@ -90,12 +84,12 @@ class SummaryPageController @Inject()(
                   .remove(supplementaryCacheId)
                   .map(
                     _ =>
-                    status match {
-                      case ACCEPTED =>
-                        Redirect(controllers.supplementary.routes.ConfirmationPageController.displayPage())
-                          .flashing(prepareFlashScope(lrn.getOrElse(""), conversationId))
-                      case _ =>
-                        Redirect(controllers.supplementary.routes.ConfirmationPageController.displayRejectionPage())
+                      status match {
+                        case ACCEPTED =>
+                          Redirect(controllers.supplementary.routes.ConfirmationPageController.displayPage())
+                            .flashing(prepareFlashScope(lrn.getOrElse(""), conversationId))
+                        case _ =>
+                          Redirect(controllers.supplementary.routes.ConfirmationPageController.displayRejectionPage())
                     }
                   )
               }
