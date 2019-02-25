@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import base.TestHelper.createRandomString
+import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.DeclarationHolder
 import models.declaration.supplementary.DeclarationHoldersData
 import models.declaration.supplementary.DeclarationHoldersData.formId
@@ -27,7 +28,10 @@ import play.api.test.Helpers._
 class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
   import DeclarationHolderControllerSpec._
 
-  val uri = uriWithContextPath("/declaration/supplementary/holder-of-authorisation")
+  private val uri = uriWithContextPath("/declaration/supplementary/holder-of-authorisation")
+  private val addActionUrlEncoded = (Add.toString, "")
+  private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
+  private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   before {
     authorizedUser()
@@ -80,10 +84,11 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
   }
 
   "Declaration holder controller in submit holder" should {
+
     "display the form page with error" when {
       "try to add data without holder" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = ("action", "Add")
+        val body = addActionUrlEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
         val stringResult = contentAsString(result)
@@ -95,7 +100,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to save data without holder" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = ("action", "Save and continue")
+        val body = saveAndContinueActionUrlEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
         val stringResult = contentAsString(result)
@@ -107,7 +112,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to add holder without eori number" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("authorisationTypeCode", "1234"), ("action", "Add"))
+        val body = Seq(("authorisationTypeCode", "1234"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -117,7 +122,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to add holder without authorisation code" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("eori", "eori1"), ("action", "Add"))
+        val body = Seq(("eori", "eori1"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -127,7 +132,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to save holder without eori number" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("authorisationTypeCode", "1234"), ("action", "Save and continue"))
+        val body = Seq(("authorisationTypeCode", "1234"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -137,7 +142,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to save holder without authorisation code" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("eori", "eori1"), ("action", "Save and continue"))
+        val body = Seq(("eori", "eori1"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -147,7 +152,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to add longer authorisation code" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("authorisationTypeCode", "12345"), ("eori", "eori1"), ("action", "Add"))
+        val body = Seq(("authorisationTypeCode", "12345"), ("eori", "eori1"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -157,7 +162,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to add longer eori" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("eori", createRandomString(18)), ("action", "Add"))
+        val body = Seq(("eori", createRandomString(18)), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -167,7 +172,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to save longer authorisation code" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("authorisationTypeCode", "12345"), ("eori", "eori1"), ("action", "Save and continue"))
+        val body = Seq(("authorisationTypeCode", "12345"), ("eori", "eori1"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -177,7 +182,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to save longer eori" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("eori", createRandomString(18)), ("action", "Save and continue"))
+        val body = Seq(("eori", createRandomString(18)), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -187,7 +192,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to add authorisation code with special characters" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("authorisationTypeCode", "1$#4"), ("eori", "eori1"), ("action", "Add"))
+        val body = Seq(("authorisationTypeCode", "1$#4"), ("eori", "eori1"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -197,7 +202,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to add eori with special characters" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "e@#$1"), ("action", "Add"))
+        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "e@#$1"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -207,7 +212,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to save authorisation code with special characters" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("authorisationTypeCode", "1$#4"), ("eori", "eori1"), ("action", "Save and continue"))
+        val body = Seq(("authorisationTypeCode", "1$#4"), ("eori", "eori1"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -217,7 +222,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to save eori with special characters" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "e@#$1"), ("action", "Save and continue"))
+        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "e@#$1"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -227,7 +232,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to add more than 99 holders" in {
         withCaching[DeclarationHoldersData](Some(cacheWithMaximumAmountOfHolders), formId)
-        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori1"), ("action", "Add"))
+        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori1"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -237,7 +242,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
 
       "try to save more than 99 holders" in {
         withCaching[DeclarationHoldersData](Some(cacheWithMaximumAmountOfHolders), formId)
-        val body = Seq(("authorisationTypeCode", "9999"), ("eori", "eori9"), ("action", "Save and continue"))
+        val body = Seq(("authorisationTypeCode", "9999"), ("eori", "eori9"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -248,7 +253,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
       "try to add duplicated holder" in {
         val cachedData = DeclarationHoldersData(Seq(DeclarationHolder(Some("1234"), Some("eori"))))
         withCaching[DeclarationHoldersData](Some(cachedData), formId)
-        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori"), ("action", "Add"))
+        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -259,7 +264,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
       "try to save duplicated holder" in {
         val cachedData = DeclarationHoldersData(Seq(DeclarationHolder(Some("1234"), Some("eori"))))
         withCaching[DeclarationHoldersData](Some(cachedData), formId)
-        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori"), ("action", "Save and continue"))
+        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -270,7 +275,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
       "try to remove not added additional code" in {
         val cachedData = DeclarationHoldersData(Seq(DeclarationHolder(Some("1234"), Some("eori"))))
         withCaching[DeclarationHoldersData](Some(cachedData), formId)
-        val body = ("action", "Remove:4321-eori")
+        val body = removeActionUrlEncoded("4321-eori")
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
         val stringResult = contentAsString(result)
@@ -285,7 +290,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
     "add holder without error" when {
       "user provide holder with empty cache" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori1"), ("action", "Add"))
+        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori1"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -295,7 +300,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
       "user provide holder that not exists in cache" in {
         val cachedData = DeclarationHoldersData(Seq(DeclarationHolder(Some("4321"), Some("eori"))))
         withCaching[DeclarationHoldersData](Some(cachedData), formId)
-        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori1"), ("action", "Add"))
+        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori1"), addActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -309,7 +314,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
           Seq(DeclarationHolder(Some("4321"), Some("eori")), DeclarationHolder(Some("4321"), Some("eori")))
         )
         withCaching[DeclarationHoldersData](Some(cachedData), formId)
-        val body = ("action", "Remove:4321-eori")
+        val body = removeActionUrlEncoded("4321-eori")
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
@@ -320,7 +325,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
     "redirect to the next page" when {
       "user provide holder with empty cache" in {
         withCaching[DeclarationHoldersData](None, formId)
-        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori1"), ("action", "Save and continue"))
+        val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori1"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
@@ -334,7 +339,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
       "user doesn't fill form but some holder exists inside the cache" in {
         val cachedData = DeclarationHoldersData(Seq(DeclarationHolder(Some("1234"), Some("eori"))))
         withCaching[DeclarationHoldersData](Some(cachedData), formId)
-        val body = ("action", "Save and continue")
+        val body = saveAndContinueActionUrlEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
         val header = result.futureValue.header
@@ -348,7 +353,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
       "user provide holder with some different holder in cache" in {
         val cachedData = DeclarationHoldersData(Seq(DeclarationHolder(Some("1234"), Some("eori"))))
         withCaching[DeclarationHoldersData](Some(cachedData), formId)
-        val body = Seq(("authorisationTypeCode", "4321"), ("eori", "eori1"), ("action", "Save and continue"))
+        val body = Seq(("authorisationTypeCode", "4321"), ("eori", "eori1"), saveAndContinueActionUrlEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header

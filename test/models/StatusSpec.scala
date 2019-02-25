@@ -19,7 +19,7 @@ import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
 import uk.gov.hmrc.wco.dec.{Response, ResponseStatus}
 
-class StatusSpec extends WordSpec with MustMatchers{
+class StatusSpec extends WordSpec with MustMatchers {
 
   "Reads for status" should {
     "correctly read a value for every scenario" in {
@@ -114,19 +114,15 @@ class StatusSpec extends WordSpec with MustMatchers{
     }
 
     "correctly retrieve CustomsPositionGranted status" in {
-      val customsPositionGrantedResponse = Response(
-        functionCode = "11",
-        status = Seq(ResponseStatus(nameCode = Some("39")))
-      )
+      val customsPositionGrantedResponse =
+        Response(functionCode = "11", status = Seq(ResponseStatus(nameCode = Some("39"))))
 
       Status.retrieveFromResponse(customsPositionGrantedResponse) must be(CustomsPositionGranted)
     }
 
     "correctly retrieve CustomsPositionDenied status" in {
-      val customsPositionDeniedResponse = Response(
-        functionCode = "11",
-        status = Seq(ResponseStatus(nameCode = Some("41")))
-      )
+      val customsPositionDeniedResponse =
+        Response(functionCode = "11", status = Seq(ResponseStatus(nameCode = Some("41"))))
 
       Status.retrieveFromResponse(customsPositionDeniedResponse) must be(CustomsPositionDenied)
     }

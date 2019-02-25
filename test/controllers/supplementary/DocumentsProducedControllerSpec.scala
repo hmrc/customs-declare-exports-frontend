@@ -88,7 +88,7 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages("supplementary.addDocument.documentPart.error"))
       }
-      
+
       "provided with incorrect documents quantity" in {
         val incorrectDocumentQuantity: JsValue =
           JsObject(Map("documentQuantity" -> JsString("123456789012.1234567")))
@@ -98,7 +98,7 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
         contentAsString(result) must include(messages("supplementary.addDocument.documentQuantity.error"))
       }
     }
-    
+
     "redirect to summary page" when {
       "provided with empty form" in {
         val result = route(app, postRequest(uri, emptyDocumentsProducedJSON)).get

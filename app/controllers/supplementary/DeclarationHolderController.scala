@@ -19,6 +19,7 @@ package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.supplementary.DeclarationHolder
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -56,8 +57,7 @@ class DeclarationHolderController @Inject()(
   def submitHoldersOfAuthorisation(): Action[AnyContent] = authenticate.async { implicit request =>
     val boundForm = form.bindFromRequest()
 
-    val actionType =
-      request.body.asFormUrlEncoded.flatMap(_.get("action")).flatMap(_.headOption).getOrElse("Wrong action")
+    val actionTypeOpt = request.body.asFormUrlEncoded.flatMap(FormAction.fromUrlEncoded(_))
 
     val cachedData = customsCacheService
       .fetchAndGetEntry[DeclarationHoldersData](supplementaryCacheId, formId)
@@ -69,11 +69,11 @@ class DeclarationHolderController @Inject()(
           (formWithErrors: Form[DeclarationHolder]) =>
             Future.successful(BadRequest(declaration_holder(appConfig, formWithErrors, cache.holders))),
           validForm =>
-            actionType match {
-              case "Add"                             => addHolder(validForm, cache)
-              case "Save and continue"               => saveAndContinue(validForm, cache)
-              case value if value.contains("Remove") => removeHolder(retrieveHolder(actionType), cache)
-              case _                                 => errorHandler.displayErrorPage()
+            actionTypeOpt match {
+              case Some(Add)             => addHolder(validForm, cache)
+              case Some(SaveAndContinue) => saveAndContinue(validForm, cache)
+              case Some(Remove(values))  => removeHolder(retrieveHolder(values), cache)
+              case _                     => errorHandler.displayErrorPage()
           }
         )
     }
@@ -185,6 +185,6 @@ class DeclarationHolderController @Inject()(
     Future.successful(BadRequest(declaration_holder(appConfig, formWithError, holders)))
   }
 
-  private def retrieveHolder(action: String): DeclarationHolder =
-    DeclarationHolder.buildFromString(action.dropWhile(_ != ':').drop(1))
+  private def retrieveHolder(values: Seq[String]): DeclarationHolder =
+    DeclarationHolder.buildFromString(values.headOption.getOrElse(""))
 }

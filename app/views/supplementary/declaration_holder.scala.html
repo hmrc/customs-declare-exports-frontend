@@ -32,7 +32,7 @@
 
         @components.page_title(Some("supplementary.declarationHolder.title"))
 
-        @components.single_item_element_table(holders.map(_.toString))
+        @components.single_value_elements_table(holders.map(_.toString))
 
         @components.input_text(
             field = form("authorisationTypeCode"),

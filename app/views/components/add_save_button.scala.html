@@ -14,12 +14,14 @@
  * limitations under the License.
  *@
 
+@import controllers.util.{Add, SaveAndContinue}
+
 @(
     saveKey: String = "site.save_and_continue",
     addKey: String = "site.add"
 )(implicit messages: Messages)
 
 <div class="section align='right'">
-    <button id="add" name="action" class="button" value="@messages(addKey)">@messages(addKey)</button>
-    <button id="submit" name="action" class="button" value="@messages(saveKey)">@messages(saveKey)</button>
+    <button id="add" class="button" name="@Add.toString">@messages(addKey)</button>
+    <button id="submit" class="button" name="@SaveAndContinue.toString">@messages(saveKey)</button>
 </div>
