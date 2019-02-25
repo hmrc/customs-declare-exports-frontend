@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package forms.supplementary
-import models.declaration.supplementary.ProcedureCodesData
+package models.declaration.supplementary
+
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
@@ -41,8 +41,9 @@ class ProcedureCodesDataSpec extends WordSpec with MustMatchers {
   }
 
   "Procedure code limit" should {
-    "contains correct value" in {
-      ProcedureCodesData.limitOfCodes must be(99)
+    "contain correct value" in {
+      val expectedProceduresCodesDataMaxAmount = 99
+      ProcedureCodesData.limitOfCodes must be(expectedProceduresCodesDataMaxAmount)
     }
   }
 

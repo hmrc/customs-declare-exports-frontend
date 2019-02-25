@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package forms.supplementary
+package models.declaration.supplementary
+
 import base.TestHelper
-import models.declaration.supplementary.DeclarationHoldersData
+import forms.supplementary.DeclarationHolder
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
-class DeclarationHolderSpec extends WordSpec with MustMatchers {
-  import DeclarationHolderSpec._
+class DeclarationHoldersDataSpec extends WordSpec with MustMatchers {
+  import DeclarationHoldersDataSpec._
 
   "Method toMetadataProperties" should {
     "return proper Metadata Properties" in {
@@ -42,7 +43,7 @@ class DeclarationHolderSpec extends WordSpec with MustMatchers {
   }
 }
 
-object DeclarationHolderSpec {
+object DeclarationHoldersDataSpec {
   private val eoriMaxLength = 17
 
   val correctDeclarationHolder = DeclarationHoldersData(

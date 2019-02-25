@@ -22,7 +22,6 @@ import forms.supplementary.ConsigneeDetailsSpec._
 import forms.supplementary.ConsignmentReferencesSpec._
 import forms.supplementary.DeclarantDetailsSpec._
 import forms.supplementary.DeclarationAdditionalActorsSpec._
-import forms.supplementary.DeclarationHolderSpec._
 import forms.supplementary.DestinationCountriesSpec._
 import forms.supplementary.DispatchLocation.AllowedDispatchLocations
 import forms.supplementary.DocumentsProducedSpec._
@@ -33,7 +32,6 @@ import forms.supplementary.ItemTypeSpec._
 import forms.supplementary.OfficeOfExitSpec._
 import forms.supplementary.PackageInformationSpec._
 import forms.supplementary.PreviousDocumentsSpec._
-import forms.supplementary.ProcedureCodesDataSpec._
 import forms.supplementary.RepresentativeDetailsSpec._
 import forms.supplementary.SupervisingCustomsOfficeSpec._
 import forms.supplementary.TotalNumberOfItemsSpec._
@@ -41,7 +39,9 @@ import forms.supplementary.TransactionTypeSpec._
 import forms.supplementary.TransportInformationSpec._
 import forms.supplementary.WarehouseIdentificationSpec._
 import forms.supplementary._
+import models.declaration.supplementary.DeclarationHoldersDataSpec._
 import models.declaration.supplementary.DeclarationTypeSpec._
+import models.declaration.supplementary.ProcedureCodesDataSpec._
 import models.declaration.supplementary.SupplementaryDeclarationData.suppDecFunctionCode
 import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
