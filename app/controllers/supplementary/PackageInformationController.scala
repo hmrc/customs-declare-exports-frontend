@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import forms.supplementary.{PackageInformation, PackageInformationData}
+import forms.supplementary.{PackageInformation, PackageInformationData, Packages}
 import forms.supplementary.PackageInformation._
 import handlers.ErrorHandler
 import play.api.data.{Form, FormError}
@@ -63,7 +63,7 @@ class PackageInformationController @Inject()(
     val cachedData =
       customsCacheService
         .fetchAndGetEntry[PackageInformationData](cacheId, formId)
-        .map(_.getOrElse(PackageInformationData(Seq())))
+        .map(_.getOrElse(PackageInformationData(Seq(), None, None, None, None)))
 
     cachedData.flatMap { cache =>
       boundForm
@@ -74,7 +74,16 @@ class PackageInformationController @Inject()(
             actionType match {
               case "Add"                             => addAnotherPackageAndTypeHandler(validForm, cache)
               case "Save and continue"               => saveAndContinueHandler(validForm, cache)
-              //case value if value.contains("Remove") => removePackageTypeHandler(retrieveInformation(value), cache)
+              case value if value.contains("Remove") =>
+                val retrievedData = retrieveInformation(value)
+
+                removePackageTypeHandler(
+                  validForm.copy(
+                    typesOfPackages = retrievedData.typesOfPackages,
+                    numberOfPackages = retrievedData.numberOfPackages
+                  ),
+                  cache
+                )
               case _                                 => errorHandler.displayErrorPage()
             }
           }
@@ -99,7 +108,7 @@ class PackageInformationController @Inject()(
     cachedData: PackageInformationData
   )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.packages) match {
-      case (_, information) if information.length >= 99 => //TODO Extract 99
+      case (_, packages) if packages.length >= 99 => //TODO Extract 99
         handleErrorPage(
           Seq(("", "supplementary.declarationHolders.maximumAmount.error")),
           userInput,
@@ -109,7 +118,7 @@ class PackageInformationController @Inject()(
         handleErrorPage(Seq(("", "supplementary.declarationHolders.duplicated")), userInput, cachedData.packages)
 
       case (information, packages) if information.typesOfPackages.isDefined && information.numberOfPackages.isDefined =>
-        val updatedCache = PackageInformationData(packages :+ information)
+        val updatedCache = PackageInformationData(packages :+ information.toPackages(information), None, None, None, None )
 
         customsCacheService.cache[PackageInformationData](cacheId, formId, updatedCache).map { _ =>
           Redirect(controllers.supplementary.routes.PackageInformationController.displayForm())
@@ -125,8 +134,8 @@ class PackageInformationController @Inject()(
         information match {
           case PackageInformation(Some(typesOfPackages), Some(numberOfPackages),
           Some(supplementaryUnits), Some(shippingMarks), Some(netMass), Some(grossMass)) =>
-            val updatedCache = PackageInformationData(Seq(PackageInformation(Some(typesOfPackages),
-              Some(numberOfPackages), Some(supplementaryUnits), Some(shippingMarks), Some(netMass), Some(grossMass))))
+            val updatedCache = PackageInformationData(Seq(Packages(Some(typesOfPackages), Some(numberOfPackages))),
+              Some(supplementaryUnits), Some(shippingMarks), Some(netMass), Some(grossMass))
 
             customsCacheService.cache[PackageInformationData](cacheId, formId, updatedCache).map { _ =>
               Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm())
@@ -169,9 +178,9 @@ class PackageInformationController @Inject()(
           case _ if information.typesOfPackages.isDefined == information.numberOfPackages.isDefined &&
             information.supplementaryUnits.isDefined && information.shippingMarks.isDefined && information.netMass.isDefined &&
             information.grossMass.isDefined=>
-            val updatedHolders = if(information.typesOfPackages.isDefined && information.numberOfPackages.isDefined )
-              informations :+ information else informations
-            val updatedCache = PackageInformationData(updatedHolders)
+            val updatedInformations = if(information.typesOfPackages.isDefined && information.numberOfPackages.isDefined )
+              informations :+ information.toPackages(information) else informations
+            val updatedCache = PackageInformationData(updatedInformations, None, None, None, None)
 
             customsCacheService.cache[PackageInformationData](cacheId, formId, updatedCache).map { _ =>
               Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm())
@@ -220,7 +229,7 @@ class PackageInformationController @Inject()(
   private def handleErrorPage(
     fieldWithError: Seq[(String, String)],
     userInput: PackageInformation,
-    information: Seq[PackageInformation]
+    information: Seq[Packages]
   )(implicit request: Request[_]): Future[Result] = {
     val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
 
@@ -228,47 +237,7 @@ class PackageInformationController @Inject()(
 
     Future.successful(BadRequest(package_information(appConfig, formWithError, information)))
   }
-//
-//  def submitProcedureCodes(): Action[AnyContent] = authenticate.async { implicit request =>
-//    val boundForm = form.bindFromRequest()
-//
-//    val actionType =
-//      request.body.asFormUrlEncoded.flatMap(_.get("action")).flatMap(_.headOption).getOrElse("Wrong action")
-//
-//    val cachedData =
-//      customsCacheService
-//        .fetchAndGetEntry[PackageInformation](cacheId, formId)
-//        .map(_.getOrElse(PackageInoformationData(None, Seq())))
-//
-//    cachedData.flatMap { cache =>
-//      boundForm
-//        .fold(
-//          (formWithErrors: Form[PackageInformation]) =>
-//            Future.successful(BadRequest(package_information(appConfig, formWithErrors, cache.additionalProcedureCodes))),
-//          validForm => {
-//            actionType match {
-//              case "Add"                             => addAnotherPackageAndTypeHandler(validForm, cache)
-//              case "Save and continue"               => saveAndContinueHandler(validForm, cache)
-//              case value if value.contains("Remove") => removeTypeHandler(retrieveProcedureCode(value), cache)
-//              case _                                 => displayErrorPage()
-//            }
-//          }
-//        )
-//    }
-//  }
-//
-//  private def addAnotherPackageAndTypeHandler(typesOfPackages: PackageInformation, numberOfPackages: PackageInformation)
-//
-//  private def displayErrorPage()(implicit request: Request[_]): Future[Result] =
-//    Future.successful(
-//      BadRequest(
-//        errorHandler.standardErrorTemplate(
-//          pageTitle = messagesApi("global.error.title"),
-//          heading = messagesApi("global.error.heading"),
-//          message = messagesApi("global.error.message")
-//        )
-//      )
-//    )
-//  private def removeTypeHandler()
 
+  private def retrieveInformation(action: String): Packages = //TODO PROCEDURE CODE BUT RETRIEVE 2 THINGS use packages instead of package information
+    Packages.buildFromString(action.dropWhile(_ != ':').drop(1))
 }

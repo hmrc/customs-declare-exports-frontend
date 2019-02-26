@@ -29,7 +29,9 @@ case class PackageInformation(
   shippingMarks: Option[String],
   netMass: Option[String],
   grossMass: Option[String]
-)
+) {
+  def toPackages(packageInformation: PackageInformation): Packages = Packages(packageInformation.typesOfPackages, packageInformation.numberOfPackages)
+}
 
 object PackageInformation {
 
@@ -72,8 +74,28 @@ object PackageInformation {
   def form(): Form[PackageInformation] = Form(mapping)
 }
 
+case class Packages(
+  typesOfPackages: Option[String],
+  numberOfPackages: Option[String]
+){
+  override def toString: String = s"${typesOfPackages.getOrElse("")}-${numberOfPackages.getOrElse("")}"
+}
+
+object Packages {
+  implicit val format = Json.format[Packages]
+
+
+  def buildFromString(value: String): Packages = {
+    val dividedString = value.split('-')
+
+    if(dividedString.length == 0) Packages(None, None)
+    else if (dividedString.length == 1) Packages(Some(value.split('-')(0)), None)
+    else Packages(Some(value.split('-')(0)), Some(value.split('-')(1)))
+  }
+}
+
 case class PackageInformationData(
-  packages: Seq[(String, String)],
+  packages: Seq[Packages],
   supplementaryUnits: Option[String],
   shippingMarks: Option[String],
   netMass: Option[String],
@@ -96,8 +118,8 @@ case class PackageInformationData(
 
     val additionalPackageInformationMapping = packages.zipWithIndex.map { informationWithIndex =>
       Map(
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[" + informationWithIndex._2 + "].typeCode" -> informationWithIndex._1._1,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[" + informationWithIndex._2 + "].quantity" -> informationWithIndex._1._2
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[" + informationWithIndex._2 + "].typeCode" -> informationWithIndex._1.typesOfPackages.getOrElse(""),
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[" + informationWithIndex._2 + "].quantity" -> informationWithIndex._1.numberOfPackages.getOrElse("")
       )
     }.fold(Map.empty)(_ ++ _)
 
