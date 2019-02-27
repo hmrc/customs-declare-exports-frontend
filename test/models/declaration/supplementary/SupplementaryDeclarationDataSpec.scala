@@ -337,7 +337,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
   "Method toMetadataProperties" should {
     "invoke the same method on every data element contained" in new SimpleTest {
-      val aa = supplementaryDeclarationData.toMetadataProperties()
+      supplementaryDeclarationData.toMetadataProperties()
 
       verify(declarationTypeMock, times(1)).toMetadataProperties()
       verify(consignmentReferencesMock, times(1)).toMetadataProperties()
