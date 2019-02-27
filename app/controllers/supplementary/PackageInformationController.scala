@@ -19,6 +19,7 @@ package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.supplementary.PackageInformation
 import javax.inject.Inject
 import play.api.data.Form
@@ -56,8 +57,7 @@ class PackageInformationController @Inject()(
   def submitPackageInformation(): Action[AnyContent] = authenticate.async { implicit request =>
     val boundForm = form.bindFromRequest()
 
-    val actionType =
-      request.body.asFormUrlEncoded.flatMap(_.get("action")).flatMap(_.headOption).getOrElse("Wrong action")
+    val actionTypeOpt = request.body.asFormUrlEncoded.flatMap(FormAction.fromUrlEncoded(_))
 
     val cachedData =
       customsCacheService
@@ -70,11 +70,11 @@ class PackageInformationController @Inject()(
           (formWithErrors: Form[PackageInformation]) =>
             Future.successful(BadRequest(package_information(appConfig, formWithErrors, cache.packages))),
           validForm => {
-            actionType match {
-              case "Add"                             => addAnotherPackageAndTypeHandler(validForm, cache)
-              case "Save and continue"               => saveAndContinueHandler(validForm, cache)
-              case value if value.contains("Remove") =>
-                val retrievedData = retrieveInformation(value)
+            actionTypeOpt match {
+              case Some(Add)                             => addAnotherPackageAndTypeHandler(validForm, cache)
+              case Some(SaveAndContinue)              => saveAndContinueHandler(validForm, cache)
+              case Some(Remove(values)) =>
+                val retrievedData = retrieveInformation(values)
 
                 removePackageTypeHandler(
                   validForm.copy(
@@ -237,6 +237,6 @@ class PackageInformationController @Inject()(
     Future.successful(BadRequest(package_information(appConfig, formWithError, information)))
   }
 
-  private def retrieveInformation(action: String): Packages =
-    Packages.buildFromString(action.dropWhile(_ != ':').drop(1))
+  private def retrieveInformation(values: Seq[String]): Packages =
+    Packages.buildFromString(values.headOption.getOrElse("").dropWhile(_ != ':').drop(1))
 }
