@@ -33,7 +33,7 @@
 
         @components.page_title(Some("supplementary.packageInformation.title"))
 
-        @components.single_item_element_table(packages.map(_.toString))
+        @components.single_value_elements_table(packages.map(_.toString))
 
         @components.input_text(
             field = form("typesOfPackages"),

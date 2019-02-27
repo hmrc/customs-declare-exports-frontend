@@ -29,6 +29,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import forms.supplementary.{PackageInformation, PackageInformationData, Packages}
 import forms.supplementary.PackageInformation._
 import handlers.ErrorHandler
+import models.requests.AuthenticatedRequest
 import play.api.data.{Form, FormError}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -45,8 +46,6 @@ class PackageInformationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  private val cacheId = appConfig.appName
-
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[PackageInformationData](supplementaryCacheId, formId).map {
       case Some(data) => Ok(package_information(appConfig, form, data.packages))
@@ -62,7 +61,7 @@ class PackageInformationController @Inject()(
 
     val cachedData =
       customsCacheService
-        .fetchAndGetEntry[PackageInformationData](cacheId, formId)
+        .fetchAndGetEntry[PackageInformationData](supplementaryCacheId, formId)
         .map(_.getOrElse(PackageInformationData(Seq(), None, None, None, None)))
 
     cachedData.flatMap { cache =>
@@ -93,12 +92,12 @@ class PackageInformationController @Inject()(
 
   private def removePackageTypeHandler(code: PackageInformation,
                                  cachedData: PackageInformationData
-                               )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
+                               )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
     if (cachedData.containsTypesOfPackage(code) || cachedData.containsNumberOfPackage(code)) {
       val updatedCache =
         cachedData.copy(packages = cachedData.packages.filterNot(_ == code))
 
-      customsCacheService.cache[PackageInformationData](cacheId, formId, updatedCache).map { _ =>
+      customsCacheService.cache[PackageInformationData](supplementaryCacheId, formId, updatedCache).map { _ =>
         Redirect(controllers.supplementary.routes.PackageInformationController.displayForm())
       }
     } else displayErrorPage()
@@ -106,7 +105,7 @@ class PackageInformationController @Inject()(
   private def addAnotherPackageAndTypeHandler(
     userInput: PackageInformation,
     cachedData: PackageInformationData
-  )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.packages) match {
       case (_, packages) if packages.length >= 99 => //TODO Extract 99
         handleErrorPage(
@@ -120,7 +119,7 @@ class PackageInformationController @Inject()(
       case (information, packages) if information.typesOfPackages.isDefined && information.numberOfPackages.isDefined =>
         val updatedCache = PackageInformationData(packages :+ information.toPackages(information), None, None, None, None )
 
-        customsCacheService.cache[PackageInformationData](cacheId, formId, updatedCache).map { _ =>
+        customsCacheService.cache[PackageInformationData](supplementaryCacheId, formId, updatedCache).map { _ =>
           Redirect(controllers.supplementary.routes.PackageInformationController.displayForm())
         }
     }
@@ -128,7 +127,7 @@ class PackageInformationController @Inject()(
   private def saveAndContinueHandler(
     userInput: PackageInformation,
     cachedData: PackageInformationData
-  )(implicit request: Request[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.packages) match {
       case (information, Seq()) =>
         information match {
@@ -137,7 +136,7 @@ class PackageInformationController @Inject()(
             val updatedCache = PackageInformationData(Seq(Packages(Some(typesOfPackages), Some(numberOfPackages))),
               Some(supplementaryUnits), Some(shippingMarks), Some(netMass), Some(grossMass))
 
-            customsCacheService.cache[PackageInformationData](cacheId, formId, updatedCache).map { _ =>
+            customsCacheService.cache[PackageInformationData](supplementaryCacheId, formId, updatedCache).map { _ =>
               Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm())
             }
 
@@ -182,7 +181,7 @@ class PackageInformationController @Inject()(
               informations :+ information.toPackages(information) else informations
             val updatedCache = PackageInformationData(updatedInformations, None, None, None, None)
 
-            customsCacheService.cache[PackageInformationData](cacheId, formId, updatedCache).map { _ =>
+            customsCacheService.cache[PackageInformationData](supplementaryCacheId, formId, updatedCache).map { _ =>
               Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm())
             }
 
@@ -238,6 +237,6 @@ class PackageInformationController @Inject()(
     Future.successful(BadRequest(package_information(appConfig, formWithError, information)))
   }
 
-  private def retrieveInformation(action: String): Packages = //TODO PROCEDURE CODE BUT RETRIEVE 2 THINGS use packages instead of package information
+  private def retrieveInformation(action: String): Packages =
     Packages.buildFromString(action.dropWhile(_ != ':').drop(1))
 }

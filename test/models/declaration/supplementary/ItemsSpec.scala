@@ -27,13 +27,13 @@ class ItemsSpec extends WordSpec with MustMatchers {
     val transactionTypeMock = mock(classOf[TransactionType])
     val itemNumberMock = mock(classOf[GoodsItemNumber])
     val itemTypeMock = mock(classOf[ItemType])
-    val packageInformationMock = mock(classOf[PackageInformation])
+    val packageInformationMock = mock(classOf[PackageInformationData])
     val items = Items(
       totalNumberOfItems = Some(totalNumberOfItemsMock),
       transactionType = Some(transactionTypeMock),
       goodsItemNumber = Some(itemNumberMock),
       itemType = Some(itemTypeMock),
-      packageInformation = Some(packageInformationMock)
+      packageInformationData = Some(packageInformationMock)
     )
 
     when(totalNumberOfItemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
