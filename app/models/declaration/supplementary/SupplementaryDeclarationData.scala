@@ -28,7 +28,7 @@ case class SupplementaryDeclarationData(
   transportInformation: Option[TransportInformation] = None,
   items: Option[Items] = None,
   previousDocuments: Option[PreviousDocuments] = None,
-  additionalInformation: Option[AdditionalInformation] = None,
+  additionalInformationData: Option[AdditionalInformationData] = None,
   documentsProduced: Option[DocumentsProduced] = None
 ) extends SummaryContainer with MetadataPropertiesConvertable {
   import SupplementaryDeclarationData._
@@ -48,7 +48,7 @@ case class SupplementaryDeclarationData(
       transportInformation.isEmpty &&
       items.isEmpty &&
       previousDocuments.isEmpty &&
-      additionalInformation.isEmpty &&
+      additionalInformationData.isEmpty &&
       documentsProduced.isEmpty
 
   def toMap: Map[String, MetadataPropertiesConvertable] =
@@ -60,7 +60,7 @@ case class SupplementaryDeclarationData(
       TransportInformation.id -> transportInformation,
       Items.id -> items,
       PreviousDocuments.formId -> previousDocuments,
-      AdditionalInformation.formId -> additionalInformation,
+      AdditionalInformationData.formId -> additionalInformationData,
       DocumentsProduced.formId -> documentsProduced
     ).collect { case (key, Some(data)) => (key, data) }
 }
@@ -77,7 +77,7 @@ object SupplementaryDeclarationData {
       transportInformation = cacheMap.getEntry[TransportInformation](TransportInformation.id),
       items = flattenIfEmpty(Items(cacheMap)),
       previousDocuments = cacheMap.getEntry[PreviousDocuments](PreviousDocuments.formId),
-      additionalInformation = cacheMap.getEntry[AdditionalInformation](AdditionalInformation.formId),
+      additionalInformationData = cacheMap.getEntry[AdditionalInformationData](AdditionalInformationData.formId),
       documentsProduced = cacheMap.getEntry[DocumentsProduced](DocumentsProduced.formId)
     )
 

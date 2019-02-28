@@ -16,22 +16,14 @@
 
 package forms.supplementary
 
-import forms.MetadataPropertiesConvertable
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
-case class AdditionalInformation(code: Option[String], description: Option[String])
-    extends MetadataPropertiesConvertable {
 
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementCode" -> code
-        .getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementDescription" -> description
-        .getOrElse("")
-    )
+case class AdditionalInformation(code: Option[String], description: Option[String]) {
+  override def toString: String = s"${code.getOrElse("")}-${description.getOrElse("")}"
 }
 
 object AdditionalInformation {
@@ -52,4 +44,12 @@ object AdditionalInformation {
   )(AdditionalInformation.apply)(AdditionalInformation.unapply)
 
   def form(): Form[AdditionalInformation] = Form(mapping)
+
+  def buildFromString(value: String): AdditionalInformation = {
+    val dividedString = value.split('-')
+
+    if (dividedString.length == 0) AdditionalInformation(None, None)
+    else if (dividedString.length == 1) AdditionalInformation(Some(value.split('-')(0)), None)
+    else AdditionalInformation(Some(value.split('-')(0)), Some(value.split('-')(1)))
+  }
 }

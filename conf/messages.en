@@ -470,8 +470,12 @@ supplementary.additionalInformation = Additional information
 supplementary.additionalInformation.title = 2/2 Additional information
 supplementary.additionalInformation.code = Enter the union or national code
 supplementary.additionalInformation.code.error = Code is incorrect
+supplementary.additionalInformation.code.empty = Code cannot be empty
 supplementary.additionalInformation.description = Enter the information required
-supplementary.additionalInformation.description.error = Information is incorrect
+supplementary.additionalInformation.description.error = Information description is incorrect
+supplementary.additionalInformation.description.empty = Information description cannot be empty
+supplementary.additionalInformation.maximumAmount.error = You cannot have more than 99 items
+supplementary.additionalInformation.duplicated = You cannot add the same item
 
 supplementary.transactionType.documentTypeCode.title = Transaction type
 supplementary.transactionType.documentTypeCode.header = 8/5 Transaction type

@@ -14,18 +14,14 @@
  * limitations under the License.
  *@
 
-@import forms.supplementary.AdditionalInformation
+@import models.declaration.supplementary.AdditionalInformationData
 @import models.viewmodels.HtmlTableRow
-
-@(additionalInformation: Option[AdditionalInformation])(implicit messages: Messages)
+@(additionalInformationData: Option[AdditionalInformationData])(implicit messages: Messages)
 
 @components.summary_list(Some(messages("supplementary.summary.additionalInformation.header"))) {
+
     @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalInformation.code"),
-        value = additionalInformation.flatMap(_.code)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalInformation.description"),
-        value = additionalInformation.flatMap(_.description)
+        label = messages("supplementary.summary.additionalInformation.header"),
+        value = additionalInformationData.map(_.items.map(_.toString))
     ))
 }

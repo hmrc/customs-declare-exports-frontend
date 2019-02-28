@@ -19,7 +19,7 @@
 @import forms.supplementary.AdditionalInformation
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[AdditionalInformation])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.additionalInformation"),
@@ -32,6 +32,8 @@
 
         @components.page_title(Some("supplementary.additionalInformation.title"))
 
+        @components.single_value_elements_table(items.map(_.toString))
+
         @components.input_text(
             field = form("code"),
             label = messages("supplementary.additionalInformation.code")
@@ -42,6 +44,6 @@
             label = messages("supplementary.additionalInformation.description")
         )
 
-        @components.submit_button()
+        @components.add_save_button()
     }
 }
