@@ -14,34 +14,34 @@
  * limitations under the License.
  *@
 
-@import forms.supplementary.DocumentsProduced
+@import models.declaration.supplementary.DocumentsProducedData
 @import models.viewmodels.HtmlTableRow
-
-@(additionalDocumentation: Option[DocumentsProduced])(implicit messages: Messages)
+@(additionalDocumentationData: Option[DocumentsProducedData])(implicit messages: Messages)
 
 @components.summary_list(Some(messages("supplementary.summary.additionalDocumentation.header"))) {
+
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalDocumentation.documentTypeCode"),
-        value = additionalDocumentation.flatMap(_.documentTypeCode)
+        value = additionalDocumentationData.map(_.documents.map(_.documentTypeCode))
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalDocumentation.documentId"),
-        value = additionalDocumentation.flatMap(_.documentIdentifier)
+        value = additionalDocumentationData.map(_.documents.map(_.documentIdentifier))
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalDocumentation.documentPart"),
-        value = additionalDocumentation.flatMap(_.documentPart)
+        value = additionalDocumentationData.map(_.documents.map(_.documentPart))
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalDocumentation.documentStatus"),
-        value = additionalDocumentation.flatMap(_.documentStatus)
+        value = additionalDocumentationData.map(_.documents.map(_.documentStatus))
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalDocumentation.documentStatusReason"),
-        value = additionalDocumentation.flatMap(_.documentStatusReason)
+        value = additionalDocumentationData.map(_.documents.map(_.documentStatusReason))
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.additionalDocumentation.documentQuantity"),
-        value = additionalDocumentation.flatMap(_.documentQuantity)
+        value = additionalDocumentationData.map(_.documents.map(_.documentQuantity))
     ))
 }

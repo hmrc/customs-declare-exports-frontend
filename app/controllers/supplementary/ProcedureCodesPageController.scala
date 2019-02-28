@@ -188,7 +188,7 @@ class ProcedureCodesPageController @Inject()(
             }
         }
     }
-  //scalastyle:on methodLength
+  //scalastyle:on method.length
 
   private def retrieveProcedureCode(values: Seq[String]): String = values.headOption.getOrElse("")
 
