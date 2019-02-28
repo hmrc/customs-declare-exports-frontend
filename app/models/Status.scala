@@ -25,6 +25,7 @@ object Status {
 
   implicit object StatusFormat extends Format[Status] {
     def reads(status: JsValue): JsResult[Status] = status match {
+      case JsString("Pending")   => JsSuccess(Pending)
       case JsString("01")   => JsSuccess(Accepted)
       case JsString("02")   => JsSuccess(Received)
       case JsString("03")   => JsSuccess(Rejected)
@@ -43,6 +44,7 @@ object Status {
     }
 
     def writes(status: Status): JsValue = status match {
+      case Pending                      => JsString("Pending")
       case Accepted                     => JsString("01")
       case Received                     => JsString("02")
       case Rejected                     => JsString("03")
@@ -62,6 +64,7 @@ object Status {
 
   def retrieveFromResponse(response: Response): Status =
     response.functionCode match {
+      case "Pending"                                                            => Pending
       case "01"                                                                 => Accepted
       case "02"                                                                 => Received
       case "03"                                                                 => Rejected
@@ -79,6 +82,8 @@ object Status {
       case _                                                                    => throw new Exception("Incorrect status")
     }
 }
+
+case object Pending extends Status
 
 case object Accepted extends Status
 
