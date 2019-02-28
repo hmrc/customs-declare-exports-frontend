@@ -25,7 +25,7 @@ import javax.inject.Inject
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
 import models.declaration.supplementary.SupplementaryDeclarationData
-import models.{CustomsDeclarationsResponse, Submission}
+import models.{CustomsDeclarationsResponse, Pending, Submission}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -65,16 +65,12 @@ class SummaryPageController @Inject()(
         val metaData = MetaData.fromProperties(suppDecData.toMetadataProperties())
 
         customsDeclarationConnector.submitExportDeclaration(metaData).flatMap {
-          case CustomsDeclarationsResponse(status, Some(conversationId)) =>
+          case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
             val ducr = suppDecData.consignmentReferences.flatMap(_.ducr)
             val lrn = suppDecData.consignmentReferences.map(_.lrn)
-            val declarationStatus = status match {
-              case ACCEPTED => models.Accepted
-              case _        => models.Rejected
-            }
 
             val submission =
-              new Submission(request.user.eori, conversationId, ducr.fold("")(_.ducr), lrn, None, declarationStatus)
+              new Submission(request.user.eori, conversationId, ducr.fold("")(_.ducr), lrn, None, Pending)
 
             customsDeclareExportsConnector
               .saveSubmissionResponse(submission)
@@ -82,16 +78,10 @@ class SummaryPageController @Inject()(
                 exportsMetrics.incrementCounter(submissionMetric)
                 customsCacheService
                   .remove(supplementaryCacheId)
-                  .map(
-                    _ =>
-                      status match {
-                        case ACCEPTED =>
-                          Redirect(controllers.supplementary.routes.ConfirmationPageController.displayPage())
-                            .flashing(prepareFlashScope(lrn.getOrElse(""), conversationId))
-                        case _ =>
-                          Redirect(controllers.supplementary.routes.ConfirmationPageController.displayRejectionPage())
-                    }
-                  )
+                  .map { _ =>
+                    Redirect(controllers.supplementary.routes.ConfirmationPageController.displayPage())
+                      .flashing(prepareFlashScope(lrn.getOrElse(""), conversationId))
+                  }
               }
               .recover {
                 case error: Throwable =>
