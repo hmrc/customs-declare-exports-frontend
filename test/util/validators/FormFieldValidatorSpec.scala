@@ -642,4 +642,89 @@ class FormFieldValidatorSpec extends WordSpec with MustMatchers {
       }
     }
   }
+
+  "FormFieldValidator containsDuplicates" should {
+
+    "return false" when {
+      "input contains no value" in {
+        val input = Seq.empty
+        containsDuplicates(input) must be(false)
+      }
+
+      "input contains single value" in {
+        val input = Seq("value")
+        containsDuplicates(input) must be(false)
+      }
+
+      "input contains only unique values" in {
+        val input = Seq("value_1", "value_2", "value_3")
+        containsDuplicates(input) must be(false)
+      }
+    }
+
+    "return true" when {
+      "input contains 2 identical values" in {
+        val input = Seq("value", "value")
+        containsDuplicates(input) must be(true)
+      }
+
+      "input contains 3 identical values" in {
+        val input = Seq("value", "value", "value")
+        containsDuplicates(input) must be(true)
+      }
+
+      "input contains 2 identical values mixed with uniques" in {
+        val input = Seq("value", "value_1", "value_2", "value", "value_3")
+        containsDuplicates(input) must be(true)
+      }
+
+      "input contains 2 pairs of identical values" in {
+        val input = Seq("value_1", "value_2", "value_2", "value_1")
+        containsDuplicates(input) must be(true)
+      }
+    }
+  }
+
+  "FormFieldValidator containsUniques" should {
+
+    "return false" when {
+      "input contains 2 identical values" in {
+        val input = Seq("value", "value")
+        containsUniques(input) must be(false)
+      }
+
+      "input contains 3 identical values" in {
+        val input = Seq("value", "value", "value")
+        containsUniques(input) must be(false)
+      }
+
+      "input contains 2 identical values mixed with uniques" in {
+        val input = Seq("value", "value_1", "value_2", "value", "value_3")
+        containsUniques(input) must be(false)
+      }
+
+      "input contains 2 pairs of identical values" in {
+        val input = Seq("value_1", "value_2", "value_2", "value_1")
+        containsUniques(input) must be(false)
+      }
+    }
+
+    "return true" when {
+      "input contains no value" in {
+        val input = Seq.empty
+        containsUniques(input) must be(true)
+      }
+
+      "input contains single value" in {
+        val input = Seq("value")
+        containsUniques(input) must be(true)
+      }
+
+      "input contains only unique values" in {
+        val input = Seq("value_1", "value_2", "value_3")
+        containsUniques(input) must be(true)
+      }
+    }
+  }
+
 }

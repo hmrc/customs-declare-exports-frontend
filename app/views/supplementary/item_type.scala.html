@@ -40,13 +40,13 @@
     )
 
     @components.input_text(
-      field = form("taricAdditionalCode"),
+      field = form("taricAdditionalCode[0]"),
       label = messages("supplementary.itemType.taricAdditionalCodes.header"),
       hint = Some(messages("supplementary.itemType.taricAdditionalCodes.header.hint"))
     )
 
     @components.input_text(
-      field = form("nationalAdditionalCode"),
+      field = form("nationalAdditionalCode[0]"),
       label = messages("supplementary.itemType.nationalAdditionalCode.header"),
       hint = Some(messages("supplementary.itemType.nationalAdditionalCode.header.hint"))
     )

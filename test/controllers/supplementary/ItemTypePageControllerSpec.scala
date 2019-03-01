@@ -146,7 +146,7 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
-      "Statictical value contains non-digit characters" in {
+      "Statistical value contains non-digit characters" in {
         val form = buildItemTypeJsonInput(statisticalValue = "123456Q.78")
         val expectedErrorMessage = messages("supplementary.itemType.statisticalValue.error.wrongFormat")
         testErrorInFormScenario(form, expectedErrorMessage)
