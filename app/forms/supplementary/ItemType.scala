@@ -17,20 +17,30 @@
 package forms.supplementary
 
 import forms.MetadataPropertiesConvertable
-import play.api.data.Forms.{optional, text}
+import forms.supplementary.ItemType._
+import play.api.data.Forms.{default, optional, seq, text}
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
-import utils.validators.FormFieldValidator._
+import play.api.libs.functional.syntax._
+import play.api.libs.json.Reads._
+import play.api.libs.json._
 
 case class ItemType(
   combinedNomenclatureCode: String,
-  taricAdditionalCode: Option[String],
-  nationalAdditionalCode: Option[String],
+  taricAdditionalCodes: Seq[String],
+  nationalAdditionalCodes: Seq[String],
   descriptionOfGoods: String,
   cusCode: Option[String],
   statisticalValue: String
 ) extends MetadataPropertiesConvertable {
-  import ItemType.IdentificationTypeCodes
+
+  def updateWith(other: ItemType): ItemType = ItemType(
+    combinedNomenclatureCode = other.combinedNomenclatureCode,
+    taricAdditionalCodes = this.taricAdditionalCodes ++ other.taricAdditionalCodes,
+    nationalAdditionalCodes = this.nationalAdditionalCodes ++ other.nationalAdditionalCodes,
+    descriptionOfGoods = other.descriptionOfGoods,
+    cusCode = other.cusCode,
+    statisticalValue = other.statisticalValue
+  )
 
   override def toMetadataProperties(): Map[String, String] = {
     val codeFieldsProperties = buildListOfProvidedCodesWithIdentifiers().zipWithIndex
@@ -53,74 +63,56 @@ case class ItemType(
     )
   }
 
-  private def buildListOfProvidedCodesWithIdentifiers(): List[(String, String)] =
-    List(
-      (Some(combinedNomenclatureCode), IdentificationTypeCodes.CombinedNomenclatureCode),
-      (taricAdditionalCode, IdentificationTypeCodes.TARICAdditionalCode),
-      (nationalAdditionalCode, IdentificationTypeCodes.NationalAdditionalCode),
-      (cusCode, IdentificationTypeCodes.CUSCode)
-    ).filter(_._1.isDefined).map { elem =>
-      (elem._1.get, elem._2)
+  private def buildListOfProvidedCodesWithIdentifiers(): List[(String, String)] = {
+    val taricAdditionalCodesTuples = taricAdditionalCodes.map { code =>
+      (Some(code), IdentificationTypeCodes.TARICAdditionalCode)
     }
+    val nationalAdditionalCodesTuples = nationalAdditionalCodes.map { code =>
+      (Some(code), IdentificationTypeCodes.NationalAdditionalCode)
+    }
+    val allCodesWithIdentifiers =
+      Seq((Some(combinedNomenclatureCode), IdentificationTypeCodes.CombinedNomenclatureCode)) ++
+        taricAdditionalCodesTuples ++
+        nationalAdditionalCodesTuples ++
+        Seq((cusCode, IdentificationTypeCodes.CUSCode))
+
+    allCodesWithIdentifiers
+      .filter(_._1.isDefined)
+      .map { elem =>
+        (elem._1.get, elem._2)
+      }
+      .toList
+  }
 
 }
 
 object ItemType {
-  implicit val format = Json.format[ItemType]
 
-  private val combinedNomenclatureCodeMaxLength = 8
-  private val taricAdditionalCodeLength = 4
-  private val nationalAdditionalCodeMaxLength = 4
-  private val descriptionOfGoodsMaxLength = 280
-  private val cusCodeLength = 8
-  private val statisticalValueMaxLength = 15
-  private val statisticalValueDecimalPlaces = 2
+  implicit val reads: Reads[ItemType] = (
+    (JsPath \ "combinedNomenclatureCode").read[String] and
+      (JsPath \ "taricAdditionalCode").read[Seq[String]] and
+      (JsPath \ "nationalAdditionalCode").read[Seq[String]] and
+      (JsPath \ "descriptionOfGoods").read[String] and
+      (JsPath \ "cusCode").readNullable[String] and
+      (JsPath \ "statisticalValue").read[String]
+  )(ItemType.apply _)
+
+  implicit val writes: Writes[ItemType] = (
+    (JsPath \ "combinedNomenclatureCode").write[String] and
+      (JsPath \ "taricAdditionalCode").write[Seq[String]] and
+      (JsPath \ "nationalAdditionalCode").write[Seq[String]] and
+      (JsPath \ "descriptionOfGoods").write[String] and
+      (JsPath \ "cusCode").writeNullable[String] and
+      (JsPath \ "statisticalValue").write[String]
+  )(unlift(ItemType.unapply))
 
   val mapping = Forms.mapping(
-    "combinedNomenclatureCode" -> text()
-      .verifying("supplementary.itemType.combinedNomenclatureCode.error.empty", nonEmpty)
-      .verifying(
-        "supplementary.itemType.combinedNomenclatureCode.error.length",
-        isEmpty or noLongerThan(combinedNomenclatureCodeMaxLength)
-      )
-      .verifying("supplementary.itemType.combinedNomenclatureCode.error.specialCharacters", isEmpty or isAlphanumeric),
-    "taricAdditionalCode" -> optional(
-      text()
-        .verifying(
-          "supplementary.itemType.taricAdditionalCodes.error.length",
-          hasSpecificLength(taricAdditionalCodeLength)
-        )
-        .verifying("supplementary.itemType.taricAdditionalCodes.error.specialCharacters", isAlphanumeric)
-    ),
-    "nationalAdditionalCode" -> optional(
-      text()
-        .verifying(
-          "supplementary.itemType.nationalAdditionalCode.error.length",
-          noLongerThan(nationalAdditionalCodeMaxLength)
-        )
-        .verifying("supplementary.itemType.nationalAdditionalCode.error.specialCharacters", isAlphanumeric)
-    ),
-    "descriptionOfGoods" -> text()
-      .verifying("supplementary.itemType.description.error.empty", nonEmpty)
-      .verifying(
-        "supplementary.itemType.description.error.length",
-        isEmpty or noLongerThan(descriptionOfGoodsMaxLength)
-      ),
-    "cusCode" -> optional(
-      text()
-        .verifying("supplementary.itemType.cusCode.error.length", hasSpecificLength(cusCodeLength))
-        .verifying("supplementary.itemType.cusCode.error.specialCharacters", isAlphanumeric)
-    ),
+    "combinedNomenclatureCode" -> text(),
+    "taricAdditionalCode" -> default(seq(text()), Seq.empty),
+    "nationalAdditionalCode" -> default(seq(text()), Seq.empty),
+    "descriptionOfGoods" -> text(),
+    "cusCode" -> optional(text()),
     "statisticalValue" -> text()
-      .verifying("supplementary.itemType.statisticalValue.error.empty", nonEmpty)
-      .verifying(
-        "supplementary.itemType.statisticalValue.error.length",
-        input => input.isEmpty || noLongerThan(statisticalValueMaxLength)(input.replaceAll("\\.", ""))
-      )
-      .verifying(
-        "supplementary.itemType.statisticalValue.error.wrongFormat",
-        isEmpty or isDecimalWithNoMoreDecimalPlacesThan(statisticalValueDecimalPlaces)
-      )
   )(ItemType.apply)(ItemType.unapply)
 
   val id = "ItemType"
@@ -133,4 +125,6 @@ object ItemType {
     val NationalAdditionalCode = "GN"
     val CUSCode = "CV"
   }
+
+  val empty: ItemType = ItemType("", Nil, Nil, "", None, "")
 }

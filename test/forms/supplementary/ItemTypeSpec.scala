@@ -18,7 +18,7 @@ package forms.supplementary
 
 import forms.supplementary.ItemType._
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
 class ItemTypeSpec extends WordSpec with MustMatchers {
   import ItemTypeSpec._
@@ -29,8 +29,8 @@ class ItemTypeSpec extends WordSpec with MustMatchers {
       "provided with mandatory data only" in {
         val itemType = ItemType(
           combinedNomenclatureCode = combinedNomenclatureCode,
-          taricAdditionalCode = None,
-          nationalAdditionalCode = None,
+          taricAdditionalCodes = Nil,
+          nationalAdditionalCodes = Nil,
           descriptionOfGoods = descriptionOfGoods,
           cusCode = None,
           statisticalValue = statisticalValue
@@ -46,11 +46,11 @@ class ItemTypeSpec extends WordSpec with MustMatchers {
         itemType.toMetadataProperties() must equal(expectedItemTypeProperties)
       }
 
-      "provided with mandatory data and TARIC additional code" in {
+      "provided with mandatory data and single TARIC Additional Code" in {
         val itemType = ItemType(
           combinedNomenclatureCode = combinedNomenclatureCode,
-          taricAdditionalCode = Some(taricAdditionalCode),
-          nationalAdditionalCode = None,
+          taricAdditionalCodes = Seq(taricAdditionalCode),
+          nationalAdditionalCodes = Nil,
           descriptionOfGoods = descriptionOfGoods,
           cusCode = None,
           statisticalValue = statisticalValue
@@ -69,11 +69,43 @@ class ItemTypeSpec extends WordSpec with MustMatchers {
         itemType.toMetadataProperties() must equal(expectedItemTypeProperties)
       }
 
-      "provided with mandatory data and National Additional Code" in {
+      "provided with mandatory data and multiple TARIC Additional Codes" in {
+        val taricAdditionalCode_1 = "AB12"
+        val taricAdditionalCode_2 = "CD34"
+        val taricAdditionalCode_3 = "56EF"
         val itemType = ItemType(
           combinedNomenclatureCode = combinedNomenclatureCode,
-          taricAdditionalCode = None,
-          nationalAdditionalCode = Some(nationalAdditionalCode),
+          taricAdditionalCodes = Seq(taricAdditionalCode_1, taricAdditionalCode_2, taricAdditionalCode_3),
+          nationalAdditionalCodes = Nil,
+          descriptionOfGoods = descriptionOfGoods,
+          cusCode = None,
+          statisticalValue = statisticalValue
+        )
+        val expectedItemTypeProperties: Map[String, String] = Map(
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[0].id" -> combinedNomenclatureCode,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[0].identificationTypeCode" ->
+            IdentificationTypeCodes.CombinedNomenclatureCode,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[1].id" -> taricAdditionalCode_1,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[1].identificationTypeCode" ->
+            IdentificationTypeCodes.TARICAdditionalCode,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[2].id" -> taricAdditionalCode_2,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[2].identificationTypeCode" ->
+            IdentificationTypeCodes.TARICAdditionalCode,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[3].id" -> taricAdditionalCode_3,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[3].identificationTypeCode" ->
+            IdentificationTypeCodes.TARICAdditionalCode,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.description" -> descriptionOfGoods,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].statisticalValueAmount" -> statisticalValue
+        )
+
+        itemType.toMetadataProperties() must equal(expectedItemTypeProperties)
+      }
+
+      "provided with mandatory data and single National Additional Code" in {
+        val itemType = ItemType(
+          combinedNomenclatureCode = combinedNomenclatureCode,
+          taricAdditionalCodes = Nil,
+          nationalAdditionalCodes = Seq(nationalAdditionalCode),
           descriptionOfGoods = descriptionOfGoods,
           cusCode = None,
           statisticalValue = statisticalValue
@@ -92,11 +124,43 @@ class ItemTypeSpec extends WordSpec with MustMatchers {
         itemType.toMetadataProperties() must equal(expectedItemTypeProperties)
       }
 
+      "provided with mandatory data and multiple National Additional Codes" in {
+        val nationalAdditionalCode_1 = "AB12"
+        val nationalAdditionalCode_2 = "CD34"
+        val nationalAdditionalCode_3 = "56EF"
+        val itemType = ItemType(
+          combinedNomenclatureCode = combinedNomenclatureCode,
+          taricAdditionalCodes = Nil,
+          nationalAdditionalCodes = Seq(nationalAdditionalCode_1, nationalAdditionalCode_2, nationalAdditionalCode_3),
+          descriptionOfGoods = descriptionOfGoods,
+          cusCode = None,
+          statisticalValue = statisticalValue
+        )
+        val expectedItemTypeProperties: Map[String, String] = Map(
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[0].id" -> combinedNomenclatureCode,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[0].identificationTypeCode" ->
+            IdentificationTypeCodes.CombinedNomenclatureCode,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[1].id" -> nationalAdditionalCode_1,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[1].identificationTypeCode" ->
+            IdentificationTypeCodes.NationalAdditionalCode,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[2].id" -> nationalAdditionalCode_2,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[2].identificationTypeCode" ->
+            IdentificationTypeCodes.NationalAdditionalCode,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[3].id" -> nationalAdditionalCode_3,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[3].identificationTypeCode" ->
+            IdentificationTypeCodes.NationalAdditionalCode,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.description" -> descriptionOfGoods,
+          "declaration.goodsShipment.governmentAgencyGoodsItems[0].statisticalValueAmount" -> statisticalValue
+        )
+
+        itemType.toMetadataProperties() must equal(expectedItemTypeProperties)
+      }
+
       "provided with mandatory data and CUS Code" in {
         val itemType = ItemType(
           combinedNomenclatureCode = combinedNomenclatureCode,
-          taricAdditionalCode = None,
-          nationalAdditionalCode = None,
+          taricAdditionalCodes = Nil,
+          nationalAdditionalCodes = Nil,
           descriptionOfGoods = descriptionOfGoods,
           cusCode = Some(cusCode),
           statisticalValue = statisticalValue
@@ -118,8 +182,8 @@ class ItemTypeSpec extends WordSpec with MustMatchers {
       "provided with all data" in {
         val itemType = ItemType(
           combinedNomenclatureCode = combinedNomenclatureCode,
-          taricAdditionalCode = Some(taricAdditionalCode),
-          nationalAdditionalCode = Some(nationalAdditionalCode),
+          taricAdditionalCodes = Seq(taricAdditionalCode),
+          nationalAdditionalCodes = Seq(nationalAdditionalCode),
           descriptionOfGoods = descriptionOfGoods,
           cusCode = Some(cusCode),
           statisticalValue = statisticalValue
@@ -158,16 +222,16 @@ object ItemTypeSpec {
 
   val correctItemType = ItemType(
     combinedNomenclatureCode = combinedNomenclatureCode,
-    taricAdditionalCode = Some(taricAdditionalCode),
-    nationalAdditionalCode = Some(nationalAdditionalCode),
+    taricAdditionalCodes = Seq(taricAdditionalCode),
+    nationalAdditionalCodes = Seq(nationalAdditionalCode),
     descriptionOfGoods = descriptionOfGoods,
     cusCode = Some(cusCode),
     statisticalValue = statisticalValue
   )
   val emptyItemType = ItemType(
     combinedNomenclatureCode = "",
-    taricAdditionalCode = None,
-    nationalAdditionalCode = None,
+    taricAdditionalCodes = Nil,
+    nationalAdditionalCodes = Nil,
     descriptionOfGoods = "",
     cusCode = None,
     statisticalValue = ""
@@ -176,8 +240,8 @@ object ItemTypeSpec {
   val correctItemTypeJSON: JsValue = JsObject(
     Map(
       "combinedNomenclatureCode" -> JsString(combinedNomenclatureCode),
-      "taricAdditionalCode" -> JsString(taricAdditionalCode),
-      "nationalAdditionalCode" -> JsString(nationalAdditionalCode),
+      "taricAdditionalCode" -> JsArray(Seq(JsString(taricAdditionalCode))),
+      "nationalAdditionalCode" -> JsArray(Seq(JsString(nationalAdditionalCode))),
       "descriptionOfGoods" -> JsString(descriptionOfGoods),
       "cusCode" -> JsString(cusCode),
       "statisticalValue" -> JsString(statisticalValue)

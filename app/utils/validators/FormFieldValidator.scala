@@ -96,4 +96,8 @@ object FormFieldValidator {
           case Array(a) if isNumeric(a)                    => a.length <= totalLength
           case _                                           => false
   }
+
+  val containsDuplicates: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size != input.size
+
+  val containsUniques: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size == input.size
 }
