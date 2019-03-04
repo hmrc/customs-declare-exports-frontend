@@ -17,6 +17,7 @@
 package forms.supplementary.validators
 
 import forms.supplementary.ItemType
+import forms.supplementary.ItemType._
 import play.api.data.Forms.{optional, seq, text}
 import play.api.data.{Form, Forms}
 import utils.validators.FormFieldValidator._
@@ -45,7 +46,7 @@ object ItemTypeValidator extends Validator[ItemType] {
 
   val mappingWithValidationForAddition = Forms.mapping(
     "combinedNomenclatureCode" -> text(),
-    "taricAdditionalCode" -> seq(
+    taricAdditionalCodesKey -> seq(
       text()
         .verifying(
           "supplementary.itemType.taricAdditionalCodes.error.length",
@@ -57,7 +58,7 @@ object ItemTypeValidator extends Validator[ItemType] {
         codes => codes.size <= taricAdditionalCodesMaxAmount
       )
       .verifying("supplementary.itemType.taricAdditionalCodes.error.duplicate", containsUniques),
-    "nationalAdditionalCode" -> seq(
+    nationalAdditionalCodesKey -> seq(
       text()
         .verifying(
           "supplementary.itemType.nationalAdditionalCode.error.length",
@@ -65,9 +66,10 @@ object ItemTypeValidator extends Validator[ItemType] {
         )
         .verifying("supplementary.itemType.nationalAdditionalCode.error.specialCharacters", isAlphanumeric)
     ).verifying(
-      "supplementary.itemType.nationalAdditionalCode.error.maxAmount",
-      codes => codes.size <= nationalAdditionalCodesMaxAmount
-    ).verifying("supplementary.itemType.nationalAdditionalCode.error.duplicate", containsUniques),
+        "supplementary.itemType.nationalAdditionalCode.error.maxAmount",
+        codes => codes.size <= nationalAdditionalCodesMaxAmount
+      )
+      .verifying("supplementary.itemType.nationalAdditionalCode.error.duplicate", containsUniques),
     "descriptionOfGoods" -> text(),
     "cusCode" -> optional(text()),
     "statisticalValue" -> text()
@@ -89,9 +91,9 @@ object ItemTypeValidator extends Validator[ItemType] {
         )
         .verifying("supplementary.itemType.taricAdditionalCodes.error.specialCharacters", isAlphanumeric)
     ).verifying(
-      "supplementary.itemType.taricAdditionalCodes.error.maxAmount",
-      codes => codes.size <= taricAdditionalCodesMaxAmount
-    )
+        "supplementary.itemType.taricAdditionalCodes.error.maxAmount",
+        codes => codes.size <= taricAdditionalCodesMaxAmount
+      )
       .verifying("supplementary.itemType.taricAdditionalCodes.error.duplicate", containsUniques),
     "nationalAdditionalCode" -> seq(
       text()
@@ -101,9 +103,10 @@ object ItemTypeValidator extends Validator[ItemType] {
         )
         .verifying("supplementary.itemType.nationalAdditionalCode.error.specialCharacters", isAlphanumeric)
     ).verifying(
-      "supplementary.itemType.nationalAdditionalCode.error.maxAmount",
-      codes => codes.size <= nationalAdditionalCodesMaxAmount
-    ).verifying("supplementary.itemType.nationalAdditionalCode.error.duplicate", containsUniques),
+        "supplementary.itemType.nationalAdditionalCode.error.maxAmount",
+        codes => codes.size <= nationalAdditionalCodesMaxAmount
+      )
+      .verifying("supplementary.itemType.nationalAdditionalCode.error.duplicate", containsUniques),
     "descriptionOfGoods" -> text()
       .verifying("supplementary.itemType.description.error.empty", nonEmpty)
       .verifying(
