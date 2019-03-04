@@ -40,7 +40,7 @@ object Status {
       case JsString("16")   => JsSuccess(GoodsHaveExitedTheCommunity)
       case JsString("17")   => JsSuccess(DeclarationHandledExternally)
       case JsString("18")   => JsSuccess(AwaitingExitResults)
-      case _                => JsError("Incorrect value")
+      case _                => JsSuccess(UnknownStatus)
     }
 
     def writes(status: Status): JsValue = status match {
@@ -59,6 +59,7 @@ object Status {
       case GoodsHaveExitedTheCommunity  => JsString("16")
       case DeclarationHandledExternally => JsString("17")
       case AwaitingExitResults          => JsString("18")
+      case UnknownStatus                => JsString("UnknownStatus")
     }
   }
 
@@ -79,7 +80,7 @@ object Status {
       case "16"                                                                 => GoodsHaveExitedTheCommunity
       case "17"                                                                 => DeclarationHandledExternally
       case "18"                                                                 => AwaitingExitResults
-      case _                                                                    => throw new Exception("Incorrect status")
+      case _                                                                    => UnknownStatus
     }
 }
 
@@ -125,4 +126,8 @@ case object DeclarationHandledExternally extends Status {
 
 case object AwaitingExitResults extends Status {
   override def toString(): String = "Awaiting Exit Results"
+}
+
+case object UnknownStatus extends Status {
+  override def toString(): String = "Unknown status"
 }
