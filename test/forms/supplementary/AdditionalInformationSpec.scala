@@ -45,18 +45,24 @@ class AdditionalInformationSpec extends WordSpec with MustMatchers {
 object AdditionalInformationSpec {
   val correctAdditionalInformation =
     AdditionalInformationData(
-      Seq(AdditionalInformation(code = Some("M1l3s"), description = Some("Description for Additional Information: Davis"))))
+      Seq(
+        AdditionalInformation(code = Some("M1l3s"), description = Some("Description for Additional Information: Davis"))
+      )
+    )
 
   val emptyAdditionalInformation = AdditionalInformation(None, None)
 
   val correctAdditionalInformationJSON: JsValue = JsObject(
-    Map("code" -> JsString("M1l3s"), "description" -> JsString("Description for Additional Information: Davis")))
+    Map("code" -> JsString("M1l3s"), "description" -> JsString("Description for Additional Information: Davis"))
+  )
 
   val incorrectAdditionalInformationJSON: JsValue = JsObject(
-    Map("code" -> JsString("Miles"), "description" -> JsString("Description for Additional Information: Davis")))
+    Map("code" -> JsString("Miles"), "description" -> JsString("Description for Additional Information: Davis"))
+  )
 
   val emptyAdditionalInformationJSON: JsValue = JsObject(Map("code" -> JsString(""), "description" -> JsString("")))
 
   val correctAdditionalInformationDataJSON: JsValue = JsObject(
-    Map("items" -> JsArray(Seq(correctAdditionalInformationJSON))))
+    Map("items" -> JsArray(Seq(correctAdditionalInformationJSON)))
+  )
 }

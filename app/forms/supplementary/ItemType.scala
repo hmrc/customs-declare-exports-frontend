@@ -87,7 +87,6 @@ case class ItemType(
 }
 
 object ItemType {
-
   implicit val reads: Reads[ItemType] = (
     (JsPath \ "combinedNomenclatureCode").read[String] and
       (JsPath \ "taricAdditionalCode").read[Seq[String]] and
@@ -106,10 +105,13 @@ object ItemType {
       (JsPath \ "statisticalValue").write[String]
   )(unlift(ItemType.unapply))
 
+  val taricAdditionalCodesKey = "taricAdditionalCode"
+  val nationalAdditionalCodesKey = "nationalAdditionalCode"
+
   val mapping = Forms.mapping(
     "combinedNomenclatureCode" -> text(),
-    "taricAdditionalCode" -> default(seq(text()), Seq.empty),
-    "nationalAdditionalCode" -> default(seq(text()), Seq.empty),
+    taricAdditionalCodesKey -> default(seq(text()), Seq.empty),
+    nationalAdditionalCodesKey -> default(seq(text()), Seq.empty),
     "descriptionOfGoods" -> text(),
     "cusCode" -> optional(text()),
     "statisticalValue" -> text()

@@ -41,4 +41,3 @@ object AdditionalInformationData {
 
   val maxNumberOfItems = 99
 }
-

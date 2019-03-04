@@ -21,7 +21,6 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.FormFieldValidator._
 
-
 case class AdditionalInformation(code: Option[String], description: Option[String]) {
   override def toString: String = s"${code.getOrElse("")}-${description.getOrElse("")}"
 }
