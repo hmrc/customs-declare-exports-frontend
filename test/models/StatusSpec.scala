@@ -37,7 +37,8 @@ class StatusSpec extends WordSpec with MustMatchers {
       Status.StatusFormat.reads(JsString("16")) must be(JsSuccess(GoodsHaveExitedTheCommunity))
       Status.StatusFormat.reads(JsString("17")) must be(JsSuccess(DeclarationHandledExternally))
       Status.StatusFormat.reads(JsString("18")) must be(JsSuccess(AwaitingExitResults))
-      Status.StatusFormat.reads(JsString("WrongStatus")) must be(JsError("Incorrect value"))
+      Status.StatusFormat.reads(JsString("WrongStatus")) must be(JsSuccess(UnknownStatus))
+      Status.StatusFormat.reads(JsString("UnknownStatus")) must be(JsSuccess(UnknownStatus))
     }
 
     "correctly write a value for every scenario" in {
@@ -55,6 +56,7 @@ class StatusSpec extends WordSpec with MustMatchers {
       Json.toJson(GoodsHaveExitedTheCommunity) must be(JsString("16"))
       Json.toJson(DeclarationHandledExternally) must be(JsString("17"))
       Json.toJson(AwaitingExitResults) must be(JsString("18"))
+      Json.toJson(UnknownStatus) must be(JsString("UnknownStatus"))
     }
   }
 
@@ -143,6 +145,12 @@ class StatusSpec extends WordSpec with MustMatchers {
       val awaitingExitResultsResponse = Response("18")
 
       Status.retrieveFromResponse(awaitingExitResultsResponse) must be(AwaitingExitResults)
+    }
+
+    "correctly retrieve UnknownStatus status" in {
+      val unknownStatusResponse = Response("20")
+
+      Status.retrieveFromResponse(unknownStatusResponse) must be(UnknownStatus)
     }
   }
 }

@@ -56,7 +56,6 @@ class SummaryPageController @Inject()(
     }
   }
 
-  //scalastyle:off method.length
   def submitSupplementaryDeclaration(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetch(supplementaryCacheId).flatMap {
       case Some(cacheMap) =>
@@ -97,7 +96,6 @@ class SummaryPageController @Inject()(
         Future.successful(handleError(s"Could not obtain data from DB"))
     }
   }
-  //scalastyle:on method.length
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
     Logger.error(logMessage)
