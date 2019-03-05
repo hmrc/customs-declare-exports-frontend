@@ -26,8 +26,8 @@ case class WarehouseIdentification(id: Option[String]) extends MetadataPropertie
 
   override def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.goodsShipment.warehouse.id" -> id.flatMap(_.headOption).fold("")(_.toString),
-      "declaration.goodsShipment.warehouse.typeCode" -> id.map(_.drop(1).toString).getOrElse("")
+      "declaration.goodsShipment.warehouse.typeCode" -> id.flatMap(_.headOption).fold("")(_.toString),
+      "declaration.goodsShipment.warehouse.id" -> id.map(_.drop(1).toString).getOrElse("")
     )
 }
 
