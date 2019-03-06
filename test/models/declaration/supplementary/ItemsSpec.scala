@@ -27,20 +27,16 @@ class ItemsSpec extends WordSpec with MustMatchers {
     val transactionTypeMock = mock(classOf[TransactionType])
     val itemNumberMock = mock(classOf[GoodsItemNumber])
     val itemTypeMock = mock(classOf[ItemType])
-    val packageInformationMock = mock(classOf[PackageInformationData])
     val items = Items(
       totalNumberOfItems = Some(totalNumberOfItemsMock),
       transactionType = Some(transactionTypeMock),
       goodsItemNumber = Some(itemNumberMock),
-      itemType = Some(itemTypeMock),
-      packageInformationData = Some(packageInformationMock)
-    )
+      itemType = Some(itemTypeMock))
 
     when(totalNumberOfItemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     when(transactionTypeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     when(itemNumberMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     when(itemTypeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-    when(packageInformationMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
   }
 
   private trait TestMapConcatenation extends SimpleTest {
@@ -48,12 +44,10 @@ class ItemsSpec extends WordSpec with MustMatchers {
     val transactionTypeMap = Map("TransactionType" -> "TransactionTypeValue")
     val itemNumberMap = Map("GoodItemNumber" -> "GoodItemNumberValue")
     val itemTypeMap = Map("ItemType" -> "ItemTypeValue")
-    val packageInformationMap = Map("PackageInformation" -> "PackageInformationValue")
     when(totalNumberOfItemsMock.toMetadataProperties()).thenReturn(totalNumberOfItemsMap)
     when(transactionTypeMock.toMetadataProperties()).thenReturn(transactionTypeMap)
     when(itemNumberMock.toMetadataProperties()).thenReturn(itemNumberMap)
     when(itemTypeMock.toMetadataProperties()).thenReturn(itemTypeMap)
-    when(packageInformationMock.toMetadataProperties()).thenReturn(packageInformationMap)
   }
 
   "Items" when {
@@ -66,12 +60,11 @@ class ItemsSpec extends WordSpec with MustMatchers {
         verify(transactionTypeMock, times(1)).toMetadataProperties()
         verify(itemNumberMock, times(1)).toMetadataProperties()
         verify(itemTypeMock, times(1)).toMetadataProperties()
-        verify(packageInformationMock, times(1)).toMetadataProperties()
       }
 
       "return Map being sum of all Maps from sub-objects" in new TestMapConcatenation {
         items.toMetadataProperties() must equal(
-          totalNumberOfItemsMap ++ transactionTypeMap ++ itemNumberMap ++ itemTypeMap ++ packageInformationMap
+          totalNumberOfItemsMap ++ transactionTypeMap ++ itemNumberMap ++ itemTypeMap
         )
       }
     }

@@ -16,7 +16,6 @@
 
 package forms.supplementary
 
-import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -29,9 +28,7 @@ case class PackageInformation(
   shippingMarks: Option[String],
   netMass: Option[String],
   grossMass: Option[String]
-) {
-  def toPackages(packageInformation: PackageInformation): Packages = Packages(packageInformation.typesOfPackages, packageInformation.numberOfPackages)
-}
+)
 
 object PackageInformation {
 
@@ -72,70 +69,4 @@ object PackageInformation {
   )(PackageInformation.apply)(PackageInformation.unapply)
 
   def form(): Form[PackageInformation] = Form(mapping)
-}
-
-case class Packages(
-  typesOfPackages: Option[String],
-  numberOfPackages: Option[String]
-){
-  override def toString: String = s"${typesOfPackages.getOrElse("")}-${numberOfPackages.getOrElse("")}"
-}
-
-object Packages {
-  implicit val format = Json.format[Packages]
-
-
-  def buildFromString(value: String): Packages = {
-    val dividedString = value.split('-')
-
-    if(dividedString.length == 0) Packages(None, None)
-    else if (dividedString.length == 1) Packages(Some(value.split('-')(0)), None)
-    else Packages(Some(value.split('-')(0)), Some(value.split('-')(1)))
-  }
-}
-
-case class PackageInformationData(
-  packages: Seq[Packages],
-  supplementaryUnits: Option[String],
-  shippingMarks: Option[String],
-  netMass: Option[String],
-  grossMass: Option[String]
-) extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] = {
-    val packageInformationMapping = Map(
-      //        "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[0].typeCode" -> informations.getOrElse(""),
-      //        "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[0].quantity" -> informations,
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[0].marksNumbersId" -> supplementaryUnits.getOrElse(""), //TODO Check this, it can't be packagings[0]
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.tariffQuantity" -> shippingMarks.getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.netWeightMeasure" -> netMass.getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.grossMassMeasure" -> grossMass.getOrElse("")
-    )
-    //  val additionalProcedureCodesMapping = additionalProcedureCodes.zipWithIndex.map { codeWithIdx =>
-    //    "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[" + (codeWithIdx._2 + 1) + "].currentCode" -> codeWithIdx._1
-    //  }
-    //  procedureCodeMapping ++ additionalProcedureCodesMapping
-
-    val additionalPackageInformationMapping = packages.zipWithIndex.map { informationWithIndex =>
-      Map(
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[" + informationWithIndex._2 + "].typeCode" -> informationWithIndex._1.typesOfPackages.getOrElse(""),
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[" + informationWithIndex._2 + "].quantity" -> informationWithIndex._1.numberOfPackages.getOrElse("")
-      )
-    }.fold(Map.empty)(_ ++ _)
-
-    packageInformationMapping ++ additionalPackageInformationMapping
-  }
-
-
-  def toPackageInformation(): PackageInformation = PackageInformation(None, None, None, None, None, None)
-
-  def containsTypesOfPackage(information: PackageInformation): Boolean = packages.contains(information.typesOfPackages)
-
-  def containsNumberOfPackage(information: PackageInformation): Boolean = packages.contains(information.numberOfPackages)
-}
-
-object PackageInformationData {
-  implicit val format = Json.format[PackageInformationData]
-
-  val formId = "PackageInformationData"
 }

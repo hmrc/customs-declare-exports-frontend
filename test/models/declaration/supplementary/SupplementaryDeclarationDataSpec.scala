@@ -242,7 +242,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.items.get.transactionType must be(defined)
           supplementaryDeclarationData.items.get.goodsItemNumber must be(defined)
           supplementaryDeclarationData.items.get.itemType must be(defined)
-          supplementaryDeclarationData.items.get.packageInformation must be(defined)
           supplementaryDeclarationData.previousDocuments must be(defined)
           supplementaryDeclarationData.additionalInformation must be(defined)
           supplementaryDeclarationData.documentsProduced must be(defined)
@@ -474,9 +473,7 @@ object SupplementaryDeclarationDataSpec {
         totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
         transactionType = Some(correctTransactionType),
         goodsItemNumber = Some(correctGoodsItemNumber),
-        itemType = Some(correctItemType),
-        packageInformation = Some(correctPackageInformationDecimalValues)
-      )
+        itemType = Some(correctItemType))
     ),
     previousDocuments = Some(correctPreviousDocuments),
     additionalInformation = Some(correctAdditionalInformation),

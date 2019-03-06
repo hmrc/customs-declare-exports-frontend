@@ -483,6 +483,8 @@ supplementary.transactionType.identifier = Further information on this transacti
 supplementary.transactionType.identifier.error = Further information on this transaction are incorrect
 
 supplementary.packageInformation.title = Package Information
+supplementary.packageInformation.table.heading=1 Package added
+supplementary.packageInformation.table.multiple.heading={0} Packages added
 supplementary.packageInformation.typesOfPackages = 6/9 How is this item packaged?
 supplementary.packageInformation.typesOfPackages.hint = Enter the 2 digit code, for example PA for pallets
 supplementary.packageInformation.typesOfPackages.error = Incorrect type of package

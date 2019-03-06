@@ -17,6 +17,7 @@
 package controllers.supplementary
 
 import base.{CustomExportsBaseSpec, TestHelper}
+import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.PackageInformation
 import forms.supplementary.PackageInformationSpec._
 import play.api.libs.json.{JsObject, JsString, JsValue}
@@ -26,7 +27,11 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/declaration/supplementary/package-information")
 
-  "Total number of items controller" should {
+  private val addActionUrlEncoded = (Add.toString, "")
+  private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
+  private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
+
+  "PackageInformationController" should {
     "display total number of items form" in {
       authorizedUser()
       withCaching[PackageInformation](None)
@@ -39,14 +44,6 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.packageInformation.typesOfPackages"))
       stringResult must include(messages("supplementary.packageInformation.typesOfPackages.hint"))
       stringResult must include(messages("supplementary.packageInformation.numberOfPackages"))
-      stringResult must include(messages("supplementary.packageInformation.supplementaryUnits"))
-      stringResult must include(messages("supplementary.packageInformation.supplementaryUnits.hint"))
-      stringResult must include(messages("supplementary.packageInformation.shippingMarks"))
-      stringResult must include(messages("supplementary.packageInformation.shippingMarks.hint"))
-      stringResult must include(messages("supplementary.packageInformation.netMass"))
-      stringResult must include(messages("supplementary.packageInformation.netMass.hint"))
-      stringResult must include(messages("supplementary.packageInformation.grossMass"))
-      stringResult must include(messages("supplementary.packageInformation.grossMass.hint"))
     }
   }
 
@@ -60,15 +57,12 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
 
     contentAsString(result) must include(messages("supplementary.packageInformation.typesOfPackages.empty"))
     contentAsString(result) must include(messages("supplementary.packageInformation.numberOfPackages.empty"))
-    contentAsString(result) must include(messages("supplementary.packageInformation.shippingMarks.empty"))
-    contentAsString(result) must include(messages("supplementary.packageInformation.netMass.empty"))
-    contentAsString(result) must include(messages("supplementary.packageInformation.grossMass.empty"))
 
+/*
     contentAsString(result) must not include messages("supplementary.packageInformation.typesOfPackages.error")
     contentAsString(result) must not include messages("supplementary.packageInformation.numberOfPackages.error")
-    contentAsString(result) must not include messages("supplementary.packageInformation.shippingMarks.error")
-    contentAsString(result) must not include messages("supplementary.packageInformation.netMass.error")
-    contentAsString(result) must not include messages("supplementary.packageInformation.grossMass.error")
+*/
+
   }
 
   "validate form - too short type of packages" in {
@@ -79,11 +73,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(1)),
-          "numberOfPackages" -> JsString("12345"),
-          "supplementaryUnits" -> JsString("1234567890.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("1234567890.123456")
+          "numberOfPackages" -> JsString("12345")
         )
       )
 
@@ -101,11 +91,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString("12345"),
-          "supplementaryUnits" -> JsString("1234567890.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("1234567890.123456")
+          "numberOfPackages" -> JsString("12345")
         )
       )
 
@@ -123,11 +109,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString("123456"),
-          "supplementaryUnits" -> JsString("1234567890.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("1234567890.123456")
+          "numberOfPackages" -> JsString("123456")
         )
       )
 
@@ -145,11 +127,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5)),
-          "supplementaryUnits" -> JsString("1234567890.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("1234567890.123456")
+          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
         )
       )
 
@@ -167,13 +145,8 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString("12334"),
-          "supplementaryUnits" -> JsString("12345678910.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("1234567890.123456")
-        )
-      )
+          "numberOfPackages" -> JsString("12334")
+      ))
 
     val result = route(app, postRequest(uri, incorrectSupplementaryUnits)).get
 
@@ -189,11 +162,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(2)),
-          "numberOfPackages" -> JsString("1234"),
-          "supplementaryUnits" -> JsString("12345.1234567"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("1234567890.123456")
+          "numberOfPackages" -> JsString("1234")
         )
       )
 
@@ -211,11 +180,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString("1234"),
-          "supplementaryUnits" -> JsString("12345678901234567"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("1234567890.123456")
+          "numberOfPackages" -> JsString("1234")
         )
       )
 
@@ -233,11 +198,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5)),
-          "supplementaryUnits" -> JsString("12345678910.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(43)),
-          "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("1234567890.123456")
+          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
         )
       )
 
@@ -255,11 +216,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5)),
-          "supplementaryUnits" -> JsString("1234567890.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("123456789.1234"),
-          "grossMass" -> JsString("1234567890.123456")
+          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
         )
       )
 
@@ -277,11 +234,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5)),
-          "supplementaryUnits" -> JsString("1234567890.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("1234.1234"),
-          "grossMass" -> JsString("1234567890.123456")
+          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
         )
       )
 
@@ -299,11 +252,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5)),
-          "supplementaryUnits" -> JsString("1234567890.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("123456789012"),
-          "grossMass" -> JsString("1234567890.123456")
+          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
         )
       )
 
@@ -321,11 +270,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5)),
-          "supplementaryUnits" -> JsString("1234567890.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("123456789012.123456")
+          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
         )
       )
 
@@ -343,11 +288,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5)),
-          "supplementaryUnits" -> JsString("1234567890.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("12345.12345678")
+          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
         )
       )
 
@@ -365,11 +306,7 @@ class PackageInformationControllerSpec extends CustomExportsBaseSpec {
       JsObject(
         Map(
           "typesOfPackages" -> JsString(TestHelper.createRandomString(2)),
-          "numberOfPackages" -> JsString("12345"),
-          "supplementaryUnits" -> JsString("1234567890.123456"),
-          "shippingMarks" -> JsString(TestHelper.createRandomString(42)),
-          "netMass" -> JsString("12345678.123"),
-          "grossMass" -> JsString("12345678901234567")
+          "numberOfPackages" -> JsString("12345")
         )
       )
 
