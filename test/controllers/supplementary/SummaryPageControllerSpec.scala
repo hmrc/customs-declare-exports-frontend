@@ -18,6 +18,7 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import forms.supplementary.{ConsignmentReferences, ConsignmentReferencesSpec}
+import models.declaration.supplementary.SupplementaryDeclarationDataSpec
 import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse}
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -160,6 +161,26 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       }
 
       "display content for Documents module" in new Test {
+        val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
+
+        resultAsString must include(messages("supplementary.summary.previousDocuments.header"))
+        resultAsString must include(messages("supplementary.summary.previousDocuments.documentCategory"))
+        resultAsString must include(messages("supplementary.summary.previousDocuments.documentType"))
+        resultAsString must include(messages("supplementary.summary.previousDocuments.documentReference"))
+        resultAsString must include(messages("supplementary.summary.previousDocuments.goodsItemIdentifier"))
+        resultAsString must include(messages("supplementary.summary.additionalInformation.header"))
+        resultAsString must include(messages("supplementary.summary.additionalDocumentation.header"))
+        resultAsString must not include messages("supplementary.summary.additionalDocumentation.documentTypeCode")
+        resultAsString must not include messages("supplementary.summary.additionalDocumentation.documentId")
+        resultAsString must not include messages("supplementary.summary.additionalDocumentation.documentPart")
+        resultAsString must not include messages("supplementary.summary.additionalDocumentation.documentStatus")
+        resultAsString must not include messages("supplementary.summary.additionalDocumentation.documentStatusReason")
+      }
+
+      "display content for Documents module with cache available" in new Test {
+        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
+          .thenReturn(Future.successful(Some(SupplementaryDeclarationDataSpec.cacheMapAllRecords)))
+
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.previousDocuments.header"))
