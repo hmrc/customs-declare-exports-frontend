@@ -20,28 +20,30 @@
 
 @components.summary_list(Some(messages("supplementary.summary.additionalDocumentation.header"))) {
 
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalDocumentation.documentTypeCode"),
-        value = additionalDocumentationData.map(_.documents.map(_.documentTypeCode))
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalDocumentation.documentId"),
-        value = additionalDocumentationData.map(_.documents.map(_.documentIdentifier))
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalDocumentation.documentPart"),
-        value = additionalDocumentationData.map(_.documents.map(_.documentPart))
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalDocumentation.documentStatus"),
-        value = additionalDocumentationData.map(_.documents.map(_.documentStatus))
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalDocumentation.documentStatusReason"),
-        value = additionalDocumentationData.map(_.documents.map(_.documentStatusReason))
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalDocumentation.documentQuantity"),
-        value = additionalDocumentationData.map(_.documents.map(_.documentQuantity))
-    ))
+    @if(additionalDocumentationData.map(_.documents.nonEmpty)) {
+        <table class="form-group">
+            <thead>
+                <tr>
+                    <th scope="col">@messages("supplementary.summary.additionalDocumentation.documentTypeCode")</th>
+                    <th scope="col">@messages("supplementary.summary.additionalDocumentation.documentId")</th>
+                    <th scope="col">@messages("supplementary.summary.additionalDocumentation.documentPart")</th>
+                    <th scope="col">@messages("supplementary.summary.additionalDocumentation.documentStatus")</th>
+                    <th scope="col">@messages("supplementary.summary.additionalDocumentation.documentStatusReason")</th>
+                    <th scope="col">@messages("supplementary.summary.additionalDocumentation.documentQuantity")</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for(item <- additionalDocumentationData.map(_.documents).get) {
+                <tr>
+                    <td scope="row">@item.documentTypeCode</td>
+                    <td>@item.documentIdentifier</td>
+                    <td>@item.documentPart</td>
+                    <td>@item.documentStatus</td>
+                    <td>@item.documentStatusReason</td>
+                    <td>@item.documentQuantity</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
 }
