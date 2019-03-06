@@ -44,6 +44,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
   "MovementSummaryController.displaySummary()" when {
 
     "cannot read data from DB" should {
+
       "return 500 code" in {
         mockCustomsCacheServiceFetchMovementRequestResultWith(None)
 
@@ -62,6 +63,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
 
     "can read data from DB" should {
+
       "return 200 code" in {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
 
@@ -111,6 +113,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
   "MovementSummaryController.submitMovementRequest" when {
 
     "cannot read data from DB" should {
+
       "return 500 code" in {
         mockCustomsCacheServiceFetchMovementRequestResultWith(None)
 
@@ -150,6 +153,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
 
     "can read data from DB and submission succeeded" should {
+
       "fetch data from CustomsCacheService" in {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
         sendMovementRequest()
@@ -181,6 +185,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
 
     "MovementSummaryController.displayConfirmation" should {
+
       "fetch data from CustomsCacheService" in {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
         mockCustomsCacheServiceClearedSuccessfully()
@@ -217,7 +222,6 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
         contentAsString(result) must include(messagesApi("movement.choice.EDL") + " has been submitted")
       }
     }
-
   }
 
   private def mockCustomsCacheServiceFetchMovementRequestResultWith(

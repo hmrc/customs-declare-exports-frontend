@@ -39,7 +39,24 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
     )
   )
 
-  "CancelDeclarationController" should {
+  "Cancel Declaration Controller on display page" should {
+
+    "display \"Submit\" button on page" in {
+
+      val result = route(app, getRequest(uri)).get
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("cancellation.submitButton"))
+      resultAsString must include("button id=\"submit\" class=\"button\"")
+    }
+
+    "display \"Back\" button that links to \"What do you want to do ?\" page" in {
+      val result = route(app, getRequest(uri)).get
+
+      contentAsString(result) must include(messages("site.back"))
+      contentAsString(result) must include("/choice")
+    }
+
     "return 200 with a success" in {
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -96,6 +113,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
     }
 
     "redirect to error page" when {
+
       "cancellation failed in customs declarations" in {
         customsDeclaration400Response()
 
@@ -109,6 +127,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
     }
 
     "redirect to not existing declaration error page" when {
+
       "user try to cancel not existing declaration" in {
         successfulCustomsDeclarationResponse()
         successfulCancelDeclarationResponse(MissingDeclaration)
@@ -123,6 +142,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
     }
 
     "redirect to cancellation request exists page" when {
+
       "user try to cancel declaration once again" in {
         successfulCustomsDeclarationResponse()
         successfulCancelDeclarationResponse(CancellationRequestExists)
@@ -137,6 +157,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
     }
 
     "redirect to confirmation page" when {
+
       "provided data is correct" in {
         successfulCustomsDeclarationResponse()
         successfulCancelDeclarationResponse(CancellationRequested)

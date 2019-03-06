@@ -26,7 +26,8 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/declaration/supplementary/total-numbers-of-items")
 
-  "Total number of items controller" should {
+  "Total Number of Items Controller on display" should {
+
     "display total number of items form" in {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
@@ -42,6 +43,26 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.totalAmountInvoiced.hint"))
       stringResult must include(messages("supplementary.exchangeRate"))
       stringResult must include(messages("supplementary.exchangeRate.hint"))
+    }
+
+    "display \"Back\" button that links to \"Transport information\" page" in {
+
+      val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(OK)
+      stringResult must include(messages("site.back"))
+      stringResult must include(messages("/declaration/supplementary/transport-information"))
+    }
+
+    "display \"Save and continue\" button on page" in {
+      withCaching[TotalNumberOfItems](None)
+
+      val result = route(app, getRequest(uri)).get
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.save_and_continue"))
+      resultAsString must include("button id=\"submit\" class=\"button\"")
     }
 
     "validate form - incorrect values - alphabetic" in {

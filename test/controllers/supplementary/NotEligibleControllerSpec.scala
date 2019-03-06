@@ -17,22 +17,27 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
+import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class NotEligibleControllerSpec extends CustomExportsBaseSpec {
+class NotEligibleControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   val uri = uriWithContextPath("/declaration/supplementary/not-eligible")
 
-  "NotEligible" should {
+  before {
+    authorizedUser()
+  }
+
+  "Not Eligible Controller on display page" should {
+
     "return 200 with a success" in {
-      authorizedUser()
 
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
     }
+
     "display page content" in {
-      authorizedUser()
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -43,6 +48,16 @@ class NotEligibleControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("notEligible.descriptionPostUrl"))
       stringResult must include(messages("notEligible.referenceTitle"))
       stringResult must include(messages("notEligible.reference.text"))
+    }
+
+    "display \"Back\" button that links to \"Make an declaration\" page" in {
+
+      val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(OK)
+      stringResult must include(messages("site.back"))
+      stringResult must include(messages("start"))
     }
   }
 }

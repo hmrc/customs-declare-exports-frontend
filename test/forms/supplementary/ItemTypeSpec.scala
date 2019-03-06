@@ -359,6 +359,14 @@ object ItemTypeSpec {
     cusCode = Some(cusCode),
     statisticalValue = statisticalValue
   )
+  val mandatoryOnlyItemType = ItemType(
+    combinedNomenclatureCode = combinedNomenclatureCode,
+    taricAdditionalCodes = Nil,
+    nationalAdditionalCodes = Nil,
+    descriptionOfGoods = descriptionOfGoods,
+    cusCode = None,
+    statisticalValue = statisticalValue
+  )
   val emptyItemType = ItemType(
     combinedNomenclatureCode = "",
     taricAdditionalCodes = Nil,
@@ -375,6 +383,16 @@ object ItemTypeSpec {
       "nationalAdditionalCode" -> JsArray(Seq(JsString(nationalAdditionalCode))),
       "descriptionOfGoods" -> JsString(descriptionOfGoods),
       "cusCode" -> JsString(cusCode),
+      "statisticalValue" -> JsString(statisticalValue)
+    )
+  )
+  val mandatoryOnlyItemTypeJSON: JsValue = JsObject(
+    Map(
+      "combinedNomenclatureCode" -> JsString(combinedNomenclatureCode),
+      "taricAdditionalCode" -> JsArray(Seq(JsString(""))),
+      "nationalAdditionalCode" -> JsArray(Seq(JsString(""))),
+      "descriptionOfGoods" -> JsString(descriptionOfGoods),
+      "cusCode" -> JsString(""),
       "statisticalValue" -> JsString(statisticalValue)
     )
   )

@@ -50,6 +50,9 @@ object DestinationCountriesSpec {
   val emptyDestinationCountriesJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString(""), "countryOfDispatch" -> JsString(""))
   )
+  val emptyDispatchCountriesJSON: JsValue = JsObject(
+    Map("countryOfDestination" -> JsString(""), "countryOfDispatch" -> JsString("Malawi"))
+  )
   val incorrectDestinationCountriesJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString("Country"), "countryOfDispatch" -> JsString("Country"))
   )

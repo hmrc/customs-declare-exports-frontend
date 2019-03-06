@@ -45,6 +45,7 @@ object DeclarationAdditionalActorsSpec {
   val correctAdditionalActors2 = DeclarationAdditionalActors(eori = Some("eori99"), partyType = Some(FreightForwarder))
   val correctAdditionalActorsData = DeclarationAdditionalActorsData(Seq(correctAdditionalActors1,correctAdditionalActors2))
   val emptyAdditionalActors = DeclarationAdditionalActors(eori = None, partyType = None)
+  val correctEORIPartyNotSelected = DeclarationAdditionalActors(eori = Some("1234567890123456"), partyType = None)
   val incorrectAdditionalActors =
     DeclarationAdditionalActors(eori = Some("123456789123456789"), partyType = Some("Incorrect"))
 
@@ -58,6 +59,7 @@ object DeclarationAdditionalActorsSpec {
   val emptyAdditionalActorsJSON: JsValue = JsObject(Map("eori" -> JsString(""), "partyType" -> JsString("")))
   val emptyAdditionalActorsDataJSON = JsObject(Map("actors" -> JsArray(Seq(emptyAdditionalActorsJSON))))
 
+  val correctEORIPartyNotSelectedJSON: JsValue = JsObject(Map("eori" -> JsString("1234567890123456")))
   val incorrectAdditionalActorsJSON: JsValue = JsObject(
     Map("eori" -> JsString("123456789123456789"), "partyType" -> JsString("Incorrect"))
   )

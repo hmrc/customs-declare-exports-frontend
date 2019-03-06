@@ -19,15 +19,20 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.TransactionType
 import forms.supplementary.TransactionTypeSpec._
+import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class TransactionTypeControllerSpec extends CustomExportsBaseSpec {
+class TransactionTypeControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   val uri = uriWithContextPath("/declaration/supplementary/transaction-type")
 
-  "Transaction type controller" should {
+  before {
+    authorizedUser()
+  }
+
+  "Transaction Type Controller on display page" should {
+
     "display transaction type form" in {
-      authorizedUser()
       withCaching[TransactionType](None)
 
       val result = route(app, getRequest(uri)).get
@@ -40,8 +45,27 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.transactionType.identifier"))
     }
 
+    "display \"Back\" button that links to \"Total Number of Items\" page" in {
+
+      val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(OK)
+      stringResult must include(messages("site.back"))
+      stringResult must include(messages("/declaration/supplementary/total-numbers-of-items"))
+    }
+
+    "display \"Save and continue\" button on page" in {
+      withCaching[TransactionType](None)
+
+      val result = route(app, getRequest(uri)).get
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.save_and_continue"))
+      resultAsString must include("button id=\"submit\" class=\"button\"")
+    }
+
     "validate form - empty value" in {
-      authorizedUser()
       withCaching[TransactionType](None)
 
       val result = route(app, postRequest(uri, emptyTransactionTypeJSON)).get
@@ -50,7 +74,6 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - incorrect values" in {
-      authorizedUser()
       withCaching[TransactionType](None)
 
       val result = route(app, postRequest(uri, incorrectTransactionTypeJSON)).get
@@ -61,7 +84,6 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec {
     }
 
     "validate form - correct values" in {
-      authorizedUser()
       withCaching[TransactionType](None)
 
       val result = route(app, postRequest(uri, correctTransactionTypeJSON)).get

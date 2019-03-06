@@ -17,51 +17,32 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
-import base.ExportsTestData._
 import forms.supplementary.DeclarantDetails
 import forms.supplementary.DeclarantDetailsSpec._
+import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
+class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
-  val uri = uriWithContextPath("/declaration/supplementary/declarant-details")
+  private val uri = uriWithContextPath("/declaration/supplementary/declarant-details")
 
-  "Declarant address controller" should {
-    "display declarant address form" in {
-      authorizedUser()
+  before {
+    authorizedUser()
+  }
+
+  "Declarant Details Page Controller on GET" should {
+
+    "return 200 status code" in {
       withCaching[DeclarantDetails](None)
-
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.declarant.title"))
-      stringResult must include(messages("supplementary.declarant.title.hint"))
-      stringResult must include(messages("supplementary.eori"))
-      stringResult must include(messages("supplementary.address.fullName"))
-      stringResult must include(messages("supplementary.address.addressLine"))
-      stringResult must include(messages("supplementary.address.townOrCity"))
-      stringResult must include(messages("supplementary.address.postCode"))
-      stringResult must include(messages("supplementary.address.country"))
     }
+  }
 
-    "validate form - incorrect values" in {
-      authorizedUser()
-      withCaching[DeclarantDetails](None)
+  "Declarant Details Page Controller on page" should {
 
-      val result = route(app, postRequest(uri, incorrectEntityDetails)).get
-      val stringResult = contentAsString(result)
-
-      stringResult must include(messages("supplementary.eori.error"))
-      stringResult must include(messages("supplementary.address.fullName.error"))
-      stringResult must include(messages("supplementary.address.addressLine.error"))
-      stringResult must include(messages("supplementary.address.townOrCity.error"))
-      stringResult must include(messages("supplementary.address.postCode.error"))
-      stringResult must include(messages("supplementary.address.country.error"))
-    }
-
-    "validate form - only eori provided" in {
-      authorizedUser()
+    "validate form and redirect - only eori provided" in {
       withCaching[DeclarantDetails](None)
 
       val result = route(app, postRequest(uri, correctDeclarantDetailsEORIOnlyJSON)).get
@@ -73,8 +54,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       )
     }
 
-    "validate form - only address provided" in {
-      authorizedUser()
+    "validate form and redirect - only address provided" in {
       withCaching[DeclarantDetails](None)
 
       val result = route(app, postRequest(uri, correctDeclarantDetailsAddressOnlyJSON)).get
@@ -86,8 +66,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       )
     }
 
-    "validate form - all values provided" in {
-      authorizedUser()
+    "validate form and redirect - all values provided" in {
       withCaching[DeclarantDetails](None)
 
       val result = route(app, postRequest(uri, correctDeclarantDetailsJSON)).get

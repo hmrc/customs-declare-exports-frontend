@@ -33,15 +33,17 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
   val falseServerError: Boolean = false
   val movementSubmission = MovementSubmission("eori1", "convid1", "ducr1", None, "EAL")
 
-  "CustomsDeclareExportsConnector" should {
-    "POST submission to Customs Declare Exports" in saveSubmission() { response =>
+  "Customs Declare Exports Connector" should {
+
+    "POST submission to Customs Declare Exports endpoint" in saveSubmission() { response =>
       response.futureValue.status must be(OK)
     }
 
-    "POST to Customs Declare Exports to save movements" in saveMovementSubmission() { response =>
+    "POST to Customs Declare Exports endpoint to save movement submission" in saveMovementSubmission() { response =>
       response.futureValue.status must be(OK)
     }
   }
+
   def saveSubmission()(test: Future[CustomsDeclareExportsResponse] => Unit): Unit = {
     val http =
       new MockHttpClient(expectedUrl(appConfig.saveSubmissionResponse), submission, expectedHeaders, falseServerError)

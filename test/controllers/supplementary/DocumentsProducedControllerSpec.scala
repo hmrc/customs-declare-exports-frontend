@@ -37,60 +37,42 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
     withCaching[DocumentsProducedData](None, formId)
   }
 
-  "Documents Produced Controller when getting the page" should {
+  "Documents Produced Controller on page" should {
+
     "return 200 with a success" in {
       val result = route(app, getRequest(uri)).get
+
       status(result) must be(OK)
     }
 
-    "display add document form with no documents" in {
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
+    "display page with errors" when {
 
-      status(result) must be(OK)
-      stringResult must include(messages("supplementary.addDocument.title"))
-      stringResult must include(messages("supplementary.addDocument.hint"))
-      stringResult must include(messages("supplementary.addDocument.documentTypeCode"))
-      stringResult must include(messages("supplementary.addDocument.documentIdentifier"))
-      stringResult must include(messages("supplementary.addDocument.documentPart"))
-      stringResult must include(messages("supplementary.addDocument.documentStatus"))
-      stringResult must include(messages("supplementary.addDocument.documentStatusReason"))
-      stringResult must include(messages("supplementary.addDocument.documentQuantity"))
-    }
+      "provided with incorrect document type code" in {
+        val incorrectDocumentTypeCode: JsValue = JsObject(Map("documentTypeCode" -> JsString("abcdf")))
 
-    "display add document form with added documents" in {
-      withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
+        val result = route(app, postRequest(uri, incorrectDocumentTypeCode)).get
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages("supplementary.addDocument.documentTypeCode.error"))
+      }
 
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
+      "provided with incorrect document identifier" in {
+        val incorrectDocumentIdentifier: JsValue =
+          JsObject(Map("documentIdentifier" -> JsString(TestHelper.createRandomString(31))))
 
-      status(result) must be(OK)
-      stringResult must include("AB12")
-      stringResult must include("DocumentStatusReason")
-      stringResult must include("1234567890.123456")
-      stringResult must include("Remove")
-      stringResult must include(messages("supplementary.addDocument.title"))
-      stringResult must include(messages("supplementary.addDocument.hint"))
-      stringResult must include(messages("supplementary.addDocument.documentTypeCode"))
-      stringResult must include(messages("supplementary.addDocument.documentIdentifier"))
-      stringResult must include(messages("supplementary.addDocument.documentPart"))
-      stringResult must include(messages("supplementary.addDocument.documentStatus"))
-      stringResult must include(messages("supplementary.addDocument.documentStatusReason"))
-      stringResult must include(messages("supplementary.addDocument.documentQuantity"))
-    }
+        val result = route(app, postRequest(uri, incorrectDocumentIdentifier)).get
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages("supplementary.addDocument.documentIdentifier.error"))
+      }
 
-    "display back button that links to additional information page" in {
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
+      "provided with incorrect document part" in {
+        val incorrectDocumentPart: JsValue =
+          JsObject(Map("documentPart" -> JsString(TestHelper.createRandomString(6))))
 
-      status(result) must be(OK)
-      stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/supplementary/additional-information"))
-    }
-  }
+        val result = route(app, postRequest(uri, incorrectDocumentPart)).get
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages("supplementary.addDocument.documentPart.error"))
+      }
 
-  "Documents Produced Controller handling a post" should {
-    "display page with an error" when {
       "provided with incorrect document status" in {
         val incorrectDocumentStatus: JsValue = JsObject(Map("documentStatus" -> JsString("as")))
 
@@ -106,24 +88,6 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
         val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages("supplementary.addDocument.documentStatusReason.error"))
-      }
-
-      "provided with incorrect document identifier" in {
-        val incorrectDocumentStatusReason: JsValue =
-          JsObject(Map("documentIdentifier" -> JsString(TestHelper.createRandomString(31))))
-
-        val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.addDocument.documentIdentifier.error"))
-      }
-
-      "provided with incorrect document part" in {
-        val incorrectDocumentStatusReason: JsValue =
-          JsObject(Map("documentPart" -> JsString(TestHelper.createRandomString(6))))
-
-        val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.addDocument.documentPart.error"))
       }
 
       "provided with incorrect documents quantity" in {
@@ -188,7 +152,8 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
       }
     }
 
-    "add a document sucessfully" when {
+    "add a document successfully" when {
+
       "with an empty cache" in {
         withCaching[DocumentsProducedData](None, formId)
         val body = correctDocumentsProducedMap.toSeq :+ addActionUrlEncoded
@@ -209,6 +174,7 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
     }
 
     "remove a document successfully" when {
+
       "exists in cache" in {
         withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
@@ -221,6 +187,7 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
     }
 
     "redirect to summary page" when {
+
       "provided with empty form and with empty cache" in {
         val body = emptyDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -259,6 +226,5 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/summary"))
       }
     }
-
   }
 }

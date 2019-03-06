@@ -36,7 +36,6 @@ class DocumentSpec extends WordSpec with MustMatchers {
       previousDocuments.toMetadataProperties() must equal(expectedMetadataProperties)
     }
   }
-
 }
 
 object DocumentSpec {
@@ -57,6 +56,12 @@ object DocumentSpec {
     documentReference = TestHelper.createRandomString(36),
     goodsItemIdentifier = Some("Incorrect identifier")
   )
+  val mandatoryPreviousDocuments = Document(
+    documentCategory = TemporaryStorage,
+    documentType = "ABC",
+    documentReference = "DocumentReference",
+    goodsItemIdentifier = None
+  )
 
   val correctPreviousDocumentsJSON: JsValue = JsObject(
     Map(
@@ -71,6 +76,14 @@ object DocumentSpec {
       "documentCategory" -> JsString(""),
       "documentType" -> JsString(""),
       "documentReference" -> JsString(""),
+      "goodsItemIdentifier" -> JsString("")
+    )
+  )
+  val mandatoryPreviousDocumentsJSON: JsValue = JsObject(
+    Map(
+      "documentCategory" -> JsString(TemporaryStorage),
+      "documentType" -> JsString("ABC"),
+      "documentReference" -> JsString("DocumentReference"),
       "goodsItemIdentifier" -> JsString("")
     )
   )

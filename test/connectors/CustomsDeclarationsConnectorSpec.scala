@@ -33,30 +33,32 @@ import scala.concurrent.{Await, Future}
 
 class CustomsDeclarationsConnectorSpec extends CustomExportsBaseSpec {
 
-  val eori = Some(createRandomString(16))
-  val lrn = Some(createRandomString(35))
-  val conversationId: String = createRandomString(80)
+  // amended values to be in order with actual values
+  val eori = Some(createRandomString(18))
+  val lrn = Some(createRandomString(22))
+  val conversationId: String = createRandomString(36)
 
-  "CustomsDeclarationsConnector " should {
+  "Customs Declarations Connector" should {
 
-    "POST metadata to Customs Declarations" in submitDeclarationScenario(MetaData(declaration = Some(Declaration()))) {
-      resp =>
-        resp.futureValue.status must be(ACCEPTED)
+    "POST metadata to Customs Declarations endpoint" in submitDeclarationScenario(
+      MetaData(declaration = Some(Declaration()))
+    ) { resp =>
+      resp.futureValue.status must be(ACCEPTED)
     }
-    "POST metadata to Customs Declarations cancellation" in submitDeclarationScenario(
+
+    "POST metadata to Customs Declarations cancellation endpoint" in submitDeclarationScenario(
       MetaData(declaration = Some(Declaration())),
       postURL = appConfig.submitCancellationUri
     ) { resp =>
       resp.futureValue.status must be(ACCEPTED)
     }
 
-    "update declaration status on acceptance of declaration" in submitDeclarationScenario(
+    "update declaration status when declaration is accepted" in submitDeclarationScenario(
       metaData = MetaData(declaration = Some(Declaration(functionalReferenceId = lrn))),
       conversationId = conversationId
     ) { resp =>
       Await.result(resp, 1.second)
     }
-
   }
 
   def submitDeclarationScenario(

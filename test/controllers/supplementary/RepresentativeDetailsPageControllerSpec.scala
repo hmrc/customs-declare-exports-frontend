@@ -39,35 +39,42 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     authorizedUser()
   }
 
-  "RepresentativeAddressController on displayRepresentativeDetailsPage" should {
+  "Representative Address Controller on display page" should {
+
     "return 200 code" in {
       val result = displayPageTestScenario()
+
       status(result) must be(OK)
     }
 
     "display page title" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("supplementary.representative.title"))
     }
 
-    "display \"back\" button that links to declarant details page" in {
+    "display \"Back\" button that links to \"Declarant details\" page" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("declarant-details")
+      contentAsString(result) must include("/declaration/supplementary/declarant-details")
     }
 
     "display page header" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("supplementary.representative.header"))
     }
 
     "display information to enter EORI number" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("supplementary.representative.eori.info"))
     }
 
     "display element to enter EORI number" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("supplementary.representative.eori.info"))
       contentAsString(result) must include(messages("supplementary.eori"))
       contentAsString(result) must include(messages("supplementary.eori.hint"))
@@ -75,58 +82,69 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
     "display information to enter representatives name and address" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("supplementary.representative.address.info"))
     }
 
     "display element to enter full name" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("supplementary.address.fullName"))
     }
 
     "display element to enter first address line" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("supplementary.address.addressLine"))
     }
 
     "display element to enter city" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("supplementary.address.townOrCity"))
     }
 
     "display element to enter postcode" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("supplementary.address.postCode"))
     }
 
     "display element to enter country" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("supplementary.address.country"))
     }
 
     "display information to choose type of representation" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("supplementary.representative.representationType.header"))
     }
 
     "display radio button element to enter Representative Status Code" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("supplementary.representative.representationType.direct"))
       contentAsString(result) must include(messages("supplementary.representative.representationType.indirect"))
     }
 
     "display \"Save and continue\" button" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) must include(messages("site.save_and_continue"))
       contentAsString(result) must include("button id=\"submit\" class=\"button\"")
     }
 
     "not populate the form fields if cache is empty" in {
       val result = displayPageTestScenario()
+
       contentAsString(result) mustNot include("checked=\"checked\"")
     }
 
     "populate the form fields with data from cache" in {
       val result = displayPageTestScenario(Some(correctRepresentativeDetails))
+
       contentAsString(result) must include("checked=\"checked\"")
     }
 
@@ -136,9 +154,10 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     }
   }
 
-  "RepresentativeAddressController on submitRepresentativeData" should {
+  "Representative Address Controller on submit" should {
 
     "display the form page with error for empty field" when {
+
       "status is empty" in {
         withCaching[RepresentativeDetails](None)
 
@@ -159,7 +178,8 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     }
 
     "display the form page with error for wrong value" when {
-      "Wrong value provided for EORI" in {
+
+      "wrong value provided for EORI" in {
         withCaching[RepresentativeDetails](None)
 
         val incorrectFormData = incorrectRepresentativeDetails
@@ -168,7 +188,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
         contentAsString(result) must include(messages("supplementary.eori.error"))
       }
 
-      "Wrong value provided for full name" in {
+      "wrong value provided for full name" in {
         withCaching[RepresentativeDetails](None)
 
         val incorrectFormData = incorrectRepresentativeDetails
@@ -177,7 +197,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
         contentAsString(result) must include(messages("supplementary.address.fullName.error"))
       }
 
-      "Wrong value provided for first address line" in {
+      "wrong value provided for first address line" in {
         withCaching[RepresentativeDetails](None)
 
         val incorrectFormData = incorrectRepresentativeDetails
@@ -186,7 +206,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
         contentAsString(result) must include(messages("supplementary.address.addressLine.error"))
       }
 
-      "Wrong value provided for city" in {
+      "wrong value provided for city" in {
         withCaching[RepresentativeDetails](None)
 
         val incorrectFormData = incorrectRepresentativeDetails
@@ -195,7 +215,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
         contentAsString(result) must include(messages("supplementary.address.townOrCity.error"))
       }
 
-      "Wrong value provided for postcode" in {
+      "wrong value provided for postcode" in {
         withCaching[RepresentativeDetails](None)
 
         val incorrectFormData = incorrectRepresentativeDetails
@@ -204,7 +224,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
         contentAsString(result) must include(messages("supplementary.address.postCode.error"))
       }
 
-      "Wrong value provided for country" in {
+      "wrong value provided for country" in {
         withCaching[RepresentativeDetails](None)
 
         val incorrectFormData = incorrectRepresentativeDetails
@@ -238,7 +258,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       )
     }
 
-    "save the data to the cache" in {
+    "save data to the cache" in {
       reset(mockCustomsCacheService)
       withCaching[RepresentativeDetails](None)
 

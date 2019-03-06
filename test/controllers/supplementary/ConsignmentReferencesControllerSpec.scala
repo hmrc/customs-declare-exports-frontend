@@ -30,7 +30,8 @@ import play.api.test.Helpers._
 import scala.concurrent.Future
 
 class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
-  private val consignmentReferencesUri = uriWithContextPath("/declaration/supplementary/consignment-references")
+
+  private val uri = uriWithContextPath("/declaration/supplementary/consignment-references")
 
   import ConsignmentReferencesControllerSpec._
 
@@ -38,52 +39,11 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
     authorizedUser()
   }
 
-  "ConsignmentReferencesController on displayPage" should {
+  "Consignment References Controller on page" should {
+
     "return 200 code" in {
       val result = displayConsignmentReferencesPageTestScenario()
       status(result) must be(OK)
-    }
-
-    "display page title" in {
-      val result = displayConsignmentReferencesPageTestScenario()
-      contentAsString(result) must include(messages("supplementary.consignmentReferences.title"))
-    }
-
-    "display \"back\" button that links to \"Declaration Type\" page" in {
-      val result = displayConsignmentReferencesPageTestScenario()
-      val resultAsString = contentAsString(result)
-
-      resultAsString must include(messages("site.back"))
-      resultAsString must include(messages("/declaration/supplementary/type"))
-    }
-
-    "display page header" in {
-      val result = displayConsignmentReferencesPageTestScenario()
-      contentAsString(result) must include(messages("supplementary.consignmentReferences.header"))
-    }
-
-    "display input text with question and hint for reference number/UCR" in {
-      val result = displayConsignmentReferencesPageTestScenario()
-      val resultAsString = contentAsString(result)
-
-      resultAsString must include(messages("supplementary.consignmentReferences.ucr.info"))
-      resultAsString must include(messages("supplementary.consignmentReferences.ucr.hint"))
-    }
-
-    "display input text with question and hint for LRN" in {
-      val result = displayConsignmentReferencesPageTestScenario()
-      val resultAsString = contentAsString(result)
-
-      resultAsString must include(messages("supplementary.consignmentReferences.lrn.info"))
-      resultAsString must include(messages("supplementary.consignmentReferences.lrn.hint"))
-    }
-
-    "display \"Save and continue\" button" in {
-      val result = displayConsignmentReferencesPageTestScenario()
-      val resultAsString = contentAsString(result)
-
-      resultAsString must include(messages("site.save_and_continue"))
-      resultAsString must include("button id=\"submit\" class=\"button\"")
     }
 
     "not populate the form fields if cache is empty" in {
@@ -108,19 +68,20 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
       cacheStoredValue: Option[ConsignmentReferences] = None
     ): Future[Result] = {
       withCaching[ConsignmentReferences](cacheStoredValue, ConsignmentReferences.id)
-      route(app, getRequest(consignmentReferencesUri)).get
+      route(app, getRequest(uri)).get
     }
   }
 
-  "ConsignmentReferencesController on submitConsignmentReferences" should {
+  "Consignment References Controller on submit page" should {
 
     "display the form page with error" when {
-      "provided DUCR is longer than 35 characters" in {
+
+      "provided UCR is longer than 35 characters" in {
         withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
         val form =
           buildConsignmentReferencesTestData(ducr = "8GB123456789012-1234567890123456789ABCD", lrn = "123456QWERTY")
-        val result = route(app, postRequest(consignmentReferencesUri, form)).get
+        val result = route(app, postRequest(uri, form)).get
 
         contentAsString(result) must include(messages("error.ducr"))
       }
@@ -129,7 +90,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
         withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
         val form = buildConsignmentReferencesTestData(ducr = exemplaryDucr)
-        val result = route(app, postRequest(consignmentReferencesUri, form)).get
+        val result = route(app, postRequest(uri, form)).get
 
         contentAsString(result) must include(messages("supplementary.consignmentReferences.lrn.error.empty"))
       }
@@ -138,7 +99,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
         withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
         val form = buildConsignmentReferencesTestData(ducr = exemplaryDucr, lrn = "123$%&ABC")
-        val result = route(app, postRequest(consignmentReferencesUri, form)).get
+        val result = route(app, postRequest(uri, form)).get
 
         contentAsString(result) must include(messages("supplementary.consignmentReferences.lrn.error.specialCharacter"))
       }
@@ -147,17 +108,17 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
         withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
         val form = buildConsignmentReferencesTestData(ducr = exemplaryDucr, lrn = "1234567890123456789012QWERTY")
-        val result = route(app, postRequest(consignmentReferencesUri, form)).get
+        val result = route(app, postRequest(uri, form)).get
 
         contentAsString(result) must include(messages("supplementary.consignmentReferences.lrn.error.length"))
       }
     }
 
-    "proceed when no ucr provided by user" in {
+    "proceed when no UCR provided by user" in {
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
       val validForm = buildConsignmentReferencesTestData(lrn = "123ABC")
-      val result = route(app, postRequest(consignmentReferencesUri, validForm)).get
+      val result = route(app, postRequest(uri, validForm)).get
 
       contentAsString(result) mustNot include(messages("error.ducr"))
     }
@@ -166,7 +127,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
       reset(mockCustomsCacheService)
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-      route(app, postRequest(consignmentReferencesUri, correctConsignmentReferencesJSON)).get.map { _ =>
+      route(app, postRequest(uri, correctConsignmentReferencesJSON)).get.map { _ =>
         verify(mockCustomsCacheService)
           .cache[ConsignmentReferences](any(), ArgumentMatchers.eq(ConsignmentReferences.id), any())(
             any(),
@@ -179,7 +140,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
     "return 303 code" in {
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-      val result = route(app, postRequest(consignmentReferencesUri, correctConsignmentReferencesJSON)).get
+      val result = route(app, postRequest(uri, correctConsignmentReferencesJSON)).get
 
       status(result) must be(SEE_OTHER)
     }
@@ -187,7 +148,7 @@ class ConsignmentReferencesControllerSpec extends CustomExportsBaseSpec with Bef
     "redirect to \"Exporter Details\" page" in {
       withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
 
-      val result = route(app, postRequest(consignmentReferencesUri, correctConsignmentReferencesJSON)).get
+      val result = route(app, postRequest(uri, correctConsignmentReferencesJSON)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(

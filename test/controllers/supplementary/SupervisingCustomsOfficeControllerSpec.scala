@@ -25,7 +25,8 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/declaration/supplementary/supervising-office")
 
-  "Supervising customs office controller" should {
+  "Supervising Customs Office Controller on display" should {
+
     "display supervising customs office form" in {
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
@@ -39,6 +40,26 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.supervisingCustomsOffice.hint"))
     }
 
+    "display \"Back\" button that links to \"Procedure codes\" page" in {
+
+      val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(OK)
+      stringResult must include(messages("site.back"))
+      stringResult must include(messages("/declaration/supplementary/procedure-codes"))
+    }
+
+    "display \"Save and continue\" button on page" in {
+      withCaching[SupervisingCustomsOffice](None)
+
+      val result = route(app, getRequest(uri)).get
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.save_and_continue"))
+      resultAsString must include("button id=\"submit\" class=\"button\"")
+    }
+
     "validate form - incorrect values" in {
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
@@ -48,7 +69,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
       contentAsString(result) must include(messages("supplementary.supervisingCustomsOffice.error"))
     }
 
-    "validate form - no answer" in {
+    "validate form and redirect - no answer" in {
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
 
@@ -59,7 +80,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/warehouse"))
     }
 
-    "validate form - correct value" in {
+    "validate form and redirect - correct value" in {
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
 

@@ -18,25 +18,37 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import forms.supplementary.Document
-import forms.supplementary.Document.AllowedValues.TemporaryStorage
 import forms.supplementary.DocumentSpec._
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
+class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   val uri = uriWithContextPath("/declaration/supplementary/previous-documents")
 
-  "Previous documents controller" should {
+  before {
+    authorizedUser()
+    withCaching[Document](None)
+  }
+
+  "Previous Documents Controller on GET" should {
+
+    "return 200 status code" in {
+
+      val result = route(app, getRequest(uri)).get
+
+      status(result) must be(OK)
+    }
+
+    // TODO: move to views
     "display previous documents form" in {
-      authorizedUser()
-      withCaching[Document](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
       stringResult must include(messages("supplementary.previousDocuments.title"))
+      stringResult must include(messages("supplementary.previousDocuments.hint"))
       stringResult must include(messages("supplementary.previousDocuments.temporaryStorage"))
       stringResult must include(messages("supplementary.previousDocuments.simplifiedDeclaration"))
       stringResult must include(messages("supplementary.previousDocuments.previousDocument"))
@@ -45,9 +57,29 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.previousDocuments.goodsItemIdentifier"))
     }
 
-    "valid form - empty values" in {
-      authorizedUser()
-      withCaching[Document](None)
+    "display \"Back\" button that links to \"Transaction type\" page" in {
+
+      val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(OK)
+      stringResult must include(messages("site.back"))
+      stringResult must include(messages("/declaration/supplementary/transaction-type"))
+    }
+
+    "display \"Save and continue\" button on page" in {
+
+      val result = route(app, getRequest(uri)).get
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.save_and_continue"))
+      resultAsString must include("button id=\"submit\" class=\"button\"")
+    }
+  }
+
+  "Previous Document Controller on POST" should {
+
+    "validate form - empty values" in {
 
       val result = route(app, postRequest(uri, emptyPreviousDocumentsJSON)).get
       val stringResult = contentAsString(result)
@@ -57,9 +89,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.previousDocuments.documentReference.empty"))
     }
 
-    "valid form - incorrect values" in {
-      authorizedUser()
-      withCaching[Document](None)
+    "validate form - incorrect values" in {
 
       val result = route(app, postRequest(uri, incorrectPreviousDocumentsJSON)).get
       val stringResult = contentAsString(result)
@@ -70,18 +100,19 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.previousDocuments.goodsItemIdentifier.error"))
     }
 
-    "valid form - correct values" in {
-      authorizedUser()
-      withCaching[Document](None)
+    "validate form and redirect - only mandatory fields" in {
 
-      val correctPreviousDocuments: JsValue = JsObject(
-        Map(
-          "documentCategory" -> JsString(TemporaryStorage),
-          "documentType" -> JsString("ABC"),
-          "documentReference" -> JsString("DocumentReference"),
-          "goodsItemIdentifier" -> JsString("123")
-        )
+      val result = route(app, postRequest(uri, mandatoryPreviousDocumentsJSON)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/good-item-number")
       )
+    }
+
+    "validate form and redirect - correct values" in {
+
       val result = route(app, postRequest(uri, correctPreviousDocumentsJSON)).get
       val header = result.futureValue.header
 

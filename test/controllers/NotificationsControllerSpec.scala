@@ -26,6 +26,7 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
   val submissionNotificationsUri = uriWithContextPath("/notifications/1234")
 
   "NotificationController" should {
+
     "return list of notification" in {
       authorizedUser()
       listOfNotifications()

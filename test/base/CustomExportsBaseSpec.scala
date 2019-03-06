@@ -19,13 +19,9 @@ package base
 import java.util.UUID
 
 import akka.stream.Materializer
+import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
-import connectors.{
-  CustomsDeclarationsConnector,
-  CustomsDeclareExportsConnector,
-  CustomsInventoryLinkingExportsConnector,
-  NrsConnector
-}
+import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
@@ -64,6 +60,8 @@ trait CustomExportsBaseSpec
   val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
   val mockNrsService: NRSService = mock[NRSService]
   val mockMetrics: ExportsMetrics = mock[ExportsMetrics]
+
+  SharedMetricRegistries.clear()
 
   override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(

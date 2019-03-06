@@ -17,51 +17,22 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
-import base.ExportsTestData._
 import forms.supplementary.ConsigneeDetails
 import forms.supplementary.ConsigneeDetailsSpec._
+import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
+class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
-  val uri = uriWithContextPath("/declaration/supplementary/consignee-details")
+  private val uri = uriWithContextPath("/declaration/supplementary/consignee-details")
 
-  "Consignee address controller" should {
-    "display consignee address form" in {
-      authorizedUser()
-      withCaching[ConsigneeDetails](None)
+  before {
+    authorizedUser()
+  }
 
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
+  "Consignee Details Page controller" should {
 
-      status(result) must be(OK)
-      stringResult must include(messages("supplementary.consignee.title"))
-      stringResult must include(messages("supplementary.consignee.title.hint"))
-      stringResult must include(messages("supplementary.eori"))
-      stringResult must include(messages("supplementary.address.fullName"))
-      stringResult must include(messages("supplementary.address.addressLine"))
-      stringResult must include(messages("supplementary.address.townOrCity"))
-      stringResult must include(messages("supplementary.address.postCode"))
-      stringResult must include(messages("supplementary.address.country"))
-    }
-
-    "validate form - incorrect values" in {
-      authorizedUser()
-      withCaching[ConsigneeDetails](None)
-
-      val result = route(app, postRequest(uri, incorrectEntityDetails)).get
-      val stringResult = contentAsString(result)
-
-      stringResult must include(messages("supplementary.eori.error"))
-      stringResult must include(messages("supplementary.address.fullName.error"))
-      stringResult must include(messages("supplementary.address.addressLine.error"))
-      stringResult must include(messages("supplementary.address.townOrCity.error"))
-      stringResult must include(messages("supplementary.address.postCode.error"))
-      stringResult must include(messages("supplementary.address.country.error"))
-    }
-
-    "validate form - only eori provided" in {
-      authorizedUser()
+    "validate form and redirect - only eori provided" in {
       withCaching[ConsigneeDetails](None)
 
       val result = route(app, postRequest(uri, correctConsigneeDetailsEORIOnlyJSON)).get
@@ -73,8 +44,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
       )
     }
 
-    "validate form - only address provided" in {
-      authorizedUser()
+    "validate form and redirect - only address provided" in {
       withCaching[ConsigneeDetails](None)
 
       val result = route(app, postRequest(uri, correctConsigneeDetailsAddressOnlyJSON)).get
@@ -86,8 +56,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
       )
     }
 
-    "validate form - all values provided" in {
-      authorizedUser()
+    "validate form and redirect - all values provided" in {
       withCaching[ConsigneeDetails](None)
 
       val result = route(app, postRequest(uri, correctConsigneeDetailsJSON)).get

@@ -24,6 +24,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
   val config = app.injector.instanceOf[AppConfig]
 
   "The config" should {
+
     "have analytics token" in {
       config.analyticsToken must be("N/A")
     }
@@ -32,19 +33,20 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       config.analyticsHost must be("auto")
     }
 
-    "have auth url" in {
+    "have auth URL" in {
       config.authUrl must be("http://localhost:8500")
     }
 
-    "have login url" in {
+    "have login URL" in {
       config.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
     }
 
-    "have login continue url" in {
+    // what is continue URL - redirect ?
+    "have login continue URL" in {
       config.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
     }
 
-    "have customs declarations url" in {
+    "have customs declarations URL" in {
       config.customsDeclarationsUrl must be("http://localhost:9820")
     }
 
@@ -64,19 +66,22 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       config.defaultFeatureStatus must be(FeatureStatus.disabled)
     }
 
-    "return correct status for feature" in {
+    "return correct value for feature" in {
       config.featureStatus(Feature.default) must be(FeatureStatus.disabled)
     }
 
     "return correct value for isFeatureOn method" in {
       config.isFeatureOn(Feature.default) must be(false)
     }
-    "have a submit export declarations uri" in {
+
+    "have a submit export declarations URI" in {
       config.submitExportDeclarationUri must be("/")
     }
+
     "have a submit cancellation uri" in {
       config.submitCancellationUri must be("/cancellation-requests")
     }
+
     "have customs declarations endpoint" in {
       config.customsDeclarationsEndpoint must be("http://localhost:6790")
     }
