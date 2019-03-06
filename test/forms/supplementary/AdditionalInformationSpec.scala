@@ -34,7 +34,7 @@ class AdditionalInformationSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "Declaration object" should {
+  "Additional Information object" should {
     "contains correct limit value" in {
       AdditionalInformationData.maxNumberOfItems must be(99)
     }

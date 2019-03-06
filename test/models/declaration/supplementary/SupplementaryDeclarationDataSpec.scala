@@ -78,7 +78,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.items mustNot be(defined)
           supplementaryDeclarationData.previousDocuments mustNot be(defined)
           supplementaryDeclarationData.additionalInformationData mustNot be(defined)
-          supplementaryDeclarationData.documentsProduced mustNot be(defined)
+          supplementaryDeclarationData.documentsProducedData mustNot be(defined)
         }
       }
 
@@ -245,7 +245,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.items.get.packageInformation must be(defined)
           supplementaryDeclarationData.previousDocuments must be(defined)
           supplementaryDeclarationData.additionalInformationData must be(defined)
-          supplementaryDeclarationData.documentsProduced must be(defined)
+          supplementaryDeclarationData.documentsProducedData must be(defined)
         }
       }
 
@@ -328,8 +328,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         map(PreviousDocuments.formId) must equal(data.previousDocuments.get)
         map.keys must contain(AdditionalInformationData.formId)
         map(AdditionalInformationData.formId) must equal(data.additionalInformationData.get)
-        map.keys must contain(DocumentsProduced.formId)
-        map(DocumentsProduced.formId) must equal(data.documentsProduced.get)
+        map.keys must contain(DocumentsProducedData.formId)
+        map(DocumentsProducedData.formId) must equal(data.documentsProducedData.get)
       }
     }
 
@@ -347,7 +347,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       verify(itemsMock, times(1)).toMetadataProperties()
       verify(previousDocumentsMock, times(1)).toMetadataProperties()
       verify(additionalInformationDataMock, times(1)).toMetadataProperties()
-      verify(documentsProducedMock, times(1)).toMetadataProperties()
+      verify(documentsProducedDataMock, times(1)).toMetadataProperties()
     }
 
     "return Map being summary of all data elements returned Maps" in new TestMapConcatenation {
@@ -365,7 +365,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       val itemsMock = mock(classOf[Items])
       val previousDocumentsMock = mock(classOf[PreviousDocuments])
       val additionalInformationDataMock = mock(classOf[AdditionalInformationData])
-      val documentsProducedMock = mock(classOf[DocumentsProduced])
+      val documentsProducedDataMock = mock(classOf[DocumentsProducedData])
       val supplementaryDeclarationData = SupplementaryDeclarationData(
         declarationType = Some(declarationTypeMock),
         consignmentReferences = Some(consignmentReferencesMock),
@@ -375,7 +375,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         items = Some(itemsMock),
         previousDocuments = Some(previousDocumentsMock),
         additionalInformationData = Some(additionalInformationDataMock),
-        documentsProduced = Some(documentsProducedMock)
+        documentsProducedData = Some(documentsProducedDataMock)
       )
 
       when(declarationTypeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
@@ -386,7 +386,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       when(itemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(previousDocumentsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(additionalInformationDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-      when(documentsProducedMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+      when(documentsProducedDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     }
 
     trait TestMapConcatenation extends SimpleTest {
@@ -408,7 +408,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       when(itemsMock.toMetadataProperties()).thenReturn(itemsMap)
       when(previousDocumentsMock.toMetadataProperties()).thenReturn(previousDocumentsMap)
       when(additionalInformationDataMock.toMetadataProperties()).thenReturn(additionalInformationMap)
-      when(documentsProducedMock.toMetadataProperties()).thenReturn(documentsProducedMap)
+      when(documentsProducedDataMock.toMetadataProperties()).thenReturn(documentsProducedMap)
     }
   }
 
@@ -442,7 +442,7 @@ object SupplementaryDeclarationDataSpec {
       PackageInformation.formId -> correctPackageInformationDecimalValuesJSON,
       PreviousDocuments.formId -> correctPreviousDocumentsJSON,
       AdditionalInformationData.formId -> correctAdditionalInformationDataJSON,
-      DocumentsProduced.formId -> correctDocumentsProducedJSON
+      DocumentsProducedData.formId -> correctDocumentsProducedDataJSON
     )
   )
 
@@ -480,7 +480,7 @@ object SupplementaryDeclarationDataSpec {
     ),
     previousDocuments = Some(correctPreviousDocuments),
     additionalInformationData = Some(correctAdditionalInformation),
-    documentsProduced = Some(correctDocumentsProduced)
+    documentsProducedData = Some(correctDocumentsProducedData)
   )
 
 }

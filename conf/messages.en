@@ -362,6 +362,9 @@ supplementary.addDocument.documentStatusReason = Document status reason
 supplementary.addDocument.documentStatusReason.error = Incorrect document status reason
 supplementary.addDocument.documentQuantity = Quantity
 supplementary.addDocument.documentQuantity.error = Incorrect quantity value
+supplementary.addDocument.maximumAmount.error = You cannot have more than 99 documents
+supplementary.addDocument.duplicated = You cannot add an already existent document
+supplementary.addDocument.isNotDefined = Please provide some document information
 
 supplementary.totalNumberOfItems = 1/9 What is the total number of items?
 supplementary.totalNumberOfItems.title = Total number of items
