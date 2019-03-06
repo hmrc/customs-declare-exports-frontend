@@ -37,14 +37,14 @@ class WarehouseIdentificationSpec extends WordSpec with MustMatchers {
 }
 
 object WarehouseIdentificationSpec {
-  private val warehouseId = "R"
-  private val warehouseTypeCode = "1234567GB"
+  private val warehouseTypeCode = "R"
+  private val warehouseId = "1234567GB"
 
-  val correctWarehouseIdentification = WarehouseIdentification(id = Some(warehouseId + warehouseTypeCode))
+  val correctWarehouseIdentification = WarehouseIdentification(id = Some(warehouseTypeCode + warehouseId))
   val emptyWarehouseIdentification = WarehouseIdentification(id = None)
 
   val correctWarehouseIdentificationJSON: JsValue =
-    JsObject(Map("identificationNumber" -> JsString(warehouseId + warehouseTypeCode)))
+    JsObject(Map("identificationNumber" -> JsString(warehouseTypeCode + warehouseId)))
   val emptyWarehouseIdentificationJSON: JsValue =
     JsObject(Map("identificationNumber" -> JsString("")))
 }
