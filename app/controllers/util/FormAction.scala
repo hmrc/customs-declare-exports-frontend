@@ -21,12 +21,14 @@ sealed trait FormAction
 object FormAction {
   private val addLabel = Add.toString
   private val saveAndContinueLabel = SaveAndContinue.toString
+  private val continueLabel = Continue.toString
   private val removeLabel = Remove.toString
 
   def fromUrlEncoded(input: Map[String, Seq[String]]): FormAction =
     input.flatMap {
       case (`addLabel`, _)             => Some(Add)
       case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
+      case (`continueLabel`, _)        => Some(Continue)
       case (`removeLabel`, values)     => Some(Remove(values))
       case _                           => None
     }.headOption.getOrElse(Unknown)
@@ -35,5 +37,6 @@ object FormAction {
 case object Unknown extends FormAction
 case object Add extends FormAction
 case object SaveAndContinue extends FormAction
+case object Continue extends FormAction
 
 case class Remove(keys: Seq[String]) extends FormAction
