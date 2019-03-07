@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package utils.validators
+package utils.validators.forms
 
 import scala.util.{Success, Try}
 
-object FormFieldValidator {
+object FieldValidator {
 
   implicit class PredicateOpsForFunctions[A](first: A => Boolean) {
     def and(second: A => Boolean): A => Boolean = (arg: A) => first(arg) && second(arg)

@@ -20,7 +20,7 @@ import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.FormFieldValidator._
+import utils.validators.forms.FieldValidator._
 
 case class TotalNumberOfItems(
   itemsQuantity: String,

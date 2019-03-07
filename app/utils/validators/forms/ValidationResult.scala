@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package forms.supplementary.validators
+package utils.validators.forms
 
 import play.api.data.FormError
 
 sealed trait ValidationResult
 
-case object Success extends ValidationResult
-case class Failure(errors: Seq[FormError]) extends ValidationResult
+case object Valid extends ValidationResult
+case class Invalid(errors: Seq[FormError]) extends ValidationResult
