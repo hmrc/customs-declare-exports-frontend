@@ -63,26 +63,14 @@ case class ItemType(
     )
   }
 
-  private def buildListOfProvidedCodesWithIdentifiers(): List[(String, String)] = {
-    val taricAdditionalCodesTuples = taricAdditionalCodes.map { code =>
-      (Some(code), IdentificationTypeCodes.TARICAdditionalCode)
-    }
-    val nationalAdditionalCodesTuples = nationalAdditionalCodes.map { code =>
-      (Some(code), IdentificationTypeCodes.NationalAdditionalCode)
-    }
-    val allCodesWithIdentifiers =
-      Seq((Some(combinedNomenclatureCode), IdentificationTypeCodes.CombinedNomenclatureCode)) ++
-        taricAdditionalCodesTuples ++
-        nationalAdditionalCodesTuples ++
-        Seq((cusCode, IdentificationTypeCodes.CUSCode))
-
-    allCodesWithIdentifiers
+  private def buildListOfProvidedCodesWithIdentifiers(): List[(String, String)] =
+    (Seq((Some(combinedNomenclatureCode), IdentificationTypeCodes.CombinedNomenclatureCode)) ++
+      Seq((cusCode, IdentificationTypeCodes.CUSCode)) ++
+      taricAdditionalCodes.map(code => (Some(code), IdentificationTypeCodes.TARICAdditionalCode)) ++
+      nationalAdditionalCodes.map(code => (Some(code), IdentificationTypeCodes.NationalAdditionalCode)))
       .filter(_._1.isDefined)
-      .map { elem =>
-        (elem._1.get, elem._2)
-      }
+      .map(elem => (elem._1.get, elem._2))
       .toList
-  }
 
 }
 
