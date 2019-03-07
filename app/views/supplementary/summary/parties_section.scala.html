@@ -64,11 +64,11 @@
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.additionalPartiesId"),
-        value = parties.flatMap(_.declarationAdditionalActors).flatMap(_.eori)
+        value = parties.flatMap(_.declarationAdditionalActorsData).map(_.actors)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.additionalPartiesType"),
-        value = parties.flatMap(_.declarationAdditionalActors).flatMap(_.partyType)
+        value = parties.flatMap(_.declarationAdditionalActorsData).map(_.actors)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(

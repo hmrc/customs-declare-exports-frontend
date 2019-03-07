@@ -260,6 +260,11 @@ supplementary.address.country.empty = Country cannot be empty
 supplementary.namedEntityDetails.error = Please, provide either EORI number or full Address details
 
 supplementary.additionalActors.title = 3/37 Add other party
+supplementary.additionalActors.eori = EORI number
+supplementary.additionalActors.eori.isNotDefined = Please enter a EORI number
+supplementary.additionalActors.partyType = Party type
+supplementary.additionalActors.maximumAmount.error = You cannot have more than 99 actors
+supplementary.additionalActors.duplicated.error = You cannot add the same actor
 supplementary.partyType = Party type
 supplementary.partyType.CS = Consolidator
 supplementary.partyType.MF = Manufacturer

@@ -21,7 +21,8 @@
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
-@(appConfig: AppConfig, form: Form[DeclarationAdditionalActors])(implicit request: Request[_], messages: Messages)
+@import models.declaration.supplementary.DeclarationAdditionalActorsData
+@(appConfig: AppConfig, form: Form[DeclarationAdditionalActors], actors: Seq[DeclarationAdditionalActors])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.additionalActors.title"),
@@ -36,12 +37,12 @@
 
         @components.input_text(
             field = form("eori"),
-            label = messages("supplementary.eori"),
+            label = messages("supplementary.additionalActors.eori"),
             hint = Some(messages("supplementary.eori.hint")),
             labelClass = Some("font-weight: 400")
         )
 
-        @components.page_title(Some("supplementary.partyType"), Some(""))
+        @components.page_title(Some("supplementary.additionalActors.partyType"), Some(""))
 
         @components.input_radio(
             field = form("partyType"),

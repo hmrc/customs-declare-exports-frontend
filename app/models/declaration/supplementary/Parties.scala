@@ -24,7 +24,7 @@ case class Parties(
   exporterDetails: Option[ExporterDetails] = None,
   declarantDetails: Option[DeclarantDetails] = None,
   representativeDetails: Option[RepresentativeDetails] = None,
-  declarationAdditionalActors: Option[DeclarationAdditionalActors] = None,
+  declarationAdditionalActorsData: Option[DeclarationAdditionalActorsData] = None,
   declarationHoldersData: Option[DeclarationHoldersData] = None
 ) extends SummaryContainer with MetadataPropertiesConvertable {
 
@@ -33,7 +33,7 @@ case class Parties(
       exporterDetails.map(_.toMetadataProperties()),
       declarantDetails.map(_.toMetadataProperties()),
       representativeDetails.map(_.toMetadataProperties()),
-      declarationAdditionalActors.map(_.toMetadataProperties()),
+      declarationAdditionalActorsData.map(_.toMetadataProperties()),
       declarationHoldersData.map(_.toMetadataProperties())
     ).flatten.fold(Map.empty)(_ ++ _)
 
@@ -41,7 +41,7 @@ case class Parties(
     exporterDetails.isEmpty &&
       declarantDetails.isEmpty &&
       representativeDetails.isEmpty &&
-      declarationAdditionalActors.isEmpty &&
+      declarationAdditionalActorsData.isEmpty &&
       declarationHoldersData.isEmpty
 }
 
@@ -52,7 +52,7 @@ object Parties {
     exporterDetails = cacheMap.getEntry[ExporterDetails](ExporterDetails.id),
     declarantDetails = cacheMap.getEntry[DeclarantDetails](DeclarantDetails.id),
     representativeDetails = cacheMap.getEntry[RepresentativeDetails](RepresentativeDetails.formId),
-    declarationAdditionalActors = cacheMap.getEntry[DeclarationAdditionalActors](DeclarationAdditionalActors.formId),
+    declarationAdditionalActorsData = cacheMap.getEntry[DeclarationAdditionalActorsData](DeclarationAdditionalActorsData.formId),
     declarationHoldersData = cacheMap.getEntry[DeclarationHoldersData](DeclarationHoldersData.formId)
   )
 }
