@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.supplementary.validators
+package utils.validators.forms
 
 trait Validator[T] {
   def validateOnAddition(element: T): ValidationResult

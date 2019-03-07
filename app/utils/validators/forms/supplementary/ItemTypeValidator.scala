@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package forms.supplementary.validators
+package utils.validators.forms.supplementary
 
 import forms.supplementary.ItemType
-import forms.supplementary.ItemType._
+import forms.supplementary.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
 import play.api.data.Forms.{optional, seq, text}
 import play.api.data.{Form, Forms}
-import utils.validators.FormFieldValidator._
+import utils.validators.forms.FieldValidator._
+import utils.validators.forms.{Invalid, Valid, ValidationResult, Validator}
 
 object ItemTypeValidator extends Validator[ItemType] {
 
@@ -37,12 +38,12 @@ object ItemTypeValidator extends Validator[ItemType] {
   override def validateOnAddition(element: ItemType): ValidationResult =
     Form(mappingWithValidationForAddition)
       .fillAndValidate(element)
-      .fold[ValidationResult](formWithErrors => Failure(formWithErrors.errors), _ => Success)
+      .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
 
   override def validateOnSaveAndContinue(element: ItemType): ValidationResult =
     Form(mappingWithValidation)
       .fillAndValidate(element)
-      .fold[ValidationResult](formWithErrors => Failure(formWithErrors.errors), _ => Success)
+      .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
 
   val mappingWithValidationForAddition = Forms.mapping(
     "combinedNomenclatureCode" -> text(),

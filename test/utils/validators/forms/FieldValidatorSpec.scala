@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package util.validators
+package utils.validators.forms
 
 import org.scalatest.{MustMatchers, WordSpec}
-import utils.validators.FormFieldValidator._
+import utils.validators.forms.FieldValidator._
 
-class FormFieldValidatorSpec extends WordSpec with MustMatchers {
+class FieldValidatorSpec extends WordSpec with MustMatchers {
 
   val anyString = "Any string"
   val emptyString = ""

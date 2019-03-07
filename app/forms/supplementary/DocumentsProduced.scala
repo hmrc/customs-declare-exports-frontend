@@ -19,7 +19,7 @@ package forms.supplementary
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{JsValue, Json}
-import utils.validators.FormFieldValidator._
+import utils.validators.forms.FieldValidator._
 
 case class DocumentsProduced(
   documentTypeCode: Option[String],

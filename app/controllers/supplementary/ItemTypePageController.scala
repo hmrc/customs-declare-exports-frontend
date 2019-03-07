@@ -22,7 +22,6 @@ import controllers.util.CacheIdGenerator.supplementaryCacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.supplementary.ItemType
 import forms.supplementary.ItemType._
-import forms.supplementary.validators.{Failure, ItemTypeValidator, Success}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.AuthenticatedRequest
@@ -31,6 +30,8 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.validators.forms.supplementary.ItemTypeValidator
+import utils.validators.forms.{Invalid, Valid}
 import views.html.supplementary.item_type
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,21 +57,15 @@ class ItemTypePageController @Inject()(
     val inputForm = ItemType.form.bindFromRequest()
     val itemTypeInput: ItemType = inputForm.value.getOrElse(ItemType.empty)
 
-    customsCacheService.fetchAndGetEntry[ItemType](supplementaryCacheId, ItemType.id).flatMap { itemTypeCache =>
+    customsCacheService.fetchAndGetEntry[ItemType](supplementaryCacheId, ItemType.id).flatMap { itemTypeCacheOpt =>
+      val itemTypeCache = itemTypeCacheOpt.getOrElse(ItemType.empty)
       extractActionType() match {
-        case Some(Add) =>
-          handleAddition(itemTypeInput, itemTypeCache.getOrElse(ItemType.empty))
-
-        case Some(SaveAndContinue) =>
-          handleSaveAndContinue(itemTypeInput, itemTypeCache.getOrElse(ItemType.empty))
-
-        case Some(Remove(keys)) =>
-          handleRemoval(keys, itemTypeCache.getOrElse(ItemType.empty))
-
-        case _ => errorHandler.displayErrorPage()
+        case Some(Add)             => handleAddition(itemTypeInput, itemTypeCache)
+        case Some(SaveAndContinue) => handleSaveAndContinue(itemTypeInput, itemTypeCache)
+        case Some(Remove(keys))    => handleRemoval(keys, itemTypeCache)
+        case _                     => errorHandler.displayErrorPage()
       }
     }
-
   }
 
   private def extractActionType()(implicit request: Request[AnyContent]): Option[FormAction] =
@@ -81,11 +76,11 @@ class ItemTypePageController @Inject()(
   ): Future[Result] = {
     val itemTypeUpdated = updateCachedItemTypeAddition(itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnAddition(itemTypeUpdated) match {
-      case Success =>
+      case Valid =>
         customsCacheService.cache[ItemType](supplementaryCacheId, ItemType.id, itemTypeUpdated).map { _ =>
           Redirect(controllers.supplementary.routes.ItemTypePageController.displayPage())
         }
-      case Failure(errors) =>
+      case Invalid(errors) =>
         val formWithErrors =
           errors.foldLeft(ItemType.form.fill(itemTypeInput))((form, error) => form.withError(adjustErrorKey(error)))
         Future.successful(
@@ -112,11 +107,11 @@ class ItemTypePageController @Inject()(
   ): Future[Result] = {
     val itemTypeUpdated = updateCachedItemTypeSaveAndContinue(itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnSaveAndContinue(itemTypeUpdated) match {
-      case Success =>
+      case Valid =>
         customsCacheService.cache[ItemType](supplementaryCacheId, ItemType.id, itemTypeUpdated).map { _ =>
           Redirect(controllers.supplementary.routes.PackageInformationController.displayForm())
         }
-      case Failure(errors) =>
+      case Invalid(errors) =>
         val formWithErrors =
           errors.foldLeft(ItemType.form.fill(itemTypeInput))((form, error) => form.withError(adjustErrorKey(error)))
         Future.successful(
