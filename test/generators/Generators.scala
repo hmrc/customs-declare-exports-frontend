@@ -16,6 +16,7 @@
 
 package generators
 
+import forms.supplementary.PackageInformation
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
@@ -61,14 +62,18 @@ trait Generators {
       .suchThat(!_.isValidInt)
       .map(_.formatted("%f"))
 
-  def intsBelowValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat (_ < value)
+  def intGreaterThan(min: Int): Gen[Int] =
+    choose(min + 1, Int.MaxValue)
 
-  def intsAboveValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat (_ > value)
+  def intLessThan(max: Int): Gen[Int] =
+    choose(Int.MinValue, max - 1)
 
-  def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat (x => x < min || x > max)
+  def intBetweenRange(min: Int, max: Int): Gen[Int] =
+    choose(min, max)
+
+  def intOutsideRange(min: Int, max: Int): Gen[Int] =
+    oneOf(intLessThan(min), intGreaterThan(max))
+
 
   def nonBooleans: Gen[String] =
     arbitrary[String]
@@ -90,4 +95,31 @@ trait Generators {
 
   def stringsExceptSpecificValues(excluded: Set[String]): Gen[String] =
     nonEmptyString suchThat (!excluded.contains(_))
+
+  implicit val arbitraryPackaging: Arbitrary[PackageInformation] = Arbitrary {
+    for {
+      noOfPackages <- option(choose[Int](1, 99999))
+      typeOfPackages <- option(alphaNumStr.map(_.take(2)))
+      marksNumbersId <- alphaNumStr.map(_.take(40))
+      if (typeOfPackages.exists(_.size == 2) && marksNumbersId.size > 0)
+    } yield PackageInformation(typeOfPackages, noOfPackages,Some(marksNumbersId))
+  }
+
+  implicit val arbitraryPackagingSeq  =listOfN[PackageInformation](5, arbitraryPackaging.arbitrary)
+
+  def caseClassToSeq(cc: AnyRef) =
+    (Map[String, String]() /: cc.getClass.getDeclaredFields) {
+      (a, f) =>
+        f.setAccessible(true)
+        a + (f.getName -> f.get(cc).toString)
+    }.toSeq
+
+  def minStringLength(length: Int): Gen[String] =
+    for {
+      i <- choose(length, length + 500)
+      n <- listOfN(i, arbitrary[Char])
+    } yield n.mkString
+
+  def numStrLongerThan(minLength: Int): Gen[String] =
+    numStr suchThat (_.length > minLength)
 }

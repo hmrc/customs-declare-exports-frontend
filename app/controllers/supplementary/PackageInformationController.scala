@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.requests.AuthenticatedRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.supplementary.package_information
@@ -41,7 +41,6 @@ class PackageInformationController @Inject()(
 )(implicit ec: ExecutionContext, appConfig: AppConfig, override val messagesApi: MessagesApi)
     extends FrontendController with I18nSupport {
 
-  val goodsItemPackagingCacheKey = "goodsItemPackagingCacheKey"
   val packagesMaxElements = 99
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     cacheService
@@ -67,43 +66,48 @@ class PackageInformationController @Inject()(
         actionTypeOpt match {
           case Some(Add)             => addItem()
           case Some(Remove(ids))     => remove(ids.headOption)
-          case Some(SaveAndContinue) => continue(true)
-          case _ =>
-            errorHandler.displayErrorPage()
+          case Some(SaveAndContinue) => continue()
+          case _                     => errorHandler.displayErrorPage()
         }
       }
   }
 
-  def remove(id: Option[String])(implicit authRequest: AuthenticatedRequest[AnyContent], packagings: Seq[PackageInformation]) =
+  def remove(id: Option[String])(implicit authRequest: AuthenticatedRequest[AnyContent],
+    packagings: Seq[PackageInformation]) =
     id match {
       case Some(id) => {
         val updatedPackagings =
           packagings.zipWithIndex.filterNot(_._2.toString == id).map(_._1)
 
         cacheService
-          .cache[Seq[PackageInformation]](supplementaryCacheId(), goodsItemPackagingCacheKey, updatedPackagings)
+          .cache[Seq[PackageInformation]](supplementaryCacheId(), formId, updatedPackagings)
           .map(_ => Redirect(routes.PackageInformationController.displayForm()))
       }
       case _ => errorHandler.displayErrorPage()
     }
 
-  def continue(isFormMandatory: Boolean)(implicit request: AuthenticatedRequest[_],
-    packagings: Seq[PackageInformation]) = {
+  def continue()(implicit request: AuthenticatedRequest[_], packagings: Seq[PackageInformation]) = {
     val payload = form.bindFromRequest()
-    if (payload.data.filterNot(_._2.size > 0).size > 0)
+    if (payload.data.filter(_._2.size > 0).size > 1)
       Future.successful(
         BadRequest(
-          package_information(payload.discardingErrors.withGlobalError("Use Add button to add packaging"), packagings)
+          package_information(payload.discardingErrors.withGlobalError("Use add button to add packaging"), packagings)
         )
       )
-    else if(packagings.size ==0) Future.successful(
-      BadRequest(
-        package_information(payload.discardingErrors.withGlobalError("Add one or more package information using Add button"), packagings)
+    else if (packagings.size == 0)
+      Future.successful(
+        BadRequest(
+          package_information(
+            payload.discardingErrors.withGlobalError("Add one or more package information using Add button"),
+            packagings
+          )
+        )
       )
-    )
     else Future.successful(Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm()))
 
   }
+  def validaeAddPayload() = true
+  def validateContinuePayload() = true
 
   def addItem()(implicit authenticatedRequest: AuthenticatedRequest[AnyContent], packagings: Seq[PackageInformation]) =
     form
@@ -112,23 +116,29 @@ class PackageInformationController @Inject()(
         (formWithErrors: Form[PackageInformation]) =>
           Future.successful(BadRequest(package_information(formWithErrors, packagings))),
         validForm => {
-          if(packagings.contains(validForm))
-            Future.successful(
-            BadRequest(
-              package_information(form.fill(validForm).withGlobalError("Packaging you are trying to add exists"), packagings)
-            )
-          )
-          else if(packagings.size > packagesMaxElements)
+          if (packagings.contains(validForm))
             Future.successful(
               BadRequest(
-                package_information(form.fill(validForm).withGlobalError("maximum number of packagings added"), packagings)
+                package_information(
+                  form.fill(validForm).withGlobalError("Input provided is a duplicate of existing packaging"),
+                  packagings
+                )
               )
             )
-          else
-          {
+          else if (packagings.size > packagesMaxElements)
+            Future.successful(
+              BadRequest(
+                package_information(
+                  form.fill(validForm).withGlobalError("maximum number of packagings added"),
+                  packagings
+                )
+              )
+            )
+          else {
             val updatedPackagings = packagings :+ validForm
-          cacheService.cache[Seq[PackageInformation]](supplementaryCacheId(), goodsItemPackagingCacheKey,
-            updatedPackagings).map(_ => Redirect(routes.PackageInformationController.displayForm()))
+            cacheService
+              .cache[Seq[PackageInformation]](supplementaryCacheId(), formId, updatedPackagings)
+              .map(_ => Redirect(routes.PackageInformationController.displayForm()))
           }
         }
       )

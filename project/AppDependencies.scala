@@ -23,8 +23,7 @@ object AppDependencies {
     "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
     "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonVersion,
     "com.fasterxml.jackson.dataformat" % "jackson-dataformat-xml" % jacksonVersion,
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion,
-    "ai.x" %% "play-json-extensions" % "0.9.0"
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion
   )
 
   val test = Seq(
@@ -35,7 +34,8 @@ object AppDependencies {
     "org.jsoup" % "jsoup" % "1.10.3" % "test",
     "com.typesafe.play" %% "play-test" % PlayVersion.current % "test",
     "org.mockito" % "mockito-core" % "2.13.0" % "test",
-    "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
+    "org.scalacheck" %% "scalacheck" % "1.14.0" % "test"
+    
   )
 
   def apply(): Seq[ModuleID] = compile ++ test

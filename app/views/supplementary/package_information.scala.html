@@ -47,13 +47,17 @@ messages("supplementary.packageInformation.table.multiple.heading", packages.siz
                 <tr>
                     <th scope="col">@messages("supplementary.packageInformation.typesOfPackages")</th>
                     <th scope="col">@messages("supplementary.packageInformation.numberOfPackages")</th>
+                    <th scope="col">@messages("supplementary.packageInformation.shippingMarks")</th>
+                    <th scope="col">@messages("supplementary.packageInformation.remove")</th>
                 </tr>
                 </thead>
                 <tbody>
-                @for(item <- packages) {
+                @packages.zipWithIndex.map { case (item, index) =>
                 <tr>
-                    <td scope="row">@item.typesOfPackages</td>
+                    <td scope="row">@item.typesOfPackages.getOrElse("")</td>
                     <td>@item.numberOfPackages</td>
+                    <td>@item.shippingMarks</td>
+                    <td><button class="button" name=@messages("site.remove") value="@index">@messages("site.remove")</button></td>
                 </tr>
                 }
                 </tbody>
@@ -69,6 +73,12 @@ messages("supplementary.packageInformation.table.multiple.heading", packages.siz
         @components.input_text(
             field = form("numberOfPackages"),
             label = messages("supplementary.packageInformation.numberOfPackages")
+        )
+
+        @components.input_text(
+            field = form("shippingMarks"),
+            label = messages("supplementary.packageInformation.shippingMarks"),
+            hint = Some(messages("supplementary.packageInformation.shippingMarks.hint"))
         )
 
         @components.add_save_button()

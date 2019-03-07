@@ -30,7 +30,6 @@ import forms.supplementary.GoodsItemNumberSpec._
 import forms.supplementary.GoodsLocationSpec._
 import forms.supplementary.ItemTypeSpec._
 import forms.supplementary.OfficeOfExitSpec._
-import forms.supplementary.PackageInformationSpec._
 import forms.supplementary.PreviousDocumentsSpec._
 import forms.supplementary.RepresentativeDetailsSpec._
 import forms.supplementary.SupervisingCustomsOfficeSpec._
@@ -438,7 +437,6 @@ object SupplementaryDeclarationDataSpec {
       TransactionType.formId -> correctTransactionTypeJSON,
       GoodsItemNumber.formId -> correctGoodsItemNumberJSON,
       ItemType.id -> correctItemTypeJSON,
-      PackageInformation.formId -> correctPackageInformationDecimalValuesJSON,
       PreviousDocuments.formId -> correctPreviousDocumentsJSON,
       AdditionalInformation.formId -> correctAdditionalInformationJSON,
       DocumentsProduced.formId -> correctDocumentsProducedJSON

@@ -16,331 +16,142 @@
 
 package controllers.supplementary
 
-import base.{CustomExportsBaseSpec, TestHelper}
+import base.CustomExportsBaseSpec
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.PackageInformation
-import forms.supplementary.PackageInformationSpec._
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import generators.Generators
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.OptionValues
+import org.scalatest.prop.PropertyChecks
+import play.api.data.Form
 import play.api.test.Helpers._
+import play.twirl.api.Html
+import uk.gov.hmrc.auth.core.InsufficientEnrolments
+import views.html.supplementary.package_information
 
-class PackageInformationControllerSpec extends CustomExportsBaseSpec {
+class PackageInformationControllerSpec
+    extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
 
   val uri = uriWithContextPath("/declaration/supplementary/package-information")
+
+  val form = PackageInformation.form()
+  def view(form: Form[PackageInformation] = form, charges: Seq[PackageInformation] = Seq.empty): Html =
+    package_information(form, charges)(fakeRequest, messages, appConfig)
+  val formId = "PackageInformation"
 
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   "PackageInformationController" should {
-    "display total number of items form" in {
-      authorizedUser()
-      withCaching[PackageInformation](None)
 
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
+    "displayForm" should {
 
-      status(result) must be(OK)
-      stringResult must include(messages("supplementary.packageInformation.title"))
-      stringResult must include(messages("supplementary.packageInformation.typesOfPackages"))
-      stringResult must include(messages("supplementary.packageInformation.typesOfPackages.hint"))
-      stringResult must include(messages("supplementary.packageInformation.numberOfPackages"))
+      "return UNAUTHORIZED" when {
+
+        "user does not have" in {
+          userWithoutEori()
+          withCaching[PackageInformation](None)
+
+          val result = route(app, getRequest(uri)).value
+          intercept[InsufficientEnrolments](status(result))
+
+        }
+      }
+      "return OK" when {
+
+        "user is signed in" in {
+          authorizedUser()
+          withCaching[PackageInformation](None)
+
+          val result = route(app, getRequest(uri)).value
+          val stringResult = contentAsString(result)
+
+          status(result) must be(OK)
+          stringResult must include(messages("supplementary.packageInformation.title"))
+          stringResult must include(messages("supplementary.packageInformation.typesOfPackages"))
+          stringResult must include(messages("supplementary.packageInformation.typesOfPackages.hint"))
+          stringResult must include(messages("supplementary.packageInformation.numberOfPackages"))
+        }
+      }
+
+      "load data from cache" when {
+
+        "packageInformation is added before" in {
+          authorizedUser()
+
+          val cachedData = arbitraryPackagingSeq.sample
+          withCaching[List[PackageInformation]](cachedData, formId)
+
+          val result = route(app, getRequest(uri)).value
+          status(result) must be(OK)
+
+          val stringResult = contentAsString(result)
+
+          cachedData.map(res => stringResult.contains(s"${res.size} Packages added"))
+
+        }
+      }
     }
-  }
-
-  "validate form - empty form" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val result = route(app, postRequest(uri, emptyPackageInformationJSON)).get
-
-    status(result) must be(BAD_REQUEST)
-
-    contentAsString(result) must include(messages("supplementary.packageInformation.typesOfPackages.empty"))
-    contentAsString(result) must include(messages("supplementary.packageInformation.numberOfPackages.empty"))
-
-/*
-    contentAsString(result) must not include messages("supplementary.packageInformation.typesOfPackages.error")
-    contentAsString(result) must not include messages("supplementary.packageInformation.numberOfPackages.error")
-*/
-
-  }
-
-  "validate form - too short type of packages" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectTypeOfPackages: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(1)),
-          "numberOfPackages" -> JsString("12345")
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectTypeOfPackages)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.typesOfPackages.error"))
-  }
-
-  "validate form - too long type of packages" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectTypeOfPackages: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString("12345")
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectTypeOfPackages)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.typesOfPackages.error"))
-  }
-
-  "validate form - too long number of packages" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectNumberOfPackages: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString("123456")
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectNumberOfPackages)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.numberOfPackages.error"))
-  }
-
-  "validate form - alpha numerical number of packages" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectNumberOfPackages: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectNumberOfPackages)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.numberOfPackages.error"))
-  }
-
-  "validate form - too many digits on supplementary units" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectSupplementaryUnits: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString("12334")
-      ))
-
-    val result = route(app, postRequest(uri, incorrectSupplementaryUnits)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.supplementaryUnits.error"))
-  }
-
-  "validate form - too many digits after comma on supplementary units" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectSupplementaryUnits: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(2)),
-          "numberOfPackages" -> JsString("1234")
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectSupplementaryUnits)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.supplementaryUnits.error"))
-  }
-
-  "validate form - too large numeric value on supplementary units" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectSupplementaryUnits: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString("1234")
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectSupplementaryUnits)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.supplementaryUnits.error"))
-  }
-
-  "validate form - too long shipping marks" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectShippingMarks: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectShippingMarks)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.shippingMarks.error"))
-  }
-
-  "validate form - too many digits on net mass" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectNetMass: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectNetMass)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.netMass.error"))
-  }
-
-  "validate form - too many digits after comma on net mass" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectNetMass: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectNetMass)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.netMass.error"))
-  }
-
-  "validate form - too large numeric value on net mass" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectNetMass: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectNetMass)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.netMass.error"))
-  }
-
-  "validate form - too many digits on gross mass" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectGrossMass: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectGrossMass)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.grossMass.error"))
-  }
-
-  "validate form - too many digits after comma on gross mass" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectGrossMass: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(3)),
-          "numberOfPackages" -> JsString(TestHelper.createRandomString(5))
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectGrossMass)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.grossMass.error"))
-  }
-
-  "validate form - too large numeric value on gross mass" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val incorrectGrossMass: JsValue =
-      JsObject(
-        Map(
-          "typesOfPackages" -> JsString(TestHelper.createRandomString(2)),
-          "numberOfPackages" -> JsString("12345")
-        )
-      )
-
-    val result = route(app, postRequest(uri, incorrectGrossMass)).get
-
-    status(result) must be(BAD_REQUEST)
-    contentAsString(result) must include(messages("supplementary.packageInformation.grossMass.error"))
-  }
-
-  "validate form - correct values" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val result = route(app, postRequest(uri, correctPackageInformationDecimalValuesJSON)).get
-    val header = result.futureValue.header
-
-    status(result) must be(SEE_OTHER)
-    header.headers.get("Location") must be(
-      Some("/customs-declare-exports/declaration/supplementary/additional-information")
-    )
-
-  }
-
-  "validate form - correct values using only integers" in {
-    authorizedUser()
-    withCaching[PackageInformation](None)
-
-    val result = route(app, postRequest(uri, correctPackageInformationIntegerValuesJSON)).get
-    val header = result.futureValue.header
-
-    status(result) must be(SEE_OTHER)
-    header.headers.get("Location") must be(
-      Some("/customs-declare-exports/declaration/supplementary/additional-information")
-    )
+
+    ".onSubmit" should {
+
+      "return UNAUTHORIZED" when {
+
+        "user does not have an eori" in {
+          userWithoutEori()
+          val body = Seq(("typesOfPackages", "A1"), addActionUrlEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
+
+          intercept[InsufficientEnrolments](status(result))
+        }
+      }
+
+      "return BAD_REQUEST" when {
+
+        "invalid data is submitted" in {
+          authorizedUser()
+          withCaching[PackageInformation](None, formId)
+
+          val body = Seq(("typesOfPackages", "1234"), addActionUrlEncoded)
+
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
+
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include("Type of package should be a 2 character code")
+
+        }
+      }
+
+      "add packageInformation to the cache" when {
+
+        "with valid data and on click of  add" in {
+
+          forAll(arbitrary[PackageInformation]){packaging =>
+            authorizedUser()
+            withCaching[Seq[PackageInformation]](Some(Seq(packaging.copy())), formId)
+
+            val input = for ((k, Some(v)) <- packaging.getClass.getDeclaredFields.map(_.getName).zip(packaging.productIterator.to).toMap)
+              yield k -> v.asInstanceOf[Any].toString
+
+            val payload = input.toSeq :+ addActionUrlEncoded
+            val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
+            contentAsString(result) must include(s"1 Package added")
+            //status(result) must be(SEE_OTHER)
+          }
+        }
+      }
+
+      "remove packageInformation from the cache" when {
+
+        "when valid index is submitted" in {}
+      }
+      "navigate to additionalInformation" when {
+
+        "on click of continue" in {}
+      }
+
+    }
   }
 
 }
