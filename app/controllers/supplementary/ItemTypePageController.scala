@@ -22,7 +22,7 @@ import controllers.util.CacheIdGenerator.supplementaryCacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.supplementary.ItemType
 import forms.supplementary.ItemType._
-import forms.supplementary.validators.{Failure, ItemTypeValidator, Success, ValidationResult}
+import forms.supplementary.validators.{Failure, ItemTypeValidator, Success}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.AuthenticatedRequest
@@ -57,8 +57,7 @@ class ItemTypePageController @Inject()(
     val itemTypeInput: ItemType = inputForm.value.getOrElse(ItemType.empty)
 
     customsCacheService.fetchAndGetEntry[ItemType](supplementaryCacheId, ItemType.id).flatMap { itemTypeCache =>
-      val action = extractActionType()
-      action match {
+      extractActionType() match {
         case Some(Add) =>
           handleAddition(itemTypeInput, itemTypeCache.getOrElse(ItemType.empty))
 
@@ -81,7 +80,7 @@ class ItemTypePageController @Inject()(
     implicit request: AuthenticatedRequest[AnyContent]
   ): Future[Result] = {
     val itemTypeUpdated = updateCachedItemTypeAddition(itemTypeInput, itemTypeCache)
-    validateItemType(itemTypeUpdated).flatMap {
+    ItemTypeValidator.validateOnAddition(itemTypeUpdated) match {
       case Success =>
         customsCacheService.cache[ItemType](supplementaryCacheId, ItemType.id, itemTypeUpdated).map { _ =>
           Redirect(controllers.supplementary.routes.ItemTypePageController.displayPage())
@@ -112,7 +111,7 @@ class ItemTypePageController @Inject()(
     implicit request: AuthenticatedRequest[AnyContent]
   ): Future[Result] = {
     val itemTypeUpdated = updateCachedItemTypeSaveAndContinue(itemTypeInput, itemTypeCache)
-    validateItemType(itemTypeUpdated).flatMap {
+    ItemTypeValidator.validateOnSaveAndContinue(itemTypeUpdated) match {
       case Success =>
         customsCacheService.cache[ItemType](supplementaryCacheId, ItemType.id, itemTypeUpdated).map { _ =>
           Redirect(controllers.supplementary.routes.PackageInformationController.displayForm())
@@ -142,13 +141,6 @@ class ItemTypePageController @Inject()(
       cusCode = itemTypeInput.cusCode,
       statisticalValue = itemTypeInput.statisticalValue
     )
-
-  private def validateItemType(itemType: ItemType)(implicit request: Request[AnyContent]): Future[ValidationResult] =
-    Future.successful(extractActionType().map {
-      case Add             => ItemTypeValidator.validateOnAddition(itemType)
-      case SaveAndContinue => ItemTypeValidator.validateOnSaveAndContinue(itemType)
-      case _               => Failure(Seq.empty)
-    }.getOrElse(Failure(Seq.empty)))
 
   private def adjustErrorKey(error: FormError): FormError =
     if (error.key.contains(taricAdditionalCodesKey) || error.key.contains(nationalAdditionalCodesKey))
