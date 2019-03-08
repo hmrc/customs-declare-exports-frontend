@@ -16,22 +16,28 @@
 
 package forms
 
-import play.api.data.Form
-import play.api.data.Forms.{mapping, text}
+import play.api.data.Forms.{optional, text}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator.isContainedIn
 
 case class Choice(choice: String)
 
 object Choice {
   implicit val format = Json.format[Choice]
 
+  val choiceId = "Choice"
+
   import AllowedChoiceValues._
   private val correctChoice = Set(SupplementaryDec, StandardDec, Arrival, Departure, CancelDec)
 
-  val choiceMapping =
-    mapping("choice" -> text().verifying("Incorrect value", correctChoice.contains(_)))(Choice.apply)(Choice.unapply)
-
-  val choiceId = "Choice"
+  val choiceMapping: Mapping[Choice] = Forms.single(
+    "choice" -> optional(
+      text()
+        .verifying("choicePage.input.error.incorrectValue", isContainedIn(correctChoice))
+    ).verifying("choicePage.input.error.empty", _.isDefined)
+      .transform[Choice](value => Choice(value.getOrElse("")), choice => Some(choice.choice))
+  )
 
   def form(): Form[Choice] = Form(choiceMapping)
 

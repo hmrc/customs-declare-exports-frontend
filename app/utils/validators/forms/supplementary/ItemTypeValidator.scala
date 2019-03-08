@@ -58,7 +58,7 @@ object ItemTypeValidator extends Validator[ItemType] {
         "supplementary.itemType.taricAdditionalCodes.error.maxAmount",
         codes => codes.size <= taricAdditionalCodesMaxAmount
       )
-      .verifying("supplementary.itemType.taricAdditionalCodes.error.duplicate", containsUniques),
+      .verifying("supplementary.itemType.taricAdditionalCodes.error.duplicate", areAllElementsUnique),
     nationalAdditionalCodesKey -> seq(
       text()
         .verifying(
@@ -70,7 +70,7 @@ object ItemTypeValidator extends Validator[ItemType] {
         "supplementary.itemType.nationalAdditionalCode.error.maxAmount",
         codes => codes.size <= nationalAdditionalCodesMaxAmount
       )
-      .verifying("supplementary.itemType.nationalAdditionalCode.error.duplicate", containsUniques),
+      .verifying("supplementary.itemType.nationalAdditionalCode.error.duplicate", areAllElementsUnique),
     "descriptionOfGoods" -> text(),
     "cusCode" -> optional(text()),
     "statisticalValue" -> text()
@@ -95,7 +95,7 @@ object ItemTypeValidator extends Validator[ItemType] {
         "supplementary.itemType.taricAdditionalCodes.error.maxAmount",
         codes => codes.size <= taricAdditionalCodesMaxAmount
       )
-      .verifying("supplementary.itemType.taricAdditionalCodes.error.duplicate", containsUniques),
+      .verifying("supplementary.itemType.taricAdditionalCodes.error.duplicate", areAllElementsUnique),
     "nationalAdditionalCode" -> seq(
       text()
         .verifying(
@@ -107,7 +107,7 @@ object ItemTypeValidator extends Validator[ItemType] {
         "supplementary.itemType.nationalAdditionalCode.error.maxAmount",
         codes => codes.size <= nationalAdditionalCodesMaxAmount
       )
-      .verifying("supplementary.itemType.nationalAdditionalCode.error.duplicate", containsUniques),
+      .verifying("supplementary.itemType.nationalAdditionalCode.error.duplicate", areAllElementsUnique),
     "descriptionOfGoods" -> text()
       .verifying("supplementary.itemType.description.error.empty", nonEmpty)
       .verifying(

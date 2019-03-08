@@ -110,7 +110,7 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
         )
         val result = route(app, postRequest(uri, emptyForm)).get
 
-        contentAsString(result) must include(messages("supplementary.transportInfo.error.empty"))
+        contentAsString(result) must include(messages("supplementary.transportInfo.borderTransportMode.error.empty"))
       }
 
       "no value provided for means of transport on departure type" in {
@@ -120,7 +120,7 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
         )
         val result = route(app, postRequest(uri, emptyForm)).get
 
-        contentAsString(result) must include(messages("supplementary.transportInfo.error.empty"))
+        contentAsString(result) must include(messages("supplementary.transportInfo.meansOfTransport.departure.error.empty"))
       }
 
       "means of transport on departure ID number is longer than 27 characters" in {
@@ -149,7 +149,7 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
         )
         val result = route(app, postRequest(uri, emptyForm)).get
 
-        contentAsString(result) must include(messages("supplementary.transportInfo.error.empty"))
+        contentAsString(result) must include(messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty"))
       }
 
       "means of transport crossing the border ID number is longer than 35 characters" in {

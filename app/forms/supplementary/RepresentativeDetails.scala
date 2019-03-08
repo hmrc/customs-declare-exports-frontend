@@ -17,10 +17,11 @@
 package forms.supplementary
 
 import forms.MetadataPropertiesConvertable
-import play.api.data.Forms.text
+import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.Countries.allCountries
+import utils.validators.forms.FieldValidator.isContainedIn
 
 case class RepresentativeDetails(
   details: EntityDetails,
@@ -46,10 +47,9 @@ case class RepresentativeDetails(
 }
 
 object RepresentativeDetails {
-  import StatusCodes._
-
   implicit val format = Json.format[RepresentativeDetails]
 
+  import StatusCodes._
   private val representativeStatusCodeAllowedValues =
     Set(Declarant, DirectRepresentative, IndirectRepresentative)
 
@@ -57,10 +57,13 @@ object RepresentativeDetails {
 
   val mapping = Forms.mapping(
     "details" -> EntityDetails.mapping,
-    "statusCode" -> text().verifying(
-      "supplementary.representative.representationType.error.empty",
-      input => input.nonEmpty && representativeStatusCodeAllowedValues(input)
-    )
+    "statusCode" -> optional(
+      text().verifying(
+        "supplementary.representative.representationType.error.wrongValue",
+        isContainedIn(representativeStatusCodeAllowedValues)
+      )
+    ).verifying("supplementary.representative.representationType.error.empty", _.isDefined)
+      .transform[String](value => value.getOrElse(""), statusCode => Some(statusCode))
   )(RepresentativeDetails.apply)(RepresentativeDetails.unapply)
 
   def form(): Form[RepresentativeDetails] = Form(mapping)

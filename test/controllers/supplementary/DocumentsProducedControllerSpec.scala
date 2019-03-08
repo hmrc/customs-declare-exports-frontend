@@ -121,7 +121,8 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
           "documentPart" -> "ABC12",
           "documentStatus" -> "AB",
           "documentStatusReason" -> "DocumentStatusReason",
-          "documentQuantity" -> "1234567890.123456")
+          "documentQuantity" -> "1234567890.123456"
+        )
 
         val body = duplicatedDocument.toSeq :+ addActionUrlEncoded
 
@@ -141,7 +142,8 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
           "documentPart" -> "",
           "documentStatus" -> "",
           "documentStatusReason" -> "",
-          "documentQuantity" -> "")
+          "documentQuantity" -> ""
+        )
 
         val body = undefinedDocument.toSeq :+ addActionUrlEncoded
 

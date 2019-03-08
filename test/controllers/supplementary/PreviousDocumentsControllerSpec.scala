@@ -84,7 +84,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with BeforeA
       val result = route(app, postRequest(uri, emptyPreviousDocumentsJSON)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include(messages("supplementary.previousDocuments.documentCategory.empty"))
+      stringResult must include(messages("supplementary.previousDocuments.documentCategory.error.empty"))
       stringResult must include(messages("supplementary.previousDocuments.documentType.empty"))
       stringResult must include(messages("supplementary.previousDocuments.documentReference.empty"))
     }
@@ -94,7 +94,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with BeforeA
       val result = route(app, postRequest(uri, incorrectPreviousDocumentsJSON)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include(messages("supplementary.previousDocuments.documentCategory.error"))
+      stringResult must include(messages("supplementary.previousDocuments.documentCategory.error.incorrect"))
       stringResult must include(messages("supplementary.previousDocuments.documentType.error"))
       stringResult must include(messages("supplementary.previousDocuments.documentReference.error"))
       stringResult must include(messages("supplementary.previousDocuments.goodsItemIdentifier.error"))

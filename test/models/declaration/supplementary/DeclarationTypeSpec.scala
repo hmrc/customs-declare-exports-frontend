@@ -17,8 +17,9 @@
 package models.declaration.supplementary
 
 import forms.supplementary.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes.Simplified
+import forms.supplementary.AdditionalDeclarationTypeSpec._
 import forms.supplementary.DispatchLocation.AllowedDispatchLocations.OutsideEU
-import forms.supplementary.{AdditionalDeclarationType, DispatchLocation}
+import forms.supplementary.DispatchLocationSpec._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
@@ -41,20 +42,12 @@ class DeclarationTypeSpec extends WordSpec with MustMatchers {
 }
 
 object DeclarationTypeSpec {
-  val correctDispatchLocation = DispatchLocation(OutsideEU)
-  val correctAdditionalDeclarationType = AdditionalDeclarationType(Simplified)
   val correctDeclarationType = DeclarationType(Some(correctDispatchLocation), Some(correctAdditionalDeclarationType))
-  val emptyDispatchLocation = DispatchLocation("")
-  val emptyAdditionalDeclarationType = AdditionalDeclarationType("")
   val emptyDeclarationType = DeclarationType(Some(correctDispatchLocation), Some(correctAdditionalDeclarationType))
 
-  val correctDispatchLocationJSON: JsValue = JsObject(Map("dispatchLocation" -> JsString(OutsideEU)))
-  val correctAdditionalDeclarationTypeJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString(Simplified)))
   val correctDeclarationTypeJSON: JsValue = JsObject(
     Map("dispatchLocation" -> JsString(OutsideEU), "additionalDeclarationType" -> JsString(Simplified))
   )
-  val emptyDispatchLocationJSON: JsValue = JsObject(Map("dispatchLocation" -> JsString("")))
-  val emptyAdditionalDeclarationJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString("")))
   val emptyDeclarationTypeJSON: JsValue = JsObject(
     Map("dispatchLocation" -> JsString(""), "additionalDeclarationType" -> JsString(""))
   )

@@ -88,7 +88,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
         val emptyForm = JsObject(Map("" -> JsString("")))
         val result = route(app, postRequest(choiceUri, emptyForm)).get
 
-        contentAsString(result) must include(messages("error.required"))
+        contentAsString(result) must include(messages("choicePage.input.error.empty"))
       }
 
       "wrong value provided for choice" in {
@@ -97,7 +97,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
         val wrongForm = JsObject(Map("choice" -> JsString("movement")))
         val result = route(app, postRequest(choiceUri, wrongForm)).get
 
-        contentAsString(result) must include(messages("movement.incorrectValue"))
+        contentAsString(result) must include(messages("choicePage.input.error.incorrectValue"))
       }
     }
 
