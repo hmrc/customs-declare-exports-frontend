@@ -57,7 +57,7 @@ class PackageInformationController @Inject()(
   //TODO validate for maximum no of entries -DONE
   //TODO continue - check items entered
   def submitForm(): Action[AnyContent] = authenticate.async { implicit authRequest =>
-    val actionTypeOpt = authRequest.body.asFormUrlEncoded.flatMap(FormAction.fromUrlEncoded(_))
+    val actionTypeOpt = authRequest.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
     cacheService
       .fetchAndGetEntry[Seq[PackageInformation]](supplementaryCacheId, formId)
       .flatMap { data =>

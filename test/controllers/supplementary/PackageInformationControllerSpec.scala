@@ -20,6 +20,9 @@ import base.CustomExportsBaseSpec
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.PackageInformation
 import generators.Generators
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.verify
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.OptionValues
 import org.scalatest.prop.PropertyChecks
@@ -127,31 +130,70 @@ class PackageInformationControllerSpec
 
         "with valid data and on click of  add" in {
 
-          forAll(arbitrary[PackageInformation]){packaging =>
+          forAll(arbitrary[PackageInformation]) { packaging =>
             authorizedUser()
-            withCaching[Seq[PackageInformation]](Some(Seq(packaging.copy())), formId)
-
-            val input = for ((k, Some(v)) <- packaging.getClass.getDeclaredFields.map(_.getName).zip(packaging.productIterator.to).toMap)
-              yield k -> v.asInstanceOf[Any].toString
-
-            val payload = input.toSeq :+ addActionUrlEncoded
+            withCaching[PackageInformation](None, formId)
+            val payload = toMap(packaging).toSeq :+ addActionUrlEncoded
             val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
-            contentAsString(result) must include(s"1 Package added")
-            //status(result) must be(SEE_OTHER)
+            status(result) must be(SEE_OTHER)
+            result.futureValue.header.headers.get("Location") must be(
+              Some("/customs-declare-exports/declaration/supplementary/package-information")
+            )
+            verify(mockCustomsCacheService)
+              .cache[Seq[PackageInformation]](any(), ArgumentMatchers.eq(formId), ArgumentMatchers.eq(Seq(packaging)))(
+                any(),
+                any(),
+                any()
+              )
           }
         }
       }
 
       "remove packageInformation from the cache" when {
 
-        "when valid index is submitted" in {}
+        "when valid index is submitted" in {
+          forAll(arbitraryPackagingSeq) { packagingSeq =>
+            authorizedUser()
+            whenever(packagingSeq.nonEmpty) {
+              withCaching[List[PackageInformation]](Some(packagingSeq), formId)
+              val packaging = packagingSeq.head
+              val payload = toMap(packaging).toSeq :+ removeActionUrlEncoded("0")
+              val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
+              status(result) must be(SEE_OTHER)
+              result.futureValue.header.headers.get("Location") must be(
+                Some("/customs-declare-exports/declaration/supplementary/package-information")
+              )
+              verify(mockCustomsCacheService)
+                .cache[Seq[PackageInformation]](any(), ArgumentMatchers.eq(formId), ArgumentMatchers.eq(packagingSeq.filterNot(_ == packaging)))(
+                any(),
+                any(),
+                any()
+              )
+            }
+          }
+        }
       }
       "navigate to additionalInformation" when {
 
-        "on click of continue" in {}
-      }
+        "on click of continue when a record has already been added" in {
+          forAll(arbitrary[PackageInformation]) { packaging =>
+            authorizedUser()
+            withCaching[Seq[PackageInformation]](Some(Seq(packaging)), formId)
 
+            val result = route(app, postRequestFormUrlEncoded(uri, Seq(saveAndContinueActionUrlEncoded): _*)).value
+            status(result) must be(SEE_OTHER)
+            result.futureValue.header.headers.get("Location") must be(
+              Some("/customs-declare-exports/declaration/supplementary/additional-information")
+            )
+          }
+        }
+      }
     }
   }
+  private def toMap(packaging:PackageInformation) = for ((k, Some(v)) <- packaging.getClass.getDeclaredFields
+    .map(_.getName)
+    .zip(packaging.productIterator.to)
+    .toMap)
+    yield k -> v.asInstanceOf[Any].toString
 
 }
