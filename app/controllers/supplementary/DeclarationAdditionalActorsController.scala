@@ -30,7 +30,6 @@ import models.declaration.supplementary.DeclarationAdditionalActorsData.{formId,
 import models.requests.AuthenticatedRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.CustomsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -102,7 +101,8 @@ class DeclarationAdditionalActorsController @Inject()(
           handleErrorPage(Seq(("eori", "supplementary.additionalActors.eori.isNotDefined")), userInput, cachedData.actors)
     }
 
-  private def retrieveItem(value: String): Option[DeclarationAdditionalActors] = DeclarationAdditionalActors.fromJsonString(value)
+  private def retrieveItem(value: String): Option[DeclarationAdditionalActors] =
+    DeclarationAdditionalActors.fromJsonString(value)
 
   private def saveAndContinue(
     userInput: DeclarationAdditionalActors,
@@ -143,19 +143,18 @@ class DeclarationAdditionalActorsController @Inject()(
     actorToRemove: Option[DeclarationAdditionalActors],
     cachedData: DeclarationAdditionalActorsData
   )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
-
     actorToRemove match {
       case Some(actorToRemove) =>
         if (cachedData.containsItem(actorToRemove)) {
           val updatedCache = cachedData.copy(actors = cachedData.actors.filterNot(_ == actorToRemove))
 
-          customsCacheService.cache[DeclarationAdditionalActorsData](supplementaryCacheId, formId, updatedCache).map { _ =>
-            Redirect(DeclarationAdditionalActorsController.displayForm())
+          customsCacheService.cache[DeclarationAdditionalActorsData](supplementaryCacheId, formId, updatedCache).map {
+            _ =>
+              Redirect(DeclarationAdditionalActorsController.displayForm())
           }
         } else errorHandler.displayErrorPage()
       case _ => errorHandler.displayErrorPage()
     }
-
 
   private def handleErrorPage(
     fieldWithError: Seq[(String, String)],

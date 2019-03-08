@@ -75,8 +75,8 @@ object Status {
       case "08"                                                                 => Released
       case "09"                                                                 => Cleared
       case "10"                                                                 => Cancelled
-      case "11" if response.status.headOption.flatMap(_.nameCode) == Some("39") => CustomsPositionGranted
-      case "11" if response.status.headOption.flatMap(_.nameCode) == Some("41") => CustomsPositionDenied
+      case "11" if response.status.headOption.flatMap(_.nameCode).contains("39") => CustomsPositionGranted
+      case "11" if response.status.headOption.flatMap(_.nameCode).contains("41") => CustomsPositionDenied
       case "16"                                                                 => GoodsHaveExitedTheCommunity
       case "17"                                                                 => DeclarationHandledExternally
       case "18"                                                                 => AwaitingExitResults

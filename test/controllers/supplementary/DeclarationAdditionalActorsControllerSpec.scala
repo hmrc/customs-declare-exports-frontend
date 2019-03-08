@@ -24,6 +24,7 @@ import forms.supplementary.DeclarationAdditionalActors.PartyType
 import forms.supplementary.DeclarationAdditionalActorsSpec._
 import models.declaration.supplementary.DeclarationAdditionalActorsData
 import models.declaration.supplementary.DeclarationAdditionalActorsData.formId
+import models.declaration.supplementary.DeclarationAdditionalActorsDataSpec._
 import org.mockito.Mockito.reset
 import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
@@ -66,7 +67,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
       stringResult must include(messages("supplementary.partyType.MF"))
       stringResult must include(messages("supplementary.partyType.FW"))
       stringResult must include(messages("supplementary.partyType.WH"))
-      stringResult must include(messages("error.required"))
+      stringResult must include(messages("supplementary.partyType.empty"))
     }
 
     "display additional information form with added items" in {

@@ -27,7 +27,6 @@ import views.tags.ViewTest
 class DispatchLocationViewSpec extends ViewSpec {
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
-  private def createView(form: Form[DispatchLocation] = form): Html = dispatch_location(appConfig, form)(fakeRequest, messages)
 
   private val prefix = s"${basePrefix}dispatchLocation."
 
@@ -36,25 +35,30 @@ class DispatchLocationViewSpec extends ViewSpec {
   private val hint = Item(prefix + "header.", "hint")
   private val outsideEu = Item(prefix + "inputText.", "outsideEU")
   private val specialFiscalTerritory = Item(prefix + "inputText.", "specialFiscalTerritory")
-  private val errorMessage = Item(prefix + "inputText.", "errorMessage")
+  private val errorMessageEmpty = Item(prefix + "inputText.", "error.empty")
+  private val errorMessageIncorrect = Item(prefix + "inputText.", "error.incorrectValue")
+
+  private def createView(form: Form[DispatchLocation] = form): Html =
+    dispatch_location(appConfig, form)(fakeRequest, messages)
 
   "Dispatch Location View" should {
 
     "have proper messages for labels" in {
 
-    assertMessage(header.withPrefix, "1/1 Where are the goods being dispatched to?")
-    assertMessage(hint.withPrefix, "Hint text if needed here")
-    assertMessage(outsideEu.withPrefix, "Outside the EU")
-    assertMessage(
-      specialFiscalTerritory.withPrefix,
-      "Fiscal territory of the EU or country with which the EU has formed a customs union"
-    )
-  }
+      assertMessage(header.withPrefix, "1/1 Where are the goods being dispatched to?")
+      assertMessage(hint.withPrefix, "Hint text if needed here")
+      assertMessage(outsideEu.withPrefix, "Outside the EU")
+      assertMessage(
+        specialFiscalTerritory.withPrefix,
+        "Fiscal territory of the EU or country with which the EU has formed a customs union"
+      )
+    }
 
     "have proper messages for error labels" in {
 
-      assertMessage(errorMessage.withPrefix, "Please, choose dispatch location")
-  }
+      assertMessage(errorMessageEmpty.withPrefix, "Please, choose dispatch location")
+      assertMessage(errorMessageIncorrect.withPrefix, "Please, choose valid dispatch location")
+    }
   }
 
   "Dispatch Location View on empty page" should {
@@ -108,12 +112,14 @@ class DispatchLocationViewSpec extends ViewSpec {
 
     "display error if nothing is selected" in {
 
-      val view = createView(DispatchLocation.form().withError(formName, messages(errorMessage.withPrefix)))
+      val view = createView(DispatchLocation.form().withError(formName, messages(errorMessageEmpty.withPrefix)))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(errorMessage.withPrefix), "#dispatchLocation")
+      checkErrorLink(view, 1, messages(errorMessageEmpty.withPrefix), "#dispatchLocation")
 
-      getElementByCss(view, "#error-message-dispatchLocation-input").text() must be(messages(errorMessage.withPrefix))
+      getElementByCss(view, "#error-message-dispatchLocation-input").text() must be(
+        messages(errorMessageEmpty.withPrefix)
+      )
     }
   }
 

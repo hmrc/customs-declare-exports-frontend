@@ -140,7 +140,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       val result = ItemTypeValidator.validateOnAddition(input)
       result match {
         case f: Invalid => expectedResult.errors.foreach(f.errors must contain(_))
-        case Valid    => fail()
+        case Valid      => fail()
       }
     }
   }
@@ -368,7 +368,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       val result = ItemTypeValidator.validateOnSaveAndContinue(input)
       result match {
         case f: Invalid => expectedResult.errors.foreach(f.errors must contain(_))
-        case Valid    => fail()
+        case Valid      => fail()
       }
     }
   }

@@ -69,7 +69,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
         val formWithoutDeclarationType = buildDispatchLocationTestData()
         val result = route(app, postRequest(dispatchLocationUri, formWithoutDeclarationType)).get
 
-        contentAsString(result) must include(messages("supplementary.dispatchLocation.inputText.errorMessage"))
+        contentAsString(result) must include(messages("supplementary.dispatchLocation.inputText.error.empty"))
       }
     }
 
@@ -148,7 +148,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
         val formWithoutAdditionalDeclarationType = buildAdditionalDeclarationTypeTestData()
         val result = route(app, postRequest(declarationTypeUri, formWithoutAdditionalDeclarationType)).get
 
-        contentAsString(result) must include(messages("supplementary.declarationType.inputText.errorMessage"))
+        contentAsString(result) must include(messages("supplementary.declarationType.inputText.error.empty"))
       }
     }
 

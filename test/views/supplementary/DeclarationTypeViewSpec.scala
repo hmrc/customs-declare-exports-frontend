@@ -36,9 +36,11 @@ class DeclarationTypeViewSpec extends ViewSpec {
   private val hint = Item(prefix + "header.", "hint")
   private val simplified = Item(prefix + "inputText.", "simplified")
   private val standard = Item(prefix + "inputText.", "standard")
-  private val errorMessage = Item(prefix + "inputText.", "errorMessage")
+  private val errorMessageEmpty = Item(prefix + "inputText.", "error.empty")
+  private val errorMessageIncorrect = Item(prefix + "inputText.", "error.incorrectValue")
 
-  private def createView(form: Form[AdditionalDeclarationType] = form): Html = declaration_type(appConfig, form)(fakeRequest, messages)
+  private def createView(form: Form[AdditionalDeclarationType] = form): Html =
+    declaration_type(appConfig, form)(fakeRequest, messages)
 
   "Declaration Type View" should {
 
@@ -53,7 +55,8 @@ class DeclarationTypeViewSpec extends ViewSpec {
 
     "have proper messages for error labels" in {
 
-      assertMessage(errorMessage.withPrefix, "Please, choose declaration type")
+      assertMessage(errorMessageEmpty.withPrefix, "Please, choose declaration type")
+      assertMessage(errorMessageIncorrect.withPrefix, "Please, choose valid declaration type")
     }
   }
 
@@ -108,12 +111,15 @@ class DeclarationTypeViewSpec extends ViewSpec {
 
     "display error if nothing is selected" in {
 
-      val view = createView(AdditionalDeclarationType.form().withError(formName, messages(errorMessage.withPrefix)))
+      val view =
+        createView(AdditionalDeclarationType.form().withError(formName, messages(errorMessageEmpty.withPrefix)))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(errorMessage.withPrefix), "#additionalDeclarationType")
+      checkErrorLink(view, 1, messages(errorMessageEmpty.withPrefix), "#additionalDeclarationType")
 
-      getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(messages(errorMessage.withPrefix))
+      getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(
+        messages(errorMessageEmpty.withPrefix)
+      )
     }
   }
 

@@ -43,6 +43,103 @@ class TransportInformationSpec extends WordSpec with MustMatchers {
     }
   }
 
+  "TransportInformation mapping used for binding data" should {
+
+    "return form with errors for borderModeOfTransportCode" when {
+      "provided with empty input for the field" in {
+        val transportInformationInputData = JsObject(Map(
+          "meansOfTransportOnDepartureType" -> JsString(NameOfVessel),
+          "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel)
+        ))
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.transportInfo.borderTransportMode.error.empty")
+      }
+
+      "provided with a value not defined in ModeOfTransportCodes for the field" in {
+        val transportInformationInputData = JsObject(Map(
+          "borderModeOfTransportCode" -> JsString("Invalid"),
+          "meansOfTransportOnDepartureType" -> JsString(NameOfVessel),
+          "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel)
+        ))
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.transportInfo.borderTransportMode.error.incorrect")
+      }
+    }
+
+    "return form with errors for meansOfTransportOnDepartureType" when {
+      "provided with empty input for the field" in {
+        val transportInformationInputData = JsObject(Map(
+          "borderModeOfTransportCode" -> JsString(Road),
+          "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel)
+        ))
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.transportInfo.meansOfTransport.departure.error.empty")
+      }
+
+      "provided with a value not defined in MeansOfTransportTypeCodes for the field" in {
+        val transportInformationInputData = JsObject(Map(
+          "borderModeOfTransportCode" -> JsString(Road),
+          "meansOfTransportOnDepartureType" -> JsString("Invalid"),
+          "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel)
+        ))
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.transportInfo.meansOfTransport.departure.error.incorrect")
+      }
+    }
+
+    "return form with errors for meansOfTransportCrossingTheBorderType" when {
+      "provided with empty input for the field" in {
+        val transportInformationInputData = JsObject(Map(
+          "borderModeOfTransportCode" -> JsString(Road),
+          "meansOfTransportOnDepartureType" -> JsString(NameOfVessel)
+        ))
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty")
+      }
+
+      "provided with a value not defined in MeansOfTransportTypeCodes for the field" in {
+        val transportInformationInputData = JsObject(Map(
+          "borderModeOfTransportCode" -> JsString(Road),
+          "meansOfTransportOnDepartureType" -> JsString(NameOfVessel),
+          "meansOfTransportCrossingTheBorderType" -> JsString("Invalid")
+        ))
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect")
+      }
+    }
+
+    "return form without errors" when {
+      "provided with valid input" in {
+        val transportInformationInputData = JsObject(Map(
+          "borderModeOfTransportCode" -> JsString(Road),
+          "meansOfTransportOnDepartureType" -> JsString(NameOfVessel),
+          "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel)
+        ))
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(false)
+      }
+    }
+  }
+
 }
 
 object TransportInformationSpec {
