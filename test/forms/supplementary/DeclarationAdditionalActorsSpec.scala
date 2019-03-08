@@ -54,8 +54,14 @@ object DeclarationAdditionalActorsSpec {
     JsObject(Map("actors" -> JsArray(Seq(correctAdditionalActorsJSON))))
 
   val emptyAdditionalActorsJSON: JsValue = JsObject(Map("eori" -> JsString(""), "partyType" -> JsString("")))
+  val emptyAdditionalActorsDataJSON = JsObject(Map("actors" -> JsArray(Seq(emptyAdditionalActorsJSON))))
+
   val incorrectAdditionalActorsJSON: JsValue = JsObject(
     Map("eori" -> JsString("123456789123456789"), "partyType" -> JsString("Incorrect"))
   )
+
+  val correctAdditionalActorsMap: Map[String, String] = Map(
+    "eori" -> "eori1",
+    "partyType" -> "CS")
 
 }

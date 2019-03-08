@@ -47,7 +47,7 @@ POST        /consignee-details              controllers.supplementary.ConsigneeD
 
 GET         /additional-actors              controllers.supplementary.DeclarationAdditionalActorsController.displayForm()
 
-POST        /additional-actors              controllers.supplementary.DeclarationAdditionalActorsController.saveAdditionalActors()
+POST        /additional-actors              controllers.supplementary.DeclarationAdditionalActorsController.saveForm()
 
 # Declaration holder of authorisation
 

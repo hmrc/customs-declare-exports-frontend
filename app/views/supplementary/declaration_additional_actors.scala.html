@@ -28,8 +28,27 @@
     title = messages("supplementary.additionalActors.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(DeclarationAdditionalActorsController.saveAdditionalActors(), 'autoComplete -> "off") {
+    @helpers.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
         @components.back_link("/customs-declare-exports/declaration/supplementary/representative-details")
+
+        @if(actors.nonEmpty) {
+            <table class="form-group">
+                <thead>
+                    <tr>
+                        <th scope="col">@messages("supplementary.additionalActors.eori")</th>
+                        <th scope="col">@messages("supplementary.additionalActors.partyType")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for(actor <- actors) {
+                    <tr>
+                        <td scope="row">@actor.eori</td>
+                        <td>@actor.partyType</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
 
         @components.error_summary(form.errors)
 
@@ -55,6 +74,6 @@
             )
         )
 
-        @components.submit_button()
+        @components.add_save_button()
     }
 }
