@@ -22,7 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.Countries.allCountries
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfTrue
-import utils.validators.FormFieldValidator._
+import utils.validators.forms.FieldValidator._
 
 case class TransportInformation(
   inlandModeOfTransportCode: Option[String],

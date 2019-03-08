@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package utils.validators
+package utils.validators.forms
 
 import scala.util.{Success, Try}
 
-object FormFieldValidator {
+object FieldValidator {
 
   implicit class PredicateOpsForFunctions[A](first: A => Boolean) {
     def and(second: A => Boolean): A => Boolean = (arg: A) => first(arg) && second(arg)
@@ -96,4 +96,8 @@ object FormFieldValidator {
           case Array(a) if isNumeric(a)                    => a.length <= totalLength
           case _                                           => false
   }
+
+  val containsDuplicates: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size != input.size
+
+  val containsUniques: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size == input.size
 }

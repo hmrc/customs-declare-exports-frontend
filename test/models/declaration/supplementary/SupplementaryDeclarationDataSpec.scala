@@ -76,8 +76,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.transportInformation mustNot be(defined)
           supplementaryDeclarationData.items mustNot be(defined)
           supplementaryDeclarationData.previousDocuments mustNot be(defined)
-          supplementaryDeclarationData.additionalInformation mustNot be(defined)
-          supplementaryDeclarationData.documentsProduced mustNot be(defined)
+          supplementaryDeclarationData.additionalInformationData mustNot be(defined)
+          supplementaryDeclarationData.documentsProducedData mustNot be(defined)
         }
       }
 
@@ -242,8 +242,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.items.get.goodsItemNumber must be(defined)
           supplementaryDeclarationData.items.get.itemType must be(defined)
           supplementaryDeclarationData.previousDocuments must be(defined)
-          supplementaryDeclarationData.additionalInformation must be(defined)
-          supplementaryDeclarationData.documentsProduced must be(defined)
+          supplementaryDeclarationData.additionalInformationData must be(defined)
+          supplementaryDeclarationData.documentsProducedData must be(defined)
         }
       }
 
@@ -279,11 +279,11 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       "return Map with 3 elements" in {
         val declarationType = correctDeclarationType
         val parties = Parties(exporterDetails = Some(correctExporterDetails))
-        val additionalInformation = correctAdditionalInformation
+        val additionalInformationData = correctAdditionalInformation
         val supplementaryDeclarationData = SupplementaryDeclarationData(
           declarationType = Some(declarationType),
           parties = Some(parties),
-          additionalInformation = Some(additionalInformation)
+          additionalInformationData = Some(additionalInformationData)
         )
 
         val map = supplementaryDeclarationData.toMap
@@ -295,9 +295,9 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         map.keys must contain(Parties.id)
         map.get(Parties.id) must be(defined)
         map(Parties.id) must equal(parties)
-        map.keys must contain(AdditionalInformation.formId)
-        map.get(AdditionalInformation.formId) must be(defined)
-        map(AdditionalInformation.formId) must equal(additionalInformation)
+        map.keys must contain(AdditionalInformationData.formId)
+        map.get(AdditionalInformationData.formId) must be(defined)
+        map(AdditionalInformationData.formId) must equal(additionalInformationData)
       }
     }
 
@@ -324,10 +324,10 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         map(Items.id) must equal(data.items.get)
         map.keys must contain(PreviousDocuments.formId)
         map(PreviousDocuments.formId) must equal(data.previousDocuments.get)
-        map.keys must contain(AdditionalInformation.formId)
-        map(AdditionalInformation.formId) must equal(data.additionalInformation.get)
-        map.keys must contain(DocumentsProduced.formId)
-        map(DocumentsProduced.formId) must equal(data.documentsProduced.get)
+        map.keys must contain(AdditionalInformationData.formId)
+        map(AdditionalInformationData.formId) must equal(data.additionalInformationData.get)
+        map.keys must contain(DocumentsProducedData.formId)
+        map(DocumentsProducedData.formId) must equal(data.documentsProducedData.get)
       }
     }
 
@@ -335,7 +335,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
   "Method toMetadataProperties" should {
     "invoke the same method on every data element contained" in new SimpleTest {
-      val aa = supplementaryDeclarationData.toMetadataProperties()
+      supplementaryDeclarationData.toMetadataProperties()
 
       verify(declarationTypeMock, times(1)).toMetadataProperties()
       verify(consignmentReferencesMock, times(1)).toMetadataProperties()
@@ -344,8 +344,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       verify(transportInformationMock, times(1)).toMetadataProperties()
       verify(itemsMock, times(1)).toMetadataProperties()
       verify(previousDocumentsMock, times(1)).toMetadataProperties()
-      verify(additionalInformationMock, times(1)).toMetadataProperties()
-      verify(documentsProducedMock, times(1)).toMetadataProperties()
+      verify(additionalInformationDataMock, times(1)).toMetadataProperties()
+      verify(documentsProducedDataMock, times(1)).toMetadataProperties()
     }
 
     "return Map being summary of all data elements returned Maps" in new TestMapConcatenation {
@@ -362,8 +362,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       val transportInformationMock = mock(classOf[TransportInformation])
       val itemsMock = mock(classOf[Items])
       val previousDocumentsMock = mock(classOf[PreviousDocuments])
-      val additionalInformationMock = mock(classOf[AdditionalInformation])
-      val documentsProducedMock = mock(classOf[DocumentsProduced])
+      val additionalInformationDataMock = mock(classOf[AdditionalInformationData])
+      val documentsProducedDataMock = mock(classOf[DocumentsProducedData])
       val supplementaryDeclarationData = SupplementaryDeclarationData(
         declarationType = Some(declarationTypeMock),
         consignmentReferences = Some(consignmentReferencesMock),
@@ -372,8 +372,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         transportInformation = Some(transportInformationMock),
         items = Some(itemsMock),
         previousDocuments = Some(previousDocumentsMock),
-        additionalInformation = Some(additionalInformationMock),
-        documentsProduced = Some(documentsProducedMock)
+        additionalInformationData = Some(additionalInformationDataMock),
+        documentsProducedData = Some(documentsProducedDataMock)
       )
 
       when(declarationTypeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
@@ -383,8 +383,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       when(transportInformationMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(itemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(previousDocumentsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-      when(additionalInformationMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-      when(documentsProducedMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+      when(additionalInformationDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+      when(documentsProducedDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     }
 
     trait TestMapConcatenation extends SimpleTest {
@@ -405,8 +405,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       when(transportInformationMock.toMetadataProperties()).thenReturn(transportInformationMap)
       when(itemsMock.toMetadataProperties()).thenReturn(itemsMap)
       when(previousDocumentsMock.toMetadataProperties()).thenReturn(previousDocumentsMap)
-      when(additionalInformationMock.toMetadataProperties()).thenReturn(additionalInformationMap)
-      when(documentsProducedMock.toMetadataProperties()).thenReturn(documentsProducedMap)
+      when(additionalInformationDataMock.toMetadataProperties()).thenReturn(additionalInformationMap)
+      when(documentsProducedDataMock.toMetadataProperties()).thenReturn(documentsProducedMap)
     }
   }
 
@@ -438,8 +438,8 @@ object SupplementaryDeclarationDataSpec {
       GoodsItemNumber.formId -> correctGoodsItemNumberJSON,
       ItemType.id -> correctItemTypeJSON,
       PreviousDocuments.formId -> correctPreviousDocumentsJSON,
-      AdditionalInformation.formId -> correctAdditionalInformationJSON,
-      DocumentsProduced.formId -> correctDocumentsProducedJSON
+      AdditionalInformationData.formId -> correctAdditionalInformationDataJSON,
+      DocumentsProducedData.formId -> correctDocumentsProducedDataJSON
     )
   )
 
@@ -474,8 +474,8 @@ object SupplementaryDeclarationDataSpec {
         itemType = Some(correctItemType))
     ),
     previousDocuments = Some(correctPreviousDocuments),
-    additionalInformation = Some(correctAdditionalInformation),
-    documentsProduced = Some(correctDocumentsProduced)
+    additionalInformationData = Some(correctAdditionalInformation),
+    documentsProducedData = Some(correctDocumentsProducedData)
   )
 
 }

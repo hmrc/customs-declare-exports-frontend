@@ -14,34 +14,36 @@
  * limitations under the License.
  *@
 
-@import forms.supplementary.DocumentsProduced
+@import models.declaration.supplementary.DocumentsProducedData
 @import models.viewmodels.HtmlTableRow
-
-@(additionalDocumentation: Option[DocumentsProduced])(implicit messages: Messages)
+@(additionalDocumentationData: Option[DocumentsProducedData])(implicit messages: Messages)
 
 @components.summary_list(Some(messages("supplementary.summary.additionalDocumentation.header"))) {
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalDocumentation.documentTypeCode"),
-        value = additionalDocumentation.flatMap(_.documentTypeCode)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalDocumentation.documentId"),
-        value = additionalDocumentation.flatMap(_.documentIdentifier)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalDocumentation.documentPart"),
-        value = additionalDocumentation.flatMap(_.documentPart)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalDocumentation.documentStatus"),
-        value = additionalDocumentation.flatMap(_.documentStatus)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalDocumentation.documentStatusReason"),
-        value = additionalDocumentation.flatMap(_.documentStatusReason)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalDocumentation.documentQuantity"),
-        value = additionalDocumentation.flatMap(_.documentQuantity)
-    ))
+
+    @if(additionalDocumentationData.map(_.documents.nonEmpty)) {
+        <table class="form-group">
+            <thead>
+                <tr>
+                    <th scope="col">@messages("supplementary.summary.additionalDocumentation.documentTypeCode")</th>
+                    <th scope="col">@messages("supplementary.summary.additionalDocumentation.documentId")</th>
+                    <th scope="col">@messages("supplementary.summary.additionalDocumentation.documentPart")</th>
+                    <th scope="col">@messages("supplementary.summary.additionalDocumentation.documentStatus")</th>
+                    <th scope="col">@messages("supplementary.summary.additionalDocumentation.documentStatusReason")</th>
+                    <th scope="col">@messages("supplementary.summary.additionalDocumentation.documentQuantity")</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for(item <- additionalDocumentationData.map(_.documents).get) {
+                <tr>
+                    <td scope="row">@item.documentTypeCode</td>
+                    <td>@item.documentIdentifier</td>
+                    <td>@item.documentPart</td>
+                    <td>@item.documentStatus</td>
+                    <td>@item.documentStatusReason</td>
+                    <td>@item.documentQuantity</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
 }

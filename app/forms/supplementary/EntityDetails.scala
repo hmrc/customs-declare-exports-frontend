@@ -19,7 +19,7 @@ package forms.supplementary
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.FormFieldValidator._
+import utils.validators.forms.FieldValidator._
 
 case class EntityDetails(
   eori: Option[String], // alphanumeric, max length 17 characters

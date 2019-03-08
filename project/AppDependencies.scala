@@ -18,7 +18,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "bootstrap-play-25" % "4.6.0",
     "uk.gov.hmrc" %% "play-language" % "3.4.0",
     "com.thoughtworks.xstream" % "xstream" % "1.4.10",
-    "uk.gov.hmrc" %% "wco-dec" % "0.22.0",
+    "uk.gov.hmrc" %% "wco-dec" % "0.23.0",
     "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
     "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
     "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonVersion,

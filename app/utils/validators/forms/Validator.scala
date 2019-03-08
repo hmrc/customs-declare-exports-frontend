@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import models.declaration.supplementary.AdditionalInformationData
-@import models.viewmodels.HtmlTableRow
-@(additionalInformationData: Option[AdditionalInformationData])(implicit messages: Messages)
+package utils.validators.forms
 
-@components.summary_list(Some(messages("supplementary.summary.additionalInformation.header"))) {
-
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.additionalInformation.header"),
-        value = additionalInformationData.map(_.items.map(_.toString))
-    ))
+trait Validator[T] {
+  def validateOnAddition(element: T): ValidationResult
+  def validateOnSaveAndContinue(element: T): ValidationResult
 }

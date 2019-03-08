@@ -60,11 +60,11 @@
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.taricAdditionalCodes"),
-        value = items.flatMap(_.itemType).flatMap(_.taricAdditionalCode)
+        value = items.flatMap(_.itemType).map(_.taricAdditionalCodes)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.nationalAdditionalCode"),
-        value = items.flatMap(_.itemType).flatMap(_.nationalAdditionalCode)
+        value = items.flatMap(_.itemType).map(_.nationalAdditionalCodes)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.tradeDescription"),

@@ -20,7 +20,7 @@ import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.Countries.allCountries
-import utils.validators.FormFieldValidator._
+import utils.validators.forms.FieldValidator._
 
 case class Address(
   fullName: String, // alphanumeric length 1 - 70

@@ -25,6 +25,7 @@ object Status {
 
   implicit object StatusFormat extends Format[Status] {
     def reads(status: JsValue): JsResult[Status] = status match {
+      case JsString("Pending")   => JsSuccess(Pending)
       case JsString("01")   => JsSuccess(Accepted)
       case JsString("02")   => JsSuccess(Received)
       case JsString("03")   => JsSuccess(Rejected)
@@ -39,10 +40,11 @@ object Status {
       case JsString("16")   => JsSuccess(GoodsHaveExitedTheCommunity)
       case JsString("17")   => JsSuccess(DeclarationHandledExternally)
       case JsString("18")   => JsSuccess(AwaitingExitResults)
-      case _                => JsError("Incorrect value")
+      case _                => JsSuccess(UnknownStatus)
     }
 
     def writes(status: Status): JsValue = status match {
+      case Pending                      => JsString("Pending")
       case Accepted                     => JsString("01")
       case Received                     => JsString("02")
       case Rejected                     => JsString("03")
@@ -57,11 +59,13 @@ object Status {
       case GoodsHaveExitedTheCommunity  => JsString("16")
       case DeclarationHandledExternally => JsString("17")
       case AwaitingExitResults          => JsString("18")
+      case UnknownStatus                => JsString("UnknownStatus")
     }
   }
 
   def retrieveFromResponse(response: Response): Status =
     response.functionCode match {
+      case "Pending"                                                            => Pending
       case "01"                                                                 => Accepted
       case "02"                                                                 => Received
       case "03"                                                                 => Rejected
@@ -76,9 +80,11 @@ object Status {
       case "16"                                                                 => GoodsHaveExitedTheCommunity
       case "17"                                                                 => DeclarationHandledExternally
       case "18"                                                                 => AwaitingExitResults
-      case _                                                                    => throw new Exception("Incorrect status")
+      case _                                                                    => UnknownStatus
     }
 }
+
+case object Pending extends Status
 
 case object Accepted extends Status
 
@@ -120,4 +126,8 @@ case object DeclarationHandledExternally extends Status {
 
 case object AwaitingExitResults extends Status {
   override def toString(): String = "Awaiting Exit Results"
+}
+
+case object UnknownStatus extends Status {
+  override def toString(): String = "Unknown status"
 }

@@ -75,28 +75,4 @@ class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with BeforeAn
       resultAsString must include("<a href=\"/customs-declare-exports/notifications/" + conversationId + "\">")
     }
   }
-
-  "ConfirmationPageController on display rejected confirmation page" should {
-    "return 200 code" in {
-      val result = route(app, getRequest(rejectionPageUri)).get
-      status(result) must be(OK)
-    }
-
-    "display the whole content" in {
-      val result = route(app, getRequest(rejectionPageUri)).get
-      val stringResult = contentAsString(result)
-
-      stringResult must include(messages("supplementary.confirmation.header"))
-      stringResult must include(messages("supplementary.confirmation.rejection.header"))
-      stringResult must include(messages("supplementary.confirmation.whatHappensNext"))
-    }
-
-    "display a button links to choice page" in {
-      val result = route(app, getRequest(rejectionPageUri)).get
-      val stringResult = contentAsString(result)
-
-      stringResult must include(messages("supplementary.confirmation.submitAnotherDeclaration"))
-      stringResult must include("a href=\"/customs-declare-exports/choice\" role=\"button\" class=\"button\"")
-    }
-  }
 }

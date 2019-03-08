@@ -154,5 +154,3 @@ POST        /summary                        controllers.supplementary.SummaryPag
 # Confirmation
 
 GET         /confirmation                   controllers.supplementary.ConfirmationPageController.displayPage()
-
-GET         /rejection                      controllers.supplementary.ConfirmationPageController.displayRejectionPage()

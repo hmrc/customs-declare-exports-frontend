@@ -28,8 +28,8 @@ case class SupplementaryDeclarationData(
   transportInformation: Option[TransportInformation] = None,
   items: Option[Items] = None,
   previousDocuments: Option[PreviousDocuments] = None,
-  additionalInformation: Option[AdditionalInformation] = None,
-  documentsProduced: Option[DocumentsProduced] = None
+  additionalInformationData: Option[AdditionalInformationData] = None,
+  documentsProducedData: Option[DocumentsProducedData] = None
 ) extends SummaryContainer with MetadataPropertiesConvertable {
   import SupplementaryDeclarationData._
 
@@ -48,8 +48,8 @@ case class SupplementaryDeclarationData(
       transportInformation.isEmpty &&
       items.isEmpty &&
       previousDocuments.isEmpty &&
-      additionalInformation.isEmpty &&
-      documentsProduced.isEmpty
+      additionalInformationData.isEmpty &&
+      documentsProducedData.isEmpty
 
   def toMap: Map[String, MetadataPropertiesConvertable] =
     Map(
@@ -60,8 +60,8 @@ case class SupplementaryDeclarationData(
       TransportInformation.id -> transportInformation,
       Items.id -> items,
       PreviousDocuments.formId -> previousDocuments,
-      AdditionalInformation.formId -> additionalInformation,
-      DocumentsProduced.formId -> documentsProduced
+      AdditionalInformationData.formId -> additionalInformationData,
+      DocumentsProducedData.formId -> documentsProducedData
     ).collect { case (key, Some(data)) => (key, data) }
 }
 
@@ -77,8 +77,8 @@ object SupplementaryDeclarationData {
       transportInformation = cacheMap.getEntry[TransportInformation](TransportInformation.id),
       items = flattenIfEmpty(Items(cacheMap)),
       previousDocuments = cacheMap.getEntry[PreviousDocuments](PreviousDocuments.formId),
-      additionalInformation = cacheMap.getEntry[AdditionalInformation](AdditionalInformation.formId),
-      documentsProduced = cacheMap.getEntry[DocumentsProduced](DocumentsProduced.formId)
+      additionalInformationData = cacheMap.getEntry[AdditionalInformationData](AdditionalInformationData.formId),
+      documentsProducedData = cacheMap.getEntry[DocumentsProducedData](DocumentsProducedData.formId)
     )
 
   private def flattenIfEmpty[A <: SummaryContainer](container: A): Option[A] =

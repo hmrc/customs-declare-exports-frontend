@@ -16,11 +16,10 @@
 
 package forms.supplementary
 
-import forms.MetadataPropertiesConvertable
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
-import utils.validators.FormFieldValidator._
+import play.api.libs.json.{JsValue, Json}
+import utils.validators.forms.FieldValidator._
 
 case class DocumentsProduced(
   documentTypeCode: Option[String],
@@ -29,32 +28,25 @@ case class DocumentsProduced(
   documentStatus: Option[String],
   documentStatusReason: Option[String],
   documentQuantity: Option[String]
-) extends MetadataPropertiesConvertable {
+) {
+  implicit val writes = Json.writes[DocumentsProduced]
+  
+  def isDefined: Boolean =
+    List(documentTypeCode, documentIdentifier, documentPart, documentStatus, documentStatusReason, documentQuantity)
+      .exists(_.isDefined)
 
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].categoryCode" ->
-        documentTypeCode.flatMap(_.headOption).fold("")(_.toString),
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].typeCode" ->
-        documentTypeCode.map(_.drop(1).toString).getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].id" ->
-        (documentIdentifier.getOrElse("") + documentPart.getOrElse("")),
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].lpcoExemptionCode" ->
-        documentStatus.getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].name" ->
-        documentStatusReason.getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].writeOff.quantity" ->
-        documentQuantity.getOrElse("")
-    )
+  def toJson: JsValue = Json.toJson(this)
 }
 
 object DocumentsProduced {
+
   implicit val format = Json.format[DocumentsProduced]
 
   val formId = "Document"
 
   private val documentQuantityMaxLength = 16
   private val documentQuantityMaxDecimalPlaces = 6
+
   val mapping = Forms.mapping(
     "documentTypeCode" -> optional(
       text().verifying("supplementary.addDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)
@@ -80,4 +72,6 @@ object DocumentsProduced {
   )(DocumentsProduced.apply)(DocumentsProduced.unapply)
 
   def form(): Form[DocumentsProduced] = Form(mapping)
+
+  def fromJson(str: JsValue): DocumentsProduced = Json.fromJson(str).get
 }
