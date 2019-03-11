@@ -16,6 +16,7 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
+@import controllers.util.Remove
 @import forms.supplementary.DeclarationAdditionalActors
 @import forms.supplementary.DeclarationAdditionalActors.PartyType._
 @import uk.gov.hmrc.play.views.html._
@@ -37,6 +38,7 @@
                     <tr>
                         <th scope="col">@messages("supplementary.additionalActors.eori")</th>
                         <th scope="col">@messages("supplementary.additionalActors.partyType")</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,6 +46,7 @@
                     <tr>
                         <td scope="row">@actor.eori</td>
                         <td>@actor.partyType</td>
+                        <td><button class="button" name="@Remove.toString" value="@actor.toJson">@messages("site.remove")</button></td>
                     </tr>
                 }
                 </tbody>

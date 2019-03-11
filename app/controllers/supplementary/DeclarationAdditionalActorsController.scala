@@ -20,7 +20,7 @@ import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.supplementary.routes.{DeclarationAdditionalActorsController, DeclarationHolderController}
 import controllers.util.CacheIdGenerator.supplementaryCacheId
-import controllers.util.{Add, FormAction, SaveAndContinue}
+import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.supplementary.DeclarationAdditionalActors
 import forms.supplementary.DeclarationAdditionalActors.form
 import handlers.ErrorHandler
@@ -30,6 +30,7 @@ import models.declaration.supplementary.DeclarationAdditionalActorsData.{formId,
 import models.requests.AuthenticatedRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.CustomsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -94,6 +95,9 @@ class DeclarationAdditionalActorsController @Inject()(
           Redirect(DeclarationHolderController.displayForm())
         } else Future.successful(Redirect(DeclarationHolderController.displayForm()))
 
+
+  private def retrieveItem(value: JsValue): DeclarationAdditionalActors = DeclarationAdditionalActors.fromJson(value)
+
   def saveForm(): Action[AnyContent] = authenticate.async { implicit request =>
     val boundForm = form.bindFromRequest()
     val actionTypeOpt = request.body.asFormUrlEncoded.flatMap(FormAction.fromUrlEncoded(_))
@@ -110,12 +114,14 @@ class DeclarationAdditionalActorsController @Inject()(
             actionTypeOpt match {
               case Some(Add)             => addItem(validForm, cache)
               case Some(SaveAndContinue) => saveAndContinue(validForm, cache)
-//              case Some(Remove(values))  => removeItem(retrieveItem(Json.parse(values.headOption.get)), cache)
+              case Some(Remove(values))  => removeItem(retrieveItem(Json.parse(values.headOption.get)), cache)
               case _ => errorHandler.displayErrorPage()
           }
         )
     }
   }
+
+
 
   private def addItem(
     userInput: DeclarationAdditionalActors,
@@ -138,6 +144,19 @@ class DeclarationAdditionalActorsController @Inject()(
           handleErrorPage(Seq(("", "supplementary.additionalActors.eori.isNotDefined")), userInput, cachedData.actors)
       }
     }
+
+  private def removeItem(actorToRemove: DeclarationAdditionalActors,
+                          cachedData: DeclarationAdditionalActorsData
+                        )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+    if (cachedData.containsItem(actorToRemove)) {
+      val updatedCache = cachedData.copy(actors = cachedData.actors.filterNot(_ == actorToRemove))
+
+      customsCacheService.cache[DeclarationAdditionalActorsData](supplementaryCacheId, formId, updatedCache).map { _ =>
+        Redirect(DeclarationAdditionalActorsController.displayForm())
+      }
+    } else errorHandler.displayErrorPage()
+
+
   private def handleErrorPage(
     fieldWithError: Seq[(String, String)],
     userInput: DeclarationAdditionalActors,
