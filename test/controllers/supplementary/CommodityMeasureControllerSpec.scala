@@ -29,7 +29,7 @@ import org.scalatest.prop.PropertyChecks
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
-class CommodityControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
+class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
 
   val uri = uriWithContextPath("/declaration/supplementary/commodity-measure")
 
@@ -54,16 +54,12 @@ class CommodityControllerSpec extends CustomExportsBaseSpec with Generators with
 
         "user is signed in" in {
           authorizedUser()
-          val packages = arbitraryPackagingSeq.sample
-          withCaching[Seq[PackageInformation]](packages, "PackageInformation")
-
-          withCaching[CommodityMeasure](None)
-
+          withCaching[CommodityMeasure](None, commodityFormId)
+          val packages = arbitraryPackagingSeq.sample.getOrElse(Seq.empty)
+          withCaching[Seq[PackageInformation]](Some(packages), "PackageInformation")
           val result = route(app, getRequest(uri)).value
           val stringResult = contentAsString(result)
-
-          //status(result) must be(OK)
-          stringResult must include(("supplementary.commodityMeasure.title"))
+          status(result) must be(OK)
           stringResult must include(messages("supplementary.commodityMeasure.title"))
           stringResult must include(messages("supplementary.commodityMeasure.supplementaryUnits"))
           stringResult must include(messages("supplementary.commodityMeasure.supplementaryUnits.hint"))
@@ -72,24 +68,6 @@ class CommodityControllerSpec extends CustomExportsBaseSpec with Generators with
         }
       }
 
-      "load data from cache" when {
-
-        "packageInformation is added before" in {
-          authorizedUser()
-          val packages = arbitraryPackagingSeq.sample
-          withCaching[List[PackageInformation]](packages, "PackageInformation")
-          val cachedData = arbitraryCommodityMeasure.arbitrary.sample
-          withCaching[CommodityMeasure](cachedData, commodityFormId)
-
-          val result = route(app, getRequest(uri)).value
-          status(result) must be(BAD_REQUEST)
-
-          val stringResult = contentAsString(result)
-
-          cachedData.map(res => stringResult.contains("You should add one package information to proceed"))
-
-        }
-      }
       "show global error" when {
 
         "when no packages added and user tries to navigate to the screen" in {
