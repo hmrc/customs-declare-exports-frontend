@@ -106,6 +106,8 @@ trait Generators {
   }
 
   implicit val arbitraryPackagingSeq  =listOfN[PackageInformation](5, arbitraryPackaging.arbitrary)
+  implicit val arbitraryPackagingMaxSeq  = Gen.listOfN[PackageInformation](99, arbitraryPackaging.arbitrary)
+
 
   def caseClassToSeq(cc: AnyRef) =
     (Map[String, String]() /: cc.getClass.getDeclaredFields) {

@@ -42,6 +42,11 @@ class PackageInformationController @Inject()(
     extends FrontendController with I18nSupport {
 
   val packagesMaxElements = 99
+  val DUPLICATE_MSG_KEY = "supplementary.packageInformation.global.duplicate"
+  val LIMIT_MSG_KEY = "supplementary.packageInformation.global.limit"
+  val USE_ADD = "supplementary.packageInformation.global.useAdd"
+  val ADD_ONE = "supplementary.packageInformation.global.addOne"
+
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     cacheService
       .fetchAndGetEntry[Seq[PackageInformation]](supplementaryCacheId, formId)
@@ -49,13 +54,6 @@ class PackageInformationController @Inject()(
 
   }
 
-  //TODO Validate payload - DONE
-  //TODO Check GovermentAgencyGoodsItem Exists - DONE
-  //TODO verify what action user performed - SEMI DONE
-  //TODO handle add ,remove,  -- DONE
-  //TODO check duplication  -- DONE
-  //TODO validate for maximum no of entries -DONE
-  //TODO continue - check items entered
   def submitForm(): Action[AnyContent] = authenticate.async { implicit authRequest =>
     val actionTypeOpt = authRequest.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
     cacheService
@@ -86,28 +84,14 @@ class PackageInformationController @Inject()(
       case _ => errorHandler.displayErrorPage()
     }
 
-  def continue()(implicit request: AuthenticatedRequest[_], packagings: Seq[PackageInformation]) = {
+  def continue()(implicit request: AuthenticatedRequest[AnyContent], packagings: Seq[PackageInformation]) = {
     val payload = form.bindFromRequest()
-    if (payload.data.filter(_._2.size > 0).size > 1)
-      Future.successful(
-        BadRequest(
-          package_information(payload.discardingErrors.withGlobalError("Use add button to add packaging"), packagings)
-        )
-      )
-    else if (packagings.size == 0)
-      Future.successful(
-        BadRequest(
-          package_information(
-            payload.discardingErrors.withGlobalError("Add one or more package information using Add button"),
-            packagings
-          )
-        )
-      )
-    else Future.successful(Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm()))
+    if (form.data.filter(_._2.size > 0).size > 1) badRequest(payload, USE_ADD)
+    else if (packagings.size == 0) badRequest(payload, ADD_ONE)
+    else
+      Future.successful(Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm()))
 
   }
-  def validaeAddPayload() = true
-  def validateContinuePayload() = true
 
   def addItem()(implicit authenticatedRequest: AuthenticatedRequest[AnyContent], packagings: Seq[PackageInformation]) =
     form
@@ -116,31 +100,23 @@ class PackageInformationController @Inject()(
         (formWithErrors: Form[PackageInformation]) =>
           Future.successful(BadRequest(package_information(formWithErrors, packagings))),
         validForm => {
-          if (packagings.contains(validForm))
-            Future.successful(
-              BadRequest(
-                package_information(
-                  form.fill(validForm).withGlobalError("Input provided is a duplicate of existing packaging"),
-                  packagings
-                )
-              )
-            )
-          else if (packagings.size > packagesMaxElements)
-            Future.successful(
-              BadRequest(
-                package_information(
-                  form.fill(validForm).withGlobalError("maximum number of packagings added"),
-                  packagings
-                )
-              )
-            )
-          else {
-            val updatedPackagings = packagings :+ validForm
+          isAdditionValid[PackageInformation](validForm).fold(
             cacheService
-              .cache[Seq[PackageInformation]](supplementaryCacheId(), formId, updatedPackagings)
+              .cache[Seq[PackageInformation]](supplementaryCacheId(), formId, (packagings :+ validForm))
               .map(_ => Redirect(routes.PackageInformationController.displayForm()))
-          }
+          )(badRequest(form.fill(validForm), _))
         }
       )
+
+  private def isAdditionValid[A](item: A)(implicit cachedItems: Seq[A]): Option[String] =
+    if (cachedItems.contains(item)) Some(DUPLICATE_MSG_KEY)
+    else if (cachedItems.size > packagesMaxElements) Some(LIMIT_MSG_KEY)
+    else None
+
+  private def badRequest(
+    form: Form[_],
+    error: String
+  )(implicit authenticatedRequest: AuthenticatedRequest[AnyContent], packages: Seq[PackageInformation]) =
+    Future.successful(BadRequest(package_information(form.withGlobalError(error), packages)))
 
 }

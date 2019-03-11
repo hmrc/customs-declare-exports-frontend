@@ -149,6 +149,21 @@ class PackageInformationControllerSpec
         }
       }
 
+      "show global error" when {
+
+        "when no packages added and on click of  continue" in {
+
+          forAll(arbitrary[PackageInformation]) { packaging =>
+            authorizedUser()
+              withCaching[PackageInformation](None, formId)
+              val payload = toMap(packaging).toSeq :+ saveAndContinueActionUrlEncoded
+              val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
+              status(result) must be(BAD_REQUEST)
+              contentAsString(result) must include("You should add one package information to Continue")
+
+          }
+        }
+      }
       "remove packageInformation from the cache" when {
 
         "when valid index is submitted" in {
