@@ -42,10 +42,6 @@ class PackageInformationController @Inject()(
     extends FrontendController with I18nSupport {
 
   val packagesMaxElements = 99
-  val DUPLICATE_MSG_KEY = "supplementary.packageInformation.global.duplicate"
-  val LIMIT_MSG_KEY = "supplementary.packageInformation.global.limit"
-  val USE_ADD = "supplementary.packageInformation.global.useAdd"
-  val ADD_ONE = "supplementary.packageInformation.global.addOne"
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     cacheService
@@ -70,8 +66,9 @@ class PackageInformationController @Inject()(
       }
   }
 
-  def remove(id: Option[String])(implicit authRequest: AuthenticatedRequest[AnyContent],
-    packagings: Seq[PackageInformation]) =
+  def remove(
+    id: Option[String]
+  )(implicit authRequest: AuthenticatedRequest[AnyContent], packagings: Seq[PackageInformation]) =
     id match {
       case Some(id) => {
         val updatedPackagings =
@@ -89,7 +86,7 @@ class PackageInformationController @Inject()(
     if (form.data.filter(_._2.size > 0).size > 1) badRequest(payload, USE_ADD)
     else if (packagings.size == 0) badRequest(payload, ADD_ONE)
     else
-      Future.successful(Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm()))
+      Future.successful(Redirect(controllers.supplementary.routes.CommodityMeasureController.displayForm()))
 
   }
 

@@ -64,5 +64,10 @@ object PackageInformation {
       require1Field[PackageInformation](_.typesOfPackages, _.numberOfPackages, _.shippingMarks)
     )
 
+  val DUPLICATE_MSG_KEY = "supplementary.packageInformation.global.duplicate"
+  val LIMIT_MSG_KEY = "supplementary.packageInformation.global.limit"
+  val USE_ADD = "supplementary.packageInformation.global.useAdd"
+  val ADD_ONE = "supplementary.packageInformation.global.addOne"
+
   def form(): Form[PackageInformation] = Form(mapping)
 }

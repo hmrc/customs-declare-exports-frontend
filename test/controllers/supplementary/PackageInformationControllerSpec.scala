@@ -155,11 +155,11 @@ class PackageInformationControllerSpec
 
           forAll(arbitrary[PackageInformation]) { packaging =>
             authorizedUser()
-              withCaching[PackageInformation](None, formId)
-              val payload = toMap(packaging).toSeq :+ saveAndContinueActionUrlEncoded
-              val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
-              status(result) must be(BAD_REQUEST)
-              contentAsString(result) must include("You should add one package information to Continue")
+            withCaching[PackageInformation](None, formId)
+            val payload = toMap(packaging).toSeq :+ saveAndContinueActionUrlEncoded
+            val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
+            status(result) must be(BAD_REQUEST)
+            contentAsString(result) must include("You should add one package information to Continue")
 
           }
         }
@@ -179,11 +179,11 @@ class PackageInformationControllerSpec
                 Some("/customs-declare-exports/declaration/supplementary/package-information")
               )
               verify(mockCustomsCacheService)
-                .cache[Seq[PackageInformation]](any(), ArgumentMatchers.eq(formId), ArgumentMatchers.eq(packagingSeq.filterNot(_ == packaging)))(
-                any(),
-                any(),
-                any()
-              )
+                .cache[Seq[PackageInformation]](
+                  any(),
+                  ArgumentMatchers.eq(formId),
+                  ArgumentMatchers.eq(packagingSeq.filterNot(_ == packaging))
+                )(any(), any(), any())
             }
           }
         }
@@ -198,17 +198,18 @@ class PackageInformationControllerSpec
             val result = route(app, postRequestFormUrlEncoded(uri, Seq(saveAndContinueActionUrlEncoded): _*)).value
             status(result) must be(SEE_OTHER)
             result.futureValue.header.headers.get("Location") must be(
-              Some("/customs-declare-exports/declaration/supplementary/additional-information")
+              Some("/customs-declare-exports/declaration/supplementary/commodity-measure")
             )
           }
         }
       }
     }
   }
-  private def toMap(packaging:PackageInformation) = for ((k, Some(v)) <- packaging.getClass.getDeclaredFields
-    .map(_.getName)
-    .zip(packaging.productIterator.to)
-    .toMap)
-    yield k -> v.asInstanceOf[Any].toString
+  private def toMap(packaging: PackageInformation) =
+    for ((k, Some(v)) <- packaging.getClass.getDeclaredFields
+           .map(_.getName)
+           .zip(packaging.productIterator.to)
+           .toMap)
+      yield k -> v.asInstanceOf[Any].toString
 
 }

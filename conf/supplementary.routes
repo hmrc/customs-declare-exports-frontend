@@ -145,6 +145,12 @@ GET         /package-information            controllers.supplementary.PackageInf
 
 POST        /package-information            controllers.supplementary.PackageInformationController.submitForm()
 
+# Commodity Measure Information
+
+GET         /commodity-measure            controllers.supplementary.CommodityMeasureController.displayForm()
+
+POST        /commodity-measure            controllers.supplementary.CommodityMeasureController.submitForm()
+
 # Summary
 
 GET         /summary                        controllers.supplementary.SummaryPageController.displayPage()

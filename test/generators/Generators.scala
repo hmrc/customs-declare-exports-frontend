@@ -16,7 +16,7 @@
 
 package generators
 
-import forms.supplementary.PackageInformation
+import forms.supplementary.{CommodityMeasure, PackageInformation}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
@@ -74,7 +74,6 @@ trait Generators {
   def intOutsideRange(min: Int, max: Int): Gen[Int] =
     oneOf(intLessThan(min), intGreaterThan(max))
 
-
   def nonBooleans: Gen[String] =
     arbitrary[String]
       .suchThat(_.nonEmpty)
@@ -101,19 +100,24 @@ trait Generators {
       noOfPackages <- option(choose[Int](1, 99999))
       typeOfPackages <- option(alphaNumStr.map(_.take(2)))
       marksNumbersId <- alphaNumStr.map(_.take(40))
-      if (typeOfPackages.exists(_.size == 2) && marksNumbersId.size > 0)
-    } yield PackageInformation(typeOfPackages, noOfPackages,Some(marksNumbersId))
+      if typeOfPackages.exists(_.size == 2) && marksNumbersId.size > 0
+    } yield PackageInformation(typeOfPackages, noOfPackages, Some(marksNumbersId))
   }
 
-  implicit val arbitraryPackagingSeq  =listOfN[PackageInformation](5, arbitraryPackaging.arbitrary)
-  implicit val arbitraryPackagingMaxSeq  = Gen.listOfN[PackageInformation](99, arbitraryPackaging.arbitrary)
-
+  implicit val arbitraryCommodityMeasure: Arbitrary[CommodityMeasure] = Arbitrary {
+    for {
+      supplementaryUnits <- posDecimal(16, 2)
+      netMass <- posDecimal(11, 3)
+      grossMass <- posDecimal(16, 2)
+    } yield CommodityMeasure(Some(supplementaryUnits.toString), netMass.toString, grossMass.toString)
+  }
+  implicit val arbitraryPackagingSeq = listOfN[PackageInformation](5, arbitraryPackaging.arbitrary)
+  implicit val arbitraryPackagingMaxSeq = Gen.listOfN[PackageInformation](99, arbitraryPackaging.arbitrary)
 
   def caseClassToSeq(cc: AnyRef) =
-    (Map[String, String]() /: cc.getClass.getDeclaredFields) {
-      (a, f) =>
-        f.setAccessible(true)
-        a + (f.getName -> f.get(cc).toString)
+    (Map[String, String]() /: cc.getClass.getDeclaredFields) { (a, f) =>
+      f.setAccessible(true)
+      a + (f.getName -> f.get(cc).toString)
     }.toSeq
 
   def minStringLength(length: Int): Gen[String] =
@@ -124,4 +128,14 @@ trait Generators {
 
   def numStrLongerThan(minLength: Int): Gen[String] =
     numStr suchThat (_.length > minLength)
+
+  implicit val chooseBigInt: Choose[BigInt] =
+    Choose.xmap[Long, BigInt](BigInt(_), _.toLong)
+
+  def decimal(minSize: Int, maxSize: Int, scale: Int): Gen[BigDecimal] = {
+    val min = if (minSize <= 0) BigInt(0) else BigInt("1" + ("0" * (minSize - 1)))
+    choose[BigInt](min, BigInt("9" * maxSize)).map(BigDecimal(_, scale))
+  }
+  def posDecimal(precision: Int, scale: Int): Gen[BigDecimal] =
+    decimal(0, precision, scale)
 }
