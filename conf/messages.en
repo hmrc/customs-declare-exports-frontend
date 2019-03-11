@@ -512,6 +512,7 @@ supplementary.packageInformation.shippingMarks = 6/11 Shipping marks
 supplementary.packageInformation.shippingMarks.hint = Any mark or numbers on transport units and packages which can help us find it
 supplementary.packageInformation.shippingMarks.error = Shipping marks can only be up to 42 characters
 supplementary.packageInformation.shippingMarks.empty = Shipping marks can not be empty
+supplementary.commodityMeasure.title = Commodity measurements
 supplementary.commodityMeasure.netMass = 6/1 Net Weight
 supplementary.commodityMeasure.netMass.hint = The weight excluding container and packaging
 supplementary.commodityMeasure.netMass.empty = Net weight can not be empty
