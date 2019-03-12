@@ -83,7 +83,7 @@ class PackageInformationController @Inject()(
 
   def continue()(implicit request: AuthenticatedRequest[AnyContent], packagings: Seq[PackageInformation]) = {
     val payload = form.bindFromRequest()
-    if (form.data.filter(_._2.size > 0).size > 1) badRequest(payload, USE_ADD)
+    if (payload.data.filter(_._2.size > 0).size > 1) badRequest(payload, USE_ADD)
     else if (packagings.size == 0) badRequest(payload, ADD_ONE)
     else
       Future.successful(Redirect(controllers.supplementary.routes.CommodityMeasureController.displayForm()))

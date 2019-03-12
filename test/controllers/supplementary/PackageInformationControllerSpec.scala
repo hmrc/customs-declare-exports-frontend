@@ -153,16 +153,26 @@ class PackageInformationControllerSpec
 
         "when no packages added and on click of  continue" in {
 
+          authorizedUser()
+          withCaching[PackageInformation](None, formId)
+          val result = route(app, postRequestFormUrlEncoded(uri, Seq(saveAndContinueActionUrlEncoded): _*)).value
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include("You should add one package information to Continue")
+
+        }
+        "when user entered data and click continue" in {
+
           forAll(arbitrary[PackageInformation]) { packaging =>
             authorizedUser()
-            withCaching[PackageInformation](None, formId)
+            withCaching[Seq[PackageInformation]](Some(Seq(packaging)), formId)
             val payload = toMap(packaging).toSeq :+ saveAndContinueActionUrlEncoded
             val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
             status(result) must be(BAD_REQUEST)
-            contentAsString(result) must include("You should add one package information to Continue")
+            contentAsString(result) must include("Use add button to add package information")
 
           }
         }
+
       }
       "remove packageInformation from the cache" when {
 
