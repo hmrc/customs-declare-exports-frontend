@@ -22,16 +22,16 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfNot
 
 case class DeclarationAdditionalActors(eori: Option[String], partyType: Option[String]) {
-  implicit val writes = Json.writes[DeclarationAdditionalActors]
 
   def isDefined: Boolean = eori.isDefined && partyType.isDefined
 
-  def toJson: JsValue = Json.toJson(this)
+  def toJson: JsValue = Json.toJson(this)(DeclarationAdditionalActors.format)
+
 }
 
 object DeclarationAdditionalActors {
 
-  def fromJson(value: JsValue): DeclarationAdditionalActors = Json.fromJson(value).get
+  def fromJsonString(value: String): Option[DeclarationAdditionalActors] = Json.fromJson(Json.parse(value)).asOpt
 
   implicit val format = Json.format[DeclarationAdditionalActors]
 

@@ -30,7 +30,7 @@ case class DocumentsProduced(
   documentQuantity: Option[String]
 ) {
   implicit val writes = Json.writes[DocumentsProduced]
-  
+
   def isDefined: Boolean =
     List(documentTypeCode, documentIdentifier, documentPart, documentStatus, documentStatusReason, documentQuantity)
       .exists(_.isDefined)

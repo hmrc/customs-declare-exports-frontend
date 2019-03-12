@@ -25,22 +25,22 @@ object Status {
 
   implicit object StatusFormat extends Format[Status] {
     def reads(status: JsValue): JsResult[Status] = status match {
-      case JsString("Pending")   => JsSuccess(Pending)
-      case JsString("01")   => JsSuccess(Accepted)
-      case JsString("02")   => JsSuccess(Received)
-      case JsString("03")   => JsSuccess(Rejected)
-      case JsString("05")   => JsSuccess(UndergoingPhysicalCheck)
-      case JsString("06")   => JsSuccess(AdditionalDocumentsRequired)
-      case JsString("07")   => JsSuccess(Amended)
-      case JsString("08")   => JsSuccess(Released)
-      case JsString("09")   => JsSuccess(Cleared)
-      case JsString("10")   => JsSuccess(Cancelled)
-      case JsString("1139") => JsSuccess(CustomsPositionGranted)
-      case JsString("1141") => JsSuccess(CustomsPositionDenied)
-      case JsString("16")   => JsSuccess(GoodsHaveExitedTheCommunity)
-      case JsString("17")   => JsSuccess(DeclarationHandledExternally)
-      case JsString("18")   => JsSuccess(AwaitingExitResults)
-      case _                => JsSuccess(UnknownStatus)
+      case JsString("Pending") => JsSuccess(Pending)
+      case JsString("01")      => JsSuccess(Accepted)
+      case JsString("02")      => JsSuccess(Received)
+      case JsString("03")      => JsSuccess(Rejected)
+      case JsString("05")      => JsSuccess(UndergoingPhysicalCheck)
+      case JsString("06")      => JsSuccess(AdditionalDocumentsRequired)
+      case JsString("07")      => JsSuccess(Amended)
+      case JsString("08")      => JsSuccess(Released)
+      case JsString("09")      => JsSuccess(Cleared)
+      case JsString("10")      => JsSuccess(Cancelled)
+      case JsString("1139")    => JsSuccess(CustomsPositionGranted)
+      case JsString("1141")    => JsSuccess(CustomsPositionDenied)
+      case JsString("16")      => JsSuccess(GoodsHaveExitedTheCommunity)
+      case JsString("17")      => JsSuccess(DeclarationHandledExternally)
+      case JsString("18")      => JsSuccess(AwaitingExitResults)
+      case _                   => JsSuccess(UnknownStatus)
     }
 
     def writes(status: Status): JsValue = status match {

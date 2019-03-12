@@ -16,8 +16,7 @@
 
 package forms.supplementary
 
-import forms.supplementary.DeclarationAdditionalActors.PartyType.Consolidator
-import forms.supplementary.DocumentsProducedSpec.correctDocumentsProducedJSON
+import forms.supplementary.DeclarationAdditionalActors.PartyType.{Consolidator, FreightForwarder}
 import models.declaration.supplementary.DeclarationAdditionalActorsData
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
@@ -29,8 +28,10 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
     "return proper Metadata Properties" in {
       val additionalActorsData = correctAdditionalActorsData
       val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.aeoMutualRecognitionParties[0].id" -> correctAdditionalActors.eori.get,
-        "declaration.goodsShipment.aeoMutualRecognitionParties[0].roleCode" -> correctAdditionalActors.partyType.get
+        "declaration.goodsShipment.aeoMutualRecognitionParties[0].id" -> correctAdditionalActors1.eori.get,
+        "declaration.goodsShipment.aeoMutualRecognitionParties[0].roleCode" -> correctAdditionalActors1.partyType.get,
+        "declaration.goodsShipment.aeoMutualRecognitionParties[1].id" -> correctAdditionalActors2.eori.get,
+        "declaration.goodsShipment.aeoMutualRecognitionParties[1].roleCode" -> correctAdditionalActors2.partyType.get
       )
 
       additionalActorsData.toMetadataProperties() must equal(expectedMetadataProperties)
@@ -40,8 +41,9 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
 }
 
 object DeclarationAdditionalActorsSpec {
-  val correctAdditionalActors = DeclarationAdditionalActors(eori = Some("eori1"), partyType = Some(Consolidator))
-  val correctAdditionalActorsData = DeclarationAdditionalActorsData(Seq(correctAdditionalActors))
+  val correctAdditionalActors1 = DeclarationAdditionalActors(eori = Some("eori1"), partyType = Some(Consolidator))
+  val correctAdditionalActors2 = DeclarationAdditionalActors(eori = Some("eori99"), partyType = Some(FreightForwarder))
+  val correctAdditionalActorsData = DeclarationAdditionalActorsData(Seq(correctAdditionalActors1,correctAdditionalActors2))
   val emptyAdditionalActors = DeclarationAdditionalActors(eori = None, partyType = None)
   val incorrectAdditionalActors =
     DeclarationAdditionalActors(eori = Some("123456789123456789"), partyType = Some("Incorrect"))

@@ -52,7 +52,8 @@ object Parties {
     exporterDetails = cacheMap.getEntry[ExporterDetails](ExporterDetails.id),
     declarantDetails = cacheMap.getEntry[DeclarantDetails](DeclarantDetails.id),
     representativeDetails = cacheMap.getEntry[RepresentativeDetails](RepresentativeDetails.formId),
-    declarationAdditionalActorsData = cacheMap.getEntry[DeclarationAdditionalActorsData](DeclarationAdditionalActorsData.formId),
+    declarationAdditionalActorsData =
+      cacheMap.getEntry[DeclarationAdditionalActorsData](DeclarationAdditionalActorsData.formId),
     declarationHoldersData = cacheMap.getEntry[DeclarationHoldersData](DeclarationHoldersData.formId)
   )
 }

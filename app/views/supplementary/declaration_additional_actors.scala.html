@@ -32,6 +32,10 @@
     @helpers.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
         @components.back_link("/customs-declare-exports/declaration/supplementary/representative-details")
 
+        @components.error_summary(form.errors)
+
+        @components.page_title(Some("supplementary.additionalActors.title"), Some(""))
+
         @if(actors.nonEmpty) {
             <table class="form-group">
                 <thead>
@@ -52,10 +56,6 @@
                 </tbody>
             </table>
         }
-
-        @components.error_summary(form.errors)
-
-        @components.page_title(Some("supplementary.additionalActors.title"), Some(""))
 
         @components.input_text(
             field = form("eori"),
