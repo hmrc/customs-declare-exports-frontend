@@ -161,7 +161,6 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
           meansOfTransportCrossingTheBorderIDNumber = "123456789012345678901234567890ABCDEF"
         )
         val result = route(app, postRequest(uri, emptyForm)).get
-
         contentAsString(result) must include(
           messages("supplementary.transportInfo.meansOfTransport.idNumber.error.length")
         )
@@ -174,20 +173,6 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
         contentAsString(result) must include(
           messages("supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters")
         )
-      }
-
-      "choose container and not provide container ID" in {
-        val emptyForm = buildTransportInformationForm(container = true)
-        val result = route(app, postRequest(uri, emptyForm)).get
-
-        contentAsString(result) must include(messages("supplementary.transportInfo.containerId.empty"))
-      }
-
-      "choose container and provide incorrect container ID" in {
-        val emptyForm = buildTransportInformationForm(container = true, containerId = TestHelper.createRandomString(18))
-        val result = route(app, postRequest(uri, emptyForm)).get
-
-        contentAsString(result) must include(messages("supplementary.transportInfo.containerId.error"))
       }
     }
 

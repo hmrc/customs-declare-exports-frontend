@@ -35,8 +35,7 @@ class TransportInformationSpec extends WordSpec with MustMatchers {
         "declaration.borderTransportMeans.identificationTypeCode" -> transportInformation.meansOfTransportCrossingTheBorderType,
         "declaration.borderTransportMeans.id" -> transportInformation.meansOfTransportCrossingTheBorderIDNumber.get,
         "declaration.borderTransportMeans.registrationNationalityCode" -> "GB",
-        "declaration.goodsShipment.consignment.containerCode" -> "1",
-        "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.transportEquipment.id" -> transportInformation.containerId.get
+        "declaration.goodsShipment.consignment.containerCode" -> "1"
       )
 
       transportInformation.toMetadataProperties() must equal(expectedTransportInformationProperties)
@@ -169,8 +168,7 @@ object TransportInformationSpec {
     meansOfTransportCrossingTheBorderType = NameOfVessel,
     meansOfTransportCrossingTheBorderIDNumber = Some("QWERTY"),
     meansOfTransportCrossingTheBorderNationality = Some("United Kingdom"),
-    container = true,
-    containerId = Some("ContainerID")
+    container = true
   )
   val emptyTransportInformation = TransportInformation(
     inlandModeOfTransportCode = None,
@@ -180,8 +178,7 @@ object TransportInformationSpec {
     meansOfTransportCrossingTheBorderType = "",
     meansOfTransportCrossingTheBorderIDNumber = None,
     meansOfTransportCrossingTheBorderNationality = None,
-    container = false,
-    containerId = None
+    container = false
   )
 
   val correctTransportInformationJSON: JsValue = JsObject(
@@ -193,8 +190,7 @@ object TransportInformationSpec {
       "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel),
       "meansOfTransportCrossingTheBorderIDNumber" -> JsString("QWERTY"),
       "meansOfTransportCrossingTheBorderNationality" -> JsString("United Kingdom"),
-      "container" -> JsBoolean(true),
-      "containerId" -> JsString("ContainerID")
+      "container" -> JsBoolean(true)
     )
   )
   val emptyTransportInformationJSON: JsValue = JsObject(
@@ -206,8 +202,7 @@ object TransportInformationSpec {
       "meansOfTransportCrossingTheBorderType" -> JsString(""),
       "meansOfTransportCrossingTheBorderIDNumber" -> JsString(""),
       "meansOfTransportCrossingTheBorderNationality" -> JsString(""),
-      "container" -> JsBoolean(false),
-      "containerId" -> JsString("")
+      "container" -> JsBoolean(false)
     )
   )
 }

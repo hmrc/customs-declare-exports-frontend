@@ -144,7 +144,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(
           messages("supplementary.summary.transport.meansOfTransportCrossingBorderNationality")
         )
-        resultAsString must include(messages("supplementary.summary.transport.containerId"))
       }
 
       "display content for Item module" in new Test {

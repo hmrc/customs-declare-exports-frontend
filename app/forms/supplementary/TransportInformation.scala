@@ -32,8 +32,7 @@ case class TransportInformation(
   meansOfTransportCrossingTheBorderType: String,
   meansOfTransportCrossingTheBorderIDNumber: Option[String],
   meansOfTransportCrossingTheBorderNationality: Option[String],
-  container: Boolean,
-  containerId: Option[String]
+  container: Boolean
 ) extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
@@ -50,8 +49,7 @@ case class TransportInformation(
           .find(country => meansOfTransportCrossingTheBorderNationality.contains(country.countryName))
           .map(_.countryCode)
           .getOrElse(""),
-      "declaration.goodsShipment.consignment.containerCode" -> (if (container) "1" else "0"),
-      "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.transportEquipment.id" -> containerId.getOrElse("")
+      "declaration.goodsShipment.consignment.containerCode" -> (if (container) "1" else "0")
     )
 }
 
@@ -137,13 +135,7 @@ object TransportInformation {
           isContainedIn(allCountries.map(_.countryName))
         )
     ),
-    "container" -> boolean,
-    "containerId" -> mandatoryIfTrue(
-      "container",
-      text()
-        .verifying("supplementary.transportInfo.containerId.empty", nonEmpty)
-        .verifying("supplementary.transportInfo.containerId.error", isEmpty or (isAlphanumeric and noLongerThan(17)))
-    )
+    "container" -> boolean
   )(TransportInformation.apply)(TransportInformation.unapply)
 
   object ModeOfTransportCodes {
