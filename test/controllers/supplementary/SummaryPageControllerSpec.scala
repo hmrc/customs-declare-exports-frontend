@@ -87,6 +87,8 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       }
 
       "display content for Parties module" in new Test {
+        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
+          .thenReturn(Future.successful(Some(SupplementaryDeclarationDataSpec.cacheMapAllRecords)))
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.parties.header"))

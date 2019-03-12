@@ -49,6 +49,3 @@ object DocumentsProducedData {
 
   val maxNumberOfItems = 99
 }
-
-
-

@@ -16,32 +16,55 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
+@import controllers.util.Remove
 @import forms.supplementary.DeclarationAdditionalActors
 @import forms.supplementary.DeclarationAdditionalActors.PartyType._
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
-@(appConfig: AppConfig, form: Form[DeclarationAdditionalActors])(implicit request: Request[_], messages: Messages)
+@import models.declaration.supplementary.DeclarationAdditionalActorsData
+@(appConfig: AppConfig, form: Form[DeclarationAdditionalActors], actors: Seq[DeclarationAdditionalActors])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.additionalActors.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(DeclarationAdditionalActorsController.saveAdditionalActors(), 'autoComplete -> "off") {
+    @helpers.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
         @components.back_link("/customs-declare-exports/declaration/supplementary/representative-details")
 
         @components.error_summary(form.errors)
 
         @components.page_title(Some("supplementary.additionalActors.title"), Some(""))
 
+        @if(actors.nonEmpty) {
+            <table class="form-group">
+                <thead>
+                    <tr>
+                        <th scope="col">@messages("supplementary.additionalActors.eori")</th>
+                        <th scope="col">@messages("supplementary.additionalActors.partyType")</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for(actor <- actors) {
+                    <tr>
+                        <td scope="row">@actor.eori</td>
+                        <td>@actor.partyType</td>
+                        <td><button class="button" name="@Remove.toString" value="@actor.toJson">@messages("site.remove")</button></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+
         @components.input_text(
             field = form("eori"),
-            label = messages("supplementary.eori"),
+            label = messages("supplementary.additionalActors.eori"),
             hint = Some(messages("supplementary.eori.hint")),
             labelClass = Some("font-weight: 400")
         )
 
-        @components.page_title(Some("supplementary.partyType"), Some(""))
+        @components.page_title(Some("supplementary.additionalActors.partyType"), Some(""))
 
         @components.input_radio(
             field = form("partyType"),
@@ -54,6 +77,6 @@
             )
         )
 
-        @components.submit_button()
+        @components.add_save_button()
     }
 }

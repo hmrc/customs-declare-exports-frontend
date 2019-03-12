@@ -17,25 +17,38 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
+import controllers.supplementary.DeclarationAdditionalActorsControllerSpec.cacheWithMaximumAmountOfActors
+import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.DeclarationAdditionalActors
+import forms.supplementary.DeclarationAdditionalActors.PartyType
 import forms.supplementary.DeclarationAdditionalActorsSpec._
+import models.declaration.supplementary.DeclarationAdditionalActorsData
+import models.declaration.supplementary.DeclarationAdditionalActorsData.formId
+import org.mockito.Mockito.reset
+import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 
-class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
+class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec with BeforeAndAfterEach {
 
-  val uri = uriWithContextPath("/declaration/supplementary/additional-actors")
+  val uri: String = uriWithContextPath("/declaration/supplementary/additional-actors")
+  private val addActionUrlEncoded = (Add.toString, "")
+  private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
+  private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
-  "Declaration additional actors controller" should {
-    "display declaration additional actors form" in {
-      authorizedUser()
+  override def beforeEach() {
+    authorizedUser()
+    reset(mockCustomsCacheService)
+  }
+
+"Declaration additional actors controller" should {
+    "display declaration additional actors form with no actors" in {
       withCaching[DeclarationAdditionalActors](None)
-
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
       stringResult must include(messages("supplementary.additionalActors.title"))
-      stringResult must include(messages("supplementary.eori"))
+      stringResult must include(messages("supplementary.additionalActors.eori"))
       stringResult must include(messages("supplementary.eori.hint"))
       stringResult must include(messages("supplementary.partyType"))
       stringResult must include(messages("supplementary.partyType.CS"))
@@ -44,10 +57,22 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.partyType.WH"))
     }
 
-    "validate form - incorrect values" in {
-      authorizedUser()
-      withCaching[DeclarationAdditionalActors](None)
+    "display additional information form with added items" in {
+      withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
 
+      val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(OK)
+      stringResult must include("eori1")
+      stringResult must include(PartyType.Consolidator)
+      stringResult must include(messages("supplementary.additionalActors.title"))
+      stringResult must include(messages("supplementary.additionalActors.eori"))
+      stringResult must include(messages("supplementary.additionalActors.partyType"))
+    }
+
+    "validate form - incorrect values" in {
+      withCaching[DeclarationAdditionalActorsData](None)
       val result = route(app, postRequest(uri, incorrectAdditionalActorsJSON)).get
       val stringResult = contentAsString(result)
 
@@ -55,30 +80,206 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.partyType.error"))
     }
 
-    "validate form - optional data allowed" in {
-      authorizedUser()
-      withCaching[DeclarationAdditionalActors](None)
+    "handle save and continue action" should {
+      "when validate form - optional data allowed" in {
+        withCaching[DeclarationAdditionalActorsData](None)
 
-      val result = route(app, postRequest(uri, emptyAdditionalActorsJSON)).get
-      val header = result.futureValue.header
+        testHappyPathsScenarios(
+          expectedPath = "/customs-declare-exports/declaration/supplementary/holder-of-authorisation",
+          actorsMap = Map("eori" -> "", "partyType" -> ""),
+          action = saveAndContinueActionUrlEncoded
+        )
+      }
 
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/holder-of-authorisation")
-      )
+      "when validate form - correct values and an empty cache" in {
+        withCaching[DeclarationAdditionalActorsData](None)
+
+        testHappyPathsScenarios(
+          expectedPath = "/customs-declare-exports/declaration/supplementary/holder-of-authorisation",
+          actorsMap = correctAdditionalActorsMap,
+          action = saveAndContinueActionUrlEncoded
+        )
+      }
+
+      "when validate form - correct values and items in cache" in {
+        withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
+
+        testHappyPathsScenarios(
+          expectedPath = "/customs-declare-exports/declaration/supplementary/holder-of-authorisation",
+          actorsMap = Map("eori" -> "eori2", "partyType" -> "CS"),
+          action = saveAndContinueActionUrlEncoded
+        )
+      }
+
+      "not add an item and return BAD_REQUEST" should {
+        "when adding more than 99 items" in {
+          withCaching[DeclarationAdditionalActorsData](Some(cacheWithMaximumAmountOfActors), formId)
+
+          testErrorScenario(
+            action = saveAndContinueActionUrlEncoded,
+            data = Map("eori" -> "eori1", "partyType" -> "CS"),
+            maybeExpectedErrorMessagePath = Some("supplementary.additionalActors.maximumAmount.error")
+          )
+        }
+
+        "when adding duplicate item" in {
+          withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
+
+          testErrorScenario(
+            action = saveAndContinueActionUrlEncoded,
+            data = correctAdditionalActorsMap,
+            maybeExpectedErrorMessagePath = None
+          )
+        }
+      }
     }
 
-    "validate form - correct values" in {
-      authorizedUser()
-      withCaching[DeclarationAdditionalActors](None)
+    "handle remove action" should {
 
-      val result = route(app, postRequest(uri, correctAdditionalActorsJSON)).get
-      val header = result.futureValue.header
+      "remove an actor successfully " when {
+        "exists in the cache" in {
+          withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
 
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/holder-of-authorisation")
-      )
+          val body = removeActionUrlEncoded(correctAdditionalActorsData.actors.head.toJson.toString())
+
+          val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+
+          status(result) must be(SEE_OTHER)
+        }
+      }
+
+      "return an error" when {
+        "does not exists in the cache" in {
+          withCaching[DeclarationAdditionalActorsData](None, formId)
+
+          val body = removeActionUrlEncoded(correctAdditionalActorsData.actors.head.toJson.toString())
+
+          val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+
+          status(result) must be(BAD_REQUEST)
+        }
+      }
+    }
+
+    "handle add action" should {
+
+      "when validate form - optional data allowed" in {
+        withCaching[DeclarationAdditionalActorsData](None)
+
+        val undefinedDocument: Map[String, String] = Map("eori" -> "", "partyType" -> "")
+        testErrorScenario(
+          addActionUrlEncoded,
+          undefinedDocument,
+          Some("supplementary.additionalActors.eori.isNotDefined")
+        )
+      }
+
+      "when validate form - correct values" in {
+        withCaching[DeclarationAdditionalActorsData](None)
+        testHappyPathsScenarios(
+          expectedPath = "/customs-declare-exports/declaration/supplementary/additional-actors",
+          actorsMap = correctAdditionalActorsMap,
+          action = addActionUrlEncoded
+        )
+      }
+
+      "not add an item and return BAD_REQUEST" should {
+        "when adding more than 99 items" in {
+          withCaching[DeclarationAdditionalActorsData](Some(cacheWithMaximumAmountOfActors), formId)
+
+          testErrorScenario(
+            action = addActionUrlEncoded,
+            data = Map("eori" -> "eori1", "partyType" -> "CS"),
+            maybeExpectedErrorMessagePath = Some("supplementary.additionalActors.maximumAmount.error")
+          )
+        }
+
+        "when adding duplicate item" in {
+
+          withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
+
+          testErrorScenario(
+            action = addActionUrlEncoded,
+            data = correctAdditionalActorsMap,
+            maybeExpectedErrorMessagePath = None
+          )
+        }
+      }
+
+      "add an item successfully and return SEE_OTHER" when {
+        "with an empty cache" in {
+          withCaching[DeclarationAdditionalActorsData](None, formId)
+
+          testHappyPathsScenarios(
+            expectedPath = "/customs-declare-exports/declaration/supplementary/additional-actors",
+            actorsMap = correctAdditionalActorsMap,
+            action = addActionUrlEncoded
+          )
+        }
+
+        "that does not exist in cache" in {
+          withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
+
+          testHappyPathsScenarios(
+            expectedPath = "/customs-declare-exports/declaration/supplementary/additional-actors",
+            actorsMap = Map("eori" -> "eori2", "partyType" -> "CS"),
+            action = addActionUrlEncoded
+          )
+
+        }
+
+      }
+    }
+
+    "display back button that links to package information page" in {
+      withCaching[DeclarationAdditionalActorsData](None, formId)
+
+      val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(OK)
+      stringResult must include(messages("site.back"))
+      stringResult must include(messages("/declaration/supplementary/representative-details"))
     }
   }
+
+  private def testHappyPathsScenarios(
+    expectedPath: String,
+    actorsMap: Map[String, String],
+    action: (String, String)
+  ): Unit = {
+    val body = actorsMap.toSeq :+ action
+    val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+    val header = result.futureValue.header
+
+    status(result) must be(SEE_OTHER)
+    header.headers.get("Location") must be(Some(expectedPath))
+  }
+
+  private def testErrorScenario(
+    action: (String, String),
+    data: Map[String, String],
+    maybeExpectedErrorMessagePath: Option[String]
+  ) = {
+
+    val body = data.toSeq :+ action
+    val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+    status(result) must be(BAD_REQUEST)
+
+    maybeExpectedErrorMessagePath.fold() { expectedErrorMessagePath =>
+      val stringResult = contentAsString(result)
+      stringResult must include(messages(expectedErrorMessagePath))
+    }
+
+  }
+}
+
+object DeclarationAdditionalActorsControllerSpec {
+  val cacheWithMaximumAmountOfActors = DeclarationAdditionalActorsData(
+    Seq
+      .range[Int](100, 200, 1)
+      .map(elem => DeclarationAdditionalActors(Some(elem.toString), Some(elem.toString)))
+  )
 }
