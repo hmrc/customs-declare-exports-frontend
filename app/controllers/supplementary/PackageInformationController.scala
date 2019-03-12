@@ -83,12 +83,18 @@ class PackageInformationController @Inject()(
 
   def continue()(implicit request: AuthenticatedRequest[AnyContent], packagings: Seq[PackageInformation]) = {
     val payload = form.bindFromRequest()
-    if (payload.data.filter(_._2.size > 0).size > 1) badRequest(payload, USE_ADD)
+    if (!isFormEmpty(payload)) badRequest(payload, USE_ADD)
     else if (packagings.size == 0) badRequest(payload, ADD_ONE)
     else
       Future.successful(Redirect(controllers.supplementary.routes.CommodityMeasureController.displayForm()))
 
   }
+
+  private def isFormEmpty[A](form: Form[A]): Boolean =
+    retrieveData(form).filter { case (_, value) => value.nonEmpty }.isEmpty
+
+  private def retrieveData[A](form: Form[A]): Map[String, String] =
+    form.data.filter { case (name, _) => name != "csrfToken" }
 
   def addItem()(implicit authenticatedRequest: AuthenticatedRequest[AnyContent], packagings: Seq[PackageInformation]) =
     form
