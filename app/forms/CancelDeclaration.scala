@@ -20,7 +20,7 @@ import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import uk.gov.hmrc.wco.dec._
-import utils.validators.FormFieldValidator._
+import utils.validators.forms.FieldValidator._
 
 case class CancelDeclaration(functionalReferenceId: String, declarationId: String, statementDescription: String) {
 

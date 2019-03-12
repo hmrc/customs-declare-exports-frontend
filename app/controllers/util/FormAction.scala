@@ -23,15 +23,16 @@ object FormAction {
   private val saveAndContinueLabel = SaveAndContinue.toString
   private val removeLabel = Remove.toString
 
-  def fromUrlEncoded(input: Map[String, Seq[String]]): Option[FormAction] =
+  def fromUrlEncoded(input: Map[String, Seq[String]]): FormAction =
     input.flatMap {
       case (`addLabel`, _)             => Some(Add)
       case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
       case (`removeLabel`, values)     => Some(Remove(values))
       case _                           => None
-    }.headOption
+    }.headOption.getOrElse(Unknown)
 }
 
+case object Unknown extends FormAction
 case object Add extends FormAction
 case object SaveAndContinue extends FormAction
 

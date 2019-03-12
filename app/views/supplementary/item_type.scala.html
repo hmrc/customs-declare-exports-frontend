@@ -16,10 +16,12 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
+@import controllers.util.SaveAndContinue
 @import forms.supplementary.ItemType
+@import forms.supplementary.ItemType._
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[ItemType])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[ItemType], taricAdditionalCodes: Seq[String] = Seq.empty, nationalAdditionalCodes: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages)
 
 @main_template(
   title = messages("supplementary.itemType.title"),
@@ -39,18 +41,19 @@
       hint = Some(messages("supplementary.itemType.combinedNomenclatureCode.header.hint"))
     )
 
-    @components.input_text(
-      field = form("taricAdditionalCode"),
-      label = messages("supplementary.itemType.taricAdditionalCodes.header"),
-      hint = Some(messages("supplementary.itemType.taricAdditionalCodes.header.hint"))
+    @components.input_text_multiple_values(
+        field = form(taricAdditionalCodesKey + "[]"),
+        label = messages("supplementary.itemType.taricAdditionalCodes.header"),
+        hint = Some(messages("supplementary.itemType.taricAdditionalCodes.header.hint")),
+        elements = taricAdditionalCodes
     )
 
-    @components.input_text(
-      field = form("nationalAdditionalCode"),
-      label = messages("supplementary.itemType.nationalAdditionalCode.header"),
-      hint = Some(messages("supplementary.itemType.nationalAdditionalCode.header.hint"))
+    @components.input_text_multiple_values(
+        field = form(nationalAdditionalCodesKey + "[]"),
+        label = messages("supplementary.itemType.nationalAdditionalCode.header"),
+        hint = Some(messages("supplementary.itemType.nationalAdditionalCode.header.hint")),
+        elements = nationalAdditionalCodes
     )
-
     @components.input_text(
       field = form("cusCode"),
       label = messages("supplementary.itemType.cusCode.header"),
@@ -69,7 +72,9 @@
       hint = Some(messages("supplementary.itemType.description.header.hint"))
     )
 
-    @components.submit_button()
+    <div class="section align='right'">
+        <button id="submit" class="button" name="@SaveAndContinue.toString">@messages("site.save_and_continue")</button>
+    </div>
   }
 
 }

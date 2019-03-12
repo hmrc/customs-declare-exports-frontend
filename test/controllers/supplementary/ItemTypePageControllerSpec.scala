@@ -17,13 +17,14 @@
 package controllers.supplementary
 
 import base.{CustomExportsBaseSpec, TestHelper}
+import controllers.util.{FormAction, SaveAndContinue}
 import forms.supplementary.ItemType
-import forms.supplementary.ItemTypeSpec.correctItemTypeJSON
+import forms.supplementary.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
+import forms.supplementary.ItemTypeSpec.correctItemType
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import org.scalatest.BeforeAndAfter
-import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
 class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
@@ -68,92 +69,94 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
 
     "display the form page with error" when {
       "Combined Nomenclature Code is empty" in {
-        val form = buildItemTypeJsonInput()
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)()
         val expectedErrorMessage = messages("supplementary.itemType.combinedNomenclatureCode.error.empty")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
       "Combined Nomenclature Code is longer than 8 characters" in {
-        val form = buildItemTypeJsonInput(combinedNomenclatureCode = "123456789")
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(combinedNomenclatureCode = "123456789")
         val expectedErrorMessage = messages("supplementary.itemType.combinedNomenclatureCode.error.length")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
       "Combined Nomenclature Code contains special characters" in {
-        val form = buildItemTypeJsonInput(combinedNomenclatureCode = "123$%^")
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(combinedNomenclatureCode = "123$%^")
         val expectedErrorMessage = messages("supplementary.itemType.combinedNomenclatureCode.error.specialCharacters")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
       "TARIC additional code is not 4 characters long" in {
-        val form = buildItemTypeJsonInput(taricAdditionalCode = "123")
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(taricAdditionalCodes = Seq("123"))
         val expectedErrorMessage = messages("supplementary.itemType.taricAdditionalCodes.error.length")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
       "TARIC additional code contains special characters" in {
-        val form = buildItemTypeJsonInput(taricAdditionalCode = "123%")
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(taricAdditionalCodes = Seq("123%"))
         val expectedErrorMessage = messages("supplementary.itemType.taricAdditionalCodes.error.specialCharacters")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
       "National additional code is longer than 4 characters" in {
-        val form = buildItemTypeJsonInput(nationalAdditionalCode = "12345")
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(nationalAdditionalCodes = Seq("12345"))
         val expectedErrorMessage = messages("supplementary.itemType.nationalAdditionalCode.error.length")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
       "National additional code contains special characters" in {
-        val form = buildItemTypeJsonInput(nationalAdditionalCode = "12#%")
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(nationalAdditionalCodes = Seq("12#%"))
         val expectedErrorMessage = messages("supplementary.itemType.nationalAdditionalCode.error.specialCharacters")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
       "Description of goods is empty" in {
-        val form = buildItemTypeJsonInput()
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)()
         val expectedErrorMessage = messages("supplementary.itemType.description.error.empty")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
       "Description of goods is longer than 280 characters" in {
         val descriptionMaxLength = 280
-        val form = buildItemTypeJsonInput(descriptionOfGoods = TestHelper.createRandomString(descriptionMaxLength + 1))
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          descriptionOfGoods = TestHelper.createRandomString(descriptionMaxLength + 1)
+        )
         val expectedErrorMessage = messages("supplementary.itemType.description.error.length")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
       "CUS code is not 8 characters long" in {
-        val form = buildItemTypeJsonInput(cusCode = "1234567")
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(cusCode = "1234567")
         val expectedErrorMessage = messages("supplementary.itemType.cusCode.error.length")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
       "CUS code contains special characters" in {
-        val form = buildItemTypeJsonInput(cusCode = "1234@#$%")
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(cusCode = "1234@#$%")
         val expectedErrorMessage = messages("supplementary.itemType.cusCode.error.specialCharacters")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
       "Statistical value is empty" in {
-        val form = buildItemTypeJsonInput()
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)()
         val expectedErrorMessage = messages("supplementary.itemType.statisticalValue.error.empty")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
       "Statistical value contains more than 15 digits" in {
-        val form = buildItemTypeJsonInput(statisticalValue = "12345678901234.56")
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(statisticalValue = "12345678901234.56")
         val expectedErrorMessage = messages("supplementary.itemType.statisticalValue.error.length")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
-      "Statictical value contains non-digit characters" in {
-        val form = buildItemTypeJsonInput(statisticalValue = "123456Q.78")
+      "Statistical value contains non-digit characters" in {
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(statisticalValue = "123456Q.78")
         val expectedErrorMessage = messages("supplementary.itemType.statisticalValue.error.wrongFormat")
         testErrorInFormScenario(form, expectedErrorMessage)
       }
 
-      def testErrorInFormScenario(form: JsValue, expectedErrorMessage: String): Unit = {
-        val result = route(app, postRequest(uri, form)).get
+      def testErrorInFormScenario(form: Map[String, String], expectedErrorMessage: String): Unit = {
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
         contentAsString(result) must include(expectedErrorMessage)
       }
     }
@@ -162,19 +165,19 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
       reset(mockCustomsCacheService)
       withCaching[ItemType](None, ItemType.id)
 
-      route(app, postRequest(uri, correctItemTypeJSON)).get.futureValue
+      route(app, postRequestFormUrlEncoded(uri, correctItemTypeFormUrlEncoded.toSeq: _*)).get.futureValue
 
       verify(mockCustomsCacheService)
         .cache[ItemType](any(), ArgumentMatchers.eq(ItemType.id), any())(any(), any(), any())
     }
 
     "return 303 code" in {
-      val result = route(app, postRequest(uri, correctItemTypeJSON)).get
+      val result = route(app, postRequestFormUrlEncoded(uri, correctItemTypeFormUrlEncoded.toSeq: _*)).get
       status(result) must be(SEE_OTHER)
     }
 
     "redirect to \"Add Package Information\" page" in {
-      val result = route(app, postRequest(uri, correctItemTypeJSON)).get
+      val result = route(app, postRequestFormUrlEncoded(uri, correctItemTypeFormUrlEncoded.toSeq: _*)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
@@ -187,22 +190,34 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
 
 object ItemTypePageControllerSpec {
 
-  def buildItemTypeJsonInput(
+  val correctItemTypeFormUrlEncoded: Map[String, String] =
+    buildItemTypeUrlEncodedInput(SaveAndContinue)(
+      combinedNomenclatureCode = correctItemType.combinedNomenclatureCode,
+      taricAdditionalCodes = correctItemType.taricAdditionalCodes,
+      nationalAdditionalCodes = correctItemType.nationalAdditionalCodes,
+      descriptionOfGoods = correctItemType.descriptionOfGoods,
+      cusCode = correctItemType.cusCode.get,
+      statisticalValue = correctItemType.statisticalValue
+    )
+
+  def buildItemTypeUrlEncodedInput(formAction: FormAction)(
     combinedNomenclatureCode: String = "",
-    taricAdditionalCode: String = "",
-    nationalAdditionalCode: String = "",
+    taricAdditionalCodes: Seq[String] = Seq.empty,
+    nationalAdditionalCodes: Seq[String] = Seq.empty,
     descriptionOfGoods: String = "",
     cusCode: String = "",
     statisticalValue: String = ""
-  ): JsValue = JsObject(
-    Map(
-      "combinedNomenclatureCode" -> JsString(combinedNomenclatureCode),
-      "taricAdditionalCode" -> JsString(taricAdditionalCode),
-      "nationalAdditionalCode" -> JsString(nationalAdditionalCode),
-      "descriptionOfGoods" -> JsString(descriptionOfGoods),
-      "cusCode" -> JsString(cusCode),
-      "statisticalValue" -> JsString(statisticalValue)
-    )
-  )
+  ) =
+    Map(formAction.toString -> "") ++
+      Map(
+        "combinedNomenclatureCode" -> combinedNomenclatureCode,
+        "descriptionOfGoods" -> descriptionOfGoods,
+        "cusCode" -> cusCode,
+        "statisticalValue" -> statisticalValue
+      ) ++ taricAdditionalCodes.zipWithIndex.map {
+      case (code, idx) => taricAdditionalCodesKey + "[" + idx + "]" -> code
+    } ++ nationalAdditionalCodes.zipWithIndex.map {
+      case (code, idx) => nationalAdditionalCodesKey + "[" + idx + "]" -> code
+    }
 
 }

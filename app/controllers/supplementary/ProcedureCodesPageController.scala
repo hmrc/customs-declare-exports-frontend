@@ -57,7 +57,7 @@ class ProcedureCodesPageController @Inject()(
   def submitProcedureCodes(): Action[AnyContent] = authenticate.async { implicit request =>
     val boundForm = form.bindFromRequest()
 
-    val actionTypeOpt = request.body.asFormUrlEncoded.flatMap(FormAction.fromUrlEncoded(_))
+    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
     val cachedData = customsCacheService
       .fetchAndGetEntry[ProcedureCodesData](supplementaryCacheId, formId)
