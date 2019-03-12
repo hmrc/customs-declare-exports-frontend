@@ -22,7 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class PreviousDocuments(
+case class Document(
   documentCategory: String,
   documentType: String,
   documentReference: String,
@@ -38,8 +38,8 @@ case class PreviousDocuments(
     )
 }
 
-object PreviousDocuments {
-  implicit val format = Json.format[PreviousDocuments]
+object Document {
+  implicit val format = Json.format[Document]
 
   val formId = "PreviousDocuments"
 
@@ -54,7 +54,10 @@ object PreviousDocuments {
       ),
     "documentType" -> text()
       .verifying("supplementary.previousDocuments.documentType.empty", nonEmpty)
-      .verifying("supplementary.previousDocuments.documentType.error", isEmpty or (isAlphanumeric and noLongerThan(3))),
+      .verifying(
+        "supplementary.previousDocuments.documentType.error",
+        isEmpty or (isAlphanumeric and noLongerThan(3))
+      ),
     "documentReference" -> text()
       .verifying("supplementary.previousDocuments.documentReference.empty", nonEmpty)
       .verifying(
@@ -64,13 +67,21 @@ object PreviousDocuments {
     "goodsItemIdentifier" -> optional(
       text().verifying("supplementary.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3))
     )
-  )(PreviousDocuments.apply)(PreviousDocuments.unapply)
+  )(Document.apply)(Document.unapply)
 
-  def form(): Form[PreviousDocuments] = Form(mapping)
+  def form(): Form[Document] = Form(mapping)
 
   object AllowedValues {
     val TemporaryStorage = "X"
     val SimplifiedDeclaration = "Y"
     val PreviousDocument = "Z"
   }
+}
+
+case class PreviousDocumentsData(documents: Seq[Document])
+
+object PreviousDocumentsData {
+  implicit val format = Json.format[PreviousDocumentsData]
+
+  val maxAmountOfItems = 99
 }

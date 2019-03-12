@@ -26,8 +26,8 @@ class AdditionalInformationSpec extends WordSpec with MustMatchers {
     "return proper Metadata Properties" in {
       val additionalInformation = correctAdditionalInformation
       val expectedProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementCode" -> additionalInformation.items.head.code.get,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementDescription" -> additionalInformation.items.head.description.get
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementCode" -> additionalInformation.items.head.code,
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementDescription" -> additionalInformation.items.head.description
       )
 
       additionalInformation.toMetadataProperties() must equal(expectedProperties)
@@ -45,12 +45,9 @@ class AdditionalInformationSpec extends WordSpec with MustMatchers {
 object AdditionalInformationSpec {
   val correctAdditionalInformation =
     AdditionalInformationData(
-      Seq(
-        AdditionalInformation(code = Some("M1l3s"), description = Some("Description for Additional Information: Davis"))
-      )
-    )
+      Seq(AdditionalInformation(code = "M1l3s", description = "Description for Additional Information: Davis")))
 
-  val emptyAdditionalInformation = AdditionalInformation(None, None)
+  val emptyAdditionalInformation = AdditionalInformation("", "")
 
   val correctAdditionalInformationJSON: JsValue = JsObject(
     Map("code" -> JsString("M1l3s"), "description" -> JsString("Description for Additional Information: Davis"))

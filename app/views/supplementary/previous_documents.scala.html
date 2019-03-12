@@ -16,12 +16,12 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
-@import forms.supplementary.PreviousDocuments
-@import forms.supplementary.PreviousDocuments.AllowedValues._
+@import forms.supplementary.Document
+@import forms.supplementary.Document.AllowedValues._
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
-@(appConfig: AppConfig, form: Form[PreviousDocuments])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[Document])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.previousDocuments"),

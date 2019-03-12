@@ -21,8 +21,8 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class AdditionalInformation(code: Option[String], description: Option[String]) {
-  override def toString: String = s"${code.getOrElse("")}-${description.getOrElse("")}"
+case class AdditionalInformation(code: String, description: String) {
+  override def toString: String = s"${code}-${description}"
 }
 
 object AdditionalInformation {
@@ -31,24 +31,18 @@ object AdditionalInformation {
   val formId = "AdditionalInformation"
 
   val mapping = Forms.mapping(
-    "code" -> optional(
-      text().verifying("supplementary.additionalInformation.code.error", isAlphanumeric and hasSpecificLength(5))
-    ),
-    "description" -> optional(
-      text().verifying(
-        "supplementary.additionalInformation.description.error",
-        noLongerThan(70) and isAlphanumericWithAllowedSpecialCharacters
-      )
-    )
+    "code" ->
+      text()
+        .verifying("supplementary.additionalInformation.code.empty", nonEmpty)
+        .verifying("supplementary.additionalInformation.code.error", isEmpty or (isAlphanumeric and hasSpecificLength(5))),
+    "description" ->
+      text()
+        .verifying("supplementary.additionalInformation.description.empty", nonEmpty)
+        .verifying(
+          "supplementary.additionalInformation.description.error",
+          isEmpty or (noLongerThan(70) and isAlphanumericWithAllowedSpecialCharacters)
+        )
   )(AdditionalInformation.apply)(AdditionalInformation.unapply)
 
   def form(): Form[AdditionalInformation] = Form(mapping)
-
-  def buildFromString(value: String): AdditionalInformation = {
-    val dividedString = value.split('-')
-
-    if (dividedString.length == 0) AdditionalInformation(None, None)
-    else if (dividedString.length == 1) AdditionalInformation(Some(value.split('-')(0)), None)
-    else AdditionalInformation(Some(value.split('-')(0)), Some(value.split('-')(1)))
-  }
 }

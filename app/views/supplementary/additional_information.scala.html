@@ -16,6 +16,7 @@
 
 @import config.AppConfig
 @import controllers.supplementary.routes._
+@import controllers.util.Remove
 @import forms.supplementary.AdditionalInformation
 @import uk.gov.hmrc.play.views.html._
 
@@ -32,7 +33,21 @@
 
         @components.page_title(Some("supplementary.additionalInformation.title"))
 
-        @components.single_value_elements_table(items.map(_.toString))
+        @if(items.nonEmpty) {
+            <div class="field-group">
+                <table >
+                @items.zipWithIndex.map { case (item, index) =>
+                <tr>
+                    <th>@item</th>
+                    <th>
+                        <button class="button" name="@Remove.toString" value="@index">@messages("site.remove")</button>
+                </th>
+                </tr>
+                }
+                </table>
+                <br><br>
+            </div>
+        }
 
         @components.input_text(
             field = form("code"),

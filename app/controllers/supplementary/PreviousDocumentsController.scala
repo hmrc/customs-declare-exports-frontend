@@ -19,8 +19,8 @@ package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.supplementaryCacheId
-import forms.supplementary.PreviousDocuments
-import forms.supplementary.PreviousDocuments._
+import forms.supplementary.Document
+import forms.supplementary.Document._
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -40,7 +40,7 @@ class PreviousDocumentsController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[PreviousDocuments](supplementaryCacheId, formId).map {
+    customsCacheService.fetchAndGetEntry[Document](supplementaryCacheId, formId).map {
       case Some(data) => Ok(previous_documents(appConfig, form.fill(data)))
       case _          => Ok(previous_documents(appConfig, form))
     }
@@ -50,10 +50,10 @@ class PreviousDocumentsController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[PreviousDocuments]) =>
+        (formWithErrors: Form[Document]) =>
           Future.successful(BadRequest(previous_documents(appConfig, formWithErrors))),
         validForm =>
-          customsCacheService.cache[PreviousDocuments](supplementaryCacheId, formId, validForm).map { _ =>
+          customsCacheService.cache[Document](supplementaryCacheId, formId, validForm).map { _ =>
             Redirect(controllers.supplementary.routes.GoodsItemNumberController.displayForm())
         }
       )
