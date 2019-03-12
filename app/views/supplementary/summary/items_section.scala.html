@@ -79,28 +79,4 @@
         value = items.flatMap(_.itemType).map(_.statisticalValue)
     ))
 
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.itemPackaging"),
-        value = items.flatMap(_.packageInformation).map(_.numberOfPackages)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.packageType"),
-        value = items.flatMap(_.packageInformation).map(_.typesOfPackages)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.supplementaryUnits"),
-        value = items.flatMap(_.packageInformation).flatMap(_.supplementaryUnits)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.shippingMarks"),
-        value = items.flatMap(_.packageInformation).map(_.shippingMarks)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.netWeight"),
-        value = items.flatMap(_.packageInformation).map(_.netMass)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.grossWeight"),
-        value = items.flatMap(_.packageInformation).map(_.grossMass)
-    ))
 }

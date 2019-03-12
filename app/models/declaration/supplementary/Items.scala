@@ -24,8 +24,7 @@ case class Items(
   totalNumberOfItems: Option[TotalNumberOfItems] = None,
   transactionType: Option[TransactionType] = None,
   goodsItemNumber: Option[GoodsItemNumber] = None,
-  itemType: Option[ItemType] = None,
-  packageInformation: Option[PackageInformation] = None
+  itemType: Option[ItemType] = None
 ) extends SummaryContainer with MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
@@ -33,16 +32,14 @@ case class Items(
       totalNumberOfItems.map(_.toMetadataProperties()),
       transactionType.map(_.toMetadataProperties()),
       goodsItemNumber.map(_.toMetadataProperties()),
-      itemType.map(_.toMetadataProperties()),
-      packageInformation.map(_.toMetadataProperties())
+      itemType.map(_.toMetadataProperties())
     ).flatten.fold(Map.empty)(_ ++ _)
 
   override def isEmpty: Boolean =
     totalNumberOfItems.isEmpty &&
       transactionType.isEmpty &&
       goodsItemNumber.isEmpty &&
-      itemType.isEmpty &&
-      packageInformation.isEmpty
+      itemType.isEmpty
 }
 
 object Items {
@@ -52,7 +49,6 @@ object Items {
     totalNumberOfItems = cacheMap.getEntry[TotalNumberOfItems](TotalNumberOfItems.formId),
     transactionType = cacheMap.getEntry[TransactionType](TransactionType.formId),
     goodsItemNumber = cacheMap.getEntry[GoodsItemNumber](GoodsItemNumber.formId),
-    itemType = cacheMap.getEntry[ItemType](ItemType.id),
-    packageInformation = cacheMap.getEntry[PackageInformation](PackageInformation.formId)
+    itemType = cacheMap.getEntry[ItemType](ItemType.id)
   )
 }

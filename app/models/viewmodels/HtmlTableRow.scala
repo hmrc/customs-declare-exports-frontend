@@ -24,8 +24,6 @@ object HtmlTableRow {
 
   def apply(label: String, value: String): HtmlTableRow = new HtmlTableRow(label, Seq(Some(value)))
 
-  def apply(label: String, value: Option[_]): HtmlTableRow = new HtmlTableRow(label, adjust(value))
-
   def apply(label: String, value: Iterable[_]): HtmlTableRow = new HtmlTableRow(label, adjust(value))
 
   private def adjust(option: Option[_]): Seq[Option[String]] = option match {

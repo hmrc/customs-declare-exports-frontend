@@ -145,7 +145,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.items.numberOfItems"))
         resultAsString must include(messages("supplementary.summary.items.amountInvoiced"))
         resultAsString must include(messages("supplementary.summary.items.exchangeRate"))
-        resultAsString must include(messages("supplementary.summary.items.numberOfPackages"))
         resultAsString must include(messages("supplementary.summary.items.transactionType"))
         resultAsString must include(messages("supplementary.summary.items.itemNumber"))
         resultAsString must include(messages("supplementary.summary.items.commodityCode"))
@@ -154,12 +153,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.items.tradeDescription"))
         resultAsString must include(messages("supplementary.summary.items.cusCode"))
         resultAsString must include(messages("supplementary.summary.items.statisticalValue"))
-        resultAsString must include(messages("supplementary.summary.items.itemPackaging"))
-        resultAsString must include(messages("supplementary.summary.items.packageType"))
-        resultAsString must include(messages("supplementary.summary.items.supplementaryUnits"))
-        resultAsString must include(messages("supplementary.summary.items.shippingMarks"))
-        resultAsString must include(messages("supplementary.summary.items.netWeight"))
-        resultAsString must include(messages("supplementary.summary.items.grossWeight"))
+
       }
 
       "display content for Documents module" in new Test {

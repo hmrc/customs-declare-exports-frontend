@@ -16,65 +16,58 @@
 
 package forms.supplementary
 
-import forms.MetadataPropertiesConvertable
-import play.api.data.Forms.{optional, text}
+import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
 case class PackageInformation(
-  typesOfPackages: String,
-  numberOfPackages: String,
-  supplementaryUnits: Option[String],
-  shippingMarks: String,
-  netMass: String,
-  grossMass: String
-) extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[0].typeCode" -> typesOfPackages,
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[0].quantity" -> numberOfPackages,
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].packagings[0].marksNumbersId" -> shippingMarks,
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.tariffQuantity" -> supplementaryUnits
-        .getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.netWeightMeasure" -> netMass,
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.goodsMeasure.grossMassMeasure" -> grossMass
-    )
-}
+  typesOfPackages: Option[String],
+  numberOfPackages: Option[Int],
+  shippingMarks: Option[String]
+)
 
 object PackageInformation {
+
+  def require1Field[T](fs: (T => Option[_])*): T => Boolean =
+    t => fs.exists(f => f(t).nonEmpty)
 
   implicit val format = Json.format[PackageInformation]
 
   val formId = "PackageInformation"
 
-  val mapping = Forms.mapping(
-    "typesOfPackages" -> text()
-      .verifying(
-        "supplementary.packageInformation.typesOfPackages.error",
-        isEmpty or (isAlphanumeric and hasSpecificLength(2))
+  val mapping = Forms
+    .mapping(
+      "typesOfPackages" -> optional(
+        text()
+          .verifying(
+            "supplementary.packageInformation.typesOfPackages.error",
+            isEmpty or (isAlphanumeric and hasSpecificLength(2))
+          )
+          .verifying("supplementary.packageInformation.typesOfPackages.empty", nonEmpty)
+      ),
+      "numberOfPackages" ->
+        optional(
+          number.verifying("supplementary.packageInformation.numberOfPackages.error", (q => q > 0 && q <= 999999))
+        ),
+      "shippingMarks" -> optional(
+        text()
+          .verifying(
+            "supplementary.packageInformation.shippingMarks.error",
+            isEmpty or (isAlphanumeric and noLongerThan(42))
+          )
+          .verifying("supplementary.packageInformation.shippingMarks.empty", nonEmpty)
       )
-      .verifying("supplementary.packageInformation.typesOfPackages.empty", nonEmpty),
-    "numberOfPackages" -> text()
-      .verifying("supplementary.packageInformation.numberOfPackages.error", isEmpty or (isNumeric and noLongerThan(5)))
-      .verifying("supplementary.packageInformation.numberOfPackages.empty", nonEmpty),
-    "supplementaryUnits" -> optional(
-      text().verifying("supplementary.packageInformation.supplementaryUnits.error", validateDecimal(16)(6))
-    ),
-    "shippingMarks" -> text()
-      .verifying(
-        "supplementary.packageInformation.shippingMarks.error",
-        isEmpty or (isAlphanumeric and noLongerThan(42))
-      )
-      .verifying("supplementary.packageInformation.shippingMarks.empty", nonEmpty),
-    "netMass" -> text()
-      .verifying("supplementary.packageInformation.netMass.error", isEmpty or validateDecimal(11)(3))
-      .verifying("supplementary.packageInformation.netMass.empty", nonEmpty),
-    "grossMass" -> text()
-      .verifying("supplementary.packageInformation.grossMass.error", isEmpty or validateDecimal(16)(6))
-      .verifying("supplementary.packageInformation.grossMass.empty", nonEmpty)
-  )(PackageInformation.apply)(PackageInformation.unapply)
+    )(PackageInformation.apply)(PackageInformation.unapply)
+    .verifying(
+      "You must provide 6/9 item packaged, 6/10 Shipping Marks, 6/11 Number of Packages  for a package to be added",
+      require1Field[PackageInformation](_.typesOfPackages, _.numberOfPackages, _.shippingMarks)
+    )
+
+  val DUPLICATE_MSG_KEY = "supplementary.packageInformation.global.duplicate"
+  val LIMIT_MSG_KEY = "supplementary.packageInformation.global.limit"
+  val USE_ADD = "supplementary.packageInformation.global.useAdd"
+  val ADD_ONE = "supplementary.packageInformation.global.addOne"
 
   def form(): Form[PackageInformation] = Form(mapping)
 }

@@ -143,7 +143,13 @@ POST        /transaction-type               controllers.supplementary.Transactio
 
 GET         /package-information            controllers.supplementary.PackageInformationController.displayForm()
 
-POST        /package-information            controllers.supplementary.PackageInformationController.submit()
+POST        /package-information            controllers.supplementary.PackageInformationController.submitForm()
+
+# Commodity Measure Information
+
+GET         /commodity-measure            controllers.supplementary.CommodityMeasureController.displayForm()
+
+POST        /commodity-measure            controllers.supplementary.CommodityMeasureController.submitForm()
 
 # Summary
 

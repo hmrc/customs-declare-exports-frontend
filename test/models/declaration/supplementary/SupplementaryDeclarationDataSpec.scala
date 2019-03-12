@@ -30,7 +30,6 @@ import forms.supplementary.GoodsItemNumberSpec._
 import forms.supplementary.GoodsLocationSpec._
 import forms.supplementary.ItemTypeSpec._
 import forms.supplementary.OfficeOfExitSpec._
-import forms.supplementary.PackageInformationSpec._
 import forms.supplementary.DocumentSpec._
 import forms.supplementary.RepresentativeDetailsSpec._
 import forms.supplementary.SupervisingCustomsOfficeSpec._
@@ -242,7 +241,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.items.get.transactionType must be(defined)
           supplementaryDeclarationData.items.get.goodsItemNumber must be(defined)
           supplementaryDeclarationData.items.get.itemType must be(defined)
-          supplementaryDeclarationData.items.get.packageInformation must be(defined)
           supplementaryDeclarationData.previousDocuments must be(defined)
           supplementaryDeclarationData.additionalInformationData must be(defined)
           supplementaryDeclarationData.documentsProducedData must be(defined)
@@ -439,7 +437,6 @@ object SupplementaryDeclarationDataSpec {
       TransactionType.formId -> correctTransactionTypeJSON,
       GoodsItemNumber.formId -> correctGoodsItemNumberJSON,
       ItemType.id -> correctItemTypeJSON,
-      PackageInformation.formId -> correctPackageInformationDecimalValuesJSON,
       Document.formId -> correctPreviousDocumentsJSON,
       AdditionalInformationData.formId -> correctAdditionalInformationDataJSON,
       DocumentsProducedData.formId -> correctDocumentsProducedDataJSON
@@ -474,9 +471,7 @@ object SupplementaryDeclarationDataSpec {
         totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
         transactionType = Some(correctTransactionType),
         goodsItemNumber = Some(correctGoodsItemNumber),
-        itemType = Some(correctItemType),
-        packageInformation = Some(correctPackageInformationDecimalValues)
-      )
+        itemType = Some(correctItemType))
     ),
     previousDocuments = Some(correctPreviousDocument),
     additionalInformationData = Some(correctAdditionalInformation),
