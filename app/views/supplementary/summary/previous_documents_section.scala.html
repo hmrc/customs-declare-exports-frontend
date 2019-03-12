@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import forms.supplementary.PreviousDocuments
+@import forms.supplementary.Document
 @import models.viewmodels.HtmlTableRow
 
-@(previousDocuments: Option[PreviousDocuments])(implicit messages: Messages)
+@(previousDocuments: Option[Document])(implicit messages: Messages)
 
 @components.summary_list(Some(messages("supplementary.summary.previousDocuments.header"))) {
     @components.table_row_no_change_link(HtmlTableRow(

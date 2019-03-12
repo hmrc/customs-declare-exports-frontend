@@ -24,10 +24,8 @@ case class AdditionalInformationData(items: Seq[AdditionalInformation]) extends 
   override def toMetadataProperties(): Map[String, String] =
     items.zipWithIndex.map { itemWithId =>
       Map(
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[" + itemWithId._2 + "].statementCode" -> itemWithId._1.code
-          .getOrElse(""),
+        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[" + itemWithId._2 + "].statementCode" -> itemWithId._1.code,
         "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[" + itemWithId._2 + "].statementDescription" -> itemWithId._1.description
-          .getOrElse("")
       )
     }.fold(Map.empty)(_ ++ _)
 

@@ -15,22 +15,21 @@
  */
 
 package controllers.supplementary
+
 import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.supplementaryCacheId
-import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
+import controllers.util.MultipleItemsHelper._
+import controllers.util._
 import forms.supplementary.AdditionalInformation
 import forms.supplementary.AdditionalInformation.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.supplementary.AdditionalInformationData
-import models.declaration.supplementary.AdditionalInformationData.{formId, maxNumberOfItems}
-import models.requests.AuthenticatedRequest
-import play.api.data.{Form, FormError}
+import models.declaration.supplementary.AdditionalInformationData.formId
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.supplementary.additional_information
 
@@ -61,134 +60,40 @@ class AdditionalInformationController @Inject()(
       .fetchAndGetEntry[AdditionalInformationData](supplementaryCacheId, formId)
       .map(_.getOrElse(AdditionalInformationData(Seq())))
 
+    val elementLimit = 99
+
     cachedData.flatMap { cache =>
-      boundForm
-        .fold(
-          (formWithErrors: Form[AdditionalInformation]) =>
-            Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
-          validForm =>
-            actionTypeOpt match {
-              case Some(Add)             => addItem(validForm, cache)
-              case Some(SaveAndContinue) => saveAndContinue(validForm, cache)
-              case Some(Remove(values))  => removeItem(retrieveItem(values), cache)
-              case _                     => errorHandler.displayErrorPage()
-          }
-        )
-    }
-  }
+      actionTypeOpt match {
+        case Some(Add) =>
+          add(boundForm, cache.items, elementLimit).fold(
+            formWithErrors => Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
+            updatedCache =>
+              customsCacheService
+                .cache[AdditionalInformationData](supplementaryCacheId, formId, AdditionalInformationData(updatedCache))
+                .map(_ => Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm()))
+          )
 
-  private def saveAndContinue(
-    userInput: AdditionalInformation,
-    cachedData: AdditionalInformationData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
-    (userInput, cachedData.items) match {
-      case (item, Seq()) => handleSaveAndContinueEmptyCache(item)
-      case (item, items) => handleSaveAndContinueCache(item, items)
-    }
+        case Some(Remove(ids)) => {
+          val updatedCache = remove(ids.headOption, cache.items)
 
-  private def handleSaveAndContinueCache(item: AdditionalInformation, items: Seq[AdditionalInformation])(
-    implicit request: AuthenticatedRequest[_]
-  ) =
-    item match {
-      case _ if items.length >= maxNumberOfItems =>
-        handleErrorPage(Seq(("", "supplementary.additionalInformation.maximumAmount.error")), item, items)
-
-      case _ if items.contains(item) =>
-        handleErrorPage(Seq(("", "supplementary.additionalInformation.duplicated")), item, items)
-
-      case _ if item.code.isDefined == item.description.isDefined =>
-        val updatedItems = if (item.code.isDefined) items :+ item else items
-        val updatedCache = AdditionalInformationData(updatedItems)
-
-        customsCacheService.cache[AdditionalInformationData](supplementaryCacheId, formId, updatedCache).map { _ =>
-          Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm())
+          customsCacheService
+            .cache[AdditionalInformationData](supplementaryCacheId, formId, AdditionalInformationData(updatedCache))
+            .map(_ => Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm()))
         }
 
-      case AdditionalInformation(maybeCode, maybeDescription) =>
-        val codeError =
-          maybeCode.fold(Seq(("code", "supplementary.additionalInformation.code.empty")))(_ => Seq[(String, String)]())
-        val descriptionError = maybeDescription.fold(
-          Seq(("description", "supplementary.additionalInformation.description.empty"))
-        )(_ => Seq[(String, String)]())
+        case Some(SaveAndContinue) =>
+          saveAndContinue(boundForm, cache.items, true, elementLimit).fold(
+            formWithErrors => Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
+            updatedCache =>
+              if(updatedCache != cache.items)
+                customsCacheService
+                  .cache[AdditionalInformationData](supplementaryCacheId, formId, AdditionalInformationData(updatedCache))
+                  .map(_ => Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm()))
+              else Future.successful(Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm()))
+          )
 
-        handleErrorPage(codeError ++ descriptionError, item, items)
-    }
-
-  private def handleSaveAndContinueEmptyCache(item: AdditionalInformation)(implicit request: AuthenticatedRequest[_]) =
-    item match {
-      case AdditionalInformation(Some(code), Some(description)) =>
-        val updateCache = AdditionalInformationData(Seq(AdditionalInformation(Some(code), Some(description))))
-
-        customsCacheService.cache[AdditionalInformationData](supplementaryCacheId(), formId, updateCache).map { _ =>
-          Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm())
-        }
-
-      case AdditionalInformation(maybeCode, maybeDescription) =>
-        val codeError =
-          maybeCode.fold(Seq(("code", "supplementary.additionalInformation.code.empty")))(_ => Seq[(String, String)]())
-
-        val descriptionError = maybeDescription.fold(
-          Seq(("description", "supplementary.additionalInformation.description.empty"))
-        )(_ => Seq[(String, String)]())
-
-        handleErrorPage(codeError ++ descriptionError, item, Seq())
-    }
-  private def addItem(
-    userInput: AdditionalInformation,
-    cachedData: AdditionalInformationData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
-    (userInput, cachedData.items) match {
-      case (_, items) if items.length >= maxNumberOfItems =>
-        handleErrorPage(
-          Seq(("", "supplementary.additionalInformation.maximumAmount.error")),
-          userInput,
-          cachedData.items
-        )
-
-      case (item, items) if items.contains(item) =>
-        handleErrorPage(Seq(("", "supplementary.additionalInformation.duplicated")), userInput, cachedData.items)
-
-      case (item, items) if item.code.isDefined && item.description.isDefined =>
-        val updatedCache = AdditionalInformationData(items :+ item)
-
-        customsCacheService.cache[AdditionalInformationData](supplementaryCacheId, formId, updatedCache).map { _ =>
-          Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm())
-        }
-
-      case (AdditionalInformation(code, description), _) =>
-        val codeError =
-          code.fold(Seq(("code", "supplementary.additionalInformation.code.empty")))(_ => Seq[(String, String)]())
-        val descriptionError = description.fold(
-          Seq(("description", "supplementary.additionalInformation.description.empty"))
-        )(_ => Seq[(String, String)]())
-
-        handleErrorPage(codeError ++ descriptionError, userInput, cachedData.items)
-    }
-
-  private def removeItem(
-    itemToRemove: AdditionalInformation,
-    cachedData: AdditionalInformationData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
-    if (cachedData.containsItem(itemToRemove)) {
-      val updatedCache = cachedData.copy(items = cachedData.items.filterNot(_ == itemToRemove))
-
-      customsCacheService.cache[AdditionalInformationData](supplementaryCacheId, formId, updatedCache).map { _ =>
-        Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm())
+        case _ => errorHandler.displayErrorPage()
       }
-    } else errorHandler.displayErrorPage()
-
-  private def handleErrorPage(
-    fieldWithError: Seq[(String, String)],
-    userInput: AdditionalInformation,
-    items: Seq[AdditionalInformation]
-  )(implicit request: Request[_]): Future[Result] = {
-    val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
-
-    val formWithError = form.fill(userInput).copy(errors = updatedErrors)
-
-    Future.successful(BadRequest(additional_information(appConfig, formWithError, items)))
+    }
   }
-
-  private def retrieveItem(values: Seq[String]): AdditionalInformation =
-    AdditionalInformation.buildFromString(values.headOption.getOrElse(""))
 }

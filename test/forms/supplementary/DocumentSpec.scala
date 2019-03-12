@@ -20,12 +20,12 @@ import base.TestHelper
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class PreviousDocumentsSpec extends WordSpec with MustMatchers {
-  import PreviousDocumentsSpec._
+class DocumentSpec extends WordSpec with MustMatchers {
+  import DocumentSpec._
 
   "Method toMetadataProperties" should {
     "return proper Metadata Properties" in {
-      val previousDocuments = correctPreviousDocuments
+      val previousDocuments = correctPreviousDocument
       val expectedMetadataProperties: Map[String, String] = Map(
         "declaration.goodsShipment.previousDocuments[0].categoryCode" -> previousDocuments.documentCategory,
         "declaration.goodsShipment.previousDocuments[0].typeCode" -> previousDocuments.documentType,
@@ -39,18 +39,19 @@ class PreviousDocumentsSpec extends WordSpec with MustMatchers {
 
 }
 
-object PreviousDocumentsSpec {
-  import forms.supplementary.PreviousDocuments.AllowedValues.TemporaryStorage
+object DocumentSpec {
+  import forms.supplementary.Document.AllowedValues.TemporaryStorage
 
-  val correctPreviousDocuments = PreviousDocuments(
+  val correctPreviousDocument = Document(
     documentCategory = TemporaryStorage,
     documentType = "ABC",
     documentReference = "DocumentReference",
     goodsItemIdentifier = Some("123")
   )
-  val emptyPreviousDocuments =
-    PreviousDocuments(documentCategory = "", documentType = "", documentReference = "", goodsItemIdentifier = None)
-  val incorrectPreviousDocuments = PreviousDocuments(
+  val emptyPreviousDocument =
+    Document(documentCategory = "", documentType = "", documentReference = "", goodsItemIdentifier = None)
+
+  val incorrectPreviousDocuments = Document(
     documentCategory = "Incorrect category",
     documentType = "Incorrect type",
     documentReference = TestHelper.createRandomString(36),

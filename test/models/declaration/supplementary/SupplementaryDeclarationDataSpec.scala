@@ -31,7 +31,7 @@ import forms.supplementary.GoodsLocationSpec._
 import forms.supplementary.ItemTypeSpec._
 import forms.supplementary.OfficeOfExitSpec._
 import forms.supplementary.PackageInformationSpec._
-import forms.supplementary.PreviousDocumentsSpec._
+import forms.supplementary.DocumentSpec._
 import forms.supplementary.RepresentativeDetailsSpec._
 import forms.supplementary.SupervisingCustomsOfficeSpec._
 import forms.supplementary.TotalNumberOfItemsSpec._
@@ -324,8 +324,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         map(TransportInformation.id) must equal(data.transportInformation.get)
         map.keys must contain(Items.id)
         map(Items.id) must equal(data.items.get)
-        map.keys must contain(PreviousDocuments.formId)
-        map(PreviousDocuments.formId) must equal(data.previousDocuments.get)
+        map.keys must contain(Document.formId)
+        map(Document.formId) must equal(data.previousDocuments.get)
         map.keys must contain(AdditionalInformationData.formId)
         map(AdditionalInformationData.formId) must equal(data.additionalInformationData.get)
         map.keys must contain(DocumentsProducedData.formId)
@@ -363,7 +363,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       val locationsMock = mock(classOf[Locations])
       val transportInformationMock = mock(classOf[TransportInformation])
       val itemsMock = mock(classOf[Items])
-      val previousDocumentsMock = mock(classOf[PreviousDocuments])
+      val previousDocumentsMock = mock(classOf[Document])
       val additionalInformationDataMock = mock(classOf[AdditionalInformationData])
       val documentsProducedDataMock = mock(classOf[DocumentsProducedData])
       val supplementaryDeclarationData = SupplementaryDeclarationData(
@@ -440,7 +440,7 @@ object SupplementaryDeclarationDataSpec {
       GoodsItemNumber.formId -> correctGoodsItemNumberJSON,
       ItemType.id -> correctItemTypeJSON,
       PackageInformation.formId -> correctPackageInformationDecimalValuesJSON,
-      PreviousDocuments.formId -> correctPreviousDocumentsJSON,
+      Document.formId -> correctPreviousDocumentsJSON,
       AdditionalInformationData.formId -> correctAdditionalInformationDataJSON,
       DocumentsProducedData.formId -> correctDocumentsProducedDataJSON
     )
@@ -478,7 +478,7 @@ object SupplementaryDeclarationDataSpec {
         packageInformation = Some(correctPackageInformationDecimalValues)
       )
     ),
-    previousDocuments = Some(correctPreviousDocuments),
+    previousDocuments = Some(correctPreviousDocument),
     additionalInformationData = Some(correctAdditionalInformation),
     documentsProducedData = Some(correctDocumentsProducedData)
   )

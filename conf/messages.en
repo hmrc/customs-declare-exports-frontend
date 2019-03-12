@@ -481,8 +481,6 @@ supplementary.additionalInformation.code.empty = Code cannot be empty
 supplementary.additionalInformation.description = Enter the information required
 supplementary.additionalInformation.description.error = Information description is incorrect
 supplementary.additionalInformation.description.empty = Information description cannot be empty
-supplementary.additionalInformation.maximumAmount.error = You cannot have more than 99 items
-supplementary.additionalInformation.duplicated = You cannot add the same item
 
 supplementary.transactionType.documentTypeCode.title = Transaction type
 supplementary.transactionType.documentTypeCode.header = 8/5 Transaction type
@@ -604,3 +602,8 @@ supplementary.confirmation.explanation = Your MRN will be provided in a notifica
 supplementary.confirmation.explanation.linkText = Check your notification status in the dashboard.
 supplementary.confirmation.submitAnotherDeclaration = Submit another declaration
 supplementary.confirmation.rejection.header = Your declaration has been rejected
+
+supplementary.limit = You cannot add more items
+supplementary.duplication = You cannot add duplicated value
+supplementary.continue.error = Use Add button before continue to next page
+supplementary.continue.mandatory = You must add at least one item

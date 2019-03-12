@@ -17,9 +17,9 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
-import forms.supplementary.PreviousDocuments
-import forms.supplementary.PreviousDocuments.AllowedValues.TemporaryStorage
-import forms.supplementary.PreviousDocumentsSpec._
+import forms.supplementary.Document
+import forms.supplementary.Document.AllowedValues.TemporaryStorage
+import forms.supplementary.DocumentSpec._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
@@ -30,7 +30,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
   "Previous documents controller" should {
     "display previous documents form" in {
       authorizedUser()
-      withCaching[PreviousDocuments](None)
+      withCaching[Document](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -47,7 +47,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
 
     "valid form - empty values" in {
       authorizedUser()
-      withCaching[PreviousDocuments](None)
+      withCaching[Document](None)
 
       val result = route(app, postRequest(uri, emptyPreviousDocumentsJSON)).get
       val stringResult = contentAsString(result)
@@ -59,7 +59,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
 
     "valid form - incorrect values" in {
       authorizedUser()
-      withCaching[PreviousDocuments](None)
+      withCaching[Document](None)
 
       val result = route(app, postRequest(uri, incorrectPreviousDocumentsJSON)).get
       val stringResult = contentAsString(result)
@@ -72,7 +72,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec {
 
     "valid form - correct values" in {
       authorizedUser()
-      withCaching[PreviousDocuments](None)
+      withCaching[Document](None)
 
       val correctPreviousDocuments: JsValue = JsObject(
         Map(
