@@ -99,7 +99,7 @@ class DeclarationAdditionalActorsController @Inject()(
             .cache[DeclarationAdditionalActorsData](supplementaryCacheId, formId, updatedCache)
             .map(_ => Redirect(DeclarationAdditionalActorsController.displayForm()))
         } else
-          handleErrorPage(Seq(("", "supplementary.additionalActors.eori.isNotDefined")), userInput, cachedData.actors)
+          handleErrorPage(Seq(("eori", "supplementary.additionalActors.eori.isNotDefined")), userInput, cachedData.actors)
     }
 
   private def retrieveItem(value: String): Option[DeclarationAdditionalActors] = DeclarationAdditionalActors.fromJsonString(value)
