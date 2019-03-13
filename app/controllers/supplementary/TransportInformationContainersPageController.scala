@@ -18,22 +18,21 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.supplementary.routes.{TotalNumberOfItemsController, TransportInformationContainersPageController}
 import controllers.util.CacheIdGenerator.supplementaryCacheId
-import forms.supplementary.TransportInformation
-import forms.supplementary.TransportInformation.form
+import forms.supplementary.TransportInformationContainer.form
 import handlers.ErrorHandler
 import javax.inject.Inject
-import play.api.data.Form
+import models.declaration.supplementary.TransportInformationContainerData
+import models.declaration.supplementary.TransportInformationContainerData.formId
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.transport_information
+import views.html.supplementary.add_transport_containers
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-class TransportInformationPageController @Inject()(
+class TransportInformationContainersPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
@@ -46,29 +45,13 @@ class TransportInformationPageController @Inject()(
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[TransportInformation](supplementaryCacheId, TransportInformation.id)
+      .fetchAndGetEntry[TransportInformationContainerData](supplementaryCacheId, formId)
       .map {
-        case Some(data) => Ok(transport_information(appConfig, form.fill(data)))
-        case _          => Ok(transport_information(appConfig, form))
+        case Some(data) => Ok(add_transport_containers(appConfig, form, data.containers))
+        case _          => Ok(add_transport_containers(appConfig, form, Seq()))
       }
   }
 
-  def submitTransportInformation(): Action[AnyContent] = authenticate.async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[TransportInformation]) =>
-          Future.successful(BadRequest(transport_information(appConfig, formWithErrors))),
-        validTransportInformation =>
-          customsCacheService
-            .cache[TransportInformation](supplementaryCacheId, TransportInformation.id, validTransportInformation)
-            .map(_ => {
-              if (validTransportInformation.container)
-                Redirect(TransportInformationContainersPageController.displayPage())
-              else
-                Redirect(TotalNumberOfItemsController.displayForm())
-            })
-      )
-  }
+  def submitTransportInformation(): Action[AnyContent] = ???
 
 }

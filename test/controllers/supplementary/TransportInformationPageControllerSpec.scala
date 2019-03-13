@@ -16,7 +16,7 @@
 
 package controllers.supplementary
 
-import base.{CustomExportsBaseSpec, TestHelper}
+import base.CustomExportsBaseSpec
 import forms.supplementary.TransportInformation
 import forms.supplementary.TransportInformation.MeansOfTransportTypeCodes.NameOfVessel
 import forms.supplementary.TransportInformation.ModeOfTransportCodes.Road
@@ -185,17 +185,14 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
         .cache[TransportInformation](any(), ArgumentMatchers.eq(TransportInformation.id), any())(any(), any(), any())
     }
 
-    "return 303 code" in {
+    "redirect to 'Total number of items' page" in {
       val result = route(app, postRequest(uri, correctTransportInformationJSON)).get
       status(result) must be(SEE_OTHER)
-    }
 
-    "redirect to \"Total number of items\" page" in {
-      val result = route(app, postRequest(uri, correctTransportInformationJSON)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/total-numbers-of-items")
+        Some("/customs-declare-exports/declaration/supplementary/add-transport-containers")
       )
     }
   }

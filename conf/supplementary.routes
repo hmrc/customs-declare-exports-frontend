@@ -97,6 +97,12 @@ GET         /transport-information          controllers.supplementary.TransportI
 
 POST        /transport-information          controllers.supplementary.TransportInformationPageController.submitTransportInformation()
 
+# Transport Information Containers
+
+GET         /add-transport-containers       controllers.supplementary.TransportInformationContainersPageController.displayPage()
+
+POST        /add-transport-containers       controllers.supplementary.TransportInformationContainersPageController.submitTransportInformation()
+
 # Total number of items
 
 GET         /total-numbers-of-items         controllers.supplementary.TotalNumberOfItemsController.displayForm()
