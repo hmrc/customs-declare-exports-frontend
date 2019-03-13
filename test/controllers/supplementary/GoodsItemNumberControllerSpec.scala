@@ -19,16 +19,21 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.GoodsItemNumber
 import forms.supplementary.GoodsItemNumberSpec._
+import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class GoodsItemNumberControllerSpec extends CustomExportsBaseSpec {
+class GoodsItemNumberControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   val uri = uriWithContextPath("/declaration/supplementary/good-item-number")
 
+  before {
+    authorizedUser()
+  }
+
   "Good item number controller" should {
+
     "display good item number declaration form" in {
-      authorizedUser()
       withCaching[GoodsItemNumber](None)
 
       val result = route(app, getRequest(uri)).get
@@ -39,10 +44,30 @@ class GoodsItemNumberControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.goodItemNumber"))
       stringResult must include(messages("supplementary.goodItemNumber.hint"))
     }
+
+    "display \"Back\" button that links to \"Previous Documents\" page" in {
+      withCaching[GoodsItemNumber](None)
+
+      val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(OK)
+      stringResult must include(messages("site.back"))
+      stringResult must include(messages("/declaration/supplementary/previous-documents"))
+    }
+
+    "display \"Save and continue\" button on page" in {
+      withCaching[GoodsItemNumber](None)
+
+      val result = route(app, getRequest(uri)).get
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.save_and_continue"))
+      resultAsString must include("button id=\"submit\" class=\"button\"")
+    }
   }
 
   "validate form - too many characters" in {
-    authorizedUser()
     withCaching[GoodsItemNumber](None)
 
     val incorrectGoodItemNumber: JsValue =
@@ -53,12 +78,12 @@ class GoodsItemNumberControllerSpec extends CustomExportsBaseSpec {
     stringResult must include(messages("supplementary.goodItemNumber.error"))
   }
 
-  "validate form - cannot contain zeros" in {
-    authorizedUser()
+  "validate form - cannot contain only zeros" in {
     withCaching[GoodsItemNumber](None)
 
+    //TODO: not sure why we have . in here before
     val incorrectGoodItemNumber: JsValue =
-      JsObject(Map("goodItemNumber" -> JsString("0.00")))
+      JsObject(Map("goodItemNumber" -> JsString("000")))
     val result = route(app, postRequest(uri, incorrectGoodItemNumber)).get
     val stringResult = contentAsString(result)
 
@@ -66,7 +91,6 @@ class GoodsItemNumberControllerSpec extends CustomExportsBaseSpec {
   }
 
   "validate form - contains alphabetic" in {
-    authorizedUser()
     withCaching[GoodsItemNumber](None)
 
     val alphabeticGoodItemNumber: JsValue =
@@ -77,8 +101,7 @@ class GoodsItemNumberControllerSpec extends CustomExportsBaseSpec {
     stringResult must include(messages("supplementary.goodItemNumber.error"))
   }
 
-  "validate form - correct answer" in {
-    authorizedUser()
+  "validate form and redirect - correct answer" in {
     withCaching[GoodsItemNumber](None)
 
     val result = route(app, postRequest(uri, correctGoodsItemNumberJSON)).get

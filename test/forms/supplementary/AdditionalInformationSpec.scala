@@ -23,7 +23,9 @@ class AdditionalInformationSpec extends WordSpec with MustMatchers {
   import AdditionalInformationSpec._
 
   "Method toMetadataProperties" should {
+
     "return proper Metadata Properties" in {
+
       val additionalInformation = correctAdditionalInformation
       val expectedProperties: Map[String, String] = Map(
         "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[0].statementCode" -> additionalInformation.items.head.code,
@@ -43,6 +45,7 @@ class AdditionalInformationSpec extends WordSpec with MustMatchers {
 }
 
 object AdditionalInformationSpec {
+
   val correctAdditionalInformation =
     AdditionalInformationData(
       Seq(AdditionalInformation(code = "M1l3s", description = "Description for Additional Information: Davis")))

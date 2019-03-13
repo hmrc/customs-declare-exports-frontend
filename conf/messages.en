@@ -200,7 +200,7 @@ startPage.enquiries = General enquires help
 supplementary.declarationType.title = Declaration Type
 supplementary.declarationType.header = 1/2 What type of declaration are you making?
 supplementary.declarationType.header.hint = Hint text if needed here
-supplementary.declarationType.inputText.simplified = Pre-authorized simplified declaration
+supplementary.declarationType.inputText.simplified = Pre-authorised simplified declaration
 supplementary.declarationType.inputText.standard = Entry in Declarants Records (EIDR)
 supplementary.declarationType.inputText.errorMessage = Please, choose declaration type
 

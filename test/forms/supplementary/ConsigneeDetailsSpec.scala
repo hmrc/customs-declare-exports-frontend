@@ -40,10 +40,12 @@ object ConsigneeDetailsSpec {
   val correctConsigneeDetails = ConsigneeDetails(details = EntityDetailsSpec.correctEntityDetails)
   val correctConsigneeDetailsEORIOnly = ConsigneeDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
   val correctConsigneeDetailsAddressOnly = ConsigneeDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly)
+  val incorrectConsigneeDetails = ConsigneeDetails(details = EntityDetailsSpec.incorrectEntityDetails)
   val emptyConsigneeDetails = ConsigneeDetails(details = EntityDetailsSpec.emptyEntityDetails)
 
   val correctConsigneeDetailsJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON))
   val correctConsigneeDetailsEORIOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsEORIOnlyJSON))
   val correctConsigneeDetailsAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))
+  val incorrectConsigneeDetailsJSON: JsValue = JsObject(Map("details" -> incorrectEntityDetailsJSON))
   val emptyConsigneeDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 }

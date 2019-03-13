@@ -25,6 +25,7 @@ class ErrorHandlerSpec extends CustomExportsBaseSpec {
 
   val errorHandler = new ErrorHandler(appConfig, messagesApi)
   val req = FakeRequest("GET", "/foo")
+
   "ErrorHandlerSpec" should {
     "standardErrorTemplate" in {
       val result = errorHandler.standardErrorTemplate("Page Title", "Heading", "Message")(FakeRequest()).body

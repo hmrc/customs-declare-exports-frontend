@@ -47,11 +47,13 @@ object DeclarantDetailsSpec {
   val correctDeclarantDetails = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetails)
   val correctDeclarantDetailsEORIOnly = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
   val correctDeclarantDetailsAddressOnly = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly)
+  val incorrectDeclarantDetails = DeclarantDetails(details = EntityDetailsSpec.incorrectEntityDetails)
   val emptyDeclarantDetails = DeclarantDetails(details = EntityDetailsSpec.emptyEntityDetails)
 
   val correctDeclarantDetailsJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON))
   val correctDeclarantDetailsEORIOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsEORIOnlyJSON))
   val correctDeclarantDetailsAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))
+  val incorrectDeclarantDetailsJSON: JsValue = JsObject(Map("details" -> incorrectEntityDetailsJSON))
   val emptyDeclarantDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 
 }

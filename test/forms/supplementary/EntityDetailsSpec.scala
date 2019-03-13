@@ -18,6 +18,7 @@ package forms.supplementary
 
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
+import base.TestHelper._
 
 class EntityDetailsSpec extends WordSpec with MustMatchers {
   import EntityDetailsSpec._
@@ -223,6 +224,10 @@ object EntityDetailsSpec {
   val correctEntityDetails = EntityDetails(eori = Some("9GB1234567ABCDEF"), address = Some(AddressSpec.correctAddress))
   val correctEntityDetailsEORIOnly = EntityDetails(eori = Some("9GB1234567ABCDEF"), address = None)
   val correctEntityDetailsAddressOnly = EntityDetails(eori = None, address = Some(AddressSpec.correctAddress))
+  val incorrectEntityDetails = EntityDetails(
+    eori = Some("gIeC1xyOPmgpZSVGT1nFmGxPd3tS7yvj7CKgsZfq2BYfXPB0tKM6GISKwvuqn0g14TwN6e"),
+    address = Some(AddressSpec.incorrectAddress)
+  )
   val emptyEntityDetails = EntityDetails(None, None)
 
   val correctEntityDetailsJSON: JsValue = JsObject(
@@ -233,6 +238,9 @@ object EntityDetailsSpec {
   )
   val correctEntityDetailsAddressOnlyJSON: JsValue = JsObject(
     Map("eori" -> JsString(""), "address" -> AddressSpec.correctAddressJSON)
+  )
+  val incorrectEntityDetailsJSON: JsValue = JsObject(
+    Map("eori" -> JsString("gIeC1xyOPmgpZSVGT1nFmGxPd3tS7yvj7CKgsZfq2BYfXPB0tKM6GISKwvuqn0g14TwN6e"), "address" -> AddressSpec.incorrectAddressJSON)
   )
   val emptyEntityDetailsJSON: JsValue = JsObject(Map("eori" -> JsString(""), "address" -> JsString("")))
 

@@ -15,9 +15,9 @@
  */
 
 package forms.supplementary
+
 import base.TestHelper._
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class AddressSpec extends WordSpec with MustMatchers {
   import AddressSpec._
@@ -25,7 +25,9 @@ class AddressSpec extends WordSpec with MustMatchers {
   "Bound Form with Address mapping" should {
 
     "contain errors for fullName" when {
+
       "provided with empty input" in {
+
         val input = buildAddressInputMap()
         val form = Address.form().bind(input)
 
@@ -35,6 +37,7 @@ class AddressSpec extends WordSpec with MustMatchers {
       }
 
       "provided with input longer than 70 characters" in {
+
         val input = buildAddressInputMap(fullName = createRandomString(71))
         val form = Address.form().bind(input)
 
@@ -171,10 +174,10 @@ class AddressSpec extends WordSpec with MustMatchers {
 
     "contain all the data with no errors" when {
       "provided with full input" in {
-        val input = buildAddressInputMap(correctAddress)
+        //val input = buildAddressInputMap(correctAddress)
         val expectedAddress = correctAddress
 
-        val form = Address.form().bind(input)
+        val form = Address.form().bind(correctAddressJSON)
 
         form.errors must be(empty)
         form.value must be(defined)
@@ -197,6 +200,9 @@ class AddressSpec extends WordSpec with MustMatchers {
 }
 
 object AddressSpec {
+
+  import play.api.libs.json._
+
   val correctAddress = Address(
     fullName = "Full Name",
     addressLine = "Address Line",
@@ -204,26 +210,20 @@ object AddressSpec {
     postCode = "AB12 34CD",
     country = "Poland"
   )
+
+  val incorrectAddress = Address(
+    fullName = "nX9KuS2J6Ee1ATbgbcZFaFOCHI1t8RJnNfbU0dbPQAK4w0q6PdzuZIyxcXziSbUBzizlmi1",
+    addressLine = "nX9KuS2J6Ee1ATbgbcZFaFOCHI1t8RJnNfbU0dbPQAK4w0q6PdzuZIyxcXziSbUBzizlmi1",
+    townOrCity = "gDsSwbyP6cPkpgRZSHoH3JtEj8grDfjsVCmq",
+    postCode = "TN0EHF96qN",
+    country = "abc"
+  )
+
   val emptyAddress = Address("", "", "", "", "")
 
-  val correctAddressJSON: JsValue = JsObject(
-    Map(
-      "fullName" -> JsString("Full Name"),
-      "addressLine" -> JsString("Address Line"),
-      "townOrCity" -> JsString("Town or City"),
-      "postCode" -> JsString("AB12 34CD"),
-      "country" -> JsString("Poland")
-    )
-  )
-  val emptyAddressJSON: JsValue = JsObject(
-    Map(
-      "fullName" -> JsString(""),
-      "addressLine" -> JsString(""),
-      "townOrCity" -> JsString(""),
-      "postCode" -> JsString(""),
-      "country" -> JsString("")
-    )
-  )
+  val correctAddressJSON: JsValue = Json.toJson(correctAddress)
+  val incorrectAddressJSON: JsValue = Json.toJson(incorrectAddress)
+  val emptyAddressJSON: JsValue = Json.toJson(emptyAddress)
 
   def buildAddressInputMap(address: Address): Map[String, String] = buildAddressInputMap(
     fullName = address.fullName,
@@ -246,5 +246,4 @@ object AddressSpec {
     "postCode" -> postCode,
     "country" -> country
   )
-
 }

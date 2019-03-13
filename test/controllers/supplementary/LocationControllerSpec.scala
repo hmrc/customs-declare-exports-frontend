@@ -19,13 +19,19 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.GoodsLocation
 import forms.supplementary.GoodsLocationSpec._
+import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class LocationControllerSpec extends CustomExportsBaseSpec {
+class LocationControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   val uri = uriWithContextPath("/declaration/supplementary/location-of-goods")
 
-  "Location controller" should {
+  before {
+    authorizedUser()
+  }
+
+  "Location Controller on display page" should {
+
     "display goods location form" in {
       authorizedUser()
       withCaching[GoodsLocation](None)
@@ -45,8 +51,27 @@ class LocationControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.goodsLocation.city"))
     }
 
+    "display \"Back\" button that links to \"Destination Countries\" page" in {
+      withCaching[GoodsLocation](None)
+
+      val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(OK)
+      stringResult must include(messages("site.back"))
+      stringResult must include(messages("/declaration/supplementary/destination-countries"))
+    }
+
+    "display \"Save and continue\" button on page" in {
+
+      val result = route(app, getRequest(uri)).get
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.save_and_continue"))
+      resultAsString must include("button id=\"submit\" class=\"button\"")
+    }
+
     "validate form - incorrect values" in {
-      authorizedUser()
       withCaching[GoodsLocation](None)
 
       val result = route(app, postRequest(uri, incorrectGoodsLocationJSON)).get
@@ -62,8 +87,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("supplementary.goodsLocation.city.error"))
     }
 
-    "validate form - empty form" in {
-      authorizedUser()
+    "validate form and redirect - empty form" in {
       withCaching[GoodsLocation](None)
 
       val result = route(app, postRequest(uri, emptyGoodsLocationJSON)).get
@@ -73,8 +97,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec {
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/office-of-exit"))
     }
 
-    "validate form - correct values" in {
-      authorizedUser()
+    "validate form and redirect - correct values" in {
       withCaching[GoodsLocation](None)
 
       val result = route(app, postRequest(uri, correctGoodsLocationJSON)).get

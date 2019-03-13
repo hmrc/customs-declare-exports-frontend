@@ -24,6 +24,8 @@ import play.api.test.Helpers._
 
 class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
+  private val uri = uriWithContextPath("/declaration/supplementary/confirmation")
+
   private val lrn = "1234567890"
   private val conversationId = "12QW-34ER-56TY-78UI-90OP"
 
@@ -36,43 +38,28 @@ class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with BeforeAn
     authorizedUser()
   }
 
-  val confirmationPageUri = uriWithContextPath("/declaration/supplementary/confirmation")
-  val rejectionPageUri = uriWithContextPath("/declaration/supplementary/rejection")
+  "Confirmation Page Controller on GET" should {
 
-  "ConfirmationPageController on display confirmation page" should {
+    "return 200 status code" in {
 
-    "return 200 code" in {
-      val result = route(app, getRequestWithFlash(confirmationPageUri)).get
+      val result = route(app, getRequest(uri)).get
+
       status(result) must be(OK)
     }
 
-    "display the whole content" in {
-      val resultAsString = contentAsString(route(app, getRequestWithFlash(confirmationPageUri)).get)
+    "display LRN using Flash banner" in {
 
-      resultAsString must include(messages("supplementary.confirmation.title"))
-      resultAsString must include(messages("supplementary.confirmation.header"))
-      resultAsString must include(messages("supplementary.confirmation.info"))
-      resultAsString must include(messages("supplementary.confirmation.whatHappensNext"))
-      resultAsString must include(messages("supplementary.confirmation.explanation"))
+      val result = contentAsString(route(app, getRequestWithFlash(uri)).get)
+
+      result must include(lrn)
     }
 
-    "display LRN from flash" in {
-      val resultAsString = contentAsString(route(app, getRequestWithFlash(confirmationPageUri)).get)
-      resultAsString must include(lrn)
-    }
+    "display the link to submission" in {
 
-    "display a button that links to choice page" in {
-      val resultAsString = contentAsString(route(app, getRequestWithFlash(confirmationPageUri)).get)
-
-      resultAsString must include(messages("supplementary.confirmation.submitAnotherDeclaration"))
-      resultAsString must include("a href=\"/customs-declare-exports/choice\" role=\"button\" class=\"button\"")
-    }
-
-    "display the link to the list of notifications for this submission" in {
-      val resultAsString = contentAsString(route(app, getRequestWithFlash(confirmationPageUri)).get)
+      val resultAsString = contentAsString(route(app, getRequestWithFlash(uri)).get)
 
       resultAsString must include(messages("supplementary.confirmation.explanation.linkText"))
-      resultAsString must include("<a href=\"/customs-declare-exports/notifications/" + conversationId + "\">")
+      resultAsString must include("<a href=\"/customs-declare-exports/submissions\">")
     }
   }
 }

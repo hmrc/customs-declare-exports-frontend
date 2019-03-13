@@ -36,8 +36,8 @@ class CustomsInventoryLinkingExportsConnectorSpec extends CustomExportsBaseSpec 
     "X-EORI-Identfier" -> "eori1"
   )
 
-  "CustomsInventoryLinkingExportsConnector" should {
-    "POST arrival to Customs Inventory Linking Exports" in sendArrival(eori, xml) { response =>
+  "Customs Inventory Linking Exports Connector" should {
+    "POST arrival to Customs Inventory Linking Exports endpoint" in sendArrival(eori, xml) { response =>
       response.futureValue.status must be(ACCEPTED)
     }
   }

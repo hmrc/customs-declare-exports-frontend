@@ -34,7 +34,27 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
     authorizedUser()
   }
 
-  "ChoiceController on displayChoiceForm" should {
+  "Choice Controller on display" should {
+
+    "display \"Save and continue\" button on page" in {
+      withCaching[Choice](None, Choice.choiceId)
+
+      val result = route(app, getRequest(choiceUri)).get
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.save_and_continue"))
+      resultAsString must include("button id=\"submit\" class=\"button\"")
+    }
+
+    "display \"Back\" button that links to \"Make an export declaration\" page" in {
+      withCaching[Choice](None, Choice.choiceId)
+
+      val result = route(app, getRequest(choiceUri)).get
+
+      contentAsString(result) must include(messages("site.back"))
+      contentAsString(result) must include("start")
+    }
+
     "return http code 200 with success" in {
       withCaching[Choice](None, Choice.choiceId)
 
@@ -58,9 +78,10 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
     }
   }
 
-  "ChoiceController on submitChoice" should {
+  "ChoiceController on submit" should {
 
     "display the choice page with error" when {
+
       "no value provided for choice" in {
         withCaching[Choice](None, Choice.choiceId)
 
@@ -137,5 +158,4 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       header.headers.get("Location") must be(Some("/customs-declare-exports/movement/ducr"))
     }
   }
-
 }
