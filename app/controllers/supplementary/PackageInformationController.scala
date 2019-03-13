@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.requests.AuthenticatedRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.supplementary.package_information
@@ -47,7 +47,6 @@ class PackageInformationController @Inject()(
     cacheService
       .fetchAndGetEntry[Seq[PackageInformation]](supplementaryCacheId, formId)
       .map(items => Ok(package_information(form, items.getOrElse(Seq.empty))))
-
   }
 
   def submitForm(): Action[AnyContent] = authenticate.async { implicit authRequest =>
@@ -68,23 +67,26 @@ class PackageInformationController @Inject()(
 
   def remove(
     id: Option[String]
-  )(implicit authRequest: AuthenticatedRequest[AnyContent], packagings: Seq[PackageInformation]) =
+  )(implicit authRequest: AuthenticatedRequest[AnyContent], packages: Seq[PackageInformation]): Future[Result] =
     id match {
       case Some(id) => {
-        val updatedPackagings =
-          packagings.zipWithIndex.filterNot(_._2.toString == id).map(_._1)
+        val updatedPackages =
+          packages.zipWithIndex.filterNot(_._2.toString == id).map(_._1)
 
         cacheService
-          .cache[Seq[PackageInformation]](supplementaryCacheId(), formId, updatedPackagings)
+          .cache[Seq[PackageInformation]](supplementaryCacheId(), formId, updatedPackages)
           .map(_ => Redirect(routes.PackageInformationController.displayForm()))
       }
       case _ => errorHandler.displayErrorPage()
     }
 
-  def continue()(implicit request: AuthenticatedRequest[AnyContent], packagings: Seq[PackageInformation]) = {
+  def continue()(
+    implicit request: AuthenticatedRequest[AnyContent],
+    packages: Seq[PackageInformation]
+  ): Future[Result] = {
     val payload = form.bindFromRequest()
     if (!isFormEmpty(payload)) badRequest(payload, USE_ADD)
-    else if (packagings.size == 0) badRequest(payload, ADD_ONE)
+    else if (packages.size == 0) badRequest(payload, ADD_ONE)
     else
       Future.successful(Redirect(controllers.supplementary.routes.CommodityMeasureController.displayForm()))
 
@@ -96,16 +98,19 @@ class PackageInformationController @Inject()(
   private def retrieveData[A](form: Form[A]): Map[String, String] =
     form.data.filter { case (name, _) => name != "csrfToken" }
 
-  def addItem()(implicit authenticatedRequest: AuthenticatedRequest[AnyContent], packagings: Seq[PackageInformation]) =
+  def addItem()(
+    implicit authenticatedRequest: AuthenticatedRequest[AnyContent],
+    packages: Seq[PackageInformation]
+  ): Future[Result] =
     form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[PackageInformation]) =>
-          Future.successful(BadRequest(package_information(formWithErrors, packagings))),
+          Future.successful(BadRequest(package_information(formWithErrors, packages))),
         validForm => {
           isAdditionValid[PackageInformation](validForm).fold(
             cacheService
-              .cache[Seq[PackageInformation]](supplementaryCacheId(), formId, (packagings :+ validForm))
+              .cache[Seq[PackageInformation]](supplementaryCacheId(), formId, (packages :+ validForm))
               .map(_ => Redirect(routes.PackageInformationController.displayForm()))
           )(badRequest(form.fill(validForm), _))
         }
@@ -121,5 +126,4 @@ class PackageInformationController @Inject()(
     error: String
   )(implicit authenticatedRequest: AuthenticatedRequest[AnyContent], packages: Seq[PackageInformation]) =
     Future.successful(BadRequest(package_information(form.withGlobalError(error), packages)))
-
 }
