@@ -79,7 +79,7 @@ class SummaryPageController @Inject()(
                   .remove(supplementaryCacheId)
                   .map { _ =>
                     Redirect(controllers.supplementary.routes.ConfirmationPageController.displayPage())
-                      .flashing(prepareFlashScope(lrn.getOrElse(""), conversationId))
+                      .flashing(prepareFlashScope(lrn.getOrElse("")))
                   }
               }
               .recover {
@@ -108,7 +108,7 @@ class SummaryPageController @Inject()(
     )
   }
 
-  private def prepareFlashScope(lrn: String, conversationId: String) =
-    Flash(Map("LRN" -> lrn, "ConversationId" -> conversationId))
+  private def prepareFlashScope(lrn: String) =
+    Flash(Map("LRN" -> lrn))
 
 }

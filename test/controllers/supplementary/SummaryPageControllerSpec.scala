@@ -247,7 +247,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/confirmation"))
       }
 
-      "add flash scope with lrn and conversation ID" in new Test {
+      "add flash scope with lrn " in new Test {
         val cacheData = Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.correctConsignmentReferencesJSON)
         when(mockCustomsCacheService.fetch(anyString())(any(), any()))
           .thenReturn(Future.successful(Some(CacheMap(eoriForCache, cacheData))))
@@ -257,8 +257,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         val f = flash(result)
         f.get("LRN") must be(defined)
         f("LRN") must equal("123ABC")
-        f.get("ConversationId") must be(defined)
-        f("ConversationId") must equal("1234")
       }
     }
 
