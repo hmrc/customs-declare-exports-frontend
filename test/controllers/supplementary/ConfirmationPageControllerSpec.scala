@@ -54,12 +54,9 @@ class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with BeforeAn
       result must include(lrn)
     }
 
-    "display proper link to \"Check your notification status in the dashboard\"" in {
-
-      val result = contentAsString(route(app, getRequestWithFlash(uri)).get)
-
     "display the link to submission" in {
-      val resultAsString = contentAsString(route(app, getRequestWithFlash(confirmationPageUri)).get)
+
+      val resultAsString = contentAsString(route(app, getRequestWithFlash(uri)).get)
 
       resultAsString must include(messages("supplementary.confirmation.explanation.linkText"))
       resultAsString must include("<a href=\"/customs-declare-exports/submissions\">")

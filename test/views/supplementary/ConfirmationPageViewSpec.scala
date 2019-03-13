@@ -85,7 +85,7 @@ class ConfirmationPageViewSpec extends ViewSpec {
 
       val link = getElementByCss(view, "article>p:nth-child(4)>a")
       link.text() must be(messages(explanationLink.withPrefix))
-      link.attr("href") must be("/customs-declare-exports/notifications/")
+      link.attr("href") must be("/customs-declare-exports/submissions")
     }
 
     "display a \"Submit another declaration\" button that links to \"What do you want to do ?\" page" in {
@@ -102,13 +102,13 @@ class ConfirmationPageViewSpec extends ViewSpec {
 
     "display LRN and proper link to notification" in {
 
-      val view = confirmation_page(appConfig)(fakeRequest, new Flash(Map("LRN" -> "12345", "ConversationId" -> "12345")), messages)
+      val view = confirmation_page(appConfig)(fakeRequest, new Flash(Map("LRN" -> "12345")), messages)
 
       getElementByCss(view, "article>div.govuk-box-highlight>p").text() must be("12345")
 
       val link = getElementByCss(view, "article>p:nth-child(4)>a")
       link.text() must be(messages(explanationLink.withPrefix))
-      link.attr("href") must be("/customs-declare-exports/notifications/12345")
+      link.attr("href") must be("/customs-declare-exports/submissions")
     }
   }
 }
