@@ -43,6 +43,7 @@ class NrsConnectorSpec extends CustomExportsBaseSpec {
   )
 
   "NrsConnector" should {
+
     "submit non repudiation request successfully" in submitNonRepudiation() { response =>
       response.futureValue.nrSubmissionId must be("submissionId1")
     }

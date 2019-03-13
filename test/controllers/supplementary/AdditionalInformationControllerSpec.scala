@@ -28,62 +28,47 @@ import play.api.test.Helpers._
 
 class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
-  val uri: String = uriWithContextPath("/declaration/supplementary/additional-information")
-  private val addActionUrlEncoded = (Add.toString, "")
-  private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
-  private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
+  private val uri: String = uriWithContextPath("/declaration/supplementary/additional-information")
+
+  private val addActionURLEncoded = (Add.toString, "")
+  private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
+  private def removeActionURLEncoded(value: String) = (Remove.toString, value)
 
   before {
     authorizedUser()
+    withCaching[AdditionalInformationData](None, formId)
   }
 
-  "Additional Information Controller when getting the page" should {
-    "display additional information form with no items" in {
-      withCaching[AdditionalInformationData](None)
+  "Additional Information Controller on GET" should {
+
+    "return 200 status code" in {
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.additionalInformation.title"))
-      stringResult must include(messages("supplementary.additionalInformation.code"))
-      stringResult must include(messages("supplementary.additionalInformation.description"))
     }
 
     "display additional information form with added items" in {
+
       val cachedData = AdditionalInformationData(
         Seq(AdditionalInformation("M1l3s", "Davis"), AdditionalInformation("X4rlz", "Mingus"))
       )
       withCaching[AdditionalInformationData](Some(cachedData), formId)
 
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include("M1l3s-Davis")
-      stringResult must include("X4rlz-Mingus")
-      stringResult must include(messages("supplementary.additionalInformation.title"))
-      stringResult must include(messages("supplementary.additionalInformation.code"))
-      stringResult must include(messages("supplementary.additionalInformation.description"))
-    }
-
-    "display back button that links to package information page" in {
-      withCaching[AdditionalInformationData](None, formId)
-
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
-
-      status(result) must be(OK)
-      stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/supplementary/package-information"))
     }
   }
 
-  "Additional Information controller handling a post" should {
-    "add an item sucessfully" when {
+  "Additional Information Controller on POST" should {
+
+    "add an item successfully" when {
+
       "with an empty cache" in {
         withCaching[AdditionalInformationData](None, formId)
-        val body = Seq(("code", "J0ohn"), ("description", "Coltrane"), addActionUrlEncoded)
+        val body = Seq(("code", "J0ohn"), ("description", "Coltrane"), addActionURLEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -93,7 +78,7 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       "that does not exist in cache" in {
         val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis")))
         withCaching[AdditionalInformationData](Some(cachedData), formId)
-        val body = Seq(("code", "x4rlz"), ("description", "Mingusss"), addActionUrlEncoded)
+        val body = Seq(("code", "x4rlz"), ("description", "Mingusss"), addActionURLEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -102,12 +87,15 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
     }
 
     "remove an item successfully" when {
+
       "exists in cache based on id" in {
-        val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis"), AdditionalInformation("J00hn", "Coltrane"))
+
+        val cachedData = AdditionalInformationData(
+          Seq(AdditionalInformation("M1l3s", "Davis"), AdditionalInformation("J00hn", "Coltrane"))
         )
         withCaching[AdditionalInformationData](Some(cachedData), formId)
-        val body = removeActionUrlEncoded("0")
 
+        val body = removeActionURLEncoded("0")
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
         status(result) must be(SEE_OTHER)
@@ -115,9 +103,11 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
     }
 
     "display the form page with an error" when {
+
       "try to add an item without any data" in {
+
         withCaching[AdditionalInformationData](None, formId)
-        val body = Seq(("code", ""), ("description", ""), addActionUrlEncoded)
+        val body = Seq(("code", ""), ("description", ""), addActionURLEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val stringResult = contentAsString(result)
@@ -128,9 +118,8 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       }
 
       "try to save and continue without any items" in {
-        withCaching[AdditionalInformationData](None, formId)
 
-        val body = Seq(("code", ""), ("description", ""), saveAndContinueActionUrlEncoded)
+        val body = Seq(("code", ""), ("description", ""), saveAndContinueActionURLEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val stringResult = contentAsString(result)
@@ -140,9 +129,8 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       }
 
       "try to add an item without code" in {
-        withCaching[AdditionalInformationData](None, formId)
-        val body = Seq(("code", ""), ("description", "Davis"), addActionUrlEncoded)
 
+        val body = Seq(("code", ""), ("description", "Davis"), addActionURLEncoded)
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(BAD_REQUEST)
@@ -150,9 +138,8 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       }
 
       "try to add an item without a description" in {
-        withCaching[AdditionalInformationData](None, formId)
-        val body = Seq(("code", "M1l3s"), ("description", ""), addActionUrlEncoded)
 
+        val body = Seq(("code", "M1l3s"), ("description", ""), addActionURLEncoded)
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(BAD_REQUEST)
@@ -160,9 +147,8 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       }
 
       "try to save and continue without providing a code" in {
-        withCaching[AdditionalInformationData](None, formId)
-        val body = Seq(("code", ""), ("description", "Davis"), addActionUrlEncoded)
 
+        val body = Seq(("code", ""), ("description", "Davis"), addActionURLEncoded)
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(BAD_REQUEST)
@@ -170,9 +156,8 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       }
 
       "try to save and continue without a description" in {
-        withCaching[AdditionalInformationData](None, formId)
-        val body = Seq(("code", "123rt"), ("description", ""), addActionUrlEncoded)
 
+        val body = Seq(("code", "123rt"), ("description", ""), addActionURLEncoded)
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(BAD_REQUEST)
@@ -180,9 +165,8 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       }
 
       "try to add a longer code" in {
-        withCaching[AdditionalInformationData](None, formId)
-        val body = Seq(("code", createRandomString(6)), ("description", ""), addActionUrlEncoded)
 
+        val body = Seq(("code", createRandomString(6)), ("description", ""), addActionURLEncoded)
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(BAD_REQUEST)
@@ -190,9 +174,8 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       }
 
       "try to add a shorter code" in {
-        withCaching[AdditionalInformationData](None, formId)
-        val body = Seq(("code", createRandomString(3)), ("description", ""), addActionUrlEncoded)
 
+        val body = Seq(("code", createRandomString(3)), ("description", ""), addActionURLEncoded)
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(BAD_REQUEST)
@@ -200,20 +183,20 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       }
 
       "try to add a longer description" in {
-        withCaching[AdditionalInformationData](None, formId)
-        val body = Seq(("code", "M1l3s"), ("description", createRandomString(100)), addActionUrlEncoded)
 
+        val body = Seq(("code", "M1l3s"), ("description", createRandomString(100)), addActionURLEncoded)
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages("supplementary.additionalInformation.description.error"))
       }
 
-    "try to add duplicated item" in {
-      val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis")))
-      withCaching[AdditionalInformationData](Some(cachedData), formId)
-      val body = Seq(("code", "M1l3s"), ("description", "Davis"), addActionUrlEncoded)
+      "try to add duplicated item" in {
 
+        val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis")))
+        withCaching[AdditionalInformationData](Some(cachedData), formId)
+
+        val body = Seq(("code", "M1l3s"), ("description", "Davis"), addActionURLEncoded)
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(BAD_REQUEST)
@@ -222,8 +205,8 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
 
       "try to add more than 99 items" in {
         withCaching[AdditionalInformationData](Some(cacheWithMaximumAmountOfHolders), formId)
-        val body = Seq(("code", "M1l3s"), ("description", "Davis"), addActionUrlEncoded)
 
+        val body = Seq(("code", "M1l3s"), ("description", "Davis"), addActionURLEncoded)
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(BAD_REQUEST)
@@ -232,18 +215,19 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
 
       "try to save more than 99 items" in {
         withCaching[AdditionalInformationData](Some(cacheWithMaximumAmountOfHolders), formId)
-        val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionUrlEncoded)
 
+        val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionURLEncoded)
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages("supplementary.limit"))
       }
 
-    "try to remove a non existent code" in {
-      val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis")))
-      withCaching[AdditionalInformationData](Some(cachedData), formId)
-      val body = ("action", "Remove:J0ohn-Coltrane")
+      "try to remove a non existent code" in {
+        val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis")))
+        withCaching[AdditionalInformationData](Some(cachedData), formId)
+
+        val body = ("action", "Remove:J0ohn-Coltrane")
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
         val stringResult = contentAsString(result)
@@ -254,10 +238,12 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
         stringResult must include(messages("global.error.message"))
       }
     }
+
     "redirect to the next page" when {
+
       "user provide item with empty cache" in {
-        withCaching[AdditionalInformationData](None, formId)
-        val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionUrlEncoded)
+
+        val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionURLEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
@@ -270,7 +256,7 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
         val cachedData = AdditionalInformationData(Seq(AdditionalInformation("Jo0hn", "Coltrane")))
         withCaching[AdditionalInformationData](Some(cachedData), formId)
 
-        val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionUrlEncoded)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionURLEncoded)).get
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
@@ -280,7 +266,8 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       "user provide holder with some different holder in cache" in {
         val cachedData = AdditionalInformationData(Seq(AdditionalInformation("x4rlz", "Mingus")))
         withCaching[AdditionalInformationData](Some(cachedData), formId)
-        val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionUrlEncoded)
+
+        val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionURLEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
@@ -290,7 +277,6 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       }
     }
   }
-
 }
 
 object AdditionalInformationControllerSpec {

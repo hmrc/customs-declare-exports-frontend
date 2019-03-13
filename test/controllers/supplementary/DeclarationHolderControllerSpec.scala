@@ -37,55 +37,20 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
     authorizedUser()
   }
 
-  "Declaration holder controller on display page" should {
-    "display form without holders" in {
-      withCaching[DeclarationHoldersData](None, formId)
+  "Declaration Holder Controller on page" should {
 
+    "return 200 status code" in {
+      withCaching[DeclarationHoldersData](None, formId)
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.declarationHolder.title"))
-      stringResult must include(messages("supplementary.declarationHolder.authorisationCode"))
-      stringResult must include(messages("supplementary.declarationHolder.authorisationCode.hint"))
-      stringResult must include(messages("supplementary.eori"))
-      stringResult must include(messages("supplementary.eori.hint"))
-    }
-
-    "display table with added holders" in {
-      val cachedData = DeclarationHoldersData(
-        Seq(DeclarationHolder(Some("1234"), Some("eori1")), DeclarationHolder(Some("5678"), Some("eori2")))
-      )
-      withCaching[DeclarationHoldersData](Some(cachedData), formId)
-
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
-
-      status(result)
-      stringResult must include("1234-eori1")
-      stringResult must include("5678-eori2")
-      stringResult must include(messages("supplementary.declarationHolder.title"))
-      stringResult must include(messages("supplementary.declarationHolder.authorisationCode"))
-      stringResult must include(messages("supplementary.declarationHolder.authorisationCode.hint"))
-      stringResult must include(messages("supplementary.eori"))
-      stringResult must include(messages("supplementary.eori.hint"))
-    }
-
-    "display back button that links to additional actors page" in {
-      withCaching[DeclarationHoldersData](None, formId)
-
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
-
-      status(result) must be(OK)
-      stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/supplementary/additional-actors"))
     }
   }
 
-  "Declaration holder controller in submit holder" should {
+  "Declaration Holder Controller in submit holder" should {
 
     "display the form page with error" when {
+
       "try to add data without holder" in {
         withCaching[DeclarationHoldersData](None, formId)
         val body = addActionUrlEncoded
@@ -288,6 +253,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
     }
 
     "add holder without error" when {
+
       "user provide holder with empty cache" in {
         withCaching[DeclarationHoldersData](None, formId)
         val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori1"), addActionUrlEncoded)
@@ -309,6 +275,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
     }
 
     "remove holder" when {
+
       "holder exists in cache" in {
         val cachedData = DeclarationHoldersData(
           Seq(DeclarationHolder(Some("4321"), Some("eori")), DeclarationHolder(Some("4321"), Some("eori")))
@@ -323,6 +290,7 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with BeforeA
     }
 
     "redirect to the next page" when {
+
       "user provide holder with empty cache" in {
         withCaching[DeclarationHoldersData](None, formId)
         val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori1"), saveAndContinueActionUrlEncoded)

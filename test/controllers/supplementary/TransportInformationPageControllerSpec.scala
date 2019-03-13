@@ -38,7 +38,8 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
     withCaching[TransportInformation](None, TransportInformation.id)
   }
 
-  "TransportInformationPageController on displayPage" should {
+  "Transport Information Page Controller on display" should {
+
     "display the whole content" in {
       val result = route(app, getRequest(uri)).get
       val resultAsString = contentAsString(result)
@@ -81,7 +82,16 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
       resultAsString must include(messages("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel"))
     }
 
-    "display \"back\" button that links to office-of-exit page" in {
+    "display \"Save and continue\" button on page" in {
+
+      val result = route(app, getRequest(uri)).get
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.save_and_continue"))
+      resultAsString must include("button id=\"submit\" class=\"button\"")
+    }
+
+    "display \"Back\" button that links to \"Office-of-exit\" page" in {
       val result = route(app, getRequest(uri)).get
 
       contentAsString(result) must include(messages("site.back"))
@@ -89,9 +99,10 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
     }
   }
 
-  "TransportInformationPageController on submitTransportInformation" should {
+  "TransportInformationPageController on submit" should {
 
     "display the form page with error" when {
+
       "no value provided for mode of transport at the border" in {
         val emptyForm = buildTransportInformationForm(
           meansOfTransportOnDepartureType = NameOfVessel,

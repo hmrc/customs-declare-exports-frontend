@@ -47,10 +47,12 @@ object ExporterDetailsSpec {
   val correctExporterDetails = ExporterDetails(details = EntityDetailsSpec.correctEntityDetails)
   val correctExporterDetailsEORIOnly = ExporterDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
   val correctExporterDetailsAddressOnly = ExporterDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly)
+  val incorrectExporterDetails = ExporterDetails(details = EntityDetailsSpec.incorrectEntityDetails)
   val emptyExporterDetails = ExporterDetails(details = EntityDetailsSpec.emptyEntityDetails)
 
   val correctExporterDetailsJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON))
   val correctExporterDetailsEORIOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsEORIOnlyJSON))
   val correctExporterDetailsAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))
+  val incorrectExporterDetailsJSON: JsValue = JsObject(Map("details" -> incorrectEntityDetailsJSON))
   val emptyExporterDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 }

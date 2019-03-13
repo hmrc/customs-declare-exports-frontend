@@ -25,28 +25,39 @@ import forms.supplementary.DeclarationAdditionalActorsSpec._
 import models.declaration.supplementary.DeclarationAdditionalActorsData
 import models.declaration.supplementary.DeclarationAdditionalActorsData.formId
 import org.mockito.Mockito.reset
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec with BeforeAndAfterEach {
+class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   val uri: String = uriWithContextPath("/declaration/supplementary/additional-actors")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
-  override def beforeEach() {
+  before {
     authorizedUser()
+    withCaching[DeclarationAdditionalActorsData](None)
+  }
+
+  after {
     reset(mockCustomsCacheService)
   }
 
-"Declaration additional actors controller" should {
-    "display declaration additional actors form with no actors" in {
-      withCaching[DeclarationAdditionalActors](None)
+  "Declaration Additional Actors Controller on page" should {
+
+    "return 200 status code" in {
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
+    }
+
+    "validate form - correct EORI, not selected party type" in {
+
+      val result = route(app, postRequest(uri, correctEORIPartyNotSelectedJSON)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(BAD_REQUEST)
       stringResult must include(messages("supplementary.additionalActors.title"))
       stringResult must include(messages("supplementary.additionalActors.eori"))
       stringResult must include(messages("supplementary.eori.hint"))
@@ -55,6 +66,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
       stringResult must include(messages("supplementary.partyType.MF"))
       stringResult must include(messages("supplementary.partyType.FW"))
       stringResult must include(messages("supplementary.partyType.WH"))
+      stringResult must include(messages("error.required"))
     }
 
     "display additional information form with added items" in {
@@ -72,17 +84,18 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
     }
 
     "validate form - incorrect values" in {
-      withCaching[DeclarationAdditionalActorsData](None)
+
       val result = route(app, postRequest(uri, incorrectAdditionalActorsJSON)).get
       val stringResult = contentAsString(result)
 
+      status(result) must be(BAD_REQUEST)
       stringResult must include(messages("supplementary.eori.error"))
       stringResult must include(messages("supplementary.partyType.error"))
     }
 
     "handle save and continue action" should {
+
       "when validate form - optional data allowed" in {
-        withCaching[DeclarationAdditionalActorsData](None)
 
         testHappyPathsScenarios(
           expectedPath = "/customs-declare-exports/declaration/supplementary/holder-of-authorisation",
@@ -92,7 +105,6 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
       }
 
       "when validate form - correct values and an empty cache" in {
-        withCaching[DeclarationAdditionalActorsData](None)
 
         testHappyPathsScenarios(
           expectedPath = "/customs-declare-exports/declaration/supplementary/holder-of-authorisation",
@@ -112,6 +124,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
       }
 
       "not add an item and return BAD_REQUEST" should {
+
         "when adding more than 99 items" in {
           withCaching[DeclarationAdditionalActorsData](Some(cacheWithMaximumAmountOfActors), formId)
 
@@ -137,6 +150,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
     "handle remove action" should {
 
       "remove an actor successfully " when {
+
         "exists in the cache" in {
           withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
 
@@ -149,8 +163,8 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
       }
 
       "return an error" when {
+
         "does not exists in the cache" in {
-          withCaching[DeclarationAdditionalActorsData](None, formId)
 
           val body = removeActionUrlEncoded(correctAdditionalActorsData.actors.head.toJson.toString())
 
@@ -164,7 +178,6 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
     "handle add action" should {
 
       "when validate form - optional data allowed" in {
-        withCaching[DeclarationAdditionalActorsData](None)
 
         val undefinedDocument: Map[String, String] = Map("eori" -> "", "partyType" -> "")
         testErrorScenario(
@@ -175,7 +188,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
       }
 
       "when validate form - correct values" in {
-        withCaching[DeclarationAdditionalActorsData](None)
+
         testHappyPathsScenarios(
           expectedPath = "/customs-declare-exports/declaration/supplementary/additional-actors",
           actorsMap = correctAdditionalActorsMap,
@@ -184,6 +197,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
       }
 
       "not add an item and return BAD_REQUEST" should {
+
         "when adding more than 99 items" in {
           withCaching[DeclarationAdditionalActorsData](Some(cacheWithMaximumAmountOfActors), formId)
 
@@ -195,7 +209,6 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
         }
 
         "when adding duplicate item" in {
-
           withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
 
           testErrorScenario(
@@ -207,6 +220,7 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
       }
 
       "add an item successfully and return SEE_OTHER" when {
+
         "with an empty cache" in {
           withCaching[DeclarationAdditionalActorsData](None, formId)
 
@@ -227,12 +241,11 @@ class DeclarationAdditionalActorsControllerSpec extends CustomExportsBaseSpec wi
           )
 
         }
-
       }
     }
 
+    // TODO: move to view
     "display back button that links to package information page" in {
-      withCaching[DeclarationAdditionalActorsData](None, formId)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)

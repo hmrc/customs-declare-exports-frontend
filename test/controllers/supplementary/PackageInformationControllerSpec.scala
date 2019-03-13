@@ -160,6 +160,7 @@ class PackageInformationControllerSpec
           contentAsString(result) must include("You should add one package information to Continue")
 
         }
+
         "when user entered data and click continue" in {
 
           forAll(arbitrary[PackageInformation]) { packaging =>
@@ -169,11 +170,11 @@ class PackageInformationControllerSpec
             val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
             status(result) must be(BAD_REQUEST)
             contentAsString(result) must include("Use add button to add package information")
-
           }
         }
 
       }
+
       "remove packageInformation from the cache" when {
 
         "when valid index is submitted" in {
@@ -198,6 +199,7 @@ class PackageInformationControllerSpec
           }
         }
       }
+
       "navigate to additionalInformation" when {
 
         "on click of continue when a record has already been added" in {
@@ -215,6 +217,7 @@ class PackageInformationControllerSpec
       }
     }
   }
+
   private def toMap(packaging: PackageInformation) =
     for ((k, Some(v)) <- packaging.getClass.getDeclaredFields
            .map(_.getName)

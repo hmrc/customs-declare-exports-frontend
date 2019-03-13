@@ -20,7 +20,7 @@ import base.{CustomExportsBaseSpec, TestHelper}
 import controllers.util.{FormAction, SaveAndContinue}
 import forms.supplementary.ItemType
 import forms.supplementary.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
-import forms.supplementary.ItemTypeSpec.correctItemType
+import forms.supplementary.ItemTypeSpec._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
@@ -37,7 +37,8 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
     withCaching[ItemType](None, ItemType.id)
   }
 
-  "ItemTypePageController on displayPage()" should {
+  "Item Type Page Controller on display page" should {
+
     "display the whole content" in {
       val result = route(app, getRequest(uri)).get
       val resultAsString = contentAsString(result)
@@ -55,19 +56,31 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
       resultAsString must include(messages("supplementary.itemType.cusCode.header.hint"))
       resultAsString must include(messages("supplementary.itemType.statisticalValue.header"))
       resultAsString must include(messages("supplementary.itemType.statisticalValue.header.hint"))
+      resultAsString must include(messages("supplementary.itemType.description.header"))
+      resultAsString must include(messages("supplementary.itemType.description.header.hint"))
     }
 
-    "display \"back\" button that links to Goods Item Number page" in {
+    "display \"Back\" button that links to \"Warehouse\" page" in {
       val result = route(app, getRequest(uri)).get
 
       contentAsString(result) must include(messages("site.back"))
       contentAsString(result) must include("/declaration/supplementary/warehouse")
     }
+
+    "display \"Save and continue\" button on page" in {
+
+      val result = route(app, getRequest(uri)).get
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.save_and_continue"))
+      resultAsString must include("button id=\"submit\" class=\"button\"")
+    }
   }
 
-  "ItemTypePageController on submitItemType()" should {
+  "Item Type Page Controller on submit item page" should {
 
     "display the form page with error" when {
+
       "Combined Nomenclature Code is empty" in {
         val form = buildItemTypeUrlEncodedInput(SaveAndContinue)()
         val expectedErrorMessage = messages("supplementary.itemType.combinedNomenclatureCode.error.empty")
@@ -184,8 +197,17 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
         Some("/customs-declare-exports/declaration/supplementary/package-information")
       )
     }
-  }
 
+    "redirect to \"Add Package Information\" page with mandatory fields only" in {
+      val result = route(app, postRequestFormUrlEncoded(uri, mandatoryItemTypeFormUrlEncoded.toSeq: _*)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/package-information")
+      )
+    }
+  }
 }
 
 object ItemTypePageControllerSpec {
@@ -195,6 +217,16 @@ object ItemTypePageControllerSpec {
       combinedNomenclatureCode = correctItemType.combinedNomenclatureCode,
       taricAdditionalCodes = correctItemType.taricAdditionalCodes,
       nationalAdditionalCodes = correctItemType.nationalAdditionalCodes,
+      descriptionOfGoods = correctItemType.descriptionOfGoods,
+      cusCode = correctItemType.cusCode.get,
+      statisticalValue = correctItemType.statisticalValue
+    )
+
+  val mandatoryItemTypeFormUrlEncoded: Map[String, String] =
+    buildItemTypeUrlEncodedInput(SaveAndContinue)(
+      combinedNomenclatureCode = correctItemType.combinedNomenclatureCode,
+      taricAdditionalCodes = Nil,
+      nationalAdditionalCodes = Nil,
       descriptionOfGoods = correctItemType.descriptionOfGoods,
       cusCode = correctItemType.cusCode.get,
       statisticalValue = correctItemType.statisticalValue

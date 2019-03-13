@@ -19,21 +19,27 @@ package controllers
 import base.CustomExportsBaseSpec
 import base.ExportsTestData._
 import forms.{Choice, Ducr, MovementFormsAndIds}
+import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 
-class MovementControllerSpec extends CustomExportsBaseSpec {
+class MovementControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   val ducrUri = uriWithContextPath("/movement/ducr")
   val goodsDateUri = uriWithContextPath("/movement/goodsDate")
   val locationUri = uriWithContextPath("/movement/location")
   val transportUri = uriWithContextPath("/movement/transport")
 
-  "Movement controller" when {
+  before {
+    authorizedUser()
+  }
 
-    "ducr screen " should {
+  "Movement Controller" when {
+
+    "DUCR screen " should {
+
       "return http code 200 with success" in {
-        authorizedUser()
+
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, Ducr.id)
 
@@ -43,7 +49,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "display form for arrival" in {
-        authorizedUser()
+
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, Ducr.id)
 
@@ -55,7 +61,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "display form for departure" in {
-        authorizedUser()
+
         withCaching(Some(Choice("EDL")), Choice.choiceId)
         withCaching(None, Ducr.id)
 
@@ -67,7 +73,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "validated submitted form for arrival" in {
-        authorizedUser()
         withCaching(None, Ducr.id)
 
         val emptyForm = JsObject(Map("" -> JsString("")))
@@ -80,7 +85,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "validated submitted form for departure" in {
-        authorizedUser()
         withCaching(None, Ducr.id)
 
         val emptyForm = JsObject(Map("" -> JsString("")))
@@ -93,7 +97,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "redirect to goods date page" in {
-        authorizedUser()
         withCaching(None, Ducr.id)
 
         val result = route(app, postRequest(ducrUri, correctDucrJson)).get
@@ -105,8 +108,9 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
     }
 
     "goods date" should {
+
       "return http code 200 with success" in {
-        authorizedUser()
+
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.goodsDateId)
 
@@ -116,7 +120,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "display form" in {
-        authorizedUser()
+
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.goodsDateId)
 
@@ -131,7 +135,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "validate form with minimum values - incorrect values" in {
-        authorizedUser()
         withCaching(None, MovementFormsAndIds.goodsDateId)
 
         val result = route(app, postRequest(goodsDateUri, wrongMinimumGoodsDate)).get
@@ -145,7 +148,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "validate form with maximum values - incorrect values" in {
-        authorizedUser()
         withCaching(None, MovementFormsAndIds.goodsDateId)
 
         val result = route(app, postRequest(goodsDateUri, wrongMaximumGoodsDate)).get
@@ -158,7 +160,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "redirect to the next page" in {
-        authorizedUser()
+
         withCaching(None, MovementFormsAndIds.goodsDateId)
 
         val result = route(app, postRequest(goodsDateUri, goodsDate)).get
@@ -170,8 +172,9 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
     }
 
     "location" should {
+
       "return http code 200 with success" in {
-        authorizedUser()
+
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.locationId)
 
@@ -181,7 +184,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "display form" in {
-        authorizedUser()
+
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.locationId)
 
@@ -195,7 +198,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "redirect to the next page with empty input data" in {
-        authorizedUser()
+
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.locationId)
 
@@ -207,7 +210,7 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "redirect to the next page with correct input data" in {
-        authorizedUser()
+
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.locationId)
 
@@ -220,8 +223,8 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
     }
 
     "transport" should {
+
       "return http code 200 with success" in {
-        authorizedUser()
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.transportId)
 
@@ -231,7 +234,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "display form" in {
-        authorizedUser()
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.transportId)
 
@@ -244,7 +246,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "validate input data - incorrect input data" in {
-        authorizedUser()
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.transportId)
 
@@ -256,7 +257,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "redirect to the next page with empty input data" in {
-        authorizedUser()
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.transportId)
 
@@ -268,7 +268,6 @@ class MovementControllerSpec extends CustomExportsBaseSpec {
       }
 
       "redirect to the next page with correct input data" in {
-        authorizedUser()
         withCaching(Some(Choice("EAL")), Choice.choiceId)
         withCaching(None, MovementFormsAndIds.transportId)
 

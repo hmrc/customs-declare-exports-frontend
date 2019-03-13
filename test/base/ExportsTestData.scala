@@ -16,7 +16,6 @@
 
 package base
 
-import base.TestHelper._
 import forms.Choice._
 import forms.MovementFormsAndIds._
 import forms.{Choice, Ducr, GoodsDateForm}
@@ -243,15 +242,4 @@ object ExportsTestData {
     )
     CacheMap(id, data)
   }
-
-  val incorrectEntityDetails: JsValue = JsObject(
-    Map(
-      "details.eori" -> JsString(createRandomString(18)),
-      "details.address.fullName" -> JsString(createRandomString(71)),
-      "details.address.addressLine" -> JsString(createRandomString(71)),
-      "details.address.townOrCity" -> JsString(createRandomString(36)),
-      "details.address.postCode" -> JsString(createRandomString(10)),
-      "details.address.country" -> JsString(createRandomString(3))
-    )
-  )
 }

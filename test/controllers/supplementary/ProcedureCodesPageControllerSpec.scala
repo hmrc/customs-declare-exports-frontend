@@ -35,7 +35,8 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
     authorizedUser()
   }
 
-  "ProcedureCodesPageController on displayPage" should {
+  "Procedure Codes Page Controller on display page" should {
+
     "display form without additional codes" in {
       withCaching[ProcedureCodesData](None, formId)
 
@@ -65,7 +66,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       stringResult must include(messages("site.remove"))
     }
 
-    "display \"back\" button that links to good item number page" in {
+    "display \"Back\" button that links to \"Good item number\" page" in {
       withCaching[ProcedureCodesData](None, formId)
 
       val result = route(app, getRequest(uri)).get
@@ -75,11 +76,32 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       stringResult must include(messages("site.back"))
       stringResult must include("/declaration/supplementary/good-item-number")
     }
+
+    "display \"Save and continue\" button on page" in {
+      withCaching[ProcedureCodesData](None)
+
+      val result = route(app, getRequest(uri)).get
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.save_and_continue"))
+      resultAsString must include("button id=\"submit\" class=\"button\"")
+    }
+
+    "display \"Add\" button on page" in {
+      withCaching[ProcedureCodesData](None)
+
+      val result = route(app, getRequest(uri)).get
+      val resultAsString = contentAsString(result)
+
+      resultAsString must include(messages("site.add"))
+      resultAsString must include("button id=\"add\" class=\"button\"")
+    }
   }
 
-  "ProcedureCodesPageController on submitProcedureCodes" should {
+  "Procedure Codes Page Controller on submit procedure codes" should {
 
     "display the form page with error" when {
+
       "try to save the data without procedure code" in {
         withCaching[ProcedureCodesData](None, formId)
         val body = Seq(("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)
@@ -257,6 +279,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
     }
 
     "add code without errors" when {
+
       "user provides additional code when no codes in cache" in {
         val cachedData = ProcedureCodesData(Some("1234"), Seq())
         withCaching[ProcedureCodesData](Some(cachedData), formId)
@@ -267,7 +290,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
         status(result) must be(SEE_OTHER)
       }
 
-      "user provide additional code that not exists in cache " in {
+      "user provides additional code that does not exist in cache " in {
         val cachedData = ProcedureCodesData(Some("1234"), Seq("100"))
         withCaching[ProcedureCodesData](Some(cachedData), formId)
         val body = Seq(("additionalProcedureCode", "123"), addActionUrlEncoded)
@@ -279,6 +302,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
     }
 
     "remove code" when {
+
       "code exists in cache" in {
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123", "234", "235"))
         withCaching[ProcedureCodesData](Some(cachedData), formId)
@@ -291,6 +315,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
     }
 
     "redirect to next page" when {
+
       "user fill both inputs with empty cache" in {
         withCaching[ProcedureCodesData](None, formId)
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)

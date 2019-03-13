@@ -24,11 +24,13 @@ class StartControllerSpec extends CustomExportsBaseSpec {
   val uri = uriWithContextPath("/start")
 
   "StartController" should {
+
     "return 200 for a GET" in {
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
     }
+
     "display radio button to start now" in {
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)

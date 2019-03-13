@@ -17,10 +17,9 @@
 @import config.AppConfig
 @import controllers.supplementary.routes._
 @import forms.supplementary.ConsignmentReferences
-@import models.requests.AuthenticatedRequest
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[ConsignmentReferences])(implicit request: AuthenticatedRequest[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[ConsignmentReferences])(implicit request: Request[_], messages: Messages)
 
 @main_template(
   title = messages("supplementary.consignmentReferences.title"),

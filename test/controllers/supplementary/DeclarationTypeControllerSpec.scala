@@ -41,44 +41,11 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     authorizedUser()
   }
 
-  "DeclarationTypeController on displayDispatchLocationPage" should {
+  "Declaration Type Controller on dispatch location page" should {
+
     "return 200 code" in {
       val result = displayDispatchLocationPageTestScenario()
       status(result) must be(OK)
-    }
-
-    "display page title" in {
-      val result = displayDispatchLocationPageTestScenario()
-      contentAsString(result) must include(messages("supplementary.dispatchLocation.title"))
-    }
-
-    "display \"back\" button that links to \"What do you want to do\" page" in {
-      val result = displayDispatchLocationPageTestScenario()
-      contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("choice")
-    }
-
-    "display page header with hint" in {
-      val result = displayDispatchLocationPageTestScenario()
-      contentAsString(result) must include(messages("supplementary.dispatchLocation.header"))
-      contentAsString(result) must include(messages("supplementary.dispatchLocation.header.hint"))
-    }
-
-    "display radio button with question text for declaration type" in {
-      val result = displayDispatchLocationPageTestScenario()
-      contentAsString(result) must include(messages("supplementary.dispatchLocation.inputText.outsideEU"))
-      contentAsString(result) must include(messages("supplementary.dispatchLocation.inputText.specialFiscalTerritory"))
-    }
-
-    "display \"Save and continue\" button" in {
-      val result = displayDispatchLocationPageTestScenario()
-      contentAsString(result) must include(messages("site.save_and_continue"))
-      contentAsString(result) must include("button id=\"submit\" class=\"button\"")
-    }
-
-    "not populate the form fields if cache is empty" in {
-      val result = displayDispatchLocationPageTestScenario()
-      contentAsString(result) mustNot include("checked=\"checked\"")
     }
 
     "populate the form fields with data from cache" in {
@@ -92,9 +59,10 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
   }
 
-  "DeclarationTypeController on submitDispatchLocation" should {
+  "Declaration Type Controller on submit dispatch location" should {
 
     "display the form page with error" when {
+
       "no value provided for dispatch location" in {
         withCaching[DispatchLocation](None, DispatchLocation.formId)
 
@@ -126,6 +94,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
 
     "redirect to \"Additional Declaration Type\" page" when {
+
       "dispatch location is Outside EU (EX)" in {
         withCaching[DispatchLocation](None, DispatchLocation.formId)
 
@@ -137,7 +106,8 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
       }
     }
 
-    "redirect to \"Not-eligible page\" page" when {
+    "redirect to \"Not-eligible\" page" when {
+
       "dispatch location is a Special Fiscal Territory (CO)" in {
         withCaching[DispatchLocation](None, DispatchLocation.formId)
 
@@ -150,44 +120,11 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
   }
 
-  "DeclarationTypeController on displayDeclarationTypePage" should {
+  "Declaration Type Controller on display declaration type page" should {
+
     "return 200 code" in {
       val result = displayDeclarationTypePageTestScenario()
       status(result) must be(OK)
-    }
-
-    "display page title" in {
-      val result = displayDeclarationTypePageTestScenario()
-      contentAsString(result) must include(messages("supplementary.declarationType.title"))
-    }
-
-    "display \"back\" button that links to \"Dispatch Location\" page" in {
-      val result = displayDeclarationTypePageTestScenario()
-      contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("dispatch-location")
-    }
-
-    "display page header with hint" in {
-      val result = displayDeclarationTypePageTestScenario()
-      contentAsString(result) must include(messages("supplementary.declarationType.header"))
-      contentAsString(result) must include(messages("supplementary.declarationType.header.hint"))
-    }
-
-    "display radio button with question text for declaration type" in {
-      val result = displayDeclarationTypePageTestScenario()
-      contentAsString(result) must include(messages("supplementary.declarationType.inputText.simplified"))
-      contentAsString(result) must include(messages("supplementary.declarationType.inputText.standard"))
-    }
-
-    "display \"Save and continue\" button" in {
-      val result = displayDeclarationTypePageTestScenario()
-      contentAsString(result) must include(messages("site.save_and_continue"))
-      contentAsString(result) must include("button id=\"submit\" class=\"button\"")
-    }
-
-    "not populate the form fields if cache is empty" in {
-      val result = displayDeclarationTypePageTestScenario()
-      contentAsString(result) mustNot include("checked=\"checked\"")
     }
 
     "populate the form fields with data from cache" in {
@@ -201,9 +138,10 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
   }
 
-  "DeclarationTypeController on submitDeclarationTypePage" should {
+  "Declaration Type Controller on submit declaration type page" should {
 
     "display the form page with error" when {
+
       "no value provided for declaration type" in {
         withCaching[AdditionalDeclarationType](None, AdditionalDeclarationType.formId)
 
@@ -250,7 +188,6 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
       )
     }
   }
-
 }
 
 object DeclarationTypeControllerSpec {
@@ -260,5 +197,4 @@ object DeclarationTypeControllerSpec {
   def buildAdditionalDeclarationTypeTestData(value: String = ""): JsValue = JsObject(
     Map("additionalDeclarationType" -> JsString(value))
   )
-
 }
