@@ -25,7 +25,7 @@ case class TransportInformationContainerData(containers: Seq[TransportInformatio
   override def toMetadataProperties(): Map[String, String] =
     containers.zipWithIndex.map { container =>
       Map(
-        "declaration.goodsShipment.consignment.transportEquipment[" + container._2 + "].id" -> container._1.id
+        "declaration.goodsShipment.consignment.transportEquipments[" + container._2 + "].id" -> container._1.id
       )
     }.fold(Map.empty)(_ ++ _)
 
@@ -35,7 +35,7 @@ case class TransportInformationContainerData(containers: Seq[TransportInformatio
 object TransportInformationContainerData {
   implicit val format = Json.format[TransportInformationContainerData]
 
-  val formId = "TransportInformationContainerData"
+  val id = "TransportInformationContainerData"
 
   val maxNumberOfItems = 9999
 }

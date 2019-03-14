@@ -15,11 +15,24 @@
  */
 
 package forms.supplementary
+
+import base.CustomExportsBaseSpec
+import forms.FormMatchers
+import forms.supplementary.TransportInformationContainer.{mapping, maxContainerIdLength}
 import forms.supplementary.TransportInformationContainerSpec._
+import generators.Generators
 import models.declaration.supplementary.TransportInformationContainerData
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen.{alphaNumStr, asciiStr}
+import org.scalatest.MustMatchers
+import org.scalatest.prop.PropertyChecks
+import play.api.data.Form
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
-class TransportInformationContainerSpec extends WordSpec with MustMatchers {
+import uk.gov.hmrc.wco.dec.MetaData
+import utils.validators.forms.FieldValidator.isAlphanumeric
+class TransportInformationContainerSpec
+    extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers {
 
   "Method toMetadataProperties" should {
 
@@ -28,10 +41,23 @@ class TransportInformationContainerSpec extends WordSpec with MustMatchers {
       val transportInformationContainerData = correctTransportInformationContainerData
 
       val expectedProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.consignment.transportEquipment[0].id" -> transportInformationContainerData.containers.head.id
+        "declaration.goodsShipment.consignment.transportEquipments[0].id" -> transportInformationContainerData.containers.head.id
       )
 
       transportInformationContainerData.toMetadataProperties() must equal(expectedProperties)
+    }
+
+    "map correctly" in {
+
+      val transportInformationContainerData = correctTransportInformationContainerData
+      val metadata = MetaData.fromProperties(transportInformationContainerData.toMetadataProperties())
+
+      metadata.declaration must be(defined)
+      metadata.declaration.get.goodsShipment must be(defined)
+      metadata.declaration.get.goodsShipment.get.consignment must be(defined)
+      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments mustNot be(empty)
+      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments.head.id must be (defined)
+      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments.head.id.get must equal(transportInformationContainerData.containers.head.id)
     }
   }
 
@@ -41,17 +67,57 @@ class TransportInformationContainerSpec extends WordSpec with MustMatchers {
     }
   }
 
+  "TransportInformationContainerSpec" should {
+    "fail" when {
+      "id is empty" in {
+        Form(mapping)
+          .fillAndValidate(TransportInformationContainer(""))
+          .fold(_ must haveErrorMessage("Container ID cannot be empty"), _ => fail("form should not succeed"))
+      }
+
+      "try to add a longer id" in {
+        implicit val arbitraryTransportInformationContainer: Arbitrary[TransportInformationContainer] = Arbitrary {
+          for {
+            id <- alphaNumStr.suchThat(_.length > maxContainerIdLength)
+          } yield TransportInformationContainer(id.toString)
+        }
+
+        forAll(arbitrary[TransportInformationContainer]) { container =>
+          Form(mapping)
+            .fillAndValidate(container)
+            .fold(
+              _ must haveErrorMessage("Only 17 alphanumeric characters are allowed"),
+              _ => fail("form should not succeed")
+            )
+        }
+      }
+
+      "try to add special characters" in {
+        implicit val arbitraryTransportInformationContainer: Arbitrary[TransportInformationContainer] = Arbitrary {
+          for {
+            id <- asciiStr.suchThat(str => str.length > 0 && !isAlphanumeric(str))
+          } yield TransportInformationContainer(id.toString)
+        }
+
+        forAll(arbitrary[TransportInformationContainer]) { container =>
+          Form(mapping)
+            .fillAndValidate(container)
+            .fold(_ must haveErrorMessage("Only alphanumeric characters allowed"), _ => fail("form should not succeed"))
+        }
+      }
+    }
+  }
 }
 
 object TransportInformationContainerSpec {
-  private val containerId = "containerId"
+  private val containerId = "id"
 
   val correctTransportInformationContainerData =
     TransportInformationContainerData(Seq(TransportInformationContainer(id = "M1l3s")))
 
   val emptyTransportInformationContainerData = TransportInformationContainer("")
 
-  val correctTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("M1l3s")))
+  val correctTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("container-M1l3s")))
 
   val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
 

@@ -20,7 +20,8 @@
 @import services.Country
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
-@(appConfig: AppConfig, form: Form[TransportInformationContainer], containers: Seq[TransportInformationContainer])(implicit request: Request[_], messages: Messages, countries: List[Country])
+@import controllers.util.Remove
+@(form: Form[TransportInformationContainer], containers: Seq[TransportInformationContainer])(implicit appConfig: AppConfig, request: Request[_], messages: Messages, countries: List[Country])
 
 @main_template(
     title = messages("supplementary.transportInfo.containers.title"),
@@ -29,14 +30,38 @@
 
     @components.back_link("/customs-declare-exports/declaration/supplementary/transport-information")
 
-    @helpers.form(TransportInformationContainersPageController.submitTransportInformation(), 'autoComplete -> "off") {
+    @helpers.form(TransportInformationContainersPageController.handlePost(), 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
 
         @components.page_title(Some("supplementary.transportInfo.containers.title"), None)
 
+
+        @if(containers.nonEmpty) {
+            <div class="field-group">
+                <table >
+                    <thead>
+                        <tr>
+                            <th scope="col">@messages("supplementary.transportInfo.containerId.title")</th>
+                            <td></td>
+                        </tr>
+                    </thead>
+                @containers.zipWithIndex.map { case (container, index) =>
+                    <tr>
+                        <td>@container.id</td>
+                        <td>
+                            <button class="button" name="@Remove.toString" value="@index">@messages("site.remove")</button>
+                        </td>
+                    </tr>
+                }
+                </table>
+                <br><br>
+            </div>
+        }
+
+
         @components.input_text(
-            field = form("containerId"),
+            field = form("id"),
             label = messages("supplementary.transportInfo.containerId")
         )
 

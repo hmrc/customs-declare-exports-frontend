@@ -28,11 +28,14 @@ object TransportInformationContainer {
 
   val formId = "TransportInformationContainer"
 
+  val maxContainerIdLength = 17
+
   val mapping = Forms.mapping(
     "id" ->
       text()
         .verifying("supplementary.transportInfo.containerId.empty", nonEmpty)
-        .verifying("supplementary.transportInfo.containerId.error", isEmpty or (isAlphanumeric and noLongerThan(17)))
+        .verifying("supplementary.transportInfo.containerId.error.alphanumeric", isAlphanumeric)
+        .verifying("supplementary.transportInfo.containerId.error.length", noLongerThan(maxContainerIdLength))
   )(TransportInformationContainer.apply)(TransportInformationContainer.unapply)
 
   def form(): Form[TransportInformationContainer] = Form(mapping)

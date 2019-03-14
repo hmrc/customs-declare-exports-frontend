@@ -209,8 +209,7 @@ object TransportInformationPageControllerSpec {
     meansOfTransportCrossingTheBorderType: String = "",
     meansOfTransportCrossingTheBorderIDNumber: String = "",
     meansOfTransportCrossingTheBorderNationality: String = "",
-    container: Boolean = false,
-    containerId: String = ""
+    container: Boolean = false
   ): JsValue = JsObject(
     Map(
       "inlandModeOfTransportCode" -> JsString(inlandModeOfTransportCode),
@@ -220,8 +219,7 @@ object TransportInformationPageControllerSpec {
       "meansOfTransportCrossingTheBorderType" -> JsString(meansOfTransportCrossingTheBorderType),
       "meansOfTransportCrossingTheBorderIDNumber" -> JsString(meansOfTransportCrossingTheBorderIDNumber),
       "meansOfTransportCrossingTheBorderNationality" -> JsString(meansOfTransportCrossingTheBorderNationality),
-      "container" -> JsBoolean(container),
-      "containerId" -> JsString(containerId)
+      "container" -> JsBoolean(container)
     )
   )
 

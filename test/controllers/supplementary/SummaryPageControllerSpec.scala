@@ -191,6 +191,17 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentStatusReason"))
       }
 
+      "display containers content with cache available" in new Test {
+        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
+          .thenReturn(Future.successful(Some(SupplementaryDeclarationDataSpec.cacheMapAllRecords)))
+
+        val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
+
+        resultAsString must include(messages("supplementary.transportInfo.containers.title"))
+        resultAsString must include(messages("supplementary.transportInfo.containerId.title"))
+        resultAsString must include(messages("container-M1l3s"))
+      }
+
       "get the whole supplementary declaration data from cache" in new Test {
         route(app, getRequest(summaryPageUri)).get.futureValue
         verify(mockCustomsCacheService, onlyOnce).fetch(any())(any(), any())

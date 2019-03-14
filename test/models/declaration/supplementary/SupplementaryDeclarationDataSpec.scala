@@ -35,6 +35,10 @@ import forms.supplementary.RepresentativeDetailsSpec._
 import forms.supplementary.SupervisingCustomsOfficeSpec._
 import forms.supplementary.TotalNumberOfItemsSpec._
 import forms.supplementary.TransactionTypeSpec._
+import forms.supplementary.TransportInformationContainerSpec.{
+  correctTransportInformationContainerData,
+  correctTransportInformationContainerDataJSON
+}
 import forms.supplementary.TransportInformationSpec._
 import forms.supplementary.WarehouseIdentificationSpec._
 import forms.supplementary._
@@ -75,6 +79,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.parties mustNot be(defined)
           supplementaryDeclarationData.locations mustNot be(defined)
           supplementaryDeclarationData.transportInformation mustNot be(defined)
+          supplementaryDeclarationData.transportInformationContainerData mustNot be(defined)
           supplementaryDeclarationData.items mustNot be(defined)
           supplementaryDeclarationData.additionalInformationData mustNot be(defined)
           supplementaryDeclarationData.documentsProducedData mustNot be(defined)
@@ -236,6 +241,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.locations.get.warehouseIdentification must be(defined)
           supplementaryDeclarationData.locations.get.officeOfExit must be(defined)
           supplementaryDeclarationData.transportInformation must be(defined)
+          supplementaryDeclarationData.transportInformationContainerData must be(defined)
           supplementaryDeclarationData.items must be(defined)
           supplementaryDeclarationData.items.get.totalNumberOfItems must be(defined)
           supplementaryDeclarationData.items.get.transactionType must be(defined)
@@ -306,7 +312,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
         val map = data.toMap
 
-        val supplementaryDeclarationDataFieldsAmount = 8
+        val supplementaryDeclarationDataFieldsAmount = 9
         map.size must equal(supplementaryDeclarationDataFieldsAmount)
 
         map.keys must contain(DeclarationType.id)
@@ -319,6 +325,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         map(Locations.id) must equal(data.locations.get)
         map.keys must contain(TransportInformation.id)
         map(TransportInformation.id) must equal(data.transportInformation.get)
+        map(TransportInformationContainerData.id) must equal(data.transportInformationContainerData.get)
         map.keys must contain(Items.id)
         map(Items.id) must equal(data.items.get)
         map.keys must contain(AdditionalInformationData.formId)
@@ -356,6 +363,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       val partiesMock = mock(classOf[Parties])
       val locationsMock = mock(classOf[Locations])
       val transportInformationMock = mock(classOf[TransportInformation])
+      val transportInformationContainerDataMock = mock(classOf[TransportInformationContainerData])
       val itemsMock = mock(classOf[Items])
       val additionalInformationDataMock = mock(classOf[AdditionalInformationData])
       val documentsProducedDataMock = mock(classOf[DocumentsProducedData])
@@ -365,6 +373,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         parties = Some(partiesMock),
         locations = Some(locationsMock),
         transportInformation = Some(transportInformationMock),
+        transportInformationContainerData = Some(transportInformationContainerDataMock),
         items = Some(itemsMock),
         additionalInformationData = Some(additionalInformationDataMock),
         documentsProducedData = Some(documentsProducedDataMock)
@@ -375,6 +384,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       when(partiesMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(locationsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(transportInformationMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+      when(transportInformationContainerDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(itemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(additionalInformationDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(documentsProducedDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
@@ -387,6 +397,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       val partiesMap = Map("Parties" -> "PartiesValue")
       val locationsMap = Map("Locations" -> "LocationsValue")
       val transportInformationMap = Map("TransportInformation" -> "TransportInformationValue")
+      val transportInformationContainerMap =
+        Map("TransportInformationContainer" -> "TransportInformationContainerValue")
       val itemsMap = Map("Items" -> "ItemsValue")
       val additionalInformationMap = Map("AdditionalInformation" -> "AdditionalInformationValue")
       val documentsProducedMap = Map("DocumentsProduced" -> "DocumentsProducedValue")
@@ -424,6 +436,7 @@ object SupplementaryDeclarationDataSpec {
       WarehouseIdentification.formId -> correctWarehouseIdentificationJSON,
       OfficeOfExit.formId -> correctOfficeOfExitJSON,
       TransportInformation.id -> correctTransportInformationJSON,
+      TransportInformationContainerData.id -> correctTransportInformationContainerDataJSON,
       TotalNumberOfItems.formId -> correctTotalNumberOfItemsDecimalValuesJSON,
       TransactionType.formId -> correctTransactionTypeJSON,
       GoodsItemNumber.formId -> correctGoodsItemNumberJSON,
@@ -456,6 +469,7 @@ object SupplementaryDeclarationDataSpec {
       )
     ),
     transportInformation = Some(correctTransportInformation),
+    transportInformationContainerData = Some(correctTransportInformationContainerData),
     items = Some(
       Items(
         totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),

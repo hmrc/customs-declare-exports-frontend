@@ -16,8 +16,12 @@
 
 package controllers.supplementary
 import base.CustomExportsBaseSpec
+import base.TestHelper.createRandomString
+import controllers.supplementary.TransportInformationContainersPageControllerSpec.cacheWithMaximumAmountOfHolders
+import controllers.util.{Add, Remove, SaveAndContinue}
+import forms.supplementary.TransportInformationContainer
 import models.declaration.supplementary.TransportInformationContainerData
-import models.declaration.supplementary.TransportInformationContainerData.formId
+import models.declaration.supplementary.TransportInformationContainerData.id
 import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
@@ -25,16 +29,22 @@ class TransportInformationContainersPageControllerSpec extends CustomExportsBase
 
   private val uri = uriWithContextPath("/declaration/supplementary/add-transport-containers")
 
+  private val addActionURLEncoded = (Add.toString, "")
+  private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
+  private def removeActionURLEncoded(value: String) = (Remove.toString, value)
+
   before {
     authorizedUser()
-    withCaching[TransportInformationContainerData](None, formId)
+    withCaching[TransportInformationContainerData](None, id)
   }
 
-  "Transport Information Containers Page Controller on display" should {
+  "Transport Information Containers Page Controller on GET" should {
 
-    "display the whole content" in {
+    "display the whole content and return a 200 HTTP code" in {
       val result = route(app, getRequest(uri)).get
       val resultAsString = contentAsString(result)
+
+      status(result) must be(OK)
 
       resultAsString must include(messages("supplementary.transportInfo.containers.title"))
       resultAsString must include(messages("supplementary.transportInfo.containerId"))
@@ -55,6 +65,187 @@ class TransportInformationContainersPageControllerSpec extends CustomExportsBase
       contentAsString(result) must include(messages("site.back"))
       contentAsString(result) must include("/declaration/supplementary/transport-information")
     }
+
+    "display additional information form with added items" in {
+
+      val cachedData = TransportInformationContainerData(
+        Seq(TransportInformationContainer("M1l3s"), TransportInformationContainer("X4rlz"))
+      )
+      withCaching[TransportInformationContainerData](Some(cachedData), id)
+
+      val result = route(app, getRequest(uri)).get
+      val resultAsString = contentAsString(result)
+
+      status(result) must be(OK)
+
+      resultAsString must include(messages("supplementary.transportInfo.containerId"))
+      resultAsString must include(messages("supplementary.transportInfo.containers.title"))
+      resultAsString must include(messages("supplementary.transportInfo.containerId.title"))
+    }
   }
 
+  "Additional Information Controller on POST" should {
+
+    "add a container successfully" when {
+
+      "with an empty cache" in {
+        withCaching[TransportInformationContainerData](None, id)
+        val body = Seq(("id", "J0ohn"), addActionURLEncoded)
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(SEE_OTHER)
+      }
+
+      "that does not exist in cache" in {
+        val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("M1l3s")))
+        withCaching[TransportInformationContainerData](Some(cachedData), id)
+        val body = Seq(("id", "x4rlz"), addActionURLEncoded)
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(SEE_OTHER)
+      }
+    }
+
+    "remove an item successfully" when {
+
+      "exists in cache based on id" in {
+
+        val cachedData = TransportInformationContainerData(
+          Seq(TransportInformationContainer("M1l3s"), TransportInformationContainer("J00hn"))
+        )
+        withCaching[TransportInformationContainerData](Some(cachedData), id)
+
+        val body = removeActionURLEncoded("0")
+        val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+
+        status(result) must be(SEE_OTHER)
+      }
+    }
+
+    "display the form page with an error" when {
+
+      "try to add a container without any data" in {
+
+        withCaching[TransportInformationContainerData](None, id)
+        val body = Seq(("id", ""), addActionURLEncoded)
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val stringResult = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+        stringResult must include(messages("supplementary.transportInfo.containerId.empty"))
+      }
+
+      "try to save and continue without any data" in {
+
+        val body = Seq(("id", ""), saveAndContinueActionURLEncoded)
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val stringResult = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+        stringResult must include(messages("supplementary.continue.mandatory"))
+      }
+
+      "try to add duplicated container" in {
+
+        val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("M1l3s")))
+        withCaching[TransportInformationContainerData](Some(cachedData), id)
+
+        val body = Seq(("id", "M1l3s"), addActionURLEncoded)
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages("supplementary.duplication"))
+      }
+
+      "try to add more than 9999 containers" in {
+        withCaching[TransportInformationContainerData](Some(cacheWithMaximumAmountOfHolders), id)
+
+        val body = Seq(("id", "M1l3s"), addActionURLEncoded)
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages("supplementary.limit"))
+      }
+
+      "try to save more than 9999 containers" in {
+        withCaching[TransportInformationContainerData](Some(cacheWithMaximumAmountOfHolders), id)
+
+        val body = Seq(("id", "M1l3s"), saveAndContinueActionURLEncoded)
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages("supplementary.limit"))
+      }
+
+      "try to remove a non existent container" in {
+        val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("M1l3s")))
+        withCaching[TransportInformationContainerData](Some(cachedData), id)
+
+        val body = ("action", "Remove:J0ohn-Coltrane")
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+        val stringResult = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+        stringResult must include(messages("global.error.title"))
+        stringResult must include(messages("global.error.heading"))
+        stringResult must include(messages("global.error.message"))
+      }
+    }
+  }
+  "redirect to the next page" when {
+
+    "user provide container with empty cache" in {
+
+      val body = Seq(("id", "M1l3s"), saveAndContinueActionURLEncoded)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/total-numbers-of-items")
+      )
+    }
+
+    "user doesn't fill form but some containers already exist in the cache" in {
+      val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("Jo0hn")))
+      withCaching[TransportInformationContainerData](Some(cachedData), id)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionURLEncoded)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/total-numbers-of-items")
+      )
+    }
+
+    "user provide container with some different container in cache" in {
+      val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("x4rlz")))
+      withCaching[TransportInformationContainerData](Some(cachedData), id)
+
+      val body = Seq(("id", "M1l3s"), saveAndContinueActionURLEncoded)
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(
+        Some("/customs-declare-exports/declaration/supplementary/total-numbers-of-items")
+      )
+    }
+  }
+}
+
+object TransportInformationContainersPageControllerSpec {
+  val cacheWithMaximumAmountOfHolders = TransportInformationContainerData(
+    Seq
+      .range[Int](1, 10000, 1)
+      .map(elem => TransportInformationContainer(elem.toString))
+  )
 }

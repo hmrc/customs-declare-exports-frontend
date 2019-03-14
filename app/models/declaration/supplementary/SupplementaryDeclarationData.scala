@@ -26,6 +26,7 @@ case class SupplementaryDeclarationData(
   parties: Option[Parties] = None,
   locations: Option[Locations] = None,
   transportInformation: Option[TransportInformation] = None,
+  transportInformationContainerData: Option[TransportInformationContainerData] = None,
   items: Option[Items] = None,
   additionalInformationData: Option[AdditionalInformationData] = None,
   documentsProducedData: Option[DocumentsProducedData] = None
@@ -45,6 +46,7 @@ case class SupplementaryDeclarationData(
       parties.isEmpty &&
       locations.isEmpty &&
       transportInformation.isEmpty &&
+      transportInformationContainerData.isEmpty &&
       items.isEmpty &&
       additionalInformationData.isEmpty &&
       documentsProducedData.isEmpty
@@ -56,6 +58,7 @@ case class SupplementaryDeclarationData(
       Parties.id -> parties,
       Locations.id -> locations,
       TransportInformation.id -> transportInformation,
+      TransportInformationContainerData.id -> transportInformationContainerData,
       Items.id -> items,
       AdditionalInformationData.formId -> additionalInformationData,
       DocumentsProducedData.formId -> documentsProducedData
@@ -72,6 +75,8 @@ object SupplementaryDeclarationData {
       parties = flattenIfEmpty(Parties(cacheMap)),
       locations = flattenIfEmpty(Locations(cacheMap)),
       transportInformation = cacheMap.getEntry[TransportInformation](TransportInformation.id),
+      transportInformationContainerData =
+        cacheMap.getEntry[TransportInformationContainerData](TransportInformationContainerData.id),
       items = flattenIfEmpty(Items(cacheMap)),
       additionalInformationData = cacheMap.getEntry[AdditionalInformationData](AdditionalInformationData.formId),
       documentsProducedData = cacheMap.getEntry[DocumentsProducedData](DocumentsProducedData.formId)
