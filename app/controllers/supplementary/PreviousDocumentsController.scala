@@ -85,7 +85,7 @@ class PreviousDocumentsController @Inject()(
               if (updatedCache != cache.documents)
                 customsCacheService
                   .cache[PreviousDocumentsData](supplementaryCacheId, formId, PreviousDocumentsData(updatedCache))
-                  .map(_ => Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm()))
+                  .map(_ => Redirect(controllers.supplementary.routes.GoodsItemNumberController.displayForm()))
               else Future.successful(Redirect(controllers.supplementary.routes.GoodsItemNumberController.displayForm()))
           )
         }
