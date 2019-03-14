@@ -21,7 +21,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.html.supplementary.summary._
 
-@(appConfig: AppConfig, suppDecData: SupplementaryDeclarationData)(implicit request: Request[_], messages: Messages)
+@(suppDecData: SupplementaryDeclarationData)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.summary.title"),
@@ -68,7 +68,7 @@
     @additional_documentation_section(suppDecData.documentsProducedData)
 
     @helpers.form(action = SummaryPageController.submitSupplementaryDeclaration()) {
-        @components.submit_button("Accept and submit declaration")
+        @components.submit_button(messages("site.acceptAndSubmitDeclaration"))
     }
 
 }
