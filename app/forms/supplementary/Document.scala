@@ -27,16 +27,7 @@ case class Document(
   documentType: String,
   documentReference: String,
   goodsItemIdentifier: Option[String]
-) extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.previousDocuments[0].categoryCode" -> documentCategory,
-      "declaration.goodsShipment.previousDocuments[0].typeCode" -> documentType,
-      "declaration.goodsShipment.previousDocuments[0].id" -> documentReference,
-      "declaration.goodsShipment.previousDocuments[0].lineNumeric" -> goodsItemIdentifier.getOrElse("")
-    )
-}
+)
 
 object Document {
   implicit val format = Json.format[Document]
@@ -77,10 +68,24 @@ object Document {
   }
 }
 
-case class PreviousDocumentsData(documents: Seq[Document])
+case class PreviousDocumentsData(documents: Seq[Document]) extends MetadataPropertiesConvertable {
+  override def toMetadataProperties(): Map[String, String] =
+    documents.zipWithIndex.map {
+      case (elem, index) =>
+        Map(
+          "declaration.goodsShipment.previousDocuments[" + index + "].categoryCode" -> elem.documentCategory,
+          "declaration.goodsShipment.previousDocuments[" + index + "].typeCode" -> elem.documentType,
+          "declaration.goodsShipment.previousDocuments[" + index + "].id" -> elem.documentReference,
+          "declaration.goodsShipment.previousDocuments[" + index + "].lineNumeric" -> elem.goodsItemIdentifier
+            .getOrElse("")
+        )
+    }.fold(Map.empty)(_ ++ _)
+}
 
 object PreviousDocumentsData {
   implicit val format = Json.format[PreviousDocumentsData]
 
   val maxAmountOfItems = 99
+
+  val isScreenMandatory = true
 }

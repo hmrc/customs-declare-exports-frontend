@@ -19,10 +19,12 @@ package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.supplementaryCacheId
-import forms.supplementary.Document
+import controllers.util._
 import forms.supplementary.Document._
+import forms.supplementary.PreviousDocumentsData
+import forms.supplementary.PreviousDocumentsData._
+import handlers.ErrorHandler
 import javax.inject.Inject
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
@@ -32,30 +34,64 @@ import views.html.supplementary.previous_documents
 import scala.concurrent.{ExecutionContext, Future}
 
 class PreviousDocumentsController @Inject()(
-  appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController with I18nSupport {
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Document](supplementaryCacheId, formId).map {
-      case Some(data) => Ok(previous_documents(appConfig, form.fill(data)))
-      case _          => Ok(previous_documents(appConfig, form))
+    customsCacheService.fetchAndGetEntry[PreviousDocumentsData](supplementaryCacheId, formId).map {
+      case Some(data) => Ok(previous_documents(form, data.documents))
+      case _          => Ok(previous_documents(form, Seq.empty))
     }
   }
 
   def savePreviousDocuments(): Action[AnyContent] = authenticate.async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[Document]) =>
-          Future.successful(BadRequest(previous_documents(appConfig, formWithErrors))),
-        validForm =>
-          customsCacheService.cache[Document](supplementaryCacheId, formId, validForm).map { _ =>
-            Redirect(controllers.supplementary.routes.GoodsItemNumberController.displayForm())
+    import MultipleItemsHelper._
+
+    val boundForm = form.bindFromRequest()
+
+    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+
+    val cachedData = customsCacheService
+      .fetchAndGetEntry[PreviousDocumentsData](supplementaryCacheId, formId)
+      .map(_.getOrElse(PreviousDocumentsData(Seq.empty)))
+
+    cachedData.flatMap { cache =>
+      actionTypeOpt match {
+        case Some(Add) =>
+          add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
+            formWithErrors => Future.successful(BadRequest(previous_documents(formWithErrors, cache.documents))),
+            updatedCache =>
+              customsCacheService
+                .cache[PreviousDocumentsData](supplementaryCacheId, formId, PreviousDocumentsData(updatedCache))
+                .map(_ => Redirect(controllers.supplementary.routes.PreviousDocumentsController.displayForm()))
+          )
+
+        case Some(Remove(ids)) => {
+          val updatedCache = remove(ids.headOption, cache.documents)
+
+          customsCacheService
+            .cache[PreviousDocumentsData](supplementaryCacheId, formId, PreviousDocumentsData(updatedCache))
+            .map(_ => Redirect(controllers.supplementary.routes.PreviousDocumentsController.displayForm()))
         }
-      )
+
+        case Some(SaveAndContinue) => {
+          saveAndContinue(boundForm, cache.documents, isScreenMandatory, maxAmountOfItems).fold(
+            formWithErrors => Future.successful(BadRequest(previous_documents(formWithErrors, cache.documents))),
+            updatedCache =>
+              if (updatedCache != cache.documents)
+                customsCacheService
+                  .cache[PreviousDocumentsData](supplementaryCacheId, formId, PreviousDocumentsData(updatedCache))
+                  .map(_ => Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm()))
+              else Future.successful(Redirect(controllers.supplementary.routes.GoodsItemNumberController.displayForm()))
+          )
+        }
+
+        case _ => errorHandler.displayErrorPage()
+      }
+    }
   }
 }

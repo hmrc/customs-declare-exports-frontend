@@ -25,12 +25,12 @@ class DocumentSpec extends WordSpec with MustMatchers {
 
   "Method toMetadataProperties" should {
     "return proper Metadata Properties" in {
-      val previousDocuments = correctPreviousDocument
+      val previousDocuments = PreviousDocumentsData(Seq(correctPreviousDocument))
       val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.previousDocuments[0].categoryCode" -> previousDocuments.documentCategory,
-        "declaration.goodsShipment.previousDocuments[0].typeCode" -> previousDocuments.documentType,
-        "declaration.goodsShipment.previousDocuments[0].id" -> previousDocuments.documentReference,
-        "declaration.goodsShipment.previousDocuments[0].lineNumeric" -> previousDocuments.goodsItemIdentifier.get
+        "declaration.goodsShipment.previousDocuments[0].categoryCode" -> correctPreviousDocument.documentCategory,
+        "declaration.goodsShipment.previousDocuments[0].typeCode" -> correctPreviousDocument.documentType,
+        "declaration.goodsShipment.previousDocuments[0].id" -> correctPreviousDocument.documentReference,
+        "declaration.goodsShipment.previousDocuments[0].lineNumeric" -> correctPreviousDocument.goodsItemIdentifier.get
       )
 
       previousDocuments.toMetadataProperties() must equal(expectedMetadataProperties)

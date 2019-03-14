@@ -21,7 +21,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
-@(appConfig: AppConfig, form: Form[Document])(implicit request: Request[_], messages: Messages)
+@(form: Form[Document], documents: Seq[Document])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("supplementary.previousDocuments"),
@@ -32,15 +32,43 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("supplementary.previousDocuments.title"),Some("supplementary.previousDocuments.hint"))
+        @if(documents.nonEmpty) {
+            <table class="form-group">
+                <caption>@messages("supplementary.previousDocuments")</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">@messages("supplementary.previousDocuments.documentCategory.label")</th>
+                        <th scope="col">@messages("supplementary.previousDocuments.documentType.label")</th>
+                        <th scope="col">@messages("supplementary.previousDocuments.documentReference.label")</th>
+                        <th scope="col">@messages("supplementary.previousDocuments.goodsItemIdentifier.label")</th>
+                        <th scope="col">@messages("supplementary.packageInformation.remove")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @documents.zipWithIndex.map { case (document, index) =>
+                <tr>
+                    <td scope="row">@messages("supplementary.previousDocuments." + document.documentCategory)</td>
+                    <td>@document.documentType</td>
+                    <td>@document.documentReference</td>
+                    <td>@document.goodsItemIdentifier.getOrElse("")</td>
+                    <td>
+                        <button class="button" name=@messages("site.remove") value="@index">@messages("site.remove") </button>
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
+        }
+
+        @components.page_title(Some("supplementary.previousDocuments.title"), Some("supplementary.previousDocuments.hint"))
 
         @components.input_radio(
             field = form("documentCategory"),
             legend = messages(""),
             inputs = Seq(
-                RadioOption("Temporary storage", TemporaryStorage, messages("supplementary.previousDocuments.temporaryStorage")),
-                RadioOption("Simplified declaration", SimplifiedDeclaration, messages("supplementary.previousDocuments.simplifiedDeclaration")),
-                RadioOption("Previous document", PreviousDocument, messages("supplementary.previousDocuments.previousDocument"))
+                RadioOption("Temporary storage", TemporaryStorage, messages("supplementary.previousDocuments.X")),
+                RadioOption("Simplified declaration", SimplifiedDeclaration, messages("supplementary.previousDocuments.Y")),
+                RadioOption("Previous document", PreviousDocument, messages("supplementary.previousDocuments.Z"))
             )
         )
 
@@ -59,6 +87,6 @@
             label = messages("supplementary.previousDocuments.goodsItemIdentifier")
         )
 
-        @components.submit_button()
+        @components.add_save_button()
     }
 }
