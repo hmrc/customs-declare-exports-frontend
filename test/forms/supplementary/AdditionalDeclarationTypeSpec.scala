@@ -39,7 +39,7 @@ class AdditionalDeclarationTypeSpec extends WordSpec with MustMatchers {
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.declarationType.inputText.error.incorrectValue")
+        form.errors.head.message must equal("supplementary.declarationType.inputText.error.incorrect")
       }
     }
 

@@ -21,7 +21,6 @@ import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.supplementaryCacheId
 import controllers.util.MultipleItemsHelper._
 import controllers.util._
-import forms.supplementary.AdditionalInformation
 import forms.supplementary.AdditionalInformation.form
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -66,7 +65,8 @@ class AdditionalInformationController @Inject()(
       actionTypeOpt match {
         case Some(Add) =>
           add(boundForm, cache.items, elementLimit).fold(
-            formWithErrors => Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
+            formWithErrors =>
+              Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
             updatedCache =>
               customsCacheService
                 .cache[AdditionalInformationData](supplementaryCacheId, formId, AdditionalInformationData(updatedCache))
@@ -83,13 +83,19 @@ class AdditionalInformationController @Inject()(
 
         case Some(SaveAndContinue) =>
           saveAndContinue(boundForm, cache.items, true, elementLimit).fold(
-            formWithErrors => Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
+            formWithErrors =>
+              Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
             updatedCache =>
-              if(updatedCache != cache.items)
+              if (updatedCache != cache.items)
                 customsCacheService
-                  .cache[AdditionalInformationData](supplementaryCacheId, formId, AdditionalInformationData(updatedCache))
+                  .cache[AdditionalInformationData](
+                    supplementaryCacheId,
+                    formId,
+                    AdditionalInformationData(updatedCache)
+                  )
                   .map(_ => Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm()))
-              else Future.successful(Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm()))
+              else
+                Future.successful(Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm()))
           )
 
         case _ => errorHandler.displayErrorPage()

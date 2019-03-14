@@ -41,11 +41,13 @@ class DocumentSpec extends WordSpec with MustMatchers {
 
     "return form with errors" when {
       "provided with empty document category" in {
-        val documentInputData = JsObject(Map(
-          "documentType" -> JsString("ABC"),
-          "documentReference" -> JsString("DocumentReference"),
-          "goodsItemIdentifier" -> JsString("123")
-        ))
+        val documentInputData = JsObject(
+          Map(
+            "documentType" -> JsString("ABC"),
+            "documentReference" -> JsString("DocumentReference"),
+            "goodsItemIdentifier" -> JsString("123")
+          )
+        )
         val form = Document.form().bind(documentInputData)
 
         form.hasErrors must be(true)
@@ -54,12 +56,14 @@ class DocumentSpec extends WordSpec with MustMatchers {
       }
 
       "provided with unknown document category" in {
-        val documentInputData = JsObject(Map(
-          "documentCategory" -> JsString("Unknown category"),
-          "documentType" -> JsString("ABC"),
-          "documentReference" -> JsString("DocumentReference"),
-          "goodsItemIdentifier" -> JsString("123")
-        ))
+        val documentInputData = JsObject(
+          Map(
+            "documentCategory" -> JsString("Unknown category"),
+            "documentType" -> JsString("ABC"),
+            "documentReference" -> JsString("DocumentReference"),
+            "goodsItemIdentifier" -> JsString("123")
+          )
+        )
         val form = Document.form().bind(documentInputData)
 
         form.hasErrors must be(true)

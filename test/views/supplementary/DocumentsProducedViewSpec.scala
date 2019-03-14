@@ -27,7 +27,8 @@ import views.tags.ViewTest
 class DocumentsProducedViewSpec extends ViewSpec {
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
-  private val filledForm = DocumentsProduced(Some("test"), Some("test1"), Some("test2"), Some("test3"), Some("test4"), Some("test5"))
+  private val filledForm =
+    DocumentsProduced(Some("test"), Some("test1"), Some("test2"), Some("test3"), Some("test4"), Some("test5"))
 
   private val prefix = s"${basePrefix}addDocument."
 
@@ -43,7 +44,8 @@ class DocumentsProducedViewSpec extends ViewSpec {
   private val duplicated = Item(prefix, "duplicated")
   private val notDefined = Item(prefix, "isNotDefined")
 
-  private def createView(form: Form[DocumentsProduced] = form): Html = documents_produced(appConfig, form, Seq())(fakeRequest, messages)
+  private def createView(form: Form[DocumentsProduced] = form): Html =
+    documents_produced(appConfig, form, Seq())(fakeRequest, messages)
 
   "Documents Produced View" should {
 
@@ -158,7 +160,8 @@ class DocumentsProducedViewSpec extends ViewSpec {
 
     "display error for Document type code" in {
 
-      val view = createView(DocumentsProduced.form().withError(documentTypeCode.key, messages(documentTypeCode.withError)))
+      val view =
+        createView(DocumentsProduced.form().withError(documentTypeCode.key, messages(documentTypeCode.withError)))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentTypeCode.withError, documentTypeCode.asLink)
@@ -170,7 +173,8 @@ class DocumentsProducedViewSpec extends ViewSpec {
 
     "display error for Document identifier" in {
 
-      val view = createView(DocumentsProduced.form().withError(documentIdentifier.key, messages(documentIdentifier.withError)))
+      val view =
+        createView(DocumentsProduced.form().withError(documentIdentifier.key, messages(documentIdentifier.withError)))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentIdentifier.withError, documentIdentifier.asLink)
@@ -202,7 +206,9 @@ class DocumentsProducedViewSpec extends ViewSpec {
 
     "display error for Document status reason" in {
 
-      val view = createView(DocumentsProduced.form().withError(documentStatusReason.key, messages(documentStatusReason.withError)))
+      val view = createView(
+        DocumentsProduced.form().withError(documentStatusReason.key, messages(documentStatusReason.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentStatusReason.withError, documentStatusReason.asLink)
@@ -214,7 +220,8 @@ class DocumentsProducedViewSpec extends ViewSpec {
 
     "display error for Document quantity" in {
 
-      val view = createView(DocumentsProduced.form().withError(documentQuantity.key, messages(documentQuantity.withError)))
+      val view =
+        createView(DocumentsProduced.form().withError(documentQuantity.key, messages(documentQuantity.withError)))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentQuantity.withError, documentQuantity.asLink)
@@ -250,7 +257,8 @@ class DocumentsProducedViewSpec extends ViewSpec {
 
     "display errors for all fields" in {
 
-      val form = DocumentsProduced.form()
+      val form = DocumentsProduced
+        .form()
         .withError(documentTypeCode.key, messages(documentTypeCode.withError))
         .withError(documentIdentifier.key, messages(documentIdentifier.withError))
         .withError(documentPart.key, messages(documentPart.withError))

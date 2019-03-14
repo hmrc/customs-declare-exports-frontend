@@ -39,7 +39,8 @@ class DeclarationAdditionalActorsViewSpec extends ViewSpec {
   private val freightForwarder = Item(prefixParty, "FW")
   private val warehouseKeeper = Item(prefixParty, "WH")
 
-  private def createView(form: Form[DeclarationAdditionalActors] = form): Html = declaration_additional_actors(appConfig, form, Seq())(fakeRequest, messages)
+  private def createView(form: Form[DeclarationAdditionalActors] = form): Html =
+    declaration_additional_actors(appConfig, form, Seq())(fakeRequest, messages)
 
   "Declaration Additional Actors View" should {
 
@@ -134,9 +135,12 @@ class DeclarationAdditionalActorsViewSpec extends ViewSpec {
 
     "display errors when EORI is provided, but is incorrect" in {
 
-      val view = createView(DeclarationAdditionalActors.form()
-        .withError("eori", messages(eori.withError))
-        .withError(party.key, messages(party.withError)))
+      val view = createView(
+        DeclarationAdditionalActors
+          .form()
+          .withError("eori", messages(eori.withError))
+          .withError(party.key, messages(party.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, eori.withError, eori.asLink)
@@ -148,8 +152,11 @@ class DeclarationAdditionalActorsViewSpec extends ViewSpec {
 
     "display error when EORI is provided, but party is not selected" in {
 
-      val view = createView(DeclarationAdditionalActors.form()
-        .withError(party.key, messages(party.withError)))
+      val view = createView(
+        DeclarationAdditionalActors
+          .form()
+          .withError(party.key, messages(party.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, party.withError, party.asLink)
@@ -162,7 +169,8 @@ class DeclarationAdditionalActorsViewSpec extends ViewSpec {
 
     "display EORI with CS selected" in {
 
-      val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("CS"))))
+      val view =
+        createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("CS"))))
 
       getElementById(view, eori.key).attr("value") must be("1234")
       getElementById(view, consolidator.withPrefix).attr("checked") must be("checked")
@@ -170,7 +178,8 @@ class DeclarationAdditionalActorsViewSpec extends ViewSpec {
 
     "display EORI with MF selected" in {
 
-      val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("MF"))))
+      val view =
+        createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("MF"))))
 
       getElementById(view, eori.key).attr("value") must be("1234")
       getElementById(view, manufacturer.withPrefix).attr("checked") must be("checked")
@@ -178,7 +187,8 @@ class DeclarationAdditionalActorsViewSpec extends ViewSpec {
 
     "display EORI with FW selected" in {
 
-      val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("FW"))))
+      val view =
+        createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("FW"))))
 
       getElementById(view, eori.key).attr("value") must be("1234")
       getElementById(view, freightForwarder.withPrefix).attr("checked") must be("checked")
@@ -186,7 +196,8 @@ class DeclarationAdditionalActorsViewSpec extends ViewSpec {
 
     "display EORI with WH selected" in {
 
-      val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("WH"))))
+      val view =
+        createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("WH"))))
 
       getElementById(view, eori.key).attr("value") must be("1234")
       getElementById(view, warehouseKeeper.withPrefix).attr("checked") must be("checked")

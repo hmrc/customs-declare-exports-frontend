@@ -27,7 +27,8 @@ import views.tags.ViewTest
 class DestinationCountriesViewSpec extends ViewSpec {
 
   private val form: Form[DestinationCountries] = DestinationCountries.form()
-  private def createView(form: Form[DestinationCountries] = form): Html = destination_countries(appConfig, form)(fakeRequest, messages, countries)
+  private def createView(form: Form[DestinationCountries] = form): Html =
+    destination_countries(appConfig, form)(fakeRequest, messages, countries)
 
   private val prefix = s"${basePrefix}destinationCountries."
 
@@ -76,7 +77,9 @@ class DestinationCountriesViewSpec extends ViewSpec {
 
       val view = createView()
 
-      getElementByCss(view, "#countryOfDestination-outer>label").text() must be(messages(countryOfDestination.withPrefix))
+      getElementByCss(view, "#countryOfDestination-outer>label").text() must be(
+        messages(countryOfDestination.withPrefix)
+      )
       getElementById(view, countryOfDestination.key).attr("value") must be("")
     }
 
@@ -99,7 +102,8 @@ class DestinationCountriesViewSpec extends ViewSpec {
 
     "display error when dispatch country is empty" in {
 
-      val view = createView(DestinationCountries.form().withError(countryOfDispatch.key, messages(countryOfDispatch.withEmpty)))
+      val view =
+        createView(DestinationCountries.form().withError(countryOfDispatch.key, messages(countryOfDispatch.withEmpty)))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatch.withEmpty), countryOfDispatch.asLink)
@@ -109,7 +113,8 @@ class DestinationCountriesViewSpec extends ViewSpec {
 
     "display error when dispatch country is incorrect" in {
 
-      val view = createView(DestinationCountries.form().withError(countryOfDispatch.key, messages(countryOfDispatch.withError)))
+      val view =
+        createView(DestinationCountries.form().withError(countryOfDispatch.key, messages(countryOfDispatch.withError)))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatch.withError), countryOfDispatch.asLink)
@@ -119,7 +124,9 @@ class DestinationCountriesViewSpec extends ViewSpec {
 
     "display error when destination country is incorrect" in {
 
-      val view = createView(DestinationCountries.form().withError(countryOfDestination.key, messages(countryOfDestination.withError)))
+      val view = createView(
+        DestinationCountries.form().withError(countryOfDestination.key, messages(countryOfDestination.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDestination.withError), countryOfDestination.asLink)
@@ -129,7 +136,8 @@ class DestinationCountriesViewSpec extends ViewSpec {
 
     "display errors when both countries are incorrect" in {
 
-      val form = DestinationCountries.form()
+      val form = DestinationCountries
+        .form()
         .withError(countryOfDispatch.key, messages(countryOfDispatch.withError))
         .withError(countryOfDestination.key, messages(countryOfDestination.withError))
       val view = createView(form)
@@ -147,7 +155,8 @@ class DestinationCountriesViewSpec extends ViewSpec {
 
     "display errors when dispatch country is empty and destination is incorrect" in {
 
-      val form = DestinationCountries.form()
+      val form = DestinationCountries
+        .form()
         .withError(countryOfDispatch.key, messages(countryOfDispatch.withEmpty))
         .withError(countryOfDestination.key, messages(countryOfDestination.withError))
       val view = createView(form)
@@ -168,7 +177,7 @@ class DestinationCountriesViewSpec extends ViewSpec {
 
     "display both countries in inputs" in {
 
-      val view = createView(DestinationCountries.form().fill(DestinationCountries( "Ukraine", Some("Poland"))))
+      val view = createView(DestinationCountries.form().fill(DestinationCountries("Ukraine", Some("Poland"))))
 
       getElementById(view, countryOfDispatch.key).attr("value") must be("Ukraine")
       getElementById(view, countryOfDestination.key).attr("value") must be("Poland")

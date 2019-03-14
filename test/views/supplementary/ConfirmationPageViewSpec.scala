@@ -35,7 +35,7 @@ class ConfirmationPageViewSpec extends ViewSpec {
   private val explanationLink = Item(prefix + "explanation.", "linkText")
   private val submitAnother = Item(prefix, "submitAnotherDeclaration")
 
-  private def createView() :Html = confirmation_page(appConfig)(fakeRequest, flash, messages)
+  private def createView(): Html = confirmation_page(appConfig)(fakeRequest, flash, messages)
 
   "Confirmation Page View" should {
 
@@ -76,7 +76,9 @@ class ConfirmationPageViewSpec extends ViewSpec {
       val view = createView()
 
       getElementByCss(view, "article>h1").text() must be(messages(whatHappensNext.withPrefix))
-      getElementByCss(view, "article>p:nth-child(4)").text() must be(messages(explanation.withPrefix) + " " + messages(explanationLink.withPrefix))
+      getElementByCss(view, "article>p:nth-child(4)").text() must be(
+        messages(explanation.withPrefix) + " " + messages(explanationLink.withPrefix)
+      )
     }
 
     "display an \"Check your notification status in the dashboard\" empty link without conversationId" in {

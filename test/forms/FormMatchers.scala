@@ -16,13 +16,11 @@
 
 package forms
 
-
 import base.CustomExportsBaseSpec
 import org.scalatest.matchers.{MatchResult, Matcher}
 import play.api.data.{Form, FormError}
 
-
-trait FormMatchers extends CustomExportsBaseSpec{
+trait FormMatchers extends CustomExportsBaseSpec {
 
   class ErrorHasMessage(right: String) extends Matcher[Option[FormError]] {
 

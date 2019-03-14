@@ -37,7 +37,7 @@ class DeclarationTypeViewSpec extends ViewSpec {
   private val simplified = Item(prefix + "inputText.", "simplified")
   private val standard = Item(prefix + "inputText.", "standard")
   private val errorMessageEmpty = Item(prefix + "inputText.", "error.empty")
-  private val errorMessageIncorrect = Item(prefix + "inputText.", "error.incorrectValue")
+  private val errorMessageIncorrect = Item(prefix + "inputText.", "error.incorrect")
 
   private def createView(form: Form[AdditionalDeclarationType] = form): Html =
     declaration_type(appConfig, form)(fakeRequest, messages)

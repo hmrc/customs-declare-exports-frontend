@@ -33,7 +33,7 @@ object DispatchLocation {
   val formMapping: Mapping[DispatchLocation] = Forms.single(
     "dispatchLocation" -> optional(
       text(maxLength = 2)
-        .verifying("supplementary.dispatchLocation.inputText.error.incorrectValue", isContainedIn(allowedValues))
+        .verifying("supplementary.dispatchLocation.inputText.error.incorrect", isContainedIn(allowedValues))
     ).verifying("supplementary.dispatchLocation.inputText.error.empty", _.isDefined)
       .transform[DispatchLocation](
         value => DispatchLocation(value.getOrElse("")),

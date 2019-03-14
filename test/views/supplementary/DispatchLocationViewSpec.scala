@@ -36,7 +36,7 @@ class DispatchLocationViewSpec extends ViewSpec {
   private val outsideEu = Item(prefix + "inputText.", "outsideEU")
   private val specialFiscalTerritory = Item(prefix + "inputText.", "specialFiscalTerritory")
   private val errorMessageEmpty = Item(prefix + "inputText.", "error.empty")
-  private val errorMessageIncorrect = Item(prefix + "inputText.", "error.incorrectValue")
+  private val errorMessageIncorrect = Item(prefix + "inputText.", "error.incorrect")
 
   private def createView(form: Form[DispatchLocation] = form): Html =
     dispatch_location(appConfig, form)(fakeRequest, messages)

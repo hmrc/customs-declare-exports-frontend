@@ -473,7 +473,8 @@ object SupplementaryDeclarationDataSpec {
         totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
         transactionType = Some(correctTransactionType),
         goodsItemNumber = Some(correctGoodsItemNumber),
-        itemType = Some(correctItemType))
+        itemType = Some(correctItemType)
+      )
     ),
     previousDocuments = Some(correctPreviousDocument),
     additionalInformationData = Some(correctAdditionalInformation),

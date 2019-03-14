@@ -82,11 +82,17 @@ object TransportInformation {
   val mapping = Forms.mapping(
     "inlandModeOfTransportCode" -> optional(
       text()
-        .verifying("supplementary.transportInfo.inlandTransportMode.error.incorrect", isContainedIn(allowedModeOfTransportCodes))
+        .verifying(
+          "supplementary.transportInfo.inlandTransportMode.error.incorrect",
+          isContainedIn(allowedModeOfTransportCodes)
+        )
     ),
     "borderModeOfTransportCode" -> optional(
       text()
-        .verifying("supplementary.transportInfo.borderTransportMode.error.incorrect", isEmpty or isContainedIn(allowedModeOfTransportCodes))
+        .verifying(
+          "supplementary.transportInfo.borderTransportMode.error.incorrect",
+          isEmpty or isContainedIn(allowedModeOfTransportCodes)
+        )
     ).verifying("supplementary.transportInfo.borderTransportMode.error.empty", _.isDefined)
       .transform[String](
         optValue => optValue.getOrElse(""),
@@ -126,7 +132,10 @@ object TransportInformation {
     ),
     "meansOfTransportCrossingTheBorderNationality" -> optional(
       text()
-        .verifying("supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect", isContainedIn(allCountries.map(_.countryName)))
+        .verifying(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect",
+          isContainedIn(allCountries.map(_.countryName))
+        )
     ),
     "container" -> boolean,
     "containerId" -> mandatoryIfTrue(
