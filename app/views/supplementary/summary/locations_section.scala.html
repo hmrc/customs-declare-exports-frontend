@@ -26,7 +26,7 @@
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.destinationCountry"),
-        value = locations.flatMap(_.destinationCountries).flatMap(_.countryOfDestination)
+        value = locations.flatMap(_.destinationCountries).map(_.countryOfDestination)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
@@ -39,7 +39,7 @@
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.locationCode"),
-        value = locations.flatMap(_.goodsLocation).flatMap(_.identificationOfLocation)
+        value = locations.flatMap(_.goodsLocation).map(_.identificationOfLocation)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.additionalQualifier"),

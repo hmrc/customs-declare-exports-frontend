@@ -20,6 +20,7 @@ import base.CustomExportsBaseSpec
 import forms.supplementary.GoodsLocation
 import forms.supplementary.GoodsLocationSpec._
 import org.scalatest.BeforeAndAfter
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
 class LocationControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
@@ -91,6 +92,19 @@ class LocationControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       withCaching[GoodsLocation](None)
 
       val result = route(app, postRequest(uri, emptyGoodsLocationJSON)).get
+      val stringResult = contentAsString(result)
+
+      status(result) must be(BAD_REQUEST)
+      stringResult must include(messages("supplementary.goodsLocation.identificationOfLocation.empty"))
+    }
+
+    "validate form - correct value for mandatory field" in {
+      authorizedUser()
+      withCaching[GoodsLocation](None)
+
+      val correctGoodsLocation: JsValue =
+        JsObject(Map("identificationOfLocation" -> JsString("abc")))
+      val result = route(app, postRequest(uri, correctGoodsLocation)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

@@ -22,7 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.Countries.allCountries
 
-case class DestinationCountries(countryOfDispatch: String, countryOfDestination: Option[String])
+case class DestinationCountries(countryOfDispatch: String, countryOfDestination:String)
     extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
@@ -49,12 +49,12 @@ object DestinationCountries {
         "supplementary.destinationCountries.countryOfDispatch.error",
         input => input.isEmpty || allCountries.exists(country => country.countryName == input)
       ),
-    "countryOfDestination" -> optional(
-      text().verifying(
+    "countryOfDestination" -> text()
+      .verifying("supplementary.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
+      .verifying(
         "supplementary.destinationCountries.countryOfDestination.error",
         input => input.isEmpty || allCountries.exists(country => country.countryName == input)
       )
-    )
   )(DestinationCountries.apply)(DestinationCountries.unapply)
 
   def form(): Form[DestinationCountries] = Form(mapping)

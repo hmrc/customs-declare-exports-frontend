@@ -30,11 +30,11 @@
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.amountInvoiced"),
-        value = items.flatMap(_.totalNumberOfItems).flatMap(_.totalAmountInvoiced)
+        value = items.flatMap(_.totalNumberOfItems).map(_.totalAmountInvoiced)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.exchangeRate"),
-        value = items.flatMap(_.totalNumberOfItems).flatMap(_.exchangeRate)
+        value = items.flatMap(_.totalNumberOfItems).map(_.exchangeRate)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.numberOfPackages"),

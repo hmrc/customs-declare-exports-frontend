@@ -26,8 +26,8 @@ class TotalNumberOfItemsSpec extends WordSpec with MustMatchers {
       val totalNumberOfItems = correctTotalNumberOfItemsDecimalValues
       val expectedMetadataProperties: Map[String, String] = Map(
         "declaration.goodsItemQuantity" -> totalNumberOfItems.itemsQuantity,
-        "declaration.invoiceAmount" -> totalNumberOfItems.totalAmountInvoiced.get,
-        "declaration.currencyExchanges[0].rateNumeric" -> totalNumberOfItems.exchangeRate.get,
+        "declaration.invoiceAmount" -> totalNumberOfItems.totalAmountInvoiced,
+        "declaration.currencyExchanges[0].rateNumeric" -> totalNumberOfItems.exchangeRate,
         "declaration.totalPackageQuantity" -> totalNumberOfItems.totalPackage
       )
 
@@ -40,18 +40,18 @@ class TotalNumberOfItemsSpec extends WordSpec with MustMatchers {
 object TotalNumberOfItemsSpec {
   val correctTotalNumberOfItemsDecimalValues = TotalNumberOfItems(
     itemsQuantity = "123",
-    totalAmountInvoiced = Some("12312312312312.12"),
-    exchangeRate = Some("1212121.12345"),
+    totalAmountInvoiced = "12312312312312.12",
+    exchangeRate = "1212121.12345",
     totalPackage = "123"
   )
   val correctTotalNumberOfItemsIntegerValues = TotalNumberOfItems(
     itemsQuantity = "123",
-    totalAmountInvoiced = Some("12312312312312"),
-    exchangeRate = Some("123123123123"),
+    totalAmountInvoiced = "12312312312312",
+    exchangeRate = "123123123123",
     totalPackage = "123"
   )
   val emptyTotalNumberOfItems =
-    TotalNumberOfItems(itemsQuantity = "", totalAmountInvoiced = None, exchangeRate = None, totalPackage = "")
+    TotalNumberOfItems(itemsQuantity = "", totalAmountInvoiced = "", exchangeRate = "", totalPackage = "")
 
   val correctTotalNumberOfItemsDecimalValuesJSON: JsValue = JsObject(
     Map(

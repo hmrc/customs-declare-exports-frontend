@@ -100,4 +100,6 @@ object FieldValidator {
   val containsDuplicates: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size != input.size
 
   val areAllElementsUnique: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size == input.size
+
+  val ofPattern: String => String => Boolean = (pattern: String) => (input: String) => input.matches(pattern)
 }
