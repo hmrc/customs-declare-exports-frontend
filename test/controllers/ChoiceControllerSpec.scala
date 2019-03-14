@@ -32,13 +32,12 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   before {
     authorizedUser()
+    withCaching[Choice](None, Choice.choiceId)
   }
 
   "Choice Controller on display" should {
 
     "display \"Save and continue\" button on page" in {
-      withCaching[Choice](None, Choice.choiceId)
-
       val result = route(app, getRequest(choiceUri)).get
       val resultAsString = contentAsString(result)
 
@@ -47,8 +46,6 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
     }
 
     "display \"Back\" button that links to \"Make an export declaration\" page" in {
-      withCaching[Choice](None, Choice.choiceId)
-
       val result = route(app, getRequest(choiceUri)).get
 
       contentAsString(result) must include(messages("site.back"))
@@ -56,16 +53,12 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
     }
 
     "return http code 200 with success" in {
-      withCaching[Choice](None, Choice.choiceId)
-
       val result = route(app, getRequest(choiceUri)).get
 
       status(result) must be(OK)
     }
 
     "display radio button to choose simplified declaration or standard declaration or arrival or departure" in {
-      withCaching[Choice](None, Choice.choiceId)
-
       val result = route(app, getRequest(choiceUri)).get
       val stringResult = contentAsString(result)
 
@@ -75,6 +68,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       stringResult must include(messages("declaration.choice.CAN"))
       stringResult must include(messages("movement.choice.EAL"))
       stringResult must include(messages("movement.choice.EDL"))
+      stringResult must include(messages("declaration.choice.SUB"))
     }
   }
 
@@ -83,8 +77,6 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
     "display the choice page with error" when {
 
       "no value provided for choice" in {
-        withCaching[Choice](None, Choice.choiceId)
-
         val emptyForm = JsObject(Map("" -> JsString("")))
         val result = route(app, postRequest(choiceUri, emptyForm)).get
 
@@ -92,8 +84,6 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       }
 
       "wrong value provided for choice" in {
-        withCaching[Choice](None, Choice.choiceId)
-
         val wrongForm = JsObject(Map("choice" -> JsString("movement")))
         val result = route(app, postRequest(choiceUri, wrongForm)).get
 
@@ -113,8 +103,6 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
     }
 
     "redirect to dispatch location page when simplified declaration chosen" in {
-      withCaching[Choice](None, choiceId)
-
       val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.SupplementaryDec)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
@@ -126,8 +114,6 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
     }
 
     "redirect to choice page when standard declaration chosen" in {
-      withCaching[Choice](None, choiceId)
-
       val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.StandardDec)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
@@ -137,8 +123,6 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
     }
 
     "redirect to ducr for arrival page when arrival chosen" in {
-      withCaching[Choice](None, choiceId)
-
       val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.Arrival)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
@@ -148,8 +132,6 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
     }
 
     "redirect to ducr for departure page when departure chosen" in {
-      withCaching[Choice](None, choiceId)
-
       val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.Departure)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
@@ -157,5 +139,14 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/movement/ducr"))
     }
+  }
+
+  "redirect to submissions page when View recent declarations chosen" in {
+    val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.Submissions)))
+    val result = route(app, postRequest(choiceUri, correctForm)).get
+    val header = result.futureValue.header
+
+    status(result) must be(SEE_OTHER)
+    header.headers.get("Location") must be(Some("/customs-declare-exports/submissions"))
   }
 }

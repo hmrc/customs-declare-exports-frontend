@@ -141,6 +141,7 @@ movement.choice.EDL = Departure
 declaration.choice.SMP = Supplementary declaration
 declaration.choice.STD = Standard declaration
 declaration.choice.CAN = Cancel declaration
+declaration.choice.SUB = View recent declarations
 movement.choice.EDL.heading = Depart
 movement.role.dec = I am declaring for the company I work for or own
 movement.EAL = Arrive goods
@@ -474,7 +475,6 @@ supplementary.itemType.statisticalValue.error.empty = The statistical value cann
 supplementary.itemType.statisticalValue.error.length = Entered statistical value is too long
 supplementary.itemType.statisticalValue.error.wrongFormat = Format of this value is incorrect
 
-
 supplementary.previousDocuments = Previous documents
 supplementary.previousDocuments.title = 2/1 Enter previous DUCR or MUCR references linked to these goods
 supplementary.previousDocuments.hint = For example, 8GB-123456789101-SHIP1
@@ -640,3 +640,5 @@ supplementary.limit = You cannot add more items
 supplementary.duplication = You cannot add duplicated value
 supplementary.continue.error = Use Add button before continue to next page
 supplementary.continue.mandatory = You must add at least one item
+
+supplementary.startNewDec = Start a new declaration
