@@ -169,11 +169,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       "display content for Documents module" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
-        resultAsString must include(messages("supplementary.summary.previousDocuments.header"))
-        resultAsString must include(messages("supplementary.summary.previousDocuments.documentCategory"))
-        resultAsString must include(messages("supplementary.summary.previousDocuments.documentType"))
-        resultAsString must include(messages("supplementary.summary.previousDocuments.documentReference"))
-        resultAsString must include(messages("supplementary.summary.previousDocuments.goodsItemIdentifier"))
         resultAsString must include(messages("supplementary.summary.additionalInformation.header"))
         resultAsString must include(messages("supplementary.summary.additionalDocumentation.header"))
         resultAsString must not include messages("supplementary.summary.additionalDocumentation.documentTypeCode")
@@ -189,11 +184,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
-        resultAsString must include(messages("supplementary.summary.previousDocuments.header"))
-        resultAsString must include(messages("supplementary.summary.previousDocuments.documentCategory"))
-        resultAsString must include(messages("supplementary.summary.previousDocuments.documentType"))
-        resultAsString must include(messages("supplementary.summary.previousDocuments.documentReference"))
-        resultAsString must include(messages("supplementary.summary.previousDocuments.goodsItemIdentifier"))
         resultAsString must include(messages("supplementary.summary.additionalInformation.header"))
         resultAsString must include(messages("supplementary.summary.additionalDocumentation.header"))
         resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentTypeCode"))

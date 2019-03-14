@@ -15,6 +15,7 @@
  */
 
 package controllers.supplementary
+
 import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.supplementaryCacheId
@@ -42,7 +43,7 @@ class CommodityMeasureController @Inject()(
     cacheService
       .fetchAndGetEntry[Seq[PackageInformation]](supplementaryCacheId, formId)
       .flatMap {
-        case Some(packages) =>
+        case Some(_) =>
           cacheService.fetchAndGetEntry[CommodityMeasure](supplementaryCacheId, commodityFormId).map {
             case Some(data) => Ok(goods_measure(form.fill(data)))
             case _          => Ok(goods_measure(form))

@@ -22,11 +22,11 @@
 @(form: Form[_], packages: Seq[PackageInformation])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @tableHeader = @{
-if(packages.size == 1) {
-messages("supplementary.packageInformation.table.heading")
-} else {
-messages("supplementary.packageInformation.table.multiple.heading", packages.size)
-}
+    if(packages.size == 1) {
+        messages("supplementary.packageInformation.table.heading")
+    } else {
+        messages("supplementary.packageInformation.table.multiple.heading", packages.size)
+    }
 }
 
 @main_template(
@@ -44,12 +44,12 @@ messages("supplementary.packageInformation.table.multiple.heading", packages.siz
             <table class="form-group">
                 <caption>@tableHeader</caption>
                 <thead>
-                <tr>
-                    <th scope="col">@messages("supplementary.packageInformation.typesOfPackages")</th>
-                    <th scope="col">@messages("supplementary.packageInformation.numberOfPackages")</th>
-                    <th scope="col">@messages("supplementary.packageInformation.shippingMarks")</th>
-                    <th scope="col">@messages("supplementary.packageInformation.remove")</th>
-                </tr>
+                    <tr>
+                        <th scope="col">@messages("supplementary.packageInformation.typesOfPackages")</th>
+                        <th scope="col">@messages("supplementary.packageInformation.numberOfPackages")</th>
+                        <th scope="col">@messages("supplementary.packageInformation.shippingMarks")</th>
+                        <th scope="col">@messages("supplementary.packageInformation.remove")</th>
+                    </tr>
                 </thead>
                 <tbody>
                 @packages.zipWithIndex.map { case (item, index) =>
@@ -57,12 +57,14 @@ messages("supplementary.packageInformation.table.multiple.heading", packages.siz
                     <td scope="row">@item.typesOfPackages.getOrElse("")</td>
                     <td>@item.numberOfPackages</td>
                     <td>@item.shippingMarks</td>
-                    <td><button class="button" name=@messages("site.remove") value="@index">@messages("site.remove")</button></td>
+                    <td>
+                        <button class="button" name=@messages("site.remove") value="@index">@messages("site.remove")</button>
+                    </td>
                 </tr>
                 }
                 </tbody>
             </table>
-            }
+        }
 
         @components.input_text(
             field = form("typesOfPackages"),

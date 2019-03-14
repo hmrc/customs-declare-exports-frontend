@@ -21,7 +21,12 @@ import java.util.UUID
 import akka.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
-import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
+import connectors.{
+  CustomsDeclarationsConnector,
+  CustomsDeclareExportsConnector,
+  CustomsInventoryLinkingExportsConnector,
+  NrsConnector
+}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
