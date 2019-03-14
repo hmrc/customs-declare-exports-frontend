@@ -17,6 +17,7 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
+import forms.supplementary.ConsignmentReferencesSpec.correctConsignmentReferencesJSON
 import forms.supplementary.{ConsignmentReferences, ConsignmentReferencesSpec}
 import models.declaration.supplementary.SupplementaryDeclarationDataSpec
 import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse}
@@ -34,12 +35,12 @@ import scala.concurrent.Future
 class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
   private trait Test {
-
     implicit val headerCarrierMock = mock[HeaderCarrier]
     val summaryPageUri = uriWithContextPath("/declaration/supplementary/summary")
     val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
     val emptyMetadata: MetaData = MetaData(response = Seq.empty)
     val onlyOnce: VerificationMode = times(1)
+    val minimumValidCacheData = CacheMap(eoriForCache, Map(ConsignmentReferences.id -> correctConsignmentReferencesJSON))
 
     reset(mockCustomsCacheService)
     reset(mockNrsService)
@@ -50,7 +51,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     authorizedUser()
     withCaching(None, eoriForCache)
     when(mockCustomsCacheService.fetch(anyString())(any(), any()))
-      .thenReturn(Future.successful(Some(CacheMap(eoriForCache, Map.empty))))
+      .thenReturn(Future.successful(Some(minimumValidCacheData)))
     when(mockCustomsCacheService.remove(anyString())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK)))
     successfulCustomsDeclarationResponse()
@@ -59,7 +60,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
   "Summary Page Controller on display" when {
 
     "there is data in cache for supplementary declaration" should {
-
       "return 200 code" in new Test {
         val result = route(app, getRequest(summaryPageUri)).get
         status(result) must be(OK)
@@ -75,8 +75,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       "display \"Accept and submit declaration\" button" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
-        // TODO: no message for that
-        resultAsString must include("Accept and submit declaration")
+        resultAsString must include(messages("site.acceptAndSubmitDeclaration"))
         resultAsString must include("button id=\"submit\" class=\"button\"")
       }
 
@@ -200,7 +199,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     }
 
     "there is no data in cache for supplementary declaration" should {
-
       "display error page" in new Test {
         when(mockCustomsCacheService.fetch(anyString())(any(), any()))
           .thenReturn(Future.successful(None))
@@ -211,12 +209,28 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.noData.header.secondary"))
       }
     }
+
+    "there is data in cache, but without LRN" should {
+      "display error page" in new Test {
+        val cachedData = CacheMap(
+          id = eoriForCache,
+          data = SupplementaryDeclarationDataSpec.cacheMapAllRecords.data - ConsignmentReferences.id
+        )
+        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
+          .thenReturn(Future.successful(Some(cachedData)))
+
+        val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
+
+        resultAsString must include(messages("supplementary.summary.noData.header"))
+        resultAsString must include(messages("supplementary.summary.noData.header.secondary"))
+      }
+    }
+
   }
 
   "Summary Page Controller on submit" when {
 
     "everything is correct" should {
-
       "get the whole supplementary declaration data from cache" in new Test {
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         verify(mockCustomsCacheService, onlyOnce).fetch(any())(any(), any())
@@ -263,7 +277,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     }
 
     "got error from Customs Declarations" should {
-
       "display error page" in new Test {
         when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
           .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
