@@ -39,7 +39,7 @@ trait ViewSpec extends PlaySpec with OneAppPerSuite with ViewValidator {
   implicit lazy val flash: Flash = new Flash()
   implicit lazy val countries: List[Country] = Countries.allCountries
 
-  def assertMessage(key: String, expected :String): Unit = messages(key) must be(expected)
+  def assertMessage(key: String, expected: String): Unit = messages(key) must be(expected)
 
   SharedMetricRegistries.clear()
 }

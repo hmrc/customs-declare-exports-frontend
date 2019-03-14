@@ -55,7 +55,7 @@ object Metadata {
   implicit val format: OFormat[Metadata] = Json.format[Metadata]
 }
 
-case class  IdentityData(
+case class IdentityData(
   internalId: Option[String] = None,
   externalId: Option[String] = None,
   agentCode: Option[String] = None,

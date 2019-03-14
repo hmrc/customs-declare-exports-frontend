@@ -35,10 +35,8 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
       }
 
       "provided with unknown value for party type" in {
-        val declarationAdditionalActorsInputData = JsObject(Map(
-          "eori" -> JsString("eori1"),
-          "partyType" -> JsString("Incorrect")
-        ))
+        val declarationAdditionalActorsInputData =
+          JsObject(Map("eori" -> JsString("eori1"), "partyType" -> JsString("Incorrect")))
         val form = DeclarationAdditionalActors.form().bind(declarationAdditionalActorsInputData)
 
         form.hasErrors must be(true)

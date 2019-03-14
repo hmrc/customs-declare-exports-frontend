@@ -37,7 +37,8 @@ class DeclarationHolderViewSpec extends ViewSpec {
   private val duplicated = Item(prefixWithS, "duplicated")
   private val eori = Item(basePrefix, "eori")
 
-  private def createView(form: Form[DeclarationHolder] = form): Html = declaration_holder(appConfig, form, Seq())(fakeRequest, messages)
+  private def createView(form: Form[DeclarationHolder] = form): Html =
+    declaration_holder(appConfig, form, Seq())(fakeRequest, messages)
 
   "Declaration Holder View" should {
 
@@ -77,8 +78,12 @@ class DeclarationHolderViewSpec extends ViewSpec {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(messages(authorisationCode.withPrefix))
-      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(authorisationCode.withHint))
+      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(
+        messages(authorisationCode.withPrefix)
+      )
+      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(
+        messages(authorisationCode.withHint)
+      )
       getElementById(view, "authorisationTypeCode").attr("value") must be("")
     }
 
@@ -115,12 +120,15 @@ class DeclarationHolderViewSpec extends ViewSpec {
 
     "display error for empty Authorisation code" in {
 
-      val view = createView(DeclarationHolder.form().withError("authorisationTypeCode", messages(authorisationCode.withEmpty)))
+      val view =
+        createView(DeclarationHolder.form().withError("authorisationTypeCode", messages(authorisationCode.withEmpty)))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, authorisationCode.withEmpty, "#authorisationTypeCode")
 
-      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCode.withEmpty))
+      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(
+        messages(authorisationCode.withEmpty)
+      )
     }
 
     "display error for empty EORI" in {
@@ -135,28 +143,38 @@ class DeclarationHolderViewSpec extends ViewSpec {
 
     "display error for both empty fields" in {
 
-      val view = createView(DeclarationHolder.form()
-        .withError("authorisationTypeCode", messages(authorisationCode.withEmpty))
-        .withError(eori.key, messages(eori.withEmpty)))
+      val view = createView(
+        DeclarationHolder
+          .form()
+          .withError("authorisationTypeCode", messages(authorisationCode.withEmpty))
+          .withError(eori.key, messages(eori.withEmpty))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, authorisationCode.withEmpty, "#authorisationTypeCode")
       checkErrorLink(view, 2, eori.withEmpty, eori.asLink)
 
-      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCode.withEmpty))
+      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(
+        messages(authorisationCode.withEmpty)
+      )
       getElementByCss(view, "#error-message-eori-input").text() must be(messages(eori.withEmpty))
     }
 
     "display error for incorrect Authorisation code" in {
 
-      val view = createView(DeclarationHolder.form()
-        .withError("authorisationTypeCode", messages(authorisationCode.withError))
-        .withError(eori.key, messages(eori.withError)))
+      val view = createView(
+        DeclarationHolder
+          .form()
+          .withError("authorisationTypeCode", messages(authorisationCode.withError))
+          .withError(eori.key, messages(eori.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, authorisationCode.withError, "#authorisationTypeCode")
 
-      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCode.withError))
+      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(
+        messages(authorisationCode.withError)
+      )
     }
 
     "display error for incorrect EORI" in {
@@ -171,15 +189,20 @@ class DeclarationHolderViewSpec extends ViewSpec {
 
     "display error for both incorrect fields" in {
 
-      val view = createView(DeclarationHolder.form()
-        .withError("authorisationTypeCode", messages(authorisationCode.withError))
-        .withError(eori.key, messages(eori.withError)))
+      val view = createView(
+        DeclarationHolder
+          .form()
+          .withError("authorisationTypeCode", messages(authorisationCode.withError))
+          .withError(eori.key, messages(eori.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, authorisationCode.withError, "#authorisationTypeCode")
       checkErrorLink(view, 2, eori.withError, eori.asLink)
 
-      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCode.withError))
+      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(
+        messages(authorisationCode.withError)
+      )
       getElementByCss(view, "#error-message-eori-input").text() must be(messages(eori.withError))
     }
 
@@ -216,7 +239,8 @@ class DeclarationHolderViewSpec extends ViewSpec {
 
     "display one item in table" in {
 
-      val view = declaration_holder(appConfig, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(fakeRequest, messages)
+      val view =
+        declaration_holder(appConfig, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(fakeRequest, messages)
 
       getElementByCss(view, "tbody>tr>th:nth-child(1)").text() must be("1234-1234")
 

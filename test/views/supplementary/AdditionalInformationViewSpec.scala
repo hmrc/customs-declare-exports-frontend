@@ -26,7 +26,7 @@ import views.tags.ViewTest
 @ViewTest
 class AdditionalInformationViewSpec extends ViewSpec {
 
-  private val form :Form[AdditionalInformation] = AdditionalInformation.form()
+  private val form: Form[AdditionalInformation] = AdditionalInformation.form()
 
   private val prefix = s"${basePrefix}additionalInformation."
 
@@ -38,7 +38,8 @@ class AdditionalInformationViewSpec extends ViewSpec {
   private val duplication = Item(basePrefix, "duplication")
   private val oneItem = Item(basePrefix + "continue.", "mandatory")
 
-  private def createView(form :Form[AdditionalInformation] = form) :Html = additional_information(appConfig, form, Seq())(fakeRequest, messages)
+  private def createView(form: Form[AdditionalInformation] = form): Html =
+    additional_information(appConfig, form, Seq())(fakeRequest, messages)
 
   "Additional Information View" should {
 
@@ -76,7 +77,7 @@ class AdditionalInformationViewSpec extends ViewSpec {
 
     "display empty input with label for Union code" in {
 
-      val view  = createView()
+      val view = createView()
 
       getElementByCss(view, "form>div:nth-child(3)>label>span").text() must be(messages(code.withPrefix))
       getElementById(view, code.key).attr("value") must be("")
@@ -84,7 +85,7 @@ class AdditionalInformationViewSpec extends ViewSpec {
 
     "display empty input with label for Description" in {
 
-      val view  = createView()
+      val view = createView()
 
       getElementByCss(view, "form>div:nth-child(4)>label>span").text() must be(messages(description.withPrefix))
       getElementById(view, description.key).attr("value") must be("")
@@ -136,9 +137,11 @@ class AdditionalInformationViewSpec extends ViewSpec {
 
       "display error for both inputs empty" in {
 
-        val view = createView(AdditionalInformation.form()
-          .withError(code.key, messages(code.withEmpty))
-          .withError(description.key, messages(description.withEmpty))
+        val view = createView(
+          AdditionalInformation
+            .form()
+            .withError(code.key, messages(code.withEmpty))
+            .withError(description.key, messages(description.withEmpty))
         )
 
         checkErrorsSummary(view)
@@ -171,9 +174,11 @@ class AdditionalInformationViewSpec extends ViewSpec {
 
       "display error for both inputs incorrect" in {
 
-        val view = createView(AdditionalInformation.form()
-          .withError(code.key, messages(code.withError))
-          .withError(description.key, messages(description.withError))
+        val view = createView(
+          AdditionalInformation
+            .form()
+            .withError(code.key, messages(code.withError))
+            .withError(description.key, messages(description.withError))
         )
 
         checkErrorsSummary(view)

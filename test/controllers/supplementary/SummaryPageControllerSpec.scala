@@ -72,7 +72,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include("/declaration/supplementary/add-document")
       }
 
-      "display \"Accept and submit declaration\" button" in new Test{
+      "display \"Accept and submit declaration\" button" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         // TODO: no message for that

@@ -34,7 +34,7 @@ object AdditionalDeclarationType {
   val formMapping: Mapping[AdditionalDeclarationType] = Forms.single(
     "additionalDeclarationType" -> optional(
       text(maxLength = 1)
-        .verifying("supplementary.declarationType.inputText.error.incorrectValue", isContainedIn(allowedValues))
+        .verifying("supplementary.declarationType.inputText.error.incorrect", isContainedIn(allowedValues))
     ).verifying("supplementary.declarationType.inputText.error.empty", _.isDefined)
       .transform[AdditionalDeclarationType](
         value => AdditionalDeclarationType(value.getOrElse("")),

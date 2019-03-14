@@ -29,12 +29,12 @@ object Choice {
   val choiceId = "Choice"
 
   import AllowedChoiceValues._
-  private val correctChoice = Set(SupplementaryDec, StandardDec, Arrival, Departure, CancelDec)
+  private val correctChoices = Set(SupplementaryDec, StandardDec, Arrival, Departure, CancelDec)
 
   val choiceMapping: Mapping[Choice] = Forms.single(
     "choice" -> optional(
       text()
-        .verifying("choicePage.input.error.incorrectValue", isContainedIn(correctChoice))
+        .verifying("choicePage.input.error.incorrectValue", isContainedIn(correctChoices))
     ).verifying("choicePage.input.error.empty", _.isDefined)
       .transform[Choice](value => Choice(value.getOrElse("")), choice => Some(choice.choice))
   )

@@ -65,22 +65,22 @@ object Status {
 
   def retrieveFromResponse(response: Response): Status =
     response.functionCode match {
-      case "Pending"                                                            => Pending
-      case "01"                                                                 => Accepted
-      case "02"                                                                 => Received
-      case "03"                                                                 => Rejected
-      case "05"                                                                 => UndergoingPhysicalCheck
-      case "06"                                                                 => AdditionalDocumentsRequired
-      case "07"                                                                 => Amended
-      case "08"                                                                 => Released
-      case "09"                                                                 => Cleared
-      case "10"                                                                 => Cancelled
+      case "Pending"                                                             => Pending
+      case "01"                                                                  => Accepted
+      case "02"                                                                  => Received
+      case "03"                                                                  => Rejected
+      case "05"                                                                  => UndergoingPhysicalCheck
+      case "06"                                                                  => AdditionalDocumentsRequired
+      case "07"                                                                  => Amended
+      case "08"                                                                  => Released
+      case "09"                                                                  => Cleared
+      case "10"                                                                  => Cancelled
       case "11" if response.status.headOption.flatMap(_.nameCode).contains("39") => CustomsPositionGranted
       case "11" if response.status.headOption.flatMap(_.nameCode).contains("41") => CustomsPositionDenied
-      case "16"                                                                 => GoodsHaveExitedTheCommunity
-      case "17"                                                                 => DeclarationHandledExternally
-      case "18"                                                                 => AwaitingExitResults
-      case _                                                                    => UnknownStatus
+      case "16"                                                                  => GoodsHaveExitedTheCommunity
+      case "17"                                                                  => DeclarationHandledExternally
+      case "18"                                                                  => AwaitingExitResults
+      case _                                                                     => UnknownStatus
     }
 }
 

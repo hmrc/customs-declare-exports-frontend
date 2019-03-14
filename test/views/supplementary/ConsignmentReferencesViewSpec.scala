@@ -27,7 +27,7 @@ import views.tags.ViewTest
 @ViewTest
 class ConsignmentReferencesViewSpec extends ViewSpec {
 
-  private val form :Form[ConsignmentReferences] = ConsignmentReferences.form()
+  private val form: Form[ConsignmentReferences] = ConsignmentReferences.form()
 
   private val prefix = s"${basePrefix}consignmentReferences."
 
@@ -40,7 +40,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec {
   private val lrnLength = Item(prefix + "lrn.error.", "length")
   private val lrnSpecialCharacter = Item(prefix + "lrn.error.", "specialCharacter")
 
-  private def createView(form: Form[ConsignmentReferences] = form): Html = consignment_references(appConfig, form)(fakeRequest, messages)
+  private def createView(form: Form[ConsignmentReferences] = form): Html =
+    consignment_references(appConfig, form)(fakeRequest, messages)
 
   "Consignment References View" should {
 
@@ -146,9 +147,12 @@ class ConsignmentReferencesViewSpec extends ViewSpec {
 
     "display error when UCR is incorrect and LRN empty" in {
 
-      val view = createView(ConsignmentReferences.form()
-        .withError("ducr.ducr", messages(ucrError.withPrefix))
-        .withError(lrn.key, messages(lrnEmpty.withPrefix)))
+      val view = createView(
+        ConsignmentReferences
+          .form()
+          .withError("ducr.ducr", messages(ucrError.withPrefix))
+          .withError(lrn.key, messages(lrnEmpty.withPrefix))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, ucrError.withPrefix, "#ducr_ducr")
@@ -160,9 +164,12 @@ class ConsignmentReferencesViewSpec extends ViewSpec {
 
     "display error when UCR is incorrect and LRN is longer then 22 characters" in {
 
-      val view = createView(ConsignmentReferences.form()
-        .withError("ducr.ducr", messages(ucrError.withPrefix))
-        .withError(lrn.key, messages(lrnLength.withPrefix)))
+      val view = createView(
+        ConsignmentReferences
+          .form()
+          .withError("ducr.ducr", messages(ucrError.withPrefix))
+          .withError(lrn.key, messages(lrnLength.withPrefix))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, ucrError.withPrefix, "#ducr_ducr")
@@ -174,9 +181,12 @@ class ConsignmentReferencesViewSpec extends ViewSpec {
 
     "display error when UCR is incorrect and LRN contains special character" in {
 
-      val view = createView(ConsignmentReferences.form()
-        .withError("ducr.ducr", messages(ucrError.withPrefix))
-        .withError(lrn.key, messages(lrnSpecialCharacter.withPrefix)))
+      val view = createView(
+        ConsignmentReferences
+          .form()
+          .withError("ducr.ducr", messages(ucrError.withPrefix))
+          .withError(lrn.key, messages(lrnSpecialCharacter.withPrefix))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, ucrError.withPrefix, "#ducr_ducr")

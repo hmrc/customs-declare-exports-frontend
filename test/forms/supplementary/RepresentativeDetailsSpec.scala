@@ -46,9 +46,7 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
 
     "return form with errors" when {
       "provided with empty value for status code" in {
-        val representativeDetailsWithoutStatusCode = JsObject(
-          Map("details" -> correctEntityDetailsJSON)
-        )
+        val representativeDetailsWithoutStatusCode = JsObject(Map("details" -> correctEntityDetailsJSON))
         val form = RepresentativeDetails.form().bind(representativeDetailsWithoutStatusCode)
 
         form.hasErrors must be(true)
@@ -57,9 +55,8 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
       }
 
       "provided with unrecognized status code" in {
-        val representativeDetailsWithoutStatusCode = JsObject(
-          Map("details" -> correctEntityDetailsJSON, "statusCode" -> JsString("Invalid"))
-        )
+        val representativeDetailsWithoutStatusCode =
+          JsObject(Map("details" -> correctEntityDetailsJSON, "statusCode" -> JsString("Invalid")))
         val form = RepresentativeDetails.form().bind(representativeDetailsWithoutStatusCode)
 
         form.hasErrors must be(true)
@@ -77,7 +74,6 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
     }
 
   }
-
 
 }
 
@@ -102,7 +98,5 @@ object RepresentativeDetailsSpec {
   val correctRepresentativeDetailsAddressOnlyJSON: JsValue = JsObject(
     Map("details" -> correctEntityDetailsAddressOnlyJSON, "statusCode" -> JsString(DirectRepresentative))
   )
-  val emptyRepresentativeDetailsJSON: JsValue = JsObject(
-    Map("details" -> emptyEntityDetailsJSON)
-  )
+  val emptyRepresentativeDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 }

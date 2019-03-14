@@ -20,15 +20,12 @@ import base.CustomExportsBaseSpec
 import forms.FormMatchers
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalatest.MustMatchers
 import org.scalatest.prop.PropertyChecks
-import org.scalatest.{MustMatchers}
 import play.api.data.Form
 
-class PackageInformationSpec extends CustomExportsBaseSpec  with MustMatchers
-  with PropertyChecks
-  with Generators
-with FormMatchers
-{
+class PackageInformationSpec
+    extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers {
 
   "packagingInformationMapping" should {
 
@@ -37,11 +34,9 @@ with FormMatchers
       "valid values are bound" in {
 
         forAll { packaging: PackageInformation =>
-
-          Form(PackageInformation.mapping).fillAndValidate(packaging).fold(
-            _ => fail("form should not fail"),
-            success => success mustBe packaging
-          )
+          Form(PackageInformation.mapping)
+            .fillAndValidate(packaging)
+            .fold(_ => fail("form should not fail"), success => success mustBe packaging)
         }
       }
     }
@@ -50,12 +45,12 @@ with FormMatchers
 
       "marksNumbersId is longer than 42 characters" in {
 
-        forAll(arbitrary[PackageInformation], minStringLength(43)) {
-          (packaging, id) =>
-
-            val data = packaging.copy(shippingMarks = Some(id))
-            Form(PackageInformation.mapping).fillAndValidate(data).fold(
-              _  must haveErrorMessage( "Shipping marks can only be up to 42 characters"),
+        forAll(arbitrary[PackageInformation], minStringLength(43)) { (packaging, id) =>
+          val data = packaging.copy(shippingMarks = Some(id))
+          Form(PackageInformation.mapping)
+            .fillAndValidate(data)
+            .fold(
+              _ must haveErrorMessage("Shipping marks can only be up to 42 characters"),
               _ => fail("should not succeed")
             )
         }
@@ -63,11 +58,11 @@ with FormMatchers
 
       "numberOfPackages is larger than 99999" in {
 
-        forAll(arbitrary[PackageInformation], intGreaterThan(99999)) {
-          (packaging, quantity) =>
-
-            val data = packaging.copy(numberOfPackages = Some(quantity))
-            Form(PackageInformation.mapping).fillAndValidate(data).fold(
+        forAll(arbitrary[PackageInformation], intGreaterThan(99999)) { (packaging, quantity) =>
+          val data = packaging.copy(numberOfPackages = Some(quantity))
+          Form(PackageInformation.mapping)
+            .fillAndValidate(data)
+            .fold(
               _ must haveErrorMessage("Number of packages must be greater than 0 and less than 99999"),
               _ => fail("should not succeed")
             )
@@ -76,11 +71,11 @@ with FormMatchers
 
       "numberOfPackages is less than or equal to 0" in {
 
-        forAll(arbitrary[PackageInformation], intLessThan(1)) {
-          (packaging, quantity) =>
-
-            val data = packaging.copy(numberOfPackages = Some(quantity))
-            Form(PackageInformation.mapping).fillAndValidate(data).fold(
+        forAll(arbitrary[PackageInformation], intLessThan(1)) { (packaging, quantity) =>
+          val data = packaging.copy(numberOfPackages = Some(quantity))
+          Form(PackageInformation.mapping)
+            .fillAndValidate(data)
+            .fold(
               _ must haveErrorMessage("Number of packages must be greater than 0 and less than 99999"),
               _ => fail("should not succeed")
             )
@@ -89,23 +84,28 @@ with FormMatchers
 
       "typesOfPackages length not equal to 2" in {
 
-        forAll(arbitrary[PackageInformation], minStringLength(3)) {
-          (packaging, typeCode) =>
-            whenever(typeCode.nonEmpty) {
-              val data = packaging.copy(typesOfPackages = Some(typeCode))
-              Form(PackageInformation.mapping).fillAndValidate(data).fold(
+        forAll(arbitrary[PackageInformation], minStringLength(3)) { (packaging, typeCode) =>
+          whenever(typeCode.nonEmpty) {
+            val data = packaging.copy(typesOfPackages = Some(typeCode))
+            Form(PackageInformation.mapping)
+              .fillAndValidate(data)
+              .fold(
                 _ must haveErrorMessage("Type of package should be a 2 character code"),
                 _ => fail("should not succeed")
               )
-            }
+          }
         }
       }
 
       "Shipping Marks, Number of Packages or Type for package not supplied" in {
-        Form(PackageInformation.mapping).bind(Map.empty[String, String]).fold(
-          _ must haveErrorMessage("You must provide 6/9 item packaged, 6/10 Shipping Marks, 6/11 Number of Packages  for a package to be added"),
-          _ => fail("should not succeed")
-        )
+        Form(PackageInformation.mapping)
+          .bind(Map.empty[String, String])
+          .fold(
+            _ must haveErrorMessage(
+              "You must provide 6/9 item packaged, 6/10 Shipping Marks, 6/11 Number of Packages  for a package to be added"
+            ),
+            _ => fail("should not succeed")
+          )
       }
     }
   }

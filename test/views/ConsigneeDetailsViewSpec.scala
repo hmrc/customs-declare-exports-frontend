@@ -26,7 +26,7 @@ import views.tags.ViewTest
 @ViewTest
 class ConsigneeDetailsViewSpec extends ViewSpec {
 
-  val form:Form[ConsigneeDetails] = ConsigneeDetails.form()
+  val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
 
   private val prefix = s"${basePrefix}consignee."
 
@@ -38,7 +38,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
   private val postCode = Item(addressPrefix, "postCode")
   private val country = Item(addressPrefix, "country")
   private val nothingEntered = Item(basePrefix, "namedEntityDetails")
-  private def createView(form :Form[ConsigneeDetails] = form) : Html = consignee_details(appConfig, form)
+  private def createView(form: Form[ConsigneeDetails] = form): Html = consignee_details(appConfig, form)
 
   "Consignee Details View" should {
 
@@ -100,7 +100,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(1)>label").text() must be(messages(fullName.withPrefix))
+      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(1)>label").text() must be(
+        messages(fullName.withPrefix)
+      )
       getElementById(view, "details_address_fullName").attr("value") must be("")
     }
 
@@ -108,7 +110,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(2)>label").text() must be(messages(addressLine.withPrefix))
+      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(2)>label").text() must be(
+        messages(addressLine.withPrefix)
+      )
       getElementById(view, "details_address_addressLine").attr("value") must be("")
     }
 
@@ -116,7 +120,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(3)>label").text() must be(messages(townOrCity.withPrefix))
+      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(3)>label").text() must be(
+        messages(townOrCity.withPrefix)
+      )
       getElementById(view, "details_address_townOrCity").attr("value") must be("")
     }
 
@@ -124,7 +130,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(4)>label").text() must be(messages(postCode.withPrefix))
+      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(4)>label").text() must be(
+        messages(postCode.withPrefix)
+      )
       getElementById(view, "details_address_postCode").attr("value") must be("")
     }
 
@@ -132,7 +140,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(5)>label").text() must be(messages(country.withPrefix))
+      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(5)>label").text() must be(
+        messages(country.withPrefix)
+      )
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 
@@ -155,8 +165,11 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
 
     "display error when both EORI and business details are not provided" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details", messages(nothingEntered.withError)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details", messages(nothingEntered.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, nothingEntered.withError, "#details")
@@ -166,8 +179,11 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
 
     "display error when EORI is provided, but is incorrect" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.eori", messages(eori.withError)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.eori", messages(eori.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, eori.withError, "#details_eori")
@@ -177,108 +193,153 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
 
     "display error for empty Full name" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.fullName", messages(fullName.withEmpty)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.fullName", messages(fullName.withEmpty))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, fullName.withEmpty, "#details_address_fullName")
 
-      getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullName.withEmpty))
+      getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(
+        messages(fullName.withEmpty)
+      )
     }
 
     "display error for incorrect Full name" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.fullName", messages(fullName.withError)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.fullName", messages(fullName.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, fullName.withError, "#details_address_fullName")
 
-      getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullName.withError))
+      getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(
+        messages(fullName.withError)
+      )
     }
 
     "display error for empty Address" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.addressLine", messages(addressLine.withEmpty)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.addressLine", messages(addressLine.withEmpty))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, addressLine.withEmpty, "#details_address_addressLine")
 
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(messages(addressLine.withEmpty))
+      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        messages(addressLine.withEmpty)
+      )
     }
 
     "display error for incorrect Address" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.addressLine", messages(addressLine.withError)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.addressLine", messages(addressLine.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, addressLine.withError, "#details_address_addressLine")
 
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(messages(addressLine.withError))
+      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        messages(addressLine.withError)
+      )
     }
 
     "display error for empty Town or city" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.townOrCity", messages(townOrCity.withEmpty)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.townOrCity", messages(townOrCity.withEmpty))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, townOrCity.withEmpty, "#details_address_townOrCity")
 
-      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCity.withEmpty))
+      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        messages(townOrCity.withEmpty)
+      )
     }
 
     "display error for incorrect Town or city" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.townOrCity", messages(townOrCity.withError)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.townOrCity", messages(townOrCity.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, townOrCity.withError, "#details_address_townOrCity")
 
-      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCity.withError))
+      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        messages(townOrCity.withError)
+      )
     }
 
     "display error for empty Postcode" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.postCode", messages(postCode.withEmpty)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.postCode", messages(postCode.withEmpty))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, postCode.withEmpty, "#details_address_postCode")
 
-      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCode.withEmpty))
+      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(
+        messages(postCode.withEmpty)
+      )
     }
 
     "display error for incorrect Postcode" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.postCode", messages(postCode.withError)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.postCode", messages(postCode.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, postCode.withError, "#details_address_postCode")
 
-      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCode.withError))
+      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(
+        messages(postCode.withError)
+      )
     }
 
     "display error for empty Country" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.country", messages(country.withEmpty)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.country", messages(country.withEmpty))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, country.withEmpty, "#details_address_country")
-
 
       getElementByCss(view, "span.error-message").text() must be(messages(country.withEmpty))
     }
 
     "display error for incorrect Country" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.country", messages(country.withError)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.country", messages(country.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, country.withError, "#details_address_country")
@@ -288,11 +349,14 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
 
     "display errors when everything except Full name is empty" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.addressLine", messages(addressLine.withEmpty))
-        .withError("details.address.townOrCity", messages(townOrCity.withEmpty))
-        .withError("details.address.postCode", messages(postCode.withEmpty))
-        .withError("details.address.country", messages(country.withEmpty)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.addressLine", messages(addressLine.withEmpty))
+          .withError("details.address.townOrCity", messages(townOrCity.withEmpty))
+          .withError("details.address.postCode", messages(postCode.withEmpty))
+          .withError("details.address.country", messages(country.withEmpty))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, addressLine.withEmpty, "#details_address_addressLine")
@@ -300,20 +364,29 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
       checkErrorLink(view, 3, postCode.withEmpty, "#details_address_postCode")
       checkErrorLink(view, 4, country.withEmpty, "#details_address_country")
 
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(messages(addressLine.withEmpty))
-      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCity.withEmpty))
-      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCode.withEmpty))
+      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        messages(addressLine.withEmpty)
+      )
+      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        messages(townOrCity.withEmpty)
+      )
+      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(
+        messages(postCode.withEmpty)
+      )
       getElementByCss(view, "span.error-message").text() must be(messages(country.withEmpty))
 
     }
 
     "display errors when everything except Country is empty" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.fullName", messages(fullName.withEmpty))
-        .withError("details.address.addressLine", messages(addressLine.withEmpty))
-        .withError("details.address.townOrCity", messages(townOrCity.withEmpty))
-        .withError("details.address.postCode", messages(postCode.withEmpty)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.fullName", messages(fullName.withEmpty))
+          .withError("details.address.addressLine", messages(addressLine.withEmpty))
+          .withError("details.address.townOrCity", messages(townOrCity.withEmpty))
+          .withError("details.address.postCode", messages(postCode.withEmpty))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, fullName.withEmpty, "#details_address_fullName")
@@ -321,19 +394,30 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
       checkErrorLink(view, 3, townOrCity.withEmpty, "#details_address_townOrCity")
       checkErrorLink(view, 4, postCode.withEmpty, "#details_address_postCode")
 
-      getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullName.withEmpty))
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(messages(addressLine.withEmpty))
-      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCity.withEmpty))
-      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCode.withEmpty))
+      getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(
+        messages(fullName.withEmpty)
+      )
+      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        messages(addressLine.withEmpty)
+      )
+      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        messages(townOrCity.withEmpty)
+      )
+      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(
+        messages(postCode.withEmpty)
+      )
     }
 
     "display errors when everything except Full name is incorrect" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.addressLine", messages(addressLine.withError))
-        .withError("details.address.townOrCity", messages(townOrCity.withError))
-        .withError("details.address.postCode", messages(postCode.withError))
-        .withError("details.address.country", messages(country.withError)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.addressLine", messages(addressLine.withError))
+          .withError("details.address.townOrCity", messages(townOrCity.withError))
+          .withError("details.address.postCode", messages(postCode.withError))
+          .withError("details.address.country", messages(country.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, addressLine.withError, "#details_address_addressLine")
@@ -341,19 +425,28 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
       checkErrorLink(view, 3, postCode.withError, "#details_address_postCode")
       checkErrorLink(view, 4, country.withError, "#details_address_country")
 
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(messages(addressLine.withError))
-      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCity.withError))
-      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCode.withError))
+      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        messages(addressLine.withError)
+      )
+      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        messages(townOrCity.withError)
+      )
+      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(
+        messages(postCode.withError)
+      )
       getElementByCss(view, "span.error-message").text() must be(messages(country.withError))
     }
 
     "display errors when everything except Country is incorrect" in {
 
-      val view = createView(ConsigneeDetails.form()
-        .withError("details.address.fullName", messages(fullName.withError))
-        .withError("details.address.addressLine", messages(addressLine.withError))
-        .withError("details.address.townOrCity", messages(townOrCity.withError))
-        .withError("details.address.postCode", messages(postCode.withError)))
+      val view = createView(
+        ConsigneeDetails
+          .form()
+          .withError("details.address.fullName", messages(fullName.withError))
+          .withError("details.address.addressLine", messages(addressLine.withError))
+          .withError("details.address.townOrCity", messages(townOrCity.withError))
+          .withError("details.address.postCode", messages(postCode.withError))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, fullName.withError, "#details_address_fullName")
@@ -361,10 +454,18 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
       checkErrorLink(view, 3, townOrCity.withError, "#details_address_townOrCity")
       checkErrorLink(view, 4, postCode.withError, "#details_address_postCode")
 
-      getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullName.withError))
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(messages(addressLine.withError))
-      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCity.withError))
-      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCode.withError))
+      getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(
+        messages(fullName.withError)
+      )
+      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        messages(addressLine.withError)
+      )
+      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        messages(townOrCity.withError)
+      )
+      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(
+        messages(postCode.withError)
+      )
     }
   }
 
@@ -380,7 +481,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec {
 
     "display business address" in {
 
-      val form = ConsigneeDetails.form().fill(ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
+      val form = ConsigneeDetails
+        .form()
+        .fill(ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
       val view = createView(form)
 
       getElementById(view, "details_address_fullName").attr("value") must be("test")

@@ -32,12 +32,12 @@ object CommodityMeasure {
     "supplementaryUnits" -> optional(
       text().verifying("supplementary.commodityMeasure.supplementaryUnits.error", validateDecimal(16)(2))
     ),
-    "netMass" -> text.verifying("supplementary.commodityMeasure.netMass.empty", nonEmpty)
-      .verifying("supplementary.commodityMeasure.netMass.error", isEmpty or validateDecimal(11)(3))
-      ,
-    "grossMass" -> text.verifying("supplementary.commodityMeasure.grossMass.empty", nonEmpty)
+    "netMass" -> text
+      .verifying("supplementary.commodityMeasure.netMass.empty", nonEmpty)
+      .verifying("supplementary.commodityMeasure.netMass.error", isEmpty or validateDecimal(11)(3)),
+    "grossMass" -> text
+      .verifying("supplementary.commodityMeasure.grossMass.empty", nonEmpty)
       .verifying("supplementary.commodityMeasure.grossMass.error", isEmpty or validateDecimal(16)(2))
-
   )(CommodityMeasure.apply)(CommodityMeasure.unapply)
 
   def form(): Form[CommodityMeasure] = Form(mapping)

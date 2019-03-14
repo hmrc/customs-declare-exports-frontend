@@ -48,7 +48,8 @@ object AdditionalInformationSpec {
 
   val correctAdditionalInformation =
     AdditionalInformationData(
-      Seq(AdditionalInformation(code = "M1l3s", description = "Description for Additional Information: Davis")))
+      Seq(AdditionalInformation(code = "M1l3s", description = "Description for Additional Information: Davis"))
+    )
 
   val emptyAdditionalInformation = AdditionalInformation("", "")
 

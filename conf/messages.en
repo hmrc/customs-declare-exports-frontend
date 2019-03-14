@@ -206,7 +206,7 @@ supplementary.dispatchLocation.header.hint = Hint text if needed here
 supplementary.dispatchLocation.inputText.outsideEU = Outside the EU
 supplementary.dispatchLocation.inputText.specialFiscalTerritory = Fiscal territory of the EU or country with which the EU has formed a customs union
 supplementary.dispatchLocation.inputText.error.empty = Please, choose dispatch location
-supplementary.dispatchLocation.inputText.error.incorrectValue = Please, choose valid dispatch location
+supplementary.dispatchLocation.inputText.error.incorrect = Please, choose valid dispatch location
 
 supplementary.declarationType.title = Declaration Type
 supplementary.declarationType.header = 1/2 What type of declaration are you making?
@@ -214,7 +214,7 @@ supplementary.declarationType.header.hint = Hint text if needed here
 supplementary.declarationType.inputText.simplified = Pre-authorised simplified declaration
 supplementary.declarationType.inputText.standard = Entry in Declarants Records (EIDR)
 supplementary.declarationType.inputText.error.empty = Please, choose declaration type
-supplementary.declarationType.inputText.error.incorrectValue = Please, choose valid declaration type
+supplementary.declarationType.inputText.error.incorrect = Please, choose valid declaration type
 
 notEligible.title = You need to use a different
 notEligible.titleLineTwo = service
