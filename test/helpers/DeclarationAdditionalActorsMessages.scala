@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.supplementary
+package helpers
 
-import base.CustomExportsBaseSpec
-import helpers.ConfirmationMessages
-import play.api.test.Helpers._
+trait DeclarationAdditionalActorsMessages {
 
-class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with ConfirmationMessages {
+  val declarationAdditionalActors: String = "supplementary.additionalActors"
 
-  before {
-    authorizedUser()
-  }
-
-  "Confirmation Page Controller on GET" should {
-
-    "return 200 status code" in {
-
-      val result = route(app, getRequest(uriWithContextPath("/declaration/supplementary/confirmation"))).get
-
-      status(result) must be(OK)
-    }
-  }
+  val title: String = declarationAdditionalActors + ".title"
+  val actorsEori: String = declarationAdditionalActors + ".eori"
+  val actorsEoriNotDefined: String = declarationAdditionalActors + ".eori.isNotDefined"
+  val actorsPartyType: String = declarationAdditionalActors + ".partyType"
+  val maximumActorsError: String = declarationAdditionalActors + ".maximumAmount.error"
+  val duplicatedActorsError: String =  declarationAdditionalActors + ".duplicated.error"
 }

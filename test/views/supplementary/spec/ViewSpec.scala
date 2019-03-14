@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package views.helpers
+package views.supplementary.spec
 
+import base.ViewValidator
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}

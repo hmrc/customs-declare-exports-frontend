@@ -33,6 +33,7 @@ import models.NrsSubmissionResponse
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Seconds, Span}
@@ -58,7 +59,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait CustomExportsBaseSpec
     extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction
-    with MockConnectors {
+    with MockConnectors with BeforeAndAfter {
 
   protected val contextPath: String = "/customs-declare-exports"
 
@@ -100,7 +101,7 @@ trait CustomExportsBaseSpec
   // MockAuthAction has this value as default value... we need to use it to make cache working in tests
   val eoriForCache = "12345"
 
-  def messages: Messages = messagesApi.preferred(fakeRequest)
+  implicit val messages: Messages = messagesApi.preferred(fakeRequest)
 
   implicit val defaultPatience =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))

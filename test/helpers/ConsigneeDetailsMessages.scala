@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.supplementary
+package helpers
 
-import base.CustomExportsBaseSpec
-import helpers.ConfirmationMessages
-import play.api.test.Helpers._
+trait ConsigneeDetailsMessages {
 
-class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with ConfirmationMessages {
+  val consigneeDetails: String = "supplementary.consignee"
 
-  before {
-    authorizedUser()
-  }
-
-  "Confirmation Page Controller on GET" should {
-
-    "return 200 status code" in {
-
-      val result = route(app, getRequest(uriWithContextPath("/declaration/supplementary/confirmation"))).get
-
-      status(result) must be(OK)
-    }
-  }
+  val title: String = consigneeDetails + ".title"
+  val hint: String = consigneeDetails + ".title.hint"
 }

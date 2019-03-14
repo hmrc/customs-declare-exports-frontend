@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.supplementary
+package helpers
 
-import base.CustomExportsBaseSpec
-import helpers.ConfirmationMessages
-import play.api.test.Helpers._
+trait DispatchLocationMessages {
 
-class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with ConfirmationMessages {
+  val dispatchLocation: String = "supplementary.dispatchLocation"
 
-  before {
-    authorizedUser()
-  }
-
-  "Confirmation Page Controller on GET" should {
-
-    "return 200 status code" in {
-
-      val result = route(app, getRequest(uriWithContextPath("/declaration/supplementary/confirmation"))).get
-
-      status(result) must be(OK)
-    }
-  }
+  val header: String = dispatchLocation + ".header"
+  val hint: String = dispatchLocation + ".header.hint"
+  val outsideEu: String = dispatchLocation + ".inputText.outsideEU"
+  val specialFiscalTerritory: String = dispatchLocation + ".inputText.specialFiscalTerritory"
+  val errorMessageEmpty: String = dispatchLocation + ".inputText.error.empty"
+  val errorMessageIncorrect :String = dispatchLocation + ".inputText.error.incorrect"
 }

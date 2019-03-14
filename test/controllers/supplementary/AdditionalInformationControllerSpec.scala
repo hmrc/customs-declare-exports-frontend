@@ -16,17 +16,18 @@
 
 package controllers.supplementary
 
-import base.CustomExportsBaseSpec
+import base.{CustomExportsBaseSpec, ViewValidator}
 import base.TestHelper.createRandomString
 import controllers.supplementary.AdditionalInformationControllerSpec.cacheWithMaximumAmountOfHolders
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.AdditionalInformation
+import helpers.{AdditionalInformationMessages, CommonMessages}
 import models.declaration.supplementary.AdditionalInformationData
 import models.declaration.supplementary.AdditionalInformationData.formId
-import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class AdditionalInformationControllerSpec
+    extends CustomExportsBaseSpec with AdditionalInformationMessages with CommonMessages with ViewValidator {
 
   private val uri: String = uriWithContextPath("/declaration/supplementary/additional-information")
 
@@ -42,14 +43,12 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
   "Additional Information Controller on GET" should {
 
     "return 200 status code" in {
-
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
     }
 
-    "display additional information form with added items" in {
+    "load item from cache and display it" in {
 
       val cachedData = AdditionalInformationData(
         Seq(AdditionalInformation("M1l3s", "Davis"), AdditionalInformation("X4rlz", "Mingus"))
@@ -57,8 +56,11 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       withCaching[AdditionalInformationData](Some(cachedData), formId)
 
       val result = route(app, getRequest(uri)).get
+      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
+      stringResult must include("M1l3s-Davis")
+      stringResult must include("X4rlz-Mingus")
     }
   }
 
@@ -66,7 +68,8 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
 
     "add an item successfully" when {
 
-      "with an empty cache" in {
+      "cache is empty" in {
+
         withCaching[AdditionalInformationData](None, formId)
         val body = Seq(("code", "J0ohn"), ("description", "Coltrane"), addActionURLEncoded)
 
@@ -75,8 +78,10 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
         status(result) must be(SEE_OTHER)
       }
 
-      "that does not exist in cache" in {
+      "it does not exist in cache" in {
+
         val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis")))
+
         withCaching[AdditionalInformationData](Some(cachedData), formId)
         val body = Seq(("code", "x4rlz"), ("description", "Mingusss"), addActionURLEncoded)
 
@@ -86,9 +91,9 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       }
     }
 
-    "remove an item successfully" when {
+    "remove an item successfully by id" when {
 
-      "exists in cache based on id" in {
+      "it already exists in cache" in {
 
         val cachedData = AdditionalInformationData(
           Seq(AdditionalInformation("M1l3s", "Davis"), AdditionalInformation("J00hn", "Coltrane"))
@@ -104,126 +109,190 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
 
     "display the form page with an error" when {
 
-      "try to add an item without any data" in {
+      "adding" should {
 
-        withCaching[AdditionalInformationData](None, formId)
-        val body = Seq(("code", ""), ("description", ""), addActionURLEncoded)
+        "an item without a code" in {
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val stringResult = contentAsString(result)
+          val body = Seq(("code", ""), ("description", "Davis"), addActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(BAD_REQUEST)
-        stringResult must include(messages("supplementary.additionalInformation.code.empty"))
-        stringResult must include(messages("supplementary.additionalInformation.description.empty"))
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include(messages(codeEmpty))
+        }
+
+        "an item without a description" in {
+
+          val body = Seq(("code", "M1l3s"), ("description", ""), addActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include(messages(descriptionEmpty))
+        }
+
+        "an item without any data" in {
+
+          withCaching[AdditionalInformationData](None, formId)
+
+          val body = Seq(("code", ""), ("description", ""), addActionURLEncoded)
+
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
+
+          status(result) must be(BAD_REQUEST)
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, codeEmpty, "#code")
+          checkErrorLink(page, 2, descriptionEmpty, "#description")
+
+          getElementByCss(page, "#error-message-code-input").text() must be(messages(codeEmpty))
+          getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionEmpty))
+        }
+
+        "an item with both fields incorrect" in {
+
+          withCaching[AdditionalInformationData](None, formId)
+
+          val body = Seq(("code", "1234"), ("description", createRandomString(71)), addActionURLEncoded)
+
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
+
+          status(result) must be(BAD_REQUEST)
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, codeError, "#code")
+          checkErrorLink(page, 2, descriptionError, "#description")
+
+          getElementByCss(page, "#error-message-code-input").text() must be(messages(codeError))
+          getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionError))
+        }
+
+        "an item with longer code" in {
+
+          val body = Seq(("code", createRandomString(6)), ("description", ""), addActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include(messages(codeError))
+        }
+
+        "an item with shorter code" in {
+
+          val body = Seq(("code", createRandomString(3)), ("description", ""), addActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include(messages(codeError))
+        }
+
+        "an item with longer description" in {
+
+          val body = Seq(("code", "M1l3s"), ("description", createRandomString(100)), addActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include(messages(descriptionError))
+        }
+
+        "a duplicated item" in {
+
+          val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis")))
+          withCaching[AdditionalInformationData](Some(cachedData), formId)
+
+          val body = Seq(("code", "M1l3s"), ("description", "Davis"), addActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
+
+          status(result) must be(BAD_REQUEST)
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, duplication, "#")
+        }
+
+        "more than 99 items" in {
+
+          withCaching[AdditionalInformationData](Some(cacheWithMaximumAmountOfHolders), formId)
+
+          val body = Seq(("code", "M1l3s"), ("description", "Davis"), addActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
+
+          status(result) must be(BAD_REQUEST)
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, limit, "#")
+        }
       }
 
-      "try to save and continue without any items" in {
+      "saving and continue" when {
 
-        val body = Seq(("code", ""), ("description", ""), saveAndContinueActionURLEncoded)
+        "without a code" in {
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val stringResult = contentAsString(result)
+          val body = Seq(("code", ""), ("description", "Davis"), addActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(BAD_REQUEST)
-        stringResult must include(messages("supplementary.continue.mandatory"))
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include(messages(codeEmpty))
+        }
+
+        "without a description" in {
+
+          val body = Seq(("code", "123rt"), ("description", ""), addActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+          status(result) must be(BAD_REQUEST)
+          contentAsString(result) must include(messages(descriptionEmpty))
+        }
+
+        "an item with both fields incorrect" in {
+
+          withCaching[AdditionalInformationData](None, formId)
+
+          val body = Seq(("code", "1234"), ("description", createRandomString(71)), addActionURLEncoded)
+
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
+
+          status(result) must be(BAD_REQUEST)
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, codeError, "#code")
+          checkErrorLink(page, 2, descriptionError, "#description")
+
+          getElementByCss(page, "#error-message-code-input").text() must be(messages(codeError))
+          getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionError))
+        }
+
+        "without any items defined" in {
+
+          val body = Seq(("code", ""), ("description", ""), saveAndContinueActionURLEncoded)
+
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
+
+          status(result) must be(BAD_REQUEST)
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, continueMandatory, "#")
+        }
+
+        "with more than 99 items" in {
+
+          withCaching[AdditionalInformationData](Some(cacheWithMaximumAmountOfHolders), formId)
+
+          val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
+
+          status(result) must be(BAD_REQUEST)
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, limit, "#")
+        }
       }
 
-      "try to add an item without code" in {
+      "trying to remove a non existent code" in {
 
-        val body = Seq(("code", ""), ("description", "Davis"), addActionURLEncoded)
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.additionalInformation.code.empty"))
-      }
-
-      "try to add an item without a description" in {
-
-        val body = Seq(("code", "M1l3s"), ("description", ""), addActionURLEncoded)
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.additionalInformation.description.empty"))
-      }
-
-      "try to save and continue without providing a code" in {
-
-        val body = Seq(("code", ""), ("description", "Davis"), addActionURLEncoded)
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.additionalInformation.code.empty"))
-      }
-
-      "try to save and continue without a description" in {
-
-        val body = Seq(("code", "123rt"), ("description", ""), addActionURLEncoded)
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.additionalInformation.description.empty"))
-      }
-
-      "try to add a longer code" in {
-
-        val body = Seq(("code", createRandomString(6)), ("description", ""), addActionURLEncoded)
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.additionalInformation.code.error"))
-      }
-
-      "try to add a shorter code" in {
-
-        val body = Seq(("code", createRandomString(3)), ("description", ""), addActionURLEncoded)
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.additionalInformation.code.error"))
-      }
-
-      "try to add a longer description" in {
-
-        val body = Seq(("code", "M1l3s"), ("description", createRandomString(100)), addActionURLEncoded)
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.additionalInformation.description.error"))
-      }
-
-      "try to add duplicated item" in {
-
-        val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis")))
-        withCaching[AdditionalInformationData](Some(cachedData), formId)
-
-        val body = Seq(("code", "M1l3s"), ("description", "Davis"), addActionURLEncoded)
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.duplication"))
-      }
-
-      "try to add more than 99 items" in {
-        withCaching[AdditionalInformationData](Some(cacheWithMaximumAmountOfHolders), formId)
-
-        val body = Seq(("code", "M1l3s"), ("description", "Davis"), addActionURLEncoded)
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.limit"))
-      }
-
-      "try to save more than 99 items" in {
-        withCaching[AdditionalInformationData](Some(cacheWithMaximumAmountOfHolders), formId)
-
-        val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionURLEncoded)
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.limit"))
-      }
-
-      "try to remove a non existent code" in {
         val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis")))
         withCaching[AdditionalInformationData](Some(cachedData), formId)
 
@@ -253,6 +322,7 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       }
 
       "user doesn't fill form but some items already exist in the cache" in {
+
         val cachedData = AdditionalInformationData(Seq(AdditionalInformation("Jo0hn", "Coltrane")))
         withCaching[AdditionalInformationData](Some(cachedData), formId)
 
@@ -264,6 +334,7 @@ class AdditionalInformationControllerSpec extends CustomExportsBaseSpec with Bef
       }
 
       "user provide holder with some different holder in cache" in {
+
         val cachedData = AdditionalInformationData(Seq(AdditionalInformation("x4rlz", "Mingus")))
         withCaching[AdditionalInformationData](Some(cachedData), formId)
 

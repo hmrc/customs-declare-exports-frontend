@@ -19,31 +19,37 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.DeclarantDetails
 import forms.supplementary.DeclarantDetailsSpec._
-import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
   private val uri = uriWithContextPath("/declaration/supplementary/declarant-details")
 
   before {
     authorizedUser()
+    withCaching[DeclarantDetails](None)
   }
 
   "Declarant Details Page Controller on GET" should {
 
     "return 200 status code" in {
-      withCaching[DeclarantDetails](None)
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
     }
   }
 
-  "Declarant Details Page Controller on page" should {
+  "Declarant Details Page Controller on POST" should {
 
-    "validate form and redirect - only eori provided" in {
-      withCaching[DeclarantDetails](None)
+    "validate request and redirect - both EORI and business details are empty" in {
+
+      val result = route(app, postRequest(uri, emptyDeclarantDetailsJSON)).get
+      val page = contentAsString(result)
+
+      status(result) must be(BAD_REQUEST)
+    }
+
+    "validate request and redirect - only EORI provided" in {
 
       val result = route(app, postRequest(uri, correctDeclarantDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
@@ -54,8 +60,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec with Befo
       )
     }
 
-    "validate form and redirect - only address provided" in {
-      withCaching[DeclarantDetails](None)
+    "validate request and redirect - only address provided" in {
 
       val result = route(app, postRequest(uri, correctDeclarantDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
@@ -66,8 +71,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec with Befo
       )
     }
 
-    "validate form and redirect - all values provided" in {
-      withCaching[DeclarantDetails](None)
+    "validate request and redirect - all values provided" in {
 
       val result = route(app, postRequest(uri, correctDeclarantDetailsJSON)).get
       val header = result.futureValue.header
