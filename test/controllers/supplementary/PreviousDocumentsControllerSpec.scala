@@ -308,8 +308,12 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with BeforeA
         val body = correctDocument :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(
+          Some("/customs-declare-exports/declaration/supplementary/good-item-number")
+        )
       }
 
       "user has empty form but cache contains some item" in {
@@ -318,8 +322,12 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with BeforeA
         val body = emptyDocument :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(
+          Some("/customs-declare-exports/declaration/supplementary/good-item-number")
+        )
       }
 
       "user provide correct item with different item in cache" in {
@@ -335,8 +343,12 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with BeforeA
         val body = document :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(
+          Some("/customs-declare-exports/declaration/supplementary/good-item-number")
+        )
       }
     }
   }
