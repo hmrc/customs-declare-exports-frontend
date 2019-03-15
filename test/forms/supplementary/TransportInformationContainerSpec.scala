@@ -56,8 +56,10 @@ class TransportInformationContainerSpec
       metadata.declaration.get.goodsShipment must be(defined)
       metadata.declaration.get.goodsShipment.get.consignment must be(defined)
       metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments mustNot be(empty)
-      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments.head.id must be (defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments.head.id.get must equal(transportInformationContainerData.containers.head.id)
+      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments.head.id must be(defined)
+      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments.head.id.get must equal(
+        transportInformationContainerData.containers.head.id
+      )
     }
   }
 

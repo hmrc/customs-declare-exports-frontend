@@ -55,8 +55,7 @@ object TotalNumberOfItems {
       ),
     "totalAmountInvoiced" -> text()
       .verifying("supplementary.totalAmountInvoiced.empty", nonEmpty)
-      .verifying("supplementary.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern)
-      ),
+      .verifying("supplementary.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern)),
     "exchangeRate" -> text()
       .verifying("supplementary.exchangeRate.empty", nonEmpty)
       .verifying("supplementary.exchangeRate.error", isEmpty or ofPattern(exchangeRatePattern)),

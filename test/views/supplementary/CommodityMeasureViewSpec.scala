@@ -28,7 +28,8 @@ import views.tags.ViewTest
 class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages with CommonMessages {
 
   private val form: Form[CommodityMeasure] = CommodityMeasure.form()
-  private def createView(form: Form[CommodityMeasure] = form): Html = goods_measure(form)(fakeRequest, messages, appConfig)
+  private def createView(form: Form[CommodityMeasure] = form): Html =
+    goods_measure(form)(fakeRequest, messages, appConfig)
 
   "Commodity Measure View" should {
 
@@ -81,8 +82,12 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(messages(supplementaryUnits))
-      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(supplementaryUnitsHint))
+      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(
+        messages(supplementaryUnits)
+      )
+      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(
+        messages(supplementaryUnitsHint)
+      )
       getElementById(view, "supplementaryUnits").attr("value") must be("")
     }
 
@@ -147,7 +152,8 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
     "display error when net mass is incorrect" in {
 
-      val view = createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "20.9999", "10.00")))
+      val view =
+        createView(CommodityMeasure.form().fillAndValidate(CommodityMeasure(Some("99.99"), "20.9999", "10.00")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, netMassError, "#netMass")

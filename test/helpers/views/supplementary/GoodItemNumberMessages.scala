@@ -23,5 +23,5 @@ trait GoodItemNumberMessages {
   val title: String = goodItemNumber + ".title"
   val hint: String = goodItemNumber + ".hint"
   val goodItemError: String = goodItemNumber + ".error"
-  val goodItem : String = goodItemNumber
+  val goodItem: String = goodItemNumber
 }

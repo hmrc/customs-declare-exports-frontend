@@ -27,7 +27,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import play.api.test.Helpers._
 
-class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages {
+class ItemTypePageControllerSpec
+    extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages {
   import ItemTypePageControllerSpec._
 
   private val uri = uriWithContextPath("/declaration/supplementary/item-type")
@@ -81,7 +82,8 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidato
 
       "Combined Nomenclature Code is empty" in {
 
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(statisticalValue = "100", descriptionOfGoods = "Description")
+        val form =
+          buildItemTypeUrlEncodedInput(SaveAndContinue)(statisticalValue = "100", descriptionOfGoods = "Description")
         val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
         val page = contentAsString(result)
 
@@ -126,7 +128,9 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidato
         checkErrorsSummary(page)
         checkErrorLink(page, 1, cncErrorSpecialCharacters, "#combinedNomenclatureCode")
 
-        getElementByCss(page, "#error-message-combinedNomenclatureCode-input").text() must be(messages(cncErrorSpecialCharacters))
+        getElementByCss(page, "#error-message-combinedNomenclatureCode-input").text() must be(
+          messages(cncErrorSpecialCharacters)
+        )
       }
 
       "TARIC additional code is not 4 characters long" in {
@@ -164,7 +168,9 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidato
         checkErrorsSummary(page)
         checkErrorLink(page, 1, taricErrorSpecialCharacters, "#taricAdditionalCode_")
 
-        getElementByCss(page, "#error-message-taricAdditionalCode_-input").text() must be(messages(taricErrorSpecialCharacters))
+        getElementByCss(page, "#error-message-taricAdditionalCode_-input").text() must be(
+          messages(taricErrorSpecialCharacters)
+        )
       }
 
       "National additional code is longer than 4 characters" in {
@@ -204,7 +210,9 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidato
         checkErrorsSummary(page)
         checkErrorLink(page, 1, nacErrorSpecialCharacters, "#nationalAdditionalCode_")
 
-        getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorSpecialCharacters))
+        getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(
+          messages(nacErrorSpecialCharacters)
+        )
       }
 
       "Description of goods is empty" in {
@@ -243,7 +251,9 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidato
         checkErrorsSummary(page)
         checkErrorLink(page, 1, descriptionErrorLength, "#descriptionOfGoods")
 
-        getElementByCss(page, "#error-message-descriptionOfGoods-input").text() must be(messages(descriptionErrorLength))
+        getElementByCss(page, "#error-message-descriptionOfGoods-input").text() must be(
+          messages(descriptionErrorLength)
+        )
       }
 
       "CUS code is not 8 characters long" in {
@@ -338,7 +348,9 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidato
         checkErrorsSummary(page)
         checkErrorLink(page, 1, statisticalErrorWrongFormat, "#statisticalValue")
 
-        getElementByCss(page, "#error-message-statisticalValue-input").text() must be(messages(statisticalErrorWrongFormat))
+        getElementByCss(page, "#error-message-statisticalValue-input").text() must be(
+          messages(statisticalErrorWrongFormat)
+        )
       }
 
       "user press \"Save and continue\" without entering anything" in {
@@ -389,11 +401,13 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidato
       }
 
       "when user tries to add duplicated TARIC" in {
-        withCaching[ItemType](Some(ItemType("100", fourDigitsSequence(98), Seq(), "Description", Some(""), "100")), ItemType.id)
+        withCaching[ItemType](
+          Some(ItemType("100", fourDigitsSequence(98), Seq(), "Description", Some(""), "100")),
+          ItemType.id
+        )
 
-        val form = buildItemTypeUrlEncodedInput(Add)(
-          combinedNomenclatureCode = "100",
-          taricAdditionalCodes = Seq("9991"))
+        val form =
+          buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", taricAdditionalCodes = Seq("9991"))
         val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
         val page = contentAsString(result)
 
@@ -407,11 +421,13 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidato
 
       "when user tries to add more then 99 TARIC" in {
 
-        withCaching[ItemType](Some(ItemType("100", fourDigitsSequence(99), Seq(), "Description", Some(""), "100")), ItemType.id)
+        withCaching[ItemType](
+          Some(ItemType("100", fourDigitsSequence(99), Seq(), "Description", Some(""), "100")),
+          ItemType.id
+        )
 
-        val form = buildItemTypeUrlEncodedInput(Add)(
-          combinedNomenclatureCode = "100",
-          taricAdditionalCodes = Seq("1000"))
+        val form =
+          buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", taricAdditionalCodes = Seq("1000"))
         val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
         val page = contentAsString(result)
 
@@ -425,11 +441,13 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidato
 
       "when user tries to add duplicated NAC" in {
 
-        withCaching[ItemType](Some(ItemType("100", Seq(), fourDigitsSequence(98), "Description", Some(""), "100")), ItemType.id)
+        withCaching[ItemType](
+          Some(ItemType("100", Seq(), fourDigitsSequence(98), "Description", Some(""), "100")),
+          ItemType.id
+        )
 
-        val form = buildItemTypeUrlEncodedInput(Add)(
-          combinedNomenclatureCode = "100",
-          nationalAdditionalCodes = Seq("9991"))
+        val form =
+          buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", nationalAdditionalCodes = Seq("9991"))
         val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
         val page = contentAsString(result)
 
@@ -438,16 +456,20 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidato
         checkErrorsSummary(page)
         checkErrorLink(page, 1, nacErrorDuplicate, "#nationalAdditionalCode_")
 
-        getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorDuplicate))
+        getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(
+          messages(nacErrorDuplicate)
+        )
       }
 
       "when user tries to add more then 99 NAC" in {
 
-        withCaching[ItemType](Some(ItemType("100", Seq(), fourDigitsSequence(99), "Description", Some(""), "100")), ItemType.id)
+        withCaching[ItemType](
+          Some(ItemType("100", Seq(), fourDigitsSequence(99), "Description", Some(""), "100")),
+          ItemType.id
+        )
 
-        val form = buildItemTypeUrlEncodedInput(Add)(
-          combinedNomenclatureCode = "100",
-          nationalAdditionalCodes = Seq("1000"))
+        val form =
+          buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", nationalAdditionalCodes = Seq("1000"))
         val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
         val page = contentAsString(result)
 
@@ -456,7 +478,9 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidato
         checkErrorsSummary(page)
         checkErrorLink(page, 1, nacErrorMaxAmount, "#nationalAdditionalCode_")
 
-        getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorMaxAmount))
+        getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(
+          messages(nacErrorMaxAmount)
+        )
       }
     }
 

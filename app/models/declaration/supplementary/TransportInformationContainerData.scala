@@ -24,9 +24,7 @@ case class TransportInformationContainerData(containers: Seq[TransportInformatio
     extends MetadataPropertiesConvertable {
   override def toMetadataProperties(): Map[String, String] =
     containers.zipWithIndex.map { container =>
-      Map(
-        "declaration.goodsShipment.consignment.transportEquipments[" + container._2 + "].id" -> container._1.id
-      )
+      Map("declaration.goodsShipment.consignment.transportEquipments[" + container._2 + "].id" -> container._1.id)
     }.fold(Map.empty)(_ ++ _)
 
   def containsItem(container: TransportInformationContainer): Boolean = containers.contains(container)

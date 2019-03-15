@@ -17,7 +17,7 @@
 package connectors
 
 import base.TestHelper._
-import base.{CustomExportsBaseSpec, MockInventoryHttpClient}
+import base.{CustomExportsBaseSpec, MockHttpClient}
 import play.api.http.Status.ACCEPTED
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -50,7 +50,7 @@ class CustomsInventoryLinkingExportsConnectorSpec extends CustomExportsBaseSpec 
     val expectedUrl: String = s"${appConfig.customsInventoryLinkingExports}${appConfig.sendArrival}"
     val falseServerError: Boolean = false
     val expectedHeaders: Seq[(String, String)] = headers
-    val http = new MockInventoryHttpClient(expectedUrl, body, expectedHeaders, falseServerError)
+    val http = new MockHttpClient(expectedUrl, body, expectedHeaders, falseServerError, HttpResponse(ACCEPTED))
     val client = new CustomsInventoryLinkingExportsConnector(appConfig, http)
     test(client.sendMovementRequest(eori, body)(hc, ec))
   }

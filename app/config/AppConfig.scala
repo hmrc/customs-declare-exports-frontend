@@ -49,23 +49,13 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   lazy val authUrl = baseUrl("auth")
   lazy val loginUrl = loadConfig("urls.login")
   lazy val loginContinueUrl = loadConfig("urls.loginContinue")
-  lazy val customsDeclarationsUrl = loadConfig("urls.customsDeclarations")
 
-  lazy val customsDeclarationsEndpoint = baseUrl("customs-declarations")
-  lazy val submitExportDeclarationUri = getConfString(
-    "customs-declarations.submit-uri",
-    throw new IllegalStateException("Missing configuration for Customs Declarations submission URI")
-  )
-  lazy val submitCancellationUri = getConfString(
-    "customs-declarations.cancel-uri",
-    throw new IllegalStateException("Missing configuration for Customs Declarations cancellation URI")
-  )
   lazy val developerHubClientId: String = loadConfig("hmrc-developers-hub.client-id")
 
   lazy val customsDeclareExports = baseUrl("customs-declare-exports")
-  lazy val saveSubmissionResponse = getConfString(
-    "customs-declare-exports.save-response-uri",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports submission URI")
+  lazy val submitDeclaration = getConfString(
+    "customs-declare-exports.submit-declaration",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports submit declaration URI")
   )
   lazy val saveMovementSubmission = getConfString(
     "customs-declare-exports.save-movement-uri",
@@ -91,11 +81,6 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   lazy val cancelDeclaration = getConfString(
     "customs-declare-exports.cancel-declaration",
     throw new IllegalStateException("Missing configuration for Customs Declaration Export cancel declaration URI")
-  )
-
-  lazy val customsDeclarationsApiVersion = getConfString(
-    "customs-declarations.api-version",
-    throw new IllegalStateException("Missing configuration for Customs Declarations API version")
   )
 
   lazy val customsInventoryLinkingExports = baseUrl("customs-inventory-linking-exports")

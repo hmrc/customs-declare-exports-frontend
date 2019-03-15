@@ -22,7 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.Countries.allCountries
 
-case class DestinationCountries(countryOfDispatch: String, countryOfDestination:String)
+case class DestinationCountries(countryOfDispatch: String, countryOfDestination: String)
     extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =

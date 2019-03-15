@@ -16,48 +16,31 @@
 
 package base
 
-import connectors.{
-  CustomsDeclarationsConnector,
-  CustomsDeclareExportsConnector,
-  CustomsInventoryLinkingExportsConnector,
-  NrsConnector
-}
+import connectors.{CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
 import models._
 import models.requests.CancellationStatus
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
-import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST, OK}
+import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
 trait MockConnectors extends MockitoSugar {
-  lazy val mockCustomsDeclarationsConnector: CustomsDeclarationsConnector = mock[CustomsDeclarationsConnector]
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
   lazy val mockCustomsInventoryLinkingExportsConnector: CustomsInventoryLinkingExportsConnector =
     mock[CustomsInventoryLinkingExportsConnector]
   lazy val mockNrsConnector: NrsConnector = mock[NrsConnector]
 
-  def successfulCustomsDeclarationResponse() = {
-    when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
-      .thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED, Some("1234"))))
+  def successfulCustomsDeclareExportsResponse() =
+    when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 
-    when(mockCustomsDeclarationsConnector.submitCancellation(any(), any())(any(), any()))
-      .thenReturn(Future.successful(CustomsDeclarationsResponse(ACCEPTED, Some("1234"))))
-
-    when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
-      .thenReturn(Future.successful(CustomsDeclareExportsResponse(OK, "message")))
-  }
-
-  def customsDeclaration400Response() = {
-    when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
-      .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
-
-    when(mockCustomsDeclarationsConnector.submitCancellation(any(), any())(any(), any()))
-      .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
-  }
+  def customsDeclaration400Response() =
+    when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
   def listOfNotifications() =
     when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
@@ -105,6 +88,6 @@ trait MockConnectors extends MockitoSugar {
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionId1")))
 
   def successfulCancelDeclarationResponse(status: CancellationStatus) =
-    when(mockCustomsDeclareExportsConnector.cancelDeclaration(any())(any(), any()))
+    when(mockCustomsDeclareExportsConnector.submitCancellation(any(), any())(any(), any()))
       .thenReturn(Future.successful(status))
 }

@@ -46,10 +46,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       config.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
     }
 
-    "have customs declarations URL" in {
-      config.customsDeclarationsUrl must be("http://localhost:9820")
-    }
-
     "have language translation enabled field" in {
       config.languageTranslationEnabled must be(false)
     }
@@ -74,22 +70,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       config.isFeatureOn(Feature.default) must be(false)
     }
 
-    "have a submit export declarations URI" in {
-      config.submitExportDeclarationUri must be("/")
-    }
-
-    "have a submit cancellation uri" in {
-      config.submitCancellationUri must be("/cancellation-requests")
-    }
-
-    "have customs declarations endpoint" in {
-      config.customsDeclarationsEndpoint must be("http://localhost:6790")
-    }
-
-    "have customs declarations API version" in {
-      config.customsDeclarationsApiVersion must be("2.0")
-    }
-
     "have HMRC Developer Hub Client ID" in {
       config.developerHubClientId must be("customs-declare-exports-frontend")
     }
@@ -98,8 +78,8 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       config.customsDeclareExports must be("http://localhost:6792")
     }
 
-    "have submission response URL" in {
-      config.saveSubmissionResponse must be("/save-submission-response")
+    "have submit declaration URL" in {
+      config.submitDeclaration must be("/declaration")
     }
 
     "have movement submission URL" in {

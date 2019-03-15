@@ -70,11 +70,8 @@ object GoodsLocation {
         .verifying("supplementary.goodsLocation.qualifierOfIdentification.error", isAlphabetic and hasSpecificLength(1))
     ),
     "identificationOfLocation" -> text()
+      .verifying("supplementary.goodsLocation.identificationOfLocation.empty", nonEmpty)
       .verifying(
-        "supplementary.goodsLocation.identificationOfLocation.empty",
-        nonEmpty
-      )
-        .verifying(
         "supplementary.goodsLocation.identificationOfLocation.error",
         isEmpty or (isAlphanumeric and hasSpecificLength(3))
       ),

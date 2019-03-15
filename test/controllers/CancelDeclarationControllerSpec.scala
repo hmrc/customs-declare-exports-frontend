@@ -112,24 +112,10 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
       contentAsString(result) must include(messages("cancellation.functionalReferenceId.tooShort"))
     }
 
-    "redirect to error page" when {
-
-      "cancellation failed in customs declarations" in {
-        customsDeclaration400Response()
-
-        val result = route(app, postRequest(uri, correctCancelJson)).get
-        val stringResult = contentAsString(result)
-
-        status(result) must be(BAD_REQUEST)
-        stringResult must include(messages("global.error.heading"))
-        stringResult must include(messages("global.error.message"))
-      }
-    }
-
     "redirect to not existing declaration error page" when {
 
       "user try to cancel not existing declaration" in {
-        successfulCustomsDeclarationResponse()
+        successfulCustomsDeclareExportsResponse()
         successfulCancelDeclarationResponse(MissingDeclaration)
 
         val result = route(app, postRequest(uri, correctCancelJson)).get
@@ -144,7 +130,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
     "redirect to cancellation request exists page" when {
 
       "user try to cancel declaration once again" in {
-        successfulCustomsDeclarationResponse()
+        successfulCustomsDeclareExportsResponse()
         successfulCancelDeclarationResponse(CancellationRequestExists)
 
         val result = route(app, postRequest(uri, correctCancelJson)).get
@@ -159,7 +145,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
     "redirect to confirmation page" when {
 
       "provided data is correct" in {
-        successfulCustomsDeclarationResponse()
+        successfulCustomsDeclareExportsResponse()
         successfulCancelDeclarationResponse(CancellationRequested)
 
         val result = route(app, postRequest(uri, correctCancelJson)).get

@@ -17,7 +17,7 @@
 package controllers.supplementary
 
 import config.AppConfig
-import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
+import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.ConsignmentReferences
@@ -25,13 +25,13 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
-import models.DeclarationFormats._
 import models.declaration.supplementary.SupplementaryDeclarationData
-import models.{CustomsDeclarationsResponse, Pending, Submission}
+import models.DeclarationFormats._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.{CustomsCacheService, ExportsItemsCacheIds, NRSService}
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.{GovernmentAgencyGoodsItem, MetaData}
@@ -45,7 +45,6 @@ class SummaryPageController @Inject()(
   authenticate: AuthAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
-  customsDeclarationConnector: CustomsDeclarationsConnector,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   exportsMetrics: ExportsMetrics,
   nrsService: NRSService
@@ -69,35 +68,21 @@ class SummaryPageController @Inject()(
       case Some(cacheMap) =>
         exportsMetrics.startTimer(submissionMetric)
         val suppDecData = SupplementaryDeclarationData(cacheMap)
+        val metaData = createMetaData(cacheMap, suppDecData)
+        val ducr = suppDecData.consignmentReferences.flatMap(_.ducr)
+        val lrn = suppDecData.consignmentReferences.map(_.lrn)
 
-        customsDeclarationConnector.submitExportDeclaration(createMetaData(cacheMap, suppDecData)).flatMap {
-          case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
-            val ducr = suppDecData.consignmentReferences.flatMap(_.ducr)
-            val lrn = suppDecData.consignmentReferences.map(_.lrn)
-
-            val submission =
-              new Submission(request.user.eori, conversationId, ducr.fold("")(_.ducr), lrn, None, Pending)
-
-            customsDeclareExportsConnector
-              .saveSubmissionResponse(submission)
-              .flatMap { _ =>
-                exportsMetrics.incrementCounter(submissionMetric)
-                customsCacheService
-                  .remove(supplementaryCacheId)
-                  .map { _ =>
-                    Redirect(controllers.supplementary.routes.ConfirmationPageController.displayPage())
-                      .flashing(prepareFlashScope(lrn.getOrElse("")))
-                  }
+        customsDeclareExportsConnector
+          .submitExportDeclaration(ducr.fold("")(_.ducr), lrn, metaData)
+          .flatMap {
+            case HttpResponse(ACCEPTED, _, _, _) =>
+              customsCacheService.remove(supplementaryCacheId).map { _ =>
+                Redirect(controllers.supplementary.routes.ConfirmationPageController.displayPage())
+                  .flashing(prepareFlashScope(lrn.getOrElse("")))
               }
-              .recover {
-                case error: Throwable =>
-                  exportsMetrics.incrementCounter(submissionMetric)
-                  handleError(s"Error from Customs Declare Exports ${error.toString}")
-              }
-
-          case error =>
-            Future.successful(handleError(s"Error from Customs Declarations API ${error.toString}"))
-        }
+            case error =>
+              Future.successful(handleError(s"Error from Customs Declarations API ${error.toString}"))
+          }
 
       case None =>
         Future.successful(handleError(s"Could not obtain data from DB"))
