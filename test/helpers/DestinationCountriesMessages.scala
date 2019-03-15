@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.supplementary
+package helpers
 
-import base.CustomExportsBaseSpec
-import helpers.ConfirmationMessages
-import play.api.test.Helpers._
+trait DestinationCountriesMessages {
 
-class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with ConfirmationMessages {
+  val prefix: String = "supplementary.destinationCountries"
 
-  before {
-    authorizedUser()
-  }
-
-  "Confirmation Page Controller on GET" should {
-
-    "return 200 status code" in {
-
-      val result = route(app, getRequest(uriWithContextPath("/declaration/supplementary/confirmation"))).get
-
-      status(result) must be(OK)
-    }
-  }
+  val title: String = prefix + ".title"
+  val countryOfDestination: String = prefix + ".countryOfDestination"
+  val countryOfDestinationError: String = prefix + ".countryOfDestination.error"
+  val countryOfDispatch: String = prefix + ".countryOfDispatch"
+  val countryOfDispatchError: String = prefix + ".countryOfDispatch.error"
+  val countryOfDispatchEmpty: String = prefix + ".countryOfDispatch.empty"
 }

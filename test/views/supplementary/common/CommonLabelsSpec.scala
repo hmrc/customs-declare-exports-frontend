@@ -15,39 +15,203 @@
  */
 
 package views.supplementary.common
-import views.helpers.ViewSpec
+
+import helpers.CommonMessages
+import views.supplementary.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class CommonLabelsSpec extends ViewSpec {
+class CommonLabelsSpec extends ViewSpec with CommonMessages {
 
-  "Common labels on pages" should {
+  "Button labels" should {
 
-    "include Back" in {
-      assertMessage("site.back", "Back")
+    "have proper value for \"Back\" button" in {
+      assertMessage(backCaption, "Back")
     }
 
-    "include Remove" in {
-      assertMessage("site.remove", "Remove")
+    "have proper value for \"Remove\" button" in {
+      assertMessage(removeCaption, "Remove")
     }
 
-    "include Add" in {
-      assertMessage("site.add", "Add")
+    "have proper value for \"Add\" button" in {
+      assertMessage(addCaption, "Add")
     }
 
-    "include Save and continue" in {
-      assertMessage("site.save_and_continue", "Save and continue")
+    "have proper value for \"Save and continue\" button" in {
+      assertMessage(saveAndContinueCaption, "Save and continue")
     }
   }
 
-  "Common error labels on pages" should {
+  "Global error labels" should {
 
-    "include Error title" in {
-      assertMessage("error.summary.title", "There’s been a problem")
+    "have proper message for global error title" in {
+      assertMessage(globalErrorTitle, "There is a problem - Declare customs exports for customs exports - GOV.UK")
     }
 
-    "include Error text" in {
-      assertMessage("error.summary.text", "Check the following")
+    "have proper message for global error heading" in {
+      assertMessage(globalErrorHeading, "There is a problem with a service")
+    }
+
+    "have proper message for global error message" in {
+      assertMessage(globalErrorMessage, "Please try again later.")
+    }
+  }
+
+  "Error labels" should {
+
+    "have proper message for error summary title" in {
+      assertMessage(errorSummaryTitle, "There’s been a problem")
+    }
+
+    "have proper message for error summary text" in {
+      assertMessage(errorSummaryText, "Check the following")
+    }
+
+    "have proper message for limit of items" in {
+      assertMessage(limit, "You cannot add more items")
+    }
+
+    "have proper message for duplicated item" in {
+
+      assertMessage(duplication, "You cannot add duplicated value")
+    }
+
+    "have proper message for adding at least one item" in {
+
+      assertMessage(continueMandatory, "You must add at least one item")
+    }
+  }
+
+  "DUCR error labels" should {
+
+    "have proper message for incorrect DUCR" in {
+      assertMessage(ucrError, "Incorrect DUCR")
+    }
+  }
+
+  "EORI labels" should {
+
+    "have proper message for EORI number" in {
+      assertMessage(eori, "EORI number")
+    }
+
+    "have proper message for EORI hint" in {
+      assertMessage(eoriHint, "Enter the EORI number or business details")
+    }
+  }
+
+  "EORI error labels" should {
+
+    "have proper message for empty EORI" in {
+      assertMessage(eoriEmpty, "EORI number cannot be empty")
+    }
+
+    "have proper message for incorrect EORI" in {
+      assertMessage(eoriError, "EORI number is incorrect")
+    }
+
+    "have proper message for empty EORI or address" in {
+      assertMessage(eoriOrAddressEmpty, "Please, provide either EORI number or full Address details")
+    }
+  }
+
+  "Address labels" should {
+
+    "have proper message for Full name" in {
+      assertMessage(fullName, "Full name")
+    }
+
+    "have proper message for Address line" in {
+      assertMessage(addressLine, "Address line 1")
+    }
+
+    "have proper message for Town or City" in {
+      assertMessage(townOrCity, "Town or city")
+    }
+
+    "have proper message for Postcode" in {
+      assertMessage(postCode, "Postcode")
+    }
+
+    "have proper message for Country" in {
+      assertMessage(country, "Country")
+    }
+  }
+
+  "Address error labels" should {
+
+    "have proper message for empty Full name" in {
+      assertMessage(fullNameEmpty, "Full name cannot be empty")
+    }
+
+    "have proper message for incorrect Full name" in {
+      assertMessage(fullNameError, "Full name is incorrect")
+    }
+
+    "have proper message for empty Address line" in {
+      assertMessage(addressLineEmpty, "Address line 1 cannot be empty")
+    }
+
+    "have proper message for incorrect Address line" in {
+      assertMessage(addressLineError, "Address line 1 is incorrect")
+    }
+
+    "have proper message for empty Town or city" in {
+      assertMessage(townOrCityEmpty, "Town or city cannot be empty")
+    }
+
+    "have proper message for incorrect Town or city" in {
+      assertMessage(townOrCityError, "Town or city is incorrect")
+    }
+
+    "have proper message for empty Postcode" in {
+      assertMessage(postCodeEmpty, "Postcode cannot be empty")
+    }
+
+    "have proper message for incorrect Postcode" in {
+      assertMessage(postCodeError, "Postcode is incorrect")
+    }
+
+    "have proper message for Country empty" in {
+      assertMessage(countryEmpty, "Country cannot be empty")
+    }
+
+    "have proper message for incorrect Country" in {
+      assertMessage(countryError, "Country is incorrect")
+    }
+  }
+
+  "Party labels" should {
+
+    "have proper message for Party type" in {
+      assertMessage(partyType, "Party type")
+    }
+
+    "have proper message for Consolidator" in {
+      assertMessage(consolidator, "Consolidator")
+    }
+
+    "have proper message for Manufacturer" in {
+      assertMessage(manufacturer, "Manufacturer")
+    }
+
+    "have proper message for Freight forwarder" in {
+      assertMessage(freightForwarder, "Freight forwarder")
+    }
+
+    "have proper message for Warehouse keeper" in {
+      assertMessage(warehouseKeeper, "Warehouse keeper")
+    }
+  }
+
+  "Party error labels" should {
+
+    "have proper message for empty party" in {
+      assertMessage(partyTypeEmpty, "Please, choose party type")
+    }
+
+    "have proper message for incorrect party" in {
+      assertMessage(partyTypeError, "Party type is incorrect")
     }
   }
 }

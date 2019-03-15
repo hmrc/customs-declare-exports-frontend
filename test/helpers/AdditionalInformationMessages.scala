@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package controllers.supplementary
+package helpers
 
-import base.CustomExportsBaseSpec
-import helpers.ConfirmationMessages
-import play.api.test.Helpers._
+trait AdditionalInformationMessages {
 
-class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with ConfirmationMessages {
+  val additionalInformation: String = "supplementary.additionalInformation"
 
-  before {
-    authorizedUser()
-  }
-
-  "Confirmation Page Controller on GET" should {
-
-    "return 200 status code" in {
-
-      val result = route(app, getRequest(uriWithContextPath("/declaration/supplementary/confirmation"))).get
-
-      status(result) must be(OK)
-    }
-  }
+  val title: String = additionalInformation + ".title"
+  val code: String = additionalInformation + ".code"
+  val codeEmpty: String = additionalInformation + ".code.empty"
+  val codeError: String = additionalInformation + ".code.error"
+  val description: String = additionalInformation + ".description"
+  val descriptionEmpty: String = additionalInformation + ".description.empty"
+  val descriptionError: String = additionalInformation + ".description.error"
 }

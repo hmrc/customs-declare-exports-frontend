@@ -16,51 +16,46 @@
 
 package views.supplementary
 
+import base.TestHelper
 import forms.Ducr
 import forms.supplementary.ConsignmentReferences
+import helpers.{CommonMessages, ConsignmentReferencesMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.helpers.{Item, ViewSpec}
 import views.html.supplementary.consignment_references
+import views.supplementary.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class ConsignmentReferencesViewSpec extends ViewSpec {
+class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesMessages with CommonMessages {
+
+  /*
+   * Seems like DUCR is Declaration UCR which is alphanumeric number up to 35 digits
+   */
+
+  private val properDUCR = "7GB000000000000-12345"
+  private val incorrectDUCR = "7GB000000000000-1234512345123451234512345"
 
   private val form: Form[ConsignmentReferences] = ConsignmentReferences.form()
-
-  private val prefix = s"${basePrefix}consignmentReferences."
-
-  private val title = Item(prefix, "title")
-  private val hint = Item(prefix, "header")
-  private val lrn = Item(prefix, "lrn")
-  private val ucr = Item(prefix, "ucr")
-  private val ucrError = Item("error.", "ducr")
-  private val lrnEmpty = Item(prefix + "lrn.error.", "empty")
-  private val lrnLength = Item(prefix + "lrn.error.", "length")
-  private val lrnSpecialCharacter = Item(prefix + "lrn.error.", "specialCharacter")
-
-  private def createView(form: Form[ConsignmentReferences] = form): Html =
-    consignment_references(appConfig, form)(fakeRequest, messages)
+  private def createView(form: Form[ConsignmentReferences] = form): Html = consignment_references(appConfig, form)(fakeRequest, messages)
 
   "Consignment References View" should {
 
-    "have proper messages for labels" in {
+    "have proper messages for page labels" in {
 
-      assertMessage(title.withPrefix, "Consignment References")
-      assertMessage(hint.withPrefix, "Your references")
-      assertMessage(lrn.withInfo, "2/5 Enter your LRN reference number")
-      assertMessage(lrn.withHint, "This is your own reference number of up to 22 digits")
-      assertMessage(ucr.withInfo, "2/4 Create a UCR reference for this declaration")
-      assertMessage(ucr.withHint, "Your own reference, which must be used only for this declaration")
+      assertMessage(title, "Consignment References")
+      assertMessage(header, "Your references")
+      assertMessage(lrnInfo, "2/5 Enter your LRN reference number")
+      assertMessage(lrnHint, "This is your own reference number of up to 22 digits")
+      assertMessage(ucrInfo, "2/4 Create a UCR reference for this declaration")
+      assertMessage(ucrHint, "Your own reference, which must be used only for this declaration")
     }
 
-    "have proper messages for error labels" in {
+    "have proper messages for page error labels" in {
 
-      assertMessage(ucrError.withPrefix, "Incorrect DUCR")
-      assertMessage(lrnEmpty.withPrefix, "LRN cannot be empty")
-      assertMessage(lrnLength.withPrefix, "LRN cannot exceed 22 characters")
-      assertMessage(lrnSpecialCharacter.withPrefix, "LRN cannot contain special characters")
+      assertMessage(lrnEmpty, "LRN cannot be empty")
+      assertMessage(lrnLength, "LRN cannot exceed 22 characters")
+      assertMessage(lrnSpecialCharacter, "LRN cannot contain special characters")
     }
   }
 
@@ -68,22 +63,22 @@ class ConsignmentReferencesViewSpec extends ViewSpec {
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title.withPrefix))
+      getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
     "display header" in {
 
       val view = createView()
 
-      getElementByCss(view, "legend>h1").text() must be(messages(hint.withPrefix))
+      getElementByCss(view, "legend>h1").text() must be(messages(header))
     }
 
-    "display empty input with label for UCR" in {
+    "display empty input with label for DUCR" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(2)>label>span:nth-child(1)").text() must be(messages(ucr.withInfo))
-      getElementByCss(view, "form>div:nth-child(2)>label>span.form-hint").text() must be(messages(ucr.withHint))
+      getElementByCss(view, "form>div:nth-child(2)>label>span:nth-child(1)").text() must be(messages(ucrInfo))
+      getElementByCss(view, "form>div:nth-child(2)>label>span.form-hint").text() must be(messages(ucrHint))
       getElementById(view, "ducr_ducr").attr("value") must be("")
     }
 
@@ -91,8 +86,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(messages(lrn.withInfo))
-      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(lrn.withHint))
+      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(messages(lrnInfo))
+      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(lrnHint))
       getElementById(view, "lrn").attr("value") must be("")
     }
 
@@ -100,7 +95,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec {
 
       val backButton = getElementById(createView(), "link-back")
 
-      backButton.text() must be("Back")
+      backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/type")
     }
 
@@ -109,7 +104,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec {
       val view = createView()
 
       val saveButton = getElementByCss(view, "#submit")
-      saveButton.text() must be("Save and continue")
+      saveButton.text() must be(messages(saveAndContinueCaption))
     }
   }
 
@@ -117,83 +112,74 @@ class ConsignmentReferencesViewSpec extends ViewSpec {
 
     "display error for empty LRN" in {
 
-      val view = createView(ConsignmentReferences.form().withError(lrn.key, messages(lrnEmpty.withPrefix)))
+      val view = createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Some(Ducr(properDUCR)), "")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, lrnEmpty.withPrefix, "#lrn")
+      checkErrorLink(view, 1, lrnEmpty, "#lrn")
 
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnEmpty.withPrefix))
+      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnEmpty))
     }
 
     "display error when LRN is longer then 22 characters" in {
 
-      val view = createView(ConsignmentReferences.form().withError(lrn.key, messages(lrnLength.withPrefix)))
+      val view = createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(
+        Some(Ducr(properDUCR)),
+        TestHelper.createRandomString(23)))
+      )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, lrnLength.withPrefix, "#lrn")
+      checkErrorLink(view, 1, lrnLength, "#lrn")
 
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnLength.withPrefix))
+      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnLength))
     }
 
     "display error when LRN contains special character" in {
 
-      val view = createView(ConsignmentReferences.form().withError(lrn.key, messages(lrnSpecialCharacter.withPrefix)))
+      val view = createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Some(Ducr(properDUCR)), "#@#$")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, lrnSpecialCharacter.withPrefix, "#lrn")
+      checkErrorLink(view, 1, lrnSpecialCharacter, "#lrn")
 
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter.withPrefix))
+      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
     }
 
-    "display error when UCR is incorrect and LRN empty" in {
+    "display error when DUCR is incorrect and LRN empty" in {
 
-      val view = createView(
-        ConsignmentReferences
-          .form()
-          .withError("ducr.ducr", messages(ucrError.withPrefix))
-          .withError(lrn.key, messages(lrnEmpty.withPrefix))
+      val view = createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Some(Ducr(incorrectDUCR)), "")))
+
+      checkErrorsSummary(view)
+      checkErrorLink(view, 1, ucrError, "#ducr_ducr")
+      checkErrorLink(view, 2, lrnEmpty, "#lrn")
+
+      getElementByCss(view, "#error-message-ducr_ducr-input").text() must be(messages(ucrError))
+      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnEmpty))
+    }
+
+    "display error when DUCR is incorrect and LRN is longer then 22 characters" in {
+
+      val view = createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(
+        Some(Ducr(incorrectDUCR)),
+        TestHelper.createRandomString(23)))
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, ucrError.withPrefix, "#ducr_ducr")
-      checkErrorLink(view, 2, lrnEmpty.withPrefix, "#lrn")
+      checkErrorLink(view, 1, ucrError, "#ducr_ducr")
+      checkErrorLink(view, 2, lrnLength, "#lrn")
 
-      getElementByCss(view, "#error-message-ducr_ducr-input").text() must be(messages(ucrError.withPrefix))
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnEmpty.withPrefix))
+      getElementByCss(view, "#error-message-ducr_ducr-input").text() must be(messages(ucrError))
+      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnLength))
     }
 
-    "display error when UCR is incorrect and LRN is longer then 22 characters" in {
+    "display error when DUCR is incorrect and LRN contains special character" in {
 
-      val view = createView(
-        ConsignmentReferences
-          .form()
-          .withError("ducr.ducr", messages(ucrError.withPrefix))
-          .withError(lrn.key, messages(lrnLength.withPrefix))
-      )
+      val view = createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Some(Ducr(incorrectDUCR)), "$$%")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, ucrError.withPrefix, "#ducr_ducr")
-      checkErrorLink(view, 2, lrnLength.withPrefix, "#lrn")
+      checkErrorLink(view, 1, ucrError, "#ducr_ducr")
+      checkErrorLink(view, 2, lrnSpecialCharacter, "#lrn")
 
-      getElementByCss(view, "#error-message-ducr_ducr-input").text() must be(messages(ucrError.withPrefix))
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnLength.withPrefix))
-    }
-
-    "display error when UCR is incorrect and LRN contains special character" in {
-
-      val view = createView(
-        ConsignmentReferences
-          .form()
-          .withError("ducr.ducr", messages(ucrError.withPrefix))
-          .withError(lrn.key, messages(lrnSpecialCharacter.withPrefix))
-      )
-
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, ucrError.withPrefix, "#ducr_ducr")
-      checkErrorLink(view, 2, lrnSpecialCharacter.withPrefix, "#lrn")
-
-      getElementByCss(view, "#error-message-ducr_ducr-input").text() must be(messages(ucrError.withPrefix))
-      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter.withPrefix))
+      getElementByCss(view, "#error-message-ducr_ducr-input").text() must be(messages(ucrError))
+      getElementByCss(view, "#error-message-lrn-input").text() must be(messages(lrnSpecialCharacter))
     }
   }
 

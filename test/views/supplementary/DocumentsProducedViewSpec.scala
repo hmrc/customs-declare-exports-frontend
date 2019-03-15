@@ -16,58 +16,47 @@
 
 package views.supplementary
 
+import base.TestHelper
 import forms.supplementary.DocumentsProduced
+import helpers.{CommonMessages, DocumentsProducedMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.helpers.{Item, ViewSpec}
 import views.html.supplementary.documents_produced
+import views.supplementary.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class DocumentsProducedViewSpec extends ViewSpec {
+class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages with CommonMessages {
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
-  private val filledForm =
-    DocumentsProduced(Some("test"), Some("test1"), Some("test2"), Some("test3"), Some("test4"), Some("test5"))
+  private val filledForm = DocumentsProduced(Some("test"), Some("test1"), Some("test2"), Some("test3"), Some("test4"), Some("test5"))
 
-  private val prefix = s"${basePrefix}addDocument."
-
-  private val title = Item(prefix, "title")
-  private val hint = Item(prefix, "hint")
-  private val documentTypeCode = Item(prefix, "documentTypeCode")
-  private val documentIdentifier = Item(prefix, "documentIdentifier")
-  private val documentPart = Item(prefix, "documentPart")
-  private val documentStatus = Item(prefix, "documentStatus")
-  private val documentStatusReason = Item(prefix, "documentStatusReason")
-  private val documentQuantity = Item(prefix, "documentQuantity")
-  private val maximumAmount = Item(prefix, "maximumAmount")
-  private val duplicated = Item(prefix, "duplicated")
-  private val notDefined = Item(prefix, "isNotDefined")
-
-  private def createView(form: Form[DocumentsProduced] = form): Html =
-    documents_produced(appConfig, form, Seq())(fakeRequest, messages)
+  private def createView(form: Form[DocumentsProduced] = form): Html = documents_produced(appConfig, form, Seq())(fakeRequest, messages)
 
   "Documents Produced View" should {
 
     "have proper messages for labels" in {
 
-      assertMessage(title.withPrefix, "2/3 Do you need to add any documents?")
-      assertMessage(hint.withPrefix, "Including certificates, authorisations or additional references")
-      assertMessage(documentTypeCode.withPrefix, "Document type code")
-      assertMessage(documentIdentifier.withPrefix, "Document identifier")
-      assertMessage(documentPart.withPrefix, "Document part")
-      assertMessage(documentStatus.withPrefix, "Document status")
-      assertMessage(documentStatusReason.withPrefix, "Document status reason")
-      assertMessage(documentQuantity.withPrefix, "Quantity")
+      assertMessage(title, "2/3 Do you need to add any documents?")
+      assertMessage(hint, "Including certificates, authorisations or additional references")
+      assertMessage(documentTypeCode, "Document type code")
+      assertMessage(documentIdentifier, "Document identifier")
+      assertMessage(documentPart, "Document part")
+      assertMessage(documentStatus, "Document status")
+      assertMessage(documentStatusReason, "Document status reason")
+      assertMessage(documentQuantity, "Quantity")
     }
 
     "have proper messages for error labels" in {
 
-      assertMessage(documentTypeCode.withError, "Incorrect document type code")
-      assertMessage(documentIdentifier.withError, "Incorrect document identifier")
-      assertMessage(documentPart.withError, "Incorrect document part")
-      assertMessage(documentStatus.withError, "Incorrect document status")
-      assertMessage(documentStatusReason.withError, "Incorrect document status reason")
+      assertMessage(documentTypeCodeError, "Incorrect document type code")
+      assertMessage(documentIdentifierError, "Incorrect document identifier")
+      assertMessage(documentPartError, "Incorrect document part")
+      assertMessage(documentStatusError, "Incorrect document status")
+      assertMessage(documentStatusReasonError, "Incorrect document status reason")
+      assertMessage(maximumAmountReached, "You cannot have more than 99 documents")
+      assertMessage(duplicatedItem, "You cannot add an already existent document")
+      assertMessage(notDefined, "Please provide some document information")
     }
   }
 
@@ -75,72 +64,70 @@ class DocumentsProducedViewSpec extends ViewSpec {
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title.withPrefix))
+      getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
     "display header with hint" in {
 
       val view = createView()
 
-      getElementByCss(view, "legend>h1").text() must be(messages(title.withPrefix))
-      getElementByCss(view, "legend>span").text() must be(messages(hint.withPrefix))
+      getElementByCss(view, "legend>h1").text() must be(messages(title))
+      getElementByCss(view, "legend>span").text() must be(messages(hint))
     }
 
     "display empty input with label for Document type code" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span").text() must be(messages(documentTypeCode.withPrefix))
-      getElementById(view, documentTypeCode.key).attr("value") must be("")
+      getElementByCss(view, "form>div:nth-child(3)>label>span").text() must be(messages(documentTypeCode))
+      getElementById(view, "documentTypeCode").attr("value") must be("")
     }
 
     "display empty input with label for Document identifier" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span").text() must be(messages(documentIdentifier.withPrefix))
-      getElementById(view, documentIdentifier.key).attr("value") must be("")
+      getElementByCss(view, "form>div:nth-child(4)>label>span").text() must be(messages(documentIdentifier))
+      getElementById(view, "documentIdentifier").attr("value") must be("")
     }
 
     "display empty input with label for Document part" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span").text() must be(messages(documentPart.withPrefix))
-      getElementById(view, documentPart.key).attr("value") must be("")
+      getElementByCss(view, "form>div:nth-child(5)>label>span").text() must be(messages(documentPart))
+      getElementById(view, "documentPart").attr("value") must be("")
     }
 
     "display empty input with label for Document status" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(6)>label>span").text() must be(messages(documentStatus.withPrefix))
-      getElementById(view, documentStatus.key).attr("value") must be("")
+      getElementByCss(view, "form>div:nth-child(6)>label>span").text() must be(messages(documentStatus))
+      getElementById(view, "documentStatus").attr("value") must be("")
     }
 
     "display empty input with label for Document status reason" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(7)>label>span").text() must be(
-        messages(documentStatusReason.withPrefix)
-      )
-      getElementById(view, documentStatusReason.key).attr("value") must be("")
+      getElementByCss(view, "form>div:nth-child(7)>label>span").text() must be(messages(documentStatusReason))
+      getElementById(view, "documentStatusReason").attr("value") must be("")
     }
 
     "display empty input with label for Document quantity" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(8)>label>span").text() must be(messages(documentQuantity.withPrefix))
-      getElementById(view, documentQuantity.key).attr("value") must be("")
+      getElementByCss(view, "form>div:nth-child(8)>label>span").text() must be(messages(documentQuantity))
+      getElementById(view, "documentQuantity").attr("value") must be("")
     }
 
     "display \"Back\" button that links to \"Additional Information\" page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
-      backButton.text() must be("Back")
+      backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/additional-information")
     }
 
@@ -149,10 +136,10 @@ class DocumentsProducedViewSpec extends ViewSpec {
       val view = createView()
 
       val addButton = getElementByCss(view, "#add")
-      addButton.text() must be("Add")
+      addButton.text() must be(messages(addCaption))
 
       val saveButton = getElementByCss(view, "#submit")
-      saveButton.text() must be("Save and continue")
+      saveButton.text() must be(messages(saveAndContinueCaption))
     }
   }
 
@@ -160,136 +147,133 @@ class DocumentsProducedViewSpec extends ViewSpec {
 
     "display error for Document type code" in {
 
-      val view =
-        createView(DocumentsProduced.form().withError(documentTypeCode.key, messages(documentTypeCode.withError)))
+      val view = createView(DocumentsProduced.form().fillAndValidate(DocumentsProduced(
+        Some(TestHelper.createRandomString(5)),
+        Some("1234"),
+        Some("1234"),
+        Some("AV"),
+        Some("1234"),
+        Some("1234")
+      )))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentTypeCode.withError, documentTypeCode.asLink)
+      checkErrorLink(view, 1, documentTypeCodeError, "#documentTypeCode")
 
-      getElementByCss(view, "#error-message-documentTypeCode-input").text() must be(
-        messages(documentTypeCode.withError)
-      )
+      getElementByCss(view, "#error-message-documentTypeCode-input").text() must be(messages(documentTypeCodeError))
     }
 
     "display error for Document identifier" in {
 
-      val view =
-        createView(DocumentsProduced.form().withError(documentIdentifier.key, messages(documentIdentifier.withError)))
+      val view = createView(DocumentsProduced.form().fillAndValidate(DocumentsProduced(
+        Some("1234"),
+        Some(TestHelper.createRandomString(31)),
+        Some("1234"),
+        Some("AV"),
+        Some("1234"),
+        Some("1234")
+      )))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentIdentifier.withError, documentIdentifier.asLink)
+      checkErrorLink(view, 1, documentIdentifierError, "#documentIdentifier")
 
-      getElementByCss(view, "#error-message-documentIdentifier-input").text() must be(
-        messages(documentIdentifier.withError)
-      )
+      getElementByCss(view, "#error-message-documentIdentifier-input").text() must be(messages(documentIdentifierError))
     }
 
     "display error for Document part" in {
 
-      val view = createView(DocumentsProduced.form().withError(documentPart.key, messages(documentPart.withError)))
+      val view = createView(DocumentsProduced.form().fillAndValidate(DocumentsProduced(
+        Some("1234"),
+        Some("1234"),
+        Some(TestHelper.createRandomString(6)),
+        Some("AV"),
+        Some("1234"),
+        Some("1234")
+      )))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentPart.withError, documentPart.asLink)
+      checkErrorLink(view, 1, documentPartError, "#documentPart")
 
-      getElementByCss(view, "#error-message-documentPart-input").text() must be(messages(documentPart.withError))
+      getElementByCss(view, "#error-message-documentPart-input").text() must be(messages(documentPartError))
     }
 
     "display error for Document status" in {
 
-      val view = createView(DocumentsProduced.form().withError(documentStatus.key, messages(documentStatus.withError)))
+      val view = createView(DocumentsProduced.form().fillAndValidate(DocumentsProduced(
+        Some("1234"),
+        Some("1234"),
+        Some("1234"),
+        Some("ABC"),
+        Some("1234"),
+        Some("1234")
+      )))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentStatus.withError, documentStatus.asLink)
+      checkErrorLink(view, 1, documentStatusError, "#documentStatus")
 
-      getElementByCss(view, "#error-message-documentStatus-input").text() must be(messages(documentStatus.withError))
+      getElementByCss(view, "#error-message-documentStatus-input").text() must be(messages(documentStatusError))
     }
 
     "display error for Document status reason" in {
 
-      val view = createView(
-        DocumentsProduced.form().withError(documentStatusReason.key, messages(documentStatusReason.withError))
-      )
+      val view = createView(DocumentsProduced.form().fillAndValidate(DocumentsProduced(
+        Some("1234"),
+        Some("1234"),
+        Some("1234"),
+        Some("AV"),
+        Some(TestHelper.createRandomString(36)),
+        Some("1234")
+      )))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentStatusReason.withError, documentStatusReason.asLink)
+      checkErrorLink(view, 1, documentStatusReasonError, "#documentStatusReason")
 
-      getElementByCss(view, "#error-message-documentStatusReason-input").text() must be(
-        messages(documentStatusReason.withError)
-      )
+      getElementByCss(view, "#error-message-documentStatusReason-input").text() must be(messages(documentStatusReasonError))
     }
 
     "display error for Document quantity" in {
 
-      val view =
-        createView(DocumentsProduced.form().withError(documentQuantity.key, messages(documentQuantity.withError)))
+      val view = createView(DocumentsProduced.form().fillAndValidate(DocumentsProduced(
+        Some("1234"),
+        Some("1234"),
+        Some("1234"),
+        Some("AV"),
+        Some("1234"),
+        Some("12345678901234567")
+      )))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentQuantity.withError, documentQuantity.asLink)
+      checkErrorLink(view, 1, documentQuantityError, "#documentQuantity")
 
-      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(
-        messages(documentQuantity.withError)
-      )
-    }
-
-    "display error for duplicated document" in {
-
-      val view = createView(DocumentsProduced.form().withError("", messages(duplicated.withPrefix)))
-
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, duplicated.withPrefix, "#")
-    }
-
-    "display error for more then 99 documents" in {
-
-      val view = createView(DocumentsProduced.form().withError("", messages(maximumAmount.withError)))
-
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, maximumAmount.withError, "#")
-    }
-
-    "display error for trying to save empty document" in {
-
-      val view = createView(DocumentsProduced.form().withError("", messages(notDefined.withPrefix)))
-
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, notDefined.withPrefix, "#")
+      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(messages(documentQuantityError))
     }
 
     "display errors for all fields" in {
 
-      val form = DocumentsProduced
-        .form()
-        .withError(documentTypeCode.key, messages(documentTypeCode.withError))
-        .withError(documentIdentifier.key, messages(documentIdentifier.withError))
-        .withError(documentPart.key, messages(documentPart.withError))
-        .withError(documentStatus.key, messages(documentStatus.withError))
-        .withError(documentStatusReason.key, messages(documentStatusReason.withError))
-        .withError(documentQuantity.key, messages(documentQuantity.withError))
+      val form = DocumentsProduced.form().fillAndValidate(DocumentsProduced(
+        Some(TestHelper.createRandomString(5)),
+        Some(TestHelper.createRandomString(31)),
+        Some(TestHelper.createRandomString(6)),
+        Some("ABC"),
+        Some(TestHelper.createRandomString(36)),
+        Some("12345678901234567")
+      ))
 
       val view = createView(form)
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentTypeCode.withError, documentTypeCode.asLink)
-      checkErrorLink(view, 2, documentIdentifier.withError, documentIdentifier.asLink)
-      checkErrorLink(view, 3, documentPart.withError, documentPart.asLink)
-      checkErrorLink(view, 4, documentStatus.withError, documentStatus.asLink)
-      checkErrorLink(view, 5, documentStatusReason.withError, documentStatusReason.asLink)
-      checkErrorLink(view, 6, documentQuantity.withError, documentQuantity.asLink)
+      checkErrorLink(view, 1, documentTypeCodeError, "#documentTypeCode")
+      checkErrorLink(view, 2, documentIdentifierError, "#documentIdentifier")
+      checkErrorLink(view, 3, documentPartError, "#documentPart")
+      checkErrorLink(view, 4, documentStatusError, "#documentStatus")
+      checkErrorLink(view, 5, documentStatusReasonError, "#documentStatusReason")
+      checkErrorLink(view, 6, documentQuantityError, "#documentQuantity")
 
-      getElementByCss(view, "#error-message-documentTypeCode-input").text() must be(
-        messages(documentTypeCode.withError)
-      )
-      getElementByCss(view, "#error-message-documentIdentifier-input").text() must be(
-        messages(documentIdentifier.withError)
-      )
-      getElementByCss(view, "#error-message-documentPart-input").text() must be(messages(documentPart.withError))
-      getElementByCss(view, "#error-message-documentStatus-input").text() must be(messages(documentStatus.withError))
-      getElementByCss(view, "#error-message-documentStatusReason-input").text() must be(
-        messages(documentStatusReason.withError)
-      )
-      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(
-        messages(documentQuantity.withError)
-      )
+      getElementByCss(view, "#error-message-documentTypeCode-input").text() must be(messages(documentTypeCodeError))
+      getElementByCss(view, "#error-message-documentIdentifier-input").text() must be(messages(documentIdentifierError))
+      getElementByCss(view, "#error-message-documentPart-input").text() must be(messages(documentPartError))
+      getElementByCss(view, "#error-message-documentStatus-input").text() must be(messages(documentStatusError))
+      getElementByCss(view, "#error-message-documentStatusReason-input").text() must be(messages(documentStatusReasonError))
+      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(messages(documentQuantityError))
     }
   }
 
@@ -300,24 +284,24 @@ class DocumentsProducedViewSpec extends ViewSpec {
       val form = DocumentsProduced.form().fill(filledForm)
       val view = createView(form)
 
-      getElementById(view, documentTypeCode.key).attr("value") must be("test")
-      getElementById(view, documentIdentifier.key).attr("value") must be("test1")
-      getElementById(view, documentPart.key).attr("value") must be("test2")
-      getElementById(view, documentStatus.key).attr("value") must be("test3")
-      getElementById(view, documentStatusReason.key).attr("value") must be("test4")
-      getElementById(view, documentQuantity.key).attr("value") must be("test5")
+      getElementById(view, "documentTypeCode").attr("value") must be("test")
+      getElementById(view, "documentIdentifier").attr("value") must be("test1")
+      getElementById(view, "documentPart").attr("value") must be("test2")
+      getElementById(view, "documentStatus").attr("value") must be("test3")
+      getElementById(view, "documentStatusReason").attr("value") must be("test4")
+      getElementById(view, "documentQuantity").attr("value") must be("test5")
     }
 
     "display one item in table" in {
 
       val view = documents_produced(appConfig, form, Seq(filledForm))(fakeRequest, messages)
 
-      getElementByCss(view, "th:nth-child(1)").text() must be(messages(documentTypeCode.withPrefix))
-      getElementByCss(view, "th:nth-child(2)").text() must be(messages(documentIdentifier.withPrefix))
-      getElementByCss(view, "th:nth-child(3)").text() must be(messages(documentPart.withPrefix))
-      getElementByCss(view, "th:nth-child(4)").text() must be(messages(documentStatus.withPrefix))
-      getElementByCss(view, "th:nth-child(5)").text() must be(messages(documentStatusReason.withPrefix))
-      getElementByCss(view, "th:nth-child(6)").text() must be(messages(documentQuantity.withPrefix))
+      getElementByCss(view, "th:nth-child(1)").text() must be(messages(documentTypeCode))
+      getElementByCss(view, "th:nth-child(2)").text() must be(messages(documentIdentifier))
+      getElementByCss(view, "th:nth-child(3)").text() must be(messages(documentPart))
+      getElementByCss(view, "th:nth-child(4)").text() must be(messages(documentStatus))
+      getElementByCss(view, "th:nth-child(5)").text() must be(messages(documentStatusReason))
+      getElementByCss(view, "th:nth-child(6)").text() must be(messages(documentQuantity))
 
       getElementByCss(view, "tr>td:nth-child(1)").text() must be("test")
       getElementByCss(view, "tr>td:nth-child(2)").text() must be("test1")

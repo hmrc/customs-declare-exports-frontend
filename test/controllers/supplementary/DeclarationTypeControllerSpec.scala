@@ -18,20 +18,16 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import forms.supplementary.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes
-import forms.supplementary.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes._
 import forms.supplementary.DispatchLocation.AllowedDispatchLocations
 import forms.supplementary.{AdditionalDeclarationType, DispatchLocation}
+import helpers.DeclarationTypeMessages
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
-import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString, JsValue}
-import play.api.mvc.Result
 import play.api.test.Helpers._
 
-import scala.concurrent.Future
-
-class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with DeclarationTypeMessages {
 
   import DeclarationTypeControllerSpec._
   private val dispatchLocationUri = uriWithContextPath("/declaration/supplementary/dispatch-location")
@@ -39,43 +35,33 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
   before {
     authorizedUser()
+    withCaching[AdditionalDeclarationType](None, AdditionalDeclarationType.formId)
+    withCaching[DispatchLocation](None, DispatchLocation.formId)
   }
 
-  "Declaration Type Controller on dispatch location page" should {
+  after {
+    reset(mockCustomsCacheService)
+  }
+
+  "Declaration Type Controller for dispatch location on GET" should {
 
     "return 200 code" in {
-      val result = displayDispatchLocationPageTestScenario()
+
+      val result = route(app, getRequest(dispatchLocationUri)).get
       status(result) must be(OK)
     }
 
     "populate the form fields with data from cache" in {
-      val result = displayDispatchLocationPageTestScenario(Some(DispatchLocation(AllowedDispatchLocations.OutsideEU)))
-      contentAsString(result) must include("checked=\"checked\"")
-    }
+      withCaching[DispatchLocation](Some(DispatchLocation(AllowedDispatchLocations.OutsideEU)), DispatchLocation.formId)
 
-    def displayDispatchLocationPageTestScenario(cacheValue: Option[DispatchLocation] = None): Future[Result] = {
-      withCaching[DispatchLocation](cacheValue, DispatchLocation.formId)
-      route(app, getRequest(dispatchLocationUri)).get
+      val result = route(app, getRequest(dispatchLocationUri)).get
+      contentAsString(result) must include("checked=\"checked\"")
     }
   }
 
-  "Declaration Type Controller on submit dispatch location" should {
-
-    "display the form page with error" when {
-
-      "no value provided for dispatch location" in {
-        withCaching[DispatchLocation](None, DispatchLocation.formId)
-
-        val formWithoutDeclarationType = buildDispatchLocationTestData()
-        val result = route(app, postRequest(dispatchLocationUri, formWithoutDeclarationType)).get
-
-        contentAsString(result) must include(messages("supplementary.dispatchLocation.inputText.error.empty"))
-      }
-    }
+  "Declaration Type Controller for dispatch location on POST" should {
 
     "save the data to the cache" in {
-      reset(mockCustomsCacheService)
-      withCaching[DispatchLocation](None, DispatchLocation.formId)
 
       val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.OutsideEU)
       route(app, postRequest(dispatchLocationUri, validForm)).get.futureValue
@@ -85,7 +71,6 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
 
     "return 303 code" in {
-      withCaching[DispatchLocation](None, DispatchLocation.formId)
 
       val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.OutsideEU)
       val result = route(app, postRequest(dispatchLocationUri, validForm)).get
@@ -120,41 +105,26 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
   }
 
-  "Declaration Type Controller on display declaration type page" should {
+  "Declaration Type Controller for declaration type on GET" should {
 
     "return 200 code" in {
-      val result = displayDeclarationTypePageTestScenario()
+
+      val result = route(app, getRequest(declarationTypeUri)).get
       status(result) must be(OK)
     }
 
     "populate the form fields with data from cache" in {
-      val result = displayDeclarationTypePageTestScenario(Some(AdditionalDeclarationType(Simplified)))
-      contentAsString(result) must include("checked=\"checked\"")
-    }
 
-    def displayDeclarationTypePageTestScenario(cacheValue: Option[AdditionalDeclarationType] = None): Future[Result] = {
-      withCaching[AdditionalDeclarationType](cacheValue, AdditionalDeclarationType.formId)
-      route(app, getRequest(declarationTypeUri)).get
+      withCaching[AdditionalDeclarationType](Some(AdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Simplified)), AdditionalDeclarationType.formId)
+
+      val result = route(app, getRequest(declarationTypeUri)).get
+      contentAsString(result) must include("checked=\"checked\"")
     }
   }
 
-  "Declaration Type Controller on submit declaration type page" should {
-
-    "display the form page with error" when {
-
-      "no value provided for declaration type" in {
-        withCaching[AdditionalDeclarationType](None, AdditionalDeclarationType.formId)
-
-        val formWithoutAdditionalDeclarationType = buildAdditionalDeclarationTypeTestData()
-        val result = route(app, postRequest(declarationTypeUri, formWithoutAdditionalDeclarationType)).get
-
-        contentAsString(result) must include(messages("supplementary.declarationType.inputText.error.empty"))
-      }
-    }
+  "Declaration Type Controller on declaration type on POST" should {
 
     "save the data to the cache" in {
-      reset(mockCustomsCacheService)
-      withCaching[AdditionalDeclarationType](None, AdditionalDeclarationType.formId)
 
       val validForm = buildAdditionalDeclarationTypeTestData(AllowedAdditionalDeclarationTypes.Simplified)
       route(app, postRequest(declarationTypeUri, validForm)).get.futureValue
@@ -168,8 +138,6 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
 
     "return 303 code" in {
-      withCaching[AdditionalDeclarationType](None, AdditionalDeclarationType.formId)
-
       val validForm = buildAdditionalDeclarationTypeTestData(AllowedAdditionalDeclarationTypes.Simplified)
       val result = route(app, postRequest(declarationTypeUri, validForm)).get
 
@@ -177,7 +145,6 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
 
     "redirect to \"Consignment references\" page" in {
-      withCaching[AdditionalDeclarationType](None, AdditionalDeclarationType.formId)
 
       val validForm = buildAdditionalDeclarationTypeTestData(AllowedAdditionalDeclarationTypes.Simplified)
       val result = route(app, postRequest(declarationTypeUri, validForm)).get
