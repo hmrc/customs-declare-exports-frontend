@@ -29,86 +29,58 @@ class GoodsItemNumberControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
   before {
     authorizedUser()
+    withCaching[GoodsItemNumber](None)
   }
 
-  "Good item number controller" should {
+  "Good Item Number Controller on GET" should {
 
-    "display good item number declaration form" in {
-      withCaching[GoodsItemNumber](None)
-
+    "return 200 with a success" in {
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.goodItemNumber.title"))
-      stringResult must include(messages("supplementary.goodItemNumber"))
-      stringResult must include(messages("supplementary.goodItemNumber.hint"))
     }
+  }
 
-    "display \"Back\" button that links to \"Previous Documents\" page" in {
-      withCaching[GoodsItemNumber](None)
+  "Good Item Number Controller on POST" should {
 
-      val result = route(app, getRequest(uri)).get
+    "validate request and redirect - too many characters" in {
+
+      val incorrectGoodItemNumber: JsValue =
+        JsObject(Map("goodItemNumber" -> JsString("4563")))
+      val result = route(app, postRequest(uri, incorrectGoodItemNumber)).get
       val stringResult = contentAsString(result)
 
-      status(result) must be(OK)
-      stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/supplementary/previous-documents"))
+      stringResult must include(messages("supplementary.goodItemNumber.error"))
     }
 
-    "display \"Save and continue\" button on page" in {
-      withCaching[GoodsItemNumber](None)
+    "validate request and redirect - cannot contain only zeros" in {
 
-      val result = route(app, getRequest(uri)).get
-      val resultAsString = contentAsString(result)
+      val incorrectGoodItemNumber: JsValue =
+        JsObject(Map("goodItemNumber" -> JsString("000")))
+      val result = route(app, postRequest(uri, incorrectGoodItemNumber)).get
+      val stringResult = contentAsString(result)
 
-      resultAsString must include(messages("site.save_and_continue"))
-      resultAsString must include("button id=\"submit\" class=\"button\"")
+      stringResult must include(messages("supplementary.goodItemNumber.error"))
     }
-  }
 
-  "validate form - too many characters" in {
-    withCaching[GoodsItemNumber](None)
+    "validate request and redirect - contains alphabetic" in {
 
-    val incorrectGoodItemNumber: JsValue =
-      JsObject(Map("goodItemNumber" -> JsString("4563")))
-    val result = route(app, postRequest(uri, incorrectGoodItemNumber)).get
-    val stringResult = contentAsString(result)
+      val alphabeticGoodItemNumber: JsValue =
+        JsObject(Map("goodItemNumber" -> JsString("RGB")))
+      val result = route(app, postRequest(uri, alphabeticGoodItemNumber)).get
+      val stringResult = contentAsString(result)
 
-    stringResult must include(messages("supplementary.goodItemNumber.error"))
-  }
+      stringResult must include(messages("supplementary.goodItemNumber.error"))
+    }
 
-  "validate form - cannot contain only zeros" in {
-    withCaching[GoodsItemNumber](None)
+    "validate request and redirect - correct answer" in {
 
-    //TODO: not sure why we have . in here before
-    val incorrectGoodItemNumber: JsValue =
-      JsObject(Map("goodItemNumber" -> JsString("000")))
-    val result = route(app, postRequest(uri, incorrectGoodItemNumber)).get
-    val stringResult = contentAsString(result)
+      val result = route(app, postRequest(uri, correctGoodsItemNumberJSON)).get
+      val header = result.futureValue.header
 
-    stringResult must include(messages("supplementary.goodItemNumber.error"))
-  }
+      status(result) must be(SEE_OTHER)
 
-  "validate form - contains alphabetic" in {
-    withCaching[GoodsItemNumber](None)
-
-    val alphabeticGoodItemNumber: JsValue =
-      JsObject(Map("goodItemNumber" -> JsString("RGB")))
-    val result = route(app, postRequest(uri, alphabeticGoodItemNumber)).get
-    val stringResult = contentAsString(result)
-
-    stringResult must include(messages("supplementary.goodItemNumber.error"))
-  }
-
-  "validate form and redirect - correct answer" in {
-    withCaching[GoodsItemNumber](None)
-
-    val result = route(app, postRequest(uri, correctGoodsItemNumberJSON)).get
-    val header = result.futureValue.header
-
-    status(result) must be(SEE_OTHER)
-
-    header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/procedure-codes"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/procedure-codes"))
+    }
   }
 }

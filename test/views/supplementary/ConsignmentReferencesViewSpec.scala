@@ -41,7 +41,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
   "Consignment References View" should {
 
-    "have proper messages for page labels" in {
+    "have proper messages for labels" in {
 
       assertMessage(title, "Consignment References")
       assertMessage(header, "Your references")
@@ -51,7 +51,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       assertMessage(ucrHint, "Your own reference, which must be used only for this declaration")
     }
 
-    "have proper messages for page error labels" in {
+    "have proper messages for error labels" in {
 
       assertMessage(lrnEmpty, "LRN cannot be empty")
       assertMessage(lrnLength, "LRN cannot exceed 22 characters")
