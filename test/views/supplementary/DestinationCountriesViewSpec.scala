@@ -97,7 +97,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
         "",
-        Some("Germany")
+        "Germany"
       )))
 
       checkErrorsSummary(view)
@@ -110,7 +110,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
         TestHelper.createRandomString(10),
-        Some("Germany")
+        "Germany"
       )))
 
       checkErrorsSummary(view)
@@ -123,7 +123,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
         "Germany",
-        Some(TestHelper.createRandomString(10))
+        TestHelper.createRandomString(10)
       )))
 
       checkErrorsSummary(view)
@@ -136,7 +136,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
         TestHelper.createRandomString(10),
-        Some(TestHelper.createRandomString(10))
+        TestHelper.createRandomString(10)
       )))
 
       checkErrorsSummary(view)
@@ -154,7 +154,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
         "",
-        Some(TestHelper.createRandomString(10))
+        TestHelper.createRandomString(10)
       )))
 
       checkErrorsSummary(view)
@@ -173,7 +173,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display both countries in inputs" in {
 
-      val view = createView(DestinationCountries.form().fill(DestinationCountries("Ukraine", Some("Poland"))))
+      val view = createView(DestinationCountries.form().fill(DestinationCountries("Ukraine","Poland")))
 
       getElementById(view, "countryOfDispatch").attr("value") must be("Ukraine")
       getElementById(view, "countryOfDestination").attr("value") must be("Poland")
@@ -181,7 +181,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display only dispatch country in inputs" in {
 
-      val view = createView(DestinationCountries.form().fill(DestinationCountries("Ukraine", Some(""))))
+      val view = createView(DestinationCountries.form().fill(DestinationCountries( "Ukraine", "")))
 
       getElementById(view, "countryOfDispatch").attr("value") must be("Ukraine")
       getElementById(view, "countryOfDestination").attr("value") must be("")
@@ -189,7 +189,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display only destination country in inputs" in {
 
-      val view = createView(DestinationCountries.form().fill(DestinationCountries("", Some("Poland"))))
+      val view = createView(DestinationCountries.form().fill(DestinationCountries("", "Poland")))
 
       getElementById(view, "countryOfDispatch").attr("value") must be("")
       getElementById(view, "countryOfDestination").attr("value") must be("Poland")

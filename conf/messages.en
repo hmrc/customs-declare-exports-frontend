@@ -309,6 +309,7 @@ supplementary.declarationHolders.duplicated = You cannot add the same holder
 supplementary.destinationCountries.title = Declaration countries of dispatch/destination
 supplementary.destinationCountries.countryOfDestination = 5/8 Enter the country of destination
 supplementary.destinationCountries.countryOfDestination.error = Country of destination is incorrect
+supplementary.destinationCountries.countryOfDestination.empty = Country of destination cannot be empty
 supplementary.destinationCountries.countryOfDispatch = 5/14 Enter the country of dispatch
 supplementary.destinationCountries.countryOfDispatch.empty = Country of dispatch cannot be empty
 supplementary.destinationCountries.countryOfDispatch.error = Country of dispatch is incorrect
@@ -327,6 +328,7 @@ supplementary.goodsLocation.qualifierOfIdentification = Qualifier of the identif
 supplementary.goodsLocation.qualifierOfIdentification.error = Qualifier of the identification is incorrect
 supplementary.goodsLocation.identificationOfLocation = Identification of location
 supplementary.goodsLocation.identificationOfLocation.error = Identification of location is incorrect
+supplementary.goodsLocation.identificationOfLocation.empty = Identification of location cannot be empty
 supplementary.goodsLocation.additionalIdentifier = Additional identifier
 supplementary.goodsLocation.additionalIdentifier.error = Additional identifier is incorrect
 supplementary.goodsLocation.streetAndNumber = Street and number
@@ -433,9 +435,11 @@ supplementary.transportInfo.containerId.empty = Container ID cannot be empty
 supplementary.transportInfo.containerId.error = Container ID is incorrect
 
 supplementary.totalAmountInvoiced.error = Total amount of invoiced items is incorrect
+supplementary.totalAmountInvoiced.empty = Total amount of invoiced items cannot be empty
 supplementary.totalAmountInvoiced = 4/11 What is the total amount invoiced?
 supplementary.totalAmountInvoiced.hint = The total price of all the goods in the declaration e.g. 1234567.12
 supplementary.exchangeRate.error = Exchange rate is incorrect
+supplementary.exchangeRate.empty = Exchange rate cannot be empty
 supplementary.exchangeRate = 4/15 What was the exchange rate used?
 supplementary.exchangeRate.hint = The rate of exchange fixed in advance by a contract between the parties e.g. 1234567.12345
 

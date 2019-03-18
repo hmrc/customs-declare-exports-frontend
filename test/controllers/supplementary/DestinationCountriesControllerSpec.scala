@@ -61,15 +61,14 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       contentAsString(result) must include(messages(countryOfDispatchEmpty))
     }
 
-    "validate request and redirect - country of destination missing" in {
+    "validate request - country of destination missing" in {
+      withCaching[DestinationCountries](None)
 
       val result = route(app, postRequest(uri, emptyDispatchCountriesJSON)).get
-      val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/location-of-goods")
-      )
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages("supplementary.destinationCountries.countryOfDestination.empty"))
     }
 
     "validate request and redirect - correct values" in {

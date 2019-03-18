@@ -27,7 +27,7 @@ case class GoodsLocation(
   country: Option[String],
   typeOfLocation: Option[String],
   qualifierOfIdentification: Option[String],
-  identificationOfLocation: Option[String],
+  identificationOfLocation: String,
   additionalIdentifier: Option[String],
   streetAndNumber: Option[String],
   postCode: Option[String],
@@ -38,7 +38,7 @@ case class GoodsLocation(
     Map(
       "declaration.goodsShipment.consignment.goodsLocation.typeCode" -> typeOfLocation.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.typeCode" -> qualifierOfIdentification.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.name" -> identificationOfLocation.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.name" -> identificationOfLocation,
       "declaration.goodsShipment.consignment.goodsLocation.id" -> additionalIdentifier.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.line" -> streetAndNumber.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.postcodeId" -> postCode.getOrElse(""),
@@ -69,12 +69,15 @@ object GoodsLocation {
       text()
         .verifying("supplementary.goodsLocation.qualifierOfIdentification.error", isAlphabetic and hasSpecificLength(1))
     ),
-    "identificationOfLocation" -> optional(
-      text().verifying(
-        "supplementary.goodsLocation.identificationOfLocation.error",
-        isAlphanumeric and hasSpecificLength(3)
+    "identificationOfLocation" -> text()
+      .verifying(
+        "supplementary.goodsLocation.identificationOfLocation.empty",
+        nonEmpty
       )
-    ),
+        .verifying(
+        "supplementary.goodsLocation.identificationOfLocation.error",
+        isEmpty or (isAlphanumeric and hasSpecificLength(3))
+      ),
     "additionalIdentifier" -> optional(
       text().verifying(
         "supplementary.goodsLocation.additionalIdentifier.error",
