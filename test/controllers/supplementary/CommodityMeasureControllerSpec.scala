@@ -33,7 +33,6 @@ class CommodityMeasureControllerSpec
     extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
 
   val uri = uriWithContextPath("/declaration/supplementary/commodity-measure")
-
   val form = CommodityMeasure.form()
 
   "CommodityController" should {
@@ -51,6 +50,7 @@ class CommodityMeasureControllerSpec
 
         }
       }
+
       "return OK" when {
 
         "user is signed in" in {
@@ -87,7 +87,7 @@ class CommodityMeasureControllerSpec
 
       "return UNAUTHORIZED" when {
 
-        "user does not have an eori" in {
+        "user does not have an EORI" in {
           userWithoutEori()
           val body = Seq(("typesOfPackages", "A1"))
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
@@ -117,7 +117,7 @@ class CommodityMeasureControllerSpec
 
       "add CommodityMeasure to the cache" when {
 
-        "with valid data and on click of  add" in {
+        "with valid data and on click of add" in {
 
           forAll(arbitrary[CommodityMeasure]) { commodityMeasure =>
             authorizedUser()

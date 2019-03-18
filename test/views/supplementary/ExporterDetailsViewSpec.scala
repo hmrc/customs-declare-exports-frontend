@@ -17,30 +17,28 @@
 package views.supplementary
 
 import base.TestHelper
-import forms.supplementary.{Address, DeclarantDetails, EntityDetails}
-import helpers.{CommonMessages, DeclarantDetailsMessages}
+import forms.supplementary.{Address, EntityDetails, ExporterDetails}
+import helpers.{CommonMessages, ExporterDetailsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.supplementary.declarant_details
+import views.html.supplementary.exporter_details
 import views.supplementary.spec.ViewSpec
-import views.tags.ViewTest
 
-@ViewTest
-class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages with CommonMessages {
+class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with CommonMessages {
 
-  private val form: Form[DeclarantDetails] = DeclarantDetails.form()
-  private def createView(form: Form[DeclarantDetails] = form): Html = declarant_details(appConfig, form)(fakeRequest, messages, countries)
+  private val form: Form[ExporterDetails] = ExporterDetails.form()
+  private def createView(form: Form[ExporterDetails] = form): Html = exporter_details(appConfig, form)(fakeRequest, messages, countries)
 
-  "Declarant Details View" should {
+  "Exporter Details View" should {
 
     "have proper messages for labels" in {
 
-      assertMessage(title, "3/17 - 3/18 Add declarant")
-      assertMessage(hint, "TODO")
+      assertMessage(title, "3/1 - 3/2 Exporter ID")
+      assertMessage(hint, "The exporter is the registered trader sending the goods")
     }
   }
 
-  "Declarant Details View on empty page" should {
+  "Exporter Details View on empty page" should {
 
     "display page title" in {
 
@@ -104,12 +102,12 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Exporter Details\" page" in {
+    "display \"Back\" button that links to \"Consignment References\" page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/exporter-details")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/consignment-references")
     }
 
     "display \"Save and continue\" button on page" in {
@@ -119,11 +117,11 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
     }
   }
 
-  "Declarant Details View with invalid input" should {
+  "Exporter Details View on invalid input" should {
 
     "display error when both EORI and business details are empty" in {
 
-      val view = createView(DeclarantDetails.form().bind(Map[String, String]()))
+      val view = createView(ExporterDetails.form().bind(Map[String, String]()))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, eoriOrAddressEmpty, "#details")
@@ -133,7 +131,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display error when EORI is provided, but is incorrect" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         Some(TestHelper.createRandomString(19)), None)
       )))
 
@@ -145,7 +143,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display error for empty Full name" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England")))
       )))
 
@@ -157,7 +155,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display error for incorrect Full name" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address(TestHelper.createRandomString( 71), "Test Street", "Leeds", "LS18BN", "England")))
       )))
 
@@ -169,7 +167,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display error for empty Address" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England")))
       )))
 
@@ -181,7 +179,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display error for incorrect Address" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address("Marco Polo", TestHelper.createRandomString(71), "Leeds", "LS18BN", "England")))
       )))
 
@@ -193,7 +191,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display error for empty Town or city" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England")))
       )))
 
@@ -205,7 +203,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display error for incorrect Town or city" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address("Marco Polo", "Test Street", TestHelper.createRandomString(71), "LS18BN", "England")))
       )))
 
@@ -217,7 +215,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display error for empty Postcode" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England")))
       )))
       checkErrorsSummary(view)
@@ -228,7 +226,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display error for incorrect Postcode" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomString(71), "England")))
       )))
 
@@ -240,7 +238,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display error for empty Country" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "")))
       )))
 
@@ -253,7 +251,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display error for incorrect Country" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))
       )))
 
@@ -265,7 +263,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display errors when everything except Full name is empty" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address("Marco Polo", "", "", "", "")))
       )))
 
@@ -284,7 +282,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display errors when everything except Country is empty" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address("", "", "", "", "Ukraine")))
       )))
 
@@ -302,7 +300,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display errors when everything except Full name is incorrect" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address(
           "Marco Polo",
           TestHelper.createRandomString(71),
@@ -325,7 +323,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display errors when everything except Country is incorrect" in {
 
-      val view = createView(DeclarantDetails.form().fillAndValidate(DeclarantDetails(EntityDetails(
+      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
         None, Some(Address(
           TestHelper.createRandomString(71),
           TestHelper.createRandomString(71),
@@ -347,11 +345,11 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
     }
   }
 
-  "Declarant Details View when filled" should {
+  "Exporter Details View when filled" should {
 
     "display EORI" in {
 
-      val form = DeclarantDetails.form().fill(DeclarantDetails(EntityDetails(Some("1234"), None)))
+      val form = ExporterDetails.form().fill(ExporterDetails(EntityDetails(Some("1234"), None)))
       val view = createView(form)
 
       getElementById(view, "details_eori").attr("value") must be("1234")
@@ -359,7 +357,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display business address" in {
 
-      val form = DeclarantDetails.form().fill(DeclarantDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
+      val form = ExporterDetails.form().fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
       val view = createView(form)
 
       getElementById(view, "details_address_fullName").attr("value") must be("test")

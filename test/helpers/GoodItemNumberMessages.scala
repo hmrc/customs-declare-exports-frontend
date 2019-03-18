@@ -16,10 +16,12 @@
 
 package helpers
 
-trait DeclarantDetailsMessages {
+trait GoodItemNumberMessages {
 
-  val declarantDetails: String = "supplementary.declarant"
+  val goodItemNumber: String = "supplementary.goodItemNumber"
 
-  val title: String = declarantDetails + ".title"
-  val hint: String = declarantDetails + ".title.hint"
+  val title: String = goodItemNumber + ".title"
+  val hint: String = goodItemNumber + ".hint"
+  val goodItemError: String = goodItemNumber + ".error"
+  val goodItem : String = goodItemNumber
 }

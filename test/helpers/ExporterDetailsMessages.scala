@@ -16,10 +16,11 @@
 
 package helpers
 
-trait DeclarantDetailsMessages {
+trait ExporterDetailsMessages {
 
-  val declarantDetails: String = "supplementary.declarant"
+  // TODO: seems like mapping is wrong here - consignor or exporter e.g: supplementary.consignor or supplementary.exporter
+  val exporterDetails: String = "supplementary.consignor"
 
-  val title: String = declarantDetails + ".title"
-  val hint: String = declarantDetails + ".title.hint"
+  val title: String = exporterDetails + ".title"
+  val hint: String = exporterDetails + ".title.hint"
 }
