@@ -32,6 +32,9 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
   private def createView(form: Form[AdditionalInformation] = form): Html =
     additional_information(appConfig, form, Seq())(fakeRequest, messages)
 
+  /*
+   * Some errors (cache) are tested in AdditionalInformationControllerSpec
+   */
   "Additional Information View" should {
 
     "have proper messages for labels" in {

@@ -117,7 +117,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
     }
   }
 
-  "Exporter Details View on invalid input" should {
+  "Exporter Details View for invalid input" should {
 
     "display error when both EORI and business details are empty" in {
 
@@ -347,7 +347,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
   "Exporter Details View when filled" should {
 
-    "display EORI" in {
+    "display data in EORI input" in {
 
       val form = ExporterDetails.form().fill(ExporterDetails(EntityDetails(Some("1234"), None)))
       val view = createView(form)
@@ -355,7 +355,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
       getElementById(view, "details_eori").attr("value") must be("1234")
     }
 
-    "display business address" in {
+    "display data in Business address inputs" in {
 
       val form = ExporterDetails.form().fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
       val view = createView(form)

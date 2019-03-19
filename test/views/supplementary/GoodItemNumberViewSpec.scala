@@ -81,7 +81,7 @@ class GoodItemNumberViewSpec extends ViewSpec with GoodItemNumberMessages with C
     }
   }
 
-  "Good Item Number View on invalid input" should {
+  "Good Item Number View for invalid input" should {
 
     "display error when number is incorrect " in {
 
@@ -96,10 +96,9 @@ class GoodItemNumberViewSpec extends ViewSpec with GoodItemNumberMessages with C
 
   "Good Item Number View when filled" should {
 
-    "display entered number" in {
+    "display data in Good Number input" in {
 
-      val form = GoodsItemNumber.form().fill(GoodsItemNumber("100"))
-      val view = createView(form)
+      val view = createView(GoodsItemNumber.form().fill(GoodsItemNumber("100")))
 
       getElementById(view, "goodItemNumber").attr("value") must be("100")
     }

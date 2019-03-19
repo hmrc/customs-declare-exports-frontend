@@ -19,11 +19,10 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.GoodsItemNumber
 import forms.supplementary.GoodsItemNumberSpec._
-import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class GoodsItemNumberControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class GoodsItemNumberControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/declaration/supplementary/good-item-number")
 
