@@ -18,8 +18,8 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.supplementary.routes.{DocumentsProducedController, SummaryPageController}
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.supplementary.routes.{DocumentsProducedController, ItemsSummaryController}
+import controllers.util.CacheIdGenerator.{goodsItemCacheId, supplementaryCacheId}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.supplementary.DocumentsProduced
 import forms.supplementary.DocumentsProduced.form
@@ -32,7 +32,7 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import services.CustomsCacheService
+import services.{CustomsCacheService, ItemsCachingService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.supplementary.documents_produced
@@ -44,13 +44,14 @@ class DocumentsProducedController @Inject()(
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService
+  customsCacheService: CustomsCacheService,
+  itemsCache: ItemsCachingService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[DocumentsProducedData](supplementaryCacheId, formId)
+      .fetchAndGetEntry[DocumentsProducedData](goodsItemCacheId, formId)
       .map {
         case Some(data) => Ok(documents_produced(appConfig, form, data.documents))
         case _          => Ok(documents_produced(appConfig, form, Seq()))
@@ -61,7 +62,7 @@ class DocumentsProducedController @Inject()(
     val boundForm = form.bindFromRequest()
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
     val cachedData = customsCacheService
-      .fetchAndGetEntry[DocumentsProducedData](supplementaryCacheId, formId)
+      .fetchAndGetEntry[DocumentsProducedData](goodsItemCacheId, formId)
       .map(_.getOrElse(DocumentsProducedData(Seq())))
 
     cachedData.flatMap { cache =>
@@ -106,12 +107,25 @@ class DocumentsProducedController @Inject()(
     document: DocumentsProduced,
     documents: Seq[DocumentsProduced]
   )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
-    if (document.isDefined)
+    if (document.isDefined) {
+      val updateDocs = DocumentsProducedData(documents :+ document)
       customsCacheService
-        .cache[DocumentsProducedData](supplementaryCacheId, formId, DocumentsProducedData(documents :+ document))
-        .map { _ =>
-          Redirect(SummaryPageController.displayPage())
-        } else Future.successful(Redirect(SummaryPageController.displayPage()))
+        .cache[DocumentsProducedData](goodsItemCacheId, formId, updateDocs)
+        .flatMap { _ =>
+          addGoodsItem(document, updateDocs.documents)
+        }
+    } else
+      addGoodsItem(document)
+
+  private def addGoodsItem(
+    document: DocumentsProduced,
+    docs: Seq[DocumentsProduced] = Seq.empty
+  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier) =
+    itemsCache.addItemToCache(goodsItemCacheId, supplementaryCacheId).flatMap {
+      case true => Future.successful(Redirect(ItemsSummaryController.displayForm()))
+      case false =>
+        handleErrorPage(Seq(("", "supplementary.addgoodsitems.addallpages.error")), document, docs)
+    }
 
   private def addItem(
     userInput: DocumentsProduced,
@@ -128,7 +142,7 @@ class DocumentsProducedController @Inject()(
         if (document.isDefined) {
           val updatedCache = DocumentsProducedData(documents :+ document)
           customsCacheService
-            .cache[DocumentsProducedData](supplementaryCacheId, formId, updatedCache)
+            .cache[DocumentsProducedData](goodsItemCacheId, formId, updatedCache)
             .map(_ => Redirect(DocumentsProducedController.displayForm()))
         } else handleErrorPage(Seq(("", "supplementary.addDocument.isNotDefined")), userInput, cachedData.documents)
       }
@@ -141,7 +155,7 @@ class DocumentsProducedController @Inject()(
     if (cachedData.containsItem(docToRemove)) {
       val updatedCache = cachedData.copy(documents = cachedData.documents.filterNot(_ == docToRemove))
 
-      customsCacheService.cache[DocumentsProducedData](supplementaryCacheId, formId, updatedCache).map { _ =>
+      customsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, updatedCache).map { _ =>
         Redirect(DocumentsProducedController.displayForm())
       }
     } else errorHandler.displayErrorPage()

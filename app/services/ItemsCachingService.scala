@@ -1,0 +1,174 @@
+/*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package services
+import com.google.inject.Inject
+import config.AppConfig
+import controllers.util.CacheIdGenerator.{goodsItemCacheId, itemsId, supplementaryCacheId}
+import forms.supplementary.ItemType.IdentificationTypeCodes._
+import forms.supplementary.{CommodityMeasure, ItemType, PackageInformation}
+import javax.inject.Singleton
+import models.DeclarationFormats._
+import models.declaration.supplementary.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import models.requests.AuthenticatedRequest
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.wco.dec._
+
+import scala.concurrent.{ExecutionContext, Future}
+
+@Singleton
+class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig: AppConfig) {
+
+  def generatePackages(cachedData: CacheMap) =
+    cachedData
+      .getEntry[Seq[PackageInformation]](PackageInformation.formId)
+      .map(
+        _.map(
+          packageInfo =>
+            Packaging(
+              typeCode = packageInfo.typesOfPackages,
+              quantity = packageInfo.numberOfPackages,
+              marksNumbersId = packageInfo.shippingMarks
+          )
+        )
+      )
+
+  def procedureCodes(cachedData: CacheMap) =
+    cachedData
+      .getEntry[ProcedureCodesData](ProcedureCodesData.formId)
+      .map(
+        form =>
+          Seq(GovernmentProcedure(form.procedureCode.map(_.substring(0, 2)), form.procedureCode.map(_.substring(2, 4))))
+            ++ form.additionalProcedureCodes.map(code => GovernmentProcedure(Some(code)))
+      )
+
+  def commodityGoodsMeasure(cachedData: CacheMap) =
+    cachedData
+      .getEntry[CommodityMeasure](CommodityMeasure.commodityFormId)
+      .map(
+        form =>
+          Commodity(
+            goodsMeasure = Some(
+              GoodsMeasure(
+                Some(Measure(value = Some(BigDecimal(form.grossMass)))),
+                Some(Measure(value = Some(BigDecimal(form.netMass)))),
+                Some(Measure(value = form.supplementaryUnits.map((BigDecimal(_)))))
+              )
+            )
+        )
+      )
+
+  def additionalInfo(cachedData: CacheMap) =
+    cachedData
+      .getEntry[AdditionalInformationData](AdditionalInformationData.formId)
+      .map(_.items.map(info => AdditionalInformation(Some(info.code), Some(info.description))))
+
+  def documents(cachedData: CacheMap) =
+    cachedData
+      .getEntry[DocumentsProducedData](DocumentsProducedData.formId)
+      .map(
+        _.documents.map(
+          doc =>
+            GovernmentAgencyGoodsItemAdditionalDocument(
+              doc.documentTypeCode.map(_.substring(0, 1)),
+              typeCode = doc.documentTypeCode.map(_.substring(1)),
+              id = doc.documentIdentifier.map(_ + doc.documentPart.getOrElse("")),
+              lpcoExemptionCode = doc.documentStatus,
+              name = doc.documentStatusReason,
+              writeOff = Some(WriteOff(Some(Measure(value = doc.documentQuantity.map(BigDecimal(_))))))
+          )
+        )
+      )
+
+  def goodsItemFromItemTypes(cachedData: CacheMap) =
+    cachedData
+      .getEntry[ItemType](ItemType.id)
+      .map(
+        item => // get all codes create classification
+          GovernmentAgencyGoodsItem(
+            sequenceNumeric = 1,
+            statisticalValueAmount = Some(Amount(value = Some(BigDecimal(item.statisticalValue)))),
+            commodity = Some(
+              Commodity(
+                description = Some(item.descriptionOfGoods),
+                classifications = Seq(
+                  Classification(
+                    Some(item.combinedNomenclatureCode),
+                    identificationTypeCode = Some(CombinedNomenclatureCode)
+                  ),
+                  Classification(item.cusCode, identificationTypeCode = Some(CUSCode))
+                ) ++
+                  item.nationalAdditionalCodes.map(
+                    code => Classification(Some(code), identificationTypeCode = Some(NationalAdditionalCode))
+                  ) ++ item.taricAdditionalCodes
+                  .map(code => Classification(Some(code), identificationTypeCode = Some(TARICAdditionalCode)))
+              )
+            )
+        )
+      )
+
+  private def createGoodsItem(seq: Int, cachedData: CacheMap) = {
+    val itemTypeData = goodsItemFromItemTypes(cachedData)
+    val commodity = itemTypeData.fold(Commodity())(_.commodity.getOrElse(Commodity()))
+    val updatedCommodity = commodity.copy(goodsMeasure = commodityGoodsMeasure(cachedData).flatMap(_.goodsMeasure))
+
+    GovernmentAgencyGoodsItem(
+      sequenceNumeric = seq,
+      packagings = generatePackages(cachedData).getOrElse(Seq.empty),
+      governmentProcedures = procedureCodes(cachedData).getOrElse(Seq.empty),
+      commodity = Some(updatedCommodity),
+      additionalInformations = additionalInfo(cachedData).getOrElse(Seq.empty),
+      additionalDocuments = documents(cachedData).getOrElse(Seq.empty)
+    )
+  }
+  /*
+    Fetch cache elements of all the pages using goodsItemCacheId for pages procedure codes, itemType, packaging, goods measure,
+    additional information , documents produced.
+    create related wco-dec elements
+    create goods item for the cache and append to items already added in the cache
+    save updated items to cache and remove the elements in goodsItemCacheId
+   */
+  def addItemToCache(goodsItemCacheId:String, supplementaryCacheId:String)(implicit hc: HeaderCarrier, ec: ExecutionContext) =
+    cacheService.fetch(goodsItemCacheId).flatMap {
+        case Some(cachedData) =>
+          cacheService.fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](supplementaryCacheId, itemsId)
+            .flatMap(
+              items =>
+                cacheService
+                  .cache[Seq[GovernmentAgencyGoodsItem]](
+                    supplementaryCacheId,
+                    itemsId,
+                    items.getOrElse(Seq.empty) :+ createGoodsItem(items.getOrElse(Seq.empty).size, cachedData)
+                  )
+                  .flatMap(_ => cacheService.remove(goodsItemCacheId).map(_.status == 204))
+            )
+        case None => Future.successful(false)
+      }
+
+}
+
+object ExportsItemsCacheIds {
+  val itemsCachePages = Map(
+    PackageInformation.formId -> "package",
+    ProcedureCodesData.formId -> "procedure codes",
+    CommodityMeasure.commodityFormId -> "goods measure",
+    DocumentsProducedData.formId -> "additional documents",
+    ItemType.id -> "Item type",
+    AdditionalInformationData.formId -> "additional information"
+  )
+
+}

@@ -47,7 +47,7 @@ class DeclarationTypeViewSpec extends ViewSpec {
       assertMessage(title.withPrefix, "Declaration Type")
       assertMessage(header.withPrefix, "1/2 What type of declaration are you making?")
       assertMessage(hint.withPrefix, "Hint text if needed here")
-      assertMessage(simplified.withPrefix, "Pre-authorized simplified declaration")
+      assertMessage(simplified.withPrefix, "Pre-authorised simplified declaration")
       assertMessage(standard.withPrefix, "Entry in Declarants Records (EIDR)")
     }
 

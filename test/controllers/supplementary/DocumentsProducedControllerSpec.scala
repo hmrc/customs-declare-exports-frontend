@@ -21,9 +21,13 @@ import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.DocumentsProducedSpec.{correctDocumentsProducedMap, _}
 import models.declaration.supplementary.DocumentsProducedData
 import models.declaration.supplementary.DocumentsProducedData.formId
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
@@ -121,7 +125,8 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
           "documentPart" -> "ABC12",
           "documentStatus" -> "AB",
           "documentStatusReason" -> "DocumentStatusReason",
-          "documentQuantity" -> "1234567890.123456")
+          "documentQuantity" -> "1234567890.123456"
+        )
 
         val body = duplicatedDocument.toSeq :+ addActionUrlEncoded
 
@@ -141,7 +146,8 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
           "documentPart" -> "",
           "documentStatus" -> "",
           "documentStatusReason" -> "",
-          "documentQuantity" -> "")
+          "documentQuantity" -> ""
+        )
 
         val body = undefinedDocument.toSeq :+ addActionUrlEncoded
 
@@ -186,15 +192,16 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
       }
     }
 
-    "redirect to summary page" when {
+    "redirect to exports-items page" when {
 
       "provided with empty form and with empty cache" in {
+        when(mockItemsCachingService.addItemToCache(any(),any())(any(), any())).thenReturn(Future.successful(true))
         val body = emptyDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         val header = result.futureValue.header
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/summary"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/export-items"))
       }
 
       "provided with empty form and with existing cache" in {
@@ -204,7 +211,7 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
 
         val header = result.futureValue.header
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/summary"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/export-items"))
       }
 
       "provided with a valid document and with empty cache" in {
@@ -213,7 +220,7 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/summary"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/export-items"))
       }
 
       "provided with a valid document and with existing cache" in {
@@ -223,7 +230,7 @@ class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with BeforeA
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/summary"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/export-items"))
       }
     }
   }

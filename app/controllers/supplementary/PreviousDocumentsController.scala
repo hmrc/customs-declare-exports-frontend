@@ -54,7 +54,7 @@ class PreviousDocumentsController @Inject()(
           Future.successful(BadRequest(previous_documents(appConfig, formWithErrors))),
         validForm =>
           customsCacheService.cache[Document](supplementaryCacheId, formId, validForm).map { _ =>
-            Redirect(controllers.supplementary.routes.GoodsItemNumberController.displayForm())
+            Redirect(controllers.supplementary.routes.SupervisingCustomsOfficeController.displayForm())
         }
       )
   }

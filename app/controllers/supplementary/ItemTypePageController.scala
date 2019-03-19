@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.supplementary.ItemType
 import forms.supplementary.ItemType._
@@ -46,7 +46,7 @@ class ItemTypePageController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ItemType](supplementaryCacheId, ItemType.id).map {
+    customsCacheService.fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id).map {
       case Some(data) =>
         Ok(item_type(appConfig, ItemType.form.fill(data), data.taricAdditionalCodes, data.nationalAdditionalCodes))
       case _ => Ok(item_type(appConfig, ItemType.form))
@@ -57,7 +57,7 @@ class ItemTypePageController @Inject()(
     val inputForm = ItemType.form.bindFromRequest()
     val itemTypeInput: ItemType = inputForm.value.getOrElse(ItemType.empty)
 
-    customsCacheService.fetchAndGetEntry[ItemType](supplementaryCacheId, ItemType.id).flatMap { itemTypeCacheOpt =>
+    customsCacheService.fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id).flatMap { itemTypeCacheOpt =>
       val itemTypeCache = itemTypeCacheOpt.getOrElse(ItemType.empty)
       extractActionType() match {
         case Some(Add)             => handleAddition(itemTypeInput, itemTypeCache)
@@ -77,7 +77,7 @@ class ItemTypePageController @Inject()(
     val itemTypeUpdated = updateCachedItemTypeAddition(itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnAddition(itemTypeUpdated) match {
       case Valid =>
-        customsCacheService.cache[ItemType](supplementaryCacheId, ItemType.id, itemTypeUpdated).map { _ =>
+        customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, itemTypeUpdated).map { _ =>
           Redirect(controllers.supplementary.routes.ItemTypePageController.displayPage())
         }
       case Invalid(errors) =>
@@ -108,7 +108,7 @@ class ItemTypePageController @Inject()(
     val itemTypeUpdated = updateCachedItemTypeSaveAndContinue(itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnSaveAndContinue(itemTypeUpdated) match {
       case Valid =>
-        customsCacheService.cache[ItemType](supplementaryCacheId, ItemType.id, itemTypeUpdated).map { _ =>
+        customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, itemTypeUpdated).map { _ =>
           Redirect(controllers.supplementary.routes.PackageInformationController.displayForm())
         }
       case Invalid(errors) =>
@@ -163,7 +163,7 @@ class ItemTypePageController @Inject()(
         case `nationalAdditionalCodesKey` =>
           itemTypeCached.copy(nationalAdditionalCodes = itemTypeCached.nationalAdditionalCodes.patch(index, Nil, 1))
       }
-      customsCacheService.cache[ItemType](supplementaryCacheId, ItemType.id, itemTypeUpdated).map { _ =>
+      customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, itemTypeUpdated).map { _ =>
         Redirect(controllers.supplementary.routes.ItemTypePageController.displayPage())
       }
     } else Future.successful(Redirect(controllers.supplementary.routes.ItemTypePageController.displayPage()))

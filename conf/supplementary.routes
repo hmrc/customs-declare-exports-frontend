@@ -109,12 +109,6 @@ GET         /add-document                   controllers.supplementary.DocumentsP
 
 POST        /add-document                   controllers.supplementary.DocumentsProducedController.saveForm()
 
-# Good item number
-
-GET         /good-item-number               controllers.supplementary.GoodsItemNumberController.displayForm()
-
-POST        /good-item-number               controllers.supplementary.GoodsItemNumberController.submit()
-
 # Item Type
 
 GET         /item-type                      controllers.supplementary.ItemTypePageController.displayPage()
@@ -150,6 +144,10 @@ POST        /package-information            controllers.supplementary.PackageInf
 GET         /commodity-measure            controllers.supplementary.CommodityMeasureController.displayForm()
 
 POST        /commodity-measure            controllers.supplementary.CommodityMeasureController.submitForm()
+
+# Items Summary
+
+GET         /export-items                        controllers.supplementary.ItemsSummaryController.displayForm()
 
 # Summary
 

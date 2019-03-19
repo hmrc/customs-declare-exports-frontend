@@ -60,11 +60,11 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
       resultAsString must include(messages("supplementary.itemType.description.header.hint"))
     }
 
-    "display \"Back\" button that links to \"Warehouse\" page" in {
+    "display \"Back\" button that links to \"procedure codes\" page" in {
       val result = route(app, getRequest(uri)).get
 
       contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("/declaration/supplementary/warehouse")
+      contentAsString(result) must include("/declaration/supplementary/procedure-codes")
     }
 
     "display \"Save and continue\" button on page" in {

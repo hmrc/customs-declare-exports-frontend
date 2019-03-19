@@ -18,10 +18,9 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util.MultipleItemsHelper._
 import controllers.util._
-import forms.supplementary.AdditionalInformation
 import forms.supplementary.AdditionalInformation.form
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -45,7 +44,7 @@ class AdditionalInformationController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[AdditionalInformationData](supplementaryCacheId, formId).map {
+    customsCacheService.fetchAndGetEntry[AdditionalInformationData](goodsItemCacheId, formId).map {
       case Some(data) => Ok(additional_information(appConfig, form, data.items))
       case _          => Ok(additional_information(appConfig, form, Seq()))
     }
@@ -57,7 +56,7 @@ class AdditionalInformationController @Inject()(
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
     val cachedData = customsCacheService
-      .fetchAndGetEntry[AdditionalInformationData](supplementaryCacheId, formId)
+      .fetchAndGetEntry[AdditionalInformationData](goodsItemCacheId, formId)
       .map(_.getOrElse(AdditionalInformationData(Seq())))
 
     val elementLimit = 99
@@ -66,10 +65,11 @@ class AdditionalInformationController @Inject()(
       actionTypeOpt match {
         case Some(Add) =>
           add(boundForm, cache.items, elementLimit).fold(
-            formWithErrors => Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
+            formWithErrors =>
+              Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
             updatedCache =>
               customsCacheService
-                .cache[AdditionalInformationData](supplementaryCacheId, formId, AdditionalInformationData(updatedCache))
+                .cache[AdditionalInformationData](goodsItemCacheId, formId, AdditionalInformationData(updatedCache))
                 .map(_ => Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm()))
           )
 
@@ -77,19 +77,21 @@ class AdditionalInformationController @Inject()(
           val updatedCache = remove(ids.headOption, cache.items)
 
           customsCacheService
-            .cache[AdditionalInformationData](supplementaryCacheId, formId, AdditionalInformationData(updatedCache))
+            .cache[AdditionalInformationData](goodsItemCacheId, formId, AdditionalInformationData(updatedCache))
             .map(_ => Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm()))
         }
 
         case Some(SaveAndContinue) =>
           saveAndContinue(boundForm, cache.items, true, elementLimit).fold(
-            formWithErrors => Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
+            formWithErrors =>
+              Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
             updatedCache =>
-              if(updatedCache != cache.items)
+              if (updatedCache != cache.items)
                 customsCacheService
-                  .cache[AdditionalInformationData](supplementaryCacheId, formId, AdditionalInformationData(updatedCache))
+                  .cache[AdditionalInformationData](goodsItemCacheId, formId, AdditionalInformationData(updatedCache))
                   .map(_ => Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm()))
-              else Future.successful(Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm()))
+              else
+                Future.successful(Redirect(controllers.supplementary.routes.DocumentsProducedController.displayForm()))
           )
 
         case _ => errorHandler.displayErrorPage()

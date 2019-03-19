@@ -17,7 +17,7 @@
 package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.util.CacheIdGenerator.goodsItemCacheId
 import forms.supplementary.CommodityMeasure.{commodityFormId, form, _}
 import forms.supplementary.PackageInformation.formId
 import forms.supplementary.{CommodityMeasure, PackageInformation}
@@ -40,10 +40,10 @@ class CommodityMeasureController @Inject()(
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     cacheService
-      .fetchAndGetEntry[Seq[PackageInformation]](supplementaryCacheId, formId)
+      .fetchAndGetEntry[Seq[PackageInformation]](goodsItemCacheId, formId)
       .flatMap {
         case Some(packages) =>
-          cacheService.fetchAndGetEntry[CommodityMeasure](supplementaryCacheId, commodityFormId).map {
+          cacheService.fetchAndGetEntry[CommodityMeasure](goodsItemCacheId, commodityFormId).map {
             case Some(data) => Ok(goods_measure(form.fill(data)))
             case _          => Ok(goods_measure(form))
           }
@@ -57,7 +57,7 @@ class CommodityMeasureController @Inject()(
       .fold(
         (formWithErrors: Form[CommodityMeasure]) => Future.successful(BadRequest(goods_measure(formWithErrors))),
         validForm =>
-          cacheService.cache[CommodityMeasure](supplementaryCacheId, commodityFormId, validForm).map { _ =>
+          cacheService.cache[CommodityMeasure](goodsItemCacheId, commodityFormId, validForm).map { _ =>
             Redirect(controllers.supplementary.routes.AdditionalInformationController.displayForm())
         }
       )

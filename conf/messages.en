@@ -37,6 +37,7 @@ session_expired.guidance = The details you have given have been deleted because 
 
 site.back = Back
 site.delete = Remove
+site.link.delete = Delete
 site.edit = Change
 site.hidden-delete = Delete {0}
 site.hidden-edit = Change {0}
@@ -50,6 +51,7 @@ site.submit = Submit
 site.backToChoice = Back to choice page
 site.add = Add
 site.remove = Remove
+site.add.item= Add item
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -623,3 +625,9 @@ supplementary.limit = You cannot add more items
 supplementary.duplication = You cannot add duplicated value
 supplementary.continue.error = Use Add button before continue to next page
 supplementary.continue.mandatory = You must add at least one item
+supplementary.itemsAdd.title=Declare all items involved in this export
+supplementary.itemsAdd.title.hint=An item is an individual goods type that is identified by a commodity code, for example a computer or an aluminium pipe
+supplementary.itemssummary.table.heading=1 Export item added
+supplementary.itemssummary.table.multiple.heading={0} Export items added
+supplementary.itemssummary.itemNumber= Item number
+supplementary.addgoodsitems.addallpages=You need to provide input for procedure codes, package information, goods measure, additional information and documents

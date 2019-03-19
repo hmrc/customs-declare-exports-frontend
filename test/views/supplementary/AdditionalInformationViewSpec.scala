@@ -90,12 +90,12 @@ class AdditionalInformationViewSpec extends ViewSpec {
       getElementById(view, description.key).attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Package Information\" page" in {
+    "display \"Back\" button that links to \"Commodity measure \" page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be("Back")
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/package-information")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/commodity-measure")
     }
 
     "display both \"Add\" and \"Save and continue\" button on page" in {
