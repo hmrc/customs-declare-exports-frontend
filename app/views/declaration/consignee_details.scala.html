@@ -27,20 +27,21 @@
     appConfig = appConfig
 ) {
     @helpers.form(ConsigneeDetailsPageController.saveAddress(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/declaration/representative-details")
+        @components.back_link("/customs-declare-exports/declaration/exporter-details")
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("supplementary.consignee.title"), Some("supplementary.consignee.title.hint"))
-
+        @components.page_title(Some("supplementary.consignee.title"))
 
         @components.form_fields_wrapper(field = form("details")) {
 
             @components.input_text(
                 field = form("details.eori"),
-                label = messages("supplementary.eori"),
-                hint = Some(messages("supplementary.eori.hint"))
+                label = messages("supplementary.consignee.eori.info"),
+                hint = Some(messages("supplementary.consignee.eori.hint"))
             )
+
+            <span>@messages("supplementary.consignee.address.info")</span>
 
             @components.address(form, "details.address")
         }

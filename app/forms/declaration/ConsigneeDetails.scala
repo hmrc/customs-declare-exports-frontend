@@ -18,11 +18,25 @@ package forms.declaration
 import forms.MetadataPropertiesConvertable
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import services.Countries.allCountries
 
 case class ConsigneeDetails(details: EntityDetails) extends MetadataPropertiesConvertable {
 
-  override def toMetadataProperties(): Map[String, String] = ???
+  override def toMetadataProperties(): Map[String, String] =
+    Map("declaration.goodsShipment.consignee.id" -> details.eori.getOrElse("")) ++ buildAddressProperties()
 
+  private def buildAddressProperties(): Map[String, String] = details.address match {
+    case Some(address) =>
+      Map(
+        "declaration.goodsShipment.consignee.name" -> address.fullName,
+        "declaration.goodsShipment.consignee.address.line" -> address.addressLine,
+        "declaration.goodsShipment.consignee.address.cityName" -> address.townOrCity,
+        "declaration.goodsShipment.consignee.address.postcodeId" -> address.postCode,
+        "declaration.goodsShipment.consignee.address.countryCode" ->
+          allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
+      )
+    case None => Map.empty
+  }
 }
 
 object ConsigneeDetails {

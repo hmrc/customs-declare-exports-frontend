@@ -16,9 +16,11 @@
 
 package views.declaration.spec
 
-import base.ViewValidator
+import base.{ExportsTestData, ViewValidator}
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
+import forms.Choice
+import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
@@ -41,6 +43,9 @@ trait ViewSpec extends PlaySpec with OneAppPerSuite with ViewValidator {
   implicit lazy val countries: List[Country] = Countries.allCountries
 
   def assertMessage(key: String, expected: String): Unit = messages(key) must be(expected)
+
+  def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] =
+    JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), new Choice(choice))
 
   SharedMetricRegistries.clear()
 }

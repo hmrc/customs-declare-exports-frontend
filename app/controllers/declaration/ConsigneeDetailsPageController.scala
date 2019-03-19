@@ -59,7 +59,7 @@ class ConsigneeDetailsPageController @Inject()(
           Future.successful(BadRequest(consignee_details(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[ConsigneeDetails](cacheId, ConsigneeDetails.id, form).map { _ =>
-            Redirect(controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm())
+            Redirect(controllers.declaration.routes.DeclarantDetailsPageController.displayForm())
         }
       )
   }

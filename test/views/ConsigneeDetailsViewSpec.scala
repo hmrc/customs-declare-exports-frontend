@@ -21,8 +21,8 @@ import forms.declaration.{Address, ConsigneeDetails, EntityDetails}
 import helpers.views.declaration.{CommonMessages, ConsigneeDetailsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.consignee_details
 import views.declaration.spec.ViewSpec
+import views.html.declaration.consignee_details
 import views.tags.ViewTest
 
 @ViewTest
@@ -35,8 +35,8 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
     "have proper messages for labels" in {
 
-      assertMessage(title, "supplementary.consignee.title")
-      assertMessage(hint, "supplementary.consignee.title.hint")
+      assertMessage(title, messages("supplementary.consignee.title"))
+      assertMessage(hint, messages("supplementary.consignee.title.hint"))
     }
   }
 
@@ -47,20 +47,19 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
-    "display header with hint" in {
+    "display header" in {
 
       val view = createView()
 
       getElementByCss(view, "legend>h1").text() must be(messages(title))
-      getElementByCss(view, "legend>span").text() must be(messages(hint))
     }
 
     "display empty input with label for EORI" in {
 
       val view = createView()
 
-      getElementByCss(view, "label.form-label>span").text() must be(messages(eori))
-      getElementByCss(view, "label.form-label>span.form-hint").text() must be(messages(eoriHint))
+      getElementByCss(view, "label.form-label>span").text() must be(messages(eoriInfo))
+      getElementByCss(view, "label.form-label>span.form-hint").text() must be(messages(consigneeEoriHint))
       getElementById(view, "details_eori").attr("value") must be("")
     }
 
@@ -68,9 +67,17 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(1)>label").text() must be(
+      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(1)>label").text() must be(
         messages(fullName)
       )
+      getElementById(view, "details_address_fullName").attr("value") must be("")
+    }
+
+    "display address label" in {
+
+      val view = createView()
+
+      getElementByCss(view, "form>div>span").text() must be(messages(addressInfo))
       getElementById(view, "details_address_fullName").attr("value") must be("")
     }
 
@@ -78,7 +85,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(2)>label").text() must be(
+      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(2)>label").text() must be(
         messages(addressLine)
       )
       getElementById(view, "details_address_addressLine").attr("value") must be("")
@@ -88,7 +95,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(3)>label").text() must be(
+      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(3)>label").text() must be(
         messages(townOrCity)
       )
       getElementById(view, "details_address_townOrCity").attr("value") must be("")
@@ -98,7 +105,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(4)>label").text() must be(
+      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(4)>label").text() must be(
         messages(postCode)
       )
       getElementById(view, "details_address_postCode").attr("value") must be("")
@@ -108,18 +115,18 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(5)>label").text() must be(
+      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(5)>label").text() must be(
         messages(country)
       )
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Representative Details\" page" in {
+    "display \"Back\" button that links to \"Exporter Details\" page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/representative-details")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/exporter-details")
     }
 
     "display \"Save and continue\" button on page" in {

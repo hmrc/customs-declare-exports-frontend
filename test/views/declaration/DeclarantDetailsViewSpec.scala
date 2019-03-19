@@ -17,12 +17,13 @@
 package views.declaration
 
 import base.TestHelper
+import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.{Address, DeclarantDetails, EntityDetails}
 import helpers.views.declaration.{CommonMessages, DeclarantDetailsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.declarant_details
 import views.declaration.spec.ViewSpec
+import views.html.declaration.declarant_details
 import views.tags.ViewTest
 
 @ViewTest
@@ -30,7 +31,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
   private val form: Form[DeclarantDetails] = DeclarantDetails.form()
   private def createView(form: Form[DeclarantDetails] = form): Html =
-    declarant_details(appConfig, form)(fakeRequest, messages, countries)
+    declarant_details(appConfig, form)(fakeJourneyRequest(SupplementaryDec), messages, countries)
 
   "Declarant Details View" should {
 
@@ -115,12 +116,21 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Exporter Details\" page" in {
+    "display \"Back\" button that links to \"Exporter Details\" page if on Supplementary Journey" in {
 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/exporter-details")
+    }
+
+    "display \"Back\" button that links to \"Consignee Details\" page if on Standard Journey" in {
+
+      val view = declarant_details(appConfig, form)(fakeJourneyRequest(StandardDec), messages, countries)
+      val backButton = getElementById(view, "link-back")
+
+      backButton.text() must be(messages(backCaption))
+      backButton.attr("href") must be("/customs-declare-exports/declaration/consignee-details")
     }
 
     "display \"Save and continue\" button on page" in {
