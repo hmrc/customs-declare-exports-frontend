@@ -17,7 +17,7 @@
 package views.supplementary
 
 import forms.supplementary.AdditionalDeclarationType
-import helpers.{CommonMessages, DeclarationTypeMessages}
+import helpers.views.supplementary.{CommonMessages, DeclarationTypeMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.supplementary.declaration_type
@@ -28,7 +28,8 @@ import views.tags.ViewTest
 class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with CommonMessages {
 
   private val form: Form[AdditionalDeclarationType] = AdditionalDeclarationType.form()
-  private def createView(form: Form[AdditionalDeclarationType] = form): Html = declaration_type(appConfig, form)(fakeRequest, messages)
+  private def createView(form: Form[AdditionalDeclarationType] = form): Html =
+    declaration_type(appConfig, form)(fakeRequest, messages)
 
   "Declaration Type View" should {
 
@@ -104,7 +105,9 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(errorMessageEmpty), "#additionalDeclarationType")
 
-      getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageEmpty))
+      getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(
+        messages(errorMessageEmpty)
+      )
     }
 
     "display error if incorrect declaration is selected" in {
@@ -114,7 +117,9 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(errorMessageIncorrect), "#additionalDeclarationType")
 
-      getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(messages(errorMessageIncorrect))
+      getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(
+        messages(errorMessageIncorrect)
+      )
     }
   }
 

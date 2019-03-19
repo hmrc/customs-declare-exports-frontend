@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.views.supplementary
 
-trait DestinationCountriesMessages {
+trait AdditionalInformationMessages {
 
-  val prefix: String = "supplementary.destinationCountries"
+  val additionalInformation: String = "supplementary.additionalInformation"
 
-  val title: String = prefix + ".title"
-  val countryOfDestination: String = prefix + ".countryOfDestination"
-  val countryOfDestinationError: String = prefix + ".countryOfDestination.error"
-  val countryOfDispatch: String = prefix + ".countryOfDispatch"
-  val countryOfDispatchError: String = prefix + ".countryOfDispatch.error"
-  val countryOfDispatchEmpty: String = prefix + ".countryOfDispatch.empty"
+  val title: String = additionalInformation + ".title"
+  val code: String = additionalInformation + ".code"
+  val codeEmpty: String = additionalInformation + ".code.empty"
+  val codeError: String = additionalInformation + ".code.error"
+  val description: String = additionalInformation + ".description"
+  val descriptionEmpty: String = additionalInformation + ".description.empty"
+  val descriptionError: String = additionalInformation + ".description.error"
 }

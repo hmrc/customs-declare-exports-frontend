@@ -21,7 +21,7 @@ import controllers.supplementary.DeclarationAdditionalActorsControllerSpec.cache
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.DeclarationAdditionalActors
 import forms.supplementary.DeclarationAdditionalActorsSpec._
-import helpers.{CommonMessages, DeclarationAdditionalActorsMessages}
+import helpers.views.supplementary.{CommonMessages, DeclarationAdditionalActorsMessages}
 import models.declaration.supplementary.DeclarationAdditionalActorsData
 import models.declaration.supplementary.DeclarationAdditionalActorsData.formId
 import models.declaration.supplementary.DeclarationAdditionalActorsDataSpec._

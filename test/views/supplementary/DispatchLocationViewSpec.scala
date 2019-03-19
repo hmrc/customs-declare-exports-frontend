@@ -17,7 +17,7 @@
 package views.supplementary
 
 import forms.supplementary.DispatchLocation
-import helpers.{CommonMessages, DispatchLocationMessages}
+import helpers.views.supplementary.{CommonMessages, DispatchLocationMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.supplementary.dispatch_location
@@ -28,7 +28,8 @@ import views.tags.ViewTest
 class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages with CommonMessages {
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
-  private def createView(form: Form[DispatchLocation] = form): Html = dispatch_location(appConfig, form)(fakeRequest, messages)
+  private def createView(form: Form[DispatchLocation] = form): Html =
+    dispatch_location(appConfig, form)(fakeRequest, messages)
 
   "Dispatch Location View" should {
 
@@ -37,7 +38,10 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
       assertMessage(header, "1/1 Where are the goods being dispatched to?")
       assertMessage(hint, "Hint text if needed here")
       assertMessage(outsideEu, "Outside the EU")
-      assertMessage(specialFiscalTerritory, "Fiscal territory of the EU or country with which the EU has formed a customs union")
+      assertMessage(
+        specialFiscalTerritory,
+        "Fiscal territory of the EU or country with which the EU has formed a customs union"
+      )
     }
 
     "have proper messages for error labels" in {

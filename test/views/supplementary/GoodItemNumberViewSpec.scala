@@ -15,8 +15,9 @@
  */
 
 package views.supplementary
+
 import forms.supplementary.GoodsItemNumber
-import helpers.{CommonMessages, GoodItemNumberMessages}
+import helpers.views.supplementary.{CommonMessages, GoodItemNumberMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.supplementary.good_item_number

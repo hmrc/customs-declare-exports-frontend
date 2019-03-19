@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.views.supplementary
 
 trait DocumentsProducedMessages {
 
@@ -23,17 +23,17 @@ trait DocumentsProducedMessages {
   val title: String = documentProduced + ".title"
   val hint: String = documentProduced + ".hint"
   val documentTypeCode: String = documentProduced + ".documentTypeCode"
-  val documentTypeCodeError:String = documentProduced + ".documentTypeCode.error"
+  val documentTypeCodeError: String = documentProduced + ".documentTypeCode.error"
   val documentIdentifier: String = documentProduced + ".documentIdentifier"
-  val documentIdentifierError:String = documentProduced + ".documentIdentifier.error"
+  val documentIdentifierError: String = documentProduced + ".documentIdentifier.error"
   val documentPart: String = documentProduced + ".documentPart"
-  val documentPartError:String = documentProduced + ".documentPart.error"
+  val documentPartError: String = documentProduced + ".documentPart.error"
   val documentStatus: String = documentProduced + ".documentStatus"
-  val documentStatusError:String = documentProduced + ".documentStatus.error"
+  val documentStatusError: String = documentProduced + ".documentStatus.error"
   val documentStatusReason: String = documentProduced + ".documentStatusReason"
-  val documentStatusReasonError:String = documentProduced + ".documentStatusReason.error"
+  val documentStatusReasonError: String = documentProduced + ".documentStatusReason.error"
   val documentQuantity: String = documentProduced + ".documentQuantity"
-  val documentQuantityError:String = documentProduced + ".documentQuantity.error"
+  val documentQuantityError: String = documentProduced + ".documentQuantity.error"
   val maximumAmountReached: String = documentProduced + ".maximumAmount.error"
   val duplicatedItem: String = documentProduced + ".duplicated"
   val notDefined: String = documentProduced + ".isNotDefined"

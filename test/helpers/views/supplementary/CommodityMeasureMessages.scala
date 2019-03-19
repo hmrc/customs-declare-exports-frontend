@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.views.supplementary
 
 trait CommodityMeasureMessages {
 

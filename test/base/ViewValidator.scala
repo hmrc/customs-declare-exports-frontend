@@ -25,7 +25,7 @@ import play.twirl.api.Html
 trait ViewValidator extends MustMatchers {
 
   private def asDocument(html: Html): Document = Jsoup.parse(html.toString())
-  private def asDocument(page: String) :Document = Jsoup.parse(page)
+  private def asDocument(page: String): Document = Jsoup.parse(page)
 
   def getElementByCss(html: Html, selector: String): Element = {
 

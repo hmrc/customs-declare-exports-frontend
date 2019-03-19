@@ -17,7 +17,7 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
-import helpers.ConfirmationMessages
+import helpers.views.supplementary.ConfirmationMessages
 import play.api.test.Helpers._
 
 class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with ConfirmationMessages {

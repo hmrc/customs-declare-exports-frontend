@@ -18,7 +18,7 @@ package views.supplementary
 
 import base.TestHelper
 import forms.supplementary.DestinationCountries
-import helpers.{CommonMessages, DestinationCountriesMessages}
+import helpers.views.supplementary.{CommonMessages, DestinationCountriesMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.supplementary.destination_countries
@@ -29,7 +29,8 @@ import views.tags.ViewTest
 class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMessages with CommonMessages {
 
   private val form: Form[DestinationCountries] = DestinationCountries.form()
-  private def createView(form: Form[DestinationCountries] = form): Html = destination_countries(appConfig, form)(fakeRequest, messages, countries)
+  private def createView(form: Form[DestinationCountries] = form): Html =
+    destination_countries(appConfig, form)(fakeRequest, messages, countries)
 
   "Destination Countries View" should {
 

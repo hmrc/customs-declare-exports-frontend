@@ -20,12 +20,13 @@ import base.TestHelper.createRandomString
 import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.DeclarationHolder
-import helpers.{CommonMessages, DeclarationHolderMessages}
+import helpers.views.supplementary.{CommonMessages, DeclarationHolderMessages}
 import models.declaration.supplementary.DeclarationHoldersData
 import models.declaration.supplementary.DeclarationHoldersData.formId
 import play.api.test.Helpers._
 
-class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with DeclarationHolderMessages with CommonMessages with ViewValidator {
+class DeclarationHolderControllerSpec
+    extends CustomExportsBaseSpec with DeclarationHolderMessages with CommonMessages with ViewValidator {
   import DeclarationHolderControllerSpec._
 
   private val uri = uriWithContextPath("/declaration/supplementary/holder-of-authorisation")
@@ -97,7 +98,9 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with Declara
           checkErrorsSummary(page)
           checkErrorLink(page, 1, authorisationCodeEmpty, "#authorisationTypeCode")
 
-          getElementByCss(page, "#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeEmpty))
+          getElementByCss(page, "#error-message-authorisationTypeCode-input").text() must be(
+            messages(authorisationCodeEmpty)
+          )
         }
 
         "with longer Authorisation code" in {
@@ -133,7 +136,9 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with Declara
           checkErrorLink(page, 1, authorisationCodeEmpty, "#authorisationTypeCode")
           checkErrorLink(page, 2, eoriEmpty, "#eori")
 
-          getElementByCss(page, "#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeEmpty))
+          getElementByCss(page, "#error-message-authorisationTypeCode-input").text() must be(
+            messages(authorisationCodeEmpty)
+          )
           getElementByCss(page, "#error-message-eori-input").text() must be(messages(eoriEmpty))
         }
 
@@ -220,7 +225,9 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with Declara
           checkErrorsSummary(page)
           checkErrorLink(page, 1, authorisationCodeEmpty, "#authorisationTypeCode")
 
-          getElementByCss(page, "#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeEmpty))
+          getElementByCss(page, "#error-message-authorisationTypeCode-input").text() must be(
+            messages(authorisationCodeEmpty)
+          )
         }
 
         "with longer Authorisation code" in {
@@ -256,7 +263,9 @@ class DeclarationHolderControllerSpec extends CustomExportsBaseSpec with Declara
           checkErrorLink(page, 1, authorisationCodeEmpty, "#authorisationTypeCode")
           checkErrorLink(page, 2, eoriEmpty, "#eori")
 
-          getElementByCss(page, "#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeEmpty))
+          getElementByCss(page, "#error-message-authorisationTypeCode-input").text() must be(
+            messages(authorisationCodeEmpty)
+          )
           getElementByCss(page, "#error-message-eori-input").text() must be(messages(eoriEmpty))
         }
 

@@ -15,8 +15,7 @@
  */
 
 package views.supplementary.common
-
-import helpers.CommonMessages
+import helpers.views.supplementary.CommonMessages
 import views.supplementary.spec.ViewSpec
 import views.tags.ViewTest
 

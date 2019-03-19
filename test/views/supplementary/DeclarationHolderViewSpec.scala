@@ -18,7 +18,7 @@ package views.supplementary
 
 import base.TestHelper
 import forms.supplementary.DeclarationHolder
-import helpers.{CommonMessages, DeclarationHolderMessages}
+import helpers.views.supplementary.{CommonMessages, DeclarationHolderMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.supplementary.declaration_holder
@@ -29,7 +29,8 @@ import views.tags.ViewTest
 class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages with CommonMessages {
 
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
-  private def createView(form: Form[DeclarationHolder] = form): Html = declaration_holder(appConfig, form, Seq())(fakeRequest, messages)
+  private def createView(form: Form[DeclarationHolder] = form): Html =
+    declaration_holder(appConfig, form, Seq())(fakeRequest, messages)
 
   "Declaration Holder View" should {
 
@@ -66,7 +67,9 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
       val view = createView()
 
       getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(messages(authorisationCode))
-      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(authorisationCodeHint))
+      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(
+        messages(authorisationCodeHint)
+      )
       getElementById(view, "authorisationTypeCode").attr("value") must be("")
     }
 
@@ -103,23 +106,27 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
 
     "display error for incorrect Authorisation code" in {
 
-      val view = createView(DeclarationHolder.form().fillAndValidate(DeclarationHolder(
-        Some("12345"),
-        Some(TestHelper.createRandomString(17)))
-      ))
+      val view = createView(
+        DeclarationHolder
+          .form()
+          .fillAndValidate(DeclarationHolder(Some("12345"), Some(TestHelper.createRandomString(17))))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, authorisationCodeError, "#authorisationTypeCode")
 
-      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeError))
+      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(
+        messages(authorisationCodeError)
+      )
     }
 
     "display error for incorrect EORI" in {
 
-      val view = createView(DeclarationHolder.form().fillAndValidate(DeclarationHolder(
-        Some("1234"),
-        Some(TestHelper.createRandomString(18))
-      )))
+      val view = createView(
+        DeclarationHolder
+          .form()
+          .fillAndValidate(DeclarationHolder(Some("1234"), Some(TestHelper.createRandomString(18))))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, eoriError, "#eori")
@@ -129,16 +136,21 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
 
     "display error for both incorrect fields" in {
 
-      val view = createView(DeclarationHolder.form().fillAndValidate(DeclarationHolder(
-        Some(TestHelper.createRandomString(6)),
-        Some(TestHelper.createRandomString(18))
-      )))
+      val view = createView(
+        DeclarationHolder
+          .form()
+          .fillAndValidate(
+            DeclarationHolder(Some(TestHelper.createRandomString(6)), Some(TestHelper.createRandomString(18)))
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, authorisationCodeError, "#authorisationTypeCode")
       checkErrorLink(view, 2, eoriError, "#eori")
 
-      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(messages(authorisationCodeError))
+      getElementByCss(view, "#error-message-authorisationTypeCode-input").text() must be(
+        messages(authorisationCodeError)
+      )
       getElementByCss(view, "#error-message-eori-input").text() must be(messages(eoriError))
     }
   }
@@ -155,7 +167,8 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
 
     "display one item in table" in {
 
-      val view = declaration_holder(appConfig, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(fakeRequest, messages)
+      val view =
+        declaration_holder(appConfig, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(fakeRequest, messages)
 
       getElementByCss(view, "tbody>tr>th:nth-child(1)").text() must be("1234-1234")
 

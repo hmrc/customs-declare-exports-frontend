@@ -19,7 +19,7 @@ package views.supplementary
 import base.TestHelper
 import forms.Ducr
 import forms.supplementary.ConsignmentReferences
-import helpers.{CommonMessages, ConsignmentReferencesMessages}
+import helpers.views.supplementary.{CommonMessages, ConsignmentReferencesMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.supplementary.consignment_references
@@ -37,7 +37,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
   private val incorrectDUCR = "7GB000000000000-1234512345123451234512345"
 
   private val form: Form[ConsignmentReferences] = ConsignmentReferences.form()
-  private def createView(form: Form[ConsignmentReferences] = form): Html = consignment_references(appConfig, form)(fakeRequest, messages)
+  private def createView(form: Form[ConsignmentReferences] = form): Html =
+    consignment_references(appConfig, form)(fakeRequest, messages)
 
   "Consignment References View" should {
 
@@ -112,7 +113,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display error for empty LRN" in {
 
-      val view = createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Some(Ducr(properDUCR)), "")))
+      val view =
+        createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Some(Ducr(properDUCR)), "")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, lrnEmpty, "#lrn")
@@ -122,9 +124,10 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display error when LRN is longer then 22 characters" in {
 
-      val view = createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(
-        Some(Ducr(properDUCR)),
-        TestHelper.createRandomString(23)))
+      val view = createView(
+        ConsignmentReferences
+          .form()
+          .fillAndValidate(ConsignmentReferences(Some(Ducr(properDUCR)), TestHelper.createRandomString(23)))
       )
 
       checkErrorsSummary(view)
@@ -135,7 +138,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display error when LRN contains special character" in {
 
-      val view = createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Some(Ducr(properDUCR)), "#@#$")))
+      val view =
+        createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Some(Ducr(properDUCR)), "#@#$")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, lrnSpecialCharacter, "#lrn")
@@ -145,7 +149,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display error when DUCR is incorrect and LRN empty" in {
 
-      val view = createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Some(Ducr(incorrectDUCR)), "")))
+      val view =
+        createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Some(Ducr(incorrectDUCR)), "")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, ucrError, "#ducr_ducr")
@@ -157,9 +162,10 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display error when DUCR is incorrect and LRN is longer then 22 characters" in {
 
-      val view = createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(
-        Some(Ducr(incorrectDUCR)),
-        TestHelper.createRandomString(23)))
+      val view = createView(
+        ConsignmentReferences
+          .form()
+          .fillAndValidate(ConsignmentReferences(Some(Ducr(incorrectDUCR)), TestHelper.createRandomString(23)))
       )
 
       checkErrorsSummary(view)
@@ -172,7 +178,9 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display error when DUCR is incorrect and LRN contains special character" in {
 
-      val view = createView(ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Some(Ducr(incorrectDUCR)), "$$%")))
+      val view = createView(
+        ConsignmentReferences.form().fillAndValidate(ConsignmentReferences(Some(Ducr(incorrectDUCR)), "$$%"))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, ucrError, "#ducr_ducr")

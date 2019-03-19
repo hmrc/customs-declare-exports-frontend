@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.views.supplementary
 
-trait DeclarantDetailsMessages {
+trait ConfirmationMessages {
 
-  val declarantDetails: String = "supplementary.declarant"
+  val confirmation: String = "supplementary.confirmation"
 
-  val title: String = declarantDetails + ".title"
-  val hint: String = declarantDetails + ".title.hint"
+  val title: String = confirmation + ".title"
+  val header: String = confirmation + ".header"
+  val information: String = confirmation + ".info"
+  val whatHappensNext: String = confirmation + ".whatHappensNext"
+  val explanation: String = confirmation + ".explanation"
+  val explanationLink: String = confirmation + ".explanation.linkText"
+  val submitAnother: String = confirmation + ".submitAnotherDeclaration"
 }

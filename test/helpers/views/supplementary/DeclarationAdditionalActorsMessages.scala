@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.views.supplementary
 
 trait DeclarationAdditionalActorsMessages {
 
@@ -25,5 +25,5 @@ trait DeclarationAdditionalActorsMessages {
   val actorsEoriNotDefined: String = declarationAdditionalActors + ".eori.isNotDefined"
   val actorsPartyType: String = declarationAdditionalActors + ".partyType"
   val maximumActorsError: String = declarationAdditionalActors + ".maximumAmount.error"
-  val duplicatedActorsError: String =  declarationAdditionalActors + ".duplicated.error"
+  val duplicatedActorsError: String = declarationAdditionalActors + ".duplicated.error"
 }

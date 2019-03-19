@@ -18,7 +18,7 @@ package views.supplementary
 
 import base.TestHelper
 import forms.supplementary.DocumentsProduced
-import helpers.{CommonMessages, DocumentsProducedMessages}
+import helpers.views.supplementary.{CommonMessages, DocumentsProducedMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.supplementary.documents_produced
@@ -29,9 +29,11 @@ import views.tags.ViewTest
 class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages with CommonMessages {
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
-  private val filledForm = DocumentsProduced(Some("test"), Some("test1"), Some("test2"), Some("test3"), Some("test4"), Some("test5"))
+  private val filledForm =
+    DocumentsProduced(Some("test"), Some("test1"), Some("test2"), Some("test3"), Some("test4"), Some("test5"))
 
-  private def createView(form: Form[DocumentsProduced] = form): Html = documents_produced(appConfig, form, Seq())(fakeRequest, messages)
+  private def createView(form: Form[DocumentsProduced] = form): Html =
+    documents_produced(appConfig, form, Seq())(fakeRequest, messages)
 
   "Documents Produced View" should {
 
@@ -147,14 +149,20 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
     "display error for Document type code" in {
 
-      val view = createView(DocumentsProduced.form().fillAndValidate(DocumentsProduced(
-        Some(TestHelper.createRandomString(5)),
-        Some("1234"),
-        Some("1234"),
-        Some("AV"),
-        Some("1234"),
-        Some("1234")
-      )))
+      val view = createView(
+        DocumentsProduced
+          .form()
+          .fillAndValidate(
+            DocumentsProduced(
+              Some(TestHelper.createRandomString(5)),
+              Some("1234"),
+              Some("1234"),
+              Some("AV"),
+              Some("1234"),
+              Some("1234")
+            )
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentTypeCodeError, "#documentTypeCode")
@@ -164,14 +172,20 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
     "display error for Document identifier" in {
 
-      val view = createView(DocumentsProduced.form().fillAndValidate(DocumentsProduced(
-        Some("1234"),
-        Some(TestHelper.createRandomString(31)),
-        Some("1234"),
-        Some("AV"),
-        Some("1234"),
-        Some("1234")
-      )))
+      val view = createView(
+        DocumentsProduced
+          .form()
+          .fillAndValidate(
+            DocumentsProduced(
+              Some("1234"),
+              Some(TestHelper.createRandomString(31)),
+              Some("1234"),
+              Some("AV"),
+              Some("1234"),
+              Some("1234")
+            )
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentIdentifierError, "#documentIdentifier")
@@ -181,14 +195,20 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
     "display error for Document part" in {
 
-      val view = createView(DocumentsProduced.form().fillAndValidate(DocumentsProduced(
-        Some("1234"),
-        Some("1234"),
-        Some(TestHelper.createRandomString(6)),
-        Some("AV"),
-        Some("1234"),
-        Some("1234")
-      )))
+      val view = createView(
+        DocumentsProduced
+          .form()
+          .fillAndValidate(
+            DocumentsProduced(
+              Some("1234"),
+              Some("1234"),
+              Some(TestHelper.createRandomString(6)),
+              Some("AV"),
+              Some("1234"),
+              Some("1234")
+            )
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentPartError, "#documentPart")
@@ -198,14 +218,13 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
     "display error for Document status" in {
 
-      val view = createView(DocumentsProduced.form().fillAndValidate(DocumentsProduced(
-        Some("1234"),
-        Some("1234"),
-        Some("1234"),
-        Some("ABC"),
-        Some("1234"),
-        Some("1234")
-      )))
+      val view = createView(
+        DocumentsProduced
+          .form()
+          .fillAndValidate(
+            DocumentsProduced(Some("1234"), Some("1234"), Some("1234"), Some("ABC"), Some("1234"), Some("1234"))
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentStatusError, "#documentStatus")
@@ -215,31 +234,45 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
     "display error for Document status reason" in {
 
-      val view = createView(DocumentsProduced.form().fillAndValidate(DocumentsProduced(
-        Some("1234"),
-        Some("1234"),
-        Some("1234"),
-        Some("AV"),
-        Some(TestHelper.createRandomString(36)),
-        Some("1234")
-      )))
+      val view = createView(
+        DocumentsProduced
+          .form()
+          .fillAndValidate(
+            DocumentsProduced(
+              Some("1234"),
+              Some("1234"),
+              Some("1234"),
+              Some("AV"),
+              Some(TestHelper.createRandomString(36)),
+              Some("1234")
+            )
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentStatusReasonError, "#documentStatusReason")
 
-      getElementByCss(view, "#error-message-documentStatusReason-input").text() must be(messages(documentStatusReasonError))
+      getElementByCss(view, "#error-message-documentStatusReason-input").text() must be(
+        messages(documentStatusReasonError)
+      )
     }
 
     "display error for Document quantity" in {
 
-      val view = createView(DocumentsProduced.form().fillAndValidate(DocumentsProduced(
-        Some("1234"),
-        Some("1234"),
-        Some("1234"),
-        Some("AV"),
-        Some("1234"),
-        Some("12345678901234567")
-      )))
+      val view = createView(
+        DocumentsProduced
+          .form()
+          .fillAndValidate(
+            DocumentsProduced(
+              Some("1234"),
+              Some("1234"),
+              Some("1234"),
+              Some("AV"),
+              Some("1234"),
+              Some("12345678901234567")
+            )
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentQuantityError, "#documentQuantity")
@@ -249,14 +282,18 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
     "display errors for all fields" in {
 
-      val form = DocumentsProduced.form().fillAndValidate(DocumentsProduced(
-        Some(TestHelper.createRandomString(5)),
-        Some(TestHelper.createRandomString(31)),
-        Some(TestHelper.createRandomString(6)),
-        Some("ABC"),
-        Some(TestHelper.createRandomString(36)),
-        Some("12345678901234567")
-      ))
+      val form = DocumentsProduced
+        .form()
+        .fillAndValidate(
+          DocumentsProduced(
+            Some(TestHelper.createRandomString(5)),
+            Some(TestHelper.createRandomString(31)),
+            Some(TestHelper.createRandomString(6)),
+            Some("ABC"),
+            Some(TestHelper.createRandomString(36)),
+            Some("12345678901234567")
+          )
+        )
 
       val view = createView(form)
 
@@ -272,7 +309,9 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementByCss(view, "#error-message-documentIdentifier-input").text() must be(messages(documentIdentifierError))
       getElementByCss(view, "#error-message-documentPart-input").text() must be(messages(documentPartError))
       getElementByCss(view, "#error-message-documentStatus-input").text() must be(messages(documentStatusError))
-      getElementByCss(view, "#error-message-documentStatusReason-input").text() must be(messages(documentStatusReasonError))
+      getElementByCss(view, "#error-message-documentStatusReason-input").text() must be(
+        messages(documentStatusReasonError)
+      )
       getElementByCss(view, "#error-message-documentQuantity-input").text() must be(messages(documentQuantityError))
     }
   }

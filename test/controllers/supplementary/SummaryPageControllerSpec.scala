@@ -40,7 +40,8 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
     val emptyMetadata: MetaData = MetaData(response = Seq.empty)
     val onlyOnce: VerificationMode = times(1)
-    val minimumValidCacheData = CacheMap(eoriForCache, Map(ConsignmentReferences.id -> correctConsignmentReferencesJSON))
+    val minimumValidCacheData =
+      CacheMap(eoriForCache, Map(ConsignmentReferences.id -> correctConsignmentReferencesJSON))
 
     reset(mockCustomsCacheService)
     reset(mockNrsService)
@@ -108,8 +109,8 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.parties.representativeId"))
         resultAsString must include(messages("supplementary.summary.parties.representativeAddress"))
         resultAsString must include(messages("supplementary.summary.parties.representationType"))
-        resultAsString must include(messages("supplementary.summary.parties.additionalPartiesId"))
-        resultAsString must include(messages("supplementary.summary.parties.additionalPartiesType"))
+        resultAsString must include(messages("supplementary.summary.parties.additionalParties.id"))
+        resultAsString must include(messages("supplementary.summary.parties.additionalParties.type"))
         resultAsString must include(messages("supplementary.summary.parties.idStatusNumberAuthorisationCode"))
         resultAsString must include(messages("supplementary.summary.parties.authorizedPartyEori"))
       }

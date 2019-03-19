@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.views.supplementary
 
 trait DispatchLocationMessages {
 
@@ -25,5 +25,5 @@ trait DispatchLocationMessages {
   val outsideEu: String = dispatchLocation + ".inputText.outsideEU"
   val specialFiscalTerritory: String = dispatchLocation + ".inputText.specialFiscalTerritory"
   val errorMessageEmpty: String = dispatchLocation + ".inputText.error.empty"
-  val errorMessageIncorrect :String = dispatchLocation + ".inputText.error.incorrect"
+  val errorMessageIncorrect: String = dispatchLocation + ".inputText.error.incorrect"
 }
