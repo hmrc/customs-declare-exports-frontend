@@ -16,7 +16,7 @@
 
 package controllers.supplementary
 
-import base.{CustomExportsBaseSpec, TestHelper}
+import base.CustomExportsBaseSpec
 import forms.supplementary.TransportInformation
 import forms.supplementary.TransportInformation.MeansOfTransportTypeCodes.NameOfVessel
 import forms.supplementary.TransportInformation.ModeOfTransportCodes.Road
@@ -161,7 +161,6 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
           meansOfTransportCrossingTheBorderIDNumber = "123456789012345678901234567890ABCDEF"
         )
         val result = route(app, postRequest(uri, emptyForm)).get
-
         contentAsString(result) must include(
           messages("supplementary.transportInfo.meansOfTransport.idNumber.error.length")
         )
@@ -175,20 +174,6 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
           messages("supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters")
         )
       }
-
-      "choose container and not provide container ID" in {
-        val emptyForm = buildTransportInformationForm(container = true)
-        val result = route(app, postRequest(uri, emptyForm)).get
-
-        contentAsString(result) must include(messages("supplementary.transportInfo.containerId.empty"))
-      }
-
-      "choose container and provide incorrect container ID" in {
-        val emptyForm = buildTransportInformationForm(container = true, containerId = TestHelper.createRandomString(18))
-        val result = route(app, postRequest(uri, emptyForm)).get
-
-        contentAsString(result) must include(messages("supplementary.transportInfo.containerId.error"))
-      }
     }
 
     "save the data to the cache" in {
@@ -200,17 +185,14 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
         .cache[TransportInformation](any(), ArgumentMatchers.eq(TransportInformation.id), any())(any(), any(), any())
     }
 
-    "return 303 code" in {
+    "redirect to 'Total number of items' page" in {
       val result = route(app, postRequest(uri, correctTransportInformationJSON)).get
       status(result) must be(SEE_OTHER)
-    }
 
-    "redirect to \"Total number of items\" page" in {
-      val result = route(app, postRequest(uri, correctTransportInformationJSON)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/total-numbers-of-items")
+        Some("/customs-declare-exports/declaration/supplementary/add-transport-containers")
       )
     }
   }
@@ -227,8 +209,7 @@ object TransportInformationPageControllerSpec {
     meansOfTransportCrossingTheBorderType: String = "",
     meansOfTransportCrossingTheBorderIDNumber: String = "",
     meansOfTransportCrossingTheBorderNationality: String = "",
-    container: Boolean = false,
-    containerId: String = ""
+    container: Boolean = false
   ): JsValue = JsObject(
     Map(
       "inlandModeOfTransportCode" -> JsString(inlandModeOfTransportCode),
@@ -238,8 +219,7 @@ object TransportInformationPageControllerSpec {
       "meansOfTransportCrossingTheBorderType" -> JsString(meansOfTransportCrossingTheBorderType),
       "meansOfTransportCrossingTheBorderIDNumber" -> JsString(meansOfTransportCrossingTheBorderIDNumber),
       "meansOfTransportCrossingTheBorderNationality" -> JsString(meansOfTransportCrossingTheBorderNationality),
-      "container" -> JsBoolean(container),
-      "containerId" -> JsString(containerId)
+      "container" -> JsBoolean(container)
     )
   )
 

@@ -18,8 +18,10 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.supplementary.routes.{TotalNumberOfItemsController, TransportInformationContainersPageController}
 import controllers.util.CacheIdGenerator.supplementaryCacheId
 import forms.supplementary.TransportInformation
+import forms.supplementary.TransportInformation.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.data.Form
@@ -46,13 +48,13 @@ class TransportInformationPageController @Inject()(
     customsCacheService
       .fetchAndGetEntry[TransportInformation](supplementaryCacheId, TransportInformation.id)
       .map {
-        case Some(data) => Ok(transport_information(appConfig, TransportInformation.form.fill(data)))
-        case _          => Ok(transport_information(appConfig, TransportInformation.form))
+        case Some(data) => Ok(transport_information(appConfig, form.fill(data)))
+        case _          => Ok(transport_information(appConfig, form))
       }
   }
 
   def submitTransportInformation(): Action[AnyContent] = authenticate.async { implicit request =>
-    TransportInformation.form
+    form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[TransportInformation]) =>
@@ -60,7 +62,12 @@ class TransportInformationPageController @Inject()(
         validTransportInformation =>
           customsCacheService
             .cache[TransportInformation](supplementaryCacheId, TransportInformation.id, validTransportInformation)
-            .map(_ => Redirect(controllers.supplementary.routes.TotalNumberOfItemsController.displayForm()))
+            .map(_ => {
+              if (validTransportInformation.container)
+                Redirect(TransportInformationContainersPageController.displayPage())
+              else
+                Redirect(TotalNumberOfItemsController.displayForm())
+            })
       )
   }
 

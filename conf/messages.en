@@ -430,8 +430,12 @@ supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error
 supplementary.transportInfo.meansOfTransport.idNumber.error.length = Reference is too long
 supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters = Reference cannot contain special characters
 supplementary.transportInfo.container = 7/2 Will the goods be in a container?
+supplementary.transportInfo.containers.title = 7/10 Transport Information Containers
 supplementary.transportInfo.containerId = 7/10 Enter the container ID
+supplementary.transportInfo.containerId.title = Container ID
 supplementary.transportInfo.containerId.empty = Container ID cannot be empty
+supplementary.transportInfo.containerId.error.alphanumeric = Only alphanumeric characters allowed
+supplementary.transportInfo.containerId.error.length = Only 17 alphanumeric characters are allowed
 supplementary.transportInfo.containerId.error = Container ID is incorrect
 
 supplementary.totalAmountInvoiced.error = Total amount of invoiced items is incorrect
