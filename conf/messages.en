@@ -243,6 +243,11 @@ supplementary.consignor.title.hint = The exporter is the registered trader sendi
 supplementary.declarant.title = 3/17 - 3/18 Add declarant
 supplementary.declarant.title.hint = TODO
 
+supplementary.consignee.title = Add the consignee
+supplementary.consignee.eori.info = 3/10 Enter the EORI number or business details EORI number
+supplementary.consignee.eori.hint = The number starts with a country code, for example FR for France, and is then followed by up to 15 digits
+supplementary.consignee.address.info = 3/9 Enter consignee's name and address
+
 supplementary.representative.title = Add representative
 supplementary.representative.header = 3/19 - 3/20 Enter the representative’s details
 supplementary.representative.eori.info = Enter the EORI number or business details

@@ -19,15 +19,23 @@
 @import forms.declaration.DeclarantDetails
 @import services.Country
 @import uk.gov.hmrc.play.views.html._
+@import forms.Choice.AllowedChoiceValues._
+@import models.requests.JourneyRequest
 
-@(appConfig: AppConfig, form: Form[DeclarantDetails])(implicit request: Request[_], messages: Messages, countries: List[Country])
+@(appConfig: AppConfig, form: Form[DeclarantDetails])(implicit request: JourneyRequest[_], messages: Messages, countries: List[Country])
 
 @main_template(
     title = messages("supplementary.declarant.title"),
     appConfig = appConfig
 ) {
     @helpers.form(DeclarantDetailsPageController.saveAddress(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/declaration/exporter-details")
+
+        @{
+            request.choice.value match {
+                case SupplementaryDec => components.back_link("/customs-declare-exports/declaration/exporter-details")
+                case StandardDec      => components.back_link("/customs-declare-exports/declaration/consignee-details")
+            }
+        }
 
         @components.error_summary(form.errors)
 

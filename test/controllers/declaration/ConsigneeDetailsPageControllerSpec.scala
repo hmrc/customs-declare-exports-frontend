@@ -58,7 +58,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/declarant-details"))
     }
 
     "validate request and redirect - only address provided" in {
@@ -67,7 +67,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/declarant-details"))
     }
 
     "validate request and redirect - all values provided" in {
@@ -76,7 +76,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/declarant-details"))
     }
   }
 }

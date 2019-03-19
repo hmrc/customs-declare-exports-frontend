@@ -19,8 +19,10 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
+import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.ExporterDetails
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -56,8 +58,15 @@ class ExporterDetailsPageController @Inject()(
           Future.successful(BadRequest(exporter_details(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[ExporterDetails](cacheId, ExporterDetails.id, form).map { _ =>
-            Redirect(controllers.declaration.routes.DeclarantDetailsPageController.displayForm())
+            Redirect(nextPage(request))
         }
       )
   }
+  private def nextPage(request: JourneyRequest[AnyContent]) =
+    request.choice.value match {
+      case SupplementaryDec =>
+        controllers.declaration.routes.DeclarantDetailsPageController.displayForm()
+      case StandardDec =>
+        controllers.declaration.routes.ConsigneeDetailsPageController.displayForm()
+    }
 }
