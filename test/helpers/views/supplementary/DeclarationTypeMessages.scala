@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.views.supplementary
 
 trait DeclarationTypeMessages {
 
@@ -26,5 +26,5 @@ trait DeclarationTypeMessages {
   val simplified: String = declarationType + ".inputText.simplified"
   val standard: String = declarationType + ".inputText.standard"
   val errorMessageEmpty: String = declarationType + ".inputText.error.empty"
-  val errorMessageIncorrect :String = declarationType + ".inputText.error.incorrect"
+  val errorMessageIncorrect: String = declarationType + ".inputText.error.incorrect"
 }

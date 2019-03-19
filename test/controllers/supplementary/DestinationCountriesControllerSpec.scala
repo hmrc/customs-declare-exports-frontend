@@ -19,7 +19,7 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.DestinationCountries
 import forms.supplementary.DestinationCountriesSpec._
-import helpers.DestinationCountriesMessages
+import helpers.views.supplementary.DestinationCountriesMessages
 import play.api.test.Helpers._
 
 class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with DestinationCountriesMessages {

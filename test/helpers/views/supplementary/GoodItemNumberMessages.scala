@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.views.supplementary
 
-trait ConsigneeDetailsMessages {
+trait GoodItemNumberMessages {
 
-  val consigneeDetails: String = "supplementary.consignee"
+  val goodItemNumber: String = "supplementary.goodItemNumber"
 
-  val title: String = consigneeDetails + ".title"
-  val hint: String = consigneeDetails + ".title.hint"
+  val title: String = goodItemNumber + ".title"
+  val hint: String = goodItemNumber + ".hint"
+  val goodItemError: String = goodItemNumber + ".error"
+  val goodItem : String = goodItemNumber
 }

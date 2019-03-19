@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.views.supplementary
 
-trait ExporterDetailsMessages {
+trait ConsigneeDetailsMessages {
 
-  // TODO: seems like mapping is wrong here - consignor or exporter e.g: supplementary.consignor or supplementary.exporter
-  val exporterDetails: String = "supplementary.consignor"
+  val consigneeDetails: String = "supplementary.consignee"
 
-  val title: String = exporterDetails + ".title"
-  val hint: String = exporterDetails + ".title.hint"
+  val title: String = consigneeDetails + ".title"
+  val hint: String = consigneeDetails + ".title.hint"
 }

@@ -20,7 +20,7 @@ import base.CustomExportsBaseSpec
 import forms.supplementary.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes
 import forms.supplementary.DispatchLocation.AllowedDispatchLocations
 import forms.supplementary.{AdditionalDeclarationType, DispatchLocation}
-import helpers.DeclarationTypeMessages
+import helpers.views.supplementary.DeclarationTypeMessages
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
@@ -115,7 +115,10 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
 
     "populate the form fields with data from cache" in {
 
-      withCaching[AdditionalDeclarationType](Some(AdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Simplified)), AdditionalDeclarationType.formId)
+      withCaching[AdditionalDeclarationType](
+        Some(AdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Simplified)),
+        AdditionalDeclarationType.formId
+      )
 
       val result = route(app, getRequest(declarationTypeUri)).get
       contentAsString(result) must include("checked=\"checked\"")

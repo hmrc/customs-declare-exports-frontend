@@ -16,12 +16,12 @@
 
 package controllers.supplementary
 
-import base.{CustomExportsBaseSpec, ViewValidator}
 import base.TestHelper.createRandomString
+import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.supplementary.AdditionalInformationControllerSpec.cacheWithMaximumAmountOfHolders
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.AdditionalInformation
-import helpers.{AdditionalInformationMessages, CommonMessages}
+import helpers.views.supplementary.{AdditionalInformationMessages, CommonMessages}
 import models.declaration.supplementary.AdditionalInformationData
 import models.declaration.supplementary.AdditionalInformationData.formId
 import play.api.test.Helpers._

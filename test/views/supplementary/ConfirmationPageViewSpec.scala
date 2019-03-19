@@ -15,8 +15,7 @@
  */
 
 package views.supplementary
-
-import helpers.ConfirmationMessages
+import helpers.views.supplementary.ConfirmationMessages
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import views.html.supplementary.confirmation_page
@@ -26,7 +25,7 @@ import views.tags.ViewTest
 @ViewTest
 class ConfirmationPageViewSpec extends ViewSpec with ConfirmationMessages {
 
-  private def createView() :Html = confirmation_page(appConfig)(fakeRequest, flash, messages)
+  private def createView(): Html = confirmation_page(appConfig)(fakeRequest, flash, messages)
 
   "Confirmation Page View" should {
 
@@ -67,7 +66,9 @@ class ConfirmationPageViewSpec extends ViewSpec with ConfirmationMessages {
       val view = createView()
 
       getElementByCss(view, "article>h1").text() must be(messages(whatHappensNext))
-      getElementByCss(view, "article>p:nth-child(4)").text() must be(messages(explanation) + " " + messages(explanationLink))
+      getElementByCss(view, "article>p:nth-child(4)").text() must be(
+        messages(explanation) + " " + messages(explanationLink)
+      )
     }
 
     "display an \"Check your notification status in the dashboard\" empty link without conversationId" in {

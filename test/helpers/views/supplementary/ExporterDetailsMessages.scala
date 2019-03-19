@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package helpers
+package helpers.views.supplementary
 
-trait ConfirmationMessages {
+trait ExporterDetailsMessages {
 
-  val confirmation: String = "supplementary.confirmation"
+  // TODO: seems like mapping is wrong here - consignor or exporter e.g: supplementary.consignor or supplementary.exporter
+  val exporterDetails: String = "supplementary.consignor"
 
-  val title: String = confirmation + ".title"
-  val header: String = confirmation + ".header"
-  val information: String = confirmation + ".info"
-  val whatHappensNext: String = confirmation + ".whatHappensNext"
-  val explanation: String = confirmation + ".explanation"
-  val explanationLink: String = confirmation + ".explanation.linkText"
-  val submitAnother: String = confirmation + ".submitAnotherDeclaration"
+  val title: String = exporterDetails + ".title"
+  val hint: String = exporterDetails + ".title.hint"
 }

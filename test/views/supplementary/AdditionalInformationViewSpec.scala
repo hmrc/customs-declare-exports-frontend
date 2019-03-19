@@ -18,7 +18,7 @@ package views.supplementary
 
 import base.TestHelper
 import forms.supplementary.AdditionalInformation
-import helpers.{AdditionalInformationMessages, CommonMessages}
+import helpers.views.supplementary.{AdditionalInformationMessages, CommonMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.supplementary.additional_information

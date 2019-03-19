@@ -18,7 +18,7 @@ package views.supplementary
 
 import base.TestHelper
 import forms.supplementary.{Address, EntityDetails, ExporterDetails}
-import helpers.{CommonMessages, ExporterDetailsMessages}
+import helpers.views.supplementary.{CommonMessages, ExporterDetailsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.supplementary.exporter_details

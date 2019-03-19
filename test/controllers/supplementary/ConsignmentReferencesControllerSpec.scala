@@ -19,7 +19,7 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.ConsignmentReferences
 import forms.supplementary.ConsignmentReferencesSpec._
-import helpers.{CommonMessages, ConsignmentReferencesMessages}
+import helpers.views.supplementary.{CommonMessages, ConsignmentReferencesMessages}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}

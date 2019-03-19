@@ -15,8 +15,9 @@
  */
 
 package views.supplementary
+
 import forms.supplementary.CommodityMeasure
-import helpers.{CommodityMeasureMessages, CommonMessages}
+import helpers.views.supplementary.{CommodityMeasureMessages, CommonMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.supplementary.goods_measure

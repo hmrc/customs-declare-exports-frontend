@@ -20,13 +20,14 @@ import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.DocumentsProduced
 import forms.supplementary.DocumentsProducedSpec.{correctDocumentsProducedMap, _}
-import helpers.{CommonMessages, DocumentsProducedMessages}
+import helpers.views.supplementary.{CommonMessages, DocumentsProducedMessages}
 import models.declaration.supplementary.DocumentsProducedData
 import models.declaration.supplementary.DocumentsProducedData.formId
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class DocumentsProducedControllerSpec extends CustomExportsBaseSpec with DocumentsProducedMessages with CommonMessages with ViewValidator {
+class DocumentsProducedControllerSpec
+    extends CustomExportsBaseSpec with DocumentsProducedMessages with CommonMessages with ViewValidator {
 
   import DocumentsProducedControllerSpec._
 
@@ -275,6 +276,9 @@ object DocumentsProducedControllerSpec {
   val cacheWithMaximumAmountOfHolders = DocumentsProducedData(
     Seq
       .range[Int](100, 200, 1)
-      .map(elem => DocumentsProduced(Some(elem.toString), Some("1234"), Some("1234"), Some("AB"), Some("1234"), Some("1234"))
-  ))
+      .map(
+        elem =>
+          DocumentsProduced(Some(elem.toString), Some("1234"), Some("1234"), Some("AB"), Some("1234"), Some("1234"))
+      )
+  )
 }
