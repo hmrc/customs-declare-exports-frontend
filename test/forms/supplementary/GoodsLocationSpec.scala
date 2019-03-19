@@ -27,7 +27,7 @@ class GoodsLocationSpec extends WordSpec with MustMatchers {
     "return proper Metadata Properties" in {
       val goodsLocation = correctGoodsLocation
       val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.consignment.goodsLocation.name" -> goodsLocation.identificationOfLocation.get,
+        "declaration.goodsShipment.consignment.goodsLocation.name" -> goodsLocation.identificationOfLocation,
         "declaration.goodsShipment.consignment.goodsLocation.id" -> goodsLocation.additionalIdentifier.get,
         "declaration.goodsShipment.consignment.goodsLocation.typeCode" -> goodsLocation.typeOfLocation.get,
         "declaration.goodsShipment.consignment.goodsLocation.address.typeCode" -> goodsLocation.qualifierOfIdentification.get,
@@ -47,7 +47,7 @@ object GoodsLocationSpec {
     country = Some("United Kingdom"),
     typeOfLocation = Some("T"),
     qualifierOfIdentification = Some("Q"),
-    identificationOfLocation = Some("LOC"),
+    identificationOfLocation = "LOC",
     additionalIdentifier = Some("Additional Identifier"),
     streetAndNumber = Some("Street and Number"),
     postCode = Some("Postcode"),
@@ -57,7 +57,7 @@ object GoodsLocationSpec {
     country = None,
     typeOfLocation = None,
     qualifierOfIdentification = None,
-    identificationOfLocation = None,
+    identificationOfLocation = "",
     additionalIdentifier = None,
     streetAndNumber = None,
     postCode = None,

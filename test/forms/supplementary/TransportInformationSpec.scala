@@ -35,11 +35,125 @@ class TransportInformationSpec extends WordSpec with MustMatchers {
         "declaration.borderTransportMeans.identificationTypeCode" -> transportInformation.meansOfTransportCrossingTheBorderType,
         "declaration.borderTransportMeans.id" -> transportInformation.meansOfTransportCrossingTheBorderIDNumber.get,
         "declaration.borderTransportMeans.registrationNationalityCode" -> "GB",
-        "declaration.goodsShipment.consignment.containerCode" -> "1",
-        "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.transportEquipment.id" -> transportInformation.containerId.get
+        "declaration.goodsShipment.consignment.containerCode" -> "1"
       )
 
       transportInformation.toMetadataProperties() must equal(expectedTransportInformationProperties)
+    }
+  }
+
+  "TransportInformation mapping used for binding data" should {
+
+    "return form with errors for borderModeOfTransportCode" when {
+      "provided with empty input for the field" in {
+        val transportInformationInputData = JsObject(
+          Map(
+            "meansOfTransportOnDepartureType" -> JsString(NameOfVessel),
+            "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel)
+          )
+        )
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.transportInfo.borderTransportMode.error.empty")
+      }
+
+      "provided with a value not defined in ModeOfTransportCodes for the field" in {
+        val transportInformationInputData = JsObject(
+          Map(
+            "borderModeOfTransportCode" -> JsString("Invalid"),
+            "meansOfTransportOnDepartureType" -> JsString(NameOfVessel),
+            "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel)
+          )
+        )
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.transportInfo.borderTransportMode.error.incorrect")
+      }
+    }
+
+    "return form with errors for meansOfTransportOnDepartureType" when {
+      "provided with empty input for the field" in {
+        val transportInformationInputData = JsObject(
+          Map(
+            "borderModeOfTransportCode" -> JsString(Road),
+            "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel)
+          )
+        )
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.transportInfo.meansOfTransport.departure.error.empty")
+      }
+
+      "provided with a value not defined in MeansOfTransportTypeCodes for the field" in {
+        val transportInformationInputData = JsObject(
+          Map(
+            "borderModeOfTransportCode" -> JsString(Road),
+            "meansOfTransportOnDepartureType" -> JsString("Invalid"),
+            "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel)
+          )
+        )
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.transportInfo.meansOfTransport.departure.error.incorrect")
+      }
+    }
+
+    "return form with errors for meansOfTransportCrossingTheBorderType" when {
+      "provided with empty input for the field" in {
+        val transportInformationInputData = JsObject(
+          Map(
+            "borderModeOfTransportCode" -> JsString(Road),
+            "meansOfTransportOnDepartureType" -> JsString(NameOfVessel)
+          )
+        )
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty"
+        )
+      }
+
+      "provided with a value not defined in MeansOfTransportTypeCodes for the field" in {
+        val transportInformationInputData = JsObject(
+          Map(
+            "borderModeOfTransportCode" -> JsString(Road),
+            "meansOfTransportOnDepartureType" -> JsString(NameOfVessel),
+            "meansOfTransportCrossingTheBorderType" -> JsString("Invalid")
+          )
+        )
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect"
+        )
+      }
+    }
+
+    "return form without errors" when {
+      "provided with valid input" in {
+        val transportInformationInputData = JsObject(
+          Map(
+            "borderModeOfTransportCode" -> JsString(Road),
+            "meansOfTransportOnDepartureType" -> JsString(NameOfVessel),
+            "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel)
+          )
+        )
+        val form = TransportInformation.form().bind(transportInformationInputData)
+
+        form.hasErrors must be(false)
+      }
     }
   }
 
@@ -54,8 +168,7 @@ object TransportInformationSpec {
     meansOfTransportCrossingTheBorderType = NameOfVessel,
     meansOfTransportCrossingTheBorderIDNumber = Some("QWERTY"),
     meansOfTransportCrossingTheBorderNationality = Some("United Kingdom"),
-    container = true,
-    containerId = Some("ContainerID")
+    container = true
   )
   val emptyTransportInformation = TransportInformation(
     inlandModeOfTransportCode = None,
@@ -65,8 +178,7 @@ object TransportInformationSpec {
     meansOfTransportCrossingTheBorderType = "",
     meansOfTransportCrossingTheBorderIDNumber = None,
     meansOfTransportCrossingTheBorderNationality = None,
-    container = false,
-    containerId = None
+    container = false
   )
 
   val correctTransportInformationJSON: JsValue = JsObject(
@@ -78,8 +190,7 @@ object TransportInformationSpec {
       "meansOfTransportCrossingTheBorderType" -> JsString(NameOfVessel),
       "meansOfTransportCrossingTheBorderIDNumber" -> JsString("QWERTY"),
       "meansOfTransportCrossingTheBorderNationality" -> JsString("United Kingdom"),
-      "container" -> JsBoolean(true),
-      "containerId" -> JsString("ContainerID")
+      "container" -> JsBoolean(true)
     )
   )
   val emptyTransportInformationJSON: JsValue = JsObject(
@@ -91,8 +202,7 @@ object TransportInformationSpec {
       "meansOfTransportCrossingTheBorderType" -> JsString(""),
       "meansOfTransportCrossingTheBorderIDNumber" -> JsString(""),
       "meansOfTransportCrossingTheBorderNationality" -> JsString(""),
-      "container" -> JsBoolean(false),
-      "containerId" -> JsString("")
+      "container" -> JsBoolean(false)
     )
   )
 }

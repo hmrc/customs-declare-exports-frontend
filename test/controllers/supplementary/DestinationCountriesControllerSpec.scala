@@ -19,61 +19,59 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.DestinationCountries
 import forms.supplementary.DestinationCountriesSpec._
-import org.scalatest.BeforeAndAfter
+import helpers.views.supplementary.DestinationCountriesMessages
 import play.api.test.Helpers._
 
-class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with DestinationCountriesMessages {
 
   val uri = uriWithContextPath("/declaration/supplementary/destination-countries")
 
   before {
     authorizedUser()
+    withCaching[DestinationCountries](None)
   }
 
-  "Destination Countries Controller on page" should {
+  "Destination Countries Controller on GET" should {
 
     "return 200 status code" in {
-      withCaching[DestinationCountries](None)
 
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
     }
+  }
 
-    "validate form - incorrect values" in {
-      withCaching[DestinationCountries](None)
+  "Destination Countries Controller on POST" should {
+
+    "validate request - incorrect values" in {
 
       val result = route(app, postRequest(uri, incorrectDestinationCountriesJSON)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
-      stringResult must include(messages("supplementary.destinationCountries.countryOfDestination.error"))
-      stringResult must include(messages("supplementary.destinationCountries.countryOfDispatch.error"))
+      stringResult must include(messages(countryOfDestinationError))
+      stringResult must include(messages(countryOfDispatchError))
     }
 
-    "validate form - country of dispatch missing" in {
-      withCaching[DestinationCountries](None)
+    "validate request - country of dispatch missing" in {
 
       val result = route(app, postRequest(uri, emptyDestinationCountriesJSON)).get
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages("supplementary.destinationCountries.countryOfDispatch.empty"))
+      contentAsString(result) must include(messages(countryOfDispatchEmpty))
     }
 
-    "validate form and redirect - country of destination missing" in {
+    "validate request - country of destination missing" in {
       withCaching[DestinationCountries](None)
 
       val result = route(app, postRequest(uri, emptyDispatchCountriesJSON)).get
-      val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/location-of-goods")
-      )
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages("supplementary.destinationCountries.countryOfDestination.empty"))
     }
 
-    "validate form and redirect - correct values" in {
-      withCaching[DestinationCountries](None)
+    "validate request and redirect - correct values" in {
 
       val result = route(app, postRequest(uri, correctDestinationCountriesJSON)).get
       val header = result.futureValue.header

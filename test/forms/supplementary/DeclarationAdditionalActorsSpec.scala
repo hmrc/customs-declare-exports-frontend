@@ -17,24 +17,40 @@
 package forms.supplementary
 
 import forms.supplementary.DeclarationAdditionalActors.PartyType.{Consolidator, FreightForwarder}
-import models.declaration.supplementary.DeclarationAdditionalActorsData
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
   import DeclarationAdditionalActorsSpec._
 
-  "Method toMetadataProperties" should {
-    "return proper Metadata Properties" in {
-      val additionalActorsData = correctAdditionalActorsData
-      val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.aeoMutualRecognitionParties[0].id" -> correctAdditionalActors1.eori.get,
-        "declaration.goodsShipment.aeoMutualRecognitionParties[0].roleCode" -> correctAdditionalActors1.partyType.get,
-        "declaration.goodsShipment.aeoMutualRecognitionParties[1].id" -> correctAdditionalActors2.eori.get,
-        "declaration.goodsShipment.aeoMutualRecognitionParties[1].roleCode" -> correctAdditionalActors2.partyType.get
-      )
+  "DeclarationAdditionalActors mapping used for binding data" should {
 
-      additionalActorsData.toMetadataProperties() must equal(expectedMetadataProperties)
+    "return form with errors" when {
+      "provided with empty input for party type" in {
+        val form = DeclarationAdditionalActors.form().bind(correctEORIPartyNotSelectedJSON)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.partyType.empty")
+      }
+
+      "provided with unknown value for party type" in {
+        val declarationAdditionalActorsInputData =
+          JsObject(Map("eori" -> JsString("eori1"), "partyType" -> JsString("Incorrect")))
+        val form = DeclarationAdditionalActors.form().bind(declarationAdditionalActorsInputData)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.partyType.error")
+      }
+    }
+
+    "return form without errors" when {
+      "provided with valie input" in {
+        val form = DeclarationAdditionalActors.form().bind(correctAdditionalActorsJSON)
+
+        form.hasErrors must be(false)
+      }
     }
   }
 
@@ -43,7 +59,7 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
 object DeclarationAdditionalActorsSpec {
   val correctAdditionalActors1 = DeclarationAdditionalActors(eori = Some("eori1"), partyType = Some(Consolidator))
   val correctAdditionalActors2 = DeclarationAdditionalActors(eori = Some("eori99"), partyType = Some(FreightForwarder))
-  val correctAdditionalActorsData = DeclarationAdditionalActorsData(Seq(correctAdditionalActors1,correctAdditionalActors2))
+
   val emptyAdditionalActors = DeclarationAdditionalActors(eori = None, partyType = None)
   val correctEORIPartyNotSelected = DeclarationAdditionalActors(eori = Some("1234567890123456"), partyType = None)
   val incorrectAdditionalActors =
@@ -52,20 +68,12 @@ object DeclarationAdditionalActorsSpec {
   val correctAdditionalActorsJSON: JsValue = JsObject(
     Map("eori" -> JsString("eori1"), "partyType" -> JsString(Consolidator))
   )
-
-  val correctAdditionalActorsDataJSON: JsValue =
-    JsObject(Map("actors" -> JsArray(Seq(correctAdditionalActorsJSON))))
-
   val emptyAdditionalActorsJSON: JsValue = JsObject(Map("eori" -> JsString(""), "partyType" -> JsString("")))
-  val emptyAdditionalActorsDataJSON = JsObject(Map("actors" -> JsArray(Seq(emptyAdditionalActorsJSON))))
 
   val correctEORIPartyNotSelectedJSON: JsValue = JsObject(Map("eori" -> JsString("1234567890123456")))
   val incorrectAdditionalActorsJSON: JsValue = JsObject(
     Map("eori" -> JsString("123456789123456789"), "partyType" -> JsString("Incorrect"))
   )
 
-  val correctAdditionalActorsMap: Map[String, String] = Map(
-    "eori" -> "eori1",
-    "partyType" -> "CS")
-
+  val correctAdditionalActorsMap: Map[String, String] = Map("eori" -> "eori1", "partyType" -> "CS")
 }

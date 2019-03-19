@@ -15,6 +15,7 @@
  */
 
 package controllers.supplementary
+
 import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.goodsItemCacheId

@@ -16,39 +16,36 @@
 
 package views.supplementary
 
+import base.TestHelper
 import forms.supplementary.DestinationCountries
+import helpers.views.supplementary.{CommonMessages, DestinationCountriesMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.helpers.{Item, ViewSpec}
 import views.html.supplementary.destination_countries
+import views.supplementary.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class DestinationCountriesViewSpec extends ViewSpec {
+class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMessages with CommonMessages {
 
   private val form: Form[DestinationCountries] = DestinationCountries.form()
-  private def createView(form: Form[DestinationCountries] = form): Html = destination_countries(appConfig, form)(fakeRequest, messages, countries)
-
-  private val prefix = s"${basePrefix}destinationCountries."
-
-  private val title = Item(prefix, "title")
-  private val countryOfDestination = Item(prefix, "countryOfDestination")
-  private val countryOfDispatch = Item(prefix, "countryOfDispatch")
+  private def createView(form: Form[DestinationCountries] = form): Html =
+    destination_countries(appConfig, form)(fakeRequest, messages, countries)
 
   "Destination Countries View" should {
 
     "have proper messages for labels" in {
 
-      assertMessage(title.withPrefix, "Declaration countries of dispatch/destination")
-      assertMessage(countryOfDestination.withPrefix, "5/8 Enter the country of destination")
-      assertMessage(countryOfDispatch.withPrefix, "5/14 Enter the country of dispatch")
+      assertMessage(title, "Declaration countries of dispatch/destination")
+      assertMessage(countryOfDestination, "5/8 Enter the country of destination")
+      assertMessage(countryOfDispatch, "5/14 Enter the country of dispatch")
     }
 
     "have proper messages for error labels" in {
 
-      assertMessage(countryOfDispatch.withError, "Country of dispatch is incorrect")
-      assertMessage(countryOfDispatch.withEmpty, "Country of dispatch cannot be empty")
-      assertMessage(countryOfDestination.withError, "Country of destination is incorrect")
+      assertMessage(countryOfDispatchError, "Country of dispatch is incorrect")
+      assertMessage(countryOfDispatchEmpty, "Country of dispatch cannot be empty")
+      assertMessage(countryOfDestinationError, "Country of destination is incorrect")
     }
   }
 
@@ -56,42 +53,42 @@ class DestinationCountriesViewSpec extends ViewSpec {
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be("Declaration countries of dispatch/destination")
+      getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
     "display header" in {
 
-      getElementByCss(createView(), "h1").text() must be(messages(title.withPrefix))
+      getElementByCss(createView(), "h1").text() must be(messages(title))
     }
 
     "display empty input with label for Dispatch country" in {
 
       val view = createView()
 
-      getElementByCss(view, "#countryOfDispatch-outer>label").text() must be(messages(countryOfDispatch.withPrefix))
-      getElementById(view, countryOfDispatch.key).attr("value") must be("")
+      getElementByCss(view, "#countryOfDispatch-outer>label").text() must be(messages(countryOfDispatch))
+      getElementById(view, "countryOfDispatch").attr("value") must be("")
     }
 
     "display empty input with label for Destination country" in {
 
       val view = createView()
 
-      getElementByCss(view, "#countryOfDestination-outer>label").text() must be(messages(countryOfDestination.withPrefix))
-      getElementById(view, countryOfDestination.key).attr("value") must be("")
+      getElementByCss(view, "#countryOfDestination-outer>label").text() must be(messages(countryOfDestination))
+      getElementById(view, "countryOfDestination").attr("value") must be("")
     }
 
     "display \"Back\" button that links to \"Declaration holder of authorisation\" page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
-      backButton.text() must be("Back")
+      backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/holder-of-authorisation")
     }
 
     "display \"Save and continue\" button" in {
 
       val saveButton = getElementByCss(createView(), "#submit")
-      saveButton.text() must be("Save and continue")
+      saveButton.text() must be(messages(saveAndContinueCaption))
     }
   }
 
@@ -99,68 +96,77 @@ class DestinationCountriesViewSpec extends ViewSpec {
 
     "display error when dispatch country is empty" in {
 
-      val view = createView(DestinationCountries.form().withError(countryOfDispatch.key, messages(countryOfDispatch.withEmpty)))
+      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
+        "",
+        "Germany"
+      )))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(countryOfDispatch.withEmpty), countryOfDispatch.asLink)
+      checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDispatch.withEmpty))
+      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDispatchEmpty))
     }
 
     "display error when dispatch country is incorrect" in {
 
-      val view = createView(DestinationCountries.form().withError(countryOfDispatch.key, messages(countryOfDispatch.withError)))
+      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
+        TestHelper.createRandomString(10),
+        "Germany"
+      )))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(countryOfDispatch.withError), countryOfDispatch.asLink)
+      checkErrorLink(view, 1, messages(countryOfDispatchError), "#countryOfDispatch")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDispatch.withError))
+      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDispatchError))
     }
 
     "display error when destination country is incorrect" in {
 
-      val view = createView(DestinationCountries.form().withError(countryOfDestination.key, messages(countryOfDestination.withError)))
+      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
+        "Germany",
+        TestHelper.createRandomString(10)
+      )))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(countryOfDestination.withError), countryOfDestination.asLink)
+      checkErrorLink(view, 1, messages(countryOfDestinationError), "#countryOfDestination")
 
-      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDestination.withError))
+      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDestinationError))
     }
 
     "display errors when both countries are incorrect" in {
 
-      val form = DestinationCountries.form()
-        .withError(countryOfDispatch.key, messages(countryOfDispatch.withError))
-        .withError(countryOfDestination.key, messages(countryOfDestination.withError))
-      val view = createView(form)
+      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
+        TestHelper.createRandomString(10),
+        TestHelper.createRandomString(10)
+      )))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(countryOfDispatch.withError), countryOfDispatch.asLink)
-      checkErrorLink(view, 2, messages(countryOfDestination.withError), countryOfDestination.asLink)
+      checkErrorLink(view, 1, messages(countryOfDispatchError), "#countryOfDispatch")
+      checkErrorLink(view, 2, messages(countryOfDestinationError), "#countryOfDestination")
 
       val spanErrors = getElementsByCss(view, "span.error-message")
       spanErrors.size() must be(2)
 
-      spanErrors.get(0).text() must be(messages(countryOfDispatch.withError))
-      spanErrors.get(1).text() must be(messages(countryOfDestination.withError))
+      spanErrors.get(0).text() must be(messages(countryOfDispatchError))
+      spanErrors.get(1).text() must be(messages(countryOfDestinationError))
     }
 
     "display errors when dispatch country is empty and destination is incorrect" in {
 
-      val form = DestinationCountries.form()
-        .withError(countryOfDispatch.key, messages(countryOfDispatch.withEmpty))
-        .withError(countryOfDestination.key, messages(countryOfDestination.withError))
-      val view = createView(form)
+      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
+        "",
+        TestHelper.createRandomString(10)
+      )))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(countryOfDispatch.withEmpty), countryOfDispatch.asLink)
-      checkErrorLink(view, 2, messages(countryOfDestination.withError), countryOfDestination.asLink)
+      checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
+      checkErrorLink(view, 2, messages(countryOfDestinationError), "#countryOfDestination")
 
       val spanErrors = getElementsByCss(view, "span.error-message")
       spanErrors.size() must be(2)
 
-      spanErrors.get(0).text() must be(messages(countryOfDispatch.withEmpty))
-      spanErrors.get(1).text() must be(messages(countryOfDestination.withError))
+      spanErrors.get(0).text() must be(messages(countryOfDispatchEmpty))
+      spanErrors.get(1).text() must be(messages(countryOfDestinationError))
     }
   }
 
@@ -168,26 +174,26 @@ class DestinationCountriesViewSpec extends ViewSpec {
 
     "display both countries in inputs" in {
 
-      val view = createView(DestinationCountries.form().fill(DestinationCountries(Some("Poland"), "Ukraine")))
+      val view = createView(DestinationCountries.form().fill(DestinationCountries("Ukraine","Poland")))
 
-      getElementById(view, countryOfDispatch.key).attr("value") must be("Ukraine")
-      getElementById(view, countryOfDestination.key).attr("value") must be("Poland")
+      getElementById(view, "countryOfDispatch").attr("value") must be("Ukraine")
+      getElementById(view, "countryOfDestination").attr("value") must be("Poland")
     }
 
     "display only dispatch country in inputs" in {
 
-      val view = createView(DestinationCountries.form().fill(DestinationCountries(Some(""), "Ukraine")))
+      val view = createView(DestinationCountries.form().fill(DestinationCountries( "Ukraine", "")))
 
-      getElementById(view, countryOfDispatch.key).attr("value") must be("Ukraine")
-      getElementById(view, countryOfDestination.key).attr("value") must be("")
+      getElementById(view, "countryOfDispatch").attr("value") must be("Ukraine")
+      getElementById(view, "countryOfDestination").attr("value") must be("")
     }
 
     "display only destination country in inputs" in {
 
-      val view = createView(DestinationCountries.form().fill(DestinationCountries(Some("Poland"), "")))
+      val view = createView(DestinationCountries.form().fill(DestinationCountries("", "Poland")))
 
-      getElementById(view, countryOfDispatch.key).attr("value") must be("")
-      getElementById(view, countryOfDestination.key).attr("value") must be("Poland")
+      getElementById(view, "countryOfDispatch").attr("value") must be("")
+      getElementById(view, "countryOfDestination").attr("value") must be("Poland")
     }
   }
 }

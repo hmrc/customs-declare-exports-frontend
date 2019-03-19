@@ -17,27 +17,29 @@
 package models.declaration.supplementary
 
 import forms.supplementary.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes
+import forms.supplementary.AdditionalDeclarationTypeSpec._
 import forms.supplementary.AdditionalInformationSpec._
 import forms.supplementary.ConsigneeDetailsSpec._
 import forms.supplementary.ConsignmentReferencesSpec._
 import forms.supplementary.DeclarantDetailsSpec._
-import forms.supplementary.DeclarationAdditionalActorsSpec._
 import forms.supplementary.DestinationCountriesSpec._
 import forms.supplementary.DispatchLocation.AllowedDispatchLocations
+import forms.supplementary.DispatchLocationSpec._
 import forms.supplementary.DocumentsProducedSpec._
 import forms.supplementary.ExporterDetailsSpec._
 import forms.supplementary.GoodsItemNumberSpec._
 import forms.supplementary.GoodsLocationSpec._
 import forms.supplementary.ItemTypeSpec._
 import forms.supplementary.OfficeOfExitSpec._
-import forms.supplementary.DocumentSpec._
 import forms.supplementary.RepresentativeDetailsSpec._
 import forms.supplementary.SupervisingCustomsOfficeSpec._
 import forms.supplementary.TotalNumberOfItemsSpec._
 import forms.supplementary.TransactionTypeSpec._
+import forms.supplementary.TransportInformationContainerSpec.{correctTransportInformationContainerData, correctTransportInformationContainerDataJSON}
 import forms.supplementary.TransportInformationSpec._
 import forms.supplementary.WarehouseIdentificationSpec._
 import forms.supplementary._
+import models.declaration.supplementary.DeclarationAdditionalActorsDataSpec._
 import models.declaration.supplementary.DeclarationHoldersDataSpec._
 import models.declaration.supplementary.DeclarationTypeSpec._
 import models.declaration.supplementary.ProcedureCodesDataSpec._
@@ -74,8 +76,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.parties mustNot be(defined)
           supplementaryDeclarationData.locations mustNot be(defined)
           supplementaryDeclarationData.transportInformation mustNot be(defined)
+          supplementaryDeclarationData.transportInformationContainerData mustNot be(defined)
           supplementaryDeclarationData.items mustNot be(defined)
-          supplementaryDeclarationData.previousDocuments mustNot be(defined)
           supplementaryDeclarationData.additionalInformationData mustNot be(defined)
           supplementaryDeclarationData.documentsProducedData mustNot be(defined)
         }
@@ -236,12 +238,12 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.locations.get.warehouseIdentification must be(defined)
           supplementaryDeclarationData.locations.get.officeOfExit must be(defined)
           supplementaryDeclarationData.transportInformation must be(defined)
+          supplementaryDeclarationData.transportInformationContainerData must be(defined)
           supplementaryDeclarationData.items must be(defined)
           supplementaryDeclarationData.items.get.totalNumberOfItems must be(defined)
           supplementaryDeclarationData.items.get.transactionType must be(defined)
           supplementaryDeclarationData.items.get.goodsItemNumber must be(defined)
           supplementaryDeclarationData.items.get.itemType must be(defined)
-          supplementaryDeclarationData.previousDocuments must be(defined)
           supplementaryDeclarationData.additionalInformationData must be(defined)
           supplementaryDeclarationData.documentsProducedData must be(defined)
         }
@@ -320,10 +322,9 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         map(Locations.id) must equal(data.locations.get)
         map.keys must contain(TransportInformation.id)
         map(TransportInformation.id) must equal(data.transportInformation.get)
+        map(TransportInformationContainerData.id) must equal(data.transportInformationContainerData.get)
         map.keys must contain(Items.id)
         map(Items.id) must equal(data.items.get)
-        map.keys must contain(Document.formId)
-        map(Document.formId) must equal(data.previousDocuments.get)
         map.keys must contain(AdditionalInformationData.formId)
         map(AdditionalInformationData.formId) must equal(data.additionalInformationData.get)
         map.keys must contain(DocumentsProducedData.formId)
@@ -343,14 +344,13 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       verify(locationsMock, times(1)).toMetadataProperties()
       verify(transportInformationMock, times(1)).toMetadataProperties()
       verify(itemsMock, times(1)).toMetadataProperties()
-      verify(previousDocumentsMock, times(1)).toMetadataProperties()
       verify(additionalInformationDataMock, times(1)).toMetadataProperties()
       verify(documentsProducedDataMock, times(1)).toMetadataProperties()
     }
 
     "return Map being summary of all data elements returned Maps" in new TestMapConcatenation {
       supplementaryDeclarationData.toMetadataProperties() must equal(
-        functionCodeMap ++ declarationTypeMap ++ consignmentReferencesMap ++ partiesMap ++ locationsMap ++ transportInformationMap ++ itemsMap ++ previousDocumentsMap ++ additionalInformationMap ++ documentsProducedMap
+        functionCodeMap ++ declarationTypeMap ++ consignmentReferencesMap ++ partiesMap ++ locationsMap ++ transportInformationMap ++ itemsMap ++ additionalInformationMap ++ documentsProducedMap
       )
     }
 
@@ -360,8 +360,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       val partiesMock = mock(classOf[Parties])
       val locationsMock = mock(classOf[Locations])
       val transportInformationMock = mock(classOf[TransportInformation])
+      val transportInformationContainerDataMock = mock(classOf[TransportInformationContainerData])
       val itemsMock = mock(classOf[Items])
-      val previousDocumentsMock = mock(classOf[Document])
       val additionalInformationDataMock = mock(classOf[AdditionalInformationData])
       val documentsProducedDataMock = mock(classOf[DocumentsProducedData])
       val supplementaryDeclarationData = SupplementaryDeclarationData(
@@ -370,8 +370,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         parties = Some(partiesMock),
         locations = Some(locationsMock),
         transportInformation = Some(transportInformationMock),
+        transportInformationContainerData = Some(transportInformationContainerDataMock),
         items = Some(itemsMock),
-        previousDocuments = Some(previousDocumentsMock),
         additionalInformationData = Some(additionalInformationDataMock),
         documentsProducedData = Some(documentsProducedDataMock)
       )
@@ -381,8 +381,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       when(partiesMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(locationsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(transportInformationMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+      when(transportInformationContainerDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(itemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-      when(previousDocumentsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(additionalInformationDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(documentsProducedDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     }
@@ -394,8 +394,9 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       val partiesMap = Map("Parties" -> "PartiesValue")
       val locationsMap = Map("Locations" -> "LocationsValue")
       val transportInformationMap = Map("TransportInformation" -> "TransportInformationValue")
+      val transportInformationContainerMap =
+        Map("TransportInformationContainer" -> "TransportInformationContainerValue")
       val itemsMap = Map("Items" -> "ItemsValue")
-      val previousDocumentsMap = Map("PreviousDocuments" -> "PreviousDocumentsValue")
       val additionalInformationMap = Map("AdditionalInformation" -> "AdditionalInformationValue")
       val documentsProducedMap = Map("DocumentsProduced" -> "DocumentsProducedValue")
       when(declarationTypeMock.toMetadataProperties()).thenReturn(declarationTypeMap)
@@ -404,7 +405,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       when(locationsMock.toMetadataProperties()).thenReturn(locationsMap)
       when(transportInformationMock.toMetadataProperties()).thenReturn(transportInformationMap)
       when(itemsMock.toMetadataProperties()).thenReturn(itemsMap)
-      when(previousDocumentsMock.toMetadataProperties()).thenReturn(previousDocumentsMap)
       when(additionalInformationDataMock.toMetadataProperties()).thenReturn(additionalInformationMap)
       when(documentsProducedDataMock.toMetadataProperties()).thenReturn(documentsProducedMap)
     }
@@ -433,11 +433,11 @@ object SupplementaryDeclarationDataSpec {
       WarehouseIdentification.formId -> correctWarehouseIdentificationJSON,
       OfficeOfExit.formId -> correctOfficeOfExitJSON,
       TransportInformation.id -> correctTransportInformationJSON,
+      TransportInformationContainerData.id -> correctTransportInformationContainerDataJSON,
       TotalNumberOfItems.formId -> correctTotalNumberOfItemsDecimalValuesJSON,
       TransactionType.formId -> correctTransactionTypeJSON,
       GoodsItemNumber.formId -> correctGoodsItemNumberJSON,
       ItemType.id -> correctItemTypeJSON,
-      Document.formId -> correctPreviousDocumentsJSON,
       AdditionalInformationData.formId -> correctAdditionalInformationDataJSON,
       DocumentsProducedData.formId -> correctDocumentsProducedDataJSON
     )
@@ -452,7 +452,7 @@ object SupplementaryDeclarationDataSpec {
         declarantDetails = Some(correctDeclarantDetails),
         representativeDetails = Some(correctRepresentativeDetails),
         declarationAdditionalActorsData = Some(correctAdditionalActorsData),
-        declarationHoldersData = Some(correctDeclarationHolder)
+        declarationHoldersData = Some(correctDeclarationHoldersData)
       )
     ),
     locations = Some(
@@ -466,14 +466,15 @@ object SupplementaryDeclarationDataSpec {
       )
     ),
     transportInformation = Some(correctTransportInformation),
+    transportInformationContainerData = Some(correctTransportInformationContainerData),
     items = Some(
       Items(
         totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
         transactionType = Some(correctTransactionType),
         goodsItemNumber = Some(correctGoodsItemNumber),
-        itemType = Some(correctItemType))
+        itemType = Some(correctItemType)
+      )
     ),
-    previousDocuments = Some(correctPreviousDocument),
     additionalInformationData = Some(correctAdditionalInformation),
     documentsProducedData = Some(correctDocumentsProducedData)
   )

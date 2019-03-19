@@ -128,11 +128,6 @@
             inputs = Seq(RadioOption("Yes", "true", messages("site.yes")), RadioOption("No", "false", messages("site.no")))
         )
 
-        @components.input_text(
-            field = form("containerId"),
-            label = messages("supplementary.transportInfo.containerId")
-        )
-
         @components.submit_button()
     }
 

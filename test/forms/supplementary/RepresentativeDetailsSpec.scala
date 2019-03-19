@@ -16,6 +16,7 @@
 
 package forms.supplementary
 
+import forms.supplementary.EntityDetailsSpec._
 import forms.supplementary.RepresentativeDetails.StatusCodes.DirectRepresentative
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
@@ -23,8 +24,8 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
   import RepresentativeDetailsSpec._
 
-  "RepresentativeAddress" should {
-    "convert itself to representative address properties" in {
+  "RepresentativeDetails" should {
+    "convert itself to representative details properties" in {
       val representativeDetails = correctRepresentativeDetails
       val countryCode = "PL"
       val expectedRepresentativeAddressProperties: Map[String, String] = Map(
@@ -40,11 +41,43 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
       representativeDetails.toMetadataProperties() must equal(expectedRepresentativeAddressProperties)
     }
   }
+
+  "RepresentativeDetails mapping used for binding data" should {
+
+    "return form with errors" when {
+      "provided with empty value for status code" in {
+        val representativeDetailsWithoutStatusCode = JsObject(Map("details" -> correctEntityDetailsJSON))
+        val form = RepresentativeDetails.form().bind(representativeDetailsWithoutStatusCode)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.representative.representationType.error.empty")
+      }
+
+      "provided with unrecognized status code" in {
+        val representativeDetailsWithoutStatusCode =
+          JsObject(Map("details" -> correctEntityDetailsJSON, "statusCode" -> JsString("Invalid")))
+        val form = RepresentativeDetails.form().bind(representativeDetailsWithoutStatusCode)
+
+        form.hasErrors must be(true)
+        form.errors.length must equal(1)
+        form.errors.head.message must equal("supplementary.representative.representationType.error.wrongValue")
+      }
+    }
+
+    "return form without errors" when {
+      "provided with valid value for status code" in {
+        val form = RepresentativeDetails.form().bind(correctRepresentativeDetailsJSON)
+
+        form.hasErrors must be(false)
+      }
+    }
+
+  }
+
 }
 
 object RepresentativeDetailsSpec {
-  import forms.supplementary.EntityDetailsSpec._
-
   val correctRepresentativeDetails =
     RepresentativeDetails(details = EntityDetailsSpec.correctEntityDetails, statusCode = DirectRepresentative)
   val correctRepresentativeDetailsEORIOnly =
@@ -65,7 +98,5 @@ object RepresentativeDetailsSpec {
   val correctRepresentativeDetailsAddressOnlyJSON: JsValue = JsObject(
     Map("details" -> correctEntityDetailsAddressOnlyJSON, "statusCode" -> JsString(DirectRepresentative))
   )
-  val emptyRepresentativeDetailsJSON: JsValue = JsObject(
-    Map("details" -> emptyEntityDetailsJSON, "statusCode" -> JsString(DirectRepresentative))
-  )
+  val emptyRepresentativeDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 }

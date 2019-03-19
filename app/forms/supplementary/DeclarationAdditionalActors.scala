@@ -20,6 +20,7 @@ import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfNot
+import utils.validators.forms.FieldValidator.isContainedIn
 
 case class DeclarationAdditionalActors(eori: Option[String], partyType: Option[String]) {
 
@@ -47,7 +48,9 @@ object DeclarationAdditionalActors {
     "partyType" -> mandatoryIfNot(
       "eori",
       "",
-      text().verifying("supplementary.partyType.error", input => allowedPartyTypes(input))
+      optional(text().verifying("supplementary.partyType.error", isContainedIn(allowedPartyTypes)))
+        .verifying("supplementary.partyType.empty", _.isDefined)
+        .transform[String](optValue => optValue.getOrElse(""), party => Some(party))
     )
   )(DeclarationAdditionalActors.apply)(DeclarationAdditionalActors.unapply)
 

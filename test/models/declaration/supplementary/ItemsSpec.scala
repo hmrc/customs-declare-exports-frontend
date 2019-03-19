@@ -31,7 +31,8 @@ class ItemsSpec extends WordSpec with MustMatchers {
       totalNumberOfItems = Some(totalNumberOfItemsMock),
       transactionType = Some(transactionTypeMock),
       goodsItemNumber = Some(itemNumberMock),
-      itemType = Some(itemTypeMock))
+      itemType = Some(itemTypeMock)
+    )
 
     when(totalNumberOfItemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     when(transactionTypeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])

@@ -16,9 +16,10 @@
 
 package forms.supplementary
 
-import play.api.data.Forms.text
+import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator.isContainedIn
 
 case class DispatchLocation(
   dispatchLocation: String // 2 upper case alphabetic characters
@@ -29,13 +30,16 @@ object DispatchLocation {
 
   private val allowedValues = Set(AllowedDispatchLocations.OutsideEU, AllowedDispatchLocations.SpecialFiscalTerritory)
 
-  val formMapping: Mapping[DispatchLocation] = Forms.mapping(
-    "dispatchLocation" -> text(maxLength = 2)
-      .verifying(
-        "supplementary.dispatchLocation.inputText.errorMessage",
-        input => input.nonEmpty && allowedValues(input)
+  val formMapping: Mapping[DispatchLocation] = Forms.single(
+    "dispatchLocation" -> optional(
+      text(maxLength = 2)
+        .verifying("supplementary.dispatchLocation.inputText.error.incorrect", isContainedIn(allowedValues))
+    ).verifying("supplementary.dispatchLocation.inputText.error.empty", _.isDefined)
+      .transform[DispatchLocation](
+        value => DispatchLocation(value.getOrElse("")),
+        dispatchLocation => Some(dispatchLocation.dispatchLocation)
       )
-  )(DispatchLocation.apply)(DispatchLocation.unapply)
+  )
 
   val formId: String = "DispatchLocation"
 

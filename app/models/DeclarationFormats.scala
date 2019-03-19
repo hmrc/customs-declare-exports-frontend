@@ -19,7 +19,7 @@ import ai.x.play.json.Jsonx
 import play.api.libs.json.Json
 import uk.gov.hmrc.wco.dec._
 
-object DeclarationFormats  {
+object DeclarationFormats {
 
   implicit val measureFormats = Json.format[Measure]
   implicit val amountFormats = Json.format[Amount]
@@ -29,9 +29,11 @@ object DeclarationFormats  {
   implicit val pointerFormats = Json.format[Pointer]
   implicit val officeFormats = Json.format[Office]
   implicit val guaranteeFormats = Json.format[ObligationGuarantee]
-  implicit val governmentAgencyGoodsItemAdditionalDocumentSubmitterFormats = Json.format[GovernmentAgencyGoodsItemAdditionalDocumentSubmitter]
+  implicit val governmentAgencyGoodsItemAdditionalDocumentSubmitterFormats =
+    Json.format[GovernmentAgencyGoodsItemAdditionalDocumentSubmitter]
   implicit val writeOffFormats = Json.format[WriteOff]
-  implicit val governmentAgencyGoodsItemAdditionalDocumentFormats = Json.format[GovernmentAgencyGoodsItemAdditionalDocument]
+  implicit val governmentAgencyGoodsItemAdditionalDocumentFormats =
+    Json.format[GovernmentAgencyGoodsItemAdditionalDocument]
   implicit val additionalInformationFormats = Json.format[AdditionalInformation]
   implicit val roleBasedPartyFormats = Json.format[RoleBasedParty]
   implicit val addressFormats = Json.format[Address]

@@ -28,52 +28,21 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Befor
 
   before {
     authorizedUser()
+    withCaching[ExporterDetails](None)
   }
 
-  // TODO: seems like mapping is wrong here - consignor or exporter e.g: supplementary.consignor or supplementary.exporter
-  "Exporter Details Page Controller on page" should {
+  "Exporter Details Page Controller on GET" should {
 
-    "display exporter address form" in {
-      withCaching[ExporterDetails](None)
-
+    "return 200 with a success" in {
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.consignor.title"))
-      stringResult must include(messages("supplementary.consignor.title.hint"))
-      stringResult must include(messages("supplementary.eori"))
-      stringResult must include(messages("supplementary.eori.hint"))
-      stringResult must include(messages("supplementary.address.fullName"))
-      stringResult must include(messages("supplementary.address.addressLine"))
-      stringResult must include(messages("supplementary.address.townOrCity"))
-      stringResult must include(messages("supplementary.address.postCode"))
-      stringResult must include(messages("supplementary.address.country"))
     }
+  }
 
-    "display \"Back\" button that links to \"Consignment References\" page" in {
-      withCaching[ExporterDetails](None)
+  "Exporter Details Page Controller on POST" should {
 
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
-
-      status(result) must be(OK)
-      stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/supplementary/consignment-references"))
-    }
-
-    "display \"Save and continue\" button on page" in {
-      withCaching[ExporterDetails](None)
-
-      val result = route(app, getRequest(uri)).get
-      val resultAsString = contentAsString(result)
-
-      resultAsString must include(messages("site.save_and_continue"))
-      resultAsString must include("button id=\"submit\" class=\"button\"")
-    }
-
-    "validate form - empty values" in {
-      withCaching[ExporterDetails](None)
+    "validate request - empty values" in {
 
       val result = route(app, postRequest(uri, emptyExporterDetailsJSON)).get
       val stringResult = contentAsString(result)
@@ -81,8 +50,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Befor
       stringResult must include(messages("supplementary.namedEntityDetails.error"))
     }
 
-    "validate form - incorrect values" in {
-      withCaching[ExporterDetails](None)
+    "validate request - incorrect values" in {
 
       val result = route(app, postRequest(uri, incorrectExporterDetailsJSON)).get
       val stringResult = contentAsString(result)
@@ -95,8 +63,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Befor
       stringResult must include(messages("supplementary.address.country.error"))
     }
 
-    "validate form and redirect - only eori provided" in {
-      withCaching[ExporterDetails](None)
+    "validate request and redirect - only EORI provided" in {
 
       val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
@@ -107,8 +74,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Befor
       )
     }
 
-    "validate form and redirect - only address provided" in {
-      withCaching[ExporterDetails](None)
+    "validate request and redirect - only address provided" in {
 
       val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
@@ -119,8 +85,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Befor
       )
     }
 
-    "validate form and redirect - correct values" in {
-      withCaching[ExporterDetails](None)
+    "validate request and redirect - correct values" in {
 
       val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
       val header = result.futureValue.header

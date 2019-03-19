@@ -263,10 +263,7 @@ class ItemTypeSpec extends WordSpec with MustMatchers {
             id = Some(combinedNomenclatureCode),
             identificationTypeCode = Some(IdentificationTypeCodes.CombinedNomenclatureCode)
           ),
-          Classification(
-            id = Some(cusCode),
-            identificationTypeCode = Some(IdentificationTypeCodes.CUSCode)
-          )
+          Classification(id = Some(cusCode), identificationTypeCode = Some(IdentificationTypeCodes.CUSCode))
         )
 
         val metadata = MetaData.fromProperties(itemType.toMetadataProperties())
@@ -312,10 +309,7 @@ class ItemTypeSpec extends WordSpec with MustMatchers {
             id = Some(nationalAdditionalCode),
             identificationTypeCode = Some(IdentificationTypeCodes.NationalAdditionalCode)
           ),
-          Classification(
-            id = Some(cusCode),
-            identificationTypeCode = Some(IdentificationTypeCodes.CUSCode)
-          )
+          Classification(id = Some(cusCode), identificationTypeCode = Some(IdentificationTypeCodes.CUSCode))
         )
 
         val metadata = MetaData.fromProperties(itemType.toMetadataProperties())

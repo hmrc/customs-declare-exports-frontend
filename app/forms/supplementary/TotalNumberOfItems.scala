@@ -24,16 +24,16 @@ import utils.validators.forms.FieldValidator._
 
 case class TotalNumberOfItems(
   itemsQuantity: String,
-  totalAmountInvoiced: Option[String],
-  exchangeRate: Option[String],
+  totalAmountInvoiced: String,
+  exchangeRate: String,
   totalPackage: String
 ) extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
     Map(
       "declaration.goodsItemQuantity" -> itemsQuantity,
-      "declaration.invoiceAmount" -> totalAmountInvoiced.getOrElse(""),
-      "declaration.currencyExchanges[0].rateNumeric" -> exchangeRate.getOrElse(""),
+      "declaration.invoiceAmount" -> totalAmountInvoiced,
+      "declaration.currencyExchanges[0].rateNumeric" -> exchangeRate,
       "declaration.totalPackageQuantity" -> totalPackage
     )
 }
@@ -53,10 +53,13 @@ object TotalNumberOfItems {
         "supplementary.totalNumberOfItems.error",
         isEmpty or (isNumeric and noLongerThan(3) and containsNotOnlyZeros)
       ),
-    "totalAmountInvoiced" -> optional(
-      text().verifying("supplementary.totalAmountInvoiced.error", _.matches(totalAmountInvoicedPattern))
-    ),
-    "exchangeRate" -> optional(text().verifying("supplementary.exchangeRate.error", _.matches(exchangeRatePattern))),
+    "totalAmountInvoiced" -> text()
+      .verifying("supplementary.totalAmountInvoiced.empty", nonEmpty)
+      .verifying("supplementary.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern)
+      ),
+    "exchangeRate" -> text()
+      .verifying("supplementary.exchangeRate.empty", nonEmpty)
+      .verifying("supplementary.exchangeRate.error", isEmpty or ofPattern(exchangeRatePattern)),
     "totalPackage" -> text()
       .verifying("supplementary.totalPackageQuantity.empty", nonEmpty)
       .verifying("supplementary.totalPackageQuantity.error", isEmpty or (isNumeric and noLongerThan(8)))

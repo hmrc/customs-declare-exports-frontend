@@ -16,49 +16,37 @@
 
 package views.supplementary
 
+import base.TestHelper
 import forms.supplementary.DeclarationAdditionalActors
+import helpers.views.supplementary.{CommonMessages, DeclarationAdditionalActorsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.helpers.{Item, ViewSpec}
 import views.html.supplementary.declaration_additional_actors
+import views.supplementary.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationAdditionalActorsViewSpec extends ViewSpec {
+class DeclarationAdditionalActorsViewSpec
+    extends ViewSpec with DeclarationAdditionalActorsMessages with CommonMessages {
 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
-
-  private val prefix = s"${basePrefix}additionalActors."
-  private val prefixParty = s"${basePrefix}partyType."
-
-  private val title = Item(prefix, "title")
-  private val eori = Item(basePrefix, "eori")
-  private val party = Item(basePrefix, "partyType")
-  private val consolidator = Item(prefixParty, "CS")
-  private val manufacturer = Item(prefixParty, "MF")
-  private val freightForwarder = Item(prefixParty, "FW")
-  private val warehouseKeeper = Item(prefixParty, "WH")
-
-  private def createView(form: Form[DeclarationAdditionalActors] = form): Html = declaration_additional_actors(appConfig, form, Seq())(fakeRequest, messages)
+  private def createView(form: Form[DeclarationAdditionalActors] = form): Html =
+    declaration_additional_actors(appConfig, form, Seq())(fakeRequest, messages)
 
   "Declaration Additional Actors View" should {
 
     "have proper messages for labels" in {
 
-      assertMessage(title.withPrefix, "3/37 Add other party")
-      assertMessage(party.withPrefix, "Party type")
-      assertMessage(eori.withPrefix, "EORI number")
-      assertMessage(eori.withHint, "Enter the EORI number or business details")
-      assertMessage(consolidator.withPrefix, "Consolidator")
-      assertMessage(manufacturer.withPrefix, "Manufacturer")
-      assertMessage(freightForwarder.withPrefix, "Freight forwarder")
-      assertMessage(warehouseKeeper.withPrefix, "Warehouse keeper")
+      assertMessage(title, "3/37 Add other party")
+      assertMessage(actorsEori, "EORI number")
+      assertMessage(actorsPartyType, "Party type")
     }
 
     "have proper messages for error labels" in {
 
-      assertMessage(party.withError, "Party type is incorrect")
-      assertMessage(eori.withError, "EORI number is incorrect")
+      assertMessage(actorsEoriNotDefined, "Please enter a EORI number")
+      assertMessage(maximumActorsError, "You cannot have more than 99 actors")
+      assertMessage(duplicatedActorsError, "You cannot add the same actor")
     }
   }
 
@@ -66,12 +54,12 @@ class DeclarationAdditionalActorsViewSpec extends ViewSpec {
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title.withPrefix))
+      getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
     "display header" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title.withPrefix))
+      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
     }
 
     "display empty input with label for EORI" in {
@@ -79,54 +67,57 @@ class DeclarationAdditionalActorsViewSpec extends ViewSpec {
       val view = createView()
 
       // will grab the first element
-      getElementByCss(view, "label.form-label>span").text() must be(messages(eori.withPrefix))
-      getElementByCss(view, "label.form-label>span.form-hint").text() must be(messages(eori.withHint))
-      getElementById(view, eori.key).attr("value") must be("")
+      getElementByCss(view, "label.form-label>span").text() must be(messages(eori))
+      getElementByCss(view, "label.form-label>span.form-hint").text() must be(messages(eoriHint))
+      getElementById(view, "eori").attr("value") must be("")
     }
 
     "display four radio buttons with description (not selected)" in {
 
       val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some(""), Some(""))))
 
-      val optionOne = getElementById(view, consolidator.withPrefix)
+      val optionOne = getElementById(view, consolidator)
       optionOne.attr("checked") must be("")
 
       val optionOneLabel = getElementByCss(view, "#partyType>div:nth-child(2)>label")
-      optionOneLabel.text() must be(messages(consolidator.withPrefix))
+      optionOneLabel.text() must be(messages(consolidator))
 
-      val optionTwo = getElementById(view, manufacturer.withPrefix)
+      val optionTwo = getElementById(view, manufacturer)
       optionTwo.attr("checked") must be("")
 
       val optionTwoLabel = getElementByCss(view, "#partyType>div:nth-child(3)>label")
-      optionTwoLabel.text() must be(messages(manufacturer.withPrefix))
+      optionTwoLabel.text() must be(messages(manufacturer))
 
-      val optionThree = getElementById(view, freightForwarder.withPrefix)
+      val optionThree = getElementById(view, freightForwarder)
       optionThree.attr("checked") must be("")
 
       val optionThreeLabel = getElementByCss(view, "#partyType>div:nth-child(4)>label")
-      optionThreeLabel.text() must be(messages(freightForwarder.withPrefix))
+      optionThreeLabel.text() must be(messages(freightForwarder))
 
-      val optionFour = getElementById(view, warehouseKeeper.withPrefix)
+      val optionFour = getElementById(view, warehouseKeeper)
       optionFour.attr("checked") must be("")
 
       val optionFourLabel = getElementByCss(view, "#partyType>div:nth-child(5)>label")
-      optionFourLabel.text() must be(messages(warehouseKeeper.withPrefix))
+      optionFourLabel.text() must be(messages(warehouseKeeper))
     }
 
     "display \"Back\" button that links to \"Representative Details\" page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
-      backButton.text() must be("Back")
+      backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/representative-details")
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display both \"Add\" and \"Save and continue\" button on page" in {
 
       val view = createView()
 
+      val addButton = getElementByCss(view, "#add")
+      addButton.text() must be(messages(addCaption))
+
       val saveButton = getElementByCss(view, "#submit")
-      saveButton.text() must be("Save and continue")
+      saveButton.text() must be(messages(saveAndContinueCaption))
     }
   }
 
@@ -134,27 +125,32 @@ class DeclarationAdditionalActorsViewSpec extends ViewSpec {
 
     "display errors when EORI is provided, but is incorrect" in {
 
-      val view = createView(DeclarationAdditionalActors.form()
-        .withError("eori", messages(eori.withError))
-        .withError(party.key, messages(party.withError)))
+      val view = createView(
+        DeclarationAdditionalActors
+          .form()
+          .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomString(18)), Some("")))
+      )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, eori.withError, eori.asLink)
-      checkErrorLink(view, 2, party.withError, party.asLink)
+      checkErrorLink(view, 1, eoriError, "#eori")
+      checkErrorLink(view, 2, partyTypeError, "#partyType")
 
-      getElementByCss(view, "#error-message-eori-input").text() must be(messages(eori.withError))
-      getElementByCss(view, "#error-message-partyType-input").text() must be(messages(party.withError))
+      getElementByCss(view, "#error-message-eori-input").text() must be(messages(eoriError))
+      getElementByCss(view, "#error-message-partyType-input").text() must be(messages(partyTypeError))
     }
 
     "display error when EORI is provided, but party is not selected" in {
 
-      val view = createView(DeclarationAdditionalActors.form()
-        .withError(party.key, messages(party.withError)))
+      val view = createView(
+        DeclarationAdditionalActors
+          .form()
+          .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomString(17)), Some("")))
+      )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, party.withError, party.asLink)
+      checkErrorLink(view, 1, partyTypeError, "#partyType")
 
-      getElementByCss(view, "#error-message-partyType-input").text() must be(messages(party.withError))
+      getElementByCss(view, "#error-message-partyType-input").text() must be(messages(partyTypeError))
     }
   }
 
@@ -162,34 +158,56 @@ class DeclarationAdditionalActorsViewSpec extends ViewSpec {
 
     "display EORI with CS selected" in {
 
-      val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("CS"))))
+      val view =
+        createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("CS"))))
 
-      getElementById(view, eori.key).attr("value") must be("1234")
-      getElementById(view, consolidator.withPrefix).attr("checked") must be("checked")
+      getElementById(view, "eori").attr("value") must be("1234")
+      getElementById(view, consolidator).attr("checked") must be("checked")
     }
 
     "display EORI with MF selected" in {
 
-      val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("MF"))))
+      val view =
+        createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("MF"))))
 
-      getElementById(view, eori.key).attr("value") must be("1234")
-      getElementById(view, manufacturer.withPrefix).attr("checked") must be("checked")
+      getElementById(view, "eori").attr("value") must be("1234")
+      getElementById(view, manufacturer).attr("checked") must be("checked")
     }
 
     "display EORI with FW selected" in {
 
-      val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("FW"))))
+      val view =
+        createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("FW"))))
 
-      getElementById(view, eori.key).attr("value") must be("1234")
-      getElementById(view, freightForwarder.withPrefix).attr("checked") must be("checked")
+      getElementById(view, "eori").attr("value") must be("1234")
+      getElementById(view, freightForwarder).attr("checked") must be("checked")
     }
 
     "display EORI with WH selected" in {
 
-      val view = createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("WH"))))
+      val view =
+        createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("WH"))))
 
-      getElementById(view, eori.key).attr("value") must be("1234")
-      getElementById(view, warehouseKeeper.withPrefix).attr("checked") must be("checked")
+      getElementById(view, "eori").attr("value") must be("1234")
+      getElementById(view, warehouseKeeper).attr("checked") must be("checked")
+    }
+
+    "display one item in table" in {
+
+      val view =
+        declaration_additional_actors(appConfig, form, Seq(DeclarationAdditionalActors(Some("12345"), Some("CS"))))
+
+      getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be("EORI number")
+      getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be("Party type")
+
+      getElementByCss(view, "table>tbody>tr>td:nth-child(1)").text() must be("12345")
+      getElementByCss(view, "table>tbody>tr>td:nth-child(2)").text() must be("CS")
+
+      val removeButton = getElementByCss(view, "table>tbody>tr>td:nth-child(3)>button")
+
+      removeButton.text() must be(messages(removeCaption))
+      removeButton.attr("name") must be(messages(removeCaption))
+      removeButton.attr("value") must be("""{"eori":"12345","partyType":"CS"}""")
     }
   }
 }

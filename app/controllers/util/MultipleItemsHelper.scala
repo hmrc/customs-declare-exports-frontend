@@ -64,9 +64,9 @@ object MultipleItemsHelper {
     * @return Updated sequence ready to update to db
     */
   def remove[A](idOpt: Option[String], cachedData: Seq[A]): Seq[A] = idOpt match {
-      case Some(id) if cachedData.length - 1 >= id.toInt => removeItem(id, cachedData)
-      case _                                             => throw new InternalServerException("Incorrect id")
-    }
+    case Some(id) if cachedData.length - 1 >= id.toInt => removeItem(id, cachedData)
+    case _                                             => throw new InternalServerException("Incorrect id")
+  }
 
   private def removeItem[A](id: String, cachedData: Seq[A]): Seq[A] =
     cachedData.zipWithIndex.filter(_._2 != id.toInt).map(_._1)

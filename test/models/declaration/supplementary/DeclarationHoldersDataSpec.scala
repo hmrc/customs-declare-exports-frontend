@@ -26,7 +26,7 @@ class DeclarationHoldersDataSpec extends WordSpec with MustMatchers {
 
   "Method toMetadataProperties" should {
     "return proper Metadata Properties" in {
-      val declarationHolders = correctDeclarationHolder
+      val declarationHolders = correctDeclarationHoldersData
       val expectedMetadataProperties: Map[String, String] = Map(
         "declaration.authorisationHolders[0].categoryCode" -> declarationHolders.holders.head.authorisationTypeCode.get,
         "declaration.authorisationHolders[0].id" -> declarationHolders.holders.head.eori.get
@@ -46,15 +46,17 @@ class DeclarationHoldersDataSpec extends WordSpec with MustMatchers {
 object DeclarationHoldersDataSpec {
   private val eoriMaxLength = 17
 
-  val correctDeclarationHolder = DeclarationHoldersData(
-    Seq(DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some("PL213472539481923")))
-  )
+  val correctDeclarationHolder =
+    DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some("PL213472539481923"))
   val emptyDeclarationHolder = DeclarationHolder(authorisationTypeCode = None, eori = None)
-  val incorrectDeclarationHolder =
-    DeclarationHolder(
-      authorisationTypeCode = Some("12345"),
-      eori = Some(TestHelper.createRandomString(eoriMaxLength + 1))
-    )
+  val incorrectDeclarationHolder = DeclarationHolder(
+    authorisationTypeCode = Some("12345"),
+    eori = Some(TestHelper.createRandomString(eoriMaxLength + 1))
+  )
+
+  val correctDeclarationHoldersData = DeclarationHoldersData(Seq(correctDeclarationHolder))
+  val emptyDeclarationHoldersData = DeclarationHoldersData(Seq(emptyDeclarationHolder))
+  val incorrectDeclarationHoldersData = DeclarationHoldersData(Seq(incorrectDeclarationHolder))
 
   val correctDeclarationHolderJSON: JsValue = JsObject(
     Map("authorisationTypeCode" -> JsString("1234"), "eori" -> JsString("PL213472539481923"))

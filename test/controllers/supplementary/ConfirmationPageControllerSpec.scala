@@ -17,22 +17,10 @@
 package controllers.supplementary
 
 import base.CustomExportsBaseSpec
-import org.scalatest.BeforeAndAfter
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
+import helpers.views.supplementary.ConfirmationMessages
 import play.api.test.Helpers._
 
-class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
-
-  private val uri = uriWithContextPath("/declaration/supplementary/confirmation")
-
-  private val lrn = "1234567890"
-  private val conversationId = "12QW-34ER-56TY-78UI-90OP"
-
-  private def getRequestWithFlash(uri: String): FakeRequest[AnyContentAsEmpty.type] =
-    super
-      .getRequest(uri)
-      .withFlash("LRN" -> lrn, "ConversationId" -> conversationId)
+class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with ConfirmationMessages {
 
   before {
     authorizedUser()
@@ -42,24 +30,9 @@ class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with BeforeAn
 
     "return 200 status code" in {
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uriWithContextPath("/declaration/supplementary/confirmation"))).get
 
       status(result) must be(OK)
-    }
-
-    "display LRN using Flash banner" in {
-
-      val result = contentAsString(route(app, getRequestWithFlash(uri)).get)
-
-      result must include(lrn)
-    }
-
-    "display the link to submission" in {
-
-      val resultAsString = contentAsString(route(app, getRequestWithFlash(uri)).get)
-
-      resultAsString must include(messages("supplementary.confirmation.explanation.linkText"))
-      resultAsString must include("<a href=\"/customs-declare-exports/submissions\">")
     }
   }
 }

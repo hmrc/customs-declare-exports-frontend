@@ -38,11 +38,11 @@ class DestinationCountriesSpec extends WordSpec with MustMatchers {
 
 object DestinationCountriesSpec {
   val correctDestinationCountries =
-    DestinationCountries(countryOfDestination = Some("Poland"), countryOfDispatch = "Poland")
+    DestinationCountries(countryOfDestination = "Poland", countryOfDispatch = "Poland")
   val emptyDestinationCountries =
-    DestinationCountries(countryOfDestination = None, countryOfDispatch = "")
+    DestinationCountries(countryOfDestination = "", countryOfDispatch = "")
   val incorrectDestinationCountries =
-    DestinationCountries(countryOfDestination = Some("Country"), countryOfDispatch = "Country")
+    DestinationCountries(countryOfDestination = "Country", countryOfDispatch = "Country")
 
   val correctDestinationCountriesJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString("Poland"), "countryOfDispatch" -> JsString("Poland"))

@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package views.helpers
+package helpers.views.supplementary
 
-case class Item(prefix: String, key: String) {
+trait DeclarantDetailsMessages {
 
-  def withPrefix: String = prefix + key
-  def withInfo: String = withPrefix + ".info"
-  def withHint: String = withPrefix + ".hint"
-  def withError: String = withPrefix + ".error"
-  def withEmpty: String = withPrefix + ".empty"
-  def asLink: String = "#" + key
+  val declarantDetails: String = "supplementary.declarant"
+
+  val title: String = declarantDetails + ".title"
+  val hint: String = declarantDetails + ".title.hint"
 }

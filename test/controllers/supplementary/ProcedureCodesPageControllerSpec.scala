@@ -94,7 +94,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
       val resultAsString = contentAsString(result)
 
       resultAsString must include(messages("site.add"))
-      resultAsString must include("button id=\"add\" class=\"button\"")
+      resultAsString must include("button id=\"add\" class=\"button--secondary\"")
     }
   }
 

@@ -29,10 +29,10 @@ import org.scalatest.prop.PropertyChecks
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
-class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
+class CommodityMeasureControllerSpec
+    extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
 
   val uri = uriWithContextPath("/declaration/supplementary/commodity-measure")
-
   val form = CommodityMeasure.form()
 
   "CommodityController" should {
@@ -50,6 +50,7 @@ class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with Generato
 
         }
       }
+
       "return OK" when {
 
         "user is signed in" in {
@@ -86,7 +87,7 @@ class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with Generato
 
       "return UNAUTHORIZED" when {
 
-        "user does not have an eori" in {
+        "user does not have an EORI" in {
           userWithoutEori()
           val body = Seq(("typesOfPackages", "A1"))
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
@@ -116,7 +117,7 @@ class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with Generato
 
       "add CommodityMeasure to the cache" when {
 
-        "with valid data and on click of  add" in {
+        "with valid data and on click of add" in {
 
           forAll(arbitrary[CommodityMeasure]) { commodityMeasure =>
             authorizedUser()

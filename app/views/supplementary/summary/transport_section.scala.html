@@ -48,8 +48,4 @@
         label = messages("supplementary.summary.transport.meansOfTransportCrossingBorderNationality"),
         value = transportInformation.flatMap(_.meansOfTransportCrossingTheBorderNationality)
     ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.transport.containerId"),
-        value = transportInformation.flatMap(_.containerId)
-    ))
 }

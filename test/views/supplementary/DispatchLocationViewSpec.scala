@@ -17,44 +17,38 @@
 package views.supplementary
 
 import forms.supplementary.DispatchLocation
+import helpers.views.supplementary.{CommonMessages, DispatchLocationMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.helpers.{Item, ViewSpec}
 import views.html.supplementary.dispatch_location
+import views.supplementary.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class DispatchLocationViewSpec extends ViewSpec {
+class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages with CommonMessages {
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
-  private def createView(form: Form[DispatchLocation] = form): Html = dispatch_location(appConfig, form)(fakeRequest, messages)
-
-  private val prefix = s"${basePrefix}dispatchLocation."
-
-  private val formName = "dispatchLocation"
-  private val header = Item(prefix, "header")
-  private val hint = Item(prefix + "header.", "hint")
-  private val outsideEu = Item(prefix + "inputText.", "outsideEU")
-  private val specialFiscalTerritory = Item(prefix + "inputText.", "specialFiscalTerritory")
-  private val errorMessage = Item(prefix + "inputText.", "errorMessage")
+  private def createView(form: Form[DispatchLocation] = form): Html =
+    dispatch_location(appConfig, form)(fakeRequest, messages)
 
   "Dispatch Location View" should {
 
     "have proper messages for labels" in {
 
-    assertMessage(header.withPrefix, "1/1 Where are the goods being dispatched to?")
-    assertMessage(hint.withPrefix, "Hint text if needed here")
-    assertMessage(outsideEu.withPrefix, "Outside the EU")
-    assertMessage(
-      specialFiscalTerritory.withPrefix,
-      "Fiscal territory of the EU or country with which the EU has formed a customs union"
-    )
-  }
+      assertMessage(header, "1/1 Where are the goods being dispatched to?")
+      assertMessage(hint, "Hint text if needed here")
+      assertMessage(outsideEu, "Outside the EU")
+      assertMessage(
+        specialFiscalTerritory,
+        "Fiscal territory of the EU or country with which the EU has formed a customs union"
+      )
+    }
 
     "have proper messages for error labels" in {
 
-      assertMessage(errorMessage.withPrefix, "Please, choose dispatch location")
-  }
+      assertMessage(errorMessageEmpty, "Please, choose dispatch location")
+      assertMessage(errorMessageIncorrect, "Please, choose valid dispatch location")
+    }
   }
 
   "Dispatch Location View on empty page" should {
@@ -68,8 +62,8 @@ class DispatchLocationViewSpec extends ViewSpec {
 
       val view = createView()
 
-      getElementByCss(view, "legend>h1").text() must be(messages(header.withPrefix))
-      getElementByCss(view, "legend>span").text() must be(messages(hint.withPrefix))
+      getElementByCss(view, "legend>h1").text() must be(messages(header))
+      getElementByCss(view, "legend>span").text() must be(messages(hint))
     }
 
     "display two radio buttons with description (not selected)" in {
@@ -80,27 +74,27 @@ class DispatchLocationViewSpec extends ViewSpec {
       optionOne.attr("checked") must be("")
 
       val optionOneLabel = getElementByCss(view, "#dispatchLocation>div:nth-child(2)>label")
-      optionOneLabel.text() must be(messages(outsideEu.withPrefix))
+      optionOneLabel.text() must be(messages(outsideEu))
 
       val optionTwo = getElementById(view, "SpecialFiscalTerritory")
       optionTwo.attr("checked") must be("")
 
       val optionTwoLabel = getElementByCss(view, "#dispatchLocation>div:nth-child(3)>label")
-      optionTwoLabel.text() must be(messages(specialFiscalTerritory.withPrefix))
+      optionTwoLabel.text() must be(messages(specialFiscalTerritory))
     }
 
     "display \"Back\" button that links to \"What do you want to do ?\" page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
-      backButton.text() must be("Back")
+      backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/choice")
     }
 
     "display \"Save and continue\" button" in {
 
       val saveButton = getElementByCss(createView(), "#submit")
-      saveButton.text() must be("Save and continue")
+      saveButton.text() must be(messages(saveAndContinueCaption))
     }
   }
 
@@ -108,12 +102,22 @@ class DispatchLocationViewSpec extends ViewSpec {
 
     "display error if nothing is selected" in {
 
-      val view = createView(DispatchLocation.form().withError(formName, messages(errorMessage.withPrefix)))
+      val view = createView(DispatchLocation.form().bind(Map[String, String]()))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(errorMessage.withPrefix), "#dispatchLocation")
+      checkErrorLink(view, 1, messages(errorMessageEmpty), "#dispatchLocation")
 
-      getElementByCss(view, "#error-message-dispatchLocation-input").text() must be(messages(errorMessage.withPrefix))
+      getElementByCss(view, "#error-message-dispatchLocation-input").text() must be(messages(errorMessageEmpty))
+    }
+
+    "display error if incorrect dispatch is selected" in {
+
+      val view = createView(DispatchLocation.form().fillAndValidate(DispatchLocation("12")))
+
+      checkErrorsSummary(view)
+      checkErrorLink(view, 1, messages(errorMessageIncorrect), "#dispatchLocation")
+
+      getElementByCss(view, "#error-message-dispatchLocation-input").text() must be(messages(errorMessageIncorrect))
     }
   }
 

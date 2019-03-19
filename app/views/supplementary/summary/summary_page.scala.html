@@ -21,14 +21,14 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.html.supplementary.summary._
 
-@(appConfig: AppConfig, suppDecData: SupplementaryDeclarationData)(implicit request: Request[_], messages: Messages)
+@(suppDecData: SupplementaryDeclarationData)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.summary.title"),
     appConfig = appConfig) {
 
 
-    @components.back_link("/customs-declare-exports/declaration/supplementary/add-document")
+    @components.back_link("/customs-declare-exports/declaration/supplementary/export-items")
 
     @components.page_title(title = Some(messages("supplementary.summary.header")))
 
@@ -61,16 +61,16 @@
 
     @transport_section(suppDecData.transportInformation)
 
-    @items_section(suppDecData.items)
+    @transport_containers_section(suppDecData.transportInformationContainerData)
 
-    @previous_documents_section(suppDecData.previousDocuments)
+    @items_section(suppDecData.items)
 
     @additional_information_section(suppDecData.additionalInformationData)
 
     @additional_documentation_section(suppDecData.documentsProducedData)
 
     @helpers.form(action = SummaryPageController.submitSupplementaryDeclaration()) {
-        @components.submit_button("Accept and submit declaration")
+        @components.submit_button(messages("site.acceptAndSubmitDeclaration"))
     }
 
 }

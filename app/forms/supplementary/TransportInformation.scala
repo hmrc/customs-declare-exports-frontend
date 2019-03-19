@@ -32,8 +32,7 @@ case class TransportInformation(
   meansOfTransportCrossingTheBorderType: String,
   meansOfTransportCrossingTheBorderIDNumber: Option[String],
   meansOfTransportCrossingTheBorderNationality: Option[String],
-  container: Boolean,
-  containerId: Option[String]
+  container: Boolean
 ) extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
@@ -50,8 +49,7 @@ case class TransportInformation(
           .find(country => meansOfTransportCrossingTheBorderNationality.contains(country.countryName))
           .map(_.countryCode)
           .getOrElse(""),
-      "declaration.goodsShipment.consignment.containerCode" -> (if (container) "1" else "0"),
-      "declaration.goodsShipment.governmentAgencyGoodsItem.commodity.transportEquipment.id" -> containerId.getOrElse("")
+      "declaration.goodsShipment.consignment.containerCode" -> (if (container) "1" else "0")
     )
 }
 
@@ -82,27 +80,48 @@ object TransportInformation {
   val mapping = Forms.mapping(
     "inlandModeOfTransportCode" -> optional(
       text()
-        .verifying("supplementary.transportInfo.error.incorrect", isContainedIn(allowedModeOfTransportCodes))
+        .verifying(
+          "supplementary.transportInfo.inlandTransportMode.error.incorrect",
+          isContainedIn(allowedModeOfTransportCodes)
+        )
     ),
-    "borderModeOfTransportCode" -> text()
-      .verifying("supplementary.transportInfo.error.empty", _.trim.nonEmpty)
-      .verifying("supplementary.transportInfo.error.incorrect", isEmpty or isContainedIn(allowedModeOfTransportCodes)),
-    "meansOfTransportOnDepartureType" -> text()
-      .verifying("supplementary.transportInfo.error.empty", _.trim.nonEmpty)
-      .verifying(
-        "supplementary.transportInfo.error.incorrect",
-        isEmpty or isContainedIn(allowedMeansOfTransportTypeCodes)
+    "borderModeOfTransportCode" -> optional(
+      text()
+        .verifying(
+          "supplementary.transportInfo.borderTransportMode.error.incorrect",
+          isEmpty or isContainedIn(allowedModeOfTransportCodes)
+        )
+    ).verifying("supplementary.transportInfo.borderTransportMode.error.empty", _.isDefined)
+      .transform[String](
+        optValue => optValue.getOrElse(""),
+        borderModeOfTransportCode => Some(borderModeOfTransportCode)
+      ),
+    "meansOfTransportOnDepartureType" -> optional(
+      text()
+        .verifying(
+          "supplementary.transportInfo.meansOfTransport.departure.error.incorrect",
+          isEmpty or isContainedIn(allowedMeansOfTransportTypeCodes)
+        )
+    ).verifying("supplementary.transportInfo.meansOfTransport.departure.error.empty", _.isDefined)
+      .transform[String](
+        optValue => optValue.getOrElse(""),
+        meansOfTransportOnDepartureType => Some(meansOfTransportOnDepartureType)
       ),
     "meansOfTransportOnDepartureIDNumber" -> optional(
       text()
         .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.length", noLongerThan(27))
         .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters", isAlphanumeric)
     ),
-    "meansOfTransportCrossingTheBorderType" -> text()
-      .verifying("supplementary.transportInfo.error.empty", _.trim.nonEmpty)
-      .verifying(
-        "supplementary.transportInfo.error.incorrect",
-        isEmpty or isContainedIn(allowedMeansOfTransportTypeCodes)
+    "meansOfTransportCrossingTheBorderType" -> optional(
+      text()
+        .verifying(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect",
+          isEmpty or isContainedIn(allowedMeansOfTransportTypeCodes)
+        )
+    ).verifying("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty", _.isDefined)
+      .transform[String](
+        value => value.getOrElse(""),
+        meansOfTransportCrossingTheBorderType => Some(meansOfTransportCrossingTheBorderType)
       ),
     "meansOfTransportCrossingTheBorderIDNumber" -> optional(
       text()
@@ -111,15 +130,12 @@ object TransportInformation {
     ),
     "meansOfTransportCrossingTheBorderNationality" -> optional(
       text()
-        .verifying("supplementary.transportInfo.error.incorrect", isContainedIn(allCountries.map(_.countryName)))
+        .verifying(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect",
+          isContainedIn(allCountries.map(_.countryName))
+        )
     ),
-    "container" -> boolean,
-    "containerId" -> mandatoryIfTrue(
-      "container",
-      text()
-        .verifying("supplementary.transportInfo.containerId.empty", nonEmpty)
-        .verifying("supplementary.transportInfo.containerId.error", isEmpty or (isAlphanumeric and noLongerThan(17)))
-    )
+    "container" -> boolean
   )(TransportInformation.apply)(TransportInformation.unapply)
 
   object ModeOfTransportCodes {

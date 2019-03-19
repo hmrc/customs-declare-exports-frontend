@@ -17,43 +17,35 @@
 package views.supplementary
 
 import forms.supplementary.AdditionalDeclarationType
+import helpers.views.supplementary.{CommonMessages, DeclarationTypeMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.helpers.{Item, ViewSpec}
 import views.html.supplementary.declaration_type
+import views.supplementary.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationTypeViewSpec extends ViewSpec {
+class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with CommonMessages {
 
   private val form: Form[AdditionalDeclarationType] = AdditionalDeclarationType.form()
-
-  private val prefix = s"${basePrefix}declarationType."
-  private val formName = "additionalDeclarationType"
-
-  private val title = Item(prefix, "title")
-  private val header = Item(prefix, "header")
-  private val hint = Item(prefix + "header.", "hint")
-  private val simplified = Item(prefix + "inputText.", "simplified")
-  private val standard = Item(prefix + "inputText.", "standard")
-  private val errorMessage = Item(prefix + "inputText.", "errorMessage")
-
-  private def createView(form: Form[AdditionalDeclarationType] = form): Html = declaration_type(appConfig, form)(fakeRequest, messages)
+  private def createView(form: Form[AdditionalDeclarationType] = form): Html =
+    declaration_type(appConfig, form)(fakeRequest, messages)
 
   "Declaration Type View" should {
 
     "have proper messages for labels" in {
 
-      assertMessage(title.withPrefix, "Declaration Type")
-      assertMessage(header.withPrefix, "1/2 What type of declaration are you making?")
-      assertMessage(hint.withPrefix, "Hint text if needed here")
-      assertMessage(simplified.withPrefix, "Pre-authorised simplified declaration")
-      assertMessage(standard.withPrefix, "Entry in Declarants Records (EIDR)")
+      assertMessage(title, "Declaration Type")
+      assertMessage(header, "1/2 What type of declaration are you making?")
+      assertMessage(hint, "Hint text if needed here")
+      assertMessage(simplified, "Pre-authorised simplified declaration")
+      assertMessage(standard, "Entry in Declarants Records (EIDR)")
     }
 
     "have proper messages for error labels" in {
 
-      assertMessage(errorMessage.withPrefix, "Please, choose declaration type")
+      assertMessage(errorMessageEmpty, "Please, choose declaration type")
+      assertMessage(errorMessageIncorrect, "Please, choose valid declaration type")
     }
   }
 
@@ -61,15 +53,15 @@ class DeclarationTypeViewSpec extends ViewSpec {
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title.withPrefix))
+      getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
     "display header with hint" in {
 
       val view = createView()
 
-      getElementByCss(view, "legend>h1").text() must be(messages(header.withPrefix))
-      getElementByCss(view, "legend>span").text() must be(messages(hint.withPrefix))
+      getElementByCss(view, "legend>h1").text() must be(messages(header))
+      getElementByCss(view, "legend>span").text() must be(messages(hint))
     }
 
     "display two radio buttons with description (not selected)" in {
@@ -80,27 +72,27 @@ class DeclarationTypeViewSpec extends ViewSpec {
       optionOne.attr("checked") must be("")
 
       val optionOneLabel = getElementByCss(view, "#additionalDeclarationType>div:nth-child(2)>label")
-      optionOneLabel.text() must be(messages(simplified.withPrefix))
+      optionOneLabel.text() must be(messages(simplified))
 
       val optionTwo = getElementById(view, "Standard")
       optionTwo.attr("checked") must be("")
 
       val optionTwoLabel = getElementByCss(view, "#additionalDeclarationType>div:nth-child(3)>label")
-      optionTwoLabel.text() must be(messages(standard.withPrefix))
+      optionTwoLabel.text() must be(messages(standard))
     }
 
     "display \"Back\" button that links to \"Dispatch Location\" page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
-      backButton.text() must be("Back")
+      backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/dispatch-location")
     }
 
     "display \"Save and continue\" button" in {
 
       val saveButton = getElementByCss(createView(), "#submit")
-      saveButton.text() must be("Save and continue")
+      saveButton.text() must be(messages(saveAndContinueCaption))
     }
   }
 
@@ -108,12 +100,26 @@ class DeclarationTypeViewSpec extends ViewSpec {
 
     "display error if nothing is selected" in {
 
-      val view = createView(AdditionalDeclarationType.form().withError(formName, messages(errorMessage.withPrefix)))
+      val view = createView(AdditionalDeclarationType.form().bind(Map[String, String]()))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, messages(errorMessage.withPrefix), "#additionalDeclarationType")
+      checkErrorLink(view, 1, messages(errorMessageEmpty), "#additionalDeclarationType")
 
-      getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(messages(errorMessage.withPrefix))
+      getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(
+        messages(errorMessageEmpty)
+      )
+    }
+
+    "display error if incorrect declaration is selected" in {
+
+      val view = createView(AdditionalDeclarationType.form().fillAndValidate(AdditionalDeclarationType("X")))
+
+      checkErrorsSummary(view)
+      checkErrorLink(view, 1, messages(errorMessageIncorrect), "#additionalDeclarationType")
+
+      getElementByCss(view, "#error-message-additionalDeclarationType-input").text() must be(
+        messages(errorMessageIncorrect)
+      )
     }
   }
 

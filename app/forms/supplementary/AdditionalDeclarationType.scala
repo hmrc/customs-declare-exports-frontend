@@ -16,9 +16,10 @@
 
 package forms.supplementary
 
-import play.api.data.Forms.text
+import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator.isContainedIn
 
 case class AdditionalDeclarationType(
   additionalDeclarationType: String // 1 upper case alphabetic character
@@ -30,13 +31,16 @@ object AdditionalDeclarationType {
   private val allowedValues =
     Set(AllowedAdditionalDeclarationTypes.Simplified, AllowedAdditionalDeclarationTypes.Standard)
 
-  val formMapping: Mapping[AdditionalDeclarationType] = Forms.mapping(
-    "additionalDeclarationType" -> text(maxLength = 1)
-      .verifying(
-        "supplementary.declarationType.inputText.errorMessage",
-        input => input.nonEmpty && allowedValues(input)
+  val formMapping: Mapping[AdditionalDeclarationType] = Forms.single(
+    "additionalDeclarationType" -> optional(
+      text(maxLength = 1)
+        .verifying("supplementary.declarationType.inputText.error.incorrect", isContainedIn(allowedValues))
+    ).verifying("supplementary.declarationType.inputText.error.empty", _.isDefined)
+      .transform[AdditionalDeclarationType](
+        value => AdditionalDeclarationType(value.getOrElse("")),
+        additionalDeclarationType => Some(additionalDeclarationType.additionalDeclarationType)
       )
-  )(AdditionalDeclarationType.apply)(AdditionalDeclarationType.unapply)
+  )
 
   val formId = "AdditionalDeclarationType"
 

@@ -19,21 +19,37 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.ConsigneeDetails
 import forms.supplementary.ConsigneeDetailsSpec._
-import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
   private val uri = uriWithContextPath("/declaration/supplementary/consignee-details")
 
   before {
     authorizedUser()
+    withCaching[ConsigneeDetails](None)
   }
 
-  "Consignee Details Page controller" should {
+  "Consignee Details Page Controller on GET" should {
 
-    "validate form and redirect - only eori provided" in {
-      withCaching[ConsigneeDetails](None)
+    "return 200 status code" in {
+      val result = route(app, getRequest(uri)).get
+
+      status(result) must be(OK)
+    }
+  }
+
+  "Consignee Details Page Controller on POST" should {
+
+    "validate request and redirect - both EORI and business details are empty" in {
+
+      val result = route(app, postRequest(uri, emptyConsigneeDetailsJSON)).get
+      val page = contentAsString(result)
+
+      status(result) must be(BAD_REQUEST)
+    }
+
+    "validate request and redirect - only EORI provided" in {
 
       val result = route(app, postRequest(uri, correctConsigneeDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
@@ -44,8 +60,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec with Befo
       )
     }
 
-    "validate form and redirect - only address provided" in {
-      withCaching[ConsigneeDetails](None)
+    "validate request and redirect - only address provided" in {
 
       val result = route(app, postRequest(uri, correctConsigneeDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
@@ -56,8 +71,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec with Befo
       )
     }
 
-    "validate form and redirect - all values provided" in {
-      withCaching[ConsigneeDetails](None)
+    "validate request and redirect - all values provided" in {
 
       val result = route(app, postRequest(uri, correctConsigneeDetailsJSON)).get
       val header = result.futureValue.header

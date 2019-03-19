@@ -20,6 +20,7 @@ import config.AppConfig
 import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.supplementaryCacheId
+import forms.supplementary.ConsignmentReferences
 import handlers.ErrorHandler
 import javax.inject.Inject
 import metrics.ExportsMetrics
@@ -30,6 +31,7 @@ import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.{CustomsCacheService, NRSService}
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.MetaData
 import views.html.supplementary.summary.{summary_page, summary_page_no_data}
@@ -49,12 +51,17 @@ class SummaryPageController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
+  implicit val appConfigImpl: AppConfig = appConfig
+
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetch(supplementaryCacheId).map {
-      case Some(cacheMap) => Ok(summary_page(appConfig, SupplementaryDeclarationData(cacheMap)))
-      case None           => Ok(summary_page_no_data(appConfig))
+      case Some(cacheMap) if containsMandatoryData(cacheMap) => Ok(summary_page(SupplementaryDeclarationData(cacheMap)))
+      case _                                                 => Ok(summary_page_no_data())
     }
   }
+
+  private def containsMandatoryData(cacheMap: CacheMap): Boolean =
+    cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.id).exists(_.lrn.nonEmpty)
 
   def submitSupplementaryDeclaration(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetch(supplementaryCacheId).flatMap {
