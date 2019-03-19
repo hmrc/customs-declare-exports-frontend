@@ -79,28 +79,31 @@
                 .getOrElse(Seq())
                 .map(_.authorisationTypeCode)
     ))
-
-    @components.summary_list(Some(messages("supplementary.summary.parties.additionalParties.header"))) {
-        @if(parties.map(_.declarationAdditionalActorsData.map(_.actors.nonEmpty))) {
-            <table class="form-group">
-                <thead>
-                    <tr>
-                        <th scope="col">@messages("supplementary.summary.parties.additionalPartiesId")</th>
-                        <th scope="col">@messages("supplementary.summary.parties.additionalPartiesType")</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                @for(actor <- parties.flatMap(_.declarationAdditionalActorsData.map(_.actors)).get) {
-                    <tr>
-                        <td scope="row">@actor.eori</td>
-                        <td>@actor.partyType</td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        }
-    }
-
-
 }
+
+@components.summary_list(Some(messages("supplementary.summary.parties.additionalParties.header"))) {
+    <table class="form-group">
+        <thead>
+            <tr>
+                <th scope="col">@messages("supplementary.summary.parties.additionalParties.id")</th>
+                <th scope="col">@messages("supplementary.summary.parties.additionalParties.type")</th>
+            </tr>
+        </thead>
+        @defining(parties.flatMap(_.declarationAdditionalActorsData).map(_.actors).getOrElse(Seq.empty)) { additionalActors =>
+        @if(additionalActors.nonEmpty) {
+            <tbody>
+            @for(actor <- additionalActors) {
+                <tr>
+                    <td scope="row">@actor.eori</td>
+                    <td>@actor.partyType</td>
+                </tr>
+            }
+            </tbody>
+
+      }
+    }
+    </table>
+}
+
+
+
