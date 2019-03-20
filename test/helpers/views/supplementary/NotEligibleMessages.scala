@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
-package controllers.supplementary
+package helpers.views.supplementary
 
-import base.CustomExportsBaseSpec
-import play.api.test.Helpers._
+trait NotEligibleMessages {
 
-class NotEligibleControllerSpec extends CustomExportsBaseSpec {
+  val notEligible: String = "notEligible"
 
-  val uri = uriWithContextPath("/declaration/supplementary/not-eligible")
-
-  before {
-    authorizedUser()
-  }
-
-  "Not Eligible Controller on GET" should {
-
-    "return 200 with a success" in {
-
-      val result = route(app, getRequest(uri)).get
-
-      status(result) must be(OK)
-    }
-  }
+  val title: String = notEligible + ".title"
+  val titleLineTwo: String = notEligible + ".titleLineTwo"
+  val descriptionPreUrl: String = notEligible + ".descriptionPreUrl"
+  val descriptionUrl: String = notEligible + ".descriptionUrl"
+  val descriptionPostUrl: String = notEligible + ".descriptionPostUrl"
+  val referenceTitle: String = notEligible + ".referenceTitle"
+  val referenceText: String = notEligible + ".reference.text"
 }

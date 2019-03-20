@@ -19,10 +19,9 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.ExporterDetails
 import forms.supplementary.ExporterDetailsSpec._
-import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/declaration/supplementary/exporter-details")
 

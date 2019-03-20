@@ -172,7 +172,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
   "Destination Countries View when filled" should {
 
-    "display both countries in inputs" in {
+    "display data for both countries in inputs" in {
 
       val view = createView(DestinationCountries.form().fill(DestinationCountries("Ukraine","Poland")))
 
@@ -180,7 +180,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       getElementById(view, "countryOfDestination").attr("value") must be("Poland")
     }
 
-    "display only dispatch country in inputs" in {
+    "display data only for dispatch country input" in {
 
       val view = createView(DestinationCountries.form().fill(DestinationCountries( "Ukraine", "")))
 
@@ -188,7 +188,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       getElementById(view, "countryOfDestination").attr("value") must be("")
     }
 
-    "display only destination country in inputs" in {
+    "display data only for destination country input" in {
 
       val view = createView(DestinationCountries.form().fill(DestinationCountries("", "Poland")))
 

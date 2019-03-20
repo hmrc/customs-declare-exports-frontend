@@ -19,88 +19,46 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.GoodsLocation
 import forms.supplementary.GoodsLocationSpec._
-import org.scalatest.BeforeAndAfter
+import helpers.views.supplementary.LocationOfGoodsMessages
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class LocationControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsMessages {
 
   val uri = uriWithContextPath("/declaration/supplementary/location-of-goods")
 
   before {
     authorizedUser()
+    withCaching[GoodsLocation](None)
   }
 
   "Location Controller on display page" should {
 
-    "display goods location form" in {
-      authorizedUser()
-      withCaching[GoodsLocation](None)
-
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
-
-      status(result) must be(OK)
-      stringResult must include(messages("supplementary.goodsLocation.title"))
-      stringResult must include(messages("supplementary.address.country"))
-      stringResult must include(messages("supplementary.goodsLocation.typeOfLocation"))
-      stringResult must include(messages("supplementary.goodsLocation.qualifierOfIdentification"))
-      stringResult must include(messages("supplementary.goodsLocation.identificationOfLocation"))
-      stringResult must include(messages("supplementary.goodsLocation.additionalIdentifier"))
-      stringResult must include(messages("supplementary.goodsLocation.streetAndNumber"))
-      stringResult must include(messages("supplementary.goodsLocation.postCode"))
-      stringResult must include(messages("supplementary.goodsLocation.city"))
-    }
-
-    "display \"Back\" button that links to \"Destination Countries\" page" in {
-      withCaching[GoodsLocation](None)
-
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
-
-      status(result) must be(OK)
-      stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/supplementary/destination-countries"))
-    }
-
-    "display \"Save and continue\" button on page" in {
-
-      val result = route(app, getRequest(uri)).get
-      val resultAsString = contentAsString(result)
-
-      resultAsString must include(messages("site.save_and_continue"))
-      resultAsString must include("button id=\"submit\" class=\"button\"")
-    }
-
-    "validate form - incorrect values" in {
-      withCaching[GoodsLocation](None)
+    "validate request and redirect - incorrect values" in {
 
       val result = route(app, postRequest(uri, incorrectGoodsLocationJSON)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
-      stringResult must include(messages("supplementary.goodsLocation.typeOfLocation.error"))
-      stringResult must include(messages("supplementary.goodsLocation.qualifierOfIdentification.error"))
-      stringResult must include(messages("supplementary.goodsLocation.identificationOfLocation.error"))
-      stringResult must include(messages("supplementary.goodsLocation.additionalIdentifier.error"))
-      stringResult must include(messages("supplementary.goodsLocation.streetAndNumber.error"))
-      stringResult must include(messages("supplementary.goodsLocation.postCode.error"))
-      stringResult must include(messages("supplementary.goodsLocation.city.error"))
+      stringResult must include(messages(typeOfLocationError))
+      stringResult must include(messages(qualifierOfIdentError))
+      stringResult must include(messages(identOfLocationError))
+      stringResult must include(messages(additionalIdentifierError))
+      stringResult must include(messages(streetAndNumberError))
+      stringResult must include(messages(logPostCodeError))
+      stringResult must include(messages(cityError))
     }
 
-    "validate form and redirect - empty form" in {
-      withCaching[GoodsLocation](None)
+    "validate request and redirect - empty form" in {
 
       val result = route(app, postRequest(uri, emptyGoodsLocationJSON)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
-      stringResult must include(messages("supplementary.goodsLocation.identificationOfLocation.empty"))
+      stringResult must include(messages(identOfLocationEmpty))
     }
 
-    "validate form - correct value for mandatory field" in {
-      authorizedUser()
-      withCaching[GoodsLocation](None)
+    "validate request and redirect - correct value for mandatory field" in {
 
       val correctGoodsLocation: JsValue =
         JsObject(Map("identificationOfLocation" -> JsString("abc")))
@@ -111,8 +69,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/office-of-exit"))
     }
 
-    "validate form and redirect - correct values" in {
-      withCaching[GoodsLocation](None)
+    "validate request and redirect - correct values" in {
 
       val result = route(app, postRequest(uri, correctGoodsLocationJSON)).get
       val header = result.futureValue.header
