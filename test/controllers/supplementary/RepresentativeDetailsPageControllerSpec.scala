@@ -18,6 +18,8 @@ package controllers.supplementary
 
 import base.CustomExportsBaseSpec
 import base.TestHelper._
+import forms.Choice
+import forms.Choice.choiceId
 import forms.supplementary.RepresentativeDetails
 import forms.supplementary.RepresentativeDetailsSpec._
 import org.mockito.ArgumentMatchers
@@ -37,6 +39,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
   before {
     authorizedUser()
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Representative Address Controller on display page" should {
@@ -160,6 +163,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
       "status is empty" in {
         withCaching[RepresentativeDetails](None)
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val emptyForm = buildRepresentativeDetailsJsonInput()
         val result = route(app, postRequest(uri, emptyForm)).get
@@ -169,6 +173,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
       "status provided but both EORI and address are empty" in {
         withCaching[RepresentativeDetails](None)
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val emptyForm = buildRepresentativeDetailsJsonInput(status = "2")
         val result = route(app, postRequest(uri, emptyForm)).get
@@ -181,6 +186,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
       "wrong value provided for EORI" in {
         withCaching[RepresentativeDetails](None)
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
@@ -190,6 +196,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
       "wrong value provided for full name" in {
         withCaching[RepresentativeDetails](None)
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
@@ -199,6 +206,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
       "wrong value provided for first address line" in {
         withCaching[RepresentativeDetails](None)
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
@@ -208,6 +216,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
       "wrong value provided for city" in {
         withCaching[RepresentativeDetails](None)
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
@@ -217,6 +226,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
       "wrong value provided for postcode" in {
         withCaching[RepresentativeDetails](None)
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
@@ -226,6 +236,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
       "wrong value provided for country" in {
         withCaching[RepresentativeDetails](None)
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
@@ -236,6 +247,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
     "accept form with status and EORI only" in {
       withCaching[RepresentativeDetails](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
@@ -248,6 +260,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
     "accept form with status and address only" in {
       withCaching[RepresentativeDetails](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
@@ -261,6 +274,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     "save data to the cache" in {
       reset(mockCustomsCacheService)
       withCaching[RepresentativeDetails](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get.futureValue
 
@@ -274,6 +288,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
     "return 303 code" in {
       withCaching[RepresentativeDetails](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
 
@@ -282,6 +297,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
 
     "redirect to Additional Actors page" in {
       withCaching[RepresentativeDetails](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
       val header = result.futureValue.header

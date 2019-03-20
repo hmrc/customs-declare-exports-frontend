@@ -15,7 +15,7 @@
  */
 
 package controllers.util
-import models.requests.AuthenticatedRequest
+import models.requests.{AuthenticatedRequest, JorneyRequest}
 
 object CacheIdGenerator {
 
@@ -31,5 +31,8 @@ object CacheIdGenerator {
     s"movement-${request.user.eori}"
 
   def fullDecCacheId()(implicit request: AuthenticatedRequest[_]): String =
-    s"fullDec-${request.user.eori}"
+    s"standard-${request.user.eori}"
+
+  def cacheId()(implicit request: JorneyRequest[_]): String =
+    s"${request.choice.value}-${request.authenticatedRequest.user.eori}"
 }

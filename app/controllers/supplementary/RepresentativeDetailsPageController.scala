@@ -17,8 +17,8 @@
 package controllers.supplementary
 
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import forms.supplementary.RepresentativeDetails
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -35,6 +35,7 @@ class RepresentativeDetailsPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
@@ -42,16 +43,16 @@ class RepresentativeDetailsPageController @Inject()(
 
   implicit val countries = services.Countries.allCountries
 
-  def displayRepresentativeDetailsPage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[RepresentativeDetails](supplementaryCacheId, RepresentativeDetails.formId)
+      .fetchAndGetEntry[RepresentativeDetails](cacheId, RepresentativeDetails.formId)
       .map {
         case Some(data) => Ok(representative_details(appConfig, RepresentativeDetails.form.fill(data)))
         case _          => Ok(representative_details(appConfig, RepresentativeDetails.form))
       }
   }
 
-  def submitRepresentativeDetails(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitRepresentativeDetails(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     RepresentativeDetails.form
       .bindFromRequest()
       .fold(
@@ -60,7 +61,7 @@ class RepresentativeDetailsPageController @Inject()(
         validRepresentativeDetails =>
           customsCacheService
             .cache[RepresentativeDetails](
-              supplementaryCacheId,
+              cacheId,
               RepresentativeDetails.formId,
               validRepresentativeDetails
             )

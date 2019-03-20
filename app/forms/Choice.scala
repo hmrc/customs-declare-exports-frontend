@@ -21,7 +21,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class Choice(choice: String)
+case class Choice(value: String)
 
 object Choice {
   implicit val format = Json.format[Choice]
@@ -36,7 +36,7 @@ object Choice {
       text()
         .verifying("choicePage.input.error.incorrectValue", isContainedIn(correctChoices))
     ).verifying("choicePage.input.error.empty", _.isDefined)
-      .transform[Choice](value => Choice(value.getOrElse("")), choice => Some(choice.choice))
+      .transform[Choice](value => Choice(value.getOrElse("")), choice => Some(choice.value))
   )
 
   def form(): Form[Choice] = Form(choiceMapping)

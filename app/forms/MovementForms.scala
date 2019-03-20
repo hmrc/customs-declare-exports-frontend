@@ -105,20 +105,20 @@ object Movement {
     // TODO: ucrType is hardcoded need to UPDATE after we allow user input for mucr
     InventoryLinkingMovementRequest(
       messageCode =
-        if (choice.choice.equals(AllowedChoiceValues.Arrival) || choice.choice
+        if (choice.value.equals(AllowedChoiceValues.Arrival) || choice.value
               .equals(AllowedChoiceValues.Departure))
-          choice.choice
+          choice.value
         else "",
       agentDetails =
         Some(AgentDetails(eori = Some(eori), agentLocation = location.agentLocation, agentRole = location.agentRole)),
       ucrBlock = UcrBlock(ucr = ducrForm.ducr, ucrType = "D"),
       goodsLocation = location.goodsLocation.get,
       goodsArrivalDateTime =
-        if (choice.choice.equals("EAL") && goodsDate.isDefined)
+        if (choice.value.equals("EAL") && goodsDate.isDefined)
           Some(extractDateTime(goodsDate.get))
         else None,
       goodsDepartureDateTime =
-        if (choice.choice.equals("EDL") && goodsDate.isDefined)
+        if (choice.value.equals("EDL") && goodsDate.isDefined)
           Some(extractDateTime(goodsDate.get))
         else None,
       shedOPID = location.shed,
