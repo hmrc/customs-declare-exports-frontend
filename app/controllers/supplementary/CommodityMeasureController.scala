@@ -43,7 +43,7 @@ class CommodityMeasureController @Inject()(
     cacheService
       .fetchAndGetEntry[Seq[PackageInformation]](goodsItemCacheId, formId)
       .flatMap {
-        case Some(packages) =>
+        case Some(_) =>
           cacheService.fetchAndGetEntry[CommodityMeasure](goodsItemCacheId, commodityFormId).map {
             case Some(data) => Ok(goods_measure(form.fill(data)))
             case _          => Ok(goods_measure(form))

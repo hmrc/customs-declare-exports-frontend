@@ -32,21 +32,22 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig: AppConfig) {
 
-  def generatePackages(cachedData: CacheMap) =
+  def generatePackages(cachedData: CacheMap): Option[Seq[Packaging]] =
     cachedData
       .getEntry[Seq[PackageInformation]](PackageInformation.formId)
       .map(
-        _.map(
-          packageInfo =>
+        _.zipWithIndex.map{
+          case (packageInfo, index) =>
             Packaging(
+              sequenceNumeric = Some(index),
               typeCode = packageInfo.typesOfPackages,
               quantity = packageInfo.numberOfPackages,
               marksNumbersId = packageInfo.shippingMarks
           )
-        )
+        }
       )
 
-  def procedureCodes(cachedData: CacheMap) =
+  def procedureCodes(cachedData: CacheMap): Option[Seq[GovernmentProcedure]]  =
     cachedData
       .getEntry[ProcedureCodesData](ProcedureCodesData.formId)
       .map(
@@ -55,7 +56,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
             ++ form.additionalProcedureCodes.map(code => GovernmentProcedure(Some(code)))
       )
 
-  def commodityGoodsMeasure(cachedData: CacheMap) =
+  def commodityGoodsMeasure(cachedData: CacheMap): Option[Commodity] =
     cachedData
       .getEntry[CommodityMeasure](CommodityMeasure.commodityFormId)
       .map(
@@ -71,7 +72,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
         )
       )
 
-  def additionalInfo(cachedData: CacheMap) =
+  def additionalInfo(cachedData: CacheMap): Option[Seq[AdditionalInformation]]  =
     cachedData
       .getEntry[AdditionalInformationData](AdditionalInformationData.formId)
       .map(_.items.map(info => AdditionalInformation(Some(info.code), Some(info.description))))
@@ -93,7 +94,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
         )
       )
 
-  def goodsItemFromItemTypes(cachedData: CacheMap) =
+  def goodsItemFromItemTypes(cachedData: CacheMap): Option[GovernmentAgencyGoodsItem]  =
     cachedData
       .getEntry[ItemType](ItemType.id)
       .map(
@@ -120,7 +121,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
         )
       )
 
-  private def createGoodsItem(seq: Int, cachedData: CacheMap) = {
+  private def createGoodsItem(seq: Int, cachedData: CacheMap): GovernmentAgencyGoodsItem = {
     val itemTypeData = goodsItemFromItemTypes(cachedData)
     val commodity = itemTypeData.fold(Commodity())(_.commodity.getOrElse(Commodity()))
     val updatedCommodity = commodity.copy(goodsMeasure = commodityGoodsMeasure(cachedData).flatMap(_.goodsMeasure))
@@ -145,7 +146,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
   def addItemToCache(
     goodsItemCacheId: String,
     supplementaryCacheId: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext) =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
     cacheService.fetch(goodsItemCacheId).flatMap {
       case Some(cachedData) =>
         cacheService
