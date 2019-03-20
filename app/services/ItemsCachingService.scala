@@ -17,13 +17,12 @@
 package services
 import com.google.inject.Inject
 import config.AppConfig
-import controllers.util.CacheIdGenerator.{goodsItemCacheId, itemsId, supplementaryCacheId}
+import controllers.util.CacheIdGenerator.itemsId
 import forms.supplementary.ItemType.IdentificationTypeCodes._
 import forms.supplementary.{CommodityMeasure, ItemType, PackageInformation}
 import javax.inject.Singleton
 import models.DeclarationFormats._
 import models.declaration.supplementary.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
-import models.requests.AuthenticatedRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec._
@@ -128,6 +127,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
 
     GovernmentAgencyGoodsItem(
       sequenceNumeric = seq,
+      statisticalValueAmount = itemTypeData.flatMap(_.statisticalValueAmount),
       packagings = generatePackages(cachedData).getOrElse(Seq.empty),
       governmentProcedures = procedureCodes(cachedData).getOrElse(Seq.empty),
       commodity = Some(updatedCommodity),
@@ -142,22 +142,26 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
     create goods item for the cache and append to items already added in the cache
     save updated items to cache and remove the elements in goodsItemCacheId
    */
-  def addItemToCache(goodsItemCacheId:String, supplementaryCacheId:String)(implicit hc: HeaderCarrier, ec: ExecutionContext) =
+  def addItemToCache(
+    goodsItemCacheId: String,
+    supplementaryCacheId: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext) =
     cacheService.fetch(goodsItemCacheId).flatMap {
-        case Some(cachedData) =>
-          cacheService.fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](supplementaryCacheId, itemsId)
-            .flatMap(
-              items =>
-                cacheService
-                  .cache[Seq[GovernmentAgencyGoodsItem]](
-                    supplementaryCacheId,
-                    itemsId,
-                    items.getOrElse(Seq.empty) :+ createGoodsItem(items.getOrElse(Seq.empty).size, cachedData)
-                  )
-                  .flatMap(_ => cacheService.remove(goodsItemCacheId).map(_.status == 204))
-            )
-        case None => Future.successful(false)
-      }
+      case Some(cachedData) =>
+        cacheService
+          .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](supplementaryCacheId, itemsId)
+          .flatMap(
+            items =>
+              cacheService
+                .cache[Seq[GovernmentAgencyGoodsItem]](
+                  supplementaryCacheId,
+                  itemsId,
+                  items.getOrElse(Seq.empty) :+ createGoodsItem(items.fold(1)(_.size), cachedData)
+                )
+                .flatMap(_ => cacheService.remove(goodsItemCacheId).map(_.status == 204))
+          )
+      case None => Future.successful(false)
+    }
 
 }
 

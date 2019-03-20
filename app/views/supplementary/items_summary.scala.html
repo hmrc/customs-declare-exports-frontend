@@ -18,7 +18,7 @@
 @import controllers.supplementary.routes._
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem
-
+@import forms.supplementary.ItemType.IdentificationTypeCodes._
 
 @(items: Seq[GovernmentAgencyGoodsItem])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -43,23 +43,108 @@ messages("supplementary.itemssummary.table.multiple.heading", items.size)
                 <thead>
                 <tr>
                     <th scope="col">@messages("supplementary.itemssummary.itemNumber")</th>
-                    <th scope="col">@messages("supplementary.packageInformation.typesOfPackages")</th>
-                    <th scope="col">@messages("supplementary.packageInformation.numberOfPackages")</th>
-                    <th scope="col">@messages("supplementary.packageInformation.shippingMarks")</th>
+                    <th scope="col">@messages("supplementary.procedureCodes.procedureCode.item.header")</th>
+                    <th scope="col">@messages("supplementary.itemType.combinedNomenclatureCode.item.header")</th>
+                    <th scope="col">@messages("supplementary.itemType.cusCode.item.header")</th>
+                    <th scope="col">@messages("supplementary.itemType.statisticalValue.item.header")</th>
+                    <th scope="col">@messages("supplementary.itemType.description.item.header")</th>
+                    <th scope="col">@messages("supplementary.commodityMeasure.supplementaryUnits.item")</th>
+                    <th scope="col">@messages("supplementary.commodityMeasure.netMass")</th>
+                    <th scope="col">@messages("supplementary.commodityMeasure.grossMass")</th>
                 </tr>
                 </thead>
                 <tbody>
+
                 @items.map{item =>
-                @item.packagings.zipWithIndex.map { case (packaging, index) =>
-                <tr>
-                    <td scope="row">@item.sequenceNumeric</td>
-                    <td scope="row">@packaging.typeCode.getOrElse("")</td>
-                    <td>@packaging.quantity</td>
-                    <td>@packaging.marksNumbersId</td>
-                </tr>
-                }}
+                    <tr>
+                        <td scope="row">@item.sequenceNumeric</td>
+                        <td scope="row">@item.governmentProcedures.headOption.map(c => c.currentCode.getOrElse("")+c.previousCode.getOrElse(""))</td>
+                        <td scope="row">@item.commodity.map(_.classifications.headOption.map(c => c.id.getOrElse("")))</td>
+                        <td scope="row">@item.commodity.map(_.classifications.drop(1).take(1).headOption.map(c => c.id.getOrElse("")))</td>
+                        <td scope="row">@item.statisticalValueAmount.map(_.value)</td>
+                        <td scope="row">@item.commodity.map(_.description.getOrElse(""))</td>
+                        <td scope="row">@item.commodity.map(_.goodsMeasure.map(_.tariffQuantity.map(_.value)))</td>
+                        <td scope="row">@item.commodity.map(_.goodsMeasure.map(_.netWeightMeasure.map(_.value)))</td>
+                        <td scope="row">@item.commodity.map(_.goodsMeasure.map(_.grossMassMeasure.map(_.value)))</td>
+                    </tr>
+                    }
+
                 </tbody>
             </table>
+
+            <table class="form-group">
+                <thead>
+                <tr>
+                    <th scope="col">@messages("supplementary.itemssummary.itemNumber")</th>
+                    <th scope="col">@messages("supplementary.procedureCodes.additionalProcedureCode.item.header")</th>
+                    <th scope="col">@messages("supplementary.itemType.taricAdditionalCodes.item.header")</th>
+                    <th scope="col">@messages("supplementary.itemType.nationalAdditionalCode.item.header")</th>
+
+                    <th scope="col">@messages("supplementary.packageInformation.typesOfPackages")</th>
+                    <th scope="col">@messages("supplementary.packageInformation.numberOfPackages")</th>
+                    <th scope="col">@messages("supplementary.packageInformation.shippingMarks")</th>
+
+                    <th scope="col">@messages("supplementary.additionalInformation.item.code")</th>
+                    <th scope="col">@messages("supplementary.additionalInformation.item.description")</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                    @items.map{item =>
+                    <tr>
+                    <td scope="row">@item.sequenceNumeric</td>
+
+                    <td scope="row">
+                        <table>@item.governmentProcedures.drop(1).map{c =>
+                            <tr ><td>@c.currentCode.getOrElse("")</td></tr>
+                            }</table>
+                    </td>
+
+                    <td scope="row">@item.commodity.map(_.classifications.drop(2).map(c =>
+                        if(c.identificationTypeCode.getOrElse("") == TARICAdditionalCode) c.id.getOrElse("")))</td>
+                    <td scope="row">@item.commodity.map(_.classifications.drop(2).map(c =>
+                        if(c.identificationTypeCode.getOrElse("") == NationalAdditionalCode) c.id.getOrElse("")))</td>
+                    @item.packagings.zipWithIndex.map { case (packaging, index) =>
+
+                    <td scope="row">@packaging.typeCode.getOrElse("")</td>
+                    <td>@packaging.quantity</td>
+                    <td>@packaging.marksNumbersId</td>}
+                    <td scope="row">@item.additionalInformations.map(a => a.statementCode.getOrElse(""))</td>
+                    <td scope="row">@item.additionalInformations.map(a => a.statementDescription.getOrElse(""))</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            <table class="form-group">
+            <thead>
+            <tr>
+                <th scope="col">@messages("supplementary.itemssummary.itemNumber")</th>
+
+                <th scope="col">@messages("supplementary.addDocument.item.documentTypeCode")</th>
+                <th scope="col">@messages("supplementary.addDocument.item.documentIdentifier")</th>
+                <th scope="col">@messages("supplementary.addDocument.item.documentPart")</th>
+                <th scope="col">@messages("supplementary.addDocument.item.documentStatus")</th>
+                <th scope="col">@messages("supplementary.addDocument.item.documentStatusReason")</th>
+                <th scope="col">@messages("supplementary.addDocument.item.documentQuantity")</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            @items.map{item =>
+            <tr>
+                <td scope="row">@item.sequenceNumeric</td>
+                <td scope="row">@item.additionalDocuments.map(doc => doc.categoryCode.getOrElse("") + doc.typeCode.getOrElse(""))</td>
+                <td scope="row">@item.additionalDocuments.map(doc => doc.id.getOrElse(""))</td>
+                <td scope="row">@item.additionalDocuments.map(doc => doc.id.getOrElse(""))</td>
+                <td scope="row">@item.additionalDocuments.map(doc => doc.lpcoExemptionCode.getOrElse(""))</td>
+                <td scope="row">@item.additionalDocuments.map(doc => doc.name.getOrElse(""))</td>
+                <td scope="row">@item.additionalDocuments.map(_.writeOff.map(_.quantity.map(_.value.getOrElse(""))))</td>
+            </tr>
+            }
+            </tbody>
+</table>
+
             }
 
     <div class="section">
