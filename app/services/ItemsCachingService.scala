@@ -126,7 +126,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
     val updatedCommodity = commodity.copy(goodsMeasure = commodityGoodsMeasure(cachedData).flatMap(_.goodsMeasure))
 
     GovernmentAgencyGoodsItem(
-      sequenceNumeric = seq,
+      sequenceNumeric = seq + 1,
       statisticalValueAmount = itemTypeData.flatMap(_.statisticalValueAmount),
       packagings = generatePackages(cachedData).getOrElse(Seq.empty),
       governmentProcedures = procedureCodes(cachedData).getOrElse(Seq.empty),
@@ -156,7 +156,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
                 .cache[Seq[GovernmentAgencyGoodsItem]](
                   supplementaryCacheId,
                   itemsId,
-                  items.getOrElse(Seq.empty) :+ createGoodsItem(items.fold(1)(_.size), cachedData)
+                  items.getOrElse(Seq.empty) :+ createGoodsItem(items.fold(0)(_.size), cachedData)
                 )
                 .flatMap(_ => cacheService.remove(goodsItemCacheId).map(_.status == 204))
           )

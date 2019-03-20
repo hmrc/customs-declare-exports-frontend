@@ -95,22 +95,42 @@ messages("supplementary.itemssummary.table.multiple.heading", items.size)
                     <td scope="row">@item.sequenceNumeric</td>
 
                     <td scope="row">
-                        <table>@item.governmentProcedures.drop(1).map{c =>
-                            <tr ><td>@c.currentCode.getOrElse("")</td></tr>
-                            }</table>
+                        <ol type="1">
+                            @item.governmentProcedures.drop(1).map{c =>
+                            <li>@c.currentCode.getOrElse("")</li>
+                            }
+                        </ol>
                     </td>
 
-                    <td scope="row">@item.commodity.map(_.classifications.drop(2).map(c =>
-                        if(c.identificationTypeCode.getOrElse("") == TARICAdditionalCode) c.id.getOrElse("")))</td>
-                    <td scope="row">@item.commodity.map(_.classifications.drop(2).map(c =>
-                        if(c.identificationTypeCode.getOrElse("") == NationalAdditionalCode) c.id.getOrElse("")))</td>
-                    @item.packagings.zipWithIndex.map { case (packaging, index) =>
+                    <td scope="row"><ol type="1">
+                        @item.commodity.map(_.classifications.drop(2).map(c =>
+                        <li> {if(c.identificationTypeCode.getOrElse("") == TARICAdditionalCode) c.id.getOrElse("")}</li>
+                                ))
+                        </ol>
+                    </td>
+                    <td scope="row"><ol type="1">
+                        @item.commodity.map(_.classifications.drop(2).map(c =>
+                        <li>{if(c.identificationTypeCode.getOrElse("") == NationalAdditionalCode)
+                        c.id.getOrElse("")}</li>
+                        ))
+                    </ol></td>
 
-                    <td scope="row">@packaging.typeCode.getOrElse("")</td>
-                    <td>@packaging.quantity</td>
-                    <td>@packaging.marksNumbersId</td>}
-                    <td scope="row">@item.additionalInformations.map(a => a.statementCode.getOrElse(""))</td>
-                    <td scope="row">@item.additionalInformations.map(a => a.statementDescription.getOrElse(""))</td>
+                        <td scope="row"><ol type="1">@item.packagings.map(a =>
+                            <li>{a.typeCode.getOrElse("")}</li>)
+                        </ol></td>
+                        <td scope="row"><ol type="1">@item.packagings.map(a =>
+                            <li>{a.quantity.getOrElse("")}</li>)
+                        </ol></td>
+                        <td scope="row"><ol type="1">@item.packagings.map(a =>
+                            <li>{a.marksNumbersId.getOrElse("")}</li>)
+                        </ol></td>
+
+                        <td scope="row"><ol type="1">@item.additionalInformations.map(a =>
+                            <li>{a.statementCode.getOrElse("")}</li>)
+                        </ol></td>
+                        <td scope="row"><ol type="1">@item.additionalInformations.map(a =>
+                            <li>{a.statementDescription.getOrElse("")}</li>)
+                        </ol></td>
                     </tr>
                     }
                 </tbody>
@@ -119,7 +139,6 @@ messages("supplementary.itemssummary.table.multiple.heading", items.size)
             <thead>
             <tr>
                 <th scope="col">@messages("supplementary.itemssummary.itemNumber")</th>
-
                 <th scope="col">@messages("supplementary.addDocument.item.documentTypeCode")</th>
                 <th scope="col">@messages("supplementary.addDocument.item.documentIdentifier")</th>
                 <th scope="col">@messages("supplementary.addDocument.item.documentPart")</th>
@@ -134,12 +153,23 @@ messages("supplementary.itemssummary.table.multiple.heading", items.size)
             @items.map{item =>
             <tr>
                 <td scope="row">@item.sequenceNumeric</td>
-                <td scope="row">@item.additionalDocuments.map(doc => doc.categoryCode.getOrElse("") + doc.typeCode.getOrElse(""))</td>
-                <td scope="row">@item.additionalDocuments.map(doc => doc.id.getOrElse(""))</td>
-                <td scope="row">@item.additionalDocuments.map(doc => doc.id.getOrElse(""))</td>
-                <td scope="row">@item.additionalDocuments.map(doc => doc.lpcoExemptionCode.getOrElse(""))</td>
-                <td scope="row">@item.additionalDocuments.map(doc => doc.name.getOrElse(""))</td>
-                <td scope="row">@item.additionalDocuments.map(_.writeOff.map(_.quantity.map(_.value.getOrElse(""))))</td>
+                <td scope="row"><ol type="1">@item.additionalDocuments.map(doc =>
+                    <li>{doc.categoryCode.getOrElse("") + doc.typeCode.getOrElse("")}</li>)
+                </ol></td>
+                <td scope="row"><ol type="1">@item.additionalDocuments.map(doc =>
+                    <li>{doc.id.getOrElse("")}</li>)
+                </ol></td>
+                <td scope="row"><ol type="1">@item.additionalDocuments.map(doc =>
+                    <li>{doc.lpcoExemptionCode.getOrElse("")}</li>)
+                </ol></td>
+                <td scope="row"><ol type="1">@item.additionalDocuments.map(doc =>
+                    <li>{doc.name.getOrElse("")}</li>)
+                </ol></td>
+                <td scope="row"><ol type="1">@item.additionalDocuments.map(doc =>
+                    <li>{doc.categoryCode.getOrElse("") + doc.typeCode.getOrElse("")}</li>)
+                </ol></td>
+                <td scope="row"><ol type="1">@item.additionalDocuments.map(_.writeOff.map(_.quantity.map(_.value.getOrElse(""))))
+                </ol></td>
             </tr>
             }
             </tbody>
