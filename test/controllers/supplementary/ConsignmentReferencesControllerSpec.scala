@@ -29,7 +29,7 @@ import play.api.test.Helpers._
 class ConsignmentReferencesControllerSpec
     extends CustomExportsBaseSpec with ConsignmentReferencesMessages with CommonMessages {
 
-  private val uri = uriWithContextPath("/declaration/supplementary/consignment-references")
+  private val uri = uriWithContextPath("/declaration/consignment-references")
 
   import ConsignmentReferencesControllerSpec._
 
@@ -109,7 +109,7 @@ class ConsignmentReferencesControllerSpec
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/exporter-details")
+        Some("/customs-declare-exports/declaration/exporter-details")
       )
     }
   }

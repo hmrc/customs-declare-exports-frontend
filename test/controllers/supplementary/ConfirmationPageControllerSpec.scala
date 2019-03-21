@@ -30,7 +30,7 @@ class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with Confirma
 
     "return 200 status code" in {
 
-      val result = route(app, getRequest(uriWithContextPath("/declaration/supplementary/confirmation"))).get
+      val result = route(app, getRequest(uriWithContextPath("/declaration/confirmation"))).get
 
       status(result) must be(OK)
     }

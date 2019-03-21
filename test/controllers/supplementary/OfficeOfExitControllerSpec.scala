@@ -24,7 +24,7 @@ import play.api.test.Helpers._
 
 class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExitMessages {
 
-  val uri = uriWithContextPath("/declaration/supplementary/office-of-exit")
+  val uri = uriWithContextPath("/declaration/office-of-exit")
 
   before {
     authorizedUser()
@@ -42,7 +42,6 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
   }
 
   "Office Of Exit Controller on POST" should {
-
     "validate request and redirect - incorrect value" in {
 
       val result = route(app, postRequest(uri, incorrectOfficeOfExitJSON)).get
@@ -65,9 +64,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/transport-information")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/transport-information"))
     }
   }
 }

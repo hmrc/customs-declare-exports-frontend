@@ -120,7 +120,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/exporter-details")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/exporter-details")
     }
 
     "display \"Save and continue\" button on page" in {

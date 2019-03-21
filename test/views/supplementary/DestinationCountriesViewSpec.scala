@@ -82,7 +82,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/holder-of-authorisation")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/holder-of-authorisation")
     }
 
     "display \"Save and continue\" button" in {

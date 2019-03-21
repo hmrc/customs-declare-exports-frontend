@@ -119,7 +119,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/representative-details")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/representative-details")
     }
 
     "display \"Save and continue\" button on page" in {

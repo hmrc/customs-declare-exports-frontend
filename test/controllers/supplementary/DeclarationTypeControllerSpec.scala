@@ -30,8 +30,8 @@ import play.api.test.Helpers._
 class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with DeclarationTypeMessages {
 
   import DeclarationTypeControllerSpec._
-  private val dispatchLocationUri = uriWithContextPath("/declaration/supplementary/dispatch-location")
-  private val declarationTypeUri = uriWithContextPath("/declaration/supplementary/type")
+  private val dispatchLocationUri = uriWithContextPath("/declaration/dispatch-location")
+  private val declarationTypeUri = uriWithContextPath("/declaration/type")
 
   before {
     authorizedUser()
@@ -87,7 +87,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
         val result = route(app, postRequest(dispatchLocationUri, validForm)).get
         val header = result.futureValue.header
 
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/type"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/type"))
       }
     }
 
@@ -100,7 +100,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
         val result = route(app, postRequest(dispatchLocationUri, validForm)).get
         val header = result.futureValue.header
 
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/not-eligible"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/not-eligible"))
       }
     }
   }
@@ -154,7 +154,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/consignment-references")
+        Some("/customs-declare-exports/declaration/consignment-references")
       )
     }
   }

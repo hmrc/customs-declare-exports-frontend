@@ -24,7 +24,7 @@ import play.api.test.Helpers._
 
 class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/declaration/supplementary/total-numbers-of-items")
+  val uri = uriWithContextPath("/declaration/total-numbers-of-items")
 
   "Total Number of Items Controller on display" should {
 
@@ -52,7 +52,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(OK)
       stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/supplementary/transport-information"))
+      stringResult must include(messages("/declaration/transport-information"))
     }
 
     "display \"Save and continue\" button on page" in {
@@ -116,7 +116,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/transaction-type")
+        Some("/customs-declare-exports/declaration/transaction-type")
       )
     }
 
@@ -129,7 +129,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/transaction-type")
+        Some("/customs-declare-exports/declaration/transaction-type")
       )
     }
 
@@ -142,7 +142,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/transaction-type")
+        Some("/customs-declare-exports/declaration/transaction-type")
       )
     }
 

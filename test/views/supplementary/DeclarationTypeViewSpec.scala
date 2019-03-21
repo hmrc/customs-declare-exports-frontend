@@ -86,7 +86,7 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/dispatch-location")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/dispatch-location")
     }
 
     "display \"Save and continue\" button" in {

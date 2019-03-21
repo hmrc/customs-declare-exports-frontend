@@ -24,7 +24,7 @@ import play.api.test.Helpers._
 
 class TransactionTypeControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
-  val uri = uriWithContextPath("/declaration/supplementary/transaction-type")
+  val uri = uriWithContextPath("/declaration/transaction-type")
 
   before {
     authorizedUser()
@@ -52,7 +52,7 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
       status(result) must be(OK)
       stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/supplementary/total-numbers-of-items"))
+      stringResult must include(messages("/declaration/total-numbers-of-items"))
     }
 
     "display \"Save and continue\" button on page" in {
@@ -91,7 +91,7 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/previous-documents")
+        Some("/customs-declare-exports/declaration/previous-documents")
       )
     }
   }

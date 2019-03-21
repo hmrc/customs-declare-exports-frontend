@@ -24,7 +24,7 @@ import play.api.test.Helpers._
 
 class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with DestinationCountriesMessages {
 
-  val uri = uriWithContextPath("/declaration/supplementary/destination-countries")
+  val uri = uriWithContextPath("/declaration/destination-countries")
 
   before {
     authorizedUser()
@@ -77,7 +77,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/location-of-goods")
+        Some("/customs-declare-exports/declaration/location-of-goods")
       )
     }
   }

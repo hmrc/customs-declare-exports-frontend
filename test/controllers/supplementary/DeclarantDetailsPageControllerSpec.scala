@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 
 class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
-  private val uri = uriWithContextPath("/declaration/supplementary/declarant-details")
+  private val uri = uriWithContextPath("/declaration/declarant-details")
 
   before {
     authorizedUser()
@@ -56,7 +56,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/representative-details")
+        Some("/customs-declare-exports/declaration/representative-details")
       )
     }
 
@@ -67,7 +67,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/representative-details")
+        Some("/customs-declare-exports/declaration/representative-details")
       )
     }
 
@@ -78,7 +78,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/representative-details")
+        Some("/customs-declare-exports/declaration/representative-details")
       )
     }
   }

@@ -88,7 +88,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/commodity-measure")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/commodity-measure")
     }
 
     "display both \"Add\" and \"Save and continue\" button on page" in {

@@ -139,7 +139,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/destination-countries")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/destination-countries")
     }
 
     "display \"Save and continue\" button" in {

@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
   import TransportInformationPageControllerSpec._
 
-  private val uri = uriWithContextPath("/declaration/supplementary/transport-information")
+  private val uri = uriWithContextPath("/declaration/transport-information")
 
   before {
     authorizedUser()
@@ -95,7 +95,7 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
       val result = route(app, getRequest(uri)).get
 
       contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("/declaration/supplementary/office-of-exit")
+      contentAsString(result) must include("/declaration/office-of-exit")
     }
   }
 
@@ -192,7 +192,7 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/add-transport-containers")
+        Some("/customs-declare-exports/declaration/add-transport-containers")
       )
     }
   }

@@ -26,7 +26,8 @@ import views.supplementary.spec.ViewSpec
 class PackageInformationViewSpec extends ViewSpec with PackageInformationMessages with CommonMessages {
 
   private val form: Form[PackageInformation] = PackageInformation.form()
-  private def createView(form: Form[PackageInformation] = form): Html = package_information(form, Seq())(fakeRequest, messages, appConfig)
+  private def createView(form: Form[PackageInformation] = form): Html =
+    package_information(form, Seq())(fakeRequest, messages, appConfig)
 
   "Package Information View" should {
 
@@ -98,7 +99,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/item-type")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/item-type")
     }
 
     "display both \"Add\" and \"Save and continue\" button on page" in {
@@ -150,5 +151,5 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       getElementById(view, "numberOfPackages").attr("value") must be("100")
       getElementById(view, "shippingMarks").attr("value") must be("Test")
     }
-   }
+  }
 }

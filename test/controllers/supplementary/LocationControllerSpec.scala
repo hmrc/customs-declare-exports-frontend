@@ -25,7 +25,7 @@ import play.api.test.Helpers._
 
 class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsMessages {
 
-  val uri = uriWithContextPath("/declaration/supplementary/location-of-goods")
+  val uri = uriWithContextPath("/declaration/location-of-goods")
 
   before {
     authorizedUser()
@@ -66,7 +66,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/office-of-exit"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/office-of-exit"))
     }
 
     "validate request and redirect - correct values" in {
@@ -75,7 +75,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/office-of-exit"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/office-of-exit"))
     }
   }
 }

@@ -87,7 +87,7 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/additional-actors")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/additional-actors")
     }
 
     "display both \"Add\" and \"Save and continue\" button on page" in {

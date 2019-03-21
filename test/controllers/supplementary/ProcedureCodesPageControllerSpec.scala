@@ -23,10 +23,11 @@ import models.declaration.supplementary.ProcedureCodesData
 import models.declaration.supplementary.ProcedureCodesData.formId
 import play.api.test.Helpers._
 
-class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewValidator with ProcedureCodesMessages with CommonMessages {
+class ProcedureCodesPageControllerSpec
+    extends CustomExportsBaseSpec with ViewValidator with ProcedureCodesMessages with CommonMessages {
   import ProcedureCodesPageControllerSpec._
 
-  private val uri = uriWithContextPath("/declaration/supplementary/procedure-codes")
+  private val uri = uriWithContextPath("/declaration/procedure-codes")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
@@ -59,7 +60,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
       getElementByCss(page, "table>tbody>tr>th:nth-child(2)>button").text() must be(messages(removeCaption))
 
       getElementByCss(page, "table>tbody>tr:nth-child(2)>th:nth-child(1)").text() must be("234")
-      getElementByCss(page, "table>tbody>tr:nth-child(2)>th:nth-child(2)>button").text() must be(messages(removeCaption))
+      getElementByCss(page, "table>tbody>tr:nth-child(2)>th:nth-child(2)>button").text() must be(
+        messages(removeCaption)
+      )
     }
   }
 
@@ -81,7 +84,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorEmpty, "#additionalProcedureCode")
 
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(messages(addProcCodeErrorEmpty))
+          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
+            messages(addProcCodeErrorEmpty)
+          )
         }
 
         "with shorter procedure code" in {
@@ -126,7 +131,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, procCodeErrorSpecialCharacters, "#procedureCode")
 
-          getElementByCss(page, "#error-message-procedureCode-input").text() must be(messages(procCodeErrorSpecialCharacters))
+          getElementByCss(page, "#error-message-procedureCode-input").text() must be(
+            messages(procCodeErrorSpecialCharacters)
+          )
         }
 
         "without additional procedure code" in {
@@ -141,7 +148,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorEmpty, "#additionalProcedureCode")
 
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(messages(addProcCodeErrorEmpty))
+          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
+            messages(addProcCodeErrorEmpty)
+          )
         }
 
         "with shorter additional procedure code" in {
@@ -156,7 +165,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorLength, "#additionalProcedureCode")
 
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(messages(addProcCodeErrorLength))
+          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
+            messages(addProcCodeErrorLength)
+          )
         }
 
         "with too long additional procedure code" in {
@@ -171,7 +182,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorLength, "#additionalProcedureCode")
 
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(messages(addProcCodeErrorLength))
+          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
+            messages(addProcCodeErrorLength)
+          )
         }
 
         "with special characters in additional code" in {
@@ -186,7 +199,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorSpecialCharacters, "#additionalProcedureCode")
 
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(messages(addProcCodeErrorSpecialCharacters))
+          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
+            messages(addProcCodeErrorSpecialCharacters)
+          )
         }
 
         "with duplicated additional procedure code" in {
@@ -203,7 +218,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorDuplication, "#additionalProcedureCode")
 
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(messages(addProcCodeErrorDuplication))
+          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
+            messages(addProcCodeErrorDuplication)
+          )
         }
 
         "when more than 99 additional codes already exists" in {
@@ -237,7 +254,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorLink(page, 2, addProcCodeErrorMandatory, "#additionalProcedureCode")
 
           getElementByCss(page, "#error-message-procedureCode-input").text() must be(messages(procCodeErrorEmpty))
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(messages(addProcCodeErrorMandatory))
+          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
+            messages(addProcCodeErrorMandatory)
+          )
         }
 
         "without procedure code" in {
@@ -297,7 +316,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, procCodeErrorSpecialCharacters, "#procedureCode")
 
-          getElementByCss(page, "#error-message-procedureCode-input").text() must be(messages(procCodeErrorSpecialCharacters))
+          getElementByCss(page, "#error-message-procedureCode-input").text() must be(
+            messages(procCodeErrorSpecialCharacters)
+          )
         }
 
         "without additional procedure code" in {
@@ -312,7 +333,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorMandatory, "#additionalProcedureCode")
 
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(messages(addProcCodeErrorMandatory))
+          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
+            messages(addProcCodeErrorMandatory)
+          )
         }
 
         "with shorter additional procedure code" in {
@@ -327,7 +350,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorLength, "#additionalProcedureCode")
 
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(messages(addProcCodeErrorLength))
+          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
+            messages(addProcCodeErrorLength)
+          )
         }
 
         "with too long additional procedure code" in {
@@ -342,7 +367,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorLength, "#additionalProcedureCode")
 
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(messages(addProcCodeErrorLength))
+          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
+            messages(addProcCodeErrorLength)
+          )
         }
 
         "with special characters in additional procedure code" in {
@@ -357,7 +384,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorSpecialCharacters, "#additionalProcedureCode")
 
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(messages(addProcCodeErrorSpecialCharacters))
+          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
+            messages(addProcCodeErrorSpecialCharacters)
+          )
         }
 
         "with duplicated additional procedure code" in {
@@ -374,7 +403,9 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorDuplication, "#additionalProcedureCode")
 
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(messages(addProcCodeErrorDuplication))
+          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
+            messages(addProcCodeErrorDuplication)
+          )
         }
 
         "when more than 99 additional procedure codes already exists" in {
@@ -460,7 +491,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/item-type"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/item-type"))
       }
 
       "user fill only procedure code with some additional codes already added" in {
@@ -473,7 +504,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with ViewVa
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/item-type"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/item-type"))
       }
     }
   }

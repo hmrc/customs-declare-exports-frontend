@@ -130,7 +130,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/additional-information")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/additional-information")
     }
 
     "display both \"Add\" and \"Save and continue\" button on page" in {

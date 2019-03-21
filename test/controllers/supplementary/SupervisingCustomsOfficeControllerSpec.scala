@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 
 class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/declaration/supplementary/supervising-office")
+  val uri = uriWithContextPath("/declaration/supervising-office")
 
   "Supervising Customs Office Controller on display" should {
 
@@ -47,7 +47,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(OK)
       stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/supplementary/previous-documents"))
+      stringResult must include(messages("/declaration/previous-documents"))
     }
 
     "display \"Save and continue\" button on page" in {
@@ -77,7 +77,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/warehouse"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/warehouse"))
     }
 
     "validate form and redirect - correct value" in {
@@ -88,7 +88,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/warehouse"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/warehouse"))
     }
   }
 }

@@ -29,7 +29,7 @@ import play.api.test.Helpers._
 class AdditionalInformationControllerSpec
     extends CustomExportsBaseSpec with AdditionalInformationMessages with CommonMessages with ViewValidator {
 
-  private val uri: String = uriWithContextPath("/declaration/supplementary/additional-information")
+  private val uri: String = uriWithContextPath("/declaration/additional-information")
 
   private val addActionURLEncoded = (Add.toString, "")
   private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
@@ -410,7 +410,7 @@ class AdditionalInformationControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/add-document"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/add-document"))
       }
 
       "user doesn't fill form but some items already exist in the cache" in {
@@ -422,7 +422,7 @@ class AdditionalInformationControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/add-document"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/add-document"))
       }
 
       "user provide holder with some different holder in cache" in {
@@ -436,7 +436,7 @@ class AdditionalInformationControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/add-document"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/add-document"))
       }
     }
   }

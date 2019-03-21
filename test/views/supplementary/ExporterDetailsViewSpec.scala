@@ -118,7 +118,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/consignment-references")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/consignment-references")
     }
 
     "display \"Save and continue\" button on page" in {

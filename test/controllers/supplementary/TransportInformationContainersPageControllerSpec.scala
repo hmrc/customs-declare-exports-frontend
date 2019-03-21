@@ -27,7 +27,7 @@ import play.api.test.Helpers._
 
 class TransportInformationContainersPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
-  private val uri = uriWithContextPath("/declaration/supplementary/add-transport-containers")
+  private val uri = uriWithContextPath("/declaration/add-transport-containers")
 
   private val addActionURLEncoded = (Add.toString, "")
   private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
@@ -63,7 +63,7 @@ class TransportInformationContainersPageControllerSpec extends CustomExportsBase
       val result = route(app, getRequest(uri)).get
 
       contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("/declaration/supplementary/transport-information")
+      contentAsString(result) must include("/declaration/transport-information")
     }
 
     "display additional information form with added items" in {
@@ -208,7 +208,7 @@ class TransportInformationContainersPageControllerSpec extends CustomExportsBase
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/total-numbers-of-items")
+        Some("/customs-declare-exports/declaration/total-numbers-of-items")
       )
     }
 
@@ -221,7 +221,7 @@ class TransportInformationContainersPageControllerSpec extends CustomExportsBase
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/total-numbers-of-items")
+        Some("/customs-declare-exports/declaration/total-numbers-of-items")
       )
     }
 
@@ -236,7 +236,7 @@ class TransportInformationContainersPageControllerSpec extends CustomExportsBase
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/total-numbers-of-items")
+        Some("/customs-declare-exports/declaration/total-numbers-of-items")
       )
     }
   }

@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 
 class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
-  private val uri = uriWithContextPath("/declaration/supplementary/consignee-details")
+  private val uri = uriWithContextPath("/declaration/consignee-details")
 
   before {
     authorizedUser()
@@ -56,7 +56,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
+        Some("/customs-declare-exports/declaration/additional-actors")
       )
     }
 
@@ -67,7 +67,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
+        Some("/customs-declare-exports/declaration/additional-actors")
       )
     }
 
@@ -78,7 +78,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
+        Some("/customs-declare-exports/declaration/additional-actors")
       )
     }
   }

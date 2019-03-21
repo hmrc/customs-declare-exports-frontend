@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
   import RepresentativeDetailsPageControllerSpec._
-  private val uri = uriWithContextPath("/declaration/supplementary/representative-details")
+  private val uri = uriWithContextPath("/declaration/representative-details")
 
   before {
     authorizedUser()
@@ -60,7 +60,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       val result = displayPageTestScenario()
 
       contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("/declaration/supplementary/declarant-details")
+      contentAsString(result) must include("/declaration/declarant-details")
     }
 
     "display page header" in {
@@ -253,9 +253,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
     }
 
     "accept form with status and address only" in {
@@ -266,9 +264,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
     }
 
     "save data to the cache" in {
@@ -302,9 +298,7 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
       val header = result.futureValue.header
 
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/additional-actors")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
     }
   }
 

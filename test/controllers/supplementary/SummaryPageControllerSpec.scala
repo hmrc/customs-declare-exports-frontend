@@ -35,7 +35,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
   private trait Test {
     implicit val headerCarrierMock = mock[HeaderCarrier]
-    val summaryPageUri = uriWithContextPath("/declaration/supplementary/summary")
+    val summaryPageUri = uriWithContextPath("/declaration/summary")
     val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
     val emptyMetadata: MetaData = MetaData(response = Seq.empty)
     val onlyOnce: VerificationMode = times(1)
@@ -68,7 +68,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("site.back"))
-        resultAsString must include("/declaration/supplementary/export-items")
+        resultAsString must include("/declaration/export-items")
       }
 
       "display \"Accept and submit declaration\" button" in new Test {
@@ -224,7 +224,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         val result = route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         val header = result.header
 
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/confirmation"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/confirmation"))
       }
 
       "add flash scope with lrn " in new Test {

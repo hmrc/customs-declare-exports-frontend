@@ -24,7 +24,7 @@ import play.api.test.Helpers._
 
 class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with CommonMessages {
 
-  val uri = uriWithContextPath("/declaration/supplementary/exporter-details")
+  val uri = uriWithContextPath("/declaration/exporter-details")
 
   before {
     authorizedUser()
@@ -70,7 +70,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/declarant-details")
+        Some("/customs-declare-exports/declaration/declarant-details")
       )
     }
 
@@ -81,7 +81,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/declarant-details")
+        Some("/customs-declare-exports/declaration/declarant-details")
       )
     }
 
@@ -92,7 +92,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/declarant-details")
+        Some("/customs-declare-exports/declaration/declarant-details")
       )
     }
   }

@@ -29,7 +29,7 @@ class DeclarationHolderControllerSpec
     extends CustomExportsBaseSpec with DeclarationHolderMessages with CommonMessages with ViewValidator {
   import DeclarationHolderControllerSpec._
 
-  private val uri = uriWithContextPath("/declaration/supplementary/holder-of-authorisation")
+  private val uri = uriWithContextPath("/declaration/holder-of-authorisation")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
@@ -362,7 +362,7 @@ class DeclarationHolderControllerSpec
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/supplementary/destination-countries")
+          Some("/customs-declare-exports/declaration/destination-countries")
         )
       }
 
@@ -377,7 +377,7 @@ class DeclarationHolderControllerSpec
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/supplementary/destination-countries")
+          Some("/customs-declare-exports/declaration/destination-countries")
         )
       }
 
@@ -392,7 +392,7 @@ class DeclarationHolderControllerSpec
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/supplementary/destination-countries")
+          Some("/customs-declare-exports/declaration/destination-countries")
         )
       }
     }

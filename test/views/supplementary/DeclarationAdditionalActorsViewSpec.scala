@@ -105,7 +105,7 @@ class DeclarationAdditionalActorsViewSpec
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/representative-details")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/representative-details")
     }
 
     "display both \"Add\" and \"Save and continue\" button on page" in {

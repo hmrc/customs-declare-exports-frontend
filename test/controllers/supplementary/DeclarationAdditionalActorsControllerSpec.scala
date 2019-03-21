@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 class DeclarationAdditionalActorsControllerSpec
     extends CustomExportsBaseSpec with DeclarationAdditionalActorsMessages with CommonMessages with ViewValidator {
 
-  val uri: String = uriWithContextPath("/declaration/supplementary/additional-actors")
+  val uri: String = uriWithContextPath("/declaration/additional-actors")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
@@ -61,7 +61,7 @@ class DeclarationAdditionalActorsControllerSpec
       "when validate form - optional data allowed" in {
 
         testHappyPathsScenarios(
-          expectedPath = "/customs-declare-exports/declaration/supplementary/holder-of-authorisation",
+          expectedPath = "/customs-declare-exports/declaration/holder-of-authorisation",
           actorsMap = Map("eori" -> "", "partyType" -> ""),
           action = saveAndContinueActionUrlEncoded
         )
@@ -70,7 +70,7 @@ class DeclarationAdditionalActorsControllerSpec
       "when validate form - correct values and an empty cache" in {
 
         testHappyPathsScenarios(
-          expectedPath = "/customs-declare-exports/declaration/supplementary/holder-of-authorisation",
+          expectedPath = "/customs-declare-exports/declaration/holder-of-authorisation",
           actorsMap = correctAdditionalActorsMap,
           action = saveAndContinueActionUrlEncoded
         )
@@ -80,7 +80,7 @@ class DeclarationAdditionalActorsControllerSpec
         withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
 
         testHappyPathsScenarios(
-          expectedPath = "/customs-declare-exports/declaration/supplementary/holder-of-authorisation",
+          expectedPath = "/customs-declare-exports/declaration/holder-of-authorisation",
           actorsMap = Map("eori" -> "eori2", "partyType" -> "CS"),
           action = saveAndContinueActionUrlEncoded
         )
@@ -191,7 +191,7 @@ class DeclarationAdditionalActorsControllerSpec
       "when validate form - correct values" in {
 
         testHappyPathsScenarios(
-          expectedPath = "/customs-declare-exports/declaration/supplementary/additional-actors",
+          expectedPath = "/customs-declare-exports/declaration/additional-actors",
           actorsMap = correctAdditionalActorsMap,
           action = addActionUrlEncoded
         )
@@ -264,7 +264,7 @@ class DeclarationAdditionalActorsControllerSpec
           withCaching[DeclarationAdditionalActorsData](None, formId)
 
           testHappyPathsScenarios(
-            expectedPath = "/customs-declare-exports/declaration/supplementary/additional-actors",
+            expectedPath = "/customs-declare-exports/declaration/additional-actors",
             actorsMap = correctAdditionalActorsMap,
             action = addActionUrlEncoded
           )
@@ -274,7 +274,7 @@ class DeclarationAdditionalActorsControllerSpec
           withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
 
           testHappyPathsScenarios(
-            expectedPath = "/customs-declare-exports/declaration/supplementary/additional-actors",
+            expectedPath = "/customs-declare-exports/declaration/additional-actors",
             actorsMap = Map("eori" -> "eori2", "partyType" -> "CS"),
             action = addActionUrlEncoded
           )

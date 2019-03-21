@@ -25,7 +25,8 @@ import views.supplementary.spec.ViewSpec
 class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with CommonMessages {
 
   private val form: Form[ProcedureCodes] = ProcedureCodes.form()
-  private def createView(form: Form[ProcedureCodes] = form): Html = procedure_codes(appConfig, form, Seq())(fakeRequest, messages)
+  private def createView(form: Form[ProcedureCodes] = form): Html =
+    procedure_codes(appConfig, form, Seq())(fakeRequest, messages)
 
   /*
    * Tests for errors are in the ProcedureCodesPageControllerSpec
@@ -81,7 +82,9 @@ class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with C
       val view = createView()
 
       getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(addProcCodeHeader))
-      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(addProcCodeHeaderHint))
+      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(
+        messages(addProcCodeHeaderHint)
+      )
       getElementById(view, "additionalProcedureCode").attr("value") must be("")
     }
 
@@ -90,7 +93,7 @@ class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with C
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/export-items")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/export-items")
     }
 
     "display both \"Add\" and \"Save and continue\" button on page" in {

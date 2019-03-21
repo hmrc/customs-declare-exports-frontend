@@ -25,7 +25,8 @@ import views.supplementary.spec.ViewSpec
 class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages with CommonMessages {
 
   private val form: Form[Document] = Document.form()
-  private def createView(form: Form[Document] = form): Html = previous_documents(form, Seq())(fakeRequest, messages, appConfig)
+  private def createView(form: Form[Document] = form): Html =
+    previous_documents(form, Seq())(fakeRequest, messages, appConfig)
 
   "Previous Documents View" should {
 
@@ -123,7 +124,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/transaction-type")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/transaction-type")
     }
 
     "display both \"Add\" and \"Save and continue\" button on page" in {

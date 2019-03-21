@@ -58,7 +58,7 @@ class ChoiceController @Inject()(
           customsCacheService.cache[Choice](eoriCacheId, choiceId, validChoice).map { _ =>
             validChoice.value match {
               case SupplementaryDec | StandardDec =>
-                Redirect(controllers.supplementary.routes.DeclarationTypeController.displayDispatchLocationPage())
+                Redirect(controllers.declaration.routes.DeclarationTypeController.displayDispatchLocationPage())
               case Arrival | Departure => Redirect(controllers.movement.routes.MovementController.displayDucrPage())
               case CancelDec =>
                 Redirect(controllers.routes.CancelDeclarationController.displayForm())

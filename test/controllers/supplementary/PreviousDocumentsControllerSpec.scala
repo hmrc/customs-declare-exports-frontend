@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with PreviousDocumentsMessages with CommonMessages with ViewValidator {
   import PreviousDocumentsControllerSpec._
 
-  val uri = uriWithContextPath("/declaration/supplementary/previous-documents")
+  val uri = uriWithContextPath("/declaration/previous-documents")
   private val addActionURLEncoded = (Add.toString, "")
   private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
   private val removeActionURLEncoded: String => (String, String) = (value: String) => (Remove.toString, value)
@@ -429,9 +429,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with Previou
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/supplementary/supervising-office")
-        )
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supervising-office"))
       }
 
       "user has empty form but cache contains some item" in {
@@ -443,9 +441,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with Previou
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/supplementary/supervising-office")
-        )
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supervising-office"))
       }
 
       "user provide correct item with different item in cache" in {
@@ -464,9 +460,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with Previou
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/supplementary/supervising-office")
-        )
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supervising-office"))
       }
     }
   }

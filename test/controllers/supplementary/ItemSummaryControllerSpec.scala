@@ -26,7 +26,7 @@ import uk.gov.hmrc.wco.dec.{GovernmentAgencyGoodsItem, Packaging}
 
 class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
 
-  val uri = uriWithContextPath("/declaration/supplementary/export-items")
+  val uri = uriWithContextPath("/declaration/export-items")
 
   val formId = "PackageInformation"
 

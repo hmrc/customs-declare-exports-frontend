@@ -33,7 +33,7 @@ import uk.gov.hmrc.auth.core.InsufficientEnrolments
 class CommodityMeasureControllerSpec
     extends CustomExportsBaseSpec with CommodityMeasureMessages with Generators with PropertyChecks with OptionValues {
 
-  val uri = uriWithContextPath("/declaration/supplementary/commodity-measure")
+  val uri = uriWithContextPath("/declaration/commodity-measure")
   val form = CommodityMeasure.form()
 
   "CommodityController" should {
@@ -133,7 +133,7 @@ class CommodityMeasureControllerSpec
 
             status(result) must be(SEE_OTHER)
             result.futureValue.header.headers.get("Location") must be(
-              Some("/customs-declare-exports/declaration/supplementary/additional-information")
+              Some("/customs-declare-exports/declaration/additional-information")
             )
 
             verify(mockCustomsCacheService)
@@ -160,7 +160,7 @@ class CommodityMeasureControllerSpec
             val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
             status(result) must be(SEE_OTHER)
             result.futureValue.header.headers.get("Location") must be(
-              Some("/customs-declare-exports/declaration/supplementary/additional-information")
+              Some("/customs-declare-exports/declaration/additional-information")
             )
           }
         }

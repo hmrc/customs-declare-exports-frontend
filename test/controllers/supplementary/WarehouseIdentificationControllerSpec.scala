@@ -24,7 +24,7 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
 class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
-  val uri = uriWithContextPath("/declaration/supplementary/warehouse")
+  val uri = uriWithContextPath("/declaration/warehouse")
 
   before {
     authorizedUser()
@@ -57,7 +57,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
       val result = route(app, getRequest(uri)).get
 
       contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("/declaration/supplementary/supervising-office")
+      contentAsString(result) must include("/declaration/supervising-office")
     }
   }
 
@@ -104,7 +104,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/export-items"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
     }
 
     "validate form - correct values" in {
@@ -115,7 +115,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/export-items"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
     }
   }
 }

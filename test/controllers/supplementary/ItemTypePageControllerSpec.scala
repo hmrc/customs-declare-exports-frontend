@@ -31,7 +31,7 @@ class ItemTypePageControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages {
   import ItemTypePageControllerSpec._
 
-  private val uri = uriWithContextPath("/declaration/supplementary/item-type")
+  private val uri = uriWithContextPath("/declaration/item-type")
 
   before {
     authorizedUser()
@@ -501,7 +501,7 @@ class ItemTypePageControllerSpec
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/package-information")
+        Some("/customs-declare-exports/declaration/package-information")
       )
     }
 
@@ -511,7 +511,7 @@ class ItemTypePageControllerSpec
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/package-information")
+        Some("/customs-declare-exports/declaration/package-information")
       )
     }
   }

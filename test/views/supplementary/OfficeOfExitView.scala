@@ -70,7 +70,7 @@ class OfficeOfExitView extends ViewSpec with OfficeOfExitMessages with CommonMes
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/location-of-goods")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/location-of-goods")
     }
 
     "display \"Save and continue\" button" in {

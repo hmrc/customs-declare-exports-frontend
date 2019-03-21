@@ -21,7 +21,7 @@ import play.api.test.Helpers._
 
 class NotEligibleControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/declaration/supplementary/not-eligible")
+  val uri = uriWithContextPath("/declaration/not-eligible")
 
   before {
     authorizedUser()

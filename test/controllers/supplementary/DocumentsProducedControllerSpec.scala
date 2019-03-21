@@ -34,7 +34,7 @@ class DocumentsProducedControllerSpec
 
   import DocumentsProducedControllerSpec._
 
-  private val uri = uriWithContextPath("/declaration/supplementary/add-document")
+  private val uri = uriWithContextPath("/declaration/add-document")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
@@ -235,7 +235,7 @@ class DocumentsProducedControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/export-items"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
       "provided with empty form and with existing cache" in {
@@ -247,7 +247,7 @@ class DocumentsProducedControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/export-items"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
       "provided with a valid document and with empty cache" in {
@@ -257,7 +257,7 @@ class DocumentsProducedControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/export-items"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
       "provided with a valid document and with existing cache" in {
@@ -269,7 +269,7 @@ class DocumentsProducedControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/export-items"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
     }
   }

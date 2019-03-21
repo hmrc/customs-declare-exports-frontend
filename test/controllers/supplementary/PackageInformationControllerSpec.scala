@@ -38,7 +38,7 @@ import org.scalacheck.Gen._
 class PackageInformationControllerSpec
     extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues with ViewValidator with PackageInformationMessages with CommonMessages {
 
-  val uri = uriWithContextPath("/declaration/supplementary/package-information")
+  val uri = uriWithContextPath("/declaration/package-information")
 
   val form = PackageInformation.form()
   def view(form: Form[PackageInformation] = form, charges: Seq[PackageInformation] = Seq.empty): Html =
@@ -359,7 +359,7 @@ class PackageInformationControllerSpec
             status(result) must be(SEE_OTHER)
 
             result.futureValue.header.headers.get("Location") must be(
-              Some("/customs-declare-exports/declaration/supplementary/package-information")
+              Some("/customs-declare-exports/declaration/package-information")
             )
 
             verify(mockCustomsCacheService)
@@ -426,7 +426,7 @@ class PackageInformationControllerSpec
               val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
               status(result) must be(SEE_OTHER)
               result.futureValue.header.headers.get("Location") must be(
-                Some("/customs-declare-exports/declaration/supplementary/package-information")
+                Some("/customs-declare-exports/declaration/package-information")
               )
               verify(mockCustomsCacheService)
                 .cache[Seq[PackageInformation]](
@@ -450,7 +450,7 @@ class PackageInformationControllerSpec
             val result = route(app, postRequestFormUrlEncoded(uri, Seq(saveAndContinueActionUrlEncoded): _*)).value
             status(result) must be(SEE_OTHER)
             result.futureValue.header.headers.get("Location") must be(
-              Some("/customs-declare-exports/declaration/supplementary/commodity-measure")
+              Some("/customs-declare-exports/declaration/commodity-measure")
             )
           }
         }
