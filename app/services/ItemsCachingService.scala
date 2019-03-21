@@ -38,10 +38,10 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       .getEntry[Seq[PackageInformation]](PackageInformation.formId)
       .map(_.zipWithIndex.map {
         case (packageInfo, index) =>
-          mapPackaging(packageInfo, index)
+          createPackaging(packageInfo, index)
       })
 
-  private def mapPackaging(packageInfo: PackageInformation, index: Int) = Packaging(
+  private def createPackaging(packageInfo: PackageInformation, index: Int) = Packaging(
     sequenceNumeric = Some(index),
     typeCode = packageInfo.typesOfPackages,
     quantity = packageInfo.numberOfPackages,
@@ -57,7 +57,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
             ++ form.additionalProcedureCodes.map(code => GovernmentProcedure(Some(code)))
       )
 
-  def commodityGoodsMeasure(cachedData: CacheMap): Option[Commodity] =
+  def commodityFromGoodsMeasure(cachedData: CacheMap): Option[Commodity] =
     cachedData
       .getEntry[CommodityMeasure](CommodityMeasure.commodityFormId)
       .map(mapGoodsMeasure(_))
@@ -123,7 +123,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
   private def createGoodsItem(seq: Int, cachedData: CacheMap): GovernmentAgencyGoodsItem = {
     val itemTypeData = goodsItemFromItemTypes(cachedData)
     val commodity = itemTypeData.fold(Commodity())(_.commodity.getOrElse(Commodity()))
-    val updatedCommodity = commodity.copy(goodsMeasure = commodityGoodsMeasure(cachedData).flatMap(_.goodsMeasure))
+    val updatedCommodity = commodity.copy(goodsMeasure = commodityFromGoodsMeasure(cachedData).flatMap(_.goodsMeasure))
 
     GovernmentAgencyGoodsItem(
       sequenceNumeric = seq + 1,

@@ -73,7 +73,7 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
     "populate Commodity with GoodsMeasure from CommodityMeasure cache" in {
       val input = createCommodityMeasure()
       val cacheMap = getCacheMap(input, CommodityMeasure.commodityFormId)
-      val commodity = itemsCachingService.commodityGoodsMeasure(cacheMap).value
+      val commodity = itemsCachingService.commodityFromGoodsMeasure(cacheMap).value
       commodity.goodsMeasure.getOrElse(fail()).grossMassMeasure.value.value.value.toString mustBe input.grossMass
       commodity.goodsMeasure.getOrElse(fail()).netWeightMeasure.value.value.value.toString mustBe input.netMass
       commodity.goodsMeasure
