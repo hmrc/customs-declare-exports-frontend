@@ -462,7 +462,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
   "Consignee Details View when filled" should {
 
-    "display EORI" in {
+    "display data in EORI input" in {
 
       val form = ConsigneeDetails.form().fill(ConsigneeDetails(EntityDetails(Some("1234"), None)))
       val view = createView(form)
@@ -470,7 +470,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       getElementById(view, "details_eori").attr("value") must be("1234")
     }
 
-    "display business address" in {
+    "display data in Business address inputs" in {
 
       val form = ConsigneeDetails
         .form()

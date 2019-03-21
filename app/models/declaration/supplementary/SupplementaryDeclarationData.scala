@@ -29,11 +29,21 @@ case class SupplementaryDeclarationData(
   transportInformationContainerData: Option[TransportInformationContainerData] = None,
   items: Option[Items] = None
 ) extends SummaryContainer with MetadataPropertiesConvertable {
-  import SupplementaryDeclarationData._
+
+  import SupplementaryDeclarationData.SchemaMandatoryValues._
+
+  private val schemaMandatoryFields: Map[String, String] = Map(
+    "declaration.functionCode" -> functionCode,
+    "wcoDataModelVersionCode" -> wcoDataModelVersionCode,
+    "wcoTypeName" -> wcoTypeName,
+    "responsibleCountryCode" -> responsibleCountryCode,
+    "responsibleAgencyName" -> responsibleAgencyName,
+    "agencyAssignedCustomizationVersionCode" -> agencyAssignedCustomizationVersionCode
+  )
 
   override def toMetadataProperties(): Map[String, String] =
     this.toMap.values
-      .foldLeft(Map("declaration.functionCode" -> suppDecFunctionCode)) { (map, convertable) =>
+      .foldLeft(schemaMandatoryFields) { (map, convertable) =>
         map ++ convertable.toMetadataProperties()
       }
       .filter(_._2.nonEmpty)
@@ -60,7 +70,6 @@ case class SupplementaryDeclarationData(
 }
 
 object SupplementaryDeclarationData {
-  val suppDecFunctionCode = "9"
 
   def apply(cacheMap: CacheMap): SupplementaryDeclarationData =
     SupplementaryDeclarationData(
@@ -76,4 +85,13 @@ object SupplementaryDeclarationData {
 
   private def flattenIfEmpty[A <: SummaryContainer](container: A): Option[A] =
     if (container.isEmpty) None else Some(container)
+
+  object SchemaMandatoryValues {
+    val functionCode = "9"
+    val wcoDataModelVersionCode = "3.6"
+    val wcoTypeName = "DEC"
+    val responsibleCountryCode = "GB"
+    val responsibleAgencyName = "HMRC"
+    val agencyAssignedCustomizationVersionCode = "v2.1"
+  }
 }

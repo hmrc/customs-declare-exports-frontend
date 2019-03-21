@@ -32,17 +32,14 @@ import forms.supplementary.RepresentativeDetailsSpec._
 import forms.supplementary.SupervisingCustomsOfficeSpec._
 import forms.supplementary.TotalNumberOfItemsSpec._
 import forms.supplementary.TransactionTypeSpec._
-import forms.supplementary.TransportInformationContainerSpec.{
-  correctTransportInformationContainerData,
-  correctTransportInformationContainerDataJSON
-}
+import forms.supplementary.TransportInformationContainerSpec.{correctTransportInformationContainerData, correctTransportInformationContainerDataJSON}
 import forms.supplementary.TransportInformationSpec._
 import forms.supplementary.WarehouseIdentificationSpec._
 import forms.supplementary._
 import models.declaration.supplementary.DeclarationAdditionalActorsDataSpec._
 import models.declaration.supplementary.DeclarationHoldersDataSpec._
 import models.declaration.supplementary.DeclarationTypeSpec._
-import models.declaration.supplementary.SupplementaryDeclarationData.suppDecFunctionCode
+import models.declaration.supplementary.SupplementaryDeclarationData.SchemaMandatoryValues._
 import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, Json}
@@ -291,7 +288,27 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
   }
 
   "Method toMetadataProperties" should {
-    "invoke the same method on every data element contained" in new SimpleTest {
+
+    "contain mandatory values" in new SimpleTest {
+      val functionCodeTuple = ("declaration.functionCode", functionCode)
+      val wcoDataModelVersionCodeTuple = ("wcoDataModelVersionCode", wcoDataModelVersionCode)
+      val wcoTypeNameTuple = ("wcoTypeName", wcoTypeName)
+      val responsibleCountryCodeTuple = ("responsibleCountryCode", responsibleCountryCode)
+      val responsibleAgencyNameTuple = ("responsibleAgencyName", responsibleAgencyName)
+      val agencyAssignedCustomizationVersionCodeTuple =
+        ("agencyAssignedCustomizationVersionCode", agencyAssignedCustomizationVersionCode)
+
+      val metadataProperties: Map[String, String] = supplementaryDeclarationData.toMetadataProperties()
+
+      metadataProperties must contain(functionCodeTuple)
+      metadataProperties must contain(wcoDataModelVersionCodeTuple)
+      metadataProperties must contain(wcoTypeNameTuple)
+      metadataProperties must contain(responsibleCountryCodeTuple)
+      metadataProperties must contain(responsibleAgencyNameTuple)
+      metadataProperties must contain(agencyAssignedCustomizationVersionCodeTuple)
+    }
+
+    "invoke the same method on every sub-element contained" in new SimpleTest {
       supplementaryDeclarationData.toMetadataProperties()
 
       verify(declarationTypeMock, times(1)).toMetadataProperties()
@@ -302,11 +319,18 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       verify(itemsMock, times(1)).toMetadataProperties()
     }
 
-    "return Map being summary of all data elements returned Maps" in new TestMapConcatenation {
-      supplementaryDeclarationData.toMetadataProperties() must equal(
-        functionCodeMap ++ declarationTypeMap ++ consignmentReferencesMap ++ partiesMap ++ locationsMap ++ transportInformationMap ++ itemsMap
-      )
+    "return Map being sum of all Maps returned by sub-elements" in new TestMapConcatenation {
+      val metadataProperties: Map[String, String] = supplementaryDeclarationData.toMetadataProperties()
+
+      metadataProperties must contain(declarationTypeTuple)
+      metadataProperties must contain(consignmentReferencesTuple)
+      metadataProperties must contain(partiesTuple)
+      metadataProperties must contain(locationsTuple)
+      metadataProperties must contain(transportInformationTuple)
+      metadataProperties must contain(itemsTuple)
     }
+  }
+
 
     trait SimpleTest {
       val declarationTypeMock = mock(classOf[DeclarationType])
@@ -317,14 +341,14 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       val transportInformationContainerDataMock = mock(classOf[TransportInformationContainerData])
       val itemsMock = mock(classOf[Items])
       val supplementaryDeclarationData = SupplementaryDeclarationData(
-        declarationType = Some(declarationTypeMock),
-        consignmentReferences = Some(consignmentReferencesMock),
-        parties = Some(partiesMock),
-        locations = Some(locationsMock),
-        transportInformation = Some(transportInformationMock),
-        transportInformationContainerData = Some(transportInformationContainerDataMock),
-        items = Some(itemsMock)
-      )
+    declarationType = Some(declarationTypeMock),
+    consignmentReferences = Some(consignmentReferencesMock),
+    parties = Some(partiesMock),
+    locations = Some(locationsMock),
+    transportInformation = Some(transportInformationMock),
+    transportInformationContainerData = Some(transportInformationContainerDataMock),
+    items = Some(itemsMock)
+  )
 
       when(declarationTypeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(consignmentReferencesMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
@@ -336,23 +360,22 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
     }
 
     trait TestMapConcatenation extends SimpleTest {
-      val functionCodeMap = Map("declaration.functionCode" -> suppDecFunctionCode)
-      val declarationTypeMap = Map("DeclarationType" -> "DeclarationTypeValue")
-      val consignmentReferencesMap = Map("ConsignmentReferences" -> "ConsignmentReferencesValue")
-      val partiesMap = Map("Parties" -> "PartiesValue")
-      val locationsMap = Map("Locations" -> "LocationsValue")
-      val transportInformationMap = Map("TransportInformation" -> "TransportInformationValue")
-      val transportInformationContainerMap =
-        Map("TransportInformationContainer" -> "TransportInformationContainerValue")
-      val itemsMap = Map("Items" -> "ItemsValue")
-      when(declarationTypeMock.toMetadataProperties()).thenReturn(declarationTypeMap)
-      when(consignmentReferencesMock.toMetadataProperties()).thenReturn(consignmentReferencesMap)
-      when(partiesMock.toMetadataProperties()).thenReturn(partiesMap)
-      when(locationsMock.toMetadataProperties()).thenReturn(locationsMap)
-      when(transportInformationMock.toMetadataProperties()).thenReturn(transportInformationMap)
-      when(itemsMock.toMetadataProperties()).thenReturn(itemsMap)
-    }
+    val declarationTypeTuple = ("DeclarationType", "DeclarationTypeValue")
+    val consignmentReferencesTuple = ("ConsignmentReferences", "ConsignmentReferencesValue")
+    val partiesTuple = ("Parties", "PartiesValue")
+    val locationsTuple = ("Locations", "LocationsValue")
+    val transportInformationTuple = ("TransportInformation", "TransportInformationValue")
+    val transportInformationContainerTuple = ("TransportInformationContainer", "TransportInformationContainerValue")
+    val itemsTuple = ("Items", "ItemsValue")
+    when(declarationTypeMock.toMetadataProperties()).thenReturn(Map(declarationTypeTuple))
+    when(consignmentReferencesMock.toMetadataProperties()).thenReturn(Map(consignmentReferencesTuple))
+    when(partiesMock.toMetadataProperties()).thenReturn(Map(partiesTuple))
+    when(locationsMock.toMetadataProperties()).thenReturn(Map(locationsTuple))
+    when(transportInformationMock.toMetadataProperties()).thenReturn(Map(transportInformationTuple))
+    when(itemsMock.toMetadataProperties()).thenReturn(Map(itemsTuple))
   }
+
+
 
 }
 

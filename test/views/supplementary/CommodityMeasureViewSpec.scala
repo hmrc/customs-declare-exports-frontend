@@ -178,7 +178,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
   "Commodity Measure View when filled" should {
 
-    "display supplementary units" in {
+    "display data in supplementary units input" in {
 
       val form = CommodityMeasure.form().fill(CommodityMeasure(Some("123"), "", ""))
       val view = createView(form)
@@ -188,7 +188,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       getElementById(view, "grossMass").attr("value") must be("")
     }
 
-    "display net mass" in {
+    "display data in net mass input" in {
 
       val form = CommodityMeasure.form().fill(CommodityMeasure(Some(""), "123", ""))
       val view = createView(form)
@@ -198,7 +198,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       getElementById(view, "grossMass").attr("value") must be("")
     }
 
-    "display gross mass" in {
+    "display data in gross mass input" in {
 
       val form = CommodityMeasure.form().fill(CommodityMeasure(Some(""), "", "123"))
       val view = createView(form)

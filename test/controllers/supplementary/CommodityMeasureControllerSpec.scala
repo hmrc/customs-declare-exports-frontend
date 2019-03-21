@@ -20,6 +20,7 @@ import base.CustomExportsBaseSpec
 import forms.supplementary.CommodityMeasure.commodityFormId
 import forms.supplementary.{CommodityMeasure, PackageInformation}
 import generators.Generators
+import helpers.views.supplementary.CommodityMeasureMessages
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.verify
@@ -29,8 +30,7 @@ import org.scalatest.prop.PropertyChecks
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
-class CommodityMeasureControllerSpec
-    extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
+class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with CommodityMeasureMessages with Generators with PropertyChecks with OptionValues {
 
   val uri = uriWithContextPath("/declaration/supplementary/commodity-measure")
   val form = CommodityMeasure.form()
@@ -61,11 +61,11 @@ class CommodityMeasureControllerSpec
           val result = route(app, getRequest(uri)).value
           val stringResult = contentAsString(result)
           status(result) must be(OK)
-          stringResult must include(messages("supplementary.commodityMeasure.title"))
-          stringResult must include(messages("supplementary.commodityMeasure.supplementaryUnits"))
-          stringResult must include(messages("supplementary.commodityMeasure.supplementaryUnits.hint"))
-          stringResult must include(messages("supplementary.commodityMeasure.netMass"))
-          stringResult must include(messages("supplementary.commodityMeasure.grossMass"))
+          stringResult must include(messages(title))
+          stringResult must include(messages(supplementaryUnits))
+          stringResult must include(messages(supplementaryUnitsHint))
+          stringResult must include(messages(netMass))
+          stringResult must include(messages(grossMass))
         }
       }
 
@@ -108,9 +108,9 @@ class CommodityMeasureControllerSpec
 
           status(result) must be(BAD_REQUEST)
           val content = contentAsString(result)
-          content must include(messages("supplementary.commodityMeasure.netMass.empty"))
-          content must include(messages("supplementary.commodityMeasure.grossMass.empty"))
-          content must include(messages("supplementary.commodityMeasure.supplementaryUnits.error"))
+          content must include(messages(netMassEmpty))
+          content must include(messages(grossMassEmpty))
+          content must include(messages(supplementaryUnitsError))
 
         }
       }

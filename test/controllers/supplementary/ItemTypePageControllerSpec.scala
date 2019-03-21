@@ -16,18 +16,18 @@
 
 package controllers.supplementary
 
-import base.{CustomExportsBaseSpec, TestHelper}
-import controllers.util.{FormAction, SaveAndContinue}
+import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
+import controllers.util.{Add, FormAction, SaveAndContinue}
 import forms.supplementary.ItemType
 import forms.supplementary.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
 import forms.supplementary.ItemTypeSpec._
+import helpers.views.supplementary.{CommonMessages, ItemTypeMessages}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
-import org.scalatest.BeforeAndAfter
 import play.api.test.Helpers._
 
-class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages {
   import ItemTypePageControllerSpec._
 
   private val uri = uriWithContextPath("/declaration/supplementary/item-type")
@@ -37,147 +37,430 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
     withCaching[ItemType](None, ItemType.id)
   }
 
-  "Item Type Page Controller on display page" should {
+  after {
+    reset(mockCustomsCacheService)
+  }
 
-    "display the whole content" in {
+  "Item Type Page Controller on GET" should {
+
+    "return 200 status code" in {
       val result = route(app, getRequest(uri)).get
-      val resultAsString = contentAsString(result)
 
-      resultAsString must include(messages("supplementary.itemType.title"))
-      resultAsString must include(messages("supplementary.itemType.combinedNomenclatureCode.header"))
-      resultAsString must include(messages("supplementary.itemType.combinedNomenclatureCode.header.hint"))
-      resultAsString must include(messages("supplementary.itemType.taricAdditionalCodes.header"))
-      resultAsString must include(messages("supplementary.itemType.taricAdditionalCodes.header.hint"))
-      resultAsString must include(messages("supplementary.itemType.nationalAdditionalCode.header"))
-      resultAsString must include(messages("supplementary.itemType.nationalAdditionalCode.header.hint"))
-      resultAsString must include(messages("supplementary.itemType.description.header"))
-      resultAsString must include(messages("supplementary.itemType.description.header.hint"))
-      resultAsString must include(messages("supplementary.itemType.cusCode.header"))
-      resultAsString must include(messages("supplementary.itemType.cusCode.header.hint"))
-      resultAsString must include(messages("supplementary.itemType.statisticalValue.header"))
-      resultAsString must include(messages("supplementary.itemType.statisticalValue.header.hint"))
-      resultAsString must include(messages("supplementary.itemType.description.header"))
-      resultAsString must include(messages("supplementary.itemType.description.header.hint"))
+      status(result) must be(OK)
     }
 
-    "display \"Back\" button that links to \"procedure codes\" page" in {
-      val result = route(app, getRequest(uri)).get
+    "display the table" when {
 
-      contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("/declaration/supplementary/procedure-codes")
-    }
+      "user added one TARIC" in {
 
-    "display \"Save and continue\" button on page" in {
+        withCaching[ItemType](Some(ItemType("100", Seq("1234"), Seq(), "Description", Some(""), "100")), ItemType.id)
 
-      val result = route(app, getRequest(uri)).get
-      val resultAsString = contentAsString(result)
+        val result = route(app, getRequest(uri)).get
+        val page = contentAsString(result)
 
-      resultAsString must include(messages("site.save_and_continue"))
-      resultAsString must include("button id=\"submit\" class=\"button\"")
+        getElementByCss(page, "table>tbody>tr>th:nth-child(1)").text() must be("1234")
+        getElementByCss(page, "table>tbody>tr>th:nth-child(2)> button").text() must be(messages(removeCaption))
+      }
+
+      "user added one NAC" in {
+
+        withCaching[ItemType](Some(ItemType("100", Seq(), Seq("1234"), "Description", Some(""), "100")), ItemType.id)
+
+        val result = route(app, getRequest(uri)).get
+        val page = contentAsString(result)
+
+        getElementByCss(page, "table>tbody>tr>th:nth-child(1)").text() must be("1234")
+        getElementByCss(page, "table>tbody>tr>th:nth-child(2)> button").text() must be(messages(removeCaption))
+      }
     }
   }
 
-  "Item Type Page Controller on submit item page" should {
+  "Item Type Page Controller on POST" should {
 
     "display the form page with error" when {
 
       "Combined Nomenclature Code is empty" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)()
-        val expectedErrorMessage = messages("supplementary.itemType.combinedNomenclatureCode.error.empty")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(statisticalValue = "100", descriptionOfGoods = "Description")
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, cncErrorEmpty, "#combinedNomenclatureCode")
+
+        getElementByCss(page, "#error-message-combinedNomenclatureCode-input").text() must be(messages(cncErrorEmpty))
       }
 
       "Combined Nomenclature Code is longer than 8 characters" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(combinedNomenclatureCode = "123456789")
-        val expectedErrorMessage = messages("supplementary.itemType.combinedNomenclatureCode.error.length")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "123456789",
+          statisticalValue = "100",
+          descriptionOfGoods = "Description"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, cncErrorLength, "#combinedNomenclatureCode")
+
+        getElementByCss(page, "#error-message-combinedNomenclatureCode-input").text() must be(messages(cncErrorLength))
       }
 
       "Combined Nomenclature Code contains special characters" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(combinedNomenclatureCode = "123$%^")
-        val expectedErrorMessage = messages("supplementary.itemType.combinedNomenclatureCode.error.specialCharacters")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "123$%^",
+          statisticalValue = "100",
+          descriptionOfGoods = "Description"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, cncErrorSpecialCharacters, "#combinedNomenclatureCode")
+
+        getElementByCss(page, "#error-message-combinedNomenclatureCode-input").text() must be(messages(cncErrorSpecialCharacters))
       }
 
       "TARIC additional code is not 4 characters long" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(taricAdditionalCodes = Seq("123"))
-        val expectedErrorMessage = messages("supplementary.itemType.taricAdditionalCodes.error.length")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "12345",
+          taricAdditionalCodes = Seq("123"),
+          statisticalValue = "100",
+          descriptionOfGoods = "Description"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, taricErrorLength, "#taricAdditionalCode_")
+
+        getElementByCss(page, "#error-message-taricAdditionalCode_-input").text() must be(messages(taricErrorLength))
       }
 
       "TARIC additional code contains special characters" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(taricAdditionalCodes = Seq("123%"))
-        val expectedErrorMessage = messages("supplementary.itemType.taricAdditionalCodes.error.specialCharacters")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "12345",
+          taricAdditionalCodes = Seq("1$%^"),
+          statisticalValue = "100",
+          descriptionOfGoods = "Description"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, taricErrorSpecialCharacters, "#taricAdditionalCode_")
+
+        getElementByCss(page, "#error-message-taricAdditionalCode_-input").text() must be(messages(taricErrorSpecialCharacters))
       }
 
       "National additional code is longer than 4 characters" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(nationalAdditionalCodes = Seq("12345"))
-        val expectedErrorMessage = messages("supplementary.itemType.nationalAdditionalCode.error.length")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "12345",
+          taricAdditionalCodes = Seq("1234"),
+          nationalAdditionalCodes = Seq("12345"),
+          statisticalValue = "100",
+          descriptionOfGoods = "Description"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, nacErrorLength, "#nationalAdditionalCode_")
+
+        getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorLength))
       }
 
       "National additional code contains special characters" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(nationalAdditionalCodes = Seq("12#%"))
-        val expectedErrorMessage = messages("supplementary.itemType.nationalAdditionalCode.error.specialCharacters")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "12345",
+          taricAdditionalCodes = Seq("1234"),
+          nationalAdditionalCodes = Seq("1$%^"),
+          statisticalValue = "100",
+          descriptionOfGoods = "Description"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, nacErrorSpecialCharacters, "#nationalAdditionalCode_")
+
+        getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorSpecialCharacters))
       }
 
       "Description of goods is empty" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)()
-        val expectedErrorMessage = messages("supplementary.itemType.description.error.empty")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "12345",
+          taricAdditionalCodes = Seq("1234"),
+          nationalAdditionalCodes = Seq("1234"),
+          statisticalValue = "100"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, descriptionErrorEmpty, "#descriptionOfGoods")
+
+        getElementByCss(page, "#error-message-descriptionOfGoods-input").text() must be(messages(descriptionErrorEmpty))
       }
 
       "Description of goods is longer than 280 characters" in {
-        val descriptionMaxLength = 280
+
         val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
-          descriptionOfGoods = TestHelper.createRandomString(descriptionMaxLength + 1)
+          combinedNomenclatureCode = "12345",
+          taricAdditionalCodes = Seq("1234"),
+          nationalAdditionalCodes = Seq("1234"),
+          statisticalValue = "100",
+          descriptionOfGoods = TestHelper.createRandomString(281)
         )
-        val expectedErrorMessage = messages("supplementary.itemType.description.error.length")
-        testErrorInFormScenario(form, expectedErrorMessage)
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, descriptionErrorLength, "#descriptionOfGoods")
+
+        getElementByCss(page, "#error-message-descriptionOfGoods-input").text() must be(messages(descriptionErrorLength))
       }
 
       "CUS code is not 8 characters long" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(cusCode = "1234567")
-        val expectedErrorMessage = messages("supplementary.itemType.cusCode.error.length")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "12345",
+          taricAdditionalCodes = Seq("1234"),
+          nationalAdditionalCodes = Seq("1234"),
+          cusCode = "12345",
+          statisticalValue = "100",
+          descriptionOfGoods = "Description"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, cusCodeErrorLength, "#cusCode")
+
+        getElementByCss(page, "#error-message-cusCode-input").text() must be(messages(cusCodeErrorLength))
       }
 
       "CUS code contains special characters" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(cusCode = "1234@#$%")
-        val expectedErrorMessage = messages("supplementary.itemType.cusCode.error.specialCharacters")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "12345",
+          taricAdditionalCodes = Seq("1234"),
+          nationalAdditionalCodes = Seq("1234"),
+          cusCode = "1234@#$%",
+          statisticalValue = "100",
+          descriptionOfGoods = "Description"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, cusCodeErrorSpecialCharacters, "#cusCode")
+
+        getElementByCss(page, "#error-message-cusCode-input").text() must be(messages(cusCodeErrorSpecialCharacters))
       }
 
       "Statistical value is empty" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)()
-        val expectedErrorMessage = messages("supplementary.itemType.statisticalValue.error.empty")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "12345",
+          descriptionOfGoods = "Description"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, statisticalErrorEmpty, "#statisticalValue")
+
+        getElementByCss(page, "#error-message-statisticalValue-input").text() must be(messages(statisticalErrorEmpty))
       }
 
       "Statistical value contains more than 15 digits" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(statisticalValue = "12345678901234.56")
-        val expectedErrorMessage = messages("supplementary.itemType.statisticalValue.error.length")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "12345",
+          statisticalValue = "12345678901234.56",
+          descriptionOfGoods = "Description"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, statisticalErrorLength, "#statisticalValue")
+
+        getElementByCss(page, "#error-message-statisticalValue-input").text() must be(messages(statisticalErrorLength))
       }
 
       "Statistical value contains non-digit characters" in {
-        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(statisticalValue = "123456Q.78")
-        val expectedErrorMessage = messages("supplementary.itemType.statisticalValue.error.wrongFormat")
-        testErrorInFormScenario(form, expectedErrorMessage)
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "12345",
+          statisticalValue = "123456Q.78",
+          descriptionOfGoods = "Description"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, statisticalErrorWrongFormat, "#statisticalValue")
+
+        getElementByCss(page, "#error-message-statisticalValue-input").text() must be(messages(statisticalErrorWrongFormat))
       }
 
-      def testErrorInFormScenario(form: Map[String, String], expectedErrorMessage: String): Unit = {
+      "user press \"Save and continue\" without entering anything" in {
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)()
         val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
-        contentAsString(result) must include(expectedErrorMessage)
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, cncErrorEmpty, "#combinedNomenclatureCode")
+        checkErrorLink(page, 2, descriptionErrorEmpty, "#descriptionOfGoods")
+        checkErrorLink(page, 3, statisticalErrorEmpty, "#statisticalValue")
+
+        getElementByCss(page, "#error-message-combinedNomenclatureCode-input").text() must be(messages(cncErrorEmpty))
+        getElementByCss(page, "#error-message-descriptionOfGoods-input").text() must be(messages(descriptionErrorEmpty))
+        getElementByCss(page, "#error-message-statisticalValue-input").text() must be(messages(statisticalErrorEmpty))
+      }
+
+      "user put incorrect/empty values into all fields" in {
+
+        val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
+          combinedNomenclatureCode = "123456789",
+          taricAdditionalCodes = Seq("12345"),
+          nationalAdditionalCodes = Seq("12345"),
+          cusCode = "%^&%6789"
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, cncErrorLength, "#combinedNomenclatureCode")
+        checkErrorLink(page, 2, taricErrorLength, "#taricAdditionalCode_")
+        checkErrorLink(page, 3, nacErrorLength, "#nationalAdditionalCode_")
+        checkErrorLink(page, 4, descriptionErrorEmpty, "#descriptionOfGoods")
+        checkErrorLink(page, 5, cusCodeErrorSpecialCharacters, "#cusCode")
+        checkErrorLink(page, 6, statisticalErrorEmpty, "#statisticalValue")
+
+        getElementByCss(page, "#error-message-combinedNomenclatureCode-input").text() must be(messages(cncErrorLength))
+        getElementByCss(page, "#error-message-taricAdditionalCode_-input").text() must be(messages(taricErrorLength))
+        getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorLength))
+        getElementByCss(page, "#error-message-descriptionOfGoods-input").text() must be(messages(descriptionErrorEmpty))
+        getElementByCss(page, "#error-message-cusCode-input").text() must be(messages(cusCodeErrorSpecialCharacters))
+        getElementByCss(page, "#error-message-statisticalValue-input").text() must be(messages(statisticalErrorEmpty))
+      }
+
+      "when user tries to add duplicated TARIC" in {
+        withCaching[ItemType](Some(ItemType("100", fourDigitsSequence(98), Seq(), "Description", Some(""), "100")), ItemType.id)
+
+        val form = buildItemTypeUrlEncodedInput(Add)(
+          combinedNomenclatureCode = "100",
+          taricAdditionalCodes = Seq("9991"))
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, taricErrorDuplicate, "#taricAdditionalCode_")
+
+        getElementByCss(page, "#error-message-taricAdditionalCode_-input").text() must be(messages(taricErrorDuplicate))
+      }
+
+      "when user tries to add more then 99 TARIC" in {
+
+        withCaching[ItemType](Some(ItemType("100", fourDigitsSequence(99), Seq(), "Description", Some(""), "100")), ItemType.id)
+
+        val form = buildItemTypeUrlEncodedInput(Add)(
+          combinedNomenclatureCode = "100",
+          taricAdditionalCodes = Seq("1000"))
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, taricErrorMaxAmount, "#taricAdditionalCode_")
+
+        getElementByCss(page, "#error-message-taricAdditionalCode_-input").text() must be(messages(taricErrorMaxAmount))
+      }
+
+      "when user tries to add duplicated NAC" in {
+
+        withCaching[ItemType](Some(ItemType("100", Seq(), fourDigitsSequence(98), "Description", Some(""), "100")), ItemType.id)
+
+        val form = buildItemTypeUrlEncodedInput(Add)(
+          combinedNomenclatureCode = "100",
+          nationalAdditionalCodes = Seq("9991"))
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, nacErrorDuplicate, "#nationalAdditionalCode_")
+
+        getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorDuplicate))
+      }
+
+      "when user tries to add more then 99 NAC" in {
+
+        withCaching[ItemType](Some(ItemType("100", Seq(), fourDigitsSequence(99), "Description", Some(""), "100")), ItemType.id)
+
+        val form = buildItemTypeUrlEncodedInput(Add)(
+          combinedNomenclatureCode = "100",
+          nationalAdditionalCodes = Seq("1000"))
+        val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
+        val page = contentAsString(result)
+
+        status(result) must be(BAD_REQUEST)
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, nacErrorMaxAmount, "#nationalAdditionalCode_")
+
+        getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorMaxAmount))
       }
     }
 
     "save data to the cache" in {
-      reset(mockCustomsCacheService)
-      withCaching[ItemType](None, ItemType.id)
-
       route(app, postRequestFormUrlEncoded(uri, correctItemTypeFormUrlEncoded.toSeq: _*)).get.futureValue
 
       verify(mockCustomsCacheService)
@@ -212,6 +495,8 @@ class ItemTypePageControllerSpec extends CustomExportsBaseSpec with BeforeAndAft
 
 object ItemTypePageControllerSpec {
 
+  def fourDigitsSequence(number: Int): Seq[String] = Seq.tabulate(number)(n => (9999 - n).toString)
+
   val correctItemTypeFormUrlEncoded: Map[String, String] =
     buildItemTypeUrlEncodedInput(SaveAndContinue)(
       combinedNomenclatureCode = correctItemType.combinedNomenclatureCode,
@@ -239,7 +524,7 @@ object ItemTypePageControllerSpec {
     descriptionOfGoods: String = "",
     cusCode: String = "",
     statisticalValue: String = ""
-  ) =
+  ): Map[String, String] =
     Map(formAction.toString -> "") ++
       Map(
         "combinedNomenclatureCode" -> combinedNomenclatureCode,
@@ -251,5 +536,4 @@ object ItemTypePageControllerSpec {
     } ++ nationalAdditionalCodes.zipWithIndex.map {
       case (code, idx) => nationalAdditionalCodesKey + "[" + idx + "]" -> code
     }
-
 }
