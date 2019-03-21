@@ -125,8 +125,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.locations.goodsExaminationLocationType"))
         resultAsString must include(messages("supplementary.summary.locations.qualifierCode"))
         resultAsString must include(messages("supplementary.summary.locations.additionalQualifier"))
-        resultAsString must include(messages("supplementary.summary.locations.procedureCode"))
-        resultAsString must include(messages("supplementary.summary.locations.additionalProcedureCodes"))
         resultAsString must include(messages("supplementary.summary.locations.warehouseId"))
         resultAsString must include(messages("supplementary.summary.locations.supervisingCustomsOffice"))
         resultAsString must include(messages("supplementary.summary.locations.officeOfExit"))
@@ -156,40 +154,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.items.exchangeRate"))
         resultAsString must include(messages("supplementary.summary.items.transactionType"))
         resultAsString must include(messages("supplementary.summary.items.itemNumber"))
-        resultAsString must include(messages("supplementary.summary.items.commodityCode"))
-        resultAsString must include(messages("supplementary.summary.items.taricAdditionalCodes"))
-        resultAsString must include(messages("supplementary.summary.items.nationalAdditionalCode"))
-        resultAsString must include(messages("supplementary.summary.items.tradeDescription"))
-        resultAsString must include(messages("supplementary.summary.items.cusCode"))
-        resultAsString must include(messages("supplementary.summary.items.statisticalValue"))
 
-      }
-
-      "display content for Documents module" in new Test {
-        val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
-
-        resultAsString must include(messages("supplementary.summary.additionalInformation.header"))
-        resultAsString must include(messages("supplementary.summary.additionalDocumentation.header"))
-        resultAsString must not include messages("supplementary.summary.additionalDocumentation.documentTypeCode")
-        resultAsString must not include messages("supplementary.summary.additionalDocumentation.documentId")
-        resultAsString must not include messages("supplementary.summary.additionalDocumentation.documentPart")
-        resultAsString must not include messages("supplementary.summary.additionalDocumentation.documentStatus")
-        resultAsString must not include messages("supplementary.summary.additionalDocumentation.documentStatusReason")
-      }
-
-      "display content for Documents module with cache available" in new Test {
-        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
-          .thenReturn(Future.successful(Some(SupplementaryDeclarationDataSpec.cacheMapAllRecords)))
-
-        val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
-
-        resultAsString must include(messages("supplementary.summary.additionalInformation.header"))
-        resultAsString must include(messages("supplementary.summary.additionalDocumentation.header"))
-        resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentTypeCode"))
-        resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentId"))
-        resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentPart"))
-        resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentStatus"))
-        resultAsString must include(messages("supplementary.summary.additionalDocumentation.documentStatusReason"))
       }
 
       "display containers content with cache available" in new Test {

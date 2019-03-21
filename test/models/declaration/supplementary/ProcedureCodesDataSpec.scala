@@ -20,25 +20,6 @@ import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
 class ProcedureCodesDataSpec extends WordSpec with MustMatchers {
-  import ProcedureCodesDataSpec._
-
-  "Method toMetadataProperties" should {
-    "return proper Metadata Properties" in {
-      val procedureCodes = correctProcedureCodes
-      val expectedProcedureCodesProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].currentCode" -> procedureCode_1,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].previousCode" -> procedureCode_2,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[1].currentCode" -> procedureCodes
-          .additionalProcedureCodes(0),
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[2].currentCode" -> procedureCodes
-          .additionalProcedureCodes(1),
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[3].currentCode" -> procedureCodes
-          .additionalProcedureCodes(2)
-      )
-
-      procedureCodes.toMetadataProperties() must equal(expectedProcedureCodesProperties)
-    }
-  }
 
   "Procedure code limit" should {
     "contain correct value" in {

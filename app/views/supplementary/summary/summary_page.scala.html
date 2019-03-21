@@ -65,10 +65,6 @@
 
     @items_section(suppDecData.items)
 
-    @additional_information_section(suppDecData.additionalInformationData)
-
-    @additional_documentation_section(suppDecData.documentsProducedData)
-
     @helpers.form(action = SummaryPageController.submitSupplementaryDeclaration()) {
         @components.submit_button(messages("site.acceptAndSubmitDeclaration"))
     }

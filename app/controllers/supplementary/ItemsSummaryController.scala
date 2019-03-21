@@ -17,13 +17,14 @@
 package controllers.supplementary
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.{itemsId, supplementaryCacheId}
+import controllers.util.CacheIdGenerator.supplementaryCacheId
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.DeclarationFormats._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
+import services.ExportsItemsCacheIds.itemsId
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem
 import views.html.supplementary.items_summary

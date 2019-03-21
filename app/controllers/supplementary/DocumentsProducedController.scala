@@ -152,7 +152,7 @@ class DocumentsProducedController @Inject()(
     docToRemove: DocumentsProduced,
     cachedData: DocumentsProducedData
   )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
-    if (cachedData.containsItem(docToRemove)) {
+    if (cachedData.documents.contains(docToRemove)) {
       val updatedCache = cachedData.copy(documents = cachedData.documents.filterNot(_ == docToRemove))
 
       customsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, updatedCache).map { _ =>

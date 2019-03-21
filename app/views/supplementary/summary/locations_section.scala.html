@@ -55,14 +55,6 @@
         )
     ))
 
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.procedureCode"),
-        value = locations.flatMap(_.procedureCodesData).flatMap(_.procedureCode)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.additionalProcedureCodes"),
-        value = locations.flatMap(_.procedureCodesData).map(_.additionalProcedureCodes)
-    ))
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.warehouseId"),

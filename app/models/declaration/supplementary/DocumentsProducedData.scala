@@ -16,31 +16,10 @@
 
 package models.declaration.supplementary
 
-import forms.MetadataPropertiesConvertable
 import forms.supplementary.DocumentsProduced
 import play.api.libs.json.Json
 
-case class DocumentsProducedData(documents: Seq[DocumentsProduced]) extends MetadataPropertiesConvertable {
-  override def toMetadataProperties(): Map[String, String] =
-    documents.zipWithIndex.map { document =>
-      Map(
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[" + document._2 + "].categoryCode" ->
-          document._1.documentTypeCode.flatMap(_.headOption).fold("")(_.toString),
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[" + document._2 + "].typeCode" ->
-          document._1.documentTypeCode.map(_.drop(1).toString).getOrElse(""),
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[" + document._2 + "].id" ->
-          (document._1.documentIdentifier.getOrElse("") + document._1.documentPart.getOrElse("")),
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[" + document._2 + "].lpcoExemptionCode" ->
-          document._1.documentStatus.getOrElse(""),
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[" + document._2 + "].name" ->
-          document._1.documentStatusReason.getOrElse(""),
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[" + document._2 + "].writeOff.quantity" ->
-          document._1.documentQuantity.getOrElse("")
-      )
-    }.fold(Map.empty)(_ ++ _)
-
-  def containsItem(document: DocumentsProduced): Boolean = documents.contains(document)
-}
+case class DocumentsProducedData(documents: Seq[DocumentsProduced])
 
 object DocumentsProducedData {
   implicit val format = Json.format[DocumentsProducedData]

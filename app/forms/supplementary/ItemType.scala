@@ -16,8 +16,6 @@
 
 package forms.supplementary
 
-import forms.MetadataPropertiesConvertable
-import forms.supplementary.ItemType._
 import play.api.data.Forms.{default, optional, seq, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.functional.syntax._
@@ -31,48 +29,7 @@ case class ItemType(
   descriptionOfGoods: String,
   cusCode: Option[String],
   statisticalValue: String
-) extends MetadataPropertiesConvertable {
-
-  def updateWith(other: ItemType): ItemType = ItemType(
-    combinedNomenclatureCode = other.combinedNomenclatureCode,
-    taricAdditionalCodes = this.taricAdditionalCodes ++ other.taricAdditionalCodes,
-    nationalAdditionalCodes = this.nationalAdditionalCodes ++ other.nationalAdditionalCodes,
-    descriptionOfGoods = other.descriptionOfGoods,
-    cusCode = other.cusCode,
-    statisticalValue = other.statisticalValue
-  )
-
-  override def toMetadataProperties(): Map[String, String] = {
-    val codeFieldsProperties = buildListOfProvidedCodesWithIdentifiers().zipWithIndex
-      .foldLeft(Map.empty[String, String]) { (properties, newElem) =>
-        newElem match {
-          case ((code: String, idTypeCode: String), index: Int) =>
-            properties ++
-              Map(
-                "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[" + index + "].id" ->
-                  code,
-                "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.classifications[" + index + "].identificationTypeCode" ->
-                  idTypeCode
-              )
-        }
-      }
-
-    codeFieldsProperties ++ Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].commodity.description" -> descriptionOfGoods,
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].statisticalValueAmount" -> statisticalValue
-    )
-  }
-
-  private def buildListOfProvidedCodesWithIdentifiers(): List[(String, String)] =
-    (Seq((Some(combinedNomenclatureCode), IdentificationTypeCodes.CombinedNomenclatureCode)) ++
-      Seq((cusCode, IdentificationTypeCodes.CUSCode)) ++
-      taricAdditionalCodes.map(code => (Some(code), IdentificationTypeCodes.TARICAdditionalCode)) ++
-      nationalAdditionalCodes.map(code => (Some(code), IdentificationTypeCodes.NationalAdditionalCode)))
-      .filter(_._1.isDefined)
-      .map(elem => (elem._1.get, elem._2))
-      .toList
-
-}
+)
 
 object ItemType {
   implicit val reads: Reads[ItemType] = (

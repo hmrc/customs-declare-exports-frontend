@@ -19,7 +19,6 @@ import models.requests.AuthenticatedRequest
 
 object CacheIdGenerator {
 
-  val itemsId = "exportItems"
   def eoriCacheId()(implicit request: AuthenticatedRequest[_]): String = request.user.eori
 
   def supplementaryCacheId()(implicit request: AuthenticatedRequest[_]): String =

@@ -25,15 +25,16 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
+import models.DeclarationFormats._
 import models.declaration.supplementary.SupplementaryDeclarationData
 import models.{CustomsDeclarationsResponse, Pending, Submission}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import services.{CustomsCacheService, NRSService}
+import services.{CustomsCacheService, ExportsItemsCacheIds, NRSService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import uk.gov.hmrc.wco.dec.MetaData
+import uk.gov.hmrc.wco.dec.{GovernmentAgencyGoodsItem, MetaData}
 import views.html.supplementary.summary.{summary_page, summary_page_no_data}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -68,9 +69,8 @@ class SummaryPageController @Inject()(
       case Some(cacheMap) =>
         exportsMetrics.startTimer(submissionMetric)
         val suppDecData = SupplementaryDeclarationData(cacheMap)
-        val metaData = MetaData.fromProperties(suppDecData.toMetadataProperties())
 
-        customsDeclarationConnector.submitExportDeclaration(metaData).flatMap {
+        customsDeclarationConnector.submitExportDeclaration(createMetaData(cacheMap, suppDecData)).flatMap {
           case CustomsDeclarationsResponse(ACCEPTED, Some(conversationId)) =>
             val ducr = suppDecData.consignmentReferences.flatMap(_.ducr)
             val lrn = suppDecData.consignmentReferences.map(_.lrn)
@@ -117,5 +117,20 @@ class SummaryPageController @Inject()(
 
   private def prepareFlashScope(lrn: String) =
     Flash(Map("LRN" -> lrn))
+
+  //TODO : refactor to handle large data collection and move the logic of metadata creation to separate service
+  private def createMetaData(cacheMap: CacheMap, suppDecData: SupplementaryDeclarationData): MetaData = {
+    val metaData = MetaData.fromProperties(suppDecData.toMetadataProperties())
+
+    val goodsShipmentWithGoodsItems = metaData.declaration.flatMap(
+      _.goodsShipment.map(
+        _.copy(
+          governmentAgencyGoodsItems =
+            cacheMap.getEntry[Seq[GovernmentAgencyGoodsItem]](ExportsItemsCacheIds.itemsId).getOrElse(Seq.empty)
+        )
+      )
+    )
+    metaData.copy(declaration = metaData.declaration.map(_.copy(goodsShipment = goodsShipmentWithGoodsItems)))
+  }
 
 }

@@ -17,12 +17,13 @@
 package services
 import com.google.inject.Inject
 import config.AppConfig
-import controllers.util.CacheIdGenerator.itemsId
 import forms.supplementary.ItemType.IdentificationTypeCodes._
-import forms.supplementary.{CommodityMeasure, ItemType, PackageInformation}
+import forms.supplementary.{CommodityMeasure, DocumentsProduced, ItemType, PackageInformation}
 import javax.inject.Singleton
 import models.DeclarationFormats._
 import models.declaration.supplementary.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import play.api.http.Status.NO_CONTENT
+import services.ExportsItemsCacheIds.itemsId
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec._
@@ -35,19 +36,19 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
   def generatePackages(cachedData: CacheMap): Option[Seq[Packaging]] =
     cachedData
       .getEntry[Seq[PackageInformation]](PackageInformation.formId)
-      .map(
-        _.zipWithIndex.map{
-          case (packageInfo, index) =>
-            Packaging(
-              sequenceNumeric = Some(index),
-              typeCode = packageInfo.typesOfPackages,
-              quantity = packageInfo.numberOfPackages,
-              marksNumbersId = packageInfo.shippingMarks
-          )
-        }
-      )
+      .map(_.zipWithIndex.map {
+        case (packageInfo, index) =>
+          mapPackaging(packageInfo, index)
+      })
 
-  def procedureCodes(cachedData: CacheMap): Option[Seq[GovernmentProcedure]]  =
+  private def mapPackaging(packageInfo: PackageInformation, index: Int) = Packaging(
+    sequenceNumeric = Some(index),
+    typeCode = packageInfo.typesOfPackages,
+    quantity = packageInfo.numberOfPackages,
+    marksNumbersId = packageInfo.shippingMarks
+  )
+
+  def procedureCodes(cachedData: CacheMap): Option[Seq[GovernmentProcedure]] =
     cachedData
       .getEntry[ProcedureCodesData](ProcedureCodesData.formId)
       .map(
@@ -59,20 +60,20 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
   def commodityGoodsMeasure(cachedData: CacheMap): Option[Commodity] =
     cachedData
       .getEntry[CommodityMeasure](CommodityMeasure.commodityFormId)
-      .map(
-        form =>
-          Commodity(
-            goodsMeasure = Some(
-              GoodsMeasure(
-                Some(Measure(value = Some(BigDecimal(form.grossMass)))),
-                Some(Measure(value = Some(BigDecimal(form.netMass)))),
-                Some(Measure(value = form.supplementaryUnits.map((BigDecimal(_)))))
-              )
-            )
+      .map(mapGoodsMeasure(_))
+
+  private def mapGoodsMeasure(data: CommodityMeasure) =
+    Commodity(
+      goodsMeasure = Some(
+        GoodsMeasure(
+          Some(Measure(value = Some(BigDecimal(data.grossMass)))),
+          Some(Measure(value = Some(BigDecimal(data.netMass)))),
+          Some(Measure(value = data.supplementaryUnits.map((BigDecimal(_)))))
         )
       )
+    )
 
-  def additionalInfo(cachedData: CacheMap): Option[Seq[AdditionalInformation]]  =
+  def additionalInfo(cachedData: CacheMap): Option[Seq[AdditionalInformation]] =
     cachedData
       .getEntry[AdditionalInformationData](AdditionalInformationData.formId)
       .map(_.items.map(info => AdditionalInformation(Some(info.code), Some(info.description))))
@@ -80,21 +81,19 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
   def documents(cachedData: CacheMap) =
     cachedData
       .getEntry[DocumentsProducedData](DocumentsProducedData.formId)
-      .map(
-        _.documents.map(
-          doc =>
-            GovernmentAgencyGoodsItemAdditionalDocument(
-              doc.documentTypeCode.map(_.substring(0, 1)),
-              typeCode = doc.documentTypeCode.map(_.substring(1)),
-              id = doc.documentIdentifier.map(_ + doc.documentPart.getOrElse("")),
-              lpcoExemptionCode = doc.documentStatus,
-              name = doc.documentStatusReason,
-              writeOff = Some(WriteOff(Some(Measure(value = doc.documentQuantity.map(BigDecimal(_))))))
-          )
-        )
-      )
+      .map(_.documents.map(createGoodsItemAdditionalDocument(_)))
 
-  def goodsItemFromItemTypes(cachedData: CacheMap): Option[GovernmentAgencyGoodsItem]  =
+  private def createGoodsItemAdditionalDocument(doc: DocumentsProduced) =
+    GovernmentAgencyGoodsItemAdditionalDocument(
+      doc.documentTypeCode.map(_.substring(0, 1)),
+      typeCode = doc.documentTypeCode.map(_.substring(1)),
+      id = doc.documentIdentifier.map(_ + doc.documentPart.getOrElse("")),
+      lpcoExemptionCode = doc.documentStatus,
+      name = doc.documentStatusReason,
+      writeOff = Some(WriteOff(Some(Measure(value = doc.documentQuantity.map(BigDecimal(_))))))
+    )
+
+  def goodsItemFromItemTypes(cachedData: CacheMap): Option[GovernmentAgencyGoodsItem] =
     cachedData
       .getEntry[ItemType](ItemType.id)
       .map(
@@ -159,7 +158,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
                   itemsId,
                   items.getOrElse(Seq.empty) :+ createGoodsItem(items.fold(0)(_.size), cachedData)
                 )
-                .flatMap(_ => cacheService.remove(goodsItemCacheId).map(_.status == 204))
+                .flatMap(_ => cacheService.remove(goodsItemCacheId).map(_.status == NO_CONTENT))
           )
       case None => Future.successful(false)
     }
@@ -167,6 +166,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
 }
 
 object ExportsItemsCacheIds {
+  val itemsId = "exportItems"
   val itemsCachePages = Map(
     PackageInformation.formId -> "package",
     ProcedureCodesData.formId -> "procedure codes",

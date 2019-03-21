@@ -21,28 +21,6 @@ import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
 class DocumentsProducedSpec extends WordSpec with MustMatchers {
-  import DocumentsProducedSpec._
-
-  "Method toMetadataProperties" should {
-    "return proper Metadata Properties" in {
-      val documentsProducedData = correctDocumentsProducedData
-      val expectedID = documentsProducedData.documents.head.documentIdentifier.get + documentsProducedData.documents.head.documentPart.get
-      val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].categoryCode" -> categoryCode,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].typeCode" -> typeCode,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].id" -> expectedID,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].lpcoExemptionCode"
-          -> documentsProducedData.documents.head.documentStatus.get,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].name"
-          -> documentsProducedData.documents.head.documentStatusReason.get,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalDocuments[0].writeOff.quantity"
-          -> documentsProducedData.documents.head.documentQuantity.get
-      )
-
-      documentsProducedData.toMetadataProperties() must equal(expectedMetadataProperties)
-    }
-  }
-
   "Documents Produced object" should {
     "contains correct limit value" in {
       DocumentsProducedData.maxNumberOfItems must be(99)
