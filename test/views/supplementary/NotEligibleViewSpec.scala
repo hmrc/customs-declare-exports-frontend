@@ -30,11 +30,17 @@ class NotEligibleViewSpec extends ViewSpec with NotEligibleMessages with CommonM
 
       assertMessage(title, "You need to use a different")
       assertMessage(titleLineTwo, "service")
-      assertMessage(descriptionPreUrl, "This service is only for exports being dispatched outside the EU. You will need to use")
+      assertMessage(
+        descriptionPreUrl,
+        "This service is only for exports being dispatched outside the EU. You will need to use"
+      )
       assertMessage(descriptionUrl, "CHIEF")
       assertMessage(descriptionPostUrl, "to make your declaration.")
       assertMessage(referenceTitle, "Help and support")
-      assertMessage(referenceText, "If you are having problems with making a declaration, phone: 0300 333 3333. Open 8am to 6pm, Monday to Friday (closed bank holidays).")
+      assertMessage(
+        referenceText,
+        "If you are having problems with making a declaration, phone: 0300 333 3333. Open 8am to 6pm, Monday to Friday (closed bank holidays)."
+      )
     }
   }
 
@@ -56,7 +62,9 @@ class NotEligibleViewSpec extends ViewSpec with NotEligibleMessages with CommonM
 
       val view = createView()
 
-      getElementsByCss(view, "p:nth-child(3)").text() must be(messages(descriptionPreUrl) + " " + messages(descriptionUrl) + " " + messages(descriptionPostUrl))
+      getElementsByCss(view, "p:nth-child(3)").text() must be(
+        messages(descriptionPreUrl) + " " + messages(descriptionUrl) + " " + messages(descriptionPostUrl)
+      )
     }
 
     "display CHIEF link" in {

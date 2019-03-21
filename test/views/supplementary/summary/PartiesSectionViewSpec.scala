@@ -18,7 +18,10 @@ package views.supplementary.summary
 
 import forms.supplementary.DeclarantDetailsSpec.{correctDeclarantDetailsAddressOnly, correctDeclarantDetailsEORIOnly}
 import forms.supplementary.ExporterDetailsSpec.{correctExporterDetailsAddressOnly, correctExporterDetailsEORIOnly}
-import forms.supplementary.RepresentativeDetailsSpec.{correctRepresentativeDetailsAddressOnly, correctRepresentativeDetailsEORIOnly}
+import forms.supplementary.RepresentativeDetailsSpec.{
+  correctRepresentativeDetailsAddressOnly,
+  correctRepresentativeDetailsEORIOnly
+}
 import forms.supplementary.{Address, DeclarationHolder}
 import helpers.views.supplementary.summary.PartiesMessages
 import models.declaration.supplementary.DeclarationAdditionalActorsDataSpec.correctAdditionalActorsData

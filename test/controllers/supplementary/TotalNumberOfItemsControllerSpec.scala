@@ -103,8 +103,14 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       withCaching[TotalNumberOfItems](None)
 
       val correctTotalNumber: JsValue =
-        JsObject(Map("itemsQuantity" -> JsString("100"), "totalAmountInvoiced" -> JsString("456"),
-          "exchangeRate" -> JsString("789"), "totalPackage" -> JsString("123")))
+        JsObject(
+          Map(
+            "itemsQuantity" -> JsString("100"),
+            "totalAmountInvoiced" -> JsString("456"),
+            "exchangeRate" -> JsString("789"),
+            "totalPackage" -> JsString("123")
+          )
+        )
       val result = route(app, postRequest(uri, correctTotalNumber)).get
       val header = result.futureValue.header
 

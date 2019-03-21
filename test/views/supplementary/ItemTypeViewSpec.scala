@@ -42,11 +42,17 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       assertMessage(nacHeader, "6/17 Enter the National Additional Code")
       assertMessage(nacHeaderHint, "Up to 4 digits. If no additional code is required, leave blank")
       assertMessage(descriptionHeader, "6/8 Enter the trade description of the goods")
-      assertMessage(descriptionHeaderHint, "Include information on size, weight or other physical criteria where this is required by the commodity code")
+      assertMessage(
+        descriptionHeaderHint,
+        "Include information on size, weight or other physical criteria where this is required by the commodity code"
+      )
       assertMessage(cusCodeHeader, "6/13 What is the CUS Code for this item?")
       assertMessage(cusCodeHeaderHint, "Up to 8 digits")
       assertMessage(statisticalHeader, "8/6 What is the statistical value of the items?")
-      assertMessage(statisticalHeaderHint, "The approximate value of the goods at the time they leave the EU. It should be entered in GBP only.")
+      assertMessage(
+        statisticalHeaderHint,
+        "The approximate value of the goods at the time they leave the EU. It should be entered in GBP only."
+      )
     }
 
     "have proper labels for error messages" in {
@@ -134,7 +140,9 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       val view = createView()
 
       getElementByCss(view, "form>div:nth-child(7)>label>span:nth-child(1)").text() must be(messages(statisticalHeader))
-      getElementByCss(view, "form>div:nth-child(7)>label>span.form-hint").text() must be(messages(statisticalHeaderHint))
+      getElementByCss(view, "form>div:nth-child(7)>label>span.form-hint").text() must be(
+        messages(statisticalHeaderHint)
+      )
       getElementById(view, "statisticalValue").attr("value") must be("")
     }
 
@@ -143,7 +151,9 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       val view = createView()
 
       getElementByCss(view, "form>div:nth-child(8)>label>span:nth-child(1)").text() must be(messages(descriptionHeader))
-      getElementByCss(view, "form>div:nth-child(8)>label>span.form-hint").text() must be(messages(descriptionHeaderHint))
+      getElementByCss(view, "form>div:nth-child(8)>label>span.form-hint").text() must be(
+        messages(descriptionHeaderHint)
+      )
       getElementById(view, "descriptionOfGoods").text() must be("")
     }
 

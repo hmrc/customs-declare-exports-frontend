@@ -19,10 +19,13 @@ package connectors
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models._
-import models.requests.{CancellationRequest, CancellationStatus}
+import models.requests.CancellationStatus
 import play.api.Logger
+import play.api.http.{ContentTypes, HeaderNames}
+import play.api.mvc.Codec
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.wco.dec.MetaData
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,22 +35,25 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   private[connectors] def get(url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     httpClient.GET(url, Seq())
 
-  private[connectors] def postSubmission(
-    body: Submission
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
-    httpClient.POST[Submission, CustomsDeclareExportsResponse](
-      s"${appConfig.customsDeclareExports}${appConfig.saveSubmissionResponse}",
-      body,
-      Seq()
-    )
-
-  def saveSubmissionResponse(
-    body: Submission
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
-    postSubmission(body).map { response =>
-      Logger.debug(s"CUSTOMS_DECLARE_EXPORTS response is --> ${response.toString}")
-      response
-    }
+  def submitExportDeclaration(ducr: String, lrn: Option[String], metadata: MetaData)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] =
+    httpClient
+      .POSTString[HttpResponse](
+        s"${appConfig.customsDeclareExports}${appConfig.submitDeclaration}",
+        metadata.toXml,
+        Seq(
+          (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
+          (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
+          ("X-DUCR", ducr),
+          ("X-LRN", lrn.getOrElse(""))
+        )
+      )
+      .map { response =>
+        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS response is --> ${response.toString}")
+        response
+      }
 
   def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsNotification]] =
     httpClient.GET[Seq[ExportsNotification]](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}")
@@ -80,11 +86,19 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
         response
     }
 
-  def cancelDeclaration(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CancellationStatus] =
+  def submitCancellation(
+    mrn: String,
+    metadata: MetaData
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CancellationStatus] =
     httpClient
-      .POST[CancellationRequest, CancellationStatus](
+      .POSTString[CancellationStatus](
         s"${appConfig.customsDeclareExports}${appConfig.cancelDeclaration}",
-        CancellationRequest(mrn)
+        metadata.toXml,
+        Seq(
+          (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
+          (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
+          ("X-MRN", mrn)
+        )
       )
       .map { response =>
         Logger.debug(s"CUSTOMS_DECLARE_EXPORTS cancel declaration response is --> ${response.toString}")

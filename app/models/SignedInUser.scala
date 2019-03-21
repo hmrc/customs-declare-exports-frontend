@@ -21,8 +21,6 @@ import uk.gov.hmrc.auth.core.Enrolments
 
 case class SignedInUser(eori: String, enrolments: Enrolments, identityData: IdentityData)
 
-case class CustomsDeclarationsResponse(status: Int, conversationId: Option[String])
-
 case class CustomsDeclareExportsResponse(status: Int, message: String)
 
 object CustomsDeclareExportsResponse {

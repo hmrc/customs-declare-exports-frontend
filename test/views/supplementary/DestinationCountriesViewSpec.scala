@@ -96,10 +96,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display error when dispatch country is empty" in {
 
-      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
-        "",
-        "Germany"
-      )))
+      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries("", "Germany")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
@@ -109,10 +106,9 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display error when dispatch country is incorrect" in {
 
-      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
-        TestHelper.createRandomString(10),
-        "Germany"
-      )))
+      val view = createView(
+        DestinationCountries.form().fillAndValidate(DestinationCountries(TestHelper.createRandomString(10), "Germany"))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatchError), "#countryOfDispatch")
@@ -122,10 +118,9 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display error when destination country is incorrect" in {
 
-      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
-        "Germany",
-        TestHelper.createRandomString(10)
-      )))
+      val view = createView(
+        DestinationCountries.form().fillAndValidate(DestinationCountries("Germany", TestHelper.createRandomString(10)))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDestinationError), "#countryOfDestination")
@@ -135,10 +130,11 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display errors when both countries are incorrect" in {
 
-      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
-        TestHelper.createRandomString(10),
-        TestHelper.createRandomString(10)
-      )))
+      val view = createView(
+        DestinationCountries
+          .form()
+          .fillAndValidate(DestinationCountries(TestHelper.createRandomString(10), TestHelper.createRandomString(10)))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatchError), "#countryOfDispatch")
@@ -153,10 +149,9 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display errors when dispatch country is empty and destination is incorrect" in {
 
-      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
-        "",
-        TestHelper.createRandomString(10)
-      )))
+      val view = createView(
+        DestinationCountries.form().fillAndValidate(DestinationCountries("", TestHelper.createRandomString(10)))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
@@ -174,7 +169,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display data for both countries in inputs" in {
 
-      val view = createView(DestinationCountries.form().fill(DestinationCountries("Ukraine","Poland")))
+      val view = createView(DestinationCountries.form().fill(DestinationCountries("Ukraine", "Poland")))
 
       getElementById(view, "countryOfDispatch").attr("value") must be("Ukraine")
       getElementById(view, "countryOfDestination").attr("value") must be("Poland")
@@ -182,7 +177,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display data only for dispatch country input" in {
 
-      val view = createView(DestinationCountries.form().fill(DestinationCountries( "Ukraine", "")))
+      val view = createView(DestinationCountries.form().fill(DestinationCountries("Ukraine", "")))
 
       getElementById(view, "countryOfDispatch").attr("value") must be("Ukraine")
       getElementById(view, "countryOfDestination").attr("value") must be("")

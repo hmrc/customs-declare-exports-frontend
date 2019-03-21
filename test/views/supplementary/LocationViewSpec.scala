@@ -27,7 +27,8 @@ import views.supplementary.spec.ViewSpec
 class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with CommonMessages {
 
   private val form: Form[GoodsLocation] = GoodsLocation.form()
-  private def createView(form: Form[GoodsLocation] = form): Html = goods_location(appConfig, form)(fakeRequest, messages, countries)
+  private def createView(form: Form[GoodsLocation] = form): Html =
+    goods_location(appConfig, form)(fakeRequest, messages, countries)
 
   "Location View" should {
 
@@ -154,7 +155,8 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display error for incorrect Country" in {
 
-      val form = GoodsLocation.form().fillAndValidate(GoodsLocation(Some("test"), None, None, "TST", None, None, None, None))
+      val form =
+        GoodsLocation.form().fillAndValidate(GoodsLocation(Some("test"), None, None, "TST", None, None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -165,7 +167,8 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display error for incorrect Type of Location" in {
 
-      val form = GoodsLocation.form().fillAndValidate(GoodsLocation(None, Some("AB"), None, "TST", None, None, None, None))
+      val form =
+        GoodsLocation.form().fillAndValidate(GoodsLocation(None, Some("AB"), None, "TST", None, None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -176,13 +179,16 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display error for incorrect Qualifier of Identification" in {
 
-      val form = GoodsLocation.form().fillAndValidate(GoodsLocation(None, None, Some("AB"), "TST", None, None, None, None))
+      val form =
+        GoodsLocation.form().fillAndValidate(GoodsLocation(None, None, Some("AB"), "TST", None, None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, qualifierOfIdentError, "#qualifierOfIdentification")
 
-      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentError))
+      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
+        messages(qualifierOfIdentError)
+      )
     }
 
     "display error for empty Identification of Location" in {
@@ -193,7 +199,9 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, identOfLocationEmpty, "#identificationOfLocation")
 
-      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(messages(identOfLocationEmpty))
+      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(
+        messages(identOfLocationEmpty)
+      )
     }
 
     "display error for incorrect Identification of Location" in {
@@ -204,25 +212,35 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorsSummary(view)
       checkErrorLink(view, 1, identOfLocationError, "#identificationOfLocation")
 
-      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(messages(identOfLocationError))
+      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(
+        messages(identOfLocationError)
+      )
     }
 
     "display error for incorrect Additional Identifier" in {
 
-      val form = GoodsLocation.form().fillAndValidate(
-        GoodsLocation(None, None, None, "TST", Some(TestHelper.createRandomString(33)), None, None, None))
+      val form = GoodsLocation
+        .form()
+        .fillAndValidate(
+          GoodsLocation(None, None, None, "TST", Some(TestHelper.createRandomString(33)), None, None, None)
+        )
       val view = createView(form)
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, additionalIdentifierError, "#additionalIdentifier")
 
-      getElementByCss(view, "#error-message-additionalIdentifier-input").text() must be(messages(additionalIdentifierError))
+      getElementByCss(view, "#error-message-additionalIdentifier-input").text() must be(
+        messages(additionalIdentifierError)
+      )
     }
 
     "display error for incorrect Street and Number" in {
 
-      val form = GoodsLocation.form().fillAndValidate(
-        GoodsLocation(None, None, None, "TST", None, Some(TestHelper.createRandomString(71)), None, None))
+      val form = GoodsLocation
+        .form()
+        .fillAndValidate(
+          GoodsLocation(None, None, None, "TST", None, Some(TestHelper.createRandomString(71)), None, None)
+        )
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -233,8 +251,11 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display error for incorrect Postcode" in {
 
-      val form = GoodsLocation.form().fillAndValidate(
-          GoodsLocation(None, None, None, "TST", None, None, Some(TestHelper.createRandomString(10)), None))
+      val form = GoodsLocation
+        .form()
+        .fillAndValidate(
+          GoodsLocation(None, None, None, "TST", None, None, Some(TestHelper.createRandomString(10)), None)
+        )
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -245,8 +266,11 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display error for incorrect City" in {
 
-      val form = GoodsLocation.form().fillAndValidate(
-          GoodsLocation(None, None, None, "TST", None, None, None, Some(TestHelper.createRandomString(36))))
+      val form = GoodsLocation
+        .form()
+        .fillAndValidate(
+          GoodsLocation(None, None, None, "TST", None, None, None, Some(TestHelper.createRandomString(36)))
+        )
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -285,9 +309,15 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       getElementByCss(view, "span.error-message").text() must be(messages(countryError))
       getElementByCss(view, "#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
-      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentError))
-      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(messages(identOfLocationError))
-      getElementByCss(view, "#error-message-additionalIdentifier-input").text() must be(messages(additionalIdentifierError))
+      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
+        messages(qualifierOfIdentError)
+      )
+      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(
+        messages(identOfLocationError)
+      )
+      getElementByCss(view, "#error-message-additionalIdentifier-input").text() must be(
+        messages(additionalIdentifierError)
+      )
       getElementByCss(view, "#error-message-postCode-input").text() must be(messages(logPostCodeError))
       getElementByCss(view, "#error-message-city-input").text() must be(messages(cityError))
     }
@@ -322,9 +352,15 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       getElementByCss(view, "span.error-message").text() must be(messages(countryError))
       getElementByCss(view, "#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
-      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(messages(qualifierOfIdentError))
-      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(messages(identOfLocationEmpty))
-      getElementByCss(view, "#error-message-additionalIdentifier-input").text() must be(messages(additionalIdentifierError))
+      getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
+        messages(qualifierOfIdentError)
+      )
+      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(
+        messages(identOfLocationEmpty)
+      )
+      getElementByCss(view, "#error-message-additionalIdentifier-input").text() must be(
+        messages(additionalIdentifierError)
+      )
       getElementByCss(view, "#error-message-postCode-input").text() must be(messages(logPostCodeError))
       getElementByCss(view, "#error-message-city-input").text() must be(messages(cityError))
     }

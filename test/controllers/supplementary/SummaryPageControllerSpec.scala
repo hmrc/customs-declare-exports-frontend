@@ -20,7 +20,6 @@ import base.CustomExportsBaseSpec
 import forms.supplementary.ConsignmentReferencesSpec.correctConsignmentReferencesJSON
 import forms.supplementary.{ConsignmentReferences, ConsignmentReferencesSpec}
 import models.declaration.supplementary.SupplementaryDeclarationDataSpec
-import models.{CustomsDeclarationsResponse, CustomsDeclareExportsResponse}
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.verification.VerificationMode
@@ -45,7 +44,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
     reset(mockCustomsCacheService)
     reset(mockNrsService)
-    reset(mockCustomsDeclarationsConnector)
     reset(mockCustomsDeclareExportsConnector)
     reset(mockMetrics)
 
@@ -55,7 +53,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       .thenReturn(Future.successful(Some(minimumValidCacheData)))
     when(mockCustomsCacheService.remove(anyString())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK)))
-    successfulCustomsDeclarationResponse()
+    successfulCustomsDeclareExportsResponse()
   }
 
   "Summary Page Controller on display" when {
@@ -212,16 +210,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         verify(mockCustomsCacheService, onlyOnce).fetch(any())(any(), any())
       }
 
-      "send declaration data to Customs Declarations" in new Test {
-        route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-        verify(mockCustomsDeclarationsConnector, onlyOnce).submitExportDeclaration(emptyMetadata)
-      }
-
-      "save submission response in customs-declare-exports service" in new Test {
-        route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-        verify(mockCustomsDeclareExportsConnector, onlyOnce).saveSubmissionResponse(any())(any(), any())
-      }
-
       "remove supplementary declaration data from cache" in new Test {
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         verify(mockCustomsCacheService, onlyOnce).remove(any())(any(), any())
@@ -254,10 +242,11 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
     "got error from Customs Declarations" should {
       "display error page" in new Test {
-        when(mockCustomsDeclarationsConnector.submitExportDeclaration(any(), any())(any(), any()))
-          .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
+        when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
-        val resultAsString = contentAsString(route(app, postRequest(summaryPageUri, emptyForm)).get)
+        val result = route(app, postRequest(summaryPageUri, emptyForm)).get
+        val resultAsString = contentAsString(result)
 
         resultAsString must include(messages("global.error.title"))
         resultAsString must include(messages("global.error.heading"))
@@ -265,43 +254,13 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       }
 
       "not remove data from cache" in new Test {
-        when(mockCustomsDeclarationsConnector.submitExportDeclaration(emptyMetadata))
-          .thenReturn(Future.successful(CustomsDeclarationsResponse(BAD_REQUEST, None)))
+        when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
 
         verify(mockCustomsCacheService, times(0)).remove(eoriForCache)
       }
     }
-
-    "got exception during saving submission response in customs-declare-exports service" should {
-      pending
-      "display error page" in new Test {
-        when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
-          .thenReturn(
-            Future.successful(CustomsDeclareExportsResponse(INTERNAL_SERVER_ERROR, "failed saving submission"))
-          )
-
-        val resultAsString = contentAsString(route(app, postRequest(summaryPageUri, emptyForm)).get)
-
-        resultAsString must include(messages("global.error.title"))
-        resultAsString must include(messages("global.error.heading"))
-        resultAsString must include(messages("global.error.message"))
-      }
-
-      pending
-      "remove data from cache" in new Test {
-        when(mockCustomsDeclareExportsConnector.saveSubmissionResponse(any())(any(), any()))
-          .thenReturn(
-            Future.successful(CustomsDeclareExportsResponse(INTERNAL_SERVER_ERROR, "failed saving submission"))
-          )
-
-        val resultAsString = contentAsString(route(app, postRequest(summaryPageUri, emptyForm)).get)
-
-        verify(mockCustomsCacheService, onlyOnce).remove(eoriForCache)
-      }
-    }
-
   }
-
 }

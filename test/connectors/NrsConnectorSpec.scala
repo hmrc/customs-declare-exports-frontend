@@ -28,8 +28,8 @@ class NrsConnectorSpec extends CustomExportsBaseSpec {
 
   val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"), Accepted)
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
-  val expectedHeaders: Map[String, String] =
-    Map("Content-Type" -> "application/json", "X-API-Key" -> appConfig.nrsApiKey)
+  val expectedHeaders: Seq[(String, String)] =
+    Seq(("Content-Type", "application/json"), ("X-API-Key", appConfig.nrsApiKey))
   val nrsMetadata = Metadata(
     "cds",
     "cds-exports",
@@ -49,10 +49,11 @@ class NrsConnectorSpec extends CustomExportsBaseSpec {
     }
   }
 
-  def submitNonRepudiation(result: Boolean = false)(test: Future[NrsSubmissionResponse] => Unit): Unit = {
+  def submitNonRepudiation()(test: Future[NrsSubmissionResponse] => Unit): Unit = {
     val nrsSubmission = NRSSubmission(submission.toString, nrsMetadata)
     val expectedUrl = s"${appConfig.nrsServiceUrl}/submission"
-    val http = new MockHttpClient(expectedUrl, nrsSubmission, expectedHeaders, result, nrsRequest = true)
+    val http =
+      new MockHttpClient(expectedUrl, nrsSubmission, expectedHeaders, false, NrsSubmissionResponse("submissionId1"))
     val client = new NrsConnector(appConfig, http)
     test(client.submitNonRepudiation(nrsSubmission)(hc, ec))
   }

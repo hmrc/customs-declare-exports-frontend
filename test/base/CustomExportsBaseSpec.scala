@@ -21,12 +21,7 @@ import java.util.UUID
 import akka.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
-import connectors.{
-  CustomsDeclarationsConnector,
-  CustomsDeclareExportsConnector,
-  CustomsInventoryLinkingExportsConnector,
-  NrsConnector
-}
+import connectors.{CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
@@ -73,7 +68,6 @@ trait CustomExportsBaseSpec
   override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(
       bind[AuthConnector].to(mockAuthConnector),
-      bind[CustomsDeclarationsConnector].to(mockCustomsDeclarationsConnector),
       bind[CustomsCacheService].to(mockCustomsCacheService),
       bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
       bind[CustomsInventoryLinkingExportsConnector].to(mockCustomsInventoryLinkingExportsConnector),

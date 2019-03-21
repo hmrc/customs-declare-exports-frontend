@@ -17,51 +17,129 @@
 package connectors
 
 import base.TestHelper._
-import base.{CustomExportsBaseSpec, MockHttpClient}
-import models.{Accepted, CustomsDeclareExportsResponse, MovementSubmission, Submission}
-import play.api.http.Status.OK
-import uk.gov.hmrc.http.HeaderCarrier
+import base.{CustomExportsBaseSpec, MockHttpClient, TestHelper}
+import models._
+import models.requests.CancellationRequested
+import play.api.http.{ContentTypes, HeaderNames}
+import play.api.mvc.Codec
+import play.api.test.Helpers.{ACCEPTED, OK}
 import uk.gov.hmrc.http.logging.Authorization
-
-import scala.concurrent.Future
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.wco.dec.MetaData
 
 class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
-
-  val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"), Accepted)
-  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomString(255))))
-  val expectedHeaders: Map[String, String] = Map.empty
-  val falseServerError: Boolean = false
-  val movementSubmission = MovementSubmission("eori1", "convid1", "ducr1", None, "EAL")
+  import CustomsDeclareExportsConnectorSpec._
 
   "Customs Declare Exports Connector" should {
 
-    "POST submission to Customs Declare Exports endpoint" in saveSubmission() { response =>
+    "POST to Customs Declare Exports endpoint to submit declaration" in {
+      val http = new MockHttpClient(
+        expectedUrl(appConfig.submitDeclaration),
+        metadata.toXml,
+        submissionHeaders,
+        falseServerError,
+        HttpResponse(ACCEPTED)
+      )
+
+      val client = new CustomsDeclareExportsConnector(appConfig, http)
+      val response = client.submitExportDeclaration("", None, metadata)(hc, ec)
+
+      response.futureValue.status must be(ACCEPTED)
+    }
+
+    "GET to Customs Declare Exports endpoint to fetch notifications" in {
+      val http = new MockHttpClient(expectedUrl(appConfig.fetchNotifications), None, result = notifications)
+      val client = new CustomsDeclareExportsConnector(appConfig, http)
+      val response = client.fetchNotifications()(hc, ec)
+
+      response.futureValue must be(notifications)
+    }
+
+    "GET to Customs Declare Exports endpoint to fetch notifications by conversationId" in {
+      val http = new MockHttpClient(expectedUrl(appConfig.fetchNotifications), None, result = notifications)
+      val client = new CustomsDeclareExportsConnector(appConfig, http)
+      val response = client.fetchNotificationsByConversationId(conversationId)(hc, ec)
+
+      response.futureValue must be(notifications)
+    }
+
+    "POST to Customs Declare Exports endpoint to save movement submission" in {
+      val http = new MockHttpClient(
+        expectedUrl(appConfig.saveMovementSubmission),
+        movementSubmission,
+        expectedHeaders,
+        falseServerError,
+        CustomsDeclareExportsResponse(OK, "success")
+      )
+      val client = new CustomsDeclareExportsConnector(appConfig, http)
+      val response = client.saveMovementSubmission(movementSubmission)(hc, ec)
+
       response.futureValue.status must be(OK)
     }
 
-    "POST to Customs Declare Exports endpoint to save movement submission" in saveMovementSubmission() { response =>
-      response.futureValue.status must be(OK)
+    "GET to Customs Declare Exports endpoint to fetch submissions" in {
+      val http = new MockHttpClient(expectedUrl(appConfig.fetchSubmissions), None, result = submissions)
+      val client = new CustomsDeclareExportsConnector(appConfig, http)
+      val response = client.fetchSubmissions()(hc, ec)
+
+      response.futureValue must be(submissions)
+    }
+
+    "POST to Customs Declare Exports endpoint to submit cancellation" in {
+      val http = new MockHttpClient(
+        expectedUrl(appConfig.cancelDeclaration),
+        metadata.toXml,
+        cancellationHeaders,
+        falseServerError,
+        CancellationRequested
+      )
+      val client = new CustomsDeclareExportsConnector(appConfig, http)
+      val response = client.submitCancellation(mrn, metadata)(hc, ec)
+
+      response.futureValue must be(CancellationRequested)
     }
   }
 
-  def saveSubmission()(test: Future[CustomsDeclareExportsResponse] => Unit): Unit = {
-    val http =
-      new MockHttpClient(expectedUrl(appConfig.saveSubmissionResponse), submission, expectedHeaders, falseServerError)
-    val client = new CustomsDeclareExportsConnector(appConfig, http)
-    test(client.saveSubmissionResponse(submission)(hc, ec))
-  }
+  private def expectedUrl(endpointUrl: String): String = s"${appConfig.customsDeclareExports}${endpointUrl}"
+}
 
-  def saveMovementSubmission()(test: Future[CustomsDeclareExportsResponse] => Unit): Unit = {
-    val http = new MockHttpClient(
-      expectedUrl(appConfig.saveMovementSubmission),
-      movementSubmission,
-      expectedHeaders,
-      falseServerError
-    )
-    val client = new CustomsDeclareExportsConnector(appConfig, http)
-    test(client.saveMovementSubmission(movementSubmission)(hc, ec))
-  }
+object CustomsDeclareExportsConnectorSpec {
+  val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"), Accepted)
+  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomString(255))))
+  val mrn = TestHelper.createRandomString(10)
+  val metadata = MetaData()
 
-  def expectedUrl(endpointUrl: String): String = s"${appConfig.customsDeclareExports}${endpointUrl}"
+  val conversationId = TestHelper.createRandomString(10)
+  val eori = TestHelper.createRandomString(15)
+  val exportNotification =
+    ExportsNotification(conversationId = conversationId, eori = eori, metadata = DeclarationMetadata())
+  val notifications = Seq(exportNotification)
+
+  val submissionData = SubmissionData(
+    eori = eori,
+    conversationId = conversationId,
+    ducr = "",
+    mrn = Some(mrn),
+    lrn = None,
+    submittedTimestamp = 20190318,
+    status = Cancelled,
+    noOfNotifications = 2
+  )
+  val submissions = Seq(submissionData)
+
+  val expectedHeaders: Seq[(String, String)] = Seq.empty
+  val submissionHeaders: Seq[(String, String)] = Seq(
+    (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
+    (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
+    ("X-DUCR", ""),
+    ("X-LRN", "")
+  )
+  val cancellationHeaders: Seq[(String, String)] = Seq(
+    (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
+    (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
+    ("X-MRN", mrn)
+  )
+  val falseServerError: Boolean = false
+  val movementSubmission = MovementSubmission("eori1", "convid1", "ducr1", None, "EAL")
 
 }

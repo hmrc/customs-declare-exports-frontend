@@ -30,7 +30,8 @@ import org.scalatest.prop.PropertyChecks
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
-class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with CommodityMeasureMessages with Generators with PropertyChecks with OptionValues {
+class CommodityMeasureControllerSpec
+    extends CustomExportsBaseSpec with CommodityMeasureMessages with Generators with PropertyChecks with OptionValues {
 
   val uri = uriWithContextPath("/declaration/supplementary/commodity-measure")
   val form = CommodityMeasure.form()

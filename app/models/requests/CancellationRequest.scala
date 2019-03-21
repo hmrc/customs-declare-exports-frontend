@@ -18,12 +18,6 @@ package models.requests
 
 import play.api.libs.json.{JsValue, Json}
 
-case class CancellationRequest(mrn: String)
-
-object CancellationRequest {
-  implicit val format = Json.format[CancellationRequest]
-}
-
 sealed trait CancellationStatus
 
 case object CancellationRequestExists extends CancellationStatus

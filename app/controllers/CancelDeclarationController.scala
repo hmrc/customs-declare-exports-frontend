@@ -17,7 +17,7 @@
 package controllers
 
 import config.AppConfig
-import connectors.{CustomsDeclarationsConnector, CustomsDeclareExportsConnector}
+import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import forms.CancelDeclaration
 import forms.CancelDeclaration._
@@ -25,8 +25,7 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
-import models.CustomsDeclarationsResponse
-import models.requests.{CancellationRequestExists, CancellationRequested, MissingDeclaration}
+import models.requests._
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,7 +38,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class CancelDeclarationController @Inject()(
   appConfig: AppConfig,
   authenticate: AuthAction,
-  customsDeclarationsConnector: CustomsDeclarationsConnector,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   errorHandler: ErrorHandler,
   exportsMetrics: ExportsMetrics
@@ -59,44 +57,36 @@ class CancelDeclarationController @Inject()(
         form => {
           val metadata = form.createCancellationMetadata(request.user.eori)
           exportsMetrics.startTimer(cancelMetric)
-          customsDeclarationsConnector.submitCancellation(metadata).flatMap {
-            case CustomsDeclarationsResponse(ACCEPTED, Some(_)) =>
-              exportsMetrics.incrementCounter(cancelMetric)
-              customsDeclareExportsConnector.cancelDeclaration(form.declarationId).map {
-                response =>
-                  exportsMetrics.incrementCounter(cancelMetric)
-                  response match {
-                    case CancellationRequested => Ok(cancellation_confirmation_page(appConfig))
-                    case CancellationRequestExists =>
-                      BadRequest(
-                        errorHandler.standardErrorTemplate(
-                          pageTitle = messagesApi("cancellation.error.title"),
-                          heading = messagesApi("cancellation.exists.error.heading"),
-                          message = messagesApi("cancellation.exists.error.message")
-                        )
+
+          val mrn = form.declarationId
+
+          customsDeclareExportsConnector.submitCancellation(mrn, metadata).flatMap {
+            case status: CancellationStatus =>
+              status match {
+                case CancellationRequested =>
+                  Future.successful(Ok(cancellation_confirmation_page(appConfig)))
+                case CancellationRequestExists =>
+                  Future.successful(
+                    BadRequest(
+                      errorHandler.standardErrorTemplate(
+                        pageTitle = messagesApi("cancellation.error.title"),
+                        heading = messagesApi("cancellation.exists.error.heading"),
+                        message = messagesApi("cancellation.exists.error.message")
                       )
-                    case MissingDeclaration =>
-                      BadRequest(
-                        errorHandler.standardErrorTemplate(
-                          pageTitle = messagesApi("cancellation.error.title"),
-                          heading = messagesApi("cancellation.error.heading"),
-                          message = messagesApi("cancellation.error.message")
-                        )
-                      )
-                  }
-              }
-            case error =>
-              exportsMetrics.incrementCounter(cancelMetric)
-              Logger.error(s"Error from Customs declarations api ${error.toString}")
-              Future.successful(
-                BadRequest(
-                  errorHandler.standardErrorTemplate(
-                    pageTitle = messagesApi("global.error.title"),
-                    heading = messagesApi("global.error.heading"),
-                    message = messagesApi("global.error.message")
+                    )
                   )
-                )
-              )
+                case MissingDeclaration =>
+                  Future.successful(
+                    BadRequest(
+                      errorHandler.standardErrorTemplate(
+                        pageTitle = messagesApi("cancellation.error.title"),
+                        heading = messagesApi("cancellation.error.heading"),
+                        message = messagesApi("cancellation.error.message")
+                      )
+                    )
+                  )
+              }
+            case _ => errorHandler.displayErrorPage()
           }
         }
       )

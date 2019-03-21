@@ -27,7 +27,8 @@ import views.supplementary.spec.ViewSpec
 class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with CommonMessages {
 
   private val form: Form[ExporterDetails] = ExporterDetails.form()
-  private def createView(form: Form[ExporterDetails] = form): Html = exporter_details(appConfig, form)(fakeRequest, messages, countries)
+  private def createView(form: Form[ExporterDetails] = form): Html =
+    exporter_details(appConfig, form)(fakeRequest, messages, countries)
 
   "Exporter Details View" should {
 
@@ -66,7 +67,9 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(1)>label").text() must be(messages(fullName))
+      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(1)>label").text() must be(
+        messages(fullName)
+      )
       getElementById(view, "details_address_fullName").attr("value") must be("")
     }
 
@@ -74,7 +77,9 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(2)>label").text() must be(messages(addressLine))
+      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(2)>label").text() must be(
+        messages(addressLine)
+      )
       getElementById(view, "details_address_addressLine").attr("value") must be("")
     }
 
@@ -82,7 +87,9 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(3)>label").text() must be(messages(townOrCity))
+      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(3)>label").text() must be(
+        messages(townOrCity)
+      )
       getElementById(view, "details_address_townOrCity").attr("value") must be("")
     }
 
@@ -90,7 +97,9 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(4)>label").text() must be(messages(postCode))
+      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(4)>label").text() must be(
+        messages(postCode)
+      )
       getElementById(view, "details_address_postCode").attr("value") must be("")
     }
 
@@ -98,7 +107,9 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(5)>label").text() must be(messages(country))
+      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(5)>label").text() must be(
+        messages(country)
+      )
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 
@@ -131,9 +142,11 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display error when EORI is provided, but is incorrect" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        Some(TestHelper.createRandomString(19)), None)
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(ExporterDetails(EntityDetails(Some(TestHelper.createRandomString(19)), None)))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, eoriError, "#details_eori")
@@ -143,9 +156,13 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display error for empty Full name" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(
+            ExporterDetails(EntityDetails(None, Some(Address("", "Test Street", "Leeds", "LS18BN", "England"))))
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, fullNameEmpty, "#details_address_fullName")
@@ -155,9 +172,18 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display error for incorrect Full name" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address(TestHelper.createRandomString( 71), "Test Street", "Leeds", "LS18BN", "England")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(
+            ExporterDetails(
+              EntityDetails(
+                None,
+                Some(Address(TestHelper.createRandomString(71), "Test Street", "Leeds", "LS18BN", "England"))
+              )
+            )
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, fullNameError, "#details_address_fullName")
@@ -167,33 +193,54 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display error for empty Address" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(
+            ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "", "Leeds", "LS18BN", "England"))))
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, addressLineEmpty, "#details_address_addressLine")
 
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
+      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        messages(addressLineEmpty)
+      )
     }
 
     "display error for incorrect Address" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address("Marco Polo", TestHelper.createRandomString(71), "Leeds", "LS18BN", "England")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(
+            ExporterDetails(
+              EntityDetails(
+                None,
+                Some(Address("Marco Polo", TestHelper.createRandomString(71), "Leeds", "LS18BN", "England"))
+              )
+            )
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, addressLineError, "#details_address_addressLine")
 
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
+      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        messages(addressLineError)
+      )
     }
 
     "display error for empty Town or city" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(
+            ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "", "LS18BN", "England"))))
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, townOrCityEmpty, "#details_address_townOrCity")
@@ -203,9 +250,18 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display error for incorrect Town or city" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address("Marco Polo", "Test Street", TestHelper.createRandomString(71), "LS18BN", "England")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(
+            ExporterDetails(
+              EntityDetails(
+                None,
+                Some(Address("Marco Polo", "Test Street", TestHelper.createRandomString(71), "LS18BN", "England"))
+              )
+            )
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, townOrCityError, "#details_address_townOrCity")
@@ -215,9 +271,13 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display error for empty Postcode" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(
+            ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "", "England"))))
+          )
+      )
       checkErrorsSummary(view)
       checkErrorLink(view, 1, postCodeEmpty, "#details_address_postCode")
 
@@ -226,9 +286,18 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display error for incorrect Postcode" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomString(71), "England")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(
+            ExporterDetails(
+              EntityDetails(
+                None,
+                Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomString(71), "England"))
+              )
+            )
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, postCodeError, "#details_address_postCode")
@@ -238,22 +307,31 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display error for empty Country" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(
+            ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", ""))))
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, countryEmpty, "#details_address_country")
-
 
       getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
     }
 
     "display error for incorrect Country" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(
+            ExporterDetails(
+              EntityDetails(None, Some(Address("Marco Polo", "Test Street", "Leeds", "LS18BN", "Barcelona")))
+            )
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, countryError, "#details_address_country")
@@ -263,9 +341,11 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display errors when everything except Full name is empty" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address("Marco Polo", "", "", "", "")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("Marco Polo", "", "", "", "")))))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, addressLineEmpty, "#details_address_addressLine")
@@ -273,7 +353,9 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
       checkErrorLink(view, 3, postCodeEmpty, "#details_address_postCode")
       checkErrorLink(view, 4, countryEmpty, "#details_address_country")
 
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
+      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        messages(addressLineEmpty)
+      )
       getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
       getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
@@ -282,9 +364,11 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display errors when everything except Country is empty" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address("", "", "", "", "Ukraine")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(ExporterDetails(EntityDetails(None, Some(Address("", "", "", "", "Ukraine")))))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, fullNameEmpty, "#details_address_fullName")
@@ -293,21 +377,35 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
       checkErrorLink(view, 4, postCodeEmpty, "#details_address_postCode")
 
       getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
+      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        messages(addressLineEmpty)
+      )
       getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
       getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
     }
 
     "display errors when everything except Full name is incorrect" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address(
-          "Marco Polo",
-          TestHelper.createRandomString(71),
-          TestHelper.createRandomString(71),
-          TestHelper.createRandomString(71),
-          TestHelper.createRandomString(71))))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(
+            ExporterDetails(
+              EntityDetails(
+                None,
+                Some(
+                  Address(
+                    "Marco Polo",
+                    TestHelper.createRandomString(71),
+                    TestHelper.createRandomString(71),
+                    TestHelper.createRandomString(71),
+                    TestHelper.createRandomString(71)
+                  )
+                )
+              )
+            )
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, addressLineError, "#details_address_addressLine")
@@ -315,7 +413,9 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
       checkErrorLink(view, 3, postCodeError, "#details_address_postCode")
       checkErrorLink(view, 4, countryError, "#details_address_country")
 
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
+      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        messages(addressLineError)
+      )
       getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
       getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       getElementByCss(view, "span.error-message").text() must be(messages(countryError))
@@ -323,14 +423,26 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display errors when everything except Country is incorrect" in {
 
-      val view = createView(ExporterDetails.form().fillAndValidate(ExporterDetails(EntityDetails(
-        None, Some(Address(
-          TestHelper.createRandomString(71),
-          TestHelper.createRandomString(71),
-          TestHelper.createRandomString(71),
-          TestHelper.createRandomString(71),
-          "Ukraine")))
-      )))
+      val view = createView(
+        ExporterDetails
+          .form()
+          .fillAndValidate(
+            ExporterDetails(
+              EntityDetails(
+                None,
+                Some(
+                  Address(
+                    TestHelper.createRandomString(71),
+                    TestHelper.createRandomString(71),
+                    TestHelper.createRandomString(71),
+                    TestHelper.createRandomString(71),
+                    "Ukraine"
+                  )
+                )
+              )
+            )
+          )
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, fullNameError, "#details_address_fullName")
@@ -339,7 +451,9 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
       checkErrorLink(view, 4, postCodeError, "#details_address_postCode")
 
       getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameError))
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
+      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        messages(addressLineError)
+      )
       getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
       getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeError))
     }
@@ -357,7 +471,9 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
     "display data in Business address inputs" in {
 
-      val form = ExporterDetails.form().fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
+      val form = ExporterDetails
+        .form()
+        .fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
       val view = createView(form)
 
       getElementById(view, "details_address_fullName").attr("value") must be("test")
