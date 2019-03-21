@@ -47,7 +47,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(OK)
       stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/supplementary/procedure-codes"))
+      stringResult must include(messages("/declaration/supplementary/previous-documents"))
     }
 
     "display \"Save and continue\" button on page" in {

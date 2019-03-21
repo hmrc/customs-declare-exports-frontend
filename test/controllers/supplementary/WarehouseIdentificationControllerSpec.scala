@@ -104,7 +104,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/item-type"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/export-items"))
     }
 
     "validate form - correct values" in {
@@ -115,7 +115,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/item-type"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supplementary/export-items"))
     }
   }
 }

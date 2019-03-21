@@ -24,6 +24,9 @@ object CacheIdGenerator {
   def supplementaryCacheId()(implicit request: AuthenticatedRequest[_]): String =
     s"supplementary-${request.user.eori}"
 
+  def goodsItemCacheId()(implicit request: AuthenticatedRequest[_]): String =
+    s"suppl-items-${request.user.eori}"
+
   def movementCacheId()(implicit request: AuthenticatedRequest[_]): String =
     s"movement-${request.user.eori}"
 

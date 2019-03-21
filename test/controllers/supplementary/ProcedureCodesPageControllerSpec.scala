@@ -74,7 +74,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
       status(result) must be(OK)
       stringResult must include(messages("site.back"))
-      stringResult must include("/declaration/supplementary/good-item-number")
+      stringResult must include("/declaration/supplementary/export-items")
     }
 
     "display \"Save and continue\" button on page" in {
@@ -325,7 +325,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/supplementary/supervising-office")
+          Some("/customs-declare-exports/declaration/supplementary/item-type")
         )
       }
 
@@ -339,7 +339,7 @@ class ProcedureCodesPageControllerSpec extends CustomExportsBaseSpec with Before
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/supplementary/supervising-office")
+          Some("/customs-declare-exports/declaration/supplementary/item-type")
         )
       }
     }

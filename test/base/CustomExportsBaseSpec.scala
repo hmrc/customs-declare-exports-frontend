@@ -50,7 +50,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAs
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
-import services.{CustomsCacheService, NRSService}
+import services.{CustomsCacheService, ItemsCachingService, NRSService}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -66,6 +66,7 @@ trait CustomExportsBaseSpec
   val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
   val mockNrsService: NRSService = mock[NRSService]
   val mockMetrics: ExportsMetrics = mock[ExportsMetrics]
+  val mockItemsCachingService: ItemsCachingService = mock[ItemsCachingService]
 
   SharedMetricRegistries.clear()
 
@@ -78,7 +79,8 @@ trait CustomExportsBaseSpec
       bind[CustomsInventoryLinkingExportsConnector].to(mockCustomsInventoryLinkingExportsConnector),
       bind[NrsConnector].to(mockNrsConnector),
       bind[NRSService].to(mockNrsService),
-      bind[ExportsMetrics].to(mockMetrics)
+      bind[ExportsMetrics].to(mockMetrics),
+      bind[ItemsCachingService].to(mockItemsCachingService)
     )
     .build()
 

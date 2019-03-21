@@ -45,14 +45,14 @@ class PackageInformationController @Inject()(
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     cacheService
-      .fetchAndGetEntry[Seq[PackageInformation]](supplementaryCacheId, formId)
+      .fetchAndGetEntry[Seq[PackageInformation]](goodsItemCacheId, formId)
       .map(items => Ok(package_information(form, items.getOrElse(Seq.empty))))
   }
 
   def submitForm(): Action[AnyContent] = authenticate.async { implicit authRequest =>
     val actionTypeOpt = authRequest.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
     cacheService
-      .fetchAndGetEntry[Seq[PackageInformation]](supplementaryCacheId, formId)
+      .fetchAndGetEntry[Seq[PackageInformation]](goodsItemCacheId, formId)
       .flatMap { data =>
         implicit val packagings = data.getOrElse(Seq.empty)
 
@@ -74,7 +74,7 @@ class PackageInformationController @Inject()(
           packages.zipWithIndex.filterNot(_._2.toString == id).map(_._1)
 
         cacheService
-          .cache[Seq[PackageInformation]](supplementaryCacheId(), formId, updatedPackages)
+          .cache[Seq[PackageInformation]](goodsItemCacheId(), formId, updatedPackages)
           .map(_ => Redirect(routes.PackageInformationController.displayForm()))
       }
       case _ => errorHandler.displayErrorPage()
@@ -110,7 +110,7 @@ class PackageInformationController @Inject()(
         validForm => {
           isAdditionValid[PackageInformation](validForm).fold(
             cacheService
-              .cache[Seq[PackageInformation]](supplementaryCacheId(), formId, (packages :+ validForm))
+              .cache[Seq[PackageInformation]](goodsItemCacheId(), formId, (packages :+ validForm))
               .map(_ => Redirect(routes.PackageInformationController.displayForm()))
           )(badRequest(form.fill(validForm), _))
         }

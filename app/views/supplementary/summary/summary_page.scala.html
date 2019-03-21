@@ -28,7 +28,7 @@
     appConfig = appConfig) {
 
 
-    @components.back_link("/customs-declare-exports/declaration/supplementary/add-document")
+    @components.back_link("/customs-declare-exports/declaration/supplementary/export-items")
 
     @components.page_title(title = Some(messages("supplementary.summary.header")))
 
@@ -64,10 +64,6 @@
     @transport_containers_section(suppDecData.transportInformationContainerData)
 
     @items_section(suppDecData.items)
-
-    @additional_information_section(suppDecData.additionalInformationData)
-
-    @additional_documentation_section(suppDecData.documentsProducedData)
 
     @helpers.form(action = SummaryPageController.submitSupplementaryDeclaration()) {
         @components.submit_button(messages("site.acceptAndSubmitDeclaration"))

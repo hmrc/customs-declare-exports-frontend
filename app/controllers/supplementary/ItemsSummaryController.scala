@@ -15,48 +15,33 @@
  */
 
 package controllers.supplementary
-
 import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.supplementaryCacheId
-import forms.supplementary.GoodsItemNumber
+import handlers.ErrorHandler
 import javax.inject.Inject
-import play.api.data.Form
+import models.DeclarationFormats._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
+import services.ExportsItemsCacheIds.itemsId
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.supplementary.good_item_number
+import uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem
+import views.html.supplementary.items_summary
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-class GoodsItemNumberController @Inject()(
-  appConfig: AppConfig,
-  val messagesApi: MessagesApi,
+class ItemsSummaryController @Inject()(
   authenticate: AuthAction,
-  customsCacheService: CustomsCacheService
-)(implicit ec: ExecutionContext)
+  errorHandler: ErrorHandler,
+  cacheService: CustomsCacheService
+)(implicit ec: ExecutionContext, appConfig: AppConfig, override val messagesApi: MessagesApi)
     extends FrontendController with I18nSupport {
 
-  import forms.supplementary.GoodsItemNumber._
-
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[GoodsItemNumber](supplementaryCacheId, formId).map {
-      case Some(data) => Ok(good_item_number(appConfig, form.fill(data)))
-      case _          => Ok(good_item_number(appConfig, form))
-    }
+    cacheService
+      .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](supplementaryCacheId, itemsId)
+      .map(items => Ok(items_summary(items.getOrElse(Seq.empty))))
   }
 
-  def submit(): Action[AnyContent] = authenticate.async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[GoodsItemNumber]) =>
-          Future.successful(BadRequest(good_item_number(appConfig, formWithErrors))),
-        form =>
-          customsCacheService.cache[GoodsItemNumber](supplementaryCacheId, formId, form).map { _ =>
-            Redirect(controllers.supplementary.routes.ProcedureCodesPageController.displayPage())
-        }
-      )
-  }
 }

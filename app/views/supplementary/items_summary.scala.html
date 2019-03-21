@@ -1,0 +1,185 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.supplementary.routes._
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem
+@import forms.supplementary.ItemType.IdentificationTypeCodes._
+
+@(items: Seq[GovernmentAgencyGoodsItem])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@tableHeader = @{
+if(items.size == 1) {
+messages("supplementary.itemssummary.table.heading")
+} else {
+messages("supplementary.itemssummary.table.multiple.heading", items.size)
+}
+}
+
+@main_template(
+    title = messages("supplementary.itemssummary.title"),
+    appConfig = appConfig
+) {
+        @components.back_link("/customs-declare-exports/declaration/supplementary/warehouse")
+        @components.page_title(Some("supplementary.itemsAdd.title"))
+        <span class="form-hint">@messages("supplementary.itemsAdd.title.hint")</span>
+        @if(items.nonEmpty) {
+            <table class="form-group">
+                <caption>@tableHeader</caption>
+                <thead>
+                <tr>
+                    <th scope="col">@messages("supplementary.itemssummary.itemNumber")</th>
+                    <th scope="col">@messages("supplementary.procedureCodes.procedureCode.item.header")</th>
+                    <th scope="col">@messages("supplementary.itemType.combinedNomenclatureCode.item.header")</th>
+                    <th scope="col">@messages("supplementary.itemType.cusCode.item.header")</th>
+                    <th scope="col">@messages("supplementary.itemType.statisticalValue.item.header")</th>
+                    <th scope="col">@messages("supplementary.itemType.description.item.header")</th>
+                    <th scope="col">@messages("supplementary.commodityMeasure.supplementaryUnits.item")</th>
+                    <th scope="col">@messages("supplementary.commodityMeasure.netMass")</th>
+                    <th scope="col">@messages("supplementary.commodityMeasure.grossMass")</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                @items.map{item =>
+                    <tr>
+                        <td scope="row">@item.sequenceNumeric</td>
+                        <td scope="row">@item.governmentProcedures.headOption.map(c => c.currentCode.getOrElse("")+c.previousCode.getOrElse(""))</td>
+                        <td scope="row">@item.commodity.map(_.classifications.headOption.map(c => c.id.getOrElse("")))</td>
+                        <td scope="row">@item.commodity.map(_.classifications.drop(1).take(1).headOption.map(c => c.id.getOrElse("")))</td>
+                        <td scope="row">@item.statisticalValueAmount.map(_.value)</td>
+                        <td scope="row">@item.commodity.map(_.description.getOrElse(""))</td>
+                        <td scope="row">@item.commodity.map(_.goodsMeasure.map(_.tariffQuantity.map(_.value)))</td>
+                        <td scope="row">@item.commodity.map(_.goodsMeasure.map(_.netWeightMeasure.map(_.value)))</td>
+                        <td scope="row">@item.commodity.map(_.goodsMeasure.map(_.grossMassMeasure.map(_.value)))</td>
+                    </tr>
+                    }
+
+                </tbody>
+            </table>
+
+            <table class="form-group">
+                <thead>
+                <tr>
+                    <th scope="col">@messages("supplementary.itemssummary.itemNumber")</th>
+                    <th scope="col">@messages("supplementary.procedureCodes.additionalProcedureCode.item.header")</th>
+                    <th scope="col">@messages("supplementary.itemType.taricAdditionalCodes.item.header")</th>
+                    <th scope="col">@messages("supplementary.itemType.nationalAdditionalCode.item.header")</th>
+
+                    <th scope="col">@messages("supplementary.packageInformation.typesOfPackages")</th>
+                    <th scope="col">@messages("supplementary.packageInformation.numberOfPackages")</th>
+                    <th scope="col">@messages("supplementary.packageInformation.shippingMarks")</th>
+
+                    <th scope="col">@messages("supplementary.additionalInformation.item.code")</th>
+                    <th scope="col">@messages("supplementary.additionalInformation.item.description")</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                    @items.map{item =>
+                    <tr>
+                    <td scope="row">@item.sequenceNumeric</td>
+
+                    <td scope="row">
+                        <ol type="1">
+                            @item.governmentProcedures.drop(1).map{c =>
+                            <li>@c.currentCode.getOrElse("")</li>
+                            }
+                        </ol>
+                    </td>
+
+                    <td scope="row"><ol type="1">
+                        @item.commodity.map(_.classifications.drop(2).map(c =>
+                        <li> {if(c.identificationTypeCode.getOrElse("") == TARICAdditionalCode) c.id.getOrElse("")}</li>
+                                ))
+                        </ol>
+                    </td>
+                    <td scope="row"><ol type="1">
+                        @item.commodity.map(_.classifications.drop(2).map(c =>
+                        <li>{if(c.identificationTypeCode.getOrElse("") == NationalAdditionalCode)
+                        c.id.getOrElse("")}</li>
+                        ))
+                    </ol></td>
+
+                        <td scope="row"><ol type="1">@item.packagings.map(a =>
+                            <li>{a.typeCode.getOrElse("")}</li>)
+                        </ol></td>
+                        <td scope="row"><ol type="1">@item.packagings.map(a =>
+                            <li>{a.quantity.getOrElse("")}</li>)
+                        </ol></td>
+                        <td scope="row"><ol type="1">@item.packagings.map(a =>
+                            <li>{a.marksNumbersId.getOrElse("")}</li>)
+                        </ol></td>
+
+                        <td scope="row"><ol type="1">@item.additionalInformations.map(a =>
+                            <li>{a.statementCode.getOrElse("")}</li>)
+                        </ol></td>
+                        <td scope="row"><ol type="1">@item.additionalInformations.map(a =>
+                            <li>{a.statementDescription.getOrElse("")}</li>)
+                        </ol></td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            <table class="form-group">
+                <thead>
+                    <tr>
+                        <th scope="col">@messages("supplementary.itemssummary.itemNumber")</th>
+                        <th scope="col">@messages("supplementary.addDocument.item.documentTypeCode")</th>
+                        <th scope="col">@messages("supplementary.addDocument.item.documentIdentifier")</th>
+                        <th scope="col">@messages("supplementary.addDocument.item.documentPart")</th>
+                        <th scope="col">@messages("supplementary.addDocument.item.documentStatus")</th>
+                        <th scope="col">@messages("supplementary.addDocument.item.documentStatusReason")</th>
+                        <th scope="col">@messages("supplementary.addDocument.item.documentQuantity")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @items.map{item =>
+                    <tr>
+                        <td scope="row">@item.sequenceNumeric</td>
+                        <td scope="row"><ol type="1">@item.additionalDocuments.map(doc =>
+                            <li>{doc.categoryCode.getOrElse("") + doc.typeCode.getOrElse("")}</li>)
+                        </ol></td>
+                        <td scope="row"><ol type="1">@item.additionalDocuments.map(doc =>
+                            <li>{doc.id.getOrElse("")}</li>)
+                        </ol></td>
+                        <td scope="row"><ol type="1">@item.additionalDocuments.map(doc =>
+                            <li>{doc.lpcoExemptionCode.getOrElse("")}</li>)
+                        </ol></td>
+                        <td scope="row"><ol type="1">@item.additionalDocuments.map(doc =>
+                            <li>{doc.name.getOrElse("")}</li>)
+                        </ol></td>
+                        <td scope="row"><ol type="1">@item.additionalDocuments.map(doc =>
+                            <li>{doc.categoryCode.getOrElse("") + doc.typeCode.getOrElse("")}</li>)
+                        </ol></td>
+                        <td scope="row"><ol type="1">@item.additionalDocuments.map(_.writeOff.map(_.quantity.map(_.value.getOrElse(""))))
+                        </ol></td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    <div class="section">
+        <a id="link-add" class="link-add" href="@ProcedureCodesPageController.displayPage().url">@messages("site.add.item")</a><p></p>
+        @if(items.size > 0) {
+            <a href="@SummaryPageController.displayPage().url" class="button" id="next">@messages("site.save_and_continue")</a>
+        }
+    </div>
+
+
+}

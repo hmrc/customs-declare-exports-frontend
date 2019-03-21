@@ -27,9 +27,7 @@ case class SupplementaryDeclarationData(
   locations: Option[Locations] = None,
   transportInformation: Option[TransportInformation] = None,
   transportInformationContainerData: Option[TransportInformationContainerData] = None,
-  items: Option[Items] = None,
-  additionalInformationData: Option[AdditionalInformationData] = None,
-  documentsProducedData: Option[DocumentsProducedData] = None
+  items: Option[Items] = None
 ) extends SummaryContainer with MetadataPropertiesConvertable {
 
   import SupplementaryDeclarationData.SchemaMandatoryValues._
@@ -57,9 +55,7 @@ case class SupplementaryDeclarationData(
       locations.isEmpty &&
       transportInformation.isEmpty &&
       transportInformationContainerData.isEmpty &&
-      items.isEmpty &&
-      additionalInformationData.isEmpty &&
-      documentsProducedData.isEmpty
+      items.isEmpty
 
   def toMap: Map[String, MetadataPropertiesConvertable] =
     Map(
@@ -69,9 +65,7 @@ case class SupplementaryDeclarationData(
       Locations.id -> locations,
       TransportInformation.id -> transportInformation,
       TransportInformationContainerData.id -> transportInformationContainerData,
-      Items.id -> items,
-      AdditionalInformationData.formId -> additionalInformationData,
-      DocumentsProducedData.formId -> documentsProducedData
+      Items.id -> items
     ).collect { case (key, Some(data)) => (key, data) }
 }
 
@@ -86,9 +80,7 @@ object SupplementaryDeclarationData {
       transportInformation = cacheMap.getEntry[TransportInformation](TransportInformation.id),
       transportInformationContainerData =
         cacheMap.getEntry[TransportInformationContainerData](TransportInformationContainerData.id),
-      items = flattenIfEmpty(Items(cacheMap)),
-      additionalInformationData = cacheMap.getEntry[AdditionalInformationData](AdditionalInformationData.formId),
-      documentsProducedData = cacheMap.getEntry[DocumentsProducedData](DocumentsProducedData.formId)
+      items = flattenIfEmpty(Items(cacheMap))
     )
 
   private def flattenIfEmpty[A <: SummaryContainer](container: A): Option[A] =

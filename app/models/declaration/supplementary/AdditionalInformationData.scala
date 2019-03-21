@@ -16,21 +16,10 @@
 
 package models.declaration.supplementary
 
-import forms.MetadataPropertiesConvertable
 import forms.supplementary.AdditionalInformation
 import play.api.libs.json.Json
 
-case class AdditionalInformationData(items: Seq[AdditionalInformation]) extends MetadataPropertiesConvertable {
-  override def toMetadataProperties(): Map[String, String] =
-    items.zipWithIndex.map { itemWithId =>
-      Map(
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[" + itemWithId._2 + "].statementCode" -> itemWithId._1.code,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].additionalInformations[" + itemWithId._2 + "].statementDescription" -> itemWithId._1.description
-      )
-    }.fold(Map.empty)(_ ++ _)
-
-  def containsItem(item: AdditionalInformation): Boolean = items.contains(item)
-}
+case class AdditionalInformationData(items: Seq[AdditionalInformation])
 
 object AdditionalInformationData {
   implicit val format = Json.format[AdditionalInformationData]

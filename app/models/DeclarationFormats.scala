@@ -15,6 +15,7 @@
  */
 
 package models
+import ai.x.play.json.Jsonx
 import play.api.libs.json.Json
 import uk.gov.hmrc.wco.dec._
 
@@ -71,4 +72,6 @@ object DeclarationFormats {
   implicit val loadingLocationFormats = Json.format[LoadingLocation]
 
   implicit val warehouseFormats = Json.format[Warehouse]
+
+  implicit val governmentAgencyGoodsItemFormats = Jsonx.formatCaseClass[GovernmentAgencyGoodsItem]
 }

@@ -54,29 +54,4 @@
         value = items.flatMap(_.goodsItemNumber).map(_.goodItemNumber)
     ))
 
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.commodityCode"),
-        value = items.flatMap(_.itemType).map(_.combinedNomenclatureCode)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.taricAdditionalCodes"),
-        value = items.flatMap(_.itemType).map(_.taricAdditionalCodes)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.nationalAdditionalCode"),
-        value = items.flatMap(_.itemType).map(_.nationalAdditionalCodes)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.tradeDescription"),
-        value = items.flatMap(_.itemType).map(_.descriptionOfGoods)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.cusCode"),
-        value = items.flatMap(_.itemType).flatMap(_.cusCode)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.statisticalValue"),
-        value = items.flatMap(_.itemType).map(_.statisticalValue)
-    ))
-
 }

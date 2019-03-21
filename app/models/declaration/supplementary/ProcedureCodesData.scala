@@ -16,29 +16,10 @@
 
 package models.declaration.supplementary
 
-import forms.MetadataPropertiesConvertable
 import forms.supplementary.ProcedureCodes
 import play.api.libs.json.Json
 
-case class ProcedureCodesData(procedureCode: Option[String], additionalProcedureCodes: Seq[String])
-    extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] = {
-    val procedureCodeMapping = Map(
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].currentCode" -> procedureCode
-        .map(_.substring(0, 2))
-        .getOrElse(""),
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[0].previousCode" -> procedureCode
-        .map(_.substring(2, 4))
-        .getOrElse("")
-    )
-
-    val additionalProcedureCodesMapping = additionalProcedureCodes.zipWithIndex.map { codeWithIdx =>
-      "declaration.goodsShipment.governmentAgencyGoodsItems[0].governmentProcedures[" + (codeWithIdx._2 + 1) + "].currentCode" -> codeWithIdx._1
-    }
-
-    procedureCodeMapping ++ additionalProcedureCodesMapping
-  }
+case class ProcedureCodesData(procedureCode: Option[String], additionalProcedureCodes: Seq[String]) {
 
   def toProcedureCode(): ProcedureCodes = ProcedureCodes(procedureCode, None)
 

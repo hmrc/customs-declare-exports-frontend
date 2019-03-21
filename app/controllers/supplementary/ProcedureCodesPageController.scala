@@ -18,7 +18,7 @@ package controllers.supplementary
 
 import config.AppConfig
 import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util._
 import forms.supplementary.ProcedureCodes
 import forms.supplementary.ProcedureCodes.form
@@ -47,7 +47,7 @@ class ProcedureCodesPageController @Inject()(
     extends FrontendController with I18nSupport {
 
   def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ProcedureCodesData](supplementaryCacheId, formId).map {
+    customsCacheService.fetchAndGetEntry[ProcedureCodesData](goodsItemCacheId, formId).map {
       case Some(data) =>
         Ok(procedure_codes(appConfig, form.fill(data.toProcedureCode()), data.additionalProcedureCodes))
       case _ => Ok(procedure_codes(appConfig, form, Seq()))
@@ -60,7 +60,7 @@ class ProcedureCodesPageController @Inject()(
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
     val cachedData = customsCacheService
-      .fetchAndGetEntry[ProcedureCodesData](supplementaryCacheId, formId)
+      .fetchAndGetEntry[ProcedureCodesData](goodsItemCacheId, formId)
       .map(_.getOrElse(ProcedureCodesData(None, Seq())))
 
     cachedData.flatMap { cache =>
@@ -109,7 +109,7 @@ class ProcedureCodesPageController @Inject()(
       case (Some(code), seq) =>
         val updatedCache = ProcedureCodesData(userInput.procedureCode, seq :+ code)
 
-        customsCacheService.cache[ProcedureCodesData](supplementaryCacheId, formId, updatedCache).map { _ =>
+        customsCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, updatedCache).map { _ =>
           Redirect(controllers.supplementary.routes.ProcedureCodesPageController.displayPage())
         }
     }
@@ -122,7 +122,7 @@ class ProcedureCodesPageController @Inject()(
       val updatedCache =
         cachedData.copy(additionalProcedureCodes = cachedData.additionalProcedureCodes.filterNot(_ == code))
 
-      customsCacheService.cache[ProcedureCodesData](supplementaryCacheId, formId, updatedCache).map { _ =>
+      customsCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, updatedCache).map { _ =>
         Redirect(controllers.supplementary.routes.ProcedureCodesPageController.displayPage())
       }
     } else errorHandler.displayErrorPage()
@@ -138,8 +138,8 @@ class ProcedureCodesPageController @Inject()(
           case ProcedureCodes(Some(procedureCode), Some(additionalCode)) =>
             val procedureCodes = ProcedureCodesData(Some(procedureCode), Seq(additionalCode))
 
-            customsCacheService.cache[ProcedureCodesData](supplementaryCacheId, formId, procedureCodes).map { _ =>
-              Redirect(controllers.supplementary.routes.SupervisingCustomsOfficeController.displayForm())
+            customsCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, procedureCodes).map { _ =>
+              Redirect(controllers.supplementary.routes.ItemTypePageController.displayPage())
             }
 
           case ProcedureCodes(procedureCode, additionalCode) =>
@@ -183,8 +183,8 @@ class ProcedureCodesPageController @Inject()(
               cachedData.additionalProcedureCodes ++ additionalCode.fold(Seq[String]())(Seq(_))
             )
 
-            customsCacheService.cache[ProcedureCodesData](supplementaryCacheId, formId, updatedCache).map { _ =>
-              Redirect(controllers.supplementary.routes.SupervisingCustomsOfficeController.displayForm())
+            customsCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, updatedCache).map { _ =>
+              Redirect(controllers.supplementary.routes.ItemTypePageController.displayPage())
             }
         }
     }

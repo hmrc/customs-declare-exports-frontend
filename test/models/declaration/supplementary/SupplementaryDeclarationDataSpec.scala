@@ -18,18 +18,15 @@ package models.declaration.supplementary
 
 import forms.supplementary.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes
 import forms.supplementary.AdditionalDeclarationTypeSpec._
-import forms.supplementary.AdditionalInformationSpec._
 import forms.supplementary.ConsigneeDetailsSpec._
 import forms.supplementary.ConsignmentReferencesSpec._
 import forms.supplementary.DeclarantDetailsSpec._
 import forms.supplementary.DestinationCountriesSpec._
 import forms.supplementary.DispatchLocation.AllowedDispatchLocations
 import forms.supplementary.DispatchLocationSpec._
-import forms.supplementary.DocumentsProducedSpec._
 import forms.supplementary.ExporterDetailsSpec._
 import forms.supplementary.GoodsItemNumberSpec._
 import forms.supplementary.GoodsLocationSpec._
-import forms.supplementary.ItemTypeSpec._
 import forms.supplementary.OfficeOfExitSpec._
 import forms.supplementary.RepresentativeDetailsSpec._
 import forms.supplementary.SupervisingCustomsOfficeSpec._
@@ -42,7 +39,6 @@ import forms.supplementary._
 import models.declaration.supplementary.DeclarationAdditionalActorsDataSpec._
 import models.declaration.supplementary.DeclarationHoldersDataSpec._
 import models.declaration.supplementary.DeclarationTypeSpec._
-import models.declaration.supplementary.ProcedureCodesDataSpec._
 import models.declaration.supplementary.SupplementaryDeclarationData.SchemaMandatoryValues._
 import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
@@ -77,9 +73,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.locations mustNot be(defined)
           supplementaryDeclarationData.transportInformation mustNot be(defined)
           supplementaryDeclarationData.transportInformationContainerData mustNot be(defined)
-          supplementaryDeclarationData.items mustNot be(defined)
-          supplementaryDeclarationData.additionalInformationData mustNot be(defined)
-          supplementaryDeclarationData.documentsProducedData mustNot be(defined)
         }
       }
 
@@ -148,17 +141,15 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.consignmentReferences.get.ducr.get must equal(consignmentReferences.ducr.get)
         }
 
-        "CacheMap contains 3 records" in {
+        "CacheMap contains 2 records" in {
           val consignmentReferences = Json.fromJson[ConsignmentReferences](correctConsignmentReferencesJSON).get
           val exporterDetails = Json.fromJson[ExporterDetails](correctExporterDetailsJSON).get
-          val procedureCodes = Json.fromJson[ProcedureCodesData](correctProcedureCodesJSON).get
 
           val cacheMap = CacheMap(
             "CacheID",
             Map(
               ConsignmentReferences.id -> correctConsignmentReferencesJSON,
-              ExporterDetails.id -> correctExporterDetailsJSON,
-              ProcedureCodesData.formId -> correctProcedureCodesJSON
+              ExporterDetails.id -> correctExporterDetailsJSON
             )
           )
 
@@ -171,27 +162,17 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.parties must be(defined)
           supplementaryDeclarationData.parties.get.exporterDetails must be(defined)
           supplementaryDeclarationData.parties.get.exporterDetails.get must equal(exporterDetails)
-          supplementaryDeclarationData.locations must be(defined)
-          supplementaryDeclarationData.locations.get.procedureCodesData must be(defined)
-          supplementaryDeclarationData.locations.get.procedureCodesData.get.procedureCode must equal(
-            procedureCodes.procedureCode
-          )
-          supplementaryDeclarationData.locations.get.procedureCodesData.get.additionalProcedureCodes must equal(
-            procedureCodes.additionalProcedureCodes
-          )
         }
 
-        "CacheMap contains 3 records and 3 foreign keys" in {
+        "CacheMap contains 2 records and 3 foreign keys" in {
           val consignmentReferences = Json.fromJson[ConsignmentReferences](correctConsignmentReferencesJSON).get
           val exporterDetails = Json.fromJson[ExporterDetails](correctExporterDetailsJSON).get
-          val procedureCodes = Json.fromJson[ProcedureCodesData](correctProcedureCodesJSON).get
 
           val cacheMap = CacheMap(
             "CacheID",
             Map(
               ConsignmentReferences.id -> correctConsignmentReferencesJSON,
               ExporterDetails.id -> correctExporterDetailsJSON,
-              ProcedureCodesData.formId -> correctProcedureCodesJSON,
               "ForeignKey_1" -> JsObject(Map("key_1" -> JsString("value_1"))),
               "ForeignKey_2" -> JsObject(Map("key_2" -> JsString("value_2"))),
               "ForeignKey_3" -> JsObject(Map("key_3" -> JsString("value_3")))
@@ -207,15 +188,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.parties must be(defined)
           supplementaryDeclarationData.parties.get.exporterDetails must be(defined)
           supplementaryDeclarationData.parties.get.exporterDetails.get must equal(exporterDetails)
-          supplementaryDeclarationData.locations must be(defined)
-          supplementaryDeclarationData.locations.get.procedureCodesData must be(defined)
-          supplementaryDeclarationData.locations.get.procedureCodesData.get.procedureCode must be(defined)
-          supplementaryDeclarationData.locations.get.procedureCodesData.get.procedureCode.get must equal(
-            procedureCodes.procedureCode.get
-          )
-          supplementaryDeclarationData.locations.get.procedureCodesData.get.additionalProcedureCodes must equal(
-            procedureCodes.additionalProcedureCodes
-          )
         }
 
         "CacheMap contains all records" in {
@@ -233,19 +205,11 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.locations must be(defined)
           supplementaryDeclarationData.locations.get.destinationCountries must be(defined)
           supplementaryDeclarationData.locations.get.goodsLocation must be(defined)
-          supplementaryDeclarationData.locations.get.procedureCodesData must be(defined)
           supplementaryDeclarationData.locations.get.supervisingCustomsOffice must be(defined)
           supplementaryDeclarationData.locations.get.warehouseIdentification must be(defined)
           supplementaryDeclarationData.locations.get.officeOfExit must be(defined)
           supplementaryDeclarationData.transportInformation must be(defined)
           supplementaryDeclarationData.transportInformationContainerData must be(defined)
-          supplementaryDeclarationData.items must be(defined)
-          supplementaryDeclarationData.items.get.totalNumberOfItems must be(defined)
-          supplementaryDeclarationData.items.get.transactionType must be(defined)
-          supplementaryDeclarationData.items.get.goodsItemNumber must be(defined)
-          supplementaryDeclarationData.items.get.itemType must be(defined)
-          supplementaryDeclarationData.additionalInformationData must be(defined)
-          supplementaryDeclarationData.documentsProducedData must be(defined)
         }
       }
 
@@ -281,25 +245,18 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       "return Map with 3 elements" in {
         val declarationType = correctDeclarationType
         val parties = Parties(exporterDetails = Some(correctExporterDetails))
-        val additionalInformationData = correctAdditionalInformation
-        val supplementaryDeclarationData = SupplementaryDeclarationData(
-          declarationType = Some(declarationType),
-          parties = Some(parties),
-          additionalInformationData = Some(additionalInformationData)
-        )
+        val supplementaryDeclarationData =
+          SupplementaryDeclarationData(declarationType = Some(declarationType), parties = Some(parties))
 
         val map = supplementaryDeclarationData.toMap
 
-        map.size must equal(3)
+        map.size must equal(2)
         map.keys must contain(DeclarationType.id)
         map.get(DeclarationType.id) must be(defined)
         map(DeclarationType.id) must equal(declarationType)
         map.keys must contain(Parties.id)
         map.get(Parties.id) must be(defined)
         map(Parties.id) must equal(parties)
-        map.keys must contain(AdditionalInformationData.formId)
-        map.get(AdditionalInformationData.formId) must be(defined)
-        map(AdditionalInformationData.formId) must equal(additionalInformationData)
       }
     }
 
@@ -309,7 +266,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
         val map = data.toMap
 
-        val supplementaryDeclarationDataFieldsAmount = 9
+        val supplementaryDeclarationDataFieldsAmount = 7
         map.size must equal(supplementaryDeclarationDataFieldsAmount)
 
         map.keys must contain(DeclarationType.id)
@@ -325,10 +282,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         map(TransportInformationContainerData.id) must equal(data.transportInformationContainerData.get)
         map.keys must contain(Items.id)
         map(Items.id) must equal(data.items.get)
-        map.keys must contain(AdditionalInformationData.formId)
-        map(AdditionalInformationData.formId) must equal(data.additionalInformationData.get)
-        map.keys must contain(DocumentsProducedData.formId)
-        map(DocumentsProducedData.formId) must equal(data.documentsProducedData.get)
       }
     }
 
@@ -364,8 +317,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       verify(locationsMock, times(1)).toMetadataProperties()
       verify(transportInformationMock, times(1)).toMetadataProperties()
       verify(itemsMock, times(1)).toMetadataProperties()
-      verify(additionalInformationDataMock, times(1)).toMetadataProperties()
-      verify(documentsProducedDataMock, times(1)).toMetadataProperties()
     }
 
     "return Map being sum of all Maps returned by sub-elements" in new TestMapConcatenation {
@@ -377,10 +328,9 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       metadataProperties must contain(locationsTuple)
       metadataProperties must contain(transportInformationTuple)
       metadataProperties must contain(itemsTuple)
-      metadataProperties must contain(additionalInformationTuple)
-      metadataProperties must contain(documentsProducedTuple)
-
     }
+  }
+
 
     trait SimpleTest {
       val declarationTypeMock = mock(classOf[DeclarationType])
@@ -390,19 +340,15 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       val transportInformationMock = mock(classOf[TransportInformation])
       val transportInformationContainerDataMock = mock(classOf[TransportInformationContainerData])
       val itemsMock = mock(classOf[Items])
-      val additionalInformationDataMock = mock(classOf[AdditionalInformationData])
-      val documentsProducedDataMock = mock(classOf[DocumentsProducedData])
       val supplementaryDeclarationData = SupplementaryDeclarationData(
-        declarationType = Some(declarationTypeMock),
-        consignmentReferences = Some(consignmentReferencesMock),
-        parties = Some(partiesMock),
-        locations = Some(locationsMock),
-        transportInformation = Some(transportInformationMock),
-        transportInformationContainerData = Some(transportInformationContainerDataMock),
-        items = Some(itemsMock),
-        additionalInformationData = Some(additionalInformationDataMock),
-        documentsProducedData = Some(documentsProducedDataMock)
-      )
+    declarationType = Some(declarationTypeMock),
+    consignmentReferences = Some(consignmentReferencesMock),
+    parties = Some(partiesMock),
+    locations = Some(locationsMock),
+    transportInformation = Some(transportInformationMock),
+    transportInformationContainerData = Some(transportInformationContainerDataMock),
+    items = Some(itemsMock)
+  )
 
       when(declarationTypeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(consignmentReferencesMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
@@ -411,30 +357,25 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       when(transportInformationMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(transportInformationContainerDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
       when(itemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-      when(additionalInformationDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-      when(documentsProducedDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     }
 
     trait TestMapConcatenation extends SimpleTest {
-      val declarationTypeTuple = ("DeclarationType", "DeclarationTypeValue")
-      val consignmentReferencesTuple = ("ConsignmentReferences", "ConsignmentReferencesValue")
-      val partiesTuple = ("Parties", "PartiesValue")
-      val locationsTuple = ("Locations", "LocationsValue")
-      val transportInformationTuple = ("TransportInformation", "TransportInformationValue")
-      val transportInformationContainerTuple = ("TransportInformationContainer", "TransportInformationContainerValue")
-      val itemsTuple = ("Items", "ItemsValue")
-      val additionalInformationTuple = ("AdditionalInformation", "AdditionalInformationValue")
-      val documentsProducedTuple = ("DocumentsProduced", "DocumentsProducedValue")
-      when(declarationTypeMock.toMetadataProperties()).thenReturn(Map(declarationTypeTuple))
-      when(consignmentReferencesMock.toMetadataProperties()).thenReturn(Map(consignmentReferencesTuple))
-      when(partiesMock.toMetadataProperties()).thenReturn(Map(partiesTuple))
-      when(locationsMock.toMetadataProperties()).thenReturn(Map(locationsTuple))
-      when(transportInformationMock.toMetadataProperties()).thenReturn(Map(transportInformationTuple))
-      when(itemsMock.toMetadataProperties()).thenReturn(Map(itemsTuple))
-      when(additionalInformationDataMock.toMetadataProperties()).thenReturn(Map(additionalInformationTuple))
-      when(documentsProducedDataMock.toMetadataProperties()).thenReturn(Map(documentsProducedTuple))
-    }
+    val declarationTypeTuple = ("DeclarationType", "DeclarationTypeValue")
+    val consignmentReferencesTuple = ("ConsignmentReferences", "ConsignmentReferencesValue")
+    val partiesTuple = ("Parties", "PartiesValue")
+    val locationsTuple = ("Locations", "LocationsValue")
+    val transportInformationTuple = ("TransportInformation", "TransportInformationValue")
+    val transportInformationContainerTuple = ("TransportInformationContainer", "TransportInformationContainerValue")
+    val itemsTuple = ("Items", "ItemsValue")
+    when(declarationTypeMock.toMetadataProperties()).thenReturn(Map(declarationTypeTuple))
+    when(consignmentReferencesMock.toMetadataProperties()).thenReturn(Map(consignmentReferencesTuple))
+    when(partiesMock.toMetadataProperties()).thenReturn(Map(partiesTuple))
+    when(locationsMock.toMetadataProperties()).thenReturn(Map(locationsTuple))
+    when(transportInformationMock.toMetadataProperties()).thenReturn(Map(transportInformationTuple))
+    when(itemsMock.toMetadataProperties()).thenReturn(Map(itemsTuple))
   }
+
+
 
 }
 
@@ -454,7 +395,6 @@ object SupplementaryDeclarationDataSpec {
       DeclarationHoldersData.formId -> correctDeclarationHoldersDataJSON,
       DestinationCountries.formId -> correctDestinationCountriesJSON,
       GoodsLocation.formId -> correctGoodsLocationJSON,
-      ProcedureCodesData.formId -> correctProcedureCodesJSON,
       SupervisingCustomsOffice.formId -> correctSupervisingCustomsOfficeJSON,
       WarehouseIdentification.formId -> correctWarehouseIdentificationJSON,
       OfficeOfExit.formId -> correctOfficeOfExitJSON,
@@ -462,10 +402,7 @@ object SupplementaryDeclarationDataSpec {
       TransportInformationContainerData.id -> correctTransportInformationContainerDataJSON,
       TotalNumberOfItems.formId -> correctTotalNumberOfItemsDecimalValuesJSON,
       TransactionType.formId -> correctTransactionTypeJSON,
-      GoodsItemNumber.formId -> correctGoodsItemNumberJSON,
-      ItemType.id -> correctItemTypeJSON,
-      AdditionalInformationData.formId -> correctAdditionalInformationDataJSON,
-      DocumentsProducedData.formId -> correctDocumentsProducedDataJSON
+      GoodsItemNumber.formId -> correctGoodsItemNumberJSON
     )
   )
 
@@ -485,7 +422,6 @@ object SupplementaryDeclarationDataSpec {
       Locations(
         destinationCountries = Some(correctDestinationCountries),
         goodsLocation = Some(correctGoodsLocation),
-        procedureCodesData = Some(correctProcedureCodes),
         supervisingCustomsOffice = Some(correctSupervisingCustomsOffice),
         warehouseIdentification = Some(correctWarehouseIdentification),
         officeOfExit = Some(correctOfficeOfExit)
@@ -497,12 +433,9 @@ object SupplementaryDeclarationDataSpec {
       Items(
         totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
         transactionType = Some(correctTransactionType),
-        goodsItemNumber = Some(correctGoodsItemNumber),
-        itemType = Some(correctItemType)
+        goodsItemNumber = Some(correctGoodsItemNumber)
       )
-    ),
-    additionalInformationData = Some(correctAdditionalInformation),
-    documentsProducedData = Some(correctDocumentsProducedData)
+    )
   )
 
 }

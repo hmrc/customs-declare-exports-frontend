@@ -147,12 +147,12 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       getElementById(view, "descriptionOfGoods").text() must be("")
     }
 
-    "display \"Back\" button that links to \"Warehouse\" page" in {
+    "display \"Back\" button that links to \"procedure-codes\" page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/warehouse")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/procedure-codes")
     }
 
     "display \"Save and continue\" button" in {

@@ -16,10 +16,28 @@
 
 package base
 
+import play.api.libs.json.{Json, Writes}
+import uk.gov.hmrc.http.cache.client.CacheMap
+
+import scala.annotation.tailrec
 import scala.util.Random
 
 object TestHelper {
 
   def createRandomString(length: Int): String = Random.alphanumeric.take(length).mkString
+
+  def getDataSeq[A](n: Int, elem: A): Seq[A] = {
+    @tailrec
+    def loop(n: Int, seq: Seq[A]): Seq[A] =
+      if (n == 0) {
+        seq
+      } else {
+        loop(n - 1, seq :+ elem)
+      }
+    loop(n, Seq.empty)
+  }
+
+  def getCacheMap[A](data: A, formId: String)(implicit writes: Writes[A]): CacheMap =
+    CacheMap(formId, Map(formId -> Json.toJson(data)))
 
 }
