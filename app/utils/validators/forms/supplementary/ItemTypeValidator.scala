@@ -16,8 +16,8 @@
 
 package utils.validators.forms.supplementary
 
-import forms.supplementary.ItemType
-import forms.supplementary.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
+import forms.declaration.ItemType
+import forms.declaration.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
 import play.api.data.Forms.{optional, seq, text}
 import play.api.data.{Form, Forms}
 import utils.validators.forms.FieldValidator._

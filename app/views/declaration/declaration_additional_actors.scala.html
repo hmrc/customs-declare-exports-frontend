@@ -1,0 +1,81 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.declaration.routes._
+@import controllers.util.Remove
+@import forms.declaration.DeclarationAdditionalActors
+@import forms.declaration.DeclarationAdditionalActors.PartyType._
+@import models.declaration.DeclarationAdditionalActorsData
+@import uk.gov.hmrc.play.views.html._
+@import utils.RadioOption
+@(appConfig: AppConfig, form: Form[DeclarationAdditionalActors], actors: Seq[DeclarationAdditionalActors])(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("supplementary.additionalActors.title"),
+    appConfig = appConfig
+) {
+    @helpers.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
+        @components.back_link("/customs-declare-exports/declaration/representative-details")
+
+        @components.error_summary(form.errors)
+
+        @components.page_title(Some("supplementary.additionalActors.title"), Some(""))
+
+        @if(actors.nonEmpty) {
+            <table class="form-group">
+                <thead>
+                    <tr>
+                        <th scope="col">@messages("supplementary.additionalActors.eori")</th>
+                        <th scope="col">@messages("supplementary.additionalActors.partyType")</th>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                @for(actor <- actors) {
+                    <tr>
+                        <td scope="row">@actor.eori</td>
+                        <td>@actor.partyType</td>
+                        <td><button class="button--secondary" name="@Remove.toString" value="@actor.toJson">@messages("site.remove")</button></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+
+        @components.input_text(
+            field = form("eori"),
+            label = messages("supplementary.additionalActors.eori"),
+            hint = Some(messages("supplementary.eori.hint")),
+            labelClass = Some("font-weight: 400")
+        )
+
+        @components.page_title(Some("supplementary.additionalActors.partyType"), Some(""))
+
+        @components.input_radio(
+            field = form("partyType"),
+            legend = "",
+            inputs = Seq(
+                RadioOption("supplementary.partyType", Consolidator),
+                RadioOption("supplementary.partyType", Manufacturer),
+                RadioOption("supplementary.partyType", FreightForwarder),
+                RadioOption("supplementary.partyType", WarehouseKeeper)
+            )
+        )
+
+        @components.add_save_button()
+    }
+}

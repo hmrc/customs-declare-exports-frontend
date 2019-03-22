@@ -16,7 +16,7 @@
 
 package generators
 
-import forms.supplementary.{CommodityMeasure, PackageInformation}
+import forms.declaration.{CommodityMeasure, PackageInformation}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}

@@ -1,0 +1,166 @@
+# Declaration type
+
+GET         /dispatch-location              controllers.declaration.DeclarationTypeController.displayDispatchLocationPage()
+
+POST        /dispatch-location              controllers.declaration.DeclarationTypeController.submitDispatchLocation()
+
+GET         /type                           controllers.declaration.DeclarationTypeController.displayAdditionalDeclarationTypePage()
+
+POST        /type                           controllers.declaration.DeclarationTypeController.submitAdditionalDeclarationType()
+
+# Not Eligible
+
+GET         /not-eligible                   controllers.declaration.NotEligibleController.displayPage()
+
+# Consignment references
+
+GET         /consignment-references         controllers.declaration.ConsignmentReferencesController.displayPage()
+
+POST        /consignment-references         controllers.declaration.ConsignmentReferencesController.submitConsignmentReferences()
+
+# Exporter address
+
+GET         /exporter-details               controllers.declaration.ExporterDetailsPageController.displayForm()
+
+POST        /exporter-details               controllers.declaration.ExporterDetailsPageController.saveAddress()
+
+# Declarant address
+
+GET         /declarant-details              controllers.declaration.DeclarantDetailsPageController.displayForm()
+
+POST        /declarant-details              controllers.declaration.DeclarantDetailsPageController.saveAddress()
+
+# Representative details
+
+GET         /representative-details         controllers.declaration.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
+
+POST        /representative-details         controllers.declaration.RepresentativeDetailsPageController.submitRepresentativeDetails()
+
+# Consignee details
+
+GET         /consignee-details              controllers.declaration.ConsigneeDetailsPageController.displayForm()
+
+POST        /consignee-details              controllers.declaration.ConsigneeDetailsPageController.saveAddress()
+
+
+# Declaration additional address
+
+GET         /additional-actors              controllers.declaration.DeclarationAdditionalActorsController.displayForm()
+
+POST        /additional-actors              controllers.declaration.DeclarationAdditionalActorsController.saveForm()
+
+# Declaration holder of authorisation
+
+GET         /holder-of-authorisation        controllers.declaration.DeclarationHolderController.displayForm()
+
+POST        /holder-of-authorisation        controllers.declaration.DeclarationHolderController.submitHoldersOfAuthorisation()
+
+# Destination countries
+
+GET         /destination-countries          controllers.declaration.DestinationCountriesController.displayForm()
+
+POST        /destination-countries          controllers.declaration.DestinationCountriesController.saveCountries()
+
+# Location of goods
+
+GET         /location-of-goods              controllers.declaration.LocationController.displayForm()
+
+POST        /location-of-goods              controllers.declaration.LocationController.saveLocation()
+
+# Procedure codes
+
+GET         /procedure-codes                controllers.declaration.ProcedureCodesPageController.displayPage()
+
+POST        /procedure-codes                controllers.declaration.ProcedureCodesPageController.submitProcedureCodes()
+
+# Supervising customs office
+
+GET         /supervising-office             controllers.declaration.SupervisingCustomsOfficeController.displayForm()
+
+POST        /supervising-office             controllers.declaration.SupervisingCustomsOfficeController.saveSupervisingOffice()
+
+# Identification of a Warehouse
+
+GET         /warehouse                      controllers.declaration.WarehouseIdentificationController.displayForm()
+
+POST        /warehouse                      controllers.declaration.WarehouseIdentificationController.saveWarehouse()
+
+# Office of exit
+
+GET         /office-of-exit                 controllers.declaration.OfficeOfExitController.displayForm()
+
+POST        /office-of-exit                 controllers.declaration.OfficeOfExitController.saveOffice()
+
+# Transport Information
+
+GET         /transport-information          controllers.declaration.TransportInformationPageController.displayPage()
+
+POST        /transport-information          controllers.declaration.TransportInformationPageController.submitTransportInformation()
+
+# Transport Information Containers
+
+GET         /add-transport-containers       controllers.declaration.TransportInformationContainersPageController.displayPage()
+
+POST        /add-transport-containers       controllers.declaration.TransportInformationContainersPageController.handlePost()
+
+# Total number of items
+
+GET         /total-numbers-of-items         controllers.declaration.TotalNumberOfItemsController.displayForm()
+
+POST        /total-numbers-of-items         controllers.declaration.TotalNumberOfItemsController.saveNoOfItems()
+
+# Add Documents
+
+GET         /add-document                   controllers.declaration.DocumentsProducedController.displayForm()
+
+POST        /add-document                   controllers.declaration.DocumentsProducedController.saveForm()
+
+# Item Type
+
+GET         /item-type                      controllers.declaration.ItemTypePageController.displayPage()
+
+POST        /item-type                      controllers.declaration.ItemTypePageController.submitItemType()
+
+# Previous documents
+
+GET         /previous-documents             controllers.declaration.PreviousDocumentsController.displayForm()
+
+POST        /previous-documents             controllers.declaration.PreviousDocumentsController.savePreviousDocuments()
+
+# Additional information
+
+GET         /additional-information         controllers.declaration.AdditionalInformationController.displayForm()
+
+POST        /additional-information         controllers.declaration.AdditionalInformationController.saveAdditionalInfo()
+
+# Transaction type
+
+GET         /transaction-type               controllers.declaration.TransactionTypeController.displayForm()
+
+POST        /transaction-type               controllers.declaration.TransactionTypeController.saveTransactionType()
+
+# Package Information
+
+GET         /package-information            controllers.declaration.PackageInformationController.displayForm()
+
+POST        /package-information            controllers.declaration.PackageInformationController.submitForm()
+
+# Commodity Measure Information
+
+GET         /commodity-measure              controllers.declaration.CommodityMeasureController.displayForm()
+
+POST        /commodity-measure              controllers.declaration.CommodityMeasureController.submitForm()
+
+# Items Summary
+
+GET         /export-items                   controllers.declaration.ItemsSummaryController.displayForm()
+
+# Summary
+
+GET         /summary                        controllers.declaration.SummaryPageController.displayPage()
+
+POST        /summary                        controllers.declaration.SummaryPageController.submitSupplementaryDeclaration()
+
+# Confirmation
+
+GET         /confirmation                   controllers.declaration.ConfirmationPageController.displayPage()

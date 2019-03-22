@@ -17,8 +17,9 @@
 package services
 import base.TestHelper._
 import base.{CustomExportsBaseSpec, TestHelper}
-import forms.supplementary.{CommodityMeasure, ItemType, PackageInformation}
-import models.declaration.supplementary.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import forms.declaration.{CommodityMeasure, ItemType, PackageInformation}
+import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import models.declaration.{AdditionalInformationData, DocumentsProducedData}
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
