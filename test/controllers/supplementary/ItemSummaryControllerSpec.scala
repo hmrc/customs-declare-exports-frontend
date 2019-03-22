@@ -24,8 +24,6 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import uk.gov.hmrc.wco.dec.{GovernmentAgencyGoodsItem, Packaging}
 
-import scala.util.Random
-
 class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
 
   val uri = uriWithContextPath("/declaration/supplementary/export-items")
@@ -80,7 +78,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
         "more than one export item added " in {
           authorizedUser()
 
-             GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging()))
+          GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging()))
           val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
 
           withCaching[Seq[GovernmentAgencyGoodsItem]](Some(cachedData), formId)

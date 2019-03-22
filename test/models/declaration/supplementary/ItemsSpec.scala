@@ -29,7 +29,8 @@ class ItemsSpec extends WordSpec with MustMatchers {
     val items = Items(
       totalNumberOfItems = Some(totalNumberOfItemsMock),
       transactionType = Some(transactionTypeMock),
-      goodsItemNumber = Some(itemNumberMock))
+      goodsItemNumber = Some(itemNumberMock)
+    )
 
     when(totalNumberOfItemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     when(transactionTypeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
@@ -57,9 +58,7 @@ class ItemsSpec extends WordSpec with MustMatchers {
       }
 
       "return Map being sum of all Maps from sub-objects" in new TestMapConcatenation {
-        items.toMetadataProperties() must equal(
-          totalNumberOfItemsMap ++ transactionTypeMap ++ itemNumberMap
-        )
+        items.toMetadataProperties() must equal(totalNumberOfItemsMap ++ transactionTypeMap ++ itemNumberMap)
       }
     }
   }

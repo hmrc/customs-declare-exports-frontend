@@ -150,11 +150,11 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
       result.futureValue mustBe true
       //TODO : Check specific goodsItem is being added
       verify(mockCustomsCacheService)
-        .cache[Seq[GovernmentAgencyGoodsItem]](ArgumentMatchers.eq("supplementaryCacheId"), ArgumentMatchers.eq("exportItems"),any())(
-          any(),
-          any(),
+        .cache[Seq[GovernmentAgencyGoodsItem]](
+          ArgumentMatchers.eq("supplementaryCacheId"),
+          ArgumentMatchers.eq("exportItems"),
           any()
-        )
+        )(any(), any(), any())
       verify(mockCustomsCacheService)
         .remove(ArgumentMatchers.eq("goodsItemCacheId"))(any(), any())
     }
