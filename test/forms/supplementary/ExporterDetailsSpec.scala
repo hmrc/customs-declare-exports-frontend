@@ -18,6 +18,7 @@ package forms.supplementary
 
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsValue}
+import uk.gov.hmrc.wco.dec.MetaData
 
 class ExporterDetailsSpec extends WordSpec with MustMatchers {
   import ExporterDetailsSpec._
@@ -26,18 +27,27 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers {
     "return proper Metadata Properties" in {
       val exporterDetails = correctExporterDetails
       val countryCode = "PL"
-      val expectedExporterDetailsProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.id" -> exporterDetails.details.eori.get,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.name" -> exporterDetails.details.address.get.fullName,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.line" -> exporterDetails.details.address.get.addressLine,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.cityName" -> exporterDetails.details.address.get.townOrCity,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.postcodeId" -> exporterDetails.details.address.get.postCode,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.countryCode" -> countryCode
-      )
 
-      exporterDetails.toMetadataProperties() must equal(expectedExporterDetailsProperties)
+      val metadata = MetaData.fromProperties(exporterDetails.toMetadataProperties())
+
+      metadata.declaration must be(defined)
+      metadata.declaration.get.exporter must be(defined)
+      metadata.declaration.get.exporter.get.id must be(defined)
+      metadata.declaration.get.exporter.get.id.get must equal(exporterDetails.details.eori.get)
+      metadata.declaration.get.exporter.get.name must be(defined)
+      metadata.declaration.get.exporter.get.name.get must equal(exporterDetails.details.address.get.fullName)
+      metadata.declaration.get.exporter.get.address must be(defined)
+      metadata.declaration.get.exporter.get.address.get.line must be(defined)
+      metadata.declaration.get.exporter.get.address.get.line.get must equal(exporterDetails.details.address.get.addressLine)
+      metadata.declaration.get.exporter.get.address.get.cityName must be(defined)
+      metadata.declaration.get.exporter.get.address.get.cityName.get must equal(exporterDetails.details.address.get.townOrCity)
+      metadata.declaration.get.exporter.get.address.get.postcodeId must be(defined)
+      metadata.declaration.get.exporter.get.address.get.postcodeId.get must equal(exporterDetails.details.address.get.postCode)
+      metadata.declaration.get.exporter.get.address.get.countryCode must be(defined)
+      metadata.declaration.get.exporter.get.address.get.countryCode.get must equal(countryCode)
     }
   }
+
 
 }
 
