@@ -23,16 +23,16 @@ import services.Countries.allCountries
 case class ExporterDetails(details: EntityDetails) extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
-    Map("declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.id" -> details.eori.getOrElse("")) ++ buildAddressProperties()
+    Map("declaration.exporter.id" -> details.eori.getOrElse("")) ++ buildAddressProperties()
 
   private def buildAddressProperties(): Map[String, String] = details.address match {
     case Some(address) =>
       Map(
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.name" -> address.fullName,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.line" -> address.addressLine,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.cityName" -> address.townOrCity,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.postcodeId" -> address.postCode,
-        "declaration.goodsShipment.governmentAgencyGoodsItems[0].consignor.address.countryCode" ->
+        "declaration.exporter.name" -> address.fullName,
+        "declaration.exporter.address.line" -> address.addressLine,
+        "declaration.exporter.address.cityName" -> address.townOrCity,
+        "declaration.exporter.address.postcodeId" -> address.postCode,
+        "declaration.exporter.address.countryCode" ->
           allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
       )
     case None => Map.empty
