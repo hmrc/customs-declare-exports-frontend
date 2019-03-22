@@ -147,6 +147,10 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
   "Documents Produced View for invalid input" should {
 
+    /*
+     * Again works same for both Add and Save and Continue button
+     */
+
     "display error for Document type code" in {
 
       val view = createView(

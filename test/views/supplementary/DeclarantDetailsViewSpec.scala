@@ -463,7 +463,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
   "Declarant Details View when filled" should {
 
-    "display data EORI input" in {
+    "display data in EORI input" in {
 
       val form = DeclarantDetails.form().fill(DeclarantDetails(EntityDetails(Some("1234"), None)))
       val view = createView(form)

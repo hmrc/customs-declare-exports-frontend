@@ -16,14 +16,14 @@
 
 package controllers.supplementary
 
-import base.{CustomExportsBaseSpec, TestHelper}
+import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.supplementary.Document._
 import forms.supplementary.{Document, PreviousDocumentsData}
-import org.scalatest.BeforeAndAfter
+import helpers.views.supplementary.{CommonMessages, PreviousDocumentsMessages}
 import play.api.test.Helpers._
 
-class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with PreviousDocumentsMessages with CommonMessages with ViewValidator {
   import PreviousDocumentsControllerSpec._
 
   val uri = uriWithContextPath("/declaration/supplementary/previous-documents")
@@ -39,22 +39,35 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with BeforeA
   "Previous Documents Controller on GET" should {
 
     "return 200 status code" in {
+
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
     }
 
-    "display previous documents form with added items" in {
+    "display Previous Documents form with added items from cache" in {
+
       withCaching[PreviousDocumentsData](Some(cachedData), formId)
 
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
+      val page = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.previousDocuments." + document.documentCategory))
-      stringResult must include(document.documentType)
-      stringResult must include(document.documentReference)
-      stringResult must include(document.goodsItemIdentifier.get)
+
+      // table header
+      getElementByCss(page, "form>table>caption").text() must be(messages(previousDocuments))
+      getElementByCss(page, "form>table>thead>tr>th:nth-child(1)").text() must be(messages(documentCategoryLabel))
+      getElementByCss(page, "form>table>thead>tr>th:nth-child(2)").text() must be(messages(documentTypeLabel))
+      getElementByCss(page, "form>table>thead>tr>th:nth-child(3)").text() must be(messages(documentReferenceLabel))
+      getElementByCss(page, "form>table>thead>tr>th:nth-child(4)").text() must be(messages(documentGoodsIdentifierLabel))
+      getElementByCss(page, "form>table>thead>tr>th:nth-child(5)").text() must be(messages(removePackageInformation))
+
+      // row
+      getElementByCss(page, "form>table>tbody>tr>td:nth-child(1)").text() must be(messages(documentX))
+      getElementByCss(page, "form>table>tbody>tr>td:nth-child(2)").text() must be("1")
+      getElementByCss(page, "form>table>tbody>tr>td:nth-child(3)").text() must be("A")
+      getElementByCss(page, "form>table>tbody>tr>td:nth-child(4)").text() must be("1")
+      getElementByCss(page, "form>table>tbody>tr>td:nth-child(5)>button").text() must be(messages(removeCaption))
     }
   }
 
@@ -63,14 +76,15 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with BeforeA
     "add an item successfully" when {
 
       "cache is empty" in {
-        val body = correctDocument :+ addActionURLEncoded
 
+        val body = correctDocument :+ addActionURLEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
       }
 
       "item is not duplicated" in {
+
         withCaching[PreviousDocumentsData](Some(cachedData), formId)
 
         val document =
@@ -91,6 +105,7 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with BeforeA
     "remove an item successfully" when {
 
       "exists in cache" in {
+
         withCaching[PreviousDocumentsData](Some(cachedData), formId)
 
         val body = removeActionURLEncoded("0")
@@ -104,201 +119,304 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with BeforeA
     "display page with an error during add" when {
 
       "item doesn't contain any data" in {
+
         val body = emptyDocument :+ addActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val stringResult = contentAsString(result)
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        stringResult must include(messages("supplementary.previousDocuments.documentCategory.error.empty"))
-        stringResult must include(messages("supplementary.previousDocuments.documentType.empty"))
-        stringResult must include(messages("supplementary.previousDocuments.documentReference.empty"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentCategoryEmpty, "#documentCategory")
+        checkErrorLink(page, 2, documentTypeEmpty, "#documentType")
+        checkErrorLink(page, 3, documentReferenceEmpty, "#documentReference")
+
+        getElementByCss(page, "#error-message-documentCategory-input").text() must be(messages(documentCategoryEmpty))
+        getElementByCss(page, "#error-message-documentType-input").text() must be(messages(documentTypeEmpty))
+        getElementByCss(page, "#error-message-documentReference-input").text() must be(messages(documentReferenceEmpty))
       }
 
       "item doesn't contain document category" in {
+
         val body = documentWithoutCategory :+ addActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.previousDocuments.documentCategory.error.empty"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentCategoryEmpty, "#documentCategory")
+
+        getElementByCss(page, "#error-message-documentCategory-input").text() must be(messages(documentCategoryEmpty))
       }
 
       "item doesn't contain document type" in {
+
         val body = documentWithoutType :+ addActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.previousDocuments.documentType.empty"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentTypeEmpty, "#documentType")
+
+        getElementByCss(page, "#error-message-documentType-input").text() must be(messages(documentTypeEmpty))
       }
 
       "item doesn't contain document reference" in {
+
         val body = documentWithoutReference :+ addActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.previousDocuments.documentReference.empty"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentReferenceEmpty, "#documentReference")
+
+        getElementByCss(page, "#error-message-documentReference-input").text() must be(messages(documentReferenceEmpty))
       }
 
       "item contains incorrect document category" in {
+
         val body = documentWithIncorrectCategory :+ addActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(
-          messages("supplementary.previousDocuments.documentCategory.error.incorrect")
-        )
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentCategoryError, "#documentCategory")
+
+        getElementByCss(page, "#error-message-documentCategory-input").text() must be(messages(documentCategoryError))
       }
 
       "item contains incorrect document type" in {
+
         val body = documentWithIncorrectType :+ addActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.previousDocuments.documentType.error"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentTypeError, "#documentType")
+
+        getElementByCss(page, "#error-message-documentType-input").text() must be(messages(documentTypeError))
       }
 
       "item contains incorrect document reference" in {
+
         val body = documentWithIncorrectReference :+ addActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.previousDocuments.documentReference.error"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentReferenceError, "#documentReference")
+
+        getElementByCss(page, "#error-message-documentReference-input").text() must be(messages(documentReferenceError))
       }
 
       "item contains incorrect goods item identifier" in {
+
         val body = documentWithIncorrectIdentifier :+ addActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.previousDocuments.goodsItemIdentifier.error"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentGoodsIdentifierError, "#goodsItemIdentifier")
+
+        getElementByCss(page, "#error-message-goodsItemIdentifier-input").text() must be(messages(documentGoodsIdentifierError))
       }
 
       "item duplication in cache" in {
+
         withCaching[PreviousDocumentsData](Some(cachedData), formId)
 
         val body = correctDocument :+ addActionURLEncoded
-
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.duplication"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, duplication, "#")
       }
 
       "limit of items reached" in {
+
         withCaching[PreviousDocumentsData](Some(fullCache), formId)
 
-        val body = correctDocument :+ addActionURLEncoded
-
+        val body = Seq(("documentCategory", "Y"), ("documentType", "1"), ("documentReference", "A"), ("goodsItemIdentifier", "1")) :+ addActionURLEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.limit"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, limit, "#")
       }
     }
 
     "display page with error during save and continue" when {
 
       "item doesn't contain any data and with empty cache - screen is mandatory" in {
+
         val body = emptyDocument :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.continue.mandatory"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, continueMandatory, "#")
       }
 
       "item doesn't contain document category" in {
+
         val body = documentWithoutCategory :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.previousDocuments.documentCategory.error.empty"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentCategoryEmpty, "#documentCategory")
+
+        getElementByCss(page, "#error-message-documentCategory-input").text() must be(messages(documentCategoryEmpty))
       }
 
       "item doesn't contain document type" in {
+
         val body = documentWithoutType :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.previousDocuments.documentType.empty"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentTypeEmpty, "#documentType")
+
+        getElementByCss(page, "#error-message-documentType-input").text() must be(messages(documentTypeEmpty))
       }
 
       "item doesn't contain document reference" in {
+
         val body = documentWithoutReference :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.previousDocuments.documentReference.empty"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentReferenceEmpty, "#documentReference")
+
+        getElementByCss(page, "#error-message-documentReference-input").text() must be(messages(documentReferenceEmpty))
       }
 
       "item contains incorrect document category" in {
+
         val body = documentWithIncorrectCategory :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(
-          messages("supplementary.previousDocuments.documentCategory.error.incorrect")
-        )
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentCategoryError, "#documentCategory")
+
+        getElementByCss(page, "#error-message-documentCategory-input").text() must be(messages(documentCategoryError))
       }
 
       "item contains incorrect document type" in {
+
         val body = documentWithIncorrectType :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.previousDocuments.documentType.error"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentTypeError, "#documentType")
+
+        getElementByCss(page, "#error-message-documentType-input").text() must be(messages(documentTypeError))
       }
 
       "item contains incorrect document reference" in {
+
         val body = documentWithIncorrectReference :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.previousDocuments.documentReference.error"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentReferenceError, "#documentReference")
+
+        getElementByCss(page, "#error-message-documentReference-input").text() must be(messages(documentReferenceError))
       }
 
       "item contains incorrect goods item identifier" in {
+
         val body = documentWithIncorrectIdentifier :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.previousDocuments.goodsItemIdentifier.error"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, documentGoodsIdentifierError, "#goodsItemIdentifier")
+
+        getElementByCss(page, "#error-message-goodsItemIdentifier-input").text() must be(messages(documentGoodsIdentifierError))
       }
 
       "item duplication in cache" in {
+
         withCaching[PreviousDocumentsData](Some(cachedData), formId)
 
         val body = correctDocument :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.duplication"))
+
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, duplication, "#")
       }
 
       "limit of items reached" in {
+
         withCaching[PreviousDocumentsData](Some(fullCache), formId)
 
-        val body = correctDocument :+ saveAndContinueActionURLEncoded
+        val body = Seq(("documentCategory", "Y"), ("documentType", "1"), ("documentReference", "A"), ("goodsItemIdentifier", "1")) :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages("supplementary.limit"))
+        checkErrorsSummary(page)
+        checkErrorLink(page, 1, limit, "#")
       }
     }
 

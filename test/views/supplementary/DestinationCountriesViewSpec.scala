@@ -116,6 +116,19 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       getElementByCss(view, "span.error-message").text() must be(messages(countryOfDispatchError))
     }
 
+    "display error when destination country is empty" in {
+
+      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
+        "Germany",
+        ""
+      )))
+
+      checkErrorsSummary(view)
+      checkErrorLink(view, 1, messages(countryOfDestinationEmpty), "#countryOfDestination")
+
+      getElementByCss(view, "span.error-message").text() must be(messages(countryOfDestinationEmpty))
+    }
+
     "display error when destination country is incorrect" in {
 
       val view = createView(
@@ -145,6 +158,24 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       spanErrors.get(0).text() must be(messages(countryOfDispatchError))
       spanErrors.get(1).text() must be(messages(countryOfDestinationError))
+    }
+
+    "display errors when both countries are empty" in {
+
+      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
+        "",
+        ""
+      )))
+
+      checkErrorsSummary(view)
+      checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
+      checkErrorLink(view, 2, messages(countryOfDestinationEmpty), "#countryOfDestination")
+
+      val spanErrors = getElementsByCss(view, "span.error-message")
+      spanErrors.size() must be(2)
+
+      spanErrors.get(0).text() must be(messages(countryOfDispatchEmpty))
+      spanErrors.get(1).text() must be(messages(countryOfDestinationEmpty))
     }
 
     "display errors when dispatch country is empty and destination is incorrect" in {

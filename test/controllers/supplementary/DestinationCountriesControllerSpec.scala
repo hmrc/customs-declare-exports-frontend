@@ -67,7 +67,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       val result = route(app, postRequest(uri, emptyDispatchCountriesJSON)).get
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages("supplementary.destinationCountries.countryOfDestination.empty"))
+      contentAsString(result) must include(messages(countryOfDestinationEmpty))
     }
 
     "validate request and redirect - correct values" in {

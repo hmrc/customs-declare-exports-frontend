@@ -112,7 +112,7 @@ trait Generators {
     } yield CommodityMeasure(Some(supplementaryUnits.toString), netMass.toString, grossMass.toString)
   }
   implicit val arbitraryPackagingSeq = listOfN[PackageInformation](5, arbitraryPackaging.arbitrary)
-  implicit val arbitraryPackagingMaxSeq = Gen.listOfN[PackageInformation](99, arbitraryPackaging.arbitrary)
+  implicit val arbitraryPackagingMaxSeq = listOfN[PackageInformation](99, arbitraryPackaging.arbitrary)
 
   def caseClassToSeq(cc: AnyRef) =
     (Map[String, String]() /: cc.getClass.getDeclaredFields) { (a, f) =>

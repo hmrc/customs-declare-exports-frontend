@@ -515,11 +515,11 @@ supplementary.previousDocuments.documentReference = Enter the reference for the 
 supplementary.previousDocuments.documentReference.error = Reference for the DUCR or MUCR is incorrect
 supplementary.previousDocuments.documentReference.empty = Reference for the DUCR or MUCR cannot be empty
 supplementary.previousDocuments.goodsItemIdentifier = Enter the goods item this previous document relates to
-supplementary.previousDocuments.goodsItemIdentifier.error = This fields is incorrect
+supplementary.previousDocuments.goodsItemIdentifier.error = This field is incorrect
 supplementary.previousDocuments.documentCategory.label = Document Category
 supplementary.previousDocuments.documentType.label = Document Type
 supplementary.previousDocuments.documentReference.label = Document Reference
-supplementary.previousDocuments.goodsItemIdentifier.label = Goods Item Identofier
+supplementary.previousDocuments.goodsItemIdentifier.label = Goods Item Identifier
 
 supplementary.additionalInformation = Additional information
 supplementary.additionalInformation.title = 2/2 Additional information

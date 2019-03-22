@@ -115,18 +115,28 @@ class AdditionalInformationControllerSpec
 
           val body = Seq(("code", ""), ("description", "Davis"), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
-          contentAsString(result) must include(messages(codeEmpty))
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, codeEmpty, "#code")
+
+          getElementByCss(page, "#error-message-code-input").text() must be(messages(codeEmpty))
         }
 
         "an item without a description" in {
 
           val body = Seq(("code", "M1l3s"), ("description", ""), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
-          contentAsString(result) must include(messages(descriptionEmpty))
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, descriptionEmpty, "#description")
+
+          getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionEmpty))
         }
 
         "an item without any data" in {
@@ -171,27 +181,42 @@ class AdditionalInformationControllerSpec
 
           val body = Seq(("code", createRandomString(6)), ("description", ""), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
-          contentAsString(result) must include(messages(codeError))
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, codeError, "#code")
+
+          getElementByCss(page, "#error-message-code-input").text() must be(messages(codeError))
         }
 
         "an item with shorter code" in {
 
           val body = Seq(("code", createRandomString(3)), ("description", ""), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
-          contentAsString(result) must include(messages(codeError))
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, codeError, "#code")
+
+          getElementByCss(page, "#error-message-code-input").text() must be(messages(codeError))
         }
 
         "an item with longer description" in {
 
           val body = Seq(("code", "M1l3s"), ("description", createRandomString(100)), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
-          contentAsString(result) must include(messages(descriptionError))
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, descriptionError, "#description")
+
+          getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionError))
         }
 
         "a duplicated item" in {
@@ -230,21 +255,31 @@ class AdditionalInformationControllerSpec
 
           val body = Seq(("code", ""), ("description", "Davis"), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
-          contentAsString(result) must include(messages(codeEmpty))
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, codeEmpty, "#code")
+
+          getElementByCss(page, "#error-message-code-input").text() must be(messages(codeEmpty))
         }
 
         "without a description" in {
 
           val body = Seq(("code", "123rt"), ("description", ""), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
-          contentAsString(result) must include(messages(descriptionEmpty))
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, descriptionEmpty, "#description")
+
+          getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionEmpty))
         }
 
-        "an item with both fields incorrect" in {
+        "both fields are incorrect" in {
 
           withCaching[AdditionalInformationData](None, formId)
 
@@ -274,6 +309,63 @@ class AdditionalInformationControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, continueMandatory, "#")
+        }
+
+        "an item has longer code" in {
+
+          val body = Seq(("code", createRandomString(6)), ("description", ""), saveAndContinueActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
+
+          status(result) must be(BAD_REQUEST)
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, codeError, "#code")
+
+          getElementByCss(page, "#error-message-code-input").text() must be(messages(codeError))
+        }
+
+        "an item has shorter code" in {
+
+          val body = Seq(("code", createRandomString(3)), ("description", ""), saveAndContinueActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
+
+          status(result) must be(BAD_REQUEST)
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, codeError, "#code")
+
+          getElementByCss(page, "#error-message-code-input").text() must be(messages(codeError))
+        }
+
+        "an item has longer description" in {
+
+          val body = Seq(("code", "M1l3s"), ("description", createRandomString(100)), saveAndContinueActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
+
+          status(result) must be(BAD_REQUEST)
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, descriptionError, "#description")
+
+          getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionError))
+        }
+
+        "a duplicated item is entered" in {
+
+          val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis")))
+          withCaching[AdditionalInformationData](Some(cachedData), formId)
+
+          val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionURLEncoded)
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val page = contentAsString(result)
+
+          status(result) must be(BAD_REQUEST)
+
+          checkErrorsSummary(page)
+          checkErrorLink(page, 1, duplication, "#")
         }
 
         "with more than 99 items" in {

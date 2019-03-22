@@ -23,6 +23,7 @@ trait DestinationCountriesMessages {
   val title: String = prefix + ".title"
   val countryOfDestination: String = prefix + ".countryOfDestination"
   val countryOfDestinationError: String = prefix + ".countryOfDestination.error"
+  val countryOfDestinationEmpty: String = prefix + ".countryOfDestination.empty"
   val countryOfDispatch: String = prefix + ".countryOfDispatch"
   val countryOfDispatchError: String = prefix + ".countryOfDispatch.error"
   val countryOfDispatchEmpty: String = prefix + ".countryOfDispatch.empty"

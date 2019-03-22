@@ -359,7 +359,6 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
       getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
       getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
-
     }
 
     "display errors when everything except Country is empty" in {

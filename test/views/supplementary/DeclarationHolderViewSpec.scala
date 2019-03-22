@@ -104,6 +104,10 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
 
   "Declaration Holder View for invalid input" should {
 
+    /*
+     * Both add and save button returns the same kind of errors, so
+     * no point to distinguish them and move to controller test
+     */
     "display error for incorrect Authorisation code" in {
 
       val view = createView(

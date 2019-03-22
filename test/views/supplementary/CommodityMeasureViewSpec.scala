@@ -73,9 +73,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
     "display header with hint" in {
 
-      val view = createView()
-
-      getElementByCss(view, "legend>h1").text() must be(messages(title))
+      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
     }
 
     "display empty input with label for supplementary units" in {

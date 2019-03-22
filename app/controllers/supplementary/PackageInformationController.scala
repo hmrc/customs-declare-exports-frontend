@@ -118,7 +118,7 @@ class PackageInformationController @Inject()(
 
   private def isAdditionValid[A](item: A)(implicit cachedItems: Seq[A]): Option[String] =
     if (cachedItems.contains(item)) Some(DUPLICATE_MSG_KEY)
-    else if (cachedItems.size > packagesMaxElements) Some(LIMIT_MSG_KEY)
+    else if (cachedItems.size >= packagesMaxElements) Some(LIMIT_MSG_KEY)
     else None
 
   private def badRequest(
