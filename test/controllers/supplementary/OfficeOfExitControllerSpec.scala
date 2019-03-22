@@ -19,68 +19,47 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.OfficeOfExit
 import forms.supplementary.OfficeOfExitSpec._
-import org.scalatest.BeforeAndAfter
+import helpers.views.supplementary.OfficeOfExitMessages
 import play.api.test.Helpers._
 
-class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExitMessages {
 
   val uri = uriWithContextPath("/declaration/supplementary/office-of-exit")
 
   before {
     authorizedUser()
+    withCaching[OfficeOfExit](None)
   }
 
-  "Office Of Exit Controller on display page" should {
+  "Office of Exit Controller on GET" should {
 
-    "display office of exit form" in {
-      withCaching[OfficeOfExit](None)
+    "return 200 with a success" in {
 
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.officeOfExit.title"))
-      stringResult must include(messages("supplementary.officeOfExit"))
-      stringResult must include(messages("supplementary.officeOfExit.hint"))
     }
+  }
 
-    "display \"Back\" button that links to \"Location of goods\" page" in {
+  "Office Of Exit Controller on POST" should {
 
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
-
-      status(result) must be(OK)
-      stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/supplementary/location-of-goods"))
-    }
-
-    "display \"Save and continue\" button on page" in {
-
-      val result = route(app, getRequest(uri)).get
-      val resultAsString = contentAsString(result)
-
-      resultAsString must include(messages("site.save_and_continue"))
-      resultAsString must include("button id=\"submit\" class=\"button\"")
-    }
-
-    "validate form - incorrect value" in {
-      withCaching[OfficeOfExit](None)
+    "validate request and redirect - incorrect value" in {
 
       val result = route(app, postRequest(uri, incorrectOfficeOfExitJSON)).get
 
-      contentAsString(result) must include(messages("supplementary.officeOfExit.error"))
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(officeOfExitError))
     }
 
-    "validate form - empty form" in {
-      withCaching[OfficeOfExit](None)
+    "validate request and redirect - empty form" in {
 
       val result = route(app, postRequest(uri, emptyOfficeOfExitJSON)).get
 
-      contentAsString(result) must include(messages("supplementary.officeOfExit.empty"))
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(officeOfExitEmpty))
     }
 
-    "validate form and redirect - correct values" in {
-      withCaching[OfficeOfExit](None)
+    "validate request and redirect - correct values" in {
 
       val result = route(app, postRequest(uri, correctOfficeOfExitJSON)).get
       val header = result.futureValue.header

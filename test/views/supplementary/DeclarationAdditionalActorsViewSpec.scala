@@ -66,7 +66,6 @@ class DeclarationAdditionalActorsViewSpec
 
       val view = createView()
 
-      // will grab the first element
       getElementByCss(view, "label.form-label>span").text() must be(messages(eori))
       getElementByCss(view, "label.form-label>span.form-hint").text() must be(messages(eoriHint))
       getElementById(view, "eori").attr("value") must be("")

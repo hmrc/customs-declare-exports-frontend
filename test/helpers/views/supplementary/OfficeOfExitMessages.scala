@@ -16,12 +16,12 @@
 
 package helpers.views.supplementary
 
-trait GoodItemNumberMessages {
+trait OfficeOfExitMessages {
 
-  val goodItemNumber: String = "supplementary.goodItemNumber"
+  val officeOfExit: String = "supplementary.officeOfExit"
 
-  val title: String = goodItemNumber + ".title"
-  val hint: String = goodItemNumber + ".hint"
-  val goodItemError: String = goodItemNumber + ".error"
-  val goodItem: String = goodItemNumber
+  val title: String = officeOfExit + ".title"
+  val hint: String = officeOfExit + ".hint"
+  val officeOfExitEmpty: String = officeOfExit + ".empty"
+  val officeOfExitError: String = officeOfExit + ".error"
 }

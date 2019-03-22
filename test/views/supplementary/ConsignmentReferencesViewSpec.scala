@@ -69,9 +69,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display header" in {
 
-      val view = createView()
-
-      getElementByCss(view, "legend>h1").text() must be(messages(header))
+      getElementByCss(createView(), "legend>h1").text() must be(messages(header))
     }
 
     "display empty input with label for DUCR" in {

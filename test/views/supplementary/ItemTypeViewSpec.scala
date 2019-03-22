@@ -87,9 +87,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
     "display header" in {
 
-      val view = createView()
-
-      getElementByCss(view, "legend>h1").text() must be(messages(title))
+      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
     }
 
     "display empty input with label for CNC" in {

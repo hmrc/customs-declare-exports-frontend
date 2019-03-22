@@ -16,7 +16,6 @@
 
 package views.supplementary
 
-import base.TestHelper
 import forms.supplementary.AdditionalInformation
 import helpers.views.supplementary.{AdditionalInformationMessages, CommonMessages}
 import play.api.data.Form
@@ -33,7 +32,9 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
     additional_information(appConfig, form, Seq())(fakeRequest, messages)
 
   /*
-   * Some errors (cache) are tested in AdditionalInformationControllerSpec
+   * Moved all errors tests to AdditionalInformationControllerSpec,
+   * as the logic depends on which button we will press (we can't emulate it
+   * at view tests)
    */
   "Additional Information View" should {
 
@@ -99,56 +100,6 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
       val saveButton = getElementByCss(view, "#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
-    }
-  }
-
-  "Additional Information View for invalid input" when {
-
-    "adding" should {
-
-      "display error for empty code" in {
-
-        val view = createView(AdditionalInformation.form().fillAndValidate(AdditionalInformation("", "testing")))
-
-        checkErrorsSummary(view)
-        checkErrorLink(view, 1, codeEmpty, "#code")
-
-        getElementByCss(view, "#error-message-code-input").text() must be(messages(codeEmpty))
-      }
-
-      "display error for empty description" in {
-
-        val view = createView(AdditionalInformation.form().fillAndValidate(AdditionalInformation("12345", "")))
-
-        checkErrorsSummary(view)
-        checkErrorLink(view, 1, descriptionEmpty, "#description")
-
-        getElementByCss(view, "#error-message-description-input").text() must be(messages(descriptionEmpty))
-      }
-
-      "display error for incorrect code" in {
-
-        val view = createView(AdditionalInformation.form().fillAndValidate(AdditionalInformation("abcd", "")))
-
-        checkErrorsSummary(view)
-        checkErrorLink(view, 1, codeError, "#code")
-
-        getElementByCss(view, "#error-message-code-input").text() must be(messages(codeError))
-      }
-
-      "display error for incorrect description" in {
-
-        val view = createView(
-          AdditionalInformation
-            .form()
-            .fillAndValidate(AdditionalInformation("12345", TestHelper.createRandomString(71)))
-        )
-
-        checkErrorsSummary(view)
-        checkErrorLink(view, 1, descriptionError, "#description")
-
-        getElementByCss(view, "#error-message-description-input").text() must be(messages(descriptionError))
-      }
     }
   }
 

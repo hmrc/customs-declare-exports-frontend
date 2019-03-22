@@ -67,9 +67,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display header" in {
 
-      val view = createView()
-
-      getElementByCss(view, "legend>h1").text() must be(messages(title))
+      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
     }
 
     "display empty input with label for Country" in {

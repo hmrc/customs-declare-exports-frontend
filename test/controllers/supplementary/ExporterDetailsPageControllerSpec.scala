@@ -19,9 +19,10 @@ package controllers.supplementary
 import base.CustomExportsBaseSpec
 import forms.supplementary.ExporterDetails
 import forms.supplementary.ExporterDetailsSpec._
+import helpers.views.supplementary.CommonMessages
 import play.api.test.Helpers._
 
-class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec {
+class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with CommonMessages {
 
   val uri = uriWithContextPath("/declaration/supplementary/exporter-details")
 
@@ -46,7 +47,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, emptyExporterDetailsJSON)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include(messages("supplementary.namedEntityDetails.error"))
+      stringResult must include(messages(eoriOrAddressEmpty))
     }
 
     "validate request - incorrect values" in {
@@ -54,12 +55,12 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, incorrectExporterDetailsJSON)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include(messages("supplementary.eori.error"))
-      stringResult must include(messages("supplementary.address.fullName.error"))
-      stringResult must include(messages("supplementary.address.addressLine.error"))
-      stringResult must include(messages("supplementary.address.townOrCity.error"))
-      stringResult must include(messages("supplementary.address.postCode.error"))
-      stringResult must include(messages("supplementary.address.country.error"))
+      stringResult must include(messages(eoriError))
+      stringResult must include(messages(fullNameError))
+      stringResult must include(messages(addressLineError))
+      stringResult must include(messages(townOrCityError))
+      stringResult must include(messages(postCodeError))
+      stringResult must include(messages(countryError))
     }
 
     "validate request and redirect - only EORI provided" in {

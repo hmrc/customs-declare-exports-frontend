@@ -15,6 +15,7 @@
  */
 
 package views.supplementary
+
 import helpers.views.supplementary.{CommonMessages, NotEligibleMessages}
 import play.twirl.api.Html
 import views.html.supplementary.not_eligible
@@ -53,25 +54,19 @@ class NotEligibleViewSpec extends ViewSpec with NotEligibleMessages with CommonM
 
     "display header with hint" in {
 
-      val view = createView()
-
-      getElementByCss(view, "h1").text() must be(messages(title) + " " + messages(titleLineTwo))
+      getElementByCss(createView(), "h1").text() must be(messages(title) + " " + messages(titleLineTwo))
     }
 
     "display CHIEF information" in {
 
-      val view = createView()
-
-      getElementsByCss(view, "p:nth-child(3)").text() must be(
+      getElementsByCss(createView(), "p:nth-child(3)").text() must be(
         messages(descriptionPreUrl) + " " + messages(descriptionUrl) + " " + messages(descriptionPostUrl)
       )
     }
 
     "display CHIEF link" in {
 
-      val view = createView()
-
-      getElementByCss(view, "p:nth-child(3)>a").attr("href") must be("https://secure.hmce.gov.uk/ecom/login/index.html")
+      getElementByCss(createView(), "p:nth-child(3)>a").attr("href") must be("https://secure.hmce.gov.uk/ecom/login/index.html")
     }
 
     "display Help and Support with description" in {
