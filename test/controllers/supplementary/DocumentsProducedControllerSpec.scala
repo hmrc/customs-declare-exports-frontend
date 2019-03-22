@@ -25,9 +25,9 @@ import models.declaration.supplementary.DocumentsProducedData
 import models.declaration.supplementary.DocumentsProducedData.formId
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
+
 import scala.concurrent.Future
 class DocumentsProducedControllerSpec
     extends CustomExportsBaseSpec with DocumentsProducedMessages with CommonMessages with ViewValidator {
@@ -229,7 +229,7 @@ class DocumentsProducedControllerSpec
 
       "provided with empty form and with empty cache" in {
 
-        when(mockItemsCachingService.addItemToCache(any(),any())(any(), any())).thenReturn(Future.successful(true))
+        when(mockItemsCachingService.addItemToCache(any(), any())(any(), any())).thenReturn(Future.successful(true))
         val body = emptyDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header

@@ -38,16 +38,21 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers {
       metadata.declaration.get.exporter.get.name.get must equal(exporterDetails.details.address.get.fullName)
       metadata.declaration.get.exporter.get.address must be(defined)
       metadata.declaration.get.exporter.get.address.get.line must be(defined)
-      metadata.declaration.get.exporter.get.address.get.line.get must equal(exporterDetails.details.address.get.addressLine)
+      metadata.declaration.get.exporter.get.address.get.line.get must equal(
+        exporterDetails.details.address.get.addressLine
+      )
       metadata.declaration.get.exporter.get.address.get.cityName must be(defined)
-      metadata.declaration.get.exporter.get.address.get.cityName.get must equal(exporterDetails.details.address.get.townOrCity)
+      metadata.declaration.get.exporter.get.address.get.cityName.get must equal(
+        exporterDetails.details.address.get.townOrCity
+      )
       metadata.declaration.get.exporter.get.address.get.postcodeId must be(defined)
-      metadata.declaration.get.exporter.get.address.get.postcodeId.get must equal(exporterDetails.details.address.get.postCode)
+      metadata.declaration.get.exporter.get.address.get.postcodeId.get must equal(
+        exporterDetails.details.address.get.postCode
+      )
       metadata.declaration.get.exporter.get.address.get.countryCode must be(defined)
       metadata.declaration.get.exporter.get.address.get.countryCode.get must equal(countryCode)
     }
   }
-
 
 }
 

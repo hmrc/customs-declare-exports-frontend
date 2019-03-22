@@ -32,10 +32,7 @@ import forms.supplementary.RepresentativeDetailsSpec._
 import forms.supplementary.SupervisingCustomsOfficeSpec._
 import forms.supplementary.TotalNumberOfItemsSpec._
 import forms.supplementary.TransactionTypeSpec._
-import forms.supplementary.TransportInformationContainerSpec.{
-  correctTransportInformationContainerData,
-  correctTransportInformationContainerDataJSON
-}
+import forms.supplementary.TransportInformationContainerSpec.{correctTransportInformationContainerData, correctTransportInformationContainerDataJSON}
 import forms.supplementary.TransportInformationSpec._
 import forms.supplementary.WarehouseIdentificationSpec._
 import forms.supplementary._
@@ -334,35 +331,34 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
     }
   }
 
+  trait SimpleTest {
+    val declarationTypeMock = mock(classOf[DeclarationType])
+    val consignmentReferencesMock = mock(classOf[ConsignmentReferences])
+    val partiesMock = mock(classOf[Parties])
+    val locationsMock = mock(classOf[Locations])
+    val transportInformationMock = mock(classOf[TransportInformation])
+    val transportInformationContainerDataMock = mock(classOf[TransportInformationContainerData])
+    val itemsMock = mock(classOf[Items])
+    val supplementaryDeclarationData = SupplementaryDeclarationData(
+      declarationType = Some(declarationTypeMock),
+      consignmentReferences = Some(consignmentReferencesMock),
+      parties = Some(partiesMock),
+      locations = Some(locationsMock),
+      transportInformation = Some(transportInformationMock),
+      transportInformationContainerData = Some(transportInformationContainerDataMock),
+      items = Some(itemsMock)
+    )
 
-    trait SimpleTest {
-      val declarationTypeMock = mock(classOf[DeclarationType])
-      val consignmentReferencesMock = mock(classOf[ConsignmentReferences])
-      val partiesMock = mock(classOf[Parties])
-      val locationsMock = mock(classOf[Locations])
-      val transportInformationMock = mock(classOf[TransportInformation])
-      val transportInformationContainerDataMock = mock(classOf[TransportInformationContainerData])
-      val itemsMock = mock(classOf[Items])
-      val supplementaryDeclarationData = SupplementaryDeclarationData(
-    declarationType = Some(declarationTypeMock),
-    consignmentReferences = Some(consignmentReferencesMock),
-    parties = Some(partiesMock),
-    locations = Some(locationsMock),
-    transportInformation = Some(transportInformationMock),
-    transportInformationContainerData = Some(transportInformationContainerDataMock),
-    items = Some(itemsMock)
-  )
+    when(declarationTypeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+    when(consignmentReferencesMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+    when(partiesMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+    when(locationsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+    when(transportInformationMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+    when(transportInformationContainerDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+    when(itemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+  }
 
-      when(declarationTypeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-      when(consignmentReferencesMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-      when(partiesMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-      when(locationsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-      when(transportInformationMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-      when(transportInformationContainerDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-      when(itemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-    }
-
-    trait TestMapConcatenation extends SimpleTest {
+  trait TestMapConcatenation extends SimpleTest {
     val declarationTypeTuple = ("DeclarationType", "DeclarationTypeValue")
     val consignmentReferencesTuple = ("ConsignmentReferences", "ConsignmentReferencesValue")
     val partiesTuple = ("Parties", "PartiesValue")
@@ -377,8 +373,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
     when(transportInformationMock.toMetadataProperties()).thenReturn(Map(transportInformationTuple))
     when(itemsMock.toMetadataProperties()).thenReturn(Map(itemsTuple))
   }
-
-
 
 }
 
