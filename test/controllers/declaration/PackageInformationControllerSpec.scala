@@ -18,6 +18,8 @@ package controllers.declaration
 
 import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.PackageInformation
 import generators.Generators
 import helpers.views.declaration.{CommonMessages, PackageInformationMessages}
@@ -26,6 +28,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.verify
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary._
+import org.scalacheck.Gen._
 import org.scalatest.OptionValues
 import org.scalatest.prop.PropertyChecks
 import play.api.data.Form
@@ -33,10 +36,10 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import views.html.declaration.package_information
-import org.scalacheck.Gen._
 
 class PackageInformationControllerSpec
-    extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues with ViewValidator with PackageInformationMessages with CommonMessages {
+    extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues with ViewValidator
+    with PackageInformationMessages with CommonMessages {
 
   val uri = uriWithContextPath("/declaration/package-information")
 
@@ -63,6 +66,7 @@ class PackageInformationControllerSpec
 
       authorizedUser()
       withCaching[List[PackageInformation]](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, getRequest(uri)).get
 
@@ -72,7 +76,10 @@ class PackageInformationControllerSpec
     "display one row with data in table" in {
 
       authorizedUser()
-      withCaching[List[PackageInformation]](Some(List(PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")))), formId)
+      withCaching[List[PackageInformation]](
+        Some(List(PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")))),
+        formId
+      )
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -93,11 +100,15 @@ class PackageInformationControllerSpec
     "display two rows with data in table" in {
 
       authorizedUser()
-      withCaching[List[PackageInformation]](Some(
-        List(
-          PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")),
-          PackageInformation(Some("PB"), Some(101), Some("Shipping Mark"))
-        )), formId)
+      withCaching[List[PackageInformation]](
+        Some(
+          List(
+            PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")),
+            PackageInformation(Some("PB"), Some(101), Some("Shipping Mark"))
+          )
+        ),
+        formId
+      )
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -172,12 +183,12 @@ class PackageInformationControllerSpec
       "display error when item already exist" in {
 
         authorizedUser()
-        withCaching[List[PackageInformation]](Some(List(PackageInformation(Some("AB"), Some(100), Some("Test")))), formId)
+        withCaching[List[PackageInformation]](
+          Some(List(PackageInformation(Some("AB"), Some(100), Some("Test")))),
+          formId
+        )
 
-        val payload = Map(
-          "typesOfPackages" -> "AB",
-          "numberOfPackages" -> "100",
-          "shippingMarks" -> "Test").toSeq :+ addActionUrlEncoded
+        val payload = Map("typesOfPackages" -> "AB", "numberOfPackages" -> "100", "shippingMarks" -> "Test").toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         val page = contentAsString(result)
 
@@ -193,10 +204,7 @@ class PackageInformationControllerSpec
         val cached = listOfN[PackageInformation](99, generatePackage.arbitrary).sample
         withCaching[List[PackageInformation]](cached, formId)
 
-        val payload = Map(
-          "typesOfPackages" -> "AB",
-          "numberOfPackages" -> "100",
-          "shippingMarks" -> "Test").toSeq :+ addActionUrlEncoded
+        val payload = Map("typesOfPackages" -> "AB", "numberOfPackages" -> "100", "shippingMarks" -> "Test").toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         val page = contentAsString(result)
 
@@ -350,7 +358,6 @@ class PackageInformationControllerSpec
         "with valid data and user press \"Add\"" in {
 
           forAll(arbitrary[PackageInformation]) { packaging =>
-
             authorizedUser()
             withCaching[List[PackageInformation]](None, formId)
 
@@ -388,7 +395,9 @@ class PackageInformationControllerSpec
           // this message is not in messages.en
           val errorLink = getElementByCss(page, "div.error-summary.error-summary--show>ul>li:nth-child(1)>a")
 
-          errorLink.text() must be("You must provide 6/9 item packaged, 6/10 Shipping Marks, 6/11 Number of Packages for a package to be added")
+          errorLink.text() must be(
+            "You must provide 6/9 item packaged, 6/10 Shipping Marks, 6/11 Number of Packages for a package to be added"
+          )
           errorLink.attr("href") must be("#")
 
           checkErrorLink(page, 2, piGlobalAddOne, "#")
@@ -397,7 +406,6 @@ class PackageInformationControllerSpec
         "when user entered data and press \"Save and continue\"" in {
 
           forAll(arbitrary[PackageInformation]) { packaging =>
-
             authorizedUser()
             withCaching[Seq[PackageInformation]](Some(Seq(packaging)), formId)
 
@@ -416,7 +424,6 @@ class PackageInformationControllerSpec
 
         "when valid index is submitted" in {
           forAll(arbitraryPackagingSeq) { packagingSeq =>
-
             authorizedUser()
 
             whenever(packagingSeq.nonEmpty) {

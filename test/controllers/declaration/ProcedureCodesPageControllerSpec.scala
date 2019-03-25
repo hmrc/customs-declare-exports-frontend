@@ -18,6 +18,8 @@ package controllers.declaration
 
 import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
+import forms.Choice
+import forms.Choice.choiceId
 import helpers.views.declaration.{CommonMessages, ProcedureCodesMessages}
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.formId
@@ -35,6 +37,7 @@ class ProcedureCodesPageControllerSpec
   before {
     authorizedUser()
     withCaching[ProcedureCodesData](None, formId)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Procedure Codes Page Controller on GET" should {

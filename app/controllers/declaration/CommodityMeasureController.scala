@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.goodsItemCacheId
 import forms.declaration.CommodityMeasure.{commodityFormId, form, _}
 import forms.declaration.PackageInformation.formId
@@ -34,12 +34,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CommodityMeasureController @Inject()(
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   cacheService: CustomsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController with I18nSupport {
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService
       .fetchAndGetEntry[Seq[PackageInformation]](goodsItemCacheId, formId)
       .flatMap {
@@ -52,7 +52,7 @@ class CommodityMeasureController @Inject()(
       }
   }
 
-  def submitForm(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(

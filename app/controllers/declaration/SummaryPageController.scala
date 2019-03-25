@@ -18,8 +18,8 @@ package controllers.declaration
 
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.ConsignmentReferences
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -42,7 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SummaryPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
@@ -53,8 +53,8 @@ class SummaryPageController @Inject()(
 
   implicit val appConfigImpl: AppConfig = appConfig
 
-  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetch(supplementaryCacheId).map {
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetch(cacheId).map {
       case Some(cacheMap) if containsMandatoryData(cacheMap) => Ok(summary_page(SupplementaryDeclarationData(cacheMap)))
       case _                                                 => Ok(summary_page_no_data())
     }
@@ -63,8 +63,8 @@ class SummaryPageController @Inject()(
   private def containsMandatoryData(cacheMap: CacheMap): Boolean =
     cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.id).exists(_.lrn.nonEmpty)
 
-  def submitSupplementaryDeclaration(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetch(supplementaryCacheId).flatMap {
+  def submitSupplementaryDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetch(cacheId).flatMap {
       case Some(cacheMap) =>
         exportsMetrics.startTimer(submissionMetric)
         val suppDecData = SupplementaryDeclarationData(cacheMap)
@@ -76,7 +76,7 @@ class SummaryPageController @Inject()(
           .submitExportDeclaration(ducr.fold("")(_.ducr), lrn, metaData)
           .flatMap {
             case HttpResponse(ACCEPTED, _, _, _) =>
-              customsCacheService.remove(supplementaryCacheId).map { _ =>
+              customsCacheService.remove(cacheId).map { _ =>
                 Redirect(controllers.declaration.routes.ConfirmationPageController.displayPage())
                   .flashing(prepareFlashScope(lrn.getOrElse("")))
               }

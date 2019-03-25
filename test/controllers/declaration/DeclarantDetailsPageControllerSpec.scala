@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.DeclarantDetails
 import forms.declaration.DeclarantDetailsSpec._
 import play.api.test.Helpers._
@@ -28,6 +30,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
   before {
     authorizedUser()
     withCaching[DeclarantDetails](None)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Declarant Details Page Controller on GET" should {
@@ -55,9 +58,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/representative-details")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/representative-details"))
     }
 
     "validate request and redirect - only address provided" in {
@@ -66,9 +67,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/representative-details")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/representative-details"))
     }
 
     "validate request and redirect - all values provided" in {
@@ -77,9 +76,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/representative-details")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/representative-details"))
     }
   }
 }

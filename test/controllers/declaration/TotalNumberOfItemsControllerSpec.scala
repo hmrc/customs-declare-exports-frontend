@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.TotalNumberOfItems
 import forms.declaration.TotalNumberOfItemsSpec._
 import play.api.libs.json.{JsObject, JsString, JsValue}
@@ -31,6 +33,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
     "display total number of items form" in {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -47,6 +50,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
     "display \"Back\" button that links to \"Transport information\" page" in {
 
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
 
@@ -57,6 +61,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
 
     "display \"Save and continue\" button on page" in {
       withCaching[TotalNumberOfItems](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, getRequest(uri)).get
       val resultAsString = contentAsString(result)
@@ -68,6 +73,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
     "validate form - incorrect values - alphabetic" in {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val incorrectTotalNumber: JsValue =
         JsObject(Map("itemsQuantity" -> JsString("as3"), "totalPackage" -> JsString("asd12343")))
@@ -79,6 +85,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
     "validate form - incorrect values - longer than 3" in {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val incorrectTotalNumber: JsValue =
         JsObject(Map("itemsQuantity" -> JsString("1234"), "totalPackage" -> JsString("123456789")))
@@ -90,6 +97,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
     "validate form - incorrect values - zeros" in {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val incorrectTotalNumber: JsValue =
         JsObject(Map("itemsQuantity" -> JsString("000"), "totalPackage" -> JsString("123")))
@@ -101,6 +109,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
     "validate form - correct value for mandatory field" in {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val correctTotalNumber: JsValue =
         JsObject(
@@ -115,40 +124,37 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/transaction-type")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/transaction-type"))
     }
 
     "validate form - correct values for every field using integers for optional ones" in {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctTotalNumberOfItemsIntegerValuesJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/transaction-type")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/transaction-type"))
     }
 
     "validate form - correct values for every field using decimals for optional ones" in {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctTotalNumberOfItemsDecimalValuesJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/transaction-type")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/transaction-type"))
     }
 
     "validate form - correct mandatory field with incorrect optional due to too many digits after coma" in {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val incorrectOptionalFields: JsValue = JsObject(
         Map(
@@ -168,6 +174,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
     "validate form - correct mandatory field with incorrect optional due to too many digits before coma" in {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val incorrectOptionalFields: JsValue = JsObject(
         Map(
@@ -187,6 +194,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
     "validate form - correct mandatory field with incorrect optional due to too long integers" in {
       authorizedUser()
       withCaching[TotalNumberOfItems](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val incorrectOptionalFields: JsValue = JsObject(
         Map(

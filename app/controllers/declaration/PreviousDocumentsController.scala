@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import controllers.util._
 import forms.declaration.Document._
 import forms.declaration.PreviousDocumentsData
@@ -35,20 +35,20 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PreviousDocumentsController @Inject()(
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController with I18nSupport {
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[PreviousDocumentsData](supplementaryCacheId, formId).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[PreviousDocumentsData](cacheId, formId).map {
       case Some(data) => Ok(previous_documents(form, data.documents))
       case _          => Ok(previous_documents(form, Seq.empty))
     }
   }
 
-  def savePreviousDocuments(): Action[AnyContent] = authenticate.async { implicit request =>
+  def savePreviousDocuments(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     import MultipleItemsHelper._
 
     val boundForm = form.bindFromRequest()
@@ -56,7 +56,7 @@ class PreviousDocumentsController @Inject()(
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
     val cachedData = customsCacheService
-      .fetchAndGetEntry[PreviousDocumentsData](supplementaryCacheId, formId)
+      .fetchAndGetEntry[PreviousDocumentsData](cacheId, formId)
       .map(_.getOrElse(PreviousDocumentsData(Seq.empty)))
 
     cachedData.flatMap { cache =>
@@ -66,7 +66,7 @@ class PreviousDocumentsController @Inject()(
             formWithErrors => Future.successful(BadRequest(previous_documents(formWithErrors, cache.documents))),
             updatedCache =>
               customsCacheService
-                .cache[PreviousDocumentsData](supplementaryCacheId, formId, PreviousDocumentsData(updatedCache))
+                .cache[PreviousDocumentsData](cacheId, formId, PreviousDocumentsData(updatedCache))
                 .map(_ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
           )
 
@@ -74,7 +74,7 @@ class PreviousDocumentsController @Inject()(
           val updatedCache = remove(ids.headOption, cache.documents)
 
           customsCacheService
-            .cache[PreviousDocumentsData](supplementaryCacheId, formId, PreviousDocumentsData(updatedCache))
+            .cache[PreviousDocumentsData](cacheId, formId, PreviousDocumentsData(updatedCache))
             .map(_ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
         }
 
@@ -84,7 +84,7 @@ class PreviousDocumentsController @Inject()(
             updatedCache =>
               if (updatedCache != cache.documents)
                 customsCacheService
-                  .cache[PreviousDocumentsData](supplementaryCacheId, formId, PreviousDocumentsData(updatedCache))
+                  .cache[PreviousDocumentsData](cacheId, formId, PreviousDocumentsData(updatedCache))
                   .map(_ => Redirect(controllers.declaration.routes.SupervisingCustomsOfficeController.displayForm()))
               else
                 Future.successful(

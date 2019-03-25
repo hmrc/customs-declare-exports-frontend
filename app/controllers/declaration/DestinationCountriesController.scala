@@ -16,8 +16,8 @@
 
 package controllers.declaration
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.DestinationCountries
 import javax.inject.Inject
 import play.api.data.Form
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DestinationCountriesController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
@@ -41,21 +41,21 @@ class DestinationCountriesController @Inject()(
 
   implicit val countries = services.Countries.allCountries
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DestinationCountries](supplementaryCacheId, formId).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[DestinationCountries](cacheId, formId).map {
       case Some(data) => Ok(destination_countries(appConfig, form.fill(data)))
       case _          => Ok(destination_countries(appConfig, form))
     }
   }
 
-  def saveCountries(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveCountries(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[DestinationCountries]) =>
           Future.successful(BadRequest(destination_countries(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[DestinationCountries](supplementaryCacheId, formId, form).map { _ =>
+          customsCacheService.cache[DestinationCountries](cacheId, formId, form).map { _ =>
             Redirect(controllers.declaration.routes.LocationController.displayForm())
         }
       )

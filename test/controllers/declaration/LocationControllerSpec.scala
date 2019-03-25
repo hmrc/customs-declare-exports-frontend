@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.GoodsLocation
 import forms.declaration.GoodsLocationSpec._
 import helpers.views.declaration.LocationOfGoodsMessages
@@ -30,6 +32,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
   before {
     authorizedUser()
     withCaching[GoodsLocation](None)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Location Controller on display page" should {

@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.SupervisingCustomsOfficeSpec._
 import play.api.test.Helpers._
@@ -30,6 +32,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
     "display supervising customs office form" in {
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -52,6 +55,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
 
     "display \"Save and continue\" button on page" in {
       withCaching[SupervisingCustomsOffice](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, getRequest(uri)).get
       val resultAsString = contentAsString(result)
@@ -63,6 +67,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
     "validate form - incorrect values" in {
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, incorrectSupervisingCustomsOfficeJSON)).get
 
@@ -72,6 +77,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
     "validate form and redirect - no answer" in {
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, emptySupervisingCustomsOfficeJSON)).get
       val header = result.futureValue.header
@@ -83,6 +89,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
     "validate form and redirect - correct value" in {
       authorizedUser()
       withCaching[SupervisingCustomsOffice](None)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctSupervisingCustomsOfficeJSON)).get
       val header = result.futureValue.header

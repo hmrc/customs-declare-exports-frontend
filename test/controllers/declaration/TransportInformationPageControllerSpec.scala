@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.TransportInformation
 import forms.declaration.TransportInformation.MeansOfTransportTypeCodes.NameOfVessel
 import forms.declaration.TransportInformation.ModeOfTransportCodes.Road
@@ -36,6 +38,7 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
   before {
     authorizedUser()
     withCaching[TransportInformation](None, TransportInformation.id)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Transport Information Page Controller on display" should {
@@ -179,6 +182,7 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
     "save the data to the cache" in {
       reset(mockCustomsCacheService)
       withCaching[TransportInformation](None, TransportInformation.id)
+      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
       route(app, postRequest(uri, correctTransportInformationJSON)).get.futureValue
 
       verify(mockCustomsCacheService)
@@ -191,9 +195,7 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
 
       val header = result.futureValue.header
 
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/add-transport-containers")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/add-transport-containers"))
     }
   }
 

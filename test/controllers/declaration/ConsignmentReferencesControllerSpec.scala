@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.ConsignmentReferences
 import forms.declaration.ConsignmentReferencesSpec._
 import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
@@ -36,6 +38,7 @@ class ConsignmentReferencesControllerSpec
   before {
     authorizedUser()
     withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   after {

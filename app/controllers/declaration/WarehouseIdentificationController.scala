@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.WarehouseIdentification
 import javax.inject.Inject
 import play.api.data.Form
@@ -33,28 +33,28 @@ import scala.concurrent.{ExecutionContext, Future}
 class WarehouseIdentificationController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
   import forms.declaration.WarehouseIdentification._
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[WarehouseIdentification](supplementaryCacheId, formId).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[WarehouseIdentification](cacheId, formId).map {
       case Some(data) => Ok(warehouse_identification(appConfig, form.fill(data)))
       case _          => Ok(warehouse_identification(appConfig, form))
     }
   }
 
-  def saveWarehouse(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveWarehouse(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[WarehouseIdentification]) =>
           Future.successful(BadRequest(warehouse_identification(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[WarehouseIdentification](supplementaryCacheId, formId, form).map { _ =>
+          customsCacheService.cache[WarehouseIdentification](cacheId, formId, form).map { _ =>
             Redirect(controllers.declaration.routes.ItemsSummaryController.displayForm())
         }
       )

@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.DestinationCountries
 import forms.declaration.DestinationCountriesSpec._
 import helpers.views.declaration.DestinationCountriesMessages
@@ -29,6 +31,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
   before {
     authorizedUser()
     withCaching[DestinationCountries](None)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Destination Countries Controller on GET" should {
@@ -62,8 +65,6 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
     }
 
     "validate request - country of destination missing" in {
-      withCaching[DestinationCountries](None)
-
       val result = route(app, postRequest(uri, emptyDispatchCountriesJSON)).get
 
       status(result) must be(BAD_REQUEST)
@@ -76,9 +77,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/location-of-goods")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/location-of-goods"))
     }
   }
 }

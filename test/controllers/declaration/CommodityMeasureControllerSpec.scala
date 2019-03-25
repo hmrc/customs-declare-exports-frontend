@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.CommodityMeasure.commodityFormId
 import forms.declaration.{CommodityMeasure, PackageInformation}
 import generators.Generators
@@ -45,6 +47,7 @@ class CommodityMeasureControllerSpec
         "user does not have" in {
           userWithoutEori()
           withCaching[CommodityMeasure](None)
+          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
           val result = route(app, getRequest(uri)).value
           intercept[InsufficientEnrolments](status(result))
@@ -57,6 +60,7 @@ class CommodityMeasureControllerSpec
         "user is signed in" in {
           authorizedUser()
           withCaching[CommodityMeasure](None, commodityFormId)
+          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
           val packages = arbitraryPackagingSeq.sample.getOrElse(Seq.empty)
           withCaching[Seq[PackageInformation]](Some(packages), "PackageInformation")
           val result = route(app, getRequest(uri)).value
@@ -76,6 +80,7 @@ class CommodityMeasureControllerSpec
           authorizedUser()
           withCaching[Seq[PackageInformation]](None, "PackageInformation")
           withCaching[CommodityMeasure](None, commodityFormId)
+          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
           val result = route(app, getRequest(uri)).value
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("You must add package information to proceed")
@@ -90,6 +95,7 @@ class CommodityMeasureControllerSpec
 
         "user does not have an EORI" in {
           userWithoutEori()
+          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
           val body = Seq(("typesOfPackages", "A1"))
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
@@ -102,6 +108,7 @@ class CommodityMeasureControllerSpec
         "invalid data is submitted" in {
           authorizedUser()
           withCaching[CommodityMeasure](None, commodityFormId)
+          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
           val body = Seq(("supplementaryUnits", "abcd"), ("netMass", ""), ("grossMass", ""))
 
@@ -123,6 +130,7 @@ class CommodityMeasureControllerSpec
           forAll(arbitrary[CommodityMeasure]) { commodityMeasure =>
             authorizedUser()
             withCaching[CommodityMeasure](None, commodityFormId)
+            withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
             val body = Seq(
               ("supplementaryUnits", commodityMeasure.supplementaryUnits.getOrElse("")),
               ("netMass", commodityMeasure.netMass),
@@ -152,6 +160,7 @@ class CommodityMeasureControllerSpec
           forAll(arbitrary[CommodityMeasure]) { commodityMeasure =>
             authorizedUser()
             withCaching[CommodityMeasure](Some(commodityMeasure), commodityFormId)
+            withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
             val payload = Seq(
               ("supplementaryUnits", commodityMeasure.supplementaryUnits.getOrElse("")),
               ("netMass", commodityMeasure.netMass),

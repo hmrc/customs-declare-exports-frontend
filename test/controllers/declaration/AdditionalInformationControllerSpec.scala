@@ -20,6 +20,8 @@ import base.TestHelper.createRandomString
 import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.declaration.AdditionalInformationControllerSpec.cacheWithMaximumAmountOfHolders
 import controllers.util.{Add, Remove, SaveAndContinue}
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.AdditionalInformation
 import helpers.views.declaration.{AdditionalInformationMessages, CommonMessages}
 import models.declaration.AdditionalInformationData
@@ -38,6 +40,7 @@ class AdditionalInformationControllerSpec
   before {
     authorizedUser()
     withCaching[AdditionalInformationData](None, formId)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Additional Information Controller on GET" should {

@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.ExporterDetails
 import forms.declaration.ExporterDetailsSpec._
 import helpers.views.declaration.CommonMessages
@@ -29,6 +31,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
   before {
     authorizedUser()
     withCaching[ExporterDetails](None)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Exporter Details Page Controller on GET" should {

@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.GoodsLocation
 import javax.inject.Inject
 import play.api.data.Form
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class LocationController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
@@ -41,21 +41,21 @@ class LocationController @Inject()(
 
   implicit val countries = services.Countries.allCountries
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[GoodsLocation](supplementaryCacheId, formId).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[GoodsLocation](cacheId, formId).map {
       case Some(data) => Ok(goods_location(appConfig, form.fill(data)))
       case _          => Ok(goods_location(appConfig, form))
     }
   }
 
-  def saveLocation(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[GoodsLocation]) =>
           Future.successful(BadRequest(goods_location(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[GoodsLocation](supplementaryCacheId, formId, form).map { _ =>
+          customsCacheService.cache[GoodsLocation](cacheId, formId, form).map { _ =>
             Redirect(controllers.declaration.routes.OfficeOfExitController.displayForm())
         }
       )

@@ -17,15 +17,15 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.DeclarationHolder
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.{formId, limitOfHolders}
-import models.requests.AuthenticatedRequest
+import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -40,6 +40,7 @@ class DeclarationHolderController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
@@ -47,42 +48,43 @@ class DeclarationHolderController @Inject()(
 
   import forms.declaration.DeclarationHolder.form
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DeclarationHoldersData](supplementaryCacheId, formId).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[DeclarationHoldersData](cacheId, formId).map {
       case Some(data) => Ok(declaration_holder(appConfig, form, data.holders))
       case _          => Ok(declaration_holder(appConfig, form, Seq()))
     }
   }
 
-  def submitHoldersOfAuthorisation(): Action[AnyContent] = authenticate.async { implicit request =>
-    val boundForm = form.bindFromRequest()
+  def submitHoldersOfAuthorisation(): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      val boundForm = form.bindFromRequest()
 
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+      val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
-    val cachedData = customsCacheService
-      .fetchAndGetEntry[DeclarationHoldersData](supplementaryCacheId, formId)
-      .map(_.getOrElse(DeclarationHoldersData(Seq())))
+      val cachedData = customsCacheService
+        .fetchAndGetEntry[DeclarationHoldersData](cacheId, formId)
+        .map(_.getOrElse(DeclarationHoldersData(Seq())))
 
-    cachedData.flatMap { cache =>
-      boundForm
-        .fold(
-          (formWithErrors: Form[DeclarationHolder]) =>
-            Future.successful(BadRequest(declaration_holder(appConfig, formWithErrors, cache.holders))),
-          validForm =>
-            actionTypeOpt match {
-              case Some(Add)             => addHolder(validForm, cache)
-              case Some(SaveAndContinue) => saveAndContinue(validForm, cache)
-              case Some(Remove(values))  => removeHolder(retrieveHolder(values), cache)
-              case _                     => errorHandler.displayErrorPage()
-          }
-        )
-    }
+      cachedData.flatMap { cache =>
+        boundForm
+          .fold(
+            (formWithErrors: Form[DeclarationHolder]) =>
+              Future.successful(BadRequest(declaration_holder(appConfig, formWithErrors, cache.holders))),
+            validForm =>
+              actionTypeOpt match {
+                case Some(Add)             => addHolder(validForm, cache)
+                case Some(SaveAndContinue) => saveAndContinue(validForm, cache)
+                case Some(Remove(values))  => removeHolder(retrieveHolder(values), cache)
+                case _                     => errorHandler.displayErrorPage()
+            }
+          )
+      }
   }
 
   private def addHolder(
     userInput: DeclarationHolder,
     cachedData: DeclarationHoldersData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.holders) match {
       case (_, holders) if holders.length >= limitOfHolders =>
         handleErrorPage(
@@ -97,7 +99,7 @@ class DeclarationHolderController @Inject()(
       case (holder, holders) if holder.authorisationTypeCode.isDefined && holder.eori.isDefined =>
         val updatedCache = DeclarationHoldersData(holders :+ holder)
 
-        customsCacheService.cache[DeclarationHoldersData](supplementaryCacheId, formId, updatedCache).map { _ =>
+        customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache).map { _ =>
           Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm())
         }
 
@@ -113,14 +115,14 @@ class DeclarationHolderController @Inject()(
   private def saveAndContinue(
     userInput: DeclarationHolder,
     cachedData: DeclarationHoldersData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.holders) match {
       case (holder, Seq()) =>
         holder match {
           case DeclarationHolder(Some(typeCode), Some(eori)) =>
             val updatedCache = DeclarationHoldersData(Seq(DeclarationHolder(Some(typeCode), Some(eori))))
 
-            customsCacheService.cache[DeclarationHoldersData](supplementaryCacheId, formId, updatedCache).map { _ =>
+            customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache).map { _ =>
               Redirect(controllers.declaration.routes.DestinationCountriesController.displayForm())
             }
 
@@ -146,7 +148,7 @@ class DeclarationHolderController @Inject()(
             val updatedHolders = if (holder.authorisationTypeCode.isDefined) holders :+ holder else holders
             val updatedCache = DeclarationHoldersData(updatedHolders)
 
-            customsCacheService.cache[DeclarationHoldersData](supplementaryCacheId, formId, updatedCache).map { _ =>
+            customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache).map { _ =>
               Redirect(controllers.declaration.routes.DestinationCountriesController.displayForm())
             }
 
@@ -164,11 +166,11 @@ class DeclarationHolderController @Inject()(
   private def removeHolder(
     holderToRemove: DeclarationHolder,
     cachedData: DeclarationHoldersData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     if (cachedData.containsHolder(holderToRemove)) {
       val updatedCache = cachedData.copy(holders = cachedData.holders.filterNot(_ == holderToRemove))
 
-      customsCacheService.cache[DeclarationHoldersData](supplementaryCacheId, formId, updatedCache).map { _ =>
+      customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache).map { _ =>
         Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm())
       }
     } else errorHandler.displayErrorPage()

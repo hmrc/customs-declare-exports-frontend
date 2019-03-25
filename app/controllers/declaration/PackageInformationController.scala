@@ -17,14 +17,14 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator._
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.requests.AuthenticatedRequest
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
@@ -36,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PackageInformationController @Inject()(
   authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   cacheService: CustomsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig, override val messagesApi: MessagesApi)
@@ -43,13 +44,13 @@ class PackageInformationController @Inject()(
 
   val packagesMaxElements = 99
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService
       .fetchAndGetEntry[Seq[PackageInformation]](goodsItemCacheId, formId)
       .map(items => Ok(package_information(form, items.getOrElse(Seq.empty))))
   }
 
-  def submitForm(): Action[AnyContent] = authenticate.async { implicit authRequest =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit authRequest =>
     val actionTypeOpt = authRequest.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
     cacheService
       .fetchAndGetEntry[Seq[PackageInformation]](goodsItemCacheId, formId)
@@ -67,7 +68,7 @@ class PackageInformationController @Inject()(
 
   def remove(
     id: Option[String]
-  )(implicit authRequest: AuthenticatedRequest[AnyContent], packages: Seq[PackageInformation]): Future[Result] =
+  )(implicit authRequest: JourneyRequest[AnyContent], packages: Seq[PackageInformation]): Future[Result] =
     id match {
       case Some(id) => {
         val updatedPackages =
@@ -80,10 +81,7 @@ class PackageInformationController @Inject()(
       case _ => errorHandler.displayErrorPage()
     }
 
-  def continue()(
-    implicit request: AuthenticatedRequest[AnyContent],
-    packages: Seq[PackageInformation]
-  ): Future[Result] = {
+  def continue()(implicit request: JourneyRequest[AnyContent], packages: Seq[PackageInformation]): Future[Result] = {
     val payload = form.bindFromRequest()
     if (!isFormEmpty(payload)) badRequest(payload, USE_ADD)
     else if (packages.size == 0) badRequest(payload, ADD_ONE)
@@ -99,7 +97,7 @@ class PackageInformationController @Inject()(
     form.data.filter { case (name, _) => name != "csrfToken" }
 
   def addItem()(
-    implicit authenticatedRequest: AuthenticatedRequest[AnyContent],
+    implicit authenticatedRequest: JourneyRequest[AnyContent],
     packages: Seq[PackageInformation]
   ): Future[Result] =
     form
@@ -124,6 +122,6 @@ class PackageInformationController @Inject()(
   private def badRequest(
     form: Form[_],
     error: String
-  )(implicit authenticatedRequest: AuthenticatedRequest[AnyContent], packages: Seq[PackageInformation]) =
+  )(implicit authenticatedRequest: JourneyRequest[AnyContent], packages: Seq[PackageInformation]) =
     Future.successful(BadRequest(package_information(form.withGlobalError(error), packages)))
 }

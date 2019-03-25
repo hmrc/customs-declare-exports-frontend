@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util._
 import forms.declaration.ProcedureCodes
@@ -26,7 +26,7 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData._
-import models.requests.AuthenticatedRequest
+import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -41,12 +41,13 @@ class ProcedureCodesPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ProcedureCodesData](goodsItemCacheId, formId).map {
       case Some(data) =>
         Ok(procedure_codes(appConfig, form.fill(data.toProcedureCode()), data.additionalProcedureCodes))
@@ -54,7 +55,7 @@ class ProcedureCodesPageController @Inject()(
     }
   }
 
-  def submitProcedureCodes(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitProcedureCodes(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest()
 
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
@@ -83,7 +84,7 @@ class ProcedureCodesPageController @Inject()(
   private def addAnotherCodeHandler(
     userInput: ProcedureCodes,
     cachedData: ProcedureCodesData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput.additionalProcedureCode, cachedData.additionalProcedureCodes) match {
       case (_, codes) if codes.length >= limitOfCodes =>
         handleErrorPage(
@@ -117,7 +118,7 @@ class ProcedureCodesPageController @Inject()(
   private def removeCodeHandler(
     code: String,
     cachedData: ProcedureCodesData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     if (cachedData.containsAdditionalCode(code)) {
       val updatedCache =
         cachedData.copy(additionalProcedureCodes = cachedData.additionalProcedureCodes.filterNot(_ == code))
@@ -131,7 +132,7 @@ class ProcedureCodesPageController @Inject()(
   private def saveAndContinueHandler(
     userInput: ProcedureCodes,
     cachedData: ProcedureCodesData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.additionalProcedureCodes) match {
       case (procedureCode, Seq()) =>
         procedureCode match {

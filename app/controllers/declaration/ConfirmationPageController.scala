@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -29,11 +29,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConfirmationPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction
+  authenticate: AuthAction, journeyType: JourneyAction
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     Future.successful(Ok(confirmation_page(appConfig)))
   }
 }

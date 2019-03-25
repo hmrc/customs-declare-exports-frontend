@@ -18,6 +18,8 @@ package controllers.declaration
 
 import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, FormAction, SaveAndContinue}
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.ItemType
 import forms.declaration.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
 import forms.declaration.ItemTypeSpec._
@@ -36,6 +38,7 @@ class ItemTypePageControllerSpec
   before {
     authorizedUser()
     withCaching[ItemType](None, ItemType.id)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   after {

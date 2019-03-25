@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.DeclarantDetails
 import javax.inject.Inject
 import play.api.data.Form
@@ -33,28 +33,28 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarantDetailsPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
   implicit val countries = services.Countries.allCountries
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DeclarantDetails](supplementaryCacheId, DeclarantDetails.id).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[DeclarantDetails](cacheId, DeclarantDetails.id).map {
       case Some(data) => Ok(declarant_details(appConfig, DeclarantDetails.form.fill(data)))
       case _          => Ok(declarant_details(appConfig, DeclarantDetails.form))
     }
   }
 
-  def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     DeclarantDetails.form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[DeclarantDetails]) =>
           Future.successful(BadRequest(declarant_details(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[DeclarantDetails](supplementaryCacheId, DeclarantDetails.id, form).map { _ =>
+          customsCacheService.cache[DeclarantDetails](cacheId, DeclarantDetails.id, form).map { _ =>
             Redirect(
               controllers.declaration.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
             )

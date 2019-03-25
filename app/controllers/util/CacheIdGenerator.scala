@@ -15,17 +15,14 @@
  */
 
 package controllers.util
-import models.requests.{AuthenticatedRequest, JorneyRequest}
+import models.requests.{AuthenticatedRequest, JourneyRequest}
 
 object CacheIdGenerator {
 
   def eoriCacheId()(implicit request: AuthenticatedRequest[_]): String = request.user.eori
 
-  def supplementaryCacheId()(implicit request: AuthenticatedRequest[_]): String =
-    s"supplementary-${request.user.eori}"
-
-  def goodsItemCacheId()(implicit request: AuthenticatedRequest[_]): String =
-    s"suppl-items-${request.user.eori}"
+  def goodsItemCacheId()(implicit request: JourneyRequest[_]): String =
+    s"suppl-items-${request.authenticatedRequest.user.eori}"
 
   def movementCacheId()(implicit request: AuthenticatedRequest[_]): String =
     s"movement-${request.user.eori}"
@@ -33,6 +30,6 @@ object CacheIdGenerator {
   def fullDecCacheId()(implicit request: AuthenticatedRequest[_]): String =
     s"standard-${request.user.eori}"
 
-  def cacheId()(implicit request: JorneyRequest[_]): String =
+  def cacheId()(implicit request: JourneyRequest[_]): String =
     s"${request.choice.value}-${request.authenticatedRequest.user.eori}"
 }

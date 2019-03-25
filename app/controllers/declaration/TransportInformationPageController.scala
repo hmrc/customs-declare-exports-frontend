@@ -17,9 +17,9 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{TotalNumberOfItemsController, TransportInformationContainersPageController}
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.TransportInformation
 import forms.declaration.TransportInformation.form
 import handlers.ErrorHandler
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportInformationPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
@@ -44,16 +44,16 @@ class TransportInformationPageController @Inject()(
 
   implicit val countries = services.Countries.allCountries
 
-  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[TransportInformation](supplementaryCacheId, TransportInformation.id)
+      .fetchAndGetEntry[TransportInformation](cacheId, TransportInformation.id)
       .map {
         case Some(data) => Ok(transport_information(appConfig, form.fill(data)))
         case _          => Ok(transport_information(appConfig, form))
       }
   }
 
-  def submitTransportInformation(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitTransportInformation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
@@ -61,7 +61,7 @@ class TransportInformationPageController @Inject()(
           Future.successful(BadRequest(transport_information(appConfig, formWithErrors))),
         validTransportInformation =>
           customsCacheService
-            .cache[TransportInformation](supplementaryCacheId, TransportInformation.id, validTransportInformation)
+            .cache[TransportInformation](cacheId, TransportInformation.id, validTransportInformation)
             .map(_ => {
               if (validTransportInformation.container)
                 Redirect(TransportInformationContainersPageController.displayPage())

@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.ConsignmentReferencesSpec.correctConsignmentReferencesJSON
 import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
 import models.declaration.SupplementaryDeclarationDataSpec
@@ -54,6 +56,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     when(mockCustomsCacheService.remove(anyString())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK)))
     successfulCustomsDeclareExportsResponse()
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Summary Page Controller on display" when {
