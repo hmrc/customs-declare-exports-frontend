@@ -19,27 +19,30 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
+import forms.Choice.AllowedChoiceValues._
+import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
-import forms.declaration.{AdditionalDeclarationType, DispatchLocation}
+import forms.declaration.additionaldeclarationtype.{AdditionalDeclarationType, AdditionalDeclarationTypeStandardDec, AdditionalDeclarationTypeSupplementaryDec, AdditionalDeclarationTypeTrait}
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.{declaration_type, dispatch_location}
+import views.html.declaration.additionaldeclarationtype.declaration_type
+import views.html.declaration.dispatch_location
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationTypeController @Inject()(
-  appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
-)(implicit ec: ExecutionContext)
+)(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
   def displayDispatchLocationPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -77,30 +80,34 @@ class DeclarationTypeController @Inject()(
 
   def displayAdditionalDeclarationTypePage(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
+      val decType = extractTypeByJourney(request)
       customsCacheService
-        .fetchAndGetEntry[AdditionalDeclarationType](cacheId, AdditionalDeclarationType.formId)
+        .fetchAndGetEntry[AdditionalDeclarationType](cacheId, decType.formId)
         .map {
-          case Some(data) => Ok(declaration_type(appConfig, AdditionalDeclarationType.form().fill(data)))
-          case _          => Ok(declaration_type(appConfig, AdditionalDeclarationType.form()))
+          case Some(data) => Ok(declaration_type(decType.form.fill(data)))
+          case _          => Ok(declaration_type(decType.form))
         }
   }
 
   def submitAdditionalDeclarationType(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
-      AdditionalDeclarationType
+      val decType = extractTypeByJourney(request)
+      decType
         .form()
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[AdditionalDeclarationType]) =>
-            Future.successful(BadRequest(declaration_type(appConfig, formWithErrors))),
+            Future.successful(BadRequest(declaration_type(formWithErrors))),
           validAdditionalDeclarationType =>
             customsCacheService
-              .cache[AdditionalDeclarationType](
-                cacheId,
-                AdditionalDeclarationType.formId,
-                validAdditionalDeclarationType
-              )
+              .cache[AdditionalDeclarationType](cacheId, decType.formId, validAdditionalDeclarationType)
               .map(_ => Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage()))
         )
   }
+
+  private def extractTypeByJourney(journeyRequest: JourneyRequest[_]): AdditionalDeclarationTypeTrait =
+    journeyRequest.choice.value match {
+      case SupplementaryDec => AdditionalDeclarationTypeSupplementaryDec
+      case StandardDec      => AdditionalDeclarationTypeStandardDec
+    }
 }

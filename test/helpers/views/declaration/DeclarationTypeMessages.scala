@@ -18,13 +18,16 @@ package helpers.views.declaration
 
 trait DeclarationTypeMessages {
 
-  val declarationType: String = "supplementary.declarationType"
+  val declarationType: String = "declaration.declarationType"
 
   val title: String = declarationType + ".title"
-  val header: String = declarationType + ".header"
+  val headerSupplementaryDec: String = declarationType + ".header.supplementary"
+  val headerStandardDec: String = declarationType + ".header.standard"
   val hint: String = declarationType + ".header.hint"
-  val simplified: String = declarationType + ".inputText.simplified"
-  val standard: String = declarationType + ".inputText.standard"
+  val simplified: String = declarationType + ".inputText.supplementary.simplified"
+  val standard: String = declarationType + ".inputText.supplementary.standard"
+  val preLodged: String = declarationType + ".inputText.standard.preLodged"
+  val frontier: String = declarationType + ".inputText.standard.frontier"
   val errorMessageEmpty: String = declarationType + ".inputText.error.empty"
   val errorMessageIncorrect: String = declarationType + ".inputText.error.incorrect"
 }

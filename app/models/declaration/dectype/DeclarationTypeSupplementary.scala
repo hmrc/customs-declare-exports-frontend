@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package models.declaration
+package models.declaration.dectype
 
 import forms.MetadataPropertiesConvertable
-import forms.declaration.{AdditionalDeclarationType, DispatchLocation}
+import forms.declaration.DispatchLocation
+import forms.declaration.additionaldeclarationtype.{AdditionalDeclarationType, AdditionalDeclarationTypeSupplementaryDec}
+import models.declaration.SummaryContainer
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-case class DeclarationType(
+case class DeclarationTypeSupplementary(
   dispatchLocation: Option[DispatchLocation],
   additionalDeclarationType: Option[AdditionalDeclarationType]
 ) extends SummaryContainer with MetadataPropertiesConvertable {
@@ -35,11 +37,11 @@ case class DeclarationType(
   override def isEmpty: Boolean = dispatchLocation.isEmpty && additionalDeclarationType.isEmpty
 }
 
-object DeclarationType {
+object DeclarationTypeSupplementary {
   val id = "DeclarationType"
 
-  def apply(cacheMap: CacheMap): DeclarationType = DeclarationType(
+  def apply(cacheMap: CacheMap): DeclarationTypeSupplementary = DeclarationTypeSupplementary(
     dispatchLocation = cacheMap.getEntry[DispatchLocation](DispatchLocation.formId),
-    additionalDeclarationType = cacheMap.getEntry[AdditionalDeclarationType](AdditionalDeclarationType.formId)
+    additionalDeclarationType = cacheMap.getEntry[AdditionalDeclarationType](AdditionalDeclarationTypeSupplementaryDec.formId)
   )
 }
