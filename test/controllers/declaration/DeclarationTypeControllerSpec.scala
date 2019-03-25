@@ -19,9 +19,10 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes
+import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
-import forms.declaration.{AdditionalDeclarationType, DispatchLocation}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
+import forms.declaration.additionaldeclarationtype.{AdditionalDeclarationType, AdditionalDeclarationTypeSupplementaryDec}
 import helpers.views.declaration.DeclarationTypeMessages
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -37,7 +38,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
 
   before {
     authorizedUser()
-    withCaching[AdditionalDeclarationType](None, AdditionalDeclarationType.formId)
+    withCaching[AdditionalDeclarationType](None, AdditionalDeclarationTypeSupplementaryDec.formId)
     withCaching[DispatchLocation](None, DispatchLocation.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
@@ -81,7 +82,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
       status(result) must be(SEE_OTHER)
     }
 
-    "redirect to \"Additional Declaration Type\" page" when {
+    "redirect to 'Additional Declaration Type' page" when {
 
       "dispatch location is Outside EU (EX)" in {
         withCaching[DispatchLocation](None, DispatchLocation.formId)
@@ -94,7 +95,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
       }
     }
 
-    "redirect to \"Not Eligible\" page" when {
+    "redirect to 'Not-eligible' page" when {
 
       "dispatch location is a Special Fiscal Territory (CO)" in {
         withCaching[DispatchLocation](None, DispatchLocation.formId)
@@ -120,7 +121,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
 
       withCaching[AdditionalDeclarationType](
         Some(AdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Simplified)),
-        AdditionalDeclarationType.formId
+        AdditionalDeclarationTypeSupplementaryDec.formId
       )
 
       val result = route(app, getRequest(declarationTypeUri)).get
@@ -136,7 +137,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
       route(app, postRequest(declarationTypeUri, validForm)).get.futureValue
 
       verify(mockCustomsCacheService)
-        .cache[AdditionalDeclarationType](any(), ArgumentMatchers.eq(AdditionalDeclarationType.formId), any())(
+        .cache[AdditionalDeclarationType](any(), ArgumentMatchers.eq(AdditionalDeclarationTypeSupplementaryDec.formId), any())(
           any(),
           any(),
           any()
@@ -150,7 +151,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
       status(result) must be(SEE_OTHER)
     }
 
-    "redirect to \"Consignment references\" page" in {
+    "redirect to 'Consignment references' page" in {
 
       val validForm = buildAdditionalDeclarationTypeTestData(AllowedAdditionalDeclarationTypes.Simplified)
       val result = route(app, postRequest(declarationTypeUri, validForm)).get

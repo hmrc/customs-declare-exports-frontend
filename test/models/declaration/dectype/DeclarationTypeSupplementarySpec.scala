@@ -14,36 +14,37 @@
  * limitations under the License.
  */
 
-package models.declaration
+package models.declaration.dectype
 
-import forms.declaration.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes.Simplified
-import forms.declaration.AdditionalDeclarationTypeSpec._
 import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.declaration.DispatchLocationSpec._
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes.Simplified
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
+import uk.gov.hmrc.wco.dec.MetaData
 
-class DeclarationTypeSpec extends WordSpec with MustMatchers {
-  import DeclarationTypeSpec._
+class DeclarationTypeSupplementarySpec extends WordSpec with MustMatchers {
+  import DeclarationTypeSupplementarySpec._
 
   "Method toMetadataProperties" should {
     "return proper Metadata Properties" in {
       val declarationType = correctDeclarationType
-      val expectedMetadataProperties: Map[String, String] =
-        Map(
-          "declaration.typeCode" -> (declarationType.dispatchLocation.get.dispatchLocation +
-            declarationType.additionalDeclarationType.get.additionalDeclarationType)
-        )
+      val expectedTypeCode = declarationType.dispatchLocation.get.dispatchLocation + declarationType.additionalDeclarationType.get.additionalDeclarationType
 
-      declarationType.toMetadataProperties() must equal(expectedMetadataProperties)
+      val metadata = MetaData.fromProperties(declarationType.toMetadataProperties())
+
+      metadata.declaration must be(defined)
+      metadata.declaration.get.typeCode must be(defined)
+      metadata.declaration.get.typeCode.get must equal(expectedTypeCode)
     }
   }
 
 }
 
-object DeclarationTypeSpec {
-  val correctDeclarationType = DeclarationType(Some(correctDispatchLocation), Some(correctAdditionalDeclarationType))
-  val emptyDeclarationType = DeclarationType(Some(correctDispatchLocation), Some(correctAdditionalDeclarationType))
+object DeclarationTypeSupplementarySpec {
+  val correctDeclarationType = DeclarationTypeSupplementary(Some(correctDispatchLocation), Some(correctAdditionalDeclarationTypeSupplementaryDec))
+  val emptyDeclarationType = DeclarationTypeSupplementary(Some(correctDispatchLocation), Some(correctAdditionalDeclarationTypeSupplementaryDec))
 
   val correctDeclarationTypeJSON: JsValue = JsObject(
     Map("dispatchLocation" -> JsString(OutsideEU), "additionalDeclarationType" -> JsString(Simplified))

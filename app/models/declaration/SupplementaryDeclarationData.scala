@@ -18,10 +18,11 @@ package models.declaration
 
 import forms.MetadataPropertiesConvertable
 import forms.declaration._
+import models.declaration.dectype.DeclarationTypeSupplementary
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 case class SupplementaryDeclarationData(
-  declarationType: Option[DeclarationType] = None,
+  declarationType: Option[DeclarationTypeSupplementary] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
   parties: Option[Parties] = None,
   locations: Option[Locations] = None,
@@ -59,7 +60,7 @@ case class SupplementaryDeclarationData(
 
   def toMap: Map[String, MetadataPropertiesConvertable] =
     Map(
-      DeclarationType.id -> declarationType,
+      DeclarationTypeSupplementary.id -> declarationType,
       ConsignmentReferences.id -> consignmentReferences,
       Parties.id -> parties,
       Locations.id -> locations,
@@ -73,7 +74,7 @@ object SupplementaryDeclarationData {
 
   def apply(cacheMap: CacheMap): SupplementaryDeclarationData =
     SupplementaryDeclarationData(
-      declarationType = flattenIfEmpty(DeclarationType(cacheMap)),
+      declarationType = flattenIfEmpty(DeclarationTypeSupplementary(cacheMap)),
       consignmentReferences = cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.id),
       parties = flattenIfEmpty(Parties(cacheMap)),
       locations = flattenIfEmpty(Locations(cacheMap)),

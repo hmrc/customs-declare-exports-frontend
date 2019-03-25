@@ -14,40 +14,27 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.declaration.additionaldeclarationtype
 
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class AdditionalDeclarationType(
-  additionalDeclarationType: String // 1 upper case alphabetic character
-)
-
-object AdditionalDeclarationType {
-  implicit val format = Json.format[AdditionalDeclarationType]
-
-  private val allowedValues =
-    Set(AllowedAdditionalDeclarationTypes.Simplified, AllowedAdditionalDeclarationTypes.Standard)
+trait AdditionalDeclarationTypeTrait {
+  def allowedValues: Set[String]
 
   val formMapping: Mapping[AdditionalDeclarationType] = Forms.single(
     "additionalDeclarationType" -> optional(
       text(maxLength = 1)
-        .verifying("supplementary.declarationType.inputText.error.incorrect", isContainedIn(allowedValues))
-    ).verifying("supplementary.declarationType.inputText.error.empty", _.isDefined)
+        .verifying("declaration.declarationType.inputText.error.incorrect", isContainedIn(allowedValues))
+    ).verifying("declaration.declarationType.inputText.error.empty", _.isDefined)
       .transform[AdditionalDeclarationType](
-        value => AdditionalDeclarationType(value.getOrElse("")),
-        additionalDeclarationType => Some(additionalDeclarationType.additionalDeclarationType)
-      )
+      value => AdditionalDeclarationType(value.getOrElse("")),
+      additionalDeclarationType => Some(additionalDeclarationType.additionalDeclarationType)
+    )
   )
 
   val formId = "AdditionalDeclarationType"
 
   def form(): Form[AdditionalDeclarationType] = Form(formMapping)
-
-  object AllowedAdditionalDeclarationTypes {
-    val Simplified = "Y"
-    val Standard = "Z"
-  }
 }

@@ -212,13 +212,16 @@ supplementary.dispatchLocation.inputText.specialFiscalTerritory = Fiscal territo
 supplementary.dispatchLocation.inputText.error.empty = Please, choose dispatch location
 supplementary.dispatchLocation.inputText.error.incorrect = Please, choose valid dispatch location
 
-supplementary.declarationType.title = Declaration Type
-supplementary.declarationType.header = 1/2 What type of declaration are you making?
-supplementary.declarationType.header.hint = Hint text if needed here
-supplementary.declarationType.inputText.simplified = Pre-authorised simplified declaration
-supplementary.declarationType.inputText.standard = Entry in Declarants Records (EIDR)
-supplementary.declarationType.inputText.error.empty = Please, choose declaration type
-supplementary.declarationType.inputText.error.incorrect = Please, choose valid declaration type
+declaration.declarationType.title = Declaration Type
+declaration.declarationType.header.supplementary = 1/2 What type of declaration are you making?
+declaration.declarationType.header.standard = 1/2 Which type of standard declaration are you entering?
+declaration.declarationType.header.hint = Hint text if needed here
+declaration.declarationType.inputText.supplementary.simplified = Pre-authorised simplified declaration
+declaration.declarationType.inputText.supplementary.standard = Entry in Declarants Records (EIDR)
+declaration.declarationType.inputText.standard.preLodged = Pre-lodged
+declaration.declarationType.inputText.standard.frontier = Frontier
+declaration.declarationType.inputText.error.empty = Please, choose declaration type
+declaration.declarationType.inputText.error.incorrect = Please, choose valid declaration type
 
 notEligible.title = You need to use a different
 notEligible.titleLineTwo = service

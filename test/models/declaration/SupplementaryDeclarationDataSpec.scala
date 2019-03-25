@@ -16,8 +16,6 @@
 
 package models.declaration
 
-import forms.declaration.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes
-import forms.declaration.AdditionalDeclarationTypeSpec._
 import forms.declaration.ConsigneeDetailsSpec._
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
@@ -32,17 +30,18 @@ import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.SupervisingCustomsOfficeSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransactionTypeSpec._
-import forms.declaration.TransportInformationContainerSpec.{
-  correctTransportInformationContainerData,
-  correctTransportInformationContainerDataJSON
-}
+import forms.declaration.TransportInformationContainerSpec.{correctTransportInformationContainerData, correctTransportInformationContainerDataJSON}
 import forms.declaration.TransportInformationSpec._
 import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._
-import DeclarationAdditionalActorsDataSpec._
-import DeclarationHoldersDataSpec._
-import DeclarationTypeSpec._
-import SupplementaryDeclarationData.SchemaMandatoryValues._
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
+import models.declaration.DeclarationAdditionalActorsDataSpec._
+import models.declaration.DeclarationHoldersDataSpec._
+import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues._
+import models.declaration.dectype.DeclarationTypeSupplementary
+import models.declaration.dectype.DeclarationTypeSupplementarySpec._
 import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, Json}
@@ -93,7 +92,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
         "CacheMap contains record for AdditionalDeclarationType only" in {
           val cacheMap =
-            CacheMap("CacheID", Map(AdditionalDeclarationType.formId -> correctAdditionalDeclarationTypeJSON))
+            CacheMap("CacheID", Map(AdditionalDeclarationTypeSupplementaryDec.formId -> correctAdditionalDeclarationTypeSupplementaryDecJSON))
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
           supplementaryDeclarationData.declarationType must be(defined)
@@ -108,7 +107,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
             "CacheID",
             Map(
               DispatchLocation.formId -> correctDispatchLocationJSON,
-              AdditionalDeclarationType.formId -> correctAdditionalDeclarationTypeJSON
+              AdditionalDeclarationTypeSupplementaryDec.formId -> correctAdditionalDeclarationTypeSupplementaryDecJSON
             )
           )
 
@@ -254,9 +253,9 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         val map = supplementaryDeclarationData.toMap
 
         map.size must equal(2)
-        map.keys must contain(DeclarationType.id)
-        map.get(DeclarationType.id) must be(defined)
-        map(DeclarationType.id) must equal(declarationType)
+        map.keys must contain(DeclarationTypeSupplementary.id)
+        map.get(DeclarationTypeSupplementary.id) must be(defined)
+        map(DeclarationTypeSupplementary.id) must equal(declarationType)
         map.keys must contain(Parties.id)
         map.get(Parties.id) must be(defined)
         map(Parties.id) must equal(parties)
@@ -272,8 +271,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         val supplementaryDeclarationDataFieldsAmount = 7
         map.size must equal(supplementaryDeclarationDataFieldsAmount)
 
-        map.keys must contain(DeclarationType.id)
-        map(DeclarationType.id) must equal(data.declarationType.get)
+        map.keys must contain(DeclarationTypeSupplementary.id)
+        map(DeclarationTypeSupplementary.id) must equal(data.declarationType.get)
         map.keys must contain(ConsignmentReferences.id)
         map(ConsignmentReferences.id) must equal(data.consignmentReferences.get)
         map.keys must contain(Parties.id)
@@ -335,7 +334,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
   }
 
   trait SimpleTest {
-    val declarationTypeMock = mock(classOf[DeclarationType])
+    val declarationTypeMock = mock(classOf[DeclarationTypeSupplementary])
     val consignmentReferencesMock = mock(classOf[ConsignmentReferences])
     val partiesMock = mock(classOf[Parties])
     val locationsMock = mock(classOf[Locations])
@@ -385,7 +384,7 @@ object SupplementaryDeclarationDataSpec {
     id = "CacheID",
     data = Map(
       DispatchLocation.formId -> correctDispatchLocationJSON,
-      AdditionalDeclarationType.formId -> correctAdditionalDeclarationTypeJSON,
+      AdditionalDeclarationTypeSupplementaryDec.formId -> correctAdditionalDeclarationTypeSupplementaryDecJSON,
       ConsignmentReferences.id -> correctConsignmentReferencesJSON,
       ExporterDetails.id -> correctExporterDetailsJSON,
       DeclarantDetails.id -> correctDeclarantDetailsJSON,
