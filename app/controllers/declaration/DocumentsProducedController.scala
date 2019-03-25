@@ -17,9 +17,9 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{DocumentsProducedController, ItemsSummaryController}
-import controllers.util.CacheIdGenerator.{goodsItemCacheId, supplementaryCacheId}
+import controllers.util.CacheIdGenerator.{cacheId, goodsItemCacheId}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.DocumentsProduced
 import forms.declaration.DocumentsProduced.form
@@ -27,7 +27,7 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.{formId, maxNumberOfItems}
-import models.requests.AuthenticatedRequest
+import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsValue, Json}
@@ -43,13 +43,14 @@ class DocumentsProducedController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   itemsCache: ItemsCachingService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[DocumentsProducedData](goodsItemCacheId, formId)
       .map {
@@ -58,7 +59,7 @@ class DocumentsProducedController @Inject()(
       }
   }
 
-  def saveForm(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest()
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
     val cachedData = customsCacheService
@@ -84,14 +85,14 @@ class DocumentsProducedController @Inject()(
   private def saveAndContinue(
     userInput: DocumentsProduced,
     cachedData: DocumentsProducedData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.documents) match {
       case (document, Seq())     => saveAndRedirect(document, Seq())
       case (document, documents) => handleSaveAndContinueCache(document, documents)
     }
 
   private def handleSaveAndContinueCache(document: DocumentsProduced, documents: Seq[DocumentsProduced])(
-    implicit request: AuthenticatedRequest[_]
+    implicit request: JourneyRequest[_]
   ) =
     document match {
       case _ if documents.length >= maxNumberOfItems =>
@@ -106,7 +107,7 @@ class DocumentsProducedController @Inject()(
   private def saveAndRedirect(
     document: DocumentsProduced,
     documents: Seq[DocumentsProduced]
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     if (document.isDefined) {
       val updateDocs = DocumentsProducedData(documents :+ document)
       customsCacheService
@@ -120,8 +121,8 @@ class DocumentsProducedController @Inject()(
   private def addGoodsItem(
     document: DocumentsProduced,
     docs: Seq[DocumentsProduced] = Seq.empty
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier) =
-    itemsCache.addItemToCache(goodsItemCacheId, supplementaryCacheId).flatMap {
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier) =
+    itemsCache.addItemToCache(goodsItemCacheId, cacheId).flatMap {
       case true => Future.successful(Redirect(ItemsSummaryController.displayForm()))
       case false =>
         handleErrorPage(Seq(("", "supplementary.addgoodsitems.addallpages.error")), document, docs)
@@ -130,7 +131,7 @@ class DocumentsProducedController @Inject()(
   private def addItem(
     userInput: DocumentsProduced,
     cachedData: DocumentsProducedData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.documents) match {
       case (_, documents) if documents.length >= maxNumberOfItems =>
         handleErrorPage(Seq(("", "supplementary.addDocument.maximumAmount.error")), userInput, cachedData.documents)
@@ -151,7 +152,7 @@ class DocumentsProducedController @Inject()(
   private def removeItem(
     docToRemove: DocumentsProduced,
     cachedData: DocumentsProducedData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     if (cachedData.documents.contains(docToRemove)) {
       val updatedCache = cachedData.copy(documents = cachedData.documents.filterNot(_ == docToRemove))
 

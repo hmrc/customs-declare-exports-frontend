@@ -16,8 +16,8 @@
 
 package controllers.declaration
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.DeclarationFormats._
@@ -32,15 +32,15 @@ import views.html.declaration.items_summary
 import scala.concurrent.ExecutionContext
 
 class ItemsSummaryController @Inject()(
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   cacheService: CustomsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig, override val messagesApi: MessagesApi)
     extends FrontendController with I18nSupport {
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService
-      .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](supplementaryCacheId, itemsId)
+      .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
       .map(items => Ok(items_summary(items.getOrElse(Seq.empty))))
   }
 

@@ -145,17 +145,17 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
    */
   def addItemToCache(
     goodsItemCacheId: String,
-    supplementaryCacheId: String
+    cacheId: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
     cacheService.fetch(goodsItemCacheId).flatMap {
       case Some(cachedData) =>
         cacheService
-          .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](supplementaryCacheId, itemsId)
+          .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
           .flatMap(
             items =>
               cacheService
                 .cache[Seq[GovernmentAgencyGoodsItem]](
-                  supplementaryCacheId,
+                  cacheId,
                   itemsId,
                   items.getOrElse(Seq.empty) :+ createGoodsItem(items.fold(0)(_.size), cachedData)
                 )

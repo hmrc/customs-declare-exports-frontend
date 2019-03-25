@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.AdditionalDeclarationType.AllowedAdditionalDeclarationTypes
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import forms.declaration.{AdditionalDeclarationType, DispatchLocation}
@@ -37,6 +39,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
     authorizedUser()
     withCaching[AdditionalDeclarationType](None, AdditionalDeclarationType.formId)
     withCaching[DispatchLocation](None, DispatchLocation.formId)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   after {

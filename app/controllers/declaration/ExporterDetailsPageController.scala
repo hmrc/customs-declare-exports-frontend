@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.ExporterDetails
 import javax.inject.Inject
 import play.api.data.Form
@@ -33,28 +33,28 @@ import scala.concurrent.{ExecutionContext, Future}
 class ExporterDetailsPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
   implicit val countries = services.Countries.allCountries
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ExporterDetails](supplementaryCacheId, ExporterDetails.id).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[ExporterDetails](cacheId, ExporterDetails.id).map {
       case Some(data) => Ok(exporter_details(appConfig, ExporterDetails.form.fill(data)))
       case _          => Ok(exporter_details(appConfig, ExporterDetails.form))
     }
   }
 
-  def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     ExporterDetails.form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ExporterDetails]) =>
           Future.successful(BadRequest(exporter_details(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[ExporterDetails](supplementaryCacheId, ExporterDetails.id, form).map { _ =>
+          customsCacheService.cache[ExporterDetails](cacheId, ExporterDetails.id, form).map { _ =>
             Redirect(controllers.declaration.routes.DeclarantDetailsPageController.displayForm())
         }
       )

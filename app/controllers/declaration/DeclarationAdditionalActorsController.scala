@@ -17,9 +17,9 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{DeclarationAdditionalActorsController, DeclarationHolderController}
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActors.form
@@ -27,7 +27,7 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.DeclarationAdditionalActorsData
 import models.declaration.DeclarationAdditionalActorsData.{formId, maxNumberOfItems}
-import models.requests.AuthenticatedRequest
+import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -42,6 +42,7 @@ class DeclarationAdditionalActorsController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
@@ -50,18 +51,18 @@ class DeclarationAdditionalActorsController @Inject()(
   private val exceedMaximumNumberError = "supplementary.additionalActors.maximumAmount.error"
   private val duplicateActorError = "supplementary.additionalActors.duplicated.error"
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DeclarationAdditionalActorsData](supplementaryCacheId, formId).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[DeclarationAdditionalActorsData](cacheId, formId).map {
       case Some(data) => Ok(declaration_additional_actors(appConfig, form(), data.actors))
       case _          => Ok(declaration_additional_actors(appConfig, form(), Seq()))
     }
   }
 
-  def saveForm(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
     val cachedData = customsCacheService
-      .fetchAndGetEntry[DeclarationAdditionalActorsData](supplementaryCacheId, formId)
+      .fetchAndGetEntry[DeclarationAdditionalActorsData](cacheId, formId)
       .map(_.getOrElse(DeclarationAdditionalActorsData(Seq())))
 
     cachedData.flatMap { cache =>
@@ -83,7 +84,7 @@ class DeclarationAdditionalActorsController @Inject()(
   private def addItem(
     userInput: DeclarationAdditionalActors,
     cachedData: DeclarationAdditionalActorsData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.actors) match {
       case (_, actors) if actors.length >= maxNumberOfItems =>
         handleErrorPage(Seq(("", exceedMaximumNumberError)), userInput, cachedData.actors)
@@ -95,7 +96,7 @@ class DeclarationAdditionalActorsController @Inject()(
         if (actor.isDefined) {
           val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
           customsCacheService
-            .cache[DeclarationAdditionalActorsData](supplementaryCacheId, formId, updatedCache)
+            .cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache)
             .map(_ => Redirect(DeclarationAdditionalActorsController.displayForm()))
         } else
           handleErrorPage(
@@ -111,7 +112,7 @@ class DeclarationAdditionalActorsController @Inject()(
   private def saveAndContinue(
     userInput: DeclarationAdditionalActors,
     cacheData: DeclarationAdditionalActorsData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cacheData.actors) match {
       case (actor, Seq())  => saveAndRedirect(actor, Seq())
       case (actor, actors) => handleSaveAndContinueCache(actor, actors)
@@ -120,20 +121,16 @@ class DeclarationAdditionalActorsController @Inject()(
   private def saveAndRedirect(
     actor: DeclarationAdditionalActors,
     actors: Seq[DeclarationAdditionalActors]
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     if (actor.isDefined)
       customsCacheService
-        .cache[DeclarationAdditionalActorsData](
-          supplementaryCacheId,
-          formId,
-          DeclarationAdditionalActorsData(actors :+ actor)
-        )
+        .cache[DeclarationAdditionalActorsData](cacheId, formId, DeclarationAdditionalActorsData(actors :+ actor))
         .map { _ =>
           Redirect(DeclarationHolderController.displayForm())
         } else Future.successful(Redirect(DeclarationHolderController.displayForm()))
 
   private def handleSaveAndContinueCache(actor: DeclarationAdditionalActors, actors: Seq[DeclarationAdditionalActors])(
-    implicit request: AuthenticatedRequest[_]
+    implicit request: JourneyRequest[_]
   ) =
     if (actors.length >= maxNumberOfItems) {
       handleErrorPage(Seq(("", exceedMaximumNumberError)), actor, actors)
@@ -146,15 +143,14 @@ class DeclarationAdditionalActorsController @Inject()(
   private def removeItem(
     actorToRemove: Option[DeclarationAdditionalActors],
     cachedData: DeclarationAdditionalActorsData
-  )(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     actorToRemove match {
       case Some(actorToRemove) =>
         if (cachedData.containsItem(actorToRemove)) {
           val updatedCache = cachedData.copy(actors = cachedData.actors.filterNot(_ == actorToRemove))
 
-          customsCacheService.cache[DeclarationAdditionalActorsData](supplementaryCacheId, formId, updatedCache).map {
-            _ =>
-              Redirect(DeclarationAdditionalActorsController.displayForm())
+          customsCacheService.cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache).map { _ =>
+            Redirect(DeclarationAdditionalActorsController.displayForm())
           }
         } else errorHandler.displayErrorPage()
       case _ => errorHandler.displayErrorPage()

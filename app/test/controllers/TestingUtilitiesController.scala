@@ -18,7 +18,7 @@ package test.controllers
 
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
 import javax.inject.{Inject, Singleton}
 import models.SignedInUser
 import play.api.Logger
@@ -31,7 +31,7 @@ import uk.gov.hmrc.wco.dec.MetaData
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TestingUtilitiesController @Inject()(authenticate: AuthAction, connector: CustomsDeclareExportsConnector)(
+class TestingUtilitiesController @Inject()(authenticate: AuthAction, journeyType: JourneyAction, connector: CustomsDeclareExportsConnector)(
   implicit val appConfig: AppConfig,
   ec: ExecutionContext
 ) extends FrontendController {

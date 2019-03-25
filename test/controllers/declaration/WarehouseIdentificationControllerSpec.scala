@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.{CustomExportsBaseSpec, TestHelper}
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
 import org.scalatest.BeforeAndAfter
@@ -28,12 +30,13 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
 
   before {
     authorizedUser()
+    withCaching[WarehouseIdentification](None)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Warehouse Identification Controller on display" should {
 
     "display warehouse identification declaration form" in {
-      withCaching[WarehouseIdentification](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -64,7 +67,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
   "Warehouse Identification Controller on form" should {
 
     "validate form - too many characters" in {
-      withCaching[WarehouseIdentification](None)
 
       val incorrectWarehouseIdentification: JsValue =
         JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomString(37))))
@@ -75,7 +77,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
     }
 
     "validate form - less than two characters" in {
-      withCaching[WarehouseIdentification](None)
 
       val incorrectWarehouseIdentification: JsValue =
         JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomString(1))))
@@ -86,7 +87,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
     }
 
     "validate form - first letter is not capital" in {
-      withCaching[WarehouseIdentification](None)
 
       val incorrectWarehouseIdentification: JsValue =
         JsObject(Map("identificationNumber" -> JsString("r1234567GB")))
@@ -97,7 +97,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
     }
 
     "validate form - no answers" in {
-      withCaching[WarehouseIdentification](None)
 
       val result = route(app, postRequest(uri, emptyWarehouseIdentificationJSON)).get
       val header = result.futureValue.header
@@ -108,7 +107,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
     }
 
     "validate form - correct values" in {
-      withCaching[WarehouseIdentification](None)
 
       val result = route(app, postRequest(uri, correctWarehouseIdentificationJSON)).get
       val header = result.futureValue.header

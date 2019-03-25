@@ -17,9 +17,9 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{TotalNumberOfItemsController, TransportInformationContainersPageController}
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.TransportInformationContainer
@@ -28,7 +28,7 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.TransportInformationContainerData
 import models.declaration.TransportInformationContainerData.{id, maxNumberOfItems}
-import models.requests.AuthenticatedRequest
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -41,6 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportInformationContainersPageController @Inject()(
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
@@ -48,22 +49,22 @@ class TransportInformationContainersPageController @Inject()(
 
   implicit val countries = services.Countries.allCountries
 
-  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[TransportInformationContainerData](supplementaryCacheId, id)
+      .fetchAndGetEntry[TransportInformationContainerData](cacheId, id)
       .map {
         case Some(data) => Ok(add_transport_containers(form, data.containers))
         case _          => Ok(add_transport_containers(form, Seq()))
       }
   }
 
-  def handlePost(): Action[AnyContent] = authenticate.async { implicit request =>
+  def handlePost(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest()
 
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
     val cachedData = customsCacheService
-      .fetchAndGetEntry[TransportInformationContainerData](supplementaryCacheId, id)
+      .fetchAndGetEntry[TransportInformationContainerData](cacheId, id)
       .map(_.getOrElse(TransportInformationContainerData(Seq())))
 
     cachedData.flatMap { cache =>
@@ -83,32 +84,24 @@ class TransportInformationContainersPageController @Inject()(
     boundForm: Form[TransportInformationContainer],
     elementLimit: Int,
     cache: TransportInformationContainerData
-  )(implicit request: AuthenticatedRequest[_], appConfig: AppConfig) =
+  )(implicit request: JourneyRequest[_], appConfig: AppConfig) =
     saveAndContinue(boundForm, cache.containers, true, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(add_transport_containers(formWithErrors, cache.containers))),
       updatedCache =>
         if (updatedCache != cache.containers)
           customsCacheService
-            .cache[TransportInformationContainerData](
-              supplementaryCacheId,
-              id,
-              TransportInformationContainerData(updatedCache)
-            )
+            .cache[TransportInformationContainerData](cacheId, id, TransportInformationContainerData(updatedCache))
             .map(_ => Redirect(TotalNumberOfItemsController.displayForm()))
         else Future.successful(Redirect(TotalNumberOfItemsController.displayForm()))
     )
 
   private def removeContainer(cache: TransportInformationContainerData, ids: Seq[String])(
-    implicit request: AuthenticatedRequest[_]
+    implicit request: JourneyRequest[_]
   ) = {
     val updatedCache = remove(ids.headOption, cache.containers)
 
     customsCacheService
-      .cache[TransportInformationContainerData](
-        supplementaryCacheId,
-        id,
-        TransportInformationContainerData(updatedCache)
-      )
+      .cache[TransportInformationContainerData](cacheId, id, TransportInformationContainerData(updatedCache))
       .map(_ => Redirect(TransportInformationContainersPageController.displayPage()))
   }
 
@@ -116,16 +109,12 @@ class TransportInformationContainersPageController @Inject()(
     boundForm: Form[TransportInformationContainer],
     elementLimit: Int,
     cache: TransportInformationContainerData
-  )(implicit request: AuthenticatedRequest[_], appConfig: AppConfig) =
+  )(implicit request: JourneyRequest[_], appConfig: AppConfig) =
     add(boundForm, cache.containers, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(add_transport_containers(formWithErrors, cache.containers))),
       updatedCache =>
         customsCacheService
-          .cache[TransportInformationContainerData](
-            supplementaryCacheId,
-            id,
-            TransportInformationContainerData(updatedCache)
-          )
+          .cache[TransportInformationContainerData](cacheId, id, TransportInformationContainerData(updatedCache))
           .map(_ => Redirect(TransportInformationContainersPageController.displayPage()))
     )
 }

@@ -26,7 +26,6 @@ import javax.inject.Inject
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
 import models.requests._
-import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}

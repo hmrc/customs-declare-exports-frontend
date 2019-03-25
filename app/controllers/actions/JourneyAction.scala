@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import controllers.util.CacheIdGenerator.eoriCacheId
 import forms.Choice
 import forms.Choice.choiceId
-import models.requests.{AuthenticatedRequest, JorneyRequest}
+import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.mvc.Results.Conflict
 import play.api.mvc.{ActionRefiner, Result}
 import services.CustomsCacheService
@@ -30,13 +30,13 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 import scala.concurrent.{ExecutionContext, Future}
 
 case class JourneyAction @Inject()(customsCacheService: CustomsCacheService)(implicit ec: ExecutionContext)
-    extends ActionRefiner[AuthenticatedRequest, JorneyRequest] {
+    extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
 
-  override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JorneyRequest[A]]] = {
+  override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     customsCacheService.fetchAndGetEntry[Choice](eoriCacheId()(request), choiceId).map {
-      case Some(choice) => Right(JorneyRequest(request, choice))
+      case Some(choice) => Right(JourneyRequest(request, choice))
       case _            => Left(Conflict("Could not obtain information about journey type"))
     }
   }

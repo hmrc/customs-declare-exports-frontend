@@ -19,6 +19,8 @@ package controllers.declaration
 import base.TestHelper.createRandomString
 import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.{CommonMessages, DeclarationHolderMessages}
 import models.declaration.DeclarationHoldersData
@@ -37,6 +39,7 @@ class DeclarationHolderControllerSpec
   before {
     authorizedUser()
     withCaching[DeclarationHoldersData](None, formId)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Declaration Holder Controller on GET" should {

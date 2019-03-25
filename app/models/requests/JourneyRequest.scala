@@ -19,5 +19,5 @@ package models.requests
 import forms.Choice
 import play.api.mvc.WrappedRequest
 
-case class JorneyRequest[A](authenticatedRequest: AuthenticatedRequest[A], choice: Choice)
+case class JourneyRequest[A](authenticatedRequest: AuthenticatedRequest[A], choice: Choice)
     extends WrappedRequest[A](authenticatedRequest)

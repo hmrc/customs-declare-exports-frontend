@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import play.api.test.Helpers._
 
 class NotEligibleControllerSpec extends CustomExportsBaseSpec {
@@ -25,6 +27,7 @@ class NotEligibleControllerSpec extends CustomExportsBaseSpec {
 
   before {
     authorizedUser()
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Not Eligible Controller on GET" should {

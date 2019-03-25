@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util.MultipleItemsHelper._
 import controllers.util._
@@ -37,20 +37,20 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalInformationController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[AdditionalInformationData](goodsItemCacheId, formId).map {
       case Some(data) => Ok(additional_information(appConfig, form, data.items))
       case _          => Ok(additional_information(appConfig, form, Seq()))
     }
   }
 
-  def saveAdditionalInfo(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveAdditionalInfo(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest()
 
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))

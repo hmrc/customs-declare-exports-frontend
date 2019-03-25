@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.TransactionType
 import forms.declaration.TransactionType.{form, formId}
 import javax.inject.Inject
@@ -34,25 +34,25 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransactionTypeController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[TransactionType](supplementaryCacheId, formId).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[TransactionType](cacheId, formId).map {
       case Some(data) => Ok(transaction_type(appConfig, form.fill(data)))
       case _          => Ok(transaction_type(appConfig, form))
     }
   }
 
-  def saveTransactionType(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveTransactionType(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
       .fold(
         (formWithErrors: Form[TransactionType]) =>
           Future.successful(BadRequest(transaction_type(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[TransactionType](supplementaryCacheId, formId, form).map { _ =>
+          customsCacheService.cache[TransactionType](cacheId, formId, form).map { _ =>
             Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm())
         }
       )

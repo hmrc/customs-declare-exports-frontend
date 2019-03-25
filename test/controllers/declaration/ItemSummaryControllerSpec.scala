@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import generators.Generators
 import org.scalatest.OptionValues
 import org.scalatest.prop.PropertyChecks
@@ -50,6 +52,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
         "user is signed in" in {
           authorizedUser()
           withCaching[Seq[GovernmentAgencyGoodsItem]](None)
+          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
           val result = route(app, getRequest(uri)).value
           val stringResult = contentAsString(result)

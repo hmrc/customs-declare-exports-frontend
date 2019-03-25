@@ -147,12 +147,12 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
       when(mockCustomsCacheService.remove(anyString())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(204)))
       withCaching[Seq[GovernmentAgencyGoodsItem]](None)
-      val result = itemsCachingService.addItemToCache("goodsItemCacheId", "supplementaryCacheId")
+      val result = itemsCachingService.addItemToCache("goodsItemCacheId", "cacheId")
       result.futureValue mustBe true
       //TODO : Check specific goodsItem is being added
       verify(mockCustomsCacheService)
         .cache[Seq[GovernmentAgencyGoodsItem]](
-          ArgumentMatchers.eq("supplementaryCacheId"),
+          ArgumentMatchers.eq("cacheId"),
           ArgumentMatchers.eq("exportItems"),
           any()
         )(any(), any(), any())

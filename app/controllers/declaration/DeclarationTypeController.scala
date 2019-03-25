@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import forms.declaration.{AdditionalDeclarationType, DispatchLocation}
 import handlers.ErrorHandler
@@ -35,22 +35,22 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationTypeController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displayDispatchLocationPage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayDispatchLocationPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[DispatchLocation](supplementaryCacheId, DispatchLocation.formId)
+      .fetchAndGetEntry[DispatchLocation](cacheId, DispatchLocation.formId)
       .map {
         case Some(data) => Ok(dispatch_location(appConfig, DispatchLocation.form().fill(data)))
         case _          => Ok(dispatch_location(appConfig, DispatchLocation.form()))
       }
   }
 
-  def submitDispatchLocation(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitDispatchLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     DispatchLocation
       .form()
       .bindFromRequest()
@@ -59,7 +59,7 @@ class DeclarationTypeController @Inject()(
           Future.successful(BadRequest(dispatch_location(appConfig, formWithErrors))),
         validDispatchLocation =>
           customsCacheService
-            .cache[DispatchLocation](supplementaryCacheId, DispatchLocation.formId, validDispatchLocation)
+            .cache[DispatchLocation](cacheId, DispatchLocation.formId, validDispatchLocation)
             .map { _ =>
               Redirect(specifyNextPage(validDispatchLocation))
           }
@@ -74,16 +74,16 @@ class DeclarationTypeController @Inject()(
         controllers.declaration.routes.NotEligibleController.displayPage()
     }
 
-  def displayAdditionalDeclarationTypePage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayAdditionalDeclarationTypePage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[AdditionalDeclarationType](supplementaryCacheId, AdditionalDeclarationType.formId)
+      .fetchAndGetEntry[AdditionalDeclarationType](cacheId, AdditionalDeclarationType.formId)
       .map {
         case Some(data) => Ok(declaration_type(appConfig, AdditionalDeclarationType.form().fill(data)))
         case _          => Ok(declaration_type(appConfig, AdditionalDeclarationType.form()))
       }
   }
 
-  def submitAdditionalDeclarationType(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitAdditionalDeclarationType(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     AdditionalDeclarationType
       .form()
       .bindFromRequest()
@@ -93,7 +93,7 @@ class DeclarationTypeController @Inject()(
         validAdditionalDeclarationType =>
           customsCacheService
             .cache[AdditionalDeclarationType](
-              supplementaryCacheId,
+              cacheId,
               AdditionalDeclarationType.formId,
               validAdditionalDeclarationType
             )

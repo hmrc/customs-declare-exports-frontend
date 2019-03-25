@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.ConsigneeDetails
 import forms.declaration.ConsigneeDetailsSpec._
 import play.api.test.Helpers._
@@ -28,6 +30,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
   before {
     authorizedUser()
     withCaching[ConsigneeDetails](None)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Consignee Details Page Controller on GET" should {

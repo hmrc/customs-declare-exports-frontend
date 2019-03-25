@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.TransactionType
 import forms.declaration.TransactionTypeSpec._
 import org.scalatest.BeforeAndAfter
@@ -28,12 +30,14 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
   before {
     authorizedUser()
+    withCaching[TransactionType](None)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+
   }
 
   "Transaction Type Controller on display page" should {
 
     "display transaction type form" in {
-      withCaching[TransactionType](None)
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -56,7 +60,6 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
 
     "display \"Save and continue\" button on page" in {
-      withCaching[TransactionType](None)
 
       val result = route(app, getRequest(uri)).get
       val resultAsString = contentAsString(result)
@@ -66,7 +69,6 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
 
     "validate form - empty value" in {
-      withCaching[TransactionType](None)
 
       val result = route(app, postRequest(uri, emptyTransactionTypeJSON)).get
 
@@ -74,7 +76,6 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
 
     "validate form - incorrect values" in {
-      withCaching[TransactionType](None)
 
       val result = route(app, postRequest(uri, incorrectTransactionTypeJSON)).get
       val stringResult = contentAsString(result)
@@ -84,15 +85,12 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     }
 
     "validate form - correct values" in {
-      withCaching[TransactionType](None)
 
       val result = route(app, postRequest(uri, correctTransactionTypeJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/previous-documents")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/previous-documents"))
     }
   }
 

@@ -18,6 +18,8 @@ package controllers.declaration
 
 import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.DocumentsProduced
 import forms.declaration.DocumentsProducedSpec.{correctDocumentsProducedMap, _}
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
@@ -42,6 +44,7 @@ class DocumentsProducedControllerSpec
   before {
     authorizedUser()
     withCaching[DocumentsProducedData](None, formId)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Documents Produced Controller on GET" should {

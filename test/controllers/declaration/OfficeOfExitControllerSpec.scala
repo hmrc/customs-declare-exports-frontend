@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.OfficeOfExit
 import forms.declaration.OfficeOfExitSpec._
 import helpers.views.declaration.OfficeOfExitMessages
@@ -29,6 +31,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
   before {
     authorizedUser()
     withCaching[OfficeOfExit](None)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Office of Exit Controller on GET" should {

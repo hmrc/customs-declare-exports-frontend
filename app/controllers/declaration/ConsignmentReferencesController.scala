@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.ConsignmentReferences
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -34,22 +34,22 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConsignmentReferencesController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
-      .fetchAndGetEntry[ConsignmentReferences](supplementaryCacheId, ConsignmentReferences.id)
+      .fetchAndGetEntry[ConsignmentReferences](cacheId, ConsignmentReferences.id)
       .map {
         case Some(data) => Ok(consignment_references(appConfig, ConsignmentReferences.form.fill(data)))
         case _          => Ok(consignment_references(appConfig, ConsignmentReferences.form))
       }
   }
 
-  def submitConsignmentReferences(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitConsignmentReferences(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     ConsignmentReferences.form
       .bindFromRequest()
       .fold(
@@ -57,7 +57,7 @@ class ConsignmentReferencesController @Inject()(
           Future.successful(BadRequest(consignment_references(appConfig, formWithErrors))),
         validConsignmentReferences => {
           customsCacheService
-            .cache[ConsignmentReferences](supplementaryCacheId, ConsignmentReferences.id, validConsignmentReferences)
+            .cache[ConsignmentReferences](cacheId, ConsignmentReferences.id, validConsignmentReferences)
             .map(_ => Redirect(controllers.declaration.routes.ExporterDetailsPageController.displayForm()))
         }
       )

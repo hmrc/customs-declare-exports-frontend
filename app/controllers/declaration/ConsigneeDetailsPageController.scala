@@ -17,8 +17,8 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.fullDecCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.ConsigneeDetails
 import javax.inject.Inject
 import play.api.data.Form
@@ -37,27 +37,28 @@ class ConsigneeDetailsPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  journeyType: JourneyAction,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
   implicit val countries = services.Countries.allCountries
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ConsigneeDetails](fullDecCacheId, ConsigneeDetails.id).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[ConsigneeDetails](cacheId, ConsigneeDetails.id).map {
       case Some(data) => Ok(consignee_details(appConfig, ConsigneeDetails.form.fill(data)))
       case _          => Ok(consignee_details(appConfig, ConsigneeDetails.form))
     }
   }
 
-  def saveAddress(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     ConsigneeDetails.form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsigneeDetails]) =>
           Future.successful(BadRequest(consignee_details(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[ConsigneeDetails](fullDecCacheId, ConsigneeDetails.id, form).map { _ =>
+          customsCacheService.cache[ConsigneeDetails](cacheId, ConsigneeDetails.id, form).map { _ =>
             Redirect(controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm())
         }
       )

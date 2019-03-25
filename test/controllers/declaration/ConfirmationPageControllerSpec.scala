@@ -17,6 +17,8 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import forms.Choice
+import forms.Choice.choiceId
 import helpers.views.declaration.ConfirmationMessages
 import play.api.test.Helpers._
 
@@ -24,6 +26,7 @@ class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with Confirma
 
   before {
     authorizedUser()
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Confirmation Page Controller on GET" should {

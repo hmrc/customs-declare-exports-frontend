@@ -19,6 +19,8 @@ import base.CustomExportsBaseSpec
 import base.TestHelper.createRandomString
 import controllers.declaration.TransportInformationContainersPageControllerSpec.cacheWithMaximumAmountOfHolders
 import controllers.util.{Add, Remove, SaveAndContinue}
+import forms.Choice
+import forms.Choice.choiceId
 import forms.declaration.TransportInformationContainer
 import models.declaration.TransportInformationContainerData
 import models.declaration.TransportInformationContainerData.id
@@ -36,6 +38,7 @@ class TransportInformationContainersPageControllerSpec extends CustomExportsBase
   before {
     authorizedUser()
     withCaching[TransportInformationContainerData](None, id)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   "Transport Information Containers Page Controller on GET" should {

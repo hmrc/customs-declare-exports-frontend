@@ -16,8 +16,8 @@
 
 package controllers.declaration
 import config.AppConfig
-import controllers.actions.AuthAction
-import controllers.util.CacheIdGenerator.supplementaryCacheId
+import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.OfficeOfExit
 import javax.inject.Inject
 import play.api.data.Form
@@ -32,27 +32,27 @@ import scala.concurrent.{ExecutionContext, Future}
 class OfficeOfExitController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction,
+  authenticate: AuthAction, journeyType: JourneyAction,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
   import forms.declaration.OfficeOfExit._
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[OfficeOfExit](supplementaryCacheId, formId).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    customsCacheService.fetchAndGetEntry[OfficeOfExit](cacheId, formId).map {
       case Some(data) => Ok(office_of_exit(appConfig, form.fill(data)))
       case _          => Ok(office_of_exit(appConfig, form))
     }
   }
 
-  def saveOffice(): Action[AnyContent] = authenticate.async { implicit request =>
+  def saveOffice(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[OfficeOfExit]) =>
           Future.successful(BadRequest(office_of_exit(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[OfficeOfExit](supplementaryCacheId, formId, form).map { _ =>
+          customsCacheService.cache[OfficeOfExit](cacheId, formId, form).map { _ =>
             Redirect(controllers.declaration.routes.TransportInformationPageController.displayPage())
         }
       )

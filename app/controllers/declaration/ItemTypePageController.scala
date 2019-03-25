@@ -17,14 +17,14 @@
 package controllers.declaration
 
 import config.AppConfig
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.ItemType
 import forms.declaration.ItemType._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.requests.AuthenticatedRequest
+import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -40,12 +40,13 @@ class ItemTypePageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id).map {
       case Some(data) =>
         Ok(item_type(appConfig, ItemType.form.fill(data), data.taricAdditionalCodes, data.nationalAdditionalCodes))
@@ -53,7 +54,7 @@ class ItemTypePageController @Inject()(
     }
   }
 
-  def submitItemType(): Action[AnyContent] = authenticate.async { implicit request =>
+  def submitItemType(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val inputForm = ItemType.form.bindFromRequest()
     val itemTypeInput: ItemType = inputForm.value.getOrElse(ItemType.empty)
 
@@ -72,7 +73,7 @@ class ItemTypePageController @Inject()(
     request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
   private def handleAddition(itemTypeInput: ItemType, itemTypeCache: ItemType)(
-    implicit request: AuthenticatedRequest[AnyContent]
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
     val itemTypeUpdated = updateCachedItemTypeAddition(itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnAddition(itemTypeUpdated) match {
@@ -103,7 +104,7 @@ class ItemTypePageController @Inject()(
     )
 
   private def handleSaveAndContinue(itemTypeInput: ItemType, itemTypeCache: ItemType)(
-    implicit request: AuthenticatedRequest[AnyContent]
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
     val itemTypeUpdated = updateCachedItemTypeSaveAndContinue(itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnSaveAndContinue(itemTypeUpdated) match {
@@ -151,7 +152,7 @@ class ItemTypePageController @Inject()(
     })
 
   private def handleRemoval(keys: Seq[String], itemTypeCached: ItemType)(
-    implicit request: AuthenticatedRequest[AnyContent]
+    implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     if (keys.nonEmpty) {
       val fieldName = keys.head.split("_")(0)
