@@ -17,11 +17,12 @@
 package services
 import com.google.inject.Inject
 import config.AppConfig
-import forms.supplementary.ItemType.IdentificationTypeCodes._
-import forms.supplementary.{CommodityMeasure, DocumentsProduced, ItemType, PackageInformation}
+import forms.declaration.ItemType.IdentificationTypeCodes._
+import forms.declaration.{CommodityMeasure, DocumentsProduced, ItemType, PackageInformation}
 import javax.inject.Singleton
 import models.DeclarationFormats._
-import models.declaration.supplementary.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import models.declaration.{AdditionalInformationData, DocumentsProducedData}
 import play.api.http.Status.NO_CONTENT
 import services.ExportsItemsCacheIds.itemsId
 import uk.gov.hmrc.http.HeaderCarrier

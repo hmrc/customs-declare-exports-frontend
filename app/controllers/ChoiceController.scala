@@ -56,12 +56,9 @@ class ChoiceController @Inject()(
         (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choice_page(appConfig, formWithErrors))),
         validChoice =>
           customsCacheService.cache[Choice](eoriCacheId, choiceId, validChoice).map { _ =>
-            validChoice.choice match {
-              case SupplementaryDec =>
-                Redirect(controllers.supplementary.routes.DeclarationTypeController.displayDispatchLocationPage())
-              case StandardDec =>
-                // TODO Standard declaration is not supported now
-                Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+            validChoice.value match {
+              case SupplementaryDec | StandardDec =>
+                Redirect(controllers.declaration.routes.DeclarationTypeController.displayDispatchLocationPage())
               case Arrival | Departure => Redirect(controllers.movement.routes.MovementController.displayDucrPage())
               case CancelDec =>
                 Redirect(controllers.routes.CancelDeclarationController.displayForm())

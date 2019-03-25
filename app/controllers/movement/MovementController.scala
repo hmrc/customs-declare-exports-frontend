@@ -45,10 +45,10 @@ class MovementController @Inject()(
 
   def displayDucrPage(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, Choice.choiceId).flatMap {
-      case Some(choice) if !choice.choice.isEmpty =>
+      case Some(choice) if !choice.value.isEmpty =>
         customsCacheService.fetchAndGetEntry[Ducr](movementCacheId, Ducr.id).map {
-          case Some(data) => Ok(enter_ducr(appConfig, Ducr.form.fill(data), choice.choice))
-          case _          => Ok(enter_ducr(appConfig, Ducr.form, choice.choice))
+          case Some(data) => Ok(enter_ducr(appConfig, Ducr.form.fill(data), choice.value))
+          case _          => Ok(enter_ducr(appConfig, Ducr.form, choice.value))
         }
       case _ =>
         Future.successful(
@@ -77,10 +77,10 @@ class MovementController @Inject()(
 
   def displayGoodsDate(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, Choice.choiceId).flatMap {
-      case Some(choice) if !choice.choice.isEmpty =>
+      case Some(choice) if !choice.value.isEmpty =>
         customsCacheService.fetchAndGetEntry[GoodsDateForm](movementCacheId, goodsDateId).map {
-          case Some(data) => Ok(goods_date(appConfig, goodsDateForm.fill(data), choice.choice))
-          case _          => Ok(goods_date(appConfig, goodsDateForm, choice.choice))
+          case Some(data) => Ok(goods_date(appConfig, goodsDateForm.fill(data), choice.value))
+          case _          => Ok(goods_date(appConfig, goodsDateForm, choice.value))
         }
       case _ =>
         Future.successful(
@@ -110,10 +110,10 @@ class MovementController @Inject()(
 
   def displayLocation(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, Choice.choiceId).flatMap {
-      case Some(choice) if !choice.choice.isEmpty =>
+      case Some(choice) if !choice.value.isEmpty =>
         customsCacheService.fetchAndGetEntry[LocationForm](movementCacheId, locationId).map {
-          case Some(data) => Ok(goods_location(appConfig, locationForm.fill(data), choice.choice))
-          case _          => Ok(goods_location(appConfig, locationForm, choice.choice))
+          case Some(data) => Ok(goods_location(appConfig, locationForm.fill(data), choice.value))
+          case _          => Ok(goods_location(appConfig, locationForm, choice.value))
         }
       case _ =>
         Future.successful(
@@ -134,7 +134,7 @@ class MovementController @Inject()(
       .fold(
         (formWithErrors: Form[LocationForm]) =>
           customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, Choice.choiceId).map {
-            case Some(choice) => BadRequest(goods_location(appConfig, formWithErrors, choice.choice))
+            case Some(choice) => BadRequest(goods_location(appConfig, formWithErrors, choice.value))
             case _            => BadRequest(goods_location(appConfig, formWithErrors, "error"))
         },
         form =>

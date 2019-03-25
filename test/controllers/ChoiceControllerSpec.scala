@@ -109,17 +109,17 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/supplementary/dispatch-location")
+        Some("/customs-declare-exports/declaration/dispatch-location")
       )
     }
 
-    "redirect to choice page when standard declaration chosen" in {
+    "redirect to dispatch-location page when standard declaration chosen" in {
       val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.StandardDec)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/choice"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/dispatch-location"))
     }
 
     "redirect to ducr for arrival page when arrival chosen" in {

@@ -17,12 +17,12 @@
 package views
 
 import base.TestHelper
-import forms.supplementary.{Address, ConsigneeDetails, EntityDetails}
-import helpers.views.supplementary.{CommonMessages, ConsigneeDetailsMessages}
+import forms.declaration.{Address, ConsigneeDetails, EntityDetails}
+import helpers.views.declaration.{CommonMessages, ConsigneeDetailsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.supplementary.consignee_details
-import views.supplementary.spec.ViewSpec
+import views.html.declaration.consignee_details
+import views.declaration.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
@@ -119,7 +119,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supplementary/representative-details")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/representative-details")
     }
 
     "display \"Save and continue\" button on page" in {

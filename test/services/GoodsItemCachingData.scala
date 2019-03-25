@@ -16,8 +16,9 @@
 
 package services
 import base.TestHelper._
-import forms.supplementary._
-import models.declaration.supplementary.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import forms.declaration._
+import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import models.declaration.{AdditionalInformationData, DocumentsProducedData}
 
 import scala.util.Random
 

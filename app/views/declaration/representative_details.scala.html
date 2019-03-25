@@ -1,0 +1,69 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.declaration.routes._
+@import forms.declaration.RepresentativeDetails
+@import forms.declaration.RepresentativeDetails.StatusCodes._
+@import services.Country
+@import uk.gov.hmrc.play.views.html._
+@import utils.RadioOption
+
+@(appConfig: AppConfig, form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages, countries: List[Country])
+
+@main_template(
+    title = messages("supplementary.representative.title"),
+    appConfig = appConfig
+) {
+
+    @components.back_link("/customs-declare-exports/declaration/declarant-details")
+
+    @helpers.form(RepresentativeDetailsPageController.submitRepresentativeDetails(), 'autoComplete -> "off") {
+
+        @components.error_summary(form.errors)
+
+        @components.page_title(Some("supplementary.representative.header"), None)
+
+
+        @components.form_fields_wrapper(field = form("details")) {
+
+            @components.input_text(
+                field = form("details.eori"),
+                label = messages("supplementary.eori"),
+                hint = Some(messages("supplementary.eori.hint"))
+            )
+
+            @components.page_title(subtitle = Some("supplementary.representative.address.info"))
+
+            @components.address(form, "details.address")
+        }
+
+
+        @components.page_title(title = Some("supplementary.representative.representationType.header"))
+
+        @components.input_radio(
+            field = form("statusCode"),
+            legend = "",
+            inputs = Seq(
+                RadioOption("statusCode_declarant", Declarant, messages("supplementary.representative.representationType.declarant")),
+                RadioOption("statusCode_direct", DirectRepresentative, messages("supplementary.representative.representationType.direct")),
+                RadioOption("statusCode_indirect", IndirectRepresentative, messages("supplementary.representative.representationType.indirect"))
+            )
+        )
+
+        @components.submit_button()
+    }
+}

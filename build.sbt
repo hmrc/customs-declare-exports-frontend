@@ -19,7 +19,6 @@ lazy val microservice = Project(appName, file("."))
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
-    RoutesKeys.routesImport ++= Seq("models._"),
     majorVersion := 0
   )
   .configs(IntegrationTest)
