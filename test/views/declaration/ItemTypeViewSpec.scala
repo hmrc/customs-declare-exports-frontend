@@ -15,13 +15,16 @@
  */
 
 package views.declaration
+
 import forms.declaration.ItemType
 import helpers.views.declaration.{CommonMessages, ItemTypeMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.declaration.item_type
 import views.declaration.spec.ViewSpec
+import views.tags.ViewTest
 
+@ViewTest
 class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessages {
 
   private val form: Form[ItemType] = ItemType.form()
@@ -178,6 +181,9 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       val view = createView(form)
 
       getElementById(view, "combinedNomenclatureCode").attr("value") must be("12345")
+      getElementById(view, "cusCode").attr("value") must be("")
+      getElementById(view, "statisticalValue").attr("value") must be("")
+      getElementById(view, "descriptionOfGoods").text() must be("")
     }
 
     "display data in CUS input" in {
@@ -185,7 +191,10 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       val form = ItemType.form().fill(ItemType("", Seq(), Seq(""), "", Some("1234"), ""))
       val view = createView(form)
 
+      getElementById(view, "combinedNomenclatureCode").attr("value") must be("")
       getElementById(view, "cusCode").attr("value") must be("1234")
+      getElementById(view, "statisticalValue").attr("value") must be("")
+      getElementById(view, "descriptionOfGoods").text() must be("")
     }
 
     "display data in Statistical Value input" in {
@@ -193,7 +202,10 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       val form = ItemType.form().fill(ItemType("", Seq(), Seq(""), "", Some(""), "12345"))
       val view = createView(form)
 
+      getElementById(view, "combinedNomenclatureCode").attr("value") must be("")
+      getElementById(view, "cusCode").attr("value") must be("")
       getElementById(view, "statisticalValue").attr("value") must be("12345")
+      getElementById(view, "descriptionOfGoods").text() must be("")
     }
 
     "display data in Description input" in {
@@ -201,6 +213,9 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       val form = ItemType.form().fill(ItemType("", Seq(), Seq(""), "Description", Some(""), ""))
       val view = createView(form)
 
+      getElementById(view, "combinedNomenclatureCode").attr("value") must be("")
+      getElementById(view, "cusCode").attr("value") must be("")
+      getElementById(view, "statisticalValue").attr("value") must be("")
       getElementById(view, "descriptionOfGoods").text() must be("Description")
     }
   }

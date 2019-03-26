@@ -162,6 +162,9 @@ class DeclarationAdditionalActorsViewSpec
 
       getElementById(view, "eori").attr("value") must be("1234")
       getElementById(view, consolidator).attr("checked") must be("checked")
+      getElementById(view, manufacturer).attr("checked") must be("")
+      getElementById(view, freightForwarder).attr("checked") must be("")
+      getElementById(view, warehouseKeeper).attr("checked") must be("")
     }
 
     "display EORI with MF selected" in {
@@ -170,7 +173,10 @@ class DeclarationAdditionalActorsViewSpec
         createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("MF"))))
 
       getElementById(view, "eori").attr("value") must be("1234")
+      getElementById(view, consolidator).attr("checked") must be("")
       getElementById(view, manufacturer).attr("checked") must be("checked")
+      getElementById(view, freightForwarder).attr("checked") must be("")
+      getElementById(view, warehouseKeeper).attr("checked") must be("")
     }
 
     "display EORI with FW selected" in {
@@ -179,7 +185,10 @@ class DeclarationAdditionalActorsViewSpec
         createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("FW"))))
 
       getElementById(view, "eori").attr("value") must be("1234")
+      getElementById(view, consolidator).attr("checked") must be("")
+      getElementById(view, manufacturer).attr("checked") must be("")
       getElementById(view, freightForwarder).attr("checked") must be("checked")
+      getElementById(view, warehouseKeeper).attr("checked") must be("")
     }
 
     "display EORI with WH selected" in {
@@ -188,6 +197,9 @@ class DeclarationAdditionalActorsViewSpec
         createView(DeclarationAdditionalActors.form().fill(DeclarationAdditionalActors(Some("1234"), Some("WH"))))
 
       getElementById(view, "eori").attr("value") must be("1234")
+      getElementById(view, consolidator).attr("checked") must be("")
+      getElementById(view, manufacturer).attr("checked") must be("")
+      getElementById(view, freightForwarder).attr("checked") must be("")
       getElementById(view, warehouseKeeper).attr("checked") must be("checked")
     }
 

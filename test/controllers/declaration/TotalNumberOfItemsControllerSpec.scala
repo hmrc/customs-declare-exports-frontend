@@ -20,98 +20,36 @@ import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.TotalNumberOfItems
-import forms.declaration.TotalNumberOfItemsSpec._
+import helpers.views.declaration.TotalNumberOfItemsMessages
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
+class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalNumberOfItemsMessages {
 
   val uri = uriWithContextPath("/declaration/total-numbers-of-items")
 
-  "Total Number of Items Controller on display" should {
+  before {
 
-    "display total number of items form" in {
-      authorizedUser()
-      withCaching[TotalNumberOfItems](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    authorizedUser()
+    withCaching[TotalNumberOfItems](None)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  "Total Number Of Items Controller on GET" should {
+
+    "return 200 code" in {
 
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.totalNumberOfItems.title"))
-      stringResult must include(messages("supplementary.totalNumberOfItems"))
-      stringResult must include(messages("supplementary.totalNumberOfItems.hint"))
-      stringResult must include(messages("supplementary.totalAmountInvoiced"))
-      stringResult must include(messages("supplementary.totalAmountInvoiced.hint"))
-      stringResult must include(messages("supplementary.exchangeRate"))
-      stringResult must include(messages("supplementary.exchangeRate.hint"))
     }
+  }
 
-    "display \"Back\" button that links to \"Transport information\" page" in {
+  "Total Number Of Items Controller on POST" should {
 
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
+    "validate request and redirect - correct values for all fields (integers)" in {
 
-      status(result) must be(OK)
-      stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/transport-information"))
-    }
-
-    "display \"Save and continue\" button on page" in {
-      withCaching[TotalNumberOfItems](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
-      val result = route(app, getRequest(uri)).get
-      val resultAsString = contentAsString(result)
-
-      resultAsString must include(messages("site.save_and_continue"))
-      resultAsString must include("button id=\"submit\" class=\"button\"")
-    }
-
-    "validate form - incorrect values - alphabetic" in {
-      authorizedUser()
-      withCaching[TotalNumberOfItems](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
-      val incorrectTotalNumber: JsValue =
-        JsObject(Map("itemsQuantity" -> JsString("as3"), "totalPackage" -> JsString("asd12343")))
-      val result = route(app, postRequest(uri, incorrectTotalNumber)).get
-
-      contentAsString(result) must include(messages("supplementary.totalNumberOfItems.error"))
-    }
-
-    "validate form - incorrect values - longer than 3" in {
-      authorizedUser()
-      withCaching[TotalNumberOfItems](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
-      val incorrectTotalNumber: JsValue =
-        JsObject(Map("itemsQuantity" -> JsString("1234"), "totalPackage" -> JsString("123456789")))
-      val result = route(app, postRequest(uri, incorrectTotalNumber)).get
-
-      contentAsString(result) must include(messages("supplementary.totalNumberOfItems.error"))
-    }
-
-    "validate form - incorrect values - zeros" in {
-      authorizedUser()
-      withCaching[TotalNumberOfItems](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
-      val incorrectTotalNumber: JsValue =
-        JsObject(Map("itemsQuantity" -> JsString("000"), "totalPackage" -> JsString("123")))
-      val result = route(app, postRequest(uri, incorrectTotalNumber)).get
-
-      contentAsString(result) must include(messages("supplementary.totalNumberOfItems.error"))
-    }
-
-    "validate form - correct value for mandatory field" in {
-      authorizedUser()
-      withCaching[TotalNumberOfItems](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
-      val correctTotalNumber: JsValue =
+      val allFields: JsValue =
         JsObject(
           Map(
             "itemsQuantity" -> JsString("100"),
@@ -120,43 +58,89 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
             "totalPackage" -> JsString("123")
           )
         )
-      val result = route(app, postRequest(uri, correctTotalNumber)).get
+      val result = route(app, postRequest(uri, allFields)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/transaction-type"))
     }
 
-    "validate form - correct values for every field using integers for optional ones" in {
-      authorizedUser()
-      withCaching[TotalNumberOfItems](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    "validate request and redirect - correct values for all fields (decimals)" in {
 
-      val result = route(app, postRequest(uri, correctTotalNumberOfItemsIntegerValuesJSON)).get
+      val allFields: JsValue =
+        JsObject(
+          Map(
+            "itemsQuantity" -> JsString("100"),
+            "totalAmountInvoiced" -> JsString("456.78"),
+            "exchangeRate" -> JsString("789.789"),
+            "totalPackage" -> JsString("123")
+          )
+        )
+      val result = route(app, postRequest(uri, allFields)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
+
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/transaction-type"))
     }
 
-    "validate form - correct values for every field using decimals for optional ones" in {
-      authorizedUser()
-      withCaching[TotalNumberOfItems](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    "validate request and redirect - all inputs alphabetic" in {
 
-      val result = route(app, postRequest(uri, correctTotalNumberOfItemsDecimalValuesJSON)).get
-      val header = result.futureValue.header
+      val allFields: JsValue =
+        JsObject(
+          Map(
+            "itemsQuantity" -> JsString("test"),
+            "totalAmountInvoiced" -> JsString("test"),
+            "exchangeRate" -> JsString("test"),
+            "totalPackage" -> JsString("test")))
+      val result = route(app, postRequest(uri, allFields)).get
 
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/transaction-type"))
+      status(result) must be(BAD_REQUEST)
+
+      contentAsString(result) must include(messages(tnoiError))
+      contentAsString(result) must include(messages(taiError))
+      contentAsString(result) must include(messages(erError))
+      contentAsString(result) must include(messages(tpqError))
     }
 
-    "validate form - correct mandatory field with incorrect optional due to too many digits after coma" in {
-      authorizedUser()
-      withCaching[TotalNumberOfItems](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    "validate request and redirect - all inputs too long" in {
 
-      val incorrectOptionalFields: JsValue = JsObject(
+      val allFields: JsValue =
+        JsObject(
+          Map(
+            "itemsQuantity" -> JsString("1234"),
+            "totalAmountInvoiced" -> JsString("12312312312312123"),
+            "exchangeRate" -> JsString("1212121231123123"),
+            "totalPackage" -> JsString("123456789")))
+      val result = route(app, postRequest(uri, allFields)).get
+
+      status(result) must be(BAD_REQUEST)
+
+      contentAsString(result) must include(messages(tnoiError))
+      contentAsString(result) must include(messages(taiError))
+      contentAsString(result) must include(messages(erError))
+      contentAsString(result) must include(messages(tpqError))
+    }
+
+    "validate request and redirect - Total Number of Items is 0" in {
+
+      val incorrectTotalNumber: JsValue =
+        JsObject(
+          Map(
+            "itemsQuantity" -> JsString("000"),
+            "totalAmountInvoiced" -> JsString("999.99"),
+            "exchangeRate" -> JsString("999999.99999"),
+            "totalPackage" -> JsString("123")))
+      val result = route(app, postRequest(uri, incorrectTotalNumber)).get
+
+      status(result) must be(BAD_REQUEST)
+
+      contentAsString(result) must include(messages(tnoiError))
+    }
+
+    "validate request and redirect - Total Amount Invoiced / Exchange Rate too long decimal format" in {
+
+      val allFields: JsValue = JsObject(
         Map(
           "itemsQuantity" -> JsString("100"),
           "totalAmountInvoiced" -> JsString("12312312312312.122"),
@@ -165,18 +149,16 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
         )
       )
 
-      val result = route(app, postRequest(uri, incorrectOptionalFields)).get
+      val result = route(app, postRequest(uri, allFields)).get
+      status(result) must be(BAD_REQUEST)
 
-      contentAsString(result) must include(messages("supplementary.totalAmountInvoiced.error"))
-      contentAsString(result) must include(messages("supplementary.exchangeRate.error"))
+      contentAsString(result) must include(messages(taiError))
+      contentAsString(result) must include(messages(erError))
     }
 
-    "validate form - correct mandatory field with incorrect optional due to too many digits before coma" in {
-      authorizedUser()
-      withCaching[TotalNumberOfItems](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    "validate request and redirect - Total Amount Invoiced / Exchange Rate too long base integer" in {
 
-      val incorrectOptionalFields: JsValue = JsObject(
+      val allFields: JsValue = JsObject(
         Map(
           "itemsQuantity" -> JsString("100"),
           "totalAmountInvoiced" -> JsString("12312312312312123.12"),
@@ -185,30 +167,11 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec {
         )
       )
 
-      val result = route(app, postRequest(uri, incorrectOptionalFields)).get
+      val result = route(app, postRequest(uri, allFields)).get
+      status(result) must be(BAD_REQUEST)
 
-      contentAsString(result) must include(messages("supplementary.totalAmountInvoiced.error"))
-      contentAsString(result) must include(messages("supplementary.exchangeRate.error"))
-    }
-
-    "validate form - correct mandatory field with incorrect optional due to too long integers" in {
-      authorizedUser()
-      withCaching[TotalNumberOfItems](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
-      val incorrectOptionalFields: JsValue = JsObject(
-        Map(
-          "itemsQuantity" -> JsString("100"),
-          "totalAmountInvoiced" -> JsString("12312312312312123"),
-          "exchangeRate" -> JsString("1212121231123123"),
-          "totalPackage" -> JsString("123")
-        )
-      )
-
-      val result = route(app, postRequest(uri, incorrectOptionalFields)).get
-
-      contentAsString(result) must include(messages("supplementary.totalAmountInvoiced.error"))
-      contentAsString(result) must include(messages("supplementary.exchangeRate.error"))
+      contentAsString(result) must include(messages(taiError))
+      contentAsString(result) must include(messages(erError))
     }
   }
 }

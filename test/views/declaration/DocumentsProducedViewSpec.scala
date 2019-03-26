@@ -322,7 +322,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
   "Documents Produced View when filled" should {
 
-    "display data in both inputs" in {
+    "display data in all inputs" in {
 
       val form = DocumentsProduced.form().fill(filledForm)
       val view = createView(form)

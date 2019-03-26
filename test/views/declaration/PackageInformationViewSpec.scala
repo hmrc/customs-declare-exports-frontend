@@ -22,7 +22,9 @@ import play.api.data.Form
 import play.twirl.api.Html
 import views.html.declaration.package_information
 import views.declaration.spec.ViewSpec
+import views.tags.ViewTest
 
+@ViewTest
 class PackageInformationViewSpec extends ViewSpec with PackageInformationMessages with CommonMessages {
 
   private val form: Form[PackageInformation] = PackageInformation.form()
@@ -52,7 +54,6 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       assertMessage(numberOfPackagesError, "Number of packages must be greater than 0 and less than 99999")
       assertMessage(shippingMarksEmpty, "Shipping marks can not be empty")
       assertMessage(shippingMarksError, "Shipping marks can only be up to 42 characters")
-
     }
   }
 

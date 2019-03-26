@@ -21,10 +21,10 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.TransactionType
 import forms.declaration.TransactionTypeSpec._
-import org.scalatest.BeforeAndAfter
+import helpers.views.declaration.TransactionTypeMessages
 import play.api.test.Helpers._
 
-class TransactionTypeControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class TransactionTypeControllerSpec extends CustomExportsBaseSpec with TransactionTypeMessages {
 
   val uri = uriWithContextPath("/declaration/transaction-type")
 
@@ -32,64 +32,46 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with BeforeAnd
     authorizedUser()
     withCaching[TransactionType](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
   }
 
-  "Transaction Type Controller on display page" should {
+  "Transaction Type Controller on GET" should {
 
-    "display transaction type form" in {
+    "return 200 code" in {
 
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.transactionType.documentTypeCode.header"))
-      stringResult must include(messages("supplementary.transactionType.documentTypeCode"))
-      stringResult must include(messages("supplementary.transactionType.hint"))
-      stringResult must include(messages("supplementary.transactionType.identifier"))
     }
+  }
 
-    "display \"Back\" button that links to \"Total Number of Items\" page" in {
+  "Transaction Type Controller on POST" should {
 
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
-
-      status(result) must be(OK)
-      stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/total-numbers-of-items"))
-    }
-
-    "display \"Save and continue\" button on page" in {
-
-      val result = route(app, getRequest(uri)).get
-      val resultAsString = contentAsString(result)
-
-      resultAsString must include(messages("site.save_and_continue"))
-      resultAsString must include("button id=\"submit\" class=\"button\"")
-    }
-
-    "validate form - empty value" in {
+    "validate request and redirect - empty value" in {
 
       val result = route(app, postRequest(uri, emptyTransactionTypeJSON)).get
 
-      contentAsString(result) must include(messages("supplementary.transactionType.documentTypeCode.empty"))
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(documentTypeCodeEmpty))
     }
 
-    "validate form - incorrect values" in {
+    "validate request and redirect - incorrect values" in {
 
       val result = route(app, postRequest(uri, incorrectTransactionTypeJSON)).get
       val stringResult = contentAsString(result)
 
-      stringResult must include(messages("supplementary.transactionType.documentTypeCode.error"))
-      stringResult must include(messages("supplementary.transactionType.identifier.error"))
+      status(result) must be(BAD_REQUEST)
+
+      stringResult must include(messages(documentTypeCodeError))
+      stringResult must include(messages(identifierError))
     }
 
-    "validate form - correct values" in {
+    "validate request and redirect - correct values" in {
 
       val result = route(app, postRequest(uri, correctTransactionTypeJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
+
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/previous-documents"))
     }
   }

@@ -22,8 +22,10 @@ import play.api.data.Form
 import play.twirl.api.Html
 import views.html.declaration.office_of_exit
 import views.declaration.spec.ViewSpec
+import views.tags.ViewTest
 
-class OfficeOfExitView extends ViewSpec with OfficeOfExitMessages with CommonMessages {
+@ViewTest
+class OfficeOfExitViewSpec extends ViewSpec with OfficeOfExitMessages with CommonMessages {
 
   private val form: Form[OfficeOfExit] = OfficeOfExit.form()
   private def createView(form: Form[OfficeOfExit] = form): Html = office_of_exit(appConfig, form)(fakeRequest, messages)

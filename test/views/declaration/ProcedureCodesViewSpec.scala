@@ -15,13 +15,16 @@
  */
 
 package views.declaration
+
 import forms.declaration.ProcedureCodes
 import helpers.views.declaration.{CommonMessages, ProcedureCodesMessages}
 import play.api.data.Form
 import play.twirl.api.Html
 import views.html.declaration.procedure_codes
 import views.declaration.spec.ViewSpec
+import views.tags.ViewTest
 
+@ViewTest
 class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with CommonMessages {
 
   private val form: Form[ProcedureCodes] = ProcedureCodes.form()
@@ -115,12 +118,14 @@ class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with C
       val view = createView(ProcedureCodes.form().fill(ProcedureCodes(Some("Test"), Some(""))))
 
       getElementById(view, "procedureCode").attr("value") must be("Test")
+      getElementById(view, "additionalProcedureCode").attr("value") must be("")
     }
 
     "display data in Additional Procedure Code input" in {
 
       val view = createView(ProcedureCodes.form().fill(ProcedureCodes(Some(""), Some("Test"))))
 
+      getElementById(view, "procedureCode").attr("value") must be("")
       getElementById(view, "additionalProcedureCode").attr("value") must be("Test")
     }
 

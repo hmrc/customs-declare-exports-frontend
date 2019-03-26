@@ -23,7 +23,9 @@ import play.api.data.Form
 import play.twirl.api.Html
 import views.html.declaration.exporter_details
 import views.declaration.spec.ViewSpec
+import views.tags.ViewTest
 
+@ViewTest
 class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with CommonMessages {
 
   private val form: Form[ExporterDetails] = ExporterDetails.form()
@@ -466,6 +468,11 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
       val view = createView(form)
 
       getElementById(view, "details_eori").attr("value") must be("1234")
+      getElementById(view, "details_address_fullName").attr("value") must be("")
+      getElementById(view, "details_address_addressLine").attr("value") must be("")
+      getElementById(view, "details_address_townOrCity").attr("value") must be("")
+      getElementById(view, "details_address_postCode").attr("value") must be("")
+      getElementById(view, "details.address.country").attr("value") must be("")
     }
 
     "display data in Business address inputs" in {
@@ -475,6 +482,22 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
         .fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4")))))
       val view = createView(form)
 
+      getElementById(view, "details_eori").attr("value") must be("")
+      getElementById(view, "details_address_fullName").attr("value") must be("test")
+      getElementById(view, "details_address_addressLine").attr("value") must be("test1")
+      getElementById(view, "details_address_townOrCity").attr("value") must be("test2")
+      getElementById(view, "details_address_postCode").attr("value") must be("test3")
+      getElementById(view, "details.address.country").attr("value") must be("test4")
+    }
+
+    "display data in both EORI and Business address inputs" in {
+
+      val form = ExporterDetails
+        .form()
+        .fill(ExporterDetails(EntityDetails(Some("1234"), Some(Address("test", "test1", "test2", "test3", "test4")))))
+      val view = createView(form)
+
+      getElementById(view, "details_eori").attr("value") must be("1234")
       getElementById(view, "details_address_fullName").attr("value") must be("test")
       getElementById(view, "details_address_addressLine").attr("value") must be("test1")
       getElementById(view, "details_address_townOrCity").attr("value") must be("test2")

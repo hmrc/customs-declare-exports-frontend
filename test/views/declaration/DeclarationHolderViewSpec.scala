@@ -161,6 +161,22 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
 
   "Declaration Holder View when filled" should {
 
+    "display data in Authorisation Code input" in {
+
+      val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), None)))
+
+      getElementById(view, "authorisationTypeCode").attr("value") must be("test")
+      getElementById(view, "eori").attr("value") must be("")
+    }
+
+    "display data in EORI input" in {
+
+      val view = createView(DeclarationHolder.form().fill(DeclarationHolder(None, Some("test"))))
+
+      getElementById(view, "authorisationTypeCode").attr("value") must be("")
+      getElementById(view, "eori").attr("value") must be("test")
+    }
+
     "display data in both inputs" in {
 
       val view = createView(DeclarationHolder.form().fill(DeclarationHolder(Some("test"), Some("test1"))))
