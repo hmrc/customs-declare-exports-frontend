@@ -20,7 +20,9 @@ import helpers.views.declaration.{CommonMessages, NotEligibleMessages}
 import play.twirl.api.Html
 import views.html.declaration.not_eligible
 import views.declaration.spec.ViewSpec
+import views.tags.ViewTest
 
+@ViewTest
 class NotEligibleViewSpec extends ViewSpec with NotEligibleMessages with CommonMessages {
 
   private def createView(): Html = not_eligible(appConfig)(fakeRequest, messages)

@@ -23,7 +23,9 @@ import play.api.data.Form
 import play.twirl.api.Html
 import views.html.declaration.goods_location
 import views.declaration.spec.ViewSpec
+import views.tags.ViewTest
 
+@ViewTest
 class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with CommonMessages {
 
   private val form: Form[GoodsLocation] = GoodsLocation.form()

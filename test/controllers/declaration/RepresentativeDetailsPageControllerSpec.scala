@@ -22,17 +22,14 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.RepresentativeDetails
 import forms.declaration.RepresentativeDetailsSpec._
+import helpers.views.declaration.{CommonMessages, RepresentativeDetailsMessages}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
-import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString, JsValue}
-import play.api.mvc.Result
 import play.api.test.Helpers._
 
-import scala.concurrent.Future
-
-class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with RepresentativeDetailsMessages with CommonMessages {
 
   import RepresentativeDetailsPageControllerSpec._
   private val uri = uriWithContextPath("/declaration/representative-details")
@@ -40,214 +37,119 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
   before {
     authorizedUser()
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    withCaching[RepresentativeDetails](None, RepresentativeDetails.formId)
   }
 
-  "Representative Address Controller on display page" should {
+  after {
+    reset(mockCustomsCacheService)
+  }
+
+  "Representative Address Controller on GET" should {
 
     "return 200 code" in {
-      val result = displayPageTestScenario()
+
+      val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
     }
 
-    "display page title" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("supplementary.representative.title"))
-    }
-
-    "display \"Back\" button that links to \"Declarant details\" page" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("/declaration/declarant-details")
-    }
-
-    "display page header" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("supplementary.representative.header"))
-    }
-
-    "display information to enter EORI number" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("supplementary.representative.eori.info"))
-    }
-
-    "display element to enter EORI number" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("supplementary.representative.eori.info"))
-      contentAsString(result) must include(messages("supplementary.eori"))
-      contentAsString(result) must include(messages("supplementary.eori.hint"))
-    }
-
-    "display information to enter representatives name and address" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("supplementary.representative.address.info"))
-    }
-
-    "display element to enter full name" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("supplementary.address.fullName"))
-    }
-
-    "display element to enter first address line" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("supplementary.address.addressLine"))
-    }
-
-    "display element to enter city" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("supplementary.address.townOrCity"))
-    }
-
-    "display element to enter postcode" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("supplementary.address.postCode"))
-    }
-
-    "display element to enter country" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("supplementary.address.country"))
-    }
-
-    "display information to choose type of representation" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("supplementary.representative.representationType.header"))
-    }
-
-    "display radio button element to enter Representative Status Code" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("supplementary.representative.representationType.direct"))
-      contentAsString(result) must include(messages("supplementary.representative.representationType.indirect"))
-    }
-
-    "display \"Save and continue\" button" in {
-      val result = displayPageTestScenario()
-
-      contentAsString(result) must include(messages("site.save_and_continue"))
-      contentAsString(result) must include("button id=\"submit\" class=\"button\"")
-    }
-
     "not populate the form fields if cache is empty" in {
-      val result = displayPageTestScenario()
+
+      val result = route(app, getRequest(uri)).get
 
       contentAsString(result) mustNot include("checked=\"checked\"")
     }
 
     "populate the form fields with data from cache" in {
-      val result = displayPageTestScenario(Some(correctRepresentativeDetails))
+
+      withCaching[RepresentativeDetails](Some(correctRepresentativeDetails), RepresentativeDetails.formId)
+      val result = route(app, getRequest(uri)).get
 
       contentAsString(result) must include("checked=\"checked\"")
     }
-
-    def displayPageTestScenario(cacheValue: Option[RepresentativeDetails] = None): Future[Result] = {
-      withCaching[RepresentativeDetails](cacheValue, RepresentativeDetails.formId)
-      route(app, getRequest(uri)).get
-    }
   }
 
-  "Representative Address Controller on submit" should {
+  "Representative Address Controller on POST" should {
 
     "display the form page with error for empty field" when {
 
       "status is empty" in {
-        withCaching[RepresentativeDetails](None)
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val emptyForm = buildRepresentativeDetailsJsonInput()
         val result = route(app, postRequest(uri, emptyForm)).get
 
-        contentAsString(result) must include(messages("supplementary.representative.representationType.error.empty"))
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(repTypeErrorEmpty))
       }
 
       "status provided but both EORI and address are empty" in {
-        withCaching[RepresentativeDetails](None)
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val emptyForm = buildRepresentativeDetailsJsonInput(status = "2")
         val result = route(app, postRequest(uri, emptyForm)).get
 
-        contentAsString(result) must include(messages("supplementary.namedEntityDetails.error"))
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(eoriOrAddressEmpty))
       }
     }
 
     "display the form page with error for wrong value" when {
 
       "wrong value provided for EORI" in {
-        withCaching[RepresentativeDetails](None)
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
 
-        contentAsString(result) must include(messages("supplementary.eori.error"))
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(eoriError))
       }
 
       "wrong value provided for full name" in {
-        withCaching[RepresentativeDetails](None)
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
 
-        contentAsString(result) must include(messages("supplementary.address.fullName.error"))
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(fullNameError))
       }
 
       "wrong value provided for first address line" in {
-        withCaching[RepresentativeDetails](None)
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
 
-        contentAsString(result) must include(messages("supplementary.address.addressLine.error"))
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(addressLineError))
       }
 
       "wrong value provided for city" in {
-        withCaching[RepresentativeDetails](None)
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
 
-        contentAsString(result) must include(messages("supplementary.address.townOrCity.error"))
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(townOrCityError))
       }
 
       "wrong value provided for postcode" in {
-        withCaching[RepresentativeDetails](None)
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
 
-        contentAsString(result) must include(messages("supplementary.address.postCode.error"))
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(postCodeError))
       }
 
       "wrong value provided for country" in {
-        withCaching[RepresentativeDetails](None)
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
 
-        contentAsString(result) must include(messages("supplementary.address.country.error"))
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(countryError))
       }
     }
 
     "accept form with status and EORI only" in {
-      withCaching[RepresentativeDetails](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
@@ -257,8 +159,6 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     }
 
     "accept form with status and address only" in {
-      withCaching[RepresentativeDetails](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
@@ -268,9 +168,6 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     }
 
     "save data to the cache" in {
-      reset(mockCustomsCacheService)
-      withCaching[RepresentativeDetails](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get.futureValue
 
@@ -283,8 +180,6 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     }
 
     "return 303 code" in {
-      withCaching[RepresentativeDetails](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
 
@@ -292,8 +187,6 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
     }
 
     "redirect to Additional Actors page" in {
-      withCaching[RepresentativeDetails](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
       val header = result.futureValue.header
@@ -301,7 +194,6 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
     }
   }
-
 }
 
 object RepresentativeDetailsPageControllerSpec {
@@ -334,5 +226,4 @@ object RepresentativeDetailsPageControllerSpec {
       "statusCode" -> JsString(status)
     )
   )
-
 }

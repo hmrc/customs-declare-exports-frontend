@@ -21,7 +21,9 @@ import play.api.data.Form
 import play.twirl.api.Html
 import views.html.declaration.previous_documents
 import views.declaration.spec.ViewSpec
+import views.tags.ViewTest
 
+@ViewTest
 class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages with CommonMessages {
 
   private val form: Form[Document] = Document.form()
@@ -188,19 +190,25 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       val view = createView(Document.form().fill(Document("", "Test", "", Some(""))))
 
       getElementById(view, "documentType").attr("value") must be("Test")
+      getElementById(view, "documentReference").attr("value") must be("")
+      getElementById(view, "goodsItemIdentifier").attr("value") must be("")
     }
 
     "display data in Previous DUCR or MUCR input" in {
 
       val view = createView(Document.form().fill(Document("", "", "Test", Some(""))))
 
+      getElementById(view, "documentType").attr("value") must be("")
       getElementById(view, "documentReference").attr("value") must be("Test")
+      getElementById(view, "goodsItemIdentifier").attr("value") must be("")
     }
 
     "display data in Previous Goods Identifier input" in {
 
       val view = createView(Document.form().fill(Document("", "", "", Some("Test"))))
 
+      getElementById(view, "documentType").attr("value") must be("")
+      getElementById(view, "documentReference").attr("value") must be("")
       getElementById(view, "goodsItemIdentifier").attr("value") must be("Test")
     }
 

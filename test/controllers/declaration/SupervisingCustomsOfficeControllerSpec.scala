@@ -21,63 +21,40 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.SupervisingCustomsOfficeSpec._
+import helpers.views.declaration.SupervisingCustomsOfficeMessages
 import play.api.test.Helpers._
 
-class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
+class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec with SupervisingCustomsOfficeMessages {
 
   val uri = uriWithContextPath("/declaration/supervising-office")
 
-  "Supervising Customs Office Controller on display" should {
+  before {
+    authorizedUser()
+    withCaching[SupervisingCustomsOffice](None)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
 
-    "display supervising customs office form" in {
-      authorizedUser()
-      withCaching[SupervisingCustomsOffice](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  "Supervising Customs Office Controller on GET" should {
+
+    "return 200 code" in {
 
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.supervisingCustomsOffice"))
-      stringResult must include(messages("supplementary.supervisingCustomsOffice.title"))
-      stringResult must include(messages("supplementary.supervisingCustomsOffice.hint"))
     }
+  }
 
-    "display \"Back\" button that links to \"Procedure codes\" page" in {
+  "Supervising Customs Office Controller on POST" should {
 
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
-
-      status(result) must be(OK)
-      stringResult must include(messages("site.back"))
-      stringResult must include(messages("/declaration/previous-documents"))
-    }
-
-    "display \"Save and continue\" button on page" in {
-      withCaching[SupervisingCustomsOffice](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
-      val result = route(app, getRequest(uri)).get
-      val resultAsString = contentAsString(result)
-
-      resultAsString must include(messages("site.save_and_continue"))
-      resultAsString must include("button id=\"submit\" class=\"button\"")
-    }
-
-    "validate form - incorrect values" in {
-      authorizedUser()
-      withCaching[SupervisingCustomsOffice](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    "validate request - incorrect values" in {
 
       val result = route(app, postRequest(uri, incorrectSupervisingCustomsOfficeJSON)).get
 
-      contentAsString(result) must include(messages("supplementary.supervisingCustomsOffice.error"))
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(scoError))
     }
 
-    "validate form and redirect - no answer" in {
-      authorizedUser()
-      withCaching[SupervisingCustomsOffice](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    "validate request and redirect - no answer" in {
 
       val result = route(app, postRequest(uri, emptySupervisingCustomsOfficeJSON)).get
       val header = result.futureValue.header
@@ -86,10 +63,7 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec {
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/warehouse"))
     }
 
-    "validate form and redirect - correct value" in {
-      authorizedUser()
-      withCaching[SupervisingCustomsOffice](None)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    "validate request and redirect - correct value" in {
 
       val result = route(app, postRequest(uri, correctSupervisingCustomsOfficeJSON)).get
       val header = result.futureValue.header
