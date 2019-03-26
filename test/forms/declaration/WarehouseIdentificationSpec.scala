@@ -44,7 +44,7 @@ object WarehouseIdentificationSpec {
   val emptyWarehouseIdentification = WarehouseIdentification(id = None)
 
   val correctWarehouseIdentificationJSON: JsValue =
-    JsObject(Map("identificationNumber" -> JsString(warehouseTypeCode + warehouseId)))
+    JsObject(Map("id" -> JsString(warehouseTypeCode + warehouseId)))
   val emptyWarehouseIdentificationJSON: JsValue =
     JsObject(Map("identificationNumber" -> JsString("")))
 }
