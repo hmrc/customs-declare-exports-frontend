@@ -105,11 +105,11 @@ class DocumentsProducedControllerSpec
 
       "provided with incorrect documents quantity" in {
         val incorrectDocumentQuantity: JsValue =
-          JsObject(Map("documentQuantity" -> JsString("123456789012.1234567")))
+          JsObject(Map("documentQuantity" -> JsString("123456789012123.1234567")))
 
         val result = route(app, postRequest(uri, incorrectDocumentQuantity)).get
         status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages(documentQuantityError))
+        contentAsString(result) must include(messages(documentQuantityPrecisionError))
       }
 
       "try to remove a non existent document" in {
@@ -284,7 +284,7 @@ object DocumentsProducedControllerSpec {
       .range[Int](100, 200, 1)
       .map(
         elem =>
-          DocumentsProduced(Some(elem.toString), Some("1234"), Some("1234"), Some("AB"), Some("1234"), Some("1234"))
+          DocumentsProduced(Some(elem.toString), Some("1234"), Some("1234"), Some("AB"), Some("1234"), Some(BigDecimal("1234")))
       )
   )
 }

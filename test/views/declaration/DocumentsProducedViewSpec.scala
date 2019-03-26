@@ -30,7 +30,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
   private val filledForm =
-    DocumentsProduced(Some("test"), Some("test1"), Some("test2"), Some("test3"), Some("test4"), Some("test5"))
+    DocumentsProduced(Some("test"), Some("test1"), Some("test2"), Some("test3"), Some("test4"), Some(BigDecimal("234.22")))
 
   private def createView(form: Form[DocumentsProduced] = form): Html =
     documents_produced(appConfig, form, Seq())(fakeRequest, messages)
@@ -163,7 +163,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
               Some("1234"),
               Some("AV"),
               Some("1234"),
-              Some("1234")
+              Some(BigDecimal("1234"))
             )
           )
       )
@@ -186,7 +186,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
               Some("1234"),
               Some("AV"),
               Some("1234"),
-              Some("1234")
+              Some(BigDecimal("1234"))
             )
           )
       )
@@ -209,7 +209,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
               Some(TestHelper.createRandomString(6)),
               Some("AV"),
               Some("1234"),
-              Some("1234")
+              Some(BigDecimal("1234"))
             )
           )
       )
@@ -226,7 +226,8 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         DocumentsProduced
           .form()
           .fillAndValidate(
-            DocumentsProduced(Some("1234"), Some("1234"), Some("1234"), Some("ABC"), Some("1234"), Some("1234"))
+            DocumentsProduced(Some("1234"), Some("1234"), Some("1234"), Some("ABC"), Some("1234"),               Some(BigDecimal("1234"))
+            )
           )
       )
 
@@ -248,7 +249,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
               Some("1234"),
               Some("AV"),
               Some(TestHelper.createRandomString(36)),
-              Some("1234")
+              Some(BigDecimal("534"))
             )
           )
       )
@@ -273,15 +274,15 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
               Some("1234"),
               Some("AV"),
               Some("1234"),
-              Some("12345678901234567")
+              Some(BigDecimal("12345678901234567"))
             )
           )
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentQuantityError, "#documentQuantity")
+      checkErrorLink(view, 1, documentQuantityPrecisionError, "#documentQuantity")
 
-      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(messages(documentQuantityError))
+      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(messages(documentQuantityPrecisionError))
     }
 
     "display errors for all fields" in {
@@ -295,7 +296,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
             Some(TestHelper.createRandomString(6)),
             Some("ABC"),
             Some(TestHelper.createRandomString(36)),
-            Some("12345678901234567")
+            Some(BigDecimal("12345678901234567"))
           )
         )
 
@@ -307,7 +308,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorLink(view, 3, documentPartError, "#documentPart")
       checkErrorLink(view, 4, documentStatusError, "#documentStatus")
       checkErrorLink(view, 5, documentStatusReasonError, "#documentStatusReason")
-      checkErrorLink(view, 6, documentQuantityError, "#documentQuantity")
+      checkErrorLink(view, 6, documentQuantityPrecisionError, "#documentQuantity")
 
       getElementByCss(view, "#error-message-documentTypeCode-input").text() must be(messages(documentTypeCodeError))
       getElementByCss(view, "#error-message-documentIdentifier-input").text() must be(messages(documentIdentifierError))
@@ -316,7 +317,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementByCss(view, "#error-message-documentStatusReason-input").text() must be(
         messages(documentStatusReasonError)
       )
-      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(messages(documentQuantityError))
+      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(messages(documentQuantityPrecisionError))
     }
   }
 
@@ -332,7 +333,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementById(view, "documentPart").attr("value") must be("test2")
       getElementById(view, "documentStatus").attr("value") must be("test3")
       getElementById(view, "documentStatusReason").attr("value") must be("test4")
-      getElementById(view, "documentQuantity").attr("value") must be("test5")
+      getElementById(view, "documentQuantity").attr("value") must be("234.22")
     }
 
     "display one item in table" in {
@@ -351,7 +352,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementByCss(view, "tr>td:nth-child(3)").text() must be("test2")
       getElementByCss(view, "tr>td:nth-child(4)").text() must be("test3")
       getElementByCss(view, "tr>td:nth-child(5)").text() must be("test4")
-      getElementByCss(view, "tr>td:nth-child(6)").text() must be("test5")
+      getElementByCss(view, "tr>td:nth-child(6)").text() must be("234.22")
 
       val removeButton = getElementByCss(view, "tbody>tr>td:nth-child(7)>button")
 

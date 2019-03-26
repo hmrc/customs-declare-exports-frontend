@@ -40,7 +40,7 @@ object DocumentsProducedSpec {
         documentPart = Some("ABC12"),
         documentStatus = Some("AB"),
         documentStatusReason = Some("DocumentStatusReason"),
-        documentQuantity = Some("1234567890.123456")
+        documentQuantity = Some(BigDecimal("1234567890.123456"))
       )
     )
   )

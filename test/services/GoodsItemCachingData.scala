@@ -54,7 +54,7 @@ trait GoodsItemCachingData {
     Some(createRandomString(5)),
     Some(createRandomString(2)),
     Some(createRandomString(35)),
-    Some(decimalString())
+    Some(BigDecimal(123))
   )
   def documentsProducedData() = DocumentsProducedData(getDataSeq(Random.nextInt(10), createDocsProduced()))
 
