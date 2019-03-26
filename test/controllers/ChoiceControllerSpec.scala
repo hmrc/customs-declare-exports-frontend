@@ -108,9 +108,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/dispatch-location")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/dispatch-location"))
     }
 
     "redirect to dispatch-location page when standard declaration chosen" in {

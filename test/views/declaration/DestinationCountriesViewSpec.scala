@@ -118,10 +118,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display error when destination country is empty" in {
 
-      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
-        "Germany",
-        ""
-      )))
+      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries("Germany", "")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDestinationEmpty), "#countryOfDestination")
@@ -162,10 +159,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display errors when both countries are empty" in {
 
-      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries(
-        "",
-        ""
-      )))
+      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries("", "")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")

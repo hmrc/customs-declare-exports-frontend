@@ -364,9 +364,7 @@ class DeclarationHolderControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/destination-countries")
-        )
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/destination-countries"))
       }
 
       "user doesn't fill form but some holder exists inside the cache" in {
@@ -379,9 +377,7 @@ class DeclarationHolderControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/destination-countries")
-        )
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/destination-countries"))
       }
 
       "user provide holder with some different holder in cache" in {
@@ -394,9 +390,7 @@ class DeclarationHolderControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(
-          Some("/customs-declare-exports/declaration/destination-countries")
-        )
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/destination-countries"))
       }
     }
   }

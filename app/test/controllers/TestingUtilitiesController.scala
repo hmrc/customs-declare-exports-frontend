@@ -31,10 +31,12 @@ import uk.gov.hmrc.wco.dec.MetaData
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TestingUtilitiesController @Inject()(authenticate: AuthAction, journeyType: JourneyAction, connector: CustomsDeclareExportsConnector)(
-  implicit val appConfig: AppConfig,
-  ec: ExecutionContext
-) extends FrontendController {
+class TestingUtilitiesController @Inject()(
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
+  connector: CustomsDeclareExportsConnector
+)(implicit val appConfig: AppConfig, ec: ExecutionContext)
+    extends FrontendController {
 
   def submitDeclarationXml: Action[String] = authenticate.async(parse.tolerantText) { implicit authenticatedRequest =>
     implicit val user: SignedInUser = authenticatedRequest.user

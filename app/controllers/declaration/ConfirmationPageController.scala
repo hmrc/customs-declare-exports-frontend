@@ -29,7 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConfirmationPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction, journeyType: JourneyAction
+  authenticate: AuthAction,
+  journeyType: JourneyAction
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 

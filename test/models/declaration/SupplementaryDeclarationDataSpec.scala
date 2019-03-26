@@ -32,7 +32,10 @@ import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.SupervisingCustomsOfficeSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransactionTypeSpec._
-import forms.declaration.TransportInformationContainerSpec.{correctTransportInformationContainerData, correctTransportInformationContainerDataJSON}
+import forms.declaration.TransportInformationContainerSpec.{
+  correctTransportInformationContainerData,
+  correctTransportInformationContainerDataJSON
+}
 import forms.declaration.TransportInformationSpec._
 import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._

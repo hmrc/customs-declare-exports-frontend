@@ -25,7 +25,8 @@ import forms.declaration.{Document, PreviousDocumentsData}
 import helpers.views.declaration.{CommonMessages, PreviousDocumentsMessages}
 import play.api.test.Helpers._
 
-class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with PreviousDocumentsMessages with CommonMessages with ViewValidator {
+class PreviousDocumentsControllerSpec
+    extends CustomExportsBaseSpec with PreviousDocumentsMessages with CommonMessages with ViewValidator {
   import PreviousDocumentsControllerSpec._
 
   val uri = uriWithContextPath("/declaration/previous-documents")
@@ -62,7 +63,9 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with Previou
       getElementByCss(page, "form>table>thead>tr>th:nth-child(1)").text() must be(messages(documentCategoryLabel))
       getElementByCss(page, "form>table>thead>tr>th:nth-child(2)").text() must be(messages(documentTypeLabel))
       getElementByCss(page, "form>table>thead>tr>th:nth-child(3)").text() must be(messages(documentReferenceLabel))
-      getElementByCss(page, "form>table>thead>tr>th:nth-child(4)").text() must be(messages(documentGoodsIdentifierLabel))
+      getElementByCss(page, "form>table>thead>tr>th:nth-child(4)").text() must be(
+        messages(documentGoodsIdentifierLabel)
+      )
       getElementByCss(page, "form>table>thead>tr>th:nth-child(5)").text() must be(messages(removePackageInformation))
 
       // row
@@ -242,7 +245,9 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with Previou
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentGoodsIdentifierError, "#goodsItemIdentifier")
 
-        getElementByCss(page, "#error-message-goodsItemIdentifier-input").text() must be(messages(documentGoodsIdentifierError))
+        getElementByCss(page, "#error-message-goodsItemIdentifier-input").text() must be(
+          messages(documentGoodsIdentifierError)
+        )
       }
 
       "item duplication in cache" in {
@@ -263,7 +268,12 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with Previou
 
         withCaching[PreviousDocumentsData](Some(fullCache), formId)
 
-        val body = Seq(("documentCategory", "Y"), ("documentType", "1"), ("documentReference", "A"), ("goodsItemIdentifier", "1")) :+ addActionURLEncoded
+        val body = Seq(
+          ("documentCategory", "Y"),
+          ("documentType", "1"),
+          ("documentReference", "A"),
+          ("goodsItemIdentifier", "1")
+        ) :+ addActionURLEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
@@ -391,7 +401,9 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with Previou
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentGoodsIdentifierError, "#goodsItemIdentifier")
 
-        getElementByCss(page, "#error-message-goodsItemIdentifier-input").text() must be(messages(documentGoodsIdentifierError))
+        getElementByCss(page, "#error-message-goodsItemIdentifier-input").text() must be(
+          messages(documentGoodsIdentifierError)
+        )
       }
 
       "item duplication in cache" in {
@@ -413,7 +425,12 @@ class PreviousDocumentsControllerSpec extends CustomExportsBaseSpec with Previou
 
         withCaching[PreviousDocumentsData](Some(fullCache), formId)
 
-        val body = Seq(("documentCategory", "Y"), ("documentType", "1"), ("documentReference", "A"), ("goodsItemIdentifier", "1")) :+ saveAndContinueActionURLEncoded
+        val body = Seq(
+          ("documentCategory", "Y"),
+          ("documentType", "1"),
+          ("documentReference", "A"),
+          ("goodsItemIdentifier", "1")
+        ) :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)

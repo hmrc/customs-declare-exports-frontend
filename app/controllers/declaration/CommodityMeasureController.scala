@@ -34,7 +34,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CommodityMeasureController @Inject()(
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction, journeyType: JourneyAction,
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
   cacheService: CustomsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController with I18nSupport {

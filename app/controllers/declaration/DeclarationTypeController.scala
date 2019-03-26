@@ -35,7 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationTypeController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction, journeyType: JourneyAction,
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
@@ -74,30 +75,32 @@ class DeclarationTypeController @Inject()(
         controllers.declaration.routes.NotEligibleController.displayPage()
     }
 
-  def displayAdditionalDeclarationTypePage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[AdditionalDeclarationType](cacheId, AdditionalDeclarationType.formId)
-      .map {
-        case Some(data) => Ok(declaration_type(appConfig, AdditionalDeclarationType.form().fill(data)))
-        case _          => Ok(declaration_type(appConfig, AdditionalDeclarationType.form()))
-      }
+  def displayAdditionalDeclarationTypePage(): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      customsCacheService
+        .fetchAndGetEntry[AdditionalDeclarationType](cacheId, AdditionalDeclarationType.formId)
+        .map {
+          case Some(data) => Ok(declaration_type(appConfig, AdditionalDeclarationType.form().fill(data)))
+          case _          => Ok(declaration_type(appConfig, AdditionalDeclarationType.form()))
+        }
   }
 
-  def submitAdditionalDeclarationType(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    AdditionalDeclarationType
-      .form()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[AdditionalDeclarationType]) =>
-          Future.successful(BadRequest(declaration_type(appConfig, formWithErrors))),
-        validAdditionalDeclarationType =>
-          customsCacheService
-            .cache[AdditionalDeclarationType](
-              cacheId,
-              AdditionalDeclarationType.formId,
-              validAdditionalDeclarationType
-            )
-            .map(_ => Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage()))
-      )
+  def submitAdditionalDeclarationType(): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      AdditionalDeclarationType
+        .form()
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[AdditionalDeclarationType]) =>
+            Future.successful(BadRequest(declaration_type(appConfig, formWithErrors))),
+          validAdditionalDeclarationType =>
+            customsCacheService
+              .cache[AdditionalDeclarationType](
+                cacheId,
+                AdditionalDeclarationType.formId,
+                validAdditionalDeclarationType
+              )
+              .map(_ => Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage()))
+        )
   }
 }

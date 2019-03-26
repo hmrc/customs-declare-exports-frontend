@@ -42,7 +42,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class SummaryPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction, journeyType: JourneyAction,
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
@@ -63,30 +64,31 @@ class SummaryPageController @Inject()(
   private def containsMandatoryData(cacheMap: CacheMap): Boolean =
     cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.id).exists(_.lrn.nonEmpty)
 
-  def submitSupplementaryDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetch(cacheId).flatMap {
-      case Some(cacheMap) =>
-        exportsMetrics.startTimer(submissionMetric)
-        val suppDecData = SupplementaryDeclarationData(cacheMap)
-        val metaData = createMetaData(cacheMap, suppDecData)
-        val ducr = suppDecData.consignmentReferences.flatMap(_.ducr)
-        val lrn = suppDecData.consignmentReferences.map(_.lrn)
+  def submitSupplementaryDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      customsCacheService.fetch(cacheId).flatMap {
+        case Some(cacheMap) =>
+          exportsMetrics.startTimer(submissionMetric)
+          val suppDecData = SupplementaryDeclarationData(cacheMap)
+          val metaData = createMetaData(cacheMap, suppDecData)
+          val ducr = suppDecData.consignmentReferences.flatMap(_.ducr)
+          val lrn = suppDecData.consignmentReferences.map(_.lrn)
 
-        customsDeclareExportsConnector
-          .submitExportDeclaration(ducr.fold("")(_.ducr), lrn, metaData)
-          .flatMap {
-            case HttpResponse(ACCEPTED, _, _, _) =>
-              customsCacheService.remove(cacheId).map { _ =>
-                Redirect(controllers.declaration.routes.ConfirmationPageController.displayPage())
-                  .flashing(prepareFlashScope(lrn.getOrElse("")))
-              }
-            case error =>
-              Future.successful(handleError(s"Error from Customs Declarations API ${error.toString}"))
-          }
+          customsDeclareExportsConnector
+            .submitExportDeclaration(ducr.fold("")(_.ducr), lrn, metaData)
+            .flatMap {
+              case HttpResponse(ACCEPTED, _, _, _) =>
+                customsCacheService.remove(cacheId).map { _ =>
+                  Redirect(controllers.declaration.routes.ConfirmationPageController.displayPage())
+                    .flashing(prepareFlashScope(lrn.getOrElse("")))
+                }
+              case error =>
+                Future.successful(handleError(s"Error from Customs Declarations API ${error.toString}"))
+            }
 
-      case None =>
-        Future.successful(handleError(s"Could not obtain data from DB"))
-    }
+        case None =>
+          Future.successful(handleError(s"Could not obtain data from DB"))
+      }
   }
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {

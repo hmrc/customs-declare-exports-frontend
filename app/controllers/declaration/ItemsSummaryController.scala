@@ -32,7 +32,8 @@ import views.html.declaration.items_summary
 import scala.concurrent.ExecutionContext
 
 class ItemsSummaryController @Inject()(
-  authenticate: AuthAction, journeyType: JourneyAction,
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   cacheService: CustomsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig, override val messagesApi: MessagesApi)
