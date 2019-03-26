@@ -72,9 +72,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/declarant-details")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/declarant-details"))
     }
 
     "validate request and redirect - only address provided" in {
@@ -83,9 +81,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/declarant-details")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/declarant-details"))
     }
 
     "validate request and redirect - correct values" in {
@@ -94,9 +90,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/declarant-details")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/declarant-details"))
     }
   }
 }

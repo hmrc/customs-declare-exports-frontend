@@ -503,9 +503,7 @@ class ItemTypePageControllerSpec
       val result = route(app, postRequestFormUrlEncoded(uri, correctItemTypeFormUrlEncoded.toSeq: _*)).get
       val header = result.futureValue.header
 
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/package-information")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/package-information"))
     }
 
     "redirect to \"Add Package Information\" page with mandatory fields only" in {
@@ -513,9 +511,7 @@ class ItemTypePageControllerSpec
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/package-information")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/package-information"))
     }
   }
 }

@@ -43,13 +43,14 @@ class RepresentativeDetailsPageController @Inject()(
 
   implicit val countries = services.Countries.allCountries
 
-  def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[RepresentativeDetails](cacheId, RepresentativeDetails.formId)
-      .map {
-        case Some(data) => Ok(representative_details(appConfig, RepresentativeDetails.form.fill(data)))
-        case _          => Ok(representative_details(appConfig, RepresentativeDetails.form))
-      }
+  def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      customsCacheService
+        .fetchAndGetEntry[RepresentativeDetails](cacheId, RepresentativeDetails.formId)
+        .map {
+          case Some(data) => Ok(representative_details(appConfig, RepresentativeDetails.form.fill(data)))
+          case _          => Ok(representative_details(appConfig, RepresentativeDetails.form))
+        }
   }
 
   def submitRepresentativeDetails(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -60,11 +61,7 @@ class RepresentativeDetailsPageController @Inject()(
           Future.successful(BadRequest(representative_details(appConfig, formWithErrors))),
         validRepresentativeDetails =>
           customsCacheService
-            .cache[RepresentativeDetails](
-              cacheId,
-              RepresentativeDetails.formId,
-              validRepresentativeDetails
-            )
+            .cache[RepresentativeDetails](cacheId, RepresentativeDetails.formId, validRepresentativeDetails)
             .map(_ => Redirect(controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm()))
       )
   }

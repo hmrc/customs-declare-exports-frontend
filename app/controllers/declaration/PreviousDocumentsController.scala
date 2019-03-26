@@ -35,7 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PreviousDocumentsController @Inject()(
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction, journeyType: JourneyAction,
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)

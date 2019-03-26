@@ -36,7 +36,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportInformationPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction, journeyType: JourneyAction,
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)

@@ -111,9 +111,7 @@ class ConsignmentReferencesControllerSpec
       val result = route(app, postRequest(uri, correctConsignmentReferencesJSON)).get
       val header = result.futureValue.header
 
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/exporter-details")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/exporter-details"))
     }
   }
 }

@@ -34,7 +34,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransactionTypeController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction, journeyType: JourneyAction,
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {

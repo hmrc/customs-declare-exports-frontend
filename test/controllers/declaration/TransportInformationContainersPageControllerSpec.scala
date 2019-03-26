@@ -210,9 +210,7 @@ class TransportInformationContainersPageControllerSpec extends CustomExportsBase
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/total-numbers-of-items")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/total-numbers-of-items"))
     }
 
     "user doesn't fill form but some containers already exist in the cache" in {
@@ -223,9 +221,7 @@ class TransportInformationContainersPageControllerSpec extends CustomExportsBase
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/total-numbers-of-items")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/total-numbers-of-items"))
     }
 
     "user provide container with some different container in cache" in {
@@ -238,9 +234,7 @@ class TransportInformationContainersPageControllerSpec extends CustomExportsBase
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/total-numbers-of-items")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/total-numbers-of-items"))
     }
   }
 }

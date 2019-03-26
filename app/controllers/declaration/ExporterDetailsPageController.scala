@@ -33,7 +33,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class ExporterDetailsPageController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
-  authenticate: AuthAction, journeyType: JourneyAction,
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {

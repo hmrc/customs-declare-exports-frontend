@@ -66,7 +66,9 @@ class NotEligibleViewSpec extends ViewSpec with NotEligibleMessages with CommonM
 
     "display CHIEF link" in {
 
-      getElementByCss(createView(), "p:nth-child(3)>a").attr("href") must be("https://secure.hmce.gov.uk/ecom/login/index.html")
+      getElementByCss(createView(), "p:nth-child(3)>a").attr("href") must be(
+        "https://secure.hmce.gov.uk/ecom/login/index.html"
+      )
     }
 
     "display Help and Support with description" in {

@@ -156,9 +156,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
       val result = route(app, postRequest(declarationTypeUri, validForm)).get
       val header = result.futureValue.header
 
-      header.headers.get("Location") must be(
-        Some("/customs-declare-exports/declaration/consignment-references")
-      )
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignment-references"))
     }
   }
 }
