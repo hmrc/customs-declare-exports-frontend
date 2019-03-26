@@ -27,7 +27,7 @@ case class DocumentsProduced(
   documentPart: Option[String],
   documentStatus: Option[String],
   documentStatusReason: Option[String],
-  documentQuantity: Option[String]
+  documentQuantity: Option[BigDecimal]
 ) {
   implicit val writes = Json.writes[DocumentsProduced]
 
@@ -63,12 +63,12 @@ object DocumentsProduced {
     "documentStatusReason" -> optional(
       text().verifying("supplementary.addDocument.documentStatusReason.error", noLongerThan(35) and isAlphanumeric)
     ),
-    "documentQuantity" -> optional(
-      text().verifying(
-        "supplementary.addDocument.documentQuantity.error",
-        validateDecimal(documentQuantityMaxLength)(documentQuantityMaxDecimalPlaces)
-      )
-    )
+    "documentQuantity" ->
+      optional(bigDecimal
+        .verifying("supplementary.addDocument.documentQuantity.precision.error", _.precision <= 16)
+        .verifying("supplementary.addDocument.documentQuantity.scale.error", _.scale <= 6)
+        .verifying("supplementary.addDocument.documentQuantity.error", _ >= 0))
+
   )(DocumentsProduced.apply)(DocumentsProduced.unapply)
 
   def form(): Form[DocumentsProduced] = Form(mapping)

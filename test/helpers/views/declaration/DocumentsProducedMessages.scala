@@ -34,6 +34,8 @@ trait DocumentsProducedMessages {
   val documentStatusReasonError: String = documentProduced + ".documentStatusReason.error"
   val documentQuantity: String = documentProduced + ".documentQuantity"
   val documentQuantityError: String = documentProduced + ".documentQuantity.error"
+  val documentQuantityPrecisionError: String = documentProduced + ".documentQuantity.precision.error"
+  val documentQuantityScaleError: String = documentProduced + ".documentQuantity.scale.error"
   val maximumAmountReached: String = documentProduced + ".maximumAmount.error"
   val duplicatedItem: String = documentProduced + ".duplicated"
   val notDefined: String = documentProduced + ".isNotDefined"
