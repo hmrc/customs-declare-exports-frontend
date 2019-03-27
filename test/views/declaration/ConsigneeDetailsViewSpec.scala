@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.declaration
 
 import base.TestHelper
 import forms.declaration.{Address, ConsigneeDetails, EntityDetails}
