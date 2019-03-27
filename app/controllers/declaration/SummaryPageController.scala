@@ -25,16 +25,16 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
-import models.DeclarationFormats._
 import models.declaration.SupplementaryDeclarationData
+import models.requests.JourneyRequest
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import services.{CustomsCacheService, ExportsItemsCacheIds, NRSService}
-import uk.gov.hmrc.http.HttpResponse
+import services.WcoMetadataMapping._
+import services.{CustomsCacheService, NRSService}
 import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import uk.gov.hmrc.wco.dec.{GovernmentAgencyGoodsItem, MetaData}
 import views.html.declaration.summary.{summary_page, summary_page_no_data}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -69,23 +69,7 @@ class SummaryPageController @Inject()(
       customsCacheService.fetch(cacheId).flatMap {
         case Some(cacheMap) =>
           exportsMetrics.startTimer(submissionMetric)
-          val suppDecData = SupplementaryDeclarationData(cacheMap)
-          val metaData = createMetaData(cacheMap, suppDecData)
-          val ducr = suppDecData.consignmentReferences.flatMap(_.ducr)
-          val lrn = suppDecData.consignmentReferences.map(_.lrn)
-
-          customsDeclareExportsConnector
-            .submitExportDeclaration(ducr.fold("")(_.ducr), lrn, metaData)
-            .flatMap {
-              case HttpResponse(ACCEPTED, _, _, _) =>
-                customsCacheService.remove(cacheId).map { _ =>
-                  Redirect(controllers.declaration.routes.ConfirmationPageController.displayPage())
-                    .flashing(prepareFlashScope(lrn.getOrElse("")))
-                }
-              case error =>
-                Future.successful(handleError(s"Error from Customs Declarations API ${error.toString}"))
-            }
-
+          handleDecSubmission(cacheMap)
         case None =>
           Future.successful(handleError(s"Could not obtain data from DB"))
       }
@@ -105,19 +89,22 @@ class SummaryPageController @Inject()(
   private def prepareFlashScope(lrn: String) =
     Flash(Map("LRN" -> lrn))
 
-  //TODO : refactor to handle large data collection and move the logic of metadata creation to separate service
-  private def createMetaData(cacheMap: CacheMap, suppDecData: SupplementaryDeclarationData): MetaData = {
-    val metaData = MetaData.fromProperties(suppDecData.toMetadataProperties())
+  private def handleDecSubmission(cacheMap: CacheMap)(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+    val metaData = produceMetaData(cacheMap)
 
-    val goodsShipmentWithGoodsItems = metaData.declaration.flatMap(
-      _.goodsShipment.map(
-        _.copy(
-          governmentAgencyGoodsItems =
-            cacheMap.getEntry[Seq[GovernmentAgencyGoodsItem]](ExportsItemsCacheIds.itemsId).getOrElse(Seq.empty)
-        )
-      )
-    )
-    metaData.copy(declaration = metaData.declaration.map(_.copy(goodsShipment = goodsShipmentWithGoodsItems)))
+    val lrn = metaData.declaration.flatMap(_.functionalReferenceId)
+
+    customsDeclareExportsConnector
+      .submitExportDeclaration(declarationUcr(metaData.declaration).getOrElse(""), lrn, metaData)
+      .flatMap {
+        case HttpResponse(ACCEPTED, _, _, _) =>
+          customsCacheService.remove(cacheId).map { _ =>
+            Redirect(controllers.declaration.routes.ConfirmationPageController.displayPage())
+              .flashing(prepareFlashScope(lrn.getOrElse("")))
+          }
+        case error =>
+          Future.successful(handleError(s"Error from Customs Declarations API ${error.toString}"))
+      }
   }
 
 }

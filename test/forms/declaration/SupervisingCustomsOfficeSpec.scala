@@ -38,7 +38,7 @@ object SupervisingCustomsOfficeSpec {
   val emptySupervisingCustomsOffice = SupervisingCustomsOffice(office = None)
   val incorrectSupervisingCustomsOffice = SupervisingCustomsOffice(office = Some("123456789"))
 
-  val correctSupervisingCustomsOfficeJSON: JsValue = JsObject(Map("supervisingCustomsOffice" -> JsString("12345678")))
+  val correctSupervisingCustomsOfficeJSON: JsValue = JsObject(Map("office" -> JsString("12345678")))
   val emptySupervisingCustomsOfficeJSON: JsValue = JsObject(Map("supervisingCustomsOffice" -> JsString("")))
   val incorrectSupervisingCustomsOfficeJSON: JsValue = JsObject(
     Map("supervisingCustomsOffice" -> JsString("123456789"))
