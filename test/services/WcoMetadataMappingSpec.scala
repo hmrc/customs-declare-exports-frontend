@@ -59,6 +59,8 @@ class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCaching
       goodsShipment.consignment must be(defined)
       goodsShipment.consignment.flatMap(_.goodsLocation) must be(defined)
       goodsShipment.consignment.flatMap(_.goodsLocation.flatMap(_.address)) must be(defined)
+      goodsShipment.consignment.flatMap(_.goodsLocation.map(_.id)) mustBe Some("Additional identifier")
+      goodsShipment.consignment.flatMap(_.goodsLocation.flatMap(_.typeCode)) mustBe Some("T")
       goodsShipment.consignment.flatMap(_.goodsLocation.flatMap(_.address)) must be(defined)
       goodsShipment.consignment.flatMap(_.departureTransportMeans.flatMap(_.id)) must be(defined)
       goodsShipment.consignment.flatMap(_.departureTransportMeans.flatMap(_.identificationTypeCode)) must be(defined)
