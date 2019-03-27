@@ -42,6 +42,11 @@ GET         /consignee-details              controllers.declaration.ConsigneeDet
 
 POST        /consignee-details              controllers.declaration.ConsigneeDetailsPageController.saveAddress()
 
+# Carrier details
+
+GET         /carrier-details              controllers.declaration.CarrierDetailsPageController.displayForm()
+
+POST        /carrier-details              controllers.declaration.CarrierDetailsPageController.saveAddress()
 
 # Declaration additional address
 

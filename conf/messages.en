@@ -248,6 +248,12 @@ supplementary.consignee.eori.info = 3/10 Enter the EORI number or business detai
 supplementary.consignee.eori.hint = The number starts with a country code, for example FR for France, and is then followed by up to 15 digits
 supplementary.consignee.address.info = 3/9 Enter consignee's name and address
 
+supplementary.carrier.title = Add the carrier
+supplementary.carrier.title.hint = Enter the EORI number or business details
+supplementary.carrier.eori.info = 3/32 EORI number
+supplementary.carrier.eori.hint = The number starts with a country code, for example FR for France, and is then followed by up to 15 digits
+supplementary.carrier.address.info = 3/31 Enter carrier’s name and address
+
 supplementary.representative.title = Add representative
 supplementary.representative.header = 3/19 - 3/20 Enter the representative’s details
 supplementary.representative.eori.info = Enter the EORI number or business details

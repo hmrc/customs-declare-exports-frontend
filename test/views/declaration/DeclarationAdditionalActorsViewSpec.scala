@@ -17,12 +17,13 @@
 package views.declaration
 
 import base.TestHelper
+import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.DeclarationAdditionalActors
 import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.declaration_additional_actors
 import views.declaration.spec.ViewSpec
+import views.html.declaration.declaration_additional_actors
 import views.tags.ViewTest
 
 @ViewTest
@@ -31,7 +32,7 @@ class DeclarationAdditionalActorsViewSpec
 
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
   private def createView(form: Form[DeclarationAdditionalActors] = form): Html =
-    declaration_additional_actors(appConfig, form, Seq())(fakeRequest, messages)
+    declaration_additional_actors(appConfig, form, Seq())(fakeJourneyRequest(SupplementaryDec), messages)
 
   "Declaration Additional Actors View" should {
 
@@ -100,12 +101,21 @@ class DeclarationAdditionalActorsViewSpec
       optionFourLabel.text() must be(messages(warehouseKeeper))
     }
 
-    "display \"Back\" button that links to \"Representative Details\" page" in {
+    "display \"Back\" button that links to \"Representative Details\" page if on Supplementary journey" in {
 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/representative-details")
+    }
+
+    "display \"Back\" button that links to \"Carrier Details\" page if on Standard Journey" in {
+
+      val view = declaration_additional_actors(appConfig, form, Seq())(fakeJourneyRequest(StandardDec), messages)
+      val backButton = getElementById(view, "link-back")
+
+      backButton.text() must be(messages(backCaption))
+      backButton.attr("href") must be("/customs-declare-exports/declaration/carrier-details")
     }
 
     "display both \"Add\" and \"Save and continue\" button on page" in {
@@ -205,8 +215,11 @@ class DeclarationAdditionalActorsViewSpec
 
     "display one item in table" in {
 
-      val view =
-        declaration_additional_actors(appConfig, form, Seq(DeclarationAdditionalActors(Some("12345"), Some("CS"))))
+      val view = declaration_additional_actors(
+        appConfig,
+        form,
+        Seq(DeclarationAdditionalActors(Some("12345"), Some("CS")))
+      )(fakeJourneyRequest(StandardDec), messages)
 
       getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be("EORI number")
       getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be("Party type")

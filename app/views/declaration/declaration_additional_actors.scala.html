@@ -21,15 +21,23 @@
 @import forms.declaration.DeclarationAdditionalActors.PartyType._
 @import models.declaration.DeclarationAdditionalActorsData
 @import uk.gov.hmrc.play.views.html._
+@import forms.Choice.AllowedChoiceValues._
 @import utils.RadioOption
-@(appConfig: AppConfig, form: Form[DeclarationAdditionalActors], actors: Seq[DeclarationAdditionalActors])(implicit request: Request[_], messages: Messages)
+@import models.requests.JourneyRequest
+@(appConfig: AppConfig, form: Form[DeclarationAdditionalActors], actors: Seq[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.additionalActors.title"),
     appConfig = appConfig
 ) {
     @helpers.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/declaration/representative-details")
+
+        @{
+            request.choice.value match {
+                case SupplementaryDec => components.back_link("/customs-declare-exports/declaration/representative-details")
+                case StandardDec      => components.back_link("/customs-declare-exports/declaration/carrier-details")
+            }
+        }
 
         @components.error_summary(form.errors)
 
