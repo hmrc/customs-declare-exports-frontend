@@ -20,8 +20,8 @@ import forms.declaration.DispatchLocation
 import helpers.views.declaration.{CommonMessages, DispatchLocationMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.dispatch_location
 import views.declaration.spec.ViewSpec
+import views.html.declaration.dispatch_location
 import views.tags.ViewTest
 
 @ViewTest
@@ -29,7 +29,7 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
 
   private val form: Form[DispatchLocation] = DispatchLocation.form()
   private def createView(form: Form[DispatchLocation] = form): Html =
-    dispatch_location(appConfig, form)(fakeRequest, messages)
+    dispatch_location(form)(appConfig, fakeRequest, messages)
 
   "Dispatch Location View" should {
 

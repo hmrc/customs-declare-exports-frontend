@@ -21,7 +21,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
-@(appConfig: AppConfig, form: Form[DispatchLocation])(implicit request: Request[_], messages: Messages)
+@(form: Form[DispatchLocation])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
   title = messages("supplementary.dispatchLocation.title"),
@@ -30,7 +30,7 @@
 
   @components.back_link("/customs-declare-exports/choice")
 
-  @helpers.form(declaration.routes.DeclarationTypeController.submitDispatchLocation(), 'autoComplete -> "off") {
+  @helpers.form(declaration.routes.DispatchLocationPageController.submitForm(), 'autoComplete -> "off") {
 
     @components.error_summary(form.errors)
 

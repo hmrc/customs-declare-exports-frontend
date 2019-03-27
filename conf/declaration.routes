@@ -1,12 +1,12 @@
 # Declaration type
 
-GET         /dispatch-location              controllers.declaration.DeclarationTypeController.displayDispatchLocationPage()
+GET         /dispatch-location              controllers.declaration.DispatchLocationPageController.displayPage()
 
-POST        /dispatch-location              controllers.declaration.DeclarationTypeController.submitDispatchLocation()
+POST        /dispatch-location              controllers.declaration.DispatchLocationPageController.submitForm()
 
-GET         /type                           controllers.declaration.DeclarationTypeController.displayAdditionalDeclarationTypePage()
+GET         /type                           controllers.declaration.AdditionalDeclarationTypePageController.displayPage()
 
-POST        /type                           controllers.declaration.DeclarationTypeController.submitAdditionalDeclarationType()
+POST        /type                           controllers.declaration.AdditionalDeclarationTypePageController.submitForm()
 
 # Not Eligible
 
