@@ -35,6 +35,7 @@ case class JourneyAction @Inject()(customsCacheService: CustomsCacheService)(imp
   override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, JourneyRequest[A]]] = {
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+
     customsCacheService.fetchAndGetEntry[Choice](eoriCacheId()(request), choiceId).map {
       case Some(choice) => Right(JourneyRequest(request, choice))
       case _            => Left(Conflict("Could not obtain information about journey type"))

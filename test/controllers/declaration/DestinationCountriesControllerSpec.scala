@@ -17,10 +17,15 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.DestinationCountries
-import forms.declaration.DestinationCountriesSpec._
+import forms.declaration.DestinationCountriesSupplementarySpec._
+import forms.declaration.destinationCountries.{
+  DestinationCountries,
+  DestinationCountriesStandard,
+  DestinationCountriesSupplementary
+}
 import helpers.views.declaration.DestinationCountriesMessages
 import play.api.test.Helpers._
 
@@ -28,40 +33,77 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
   private val uri = uriWithContextPath("/declaration/destination-countries")
 
-  before {
+  private val addActionUrlEncoded = (Add.toString, "")
+  private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
+
+  trait SupplementarySetUp {
     authorizedUser()
-    withCaching[DestinationCountries](None)
+    withCaching[DestinationCountriesSupplementary](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  trait StandardSetUp {
+    authorizedUser()
+    withCaching[DestinationCountriesStandard](None)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
   }
 
   "Destination Countries Controller on GET" should {
 
-    "return 200 status code" in {
+    "return 200 status code" when {
 
-      val result = route(app, getRequest(uri)).get
+      "user is during supplementary declaration" in new SupplementarySetUp {
 
-      status(result) must be(OK)
+        val result = route(app, getRequest(uri)).get
+
+        status(result) must be(OK)
+      }
+
+      "user is during standard declaration" in new StandardSetUp {
+
+        val result = route(app, getRequest(uri)).get
+
+        status(result) must be(OK)
+      }
     }
 
-    "read item from cache and display it" in {
+    "read item from cache and display it" when {
 
-      val cachedData = DestinationCountries("Netherlands", "Belgium")
-      withCaching[DestinationCountries](Some(cachedData), "DestinationCountries")
+      "user is during supplementary declaration" in new SupplementarySetUp {
 
-      val result = route(app, getRequest(uri)).get
-      val page = contentAsString(result)
+        val cachedData = DestinationCountriesSupplementary("Netherlands", "Belgium")
+        withCaching[DestinationCountriesSupplementary](Some(cachedData), DestinationCountries.formId)
 
-      status(result) must be(OK)
-      page must include("Netherlands")
-      page must include("Belgium")
+        val result = route(app, getRequest(uri)).get
+        val page = contentAsString(result)
+
+        status(result) must be(OK)
+        page must include("Netherlands")
+        page must include("Belgium")
+      }
+
+      "user is during standard declaration" in new StandardSetUp {
+
+        val cachedData = DestinationCountriesStandard("Poland", Seq("Slovakia", "Italy"), "England")
+        withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
+
+        val result = route(app, getRequest(uri)).get
+        val page = contentAsString(result)
+
+        status(result) must be(OK)
+        page must include("Poland")
+        page must include("Slovakia")
+        page must include("Italy")
+        page must include("England")
+      }
     }
   }
 
   "Destination Countries Controller on POST" should {
 
-    "validate request - incorrect values" in {
+    "show page with errors for incorrect destination countries for supplementary declaration" in new SupplementarySetUp {
 
-      val result = route(app, postRequest(uri, incorrectDestinationCountriesJSON)).get
+      val result = route(app, postRequest(uri, incorrectDestinationCountriesSupplementaryJSON)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
@@ -69,28 +111,189 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       stringResult must include(messages(countryOfDispatchError))
     }
 
-    "validate request - country of dispatch missing" in {
+    "show page with errors for incorrect country of routing for standard declaration" in new StandardSetUp {
 
-      val result = route(app, postRequest(uri, emptyDestinationCountriesJSON)).get
+      val body = Seq(
+        ("countryOfDispatch", ""),
+        ("countriesOfRouting[]", "Country"),
+        ("countryOfDestination", ""),
+        addActionUrlEncoded
+      )
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(countryOfDispatchEmpty))
+      contentAsString(result) must include(messages(countriesOfRoutingError))
     }
 
-    "validate request - country of destination missing" in {
-      val result = route(app, postRequest(uri, emptyDispatchCountriesJSON)).get
+    "show page with errors for missing country of dispatch" when {
 
-      status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(countryOfDestinationEmpty))
+      "user is during supplementary declaration" in new SupplementarySetUp {
+
+        val result = route(app, postRequest(uri, emptyDestinationCountriesSupplementaryJSON)).get
+
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(countryOfDispatchEmpty))
+      }
+
+      "user is during standard declaration" in new StandardSetUp {
+
+        val body = Seq(
+          ("countryOfDispatch", ""),
+          ("countriesOfRouting[]", "Poland"),
+          ("countryOfDestination", "Poland"),
+          saveAndContinueActionUrlEncoded
+        )
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(countryOfDispatchEmpty))
+      }
     }
 
-    "validate request and redirect - correct values" in {
+    "show page with errors for missing countries of routing" when {
 
-      val result = route(app, postRequest(uri, correctDestinationCountriesJSON)).get
-      val header = result.futureValue.header
+      "user is during standard declaration" in new StandardSetUp {
+
+        val body = Seq(
+          ("countryOfDispatch", ""),
+          ("countriesOfRouting[]", ""),
+          ("countryOfDestination", ""),
+          saveAndContinueActionUrlEncoded
+        )
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(countriesOfRoutingEmpty))
+      }
+    }
+
+    "show page with errors for missing country of destination" when {
+
+      "user is during supplementary declaration" in new SupplementarySetUp {
+
+        val result = route(app, postRequest(uri, emptyDestinationCountrySupplementaryJSON)).get
+
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(countryOfDestinationEmpty))
+      }
+
+      "user is during standard declaration" in new StandardSetUp {
+
+        val body = Seq(
+          ("countryOfDispatch", "Poland"),
+          ("countriesOfRouting[]", "Poland"),
+          ("countryOfDestination", ""),
+          saveAndContinueActionUrlEncoded
+        )
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages(countryOfDestinationEmpty))
+      }
+    }
+
+    "validate input and add country of routing if value is correct" in {
+
+      val body = Seq(
+        ("countryOfDispatch", ""),
+        ("countriesOfRouting[]", "Poland"),
+        ("countryOfDestination", ""),
+        addActionUrlEncoded
+      )
+
+      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/location-of-goods"))
+    }
+
+    "show error message for standard declaration" when {
+      "user try to add more than 99 countries" in new StandardSetUp {
+
+        val fullCache = Seq.fill(99)("Slovakia")
+        val cachedData = DestinationCountriesStandard("Poland", fullCache, "England")
+        withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
+
+        val body = Seq(
+          ("countryOfDispatch", ""),
+          ("countriesOfRouting[]", "Poland"),
+          ("countryOfDestination", ""),
+          addActionUrlEncoded
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages("supplementary.limit"))
+      }
+
+      "user try to add duplicated value" in new StandardSetUp {
+        val cachedData = DestinationCountriesStandard("Poland", Seq("Poland"), "England")
+        withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
+
+        val body = Seq(
+          ("countryOfDispatch", ""),
+          ("countriesOfRouting[]", "Poland"),
+          ("countryOfDestination", ""),
+          addActionUrlEncoded
+        )
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(BAD_REQUEST)
+        contentAsString(result) must include(messages("supplementary.duplication"))
+      }
+    }
+
+    "remove country from the cache" when {
+      "country exist and user is during standard declaration" in new StandardSetUp {
+
+        val cachedData = DestinationCountriesStandard("Poland", Seq("Slovakia", "Italy"), "England")
+        withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
+
+        val body = (Remove.toString, "Slovakia")
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+
+        status(result) must be(SEE_OTHER)
+      }
+    }
+
+    "show global error page when the action is incorrect" in new StandardSetUp {
+
+      val result = route(app, postRequestFormUrlEncoded(uri)).get
+
+      status(result) must be(BAD_REQUEST)
+    }
+
+    "validate user input and redirect to location of goods page" when {
+
+      "user is during supplementary declaration and provide correct values" in new SupplementarySetUp {
+
+        val result = route(app, postRequest(uri, correctDestinationCountriesSupplementaryJSON)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/location-of-goods"))
+      }
+
+      "user is during standard declaration and provide correct values" in new StandardSetUp {
+
+        val cachedData = DestinationCountriesStandard("", Seq("Slovakia", "Italy"), "")
+        withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
+
+        val body = Seq(
+          ("countryOfDispatch", "Poland"),
+          ("countriesOfRouting[]", ""),
+          ("countryOfDestination", "Poland"),
+          saveAndContinueActionUrlEncoded
+        )
+
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+
+        status(result) must be(SEE_OTHER)
+      }
     }
   }
 }

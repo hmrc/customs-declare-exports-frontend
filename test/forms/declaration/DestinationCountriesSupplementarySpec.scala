@@ -16,15 +16,16 @@
 
 package forms.declaration
 
+import forms.declaration.destinationCountries.DestinationCountriesSupplementary
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class DestinationCountriesSpec extends WordSpec with MustMatchers {
-  import DestinationCountriesSpec._
+class DestinationCountriesSupplementarySpec extends WordSpec with MustMatchers {
+  import DestinationCountriesSupplementarySpec._
 
   "Method toMetadataProperties" should {
     "return proper Metadata Properties" in {
-      val destinationCountries = correctDestinationCountries
+      val destinationCountries = correctDestinationCountriesSupplementary
       val expectedMetadataProperties: Map[String, String] = Map(
         "declaration.goodsShipment.destination.countryCode" -> "PL",
         "declaration.goodsShipment.exportCountry.id" -> "PL"
@@ -36,24 +37,22 @@ class DestinationCountriesSpec extends WordSpec with MustMatchers {
 
 }
 
-object DestinationCountriesSpec {
-  val correctDestinationCountries =
-    DestinationCountries(countryOfDestination = "Poland", countryOfDispatch = "Poland")
-  val emptyDestinationCountries =
-    DestinationCountries(countryOfDestination = "", countryOfDispatch = "")
-  val incorrectDestinationCountries =
-    DestinationCountries(countryOfDestination = "Country", countryOfDispatch = "Country")
+object DestinationCountriesSupplementarySpec {
+  val correctDestinationCountriesSupplementary = DestinationCountriesSupplementary("Poland", "Poland")
 
-  val correctDestinationCountriesJSON: JsValue = JsObject(
+  val emptyDestinationCountriesSupplementary = DestinationCountriesSupplementary("", "")
+  val incorrectDestinationCountriesSupplementary = DestinationCountriesSupplementary("Country", "Country")
+
+  val correctDestinationCountriesSupplementaryJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString("Poland"), "countryOfDispatch" -> JsString("Poland"))
   )
-  val emptyDestinationCountriesJSON: JsValue = JsObject(
+  val emptyDestinationCountriesSupplementaryJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString(""), "countryOfDispatch" -> JsString(""))
   )
-  val emptyDispatchCountriesJSON: JsValue = JsObject(
+  val emptyDestinationCountrySupplementaryJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString(""), "countryOfDispatch" -> JsString("Malawi"))
   )
-  val incorrectDestinationCountriesJSON: JsValue = JsObject(
+  val incorrectDestinationCountriesSupplementaryJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString("Country"), "countryOfDispatch" -> JsString("Country"))
   )
 }

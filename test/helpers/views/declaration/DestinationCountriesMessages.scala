@@ -18,12 +18,15 @@ package helpers.views.declaration
 
 trait DestinationCountriesMessages {
 
-  val prefix: String = "supplementary.destinationCountries"
+  val prefix: String = "declaration.destinationCountries"
 
   val title: String = prefix + ".title"
   val countryOfDestination: String = prefix + ".countryOfDestination"
   val countryOfDestinationError: String = prefix + ".countryOfDestination.error"
   val countryOfDestinationEmpty: String = prefix + ".countryOfDestination.empty"
+  val countriesOfRouting: String = prefix + ".countriesOfRouting"
+  val countriesOfRoutingError: String = prefix + ".countriesOfRouting.error"
+  val countriesOfRoutingEmpty: String = prefix + ".countriesOfRouting.empty"
   val countryOfDispatch: String = prefix + ".countryOfDispatch"
   val countryOfDispatchError: String = prefix + ".countryOfDispatch.error"
   val countryOfDispatchEmpty: String = prefix + ".countryOfDispatch.empty"

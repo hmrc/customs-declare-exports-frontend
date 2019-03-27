@@ -58,4 +58,12 @@ class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi)
         )
       )
     )
+
+  def globalErrorTemplate()(implicit request: Request[_]): Html =
+    views.html.error_template(
+      pageTitle = messagesApi("global.error.title"),
+      heading = messagesApi("global.error.heading"),
+      message = messagesApi("global.error.message"),
+      appConfig = appConfig
+    )
 }

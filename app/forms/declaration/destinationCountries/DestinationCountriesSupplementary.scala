@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.declaration.destinationCountries
 
 import forms.MetadataPropertiesConvertable
-import play.api.data.Forms.{optional, text}
+import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.Countries.allCountries
 
-case class DestinationCountries(countryOfDispatch: String, countryOfDestination: String)
+case class DestinationCountriesSupplementary(countryOfDispatch: String, countryOfDestination: String)
     extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
@@ -37,25 +37,21 @@ case class DestinationCountries(countryOfDispatch: String, countryOfDestination:
     )
 }
 
-object DestinationCountries {
-  implicit val format = Json.format[DestinationCountries]
-
-  val formId = "DestinationCountries"
+object DestinationCountriesSupplementary {
+  implicit val format = Json.format[DestinationCountriesSupplementary]
 
   val mapping = Forms.mapping(
     "countryOfDispatch" -> text()
-      .verifying("supplementary.destinationCountries.countryOfDispatch.empty", _.trim.nonEmpty)
+      .verifying("declaration.destinationCountries.countryOfDispatch.empty", _.trim.nonEmpty)
       .verifying(
-        "supplementary.destinationCountries.countryOfDispatch.error",
+        "declaration.destinationCountries.countryOfDispatch.error",
         input => input.isEmpty || allCountries.exists(country => country.countryName == input)
       ),
     "countryOfDestination" -> text()
-      .verifying("supplementary.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
+      .verifying("declaration.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
       .verifying(
-        "supplementary.destinationCountries.countryOfDestination.error",
+        "declaration.destinationCountries.countryOfDestination.error",
         input => input.isEmpty || allCountries.exists(country => country.countryName == input)
       )
-  )(DestinationCountries.apply)(DestinationCountries.unapply)
-
-  def form(): Form[DestinationCountries] = Form(mapping)
+  )(DestinationCountriesSupplementary.apply)(DestinationCountriesSupplementary.unapply)
 }

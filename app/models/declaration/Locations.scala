@@ -18,10 +18,11 @@ package models.declaration
 
 import forms.MetadataPropertiesConvertable
 import forms.declaration._
+import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesSupplementary}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 case class Locations(
-  destinationCountries: Option[DestinationCountries] = None,
+  destinationCountries: Option[DestinationCountriesSupplementary] = None,
   goodsLocation: Option[GoodsLocation] = None,
   supervisingCustomsOffice: Option[SupervisingCustomsOffice] = None,
   warehouseIdentification: Option[WarehouseIdentification] = None,
@@ -49,7 +50,7 @@ object Locations {
   val id = "Locations"
 
   def apply(cacheMap: CacheMap): Locations = Locations(
-    destinationCountries = cacheMap.getEntry[DestinationCountries](DestinationCountries.formId),
+    destinationCountries = cacheMap.getEntry[DestinationCountriesSupplementary](DestinationCountries.formId),
     goodsLocation = cacheMap.getEntry[GoodsLocation](GoodsLocation.formId),
     supervisingCustomsOffice = cacheMap.getEntry[SupervisingCustomsOffice](SupervisingCustomsOffice.formId),
     warehouseIdentification = cacheMap.getEntry[WarehouseIdentification](WarehouseIdentification.formId),
