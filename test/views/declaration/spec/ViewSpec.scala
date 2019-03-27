@@ -34,7 +34,7 @@ trait ViewSpec extends PlaySpec with OneAppPerSuite with ViewValidator {
   lazy val addressPrefix = "supplementary.address."
 
   lazy val injector: Injector = app.injector
-  lazy val appConfig: AppConfig = injector.instanceOf[AppConfig]
+  implicit lazy val appConfig: AppConfig = injector.instanceOf[AppConfig]
 
   implicit lazy val messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")

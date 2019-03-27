@@ -19,9 +19,11 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
+import forms.Choice.AllowedChoiceValues._
 import forms.declaration.RepresentativeDetails
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -62,8 +64,15 @@ class RepresentativeDetailsPageController @Inject()(
         validRepresentativeDetails =>
           customsCacheService
             .cache[RepresentativeDetails](cacheId, RepresentativeDetails.formId, validRepresentativeDetails)
-            .map(_ => Redirect(controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm()))
+            .map(_ => Redirect(nextPage(request)))
       )
   }
 
+  private def nextPage(request: JourneyRequest[AnyContent]) =
+    request.choice.value match {
+      case SupplementaryDec =>
+        controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm()
+      case StandardDec =>
+        controllers.declaration.routes.CarrierDetailsPageController.displayForm()
+    }
 }

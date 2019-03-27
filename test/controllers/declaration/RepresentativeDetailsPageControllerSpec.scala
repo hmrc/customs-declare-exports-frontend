@@ -19,6 +19,7 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import base.TestHelper._
 import forms.Choice
+import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.Choice.choiceId
 import forms.declaration.RepresentativeDetails
 import forms.declaration.RepresentativeDetailsSpec._
@@ -29,14 +30,15 @@ import org.mockito.Mockito.{reset, verify}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with RepresentativeDetailsMessages with CommonMessages {
+class RepresentativeDetailsPageControllerSpec
+    extends CustomExportsBaseSpec with RepresentativeDetailsMessages with CommonMessages {
 
   import RepresentativeDetailsPageControllerSpec._
   private val uri = uriWithContextPath("/declaration/representative-details")
 
   before {
     authorizedUser()
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    withCaching[Choice](Some(Choice(SupplementaryDec)), choiceId)
     withCaching[RepresentativeDetails](None, RepresentativeDetails.formId)
   }
 
@@ -149,7 +151,9 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       }
     }
 
-    "accept form with status and EORI only" in {
+    "accept form with status and EORI if on supplementary journey" in {
+      withCaching[RepresentativeDetails](None)
+      withCaching[Choice](Some(Choice(SupplementaryDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
@@ -158,13 +162,33 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
     }
 
-    "accept form with status and address only" in {
+    "accept form with status and EORI if on standard journey" in {
+      withCaching[Choice](Some(Choice(StandardDec)), choiceId)
+
+      val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/carrier-details"))
+    }
+
+    "accept form with status and address if on supplementary journey" in {
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+    }
+
+    "accept form with status and address only if on standard journey" in {
+      withCaching[Choice](Some(Choice(StandardDec)), choiceId)
+
+      val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/carrier-details"))
     }
 
     "save data to the cache" in {
@@ -186,12 +210,22 @@ class RepresentativeDetailsPageControllerSpec extends CustomExportsBaseSpec with
       status(result) must be(SEE_OTHER)
     }
 
-    "redirect to Additional Actors page" in {
+    "redirect to Additional Actors page if on supplementary journey" in {
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+    }
+
+    "redirect to Consignee Details page if on standard journey" in {
+      withCaching[RepresentativeDetails](None)
+      withCaching[Choice](Some(Choice(StandardDec)), choiceId)
+
+      val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
+      val header = result.futureValue.header
+
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/carrier-details"))
     }
   }
 }
