@@ -19,7 +19,7 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.ConsigneeDetails
+import forms.declaration.{Address, ConsigneeDetails, EntityDetails}
 import forms.declaration.ConsigneeDetailsSpec._
 import play.api.test.Helpers._
 
@@ -33,21 +33,37 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  "Consignee Details Page Controller on GET" should {
+  "Consignee Details Controller on GET" should {
 
     "return 200 status code" in {
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
     }
+
+    "read item from cache and display it" in {
+
+      val cachedData = ConsigneeDetails(EntityDetails(Some("12345"), Some(Address("Spiderman", "Test Street", "Leeds", "LS18BN", "Germany"))))
+      withCaching[ConsigneeDetails](Some(cachedData), "ConsigneeDetails")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include("12345")
+      page must include("Spiderman")
+      page must include("Test Street")
+      page must include("Leeds")
+      page must include("LS18BN")
+      page must include("Germany")
+    }
   }
 
-  "Consignee Details Page Controller on POST" should {
+  "Consignee Details Controller on POST" should {
 
     "validate request and redirect - both EORI and business details are empty" in {
 
       val result = route(app, postRequest(uri, emptyConsigneeDetailsJSON)).get
-      val page = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
     }

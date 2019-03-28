@@ -336,7 +336,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementById(view, "documentQuantity").attr("value") must be("234.22")
     }
 
-    "display one item in table" in {
+    "display one row with data in table" in {
 
       val view = documents_produced(appConfig, form, Seq(filledForm))(fakeRequest, messages)
 

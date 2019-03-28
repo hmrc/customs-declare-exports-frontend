@@ -40,7 +40,7 @@ class ProcedureCodesPageControllerSpec
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  "Procedure Codes Page Controller on GET" should {
+  "Procedure Codes Controller on GET" should {
 
     "return 200 status code" in {
 
@@ -49,7 +49,7 @@ class ProcedureCodesPageControllerSpec
       status(result) must be(OK)
     }
 
-    "display Procedure Codes with additional codes from cache" in {
+    "read item from cache and display it" in {
 
       val cachedData = ProcedureCodesData(Some("1234"), Seq("123", "234"))
       withCaching[ProcedureCodesData](Some(cachedData), formId)
@@ -63,13 +63,11 @@ class ProcedureCodesPageControllerSpec
       getElementByCss(page, "table>tbody>tr>th:nth-child(2)>button").text() must be(messages(removeCaption))
 
       getElementByCss(page, "table>tbody>tr:nth-child(2)>th:nth-child(1)").text() must be("234")
-      getElementByCss(page, "table>tbody>tr:nth-child(2)>th:nth-child(2)>button").text() must be(
-        messages(removeCaption)
-      )
+      getElementByCss(page, "table>tbody>tr:nth-child(2)>th:nth-child(2)>button").text() must be(messages(removeCaption))
     }
   }
 
-  "Procedure Codes Page Controller on POST" can {
+  "Procedure Codes Controller on POST" can {
 
     "display the form page with error" when {
 

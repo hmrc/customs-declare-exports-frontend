@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 
 class TransactionTypeControllerSpec extends CustomExportsBaseSpec with TransactionTypeMessages {
 
-  val uri = uriWithContextPath("/declaration/transaction-type")
+  private val uri = uriWithContextPath("/declaration/transaction-type")
 
   before {
     authorizedUser()
@@ -41,6 +41,19 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with Transacti
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
+    }
+
+    "read item from cache and display it" in {
+
+      val cachedData = TransactionType("AAA9", Some("FancyShoes"))
+      withCaching[TransactionType](Some(cachedData), "TransactionType")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include("AAA9")
+      page must include("FancyShoes")
     }
   }
 

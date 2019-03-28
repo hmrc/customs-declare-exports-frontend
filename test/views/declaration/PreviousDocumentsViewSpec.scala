@@ -229,5 +229,26 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       getElementById(view, "documentReference").attr("value") must be("Test")
       getElementById(view, "goodsItemIdentifier").attr("value") must be("Test")
     }
+
+    "display one row with data in table" in {
+
+      val prevDocuments = Seq(Document("X", "1", "A", Some("1")))
+      val view = previous_documents(form, prevDocuments)(fakeRequest, messages, appConfig)
+
+      // table header
+      getElementByCss(view, "form>table>caption").text() must be(messages(previousDocuments))
+      getElementByCss(view, "form>table>thead>tr>th:nth-child(1)").text() must be(messages(documentCategoryLabel))
+      getElementByCss(view, "form>table>thead>tr>th:nth-child(2)").text() must be(messages(documentTypeLabel))
+      getElementByCss(view, "form>table>thead>tr>th:nth-child(3)").text() must be(messages(documentReferenceLabel))
+      getElementByCss(view, "form>table>thead>tr>th:nth-child(4)").text() must be(messages(documentGoodsIdentifierLabel))
+      getElementByCss(view, "form>table>thead>tr>th:nth-child(5)").text() must be(messages(removePackageInformation))
+
+      // row
+      getElementByCss(view, "form>table>tbody>tr>td:nth-child(1)").text() must be(messages(documentX))
+      getElementByCss(view, "form>table>tbody>tr>td:nth-child(2)").text() must be("1")
+      getElementByCss(view, "form>table>tbody>tr>td:nth-child(3)").text() must be("A")
+      getElementByCss(view, "form>table>tbody>tr>td:nth-child(4)").text() must be("1")
+      getElementByCss(view, "form>table>tbody>tr>td:nth-child(5)>button").text() must be(messages(removeCaption))
+    }
   }
 }

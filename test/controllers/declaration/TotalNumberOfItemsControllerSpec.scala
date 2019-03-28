@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 
 class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalNumberOfItemsMessages {
 
-  val uri = uriWithContextPath("/declaration/total-numbers-of-items")
+  private val uri = uriWithContextPath("/declaration/total-numbers-of-items")
 
   before {
 
@@ -42,6 +42,21 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
+    }
+
+    "read item from cache and display it" in {
+
+      val cachedData = TotalNumberOfItems("163.2", "7987.1", "1.33", " 631.1")
+      withCaching[TotalNumberOfItems](Some(cachedData), "TotalNumberOfItems")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include("163.2")
+      page must include("7987.1")
+      page must include("1.33")
+      page must include("631.1")
     }
   }
 
@@ -92,7 +107,9 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
             "itemsQuantity" -> JsString("test"),
             "totalAmountInvoiced" -> JsString("test"),
             "exchangeRate" -> JsString("test"),
-            "totalPackage" -> JsString("test")))
+            "totalPackage" -> JsString("test")
+          )
+        )
       val result = route(app, postRequest(uri, allFields)).get
 
       status(result) must be(BAD_REQUEST)
@@ -111,7 +128,9 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
             "itemsQuantity" -> JsString("1234"),
             "totalAmountInvoiced" -> JsString("12312312312312123"),
             "exchangeRate" -> JsString("1212121231123123"),
-            "totalPackage" -> JsString("123456789")))
+            "totalPackage" -> JsString("123456789")
+          )
+        )
       val result = route(app, postRequest(uri, allFields)).get
 
       status(result) must be(BAD_REQUEST)
@@ -130,7 +149,9 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
             "itemsQuantity" -> JsString("000"),
             "totalAmountInvoiced" -> JsString("999.99"),
             "exchangeRate" -> JsString("999999.99999"),
-            "totalPackage" -> JsString("123")))
+            "totalPackage" -> JsString("123")
+          )
+        )
       val result = route(app, postRequest(uri, incorrectTotalNumber)).get
 
       status(result) must be(BAD_REQUEST)

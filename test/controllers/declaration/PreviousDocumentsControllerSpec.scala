@@ -29,7 +29,7 @@ class PreviousDocumentsControllerSpec
     extends CustomExportsBaseSpec with PreviousDocumentsMessages with CommonMessages with ViewValidator {
   import PreviousDocumentsControllerSpec._
 
-  val uri = uriWithContextPath("/declaration/previous-documents")
+  private val uri = uriWithContextPath("/declaration/previous-documents")
   private val addActionURLEncoded = (Add.toString, "")
   private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
   private val removeActionURLEncoded: String => (String, String) = (value: String) => (Remove.toString, value)
@@ -49,31 +49,19 @@ class PreviousDocumentsControllerSpec
       status(result) must be(OK)
     }
 
-    "display Previous Documents form with added items from cache" in {
+    "read item from cache and display it" in {
 
-      withCaching[PreviousDocumentsData](Some(cachedData), formId)
+      withCaching[PreviousDocumentsData](Some(PreviousDocumentsData(Seq(Document("X", "HX", "XH", Some("UX"))))), formId)
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)
 
-      // table header
-      getElementByCss(page, "form>table>caption").text() must be(messages(previousDocuments))
-      getElementByCss(page, "form>table>thead>tr>th:nth-child(1)").text() must be(messages(documentCategoryLabel))
-      getElementByCss(page, "form>table>thead>tr>th:nth-child(2)").text() must be(messages(documentTypeLabel))
-      getElementByCss(page, "form>table>thead>tr>th:nth-child(3)").text() must be(messages(documentReferenceLabel))
-      getElementByCss(page, "form>table>thead>tr>th:nth-child(4)").text() must be(
-        messages(documentGoodsIdentifierLabel)
-      )
-      getElementByCss(page, "form>table>thead>tr>th:nth-child(5)").text() must be(messages(removePackageInformation))
-
-      // row
-      getElementByCss(page, "form>table>tbody>tr>td:nth-child(1)").text() must be(messages(documentX))
-      getElementByCss(page, "form>table>tbody>tr>td:nth-child(2)").text() must be("1")
-      getElementByCss(page, "form>table>tbody>tr>td:nth-child(3)").text() must be("A")
-      getElementByCss(page, "form>table>tbody>tr>td:nth-child(4)").text() must be("1")
-      getElementByCss(page, "form>table>tbody>tr>td:nth-child(5)>button").text() must be(messages(removeCaption))
+      page must include("X")
+      page must include("HX")
+      page must include("XH")
+      page must include("UX")
     }
   }
 

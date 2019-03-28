@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 
 class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExitMessages {
 
-  val uri = uriWithContextPath("/declaration/office-of-exit")
+  private val uri: String = uriWithContextPath("/declaration/office-of-exit")
 
   before {
     authorizedUser()
@@ -34,7 +34,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  "Office of Exit Controller on GET" should {
+  "Office Of Exit Controller on GET" should {
 
     "return 200 with a success" in {
 
@@ -42,9 +42,22 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       status(result) must be(OK)
     }
+
+    "read item from cache and display it" in {
+
+      val cachedData = OfficeOfExit("999AAA45")
+      withCaching[OfficeOfExit](Some(cachedData), "OfficeOfExit")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include("999AAA45")
+    }
   }
 
   "Office Of Exit Controller on POST" should {
+
     "validate request and redirect - incorrect value" in {
 
       val result = route(app, postRequest(uri, incorrectOfficeOfExitJSON)).get

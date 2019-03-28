@@ -27,7 +27,7 @@ import play.api.test.Helpers._
 
 class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsMessages {
 
-  val uri = uriWithContextPath("/declaration/location-of-goods")
+  private val uri = uriWithContextPath("/declaration/location-of-goods")
 
   before {
     authorizedUser()
@@ -35,7 +35,31 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  "Location Controller on display page" should {
+  "Location Controller on GET" should {
+
+    "return 200 status code" in {
+      val result = route(app, getRequest(uri)).get
+
+      status(result) must be(OK)
+    }
+
+    "read item from cache and display it" in {
+
+      val cachedData = GoodsLocation(Some("Spain"), Some("1"), Some("1"), "1", Some("1"), Some("BAFTA Street"), Some("LS37BH"), Some("SecretCity"))
+      withCaching[GoodsLocation](Some(cachedData), "GoodsLocation")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include("Spain")
+      page must include("BAFTA Street")
+      page must include("LS37BH")
+      page must include("SecretCity")
+    }
+  }
+
+  "Location Controller on POST" should {
 
     "validate request and redirect - incorrect values" in {
 

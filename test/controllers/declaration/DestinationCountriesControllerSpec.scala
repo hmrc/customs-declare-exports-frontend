@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 
 class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with DestinationCountriesMessages {
 
-  val uri = uriWithContextPath("/declaration/destination-countries")
+  private val uri = uriWithContextPath("/declaration/destination-countries")
 
   before {
     authorizedUser()
@@ -41,6 +41,19 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
+    }
+
+    "read item from cache and display it" in {
+
+      val cachedData = DestinationCountries("Netherlands", "Belgium")
+      withCaching[DestinationCountries](Some(cachedData), "DestinationCountries")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include("Netherlands")
+      page must include("Belgium")
     }
   }
 

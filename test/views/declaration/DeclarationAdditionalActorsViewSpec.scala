@@ -203,7 +203,7 @@ class DeclarationAdditionalActorsViewSpec
       getElementById(view, warehouseKeeper).attr("checked") must be("checked")
     }
 
-    "display one item in table" in {
+    "display one row with data in table" in {
 
       val view =
         declaration_additional_actors(appConfig, form, Seq(DeclarationAdditionalActors(Some("12345"), Some("CS"))))

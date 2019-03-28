@@ -45,7 +45,7 @@ class ItemTypePageControllerSpec
     reset(mockCustomsCacheService)
   }
 
-  "Item Type Page Controller on GET" should {
+  "Item Type Controller on GET" should {
 
     "return 200 status code" in {
       val result = route(app, getRequest(uri)).get
@@ -53,6 +53,27 @@ class ItemTypePageControllerSpec
       status(result) must be(OK)
     }
 
+    "read item from cache and display it" in {
+
+      val cachedData = ItemType("5555", Seq("6666"), Seq("7777"), "FaultyGoods", Some("CusCus"), "900")
+      withCaching[ItemType](Some(cachedData), "ItemType")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include("5555")
+      page must include("6666")
+      page must include("7777")
+      page must include("FaultyGoods")
+      page must include("CusCus")
+      page must include("900")
+    }
+
+    /*
+     * For some reason I cannot create the table
+     * in view tests for this form using fill() - for now they are here
+     */
     "display the table" when {
 
       "user added one TARIC" in {
@@ -79,7 +100,7 @@ class ItemTypePageControllerSpec
     }
   }
 
-  "Item Type Page Controller on POST" should {
+  "Item Type Controller on POST" should {
 
     "display the form page with error" when {
 

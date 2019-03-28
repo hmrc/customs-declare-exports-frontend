@@ -54,9 +54,28 @@ class DocumentsProducedControllerSpec
 
       status(result) must be(OK)
     }
+
+    "read item from cache and display it" in {
+
+      val cachedData = DocumentsProducedData(
+        Seq(DocumentsProduced(Some("XA"), Some("XI"), Some("XZ"), Some("YX"), Some("YY"), Some(BigDecimal("9999"))))
+      )
+      withCaching[DocumentsProducedData](Some(cachedData), "DocumentsProducedData")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include("XA")
+      page must include("XI")
+      page must include("XZ")
+      page must include("YX")
+      page must include("YY")
+      page must include("9999")
+    }
   }
 
-  "Document Produced Controller on POST" should {
+  "Documents Produced Controller on POST" should {
 
     "display page with errors" when {
 
@@ -228,7 +247,7 @@ class DocumentsProducedControllerSpec
       }
     }
 
-    "redirect to exports-items page" when {
+    "redirect to \"Export Items\" page" when {
 
       "provided with empty form and with empty cache" in {
 
@@ -284,7 +303,14 @@ object DocumentsProducedControllerSpec {
       .range[Int](100, 200, 1)
       .map(
         elem =>
-          DocumentsProduced(Some(elem.toString), Some("1234"), Some("1234"), Some("AB"), Some("1234"), Some(BigDecimal("1234")))
+          DocumentsProduced(
+            Some(elem.toString),
+            Some("1234"),
+            Some("1234"),
+            Some("AB"),
+            Some("1234"),
+            Some(BigDecimal("1234"))
+        )
       )
   )
 }

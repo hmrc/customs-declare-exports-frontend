@@ -19,7 +19,7 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.DeclarantDetails
+import forms.declaration.{Address, DeclarantDetails, EntityDetails}
 import forms.declaration.DeclarantDetailsSpec._
 import play.api.test.Helpers._
 
@@ -33,21 +33,37 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  "Declarant Details Page Controller on GET" should {
+  "Declarant Details Controller on GET" should {
 
     "return 200 status code" in {
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
     }
+
+    "read item from cache and display it" in {
+
+      val cachedData = DeclarantDetails(EntityDetails(Some("67890"), Some(Address("WonderWoman", "Test Street", "Leeds", "LS18BN", "Germany"))))
+      withCaching[DeclarantDetails](Some(cachedData), "DeclarantDetails")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include("67890")
+      page must include("WonderWoman")
+      page must include("Test Street")
+      page must include("Leeds")
+      page must include("LS18BN")
+      page must include("Germany")
+    }
   }
 
-  "Declarant Details Page Controller on POST" should {
+  "Declarant Details Controller on POST" should {
 
     "validate request and redirect - both EORI and business details are empty" in {
 
       val result = route(app, postRequest(uri, emptyDeclarantDetailsJSON)).get
-      val page = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
     }

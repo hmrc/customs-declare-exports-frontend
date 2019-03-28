@@ -74,7 +74,6 @@ class ConsignmentReferencesControllerSpec
         "name=\"lrn\"\nvalue=\"" + correctConsignmentReferences.lrn + "\""
       )
     }
-
   }
 
   "Consignment References Controller on POST" should {

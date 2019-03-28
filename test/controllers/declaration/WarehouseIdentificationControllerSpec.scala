@@ -21,12 +21,13 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
-import org.scalatest.BeforeAndAfter
+import helpers.views.declaration.WarehouseIdentificationMessages
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
-  val uri = uriWithContextPath("/declaration/warehouse")
+class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with WarehouseIdentificationMessages {
+
+  private val uri = uriWithContextPath("/declaration/warehouse")
 
   before {
     authorizedUser()
@@ -34,69 +35,61 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  "Warehouse Identification Controller on display" should {
+  "Warehouse Identification Controller on GET" should {
 
-    "display warehouse identification declaration form" in {
+    "return 200 code" in {
 
       val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
 
       status(result) must be(OK)
-      stringResult must include(messages("supplementary.warehouse.title"))
-      stringResult must include(messages("supplementary.warehouse.identificationNumber"))
-      stringResult must include(messages("supplementary.warehouse.identificationNumber.hint"))
     }
 
-    "display \"Save and continue\" button on page" in {
+    "read item from cache and display it" in {
+
+      val cachedData = WarehouseIdentification(Some("SecretStash"))
+      withCaching[WarehouseIdentification](Some(cachedData), "IdentificationOfWarehouse")
 
       val result = route(app, getRequest(uri)).get
-      val resultAsString = contentAsString(result)
+      val page = contentAsString(result)
 
-      resultAsString must include(messages("site.save_and_continue"))
-      resultAsString must include("button id=\"submit\" class=\"button\"")
-    }
-
-    "display \"Back\" button that links to \"Supervising Office\" page" in {
-      val result = route(app, getRequest(uri)).get
-
-      contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("/declaration/supervising-office")
+      status(result) must be(OK)
+      page must include("SecretStash")
     }
   }
 
-  "Warehouse Identification Controller on form" should {
+  "Warehouse Identification Controller on POST" should {
 
-    "validate form - too many characters" in {
+    "validate request - too many characters" in {
 
       val incorrectWarehouseIdentification: JsValue =
         JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomString(37))))
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
-      val stringResult = contentAsString(result)
 
-      stringResult must include(messages("supplementary.warehouse.identificationNumber.error"))
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(winError))
     }
 
-    "validate form - less than two characters" in {
+    "validate request - less than two characters" in {
 
       val incorrectWarehouseIdentification: JsValue =
         JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomString(1))))
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
-      val stringResult = contentAsString(result)
 
-      stringResult must include(messages("supplementary.warehouse.identificationNumber.error"))
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(winError))
     }
 
-    "validate form - first letter is not capital" in {
+    "validate request - first letter is not capital" in {
 
       val incorrectWarehouseIdentification: JsValue =
         JsObject(Map("identificationNumber" -> JsString("r1234567GB")))
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
-      val stringResult = contentAsString(result)
 
-      stringResult must include(messages("supplementary.warehouse.identificationNumber.error"))
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(winError))
     }
 
-    "validate form - no answers" in {
+    "validate request and redirect - no answers" in {
 
       val result = route(app, postRequest(uri, emptyWarehouseIdentificationJSON)).get
       val header = result.futureValue.header
@@ -106,7 +99,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with B
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
     }
 
-    "validate form - correct values" in {
+    "validate request and redirect - correct values" in {
 
       val result = route(app, postRequest(uri, correctWarehouseIdentificationJSON)).get
       val header = result.futureValue.header
