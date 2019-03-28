@@ -29,7 +29,7 @@ class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with Confirma
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  "Confirmation Page Controller on GET" should {
+  "Confirmation Controller on GET" should {
 
     "return 200 status code" in {
 

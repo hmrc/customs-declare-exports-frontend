@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.declaration
+package helpers.views.declaration
 
-import base.CustomExportsBaseSpec
-import forms.Choice
-import forms.Choice.choiceId
-import play.api.test.Helpers._
+trait WarehouseIdentificationMessages {
 
-class NotEligibleControllerSpec extends CustomExportsBaseSpec {
+  val warehouse: String = "supplementary.warehouse"
 
-  before {
-    authorizedUser()
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-  }
-
-  "Not Eligible Controller on GET" should {
-
-    "return 200 with a success" in {
-
-      val result = route(app, getRequest(uriWithContextPath("/declaration/not-eligible"))).get
-
-      status(result) must be(OK)
-    }
-  }
+  val title: String = warehouse + ".title"
+  val win: String = warehouse + ".identificationNumber"
+  val winError: String = warehouse + ".identificationNumber.error"
+  val winHint: String = warehouse + ".identificationNumber.hint"
 }

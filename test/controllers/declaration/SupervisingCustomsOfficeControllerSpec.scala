@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 
 class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec with SupervisingCustomsOfficeMessages {
 
-  val uri = uriWithContextPath("/declaration/supervising-office")
+  private val uri = uriWithContextPath("/declaration/supervising-office")
 
   before {
     authorizedUser()
@@ -41,6 +41,18 @@ class SupervisingCustomsOfficeControllerSpec extends CustomExportsBaseSpec with 
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
+    }
+
+    "read item from cache and display it" in {
+
+      val cachedData = SupervisingCustomsOffice(Some("666AAA45"))
+      withCaching[SupervisingCustomsOffice](Some(cachedData), "SupervisingCustomsOffice")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include("666AAA45")
     }
   }
 

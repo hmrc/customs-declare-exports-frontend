@@ -83,7 +83,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
       getElementById(view, "description").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to Commodity measure page" in {
+    "display \"Back\" button that links to \"Commodity measure\" page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -130,7 +130,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
       getElementById(view, "description").text() must be("12345")
     }
 
-    "display one item in table" in {
+    "display one row with data in table" in {
 
       val view = additional_information(appConfig, form, Seq(AdditionalInformation("12345", "12345")))
 

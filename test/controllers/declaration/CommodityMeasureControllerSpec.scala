@@ -35,16 +35,16 @@ import uk.gov.hmrc.auth.core.InsufficientEnrolments
 class CommodityMeasureControllerSpec
     extends CustomExportsBaseSpec with CommodityMeasureMessages with Generators with PropertyChecks with OptionValues {
 
-  val uri = uriWithContextPath("/declaration/commodity-measure")
-  val form = CommodityMeasure.form()
+  private val uri = uriWithContextPath("/declaration/commodity-measure")
+  private val form = CommodityMeasure.form()
 
-  "CommodityController" should {
+  "Commodity Measure Controller" should {
 
     "displayForm" should {
 
       "return UNAUTHORIZED" when {
 
-        "user does not have" in {
+        "user does not have EORI" in {
           userWithoutEori()
           withCaching[CommodityMeasure](None)
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
@@ -123,7 +123,7 @@ class CommodityMeasureControllerSpec
         }
       }
 
-      "add CommodityMeasure to the cache" when {
+      "add Commodity Measure to the cache" when {
 
         "with valid data and on click of add" in {
 
@@ -154,7 +154,7 @@ class CommodityMeasureControllerSpec
         }
       }
 
-      "navigate to additionalInformation" when {
+      "navigate to \"Additional Information\" page" when {
 
         "on click of continue when a record has already been added" in {
           forAll(arbitrary[CommodityMeasure]) { commodityMeasure =>
@@ -176,11 +176,4 @@ class CommodityMeasureControllerSpec
       }
     }
   }
-  private def toMap(commodityMeasure: CommodityMeasure) =
-    for ((k, Some(v)) <- commodityMeasure.getClass.getDeclaredFields
-           .map(_.getName)
-           .zip(commodityMeasure.productIterator.to)
-           .toMap)
-      yield k -> v.asInstanceOf[Any].toString
-
 }

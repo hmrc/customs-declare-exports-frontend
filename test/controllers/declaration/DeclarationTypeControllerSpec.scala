@@ -94,7 +94,7 @@ class DeclarationTypeControllerSpec extends CustomExportsBaseSpec with Declarati
       }
     }
 
-    "redirect to \"Not-eligible\" page" when {
+    "redirect to \"Not Eligible\" page" when {
 
       "dispatch location is a Special Fiscal Territory (CO)" in {
         withCaching[DispatchLocation](None, DispatchLocation.formId)

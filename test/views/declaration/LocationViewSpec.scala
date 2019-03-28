@@ -368,7 +368,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
   "Location View when filled" should {
 
-    "display all fields entered" in {
+    "display data in all inputs" in {
 
       val ladditionalInformation: String = TestHelper.createRandomString(32)
       val lstreetAndNumber: String = TestHelper.createRandomString(70)

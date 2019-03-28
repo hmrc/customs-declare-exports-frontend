@@ -144,13 +144,56 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       getElementById(view, "shippingMarks").attr("value") must be("Test")
     }
 
-    "display all data entered" in {
+    "display data in all inputs" in {
 
       val view = createView(PackageInformation.form().fill(PackageInformation(Some("PA"), Some(100), Some("Test"))))
 
       getElementById(view, "typesOfPackages").attr("value") must be("PA")
       getElementById(view, "numberOfPackages").attr("value") must be("100")
       getElementById(view, "shippingMarks").attr("value") must be("Test")
+    }
+
+    "display one row with data in table" in {
+
+      val packages = Seq(PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")))
+      val view = package_information(form, packages)(fakeRequest, messages, appConfig)
+
+      // check table header
+      getElementByCss(view, "table>caption").text() must be(messages(tableHeading))
+      getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be(messages(typesOfPackages))
+      getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be(messages(numberOfPackages))
+      getElementByCss(view, "table>thead>tr>th:nth-child(3)").text() must be(messages(shippingMarks))
+      getElementByCss(view, "table>thead>tr>th:nth-child(4)").text() must be(messages(remove))
+
+      // check row
+      getElementByCss(view, "table>tbody>tr>td:nth-child(1)").text() must be("PA")
+      getElementByCss(view, "table>tbody>tr>td:nth-child(2)").text() must be("100")
+      getElementByCss(view, "table>tbody>tr>td:nth-child(3)").text() must be("Shipping Mark")
+    }
+
+    "display two rows with data in table" in {
+
+      val packages = Seq(
+        PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")),
+        PackageInformation(Some("PB"), Some(101), Some("Shipping Mark"))
+      )
+      val view = package_information(form, packages)(fakeRequest, messages, appConfig)
+
+      // check table header
+      getElementByCss(view, "table>caption").text() must be("2 Packages added")
+      getElementByCss(view, "table>thead>tr>th:nth-child(1)").text() must be(messages(typesOfPackages))
+      getElementByCss(view, "table>thead>tr>th:nth-child(2)").text() must be(messages(numberOfPackages))
+      getElementByCss(view, "table>thead>tr>th:nth-child(3)").text() must be(messages(shippingMarks))
+      getElementByCss(view, "table>thead>tr>th:nth-child(4)").text() must be(messages(remove))
+
+      // check rows
+      getElementByCss(view, "table>tbody>tr>td:nth-child(1)").text() must be("PA")
+      getElementByCss(view, "table>tbody>tr>td:nth-child(2)").text() must be("100")
+      getElementByCss(view, "table>tbody>tr>td:nth-child(3)").text() must be("Shipping Mark")
+
+      getElementByCss(view, "table>tbody>tr:nth-child(2)>td:nth-child(1)").text() must be("PB")
+      getElementByCss(view, "table>tbody>tr:nth-child(2)>td:nth-child(2)").text() must be("101")
+      getElementByCss(view, "table>tbody>tr:nth-child(2)>td:nth-child(3)").text() must be("Shipping Mark")
     }
   }
 }

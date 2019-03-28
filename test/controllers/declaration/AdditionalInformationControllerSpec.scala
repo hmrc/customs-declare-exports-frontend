@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 class AdditionalInformationControllerSpec
     extends CustomExportsBaseSpec with AdditionalInformationMessages with CommonMessages with ViewValidator {
 
-  private val uri: String = uriWithContextPath("/declaration/additional-information")
+  private val uri = uriWithContextPath("/declaration/additional-information")
 
   private val addActionURLEncoded = (Add.toString, "")
   private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
@@ -51,7 +51,7 @@ class AdditionalInformationControllerSpec
       status(result) must be(OK)
     }
 
-    "load item from cache and display it" in {
+    "read item from cache and display it" in {
 
       val cachedData = AdditionalInformationData(
         Seq(AdditionalInformation("M1l3s", "Davis"), AdditionalInformation("X4rlz", "Mingus"))

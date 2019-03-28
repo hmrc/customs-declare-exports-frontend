@@ -28,17 +28,16 @@ import uk.gov.hmrc.wco.dec.{GovernmentAgencyGoodsItem, Packaging}
 
 class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
 
-  val uri = uriWithContextPath("/declaration/export-items")
+  private val uri = uriWithContextPath("/declaration/export-items")
+  private val formId = "PackageInformation"
 
-  val formId = "PackageInformation"
-
-  "ItemSummaryController" should {
+  "Item Summary Controller" should {
 
     "displayForm" should {
 
       "return UNAUTHORIZED" when {
 
-        "user does not have" in {
+        "user does not have EORI" in {
           userWithoutEori()
           withCaching[Seq[GovernmentAgencyGoodsItem]](None)
 
@@ -47,6 +46,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
         }
       }
+
       "return OK" when {
 
         "user is signed in" in {
@@ -78,6 +78,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
           stringResult.contains(s"1 Export item added")
         }
+
         "more than one export item added " in {
           authorizedUser()
 

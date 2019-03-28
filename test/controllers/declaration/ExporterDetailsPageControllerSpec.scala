@@ -19,21 +19,22 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.ExporterDetails
+import forms.declaration.{Address, EntityDetails, ExporterDetails}
 import forms.declaration.ExporterDetailsSpec._
 import helpers.views.declaration.CommonMessages
 import play.api.test.Helpers._
 
 class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with CommonMessages {
 
-  val uri = uriWithContextPath("/declaration/exporter-details")
+  private val uri = uriWithContextPath("/declaration/exporter-details")
 
   before {
     authorizedUser()
     withCaching[ExporterDetails](None)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  "Exporter Details Page Controller on GET" should {
+  "Exporter Details Controller on GET" should {
 
     "return 200 with a success" in {
       withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
@@ -41,9 +42,26 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
 
       status(result) must be(OK)
     }
+
+    "read item from cache and display it" in {
+
+      val cachedData = ExporterDetails(EntityDetails(Some("99980"), Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal"))))
+      withCaching[ExporterDetails](Some(cachedData), "ExporterDetails")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include("99980")
+      page must include("CaptainAmerica")
+      page must include("Test Street")
+      page must include("Leeds")
+      page must include("LS18BN")
+      page must include("Portugal")
+    }
   }
 
-  "Exporter Details Page Controller on POST" should {
+  "Exporter Details Controller on POST" should {
 
     "validate request - empty values" in {
       withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)

@@ -107,6 +107,14 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       getElementById(view, "grossMass").attr("value") must be("")
     }
 
+    "display \"Back\" button that links to \"Package Information\" page" in {
+
+      val backButton = getElementById(createView(), "link-back")
+
+      backButton.text() must be(messages(backCaption))
+      backButton.attr("href") must be("/customs-declare-exports/declaration/package-information")
+    }
+
     "display \"Save and continue\" button on page" in {
 
       val saveButton = getElementByCss(createView(), "#submit")

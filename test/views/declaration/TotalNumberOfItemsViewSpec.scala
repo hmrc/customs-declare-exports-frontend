@@ -246,16 +246,6 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
   "Total Number Of Items View when filled" should {
 
-    "display data in all inputs" in {
-
-      val view = createView(TotalNumberOfItems.form().fill(TotalNumberOfItems("1", "123.123", "123.12345", "1")))
-
-      getElementById(view, "itemsQuantity").attr("value") must be("1")
-      getElementById(view, "totalAmountInvoiced").attr("value") must be("123.123")
-      getElementById(view, "exchangeRate").attr("value") must be("123.12345")
-      getElementById(view, "totalPackage").attr("value") must be("1")
-    }
-
     "display data in Total Number of Items input" in {
 
       val view = createView(TotalNumberOfItems.form().fill(TotalNumberOfItems("1", "", "", "")))
@@ -293,6 +283,16 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
       getElementById(view, "itemsQuantity").attr("value") must be("")
       getElementById(view, "totalAmountInvoiced").attr("value") must be("")
       getElementById(view, "exchangeRate").attr("value") must be("")
+      getElementById(view, "totalPackage").attr("value") must be("1")
+    }
+
+    "display data in all inputs" in {
+
+      val view = createView(TotalNumberOfItems.form().fill(TotalNumberOfItems("1", "123.123", "123.12345", "1")))
+
+      getElementById(view, "itemsQuantity").attr("value") must be("1")
+      getElementById(view, "totalAmountInvoiced").attr("value") must be("123.123")
+      getElementById(view, "exchangeRate").attr("value") must be("123.12345")
       getElementById(view, "totalPackage").attr("value") must be("1")
     }
   }

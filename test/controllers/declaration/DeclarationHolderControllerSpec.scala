@@ -49,6 +49,19 @@ class DeclarationHolderControllerSpec
 
       status(result) must be(OK)
     }
+
+    "read item from cache and display it" in {
+
+      val cachedData = DeclarationHoldersData(Seq(DeclarationHolder(Some("8899"), Some("0099887766"))))
+      withCaching[DeclarationHoldersData](Some(cachedData), "DeclarationHoldersData")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include("8899")
+      page must include("0099887766")
+    }
   }
 
   "Declaration Holder Controller on POST" should {

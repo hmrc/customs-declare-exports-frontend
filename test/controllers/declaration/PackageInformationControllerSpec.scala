@@ -41,12 +41,12 @@ class PackageInformationControllerSpec
     extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues with ViewValidator
     with PackageInformationMessages with CommonMessages {
 
-  val uri = uriWithContextPath("/declaration/package-information")
+  private val uri = uriWithContextPath("/declaration/package-information")
+  private val form = PackageInformation.form()
+  private val formId = "PackageInformation"
 
-  val form = PackageInformation.form()
   def view(form: Form[PackageInformation] = form, charges: Seq[PackageInformation] = Seq.empty): Html =
     package_information(form, charges)(fakeRequest, messages, appConfig)
-  val formId = "PackageInformation"
 
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
@@ -73,38 +73,30 @@ class PackageInformationControllerSpec
       status(result) must be(OK)
     }
 
-    "display one row with data in table" in {
+    "read item from cache and display it" in {
 
       authorizedUser()
       withCaching[List[PackageInformation]](
-        Some(List(PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")))),
+        Some(List(PackageInformation(Some("XX"), Some(101), Some("Secret Mark")))),
         formId
       )
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      // check table header
-      getElementByCss(page, "table>caption").text() must be(messages(tableHeading))
-      getElementByCss(page, "table>thead>tr>th:nth-child(1)").text() must be(messages(typesOfPackages))
-      getElementByCss(page, "table>thead>tr>th:nth-child(2)").text() must be(messages(numberOfPackages))
-      getElementByCss(page, "table>thead>tr>th:nth-child(3)").text() must be(messages(shippingMarks))
-      getElementByCss(page, "table>thead>tr>th:nth-child(4)").text() must be(messages(remove))
-
-      // check row
-      getElementByCss(page, "table>tbody>tr>td:nth-child(1)").text() must be("PA")
-      getElementByCss(page, "table>tbody>tr>td:nth-child(2)").text() must be("100")
-      getElementByCss(page, "table>tbody>tr>td:nth-child(3)").text() must be("Shipping Mark")
+      page must include("XX")
+      page must include("101")
+      page must include("Secret Mark")
     }
 
-    "display two rows with data in table" in {
+    "read two items from cache and display it" in {
 
       authorizedUser()
       withCaching[List[PackageInformation]](
         Some(
           List(
-            PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")),
-            PackageInformation(Some("PB"), Some(101), Some("Shipping Mark"))
+            PackageInformation(Some("XX"), Some(101), Some("Secret Mark")),
+            PackageInformation(Some("YX"), Some(102), Some("Even More Secret Mark"))
           )
         ),
         formId
@@ -113,21 +105,13 @@ class PackageInformationControllerSpec
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      // check table header
-      getElementByCss(page, "table>caption").text() must be("2 Packages added")
-      getElementByCss(page, "table>thead>tr>th:nth-child(1)").text() must be(messages(typesOfPackages))
-      getElementByCss(page, "table>thead>tr>th:nth-child(2)").text() must be(messages(numberOfPackages))
-      getElementByCss(page, "table>thead>tr>th:nth-child(3)").text() must be(messages(shippingMarks))
-      getElementByCss(page, "table>thead>tr>th:nth-child(4)").text() must be(messages(remove))
+      page must include("XX")
+      page must include("101")
+      page must include("Secret Mark")
 
-      // check rows
-      getElementByCss(page, "table>tbody>tr>td:nth-child(1)").text() must be("PA")
-      getElementByCss(page, "table>tbody>tr>td:nth-child(2)").text() must be("100")
-      getElementByCss(page, "table>tbody>tr>td:nth-child(3)").text() must be("Shipping Mark")
-
-      getElementByCss(page, "table>tbody>tr:nth-child(2)>td:nth-child(1)").text() must be("PB")
-      getElementByCss(page, "table>tbody>tr:nth-child(2)>td:nth-child(2)").text() must be("101")
-      getElementByCss(page, "table>tbody>tr:nth-child(2)>td:nth-child(3)").text() must be("Shipping Mark")
+      page must include("YX")
+      page must include("102")
+      page must include("Even More Secret Mark")
     }
   }
 
@@ -471,5 +455,4 @@ class PackageInformationControllerSpec
            .zip(packaging.productIterator.to)
            .toMap)
       yield k -> v.asInstanceOf[Any].toString
-
 }

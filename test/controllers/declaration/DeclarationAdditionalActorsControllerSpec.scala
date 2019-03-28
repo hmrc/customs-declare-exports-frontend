@@ -33,7 +33,7 @@ import play.api.test.Helpers._
 class DeclarationAdditionalActorsControllerSpec
     extends CustomExportsBaseSpec with DeclarationAdditionalActorsMessages with CommonMessages with ViewValidator {
 
-  val uri: String = uriWithContextPath("/declaration/additional-actors")
+  private val uri: String = uriWithContextPath("/declaration/additional-actors")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
@@ -55,13 +55,27 @@ class DeclarationAdditionalActorsControllerSpec
 
       status(result) must be(OK)
     }
+
+    "read item from cache and display it" in {
+
+      val cachedData = DeclarationAdditionalActorsData(Seq(DeclarationAdditionalActors(Some("112233"), Some("CS"))))
+      withCaching[DeclarationAdditionalActorsData](Some(cachedData), "DeclarationAdditionalActorsData")
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+
+      page must include("112233")
+      page must include("CS")
+    }
   }
 
   "Declaration Additional Actors Controller on POST" should {
 
     "handle save and continue action" should {
 
-      "when validate form - optional data allowed" in {
+      "when validate request - optional data allowed" in {
 
         testHappyPathsScenarios(
           expectedPath = "/customs-declare-exports/declaration/holder-of-authorisation",
@@ -70,7 +84,7 @@ class DeclarationAdditionalActorsControllerSpec
         )
       }
 
-      "when validate form - correct values and an empty cache" in {
+      "when validate request - correct values and an empty cache" in {
 
         testHappyPathsScenarios(
           expectedPath = "/customs-declare-exports/declaration/holder-of-authorisation",
@@ -79,7 +93,7 @@ class DeclarationAdditionalActorsControllerSpec
         )
       }
 
-      "when validate form - correct values and items in cache" in {
+      "when validate request - correct values and items in cache" in {
         withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
 
         testHappyPathsScenarios(
@@ -181,7 +195,7 @@ class DeclarationAdditionalActorsControllerSpec
 
     "handle add action" should {
 
-      "when validate form - optional data allowed" in {
+      "when validate request - optional data allowed" in {
 
         val undefinedDocument: Map[String, String] = Map("eori" -> "", "partyType" -> "")
         testErrorScenario(
@@ -191,7 +205,7 @@ class DeclarationAdditionalActorsControllerSpec
         )
       }
 
-      "when validate form - correct values" in {
+      "when validate request - correct values" in {
 
         testHappyPathsScenarios(
           expectedPath = "/customs-declare-exports/declaration/additional-actors",
