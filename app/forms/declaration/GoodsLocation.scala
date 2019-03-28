@@ -24,11 +24,11 @@ import services.Countries.allCountries
 import utils.validators.forms.FieldValidator._
 
 case class GoodsLocation(
-  country: Option[String],
-  typeOfLocation: Option[String],
-  qualifierOfIdentification: Option[String],
+  country: String,
+  typeOfLocation: String,
+  qualifierOfIdentification: String,
   identificationOfLocation: String,
-  additionalIdentifier: Option[String],
+  additionalIdentifier: String,
   streetAndNumber: Option[String],
   postCode: Option[String],
   city: Option[String]
@@ -36,15 +36,15 @@ case class GoodsLocation(
 
   override def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.goodsShipment.consignment.goodsLocation.typeCode" -> typeOfLocation.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.address.typeCode" -> qualifierOfIdentification.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.typeCode" -> typeOfLocation,
+      "declaration.goodsShipment.consignment.goodsLocation.address.typeCode" -> qualifierOfIdentification,
       "declaration.goodsShipment.consignment.goodsLocation.name" -> identificationOfLocation,
-      "declaration.goodsShipment.consignment.goodsLocation.id" -> additionalIdentifier.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.id" -> additionalIdentifier,
       "declaration.goodsShipment.consignment.goodsLocation.address.line" -> streetAndNumber.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.postcodeId" -> postCode.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.cityName" -> city.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.countryCode" ->
-        allCountries.find(c => country.contains(c.countryName)).map(_.countryCode).getOrElse("")
+        allCountries.find(c => country.equals(c.countryName)).map(_.countryCode).getOrElse("")
     )
 }
 
@@ -54,33 +54,37 @@ object GoodsLocation {
   val formId = "GoodsLocation"
 
   val mapping = Forms.mapping(
-    "country" -> optional(
+    "country" ->
       text()
         .verifying("supplementary.address.country.empty", _.trim.nonEmpty)
         .verifying(
           "supplementary.address.country.error",
           input => input.trim.isEmpty || allCountries.exists(country => country.countryName == input)
-        )
-    ),
-    "typeOfLocation" -> optional(
-      text().verifying("supplementary.goodsLocation.typeOfLocation.error", isAlphabetic and hasSpecificLength(1))
-    ),
-    "qualifierOfIdentification" -> optional(
-      text()
-        .verifying("supplementary.goodsLocation.qualifierOfIdentification.error", isAlphabetic and hasSpecificLength(1))
-    ),
+        ),
+    "typeOfLocation" -> text()
+      .verifying("supplementary.goodsLocation.typeOfLocation.empty", nonEmpty)
+      .verifying(
+        "supplementary.goodsLocation.typeOfLocation.error",
+        isEmpty or (isAlphabetic and hasSpecificLength(1))
+      ),
+    "qualifierOfIdentification" -> text()
+        .verifying("supplementary.goodsLocation.qualifierOfIdentification.empty", nonEmpty)
+        .verifying(
+          "supplementary.goodsLocation.qualifierOfIdentification.error",
+          isEmpty or (isAlphabetic and hasSpecificLength(1))
+        ),
     "identificationOfLocation" -> text()
       .verifying("supplementary.goodsLocation.identificationOfLocation.empty", nonEmpty)
       .verifying(
         "supplementary.goodsLocation.identificationOfLocation.error",
         isEmpty or (isAlphanumeric and hasSpecificLength(3))
       ),
-    "additionalIdentifier" -> optional(
-      text().verifying(
+    "additionalIdentifier" -> text()
+      .verifying("supplementary.goodsLocation.additionalIdentifier.empty", nonEmpty)
+      .verifying(
         "supplementary.goodsLocation.additionalIdentifier.error",
         input => isAlphanumeric(input.replaceAll(" ", "")) && noLongerThan(32)(input)
-      )
-    ),
+      ),
     "streetAndNumber" -> optional(
       text().verifying(
         "supplementary.goodsLocation.streetAndNumber.error",

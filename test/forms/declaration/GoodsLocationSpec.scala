@@ -28,9 +28,9 @@ class GoodsLocationSpec extends WordSpec with MustMatchers {
       val goodsLocation = correctGoodsLocation
       val expectedMetadataProperties: Map[String, String] = Map(
         "declaration.goodsShipment.consignment.goodsLocation.name" -> goodsLocation.identificationOfLocation,
-        "declaration.goodsShipment.consignment.goodsLocation.id" -> goodsLocation.additionalIdentifier.get,
-        "declaration.goodsShipment.consignment.goodsLocation.typeCode" -> goodsLocation.typeOfLocation.get,
-        "declaration.goodsShipment.consignment.goodsLocation.address.typeCode" -> goodsLocation.qualifierOfIdentification.get,
+        "declaration.goodsShipment.consignment.goodsLocation.id" -> goodsLocation.additionalIdentifier,
+        "declaration.goodsShipment.consignment.goodsLocation.typeCode" -> goodsLocation.typeOfLocation,
+        "declaration.goodsShipment.consignment.goodsLocation.address.typeCode" -> goodsLocation.qualifierOfIdentification,
         "declaration.goodsShipment.consignment.goodsLocation.address.cityName" -> goodsLocation.city.get,
         "declaration.goodsShipment.consignment.goodsLocation.address.countryCode" -> "GB",
         "declaration.goodsShipment.consignment.goodsLocation.address.line" -> goodsLocation.streetAndNumber.get,
@@ -44,21 +44,21 @@ class GoodsLocationSpec extends WordSpec with MustMatchers {
 
 object GoodsLocationSpec {
   val correctGoodsLocation = GoodsLocation(
-    country = Some("United Kingdom"),
-    typeOfLocation = Some("T"),
-    qualifierOfIdentification = Some("Q"),
+    country = "United Kingdom",
+    typeOfLocation = "T",
+    qualifierOfIdentification = "Q",
     identificationOfLocation = "LOC",
-    additionalIdentifier = Some("Additional Identifier"),
+    additionalIdentifier = "Additional Identifier",
     streetAndNumber = Some("Street and Number"),
     postCode = Some("Postcode"),
     city = Some("City")
   )
   val emptyGoodsLocation = GoodsLocation(
-    country = None,
-    typeOfLocation = None,
-    qualifierOfIdentification = None,
+    country = "",
+    typeOfLocation = "",
+    qualifierOfIdentification = "",
     identificationOfLocation = "",
-    additionalIdentifier = None,
+    additionalIdentifier = "",
     streetAndNumber = None,
     postCode = None,
     city = None

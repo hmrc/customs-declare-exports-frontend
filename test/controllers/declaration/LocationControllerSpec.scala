@@ -21,7 +21,7 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.GoodsLocation
 import forms.declaration.GoodsLocationSpec._
-import helpers.views.declaration.LocationOfGoodsMessages
+import helpers.views.declaration.{CommonMessages, LocationOfGoodsMessages}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
@@ -82,13 +82,18 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val stringResult = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
+      stringResult must include(messages(typeOfLocationEmpty))
+      stringResult must include(messages(qualifierOfIdentEmpty))
       stringResult must include(messages(identOfLocationEmpty))
+      stringResult must include(messages(additionalIdentifierEmpty))
     }
 
     "validate request and redirect - correct value for mandatory field" in {
 
       val correctGoodsLocation: JsValue =
-        JsObject(Map("identificationOfLocation" -> JsString("abc")))
+        JsObject(Map("country" -> JsString("Poland"), "typeOfLocation" -> JsString("t"),
+          "qualifierOfIdentification" -> JsString("t"), "identificationOfLocation" -> JsString("TST"),
+          "additionalIdentifier" -> JsString("TST")))
       val result = route(app, postRequest(uri, correctGoodsLocation)).get
       val header = result.futureValue.header
 
