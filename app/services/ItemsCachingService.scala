@@ -108,9 +108,8 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
                   Classification(
                     Some(item.combinedNomenclatureCode),
                     identificationTypeCode = Some(CombinedNomenclatureCode)
-                  ),
-                  Classification(item.cusCode, identificationTypeCode = Some(CUSCode))
-                ) ++
+                  )
+                ) ++  item.cusCode.map(id => Classification(Some(id), identificationTypeCode = Some(CUSCode))) ++
                   item.nationalAdditionalCodes.map(
                     code => Classification(Some(code), identificationTypeCode = Some(NationalAdditionalCode))
                   ) ++ item.taricAdditionalCodes
