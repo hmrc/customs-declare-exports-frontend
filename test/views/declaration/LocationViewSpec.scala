@@ -21,8 +21,8 @@ import forms.declaration.GoodsLocation
 import helpers.views.declaration.{CommonMessages, LocationOfGoodsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.goods_location
 import views.declaration.spec.ViewSpec
+import views.html.declaration.goods_location
 import views.tags.ViewTest
 
 @ViewTest
@@ -53,9 +53,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       assertMessage(typeOfLocationError, "Type of location is incorrect")
       assertMessage(qualifierOfIdentEmpty, "Qualifier of location cannot be empty")
       assertMessage(qualifierOfIdentError, "Qualifier of the identification is incorrect")
-      assertMessage(identOfLocationEmpty, "Identification of location cannot be empty")
       assertMessage(identOfLocationError, "Identification of location is incorrect")
-      assertMessage(additionalIdentifierEmpty, "Additional identifier cannot be empty")
       assertMessage(additionalIdentifierError, "Additional identifier is incorrect")
       assertMessage(streetAndNumberError, "Street and number is incorrect")
       assertMessage(logPostCodeError, "Postcode is incorrect")
@@ -159,7 +157,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for empty Country" in {
 
       val form =
-        GoodsLocation.form().fillAndValidate(GoodsLocation("", "t", "t", "TST", "TST", None, None, None))
+        GoodsLocation.form().fillAndValidate(GoodsLocation("", "t", "t", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -171,7 +169,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for incorrect Country" in {
 
       val form =
-        GoodsLocation.form().fillAndValidate(GoodsLocation("TST", "t", "t", "TST", "TST", None, None, None))
+        GoodsLocation.form().fillAndValidate(GoodsLocation("TST", "t", "t", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -183,7 +181,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for empty Type of Location" in {
 
       val form =
-        GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "", "t", "TST", "TST", None, None, None))
+        GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "", "t", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -195,7 +193,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for incorrect Type of Location" in {
 
       val form =
-        GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "TST", "t", "TST", "TST", None, None, None))
+        GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "TST", "t", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -208,7 +206,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for empty Qualifier of Identification" in {
 
       val form =
-        GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "t", "", "TST", "TST", None, None, None))
+        GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "t", "", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -222,7 +220,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for incorrect Qualifier of Identification" in {
 
       val form =
-        GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "t", "@@!", "TST", "TST", None, None, None))
+        GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "t", "@@!", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -233,22 +231,9 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       )
     }
 
-    "display error for empty Identification of Location" in {
-
-      val form = GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "t", "t", "", "TST", None, None, None))
-      val view = createView(form)
-
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, identOfLocationEmpty, "#identificationOfLocation")
-
-      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(
-        messages(identOfLocationEmpty)
-      )
-    }
-
     "display error for incorrect Identification of Location" in {
 
-      val form = GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "t", "t", "@@!", "TST", None, None, None))
+      val form = GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "t", "t", Some("@@!"), Some("TST"), None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -259,30 +244,12 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       )
     }
 
-
-    "display error for empty Additional Identifier" in {
-
-      val form = GoodsLocation
-        .form()
-        .fillAndValidate(
-          GoodsLocation("Poland", "t", "t", "TST", "", None, None, None)
-        )
-      val view = createView(form)
-
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, additionalIdentifierEmpty, "#additionalIdentifier")
-
-      getElementByCss(view, "#error-message-additionalIdentifier-input").text() must be(
-        messages(additionalIdentifierEmpty)
-      )
-    }
-
     "display error for incorrect Additional Identifier" in {
 
       val form = GoodsLocation
         .form()
         .fillAndValidate(
-          GoodsLocation("Poland", "t", "t", "TST", TestHelper.createRandomString(33), None, None, None)
+          GoodsLocation("Poland", "t", "t", Some("TST"), Some(TestHelper.createRandomString(33)), None, None, None)
         )
       val view = createView(form)
 
@@ -299,7 +266,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       val form = GoodsLocation
         .form()
         .fillAndValidate(
-          GoodsLocation("Poland", "t", "t", "TST", "TST", Some(TestHelper.createRandomString(71)), None, None)
+          GoodsLocation("Poland", "t", "t", Some("TST"), Some("TST"), Some(TestHelper.createRandomString(71)), None, None)
         )
       val view = createView(form)
 
@@ -314,7 +281,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       val form = GoodsLocation
         .form()
         .fillAndValidate(
-          GoodsLocation("Poland", "t", "t", "TST", "TST", None, Some(TestHelper.createRandomString(10)), None)
+          GoodsLocation("Poland", "t", "t", Some("TST"), Some("TST"), None, Some(TestHelper.createRandomString(10)), None)
         )
       val view = createView(form)
 
@@ -329,7 +296,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       val form = GoodsLocation
         .form()
         .fillAndValidate(
-          GoodsLocation("Poland", "t", "t", "TST", "TST", None, None, Some(TestHelper.createRandomString(36)))
+          GoodsLocation("Poland", "t", "t", Some("TST"), Some("TST"), None, None, Some(TestHelper.createRandomString(36)))
         )
       val view = createView(form)
 
@@ -348,8 +315,8 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
             "Country",
             "ABC",
             "ABC",
-            "TEST",
-            TestHelper.createRandomString(33),
+            Some("TEST"),
+            Some(TestHelper.createRandomString(33)),
             Some(TestHelper.createRandomString(71)),
             Some(TestHelper.createRandomString(10)),
             Some(TestHelper.createRandomString(36))
@@ -391,8 +358,8 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
             "Country",
             "ABC",
             "ABC",
-            "",
-            TestHelper.createRandomString(33),
+            None,
+            Some(TestHelper.createRandomString(33)),
             Some(TestHelper.createRandomString(71)),
             Some(TestHelper.createRandomString(10)),
             Some(TestHelper.createRandomString(36))
@@ -404,19 +371,15 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorLink(view, 1, countryError, "#country")
       checkErrorLink(view, 2, typeOfLocationError, "#typeOfLocation")
       checkErrorLink(view, 3, qualifierOfIdentError, "#qualifierOfIdentification")
-      checkErrorLink(view, 4, identOfLocationEmpty, "#identificationOfLocation")
-      checkErrorLink(view, 5, additionalIdentifierError, "#additionalIdentifier")
-      checkErrorLink(view, 6, streetAndNumberError, "#streetAndNumber")
-      checkErrorLink(view, 7, logPostCodeError, "#postCode")
-      checkErrorLink(view, 8, cityError, "#city")
+      checkErrorLink(view, 4, additionalIdentifierError, "#additionalIdentifier")
+      checkErrorLink(view, 5, streetAndNumberError, "#streetAndNumber")
+      checkErrorLink(view, 6, logPostCodeError, "#postCode")
+      checkErrorLink(view, 7, cityError, "#city")
 
       getElementByCss(view, "span.error-message").text() must be(messages(countryError))
       getElementByCss(view, "#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
       getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
         messages(qualifierOfIdentError)
-      )
-      getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(
-        messages(identOfLocationEmpty)
       )
       getElementByCss(view, "#error-message-additionalIdentifier-input").text() must be(
         messages(additionalIdentifierError)
@@ -442,8 +405,8 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
             "Poland",
             "AB",
             "CD",
-            "TST",
-            ladditionalInformation,
+            Some("TST"),
+            Some(ladditionalInformation),
             Some(lstreetAndNumber),
             Some(lpostCode),
             Some(lcity)
