@@ -45,7 +45,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
     "read item from cache and display it" in {
 
-      val cachedData = GoodsLocation("Spain", "1", "1", "1", "1", Some("BAFTA Street"), Some("LS37BH"), Some("SecretCity"))
+      val cachedData = GoodsLocation("Spain", "1", "1", Some("1"), Some("1"), Some("BAFTA Street"), Some("LS37BH"), Some("SecretCity"))
       withCaching[GoodsLocation](Some(cachedData), "GoodsLocation")
 
       val result = route(app, getRequest(uri)).get
@@ -84,8 +84,6 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       status(result) must be(BAD_REQUEST)
       stringResult must include(messages(typeOfLocationEmpty))
       stringResult must include(messages(qualifierOfIdentEmpty))
-      stringResult must include(messages(identOfLocationEmpty))
-      stringResult must include(messages(additionalIdentifierEmpty))
     }
 
     "validate request and redirect - correct value for mandatory field" in {

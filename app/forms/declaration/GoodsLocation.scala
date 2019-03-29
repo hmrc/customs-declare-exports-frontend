@@ -27,8 +27,8 @@ case class GoodsLocation(
   country: String,
   typeOfLocation: String,
   qualifierOfIdentification: String,
-  identificationOfLocation: String,
-  additionalIdentifier: String,
+  identificationOfLocation: Option[String],
+  additionalIdentifier: Option[String],
   streetAndNumber: Option[String],
   postCode: Option[String],
   city: Option[String]
@@ -37,9 +37,9 @@ case class GoodsLocation(
   override def toMetadataProperties(): Map[String, String] =
     Map(
       "declaration.goodsShipment.consignment.goodsLocation.typeCode" -> typeOfLocation,
+      "declaration.goodsShipment.consignment.goodsLocation.name" -> identificationOfLocation.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.id" -> additionalIdentifier.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.typeCode" -> qualifierOfIdentification,
-      "declaration.goodsShipment.consignment.goodsLocation.name" -> identificationOfLocation,
-      "declaration.goodsShipment.consignment.goodsLocation.id" -> additionalIdentifier,
       "declaration.goodsShipment.consignment.goodsLocation.address.line" -> streetAndNumber.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.postcodeId" -> postCode.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.cityName" -> city.getOrElse(""),
@@ -68,23 +68,25 @@ object GoodsLocation {
         isEmpty or (isAlphabetic and hasSpecificLength(1))
       ),
     "qualifierOfIdentification" -> text()
-        .verifying("supplementary.goodsLocation.qualifierOfIdentification.empty", nonEmpty)
+      .verifying("supplementary.goodsLocation.qualifierOfIdentification.empty", nonEmpty)
+      .verifying(
+        "supplementary.goodsLocation.qualifierOfIdentification.error",
+        isEmpty or (isAlphabetic and hasSpecificLength(1))
+      ),
+    "identificationOfLocation" -> optional(
+      text()
         .verifying(
-          "supplementary.goodsLocation.qualifierOfIdentification.error",
-          isEmpty or (isAlphabetic and hasSpecificLength(1))
-        ),
-    "identificationOfLocation" -> text()
-      .verifying("supplementary.goodsLocation.identificationOfLocation.empty", nonEmpty)
-      .verifying(
-        "supplementary.goodsLocation.identificationOfLocation.error",
-        isEmpty or (isAlphanumeric and hasSpecificLength(3))
-      ),
-    "additionalIdentifier" -> text()
-      .verifying("supplementary.goodsLocation.additionalIdentifier.empty", nonEmpty)
-      .verifying(
-        "supplementary.goodsLocation.additionalIdentifier.error",
-        input => isAlphanumeric(input.replaceAll(" ", "")) && noLongerThan(32)(input)
-      ),
+          "supplementary.goodsLocation.identificationOfLocation.error",
+          isEmpty or (isAlphanumeric and hasSpecificLength(3))
+        )
+    ),
+    "additionalIdentifier" -> optional(
+      text()
+        .verifying(
+          "supplementary.goodsLocation.additionalIdentifier.error",
+          input => isAlphanumeric(input.replaceAll(" ", "")) && noLongerThan(32)(input)
+        )
+    ),
     "streetAndNumber" -> optional(
       text().verifying(
         "supplementary.goodsLocation.streetAndNumber.error",
