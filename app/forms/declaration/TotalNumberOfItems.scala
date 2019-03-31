@@ -32,7 +32,8 @@ case class TotalNumberOfItems(
   override def toMetadataProperties(): Map[String, String] =
     Map(
       "declaration.goodsItemQuantity" -> itemsQuantity,
-      "declaration.invoiceAmount" -> totalAmountInvoiced,
+      "declaration.invoiceAmount.value" -> totalAmountInvoiced,
+      "declaration.invoiceAmount.currencyId" -> "GBP",
       "declaration.currencyExchanges[0].rateNumeric" -> exchangeRate,
       "declaration.totalPackageQuantity" -> totalPackage
     )

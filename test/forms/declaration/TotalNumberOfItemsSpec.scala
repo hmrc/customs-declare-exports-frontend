@@ -26,7 +26,8 @@ class TotalNumberOfItemsSpec extends WordSpec with MustMatchers {
       val totalNumberOfItems = correctTotalNumberOfItemsDecimalValues
       val expectedMetadataProperties: Map[String, String] = Map(
         "declaration.goodsItemQuantity" -> totalNumberOfItems.itemsQuantity,
-        "declaration.invoiceAmount" -> totalNumberOfItems.totalAmountInvoiced,
+        "declaration.invoiceAmount.value" -> totalNumberOfItems.totalAmountInvoiced,
+        "declaration.invoiceAmount.currencyId" -> "GBP",
         "declaration.currencyExchanges[0].rateNumeric" -> totalNumberOfItems.exchangeRate,
         "declaration.totalPackageQuantity" -> totalNumberOfItems.totalPackage
       )

@@ -43,6 +43,8 @@ class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCaching
       result.declaration.flatMap(_.declarant) must be(defined)
       result.declaration.flatMap(_.agent) must be(defined)
       result.declaration.flatMap(_.goodsShipment) must be(defined)
+      result.declaration.flatMap(_.invoiceAmount.flatMap(_.value)) must be(Some(BigDecimal("12312312312312.12")))
+      result.declaration.flatMap(_.invoiceAmount.flatMap(_.currencyId)) must be(Some("GBP"))
       val goodsShipment = result.declaration.flatMap(_.goodsShipment).value
       goodsShipment.aeoMutualRecognitionParties.headOption mustBe defined
       result.declaration.value.authorisationHolders.size mustBe 1
