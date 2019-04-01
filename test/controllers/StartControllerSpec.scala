@@ -21,24 +21,14 @@ import play.api.test.Helpers._
 
 class StartControllerSpec extends CustomExportsBaseSpec {
 
-  val uri = uriWithContextPath("/start")
+  private val uri = uriWithContextPath("/start")
 
-  "StartController" should {
+  "Start Controller on GET" should {
 
-    "return 200 for a GET" in {
+    "return 200 status code" in {
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
     }
-
-    "display radio button to start now" in {
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
-
-      stringResult must include(messages("startPage.listItemOne"))
-      stringResult must include(messages("startPage.listItemTwoUrl"))
-      stringResult must include(messages("startPage.listItemThree"))
-    }
   }
-
 }
