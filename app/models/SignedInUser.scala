@@ -26,3 +26,10 @@ case class CustomsDeclareExportsResponse(status: Int, message: String)
 object CustomsDeclareExportsResponse {
   implicit val format = Json.format[CustomsDeclareExportsResponse]
 }
+
+case class CustomsDeclareExportsMovementsResponse(status: Int, message: String)
+
+object CustomsDeclareExportsMovementsResponse {
+  implicit val format = Json.format[CustomsDeclareExportsMovementsResponse]
+}
+

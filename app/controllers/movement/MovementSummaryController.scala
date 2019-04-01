@@ -16,14 +16,17 @@
 
 package controllers.movement
 
+import java.util.UUID
+
 import config.AppConfig
-import connectors.CustomsInventoryLinkingExportsConnector
+import connectors.{CustomsDeclareExportsConnector, CustomsDeclareExportsMovementsConnector, CustomsInventoryLinkingExportsConnector}
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.movementCacheId
 import forms.inventorylinking.MovementRequestSummaryMappingProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
 import metrics.{ExportsMetrics, MetricIdentifiers}
+import models.MovementSubmission
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -41,6 +44,7 @@ class MovementSummaryController @Inject()(
   authenticate: AuthAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
+  customsDeclareExportsMovementsConnector: CustomsDeclareExportsMovementsConnector,
   customsInventoryLinkingExportsConnector: CustomsInventoryLinkingExportsConnector,
   exportsMetrics: ExportsMetrics
 )(implicit ec: ExecutionContext)
@@ -57,26 +61,45 @@ class MovementSummaryController @Inject()(
 
   def submitMovementRequest(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchMovementRequest(movementCacheId, request.user.eori).flatMap {
-      case Some(data) =>
+      case Some(data) => {
+        val eoriVal = request.user.eori
+        val ducrVal = ""
+        val mucrVal = data.masterUCR
+        val movementType = "EAL"
+
         val metricIdentifier = getMetricIdentifierFrom(data)
         exportsMetrics.startTimer(metricIdentifier)
 
         customsInventoryLinkingExportsConnector
           .sendMovementRequest(movementCacheId, data.toXml)
-          .map {
-            case accepted if accepted.status == ACCEPTED =>
-              exportsMetrics.incrementCounter(metricIdentifier)
-              Redirect(controllers.movement.routes.MovementSummaryController.displayConfirmation())
+          .flatMap {
+            case response if response.status == ACCEPTED => {
+              val conversationId = UUID.randomUUID().toString
+              val movementSubmission = MovementSubmission(eoriVal, conversationId, ducrVal, mucrVal, movementType)
+
+              customsDeclareExportsMovementsConnector
+                .saveMovementSubmission(movementSubmission)
+                .map(
+                  saveResponse =>
+                    saveResponse.status match {
+                      case OK =>
+                        exportsMetrics.incrementCounter(metricIdentifier)
+                        Redirect(controllers.movement.routes.MovementSummaryController.displayConfirmation())
+                      case _ => handleError(s"Unable to save data")
+                  }
+                )
+            }
+            case _ => Future.successful(handleError(s"Could not obtain data from DB"))
 
           }
           .recover {
             case error: Throwable =>
               exportsMetrics.incrementCounter(metricIdentifier)
+              Logger.error("Error from Customs Inventory Linking", error)
               handleError(s"Error from Customs Inventory Linking ${error.toString}")
           }
-
-      case _ =>
-        Future.successful(handleError(s"Could not obtain data from DB"))
+      }
+      case _ => Future.successful(handleError(s"Could not obtain data from DB"))
     }
   }
 
