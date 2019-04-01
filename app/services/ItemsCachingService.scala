@@ -22,9 +22,8 @@ import forms.declaration.{CommodityMeasure, DocumentsProduced, ItemType, Package
 import javax.inject.Singleton
 import models.DeclarationFormats._
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
-import models.declaration.{AdditionalInformationData, DocumentsProducedData}
 import play.api.http.Status.NO_CONTENT
-import services.ExportsItemsCacheIds.itemsId
+import services.ExportsItemsCacheIds._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec._
@@ -67,9 +66,9 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
     Commodity(
       goodsMeasure = Some(
         GoodsMeasure(
-          Some(Measure(value = Some(BigDecimal(data.grossMass)))),
-          Some(Measure(value = Some(BigDecimal(data.netMass)))),
-          Some(Measure(value = data.supplementaryUnits.map((BigDecimal(_)))))
+          Some(Measure(Some(defaultMeasureCode), value = Some(BigDecimal(data.grossMass)))),
+          Some(Measure(Some(defaultMeasureCode), value = Some(BigDecimal(data.netMass)))),
+          Some(Measure(Some(defaultMeasureCode), value = data.supplementaryUnits.map((BigDecimal(_)))))
         )
       )
     )
@@ -91,7 +90,8 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       id = doc.documentIdentifier.map(_ + doc.documentPart.getOrElse("")),
       lpcoExemptionCode = doc.documentStatus,
       name = doc.documentStatusReason,
-      writeOff = Some(WriteOff(Some(Measure(value = doc.documentQuantity )))))
+      writeOff = Some(WriteOff(Some(Measure(value = doc.documentQuantity))))
+    )
 
   def goodsItemFromItemTypes(cachedData: CacheMap): Option[GovernmentAgencyGoodsItem] =
     cachedData
@@ -100,25 +100,26 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
         item => // get all codes create classification
           GovernmentAgencyGoodsItem(
             sequenceNumeric = 1,
-            statisticalValueAmount = Some(Amount(value = Some(BigDecimal(item.statisticalValue)))),
-            commodity = Some(
-              Commodity(
-                description = Some(item.descriptionOfGoods),
-                classifications = Seq(
-                  Classification(
-                    Some(item.combinedNomenclatureCode),
-                    identificationTypeCode = Some(CombinedNomenclatureCode)
-                  ),
-                  Classification(item.cusCode, identificationTypeCode = Some(CUSCode))
-                ) ++
-                  item.nationalAdditionalCodes.map(
-                    code => Classification(Some(code), identificationTypeCode = Some(NationalAdditionalCode))
-                  ) ++ item.taricAdditionalCodes
-                  .map(code => Classification(Some(code), identificationTypeCode = Some(TARICAdditionalCode)))
-              )
-            )
+            statisticalValueAmount =
+              Some(Amount(Some(defaultCurrencyCode), value = Some(BigDecimal(item.statisticalValue)))),
+            commodity = Some(commodityFromItemTypes(item))
         )
       )
+
+  private def commodityFromItemTypes(itemType: ItemType): Commodity =
+    Commodity(
+      description = Some(itemType.descriptionOfGoods),
+      classifications = getClassificationsFromItemTypes(itemType)
+    )
+
+  private def getClassificationsFromItemTypes(itemType: ItemType): Seq[Classification] =
+    Seq(
+      Classification(Some(itemType.combinedNomenclatureCode), identificationTypeCode = Some(CombinedNomenclatureCode))
+    ) ++ itemType.cusCode.map(id => Classification(Some(id), identificationTypeCode = Some(CUSCode))) ++
+      itemType.nationalAdditionalCodes.map(
+        code => Classification(Some(code), identificationTypeCode = Some(NationalAdditionalCode))
+      ) ++ itemType.taricAdditionalCodes
+      .map(code => Classification(Some(code), identificationTypeCode = Some(TARICAdditionalCode)))
 
   private def createGoodsItem(seq: Int, cachedData: CacheMap): GovernmentAgencyGoodsItem = {
     val itemTypeData = goodsItemFromItemTypes(cachedData)
@@ -167,6 +168,8 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
 
 object ExportsItemsCacheIds {
   val itemsId = "exportItems"
+  val defaultCurrencyCode = "GBP"
+  val defaultMeasureCode = "KGM"
   val itemsCachePages = Map(
     PackageInformation.formId -> "package",
     ProcedureCodesData.formId -> "procedure codes",

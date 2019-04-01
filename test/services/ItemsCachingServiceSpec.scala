@@ -19,7 +19,6 @@ import base.TestHelper._
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.declaration.{CommodityMeasure, ItemType, PackageInformation}
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
-import models.declaration.{AdditionalInformationData, DocumentsProducedData}
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
@@ -75,7 +74,9 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
       val input = createCommodityMeasure()
       val cacheMap = getCacheMap(input, CommodityMeasure.commodityFormId)
       val commodity = itemsCachingService.commodityFromGoodsMeasure(cacheMap).value
+      commodity.goodsMeasure.getOrElse(fail()).grossMassMeasure.value.unitCode.value.toString mustBe "KGM"
       commodity.goodsMeasure.getOrElse(fail()).grossMassMeasure.value.value.value.toString mustBe input.grossMass
+      commodity.goodsMeasure.getOrElse(fail()).netWeightMeasure.value.unitCode.value.toString mustBe "KGM"
       commodity.goodsMeasure.getOrElse(fail()).netWeightMeasure.value.value.value.toString mustBe input.netMass
       commodity.goodsMeasure
         .getOrElse(fail())
@@ -118,6 +119,7 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
       val input = getItemType()
       val cacheMap = getCacheMap(input, ItemType.id)
       val goodsItem = itemsCachingService.goodsItemFromItemTypes(cacheMap).value
+      goodsItem.statisticalValueAmount.value.currencyId.value.toString mustBe "GBP"
       goodsItem.statisticalValueAmount.value.value.value.toString mustBe input.statisticalValue
       val classifications = goodsItem.commodity.value.classifications
       classifications.size mustBe
