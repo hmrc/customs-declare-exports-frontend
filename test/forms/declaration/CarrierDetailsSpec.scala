@@ -33,7 +33,8 @@ class CarrierDetailsSpec extends WordSpec with MustMatchers {
       metadata.declaration must be(defined)
       metadata.declaration.get.goodsShipment must be(defined)
       metadata.declaration.get.goodsShipment.get.consignment must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.id must be(
+      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.id must be(defined)
+      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.id.get must be(
         carrierDetails.details.eori.get
       )
       metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.name must be(defined)
