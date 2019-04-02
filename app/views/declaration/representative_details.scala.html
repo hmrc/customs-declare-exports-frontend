@@ -35,32 +35,36 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("supplementary.representative.header"), None)
+        @components.section_header(messages("supplementary.summary.parties.header"))
 
+        @components.page_title(Some("supplementary.representative.header"), None)
 
         @components.form_fields_wrapper(field = form("details")) {
 
+            <p>@messages("supplementary.eori.info")</p>
+
             @components.input_text(
                 field = form("details.eori"),
-                label = messages("supplementary.eori"),
-                hint = Some(messages("supplementary.eori.hint"))
+                label = messages("supplementary.representative.eori.info"),
+                hint = Some(messages("supplementary.eori.hint")),
+                labelClass = Some("heading-24")
             )
 
-            @components.page_title(subtitle = Some("supplementary.representative.address.info"))
+            <p>Or</p>
 
-            @components.address(form, "details.address")
+            @components.address(form, "details.address", Some(messages("supplementary.representative.address.info")))
         }
-
 
         @components.page_title(title = Some("supplementary.representative.representationType.header"))
 
-        @components.input_radio(
+        @components.input_radio_with_hint(
             field = form("statusCode"),
             legend = "",
             inputs = Seq(
-                RadioOption("statusCode_declarant", Declarant, messages("supplementary.representative.representationType.declarant")),
-                RadioOption("statusCode_direct", DirectRepresentative, messages("supplementary.representative.representationType.direct")),
-                RadioOption("statusCode_indirect", IndirectRepresentative, messages("supplementary.representative.representationType.indirect"))
+                RadioOption("statusCode_direct", DirectRepresentative,
+                    messages("supplementary.representative.representationType.direct"), Some(messages("supplementary.representative.representationType.direct.hint"))),
+                RadioOption("statusCode_indirect", IndirectRepresentative,
+                    messages("supplementary.representative.representationType.indirect"), Some(messages("supplementary.representative.representationType.indirect.hint")))
             )
         )
 

@@ -37,8 +37,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "have proper messages for labels" in {
 
-      assertMessage(title, "3/17 - 3/18 Add declarant")
-      assertMessage(hint, "TODO")
+      assertMessage(title, "Who is the declarant?")
     }
   }
 
@@ -49,19 +48,25 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
       getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
-    "display header with hint" in {
+    "display section header" in {
+
+      val view = createView()
+
+      getElementById(view, "section-header").text() must be(messages("Parties"))
+    }
+
+    "display header" in {
 
       val view = createView()
 
       getElementByCss(view, "legend>h1").text() must be(messages(title))
-      getElementByCss(view, "legend>span").text() must be(messages(hint))
     }
 
     "display empty input with label for EORI" in {
 
       val view = createView()
 
-      getElementByCss(view, "label.form-label>span").text() must be(messages(eori))
+      getElementByCss(view, "label.form-label>span").text() must be(messages(declarantEori))
       getElementByCss(view, "label.form-label>span.form-hint").text() must be(messages(eoriHint))
       getElementById(view, "details_eori").attr("value") must be("")
     }
@@ -70,7 +75,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(1)>label").text() must be(
+      getElementByCss(view, "form>div.form-group>div:nth-child(4)>div:nth-child(1)>label").text() must be(
         messages(fullName)
       )
       getElementById(view, "details_address_fullName").attr("value") must be("")
@@ -80,7 +85,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(2)>label").text() must be(
+      getElementByCss(view, "form>div.form-group>div:nth-child(4)>div:nth-child(2)>label").text() must be(
         messages(addressLine)
       )
       getElementById(view, "details_address_addressLine").attr("value") must be("")
@@ -90,7 +95,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(3)>label").text() must be(
+      getElementByCss(view, "form>div.form-group>div:nth-child(4)>div:nth-child(3)>label").text() must be(
         messages(townOrCity)
       )
       getElementById(view, "details_address_townOrCity").attr("value") must be("")
@@ -100,7 +105,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(4)>label").text() must be(
+      getElementByCss(view, "form>div.form-group>div:nth-child(4)>div:nth-child(4)>label").text() must be(
         messages(postCode)
       )
       getElementById(view, "details_address_postCode").attr("value") must be("")
@@ -110,7 +115,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>div:nth-child(5)>label").text() must be(
+      getElementByCss(view, "form>div.form-group>div:nth-child(4)>div:nth-child(5)>label").text() must be(
         messages(country)
       )
       getElementById(view, "details.address.country").attr("value") must be("")

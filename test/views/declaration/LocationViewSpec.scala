@@ -37,11 +37,11 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "have proper messages for labels" in {
 
       assertMessage(locationOfGoods, "Location of goods")
-      assertMessage(title, "5/23 What is the location of the goods?")
-      assertMessage(typeOfLocation, "Type of location")
-      assertMessage(qualifierOfIdent, "Qualifier of the identification")
+      assertMessage(title, "5/23 Where was the location of the goods?")
+      assertMessage(typeOfLocation, "Location Type")
+      assertMessage(qualifierOfIdent, "Qualifier code")
       assertMessage(identOfLocation, "Identification of location")
-      assertMessage(additionalIdentifier, "Additional identifier")
+      assertMessage(additionalIdentifier, "Location code and Additional Qualifier")
       assertMessage(streetAndNumber, "Street and number")
       assertMessage(logPostCode, "Postcode")
       assertMessage(city, "City")
@@ -68,6 +68,11 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       getElementByCss(createView(), "title").text() must be(messages(locationOfGoods))
     }
 
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be("Locations")
+    }
+
     "display header" in {
 
       getElementByCss(createView(), "legend>h1").text() must be(messages(title))
@@ -85,7 +90,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span").text() must be(messages(typeOfLocation))
+      getElementByCss(view, "form>div:nth-child(6)>label>span").text() must be(messages(typeOfLocation))
       getElementById(view, "typeOfLocation").attr("value") must be("")
     }
 
@@ -93,7 +98,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(6)>label>span").text() must be(messages(qualifierOfIdent))
+      getElementByCss(view, "form>div:nth-child(7)>label>span").text() must be(messages(qualifierOfIdent))
       getElementById(view, "qualifierOfIdentification").attr("value") must be("")
     }
 
@@ -101,7 +106,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(7)>label>span").text() must be(messages(identOfLocation))
+      getElementByCss(view, "form>div:nth-child(8)>label>span").text() must be(messages(identOfLocation))
       getElementById(view, "identificationOfLocation").attr("value") must be("")
     }
 
@@ -109,7 +114,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(8)>label>span").text() must be(messages(additionalIdentifier))
+      getElementByCss(view, "form>div:nth-child(9)>label>span").text() must be(messages(additionalIdentifier))
       getElementById(view, "additionalIdentifier").attr("value") must be("")
     }
 
@@ -117,7 +122,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(9)>label>span").text() must be(messages(streetAndNumber))
+      getElementByCss(view, "form>div:nth-child(10)>label>span").text() must be(messages(streetAndNumber))
       getElementById(view, "streetAndNumber").attr("value") must be("")
     }
 
@@ -125,7 +130,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(10)>label>span").text() must be(messages(logPostCode))
+      getElementByCss(view, "form>div:nth-child(11)>label>span").text() must be(messages(logPostCode))
       getElementById(view, "postCode").attr("value") must be("")
     }
 
@@ -133,7 +138,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(11)>label>span").text() must be(messages(city))
+      getElementByCss(view, "form>div:nth-child(12)>label>span").text() must be(messages(city))
       getElementById(view, "city").attr("value") must be("")
     }
 

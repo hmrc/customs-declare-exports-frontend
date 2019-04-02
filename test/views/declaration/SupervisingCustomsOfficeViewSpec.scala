@@ -35,7 +35,7 @@ class SupervisingCustomsOfficeViewSpec extends ViewSpec with SupervisingCustomsO
 
     "have proper messages for labels" in {
 
-      assertMessage(title, "Supervising customs office")
+      assertMessage(title, "5/27 Which supervising customs office was used?")
       assertMessage(supervisingCustomOffice, "5/27 Where is the supervising customs office?")
       assertMessage(hint, "This is an 8 digit code")
     }
@@ -54,6 +54,11 @@ class SupervisingCustomsOfficeViewSpec extends ViewSpec with SupervisingCustomsO
       getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be("Locations")
+    }
+
     "display header" in {
 
       getElementByCss(createView(), "legend>h1").text() must be(messages(title))
@@ -63,9 +68,6 @@ class SupervisingCustomsOfficeViewSpec extends ViewSpec with SupervisingCustomsO
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-field>label>span:nth-child(1)").text() must be(
-        messages(supervisingCustomOffice)
-      )
       getElementByCss(view, "form>div.form-field>label>span.form-hint").text() must be(messages(hint))
       getElementById(view, "supervisingCustomsOffice").attr("value") must be("")
     }

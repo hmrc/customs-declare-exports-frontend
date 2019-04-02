@@ -27,7 +27,9 @@ trait RepresentativeDetailsMessages {
   val repTypeHeader: String = representativeDetails + ".representationType.header"
   val repTypeDeclarant: String = representativeDetails + ".representationType.declarant"
   val repTypeDirect: String = representativeDetails + ".representationType.direct"
+  val repTypeDirectHint: String = repTypeDirect + ".hint"
   val repTypeIndirect: String = representativeDetails + ".representationType.indirect"
+  val repTypeIndirectHint: String = repTypeIndirect + ".hint"
   val repTypeErrorEmpty: String = representativeDetails + ".representationType.error.empty"
   val repTypeErrorWrongValue: String = representativeDetails + ".representationType.error.wrongValue"
 }

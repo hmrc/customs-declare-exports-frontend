@@ -95,7 +95,7 @@ class CommonLabelsSpec extends ViewSpec with CommonMessages {
     }
 
     "have proper message for EORI hint" in {
-      assertMessage(eoriHint, "Enter the EORI number or business details")
+      assertMessage(eoriHint, "The number starts with a country code, for example FR for France, and is then followed by up to 15 digits")
     }
   }
 
@@ -133,7 +133,7 @@ class CommonLabelsSpec extends ViewSpec with CommonMessages {
     }
 
     "have proper message for Country" in {
-      assertMessage(country, "Country")
+      assertMessage(country, "Country code")
     }
   }
 

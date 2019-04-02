@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package utils
+@(headerTitle: String)(implicit messages: Messages)
 
-case class RadioOption(id: String, value: String, messageKey: String, hint: Option[String] = None)
-
-object RadioOption {
-  def apply(keyPrefix: String, option: String): RadioOption =
-    RadioOption(s"$keyPrefix.$option", option, s"$keyPrefix.$option")
-}
+<span id="section-header" class="pre-heading">@headerTitle</span>

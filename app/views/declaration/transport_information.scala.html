@@ -35,6 +35,8 @@
 
         @components.error_summary(form.errors)
 
+        @components.section_header(messages("supplementary.summary.transport.header"))
+
         @components.page_title(Some("supplementary.transportInfo.title"), None)
       
         @components.input_radio(
@@ -114,6 +116,7 @@
             label = messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header"),
             'autocomplete -> "off",
             '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
+            '_labelClass -> "bold-small",
             'spellcheck -> "false",
             'ariaautocomplete -> "list",
             'ariahaspopup -> "true",

@@ -32,6 +32,8 @@
 
         @components.error_summary(form.errors)
 
+        @components.section_header(messages("supplementary.summary.locations.header"))
+
         @components.page_title(Some("declaration.destinationCountries.title"))
 
         @components.input_text_autocomplete(form)(
@@ -39,6 +41,7 @@
             label = messages("declaration.destinationCountries.countryOfDispatch"),
             'autocomplete -> "off",
             '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
+            '_labelClass -> "heading-24",
             'spellcheck -> "false",
             'ariaautocomplete -> "list",
             'ariahaspopup -> "true",
@@ -52,6 +55,7 @@
             label = messages("declaration.destinationCountries.countryOfDestination"),
             'autocomplete -> "off",
             '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
+            '_labelClass -> "heading-24",
             'spellcheck -> "false",
             'ariaautocomplete -> "list",
             'ariahaspopup -> "true",

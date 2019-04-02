@@ -37,19 +37,13 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
     "have proper messages for labels" in {
 
       assertMessage(title, "Add representative")
-      assertMessage(header, "3/19 - 3/20 Enter the representative’s details")
-      assertMessage(eoriInfo, "Enter the EORI number or business details")
-      assertMessage(addressInfo, "Enter representative’s name and address")
+      assertMessage(header, "Who is the representative?")
+      assertMessage(eoriInfo, "3/20 EORI number")
+      assertMessage(addressInfo, "3/19 Enter representative’s name and address")
       assertMessage(repTypeHeader, "3/21 What type of representation is being used?")
       assertMessage(repTypeDeclarant, "I am declaring for the company I work for or own")
-      assertMessage(
-        repTypeDirect,
-        "Direct representative - The representative is accepting legal responsibility for the exporter"
-      )
-      assertMessage(
-        repTypeIndirect,
-        "Indirect representative - The representative is sharing legal responsibility with the exporter"
-      )
+      assertMessage(repTypeDirect, "Direct representative")
+      assertMessage(repTypeIndirect, "Indirect representative")
     }
 
     "have proper messages for error labels" in {
@@ -71,21 +65,11 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
       getElementByCss(createView(), "legend>h1").text() must be(messages(header))
     }
 
-    "display representative hint" in {
-
-      getElementByCss(createView(), "form>div.form-group>fieldset>legend>span").text() must be(messages(addressInfo))
-    }
-
     "display empty input with label for EORI" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(1)>label>span:nth-child(1)").text() must be(
-        messages(eori)
-      )
-      getElementByCss(view, "form>div.form-group>div:nth-child(1)>label>span.form-hint").text() must be(
-        messages(eoriInfo)
-      )
+      getElementByCss(view, "form>div.form-group>div:nth-child(2)>label>span:nth-child(1)").text() must be(messages(eoriInfo))
       getElementById(view, "details_eori").attr("value") must be("")
     }
 
@@ -93,9 +77,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(1)>label").text() must be(
-        messages(fullName)
-      )
+      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(1)>label").text() must be(messages(fullName))
       getElementById(view, "details_address_fullName").attr("value") must be("")
     }
 
@@ -103,9 +85,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(2)>label").text() must be(
-        messages(addressLine)
-      )
+      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(2)>label").text() must be(messages(addressLine))
       getElementById(view, "details_address_addressLine").attr("value") must be("")
     }
 
@@ -113,9 +93,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(3)>label").text() must be(
-        messages(townOrCity)
-      )
+      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(3)>label").text() must be(messages(townOrCity))
       getElementById(view, "details_address_townOrCity").attr("value") must be("")
     }
 
@@ -123,9 +101,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(4)>label").text() must be(
-        messages(postCode)
-      )
+      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(4)>label").text() must be(messages(postCode))
       getElementById(view, "details_address_postCode").attr("value") must be("")
     }
 
@@ -133,38 +109,25 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(5)>label").text() must be(
-        messages(country)
-      )
+      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(5)>label").text() must be(messages(country))
       getElementById(view, "details.address.country").attr("value") must be("")
-    }
-
-    "display header for representation type" in {
-
-      getElementByCss(createView(), "form>fieldset:nth-child(3)>legend>h1").text() must be(messages(repTypeHeader))
     }
 
     "display three radio buttons with description (not selected)" in {
 
       val view = createView(RepresentativeDetails.form().fill(RepresentativeDetails(EntityDetails(None, None), "")))
 
-      val optionOne = getElementById(view, "statusCode_declarant")
-      optionOne.attr("checked") must be("")
+      val optionDirect = getElementById(view, "statusCode_direct")
+      optionDirect.attr("checked") must be("")
 
-      val optionOneLabel = getElementByCss(view, "#statusCode>div:nth-child(2)>label")
-      optionOneLabel.text() must be(messages(repTypeDeclarant))
+      val optionDirectLabel = getElementByCss(view, "#statusCode>div:nth-child(2)>label>span")
+      optionDirectLabel.text() must be(messages(repTypeDirect))
 
-      val optionTwo = getElementById(view, "statusCode_direct")
-      optionTwo.attr("checked") must be("")
+      val optionIndirect = getElementById(view, "statusCode_indirect")
+      optionIndirect.attr("checked") must be("")
 
-      val optionTwoLabel = getElementByCss(view, "#statusCode>div:nth-child(3)>label")
-      optionTwoLabel.text() must be(messages(repTypeDirect))
-
-      val optionThree = getElementById(view, "statusCode_indirect")
-      optionThree.attr("checked") must be("")
-
-      val optionThreeLabel = getElementByCss(view, "#statusCode>div:nth-child(4)>label")
-      optionThreeLabel.text() must be(messages(repTypeIndirect))
+      val optionIndirectLabel = getElementByCss(view, "#statusCode>div:nth-child(3)>label>span")
+      optionIndirectLabel.text() must be(messages(repTypeIndirect))
     }
 
     "display \"Back\" button that links to \"Declarant Details\" page" in {
@@ -1122,7 +1085,6 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         val view = createView(form)
 
         getElementById(view, "details_eori").attr("value") must be("1234")
-        getElementById(view, "statusCode_declarant").attr("checked") must be("checked")
       }
 
       "display data in Business address inputs" in {
@@ -1147,7 +1109,6 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         getElementById(view, "details_address_townOrCity").attr("value") must be("test2")
         getElementById(view, "details_address_postCode").attr("value") must be("test3")
         getElementById(view, "details.address.country").attr("value") must be("test4")
-        getElementById(view, "statusCode_declarant").attr("checked") must be("checked")
       }
     }
 

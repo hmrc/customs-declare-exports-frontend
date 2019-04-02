@@ -39,7 +39,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       assertMessage(remove, "Remove Packaging Information")
       assertMessage(tableHeading, "1 Package added")
       assertMessage(tableMultipleHeading, "{0} Packages added")
-      assertMessage(typesOfPackages, "6/9 How is this item packaged?")
+      assertMessage(typesOfPackages, "6/9 How was this item packaged?")
       assertMessage(typesOfPackagesHint, "Enter the 2 digit code, for example PA for pallets")
       assertMessage(numberOfPackages, "6/10 Number of this package type")
       assertMessage(shippingMarks, "6/11 Shipping marks")
@@ -64,6 +64,11 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be("Items")
+    }
+
     "display header" in {
 
       getElementByCss(createView(), "legend>h1").text() must be(messages(title))
@@ -73,8 +78,8 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(messages(typesOfPackages))
-      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(typesOfPackagesHint))
+      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(typesOfPackages))
+      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(typesOfPackagesHint))
       getElementById(view, "typesOfPackages").attr("value") must be("")
     }
 
@@ -82,7 +87,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(numberOfPackages))
+      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(numberOfPackages))
       getElementById(view, "numberOfPackages").attr("value") must be("")
     }
 
@@ -90,8 +95,8 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(shippingMarks))
-      getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(shippingMarksHint))
+      getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(messages(shippingMarks))
+      getElementByCss(view, "form>div:nth-child(6)>label>span.form-hint").text() must be(messages(shippingMarksHint))
       getElementById(view, "shippingMarks").attr("value") must be("")
     }
 

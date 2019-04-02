@@ -39,53 +39,62 @@
 
     @components.error_summary(form.errors)
 
+    @components.section_header(messages("supplementary.items"))
+
     @components.page_title(Some("declaration.itemType.title"))
 
     @components.input_text(
         field = form(combinedNomenclatureCodeKey),
         label = messages("declaration.itemType.combinedNomenclatureCode.header"),
-        hint = Some(messages("declaration.itemType.combinedNomenclatureCode.header.hint"))
+        hint = Some(messages("declaration.itemType.combinedNomenclatureCode.header.hint")),
+        labelClass = Some("bold-small")
     )
 
     @components.input_text_multiple_values(
         field = form(taricAdditionalCodesKey + "[]"),
         label = messages("declaration.itemType.taricAdditionalCodes.header"),
         hint = Some(messages("declaration.itemType.taricAdditionalCodes.header.hint")),
-        elements = taricAdditionalCodes
+        elements = taricAdditionalCodes,
+        labelClass = Some("bold-small")
     )
 
     @components.input_text_multiple_values(
         field = form(nationalAdditionalCodesKey + "[]"),
         label = messages("declaration.itemType.nationalAdditionalCode.header"),
         hint = Some(messages("declaration.itemType.nationalAdditionalCode.header.hint")),
-        elements = nationalAdditionalCodes
+        elements = nationalAdditionalCodes,
+        labelClass = Some("bold-small")
+    )
+
+    @components.input_text(
+      field = form("statisticalValue"),
+      label = messages("declaration.itemType.statisticalValue.header"),
+      hint = Some(messages("declaration.itemType.statisticalValue.header.hint")),
+      labelClass = Some("bold-small")
     )
 
     @components.input_textarea(
-        field = form(descriptionOfGoodsKey),
-        label = messages("declaration.itemType.description.header"),
-        hint = Some(messages("declaration.itemType.description.header.hint"))
+      field = form("descriptionOfGoods"),
+      label = messages("declaration.itemType.description.header"),
+      hint = Some(messages("declaration.itemType.description.header.hint")),
+      labelClass = Some("bold-small")
     )
 
     @components.input_text(
-        field = form(cusCodeKey),
-        label = messages("declaration.itemType.cusCode.header"),
-        hint = Some(messages("declaration.itemType.cusCode.header.hint"))
+      field = form(cusCodeKey),
+      label = messages("declaration.itemType.cusCode.header"),
+      hint = Some(messages("declaration.itemType.cusCode.header.hint")),
+      labelClass = Some("bold-small")
     )
 
     @if(request.choice.value == AllowedChoiceValues.StandardDec) @{
-        components.input_text(
-            field = form(unDangerousGoodsCodeKey),
-            label = messages("declaration.itemType.unDangerousGoodsCode.header"),
-            hint = Some(messages("declaration.itemType.unDangerousGoodsCode.header.hint"))
-        )
+      components.input_text(
+          field = form(unDangerousGoodsCodeKey),
+          label = messages("declaration.itemType.unDangerousGoodsCode.header"),
+          hint = Some(messages("declaration.itemType.unDangerousGoodsCode.header.hint")),
+          labelClass = Some("bold-small")
+      )
     }
-
-    @components.input_text(
-        field = form(statisticalValueKey),
-        label = messages("declaration.itemType.statisticalValue.header"),
-        hint = Some(messages("declaration.itemType.statisticalValue.header.hint"))
-    )
 
     <div class="section align='right'">
         <button id="submit" class="button" name="@SaveAndContinue.toString">@messages("site.save_and_continue")</button>

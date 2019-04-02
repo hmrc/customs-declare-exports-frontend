@@ -25,31 +25,36 @@
 title = messages("supplementary.commodityMeasure.title"),
 appConfig = appConfig
 ) {
-@helpers.form(CommodityMeasureController.submitForm(), 'autoComplete -> "off") {
-@components.back_link("/customs-declare-exports/declaration/package-information")
+    @helpers.form(CommodityMeasureController.submitForm(), 'autoComplete -> "off") {
+    @components.back_link("/customs-declare-exports/declaration/package-information")
 
-@components.error_summary(form.errors)
+    @components.error_summary(form.errors)
 
-@components.page_title(Some("supplementary.commodityMeasure.title"))
+    @components.section_header(messages("supplementary.items"))
 
-@components.input_text(
-field = form("supplementaryUnits"),
-label = messages("supplementary.commodityMeasure.supplementaryUnits"),
-hint = Some(messages("supplementary.commodityMeasure.supplementaryUnits.hint"))
-)
+    @components.page_title(Some("supplementary.commodityMeasure.title"))
 
-@components.input_text(
-field = form("netMass"),
-label = messages("supplementary.commodityMeasure.netMass"),
-hint = Some(messages("supplementary.commodityMeasure.netMass.hint"))
-)
+    @components.input_text(
+      field = form("supplementaryUnits"),
+      label = messages("supplementary.commodityMeasure.supplementaryUnits"),
+      hint = Some(messages("supplementary.commodityMeasure.supplementaryUnits.hint")),
+      labelClass = Some("bold-small")
+    )
 
-@components.input_text(
-field = form("grossMass"),
-label = messages("supplementary.commodityMeasure.grossMass"),
-hint = Some(messages("supplementary.commodityMeasure.grossMass.hint"))
-)
+    @components.input_text(
+      field = form("netMass"),
+      label = messages("supplementary.commodityMeasure.netMass"),
+      hint = Some(messages("supplementary.commodityMeasure.netMass.hint")),
+      labelClass = Some("bold-small")
+    )
 
-@components.submit_button()
-}
+    @components.input_text(
+      field = form("grossMass"),
+      label = messages("supplementary.commodityMeasure.grossMass"),
+      hint = Some(messages("supplementary.commodityMeasure.grossMass.hint")),
+      labelClass = Some("bold-small")
+    )
+
+    @components.submit_button()
+    }
 }

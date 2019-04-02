@@ -35,12 +35,12 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
 
     "have proper messages for labels" in {
 
-      assertMessage(header, "1/1 Where are the goods being dispatched to?")
+      assertMessage(header, "1/1 Where have the goods been sent?")
       assertMessage(hint, "Hint text if needed here")
       assertMessage(outsideEu, "Outside the EU")
       assertMessage(
         specialFiscalTerritory,
-        "Fiscal territory of the EU or country with which the EU has formed a customs union"
+        "Special fiscal territory of the EU or a country with which the EU has formed a customs union"
       )
     }
 
@@ -58,12 +58,16 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
       getElementByCss(createView(), "title").text() must be("Dispatch Location")
     }
 
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be("Locations")
+    }
+
     "display header with hint" in {
 
       val view = createView()
 
       getElementByCss(view, "legend>h1").text() must be(messages(header))
-      getElementByCss(view, "legend>span").text() must be(messages(hint))
     }
 
     "display two radio buttons with description (not selected)" in {

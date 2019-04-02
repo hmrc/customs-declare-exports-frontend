@@ -41,6 +41,7 @@
 
         @components.error_summary(form.errors)
 
+        @components.section_header(messages("supplementary.summary.parties.header"))
         @components.page_title(Some("supplementary.additionalActors.title"), Some(""))
 
         @if(actors.nonEmpty) {
@@ -64,14 +65,8 @@
             </table>
         }
 
-        @components.input_text(
-            field = form("eori"),
-            label = messages("supplementary.additionalActors.eori"),
-            hint = Some(messages("supplementary.eori.hint")),
-            labelClass = Some("font-weight: 400")
-        )
 
-        @components.page_title(Some("supplementary.additionalActors.partyType"), Some(""))
+        <span class="heading-24">@messages("supplementary.additionalActors.partyType")</span>
 
         @components.input_radio(
             field = form("partyType"),
@@ -82,6 +77,13 @@
                 RadioOption("supplementary.partyType", FreightForwarder),
                 RadioOption("supplementary.partyType", WarehouseKeeper)
             )
+        )
+
+        @components.input_text(
+            field = form("eori"),
+            label = messages("supplementary.additionalActors.eori"),
+            hint = Some(messages("supplementary.eori.hint")),
+            labelClass = Some("heading-24")
         )
 
         @components.add_save_button()

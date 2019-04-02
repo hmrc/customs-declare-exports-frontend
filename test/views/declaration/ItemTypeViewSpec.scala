@@ -98,6 +98,11 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
         )
       }
 
+      "display section header" in {
+
+        getElementById(createView(journeyType = AllowedChoiceValues.StandardDec), "section-header").text() must be("Items")
+      }
+
       "display header" in {
 
         getElementByCss(createView(journeyType = AllowedChoiceValues.StandardDec), "legend>h1").text() must be(
@@ -109,8 +114,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(messages(cncHeader))
-        getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(cncHeaderHint))
+        getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(cncHeader))
+        getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(cncHeaderHint))
         getElementById(view, "combinedNomenclatureCode").attr("value") must be("")
       }
 
@@ -118,8 +123,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(taricHeader))
-        getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(taricHeaderHint))
+        getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(taricHeader))
+        getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(taricHeaderHint))
         getElementById(view, "taricAdditionalCode_").attr("value") must be("")
       }
 
@@ -127,19 +132,32 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(nacHeader))
-        getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(nacHeaderHint))
+        getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(messages(nacHeader))
+        getElementByCss(view, "form>div:nth-child(6)>label>span.form-hint").text() must be(messages(nacHeaderHint))
         getElementById(view, "nationalAdditionalCode_").attr("value") must be("")
+      }
+
+      "display empty input with label for Statistical Value" in {
+
+        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
+
+        getElementByCss(view, "form>div:nth-child(7)>label>span:nth-child(1)").text() must be(
+          messages(statisticalHeader)
+        )
+        getElementByCss(view, "form>div:nth-child(7)>label>span.form-hint").text() must be(
+          messages(statisticalHeaderHint)
+        )
+        getElementById(view, "statisticalValue").attr("value") must be("")
       }
 
       "display empty input with label for Description" in {
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(
+        getElementByCss(view, "form>div:nth-child(8)>label>span:nth-child(1)").text() must be(
           messages(descriptionHeader)
         )
-        getElementByCss(view, "form>div:nth-child(6)>label>span.form-hint").text() must be(
+        getElementByCss(view, "form>div:nth-child(8)>label>span.form-hint").text() must be(
           messages(descriptionHeaderHint)
         )
         getElementById(view, "descriptionOfGoods").text() must be("")
@@ -149,8 +167,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(7)>label>span:nth-child(1)").text() must be(messages(cusCodeHeader))
-        getElementByCss(view, "form>div:nth-child(7)>label>span.form-hint").text() must be(messages(cusCodeHeaderHint))
+        getElementByCss(view, "form>div:nth-child(9)>label>span:nth-child(1)").text() must be(messages(cusCodeHeader))
+        getElementByCss(view, "form>div:nth-child(9)>label>span.form-hint").text() must be(messages(cusCodeHeaderHint))
         getElementById(view, "cusCode").attr("value") must be("")
       }
 
@@ -158,26 +176,13 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(8)>label>span:nth-child(1)").text() must be(
+        getElementByCss(view, "form>div:nth-child(10)>label>span:nth-child(1)").text() must be(
           messages(unDangerousGoodsCodeHeader)
         )
-        getElementByCss(view, "form>div:nth-child(8)>label>span.form-hint").text() must be(
+        getElementByCss(view, "form>div:nth-child(10)>label>span.form-hint").text() must be(
           messages(unDangerousGoodsCodeHeaderHint)
         )
         getElementById(view, "unDangerousGoodsCode").attr("value") must be("")
-      }
-
-      "display empty input with label for Statistical Value" in {
-
-        val view = createView(journeyType = AllowedChoiceValues.StandardDec)
-
-        getElementByCss(view, "form>div:nth-child(9)>label>span:nth-child(1)").text() must be(
-          messages(statisticalHeader)
-        )
-        getElementByCss(view, "form>div:nth-child(9)>label>span.form-hint").text() must be(
-          messages(statisticalHeaderHint)
-        )
-        getElementById(view, "statisticalValue").attr("value") must be("")
       }
 
       "display two 'Add' buttons" in {

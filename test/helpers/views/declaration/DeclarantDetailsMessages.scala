@@ -20,6 +20,7 @@ trait DeclarantDetailsMessages {
 
   val declarantDetails: String = "supplementary.declarant"
 
+  val declarantEori: String = declarantDetails + ".eori.info"
   val title: String = declarantDetails + ".title"
   val hint: String = declarantDetails + ".title.hint"
 }

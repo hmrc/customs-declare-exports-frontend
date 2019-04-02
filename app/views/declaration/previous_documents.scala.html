@@ -32,6 +32,8 @@
 
         @components.error_summary(form.errors)
 
+        @components.section_header(messages("supplementary.consignmentReferences.heading"))
+
         @if(documents.nonEmpty) {
             <table class="form-group">
                 <caption>@messages("supplementary.previousDocuments")</caption>
@@ -74,17 +76,23 @@
 
         @components.input_text(
             field = form("documentType"),
-            label = messages("supplementary.previousDocuments.documentType")
+            label = messages("supplementary.previousDocuments.documentType"),
+            hint = Some(messages("supplementary.previousDocuments.documentType.hint")),
+            labelClass = Some("bold-small")
         )
 
         @components.input_text(
             field = form("documentReference"),
-            label = messages("supplementary.previousDocuments.documentReference")
+            label = messages("supplementary.previousDocuments.documentReference"),
+            hint = Some(messages("supplementary.previousDocuments.documentReference.hint")),
+            labelClass = Some("bold-small")
         )
 
         @components.input_text(
             field = form("goodsItemIdentifier"),
-            label = messages("supplementary.previousDocuments.goodsItemIdentifier")
+            label = messages("supplementary.previousDocuments.goodsItemIdentifier"),
+            hint = Some(messages("supplementary.previousDocuments.goodsItemIdentifier.hint")),
+            labelClass = Some("bold-small")
         )
 
         @components.add_save_button()
