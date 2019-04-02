@@ -56,7 +56,9 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       }
 
   def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsNotification]] =
-    httpClient.GET[Seq[ExportsNotification]](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}")
+    httpClient.GET[Seq[ExportsNotification]](
+      s"${appConfig.customsDeclareExportsMovements}${appConfig.fetchNotifications}"
+    )
 
   def fetchNotificationsByConversationId(
     conversationId: String
@@ -64,20 +66,6 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     httpClient.GET[Seq[ExportsNotification]](
       s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissionNotifications}/$conversationId"
     )
-
-  def saveMovementSubmission(
-    body: MovementSubmission
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CustomsDeclareExportsResponse] =
-    httpClient
-      .POST[MovementSubmission, CustomsDeclareExportsResponse](
-        s"${appConfig.customsDeclareExports}${appConfig.saveMovementSubmission}",
-        body,
-        Seq()
-      )
-      .map { response =>
-        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS save movement response is --> ${response.toString}")
-        response
-      }
 
   def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionData]] =
     httpClient.GET[Seq[SubmissionData]](s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissions}").map {

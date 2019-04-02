@@ -53,13 +53,16 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   lazy val developerHubClientId: String = loadConfig("hmrc-developers-hub.client-id")
 
   lazy val customsDeclareExports = baseUrl("customs-declare-exports")
+
+  lazy val customsDeclareExportsMovements = baseUrl("customs-declare-exports-movements")
+
   lazy val submitDeclaration = getConfString(
     "customs-declare-exports.submit-declaration",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports submit declaration URI")
   )
   lazy val saveMovementSubmission = getConfString(
-    "customs-declare-exports.save-movement-uri",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports submission URI")
+    "customs-declare-exports-movements.save-movement-uri",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports Movement submission URI")
   )
   lazy val fetchSubmissions = getConfString(
     "customs-declare-exports.fetch-submissions",

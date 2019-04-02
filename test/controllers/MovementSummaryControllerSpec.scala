@@ -20,7 +20,7 @@ import base.CustomExportsBaseSpec
 import base.ExportsTestData._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.BeforeAndAfter
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach}
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
@@ -28,17 +28,18 @@ import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMov
 
 import scala.concurrent.Future
 
-class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAndAfterEach {
 
   private val uriSummary = uriWithContextPath("/movement/summary")
   private val uriConfirmation = uriWithContextPath("/movement/confirmation")
 
   private val emptyForm = JsObject(Map("" -> JsString("")))
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     reset(mockCustomsCacheService)
     reset(mockCustomsInventoryLinkingExportsConnector)
+    reset(mockCustomsDeclareExportsMovementsConnector)
   }
 
   "MovementSummaryController.displaySummary()" when {
@@ -174,6 +175,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
 
       "redirect to confirmation page" in {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
+        successfulMovementsResponse()
         sendMovementRequest()
 
         val result = route(app, postRequest(uriSummary, emptyForm)).get

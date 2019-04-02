@@ -16,20 +16,27 @@
 
 package base
 
-import connectors.{CustomsDeclareExportsConnector, CustomsInventoryLinkingExportsConnector, NrsConnector}
+import connectors.{
+  CustomsDeclareExportsConnector,
+  CustomsDeclareExportsMovementsConnector,
+  CustomsInventoryLinkingExportsConnector,
+  NrsConnector
+}
 import models._
 import models.requests.CancellationStatus
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
-import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST}
+import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST, OK}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
 trait MockConnectors extends MockitoSugar {
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
+  lazy val mockCustomsDeclareExportsMovementsConnector: CustomsDeclareExportsMovementsConnector =
+    mock[CustomsDeclareExportsMovementsConnector]
   lazy val mockCustomsInventoryLinkingExportsConnector: CustomsInventoryLinkingExportsConnector =
     mock[CustomsInventoryLinkingExportsConnector]
   lazy val mockNrsConnector: NrsConnector = mock[NrsConnector]
@@ -37,6 +44,10 @@ trait MockConnectors extends MockitoSugar {
   def successfulCustomsDeclareExportsResponse() =
     when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+
+  def successfulMovementsResponse() =
+    when(mockCustomsDeclareExportsMovementsConnector.saveMovementSubmission(any())(any(), any()))
+      .thenReturn(Future.successful(CustomsDeclareExportsMovementsResponse(OK, "")))
 
   def customsDeclaration400Response() =
     when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))

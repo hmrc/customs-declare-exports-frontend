@@ -34,7 +34,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
 
     "POST to Customs Declare Exports endpoint to submit declaration" in {
       val http = new MockHttpClient(
-        expectedUrl(appConfig.submitDeclaration),
+        expectedExportsUrl(appConfig.submitDeclaration),
         metadata.toXml,
         submissionHeaders,
         falseServerError,
@@ -48,7 +48,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
     }
 
     "GET to Customs Declare Exports endpoint to fetch notifications" in {
-      val http = new MockHttpClient(expectedUrl(appConfig.fetchNotifications), None, result = notifications)
+      val http = new MockHttpClient(expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
       val client = new CustomsDeclareExportsConnector(appConfig, http)
       val response = client.fetchNotifications()(hc, ec)
 
@@ -56,29 +56,16 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
     }
 
     "GET to Customs Declare Exports endpoint to fetch notifications by conversationId" in {
-      val http = new MockHttpClient(expectedUrl(appConfig.fetchNotifications), None, result = notifications)
+      val http = new MockHttpClient(expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
       val client = new CustomsDeclareExportsConnector(appConfig, http)
       val response = client.fetchNotificationsByConversationId(conversationId)(hc, ec)
 
       response.futureValue must be(notifications)
     }
 
-    "POST to Customs Declare Exports endpoint to save movement submission" in {
-      val http = new MockHttpClient(
-        expectedUrl(appConfig.saveMovementSubmission),
-        movementSubmission,
-        expectedHeaders,
-        falseServerError,
-        CustomsDeclareExportsResponse(OK, "success")
-      )
-      val client = new CustomsDeclareExportsConnector(appConfig, http)
-      val response = client.saveMovementSubmission(movementSubmission)(hc, ec)
-
-      response.futureValue.status must be(OK)
-    }
 
     "GET to Customs Declare Exports endpoint to fetch submissions" in {
-      val http = new MockHttpClient(expectedUrl(appConfig.fetchSubmissions), None, result = submissions)
+      val http = new MockHttpClient(expectedExportsUrl(appConfig.fetchSubmissions), None, result = submissions)
       val client = new CustomsDeclareExportsConnector(appConfig, http)
       val response = client.fetchSubmissions()(hc, ec)
 
@@ -87,7 +74,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
 
     "POST to Customs Declare Exports endpoint to submit cancellation" in {
       val http = new MockHttpClient(
-        expectedUrl(appConfig.cancelDeclaration),
+        expectedExportsUrl(appConfig.cancelDeclaration),
         metadata.toXml,
         cancellationHeaders,
         falseServerError,
@@ -100,7 +87,8 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
     }
   }
 
-  private def expectedUrl(endpointUrl: String): String = s"${appConfig.customsDeclareExports}${endpointUrl}"
+  private def expectedExportsUrl(endpointUrl: String): String = s"${appConfig.customsDeclareExports}${endpointUrl}"
+
 }
 
 object CustomsDeclareExportsConnectorSpec {
