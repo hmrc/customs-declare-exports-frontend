@@ -28,6 +28,7 @@ case class ItemType(
   nationalAdditionalCodes: Seq[String],
   descriptionOfGoods: String,
   cusCode: Option[String],
+  unDangerousGoodsCode: Option[String],
   statisticalValue: String
 )
 
@@ -38,6 +39,7 @@ object ItemType {
       (JsPath \ "nationalAdditionalCode").read[Seq[String]] and
       (JsPath \ "descriptionOfGoods").read[String] and
       (JsPath \ "cusCode").readNullable[String] and
+      (JsPath \ "unDangerousGoodsCode").readNullable[String] and
       (JsPath \ "statisticalValue").read[String]
   )(ItemType.apply _)
 
@@ -47,19 +49,26 @@ object ItemType {
       (JsPath \ "nationalAdditionalCode").write[Seq[String]] and
       (JsPath \ "descriptionOfGoods").write[String] and
       (JsPath \ "cusCode").writeNullable[String] and
+      (JsPath \ "unDangerousGoodsCode").writeNullable[String] and
       (JsPath \ "statisticalValue").write[String]
   )(unlift(ItemType.unapply))
 
+  val combinedNomenclatureCodeKey = "combinedNomenclatureCode"
   val taricAdditionalCodesKey = "taricAdditionalCode"
   val nationalAdditionalCodesKey = "nationalAdditionalCode"
+  val descriptionOfGoodsKey = "descriptionOfGoods"
+  val cusCodeKey = "cusCode"
+  val unDangerousGoodsCodeKey = "unDangerousGoodsCode"
+  val statisticalValueKey = "statisticalValue"
 
   val mapping = Forms.mapping(
-    "combinedNomenclatureCode" -> text(),
+    combinedNomenclatureCodeKey -> text(),
     taricAdditionalCodesKey -> default(seq(text()), Seq.empty),
     nationalAdditionalCodesKey -> default(seq(text()), Seq.empty),
-    "descriptionOfGoods" -> text(),
-    "cusCode" -> optional(text()),
-    "statisticalValue" -> text()
+    descriptionOfGoodsKey -> text(),
+    cusCodeKey -> optional(text()),
+    unDangerousGoodsCodeKey -> optional(text()),
+    statisticalValueKey -> text()
   )(ItemType.apply)(ItemType.unapply)
 
   val id = "ItemType"
@@ -73,5 +82,5 @@ object ItemType {
     val CUSCode = "CV"
   }
 
-  val empty: ItemType = ItemType("", Nil, Nil, "", None, "")
+  val empty: ItemType = ItemType("", Nil, Nil, "", None, None, "")
 }

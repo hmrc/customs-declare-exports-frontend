@@ -17,7 +17,7 @@
 package utils.validators.forms.supplementary
 
 import forms.declaration.ItemType
-import forms.declaration.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
+import forms.declaration.ItemType._
 import play.api.data.Forms.{optional, seq, text}
 import play.api.data.{Form, Forms}
 import utils.validators.forms.FieldValidator._
@@ -32,6 +32,7 @@ object ItemTypeValidator extends Validator[ItemType] {
   private val nationalAdditionalCodesMaxAmount = 99
   private val descriptionOfGoodsMaxLength = 280
   private val cusCodeLength = 8
+  private val unDangerousGoodsCodeLength = 4
   private val statisticalValueMaxLength = 15
   private val statisticalValueDecimalPlaces = 2
 
@@ -45,90 +46,83 @@ object ItemTypeValidator extends Validator[ItemType] {
       .fillAndValidate(element)
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
 
+
+  private val mappingCombinedNomenclatureCode = text()
+    .verifying("declaration.itemType.combinedNomenclatureCode.error.empty", nonEmpty)
+    .verifying(
+      "declaration.itemType.combinedNomenclatureCode.error.length",
+      isEmpty or noLongerThan(combinedNomenclatureCodeMaxLength)
+    )
+    .verifying("declaration.itemType.combinedNomenclatureCode.error.specialCharacters", isEmpty or isAlphanumeric)
+
+  private val mappingTARICAdditionalCode = seq(
+    text()
+      .verifying("declaration.itemType.taricAdditionalCodes.error.length", hasSpecificLength(taricAdditionalCodeLength))
+      .verifying("declaration.itemType.taricAdditionalCodes.error.specialCharacters", isAlphanumeric)
+  ).verifying(
+    "declaration.itemType.taricAdditionalCodes.error.maxAmount",
+    codes => codes.size <= taricAdditionalCodesMaxAmount
+  )
+    .verifying("declaration.itemType.taricAdditionalCodes.error.duplicate", areAllElementsUnique)
+
+  private val mappingNationalAdditionalCode = seq(
+    text()
+      .verifying(
+        "declaration.itemType.nationalAdditionalCode.error.length",
+        noLongerThan(nationalAdditionalCodeMaxLength)
+      )
+      .verifying("declaration.itemType.nationalAdditionalCode.error.specialCharacters", isAlphanumeric)
+  ).verifying(
+    "declaration.itemType.nationalAdditionalCode.error.maxAmount",
+    codes => codes.size <= nationalAdditionalCodesMaxAmount
+  )
+    .verifying("declaration.itemType.nationalAdditionalCode.error.duplicate", areAllElementsUnique)
+
+  private val mappingDescriptionOfGoods = text()
+    .verifying("declaration.itemType.description.error.empty", nonEmpty)
+    .verifying("declaration.itemType.description.error.length", isEmpty or noLongerThan(descriptionOfGoodsMaxLength))
+
+  private val mappingCUSCode = optional(
+    text()
+      .verifying("declaration.itemType.cusCode.error.length", hasSpecificLength(cusCodeLength))
+      .verifying("declaration.itemType.cusCode.error.specialCharacters", isAlphanumeric)
+  )
+
+  private val mappingUNDangerousGoodsCode = optional(text()
+    .verifying("declaration.itemType.unDangerousGoodsCode.error.length", hasSpecificLength(unDangerousGoodsCodeLength))
+    .verifying("declaration.itemType.unDangerousGoodsCode.error.specialCharacters", isAlphanumeric)
+  )
+
+  private val mappingStatisticalValue = text()
+    .verifying("declaration.itemType.statisticalValue.error.empty", nonEmpty)
+    .verifying(
+      "declaration.itemType.statisticalValue.error.length",
+      input => input.isEmpty || noLongerThan(statisticalValueMaxLength)(input.replaceAll("\\.", ""))
+    )
+    .verifying(
+      "declaration.itemType.statisticalValue.error.wrongFormat",
+      isEmpty or isDecimalWithNoMoreDecimalPlacesThan(statisticalValueDecimalPlaces)
+    )
+
+
   val mappingWithValidationForAddition = Forms.mapping(
-    "combinedNomenclatureCode" -> text(),
-    taricAdditionalCodesKey -> seq(
-      text()
-        .verifying(
-          "supplementary.itemType.taricAdditionalCodes.error.length",
-          hasSpecificLength(taricAdditionalCodeLength)
-        )
-        .verifying("supplementary.itemType.taricAdditionalCodes.error.specialCharacters", isAlphanumeric)
-    ).verifying(
-        "supplementary.itemType.taricAdditionalCodes.error.maxAmount",
-        codes => codes.size <= taricAdditionalCodesMaxAmount
-      )
-      .verifying("supplementary.itemType.taricAdditionalCodes.error.duplicate", areAllElementsUnique),
-    nationalAdditionalCodesKey -> seq(
-      text()
-        .verifying(
-          "supplementary.itemType.nationalAdditionalCode.error.length",
-          noLongerThan(nationalAdditionalCodeMaxLength)
-        )
-        .verifying("supplementary.itemType.nationalAdditionalCode.error.specialCharacters", isAlphanumeric)
-    ).verifying(
-        "supplementary.itemType.nationalAdditionalCode.error.maxAmount",
-        codes => codes.size <= nationalAdditionalCodesMaxAmount
-      )
-      .verifying("supplementary.itemType.nationalAdditionalCode.error.duplicate", areAllElementsUnique),
-    "descriptionOfGoods" -> text(),
-    "cusCode" -> optional(text()),
-    "statisticalValue" -> text()
+    combinedNomenclatureCodeKey -> text(),
+    taricAdditionalCodesKey -> mappingTARICAdditionalCode,
+    nationalAdditionalCodesKey -> mappingNationalAdditionalCode,
+    descriptionOfGoodsKey -> text(),
+    cusCodeKey -> optional(text()),
+    unDangerousGoodsCodeKey -> optional(text()),
+    statisticalValueKey -> text()
   )(ItemType.apply)(ItemType.unapply)
 
   val mappingWithValidation = Forms.mapping(
-    "combinedNomenclatureCode" -> text()
-      .verifying("supplementary.itemType.combinedNomenclatureCode.error.empty", nonEmpty)
-      .verifying(
-        "supplementary.itemType.combinedNomenclatureCode.error.length",
-        isEmpty or noLongerThan(combinedNomenclatureCodeMaxLength)
-      )
-      .verifying("supplementary.itemType.combinedNomenclatureCode.error.specialCharacters", isEmpty or isAlphanumeric),
-    "taricAdditionalCode" -> seq(
-      text()
-        .verifying(
-          "supplementary.itemType.taricAdditionalCodes.error.length",
-          hasSpecificLength(taricAdditionalCodeLength)
-        )
-        .verifying("supplementary.itemType.taricAdditionalCodes.error.specialCharacters", isAlphanumeric)
-    ).verifying(
-        "supplementary.itemType.taricAdditionalCodes.error.maxAmount",
-        codes => codes.size <= taricAdditionalCodesMaxAmount
-      )
-      .verifying("supplementary.itemType.taricAdditionalCodes.error.duplicate", areAllElementsUnique),
-    "nationalAdditionalCode" -> seq(
-      text()
-        .verifying(
-          "supplementary.itemType.nationalAdditionalCode.error.length",
-          noLongerThan(nationalAdditionalCodeMaxLength)
-        )
-        .verifying("supplementary.itemType.nationalAdditionalCode.error.specialCharacters", isAlphanumeric)
-    ).verifying(
-        "supplementary.itemType.nationalAdditionalCode.error.maxAmount",
-        codes => codes.size <= nationalAdditionalCodesMaxAmount
-      )
-      .verifying("supplementary.itemType.nationalAdditionalCode.error.duplicate", areAllElementsUnique),
-    "descriptionOfGoods" -> text()
-      .verifying("supplementary.itemType.description.error.empty", nonEmpty)
-      .verifying(
-        "supplementary.itemType.description.error.length",
-        isEmpty or noLongerThan(descriptionOfGoodsMaxLength)
-      ),
-    "cusCode" -> optional(
-      text()
-        .verifying("supplementary.itemType.cusCode.error.length", hasSpecificLength(cusCodeLength))
-        .verifying("supplementary.itemType.cusCode.error.specialCharacters", isAlphanumeric)
-    ),
-    "statisticalValue" -> text()
-      .verifying("supplementary.itemType.statisticalValue.error.empty", nonEmpty)
-      .verifying(
-        "supplementary.itemType.statisticalValue.error.length",
-        input => input.isEmpty || noLongerThan(statisticalValueMaxLength)(input.replaceAll("\\.", ""))
-      )
-      .verifying(
-        "supplementary.itemType.statisticalValue.error.wrongFormat",
-        isEmpty or isDecimalWithNoMoreDecimalPlacesThan(statisticalValueDecimalPlaces)
-      )
+    combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCode,
+    taricAdditionalCodesKey -> mappingTARICAdditionalCode,
+    nationalAdditionalCodesKey -> mappingNationalAdditionalCode,
+    descriptionOfGoodsKey -> mappingDescriptionOfGoods,
+    cusCodeKey -> mappingCUSCode,
+    unDangerousGoodsCodeKey -> mappingUNDangerousGoodsCode,
+    statisticalValueKey -> mappingStatisticalValue
   )(ItemType.apply)(ItemType.unapply)
 
 }

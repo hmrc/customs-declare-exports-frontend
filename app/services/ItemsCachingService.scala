@@ -112,7 +112,8 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
   private def commodityFromItemTypes(itemType: ItemType): Commodity =
     Commodity(
       description = Some(itemType.descriptionOfGoods),
-      classifications = getClassificationsFromItemTypes(itemType)
+      classifications = getClassificationsFromItemTypes(itemType),
+      dangerousGoods = itemType.unDangerousGoodsCode.map(code => Seq(DangerousGoods(Some(code)))).getOrElse(Seq.empty)
     )
 
   private def getClassificationsFromItemTypes(itemType: ItemType): Seq[Classification] =

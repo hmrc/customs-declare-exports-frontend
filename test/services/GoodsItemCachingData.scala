@@ -66,6 +66,7 @@ trait GoodsItemCachingData {
     getDataSeq(Random.nextInt(10), createRandomString(4)),
     maxRandomString(70),
     Some(createRandomString(8)),
+    Some(createRandomString(4)),
     decimalString()
   )
 
