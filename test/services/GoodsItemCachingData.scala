@@ -16,6 +16,7 @@
 
 package services
 import base.TestHelper._
+import forms.declaration.Document.AllowedValues.TemporaryStorage
 import forms.declaration._
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import uk.gov.hmrc.wco.dec._
@@ -106,6 +107,14 @@ trait GoodsItemCachingData {
     commodity = Some(commodityData),
     governmentProcedures = getDataSeq(6, govProcedures)
   )
-  def goodsItemSeq(size:Int = 5): Seq[GovernmentAgencyGoodsItem] = for (i <- 1 to size) yield goodsItem(i)
+  def goodsItemSeq(size: Int = 5): Seq[GovernmentAgencyGoodsItem] = for (i <- 1 to size) yield goodsItem(i)
+
+  def correctPreviousDocument() = Document(
+    documentCategory = TemporaryStorage,
+    documentType = createRandomString(4),
+    documentReference = createRandomString(30),
+    goodsItemIdentifier = Some(Random.nextInt(100).toString)
+  )
+  def createPreviousDocs(size: Int) = PreviousDocumentsData(getDataSeq(size, correctPreviousDocument()))
 
 }
