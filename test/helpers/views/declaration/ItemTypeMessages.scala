@@ -18,7 +18,7 @@ package helpers.views.declaration
 
 trait ItemTypeMessages {
 
-  val itemType: String = "supplementary.itemType"
+  val itemType: String = "declaration.itemType"
 
   val title: String = itemType + ".title"
   val cncHeader: String = itemType + ".combinedNomenclatureCode.header"
@@ -50,6 +50,11 @@ trait ItemTypeMessages {
   val cusCodeHeaderHint: String = itemType + ".cusCode.header.hint"
   val cusCodeErrorLength: String = itemType + ".cusCode.error.length"
   val cusCodeErrorSpecialCharacters: String = itemType + ".cusCode.error.specialCharacters"
+
+  val unDangerousGoodsCodeHeader: String = itemType + ".unDangerousGoodsCode.header"
+  val unDangerousGoodsCodeHeaderHint: String = itemType + ".unDangerousGoodsCode.header.hint"
+  val unDangerousGoodsCodeErrorLength: String = itemType + ".unDangerousGoodsCode.error.length"
+  val unDangerousGoodsCodeErrorSpecialCharacters: String = itemType + ".unDangerousGoodsCode.error.specialCharacters"
 
   val statisticalHeader: String = itemType + ".statisticalValue.header"
   val statisticalHeaderHint: String = itemType + ".statisticalValue.header.hint"

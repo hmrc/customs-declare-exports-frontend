@@ -15,6 +15,7 @@
  */
 
 package services
+
 import base.TestHelper._
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.declaration.{CommodityMeasure, ItemType, PackageInformation}
@@ -44,7 +45,7 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
   "ItemsCachingService" should {
 
     "create packaging from PackageInformation cache" in {
-      val input = getDataSeq(5, createPackageInformation)
+      val input = getDataSeq(5, createPackageInformation())
       val cacheMap = getCacheMap(input, PackageInformation.formId)
 
       val packages = itemsCachingService.generatePackages(cacheMap).value
@@ -119,8 +120,10 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
       val input = getItemType()
       val cacheMap = getCacheMap(input, ItemType.id)
       val goodsItem = itemsCachingService.goodsItemFromItemTypes(cacheMap).value
+
       goodsItem.statisticalValueAmount.value.currencyId.value.toString mustBe "GBP"
       goodsItem.statisticalValueAmount.value.value.value.toString mustBe input.statisticalValue
+
       val classifications = goodsItem.commodity.value.classifications
       classifications.size mustBe
         (input.nationalAdditionalCodes.size + input.taricAdditionalCodes.size + 2)
@@ -129,6 +132,10 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
         case (actual, expected) =>
           actual.id.value mustBe expected
       }
+
+      val dangerousGoods = goodsItem.commodity.value.dangerousGoods
+      dangerousGoods.size must equal(1)
+      dangerousGoods.head.undgid.value must equal(input.unDangerousGoodsCode.get)
     }
 
     "add goodsItem to cache" in {

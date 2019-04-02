@@ -24,6 +24,7 @@ object ItemTypeSpec {
   private val nationalAdditionalCode = "CD34"
   private val descriptionOfGoods = "Description of goods."
   private val cusCode = "QWER0987"
+  private val unDangerousGoodsCode = "12CD"
   private val statisticalValue = "1234567890123.45"
 
   val correctItemType = ItemType(
@@ -32,6 +33,7 @@ object ItemTypeSpec {
     nationalAdditionalCodes = Seq(nationalAdditionalCode),
     descriptionOfGoods = descriptionOfGoods,
     cusCode = Some(cusCode),
+    unDangerousGoodsCode = Some(unDangerousGoodsCode),
     statisticalValue = statisticalValue
   )
   val mandatoryOnlyItemType = ItemType(
@@ -40,6 +42,7 @@ object ItemTypeSpec {
     nationalAdditionalCodes = Nil,
     descriptionOfGoods = descriptionOfGoods,
     cusCode = None,
+    unDangerousGoodsCode = None,
     statisticalValue = statisticalValue
   )
   val emptyItemType = ItemType(
@@ -48,6 +51,7 @@ object ItemTypeSpec {
     nationalAdditionalCodes = Nil,
     descriptionOfGoods = "",
     cusCode = None,
+    unDangerousGoodsCode = None,
     statisticalValue = ""
   )
 

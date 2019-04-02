@@ -55,7 +55,7 @@ class ItemTypePageControllerSpec
 
     "read item from cache and display it" in {
 
-      val cachedData = ItemType("5555", Seq("6666"), Seq("7777"), "FaultyGoods", Some("CusCus"), "900")
+      val cachedData = ItemType("5555", Seq("6666"), Seq("7777"), "FaultyGoods", Some("CusCus"), Some("12CD"), "900")
       withCaching[ItemType](Some(cachedData), "ItemType")
 
       val result = route(app, getRequest(uri)).get
@@ -78,7 +78,7 @@ class ItemTypePageControllerSpec
 
       "user added one TARIC" in {
 
-        withCaching[ItemType](Some(ItemType("100", Seq("1234"), Seq(), "Description", Some(""), "100")), ItemType.id)
+        withCaching[ItemType](Some(ItemType("100", Seq("1234"), Seq(), "Description", None, None, "100")), ItemType.id)
 
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
@@ -89,7 +89,7 @@ class ItemTypePageControllerSpec
 
       "user added one NAC" in {
 
-        withCaching[ItemType](Some(ItemType("100", Seq(), Seq("1234"), "Description", Some(""), "100")), ItemType.id)
+        withCaching[ItemType](Some(ItemType("100", Seq(), Seq("1234"), "Description", None, None, "100")), ItemType.id)
 
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
@@ -426,7 +426,7 @@ class ItemTypePageControllerSpec
 
       "when user tries to add duplicated TARIC" in {
         withCaching[ItemType](
-          Some(ItemType("100", fourDigitsSequence(98), Seq(), "Description", Some(""), "100")),
+          Some(ItemType("100", fourDigitsSequence(98), Seq(), "Description", None, None, "100")),
           ItemType.id
         )
 
@@ -446,7 +446,7 @@ class ItemTypePageControllerSpec
       "when user tries to add more then 99 TARIC" in {
 
         withCaching[ItemType](
-          Some(ItemType("100", fourDigitsSequence(99), Seq(), "Description", Some(""), "100")),
+          Some(ItemType("100", fourDigitsSequence(99), Seq(), "Description", None, None, "100")),
           ItemType.id
         )
 
@@ -466,7 +466,7 @@ class ItemTypePageControllerSpec
       "when user tries to add duplicated NAC" in {
 
         withCaching[ItemType](
-          Some(ItemType("100", Seq(), fourDigitsSequence(98), "Description", Some(""), "100")),
+          Some(ItemType("100", Seq(), fourDigitsSequence(98), "Description", None, None, "100")),
           ItemType.id
         )
 
@@ -488,7 +488,7 @@ class ItemTypePageControllerSpec
       "when user tries to add more then 99 NAC" in {
 
         withCaching[ItemType](
-          Some(ItemType("100", Seq(), fourDigitsSequence(99), "Description", Some(""), "100")),
+          Some(ItemType("100", Seq(), fourDigitsSequence(99), "Description", None, None, "100")),
           ItemType.id
         )
 

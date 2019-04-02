@@ -135,6 +135,7 @@ class ItemTypePageController @Inject()(
       nationalAdditionalCodes = itemTypeCache.nationalAdditionalCodes ++ itemTypeInput.nationalAdditionalCodes,
       descriptionOfGoods = itemTypeInput.descriptionOfGoods,
       cusCode = itemTypeInput.cusCode,
+      unDangerousGoodsCode = itemTypeInput.unDangerousGoodsCode,
       statisticalValue = itemTypeInput.statisticalValue
     )
 
