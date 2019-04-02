@@ -45,11 +45,11 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
     "have proper messages for labels" in {
 
       assertMessage(title, "Declaration Type")
-      assertMessage(headerSupplementaryDec, "1/2 What type of declaration are you making?")
-      assertMessage(headerStandardDec, "1/2 Which type of standard declaration are you entering?")
+      assertMessage(headerSupplementaryDec, "1/2 Which of the following best describes you?")
+      assertMessage(headerStandardDec, "1/2 Which of the following best describes you?")
       assertMessage(hint, "Hint text if needed here")
-      assertMessage(simplified, "Pre-authorised simplified declaration")
-      assertMessage(standard, "Entry in Declarants Records (EIDR)")
+      assertMessage(simplified, "I am completing a supplementary declaration for goods that have been under a Simplified Declaration procedure (SDP)")
+      assertMessage(standard, "I am completing a supplementary declaration for goods that have been under EIDR procedures")
       assertMessage(preLodged, "Pre-lodged")
       assertMessage(frontier, "Frontier")
     }
@@ -128,7 +128,6 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
         val view = createView(formSupplementary, SupplementaryDec)
 
         getElementByCss(view, "legend>h1").text() must be(messages(headerSupplementaryDec))
-        getElementByCss(view, "legend>span").text() must be(messages(hint))
       }
     }
 

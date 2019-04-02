@@ -31,6 +31,8 @@
 
         @components.error_summary(form.errors)
 
+        @components.section_header(messages("supplementary.summary.yourReferences.header"))
+
         @components.page_title(Some("supplementary.additionalInformation.title"))
 
         @if(items.nonEmpty) {
@@ -51,12 +53,14 @@
 
         @components.input_text(
             field = form("code"),
-            label = messages("supplementary.additionalInformation.code")
+            label = messages("supplementary.additionalInformation.code"),
+            labelClass = Some("bold-small")
         )
 
         @components.input_textarea(
             field = form("description"),
-            label = messages("supplementary.additionalInformation.description")
+            label = messages("supplementary.additionalInformation.description"),
+            labelClass = Some("bold-small")
         )
 
         @components.add_save_button()

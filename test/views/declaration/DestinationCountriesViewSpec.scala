@@ -36,9 +36,9 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "have proper messages for labels" in {
 
-      assertMessage(title, "Declaration countries of dispatch/destination")
-      assertMessage(countryOfDestination, "5/8 Enter the country of destination")
-      assertMessage(countryOfDispatch, "5/14 Enter the country of dispatch")
+      assertMessage(title, "Countries of dispatch and destination")
+      assertMessage(countryOfDestination, "5/8 What is the destination country?")
+      assertMessage(countryOfDispatch, "5/14 Enter the country of dispatch code")
     }
 
     "have proper messages for error labels" in {

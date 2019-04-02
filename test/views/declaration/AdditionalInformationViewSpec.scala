@@ -41,7 +41,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
     "have proper messages for labels" in {
 
       assertMessage(additionalInformation, "Additional information")
-      assertMessage(title, "2/2 Additional information")
+      assertMessage(title, "2/2 Enter additional information")
       assertMessage(code, "Enter the union or national code")
       assertMessage(description, "Enter the information required")
     }
@@ -62,6 +62,11 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
       getElementByCss(createView(), "title").text() must be(messages(additionalInformation))
     }
 
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be("Your references")
+    }
+
     "display header" in {
 
       getElementByCss(createView(), "legend>h1").text() must be(messages(title))
@@ -71,7 +76,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span").text() must be(messages(code))
+      getElementByCss(view, "form>div:nth-child(4)>label>span").text() must be(messages(code))
       getElementById(view, "code").attr("value") must be("")
     }
 
@@ -79,7 +84,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span").text() must be(messages(description))
+      getElementByCss(view, "form>div:nth-child(5)>label>span").text() must be(messages(description))
       getElementById(view, "description").attr("value") must be("")
     }
 

@@ -16,8 +16,11 @@
 
 @import services.Country
 
-@(form: Form[_], addressPrefix: String = "")(implicit request: Request[_], messages: Messages, countries: List[Country])
+@(form: Form[_], addressPrefix: String = "", addressHeader: Option[String] = None)(implicit request: Request[_], messages: Messages, countries: List[Country])
 
+@if(addressHeader.nonEmpty) {
+    <span class="heading-24">@addressHeader</span>
+}
 <div class="form-field">
     @components.input_text(
         field = form(s"$addressPrefix.fullName"),

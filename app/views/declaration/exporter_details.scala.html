@@ -31,18 +31,24 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("supplementary.consignor.title"), Some("supplementary.consignor.title.hint"))
+        @components.section_header(messages("supplementary.summary.parties.header"))
 
+        @components.page_title(Some("supplementary.consignor.title"))
+
+        <p>@messages("supplementary.carrier.title.hint")</p>
 
         @components.form_fields_wrapper(field = form("details")) {
 
             @components.input_text(
                 field = form("details.eori"),
-                label = messages("supplementary.eori"),
-                hint = Some(messages("supplementary.eori.hint"))
+                label = messages("supplementary.consignor.eori"),
+                hint = Some(messages("supplementary.carrier.eori.hint")),
+                labelClass = Some("heading-24")
             )
 
-            @components.address(form, "details.address")
+            <p>Or</p>
+
+            @components.address(form, "details.address", Some(messages("supplementary.consignor.address.info")))
         }
 
         @components.submit_button()

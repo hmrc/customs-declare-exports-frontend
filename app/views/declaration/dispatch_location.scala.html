@@ -34,10 +34,9 @@
 
     @components.error_summary(form.errors)
 
-    @components.page_title(
-      Some(messages("supplementary.dispatchLocation.header")),
-      Some(messages("supplementary.dispatchLocation.header.hint"))
-    )
+    @components.section_header(messages("supplementary.summary.locations.header"))
+
+    @components.page_title(Some(messages("supplementary.dispatchLocation.header")))
 
     @components.input_radio(
       field = form("dispatchLocation"),

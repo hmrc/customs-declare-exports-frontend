@@ -22,5 +22,7 @@ trait ExporterDetailsMessages {
   val exporterDetails: String = "supplementary.consignor"
 
   val title: String = exporterDetails + ".title"
+  val sectionHeader: String = exporterDetails + ".heading"
   val hint: String = exporterDetails + ".title.hint"
+  val consignorEori: String = exporterDetails + ".eori"
 }

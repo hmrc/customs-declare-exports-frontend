@@ -62,36 +62,44 @@
 
         @components.error_summary(form.errors)
 
+        @components.section_header(messages("supplementary.summary.yourReferences.header"))
+
         @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
 
         @components.input_text(
             field = form("documentTypeCode"),
-            label = messages("supplementary.addDocument.documentTypeCode")
+            label = messages("supplementary.addDocument.documentTypeCode"),
+            labelClass = Some("bold-small")
         )
 
         @components.input_text(
             field = form("documentIdentifier"),
-            label = messages("supplementary.addDocument.documentIdentifier")
+            label = messages("supplementary.addDocument.documentIdentifier"),
+            labelClass = Some("bold-small")
         )
 
         @components.input_text(
             field = form("documentPart"),
-            label = messages("supplementary.addDocument.documentPart")
+            label = messages("supplementary.addDocument.documentPart"),
+            labelClass = Some("bold-small")
         )
 
         @components.input_text(
             field = form("documentStatus"),
-            label = messages("supplementary.addDocument.documentStatus")
+            label = messages("supplementary.addDocument.documentStatus"),
+            labelClass = Some("bold-small")
         )
 
         @components.input_text(
             field = form("documentStatusReason"),
-            label = messages("supplementary.addDocument.documentStatusReason")
+            label = messages("supplementary.addDocument.documentStatusReason"),
+            labelClass = Some("bold-small")
         )
 
         @components.input_text(
             field = form("documentQuantity"),
-            label = messages("supplementary.addDocument.documentQuantity")
+            label = messages("supplementary.addDocument.documentQuantity"),
+            labelClass = Some("bold-small")
         )
 
         @components.add_save_button()

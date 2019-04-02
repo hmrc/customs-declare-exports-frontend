@@ -36,7 +36,7 @@ class TransactionTypeViewSpec extends ViewSpec with TransactionTypeMessages with
     "have proper labels for messages" in {
 
       assertMessage(title, "Transaction type")
-      assertMessage(header, "8/5 Transaction type")
+      assertMessage(header, "8/5 What kind of transaction are you making?")
       assertMessage(description, "What kind of transaction are you making?")
       assertMessage(hint, "This is single digit numerical character")
       assertMessage(identifier, "Further information on this transaction")
@@ -57,6 +57,11 @@ class TransactionTypeViewSpec extends ViewSpec with TransactionTypeMessages with
       getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be("Items")
+    }
+
     "display header" in {
 
       getElementByCss(createView(), "legend>h1").text() must be(messages(header))
@@ -66,8 +71,8 @@ class TransactionTypeViewSpec extends ViewSpec with TransactionTypeMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(messages(description))
-      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(hint))
+      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(description))
+      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(hint))
       getElementById(view, "documentTypeCode").attr("value") must be("")
     }
 
@@ -75,8 +80,8 @@ class TransactionTypeViewSpec extends ViewSpec with TransactionTypeMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(identifier))
-      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(hint))
+      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(identifier))
+      getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(hint))
       getElementById(view, "identifier").attr("value") must be("")
     }
 

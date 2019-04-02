@@ -38,6 +38,8 @@
 
         @components.error_summary(form.errors)
 
+        @components.section_header(messages("supplementary.items"))
+
         @components.page_title(Some("supplementary.packageInformation.title"))
 
         @if(packages.nonEmpty) {
@@ -69,18 +71,21 @@
         @components.input_text(
             field = form("typesOfPackages"),
             label = messages("supplementary.packageInformation.typesOfPackages"),
-            hint = Some(messages("supplementary.packageInformation.typesOfPackages.hint"))
+            hint = Some(messages("supplementary.packageInformation.typesOfPackages.hint")),
+            labelClass = Some("bold-small")
         )
 
         @components.input_text(
             field = form("numberOfPackages"),
-            label = messages("supplementary.packageInformation.numberOfPackages")
+            label = messages("supplementary.packageInformation.numberOfPackages"),
+            labelClass = Some("bold-small")
         )
 
         @components.input_text(
             field = form("shippingMarks"),
             label = messages("supplementary.packageInformation.shippingMarks"),
-            hint = Some(messages("supplementary.packageInformation.shippingMarks.hint"))
+            hint = Some(messages("supplementary.packageInformation.shippingMarks.hint")),
+            labelClass = Some("bold-small")
         )
 
         @components.add_save_button()

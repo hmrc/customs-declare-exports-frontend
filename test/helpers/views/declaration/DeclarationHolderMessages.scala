@@ -22,6 +22,7 @@ trait DeclarationHolderMessages {
   val declarationHolders: String = "supplementary.declarationHolders"
 
   val title: String = declarationHolder + ".title"
+  val declarationHolderEori: String = declarationHolder + ".eori"
   val authorisationCode: String = declarationHolder + ".authorisationCode"
   val authorisationCodeHint: String = declarationHolder + ".authorisationCode.hint"
   val authorisationCodeEmpty: String = declarationHolder + ".authorisationCode.empty"

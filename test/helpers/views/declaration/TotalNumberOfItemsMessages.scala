@@ -19,6 +19,7 @@ package helpers.views.declaration
 trait TotalNumberOfItemsMessages {
 
   val totalNumberOfItems: String = "supplementary.totalNumberOfItems"
+  val valueOfItems: String = "supplementary.valueOfItems"
 
   val tnoiTitle: String = totalNumberOfItems + ".title"
   val tnoiHint: String = totalNumberOfItems + ".hint"

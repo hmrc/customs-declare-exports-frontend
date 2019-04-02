@@ -30,11 +30,13 @@
 
         @components.error_summary(form.errors)
 
+        @components.section_header(messages("supplementary.summary.locations.header"))
+
         @components.page_title(Some("supplementary.supervisingCustomsOffice.title"))
 
         @components.input_text(
             field = form("supervisingCustomsOffice"),
-            label = messages("supplementary.supervisingCustomsOffice"),
+            label = "",
             hint = Some(messages("supplementary.supervisingCustomsOffice.hint"))
         )
 

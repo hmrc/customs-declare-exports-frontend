@@ -32,12 +32,15 @@
 
             @components.error_summary(form.errors)
 
+            @components.section_header(messages("supplementary.items"))
+
             @components.page_title(Some("supplementary.procedureCodes.title"))
 
             @components.input_text(
                 field = form("procedureCode"),
                 label = messages("supplementary.procedureCodes.procedureCode.header"),
-                hint = Some(messages("supplementary.procedureCodes.procedureCode.header.hint"))
+                hint = Some(messages("supplementary.procedureCodes.procedureCode.header.hint")),
+                labelClass = Some("bold-small")
             )
 
             @components.single_value_elements_table(codes)
@@ -45,7 +48,8 @@
             @components.input_text(
                 field = form("additionalProcedureCode"),
                 label = messages("supplementary.procedureCodes.additionalProcedureCode.header"),
-                hint = Some(messages("supplementary.procedureCodes.additionalProcedureCode.header.hint"))
+                hint = Some(messages("supplementary.procedureCodes.additionalProcedureCode.header.hint")),
+                labelClass = Some("bold-small")
             )
 
             @components.add_save_button()

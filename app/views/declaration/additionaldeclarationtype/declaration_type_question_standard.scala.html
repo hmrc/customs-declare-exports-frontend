@@ -20,6 +20,8 @@
 
 @(form: Form[AdditionalDeclarationType])(implicit messages: Messages)
 
+@components.section_header(messages("declaration.declarationType.title"))
+
 @components.page_title(
     Some(messages("declaration.declarationType.header.standard")),
     Some(messages("declaration.declarationType.header.hint"))

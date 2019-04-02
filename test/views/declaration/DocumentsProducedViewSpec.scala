@@ -76,6 +76,11 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be("Your references")
+    }
+
     "display header with hint" in {
 
       val view = createView()
@@ -88,7 +93,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span").text() must be(messages(documentTypeCode))
+      getElementByCss(view, "form>div:nth-child(4)>label>span").text() must be(messages(documentTypeCode))
       getElementById(view, "documentTypeCode").attr("value") must be("")
     }
 
@@ -96,7 +101,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span").text() must be(messages(documentIdentifier))
+      getElementByCss(view, "form>div:nth-child(5)>label>span").text() must be(messages(documentIdentifier))
       getElementById(view, "documentIdentifier").attr("value") must be("")
     }
 
@@ -104,7 +109,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span").text() must be(messages(documentPart))
+      getElementByCss(view, "form>div:nth-child(6)>label>span").text() must be(messages(documentPart))
       getElementById(view, "documentPart").attr("value") must be("")
     }
 
@@ -112,7 +117,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(6)>label>span").text() must be(messages(documentStatus))
+      getElementByCss(view, "form>div:nth-child(7)>label>span").text() must be(messages(documentStatus))
       getElementById(view, "documentStatus").attr("value") must be("")
     }
 
@@ -120,7 +125,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(7)>label>span").text() must be(messages(documentStatusReason))
+      getElementByCss(view, "form>div:nth-child(8)>label>span").text() must be(messages(documentStatusReason))
       getElementById(view, "documentStatusReason").attr("value") must be("")
     }
 
@@ -128,7 +133,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(8)>label>span").text() must be(messages(documentQuantity))
+      getElementByCss(view, "form>div:nth-child(9)>label>span").text() must be(messages(documentQuantity))
       getElementById(view, "documentQuantity").attr("value") must be("")
     }
 

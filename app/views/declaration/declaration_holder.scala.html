@@ -30,6 +30,8 @@
 
         @components.error_summary(form.errors)
 
+        @components.section_header(messages("supplementary.summary.parties.header"))
+
         @components.page_title(Some("supplementary.declarationHolder.title"))
 
         @components.single_value_elements_table(holders.map(_.toString))
@@ -37,13 +39,15 @@
         @components.input_text(
             field = form("authorisationTypeCode"),
             label = messages("supplementary.declarationHolder.authorisationCode"),
-            hint = Some(messages("supplementary.declarationHolder.authorisationCode.hint"))
+            hint = Some(messages("supplementary.declarationHolder.authorisationCode.hint")),
+            labelClass = Some("heading-24")
         )
 
         @components.input_text(
             field = form("eori"),
-            label = messages("supplementary.eori"),
-            hint = Some(messages("supplementary.eori.hint"))
+            label = messages("supplementary.declarationHolder.eori"),
+            hint = Some(messages("supplementary.eori.hint")),
+            labelClass = Some("heading-24")
         )
 
         @components.add_save_button()

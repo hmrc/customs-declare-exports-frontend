@@ -37,11 +37,11 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
       assertMessage(title, "Commodity measurements")
       assertMessage(netMass, "6/1 Net Weight")
-      assertMessage(netMassHint, "The weight excluding container and packaging")
+      assertMessage(netMassHint, "The weight excluding container and packaging in kg")
       assertMessage(grossMass, "6/5 Gross Weight")
-      assertMessage(grossMassHint, "The weight including container and packaging")
+      assertMessage(grossMassHint, "The weight excluding container and packaging in kg")
       assertMessage(supplementaryUnits, "6/2 Do you need to add supplementary units?")
-      assertMessage(supplementaryUnitsHint, "Enter the quantity below")
+      assertMessage(supplementaryUnitsHint, "Enter the quantity in the unit specified by the commodity code, for example 1,000 kWh")
     }
 
     "have proper messages for error labels" in {
@@ -71,6 +71,11 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be("Items")
+    }
+
     "display header with hint" in {
 
       getElementByCss(createView(), "legend>h1").text() must be(messages(title))
@@ -80,10 +85,10 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(
+      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(
         messages(supplementaryUnits)
       )
-      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(
+      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(
         messages(supplementaryUnitsHint)
       )
       getElementById(view, "supplementaryUnits").attr("value") must be("")
@@ -93,8 +98,8 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(netMass))
-      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(netMassHint))
+      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(netMass))
+      getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(netMassHint))
       getElementById(view, "netMass").attr("value") must be("")
     }
 
@@ -102,8 +107,8 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(grossMass))
-      getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(grossMassHint))
+      getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(messages(grossMass))
+      getElementByCss(view, "form>div:nth-child(6)>label>span.form-hint").text() must be(messages(grossMassHint))
       getElementById(view, "grossMass").attr("value") must be("")
     }
 

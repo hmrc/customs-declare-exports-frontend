@@ -35,11 +35,11 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "have proper messages for labels" in {
 
-      assertMessage(totalNumberOfItems, "1/9 What is the total number of items?")
+      assertMessage(totalNumberOfItems, "1/9 What were the total number of items?")
       assertMessage(tnoiTitle, "Total number of items")
       assertMessage(tnoiHint, "Up to a maximum of 999 items")
 
-      assertMessage(totalAmountInvoiced, "4/11 What is the total amount invoiced?")
+      assertMessage(totalAmountInvoiced, "4/11 What was the total amount invoiced?")
       assertMessage(taiHint, "The total price of all the goods in the declaration e.g. 1234567.12")
 
       assertMessage(exchangeRate, "4/15 What was the exchange rate used?")
@@ -75,19 +75,24 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
       getElementByCss(createView(), "title").text() must be(messages(tnoiTitle))
     }
 
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be("Items")
+    }
+
     "display header" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(totalNumberOfItems))
+      getElementByCss(createView(), "legend>h1").text() must be(messages(valueOfItems))
     }
 
     "display empty input with label for Total Number of Items" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(
+      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(
         messages(totalNumberOfItems)
       )
-      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(tnoiHint))
+      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(tnoiHint))
       getElementById(view, "itemsQuantity").attr("value") must be("")
     }
 
@@ -95,10 +100,10 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(
+      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(
         messages(totalAmountInvoiced)
       )
-      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(taiHint))
+      getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(taiHint))
       getElementById(view, "totalAmountInvoiced").attr("value") must be("")
     }
 
@@ -106,8 +111,8 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(exchangeRate))
-      getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(erHint))
+      getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(messages(exchangeRate))
+      getElementByCss(view, "form>div:nth-child(6)>label>span.form-hint").text() must be(messages(erHint))
       getElementById(view, "exchangeRate").attr("value") must be("")
     }
 
@@ -115,10 +120,10 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(
+      getElementByCss(view, "form>div:nth-child(7)>label>span:nth-child(1)").text() must be(
         messages(totalPackageQuantity)
       )
-      getElementByCss(view, "form>div:nth-child(6)>label>span.form-hint").text() must be(messages(tpqHint))
+      getElementByCss(view, "form>div:nth-child(7)>label>span.form-hint").text() must be(messages(tpqHint))
       getElementById(view, "totalPackage").attr("value") must be("")
     }
 

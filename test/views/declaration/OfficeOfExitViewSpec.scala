@@ -35,7 +35,7 @@ class OfficeOfExitViewSpec extends ViewSpec with OfficeOfExitMessages with Commo
     "have proper messages for labels" in {
 
       assertMessage(officeOfExit, "5/12 Where is the office of exit?")
-      assertMessage(title, "Office of exit")
+      assertMessage(title, "5/12 Where is the office of exit?")
       assertMessage(hint, "This is an 8 digit code")
     }
 
@@ -53,6 +53,11 @@ class OfficeOfExitViewSpec extends ViewSpec with OfficeOfExitMessages with Commo
       getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be("Locations")
+    }
+
     "display header" in {
 
       getElementByCss(createView(), "legend>h1").text() must be(messages(title))
@@ -62,7 +67,6 @@ class OfficeOfExitViewSpec extends ViewSpec with OfficeOfExitMessages with Commo
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-field>label>span:nth-child(1)").text() must be(messages(officeOfExit))
       getElementByCss(view, "form>div.form-field>label>span.form-hint").text() must be(messages(hint))
       getElementById(view, "officeId").attr("value") must be("")
     }

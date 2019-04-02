@@ -45,10 +45,10 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
     "have proper messages for labels" in {
 
       assertMessage(title, "Consignment References")
-      assertMessage(header, "Your references")
+      assertMessage(header, "Enter your consignment references")
       assertMessage(lrnInfo, "2/5 Enter your LRN reference number")
       assertMessage(lrnHint, "This is your own reference number of up to 22 digits")
-      assertMessage(ucrInfo, "2/4 Create a UCR reference for this declaration")
+      assertMessage(ucrInfo, "2/4 Enter your DUCR (Optional)")
       assertMessage(ucrHint, "Your own reference, which must be used only for this declaration")
     }
 
@@ -67,6 +67,11 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be(messages("Your references"))
+    }
+
     "display header" in {
 
       getElementByCss(createView(), "legend>h1").text() must be(messages(header))
@@ -76,8 +81,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(2)>label>span:nth-child(1)").text() must be(messages(ucrInfo))
-      getElementByCss(view, "form>div:nth-child(2)>label>span.form-hint").text() must be(messages(ucrHint))
+      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(messages(ucrInfo))
+      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(ucrHint))
       getElementById(view, "ducr_ducr").attr("value") must be("")
     }
 
@@ -85,8 +90,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(messages(lrnInfo))
-      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(lrnHint))
+      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(lrnInfo))
+      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(lrnHint))
       getElementById(view, "lrn").attr("value") must be("")
     }
 

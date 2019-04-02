@@ -35,13 +35,13 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
     "have proper messages for labels" in {
 
       assertMessage(previousDocuments, "Previous documents")
-      assertMessage(title, "2/1 Enter previous DUCR or MUCR references linked to these goods")
+      assertMessage(title, "2/1 Enter previous DUCR or MUCR references assigned to these goods")
       assertMessage(hint, "For example, 8GB-123456789101-SHIP1")
       assertMessage(documentX, "Temporary storage")
       assertMessage(documentY, "Simplified declaration")
       assertMessage(documentZ, "Previous document")
-      assertMessage(documentType, "Enter previous document code")
-      assertMessage(documentReference, "Enter the reference for the previous DUCR or MUCR")
+      assertMessage(documentType, "Enter the previous document code")
+      assertMessage(documentReference, "Enter the reference of the previous document")
       assertMessage(documentGoodsIdentifier, "Enter the goods item this previous document relates to")
       assertMessage(documentCategoryLabel, "Document Category")
       assertMessage(documentTypeLabel, "Document Type")
@@ -67,6 +67,11 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
     "display page title" in {
 
       getElementByCss(createView(), "title").text() must be(messages(previousDocuments))
+    }
+
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be("Your references")
     }
 
     "display header with hint" in {
@@ -101,7 +106,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span").text() must be(messages(documentType))
+      getElementByCss(view, "form>div:nth-child(5)>label>span").text() must be(messages(documentType))
       getElementById(view, "documentType").attr("value") must be("")
     }
 
@@ -109,7 +114,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span").text() must be(messages(documentReference))
+      getElementByCss(view, "form>div:nth-child(6)>label>span").text() must be(messages(documentReference))
       getElementById(view, "documentReference").attr("value") must be("")
     }
 
@@ -117,7 +122,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(6)>label>span").text() must be(messages(documentGoodsIdentifier))
+      getElementByCss(view, "form>div:nth-child(7)>label>span").text() must be(messages(documentGoodsIdentifier))
       getElementById(view, "documentReference").attr("value") must be("")
     }
 

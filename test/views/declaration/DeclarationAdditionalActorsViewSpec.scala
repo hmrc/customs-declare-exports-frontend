@@ -38,7 +38,7 @@ class DeclarationAdditionalActorsViewSpec
 
     "have proper messages for labels" in {
 
-      assertMessage(title, "3/37 Add other party")
+      assertMessage(title, "3/37 Add other party (Optional)")
       assertMessage(actorsEori, "EORI number")
       assertMessage(actorsPartyType, "Party type")
     }
@@ -56,6 +56,11 @@ class DeclarationAdditionalActorsViewSpec
     "display page title" in {
 
       getElementByCss(createView(), "title").text() must be(messages(title))
+    }
+
+    "display section header" in {
+
+      getElementById(createView(), "section-header").text() must be("Parties")
     }
 
     "display header" in {
