@@ -66,12 +66,14 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
     Commodity(
       goodsMeasure = Some(
         GoodsMeasure(
-          Some(Measure(Some(defaultMeasureCode), value = Some(BigDecimal(data.grossMass)))),
-          Some(Measure(Some(defaultMeasureCode), value = Some(BigDecimal(data.netMass)))),
-          Some(Measure(Some(defaultMeasureCode), value = data.supplementaryUnits.map((BigDecimal(_)))))
+          Some(createMeasure(data.grossMass)),
+          Some(createMeasure(data.netMass)),
+          data.supplementaryUnits.map(createMeasure(_))
         )
       )
     )
+
+  private def createMeasure(unitValue: String) = Measure(Some(defaultMeasureCode), value = Some(BigDecimal(unitValue)))
 
   def additionalInfo(cachedData: CacheMap): Option[Seq[AdditionalInformation]] =
     cachedData
