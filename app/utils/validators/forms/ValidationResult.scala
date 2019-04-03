@@ -21,4 +21,5 @@ import play.api.data.FormError
 sealed trait ValidationResult
 
 case object Valid extends ValidationResult
+
 case class Invalid(errors: Seq[FormError]) extends ValidationResult

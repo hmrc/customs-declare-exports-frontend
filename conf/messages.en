@@ -331,7 +331,7 @@ declaration.destinationCountries.countryOfDispatch.empty = Country of dispatch c
 declaration.destinationCountries.countryOfDispatch.error = Country of dispatch is incorrect
 declaration.destinationCountries.countriesOfRouting = 5/18 Enter the country of routing codes
 declaration.destinationCountries.countriesOfRouting.hint = Enter the countries in the order that the goods pass through
-declaration.destinationCountries.countriesOfRouting.error = TODO Missing error message
+declaration.destinationCountries.countriesOfRouting.error = Country of routing is incorrect
 declaration.destinationCountries.countriesOfRouting.empty = Enter a country code
 
 supplementary.supervisingCustomsOffice.title = Supervising customs office
