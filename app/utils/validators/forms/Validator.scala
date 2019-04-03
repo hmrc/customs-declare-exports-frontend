@@ -17,6 +17,8 @@
 package utils.validators.forms
 
 trait Validator[T] {
+
   def validateOnAddition(element: T): ValidationResult
+
   def validateOnSaveAndContinue(element: T): ValidationResult
 }
