@@ -53,8 +53,7 @@ class DispatchLocationPageController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DispatchLocation]) =>
-          Future.successful(BadRequest(dispatch_location(formWithErrors))),
+        (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatch_location(formWithErrors))),
         validDispatchLocation =>
           customsCacheService
             .cache[DispatchLocation](cacheId, DispatchLocation.formId, validDispatchLocation)

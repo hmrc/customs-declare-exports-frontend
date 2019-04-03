@@ -51,7 +51,10 @@ class PreviousDocumentsControllerSpec
 
     "read item from cache and display it" in {
 
-      withCaching[PreviousDocumentsData](Some(PreviousDocumentsData(Seq(Document("X", "HX", "XH", Some("UX"))))), formId)
+      withCaching[PreviousDocumentsData](
+        Some(PreviousDocumentsData(Seq(Document("X", "HX", "XH", Some("UX"))))),
+        formId
+      )
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)

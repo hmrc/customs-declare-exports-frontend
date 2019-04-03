@@ -30,7 +30,10 @@ import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.SupervisingCustomsOfficeSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransactionTypeSpec._
-import forms.declaration.TransportInformationContainerSpec.{correctTransportInformationContainerData, correctTransportInformationContainerDataJSON}
+import forms.declaration.TransportInformationContainerSpec.{
+  correctTransportInformationContainerData,
+  correctTransportInformationContainerDataJSON
+}
 import forms.declaration.TransportInformationSpec._
 import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._
@@ -92,7 +95,12 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
         "CacheMap contains record for AdditionalDeclarationType only" in {
           val cacheMap =
-            CacheMap("CacheID", Map(AdditionalDeclarationTypeSupplementaryDec.formId -> correctAdditionalDeclarationTypeSupplementaryDecJSON))
+            CacheMap(
+              "CacheID",
+              Map(
+                AdditionalDeclarationTypeSupplementaryDec.formId -> correctAdditionalDeclarationTypeSupplementaryDecJSON
+              )
+            )
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
           supplementaryDeclarationData.declarationType must be(defined)

@@ -63,7 +63,6 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
       response.futureValue must be(notifications)
     }
 
-
     "GET to Customs Declare Exports endpoint to fetch submissions" in {
       val http = new MockHttpClient(expectedExportsUrl(appConfig.fetchSubmissions), None, result = submissions)
       val client = new CustomsDeclareExportsConnector(appConfig, http)

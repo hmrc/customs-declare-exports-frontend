@@ -30,7 +30,14 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
   private val filledForm =
-    DocumentsProduced(Some("test"), Some("test1"), Some("test2"), Some("test3"), Some("test4"), Some(BigDecimal("234.22")))
+    DocumentsProduced(
+      Some("test"),
+      Some("test1"),
+      Some("test2"),
+      Some("test3"),
+      Some("test4"),
+      Some(BigDecimal("234.22"))
+    )
 
   private def createView(form: Form[DocumentsProduced] = form): Html =
     documents_produced(appConfig, form, Seq())(fakeRequest, messages)
@@ -226,7 +233,13 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         DocumentsProduced
           .form()
           .fillAndValidate(
-            DocumentsProduced(Some("1234"), Some("1234"), Some("1234"), Some("ABC"), Some("1234"),               Some(BigDecimal("1234"))
+            DocumentsProduced(
+              Some("1234"),
+              Some("1234"),
+              Some("1234"),
+              Some("ABC"),
+              Some("1234"),
+              Some(BigDecimal("1234"))
             )
           )
       )
@@ -282,7 +295,9 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentQuantityPrecisionError, "#documentQuantity")
 
-      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(messages(documentQuantityPrecisionError))
+      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(
+        messages(documentQuantityPrecisionError)
+      )
     }
 
     "display errors for all fields" in {
@@ -317,7 +332,9 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementByCss(view, "#error-message-documentStatusReason-input").text() must be(
         messages(documentStatusReasonError)
       )
-      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(messages(documentQuantityPrecisionError))
+      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(
+        messages(documentQuantityPrecisionError)
+      )
     }
   }
 

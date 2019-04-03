@@ -43,8 +43,10 @@ class DeclarationTypeSupplementarySpec extends WordSpec with MustMatchers {
 }
 
 object DeclarationTypeSupplementarySpec {
-  val correctDeclarationType = DeclarationTypeSupplementary(Some(correctDispatchLocation), Some(correctAdditionalDeclarationTypeSupplementaryDec))
-  val emptyDeclarationType = DeclarationTypeSupplementary(Some(correctDispatchLocation), Some(correctAdditionalDeclarationTypeSupplementaryDec))
+  val correctDeclarationType =
+    DeclarationTypeSupplementary(Some(correctDispatchLocation), Some(correctAdditionalDeclarationTypeSupplementaryDec))
+  val emptyDeclarationType =
+    DeclarationTypeSupplementary(Some(correctDispatchLocation), Some(correctAdditionalDeclarationTypeSupplementaryDec))
 
   val correctDeclarationTypeJSON: JsValue = JsObject(
     Map("dispatchLocation" -> JsString(OutsideEU), "additionalDeclarationType" -> JsString(Simplified))

@@ -43,7 +43,9 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
     "read item from cache and display it" in {
 
-      val cachedData = DeclarantDetails(EntityDetails(Some("67890"), Some(Address("WonderWoman", "Test Street", "Leeds", "LS18BN", "Germany"))))
+      val cachedData = DeclarantDetails(
+        EntityDetails(Some("67890"), Some(Address("WonderWoman", "Test Street", "Leeds", "LS18BN", "Germany")))
+      )
       withCaching[DeclarantDetails](Some(cachedData), "DeclarantDetails")
 
       val result = route(app, getRequest(uri)).get

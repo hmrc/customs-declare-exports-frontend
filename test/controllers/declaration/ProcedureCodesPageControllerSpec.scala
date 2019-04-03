@@ -63,7 +63,9 @@ class ProcedureCodesPageControllerSpec
       getElementByCss(page, "table>tbody>tr>th:nth-child(2)>button").text() must be(messages(removeCaption))
 
       getElementByCss(page, "table>tbody>tr:nth-child(2)>th:nth-child(1)").text() must be("234")
-      getElementByCss(page, "table>tbody>tr:nth-child(2)>th:nth-child(2)>button").text() must be(messages(removeCaption))
+      getElementByCss(page, "table>tbody>tr:nth-child(2)>th:nth-child(2)>button").text() must be(
+        messages(removeCaption)
+      )
     }
   }
 

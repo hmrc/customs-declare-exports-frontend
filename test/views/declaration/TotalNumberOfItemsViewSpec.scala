@@ -28,7 +28,8 @@ import views.tags.ViewTest
 class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessages with CommonMessages {
 
   private val form: Form[TotalNumberOfItems] = TotalNumberOfItems.form()
-  private def createView(form: Form[TotalNumberOfItems] = form): Html = total_number_of_items(appConfig, form)(fakeRequest, messages)
+  private def createView(form: Form[TotalNumberOfItems] = form): Html =
+    total_number_of_items(appConfig, form)(fakeRequest, messages)
 
   "Total Number Of Items View" should {
 
@@ -42,7 +43,10 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
       assertMessage(taiHint, "The total price of all the goods in the declaration e.g. 1234567.12")
 
       assertMessage(exchangeRate, "4/15 What was the exchange rate used?")
-      assertMessage(erHint, "The rate of exchange fixed in advance by a contract between the parties e.g. 1234567.12345")
+      assertMessage(
+        erHint,
+        "The rate of exchange fixed in advance by a contract between the parties e.g. 1234567.12345"
+      )
 
       assertMessage(totalPackageQuantity, "6/18 Total number of packages")
       assertMessage(tpqHint, "Include all items in this shipment")
@@ -80,7 +84,9 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(messages(totalNumberOfItems))
+      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(
+        messages(totalNumberOfItems)
+      )
       getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(tnoiHint))
       getElementById(view, "itemsQuantity").attr("value") must be("")
     }
@@ -89,7 +95,9 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(totalAmountInvoiced))
+      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(
+        messages(totalAmountInvoiced)
+      )
       getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(taiHint))
       getElementById(view, "totalAmountInvoiced").attr("value") must be("")
     }
@@ -107,7 +115,9 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(messages(totalPackageQuantity))
+      getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(
+        messages(totalPackageQuantity)
+      )
       getElementByCss(view, "form>div:nth-child(6)>label>span.form-hint").text() must be(messages(tpqHint))
       getElementById(view, "totalPackage").attr("value") must be("")
     }
@@ -149,7 +159,8 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display error when all entered input is incorrect" in {
 
-      val view = createView(TotalNumberOfItems.form().fillAndValidate(TotalNumberOfItems("abcd", "abcd", "abcd", "abcd")))
+      val view =
+        createView(TotalNumberOfItems.form().fillAndValidate(TotalNumberOfItems("abcd", "abcd", "abcd", "abcd")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, tnoiError, "#itemsQuantity")
@@ -165,7 +176,8 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display error when Total Number of Items is empty" in {
 
-      val view = createView(TotalNumberOfItems.form().fillAndValidate(TotalNumberOfItems("", "123.123", "123.12345", "1")))
+      val view =
+        createView(TotalNumberOfItems.form().fillAndValidate(TotalNumberOfItems("", "123.123", "123.12345", "1")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, tnoiEmpty, "#itemsQuantity")
@@ -175,7 +187,8 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display error when Total Number of Items is incorrect" in {
 
-      val view = createView(TotalNumberOfItems.form().fillAndValidate(TotalNumberOfItems("abcd", "123.123", "123.12345", "1")))
+      val view =
+        createView(TotalNumberOfItems.form().fillAndValidate(TotalNumberOfItems("abcd", "123.123", "123.12345", "1")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, tnoiError, "#itemsQuantity")
@@ -195,7 +208,8 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display error when Total Amount Invoiced is incorrect" in {
 
-      val view = createView(TotalNumberOfItems.form().fillAndValidate(TotalNumberOfItems("100", "abcd", "123.12345", "1")))
+      val view =
+        createView(TotalNumberOfItems.form().fillAndValidate(TotalNumberOfItems("100", "abcd", "123.12345", "1")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, taiError, "#totalAmountInvoiced")
@@ -225,7 +239,8 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display error when Total Package is empty" in {
 
-      val view = createView(TotalNumberOfItems.form().fillAndValidate(TotalNumberOfItems("100", "123.12", "123.12345", "")))
+      val view =
+        createView(TotalNumberOfItems.form().fillAndValidate(TotalNumberOfItems("100", "123.12", "123.12345", "")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, tpqEmpty, "#totalPackage")
@@ -235,7 +250,8 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display error when Total Package is incorrect" in {
 
-      val view = createView(TotalNumberOfItems.form().fillAndValidate(TotalNumberOfItems("100", "123.12", "123.12345", "abcd")))
+      val view =
+        createView(TotalNumberOfItems.form().fillAndValidate(TotalNumberOfItems("100", "123.12", "123.12345", "abcd")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, tpqError, "#totalPackage")

@@ -46,5 +46,4 @@ class CustomsDeclareExportsMovementsConnector @Inject()(appConfig: AppConfig, ht
         response
       }
 
-
 }

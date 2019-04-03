@@ -33,17 +33,26 @@ class StartViewSpec extends ViewSpec with StartMessages {
 
       assertMessage(title, "Register for customs services")
       assertMessage(heading, "Make an export declaration")
-      assertMessage(description, "An export declaration must be completed for any export leaving the UK. This includes goods being exported through the EU to a third (non-EU) country.")
+      assertMessage(
+        description,
+        "An export declaration must be completed for any export leaving the UK. This includes goods being exported through the EU to a third (non-EU) country."
+      )
       assertMessage(listHeading, "You will need:")
       assertMessage(listItemOne, "your Government Gateway details")
       assertMessage(listItemTwoPreUrl, "your")
       assertMessage(listItemTwoPostUrl, "number")
       assertMessage(listItemTwoUrl, "Economic Operator Registration and Identification (EORI)")
-      assertMessage(listItemThree, "any licences you may need, for example, for military controlled items and highly sensitive dual-use goods")
+      assertMessage(
+        listItemThree,
+        "any licences you may need, for example, for military controlled items and highly sensitive dual-use goods"
+      )
       assertMessage(listItemFour, "details of where you’re sending the export")
 
       // for some reason it does not pick up the ' in message - possibly some java/scala issue
-      assertMessage(listItemFive, "a description of the item, including the value, weight, size and type of package its in")
+      assertMessage(
+        listItemFive,
+        "a description of the item, including the value, weight, size and type of package its in"
+      )
       assertMessage(listItemSix, "your")
       assertMessage(listItemSixUrl, "commodity code(s)")
       assertMessage(listItemSeven, "for your item")
@@ -167,7 +176,9 @@ class StartViewSpec extends ViewSpec with StartMessages {
 
     "display \"Help and Support\" description" in {
 
-      getElementByCss(createView(), "#content > article > div > div > div > p:nth-child(2)").text() must be(messages(reference) + " " + messages(referenceNumber) + " " + messages(referenceText))
+      getElementByCss(createView(), "#content > article > div > div > div > p:nth-child(2)").text() must be(
+        messages(reference) + " " + messages(referenceNumber) + " " + messages(referenceText)
+      )
     }
 
     "display link to \"General Enquires page\"" in {
@@ -175,7 +186,9 @@ class StartViewSpec extends ViewSpec with StartMessages {
       val link = getElementByCss(createView(), "article>div>div>div>p:nth-child(3)>a")
 
       link.text() must be(messages(enquiries))
-      link.attr("href") must be("https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries")
+      link.attr("href") must be(
+        "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries"
+      )
     }
   }
 }
