@@ -23,20 +23,6 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 class DocumentSpec extends WordSpec with MustMatchers {
   import DocumentSpec._
 
-  "Method toMetadataProperties" should {
-    "return proper Metadata Properties" in {
-      val previousDocuments = PreviousDocumentsData(Seq(correctPreviousDocument))
-      val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.previousDocuments[0].categoryCode" -> correctPreviousDocument.documentCategory,
-        "declaration.goodsShipment.previousDocuments[0].typeCode" -> correctPreviousDocument.documentType,
-        "declaration.goodsShipment.previousDocuments[0].id" -> correctPreviousDocument.documentReference,
-        "declaration.goodsShipment.previousDocuments[0].lineNumeric" -> correctPreviousDocument.goodsItemIdentifier.get
-      )
-
-      previousDocuments.toMetadataProperties() must equal(expectedMetadataProperties)
-    }
-  }
-
   "Document mapping used for binding data" should {
 
     "return form with errors" when {

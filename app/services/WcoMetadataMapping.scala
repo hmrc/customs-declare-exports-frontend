@@ -15,10 +15,11 @@
  */
 
 package services
+import forms.declaration.{Document, PreviousDocumentsData}
 import models.DeclarationFormats._
 import models.declaration.SupplementaryDeclarationData
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.wco.dec.{Declaration, GovernmentAgencyGoodsItem, MetaData}
+import uk.gov.hmrc.wco.dec.{Declaration, GovernmentAgencyGoodsItem, MetaData, PreviousDocument}
 
 object WcoMetadataMapping {
 
@@ -29,10 +30,31 @@ object WcoMetadataMapping {
       cacheMap.getEntry[Seq[GovernmentAgencyGoodsItem]](ExportsItemsCacheIds.itemsId).getOrElse(Seq.empty)
 
     val goodsShipmentWithGoodsItems =
-      metaData.declaration.flatMap(_.goodsShipment.map(_.copy(governmentAgencyGoodsItems = goodsItems)))
+      metaData.declaration.flatMap(
+        _.goodsShipment.map(
+          _.copy(
+            governmentAgencyGoodsItems = goodsItems,
+            previousDocuments = mapPreviousDocumentsForHeaderFromCache(cacheMap)
+          )
+        )
+      )
 
     metaData.copy(declaration = metaData.declaration.map(_.copy(goodsShipment = goodsShipmentWithGoodsItems)))
   }
+
+  def mapPreviousDocumentsForHeaderFromCache(cacheMap: CacheMap): Seq[PreviousDocument] =
+    cacheMap
+      .getEntry[PreviousDocumentsData](Document.formId)
+      .map(_.documents.map(createPreviousDocuments(_)))
+      .getOrElse(Seq.empty)
+
+  private def createPreviousDocuments(doc: Document) =
+    PreviousDocument(
+      Some(doc.documentCategory),
+      Some(doc.documentReference),
+      Some(doc.documentType),
+      doc.goodsItemIdentifier.map(_.toInt)
+    )
 
   private def createHeaderData(cacheMap: CacheMap): MetaData =
     MetaData.fromProperties(SupplementaryDeclarationData(cacheMap).toMetadataProperties())

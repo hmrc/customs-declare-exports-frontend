@@ -16,7 +16,6 @@
 
 package forms.declaration
 
-import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -68,19 +67,7 @@ object Document {
   }
 }
 
-case class PreviousDocumentsData(documents: Seq[Document]) extends MetadataPropertiesConvertable {
-  override def toMetadataProperties(): Map[String, String] =
-    documents.zipWithIndex.map {
-      case (elem, index) =>
-        Map(
-          "declaration.goodsShipment.previousDocuments[" + index + "].categoryCode" -> elem.documentCategory,
-          "declaration.goodsShipment.previousDocuments[" + index + "].typeCode" -> elem.documentType,
-          "declaration.goodsShipment.previousDocuments[" + index + "].id" -> elem.documentReference,
-          "declaration.goodsShipment.previousDocuments[" + index + "].lineNumeric" -> elem.goodsItemIdentifier
-            .getOrElse("")
-        )
-    }.fold(Map.empty)(_ ++ _)
-}
+case class PreviousDocumentsData(documents: Seq[Document])
 
 object PreviousDocumentsData {
   implicit val format = Json.format[PreviousDocumentsData]

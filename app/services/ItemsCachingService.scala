@@ -90,7 +90,8 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       id = doc.documentIdentifier.map(_ + doc.documentPart.getOrElse("")),
       lpcoExemptionCode = doc.documentStatus,
       name = doc.documentStatusReason,
-      writeOff = Some(WriteOff(Some(Measure(value = doc.documentQuantity))))
+      //TODO have to implement unitCode based on user input
+      writeOff = doc.documentQuantity.map(q => WriteOff(Some(Measure(value = Some(q)))))
     )
 
   def goodsItemFromItemTypes(cachedData: CacheMap): Option[GovernmentAgencyGoodsItem] =
