@@ -54,8 +54,7 @@ class CarrierDetailsPageController @Inject()(
     CarrierDetails.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[CarrierDetails]) =>
-          Future.successful(BadRequest(carrier_details(formWithErrors))),
+        (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrier_details(formWithErrors))),
         form =>
           customsCacheService.cache[CarrierDetails](cacheId, CarrierDetails.id, form).map { _ =>
             Redirect(controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm())

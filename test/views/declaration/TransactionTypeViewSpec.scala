@@ -28,7 +28,8 @@ import views.tags.ViewTest
 class TransactionTypeViewSpec extends ViewSpec with TransactionTypeMessages with CommonMessages {
 
   private val form: Form[TransactionType] = TransactionType.form()
-  private def createView(form: Form[TransactionType] = form): Html = transaction_type(appConfig, form)(fakeRequest, messages)
+  private def createView(form: Form[TransactionType] = form): Html =
+    transaction_type(appConfig, form)(fakeRequest, messages)
 
   "Transaction Type View" should {
 

@@ -28,7 +28,8 @@ import views.tags.ViewTest
 class SupervisingCustomsOfficeViewSpec extends ViewSpec with SupervisingCustomsOfficeMessages with CommonMessages {
 
   private val form: Form[SupervisingCustomsOffice] = SupervisingCustomsOffice.form()
-  private def createView(form: Form[SupervisingCustomsOffice] = form): Html = supervising_office(appConfig, form)(fakeRequest, messages)
+  private def createView(form: Form[SupervisingCustomsOffice] = form): Html =
+    supervising_office(appConfig, form)(fakeRequest, messages)
 
   "Supervising Customs Office View" should {
 
@@ -62,7 +63,9 @@ class SupervisingCustomsOfficeViewSpec extends ViewSpec with SupervisingCustomsO
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-field>label>span:nth-child(1)").text() must be(messages(supervisingCustomOffice))
+      getElementByCss(view, "form>div.form-field>label>span:nth-child(1)").text() must be(
+        messages(supervisingCustomOffice)
+      )
       getElementByCss(view, "form>div.form-field>label>span.form-hint").text() must be(messages(hint))
       getElementById(view, "supervisingCustomsOffice").attr("value") must be("")
     }
@@ -88,7 +91,8 @@ class SupervisingCustomsOfficeViewSpec extends ViewSpec with SupervisingCustomsO
 
     "display error when Supervising Customs Office is incorrect" in {
 
-      val view = createView(SupervisingCustomsOffice.form().fillAndValidate(SupervisingCustomsOffice(Some("123456789"))))
+      val view =
+        createView(SupervisingCustomsOffice.form().fillAndValidate(SupervisingCustomsOffice(Some("123456789"))))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, scoError, "#supervisingCustomsOffice")

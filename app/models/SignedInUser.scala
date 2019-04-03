@@ -32,4 +32,3 @@ case class CustomsDeclareExportsMovementsResponse(status: Int, message: String)
 object CustomsDeclareExportsMovementsResponse {
   implicit val format = Json.format[CustomsDeclareExportsMovementsResponse]
 }
-

@@ -43,7 +43,9 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
     "read item from cache and display it" in {
 
-      val cachedData = ConsigneeDetails(EntityDetails(Some("12345"), Some(Address("Spiderman", "Test Street", "Leeds", "LS18BN", "Germany"))))
+      val cachedData = ConsigneeDetails(
+        EntityDetails(Some("12345"), Some(Address("Spiderman", "Test Street", "Leeds", "LS18BN", "Germany")))
+      )
       withCaching[ConsigneeDetails](Some(cachedData), "ConsigneeDetails")
 
       val result = route(app, getRequest(uri)).get

@@ -89,7 +89,9 @@ class SummaryPageController @Inject()(
   private def prepareFlashScope(lrn: String) =
     Flash(Map("LRN" -> lrn))
 
-  private def handleDecSubmission(cacheMap: CacheMap)(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+  private def handleDecSubmission(
+    cacheMap: CacheMap
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
     val metaData = produceMetaData(cacheMap)
 
     val lrn = metaData.declaration.flatMap(_.functionalReferenceId)

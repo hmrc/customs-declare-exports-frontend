@@ -181,7 +181,9 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for empty Type of Location" in {
 
       val form =
-        GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "", "t", Some("TST"), Some("TST"), None, None, None))
+        GoodsLocation
+          .form()
+          .fillAndValidate(GoodsLocation("Poland", "", "t", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -193,7 +195,9 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for incorrect Type of Location" in {
 
       val form =
-        GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "TST", "t", Some("TST"), Some("TST"), None, None, None))
+        GoodsLocation
+          .form()
+          .fillAndValidate(GoodsLocation("Poland", "TST", "t", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -202,11 +206,12 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       getElementByCss(view, "#error-message-typeOfLocation-input").text() must be(messages(typeOfLocationError))
     }
 
-
     "display error for empty Qualifier of Identification" in {
 
       val form =
-        GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "t", "", Some("TST"), Some("TST"), None, None, None))
+        GoodsLocation
+          .form()
+          .fillAndValidate(GoodsLocation("Poland", "t", "", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -220,7 +225,9 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for incorrect Qualifier of Identification" in {
 
       val form =
-        GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "t", "@@!", Some("TST"), Some("TST"), None, None, None))
+        GoodsLocation
+          .form()
+          .fillAndValidate(GoodsLocation("Poland", "t", "@@!", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -233,7 +240,9 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display error for incorrect Identification of Location" in {
 
-      val form = GoodsLocation.form().fillAndValidate(GoodsLocation("Poland", "t", "t", Some("@@!"), Some("TST"), None, None, None))
+      val form = GoodsLocation
+        .form()
+        .fillAndValidate(GoodsLocation("Poland", "t", "t", Some("@@!"), Some("TST"), None, None, None))
       val view = createView(form)
 
       checkErrorsSummary(view)
@@ -266,7 +275,16 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       val form = GoodsLocation
         .form()
         .fillAndValidate(
-          GoodsLocation("Poland", "t", "t", Some("TST"), Some("TST"), Some(TestHelper.createRandomString(71)), None, None)
+          GoodsLocation(
+            "Poland",
+            "t",
+            "t",
+            Some("TST"),
+            Some("TST"),
+            Some(TestHelper.createRandomString(71)),
+            None,
+            None
+          )
         )
       val view = createView(form)
 
@@ -281,7 +299,16 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       val form = GoodsLocation
         .form()
         .fillAndValidate(
-          GoodsLocation("Poland", "t", "t", Some("TST"), Some("TST"), None, Some(TestHelper.createRandomString(10)), None)
+          GoodsLocation(
+            "Poland",
+            "t",
+            "t",
+            Some("TST"),
+            Some("TST"),
+            None,
+            Some(TestHelper.createRandomString(10)),
+            None
+          )
         )
       val view = createView(form)
 
@@ -296,7 +323,16 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       val form = GoodsLocation
         .form()
         .fillAndValidate(
-          GoodsLocation("Poland", "t", "t", Some("TST"), Some("TST"), None, None, Some(TestHelper.createRandomString(36)))
+          GoodsLocation(
+            "Poland",
+            "t",
+            "t",
+            Some("TST"),
+            Some("TST"),
+            None,
+            None,
+            Some(TestHelper.createRandomString(36))
+          )
         )
       val view = createView(form)
 

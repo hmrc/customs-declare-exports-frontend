@@ -29,9 +29,9 @@ trait AdditionalDeclarationTypeTrait {
         .verifying("declaration.declarationType.inputText.error.incorrect", isContainedIn(allowedValues))
     ).verifying("declaration.declarationType.inputText.error.empty", _.isDefined)
       .transform[AdditionalDeclarationType](
-      value => AdditionalDeclarationType(value.getOrElse("")),
-      additionalDeclarationType => Some(additionalDeclarationType.additionalDeclarationType)
-    )
+        value => AdditionalDeclarationType(value.getOrElse("")),
+        additionalDeclarationType => Some(additionalDeclarationType.additionalDeclarationType)
+      )
   )
 
   val formId = "AdditionalDeclarationType"

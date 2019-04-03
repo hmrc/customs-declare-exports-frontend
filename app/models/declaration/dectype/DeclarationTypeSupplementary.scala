@@ -18,7 +18,10 @@ package models.declaration.dectype
 
 import forms.MetadataPropertiesConvertable
 import forms.declaration.DispatchLocation
-import forms.declaration.additionaldeclarationtype.{AdditionalDeclarationType, AdditionalDeclarationTypeSupplementaryDec}
+import forms.declaration.additionaldeclarationtype.{
+  AdditionalDeclarationType,
+  AdditionalDeclarationTypeSupplementaryDec
+}
 import models.declaration.SummaryContainer
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -42,6 +45,7 @@ object DeclarationTypeSupplementary {
 
   def apply(cacheMap: CacheMap): DeclarationTypeSupplementary = DeclarationTypeSupplementary(
     dispatchLocation = cacheMap.getEntry[DispatchLocation](DispatchLocation.formId),
-    additionalDeclarationType = cacheMap.getEntry[AdditionalDeclarationType](AdditionalDeclarationTypeSupplementaryDec.formId)
+    additionalDeclarationType =
+      cacheMap.getEntry[AdditionalDeclarationType](AdditionalDeclarationTypeSupplementaryDec.formId)
   )
 }

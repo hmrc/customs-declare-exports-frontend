@@ -59,8 +59,14 @@ object AdditionalDeclarationTypeStandardDecSpec {
   val incorrectAdditionalDeclarationTypeStandardDec = AdditionalDeclarationType("1")
   val emptyAdditionalDeclarationTypeStandardDec = AdditionalDeclarationType("")
 
-  val correctAdditionalDeclarationTypeStandardDecJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString(PreLodged)))
-  val incorrectAdditionalDeclarationTypeStandardDecJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString("1")))
-  val emptyAdditionalDeclarationTypeStandardDecJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString("")))
+  val correctAdditionalDeclarationTypeStandardDecJSON: JsValue = JsObject(
+    Map("additionalDeclarationType" -> JsString(PreLodged))
+  )
+  val incorrectAdditionalDeclarationTypeStandardDecJSON: JsValue = JsObject(
+    Map("additionalDeclarationType" -> JsString("1"))
+  )
+  val emptyAdditionalDeclarationTypeStandardDecJSON: JsValue = JsObject(
+    Map("additionalDeclarationType" -> JsString(""))
+  )
 
 }

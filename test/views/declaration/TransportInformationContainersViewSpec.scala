@@ -25,10 +25,12 @@ import views.html.declaration.add_transport_containers
 import views.tags.ViewTest
 
 @ViewTest
-class TransportInformationContainersViewSpec extends ViewSpec with TransportInformationContainerMessages with CommonMessages {
+class TransportInformationContainersViewSpec
+    extends ViewSpec with TransportInformationContainerMessages with CommonMessages {
 
   private val form: Form[TransportInformationContainer] = TransportInformationContainer.form()
-  private def createView(form: Form[TransportInformationContainer] = form): Html = add_transport_containers(form, Seq())(appConfig, fakeRequest, messages, countries)
+  private def createView(form: Form[TransportInformationContainer] = form): Html =
+    add_transport_containers(form, Seq())(appConfig, fakeRequest, messages, countries)
 
   "Transport Information Containers View" should {
 
@@ -100,14 +102,21 @@ class TransportInformationContainersViewSpec extends ViewSpec with TransportInfo
 
     "display one row with data in table" in {
 
-      val view = add_transport_containers(form, Seq(TransportInformationContainer("Test")))(appConfig, fakeRequest, messages, countries)
+      val view = add_transport_containers(form, Seq(TransportInformationContainer("Test")))(
+        appConfig,
+        fakeRequest,
+        messages,
+        countries
+      )
 
       // table header
       getElementByCss(view, "form>div.field-group>table>thead>tr>th").text() must be(messages(ticTitle))
 
       // table row
       getElementByCss(view, "form>div.field-group>table>tbody>tr>td:nth-child(1)").text() must be("Test")
-      getElementByCss(view, "form>div.field-group>table>tbody>tr>td:nth-child(2)>button").text() must be(messages(removeCaption))
+      getElementByCss(view, "form>div.field-group>table>tbody>tr>td:nth-child(2)>button").text() must be(
+        messages(removeCaption)
+      )
     }
   }
 }

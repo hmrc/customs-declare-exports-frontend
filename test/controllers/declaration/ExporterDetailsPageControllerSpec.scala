@@ -45,7 +45,9 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
 
     "read item from cache and display it" in {
 
-      val cachedData = ExporterDetails(EntityDetails(Some("99980"), Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal"))))
+      val cachedData = ExporterDetails(
+        EntityDetails(Some("99980"), Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal")))
+      )
       withCaching[ExporterDetails](Some(cachedData), "ExporterDetails")
 
       val result = route(app, getRequest(uri)).get

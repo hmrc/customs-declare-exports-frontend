@@ -27,7 +27,8 @@ class AdditionalDeclarationTypeSupplementaryDecSpec extends WordSpec with MustMa
 
     "return form with errors" when {
       "provided with empty input" in {
-        val form = AdditionalDeclarationTypeSupplementaryDec.form().bind(emptyAdditionalDeclarationTypeSupplementaryDecJSON)
+        val form =
+          AdditionalDeclarationTypeSupplementaryDec.form().bind(emptyAdditionalDeclarationTypeSupplementaryDecJSON)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -35,7 +36,8 @@ class AdditionalDeclarationTypeSupplementaryDecSpec extends WordSpec with MustMa
       }
 
       "provided with a value not defined in AllowedAdditionalDeclarationTypes" in {
-        val form = AdditionalDeclarationTypeSupplementaryDec.form().bind(incorrectAdditionalDeclarationTypeSupplementaryDecJSON)
+        val form =
+          AdditionalDeclarationTypeSupplementaryDec.form().bind(incorrectAdditionalDeclarationTypeSupplementaryDecJSON)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -45,7 +47,8 @@ class AdditionalDeclarationTypeSupplementaryDecSpec extends WordSpec with MustMa
 
     "return form without errors" when {
       "provided with valid input" in {
-        val form = AdditionalDeclarationTypeSupplementaryDec.form().bind(correctAdditionalDeclarationTypeSupplementaryDecJSON)
+        val form =
+          AdditionalDeclarationTypeSupplementaryDec.form().bind(correctAdditionalDeclarationTypeSupplementaryDecJSON)
 
         form.hasErrors must be(false)
       }
@@ -59,7 +62,13 @@ object AdditionalDeclarationTypeSupplementaryDecSpec {
   val incorrectAdditionalDeclarationTypeSupplementaryDec = AdditionalDeclarationType("1")
   val emptyAdditionalDeclarationTypeSupplementaryDec = AdditionalDeclarationType("")
 
-  val correctAdditionalDeclarationTypeSupplementaryDecJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString(Simplified)))
-  val incorrectAdditionalDeclarationTypeSupplementaryDecJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString("1")))
-  val emptyAdditionalDeclarationTypeSupplementaryDecJSON: JsValue = JsObject(Map("additionalDeclarationType" -> JsString("")))
+  val correctAdditionalDeclarationTypeSupplementaryDecJSON: JsValue = JsObject(
+    Map("additionalDeclarationType" -> JsString(Simplified))
+  )
+  val incorrectAdditionalDeclarationTypeSupplementaryDecJSON: JsValue = JsObject(
+    Map("additionalDeclarationType" -> JsString("1"))
+  )
+  val emptyAdditionalDeclarationTypeSupplementaryDecJSON: JsValue = JsObject(
+    Map("additionalDeclarationType" -> JsString(""))
+  )
 }

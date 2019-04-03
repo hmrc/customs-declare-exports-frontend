@@ -30,10 +30,10 @@ class GoodsLocationSpec extends WordSpec with MustMatchers {
 
       val metadata = MetaData.fromProperties(goodsLocation.toMetadataProperties())
 
-      metadata.declaration must be (defined)
-      metadata.declaration.get.goodsShipment must be (defined)
-      metadata.declaration.get.goodsShipment.get.consignment must be (defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation must be (defined)
+      metadata.declaration must be(defined)
+      metadata.declaration.get.goodsShipment must be(defined)
+      metadata.declaration.get.goodsShipment.get.consignment must be(defined)
+      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation must be(defined)
 
       val actualGoodsLocation = metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get
       actualGoodsLocation.name must be(defined)

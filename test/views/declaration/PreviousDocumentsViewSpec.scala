@@ -240,7 +240,9 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       getElementByCss(view, "form>table>thead>tr>th:nth-child(1)").text() must be(messages(documentCategoryLabel))
       getElementByCss(view, "form>table>thead>tr>th:nth-child(2)").text() must be(messages(documentTypeLabel))
       getElementByCss(view, "form>table>thead>tr>th:nth-child(3)").text() must be(messages(documentReferenceLabel))
-      getElementByCss(view, "form>table>thead>tr>th:nth-child(4)").text() must be(messages(documentGoodsIdentifierLabel))
+      getElementByCss(view, "form>table>thead>tr>th:nth-child(4)").text() must be(
+        messages(documentGoodsIdentifierLabel)
+      )
       getElementByCss(view, "form>table>thead>tr>th:nth-child(5)").text() must be(messages(removePackageInformation))
 
       // row

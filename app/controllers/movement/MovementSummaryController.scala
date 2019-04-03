@@ -19,7 +19,11 @@ package controllers.movement
 import java.util.UUID
 
 import config.AppConfig
-import connectors.{CustomsDeclareExportsConnector, CustomsDeclareExportsMovementsConnector, CustomsInventoryLinkingExportsConnector}
+import connectors.{
+  CustomsDeclareExportsConnector,
+  CustomsDeclareExportsMovementsConnector,
+  CustomsInventoryLinkingExportsConnector
+}
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.movementCacheId
 import forms.inventorylinking.MovementRequestSummaryMappingProvider
