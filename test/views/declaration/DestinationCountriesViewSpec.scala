@@ -17,20 +17,20 @@
 package views.declaration
 
 import base.TestHelper
-import forms.declaration.DestinationCountries
+import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesSupplementary}
 import helpers.views.declaration.{CommonMessages, DestinationCountriesMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.destination_countries
+import views.html.declaration.destination_countries_supplementary
 import views.declaration.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
 class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMessages with CommonMessages {
 
-  private val form: Form[DestinationCountries] = DestinationCountries.form()
-  private def createView(form: Form[DestinationCountries] = form): Html =
-    destination_countries(appConfig, form)(fakeRequest, messages, countries)
+  private val form: Form[DestinationCountriesSupplementary] = DestinationCountries.supplementaryForm
+  private def createView(form: Form[DestinationCountriesSupplementary] = form): Html =
+    destination_countries_supplementary(form)(fakeJourneyRequest("SMP"), messages, countries, appConfig)
 
   "Destination Countries View" should {
 
@@ -96,7 +96,9 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display error when dispatch country is empty" in {
 
-      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries("", "Germany")))
+      val view = createView(
+        DestinationCountries.supplementaryForm.fillAndValidate(DestinationCountriesSupplementary("", "Germany"))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
@@ -107,7 +109,8 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
     "display error when dispatch country is incorrect" in {
 
       val view = createView(
-        DestinationCountries.form().fillAndValidate(DestinationCountries(TestHelper.createRandomString(10), "Germany"))
+        DestinationCountries.supplementaryForm
+          .fillAndValidate(DestinationCountriesSupplementary(TestHelper.createRandomString(10), "Germany"))
       )
 
       checkErrorsSummary(view)
@@ -118,7 +121,9 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display error when destination country is empty" in {
 
-      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries("Germany", "")))
+      val view = createView(
+        DestinationCountries.supplementaryForm.fillAndValidate(DestinationCountriesSupplementary("Germany", ""))
+      )
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDestinationEmpty), "#countryOfDestination")
@@ -129,7 +134,8 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
     "display error when destination country is incorrect" in {
 
       val view = createView(
-        DestinationCountries.form().fillAndValidate(DestinationCountries("Germany", TestHelper.createRandomString(10)))
+        DestinationCountries.supplementaryForm
+          .fillAndValidate(DestinationCountriesSupplementary("Germany", TestHelper.createRandomString(10)))
       )
 
       checkErrorsSummary(view)
@@ -141,9 +147,10 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
     "display errors when both countries are incorrect" in {
 
       val view = createView(
-        DestinationCountries
-          .form()
-          .fillAndValidate(DestinationCountries(TestHelper.createRandomString(10), TestHelper.createRandomString(10)))
+        DestinationCountries.supplementaryForm
+          .fillAndValidate(
+            DestinationCountriesSupplementary(TestHelper.createRandomString(10), TestHelper.createRandomString(10))
+          )
       )
 
       checkErrorsSummary(view)
@@ -159,7 +166,8 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display errors when both countries are empty" in {
 
-      val view = createView(DestinationCountries.form().fillAndValidate(DestinationCountries("", "")))
+      val view =
+        createView(DestinationCountries.supplementaryForm.fillAndValidate(DestinationCountriesSupplementary("", "")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, messages(countryOfDispatchEmpty), "#countryOfDispatch")
@@ -175,7 +183,8 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
     "display errors when dispatch country is empty and destination is incorrect" in {
 
       val view = createView(
-        DestinationCountries.form().fillAndValidate(DestinationCountries("", TestHelper.createRandomString(10)))
+        DestinationCountries.supplementaryForm
+          .fillAndValidate(DestinationCountriesSupplementary("", TestHelper.createRandomString(10)))
       )
 
       checkErrorsSummary(view)
@@ -194,7 +203,8 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display data for both countries in inputs" in {
 
-      val view = createView(DestinationCountries.form().fill(DestinationCountries("Ukraine", "Poland")))
+      val view =
+        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("Ukraine", "Poland")))
 
       getElementById(view, "countryOfDispatch").attr("value") must be("Ukraine")
       getElementById(view, "countryOfDestination").attr("value") must be("Poland")
@@ -202,7 +212,8 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display data only for dispatch country input" in {
 
-      val view = createView(DestinationCountries.form().fill(DestinationCountries("Ukraine", "")))
+      val view =
+        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("Ukraine", "")))
 
       getElementById(view, "countryOfDispatch").attr("value") must be("Ukraine")
       getElementById(view, "countryOfDestination").attr("value") must be("")
@@ -210,7 +221,8 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display data only for destination country input" in {
 
-      val view = createView(DestinationCountries.form().fill(DestinationCountries("", "Poland")))
+      val view =
+        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("", "Poland")))
 
       getElementById(view, "countryOfDispatch").attr("value") must be("")
       getElementById(view, "countryOfDestination").attr("value") must be("Poland")

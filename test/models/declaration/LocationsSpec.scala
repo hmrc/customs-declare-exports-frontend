@@ -17,13 +17,14 @@
 package models.declaration
 
 import forms.declaration._
+import forms.declaration.destinationCountries.DestinationCountriesSupplementary
 import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
 
 class LocationsSpec extends WordSpec with MustMatchers {
 
   private trait SimpleTest {
-    val destinationCountriesMock = mock(classOf[DestinationCountries])
+    val destinationCountriesMock = mock(classOf[DestinationCountriesSupplementary])
     val goodsLocationMock = mock(classOf[GoodsLocation])
     val procedureCodesMock = mock(classOf[ProcedureCodesData])
     val supervisingCustomsOfficeMock = mock(classOf[SupervisingCustomsOffice])

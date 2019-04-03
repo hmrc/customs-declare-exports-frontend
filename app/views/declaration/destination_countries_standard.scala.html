@@ -1,0 +1,113 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.declaration.routes._
+@import controllers.util.{Add, Remove, SaveAndContinue}
+@import forms.declaration.destinationCountries.DestinationCountriesStandard
+@import uk.gov.hmrc.play.views.html._
+@import services.Country
+
+@(form: Form[DestinationCountriesStandard], routingCountries: Seq[String])(implicit request: Request[_], messages: Messages, countries: List[Country], appConfig: AppConfig)
+
+@main_template(
+    title = messages("declaration.destinationCountries.title"),
+    appConfig = appConfig
+) {
+    @helpers.form(DestinationCountriesController.saveCountries(), 'autoComplete -> "off") {
+        @components.back_link("/customs-declare-exports/declaration/holder-of-authorisation")
+
+        @components.error_summary(form.errors)
+
+        @components.page_title(Some("declaration.destinationCountries.title"))
+
+        @components.input_text_autocomplete(form)(
+            field = form("countryOfDispatch"),
+            label = messages("declaration.destinationCountries.countryOfDispatch"),
+            'autocomplete -> "off",
+            '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
+            'spellcheck -> "false",
+            'ariaautocomplete -> "list",
+            'ariahaspopup -> "true",
+            'ariaowns -> "suggestions-list",
+            'ariaactivedescendant -> "true",
+            'otherErrorFields -> Seq("countryCode")
+        )
+
+        <br/>
+        <br/>
+        <h2>Countries of routing</h2>
+
+        @if(routingCountries.nonEmpty) {
+            <div class="field-group">
+                <table >
+                @for(routingCountry <- routingCountries.zipWithIndex) {
+                    <tr>
+                        <th>@routingCountry._1</th>
+                        <th>
+                            <button
+                            class="button--secondary"
+                            name="@Remove.toString"
+                            value="@{
+                                routingCountry._2
+                            }">@messages("site.remove")</button>
+                        </th>
+                    </tr>
+                }
+                </table>
+                <br/><br/>
+            </div>
+        }
+
+        @components.input_text_autocomplete(form)(
+            field = form("countriesOfRouting[]"),
+            label = messages("declaration.destinationCountries.countriesOfRouting"),
+            'autocomplete -> "off",
+            '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
+            'spellcheck -> "false",
+            'ariaautocomplete -> "list",
+            'ariahaspopup -> "true",
+            'ariaowns -> "suggestions-list",
+            'ariaactivedescendant -> "true",
+            'otherErrorFields -> Seq("countryCode")
+        )
+
+        <br/>
+
+        <div class="section align='right'">
+            <button id="add" class="button--secondary" name="@Add.toString">@messages("site.add")</button>
+        </div>
+
+        <br/>
+
+        @components.input_text_autocomplete(form)(
+            field = form("countryOfDestination"),
+            label = messages("declaration.destinationCountries.countryOfDestination"),
+            'autocomplete -> "off",
+            '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
+            'spellcheck -> "false",
+            'ariaautocomplete -> "list",
+            'ariahaspopup -> "true",
+            'ariaowns -> "suggestions-list",
+            'ariaactivedescendant -> "true",
+            'otherErrorFields -> Seq("countryCode")
+        )
+
+        <div class="section align='right'">
+            <button id="submit" class="button" name="@SaveAndContinue.toString">@messages("site.save_and_continue")</button>
+        </div>
+    }
+}

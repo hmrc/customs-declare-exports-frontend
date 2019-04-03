@@ -19,7 +19,7 @@ package models.declaration
 import forms.declaration.ConsigneeDetailsSpec._
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
-import forms.declaration.DestinationCountriesSpec._
+import forms.declaration.DestinationCountriesSupplementarySpec._
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import forms.declaration.DispatchLocationSpec._
 import forms.declaration.ExporterDetailsSpec._
@@ -40,6 +40,7 @@ import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
+import forms.declaration.destinationCountries.DestinationCountries
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues._
@@ -400,7 +401,7 @@ object SupplementaryDeclarationDataSpec {
       ConsigneeDetails.id -> correctConsigneeDetailsJSON,
       DeclarationAdditionalActorsData.formId -> correctAdditionalActorsDataJSON,
       DeclarationHoldersData.formId -> correctDeclarationHoldersDataJSON,
-      DestinationCountries.formId -> correctDestinationCountriesJSON,
+      DestinationCountries.formId -> correctDestinationCountriesSupplementaryJSON,
       GoodsLocation.formId -> correctGoodsLocationJSON,
       SupervisingCustomsOffice.formId -> correctSupervisingCustomsOfficeJSON,
       WarehouseIdentification.formId -> correctWarehouseIdentificationJSON,
@@ -427,7 +428,7 @@ object SupplementaryDeclarationDataSpec {
     ),
     locations = Some(
       Locations(
-        destinationCountries = Some(correctDestinationCountries),
+        destinationCountries = Some(correctDestinationCountriesSupplementary),
         goodsLocation = Some(correctGoodsLocation),
         supervisingCustomsOffice = Some(correctSupervisingCustomsOffice),
         warehouseIdentification = Some(correctWarehouseIdentification),

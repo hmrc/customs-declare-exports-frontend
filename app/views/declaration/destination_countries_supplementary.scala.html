@@ -16,15 +16,15 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes._
-@import forms.declaration.DestinationCountries
+@import forms.declaration.destinationCountries.DestinationCountriesSupplementary
+@import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
-
 @import services.Country
 
-@(appConfig: AppConfig, form: Form[DestinationCountries])(implicit request: Request[_], messages: Messages, countries: List[Country])
+@(form: Form[DestinationCountriesSupplementary])(implicit request: JourneyRequest[_], messages: Messages, countries: List[Country], appConfig: AppConfig)
 
 @main_template(
-    title = messages("supplementary.destinationCountries.title"),
+    title = messages("declaration.destinationCountries.title"),
     appConfig = appConfig
 ) {
     @helpers.form(DestinationCountriesController.saveCountries(), 'autoComplete -> "off") {
@@ -32,11 +32,11 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("supplementary.destinationCountries.title"))
+        @components.page_title(Some("declaration.destinationCountries.title"))
 
         @components.input_text_autocomplete(form)(
             field = form("countryOfDispatch"),
-            label = messages("supplementary.destinationCountries.countryOfDispatch"),
+            label = messages("declaration.destinationCountries.countryOfDispatch"),
             'autocomplete -> "off",
             '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
             'spellcheck -> "false",
@@ -49,7 +49,7 @@
 
         @components.input_text_autocomplete(form)(
             field = form("countryOfDestination"),
-            label = messages("supplementary.destinationCountries.countryOfDestination"),
+            label = messages("declaration.destinationCountries.countryOfDestination"),
             'autocomplete -> "off",
             '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
             'spellcheck -> "false",
