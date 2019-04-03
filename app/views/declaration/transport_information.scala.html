@@ -36,11 +36,7 @@
         @components.error_summary(form.errors)
 
         @components.page_title(Some("supplementary.transportInfo.title"), None)
-
-
-
-@helper.select(field = form("inlandModeOfTransportCode"), options = Seq("foo"->"Foo", "bar"->"Bar"))
-
+      
         @components.input_radio(
             field = form("inlandModeOfTransportCode"),
             legend = messages("supplementary.transportInfo.inlandTransportMode.header"),
