@@ -21,7 +21,25 @@ trait WarehouseIdentificationMessages {
   val warehouse: String = "supplementary.warehouse"
 
   val title: String = warehouse + ".title"
-  val win: String = warehouse + ".identificationNumber"
-  val winError: String = warehouse + ".identificationNumber.error"
-  val winHint: String = warehouse + ".identificationNumber.hint"
+  val titleHint: String = warehouse + ".title.hint"
+  val identificationNumber: String = warehouse + ".identificationNumber"
+  val identificationNumberError: String = warehouse + ".identificationNumber.error"
+  val identificationNumberHint: String = warehouse + ".identificationNumber.hint"
+  val supervisingCustomsOffice: String = warehouse + ".supervisingCustomsOffice"
+  val supervisingCustomsOfficeHint: String = warehouse + ".supervisingCustomsOffice.hint"
+  val supervisingCustomsOfficeError: String = warehouse + ".supervisingCustomsOffice.error"
+  val inlandTransportMode: String = warehouse + ".inlandTransportMode.header"
+  val inlandTransportModeHint: String = warehouse + ".inlandTransportMode.header.hint"
+  val inlandTransportModeError: String = warehouse + ".inlandTransportMode.error.incorrect"
+
+  val transportMode: String = "supplementary.transportInfo.transportMode"
+
+  val sea: String = transportMode + ".sea"
+  val rail: String = transportMode + ".rail"
+  val road: String = transportMode + ".road"
+  val air: String = transportMode + ".air"
+  val postalOrMail: String = transportMode + ".postalOrMail"
+  val fixedTransportInstallations: String = transportMode + ".fixedTransportInstallations"
+  val inlandWaterway: String = transportMode + ".inlandWaterway"
+  val unknown: String = transportMode + ".unknown"
 }

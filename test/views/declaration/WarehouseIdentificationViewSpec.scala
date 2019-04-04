@@ -15,6 +15,7 @@
  */
 
 package views.declaration
+
 import forms.declaration.WarehouseIdentification
 import helpers.views.declaration.{CommonMessages, WarehouseIdentificationMessages}
 import play.api.data.Form
@@ -34,14 +35,32 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
 
     "have proper labels for messages" in {
 
-      assertMessage(title, "2/7 Enter the warehouse identification number")
-      assertMessage(win, "Identification Number")
-      assertMessage(winHint, "For example, R1234567GB")
+      assertMessage(title, "Enter more detail about the warehouse")
+      assertMessage(titleHint, "Locations")
+      assertMessage(identificationNumber, "2/7 Enter the warehouse identification number")
+      assertMessage(identificationNumberHint, "For example, R1234567GB")
+      assertMessage(supervisingCustomsOffice, "5/27 Where is the supervising customs office?")
+      assertMessage(supervisingCustomsOfficeHint, "This is an 8 digit code")
+      assertMessage(inlandTransportMode, "7/5 What was the inland mode of transport?")
+      assertMessage(
+        inlandTransportModeHint,
+        "The transport that will move the goods from their inland supervision to the port of arrival"
+      )
+      assertMessage(sea, "Sea transport")
+      assertMessage(rail, "Rail transport")
+      assertMessage(road, "Road transport")
+      assertMessage(air, "Air transport")
+      assertMessage(postalOrMail, "Postal or Mail")
+      assertMessage(fixedTransportInstallations, "Fixed transport installations")
+      assertMessage(inlandWaterway, "Inland waterway transport")
+      assertMessage(unknown, "Mode unknown, for example own propulsion")
     }
 
     "have proper error labels for messages" in {
 
-      assertMessage(winError, "Incorrect Identification Number")
+      assertMessage(identificationNumberError, "Incorrect Identification Number")
+      assertMessage(supervisingCustomsOfficeError, "Supervising customs office is incorrect")
+      assertMessage(inlandTransportModeError, "Please, choose valid inland mode of transport")
     }
   }
 
@@ -57,21 +76,12 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
       getElementByCss(createView(), "legend>h1").text() must be(messages(title))
     }
 
-    "display empty input with label for Container ID" in {
-
-      val view = createView()
-
-      getElementByCss(view, "form>div.form-field>label>span:nth-child(1)").text() must be(messages(win))
-      getElementByCss(view, "form>div.form-field>label>span.form-hint").text() must be(messages(winHint))
-      getElementById(view, "identificationNumber").attr("value") must be("")
-    }
-
     "display \"Back\" button that links to \"Supervising Office\" page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/supervising-office")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/export-items")
     }
 
     "display \"Save and continue\" button on page" in {

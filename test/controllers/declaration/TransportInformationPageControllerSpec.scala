@@ -48,8 +48,6 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
       val resultAsString = contentAsString(result)
 
       resultAsString must include(messages("supplementary.transportInfo.title"))
-      resultAsString must include(messages("supplementary.transportInfo.inlandTransportMode.header"))
-      resultAsString must include(messages("supplementary.transportInfo.inlandTransportMode.header.hint"))
       resultAsString must include(messages("supplementary.transportInfo.borderTransportMode.header"))
       resultAsString must include(messages("supplementary.transportInfo.borderTransportMode.header.hint"))
       resultAsString must include(messages("supplementary.transportInfo.meansOfTransport.departure.header"))
@@ -204,7 +202,6 @@ class TransportInformationPageControllerSpec extends CustomExportsBaseSpec with 
 object TransportInformationPageControllerSpec {
 
   def buildTransportInformationForm(
-    inlandModeOfTransportCode: String = "",
     borderModeOfTransportCode: String = "",
     meansOfTransportOnDepartureType: String = "",
     meansOfTransportOnDepartureIDNumber: String = "",
@@ -214,7 +211,6 @@ object TransportInformationPageControllerSpec {
     container: Boolean = false
   ): JsValue = JsObject(
     Map(
-      "inlandModeOfTransportCode" -> JsString(inlandModeOfTransportCode),
       "borderModeOfTransportCode" -> JsString(borderModeOfTransportCode),
       "meansOfTransportOnDepartureType" -> JsString(meansOfTransportOnDepartureType),
       "meansOfTransportOnDepartureIDNumber" -> JsString(meansOfTransportOnDepartureIDNumber),

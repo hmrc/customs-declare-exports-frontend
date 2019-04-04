@@ -19,6 +19,7 @@ package controllers.declaration
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice
 import forms.Choice.choiceId
+import forms.declaration.TransportInformation.ModeOfTransportCodes.Maritime
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
 import helpers.views.declaration.WarehouseIdentificationMessages
@@ -44,49 +45,138 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       status(result) must be(OK)
     }
 
+    "display correct hints and questions" in {
+
+      val result = route(app, getRequest(uri)).get
+      val page = contentAsString(result)
+
+      page must include(messages(title))
+      page must include(messages(titleHint))
+      page must include(messages(identificationNumber))
+      page must include(messages(supervisingCustomsOffice))
+      page must include(messages(inlandTransportMode))
+      page must include(messages(inlandTransportModeHint))
+      page must include(messages(sea))
+      page must include(messages(rail))
+      page must include(messages(road))
+      page must include(messages(air))
+      page must include(messages(postalOrMail))
+      page must include(messages(fixedTransportInstallations))
+      page must include(messages(inlandWaterway))
+      page must include(messages(unknown))
+    }
+
     "read item from cache and display it" in {
 
-      val cachedData = WarehouseIdentification(Some("SecretStash"))
+      val cachedData = WarehouseIdentification(Some("Office"), Some("SecretStash"), Some(Maritime))
       withCaching[WarehouseIdentification](Some(cachedData), "IdentificationOfWarehouse")
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)
+      page must include("Office")
       page must include("SecretStash")
+      page must include("Sea transport")
     }
   }
 
   "Warehouse Identification Controller on POST" should {
 
-    "validate request - too many characters" in {
+    "validate request - incorrect values" in {
 
       val incorrectWarehouseIdentification: JsValue =
-        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(37))))
+        JsObject(
+          Map(
+            "supervisingCustomsOffice" -> JsString(TestHelper.createRandomAlphanumericString(5)),
+            "identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(37)),
+            "inlandModeOfTransportCode" -> JsString("Incorrect mode of transport")
+          )
+        )
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
+      val page = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(winError))
+
+      page must include(messages(supervisingCustomsOfficeError))
+      page must include(messages(identificationNumberError))
     }
 
-    "validate request - less than two characters" in {
+    "validate identification number - less than two characters" in {
 
       val incorrectWarehouseIdentification: JsValue =
         JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(1))))
+
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(winError))
+      contentAsString(result) must include(messages(identificationNumberError))
     }
 
-    "validate request - first letter is not capital" in {
+    "validate identification number - more than 36 characters" in {
+
+      val incorrectWarehouseIdentification: JsValue =
+        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(37))))
+
+      val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(identificationNumberError))
+    }
+
+    "validate identification number - first letter is not capital" in {
 
       val incorrectWarehouseIdentification: JsValue =
         JsObject(Map("identificationNumber" -> JsString("r1234567GB")))
+
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(winError))
+      contentAsString(result) must include(messages(identificationNumberError))
+    }
+
+    "validate supervising customs office - less than 8 characters" in {
+
+      val incorrectWarehouseOffice: JsValue =
+        JsObject(Map("supervisingCustomsOffice" -> JsString(TestHelper.createRandomAlphanumericString(7))))
+
+      val result = route(app, postRequest(uri, incorrectWarehouseOffice)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(supervisingCustomsOfficeError))
+    }
+
+    "validate supervising customs office - more than 8 characters" in {
+
+      val incorrectWarehouseOffice: JsValue =
+        JsObject(Map("supervisingCustomsOffice" -> JsString(TestHelper.createRandomAlphanumericString(9))))
+
+      val result = route(app, postRequest(uri, incorrectWarehouseOffice)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(supervisingCustomsOfficeError))
+    }
+
+    "validate supervising customs office - 8 characters with special characters" in {
+
+      val incorrectWarehouseOffice: JsValue =
+        JsObject(Map("supervisingCustomsOffice" -> JsString("123 ,.78")))
+
+      val result = route(app, postRequest(uri, incorrectWarehouseOffice)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(supervisingCustomsOfficeError))
+    }
+
+    "validate inland mode transport code - wrong choice" in {
+
+      val incorrectTransportCode: JsValue =
+        JsObject(Map("inlandModeOfTransportCode" -> JsString("Incorrect more")))
+
+      val result = route(app, postRequest(uri, incorrectTransportCode)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(inlandTransportModeError))
     }
 
     "validate request and redirect - no answers" in {
@@ -96,7 +186,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
     }
 
     "validate request and redirect - correct values" in {
@@ -106,7 +196,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
     }
   }
 }

@@ -16,6 +16,8 @@
 
 package forms.declaration
 
+import forms.declaration.TransportInformation.ModeOfTransportCodes
+import forms.declaration.TransportInformation.ModeOfTransportCodes.Maritime
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
@@ -27,7 +29,9 @@ class WarehouseIdentificationSpec extends WordSpec with MustMatchers {
       val warehouseIdentification = correctWarehouseIdentification
       val expectedMetadataProperties: Map[String, String] = Map(
         "declaration.goodsShipment.warehouse.id" -> warehouseId,
-        "declaration.goodsShipment.warehouse.typeCode" -> warehouseTypeCode
+        "declaration.goodsShipment.warehouse.typeCode" -> warehouseTypeCode,
+        "declaration.supervisingOffice.id" -> office,
+        "declaration.goodsShipment.consignment.arrivalTransportMeans.modeCode" -> inlandModeOfTransportCode
       )
 
       warehouseIdentification.toMetadataProperties() must equal(expectedMetadataProperties)
@@ -39,12 +43,28 @@ class WarehouseIdentificationSpec extends WordSpec with MustMatchers {
 object WarehouseIdentificationSpec {
   private val warehouseTypeCode = "R"
   private val warehouseId = "1234567GB"
+  private val office = "Office"
+  private val inlandModeOfTransportCode = Maritime
 
-  val correctWarehouseIdentification = WarehouseIdentification(id = Some(warehouseTypeCode + warehouseId))
-  val emptyWarehouseIdentification = WarehouseIdentification(id = None)
+  val correctWarehouseIdentification =
+    WarehouseIdentification(Some(office), Some(warehouseTypeCode + warehouseId), Some(inlandModeOfTransportCode))
+  val emptyWarehouseIdentification = WarehouseIdentification(None, None, None)
 
   val correctWarehouseIdentificationJSON: JsValue =
-    JsObject(Map("id" -> JsString(warehouseTypeCode + warehouseId)))
+    JsObject(
+      Map(
+        "supervisingCustomsOffice" -> JsString("12345678"),
+        "identificationNumber" -> JsString(warehouseTypeCode + warehouseId),
+        "inlandModeOfTransportCode" -> JsString(ModeOfTransportCodes.Rail)
+      )
+    )
+
   val emptyWarehouseIdentificationJSON: JsValue =
-    JsObject(Map("identificationNumber" -> JsString("")))
+    JsObject(
+      Map(
+        "supervisingCustomsOffice" -> JsString(""),
+        "identificationNumber" -> JsString(""),
+        "inlandModeOfTransportCode" -> JsString("")
+      )
+    )
 }

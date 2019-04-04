@@ -18,7 +18,6 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{TotalNumberOfItemsController, TransportInformationContainersPageController}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.TransportInformation
 import forms.declaration.TransportInformation.form
@@ -65,9 +64,9 @@ class TransportInformationPageController @Inject()(
             .cache[TransportInformation](cacheId, TransportInformation.id, validTransportInformation)
             .map(_ => {
               if (validTransportInformation.container)
-                Redirect(TransportInformationContainersPageController.displayPage())
+                Redirect(controllers.declaration.routes.TransportInformationContainersPageController.displayPage())
               else
-                Redirect(TotalNumberOfItemsController.displayForm())
+                Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm())
             })
       )
   }

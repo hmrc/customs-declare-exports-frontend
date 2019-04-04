@@ -44,5 +44,4 @@ class ItemsSummaryController @Inject()(
       .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
       .map(items => Ok(items_summary(items.getOrElse(Seq.empty))))
   }
-
 }

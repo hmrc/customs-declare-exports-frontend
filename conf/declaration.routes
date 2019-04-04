@@ -78,12 +78,6 @@ GET         /procedure-codes                controllers.declaration.ProcedureCod
 
 POST        /procedure-codes                controllers.declaration.ProcedureCodesPageController.submitProcedureCodes()
 
-# Supervising customs office
-
-GET         /supervising-office             controllers.declaration.SupervisingCustomsOfficeController.displayForm()
-
-POST        /supervising-office             controllers.declaration.SupervisingCustomsOfficeController.saveSupervisingOffice()
-
 # Identification of a Warehouse
 
 GET         /warehouse                      controllers.declaration.WarehouseIdentificationController.displayForm()

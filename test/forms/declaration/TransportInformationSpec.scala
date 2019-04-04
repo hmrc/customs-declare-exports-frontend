@@ -28,7 +28,6 @@ class TransportInformationSpec extends WordSpec with MustMatchers {
     "return proper Metadata Properties" in {
       val transportInformation = correctTransportInformation
       val expectedTransportInformationProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.consignment.arrivalTransportMeans.modeCode" -> transportInformation.inlandModeOfTransportCode.get,
         "declaration.borderTransportMeans.modeCode" -> transportInformation.borderModeOfTransportCode,
         "declaration.goodsShipment.consignment.departureTransportMeans.identificationTypeCode" -> transportInformation.meansOfTransportOnDepartureType,
         "declaration.goodsShipment.consignment.departureTransportMeans.id" -> transportInformation.meansOfTransportOnDepartureIDNumber.get,
@@ -161,7 +160,6 @@ class TransportInformationSpec extends WordSpec with MustMatchers {
 
 object TransportInformationSpec {
   val correctTransportInformation = TransportInformation(
-    inlandModeOfTransportCode = Some(Road),
     borderModeOfTransportCode = Road,
     meansOfTransportOnDepartureType = NameOfVessel,
     meansOfTransportOnDepartureIDNumber = Some("123ABC"),
@@ -171,7 +169,6 @@ object TransportInformationSpec {
     container = true
   )
   val emptyTransportInformation = TransportInformation(
-    inlandModeOfTransportCode = None,
     borderModeOfTransportCode = "",
     meansOfTransportOnDepartureType = "",
     meansOfTransportOnDepartureIDNumber = None,
@@ -183,7 +180,6 @@ object TransportInformationSpec {
 
   val correctTransportInformationJSON: JsValue = JsObject(
     Map(
-      "inlandModeOfTransportCode" -> JsString(Road),
       "borderModeOfTransportCode" -> JsString(Road),
       "meansOfTransportOnDepartureType" -> JsString(NameOfVessel),
       "meansOfTransportOnDepartureIDNumber" -> JsString("123ABC"),
@@ -195,7 +191,6 @@ object TransportInformationSpec {
   )
   val emptyTransportInformationJSON: JsValue = JsObject(
     Map(
-      "inlandModeOfTransportCode" -> JsString(""),
       "borderModeOfTransportCode" -> JsString(""),
       "meansOfTransportOnDepartureType" -> JsString(""),
       "meansOfTransportOnDepartureIDNumber" -> JsString(""),

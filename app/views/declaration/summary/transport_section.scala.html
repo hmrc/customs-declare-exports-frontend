@@ -21,10 +21,6 @@
 
 @components.summary_list(Some(messages("supplementary.summary.transport.header"))) {
     @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.transport.inlandTransportMode"),
-        value = transportInformation.flatMap(_.inlandModeOfTransportCode)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.transport.borderTransportMode"),
         value = transportInformation.map(_.borderModeOfTransportCode)
     ))
