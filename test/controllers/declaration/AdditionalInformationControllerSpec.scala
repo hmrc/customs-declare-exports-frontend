@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.TestHelper.createRandomString
+import base.TestHelper.createRandomAlphanumericString
 import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.declaration.AdditionalInformationControllerSpec.cacheWithMaximumAmountOfHolders
 import controllers.util.{Add, Remove, SaveAndContinue}
@@ -165,7 +165,7 @@ class AdditionalInformationControllerSpec
 
           withCaching[AdditionalInformationData](None, formId)
 
-          val body = Seq(("code", "1234"), ("description", createRandomString(71)), addActionURLEncoded)
+          val body = Seq(("code", "1234"), ("description", createRandomAlphanumericString(71)), addActionURLEncoded)
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
@@ -182,7 +182,7 @@ class AdditionalInformationControllerSpec
 
         "an item with longer code" in {
 
-          val body = Seq(("code", createRandomString(6)), ("description", ""), addActionURLEncoded)
+          val body = Seq(("code", createRandomAlphanumericString(6)), ("description", ""), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
@@ -196,7 +196,7 @@ class AdditionalInformationControllerSpec
 
         "an item with shorter code" in {
 
-          val body = Seq(("code", createRandomString(3)), ("description", ""), addActionURLEncoded)
+          val body = Seq(("code", createRandomAlphanumericString(3)), ("description", ""), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
@@ -210,7 +210,7 @@ class AdditionalInformationControllerSpec
 
         "an item with longer description" in {
 
-          val body = Seq(("code", "M1l3s"), ("description", createRandomString(100)), addActionURLEncoded)
+          val body = Seq(("code", "M1l3s"), ("description", createRandomAlphanumericString(100)), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
@@ -286,7 +286,7 @@ class AdditionalInformationControllerSpec
 
           withCaching[AdditionalInformationData](None, formId)
 
-          val body = Seq(("code", "1234"), ("description", createRandomString(71)), addActionURLEncoded)
+          val body = Seq(("code", "1234"), ("description", createRandomAlphanumericString(71)), addActionURLEncoded)
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
@@ -316,7 +316,7 @@ class AdditionalInformationControllerSpec
 
         "an item has longer code" in {
 
-          val body = Seq(("code", createRandomString(6)), ("description", ""), saveAndContinueActionURLEncoded)
+          val body = Seq(("code", createRandomAlphanumericString(6)), ("description", ""), saveAndContinueActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
@@ -330,7 +330,7 @@ class AdditionalInformationControllerSpec
 
         "an item has shorter code" in {
 
-          val body = Seq(("code", createRandomString(3)), ("description", ""), saveAndContinueActionURLEncoded)
+          val body = Seq(("code", createRandomAlphanumericString(3)), ("description", ""), saveAndContinueActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
@@ -344,7 +344,7 @@ class AdditionalInformationControllerSpec
 
         "an item has longer description" in {
 
-          val body = Seq(("code", "M1l3s"), ("description", createRandomString(100)), saveAndContinueActionURLEncoded)
+          val body = Seq(("code", "M1l3s"), ("description", createRandomAlphanumericString(100)), saveAndContinueActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 

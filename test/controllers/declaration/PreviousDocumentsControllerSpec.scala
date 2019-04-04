@@ -500,7 +500,7 @@ object PreviousDocumentsControllerSpec {
     Seq(("documentCategory", "X"), ("documentType", "1234"), ("documentReference", "A"), ("goodsItemIdentifier", "1"))
 
   private val referenceMaxLength = 35
-  private val incorrectReference = TestHelper.createRandomString(referenceMaxLength + 1)
+  private val incorrectReference = TestHelper.createRandomAlphanumericString(referenceMaxLength + 1)
 
   val documentWithIncorrectReference =
     Seq(

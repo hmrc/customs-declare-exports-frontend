@@ -51,7 +51,7 @@ object DeclarationHoldersDataSpec {
   val emptyDeclarationHolder = DeclarationHolder(authorisationTypeCode = None, eori = None)
   val incorrectDeclarationHolder = DeclarationHolder(
     authorisationTypeCode = Some("12345"),
-    eori = Some(TestHelper.createRandomString(eoriMaxLength + 1))
+    eori = Some(TestHelper.createRandomAlphanumericString(eoriMaxLength + 1))
   )
 
   val correctDeclarationHoldersData = DeclarationHoldersData(Seq(correctDeclarationHolder))
@@ -67,7 +67,7 @@ object DeclarationHoldersDataSpec {
   val incorrectDeclarationHolderJSON: JsValue = JsObject(
     Map(
       "authorisationTypeCode" -> JsString("12345"),
-      "eori" -> JsString(TestHelper.createRandomString(eoriMaxLength + 1))
+      "eori" -> JsString(TestHelper.createRandomAlphanumericString(eoriMaxLength + 1))
     )
   )
 

@@ -38,7 +38,7 @@ class AddressSpec extends WordSpec with MustMatchers {
 
       "provided with input longer than 70 characters" in {
 
-        val input = buildAddressInputMap(fullName = createRandomString(71))
+        val input = buildAddressInputMap(fullName = createRandomAlphanumericString(71))
         val form = Address.form().bind(input)
 
         val fullNameError = form.errors.find(_.key == "fullName")
@@ -67,7 +67,7 @@ class AddressSpec extends WordSpec with MustMatchers {
       }
 
       "provided with input longer than 70 characters" in {
-        val input = buildAddressInputMap(addressLine = createRandomString(71))
+        val input = buildAddressInputMap(addressLine = createRandomAlphanumericString(71))
         val form = Address.form().bind(input)
 
         val addressLineError = form.errors.find(_.key == "addressLine")
@@ -96,7 +96,7 @@ class AddressSpec extends WordSpec with MustMatchers {
       }
 
       "provided with input longer than 35 characters" in {
-        val input = buildAddressInputMap(townOrCity = createRandomString(36))
+        val input = buildAddressInputMap(townOrCity = createRandomAlphanumericString(36))
         val form = Address.form().bind(input)
 
         val townOrCityError = form.errors.find(_.key == "townOrCity")

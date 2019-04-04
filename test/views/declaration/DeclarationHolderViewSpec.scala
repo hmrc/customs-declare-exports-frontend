@@ -21,8 +21,8 @@ import forms.declaration.DeclarationHolder
 import helpers.views.declaration.{CommonMessages, DeclarationHolderMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.declaration_holder
 import views.declaration.spec.ViewSpec
+import views.html.declaration.declaration_holder
 import views.tags.ViewTest
 
 @ViewTest
@@ -113,7 +113,7 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
       val view = createView(
         DeclarationHolder
           .form()
-          .fillAndValidate(DeclarationHolder(Some("12345"), Some(TestHelper.createRandomString(17))))
+          .fillAndValidate(DeclarationHolder(Some("12345"), Some(TestHelper.createRandomAlphanumericString(17))))
       )
 
       checkErrorsSummary(view)
@@ -129,7 +129,7 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
       val view = createView(
         DeclarationHolder
           .form()
-          .fillAndValidate(DeclarationHolder(Some("1234"), Some(TestHelper.createRandomString(18))))
+          .fillAndValidate(DeclarationHolder(Some("1234"), Some(TestHelper.createRandomAlphanumericString(18))))
       )
 
       checkErrorsSummary(view)
@@ -144,7 +144,7 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
         DeclarationHolder
           .form()
           .fillAndValidate(
-            DeclarationHolder(Some(TestHelper.createRandomString(6)), Some(TestHelper.createRandomString(18)))
+            DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(TestHelper.createRandomAlphanumericString(18)))
           )
       )
 

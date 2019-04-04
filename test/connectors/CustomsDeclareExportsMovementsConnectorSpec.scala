@@ -50,12 +50,12 @@ class CustomsDeclareExportsMovementsConnectorSpec extends CustomExportsBaseSpec 
 }
 
 object CustomsDeclareExportsMovementsConnectorSpec {
-  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomString(255))))
-  val mrn: String = TestHelper.createRandomString(10)
+  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomAlphanumericString(255))))
+  val mrn: String = TestHelper.createRandomAlphanumericString(10)
   val metadata = MetaData()
 
-  val conversationId: String = TestHelper.createRandomString(10)
-  val eori: String = TestHelper.createRandomString(15)
+  val conversationId: String = TestHelper.createRandomAlphanumericString(10)
+  val eori: String = TestHelper.createRandomAlphanumericString(15)
 
   val expectedHeaders: Seq[(String, String)] = Seq.empty
 

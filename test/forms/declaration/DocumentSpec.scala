@@ -85,7 +85,7 @@ object DocumentSpec {
   val incorrectPreviousDocuments = Document(
     documentCategory = "Incorrect category",
     documentType = "Incorrect type",
-    documentReference = TestHelper.createRandomString(36),
+    documentReference = TestHelper.createRandomAlphanumericString(36),
     goodsItemIdentifier = Some("Incorrect identifier")
   )
   val mandatoryPreviousDocuments = Document(
@@ -123,7 +123,7 @@ object DocumentSpec {
     Map(
       "documentCategory" -> JsString("Incorrect category"),
       "documentType" -> JsString("Incorrect type"),
-      "documentReference" -> JsString(TestHelper.createRandomString(36)),
+      "documentReference" -> JsString(TestHelper.createRandomAlphanumericString(36)),
       "goodsItemIdentifier" -> JsString("Incorrect identifier")
     )
   )

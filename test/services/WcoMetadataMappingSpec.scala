@@ -25,8 +25,8 @@ import uk.gov.hmrc.wco.dec.{Consignment, Declaration, GoodsShipment}
 
 class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCachingData with OptionValues {
 
-  val expectedItems = goodsItemSeq(10)
-  val expectedPreviousDocs = createPreviousDocs(6)
+  val expectedItems = createGovernmentAgencyGoodsItemSeq(10)
+  val expectedPreviousDocs = createPreviousDocumentsData(6)
   val previousDocsCache = getCacheMap(expectedPreviousDocs, "PreviousDocuments")
 
   "WcoMetadataMappingSpec" should {

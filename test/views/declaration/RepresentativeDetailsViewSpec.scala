@@ -255,7 +255,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
             .form()
             .bind(
               Map(
-                "details.eori" -> TestHelper.createRandomString(50),
+                "details.eori" -> TestHelper.createRandomAlphanumericString(50),
                 "details.address.fullName" -> "",
                 "details.address.addressLine" -> "",
                 "details.address.townOrCity" -> "",
@@ -308,7 +308,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
             .bind(
               Map(
                 "details.eori" -> "",
-                "details.address.fullName" -> TestHelper.createRandomString(71),
+                "details.address.fullName" -> TestHelper.createRandomAlphanumericString(71),
                 "details.address.addressLine" -> "28 Test Street",
                 "details.address.townOrCity" -> "Leeds",
                 "details.address.postCode" -> "LS1B82",
@@ -363,7 +363,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
               Map(
                 "details.eori" -> "",
                 "details.address.fullName" -> "John Smith",
-                "details.address.addressLine" -> TestHelper.createRandomString(71),
+                "details.address.addressLine" -> TestHelper.createRandomAlphanumericString(71),
                 "details.address.townOrCity" -> "Leeds",
                 "details.address.postCode" -> "LS1B82",
                 "details.address.country" -> "Germany",
@@ -420,7 +420,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
                 "details.eori" -> "",
                 "details.address.fullName" -> "John Smith",
                 "details.address.addressLine" -> "28 Town Street",
-                "details.address.townOrCity" -> TestHelper.createRandomString(71),
+                "details.address.townOrCity" -> TestHelper.createRandomAlphanumericString(71),
                 "details.address.postCode" -> "LS1B82",
                 "details.address.country" -> "Germany",
                 "statusCode" -> ""
@@ -475,7 +475,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
                 "details.address.fullName" -> "John Smith",
                 "details.address.addressLine" -> "28 Town Street",
                 "details.address.townOrCity" -> "Leeds",
-                "details.address.postCode" -> TestHelper.createRandomString(10),
+                "details.address.postCode" -> TestHelper.createRandomAlphanumericString(10),
                 "details.address.country" -> "Germany",
                 "statusCode" -> ""
               )
@@ -624,10 +624,10 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
               Map(
                 "details.eori" -> "",
                 "details.address.fullName" -> "John Smith",
-                "details.address.addressLine" -> TestHelper.createRandomString(71),
-                "details.address.townOrCity" -> TestHelper.createRandomString(71),
-                "details.address.postCode" -> TestHelper.createRandomString(71),
-                "details.address.country" -> TestHelper.createRandomString(71),
+                "details.address.addressLine" -> TestHelper.createRandomAlphanumericString(71),
+                "details.address.townOrCity" -> TestHelper.createRandomAlphanumericString(71),
+                "details.address.postCode" -> TestHelper.createRandomAlphanumericString(71),
+                "details.address.country" -> TestHelper.createRandomAlphanumericString(71),
                 "statusCode" -> ""
               )
             )
@@ -659,10 +659,10 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
             .bind(
               Map(
                 "details.eori" -> "",
-                "details.address.fullName" -> TestHelper.createRandomString(71),
-                "details.address.addressLine" -> TestHelper.createRandomString(71),
-                "details.address.townOrCity" -> TestHelper.createRandomString(71),
-                "details.address.postCode" -> TestHelper.createRandomString(71),
+                "details.address.fullName" -> TestHelper.createRandomAlphanumericString(71),
+                "details.address.addressLine" -> TestHelper.createRandomAlphanumericString(71),
+                "details.address.townOrCity" -> TestHelper.createRandomAlphanumericString(71),
+                "details.address.postCode" -> TestHelper.createRandomAlphanumericString(71),
                 "details.address.country" -> "Poland",
                 "statusCode" -> ""
               )
@@ -697,7 +697,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
             .form()
             .bind(
               Map(
-                "details.eori" -> TestHelper.createRandomString(50),
+                "details.eori" -> TestHelper.createRandomAlphanumericString(50),
                 "details.address.fullName" -> "",
                 "details.address.addressLine" -> "",
                 "details.address.townOrCity" -> "",
@@ -746,7 +746,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
             .bind(
               Map(
                 "details.eori" -> "",
-                "details.address.fullName" -> TestHelper.createRandomString(71),
+                "details.address.fullName" -> TestHelper.createRandomAlphanumericString(71),
                 "details.address.addressLine" -> "28 Test Street",
                 "details.address.townOrCity" -> "Leeds",
                 "details.address.postCode" -> "LS1B82",
@@ -797,7 +797,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
               Map(
                 "details.eori" -> "",
                 "details.address.fullName" -> "John Smith",
-                "details.address.addressLine" -> TestHelper.createRandomString(71),
+                "details.address.addressLine" -> TestHelper.createRandomAlphanumericString(71),
                 "details.address.townOrCity" -> "Leeds",
                 "details.address.postCode" -> "LS1B82",
                 "details.address.country" -> "Germany",
@@ -850,7 +850,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
                 "details.eori" -> "",
                 "details.address.fullName" -> "John Smith",
                 "details.address.addressLine" -> "28 Town Street",
-                "details.address.townOrCity" -> TestHelper.createRandomString(71),
+                "details.address.townOrCity" -> TestHelper.createRandomAlphanumericString(71),
                 "details.address.postCode" -> "LS1B82",
                 "details.address.country" -> "Germany",
                 "statusCode" -> "1"
@@ -901,7 +901,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
                 "details.address.fullName" -> "John Smith",
                 "details.address.addressLine" -> "28 Town Street",
                 "details.address.townOrCity" -> "Leeds",
-                "details.address.postCode" -> TestHelper.createRandomString(10),
+                "details.address.postCode" -> TestHelper.createRandomAlphanumericString(10),
                 "details.address.country" -> "Germany",
                 "statusCode" -> "1"
               )
@@ -1039,10 +1039,10 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
               Map(
                 "details.eori" -> "",
                 "details.address.fullName" -> "John Smith",
-                "details.address.addressLine" -> TestHelper.createRandomString(71),
-                "details.address.townOrCity" -> TestHelper.createRandomString(71),
-                "details.address.postCode" -> TestHelper.createRandomString(71),
-                "details.address.country" -> TestHelper.createRandomString(71),
+                "details.address.addressLine" -> TestHelper.createRandomAlphanumericString(71),
+                "details.address.townOrCity" -> TestHelper.createRandomAlphanumericString(71),
+                "details.address.postCode" -> TestHelper.createRandomAlphanumericString(71),
+                "details.address.country" -> TestHelper.createRandomAlphanumericString(71),
                 "statusCode" -> "1"
               )
             )
@@ -1072,10 +1072,10 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
             .bind(
               Map(
                 "details.eori" -> "",
-                "details.address.fullName" -> TestHelper.createRandomString(71),
-                "details.address.addressLine" -> TestHelper.createRandomString(71),
-                "details.address.townOrCity" -> TestHelper.createRandomString(71),
-                "details.address.postCode" -> TestHelper.createRandomString(71),
+                "details.address.fullName" -> TestHelper.createRandomAlphanumericString(71),
+                "details.address.addressLine" -> TestHelper.createRandomAlphanumericString(71),
+                "details.address.townOrCity" -> TestHelper.createRandomAlphanumericString(71),
+                "details.address.postCode" -> TestHelper.createRandomAlphanumericString(71),
                 "details.address.country" -> "Poland",
                 "statusCode" -> "1"
               )

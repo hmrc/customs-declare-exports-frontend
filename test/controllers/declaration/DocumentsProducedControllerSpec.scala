@@ -89,7 +89,7 @@ class DocumentsProducedControllerSpec
 
       "provided with incorrect document identifier" in {
         val incorrectDocumentIdentifier: JsValue =
-          JsObject(Map("documentIdentifier" -> JsString(TestHelper.createRandomString(31))))
+          JsObject(Map("documentIdentifier" -> JsString(TestHelper.createRandomAlphanumericString(31))))
 
         val result = route(app, postRequest(uri, incorrectDocumentIdentifier)).get
         status(result) must be(BAD_REQUEST)
@@ -98,7 +98,7 @@ class DocumentsProducedControllerSpec
 
       "provided with incorrect document part" in {
         val incorrectDocumentPart: JsValue =
-          JsObject(Map("documentPart" -> JsString(TestHelper.createRandomString(6))))
+          JsObject(Map("documentPart" -> JsString(TestHelper.createRandomAlphanumericString(6))))
 
         val result = route(app, postRequest(uri, incorrectDocumentPart)).get
         status(result) must be(BAD_REQUEST)
@@ -115,7 +115,7 @@ class DocumentsProducedControllerSpec
 
       "provided with incorrect document status reason" in {
         val incorrectDocumentStatusReason: JsValue =
-          JsObject(Map("documentStatusReason" -> JsString(TestHelper.createRandomString(36))))
+          JsObject(Map("documentStatusReason" -> JsString(TestHelper.createRandomAlphanumericString(36))))
 
         val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
         status(result) must be(BAD_REQUEST)

@@ -157,7 +157,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
       val view = createView(
         DeclarantDetails
           .form()
-          .fillAndValidate(DeclarantDetails(EntityDetails(Some(TestHelper.createRandomString(19)), None)))
+          .fillAndValidate(DeclarantDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(19)), None)))
       )
 
       checkErrorsSummary(view)
@@ -191,7 +191,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
             DeclarantDetails(
               EntityDetails(
                 None,
-                Some(Address(TestHelper.createRandomString(71), "Test Street", "Leeds", "LS18BN", "England"))
+                Some(Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England"))
               )
             )
           )
@@ -230,7 +230,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
             DeclarantDetails(
               EntityDetails(
                 None,
-                Some(Address("Marco Polo", TestHelper.createRandomString(71), "Leeds", "LS18BN", "England"))
+                Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England"))
               )
             )
           )
@@ -269,7 +269,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
             DeclarantDetails(
               EntityDetails(
                 None,
-                Some(Address("Marco Polo", "Test Street", TestHelper.createRandomString(71), "LS18BN", "England"))
+                Some(Address("Marco Polo", "Test Street", TestHelper.createRandomAlphanumericString(71), "LS18BN", "England"))
               )
             )
           )
@@ -305,7 +305,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
             DeclarantDetails(
               EntityDetails(
                 None,
-                Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomString(71), "England"))
+                Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomAlphanumericString(71), "England"))
               )
             )
           )
@@ -408,10 +408,10 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
                 Some(
                   Address(
                     "Marco Polo",
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71)
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71)
                   )
                 )
               )
@@ -444,10 +444,10 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
                 None,
                 Some(
                   Address(
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
                     "Ukraine"
                   )
                 )

@@ -233,12 +233,12 @@ class RepresentativeDetailsPageControllerSpec
 object RepresentativeDetailsPageControllerSpec {
 
   val incorrectRepresentativeDetails: JsValue = buildRepresentativeDetailsJsonInput(
-    eori = createRandomString(18),
-    fullName = createRandomString(71),
-    addressLine = createRandomString(71),
-    townOrCity = createRandomString(36),
-    postCode = createRandomString(10),
-    country = createRandomString(3)
+    eori = createRandomAlphanumericString(18),
+    fullName = createRandomAlphanumericString(71),
+    addressLine = createRandomAlphanumericString(71),
+    townOrCity = createRandomAlphanumericString(36),
+    postCode = createRandomAlphanumericString(10),
+    country = createRandomAlphanumericString(3)
   )
 
   def buildRepresentativeDetailsJsonInput(
