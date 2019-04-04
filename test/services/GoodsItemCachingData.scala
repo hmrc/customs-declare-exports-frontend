@@ -118,7 +118,8 @@ trait GoodsItemCachingData {
     governmentProcedures = getDataSeq(6, createGovernmentProcedure)
   )
 
-  def createGovernmentAgencyGoodsItemSeq(size: Int = 5): Seq[GovernmentAgencyGoodsItem] = for (i <- 1 to size) yield createGovernmentAgencyGoodsItem(i)
+  def createGovernmentAgencyGoodsItemSeq(size: Int = 5): Seq[GovernmentAgencyGoodsItem] =
+    for (i <- 1 to size) yield createGovernmentAgencyGoodsItem(i)
 
   def createDocument() = Document(
     documentCategory = TemporaryStorage,

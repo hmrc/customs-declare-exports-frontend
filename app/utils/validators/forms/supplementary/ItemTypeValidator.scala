@@ -46,7 +46,6 @@ object ItemTypeValidator extends Validator[ItemType] {
       .fillAndValidate(element)
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
 
-
   private val mappingCombinedNomenclatureCode = text()
     .verifying("declaration.itemType.combinedNomenclatureCode.error.empty", nonEmpty)
     .verifying(
@@ -60,9 +59,9 @@ object ItemTypeValidator extends Validator[ItemType] {
       .verifying("declaration.itemType.taricAdditionalCodes.error.length", hasSpecificLength(taricAdditionalCodeLength))
       .verifying("declaration.itemType.taricAdditionalCodes.error.specialCharacters", isAlphanumeric)
   ).verifying(
-    "declaration.itemType.taricAdditionalCodes.error.maxAmount",
-    codes => codes.size <= taricAdditionalCodesMaxAmount
-  )
+      "declaration.itemType.taricAdditionalCodes.error.maxAmount",
+      codes => codes.size <= taricAdditionalCodesMaxAmount
+    )
     .verifying("declaration.itemType.taricAdditionalCodes.error.duplicate", areAllElementsUnique)
 
   private val mappingNationalAdditionalCode = seq(
@@ -73,9 +72,9 @@ object ItemTypeValidator extends Validator[ItemType] {
       )
       .verifying("declaration.itemType.nationalAdditionalCode.error.specialCharacters", isAlphanumeric)
   ).verifying(
-    "declaration.itemType.nationalAdditionalCode.error.maxAmount",
-    codes => codes.size <= nationalAdditionalCodesMaxAmount
-  )
+      "declaration.itemType.nationalAdditionalCode.error.maxAmount",
+      codes => codes.size <= nationalAdditionalCodesMaxAmount
+    )
     .verifying("declaration.itemType.nationalAdditionalCode.error.duplicate", areAllElementsUnique)
 
   private val mappingDescriptionOfGoods = text()
@@ -88,9 +87,13 @@ object ItemTypeValidator extends Validator[ItemType] {
       .verifying("declaration.itemType.cusCode.error.specialCharacters", isAlphanumeric)
   )
 
-  private val mappingUNDangerousGoodsCode = optional(text()
-    .verifying("declaration.itemType.unDangerousGoodsCode.error.length", hasSpecificLength(unDangerousGoodsCodeLength))
-    .verifying("declaration.itemType.unDangerousGoodsCode.error.specialCharacters", isAlphanumeric)
+  private val mappingUNDangerousGoodsCode = optional(
+    text()
+      .verifying(
+        "declaration.itemType.unDangerousGoodsCode.error.length",
+        hasSpecificLength(unDangerousGoodsCodeLength)
+      )
+      .verifying("declaration.itemType.unDangerousGoodsCode.error.specialCharacters", isAlphanumeric)
   )
 
   private val mappingStatisticalValue = text()
@@ -103,7 +106,6 @@ object ItemTypeValidator extends Validator[ItemType] {
       "declaration.itemType.statisticalValue.error.wrongFormat",
       isEmpty or isDecimalWithNoMoreDecimalPlacesThan(statisticalValueDecimalPlaces)
     )
-
 
   val mappingWithValidationForAddition = Forms.mapping(
     combinedNomenclatureCodeKey -> text(),

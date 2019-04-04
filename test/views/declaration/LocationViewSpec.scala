@@ -258,7 +258,16 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       val form = GoodsLocation
         .form()
         .fillAndValidate(
-          GoodsLocation("Poland", "t", "t", Some("TST"), Some(TestHelper.createRandomAlphanumericString(33)), None, None, None)
+          GoodsLocation(
+            "Poland",
+            "t",
+            "t",
+            Some("TST"),
+            Some(TestHelper.createRandomAlphanumericString(33)),
+            None,
+            None,
+            None
+          )
         )
       val view = createView(form)
 
