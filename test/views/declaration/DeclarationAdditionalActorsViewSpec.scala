@@ -137,7 +137,7 @@ class DeclarationAdditionalActorsViewSpec
       val view = createView(
         DeclarationAdditionalActors
           .form()
-          .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomString(18)), Some("")))
+          .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomAlphanumericString(18)), Some("")))
       )
 
       checkErrorsSummary(view)
@@ -153,7 +153,7 @@ class DeclarationAdditionalActorsViewSpec
       val view = createView(
         DeclarationAdditionalActors
           .form()
-          .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomString(17)), Some("")))
+          .fillAndValidate(DeclarationAdditionalActors(Some(TestHelper.createRandomAlphanumericString(17)), Some("")))
       )
 
       checkErrorsSummary(view)

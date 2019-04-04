@@ -21,8 +21,8 @@ import forms.declaration.destinationCountries.{DestinationCountries, Destination
 import helpers.views.declaration.{CommonMessages, DestinationCountriesMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.destination_countries_supplementary
 import views.declaration.spec.ViewSpec
+import views.html.declaration.destination_countries_supplementary
 import views.tags.ViewTest
 
 @ViewTest
@@ -110,7 +110,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       val view = createView(
         DestinationCountries.supplementaryForm
-          .fillAndValidate(DestinationCountriesSupplementary(TestHelper.createRandomString(10), "Germany"))
+          .fillAndValidate(DestinationCountriesSupplementary(TestHelper.createRandomAlphanumericString(10), "Germany"))
       )
 
       checkErrorsSummary(view)
@@ -135,7 +135,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       val view = createView(
         DestinationCountries.supplementaryForm
-          .fillAndValidate(DestinationCountriesSupplementary("Germany", TestHelper.createRandomString(10)))
+          .fillAndValidate(DestinationCountriesSupplementary("Germany", TestHelper.createRandomAlphanumericString(10)))
       )
 
       checkErrorsSummary(view)
@@ -149,7 +149,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       val view = createView(
         DestinationCountries.supplementaryForm
           .fillAndValidate(
-            DestinationCountriesSupplementary(TestHelper.createRandomString(10), TestHelper.createRandomString(10))
+            DestinationCountriesSupplementary(TestHelper.createRandomAlphanumericString(10), TestHelper.createRandomAlphanumericString(10))
           )
       )
 
@@ -184,7 +184,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       val view = createView(
         DestinationCountries.supplementaryForm
-          .fillAndValidate(DestinationCountriesSupplementary("", TestHelper.createRandomString(10)))
+          .fillAndValidate(DestinationCountriesSupplementary("", TestHelper.createRandomAlphanumericString(10)))
       )
 
       checkErrorsSummary(view)

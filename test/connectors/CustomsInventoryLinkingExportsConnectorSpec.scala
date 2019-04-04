@@ -45,7 +45,7 @@ class CustomsInventoryLinkingExportsConnectorSpec extends CustomExportsBaseSpec 
   def sendArrival(
     eori: String,
     body: String,
-    hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomString(255))))
+    hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomAlphanumericString(255))))
   )(test: Future[HttpResponse] => Unit): Unit = {
     val expectedUrl: String = s"${appConfig.customsInventoryLinkingExports}${appConfig.sendArrival}"
     val falseServerError: Boolean = false

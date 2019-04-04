@@ -24,7 +24,10 @@ import scala.util.Random
 
 object TestHelper {
 
-  def createRandomString(length: Int): String = Random.alphanumeric.take(length).mkString
+  def createRandomAlphanumericString(length: Int): String = Random.alphanumeric.take(length).mkString
+
+  val maxStringLength = 150
+  def createRandomString(length: Int = maxStringLength): String = Random.nextString(length)
 
   def getDataSeq[A](n: Int, elem: A): Seq[A] = {
     @tailrec

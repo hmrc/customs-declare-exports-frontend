@@ -21,8 +21,8 @@ import forms.declaration.DocumentsProduced
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.documents_produced
 import views.declaration.spec.ViewSpec
+import views.html.declaration.documents_produced
 import views.tags.ViewTest
 
 @ViewTest
@@ -165,7 +165,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
           .form()
           .fillAndValidate(
             DocumentsProduced(
-              Some(TestHelper.createRandomString(5)),
+              Some(TestHelper.createRandomAlphanumericString(5)),
               Some("1234"),
               Some("1234"),
               Some("AV"),
@@ -189,7 +189,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
           .fillAndValidate(
             DocumentsProduced(
               Some("1234"),
-              Some(TestHelper.createRandomString(31)),
+              Some(TestHelper.createRandomAlphanumericString(31)),
               Some("1234"),
               Some("AV"),
               Some("1234"),
@@ -213,7 +213,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
             DocumentsProduced(
               Some("1234"),
               Some("1234"),
-              Some(TestHelper.createRandomString(6)),
+              Some(TestHelper.createRandomAlphanumericString(6)),
               Some("AV"),
               Some("1234"),
               Some(BigDecimal("1234"))
@@ -261,7 +261,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
               Some("1234"),
               Some("1234"),
               Some("AV"),
-              Some(TestHelper.createRandomString(36)),
+              Some(TestHelper.createRandomAlphanumericString(36)),
               Some(BigDecimal("534"))
             )
           )
@@ -306,11 +306,11 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         .form()
         .fillAndValidate(
           DocumentsProduced(
-            Some(TestHelper.createRandomString(5)),
-            Some(TestHelper.createRandomString(31)),
-            Some(TestHelper.createRandomString(6)),
+            Some(TestHelper.createRandomAlphanumericString(5)),
+            Some(TestHelper.createRandomAlphanumericString(31)),
+            Some(TestHelper.createRandomAlphanumericString(6)),
             Some("ABC"),
-            Some(TestHelper.createRandomString(36)),
+            Some(TestHelper.createRandomAlphanumericString(36)),
             Some(BigDecimal("12345678901234567"))
           )
         )

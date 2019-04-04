@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.TestHelper.createRandomString
+import base.TestHelper.createRandomAlphanumericString
 import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
@@ -85,7 +85,7 @@ class DeclarationHolderControllerSpec
         }
 
         "with longer EORI" in {
-          val body = Seq(("eori", createRandomString(18)), addActionUrlEncoded)
+          val body = Seq(("eori", createRandomAlphanumericString(18)), addActionUrlEncoded)
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -210,7 +210,7 @@ class DeclarationHolderControllerSpec
 
           withCaching[DeclarationHoldersData](None, formId)
 
-          val body = Seq(("eori", createRandomString(18)), addActionUrlEncoded)
+          val body = Seq(("eori", createRandomAlphanumericString(18)), addActionUrlEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
           status(result) must be(BAD_REQUEST)

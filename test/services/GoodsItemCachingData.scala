@@ -15,6 +15,7 @@
  */
 
 package services
+
 import base.TestHelper._
 import forms.declaration.Document.AllowedValues.TemporaryStorage
 import forms.declaration._
@@ -25,97 +26,107 @@ import scala.util.Random
 
 trait GoodsItemCachingData {
 
-  val maxStringSize = 150
-
-  def maxRandomString(max: Int = maxStringSize): String = Random.nextString(max)
-
   def intBetween(min: Int, max: Int): Int = min + Random.nextInt((max - min) + 1)
 
   def decimalString(): String = Random.nextDouble().toString
 
   def createPackageInformation(): PackageInformation = PackageInformation(
-    Some(createRandomString(2)),
+    Some(createRandomAlphanumericString(2)),
     Some(Random.nextInt(20)),
-    shippingMarks = Some(createRandomString(150))
+    shippingMarks = Some(createRandomAlphanumericString(150))
   )
 
   def createProcedureCodesData(): ProcedureCodesData =
-    ProcedureCodesData(Some(intBetween(1000, 9999).toString), getDataSeq(10, createRandomString(Random.nextInt(5))))
+    ProcedureCodesData(
+      Some(intBetween(1000, 9999).toString),
+      getDataSeq(10, createRandomAlphanumericString(Random.nextInt(5)))
+    )
 
   def createCommodityMeasure(): CommodityMeasure =
     CommodityMeasure(Some(Random.nextDouble().toString), Random.nextDouble().toString, Random.nextDouble().toString)
 
   def createAdditionalInformation() =
-    forms.declaration.AdditionalInformation(createRandomString(5), maxRandomString(70))
+    forms.declaration.AdditionalInformation(createRandomAlphanumericString(5), createRandomString(70))
 
-  def additionalInformationData() = AdditionalInformationData(getDataSeq(5, createAdditionalInformation()))
+  def createAdditionalInformationData() = AdditionalInformationData(getDataSeq(5, createAdditionalInformation()))
 
   def createDocsProduced(): DocumentsProduced = DocumentsProduced(
-    Some(createRandomString(4)),
-    Some(createRandomString(30)),
-    Some(createRandomString(5)),
-    Some(createRandomString(2)),
-    Some(createRandomString(35)),
+    Some(createRandomAlphanumericString(4)),
+    Some(createRandomAlphanumericString(30)),
+    Some(createRandomAlphanumericString(5)),
+    Some(createRandomAlphanumericString(2)),
+    Some(createRandomAlphanumericString(35)),
     Some(BigDecimal(123))
   )
-  def documentsProducedData() = DocumentsProducedData(getDataSeq(Random.nextInt(10), createDocsProduced()))
+  def createDocumentsProducedData() = DocumentsProducedData(getDataSeq(Random.nextInt(10), createDocsProduced()))
 
-  def getItemType(): ItemType = ItemType(
-    createRandomString(8),
-    getDataSeq(Random.nextInt(10), createRandomString(4)),
-    getDataSeq(Random.nextInt(10), createRandomString(4)),
-    maxRandomString(70),
-    Some(createRandomString(8)),
-    Some(createRandomString(4)),
+  def createItemType(): ItemType = ItemType(
+    createRandomAlphanumericString(8),
+    getDataSeq(Random.nextInt(10), createRandomAlphanumericString(4)),
+    getDataSeq(Random.nextInt(10), createRandomAlphanumericString(4)),
+    createRandomString(70),
+    Some(createRandomAlphanumericString(8)),
+    Some(createRandomAlphanumericString(4)),
     decimalString()
   )
 
-  def amount(): Amount = Amount(value = Some(Random.nextDouble()))
-  def measure(): Measure = Measure(value = Some(Random.nextDouble()))
-  def classification(): Classification =
-    Classification(Some(createRandomString(4)), identificationTypeCode = Some(createRandomString(4)))
-  def govProcedures(): GovernmentProcedure =
-    GovernmentProcedure(Some(createRandomString(8)), Some(createRandomString(4)))
-  def packaging(): Packaging =
+  def createAmount(): Amount = Amount(value = Some(Random.nextDouble()))
+
+  def createMeasure(): Measure = Measure(value = Some(Random.nextDouble()))
+
+  def createClassification(): Classification =
+    Classification(
+      Some(createRandomAlphanumericString(4)),
+      identificationTypeCode = Some(createRandomAlphanumericString(4))
+    )
+
+  def createGovernmentProcedure(): GovernmentProcedure =
+    GovernmentProcedure(Some(createRandomAlphanumericString(8)), Some(createRandomAlphanumericString(4)))
+
+  def createPackaging(): Packaging =
     Packaging(
       Some(Random.nextInt()),
-      Some(createRandomString(2)),
+      Some(createRandomAlphanumericString(2)),
       Some(Random.nextInt(20)),
-      Some(createRandomString(150))
+      Some(createRandomAlphanumericString(150))
     )
 
-  def commodityData(): Commodity = Commodity(
-    classifications = getDataSeq(10, classification),
-    goodsMeasure = Some(GoodsMeasure(Some(measure), Some(measure), Some(measure)))
+  def createCommodity(): Commodity = Commodity(
+    classifications = getDataSeq(10, createClassification),
+    goodsMeasure = Some(GoodsMeasure(Some(createMeasure), Some(createMeasure), Some(createMeasure)))
   )
-  def addInfo = uk.gov.hmrc.wco.dec.AdditionalInformation(Some(createRandomString(5)), Some(maxRandomString(70)))
 
-  def addDocs(): GovernmentAgencyGoodsItemAdditionalDocument =
+  def createWcoAdditionalInformation =
+    uk.gov.hmrc.wco.dec.AdditionalInformation(Some(createRandomAlphanumericString(5)), Some(createRandomString(70)))
+
+  def createAdditionalDocument(): GovernmentAgencyGoodsItemAdditionalDocument =
     GovernmentAgencyGoodsItemAdditionalDocument(
-      Some(createRandomString(5)),
-      typeCode = Some(createRandomString(3)),
-      id = Some(createRandomString(5)),
-      lpcoExemptionCode = Some(createRandomString(5)),
-      name = Some(createRandomString(5)),
-      writeOff = Some(WriteOff(Some(measure)))
+      Some(createRandomAlphanumericString(5)),
+      typeCode = Some(createRandomAlphanumericString(3)),
+      id = Some(createRandomAlphanumericString(5)),
+      lpcoExemptionCode = Some(createRandomAlphanumericString(5)),
+      name = Some(createRandomAlphanumericString(5)),
+      writeOff = Some(WriteOff(Some(createMeasure)))
     )
 
-  def goodsItem(index: Int) = GovernmentAgencyGoodsItem(
+  def createGovernmentAgencyGoodsItem(index: Int) = GovernmentAgencyGoodsItem(
     sequenceNumeric = index,
-    statisticalValueAmount = Some(amount),
-    additionalDocuments = getDataSeq(8, addDocs),
-    additionalInformations = getDataSeq(7, addInfo),
-    commodity = Some(commodityData),
-    governmentProcedures = getDataSeq(6, govProcedures)
+    statisticalValueAmount = Some(createAmount),
+    additionalDocuments = getDataSeq(8, createAdditionalDocument),
+    additionalInformations = getDataSeq(7, createWcoAdditionalInformation),
+    commodity = Some(createCommodity),
+    governmentProcedures = getDataSeq(6, createGovernmentProcedure)
   )
-  def goodsItemSeq(size: Int = 5): Seq[GovernmentAgencyGoodsItem] = for (i <- 1 to size) yield goodsItem(i)
 
-  def correctPreviousDocument() = Document(
+  def createGovernmentAgencyGoodsItemSeq(size: Int = 5): Seq[GovernmentAgencyGoodsItem] = for (i <- 1 to size) yield createGovernmentAgencyGoodsItem(i)
+
+  def createDocument() = Document(
     documentCategory = TemporaryStorage,
-    documentType = createRandomString(4),
-    documentReference = createRandomString(30),
+    documentType = createRandomAlphanumericString(4),
+    documentReference = createRandomAlphanumericString(30),
     goodsItemIdentifier = Some(Random.nextInt(100).toString)
   )
-  def createPreviousDocs(size: Int) = PreviousDocumentsData(getDataSeq(size, correctPreviousDocument()))
+
+  def createPreviousDocumentsData(size: Int) = PreviousDocumentsData(getDataSeq(size, createDocument()))
 
 }

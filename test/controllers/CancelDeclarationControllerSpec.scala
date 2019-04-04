@@ -88,9 +88,9 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
     "validate form - too long answers" in {
       val wrongCancelJson: JsValue = JsObject(
         Map(
-          "functionalReferenceId" -> JsString(createRandomString(36)),
-          "declarationId" -> JsString(createRandomString(71)),
-          "statementDescription" -> JsString(createRandomString(513))
+          "functionalReferenceId" -> JsString(createRandomAlphanumericString(36)),
+          "declarationId" -> JsString(createRandomAlphanumericString(71)),
+          "statementDescription" -> JsString(createRandomAlphanumericString(513))
         )
       )
 
@@ -104,7 +104,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
     }
 
     "validate form - too short answers" in {
-      val wrongCancelJson: JsValue = JsObject(Map("functionalReferenceId" -> JsString(createRandomString(10))))
+      val wrongCancelJson: JsValue = JsObject(Map("functionalReferenceId" -> JsString(createRandomAlphanumericString(10))))
 
       val result = route(app, postRequest(uri, wrongCancelJson)).get
 

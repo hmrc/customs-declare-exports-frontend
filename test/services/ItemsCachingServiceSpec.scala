@@ -89,7 +89,7 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
     }
 
     "create Seq ofAdditionalInformation from AdditionalInformationData cache" in {
-      val input = additionalInformationData()
+      val input = createAdditionalInformationData()
       val cacheMap = getCacheMap(input, AdditionalInformationData.formId)
       val additionals = itemsCachingService.additionalInfo(cacheMap).value
       (input.items zip additionals).map {
@@ -100,7 +100,7 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
     }
 
     "create Seq of GovernmentAgencyGoodsItemAdditionalDocument from DocumentsProducedData cache" in {
-      val input = documentsProducedData()
+      val input = createDocumentsProducedData()
       val cacheMap = getCacheMap(input, DocumentsProducedData.formId)
       val goodsItemAdditionalDocs = itemsCachingService.documents(cacheMap).value
       (input.documents zip goodsItemAdditionalDocs).map {
@@ -117,7 +117,7 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
     }
 
     "populate GoodsItem with Commodity Classifications, description and  statisticalValueAmount" in {
-      val input = getItemType()
+      val input = createItemType()
       val cacheMap = getCacheMap(input, ItemType.id)
       val goodsItem = itemsCachingService.goodsItemFromItemTypes(cacheMap).value
 
@@ -127,7 +127,7 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
       val classifications = goodsItem.commodity.value.classifications
       classifications.size mustBe
         (input.nationalAdditionalCodes.size + input.taricAdditionalCodes.size + 2)
-      classifications.headOption.value.id.value mustBe input.combinedNomenclatureCode
+      classifications.head.id.value mustBe input.combinedNomenclatureCode
       (classifications.drop(2) zip (input.nationalAdditionalCodes ++ input.taricAdditionalCodes)).map {
         case (actual, expected) =>
           actual.id.value mustBe expected
@@ -140,15 +140,15 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
 
     "add goodsItem to cache" in {
 
-      val input = getDataSeq(5, createPackageInformation)
+      val input = getDataSeq(5, createPackageInformation())
       val cacheMap = CacheMap(
         id = "eoriForCache",
         data = getCacheMap(input, PackageInformation.formId).data ++
-          getCacheMap(createProcedureCodesData, ProcedureCodesData.formId).data ++
-          getCacheMap(createProcedureCodesData, ProcedureCodesData.formId).data ++
+          getCacheMap(createProcedureCodesData(), ProcedureCodesData.formId).data ++
+          getCacheMap(createProcedureCodesData(), ProcedureCodesData.formId).data ++
           getCacheMap(createCommodityMeasure(), CommodityMeasure.commodityFormId).data ++
-          getCacheMap(additionalInformationData(), AdditionalInformationData.formId).data ++
-          getCacheMap(documentsProducedData(), DocumentsProducedData.formId).data
+          getCacheMap(createAdditionalInformationData(), AdditionalInformationData.formId).data ++
+          getCacheMap(createDocumentsProducedData(), DocumentsProducedData.formId).data
       )
 
       when(mockCustomsCacheService.fetch(anyString())(any(), any()))

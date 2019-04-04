@@ -21,8 +21,8 @@ import forms.declaration.{Address, EntityDetails, ExporterDetails}
 import helpers.views.declaration.{CommonMessages, ExporterDetailsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.exporter_details
 import views.declaration.spec.ViewSpec
+import views.html.declaration.exporter_details
 import views.tags.ViewTest
 
 @ViewTest
@@ -147,7 +147,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
       val view = createView(
         ExporterDetails
           .form()
-          .fillAndValidate(ExporterDetails(EntityDetails(Some(TestHelper.createRandomString(19)), None)))
+          .fillAndValidate(ExporterDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(19)), None)))
       )
 
       checkErrorsSummary(view)
@@ -181,7 +181,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
             ExporterDetails(
               EntityDetails(
                 None,
-                Some(Address(TestHelper.createRandomString(71), "Test Street", "Leeds", "LS18BN", "England"))
+                Some(Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England"))
               )
             )
           )
@@ -220,7 +220,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
             ExporterDetails(
               EntityDetails(
                 None,
-                Some(Address("Marco Polo", TestHelper.createRandomString(71), "Leeds", "LS18BN", "England"))
+                Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England"))
               )
             )
           )
@@ -259,7 +259,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
             ExporterDetails(
               EntityDetails(
                 None,
-                Some(Address("Marco Polo", "Test Street", TestHelper.createRandomString(71), "LS18BN", "England"))
+                Some(Address("Marco Polo", "Test Street", TestHelper.createRandomAlphanumericString(71), "LS18BN", "England"))
               )
             )
           )
@@ -295,7 +295,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
             ExporterDetails(
               EntityDetails(
                 None,
-                Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomString(71), "England"))
+                Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomAlphanumericString(71), "England"))
               )
             )
           )
@@ -397,10 +397,10 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
                 Some(
                   Address(
                     "Marco Polo",
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71)
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71)
                   )
                 )
               )
@@ -433,10 +433,10 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
                 None,
                 Some(
                   Address(
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
                     "Ukraine"
                   )
                 )

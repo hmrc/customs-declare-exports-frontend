@@ -62,7 +62,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
     "validate request - too many characters" in {
 
       val incorrectWarehouseIdentification: JsValue =
-        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomString(37))))
+        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(37))))
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
 
       status(result) must be(BAD_REQUEST)
@@ -72,7 +72,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
     "validate request - less than two characters" in {
 
       val incorrectWarehouseIdentification: JsValue =
-        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomString(1))))
+        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(1))))
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
 
       status(result) must be(BAD_REQUEST)

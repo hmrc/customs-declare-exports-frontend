@@ -154,7 +154,7 @@ class PackageInformationControllerSpec
         authorizedUser()
         withCaching[List[PackageInformation]](None, formId)
 
-        val payload = Map("shippingMarks" -> TestHelper.createRandomString(50)).toSeq :+ addActionUrlEncoded
+        val payload = Map("shippingMarks" -> TestHelper.createRandomAlphanumericString(50)).toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         val page = contentAsString(result)
 
@@ -238,7 +238,7 @@ class PackageInformationControllerSpec
         authorizedUser()
         withCaching[List[PackageInformation]](None, formId)
 
-        val payload = Map("shippingMarks" -> TestHelper.createRandomString(50)).toSeq :+ saveAndContinueActionUrlEncoded
+        val payload = Map("shippingMarks" -> TestHelper.createRandomAlphanumericString(50)).toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         val page = contentAsString(result)
 

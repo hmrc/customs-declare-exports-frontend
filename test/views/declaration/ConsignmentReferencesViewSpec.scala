@@ -22,8 +22,8 @@ import forms.declaration.ConsignmentReferences
 import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.consignment_references
 import views.declaration.spec.ViewSpec
+import views.html.declaration.consignment_references
 import views.tags.ViewTest
 
 @ViewTest
@@ -125,7 +125,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       val view = createView(
         ConsignmentReferences
           .form()
-          .fillAndValidate(ConsignmentReferences(Some(Ducr(properDUCR)), TestHelper.createRandomString(23)))
+          .fillAndValidate(ConsignmentReferences(Some(Ducr(properDUCR)), TestHelper.createRandomAlphanumericString(23)))
       )
 
       checkErrorsSummary(view)
@@ -163,7 +163,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       val view = createView(
         ConsignmentReferences
           .form()
-          .fillAndValidate(ConsignmentReferences(Some(Ducr(incorrectDUCR)), TestHelper.createRandomString(23)))
+          .fillAndValidate(ConsignmentReferences(Some(Ducr(incorrectDUCR)), TestHelper.createRandomAlphanumericString(23)))
       )
 
       checkErrorsSummary(view)

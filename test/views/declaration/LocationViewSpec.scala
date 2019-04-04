@@ -258,7 +258,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       val form = GoodsLocation
         .form()
         .fillAndValidate(
-          GoodsLocation("Poland", "t", "t", Some("TST"), Some(TestHelper.createRandomString(33)), None, None, None)
+          GoodsLocation("Poland", "t", "t", Some("TST"), Some(TestHelper.createRandomAlphanumericString(33)), None, None, None)
         )
       val view = createView(form)
 
@@ -281,7 +281,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
             "t",
             Some("TST"),
             Some("TST"),
-            Some(TestHelper.createRandomString(71)),
+            Some(TestHelper.createRandomAlphanumericString(71)),
             None,
             None
           )
@@ -306,7 +306,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
             Some("TST"),
             Some("TST"),
             None,
-            Some(TestHelper.createRandomString(10)),
+            Some(TestHelper.createRandomAlphanumericString(10)),
             None
           )
         )
@@ -331,7 +331,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
             Some("TST"),
             None,
             None,
-            Some(TestHelper.createRandomString(36))
+            Some(TestHelper.createRandomAlphanumericString(36))
           )
         )
       val view = createView(form)
@@ -352,10 +352,10 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
             "ABC",
             "ABC",
             Some("TEST"),
-            Some(TestHelper.createRandomString(33)),
-            Some(TestHelper.createRandomString(71)),
-            Some(TestHelper.createRandomString(10)),
-            Some(TestHelper.createRandomString(36))
+            Some(TestHelper.createRandomAlphanumericString(33)),
+            Some(TestHelper.createRandomAlphanumericString(71)),
+            Some(TestHelper.createRandomAlphanumericString(10)),
+            Some(TestHelper.createRandomAlphanumericString(36))
           )
         )
       val view = createView(form)
@@ -395,10 +395,10 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
             "ABC",
             "ABC",
             None,
-            Some(TestHelper.createRandomString(33)),
-            Some(TestHelper.createRandomString(71)),
-            Some(TestHelper.createRandomString(10)),
-            Some(TestHelper.createRandomString(36))
+            Some(TestHelper.createRandomAlphanumericString(33)),
+            Some(TestHelper.createRandomAlphanumericString(71)),
+            Some(TestHelper.createRandomAlphanumericString(10)),
+            Some(TestHelper.createRandomAlphanumericString(36))
           )
         )
       val view = createView(form)
@@ -429,10 +429,10 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display data in all inputs" in {
 
-      val ladditionalInformation: String = TestHelper.createRandomString(32)
-      val lstreetAndNumber: String = TestHelper.createRandomString(70)
-      val lpostCode: String = TestHelper.createRandomString(9)
-      val lcity: String = TestHelper.createRandomString(35)
+      val ladditionalInformation: String = TestHelper.createRandomAlphanumericString(32)
+      val lstreetAndNumber: String = TestHelper.createRandomAlphanumericString(70)
+      val lpostCode: String = TestHelper.createRandomAlphanumericString(9)
+      val lcity: String = TestHelper.createRandomAlphanumericString(35)
 
       val form = GoodsLocation
         .form()

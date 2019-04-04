@@ -153,7 +153,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
       val view = createView(
         CarrierDetails
           .form()
-          .fillAndValidate(CarrierDetails(EntityDetails(Some(TestHelper.createRandomString(18)), None)))
+          .fillAndValidate(CarrierDetails(EntityDetails(Some(TestHelper.createRandomAlphanumericString(18)), None)))
       )
 
       checkErrorsSummary(view)
@@ -187,7 +187,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
             CarrierDetails(
               EntityDetails(
                 None,
-                Some(Address(TestHelper.createRandomString(71), "Test Street", "Leeds", "LS18BN", "England"))
+                Some(Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England"))
               )
             )
           )
@@ -226,7 +226,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
             CarrierDetails(
               EntityDetails(
                 None,
-                Some(Address("Marco Polo", TestHelper.createRandomString(71), "Leeds", "LS18BN", "England"))
+                Some(Address("Marco Polo", TestHelper.createRandomAlphanumericString(71), "Leeds", "LS18BN", "England"))
               )
             )
           )
@@ -265,7 +265,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
             CarrierDetails(
               EntityDetails(
                 None,
-                Some(Address("Marco Polo", "Test Street", TestHelper.createRandomString(71), "LS18BN", "England"))
+                Some(Address("Marco Polo", "Test Street", TestHelper.createRandomAlphanumericString(71), "LS18BN", "England"))
               )
             )
           )
@@ -301,7 +301,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
             CarrierDetails(
               EntityDetails(
                 None,
-                Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomString(71), "England"))
+                Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomAlphanumericString(71), "England"))
               )
             )
           )
@@ -404,10 +404,10 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
                 Some(
                   Address(
                     "Marco Polo",
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71)
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71)
                   )
                 )
               )
@@ -440,10 +440,10 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
                 None,
                 Some(
                   Address(
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
-                    TestHelper.createRandomString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
+                    TestHelper.createRandomAlphanumericString(71),
                     "Ukraine"
                   )
                 )

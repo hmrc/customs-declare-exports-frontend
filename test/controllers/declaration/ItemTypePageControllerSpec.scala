@@ -265,7 +265,7 @@ class ItemTypePageControllerSpec
           taricAdditionalCodes = Seq("1234"),
           nationalAdditionalCodes = Seq("1234"),
           statisticalValue = "100",
-          descriptionOfGoods = TestHelper.createRandomString(281)
+          descriptionOfGoods = TestHelper.createRandomAlphanumericString(281)
         )
         val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
         val page = contentAsString(result)

@@ -105,14 +105,14 @@ object GoodsLocationSpec {
   )
   val incorrectGoodsLocationJSON: JsValue = JsObject(
     Map(
-      "country" -> JsString(TestHelper.createRandomString(3)),
-      "typeOfLocation" -> JsString(TestHelper.createRandomString(2)),
-      "qualifierOfIdentification" -> JsString(TestHelper.createRandomString(2)),
-      "identificationOfLocation" -> JsString(TestHelper.createRandomString(4)),
-      "additionalIdentifier" -> JsString(TestHelper.createRandomString(33)),
-      "streetAndNumber" -> JsString(TestHelper.createRandomString(71)),
-      "postCode" -> JsString(TestHelper.createRandomString(10)),
-      "city" -> JsString(TestHelper.createRandomString(36))
+      "country" -> JsString(TestHelper.createRandomAlphanumericString(3)),
+      "typeOfLocation" -> JsString(TestHelper.createRandomAlphanumericString(2)),
+      "qualifierOfIdentification" -> JsString(TestHelper.createRandomAlphanumericString(2)),
+      "identificationOfLocation" -> JsString(TestHelper.createRandomAlphanumericString(4)),
+      "additionalIdentifier" -> JsString(TestHelper.createRandomAlphanumericString(33)),
+      "streetAndNumber" -> JsString(TestHelper.createRandomAlphanumericString(71)),
+      "postCode" -> JsString(TestHelper.createRandomAlphanumericString(10)),
+      "city" -> JsString(TestHelper.createRandomAlphanumericString(36))
     )
   )
 

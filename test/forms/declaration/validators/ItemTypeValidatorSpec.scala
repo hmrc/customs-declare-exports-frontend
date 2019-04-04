@@ -52,7 +52,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "there is more than 99 TARIC additional codes" in {
-        val itemType = buildItemType(taricAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomString(4)))
+        val itemType = buildItemType(taricAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
         val expectedValidationResult = Invalid(
           errors = Seq(FormError(taricAdditionalCodesKey, "declaration.itemType.taricAdditionalCodes.error.maxAmount"))
         )
@@ -94,7 +94,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "there is more than 99 National additional codes" in {
-        val itemType = buildItemType(nationalAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomString(4)))
+        val itemType = buildItemType(nationalAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
         val expectedValidationResult = Invalid(
           errors =
             Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.maxAmount"))
@@ -205,7 +205,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "there is more than 99 TARIC additional codes" in {
-        val itemType = buildItemType(taricAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomString(4)))
+        val itemType = buildItemType(taricAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
         val expectedValidationResult = Invalid(
           errors = Seq(FormError(taricAdditionalCodesKey, "declaration.itemType.taricAdditionalCodes.error.maxAmount"))
         )
@@ -247,7 +247,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "there is more than 99 National additional codes" in {
-        val itemType = buildItemType(nationalAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomString(4)))
+        val itemType = buildItemType(nationalAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
         val expectedValidationResult = Invalid(
           errors =
             Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.maxAmount"))
@@ -275,7 +275,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "Description of goods is longer than 280 characters" in {
-        val itemType = buildItemType(descriptionOfGoods = TestHelper.createRandomString(281))
+        val itemType = buildItemType(descriptionOfGoods = TestHelper.createRandomAlphanumericString(281))
         val expectedValidationResult =
           Invalid(errors = Seq(FormError(descriptionOfGoodsKey, "declaration.itemType.description.error.length")))
 

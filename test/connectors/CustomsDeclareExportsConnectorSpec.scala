@@ -22,7 +22,7 @@ import models._
 import models.requests.CancellationRequested
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
-import play.api.test.Helpers.{ACCEPTED, OK}
+import play.api.test.Helpers.ACCEPTED
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.wco.dec.MetaData
@@ -92,12 +92,12 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
 
 object CustomsDeclareExportsConnectorSpec {
   val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"), Accepted)
-  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomString(255))))
-  val mrn = TestHelper.createRandomString(10)
+  val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomAlphanumericString(255))))
+  val mrn = TestHelper.createRandomAlphanumericString(10)
   val metadata = MetaData()
 
-  val conversationId = TestHelper.createRandomString(10)
-  val eori = TestHelper.createRandomString(15)
+  val conversationId = TestHelper.createRandomAlphanumericString(10)
+  val eori = TestHelper.createRandomAlphanumericString(15)
   val exportNotification =
     ExportsNotification(conversationId = conversationId, eori = eori, metadata = DeclarationMetadata())
   val notifications = Seq(exportNotification)
