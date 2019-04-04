@@ -16,17 +16,13 @@
 
 package base
 
-import connectors.{
-  CustomsDeclareExportsConnector,
-  CustomsDeclareExportsMovementsConnector,
-  CustomsInventoryLinkingExportsConnector,
-  NrsConnector
-}
+import connectors.{CustomsDeclareExportsConnector, CustomsDeclareExportsMovementsConnector, NrsConnector}
 import models._
 import models.requests.CancellationStatus
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.mockito.MockitoSugar
 import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST, OK}
 import uk.gov.hmrc.http.HttpResponse
@@ -37,29 +33,28 @@ trait MockConnectors extends MockitoSugar {
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
   lazy val mockCustomsDeclareExportsMovementsConnector: CustomsDeclareExportsMovementsConnector =
     mock[CustomsDeclareExportsMovementsConnector]
-  lazy val mockCustomsInventoryLinkingExportsConnector: CustomsInventoryLinkingExportsConnector =
-    mock[CustomsInventoryLinkingExportsConnector]
+
   lazy val mockNrsConnector: NrsConnector = mock[NrsConnector]
 
-  def successfulCustomsDeclareExportsResponse() =
+  def successfulCustomsDeclareExportsResponse(): OngoingStubbing[Future[HttpResponse]] =
     when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 
-  def successfulMovementsResponse() =
+  def successfulMovementsResponse(): OngoingStubbing[Future[CustomsDeclareExportsMovementsResponse]] =
     when(mockCustomsDeclareExportsMovementsConnector.saveMovementSubmission(any())(any(), any()))
       .thenReturn(Future.successful(CustomsDeclareExportsMovementsResponse(OK, "")))
 
-  def customsDeclaration400Response() =
+  def customsDeclaration400Response(): OngoingStubbing[Future[HttpResponse]] =
     when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
-  def listOfNotifications() =
+  def listOfNotifications(): OngoingStubbing[Future[Seq[ExportsNotification]]] =
     when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
       .thenReturn(
         Future.successful(Seq(ExportsNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty)))
       )
 
-  def listOfSubmissionNotifications() =
+  def listOfSubmissionNotifications(): OngoingStubbing[Future[Seq[ExportsNotification]]] =
     when(mockCustomsDeclareExportsConnector.fetchNotificationsByConversationId(any())(any(), any()))
       .thenReturn(
         Future.successful(
@@ -67,7 +62,7 @@ trait MockConnectors extends MockitoSugar {
         )
       )
 
-  def listOfSubmissions() =
+  def listOfSubmissions(): OngoingStubbing[Future[Seq[SubmissionData]]] =
     when(mockCustomsDeclareExportsConnector.fetchSubmissions()(any(), any()))
       .thenReturn(
         Future.successful(
@@ -86,19 +81,22 @@ trait MockConnectors extends MockitoSugar {
         )
       )
 
-  def sendMovementRequest() =
-    when(mockCustomsInventoryLinkingExportsConnector.sendMovementRequest(any(), any())(any(), any()))
+  def sendMovementRequest(): OngoingStubbing[Future[HttpResponse]] =
+    when(mockCustomsDeclareExportsMovementsConnector
+      .submitMovementDeclaration(any[String], any[Option[String]], any[String], any[String])(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 
-  def sendMovementRequest400Response() =
-    when(mockCustomsInventoryLinkingExportsConnector.sendMovementRequest(any(), any())(any(), any()))
-      .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
+  def sendMovementRequest400Response(): OngoingStubbing[Future[HttpResponse]] =
+  when(mockCustomsDeclareExportsMovementsConnector
+    .submitMovementDeclaration(any[String], any[Option[String]], any[String], any[String])(any(), any()))
+    .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
-  def submitNrsRequest() =
+
+  def submitNrsRequest(): OngoingStubbing[Future[NrsSubmissionResponse]] =
     when(mockNrsConnector.submitNonRepudiation(any())(any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionId1")))
 
-  def successfulCancelDeclarationResponse(status: CancellationStatus) =
+  def successfulCancelDeclarationResponse(status: CancellationStatus): OngoingStubbing[Future[CancellationStatus]] =
     when(mockCustomsDeclareExportsConnector.submitCancellation(any(), any())(any(), any()))
       .thenReturn(Future.successful(status))
 }

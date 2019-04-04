@@ -38,7 +38,6 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
   override def beforeEach() {
     authorizedUser()
     reset(mockCustomsCacheService)
-    reset(mockCustomsInventoryLinkingExportsConnector)
     reset(mockCustomsDeclareExportsMovementsConnector)
   }
 
@@ -164,14 +163,7 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
         verify(mockCustomsCacheService).fetchMovementRequest(any(), any())(any(), any())
       }
 
-      "call CustomsInventoryLinkingExportsConnector" in {
-        mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
-        sendMovementRequest()
 
-        route(app, postRequest(uriSummary, emptyForm)).get.futureValue
-
-        verify(mockCustomsInventoryLinkingExportsConnector).sendMovementRequest(any(), any())(any(), any())
-      }
 
       "redirect to confirmation page" in {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))

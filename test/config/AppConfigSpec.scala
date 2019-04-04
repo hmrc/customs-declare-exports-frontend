@@ -17,110 +17,251 @@
 package config
 
 import base.CustomExportsBaseSpec
+import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
+import play.api.{Configuration, Environment}
 
 class AppConfigSpec extends CustomExportsBaseSpec {
 
   val config = app.injector.instanceOf[AppConfig]
+  val environment = Environment.simple()
+
+  private val validAppConfig: Config =
+    ConfigFactory.parseString(
+      """
+        |urls.login="http://localhost:9949/auth-login-stub/gg-sign-in"
+        |urls.loginContinue="http://localhost:9000/customs-declare-exports-frontend"
+        |microservice.services.auth.host=localhostauth
+        |google-analytics.token=N/A
+        |google-analytics.host=localhostGoogle
+        |countryCodesCsvFilename=mdg-country-codes.csv
+        |countryCodesJsonFilename=location-autocomplete-canonical-list.json
+        |microservice.services.nrs.host=localhostnrs
+        |microservice.services.nrs.port=7654
+        |microservice.services.nrs.apikey=cds-exports
+        |microservice.services.features.default=disabled
+        |microservice.services.features.welsh-translation=false
+        |microservice.services.auth.port=9988
+        |microservice.services.customs-declare-exports.host=localhoste
+        |microservice.services.customs-declare-exports.port=9875
+        |microservice.services.customs-declare-exports.submit-declaration=/declaration
+        |microservice.services.customs-declare-exports.cancel-declaration=/cancel-declaration
+        |microservice.services.customs-declare-exports.fetch-notifications=/customs-declare-exports/notifications
+        |microservice.services.customs-declare-exports-movements.host=localhostm
+        |microservice.services.customs-declare-exports-movements.port=9876
+        |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
+
+      """.stripMargin
+    )
+  private val emptyAppConfig: Config = ConfigFactory.parseString("")
+  val validServicesConfiguration = Configuration(validAppConfig)
+  private val emptyServicesConfiguration = Configuration(emptyAppConfig)
+
+  private def appConfig(conf: Configuration) = new AppConfig(conf, environment)
+
+  val validConfigService: AppConfig = appConfig(validServicesConfiguration)
+  val emptyConfigService: AppConfig = appConfig(emptyServicesConfiguration)
 
   "The config" should {
 
     "have analytics token" in {
-      config.analyticsToken must be("N/A")
+      validConfigService.analyticsToken must be("N/A")
     }
 
     "have analytics host" in {
-      config.analyticsHost must be("auto")
+      validConfigService.analyticsHost must be("localhostGoogle")
     }
 
     "have auth URL" in {
-      config.authUrl must be("http://localhost:8500")
+      validConfigService.authUrl must be("http://localhostauth:9988")
     }
 
     "have login URL" in {
-      config.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
+      validConfigService.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
     }
 
     // what is continue URL - redirect ?
     "have login continue URL" in {
-      config.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
+      validConfigService.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
     }
 
     "have language translation enabled field" in {
-      config.languageTranslationEnabled must be(false)
+      validConfigService.languageTranslationEnabled must be(false)
     }
 
     "have language map with English" in {
-      config.languageMap.get("english").isDefined must be(true)
+      validConfigService.languageMap.get("english").isDefined must be(true)
     }
 
     "have language map with Cymraeg" in {
-      config.languageMap.get("cymraeg").isDefined must be(true)
+      validConfigService.languageMap.get("cymraeg").isDefined must be(true)
     }
 
     "have default feature status" in {
-      config.defaultFeatureStatus must be(FeatureStatus.disabled)
+      validConfigService.defaultFeatureStatus must be(FeatureStatus.disabled)
     }
 
     "return correct value for feature" in {
-      config.featureStatus(Feature.default) must be(FeatureStatus.disabled)
+      validConfigService.featureStatus(Feature.default) must be(FeatureStatus.disabled)
     }
 
     "return correct value for isFeatureOn method" in {
-      config.isFeatureOn(Feature.default) must be(false)
-    }
-
-    "have HMRC Developer Hub Client ID" in {
-      config.developerHubClientId must be("customs-declare-exports-frontend")
+      validConfigService.isFeatureOn(Feature.default) must be(false)
     }
 
     "have customs declare exports" in {
-      config.customsDeclareExports must be("http://localhost:6792")
+      validConfigService.customsDeclareExports must be("http://localhoste:9875")
     }
 
     "have submit declaration URL" in {
-      config.submitDeclaration must be("/declaration")
+      validConfigService.submitDeclaration must be("/declaration")
     }
 
+    "have cancel declaration URL" in {
+      validConfigService.cancelDeclaration must be("/cancel-declaration")
+    }
+
+    "have movements backend hostname " in {
+      validConfigService.customsDeclareExportsMovements must be("http://localhostm:9876")
+    }
     "have movement submission URL" in {
-      config.saveMovementSubmission must be("/save-movement-submission")
+      validConfigService.saveMovementSubmission must be("/save-movement-submission")
     }
 
     "have fetch notification URL" in {
-      config.fetchNotifications must be("/customs-declare-exports/notifications")
+      validConfigService.fetchNotifications must be("/customs-declare-exports/notifications")
     }
 
     "have fetch submission notification URL" in {
       config.fetchSubmissionNotifications must be("/customs-declare-exports/submission-notifications")
     }
 
-    "have customs inventory linking exports URL" in {
-      config.customsInventoryLinkingExports must be("http://localhost:9823")
-    }
-
-    "have submit arrival URI" in {
-      config.sendArrival must be("/")
+    "have fetchSubmissions URL" in {
+      config.fetchSubmissions must be("/submissions")
     }
 
     "have countryCodesJsonFilename" in {
-      config.countryCodesJsonFilename must be("location-autocomplete-canonical-list.json")
+      validConfigService.countryCodesJsonFilename must be("location-autocomplete-canonical-list.json")
     }
 
     "have countriesCsvFilename" in {
-      config.countriesCsvFilename must be("mdg-country-codes.csv")
-    }
-
-    "have inventory Client Id" in {
-      config.clientIdInventory must be("5c68d3b5-d8a7-4212-8688-6b67f18bbce7")
+      validConfigService.countriesCsvFilename must be("mdg-country-codes.csv")
     }
 
     "have nrsServiceUrl" in {
-      config.nrsServiceUrl must be("http://localhost:9479")
+      validConfigService.nrsServiceUrl must be("http://localhostnrs:7654")
     }
 
     "have nrsApiKey" in {
-      config.nrsApiKey must be("cds-exports")
+      validConfigService.nrsApiKey must be("cds-exports")
     }
 
   }
+
+  "throw an exception when google-analytics.host is missing" in {
+    intercept[Exception](emptyConfigService.analyticsHost).getMessage must be(
+      "Missing configuration key: google-analytics.host"
+    )
+  }
+
+  "throw an exception when google-analytics.token is missing" in {
+    intercept[Exception](emptyConfigService.analyticsToken).getMessage must be(
+      "Missing configuration key: google-analytics.token"
+    )
+  }
+
+  "throw an exception when auth.host is missing" in {
+    intercept[Exception](emptyConfigService.authUrl).getMessage must be("Could not find config auth.host")
+  }
+
+  "throw an exception when urls.login is missing" in {
+    intercept[Exception](emptyConfigService.loginUrl).getMessage must be("Missing configuration key: urls.login")
+  }
+
+  "throw an exception when urls.loginContinue is missing" in {
+    intercept[Exception](emptyConfigService.loginContinueUrl).getMessage must be(
+      "Missing configuration key: urls.loginContinue"
+    )
+  }
+
+  "throw an exception when microservice.services.features.default is missing" in {
+    intercept[Exception](emptyConfigService.defaultFeatureStatus).getMessage must be(
+      "Missing configuration key: microservice.services.features.default"
+    )
+  }
+
+  "throw an exception when customs-declare-exports.host is missing" in {
+    intercept[Exception](emptyConfigService.customsDeclareExports).getMessage must be(
+      "Could not find config customs-declare-exports.host"
+    )
+  }
+
+  "throw an exception when submit declaration uri is missing" in {
+    intercept[Exception](emptyConfigService.submitDeclaration).getMessage must be(
+      "Missing configuration for Customs Declarations Exports submit declaration URI"
+    )
+  }
+
+  "throw an exception when cancel declaration uri is missing" in {
+    intercept[Exception](emptyConfigService.cancelDeclaration).getMessage must be(
+      "Missing configuration for Customs Declaration Export cancel declaration URI"
+    )
+  }
+
+  "throw an exception when fetchSubmissions uri is missing" in {
+    intercept[Exception](emptyConfigService.fetchSubmissions).getMessage must be(
+      "Missing configuration for Customs Declaration Exports fetch submission URI"
+    )
+  }
+
+
+  "throw an exception when customs-declare-exports-movements.host is missing" in {
+    intercept[Exception](emptyConfigService.customsDeclareExportsMovements).getMessage must be(
+      "Could not find config customs-declare-exports-movements.host"
+    )
+  }
+
+  "throw an exception when movement submission uri is missing" in {
+    intercept[Exception](emptyConfigService.saveMovementSubmission).getMessage must be(
+      "Missing configuration for Customs Declarations Exports Movement submission URI"
+    )
+  }
+
+  "throw an exception when fetch notifications uri is missing" in {
+    intercept[Exception](emptyConfigService.fetchNotifications).getMessage must be(
+      "Missing configuration for Customs Declarations Exports fetch notification URI"
+    )
+  }
+
+  "throw an exception when fetch-submission-notifications uri is missing" in {
+    intercept[Exception](emptyConfigService.fetchSubmissionNotifications).getMessage must be(
+      "Missing configuration for Customs Declaration Export fetch submission notification URI"
+    )
+  }
+
+  "throw an exception when countryCodesJsonFilename is missing" in {
+    intercept[Exception](emptyConfigService.countryCodesJsonFilename).getMessage must be(
+      "Missing configuration key: countryCodesJsonFilename"
+    )
+  }
+
+  "throw an exception when countryCodesCsvFilename is missing" in {
+    intercept[Exception](emptyConfigService.countriesCsvFilename).getMessage must be(
+      "Missing configuration key: countryCodesCsvFilename"
+    )
+  }
+
+  "throw an exception when nrs.host is missing" in {
+    intercept[Exception](emptyConfigService.nrsServiceUrl).getMessage must be(
+      "Could not find config nrs.host"
+    )
+  }
+
+  "throw an exception when nrs apikey is missing" in {
+    intercept[Exception](emptyConfigService.nrsApiKey).getMessage must be(
+      "Missing configuration for nrs apikey"
+    )
+  }
+
+
 }

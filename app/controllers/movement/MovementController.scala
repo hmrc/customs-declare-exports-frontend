@@ -17,7 +17,6 @@
 package controllers.movement
 
 import config.AppConfig
-import connectors.CustomsInventoryLinkingExportsConnector
 import controllers.actions.AuthAction
 import controllers.util.CacheIdGenerator.{eoriCacheId, movementCacheId}
 import forms.MovementFormsAndIds._
@@ -37,7 +36,6 @@ class MovementController @Inject()(
   appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
-  customsInventoryLinkingExportsConnector: CustomsInventoryLinkingExportsConnector,
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)

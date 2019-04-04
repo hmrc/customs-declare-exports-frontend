@@ -50,8 +50,6 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   lazy val loginUrl = loadConfig("urls.login")
   lazy val loginContinueUrl = loadConfig("urls.loginContinue")
 
-  lazy val developerHubClientId: String = loadConfig("hmrc-developers-hub.client-id")
-
   lazy val customsDeclareExports = baseUrl("customs-declare-exports")
 
   lazy val customsDeclareExportsMovements = baseUrl("customs-declare-exports-movements")
@@ -84,16 +82,6 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   lazy val cancelDeclaration = getConfString(
     "customs-declare-exports.cancel-declaration",
     throw new IllegalStateException("Missing configuration for Customs Declaration Export cancel declaration URI")
-  )
-
-  lazy val customsInventoryLinkingExports = baseUrl("customs-inventory-linking-exports")
-  lazy val sendArrival = getConfString(
-    "customs-inventory-linking-exports.sendArrival",
-    throw new IllegalStateException("Missing configuration for Customs Inventory Linking send arrival URI")
-  )
-  lazy val clientIdInventory = getConfString(
-    "customs-inventory-linking-exports.client-id",
-    throw new IllegalStateException("Missing configuration for Customs Inventory Linking Client Id")
   )
 
   lazy val languageTranslationEnabled =
