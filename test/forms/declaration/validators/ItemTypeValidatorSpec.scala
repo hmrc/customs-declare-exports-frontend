@@ -34,7 +34,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       "any TARIC additional code is not 4 characters long" in {
         val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333", "4444"))
         val expectedValidationResult = Invalid(
-          errors = Seq(FormError(s"$taricAdditionalCodesKey[2]", "declaration.itemType.taricAdditionalCodes.error.length"))
+          errors =
+            Seq(FormError(s"$taricAdditionalCodesKey[2]", "declaration.itemType.taricAdditionalCodes.error.length"))
         )
 
         testFailedValidationOnAddition(itemType, expectedValidationResult)
@@ -44,7 +45,10 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
         val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333$", "4444"))
         val expectedValidationResult = Invalid(
           errors = Seq(
-            FormError(s"$taricAdditionalCodesKey[2]", "declaration.itemType.taricAdditionalCodes.error.specialCharacters")
+            FormError(
+              s"$taricAdditionalCodesKey[2]",
+              "declaration.itemType.taricAdditionalCodes.error.specialCharacters"
+            )
           )
         )
 
@@ -52,7 +56,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "there is more than 99 TARIC additional codes" in {
-        val itemType = buildItemType(taricAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
+        val itemType =
+          buildItemType(taricAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
         val expectedValidationResult = Invalid(
           errors = Seq(FormError(taricAdditionalCodesKey, "declaration.itemType.taricAdditionalCodes.error.maxAmount"))
         )
@@ -72,8 +77,9 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       "any National additional code is longer than 4 characters" in {
         val itemType = buildItemType(nationalAdditionalCode = Seq("1111", "2222", "33333", "4444"))
         val expectedValidationResult = Invalid(
-          errors =
-            Seq(FormError(s"$nationalAdditionalCodesKey[2]", "declaration.itemType.nationalAdditionalCode.error.length"))
+          errors = Seq(
+            FormError(s"$nationalAdditionalCodesKey[2]", "declaration.itemType.nationalAdditionalCode.error.length")
+          )
         )
 
         testFailedValidationOnAddition(itemType, expectedValidationResult)
@@ -94,7 +100,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "there is more than 99 National additional codes" in {
-        val itemType = buildItemType(nationalAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
+        val itemType =
+          buildItemType(nationalAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
         val expectedValidationResult = Invalid(
           errors =
             Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.maxAmount"))
@@ -187,7 +194,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       "any TARIC additional code is not 4 characters long" in {
         val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333", "4444"))
         val expectedValidationResult = Invalid(
-          errors = Seq(FormError(s"$taricAdditionalCodesKey[2]", "declaration.itemType.taricAdditionalCodes.error.length"))
+          errors =
+            Seq(FormError(s"$taricAdditionalCodesKey[2]", "declaration.itemType.taricAdditionalCodes.error.length"))
         )
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
@@ -197,7 +205,10 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
         val itemType = buildItemType(taricAdditionalCode = Seq("1111", "2222", "333$", "4444"))
         val expectedValidationResult = Invalid(
           errors = Seq(
-            FormError(s"$taricAdditionalCodesKey[2]", "declaration.itemType.taricAdditionalCodes.error.specialCharacters")
+            FormError(
+              s"$taricAdditionalCodesKey[2]",
+              "declaration.itemType.taricAdditionalCodes.error.specialCharacters"
+            )
           )
         )
 
@@ -205,7 +216,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "there is more than 99 TARIC additional codes" in {
-        val itemType = buildItemType(taricAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
+        val itemType =
+          buildItemType(taricAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
         val expectedValidationResult = Invalid(
           errors = Seq(FormError(taricAdditionalCodesKey, "declaration.itemType.taricAdditionalCodes.error.maxAmount"))
         )
@@ -225,8 +237,9 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       "any National additional code is longer than 4 characters" in {
         val itemType = buildItemType(nationalAdditionalCode = Seq("1111", "2222", "33333", "4444"))
         val expectedValidationResult = Invalid(
-          errors =
-            Seq(FormError(s"$nationalAdditionalCodesKey[2]", "declaration.itemType.nationalAdditionalCode.error.length"))
+          errors = Seq(
+            FormError(s"$nationalAdditionalCodesKey[2]", "declaration.itemType.nationalAdditionalCode.error.length")
+          )
         )
 
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
@@ -247,7 +260,8 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "there is more than 99 National additional codes" in {
-        val itemType = buildItemType(nationalAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
+        val itemType =
+          buildItemType(nationalAdditionalCode = (1 to 100).map(_ => TestHelper.createRandomAlphanumericString(4)))
         val expectedValidationResult = Invalid(
           errors =
             Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.maxAmount"))

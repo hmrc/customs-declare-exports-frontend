@@ -191,7 +191,9 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
             DeclarantDetails(
               EntityDetails(
                 None,
-                Some(Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England"))
+                Some(
+                  Address(TestHelper.createRandomAlphanumericString(71), "Test Street", "Leeds", "LS18BN", "England")
+                )
               )
             )
           )
@@ -269,7 +271,15 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
             DeclarantDetails(
               EntityDetails(
                 None,
-                Some(Address("Marco Polo", "Test Street", TestHelper.createRandomAlphanumericString(71), "LS18BN", "England"))
+                Some(
+                  Address(
+                    "Marco Polo",
+                    "Test Street",
+                    TestHelper.createRandomAlphanumericString(71),
+                    "LS18BN",
+                    "England"
+                  )
+                )
               )
             )
           )
@@ -305,7 +315,15 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
             DeclarantDetails(
               EntityDetails(
                 None,
-                Some(Address("Marco Polo", "Test Street", "Leeds", TestHelper.createRandomAlphanumericString(71), "England"))
+                Some(
+                  Address(
+                    "Marco Polo",
+                    "Test Street",
+                    "Leeds",
+                    TestHelper.createRandomAlphanumericString(71),
+                    "England"
+                  )
+                )
               )
             )
           )

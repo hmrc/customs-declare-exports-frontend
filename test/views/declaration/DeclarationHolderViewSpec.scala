@@ -144,7 +144,10 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
         DeclarationHolder
           .form()
           .fillAndValidate(
-            DeclarationHolder(Some(TestHelper.createRandomAlphanumericString(6)), Some(TestHelper.createRandomAlphanumericString(18)))
+            DeclarationHolder(
+              Some(TestHelper.createRandomAlphanumericString(6)),
+              Some(TestHelper.createRandomAlphanumericString(18))
+            )
           )
       )
 

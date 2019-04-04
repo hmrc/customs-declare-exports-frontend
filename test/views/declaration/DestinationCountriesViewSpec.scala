@@ -149,7 +149,10 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       val view = createView(
         DestinationCountries.supplementaryForm
           .fillAndValidate(
-            DestinationCountriesSupplementary(TestHelper.createRandomAlphanumericString(10), TestHelper.createRandomAlphanumericString(10))
+            DestinationCountriesSupplementary(
+              TestHelper.createRandomAlphanumericString(10),
+              TestHelper.createRandomAlphanumericString(10)
+            )
           )
       )
 

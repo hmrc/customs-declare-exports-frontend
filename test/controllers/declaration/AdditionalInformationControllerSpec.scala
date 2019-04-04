@@ -316,7 +316,8 @@ class AdditionalInformationControllerSpec
 
         "an item has longer code" in {
 
-          val body = Seq(("code", createRandomAlphanumericString(6)), ("description", ""), saveAndContinueActionURLEncoded)
+          val body =
+            Seq(("code", createRandomAlphanumericString(6)), ("description", ""), saveAndContinueActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
@@ -330,7 +331,8 @@ class AdditionalInformationControllerSpec
 
         "an item has shorter code" in {
 
-          val body = Seq(("code", createRandomAlphanumericString(3)), ("description", ""), saveAndContinueActionURLEncoded)
+          val body =
+            Seq(("code", createRandomAlphanumericString(3)), ("description", ""), saveAndContinueActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
@@ -344,7 +346,11 @@ class AdditionalInformationControllerSpec
 
         "an item has longer description" in {
 
-          val body = Seq(("code", "M1l3s"), ("description", createRandomAlphanumericString(100)), saveAndContinueActionURLEncoded)
+          val body = Seq(
+            ("code", "M1l3s"),
+            ("description", createRandomAlphanumericString(100)),
+            saveAndContinueActionURLEncoded
+          )
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 

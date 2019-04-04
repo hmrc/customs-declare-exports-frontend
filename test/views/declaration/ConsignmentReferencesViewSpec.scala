@@ -163,7 +163,9 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       val view = createView(
         ConsignmentReferences
           .form()
-          .fillAndValidate(ConsignmentReferences(Some(Ducr(incorrectDUCR)), TestHelper.createRandomAlphanumericString(23)))
+          .fillAndValidate(
+            ConsignmentReferences(Some(Ducr(incorrectDUCR)), TestHelper.createRandomAlphanumericString(23))
+          )
       )
 
       checkErrorsSummary(view)

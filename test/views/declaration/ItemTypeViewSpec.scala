@@ -158,8 +158,12 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(8)>label>span:nth-child(1)").text() must be(messages(unDangerousGoodsCodeHeader))
-        getElementByCss(view, "form>div:nth-child(8)>label>span.form-hint").text() must be(messages(unDangerousGoodsCodeHeaderHint))
+        getElementByCss(view, "form>div:nth-child(8)>label>span:nth-child(1)").text() must be(
+          messages(unDangerousGoodsCodeHeader)
+        )
+        getElementByCss(view, "form>div:nth-child(8)>label>span.form-hint").text() must be(
+          messages(unDangerousGoodsCodeHeaderHint)
+        )
         getElementById(view, "unDangerousGoodsCode").attr("value") must be("")
       }
 
@@ -344,7 +348,9 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
         getElementById(view, "combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
         getElementById(view, "descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
         getElementById(view, "cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
-        getElementById(view, "unDangerousGoodsCode").attr("value") must equal(itemType.unDangerousGoodsCode.getOrElse(""))
+        getElementById(view, "unDangerousGoodsCode").attr("value") must equal(
+          itemType.unDangerousGoodsCode.getOrElse("")
+        )
         getElementById(view, "statisticalValue").attr("value") must equal(itemType.statisticalValue)
       }
     }
