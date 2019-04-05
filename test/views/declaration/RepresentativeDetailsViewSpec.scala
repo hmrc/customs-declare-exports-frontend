@@ -69,7 +69,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(2)>label>span:nth-child(1)").text() must be(messages(eoriInfo))
+      getElementByCss(view, "form>div.form-group>div:nth-child(2)>label>span:nth-child(1)").text() must be(
+        messages(eoriInfo)
+      )
       getElementById(view, "details_eori").attr("value") must be("")
     }
 
@@ -77,7 +79,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(1)>label").text() must be(messages(fullName))
+      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(1)>label").text() must be(
+        messages(fullName)
+      )
       getElementById(view, "details_address_fullName").attr("value") must be("")
     }
 
@@ -85,7 +89,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(2)>label").text() must be(messages(addressLine))
+      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(2)>label").text() must be(
+        messages(addressLine)
+      )
       getElementById(view, "details_address_addressLine").attr("value") must be("")
     }
 
@@ -93,7 +99,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(3)>label").text() must be(messages(townOrCity))
+      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(3)>label").text() must be(
+        messages(townOrCity)
+      )
       getElementById(view, "details_address_townOrCity").attr("value") must be("")
     }
 
@@ -101,7 +109,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(4)>label").text() must be(messages(postCode))
+      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(4)>label").text() must be(
+        messages(postCode)
+      )
       getElementById(view, "details_address_postCode").attr("value") must be("")
     }
 
@@ -109,7 +119,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(5)>label").text() must be(messages(country))
+      getElementByCss(view, "form>div.form-group>div:nth-child(5)>div:nth-child(5)>label").text() must be(
+        messages(country)
+      )
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 

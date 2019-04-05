@@ -88,9 +88,7 @@ class PreviousDocumentsController @Inject()(
                   .cache[PreviousDocumentsData](cacheId, formId, PreviousDocumentsData(updatedCache))
                   .map(_ => Redirect(controllers.declaration.routes.ItemsSummaryController.displayForm()))
               else
-                Future.successful(
-                  Redirect(controllers.declaration.routes.ItemsSummaryController.displayForm())
-              )
+                Future.successful(Redirect(controllers.declaration.routes.ItemsSummaryController.displayForm()))
           )
         }
 

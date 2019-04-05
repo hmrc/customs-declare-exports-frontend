@@ -45,7 +45,8 @@ object WarehouseIdentification {
 
   val mapping = Forms.mapping(
     "supervisingCustomsOffice" -> optional(
-      text().verifying("supplementary.warehouse.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
+      text()
+        .verifying("supplementary.warehouse.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
     ),
     "identificationNumber" -> optional(
       text().verifying(

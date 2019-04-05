@@ -82,7 +82,9 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(declarationHolderEori))
+      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(
+        messages(declarationHolderEori)
+      )
       getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(eoriHint))
       getElementById(view, "eori").attr("value") must be("")
     }

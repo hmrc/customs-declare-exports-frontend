@@ -100,7 +100,9 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
       "display section header" in {
 
-        getElementById(createView(journeyType = AllowedChoiceValues.StandardDec), "section-header").text() must be("Items")
+        getElementById(createView(journeyType = AllowedChoiceValues.StandardDec), "section-header").text() must be(
+          "Items"
+        )
       }
 
       "display header" in {
