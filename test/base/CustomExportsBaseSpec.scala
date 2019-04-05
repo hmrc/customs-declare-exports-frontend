@@ -21,18 +21,14 @@ import java.util.UUID
 import akka.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
-import connectors.{
-  CustomsDeclareExportsConnector,
-  CustomsDeclareExportsMovementsConnector,
-  CustomsInventoryLinkingExportsConnector,
-  NrsConnector
-}
+import connectors.{CustomsDeclareExportsConnector, CustomsDeclareExportsMovementsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -76,7 +72,6 @@ trait CustomExportsBaseSpec
       bind[CustomsCacheService].to(mockCustomsCacheService),
       bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
       bind[CustomsDeclareExportsMovementsConnector].to(mockCustomsDeclareExportsMovementsConnector),
-      bind[CustomsInventoryLinkingExportsConnector].to(mockCustomsInventoryLinkingExportsConnector),
       bind[NrsConnector].to(mockNrsConnector),
       bind[NRSService].to(mockNrsService),
       bind[ExportsMetrics].to(mockMetrics),
@@ -96,7 +91,7 @@ trait CustomExportsBaseSpec
 
   val cfg: CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
 
-  val token = injector.instanceOf[CSRFFilter].tokenProvider.generateToken
+  val token: String = injector.instanceOf[CSRFFilter].tokenProvider.generateToken
 
   def fakeRequest = FakeRequest("", "")
 
@@ -105,7 +100,7 @@ trait CustomExportsBaseSpec
 
   implicit val messages: Messages = messagesApi.preferred(fakeRequest)
 
-  implicit val defaultPatience =
+  implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 
   protected def uriWithContextPath(path: String): String = s"$contextPath$path"
@@ -158,7 +153,7 @@ trait CustomExportsBaseSpec
       .copyFakeRequest(tags = tags)
   }
 
-  def withCaching[T](form: Option[Form[T]]) = {
+  def withCaching[T](form: Option[Form[T]]): OngoingStubbing[Future[CacheMap]] = {
     when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(form))
 
@@ -166,7 +161,7 @@ trait CustomExportsBaseSpec
       .thenReturn(Future.successful(CacheMap("id1", Map.empty)))
   }
 
-  def withCaching[T](dataToReturn: Option[T], id: String) = {
+  def withCaching[T](dataToReturn: Option[T], id: String): OngoingStubbing[Future[CacheMap]] = {
     when(
       mockCustomsCacheService
         .fetchAndGetEntry[T](any(), ArgumentMatchers.eq(id))(any(), any(), any())
@@ -176,7 +171,7 @@ trait CustomExportsBaseSpec
       .thenReturn(Future.successful(CacheMap(id, Map.empty)))
   }
 
-  def withNrsSubmission() =
+  def withNrsSubmission(): OngoingStubbing[Future[NrsSubmissionResponse]] =
     when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
 }
