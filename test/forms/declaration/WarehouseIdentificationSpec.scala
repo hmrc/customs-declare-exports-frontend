@@ -16,8 +16,8 @@
 
 package forms.declaration
 
-import forms.declaration.TransportInformation.ModeOfTransportCodes
-import forms.declaration.TransportInformation.ModeOfTransportCodes.Maritime
+import forms.declaration.WarehouseIdentification.ModeOfTransportCodes
+import forms.declaration.WarehouseIdentification.ModeOfTransportCodes.Maritime
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 

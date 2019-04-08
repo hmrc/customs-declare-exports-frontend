@@ -80,7 +80,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/transport-information"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/total-numbers-of-items"))
     }
   }
 }

@@ -51,7 +51,6 @@ class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCaching
       result.declaration.flatMap(_.invoiceAmount).flatMap(_.currencyId) must be(Some("GBP"))
       result.declaration.value.authorisationHolders.size mustBe 1
       result.declaration.flatMap(_.exitOffice).flatMap(_.id) mustBe Some("123qwe12")
-      assertBorderTransportMeans(result.declaration)
       result.declaration.flatMap(_.goodsShipment) must be(defined)
       val goodsShipment = result.declaration.flatMap(_.goodsShipment).value
       goodsShipment.aeoMutualRecognitionParties.headOption mustBe defined
@@ -61,26 +60,10 @@ class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCaching
       goodsShipment.warehouse.flatMap(_.id) mustBe Some("1234567GB")
       goodsShipment.warehouse.map(_.typeCode) mustBe Some("R")
       goodsShipment.consignment must be(defined)
-      assertConsignment(goodsShipment.consignment)
       assertGoodsItem(goodsShipment)
       assertPreviousDocuments(goodsShipment)
       WcoMetadataMapping.declarationUcr(result.declaration) mustBe Some("8GB123456789012-1234567890QWERTYUIO")
     }
-  }
-
-  private def assertBorderTransportMeans(declaration: Option[Declaration]) = {
-    declaration.flatMap(_.borderTransportMeans).flatMap(_.id) mustBe Some("QWERTY")
-    declaration.flatMap(_.borderTransportMeans).flatMap(_.modeCode) mustBe Some(3)
-    declaration.flatMap(_.borderTransportMeans).flatMap(_.identificationTypeCode) mustBe Some("11")
-    declaration.flatMap(_.borderTransportMeans).flatMap(_.registrationNationalityCode) mustBe Some("GB")
-
-  }
-
-  private def assertConsignment(consignment: Option[Consignment]) = {
-    consignment.flatMap(_.departureTransportMeans).flatMap(_.id) must be(defined)
-    consignment.flatMap(_.departureTransportMeans).flatMap(_.identificationTypeCode) must be(defined)
-    consignment.flatMap(_.containerCode) mustBe Some("1")
-    assertGoodsLocation(consignment)
   }
 
   private def assertGoodsLocation(consignment: Option[Consignment]) = {

@@ -54,7 +54,7 @@ class OfficeOfExitController @Inject()(
           Future.successful(BadRequest(office_of_exit(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[OfficeOfExit](cacheId, formId, form).map { _ =>
-            Redirect(controllers.declaration.routes.TransportInformationPageController.displayPage())
+            Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm())
         }
       )
   }

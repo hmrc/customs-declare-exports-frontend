@@ -90,18 +90,6 @@ GET         /office-of-exit                 controllers.declaration.OfficeOfExit
 
 POST        /office-of-exit                 controllers.declaration.OfficeOfExitController.saveOffice()
 
-# Transport Information
-
-GET         /transport-information          controllers.declaration.TransportInformationPageController.displayPage()
-
-POST        /transport-information          controllers.declaration.TransportInformationPageController.submitTransportInformation()
-
-# Transport Information Containers
-
-GET         /add-transport-containers       controllers.declaration.TransportInformationContainersPageController.displayPage()
-
-POST        /add-transport-containers       controllers.declaration.TransportInformationContainersPageController.handlePost()
-
 # Total number of items
 
 GET         /total-numbers-of-items         controllers.declaration.TotalNumberOfItemsController.displayForm()
