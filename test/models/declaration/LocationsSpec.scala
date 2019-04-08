@@ -27,20 +27,17 @@ class LocationsSpec extends WordSpec with MustMatchers {
     val destinationCountriesMock = mock(classOf[DestinationCountriesSupplementary])
     val goodsLocationMock = mock(classOf[GoodsLocation])
     val procedureCodesMock = mock(classOf[ProcedureCodesData])
-    val supervisingCustomsOfficeMock = mock(classOf[SupervisingCustomsOffice])
     val warehouseIdentificationMock = mock(classOf[WarehouseIdentification])
     val officeOfExitMock = mock(classOf[OfficeOfExit])
     val locations = Locations(
       destinationCountries = Some(destinationCountriesMock),
       goodsLocation = Some(goodsLocationMock),
-      supervisingCustomsOffice = Some(supervisingCustomsOfficeMock),
       warehouseIdentification = Some(warehouseIdentificationMock),
       officeOfExit = Some(officeOfExitMock)
     )
 
     when(destinationCountriesMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     when(goodsLocationMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-    when(supervisingCustomsOfficeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     when(warehouseIdentificationMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     when(officeOfExitMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
   }
@@ -49,12 +46,10 @@ class LocationsSpec extends WordSpec with MustMatchers {
     val destinationCountriesMap = Map("DestinationCountries" -> "DestinationCountriesValue")
     val goodsLocationMap = Map("GoodsLocation" -> "GoodsLocationValue")
     val procedureCodesMap = Map("ProcedureCodes" -> "ProcedureCodesValue")
-    val supervisingCustomsOfficeMap = Map("SupervisingCustomsOffice" -> "SupervisingCustomsOfficeValue")
     val warehouseIdentificationMap = Map("WarehouseIdentification" -> "WarehouseIdentificationValue")
     val officeOfExitMap = Map("OfficeOfExit" -> "OfficeOfExitValue")
     when(destinationCountriesMock.toMetadataProperties()).thenReturn(destinationCountriesMap)
     when(goodsLocationMock.toMetadataProperties()).thenReturn(goodsLocationMap)
-    when(supervisingCustomsOfficeMock.toMetadataProperties()).thenReturn(supervisingCustomsOfficeMap)
     when(warehouseIdentificationMock.toMetadataProperties()).thenReturn(warehouseIdentificationMap)
     when(officeOfExitMock.toMetadataProperties()).thenReturn(officeOfExitMap)
   }
@@ -67,14 +62,13 @@ class LocationsSpec extends WordSpec with MustMatchers {
 
         verify(destinationCountriesMock, times(1)).toMetadataProperties()
         verify(goodsLocationMock, times(1)).toMetadataProperties()
-        verify(supervisingCustomsOfficeMock, times(1)).toMetadataProperties()
         verify(warehouseIdentificationMock, times(1)).toMetadataProperties()
         verify(officeOfExitMock, times(1)).toMetadataProperties()
       }
 
       "return Map being sum of all Maps from sub-objects" in new TestMapConcatenation {
         locations.toMetadataProperties() must equal(
-          destinationCountriesMap ++ goodsLocationMap ++ supervisingCustomsOfficeMap ++ warehouseIdentificationMap ++ officeOfExitMap
+          destinationCountriesMap ++ goodsLocationMap ++ warehouseIdentificationMap ++ officeOfExitMap
         )
       }
     }

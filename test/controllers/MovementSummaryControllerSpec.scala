@@ -163,8 +163,6 @@ class MovementSummaryControllerSpec extends CustomExportsBaseSpec with BeforeAnd
         verify(mockCustomsCacheService).fetchMovementRequest(any(), any())(any(), any())
       }
 
-
-
       "redirect to confirmation page" in {
         mockCustomsCacheServiceFetchMovementRequestResultWith(Some(validMovementRequest("EAL")))
         successfulMovementsResponse()

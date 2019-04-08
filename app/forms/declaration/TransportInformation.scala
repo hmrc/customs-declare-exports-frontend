@@ -21,11 +21,9 @@ import play.api.data.Forms.{boolean, optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.Countries.allCountries
-import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfTrue
 import utils.validators.forms.FieldValidator._
 
 case class TransportInformation(
-  inlandModeOfTransportCode: Option[String],
   borderModeOfTransportCode: String,
   meansOfTransportOnDepartureType: String,
   meansOfTransportOnDepartureIDNumber: Option[String],
@@ -37,7 +35,6 @@ case class TransportInformation(
 
   override def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.goodsShipment.consignment.arrivalTransportMeans.modeCode" -> inlandModeOfTransportCode.getOrElse(""),
       "declaration.borderTransportMeans.modeCode" -> borderModeOfTransportCode,
       "declaration.goodsShipment.consignment.departureTransportMeans.identificationTypeCode" -> meansOfTransportOnDepartureType,
       "declaration.goodsShipment.consignment.departureTransportMeans.id" -> meansOfTransportOnDepartureIDNumber
@@ -61,11 +58,11 @@ object TransportInformation {
   def form(): Form[TransportInformation] = Form(mapping)
 
   import ModeOfTransportCodes._
-  private val allowedModeOfTransportCodes =
+  val allowedModeOfTransportCodes =
     Set(Maritime, Rail, Road, Air, PostalConsignment, FixedTransportInstallations, InlandWaterway, Unknown)
 
   import MeansOfTransportTypeCodes._
-  private val allowedMeansOfTransportTypeCodes =
+  val allowedMeansOfTransportTypeCodes =
     Set(
       IMOShipIDNumber,
       NameOfVessel,
@@ -78,13 +75,6 @@ object TransportInformation {
     )
 
   val mapping = Forms.mapping(
-    "inlandModeOfTransportCode" -> optional(
-      text()
-        .verifying(
-          "supplementary.transportInfo.inlandTransportMode.error.incorrect",
-          isContainedIn(allowedModeOfTransportCodes)
-        )
-    ),
     "borderModeOfTransportCode" -> optional(
       text()
         .verifying(

@@ -27,7 +27,6 @@ import forms.declaration.GoodsItemNumberSpec._
 import forms.declaration.GoodsLocationSpec._
 import forms.declaration.OfficeOfExitSpec._
 import forms.declaration.RepresentativeDetailsSpec._
-import forms.declaration.SupervisingCustomsOfficeSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransactionTypeSpec._
 import forms.declaration.TransportInformationContainerSpec.{
@@ -216,7 +215,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           supplementaryDeclarationData.locations must be(defined)
           supplementaryDeclarationData.locations.get.destinationCountries must be(defined)
           supplementaryDeclarationData.locations.get.goodsLocation must be(defined)
-          supplementaryDeclarationData.locations.get.supervisingCustomsOffice must be(defined)
           supplementaryDeclarationData.locations.get.warehouseIdentification must be(defined)
           supplementaryDeclarationData.locations.get.officeOfExit must be(defined)
           supplementaryDeclarationData.transportInformation must be(defined)
@@ -403,7 +401,6 @@ object SupplementaryDeclarationDataSpec {
       DeclarationHoldersData.formId -> correctDeclarationHoldersDataJSON,
       DestinationCountries.formId -> correctDestinationCountriesSupplementaryJSON,
       GoodsLocation.formId -> correctGoodsLocationJSON,
-      SupervisingCustomsOffice.formId -> correctSupervisingCustomsOfficeJSON,
       WarehouseIdentification.formId -> correctWarehouseIdentificationJSON,
       OfficeOfExit.formId -> correctOfficeOfExitJSON,
       TransportInformation.id -> correctTransportInformationJSON,
@@ -430,7 +427,6 @@ object SupplementaryDeclarationDataSpec {
       Locations(
         destinationCountries = Some(correctDestinationCountriesSupplementary),
         goodsLocation = Some(correctGoodsLocation),
-        supervisingCustomsOffice = Some(correctSupervisingCustomsOffice),
         warehouseIdentification = Some(correctWarehouseIdentification),
         officeOfExit = Some(correctOfficeOfExit)
       )

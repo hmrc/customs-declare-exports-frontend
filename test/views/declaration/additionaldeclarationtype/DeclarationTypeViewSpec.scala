@@ -48,8 +48,14 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
       assertMessage(headerSupplementaryDec, "1/2 Which of the following best describes you?")
       assertMessage(headerStandardDec, "1/2 Which of the following best describes you?")
       assertMessage(hint, "Hint text if needed here")
-      assertMessage(simplified, "I am completing a supplementary declaration for goods that have been under a Simplified Declaration procedure (SDP)")
-      assertMessage(standard, "I am completing a supplementary declaration for goods that have been under EIDR procedures")
+      assertMessage(
+        simplified,
+        "I am completing a supplementary declaration for goods that have been under a Simplified Declaration procedure (SDP)"
+      )
+      assertMessage(
+        standard,
+        "I am completing a supplementary declaration for goods that have been under EIDR procedures"
+      )
       assertMessage(preLodged, "Pre-lodged")
       assertMessage(frontier, "Frontier")
     }

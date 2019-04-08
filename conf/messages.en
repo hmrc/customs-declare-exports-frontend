@@ -347,12 +347,6 @@ declaration.destinationCountries.countriesOfRouting.hint = Enter the countries i
 declaration.destinationCountries.countriesOfRouting.error = Country of routing is incorrect
 declaration.destinationCountries.countriesOfRouting.empty = Enter a country code
 
-supplementary.supervisingCustomsOffice.title = 5/27 Which supervising customs office was used?
-supplementary.supervisingCustomsOffice = 5/27 Where is the supervising customs office?
-supplementary.supervisingCustomsOffice.hint = This is an 8 digit code
-supplementary.supervisingCustomsOffice.error = Supervising customs office is incorrect
-supplementary.supervisingCustomsOffice.empty = Supervising customs office cannot be empty
-
 supplementary.goodsLocation = Location of goods
 supplementary.goodsLocation.title = 5/23 Where was the location of the goods?
 supplementary.goodsLocation.hint = Enter the location where the goods left the UK.
@@ -397,10 +391,17 @@ supplementary.officeOfExit.hint = This is an 8 digit code
 supplementary.officeOfExit.empty = Office of exit cannot be empty
 supplementary.officeOfExit.error = Office of exit is incorrect
 
-supplementary.warehouse.title =  2/7 Enter the warehouse identification number
+supplementary.warehouse.title =  Enter more detail about the warehouse
+supplementary.warehouse.title.hint = Locations
+supplementary.warehouse.identificationNumber = 2/7 Enter the warehouse identification number
 supplementary.warehouse.identificationNumber.error = Incorrect Identification Number
 supplementary.warehouse.identificationNumber.hint = For example, R1234567GB
-supplementary.warehouse.identificationNumber = Identification Number
+supplementary.warehouse.supervisingCustomsOffice = 5/27 Where is the supervising customs office?
+supplementary.warehouse.supervisingCustomsOffice.hint = This is an 8 digit code
+supplementary.warehouse.supervisingCustomsOffice.error = Supervising customs office is incorrect
+supplementary.warehouse.inlandTransportMode.header = 7/5 What was the inland mode of transport?
+supplementary.warehouse.inlandTransportMode.header.hint = The transport that will move the goods from their inland supervision to the port of arrival
+supplementary.warehouse.inlandTransportMode.error.incorrect = Please, choose valid inland mode of transport
 
 supplementary.addDocument.title = 2/3 Do you need to add any documents?
 supplementary.addDocument.hint = Including certificates, authorisations or additional references
@@ -441,9 +442,6 @@ supplementary.totalPackageQuantity.empty = Total number of packages cannot be em
 supplementary.totalPackageQuantity.error = Total number of packages is incorrect
 
 supplementary.transportInfo.title = Enter transport details
-supplementary.transportInfo.inlandTransportMode.header = 7/5 What was the inland mode of transport?
-supplementary.transportInfo.inlandTransportMode.header.hint = The transport that will move the goods from their inland supervision to the port of arrival
-supplementary.transportInfo.inlandTransportMode.error.incorrect = Please, choose valid inland mode of transport
 supplementary.transportInfo.borderTransportMode.header = 7/4 What transport was used at the boarder?
 supplementary.transportInfo.borderTransportMode.header.hint = The transport that the goods were loaded on when they crossed the boarder
 supplementary.transportInfo.borderTransportMode.error.empty = Please, choose mode of transport at the border
@@ -648,6 +646,7 @@ supplementary.summary.locations.additionalQualifier = Additional qualifier
 supplementary.summary.locations.procedureCode = Procedure code
 supplementary.summary.locations.additionalProcedureCodes = Additional procedure codes
 supplementary.summary.locations.warehouseId = Warehouse ID
+supplementary.summary.locations.inlandModeOfTransportCode = Inland mode of transport code
 supplementary.summary.locations.supervisingCustomsOffice = Supervising customs office
 supplementary.summary.locations.officeOfExit = Office of exit
 supplementary.summary.transport.header = Transport

@@ -41,7 +41,10 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       assertMessage(grossMass, "6/5 Gross Weight")
       assertMessage(grossMassHint, "The weight excluding container and packaging in kg")
       assertMessage(supplementaryUnits, "6/2 Do you need to add supplementary units?")
-      assertMessage(supplementaryUnitsHint, "Enter the quantity in the unit specified by the commodity code, for example 1,000 kWh")
+      assertMessage(
+        supplementaryUnitsHint,
+        "Enter the quantity in the unit specified by the commodity code, for example 1,000 kWh"
+      )
     }
 
     "have proper messages for error labels" in {

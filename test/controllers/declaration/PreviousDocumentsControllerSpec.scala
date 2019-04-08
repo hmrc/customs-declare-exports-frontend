@@ -440,7 +440,7 @@ class PreviousDocumentsControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supervising-office"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
       "user has empty form but cache contains some item" in {
@@ -452,7 +452,7 @@ class PreviousDocumentsControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supervising-office"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
       "user provide correct item with different item in cache" in {
@@ -471,7 +471,7 @@ class PreviousDocumentsControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/supervising-office"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
     }
   }

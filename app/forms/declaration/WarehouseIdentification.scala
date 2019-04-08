@@ -17,17 +17,24 @@
 package forms.declaration
 
 import forms.MetadataPropertiesConvertable
+import forms.declaration.TransportInformation.allowedModeOfTransportCodes
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class WarehouseIdentification(id: Option[String]) extends MetadataPropertiesConvertable {
+case class WarehouseIdentification(
+  supervisingCustomsOffice: Option[String],
+  identificationNumber: Option[String],
+  inlandModeOfTransportCode: Option[String]
+) extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.goodsShipment.warehouse.typeCode" -> id.flatMap(_.headOption).fold("")(_.toString),
-      "declaration.goodsShipment.warehouse.id" -> id.map(_.drop(1).toString).getOrElse("")
+      "declaration.goodsShipment.warehouse.typeCode" -> identificationNumber.flatMap(_.headOption).fold("")(_.toString),
+      "declaration.goodsShipment.warehouse.id" -> identificationNumber.map(_.drop(1).toString).getOrElse(""),
+      "declaration.supervisingOffice.id" -> supervisingCustomsOffice.getOrElse(""),
+      "declaration.goodsShipment.consignment.arrivalTransportMeans.modeCode" -> inlandModeOfTransportCode.getOrElse("")
     )
 }
 
@@ -37,11 +44,22 @@ object WarehouseIdentification {
   val formId = "IdentificationOfWarehouse"
 
   val mapping = Forms.mapping(
+    "supervisingCustomsOffice" -> optional(
+      text()
+        .verifying("supplementary.warehouse.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
+    ),
     "identificationNumber" -> optional(
       text().verifying(
         "supplementary.warehouse.identificationNumber.error",
         startsWithCapitalLetter and noShorterThan(2) and noLongerThan(36) and isAlphanumeric
       )
+    ),
+    "inlandModeOfTransportCode" -> optional(
+      text()
+        .verifying(
+          "supplementary.warehouse.inlandTransportMode.error.incorrect",
+          isContainedIn(allowedModeOfTransportCodes)
+        )
     )
   )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
 

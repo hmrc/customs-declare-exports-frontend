@@ -82,15 +82,16 @@ trait MockConnectors extends MockitoSugar {
       )
 
   def sendMovementRequest(): OngoingStubbing[Future[HttpResponse]] =
-    when(mockCustomsDeclareExportsMovementsConnector
-      .submitMovementDeclaration(any[String], any[Option[String]], any[String], any[String])(any(), any()))
-      .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+    when(
+      mockCustomsDeclareExportsMovementsConnector
+        .submitMovementDeclaration(any[String], any[Option[String]], any[String], any[String])(any(), any())
+    ).thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 
   def sendMovementRequest400Response(): OngoingStubbing[Future[HttpResponse]] =
-  when(mockCustomsDeclareExportsMovementsConnector
-    .submitMovementDeclaration(any[String], any[Option[String]], any[String], any[String])(any(), any()))
-    .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
-
+    when(
+      mockCustomsDeclareExportsMovementsConnector
+        .submitMovementDeclaration(any[String], any[Option[String]], any[String], any[String])(any(), any())
+    ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
   def submitNrsRequest(): OngoingStubbing[Future[NrsSubmissionResponse]] =
     when(mockNrsConnector.submitNonRepudiation(any())(any(), any()))

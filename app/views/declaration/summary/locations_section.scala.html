@@ -55,15 +55,19 @@
         )
     ))
 
-
     @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.warehouseId"),
-        value = locations.flatMap(_.warehouseIdentification).flatMap(_.id)
+        label = messages("supplementary.summary.locations.supervisingCustomsOffice"),
+        value = locations.flatMap(_.warehouseIdentification).flatMap(_.supervisingCustomsOffice)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.locations.supervisingCustomsOffice"),
-        value = locations.flatMap(_.supervisingCustomsOffice).flatMap(_.office)
+        label = messages("supplementary.summary.locations.warehouseId"),
+        value = locations.flatMap(_.warehouseIdentification).flatMap(_.identificationNumber)
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.inlandModeOfTransportCode"),
+        value = locations.flatMap(_.warehouseIdentification).flatMap(_.inlandModeOfTransportCode)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
