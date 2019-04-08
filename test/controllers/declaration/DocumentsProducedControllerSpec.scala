@@ -240,7 +240,8 @@ class DocumentsProducedControllerSpec
 
         withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
-        val body = removeActionUrlEncoded(correctDocumentsProducedData.documents.head.toJson.toString())
+        val firstElementIndex = "0"
+        val body = removeActionUrlEncoded(firstElementIndex)
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
         status(result) must be(SEE_OTHER)

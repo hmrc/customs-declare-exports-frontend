@@ -30,7 +30,6 @@ import models.declaration.DocumentsProducedData.{formId, maxNumberOfItems}
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.{CustomsCacheService, ItemsCachingService}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -75,7 +74,7 @@ class DocumentsProducedController @Inject()(
             actionTypeOpt match {
               case Some(Add)             => addItem(validForm, cache)
               case Some(SaveAndContinue) => saveAndContinue(validForm, cache)
-              case Some(Remove(values))  => removeItem(retrieveItem(Json.parse(values.headOption.get)), cache)
+              case Some(Remove(keys))    => removeItem(keys, cache)
               case _                     => errorHandler.displayErrorPage()
           }
         )
@@ -149,17 +148,16 @@ class DocumentsProducedController @Inject()(
       }
     }
 
-  private def removeItem(
-    docToRemove: DocumentsProduced,
-    cachedData: DocumentsProducedData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    if (cachedData.documents.contains(docToRemove)) {
-      val updatedCache = cachedData.copy(documents = cachedData.documents.filterNot(_ == docToRemove))
+  private def removeItem(keys: Seq[String], cachedData: DocumentsProducedData)(
+    implicit request: JourneyRequest[_],
+    hc: HeaderCarrier
+  ): Future[Result] = keys.headOption.fold(errorHandler.displayErrorPage()) { index =>
 
-      customsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, updatedCache).map { _ =>
-        Redirect(DocumentsProducedController.displayForm())
-      }
-    } else errorHandler.displayErrorPage()
+    val updatedCache = cachedData.copy(documents = cachedData.documents.patch(index.toInt, Nil, 1))
+    customsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, updatedCache).map { _ =>
+      Redirect(DocumentsProducedController.displayForm())
+    }
+  }
 
   private def handleErrorPage(
     fieldWithError: Seq[(String, String)],
@@ -172,7 +170,5 @@ class DocumentsProducedController @Inject()(
 
     Future.successful(BadRequest(documents_produced(appConfig, formWithError, documents)))
   }
-
-  private def retrieveItem(value: JsValue): DocumentsProduced = DocumentsProduced.fromJson(value)
 
 }
