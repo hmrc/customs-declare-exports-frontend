@@ -45,7 +45,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @for(item <- documents) {
+                @documents.zipWithIndex.map { case (item, index) =>
                     <tr>
                         <td scope="row">@item.documentTypeCode</td>
                         <td>@item.documentIdentifier</td>
@@ -53,7 +53,7 @@
                         <td>@item.documentStatus</td>
                         <td>@item.documentStatusReason</td>
                         <td>@item.documentQuantity</td>
-                        <td><button class="button--secondary" name="@Remove.toString" value="@item.toJson">@messages("site.remove")</button></td>
+                        <td><button class="button--secondary" name="@Remove.toString" value="@index">@messages("site.remove")</button></td>
                     </tr>
                 }
                 </tbody>

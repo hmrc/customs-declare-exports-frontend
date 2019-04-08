@@ -377,9 +377,10 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementByCss(view, "tr>td:nth-child(6)").text() must be("234.22")
 
       val removeButton = getElementByCss(view, "tbody>tr>td:nth-child(7)>button")
+      val firstItemIndex = "0"
 
       removeButton.text() must be("Remove")
-      removeButton.attr("value") must be(filledForm.toJson.toString())
+      removeButton.attr("value") must be(firstItemIndex)
     }
   }
 }

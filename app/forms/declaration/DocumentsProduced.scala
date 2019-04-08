@@ -42,8 +42,6 @@ object DocumentsProduced {
 
   implicit val format = Json.format[DocumentsProduced]
 
-  val formId = "Document"
-
   private val documentQuantityMaxLength = 16
   private val documentQuantityMaxDecimalPlaces = 6
 
@@ -66,8 +64,8 @@ object DocumentsProduced {
     "documentQuantity" ->
       optional(
         bigDecimal
-          .verifying("supplementary.addDocument.documentQuantity.precision.error", _.precision <= 16)
-          .verifying("supplementary.addDocument.documentQuantity.scale.error", _.scale <= 6)
+          .verifying("supplementary.addDocument.documentQuantity.precision.error", _.precision <= documentQuantityMaxLength)
+          .verifying("supplementary.addDocument.documentQuantity.scale.error", _.scale <= documentQuantityMaxDecimalPlaces)
           .verifying("supplementary.addDocument.documentQuantity.error", _ >= 0)
       )
   )(DocumentsProduced.apply)(DocumentsProduced.unapply)
