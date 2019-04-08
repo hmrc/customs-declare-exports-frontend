@@ -31,6 +31,8 @@
 
         @components.error_summary(form.errors)
 
+        @components.section_header(messages("supplementary.summary.parties.header"))
+
         @components.page_title(Some("supplementary.consignee.title"))
 
         @components.form_fields_wrapper(field = form("details")) {
@@ -38,12 +40,11 @@
             @components.input_text(
                 field = form("details.eori"),
                 label = messages("supplementary.consignee.eori.info"),
-                hint = Some(messages("supplementary.consignee.eori.hint"))
+                hint = Some(messages("supplementary.consignee.eori.hint")),
+                labelClass = Some("bold-small")
             )
 
-            <span>@messages("supplementary.consignee.address.info")</span>
-
-            @components.address(form, "details.address")
+            @components.address(form, "details.address", Some(messages("supplementary.consignee.address.info")))
         }
 
         @components.submit_button()

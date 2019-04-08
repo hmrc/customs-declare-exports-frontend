@@ -47,6 +47,13 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
+    "display section header" in {
+
+      val view = createView()
+
+      getElementById(view, "section-header").text() must be(messages("Parties"))
+    }
+
     "display header" in {
 
       val view = createView()

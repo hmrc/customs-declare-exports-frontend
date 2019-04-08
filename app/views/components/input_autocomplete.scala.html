@@ -46,7 +46,7 @@
 <div id="@elements.field.name-outer"
      class="@elements.args.get('_divClass) @if(allErrors.nonEmpty || (parentElements.isDefined && parentElements.get.hasErrors)) {error}">
 
-    <label for="@elements.field.name" @if(elements.args.get('_labelClass)) { class="@elements.args.get('_labelClass)" }>
+    <label id="@(field.id)-label" for="@elements.field.name" @if(elements.args.get('_labelClass)) { class="@elements.args.get('_labelClass)" }>
     @elements.label
     @if( elements.args.get('_hintText) ) { <span class="form-hint"
                                                  id="@(field.id)-hint">@elements.args.get('_hintText)</span> }
