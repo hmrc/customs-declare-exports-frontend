@@ -30,12 +30,7 @@
 ) {
     @helpers.form(DeclarantDetailsPageController.saveAddress(), 'autoComplete -> "off") {
 
-        @{
-            request.choice.value match {
-                case SupplementaryDec => components.back_link("/customs-declare-exports/declaration/exporter-details")
-                case StandardDec      => components.back_link("/customs-declare-exports/declaration/consignee-details")
-            }
-        }
+        @components.back_link("/customs-declare-exports/declaration/consignee-details")
 
         @components.error_summary(form.errors)
 

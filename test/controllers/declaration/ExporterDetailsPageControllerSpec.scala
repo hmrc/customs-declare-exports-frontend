@@ -88,65 +88,70 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
       stringResult must include(messages(countryError))
     }
 
-    "validate request and redirect to declarant-details page with only EORI provided" in {
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    "on the supplementary journey " should {
 
-      val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
-      val header = result.futureValue.header
+      "validate request and redirect to consignee-details page with only EORI provided" in {
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/declarant-details"))
+        val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+      }
+
+      "validate request and redirect to consignee-details page with only address provided" in {
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+
+        val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+      }
+
+      "validate request and redirect to consignee-details page with correct values" in {
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+
+        val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+      }
     }
 
-    "validate request and redirect to declarant-details page with only address provided" in {
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    "on the standard journey " should {
 
-      val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
-      val header = result.futureValue.header
+      "validate request and redirect to consignee-details page with only EORI provided" in {
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
 
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/declarant-details"))
+        val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+      }
+
+      "validate request and redirect to consignee-details page with only address provided" in {
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
+
+        val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+      }
+
+      "validate request and redirect to consignee-details page with correct values" in {
+        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
+
+        val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
+        val header = result.futureValue.header
+
+        status(result) must be(SEE_OTHER)
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+      }
     }
-
-    "validate request and redirect to declarant-details page with correct values" in {
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
-      val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
-      val header = result.futureValue.header
-
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/declarant-details"))
-    }
-
-    "validate request and redirect to consignee-details page with only EORI provided" in {
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
-
-      val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
-      val header = result.futureValue.header
-
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
-    }
-
-    "validate request and redirect to consignee-details page with only address provided" in {
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
-
-      val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
-      val header = result.futureValue.header
-
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
-    }
-
-    "validate request and redirect to consignee-details page with correct values" in {
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
-
-      val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
-      val header = result.futureValue.header
-
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
-    }
-
   }
 }
