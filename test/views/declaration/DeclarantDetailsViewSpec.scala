@@ -121,15 +121,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Exporter Details\" page if on Supplementary Journey" in {
-
-      val backButton = getElementById(createView(), "link-back")
-
-      backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/exporter-details")
-    }
-
-    "display \"Back\" button that links to \"Consignee Details\" page if on Standard Journey" in {
+    "display \"Back\" button that links to \"Consignee Details\" page" in {
 
       val view = declarant_details(appConfig, form)(fakeJourneyRequest(StandardDec), messages, countries)
       val backButton = getElementById(view, "link-back")
