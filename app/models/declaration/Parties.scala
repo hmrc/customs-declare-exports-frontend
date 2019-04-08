@@ -22,6 +22,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 
 case class Parties(
   exporterDetails: Option[ExporterDetails] = None,
+  consigneeDetails: Option[ConsigneeDetails] = None,
   declarantDetails: Option[DeclarantDetails] = None,
   representativeDetails: Option[RepresentativeDetails] = None,
   declarationAdditionalActorsData: Option[DeclarationAdditionalActorsData] = None,
@@ -31,6 +32,7 @@ case class Parties(
   override def toMetadataProperties(): Map[String, String] =
     Seq(
       exporterDetails.map(_.toMetadataProperties()),
+      consigneeDetails.map(_.toMetadataProperties()),
       declarantDetails.map(_.toMetadataProperties()),
       representativeDetails.map(_.toMetadataProperties()),
       declarationAdditionalActorsData.map(_.toMetadataProperties()),
@@ -38,7 +40,8 @@ case class Parties(
     ).flatten.fold(Map.empty)(_ ++ _)
 
   def isEmpty: Boolean =
-    exporterDetails.isEmpty &&
+      exporterDetails.isEmpty &&
+      consigneeDetails.isEmpty &&
       declarantDetails.isEmpty &&
       representativeDetails.isEmpty &&
       declarationAdditionalActorsData.isEmpty &&
@@ -50,6 +53,7 @@ object Parties {
 
   def apply(cacheMap: CacheMap): Parties = Parties(
     exporterDetails = cacheMap.getEntry[ExporterDetails](ExporterDetails.id),
+    consigneeDetails = cacheMap.getEntry[ConsigneeDetails](ConsigneeDetails.id),
     declarantDetails = cacheMap.getEntry[DeclarantDetails](DeclarantDetails.id),
     representativeDetails = cacheMap.getEntry[RepresentativeDetails](RepresentativeDetails.formId),
     declarationAdditionalActorsData =
