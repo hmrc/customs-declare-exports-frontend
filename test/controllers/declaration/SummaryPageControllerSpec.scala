@@ -130,20 +130,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.locations.officeOfExit"))
       }
 
-      "display content for Transport module" in new Test {
-        val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
-
-        resultAsString must include(messages("supplementary.summary.transport.header"))
-        resultAsString must include(messages("supplementary.summary.transport.borderTransportMode"))
-        resultAsString must include(messages("supplementary.summary.transport.meansOfTransportOnDepartureType"))
-        resultAsString must include(messages("supplementary.summary.transport.meansOfTransportOnDepartureId"))
-        resultAsString must include(messages("supplementary.summary.transport.meansOfTransportCrossingBorderType"))
-        resultAsString must include(messages("supplementary.summary.transport.meansOfTransportCrossingBorderId"))
-        resultAsString must include(
-          messages("supplementary.summary.transport.meansOfTransportCrossingBorderNationality")
-        )
-      }
-
       "display content for Item module" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
@@ -154,17 +140,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.items.transactionType"))
         resultAsString must include(messages("supplementary.summary.items.itemNumber"))
 
-      }
-
-      "display containers content with cache available" in new Test {
-        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
-          .thenReturn(Future.successful(Some(SupplementaryDeclarationDataSpec.cacheMapAllRecords)))
-
-        val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
-
-        resultAsString must include(messages("supplementary.transportInfo.containers.title"))
-        resultAsString must include(messages("supplementary.transportInfo.containerId.title"))
-        resultAsString must include(messages("container-M1l3s"))
       }
 
       "get the whole supplementary declaration data from cache" in new Test {

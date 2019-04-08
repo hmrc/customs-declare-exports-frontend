@@ -19,7 +19,7 @@ package controllers.declaration
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.TransportInformation.ModeOfTransportCodes.Maritime
+import forms.declaration.WarehouseIdentification.ModeOfTransportCodes.Maritime
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
 import helpers.views.declaration.WarehouseIdentificationMessages

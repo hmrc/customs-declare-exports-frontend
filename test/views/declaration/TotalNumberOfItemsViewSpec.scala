@@ -132,7 +132,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/transport-information")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/office-of-exit")
     }
 
     "display \"Save and continue\" button on page" in {
