@@ -23,6 +23,8 @@ trait PartiesMessages {
   val header: String = parties + ".header"
   val exporterId: String = parties + ".exporterId"
   val exporterAddress: String = parties + ".exporterAddress"
+  val consigneeId: String = parties + ".consigneeId"
+  val consigneeAddress: String = parties + ".consigneeAddress"
   val declarantId: String = parties + ".declarantId"
   val declarantAddress: String = parties + ".declarantAddress"
   val representativeId: String = parties + ".representativeId"

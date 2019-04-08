@@ -16,13 +16,11 @@
 
 package views.declaration.summary
 
+import forms.declaration.ConsigneeDetailsSpec.{correctConsigneeDetailsAddressOnly, correctConsigneeDetailsEORIOnly}
 import forms.declaration.DeclarantDetailsSpec.{correctDeclarantDetailsAddressOnly, correctDeclarantDetailsEORIOnly}
 import forms.declaration.ExporterDetailsSpec.{correctExporterDetailsAddressOnly, correctExporterDetailsEORIOnly}
-import forms.declaration.RepresentativeDetailsSpec.{
-  correctRepresentativeDetailsAddressOnly,
-  correctRepresentativeDetailsEORIOnly
-}
-import forms.declaration.{Address, DeclarationHolder}
+import forms.declaration.RepresentativeDetailsSpec.{correctRepresentativeDetailsAddressOnly, correctRepresentativeDetailsEORIOnly}
+import forms.declaration.{Address, ConsigneeDetailsSpec, DeclarationHolder}
 import helpers.views.declaration.summary.PartiesMessages
 import models.declaration.DeclarationAdditionalActorsDataSpec.correctAdditionalActorsData
 import models.declaration.{DeclarationHoldersData, Parties}
@@ -87,59 +85,75 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
           .text() must equal("")
       }
 
-      "display 'Declarant ID' table row with no value" in {
+      "display 'Consignee ID' table row with no value" in {
 
         getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(1)")
-          .text() must equal(messages(declarantId))
+          .text() must equal(messages(consigneeId))
         getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(2)")
+          .text() must equal("")
+      }
+
+      "display 'Consignee address' table row with no value" in {
+
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(1)")
+          .text() must equal(messages(consigneeAddress))
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(2)")
+          .text() must equal("")
+      }
+
+      "display 'Declarant ID' table row with no value" in {
+
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(1)")
+          .text() must equal(messages(declarantId))
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(2)")
           .text() must equal("")
       }
 
       "display 'Declarant address' table row with no value" in {
 
-        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(1)")
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(1)")
           .text() must equal(messages(declarantAddress))
-        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(2)")
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
           .text() must equal("")
       }
 
       "display 'Representative ID' table row with no value" in {
 
-        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(1)")
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
           .text() must equal(messages(representativeId))
-        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(2)")
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
           .text() must equal("")
       }
 
       "display 'Representative address' table row with no value" in {
 
-        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(1)")
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
           .text() must equal(messages(representativeAddress))
-        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
           .text() must equal("")
       }
 
       "display 'Representation type' table row with no value" in {
 
-        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
           .text() must equal(messages(representationType))
-        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
           .text() must equal("")
       }
 
       "display 'Authorised party EORI' table row with no value" in {
 
-        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(1)")
           .text() must equal(messages(authorizedPartyEori))
-        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(2)")
           .text() must equal("")
       }
 
       "display 'ID status number authorisation code' table row with no value" in {
 
-        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(1)")
           .text() must equal(messages(idStatusNumberAuthorisationCode))
-        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
+        getElementByCss(emptyView, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(2)")
           .text() must equal("")
       }
 
@@ -197,14 +211,36 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
           .text() must equal(extractAddress(exporterDetails.details.address.get))
       }
 
+      "display 'Consignee ID' table row with proper value" in {
+
+        val consigneeDetails = correctConsigneeDetailsEORIOnly
+        val view = createView(Some(Parties(consigneeDetails = Some(consigneeDetails))))
+
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(1)")
+          .text() must equal(messages(consigneeId))
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(2)")
+          .text() must equal(consigneeDetails.details.eori.get)
+      }
+
+      "display 'Consignee address' table row with proper value" in {
+
+        val consigneeDetails = correctConsigneeDetailsAddressOnly
+        val view = createView(Some(Parties(consigneeDetails = Some(consigneeDetails))))
+
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(1)")
+          .text() must equal(messages(consigneeAddress))
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(2)")
+          .text() must equal(extractAddress(consigneeDetails.details.address.get))
+      }
+
       "display 'Declarant ID' table row with proper value" in {
 
         val declarantDetails = correctDeclarantDetailsEORIOnly
         val view = createView(Some(Parties(declarantDetails = Some(declarantDetails))))
 
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(1)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(1)")
           .text() must equal(messages(declarantId))
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(3)>td:nth-child(2)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(2)")
           .text() must equal(declarantDetails.details.eori.get)
       }
 
@@ -213,9 +249,9 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
         val declarantDetails = correctDeclarantDetailsAddressOnly
         val view = createView(Some(Parties(declarantDetails = Some(declarantDetails))))
 
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(1)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(1)")
           .text() must equal(messages(declarantAddress))
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(4)>td:nth-child(2)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
           .text() must equal(extractAddress(declarantDetails.details.address.get))
       }
 
@@ -224,9 +260,9 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
         val representativeDetails = correctRepresentativeDetailsEORIOnly
         val view = createView(Some(Parties(representativeDetails = Some(representativeDetails))))
 
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(1)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
           .text() must equal(messages(representativeId))
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(5)>td:nth-child(2)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
           .text() must equal(representativeDetails.details.eori.get)
       }
 
@@ -235,9 +271,9 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
         val representativeDetails = correctRepresentativeDetailsAddressOnly
         val view = createView(Some(Parties(representativeDetails = Some(representativeDetails))))
 
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(1)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
           .text() must equal(messages(representativeAddress))
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(6)>td:nth-child(2)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
           .text() must equal(extractAddress(representativeDetails.details.address.get))
       }
 
@@ -246,9 +282,9 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
         val representativeDetails = correctRepresentativeDetailsEORIOnly
         val view = createView(Some(Parties(representativeDetails = Some(representativeDetails))))
 
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
           .text() must equal(messages(representationType))
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
           .text() must equal(representativeDetails.statusCode)
       }
 
@@ -258,9 +294,9 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
           DeclarationHoldersData(Seq(DeclarationHolder(authorisationTypeCode = None, eori = Some("PL213472539481923"))))
         val view = createView(Some(Parties(declarationHoldersData = Some(declarationHoldersData))))
 
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(1)")
           .text() must equal(messages(authorizedPartyEori))
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(10)>td:nth-child(2)")
           .text() must equal(declarationHoldersData.holders.head.eori.get)
       }
 
@@ -270,9 +306,9 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
           DeclarationHoldersData(Seq(DeclarationHolder(authorisationTypeCode = Some("1234"), eori = None)))
         val view = createView(Some(Parties(declarationHoldersData = Some(declarationHoldersData))))
 
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(1)")
           .text() must equal(messages(idStatusNumberAuthorisationCode))
-        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
+        getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(11)>td:nth-child(2)")
           .text() must equal(declarationHoldersData.holders.head.authorisationTypeCode.get)
       }
 

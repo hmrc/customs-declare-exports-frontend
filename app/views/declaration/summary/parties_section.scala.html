@@ -41,6 +41,15 @@
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.consigneeId"),
+        value = parties.flatMap(_.consigneeDetails).flatMap(_.details.eori)
+    ))
+    @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.parties.consigneeAddress"),
+        value = extractAddressValues(parties.flatMap(_.consigneeDetails).flatMap(_.details.address))
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.declarantId"),
         value = parties.flatMap(_.declarantDetails).flatMap(_.details.eori)
     ))

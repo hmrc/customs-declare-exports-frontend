@@ -24,12 +24,14 @@ class PartiesSpec extends WordSpec with MustMatchers {
 
   private trait SimpleTest {
     val exporterDetailsMock = mock(classOf[ExporterDetails])
+    val consigneeDetailsMock = mock(classOf[ConsigneeDetails])
     val declarantDetailsMock = mock(classOf[DeclarantDetails])
     val representativeDetailsMock = mock(classOf[RepresentativeDetails])
     val declarationAdditionalActorsDataMock = mock(classOf[DeclarationAdditionalActorsData])
     val declarationHoldersDataMock = mock(classOf[DeclarationHoldersData])
     val parties = Parties(
       exporterDetails = Some(exporterDetailsMock),
+      consigneeDetails = Some(consigneeDetailsMock),
       declarantDetails = Some(declarantDetailsMock),
       representativeDetails = Some(representativeDetailsMock),
       declarationAdditionalActorsData = Some(declarationAdditionalActorsDataMock),
@@ -37,6 +39,7 @@ class PartiesSpec extends WordSpec with MustMatchers {
     )
 
     when(exporterDetailsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
+    when(consigneeDetailsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     when(declarantDetailsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     when(representativeDetailsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     when(declarationAdditionalActorsDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
@@ -45,11 +48,13 @@ class PartiesSpec extends WordSpec with MustMatchers {
 
   private trait TestMapConcatenation extends SimpleTest {
     val exporterDetailsMap = Map("ExporterDetails" -> "ExporterValue")
+    val consigneeDetailsMap = Map("ConsigneeDetails" -> "ConsigneeValue")
     val declarantDetailsMap = Map("DeclarantDetails" -> "DeclarantValue")
     val representativeDetailsMap = Map("RepresentativeDetails" -> "RepresentativeValue")
     val declarationAdditionalActorsDataMap = Map("DeclarationAdditionalActorsData" -> "AdditionalActorsValue")
     val declarationHolderMap = Map("DeclarationHolder" -> "HolderValue")
     when(exporterDetailsMock.toMetadataProperties()).thenReturn(exporterDetailsMap)
+    when(consigneeDetailsMock.toMetadataProperties()).thenReturn(consigneeDetailsMap)
     when(declarantDetailsMock.toMetadataProperties()).thenReturn(declarantDetailsMap)
     when(representativeDetailsMock.toMetadataProperties()).thenReturn(representativeDetailsMap)
     when(declarationAdditionalActorsDataMock.toMetadataProperties()).thenReturn(declarationAdditionalActorsDataMap)
@@ -63,6 +68,7 @@ class PartiesSpec extends WordSpec with MustMatchers {
         parties.toMetadataProperties()
 
         verify(exporterDetailsMock, times(1)).toMetadataProperties()
+        verify(consigneeDetailsMock, times(1)).toMetadataProperties()
         verify(declarantDetailsMock, times(1)).toMetadataProperties()
         verify(representativeDetailsMock, times(1)).toMetadataProperties()
         verify(declarationAdditionalActorsDataMock, times(1)).toMetadataProperties()
@@ -71,7 +77,7 @@ class PartiesSpec extends WordSpec with MustMatchers {
 
       "return Map being sum of all Maps from sub-objects" in new TestMapConcatenation {
         parties.toMetadataProperties() must equal(
-          exporterDetailsMap ++ declarantDetailsMap ++ representativeDetailsMap ++ declarationAdditionalActorsDataMap ++ declarationHolderMap
+          exporterDetailsMap ++ consigneeDetailsMap ++ declarantDetailsMap ++ representativeDetailsMap ++ declarationAdditionalActorsDataMap ++ declarationHolderMap
         )
       }
     }
