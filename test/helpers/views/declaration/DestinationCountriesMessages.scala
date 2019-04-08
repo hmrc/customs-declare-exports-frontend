@@ -22,12 +22,14 @@ trait DestinationCountriesMessages {
 
   val title: String = prefix + ".title"
   val countryOfDestination: String = prefix + ".countryOfDestination"
+  val countryOfDestinationHint: String = prefix + ".countryOfDestination.hint"
   val countryOfDestinationError: String = prefix + ".countryOfDestination.error"
   val countryOfDestinationEmpty: String = prefix + ".countryOfDestination.empty"
   val countriesOfRouting: String = prefix + ".countriesOfRouting"
   val countriesOfRoutingError: String = prefix + ".countriesOfRouting.error"
   val countriesOfRoutingEmpty: String = prefix + ".countriesOfRouting.empty"
   val countryOfDispatch: String = prefix + ".countryOfDispatch"
+  val countryOfDispatchHint: String = prefix + ".countryOfDispatch.hint"
   val countryOfDispatchError: String = prefix + ".countryOfDispatch.error"
   val countryOfDispatchEmpty: String = prefix + ".countryOfDispatch.empty"
 }

@@ -264,7 +264,7 @@ supplementary.carrier.eori.hint = The number starts with a country code, for exa
 supplementary.carrier.address.info = 3/31 Enter exporter’s name and address
 
 supplementary.representative.title = Add representative
-supplementary.representative.header = Who is the representative?
+supplementary.representative.header = Was a representative used?
 supplementary.representative.eori.info = 3/20 EORI number
 supplementary.representative.address.info = 3/19 Enter representative’s name and address
 supplementary.representative.representationType.header = 3/21 What type of representation is being used?
@@ -294,13 +294,13 @@ supplementary.address.townOrCity.empty = Town or city cannot be empty
 supplementary.address.postCode = Postcode
 supplementary.address.postCode.error = Postcode is incorrect
 supplementary.address.postCode.empty = Postcode cannot be empty
-supplementary.address.country = Country code
+supplementary.address.country = Country
 supplementary.address.country.error = Country is incorrect
 supplementary.address.country.empty = Country cannot be empty
 
 supplementary.namedEntityDetails.error = Please, provide either EORI number or full Address details
 
-supplementary.additionalActors.title = 3/37 Add other party (Optional)
+supplementary.additionalActors.title = 3/37 Add other parties (Optional)
 supplementary.additionalActors.eori = EORI number
 supplementary.additionalActors.eori.isNotDefined = Please enter a EORI number
 supplementary.additionalActors.partyType = Party type
@@ -570,7 +570,7 @@ supplementary.additionalInformation.description.error = Information description 
 supplementary.additionalInformation.description.empty = Information description cannot be empty
 
 supplementary.transactionType.documentTypeCode.title = Transaction type
-supplementary.transactionType.documentTypeCode.header = 8/5 What kind of transaction are you making?
+supplementary.transactionType.documentTypeCode.header = 8/5 What type of transaction took place?
 supplementary.transactionType.documentTypeCode = What kind of transaction are you making?
 supplementary.transactionType.hint = This is single digit numerical character
 supplementary.transactionType.documentTypeCode.empty = Document type code cannot be empty

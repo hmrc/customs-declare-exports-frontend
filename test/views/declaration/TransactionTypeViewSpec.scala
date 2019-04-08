@@ -36,7 +36,7 @@ class TransactionTypeViewSpec extends ViewSpec with TransactionTypeMessages with
     "have proper labels for messages" in {
 
       assertMessage(title, "Transaction type")
-      assertMessage(header, "8/5 What kind of transaction are you making?")
+      assertMessage(header, "8/5 What type of transaction took place?")
       assertMessage(description, "What kind of transaction are you making?")
       assertMessage(hint, "This is single digit numerical character")
       assertMessage(identifier, "Further information on this transaction")

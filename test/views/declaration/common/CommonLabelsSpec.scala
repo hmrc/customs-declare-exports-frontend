@@ -136,7 +136,7 @@ class CommonLabelsSpec extends ViewSpec with CommonMessages {
     }
 
     "have proper message for Country" in {
-      assertMessage(country, "Country code")
+      assertMessage(country, "Country")
     }
   }
 

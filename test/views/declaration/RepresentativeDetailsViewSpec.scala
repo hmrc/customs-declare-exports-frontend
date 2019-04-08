@@ -37,7 +37,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
     "have proper messages for labels" in {
 
       assertMessage(title, "Add representative")
-      assertMessage(header, "Who is the representative?")
+      assertMessage(header, "Was a representative used?")
       assertMessage(eoriInfo, "3/20 EORI number")
       assertMessage(addressInfo, "3/19 Enter representative’s name and address")
       assertMessage(repTypeHeader, "3/21 What type of representation is being used?")

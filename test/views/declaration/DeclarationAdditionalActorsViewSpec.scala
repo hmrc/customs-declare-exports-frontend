@@ -38,7 +38,7 @@ class DeclarationAdditionalActorsViewSpec
 
     "have proper messages for labels" in {
 
-      assertMessage(title, "3/37 Add other party (Optional)")
+      assertMessage(title, "3/37 Add other parties (Optional)")
       assertMessage(actorsEori, "EORI number")
       assertMessage(actorsPartyType, "Party type")
     }

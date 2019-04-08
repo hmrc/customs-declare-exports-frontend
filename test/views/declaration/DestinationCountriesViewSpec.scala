@@ -65,7 +65,8 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       val view = createView()
 
-      getElementByCss(view, "#countryOfDispatch-outer>label").text() must be(messages(countryOfDispatch))
+      getElementById(view, "countryOfDispatch-hint").text() must be(messages(countryOfDispatchHint))
+      getElementById(view, "countryOfDispatch-label").ownText() must be(messages(countryOfDispatch))
       getElementById(view, "countryOfDispatch").attr("value") must be("")
     }
 
@@ -73,7 +74,8 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       val view = createView()
 
-      getElementByCss(view, "#countryOfDestination-outer>label").text() must be(messages(countryOfDestination))
+      getElementById(view, "countryOfDestination-hint").text() must be(messages(countryOfDestinationHint))
+      getElementById(view, "countryOfDestination-label").ownText() must be(messages(countryOfDestination))
       getElementById(view, "countryOfDestination").attr("value") must be("")
     }
 
