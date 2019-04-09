@@ -19,7 +19,10 @@ package views.declaration.summary
 import forms.declaration.ConsigneeDetailsSpec.{correctConsigneeDetailsAddressOnly, correctConsigneeDetailsEORIOnly}
 import forms.declaration.DeclarantDetailsSpec.{correctDeclarantDetailsAddressOnly, correctDeclarantDetailsEORIOnly}
 import forms.declaration.ExporterDetailsSpec.{correctExporterDetailsAddressOnly, correctExporterDetailsEORIOnly}
-import forms.declaration.RepresentativeDetailsSpec.{correctRepresentativeDetailsAddressOnly, correctRepresentativeDetailsEORIOnly}
+import forms.declaration.RepresentativeDetailsSpec.{
+  correctRepresentativeDetailsAddressOnly,
+  correctRepresentativeDetailsEORIOnly
+}
 import forms.declaration.{Address, ConsigneeDetailsSpec, DeclarationHolder}
 import helpers.views.declaration.summary.PartiesMessages
 import models.declaration.DeclarationAdditionalActorsDataSpec.correctAdditionalActorsData

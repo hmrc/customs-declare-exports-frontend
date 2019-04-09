@@ -15,34 +15,34 @@
  */
 
 package views.declaration
-
-import forms.declaration.OfficeOfExit
+import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitSupplementary}
 import helpers.views.declaration.{CommonMessages, OfficeOfExitMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.office_of_exit
+import views.html.declaration.office_of_exit_supplementary
 import views.declaration.spec.ViewSpec
 import views.tags.ViewTest
 
 @ViewTest
-class OfficeOfExitViewSpec extends ViewSpec with OfficeOfExitMessages with CommonMessages {
+class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessages with CommonMessages {
 
-  private val form: Form[OfficeOfExit] = OfficeOfExit.form()
-  private def createView(form: Form[OfficeOfExit] = form): Html = office_of_exit(appConfig, form)(fakeRequest, messages)
+  private val form: Form[OfficeOfExitSupplementary] = OfficeOfExit.supplementaryForm()
+  private def createView(form: Form[OfficeOfExitSupplementary] = form): Html =
+    office_of_exit_supplementary(form)(fakeRequest, appConfig, messages)
 
-  "Office of Exit View" should {
+  "Office of Exit View for supplementary" should {
 
     "have proper messages for labels" in {
 
       assertMessage(officeOfExit, "5/12 Where is the office of exit?")
-      assertMessage(title, "5/12 Where is the office of exit?")
+      assertMessage(title, "Office of exit")
       assertMessage(hint, "This is an 8 digit code")
     }
 
     "have proper messages for error labels" in {
 
       assertMessage(officeOfExitEmpty, "Office of exit cannot be empty")
-      assertMessage(officeOfExitError, "Office of exit is incorrect")
+      assertMessage(officeOfExitLength, "The code must be 8 characters")
     }
   }
 
@@ -50,7 +50,7 @@ class OfficeOfExitViewSpec extends ViewSpec with OfficeOfExitMessages with Commo
 
     "display page title" in {
 
-      getElementById(createView(), "title").text() must be(messages(title))
+      getElementById(createView(), "title").text() must be(messages(officeOfExit))
     }
 
     "display section header" in {
@@ -85,17 +85,17 @@ class OfficeOfExitViewSpec extends ViewSpec with OfficeOfExitMessages with Commo
 
     "display error when Office of Exit is incorrect" in {
 
-      val view = createView(OfficeOfExit.form().fillAndValidate(OfficeOfExit("123456789")))
+      val view = createView(OfficeOfExit.supplementaryForm.fillAndValidate(OfficeOfExitSupplementary("123456789")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, officeOfExitError, "#officeId")
+      checkErrorLink(view, 1, officeOfExitLength, "#officeId")
 
-      getElementByCss(view, "#error-message-officeId-input").text() must be(messages(officeOfExitError))
+      getElementByCss(view, "#error-message-officeId-input").text() must be(messages(officeOfExitLength))
     }
 
     "display error when Office of Exit is empty" in {
 
-      val view = createView(OfficeOfExit.form().fillAndValidate(OfficeOfExit("")))
+      val view = createView(OfficeOfExit.supplementaryForm.fillAndValidate(OfficeOfExitSupplementary("")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, officeOfExitEmpty, "#officeId")
@@ -108,7 +108,7 @@ class OfficeOfExitViewSpec extends ViewSpec with OfficeOfExitMessages with Commo
 
     "display data in Office of Exit input" in {
 
-      val view = createView(OfficeOfExit.form().fill(OfficeOfExit("12345678")))
+      val view = createView(OfficeOfExit.supplementaryForm.fill(OfficeOfExitSupplementary("12345678")))
 
       getElementById(view, "officeId").attr("value") must be("12345678")
     }

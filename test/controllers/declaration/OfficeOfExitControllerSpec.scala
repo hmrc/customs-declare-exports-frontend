@@ -19,54 +19,87 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.OfficeOfExit
-import forms.declaration.OfficeOfExitSpec._
+import forms.declaration.OfficeOfExitSupplementarySpec._
+import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import helpers.views.declaration.OfficeOfExitMessages
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
 class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExitMessages {
 
   private val uri: String = uriWithContextPath("/declaration/office-of-exit")
 
-  before {
+  trait SetUp {
     authorizedUser()
-    withCaching[OfficeOfExit](None)
+    withCaching[OfficeOfExitSupplementary](None)
+  }
+
+  trait SupplementarySetUp extends SetUp {
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  "Office Of Exit Controller on GET" should {
+  trait StandardSetUp extends SetUp {
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
+  }
 
-    "return 200 with a success" in {
+  "Office Of Exit Controller during supplementary declaration on GET" should {
+
+    "return 200 with a success" in new SupplementarySetUp {
 
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
     }
 
-    "read item from cache and display it" in {
+    "read item from cache and display it" in new SupplementarySetUp {
 
-      val cachedData = OfficeOfExit("999AAA45")
-      withCaching[OfficeOfExit](Some(cachedData), "OfficeOfExit")
+      val cachedData = OfficeOfExitSupplementary("999AAA45")
+      withCaching[OfficeOfExitSupplementary](Some(cachedData), OfficeOfExit.formId)
+
+      val result = route(app, getRequest(uri)).get
+
+      status(result) must be(OK)
+      contentAsString(result) must include("999AAA45")
+    }
+  }
+
+  "Office Of Exit Controller during standard declaration on GET" should {
+
+    "return 200 with a success" in new StandardSetUp {
+
+      val result = route(app, getRequest(uri)).get
+
+      status(result) must be(OK)
+    }
+
+    "read item from cache and display it" in new StandardSetUp {
+      val officeId = "12345678"
+      val presentationOfficeId = "87654321"
+      val circumstancesCode = "Yes"
+      val cachedData = OfficeOfExitStandard(officeId, presentationOfficeId, circumstancesCode)
+      withCaching[OfficeOfExitStandard](Some(cachedData), OfficeOfExit.formId)
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)
-      page must include("999AAA45")
+      page must include(officeId)
+      page must include(presentationOfficeId)
+      page must include(circumstancesCode)
     }
   }
 
-  "Office Of Exit Controller on POST" should {
+  "Office Of Exit Controller during supplementary declaration on POST" should {
 
-    "validate request and redirect - incorrect value" in {
+    "return Bad Request for incorrect values" in new SupplementarySetUp {
 
       val result = route(app, postRequest(uri, incorrectOfficeOfExitJSON)).get
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(officeOfExitError))
+      contentAsString(result) must include(messages(officeOfExitLength))
     }
 
-    "validate request and redirect - empty form" in {
+    "return Bad Request for empty form" in new SupplementarySetUp {
 
       val result = route(app, postRequest(uri, emptyOfficeOfExitJSON)).get
 
@@ -74,9 +107,51 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       contentAsString(result) must include(messages(officeOfExitEmpty))
     }
 
-    "validate request and redirect - correct values" in {
+    "redirect to Total Numbers of Items page for correct values" in new SupplementarySetUp {
 
       val result = route(app, postRequest(uri, correctOfficeOfExitJSON)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/total-numbers-of-items"))
+    }
+  }
+
+  "Office Of Exit Controller during standard declaration on POST" should {
+    "return Bad Request for incorrect values" in new StandardSetUp {
+      val incorrectOfficeOfExit: JsValue = JsObject(
+        Map(
+          "officeId" -> JsString("office"),
+          "presentationOfficeId" -> JsString("presentationOfficeId"),
+          "circumstancesCode" -> JsString("circumnstancesCode")
+        )
+      )
+
+      val result = route(app, postRequest(uri, incorrectOfficeOfExit)).get
+
+      status(result) must be(BAD_REQUEST)
+    }
+
+    "return Bad Request for empty form" in {
+      val emptyOfficeOfExit: JsValue = JsObject(
+        Map("officeId" -> JsString(""), "presentationOfficeId" -> JsString(""), "circumstancesCode" -> JsString(""))
+      )
+
+      val result = route(app, postRequest(uri, emptyOfficeOfExit)).get
+
+      status(result) must be(BAD_REQUEST)
+    }
+
+    "redirect to Total Numbers of Items page" in {
+      val correctOfficeOfExit: JsValue = JsObject(
+        Map(
+          "officeId" -> JsString("12345678"),
+          "presentationOfficeId" -> JsString("12345678"),
+          "circumstancesCode" -> JsString("Yes")
+        )
+      )
+
+      val result = route(app, postRequest(uri, correctOfficeOfExit)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

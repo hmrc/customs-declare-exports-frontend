@@ -91,9 +91,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
 
       val view = createView()
 
-      getElementById(view, "details_address_townOrCity-label").text() must be(
-        messages(townOrCity)
-      )
+      getElementById(view, "details_address_townOrCity-label").text() must be(messages(townOrCity))
       getElementById(view, "details_address_townOrCity").attr("value") must be("")
     }
 
@@ -101,9 +99,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
 
       val view = createView()
 
-      getElementById(view, "details_address_postCode-label").text() must be(
-        messages(postCode)
-      )
+      getElementById(view, "details_address_postCode-label").text() must be(messages(postCode))
       getElementById(view, "details_address_postCode").attr("value") must be("")
     }
 
@@ -111,9 +107,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
 
       val view = createView()
 
-      getElementById(view, "details_address_country-label").text() must be(
-        messages(country)
-      )
+      getElementById(view, "details_address_country-label").text() must be(messages(country))
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 

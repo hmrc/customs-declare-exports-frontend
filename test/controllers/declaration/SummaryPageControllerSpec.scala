@@ -119,7 +119,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       "display content for Locations module" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
-        resultAsString must include(messages("supplementary.summary.locations.header"))
+        resultAsString must include(messages("declaration.summary.locations.header"))
         resultAsString must include(messages("supplementary.summary.locations.dispatchCountry"))
         resultAsString must include(messages("supplementary.summary.locations.destinationCountry"))
         resultAsString must include(messages("supplementary.summary.locations.goodsExaminationAddress"))

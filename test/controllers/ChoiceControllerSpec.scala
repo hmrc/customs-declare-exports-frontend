@@ -112,7 +112,6 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/dispatch-location"))
     }
 
-
     "redirect to cancel declaration page when \"Cancel declaration\" is selected" in {
 
       val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.CancelDec)))

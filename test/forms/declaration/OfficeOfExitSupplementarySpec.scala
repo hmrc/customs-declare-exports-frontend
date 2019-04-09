@@ -16,11 +16,12 @@
 
 package forms.declaration
 
+import forms.declaration.officeOfExit.OfficeOfExitSupplementary
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class OfficeOfExitSpec extends WordSpec with MustMatchers {
-  import OfficeOfExitSpec._
+class OfficeOfExitSupplementarySpec extends WordSpec with MustMatchers {
+  import OfficeOfExitSupplementarySpec._
 
   "Method toMetadataProperties" should {
     "return proper Metadata Properties" in {
@@ -33,10 +34,10 @@ class OfficeOfExitSpec extends WordSpec with MustMatchers {
 
 }
 
-object OfficeOfExitSpec {
-  val correctOfficeOfExit = OfficeOfExit(officeId = "123qwe12")
-  val emptyOfficeOfExit = OfficeOfExit(officeId = "")
-  val incorrectOfficeOfExit = OfficeOfExit(officeId = "office")
+object OfficeOfExitSupplementarySpec {
+  val correctOfficeOfExit = OfficeOfExitSupplementary(officeId = "123qwe12")
+  val emptyOfficeOfExit = OfficeOfExitSupplementary(officeId = "")
+  val incorrectOfficeOfExit = OfficeOfExitSupplementary(officeId = "office")
 
   val correctOfficeOfExitJSON: JsValue = JsObject(Map("officeId" -> JsString("123qwe12")))
   val emptyOfficeOfExitJSON: JsValue = JsObject(Map("officeId" -> JsString("")))

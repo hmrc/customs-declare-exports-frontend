@@ -51,10 +51,10 @@ class DestinationCountriesController @Inject()(
   implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    (request.choice.value match {
-      case SupplementaryDec => displayFormSupplementary()
-      case StandardDec      => displayFormStandard()
-    }).map(resultView => Ok(resultView))
+    request.choice.value match {
+      case SupplementaryDec => displayFormSupplementary().map(Ok(_))
+      case StandardDec      => displayFormStandard().map(Ok(_))
+    }
   }
 
   private def displayFormSupplementary()(

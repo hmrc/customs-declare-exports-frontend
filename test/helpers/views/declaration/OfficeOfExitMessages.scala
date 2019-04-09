@@ -18,10 +18,22 @@ package helpers.views.declaration
 
 trait OfficeOfExitMessages {
 
-  val officeOfExit: String = "supplementary.officeOfExit"
+  val officeOfExit: String = "declaration.officeOfExit"
 
   val title: String = officeOfExit + ".title"
   val hint: String = officeOfExit + ".hint"
   val officeOfExitEmpty: String = officeOfExit + ".empty"
-  val officeOfExitError: String = officeOfExit + ".error"
+  val officeOfExitLength: String = officeOfExit + ".length"
+  val officeOfExitSpecialCharacters: String = officeOfExit + ".specialCharacters"
+
+  val officeOfExitStandard: String = "standard.officeOfExit"
+
+  val presentationOffice: String = officeOfExitStandard + ".presentationOffice"
+  val presentationOfficeHint: String = officeOfExitStandard + ".presentationOffice.hint"
+  val presentationOfficeEmpty: String = officeOfExitStandard + ".presentationOffice.empty"
+  val presentationOfficeLength: String = officeOfExitStandard + ".presentationOffice.length"
+  val presentationOfficeSpecialCharacters: String = officeOfExitStandard + ".presentationOffice.specialCharacters"
+  val circumstancesCode: String = officeOfExitStandard + ".circumstancesCode"
+  val circumstancesCodeEmpty: String = officeOfExitStandard + ".circumstancesCode.empty"
+  val circumstancesCodeError: String = officeOfExitStandard + ".circumstancesCode.error"
 }

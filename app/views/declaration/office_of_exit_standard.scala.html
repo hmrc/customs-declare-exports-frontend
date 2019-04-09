@@ -1,0 +1,66 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.declaration.routes._
+@import forms.declaration.officeOfExit.OfficeOfExitStandard
+@import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers._
+@import uk.gov.hmrc.play.views.html._
+@import utils.RadioOption
+@import forms.declaration.officeOfExit.OfficeOfExit
+
+@(form: Form[OfficeOfExitStandard])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+
+@main_template(
+  title = messages("declaration.officeOfExit.title"),
+    appConfig = appConfig
+) {
+  @helpers.form(OfficeOfExitController.saveOffice(), 'autoComplete -> "off") {
+
+      @components.back_link("/customs-declare-exports/declaration/location-of-goods")
+
+      @components.error_summary(form.errors)
+
+      @components.section_header(messages("declaration.summary.locations.header"))
+
+      @components.page_title(Some("declaration.officeOfExit.title"))
+
+      @components.input_text(
+          field = form("officeId"),
+          label = messages("declaration.officeOfExit"),
+          hint = Some(messages("declaration.officeOfExit.hint")),
+          labelClass = Some("bold-small")
+      )
+
+      @components.input_text(
+          field = form("presentationOfficeId"),
+          label = messages("standard.officeOfExit.presentationOffice"),
+          hint = Some(messages("standard.officeOfExit.presentationOffice.hint")),
+          labelClass = Some("bold-small")
+      )
+
+      @components.input_radio(
+          field = form("circumstancesCode"),
+          legend = messages("standard.officeOfExit.circumstancesCode"),
+          inputs = Seq(
+              RadioOption("Yes", yes, messages("site.yes")),
+              RadioOption("No", no, messages("site.no"))
+          )
+      )
+
+      @components.submit_button()
+  }
+}
