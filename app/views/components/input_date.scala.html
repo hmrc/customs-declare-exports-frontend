@@ -14,15 +14,18 @@
  * limitations under the License.
  *@
 
-@(name: String, form: Form[_])(implicit messages: Messages)
+@(
+    label: String,
+    hint: Option[String] = None,
+    form: Form[_]
+)(implicit messages: Messages)
 
-<h2 class="heading-medium">Date and time of @messages("movement.choice." + name)</h2>
 
 <div class="form-group">
     <fieldset>
         <legend>
-            <span class="form-label">Date of @messages("movement.choice." + name)</span>
-            <span class="form-hint">For example, 31 3 1980</span>
+            <span class="form-label">@label</span>
+            @hint.map { text => <span class="form-hint">@text</span> }
         </legend>
         <div class="form-group">
             <div class="form-date">
@@ -54,39 +57,6 @@
                             name="year"
                             type="number"
                             value=@{form("year").value}
-                    >
-                </div>
-            </div>
-        </div>
-    </fieldset>
-</div>
-
-<div class="form-group">
-    <fieldset>
-        <legend>
-            <span class="form-label">Time of @messages("movement.choice." + name)</span>
-            <span class="form-hint">For example, 13 30</span>
-        </legend>
-        <div class="form-group">
-            <div class="form-date">
-                <div class="form-group form-group-day">
-                    <label class="form-label" for="hour">Hour</label>
-                    <input
-                            class="form-control"
-                            id="hour"
-                            name="hour"
-                            type="number"
-                            value=@{form("hour").value}
-                    >
-                </div>
-                <div class="form-group form-group-month">
-                    <label class="form-label" for="minute">Minute</label>
-                    <input
-                            class="form-control"
-                            id="minute"
-                            name="minute"
-                            type="number"
-                            value=@{form("minute").value}
                     >
                 </div>
             </div>
