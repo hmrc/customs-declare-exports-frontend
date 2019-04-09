@@ -36,6 +36,7 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import views.html.declaration.package_information
+import base.TestHelper._
 
 class PackageInformationControllerSpec
     extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues with ViewValidator
@@ -47,10 +48,6 @@ class PackageInformationControllerSpec
 
   def view(form: Form[PackageInformation] = form, charges: Seq[PackageInformation] = Seq.empty): Html =
     package_information(form, charges)(fakeRequest, messages, appConfig)
-
-  private val addActionUrlEncoded = (Add.toString, "")
-  private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
-  private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   val generatePackage: Arbitrary[PackageInformation] = Arbitrary {
     for {
@@ -73,7 +70,7 @@ class PackageInformationControllerSpec
       status(result) must be(OK)
     }
 
-    "read item from cache and display it" in {
+    "read data from cache" in {
 
       authorizedUser()
       withCaching[List[PackageInformation]](

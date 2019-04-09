@@ -16,10 +16,11 @@
 
 package generators
 
-import forms.declaration.{CommodityMeasure, PackageInformation}
+import forms.declaration._
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
+import services.Countries.allCountries
 
 trait Generators {
 
@@ -98,7 +99,7 @@ trait Generators {
   implicit val arbitraryPackaging: Arbitrary[PackageInformation] = Arbitrary {
     for {
       noOfPackages <- option(choose[Int](1, 99999))
-      typeOfPackages <- option(alphaNumStr.map(_.take(2)))
+      typeOfPackages <- option(alphaNumStr.suchThat(_.nonEmpty).map(_.take(2)))
       marksNumbersId <- alphaNumStr.map(_.take(40))
       if typeOfPackages.exists(_.size == 2) && marksNumbersId.size > 0
     } yield PackageInformation(typeOfPackages, noOfPackages, Some(marksNumbersId))
@@ -111,8 +112,34 @@ trait Generators {
       grossMass <- posDecimal(16, 2)
     } yield CommodityMeasure(Some(supplementaryUnits.toString), netMass.toString, grossMass.toString)
   }
+
   implicit val arbitraryPackagingSeq = listOfN[PackageInformation](5, arbitraryPackaging.arbitrary)
+
   implicit val arbitraryPackagingMaxSeq = listOfN[PackageInformation](99, arbitraryPackaging.arbitrary)
+
+  def transportCodesGen: Gen[String] = oneOf(TransportCodes.allowedModeOfTransportCodes.toSeq)
+  def transportTypeCodesGen: Gen[String] = oneOf(TransportCodes.allowedMeansOfTransportTypeCodes.toSeq)
+  def countryCodesGen: Gen[String] = oneOf(allCountries.map(_.countryName))
+
+  implicit val borderTransportArbitrary : Arbitrary[BorderTransport] = Arbitrary {
+    for{
+      borderModeOfTransportCode <- transportCodesGen
+        meansOfTransportOnDepartureType <- transportTypeCodesGen
+        meansOfTransportOnDepartureIDNumber <- option(alphaNumStr.suchThat(_.nonEmpty).map(_.take(25)))
+    } yield BorderTransport(borderModeOfTransportCode, meansOfTransportOnDepartureType, meansOfTransportOnDepartureIDNumber)
+  }
+  implicit  val transportDetailsArbitrary : Arbitrary[TransportDetails] = Arbitrary {
+    for {
+     code <- countryCodesGen
+     hasContainer <- Arbitrary(oneOf(true, false)).arbitrary
+    } yield TransportDetails(Some(code),hasContainer)
+  }
+
+  implicit val sealArbitrary : Arbitrary[Seal] = Arbitrary {
+    for {
+    id <- alphaNumStr.suchThat(_.nonEmpty).map((_.take(15)))
+    } yield Seal(id)
+  }
 
   def caseClassToSeq(cc: AnyRef) =
     (Map[String, String]() /: cc.getClass.getDeclaredFields) { (a, f) =>

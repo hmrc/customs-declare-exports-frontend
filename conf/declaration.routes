@@ -90,6 +90,12 @@ GET         /office-of-exit                 controllers.declaration.OfficeOfExit
 
 POST        /office-of-exit                 controllers.declaration.OfficeOfExitController.saveOffice()
 
+# Transport Information Containers
+
+GET         /add-transport-containers       controllers.declaration.TransportContainerController.displayPage()
+
+POST        /add-transport-containers       controllers.declaration.TransportContainerController.handlePost()
+
 # Total number of items
 
 GET         /total-numbers-of-items         controllers.declaration.TotalNumberOfItemsController.displayForm()
@@ -141,6 +147,24 @@ POST        /commodity-measure              controllers.declaration.CommodityMea
 # Items Summary
 
 GET         /export-items                   controllers.declaration.ItemsSummaryController.displayForm()
+
+# Border Transport
+
+GET         /border-transport              controllers.declaration.BorderTransportController.displayForm()
+
+POST        /border-transport              controllers.declaration.BorderTransportController.submitForm()
+
+# Transport Details
+
+GET         /transport-details              controllers.declaration.TransportDetailsController.displayForm()
+
+POST        /transport-details              controllers.declaration.TransportDetailsController.submitForm()
+
+# Seal
+
+GET         /add-seal              controllers.declaration.SealController.displayForm()
+
+POST        /add-seal              controllers.declaration.SealController.submitForm()
 
 # Summary
 

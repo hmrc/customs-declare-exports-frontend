@@ -18,17 +18,24 @@
 @import controllers.declaration.routes._
 @import models.declaration.SupplementaryDeclarationData
 @import models.viewmodels.HtmlTableRow
+@import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
 @import views.html.declaration.summary._
 
-@(suppDecData: SupplementaryDeclarationData)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@(suppDecData: SupplementaryDeclarationData)(implicit appConfig: AppConfig, request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.summary.title"),
     appConfig = appConfig) {
 
-
-    @components.back_link("/customs-declare-exports/declaration/warehouse")
+    @{if(request.choice.value == "STD")
+            components.back_link("/customs-declare-exports/declaration/add-seal")
+        else
+            if (suppDecData.transportInformationContainerData.fold(false)(_.containers.size > 0))
+                components.back_link("/customs-declare-exports/declaration/add-transport-containers")
+            else
+                components.back_link("/customs-declare-exports/declaration/transport-details")
+    }
 
     @components.page_title(title = Some(messages("supplementary.summary.header")))
 
@@ -58,6 +65,8 @@
     @parties_section(suppDecData.parties)
 
     @locations_section(suppDecData.locations)
+
+    @transport_containers_section(suppDecData.transportInformationContainerData)
 
     @items_section(suppDecData.items)
 

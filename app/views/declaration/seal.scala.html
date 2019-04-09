@@ -1,0 +1,68 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.declaration.routes._
+@import forms.declaration.Seal
+@import uk.gov.hmrc.play.views.html._
+@import controllers.util.Remove
+@(form: Form[Seal], seals: Seq[Seal])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("standard.seal.title"),
+    appConfig = appConfig
+) {
+
+    @components.back_link("/customs-declare-exports/declaration/add-transport-containers")
+
+    @helpers.form(SealController.submitForm(), 'autoComplete -> "off") {
+
+        @components.error_summary(form.errors)
+
+        @components.page_title(Some("standard.seal.title"), None)
+
+
+        @if(seals.nonEmpty) {
+            <div class="field-group">
+                <table >
+                    <thead>
+                        <tr>
+                            <th scope="col">@messages("standard.seal.id")</th>
+                            <td></td>
+                        </tr>
+                    </thead>
+                @seals.zipWithIndex.map { case (seal, index) =>
+                    <tr>
+                        <td>@seal.id</td>
+                        <td>
+                            <button class="button--secondary" name="@Remove.toString" value="@index">@messages("site.remove")</button>
+                        </td>
+                    </tr>
+                }
+                </table>
+                <br><br>
+            </div>
+        }
+
+        @components.input_text(
+            field = form("id"),
+            label = messages("standard.seal.id")
+        )
+
+        @components.add_save_button()
+    }
+
+}

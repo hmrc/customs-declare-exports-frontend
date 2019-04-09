@@ -56,5 +56,5 @@ object Countries {
 
   private def countryCode: String => String = cc => cc.split(":")(1).trim
 
-  val allCountries: List[Country] = countries.filter(c => mdgCountryCodes contains c.countryCode)
+  val allCountries: List[Country] = countries
 }
