@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.common
 
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}

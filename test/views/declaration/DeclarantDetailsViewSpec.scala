@@ -18,7 +18,8 @@ package views.declaration
 
 import base.TestHelper
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
-import forms.declaration.{Address, DeclarantDetails, EntityDetails}
+import forms.common.Address
+import forms.declaration.{DeclarantDetails, EntityDetails}
 import helpers.views.declaration.{CommonMessages, DeclarantDetailsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
