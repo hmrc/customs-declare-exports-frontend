@@ -36,7 +36,7 @@ class TransportInformationContainersViewSpec
 
     "have proper labels for messages" in {
 
-      assertMessage(container, "7/2 Will the goods be in a container?")
+      assertMessage(container, "7/2 Were the goods in a container?")
       assertMessage(containersTitle, "7/10 Transport Information Containers")
       assertMessage(transportContainerId, "7/10 Enter the container ID")
       assertMessage(ticTitle, "Container ID")

@@ -56,7 +56,7 @@ class WarehouseIdentificationController @Inject()(
           Future.successful(BadRequest(warehouse_identification(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[WarehouseIdentification](cacheId, formId, form).map { _ =>
-            Redirect(controllers.declaration.routes.SummaryPageController.displayPage())
+            Redirect(controllers.declaration.routes.BorderTransportController.displayForm())
         }
       )
   }

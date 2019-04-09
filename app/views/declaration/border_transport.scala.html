@@ -28,6 +28,8 @@
     appConfig = appConfig
 ) {
 
+@components.back_link("/customs-declare-exports/declaration/warehouse")
+
     @helpers.form(BorderTransportController.submitForm(), 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)

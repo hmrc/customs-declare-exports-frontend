@@ -131,21 +131,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.locations.officeOfExit"))
       }
 
-      "display content for Transport module" in new Test {
-        val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
-
-        resultAsString must include(messages("supplementary.summary.transport.header"))
-        resultAsString must include(messages("supplementary.summary.transport.inlandTransportMode"))
-        resultAsString must include(messages("supplementary.summary.transport.borderTransportMode"))
-        resultAsString must include(messages("supplementary.summary.transport.meansOfTransportOnDepartureType"))
-        resultAsString must include(messages("supplementary.summary.transport.meansOfTransportOnDepartureId"))
-        resultAsString must include(messages("supplementary.summary.transport.meansOfTransportCrossingBorderType"))
-        resultAsString must include(messages("supplementary.summary.transport.meansOfTransportCrossingBorderId"))
-        resultAsString must include(
-          messages("supplementary.summary.transport.meansOfTransportCrossingBorderNationality")
-        )
-      }
-
       "display content for Item module" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 

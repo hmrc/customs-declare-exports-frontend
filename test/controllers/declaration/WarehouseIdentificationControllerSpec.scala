@@ -186,7 +186,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/border-transport"))
     }
 
     "validate request and redirect - correct values" in {
@@ -196,7 +196,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/border-transport"))
     }
   }
 }
