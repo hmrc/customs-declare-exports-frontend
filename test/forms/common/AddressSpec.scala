@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.common
 
 import base.TestHelper._
 import org.scalatest.{MustMatchers, WordSpec}

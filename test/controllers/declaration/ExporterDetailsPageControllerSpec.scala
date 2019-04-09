@@ -19,8 +19,9 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.{Address, EntityDetails, ExporterDetails}
+import forms.common.Address
 import forms.declaration.ExporterDetailsSpec._
+import forms.declaration.{EntityDetails, ExporterDetails}
 import helpers.views.declaration.CommonMessages
 import play.api.test.Helpers._
 

@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import forms.common.{Address, AddressSpec}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 

@@ -16,6 +16,7 @@
 
 package forms.declaration
 
+import forms.common.Address
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json

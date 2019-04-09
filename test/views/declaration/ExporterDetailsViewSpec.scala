@@ -17,7 +17,8 @@
 package views.declaration
 
 import base.TestHelper
-import forms.declaration.{Address, EntityDetails, ExporterDetails}
+import forms.common.Address
+import forms.declaration.{EntityDetails, ExporterDetails}
 import helpers.views.declaration.{CommonMessages, ExporterDetailsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
