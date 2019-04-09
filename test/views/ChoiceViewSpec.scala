@@ -18,11 +18,14 @@ package views
 
 import forms.Choice
 import helpers.views.declaration.{ChoiceMessages, CommonMessages}
+import org.jsoup.nodes.Element
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
 import views.html.choice_page
 import views.tags.ViewTest
+
+import scala.collection.immutable
 
 @ViewTest
 class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
@@ -37,8 +40,6 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       assertMessage(title, "What do you want to do?")
       assertMessage(supplementaryDec, "Supplementary declaration")
       assertMessage(standardDec, "Standard declaration")
-      assertMessage(arrivalDec, "Arrival")
-      assertMessage(departureDec, "Departure")
       assertMessage(cancelDec, "Cancel declaration")
       assertMessage(recentDec, "View recent declarations")
     }
@@ -62,39 +63,15 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       getElementByCss(createView(), "legend>h1").text() must be(messages(title))
     }
 
-    "display six radio buttons with description (not selected)" in {
+    "display four radio buttons with description (not selected)" in {
 
       val view = createView(Choice.form().fill(Choice("")))
+      ensureAllLabelTextIsCorrect(view)
 
-      val optionOne = getElementById(view, "Supplementary declaration")
-      optionOne.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(supplementaryDec))
-
-      val optionTwo = getElementById(view, "Standard declaration")
-      optionTwo.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(standardDec))
-
-      val optionThree = getElementById(view, "Arrival")
-      optionThree.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(arrivalDec))
-
-      val optionFour = getElementById(view, "Departure")
-      optionFour.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(5)>label").text() must be(messages(departureDec))
-
-      val optionFive = getElementById(view, "Cancel declaration")
-      optionFive.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(6)>label").text() must be(messages(cancelDec))
-
-      val optionSix = getElementById(view, "Submissions")
-      optionSix.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(7)>label").text() must be(messages(recentDec))
+      ensureRadioIsUnChecked(view, "Supplementary declaration")
+      ensureRadioIsUnChecked(view, "Standard declaration")
+      ensureRadioIsUnChecked(view, "Cancel declaration")
+      ensureRadioIsUnChecked(view, "Submissions")
     }
 
     "display \"Back\" button that links to \"Make an export declaration\" page" in {
@@ -131,216 +108,67 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
     }
   }
 
+
   "Choice View when filled" should {
 
     "display selected first radio button - Supplementary (SMP)" in {
-
       val view = createView(Choice.form().fill(Choice("SMP")))
+      ensureAllLabelTextIsCorrect(view)
 
-      val optionOne = getElementById(view, "Supplementary declaration")
-      optionOne.attr("checked") must be("checked")
+      ensureRadioIsChecked(view, "Supplementary declaration")
+      ensureRadioIsUnChecked(view, "Standard declaration")
+      ensureRadioIsUnChecked(view, "Cancel declaration")
+      ensureRadioIsUnChecked(view, "Submissions")
 
-      getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(supplementaryDec))
-
-      val optionTwo = getElementById(view, "Standard declaration")
-      optionTwo.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(standardDec))
-
-      val optionThree = getElementById(view, "Arrival")
-      optionThree.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(arrivalDec))
-
-      val optionFour = getElementById(view, "Departure")
-      optionFour.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(5)>label").text() must be(messages(departureDec))
-
-      val optionFive = getElementById(view, "Cancel declaration")
-      optionFive.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(6)>label").text() must be(messages(cancelDec))
-
-      val optionSix = getElementById(view, "Submissions")
-      optionSix.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(7)>label").text() must be(messages(recentDec))
     }
 
     "display selected second radio button - Standard (STD)" in {
-
       val view = createView(Choice.form().fill(Choice("STD")))
+      ensureAllLabelTextIsCorrect(view)
 
-      val optionOne = getElementById(view, "Supplementary declaration")
-      optionOne.attr("checked") must be("")
+      ensureRadioIsUnChecked(view, "Supplementary declaration")
+      ensureRadioIsChecked(view, "Standard declaration")
+      ensureRadioIsUnChecked(view, "Cancel declaration")
+      ensureRadioIsUnChecked(view, "Submissions")
 
-      getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(supplementaryDec))
-
-      val optionTwo = getElementById(view, "Standard declaration")
-      optionTwo.attr("checked") must be("checked")
-
-      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(standardDec))
-
-      val optionThree = getElementById(view, "Arrival")
-      optionThree.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(arrivalDec))
-
-      val optionFour = getElementById(view, "Departure")
-      optionFour.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(5)>label").text() must be(messages(departureDec))
-
-      val optionFive = getElementById(view, "Cancel declaration")
-      optionFive.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(6)>label").text() must be(messages(cancelDec))
-
-      val optionSix = getElementById(view, "Submissions")
-      optionSix.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(7)>label").text() must be(messages(recentDec))
-    }
-
-    "display selected third radio button - Arrival (EAL)" in {
-
-      val view = createView(Choice.form().fill(Choice("EAL")))
-
-      val optionOne = getElementById(view, "Supplementary declaration")
-      optionOne.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(supplementaryDec))
-
-      val optionTwo = getElementById(view, "Standard declaration")
-      optionTwo.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(standardDec))
-
-      val optionThree = getElementById(view, "Arrival")
-      optionThree.attr("checked") must be("checked")
-
-      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(arrivalDec))
-
-      val optionFour = getElementById(view, "Departure")
-      optionFour.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(5)>label").text() must be(messages(departureDec))
-
-      val optionFive = getElementById(view, "Cancel declaration")
-      optionFive.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(6)>label").text() must be(messages(cancelDec))
-
-      val optionSix = getElementById(view, "Submissions")
-      optionSix.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(7)>label").text() must be(messages(recentDec))
-    }
-
-    "display selected fourth radio button - Departure (EDL)" in {
-
-      val view = createView(Choice.form().fill(Choice("EDL")))
-
-      val optionOne = getElementById(view, "Supplementary declaration")
-      optionOne.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(supplementaryDec))
-
-      val optionTwo = getElementById(view, "Standard declaration")
-      optionTwo.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(standardDec))
-
-      val optionThree = getElementById(view, "Arrival")
-      optionThree.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(arrivalDec))
-
-      val optionFour = getElementById(view, "Departure")
-      optionFour.attr("checked") must be("checked")
-
-      getElementByCss(view, "#choice>div:nth-child(5)>label").text() must be(messages(departureDec))
-
-      val optionFive = getElementById(view, "Cancel declaration")
-      optionFive.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(6)>label").text() must be(messages(cancelDec))
-
-      val optionSix = getElementById(view, "Submissions")
-      optionSix.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(7)>label").text() must be(messages(recentDec))
     }
 
     "display selected fifth radio button - Cancel declaration (CAN)" in {
-
       val view = createView(Choice.form().fill(Choice("CAN")))
+      ensureAllLabelTextIsCorrect(view)
 
-      val optionOne = getElementById(view, "Supplementary declaration")
-      optionOne.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(supplementaryDec))
-
-      val optionTwo = getElementById(view, "Standard declaration")
-      optionTwo.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(standardDec))
-
-      val optionThree = getElementById(view, "Arrival")
-      optionThree.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(arrivalDec))
-
-      val optionFour = getElementById(view, "Departure")
-      optionFour.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(5)>label").text() must be(messages(departureDec))
-
-      val optionFive = getElementById(view, "Cancel declaration")
-      optionFive.attr("checked") must be("checked")
-
-      getElementByCss(view, "#choice>div:nth-child(6)>label").text() must be(messages(cancelDec))
-
-      val optionSix = getElementById(view, "Submissions")
-      optionSix.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(7)>label").text() must be(messages(recentDec))
+      ensureRadioIsUnChecked(view, "Supplementary declaration")
+      ensureRadioIsUnChecked(view, "Standard declaration")
+      ensureRadioIsChecked(view, "Cancel declaration")
+      ensureRadioIsUnChecked(view, "Submissions")
     }
 
     "display selected sixth radio button - View recent declarations (SUB)" in {
-
       val view = createView(Choice.form().fill(Choice("SUB")))
 
-      val optionOne = getElementById(view, "Supplementary declaration")
-      optionOne.attr("checked") must be("")
+      ensureAllLabelTextIsCorrect(view)
 
-      getElementByCss(view, "#choice>div:nth-child(2)>label").text() must be(messages(supplementaryDec))
-
-      val optionTwo = getElementById(view, "Standard declaration")
-      optionTwo.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(3)>label").text() must be(messages(standardDec))
-
-      val optionThree = getElementById(view, "Arrival")
-      optionThree.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(4)>label").text() must be(messages(arrivalDec))
-
-      val optionFour = getElementById(view, "Departure")
-      optionFour.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(5)>label").text() must be(messages(departureDec))
-
-      val optionFive = getElementById(view, "Cancel declaration")
-      optionFive.attr("checked") must be("")
-
-      getElementByCss(view, "#choice>div:nth-child(6)>label").text() must be(messages(cancelDec))
-
-      val optionSix = getElementById(view, "Submissions")
-      optionSix.attr("checked") must be("checked")
-
-      getElementByCss(view, "#choice>div:nth-child(7)>label").text() must be(messages(recentDec))
+      ensureRadioIsUnChecked(view, "Supplementary declaration")
+      ensureRadioIsUnChecked(view, "Standard declaration")
+      ensureRadioIsUnChecked(view, "Cancel declaration")
+      ensureRadioIsChecked(view, "Submissions")
     }
+  }
+  private def ensureAllLabelTextIsCorrect(view: Html): Unit ={
+    val labels: immutable.Seq[Element] =  getElementsByTag(view, "label")
+    labels.forall(elems => elems.getElementsContainingText(messages(supplementaryDec)).isEmpty) must be(false)
+    labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) must be(false)
+    labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) must be(false)
+    labels.forall(elems => elems.getElementsContainingText(messages(recentDec)).isEmpty) must be(false)
+  }
+
+  private def ensureRadioIsChecked(view:Html, elementId: String): Unit ={
+    val option = getElementById(view, elementId)
+    option.attr("checked") must be("checked")
+  }
+
+  private def ensureRadioIsUnChecked(view:Html, elementId: String): Unit ={
+    val option = getElementById(view, elementId)
+    option.attr("checked") must be("")
   }
 }

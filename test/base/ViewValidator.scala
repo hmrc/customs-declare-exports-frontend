@@ -21,6 +21,7 @@ import org.jsoup.select.Elements
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
 import play.twirl.api.Html
+import scala.collection.JavaConversions._
 
 trait ViewValidator extends MustMatchers {
 
@@ -56,6 +57,18 @@ trait ViewValidator extends MustMatchers {
     if (element == null) throw new Exception(s"Can't find element $id on page by id")
 
     element
+  }
+
+  def getElementsByAttribute(html:Html, attributeName: String): List[Element] = {
+    val elements = asDocument(html).getElementsByAttribute(attributeName)
+    if (elements == null) throw new Exception(s"Can't find attribute $attributeName on page")
+    elements.toList
+  }
+
+  def getElementsByTag(html:Html, tag: String): List[Element] = {
+    val elements = asDocument(html).getElementsByTag(tag)
+    if (elements == null) throw new Exception(s"Can't find tag $tag on page")
+    elements.toList
   }
 
   def getElementById(page: String, id: String): Element = {

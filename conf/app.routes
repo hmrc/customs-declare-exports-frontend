@@ -1,6 +1,3 @@
-
-->         /movement                                    movement.Routes
-
 ->         /declaration                                 declaration.Routes
 
 # microservice specific routes

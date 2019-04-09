@@ -23,14 +23,14 @@
 @(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
 
     @main_template(
-        title = messages("movement.choice.description"),
+        title = messages("declaration.choice.description"),
         appConfig = appConfig
     ) {
 
         @helpers.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
             @components.back_link("start")
 
-            @components.heading("", "movement.choice.description")
+            @components.heading("", "declaration.choice.description")
 
             @components.input_radio(
                 field = form("choice"),
@@ -38,8 +38,6 @@
                 inputs = Seq(
                     RadioOption("Supplementary declaration", SupplementaryDec, messages("declaration.choice.SMP")),
                     RadioOption("Standard declaration", StandardDec, messages("declaration.choice.STD")),
-                    RadioOption("Arrival", Arrival, messages("movement.choice.EAL")),
-                    RadioOption("Departure", Departure, messages("movement.choice.EDL")),
                     RadioOption("Cancel declaration", CancelDec, messages("declaration.choice.CAN")),
                     RadioOption("Submissions", Submissions, messages("declaration.choice.SUB"))
                 )

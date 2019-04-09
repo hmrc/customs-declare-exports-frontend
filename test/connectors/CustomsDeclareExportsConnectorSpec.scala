@@ -127,6 +127,5 @@ object CustomsDeclareExportsConnectorSpec {
     ("X-MRN", mrn)
   )
   val falseServerError: Boolean = false
-  val movementSubmission = MovementSubmission("eori1", "convid1", "ducr1", None, "EAL")
 
 }

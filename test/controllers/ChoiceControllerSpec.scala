@@ -112,25 +112,6 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/dispatch-location"))
     }
 
-    "redirect to arrival page when \"Arrival\" is selected" in {
-
-      val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.Arrival)))
-      val result = route(app, postRequest(choiceUri, correctForm)).get
-      val header = result.futureValue.header
-
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/movement/ducr"))
-    }
-
-    "redirect to departure page when \"Departure\" is selected" in {
-
-      val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.Departure)))
-      val result = route(app, postRequest(choiceUri, correctForm)).get
-      val header = result.futureValue.header
-
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/movement/ducr"))
-    }
 
     "redirect to cancel declaration page when \"Cancel declaration\" is selected" in {
 

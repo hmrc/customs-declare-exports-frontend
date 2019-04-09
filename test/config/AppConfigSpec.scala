@@ -121,13 +121,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       validConfigService.cancelDeclaration must be("/cancel-declaration")
     }
 
-    "have movements backend hostname " in {
-      validConfigService.customsDeclareExportsMovements must be("http://localhostm:9876")
-    }
-    "have movement submission URL" in {
-      validConfigService.saveMovementSubmission must be("/save-movement-submission")
-    }
-
     "have fetch notification URL" in {
       validConfigService.fetchNotifications must be("/customs-declare-exports/notifications")
     }
@@ -211,18 +204,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
   "throw an exception when fetchSubmissions uri is missing" in {
     intercept[Exception](emptyConfigService.fetchSubmissions).getMessage must be(
       "Missing configuration for Customs Declaration Exports fetch submission URI"
-    )
-  }
-
-  "throw an exception when customs-declare-exports-movements.host is missing" in {
-    intercept[Exception](emptyConfigService.customsDeclareExportsMovements).getMessage must be(
-      "Could not find config customs-declare-exports-movements.host"
-    )
-  }
-
-  "throw an exception when movement submission uri is missing" in {
-    intercept[Exception](emptyConfigService.saveMovementSubmission).getMessage must be(
-      "Missing configuration for Customs Declarations Exports Movement submission URI"
     )
   }
 

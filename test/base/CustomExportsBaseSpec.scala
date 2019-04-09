@@ -21,7 +21,7 @@ import java.util.UUID
 import akka.stream.Materializer
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
-import connectors.{CustomsDeclareExportsConnector, CustomsDeclareExportsMovementsConnector, NrsConnector}
+import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
@@ -71,7 +71,6 @@ trait CustomExportsBaseSpec
       bind[AuthConnector].to(mockAuthConnector),
       bind[CustomsCacheService].to(mockCustomsCacheService),
       bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
-      bind[CustomsDeclareExportsMovementsConnector].to(mockCustomsDeclareExportsMovementsConnector),
       bind[NrsConnector].to(mockNrsConnector),
       bind[NRSService].to(mockNrsService),
       bind[ExportsMetrics].to(mockMetrics),
