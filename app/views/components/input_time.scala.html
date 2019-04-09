@@ -1,0 +1,54 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@(
+    label: String,
+    hint: Option[String] = None,
+    form: Form[_]
+)(implicit messages: Messages)
+
+<div class="form-group">
+    <fieldset>
+        <legend>
+            <span class="form-label">@label</span>
+            @hint.map { text => <span class="form-hint">@text</span> }
+        </legend>
+        <div class="form-group">
+            <div class="form-date">
+                <div class="form-group form-group-day">
+                    <label class="form-label" for="hour">Hour</label>
+                    <input
+                    class="form-control"
+                    id="hour"
+                    name="hour"
+                    type="number"
+                    value=@{form("hour").value}
+                    >
+                </div>
+                <div class="form-group form-group-month">
+                    <label class="form-label" for="minute">Minute</label>
+                    <input
+                    class="form-control"
+                    id="minute"
+                    name="minute"
+                    type="number"
+                    value=@{form("minute").value}
+                    >
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
