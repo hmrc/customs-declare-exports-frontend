@@ -26,7 +26,7 @@ import forms.declaration.destinationCountries._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call}
 import play.twirl.api.Html
@@ -130,7 +130,10 @@ class DestinationCountriesController @Inject()(
       case Invalid(errors) =>
         Future.successful(
           Left(
-            destination_countries_standard(countriesStandardForm.copy(errors = errors), cachedData.countriesOfRouting)
+            destination_countries_standard(
+              adjustDataKeys(countriesStandardForm).copy(errors = errors.map(adjustErrorKey(_))),
+              cachedData.countriesOfRouting
+            )
           )
         )
     }
@@ -167,9 +170,24 @@ class DestinationCountriesController @Inject()(
       case Invalid(errors) =>
         Future.successful(
           Left(
-            destination_countries_standard(countriesStandardForm.copy(errors = errors), cachedData.countriesOfRouting)
+            destination_countries_standard(
+              adjustDataKeys(countriesStandardForm).copy(errors = errors.map(adjustErrorKey(_))),
+              cachedData.countriesOfRouting
+            )
           )
         )
     }
   }
+
+  private def adjustErrorKey(error: FormError): FormError =
+    if (error.key.contains("countriesOfRouting"))
+      error.copy(key = error.key.replaceAll("\\[.*?\\]", "").concat("[]"))
+    else
+      error
+
+  private def adjustDataKeys(form: Form[DestinationCountriesStandard]): Form[DestinationCountriesStandard] =
+    form.copy(data = form.data.map {
+      case (key, value) if key.contains("countriesOfRouting") => ("countriesOfRouting[]", value)
+      case (key, value)                                       => (key, value)
+    })
 }

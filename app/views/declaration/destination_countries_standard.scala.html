@@ -18,8 +18,8 @@
 @import controllers.declaration.routes._
 @import controllers.util.{Add, Remove, SaveAndContinue}
 @import forms.declaration.destinationCountries.DestinationCountriesStandard
-@import uk.gov.hmrc.play.views.html._
 @import services.Country
+@import uk.gov.hmrc.play.views.html._
 
 @(form: Form[DestinationCountriesStandard], routingCountries: Seq[String])(implicit request: Request[_], messages: Messages, countries: List[Country], appConfig: AppConfig)
 
@@ -102,6 +102,7 @@
             label = messages("declaration.destinationCountries.countryOfDestination"),
             'autocomplete -> "off",
             '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
+            '_labelClass -> "bold-small",
             'spellcheck -> "false",
             'ariaautocomplete -> "list",
             'ariahaspopup -> "true",
