@@ -64,15 +64,15 @@ class TransactionTypeViewSpec extends ViewSpec with TransactionTypeMessages with
 
     "display header" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(header))
+      getElementById(createView(), "title").text() must be(messages(header))
     }
 
     "display empty input with label for Document Type Code" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(description))
-      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(hint))
+      getElementById(view, "documentTypeCode-label").text() must be(messages(description))
+      getElementById(view, "documentTypeCode-hint").text() must be(messages(hint))
       getElementById(view, "documentTypeCode").attr("value") must be("")
     }
 
@@ -80,8 +80,8 @@ class TransactionTypeViewSpec extends ViewSpec with TransactionTypeMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(identifier))
-      getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(hint))
+      getElementById(view, "identifier-label").text() must be(messages(identifier))
+      getElementById(view, "identifier-hint").text() must be(messages(hint))
       getElementById(view, "identifier").attr("value") must be("")
     }
 

@@ -55,19 +55,12 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be("Dispatch Location")
+      getElementById(createView(), "title").text() must be(messages(header))
     }
 
     "display section header" in {
 
       getElementById(createView(), "section-header").text() must be("Locations")
-    }
-
-    "display header with hint" in {
-
-      val view = createView()
-
-      getElementByCss(view, "legend>h1").text() must be(messages(header))
     }
 
     "display two radio buttons with description (not selected)" in {
@@ -77,13 +70,13 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
       val optionOne = getElementById(view, "OutsideEU")
       optionOne.attr("checked") must be("")
 
-      val optionOneLabel = getElementByCss(view, "#dispatchLocation>div:nth-child(2)>label")
+      val optionOneLabel = getElementById(view, "OutsideEU-label")
       optionOneLabel.text() must be(messages(outsideEu))
 
       val optionTwo = getElementById(view, "SpecialFiscalTerritory")
       optionTwo.attr("checked") must be("")
 
-      val optionTwoLabel = getElementByCss(view, "#dispatchLocation>div:nth-child(3)>label")
+      val optionTwoLabel = getElementById(view, "SpecialFiscalTerritory-label")
       optionTwoLabel.text() must be(messages(specialFiscalTerritory))
     }
 

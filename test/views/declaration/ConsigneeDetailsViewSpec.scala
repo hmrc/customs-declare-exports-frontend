@@ -44,7 +44,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      getElementById(createView(), "title").text() must be(messages(title))
     }
 
     "display section header" in {
@@ -65,8 +65,8 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "label.form-label>span").text() must be(messages(eoriInfo))
-      getElementByCss(view, "label.form-label>span.form-hint").text() must be(messages(consigneeEoriHint))
+      getElementById(view, "details_eori-label").text() must be(messages(eoriInfo))
+      getElementById(view, "details_eori-hint").text() must be(messages(consigneeEoriHint))
       getElementById(view, "details_eori").attr("value") must be("")
     }
 
@@ -74,9 +74,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(1)>label").text() must be(
-        messages(fullName)
-      )
+      getElementById(view, "details_address_fullName-label").text() must be(messages(fullName))
       getElementById(view, "details_address_fullName").attr("value") must be("")
     }
 
@@ -84,7 +82,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div>span").text() must be(messages(addressInfo))
+      getElementById(view, "address-header").text() must be(messages(addressInfo))
       getElementById(view, "details_address_fullName").attr("value") must be("")
     }
 
@@ -92,9 +90,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(2)>label").text() must be(
-        messages(addressLine)
-      )
+      getElementById(view, "details_address_addressLine-label").text() must be(messages(addressLine))
       getElementById(view, "details_address_addressLine").attr("value") must be("")
     }
 
@@ -102,9 +98,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(3)>label").text() must be(
-        messages(townOrCity)
-      )
+      getElementById(view, "details_address_townOrCity-label").text() must be(messages(townOrCity))
       getElementById(view, "details_address_townOrCity").attr("value") must be("")
     }
 
@@ -112,9 +106,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(4)>label").text() must be(
-        messages(postCode)
-      )
+      getElementById(view, "details_address_postCode-label").text() must be(messages(postCode))
       getElementById(view, "details_address_postCode").attr("value") must be("")
     }
 
@@ -122,9 +114,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(5)>label").text() must be(
-        messages(country)
-      )
+      getElementById(view, "details_address_country-label").text() must be(messages(country))
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 

@@ -50,7 +50,7 @@ class OfficeOfExitViewSpec extends ViewSpec with OfficeOfExitMessages with Commo
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      getElementById(createView(), "title").text() must be(messages(title))
     }
 
     "display section header" in {
@@ -58,16 +58,11 @@ class OfficeOfExitViewSpec extends ViewSpec with OfficeOfExitMessages with Commo
       getElementById(createView(), "section-header").text() must be("Locations")
     }
 
-    "display header" in {
-
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
-    }
-
     "display empty input with label for Country" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-field>label>span.form-hint").text() must be(messages(hint))
+      getElementById(view, "officeId-hint").text() must be(messages(hint))
       getElementById(view, "officeId").attr("value") must be("")
     }
 

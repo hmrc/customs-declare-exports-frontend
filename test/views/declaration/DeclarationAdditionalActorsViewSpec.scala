@@ -55,7 +55,7 @@ class DeclarationAdditionalActorsViewSpec
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      getElementById(createView(), "title").text() must be(messages(title))
     }
 
     "display section header" in {
@@ -63,17 +63,12 @@ class DeclarationAdditionalActorsViewSpec
       getElementById(createView(), "section-header").text() must be("Parties")
     }
 
-    "display header" in {
-
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
-    }
-
     "display empty input with label for EORI" in {
 
       val view = createView()
 
-      getElementByCss(view, "label.form-label>span").text() must be(messages(eori))
-      getElementByCss(view, "label.form-label>span.form-hint").text() must be(messages(eoriHint))
+      getElementById(view, "eori-label").text() must be(messages(eori))
+      getElementById(view, "eori-hint").text() must be(messages(eoriHint))
       getElementById(view, "eori").attr("value") must be("")
     }
 
@@ -84,25 +79,25 @@ class DeclarationAdditionalActorsViewSpec
       val optionOne = getElementById(view, consolidator)
       optionOne.attr("checked") must be("")
 
-      val optionOneLabel = getElementByCss(view, "#partyType>div:nth-child(2)>label")
+      val optionOneLabel = getElementById(view, "supplementary.partyType.CS-label")
       optionOneLabel.text() must be(messages(consolidator))
 
       val optionTwo = getElementById(view, manufacturer)
       optionTwo.attr("checked") must be("")
 
-      val optionTwoLabel = getElementByCss(view, "#partyType>div:nth-child(3)>label")
+      val optionTwoLabel = getElementById(view, "supplementary.partyType.MF-label")
       optionTwoLabel.text() must be(messages(manufacturer))
 
       val optionThree = getElementById(view, freightForwarder)
       optionThree.attr("checked") must be("")
 
-      val optionThreeLabel = getElementByCss(view, "#partyType>div:nth-child(4)>label")
+      val optionThreeLabel = getElementById(view, "supplementary.partyType.FW-label")
       optionThreeLabel.text() must be(messages(freightForwarder))
 
       val optionFour = getElementById(view, warehouseKeeper)
       optionFour.attr("checked") must be("")
 
-      val optionFourLabel = getElementByCss(view, "#partyType>div:nth-child(5)>label")
+      val optionFourLabel = getElementById(view, "supplementary.partyType.WH-label")
       optionFourLabel.text() must be(messages(warehouseKeeper))
     }
 

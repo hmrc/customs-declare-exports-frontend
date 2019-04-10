@@ -20,8 +20,8 @@ import forms.declaration.CommodityMeasure
 import helpers.views.declaration.{CommodityMeasureMessages, CommonMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.goods_measure
 import views.declaration.spec.ViewSpec
+import views.html.declaration.goods_measure
 import views.tags.ViewTest
 
 @ViewTest
@@ -71,7 +71,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      getElementById(createView(), "title").text() must be(messages(title))
     }
 
     "display section header" in {
@@ -79,21 +79,12 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       getElementById(createView(), "section-header").text() must be("Items")
     }
 
-    "display header with hint" in {
-
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
-    }
-
     "display empty input with label for supplementary units" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(
-        messages(supplementaryUnits)
-      )
-      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(
-        messages(supplementaryUnitsHint)
-      )
+      getElementById(view, "supplementaryUnits-label").text() must be(messages(supplementaryUnits))
+      getElementById(view, "supplementaryUnits-hint").text() must be(messages(supplementaryUnitsHint))
       getElementById(view, "supplementaryUnits").attr("value") must be("")
     }
 
@@ -101,8 +92,8 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(netMass))
-      getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(netMassHint))
+      getElementById(view, "netMass-label").text() must be(messages(netMass))
+      getElementById(view, "netMass-hint").text() must be(messages(netMassHint))
       getElementById(view, "netMass").attr("value") must be("")
     }
 
@@ -110,8 +101,8 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(messages(grossMass))
-      getElementByCss(view, "form>div:nth-child(6)>label>span.form-hint").text() must be(messages(grossMassHint))
+      getElementById(view, "grossMass-label").text() must be(messages(grossMass))
+      getElementById(view, "grossMass-hint").text() must be(messages(grossMassHint))
       getElementById(view, "grossMass").attr("value") must be("")
     }
 

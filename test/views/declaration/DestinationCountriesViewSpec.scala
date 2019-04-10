@@ -53,12 +53,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
-    }
-
-    "display header" in {
-
-      getElementByCss(createView(), "h1").text() must be(messages(title))
+      getElementById(createView(), "title").text() must be(messages(title))
     }
 
     "display empty input with label for Dispatch country" in {

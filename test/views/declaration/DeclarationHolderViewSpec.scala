@@ -54,7 +54,7 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      getElementById(createView(), "title").text() must be(messages(title))
     }
 
     "display section header" in {
@@ -62,19 +62,12 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
       getElementById(createView(), "section-header").text() must be("Parties")
     }
 
-    "display header" in {
-
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
-    }
-
     "display empty input with label for Authorisation Code" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(authorisationCode))
-      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(
-        messages(authorisationCodeHint)
-      )
+      getElementById(view, "authorisationTypeCode-label").text() must be(messages(authorisationCode))
+      getElementById(view, "authorisationTypeCode-hint").text() must be(messages(authorisationCodeHint))
       getElementById(view, "authorisationTypeCode").attr("value") must be("")
     }
 
@@ -82,10 +75,8 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(
-        messages(declarationHolderEori)
-      )
-      getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(eoriHint))
+      getElementById(view, "eori-label").text() must be(messages(declarationHolderEori))
+      getElementById(view, "eori-hint").text() must be(messages(eoriHint))
       getElementById(view, "eori").attr("value") must be("")
     }
 

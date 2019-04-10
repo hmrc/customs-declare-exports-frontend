@@ -75,14 +75,14 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display header" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
+      getElementById(createView(), "title").text() must be(messages(title))
     }
 
     "display empty input with label for Country" in {
 
       val view = createView()
 
-      getElementByCss(view, "#country-outer>label").text() must be(messages(country))
+      getElementById(view, "country-label").text() must be(messages(country))
       getElementById(view, "country").attr("value") must be("")
     }
 
@@ -90,7 +90,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(6)>label>span").text() must be(messages(typeOfLocation))
+      getElementById(view, "typeOfLocation-label").text() must be(messages(typeOfLocation))
       getElementById(view, "typeOfLocation").attr("value") must be("")
     }
 
@@ -98,7 +98,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(7)>label>span").text() must be(messages(qualifierOfIdent))
+      getElementById(view, "qualifierOfIdentification-label").text() must be(messages(qualifierOfIdent))
       getElementById(view, "qualifierOfIdentification").attr("value") must be("")
     }
 
@@ -106,7 +106,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(8)>label>span").text() must be(messages(identOfLocation))
+      getElementById(view, "identificationOfLocation-label").text() must be(messages(identOfLocation))
       getElementById(view, "identificationOfLocation").attr("value") must be("")
     }
 
@@ -114,7 +114,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(9)>label>span").text() must be(messages(additionalIdentifier))
+      getElementById(view, "additionalIdentifier-label").text() must be(messages(additionalIdentifier))
       getElementById(view, "additionalIdentifier").attr("value") must be("")
     }
 
@@ -122,7 +122,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(10)>label>span").text() must be(messages(streetAndNumber))
+      getElementById(view, "streetAndNumber-label").text() must be(messages(streetAndNumber))
       getElementById(view, "streetAndNumber").attr("value") must be("")
     }
 
@@ -130,7 +130,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(11)>label>span").text() must be(messages(logPostCode))
+      getElementById(view, "postCode-label").text() must be(messages(logPostCode))
       getElementById(view, "postCode").attr("value") must be("")
     }
 
@@ -138,7 +138,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(12)>label>span").text() must be(messages(city))
+      getElementById(view, "city-label").text() must be(messages(city))
       getElementById(view, "city").attr("value") must be("")
     }
 
