@@ -16,31 +16,51 @@
 
 package forms.common
 
+import java.time.LocalDate
+
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{isContainedIn, isNumeric}
+import utils.validators.forms.FieldValidator.isNumeric
 
 case class Date(year: Option[String], month: Option[String], day: Option[String]) {
 
   def isEmpty: Boolean = year.isEmpty && month.isEmpty && day.isEmpty
   def nonEmpty: Boolean = year.nonEmpty && month.nonEmpty && day.nonEmpty
+
+  override def toString: String = LocalDate.of(
+    year.getOrElse("0000").toInt,
+    month.getOrElse("00").toInt,
+    day.getOrElse("00").toInt
+  ).toString
+
 }
 
 object Date {
   implicit val format = Json.format[Date]
 
-  private val days = (1 to 31).toList.map(_.toString)
-  private val months = (1 to 12).toList.map(_.toString)
+  private val validYears = 2000 to 2099
+  private val validMonths = 1 to 12
+  private val validDays = 1 to 31
 
-  val mapping = Forms.mapping(
-    "year" -> optional(
-      text()
-        .verifying("dateTime.date.year.error", year => isNumeric(year) && (year.toInt >= 2000 && year.toInt < 2100))
-    ),
-    "month" -> optional(text().verifying("dateTime.date.month.error", isContainedIn(months))),
-    "day" -> optional(text().verifying("dateTime.date.day.error", isContainedIn(days)))
-  )(Date.apply)(Date.unapply).verifying("dateTime.date.error", validateDate(_))
+  val yearKey = "year"
+  val monthKey = "month"
+  val dayKey = "day"
+
+  val mapping = Forms
+    .mapping(
+      yearKey -> optional(
+        text()
+          .verifying("dateTime.date.year.error", year => isNumeric(year) && validYears.contains(year.toInt))
+      ),
+      monthKey -> optional(
+        text().verifying("dateTime.date.month.error", month => isNumeric(month) && validMonths.contains(month.toInt))
+      ),
+      dayKey -> optional(
+        text().verifying("dateTime.date.day.error", day => isNumeric(day) && validDays.contains(day.toInt))
+      )
+    )(Date.apply)(Date.unapply)
+    .verifying("dateTime.date.error", validateDate(_))
 
   private def validateDate(date: Date): Boolean = date.isEmpty || date.nonEmpty
 

@@ -80,20 +80,23 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       .getEntry[AdditionalInformationData](AdditionalInformationData.formId)
       .map(_.items.map(info => AdditionalInformation(Some(info.code), Some(info.description))))
 
-  def documents(cachedData: CacheMap) =
+  def documents(cachedData: CacheMap): Option[Seq[GovernmentAgencyGoodsItemAdditionalDocument]] =
     cachedData
       .getEntry[DocumentsProducedData](DocumentsProducedData.formId)
       .map(_.documents.map(createGoodsItemAdditionalDocument(_)))
 
   private def createGoodsItemAdditionalDocument(doc: DocumentsProduced) =
     GovernmentAgencyGoodsItemAdditionalDocument(
-      doc.documentTypeCode.map(_.substring(0, 1)),
+      categoryCode = doc.documentTypeCode.map(_.substring(0, 1)),
       typeCode = doc.documentTypeCode.map(_.substring(1)),
       id = doc.documentIdentifier.map(_ + doc.documentPart.getOrElse("")),
       lpcoExemptionCode = doc.documentStatus,
       name = doc.documentStatusReason,
-      //TODO have to implement unitCode based on user input
-      writeOff = doc.documentQuantity.map(q => WriteOff(Some(Measure(value = Some(q)))))
+      submitter = Some(GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(name = doc.issuingAuthorityName)),
+      effectiveDateTime = doc.dateOfValidity.map(date => DateTimeElement(DateTimeString(formatCode = "102", value = date.toString))),
+      writeOff = doc.documentQuantity.map(q => WriteOff(quantity = Some(
+        Measure(unitCode = doc.measurementUnit, value = Some(q))
+      )))
     )
 
   def goodsItemFromItemTypes(cachedData: CacheMap): Option[GovernmentAgencyGoodsItem] =

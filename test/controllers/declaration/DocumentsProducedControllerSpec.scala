@@ -20,17 +20,19 @@ import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.DocumentsProduced
+import forms.declaration.DocumentsProducedSpec
 import forms.declaration.DocumentsProducedSpec.{correctDocumentsProducedMap, _}
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
 import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.formId
+import models.declaration.DocumentsProducedDataSpec._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
+
 class DocumentsProducedControllerSpec
     extends CustomExportsBaseSpec with DocumentsProducedMessages with CommonMessages with ViewValidator {
 
@@ -39,6 +41,7 @@ class DocumentsProducedControllerSpec
   private val uri = uriWithContextPath("/declaration/add-document")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
+
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   before {
@@ -57,21 +60,25 @@ class DocumentsProducedControllerSpec
 
     "read item from cache and display it" in {
 
-      val cachedData = DocumentsProducedData(
-        Seq(DocumentsProduced(Some("XA"), Some("XI"), Some("XZ"), Some("YX"), Some("YY"), Some(BigDecimal("9999"))))
-      )
-      withCaching[DocumentsProducedData](Some(cachedData), "DocumentsProducedData")
+      val document = DocumentsProducedSpec.correctDocumentsProduced
+      val cachedData = DocumentsProducedData(Seq(document))
+      withCaching[DocumentsProducedData](Some(cachedData), DocumentsProducedData.formId)
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)
-      page must include("XA")
-      page must include("XI")
-      page must include("XZ")
-      page must include("YX")
-      page must include("YY")
-      page must include("9999")
+      page must include(document.documentTypeCode.get)
+      page must include(document.documentIdentifier.get)
+      page must include(document.documentPart.get)
+      page must include(document.documentStatus.get)
+      page must include(document.documentStatusReason.get)
+      page must include(document.issuingAuthorityName.get)
+      page must include(document.dateOfValidity.get.year.get)
+      page must include(document.dateOfValidity.get.month.get)
+      page must include(document.dateOfValidity.get.day.get)
+      page must include(document.measurementUnit.get)
+      page must include(document.documentQuantity.get.toString)
     }
   }
 
@@ -148,14 +155,7 @@ class DocumentsProducedControllerSpec
       "try to add duplicated document" in {
         withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
-        val duplicatedDocument: Map[String, String] = Map(
-          "documentTypeCode" -> "AB12",
-          "documentIdentifier" -> "ABCDEF1234567890",
-          "documentPart" -> "ABC12",
-          "documentStatus" -> "AB",
-          "documentStatusReason" -> "DocumentStatusReason",
-          "documentQuantity" -> "1234567890.123456"
-        )
+        val duplicatedDocument: Map[String, String] = correctDocumentsProducedMap
 
         val body = duplicatedDocument.toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -164,21 +164,14 @@ class DocumentsProducedControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, duplicatedItem, "#")
+        checkErrorLink(page, 1, duplicatedItemError, "#")
       }
 
       "try to add an empty document" in {
 
         withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
-        val undefinedDocument: Map[String, String] = Map(
-          "documentTypeCode" -> "",
-          "documentIdentifier" -> "",
-          "documentPart" -> "",
-          "documentStatus" -> "",
-          "documentStatusReason" -> "",
-          "documentQuantity" -> ""
-        )
+        val undefinedDocument: Map[String, String] = emptyDocumentsProducedMap
 
         val body = undefinedDocument.toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -187,29 +180,21 @@ class DocumentsProducedControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, notDefined, "#")
+        checkErrorLink(page, 1, notDefinedError, "#")
       }
 
       "try to add more then 99 documents" in {
 
         withCaching[DocumentsProducedData](Some(cacheWithMaximumAmountOfHolders), formId)
 
-        val body = Seq(
-          ("documentTypeCode", "1234"),
-          ("documentIdentifier", "Davis"),
-          ("documentPart", "1234"),
-          ("documentStatus", "AB"),
-          ("documentStatusReason", "1234"),
-          ("documentQuantity", "1234"),
-          addActionUrlEncoded
-        )
+        val body = (correctDocumentsProducedMap + ("documentIdentifier" -> "Davis")).toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, maximumAmountReached, "#")
+        checkErrorLink(page, 1, maximumAmountReachedError, "#")
       }
     }
 
@@ -227,7 +212,8 @@ class DocumentsProducedControllerSpec
 
         withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
-        val body = correctDocumentsProducedMap.toSeq :+ addActionUrlEncoded
+        val newDocument = correctDocumentsProducedMap + ("documentIdentifier" -> "DOCID123")
+        val body = newDocument.toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
@@ -248,7 +234,7 @@ class DocumentsProducedControllerSpec
       }
     }
 
-    "redirect to \"Export Items\" page" when {
+    "redirect to 'Export Items' page" when {
 
       "provided with empty form and with empty cache" in {
 
@@ -287,7 +273,8 @@ class DocumentsProducedControllerSpec
 
         withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
-        val body = correctDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
+        val newDocument = correctDocumentsProducedMap + ("documentIdentifier" -> "DOCID123")
+        val body = newDocument.toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
 
@@ -304,14 +291,7 @@ object DocumentsProducedControllerSpec {
       .range[Int](100, 200, 1)
       .map(
         elem =>
-          DocumentsProduced(
-            Some(elem.toString),
-            Some("1234"),
-            Some("1234"),
-            Some("AB"),
-            Some("1234"),
-            Some(BigDecimal("1234"))
-        )
+          correctDocumentsProduced.copy(documentTypeCode = Some(elem.toString))
       )
   )
 }

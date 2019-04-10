@@ -14,52 +14,82 @@
  * limitations under the License.
  *@
 
+@import forms.common.Date.{dayKey, monthKey, yearKey}
+
 @(
+    field: Field,
     label: String,
     hint: Option[String] = None,
+    labelClass: Option[String] = None,
     form: Form[_]
 )(implicit messages: Messages)
 
+@dayField = @{form(s"${field.name}.${dayKey}")}
+@monthField = @{form(s"${field.name}.${monthKey}")}
+@yearField = @{form(s"${field.name}.${yearKey}")}
 
-<div class="form-group">
+<div class="form-field
+        @if(field.hasErrors || dayField.hasErrors || monthField.hasErrors || yearField.hasErrors){form-field--error}">
     <fieldset>
-        <legend>
-            <span class="form-label">@label</span>
-            @hint.map { text => <span class="form-hint">@text</span> }
-        </legend>
-        <div class="form-group">
-            <div class="form-date">
-                <div class="form-group form-group-day">
-                    <label class="form-label" for="day">Day</label>
+        <label class="form-label">
+            <span id="@{field.id}-label" class="@if(labelClass.nonEmpty){@labelClass}">@label</span>
+            @hint.map { text => <span id="@{field.id}-hint" class="form-hint">@text</span> }
+
+            @field.errors.map { error =>
+                <span class="error-notification" id="error-message-@{field.id}-input">
+                    @messages(error.message, error.args: _*)
+                </span>
+            }
+            @yearField.errors.map { error =>
+                <span class="error-notification" id="error-message-@{yearField.id}-input">
+                @messages(error.message, error.args: _*)
+                </span>
+            }
+            @monthField.errors.map { error =>
+                <span class="error-notification" id="error-message-@{monthField.id}-input">
+                    @messages(error.message, error.args: _*)
+                </span>
+            }
+            @dayField.errors.map { error =>
+                <span class="error-notification" id="error-message-@{dayField.id}-input">
+                @messages(error.message, error.args: _*)
+                </span>
+            }
+        </label>
+            <div class="form-date" id="@{field.id}">
+                <div class="form-group form-group-year">
+                    <label class="form-label" for="@{yearField.id}">Year</label>
                     <input
                             class="form-control"
-                            id="day"
-                            name="day"
+                            id="@{yearField.id}"
+                            name="@{yearField.name}"
                             type="number"
-                            value=@{form("day").value}
+                            value=@{yearField.value}
+                            @if(yearField.hasErrors){ aria-describedby="error-message-@{yearField.id}-input" }
                     >
                 </div>
                 <div class="form-group form-group-month">
-                    <label class="form-label" for="month">Month</label>
+                    <label class="form-label" for="@{monthField.id}">Month</label>
                     <input
                             class="form-control"
-                            id="month"
-                            name="month"
+                            id="@{monthField.id}"
+                            name="@{monthField.name}"
                             type="number"
-                            value=@{form("month").value}
+                            value=@{monthField.value}
+                            @if(monthField.hasErrors){ aria-describedby="error-message-@{monthField.id}-input" }
                     >
                 </div>
-                <div class="form-group form-group-year">
-                    <label class="form-label" for="year">Year</label>
+                <div class="form-group form-group-day">
+                    <label class="form-label" for="@{dayField.id}">Day</label>
                     <input
                             class="form-control"
-                            id="year"
-                            name="year"
+                            id="@{dayField.id}"
+                            name="@{dayField.name}"
                             type="number"
-                            value=@{form("year").value}
+                            value=@{dayField.value}
+                            @if(dayField.hasErrors){ aria-describedby="error-message-@{dayField.id}-input" }
                     >
                 </div>
             </div>
-        </div>
     </fieldset>
 </div>

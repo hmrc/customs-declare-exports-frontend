@@ -45,10 +45,7 @@ class TimeSpec extends WordSpec with MustMatchers {
 
         "is less than 0" in {
 
-          val input = Map(
-            "hour" -> "-1",
-            "minute" -> "17"
-          )
+          val input = Map("hour" -> "-1", "minute" -> "17")
           val expectedErrors = Seq(FormError("hour", "dateTime.time.hour.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -56,10 +53,7 @@ class TimeSpec extends WordSpec with MustMatchers {
 
         "is more than 23" in {
 
-          val input = Map(
-            "hour" -> "24",
-            "minute" -> "17"
-          )
+          val input = Map("hour" -> "24", "minute" -> "17")
           val expectedErrors = Seq(FormError("hour", "dateTime.time.hour.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -67,10 +61,7 @@ class TimeSpec extends WordSpec with MustMatchers {
 
         "contains alphanumerical or special characters" in {
 
-          val input = Map(
-            "hour" -> "F#",
-            "minute" -> "17"
-          )
+          val input = Map("hour" -> "F#", "minute" -> "17")
           val expectedErrors = Seq(FormError("hour", "dateTime.time.hour.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -81,10 +72,7 @@ class TimeSpec extends WordSpec with MustMatchers {
 
         "is less than 0" in {
 
-          val input = Map(
-            "hour" -> "15",
-            "minute" -> "-1"
-          )
+          val input = Map("hour" -> "15", "minute" -> "-1")
           val expectedErrors = Seq(FormError("minute", "dateTime.time.minute.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -92,10 +80,7 @@ class TimeSpec extends WordSpec with MustMatchers {
 
         "is more than 59" in {
 
-          val input = Map(
-            "hour" -> "15",
-            "minute" -> "60"
-          )
+          val input = Map("hour" -> "15", "minute" -> "60")
           val expectedErrors = Seq(FormError("minute", "dateTime.time.minute.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -103,10 +88,7 @@ class TimeSpec extends WordSpec with MustMatchers {
 
         "contains alphanumerical or special characters" in {
 
-          val input = Map(
-            "hour" -> "15",
-            "minute" -> "F#"
-          )
+          val input = Map("hour" -> "15", "minute" -> "F#")
           val expectedErrors = Seq(FormError("minute", "dateTime.time.minute.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -123,10 +105,7 @@ class TimeSpec extends WordSpec with MustMatchers {
 
       "provided with correct data" in {
 
-        val input = Map(
-          "hour" -> "15",
-          "minute" -> "17"
-        )
+        val input = Map("hour" -> "15", "minute" -> "17")
         val form = Time.form().bind(input)
 
         form.hasErrors must be(false)

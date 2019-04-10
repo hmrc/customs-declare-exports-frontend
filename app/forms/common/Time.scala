@@ -33,10 +33,12 @@ object Time {
   private val validHours = (0 to 23).toList.map(_.toString)
   private val validMinutes = (0 to 59).toList.map(_.toString)
 
-  val mapping = Forms.mapping(
-    "hour" -> optional(text().verifying("dateTime.time.hour.error", isContainedIn(validHours))),
-    "minute" -> optional(text().verifying("dateTime.time.minute.error", isContainedIn(validMinutes)))
-  )(Time.apply)(Time.unapply).verifying("dateTime.time.error", validateTime(_))
+  val mapping = Forms
+    .mapping(
+      "hour" -> optional(text().verifying("dateTime.time.hour.error", isContainedIn(validHours))),
+      "minute" -> optional(text().verifying("dateTime.time.minute.error", isContainedIn(validMinutes)))
+    )(Time.apply)(Time.unapply)
+    .verifying("dateTime.time.error", validateTime(_))
 
   private def validateTime(time: Time): Boolean = time.nonEmpty || time.isEmpty
 

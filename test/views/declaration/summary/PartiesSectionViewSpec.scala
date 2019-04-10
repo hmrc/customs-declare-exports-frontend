@@ -16,21 +16,18 @@
 
 package views.declaration.summary
 
+import forms.common.Address
 import forms.declaration.ConsigneeDetailsSpec.{correctConsigneeDetailsAddressOnly, correctConsigneeDetailsEORIOnly}
 import forms.declaration.DeclarantDetailsSpec.{correctDeclarantDetailsAddressOnly, correctDeclarantDetailsEORIOnly}
+import forms.declaration.DeclarationHolder
 import forms.declaration.ExporterDetailsSpec.{correctExporterDetailsAddressOnly, correctExporterDetailsEORIOnly}
-import forms.declaration.RepresentativeDetailsSpec.{
-  correctRepresentativeDetailsAddressOnly,
-  correctRepresentativeDetailsEORIOnly
-}
-import forms.declaration.{Address, ConsigneeDetailsSpec, DeclarationHolder}
+import forms.declaration.RepresentativeDetailsSpec.{correctRepresentativeDetailsAddressOnly, correctRepresentativeDetailsEORIOnly}
 import helpers.views.declaration.summary.PartiesMessages
 import models.declaration.DeclarationAdditionalActorsDataSpec.correctAdditionalActorsData
 import models.declaration.{DeclarationHoldersData, Parties}
-import models.declaration.DeclarationHoldersData
 import play.twirl.api.Html
-import views.html.declaration.summary.parties_section
 import views.declaration.spec.ViewSpec
+import views.html.declaration.summary.parties_section
 import views.tags.ViewTest
 
 @ViewTest
