@@ -225,6 +225,7 @@ declaration.declarationType.inputText.standard.frontier = Frontier
 declaration.declarationType.inputText.error.empty = Please, choose declaration type
 declaration.declarationType.inputText.error.incorrect = Please, choose valid declaration type
 
+notEligible.pageTitle = You need to use a different service
 notEligible.title = You need to use a different
 notEligible.titleLineTwo = service
 notEligible.descriptionPreUrl = This service is only for exports being dispatched outside the EU. You will need to use
