@@ -52,16 +52,11 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
 
   lazy val customsDeclareExports = baseUrl("customs-declare-exports")
 
-  lazy val customsDeclareExportsMovements = baseUrl("customs-declare-exports-movements")
-
   lazy val submitDeclaration = getConfString(
     "customs-declare-exports.submit-declaration",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports submit declaration URI")
   )
-  lazy val saveMovementSubmission = getConfString(
-    "customs-declare-exports-movements.save-movement-uri",
-    throw new IllegalStateException("Missing configuration for Customs Declarations Exports Movement submission URI")
-  )
+
   lazy val fetchSubmissions = getConfString(
     "customs-declare-exports.fetch-submissions",
     throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch submission URI")

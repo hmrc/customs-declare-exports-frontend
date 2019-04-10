@@ -40,7 +40,7 @@ case class Parties(
     ).flatten.fold(Map.empty)(_ ++ _)
 
   def isEmpty: Boolean =
-      exporterDetails.isEmpty &&
+    exporterDetails.isEmpty &&
       consigneeDetails.isEmpty &&
       declarantDetails.isEmpty &&
       representativeDetails.isEmpty &&

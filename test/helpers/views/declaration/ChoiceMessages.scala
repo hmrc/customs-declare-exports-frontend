@@ -18,15 +18,15 @@ package helpers.views.declaration
 
 trait ChoiceMessages {
 
-  val movementChoice: String = "movement.choice"
+  val declarationChoice: String = "declaration.choice"
 
   // TODO: description is used as title
-  val title: String = movementChoice + ".description"
+  val title: String = declarationChoice + ".description"
 
   val supplementaryDec: String = "declaration.choice.SMP"
   val standardDec: String = "declaration.choice.STD"
-  val arrivalDec: String = movementChoice + ".EAL"
-  val departureDec: String = movementChoice + ".EDL"
+  val arrivalDec: String = declarationChoice + ".EAL"
+  val departureDec: String = declarationChoice + ".EDL"
   val cancelDec: String = "declaration.choice.CAN"
   val recentDec: String = "declaration.choice.SUB"
   val choiceEmpty: String = "choicePage.input.error.empty"
