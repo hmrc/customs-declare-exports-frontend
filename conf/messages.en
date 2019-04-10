@@ -59,6 +59,14 @@ general.inquiries.help.link = General enquires help
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
+dateTime.date.error = Please, enter full date
+dateTime.date.year.error = Year format is incorrect
+dateTime.date.month.error = Month format is incorrect
+dateTime.date.day.error = Day format is incorrect
+dateTime.time.error = Please, enter full time
+dateTime.time.hour.error = Hour format is incorrect
+dateTime.time.minute.error = Minute format is incorrect
+
 address.fullName = Full name
 address.buildingAndStreet = Building and street
 address.city = Town or city
