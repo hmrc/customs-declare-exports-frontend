@@ -116,8 +116,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(cncHeader))
-        getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(cncHeaderHint))
+        getElementById(view, "combinedNomenclatureCode-label").text() must be(messages(cncHeader))
+        getElementById(view, "combinedNomenclatureCode-hint").text() must be(messages(cncHeaderHint))
         getElementById(view, "combinedNomenclatureCode").attr("value") must be("")
       }
 
@@ -125,8 +125,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(taricHeader))
-        getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(taricHeaderHint))
+        getElementById(view, "taricAdditionalCode_-label").text() must be(messages(taricHeader))
+        getElementById(view, "taricAdditionalCode_-hint").text() must be(messages(taricHeaderHint))
         getElementById(view, "taricAdditionalCode_").attr("value") must be("")
       }
 
@@ -134,8 +134,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(messages(nacHeader))
-        getElementByCss(view, "form>div:nth-child(6)>label>span.form-hint").text() must be(messages(nacHeaderHint))
+        getElementById(view, "nationalAdditionalCode_-label").text() must be(messages(nacHeader))
+        getElementById(view, "nationalAdditionalCode_-hint").text() must be(messages(nacHeaderHint))
         getElementById(view, "nationalAdditionalCode_").attr("value") must be("")
       }
 
@@ -143,12 +143,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(7)>label>span:nth-child(1)").text() must be(
-          messages(statisticalHeader)
-        )
-        getElementByCss(view, "form>div:nth-child(7)>label>span.form-hint").text() must be(
-          messages(statisticalHeaderHint)
-        )
+        getElementById(view, "statisticalValue-label").text() must be(messages(statisticalHeader))
+        getElementById(view, "statisticalValue-hint").text() must be(messages(statisticalHeaderHint))
         getElementById(view, "statisticalValue").attr("value") must be("")
       }
 
@@ -156,12 +152,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(8)>label>span:nth-child(1)").text() must be(
-          messages(descriptionHeader)
-        )
-        getElementByCss(view, "form>div:nth-child(8)>label>span.form-hint").text() must be(
-          messages(descriptionHeaderHint)
-        )
+        getElementById(view, "descriptionOfGoods-label").ownText() must be(messages(descriptionHeader))
+        getElementById(view, "descriptionOfGoods-hint").text() must be(messages(descriptionHeaderHint))
         getElementById(view, "descriptionOfGoods").text() must be("")
       }
 
@@ -169,8 +161,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(9)>label>span:nth-child(1)").text() must be(messages(cusCodeHeader))
-        getElementByCss(view, "form>div:nth-child(9)>label>span.form-hint").text() must be(messages(cusCodeHeaderHint))
+        getElementById(view, "cusCode-label").text() must be(messages(cusCodeHeader))
+        getElementById(view, "cusCode-hint").text() must be(messages(cusCodeHeaderHint))
         getElementById(view, "cusCode").attr("value") must be("")
       }
 
@@ -178,12 +170,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.StandardDec)
 
-        getElementByCss(view, "form>div:nth-child(10)>label>span:nth-child(1)").text() must be(
-          messages(unDangerousGoodsCodeHeader)
-        )
-        getElementByCss(view, "form>div:nth-child(10)>label>span.form-hint").text() must be(
-          messages(unDangerousGoodsCodeHeaderHint)
-        )
+        getElementById(view, "unDangerousGoodsCode-label").text() must be(messages(unDangerousGoodsCodeHeader))
+        getElementById(view, "unDangerousGoodsCode-hint").text() must be(messages(unDangerousGoodsCodeHeaderHint))
         getElementById(view, "unDangerousGoodsCode").attr("value") must be("")
       }
 
@@ -211,14 +199,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
       "display page title" in {
 
-        getElementByCss(createView(journeyType = AllowedChoiceValues.SupplementaryDec), "title").text() must be(
-          messages(title)
-        )
-      }
-
-      "display header" in {
-
-        getElementByCss(createView(journeyType = AllowedChoiceValues.SupplementaryDec), "legend>h1").text() must be(
+        getElementById(createView(journeyType = AllowedChoiceValues.SupplementaryDec), "title").text() must be(
           messages(title)
         )
       }
@@ -227,8 +208,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
-        getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(cncHeader))
-        getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(cncHeaderHint))
+        getElementById(view, "combinedNomenclatureCode-label").text() must be(messages(cncHeader))
+        getElementById(view, "combinedNomenclatureCode-hint").text() must be(messages(cncHeaderHint))
         getElementById(view, "combinedNomenclatureCode").attr("value") must be("")
       }
 
@@ -236,8 +217,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
-        getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(taricHeader))
-        getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(taricHeaderHint))
+        getElementById(view, "taricAdditionalCode_-label").text() must be(messages(taricHeader))
+        getElementById(view, "taricAdditionalCode_-hint").text() must be(messages(taricHeaderHint))
         getElementById(view, "taricAdditionalCode_").attr("value") must be("")
       }
 
@@ -245,8 +226,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
-        getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(messages(nacHeader))
-        getElementByCss(view, "form>div:nth-child(6)>label>span.form-hint").text() must be(messages(nacHeaderHint))
+        getElementById(view, "nationalAdditionalCode_-label").text() must be(messages(nacHeader))
+        getElementById(view, "nationalAdditionalCode_-hint").text() must be(messages(nacHeaderHint))
         getElementById(view, "nationalAdditionalCode_").attr("value") must be("")
       }
 
@@ -254,12 +235,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
-        getElementByCss(view, "form>div:nth-child(8)>label>span:nth-child(1)").text() must be(
-          messages(descriptionHeader)
-        )
-        getElementByCss(view, "form>div:nth-child(8)>label>span.form-hint").text() must be(
-          messages(descriptionHeaderHint)
-        )
+        getElementById(view, "descriptionOfGoods-label").text() must be(messages(descriptionHeader))
+        getElementById(view, "descriptionOfGoods-hint").text() must be(messages(descriptionHeaderHint))
         getElementById(view, "descriptionOfGoods").text() must be("")
       }
 
@@ -267,8 +244,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
-        getElementByCss(view, "form>div:nth-child(9)>label>span:nth-child(1)").text() must be(messages(cusCodeHeader))
-        getElementByCss(view, "form>div:nth-child(9)>label>span.form-hint").text() must be(messages(cusCodeHeaderHint))
+        getElementById(view, "cusCode-label").text() must be(messages(cusCodeHeader))
+        getElementById(view, "cusCode-hint").text() must be(messages(cusCodeHeaderHint))
         getElementById(view, "cusCode").attr("value") must be("")
       }
 
@@ -276,12 +253,8 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         val view = createView(journeyType = AllowedChoiceValues.SupplementaryDec)
 
-        getElementByCss(view, "form>div:nth-child(7)>label>span:nth-child(1)").text() must be(
-          messages(statisticalHeader)
-        )
-        getElementByCss(view, "form>div:nth-child(7)>label>span.form-hint").text() must be(
-          messages(statisticalHeaderHint)
-        )
+        getElementById(view, "statisticalValue-label").text() must be(messages(statisticalHeader))
+        getElementById(view, "statisticalValue-hint").text() must be(messages(statisticalHeaderHint))
         getElementById(view, "statisticalValue").attr("value") must be("")
       }
 

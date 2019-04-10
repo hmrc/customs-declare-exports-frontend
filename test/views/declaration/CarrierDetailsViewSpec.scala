@@ -67,9 +67,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(1)>label").text() must be(
-        messages(fullName)
-      )
+      getElementById(view, "details_address_fullName-label").text() must be(messages(fullName))
       getElementById(view, "details_address_fullName").attr("value") must be("")
     }
 
@@ -77,7 +75,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
 
       val view = createView()
 
-      getElementByCss(view, "form>div>span").text() must be(messages(addressInfo))
+      getElementById(view, "address-header").text() must be(messages(addressInfo))
       getElementById(view, "details_address_fullName").attr("value") must be("")
     }
 
@@ -85,9 +83,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(2)>label").text() must be(
-        messages(addressLine)
-      )
+      getElementById(view, "details_address_addressLine-label").text() must be(messages(addressLine))
       getElementById(view, "details_address_addressLine").attr("value") must be("")
     }
 
@@ -95,7 +91,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(3)>label").text() must be(
+      getElementById(view, "details_address_townOrCity-label").text() must be(
         messages(townOrCity)
       )
       getElementById(view, "details_address_townOrCity").attr("value") must be("")
@@ -105,7 +101,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(4)>label").text() must be(
+      getElementById(view, "details_address_postCode-label").text() must be(
         messages(postCode)
       )
       getElementById(view, "details_address_postCode").attr("value") must be("")
@@ -115,7 +111,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(3)>div:nth-child(5)>label").text() must be(
+      getElementById(view, "details_address_country-label").text() must be(
         messages(country)
       )
       getElementById(view, "details.address.country").attr("value") must be("")

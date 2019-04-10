@@ -53,18 +53,11 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
       getElementById(createView(), "section-header").text() must be(messages("Parties"))
     }
 
-    "display header with hint" in {
-
-      val view = createView()
-
-      getElementByCss(view, "legend>h1").text() must be(messages(title))
-    }
-
     "display empty input with label for EORI" in {
 
       val view = createView()
 
-      getElementByCss(view, "label.form-label>span").text() must be(messages(consignorEori))
+      getElementById(view, "details_eori-label").text() must be(messages(consignorEori))
       getElementById(view, "details_eori").attr("value") must be("")
     }
 
@@ -72,9 +65,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(4)>div:nth-child(1)>label").text() must be(
-        messages(fullName)
-      )
+      getElementById(view, "details_address_fullName-label").text() must be(messages(fullName))
       getElementById(view, "details_address_fullName").attr("value") must be("")
     }
 
@@ -82,9 +73,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(4)>div:nth-child(2)>label").text() must be(
-        messages(addressLine)
-      )
+      getElementById(view, "details_address_addressLine-label").text() must be(messages(addressLine))
       getElementById(view, "details_address_addressLine").attr("value") must be("")
     }
 
@@ -92,9 +81,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(4)>div:nth-child(3)>label").text() must be(
-        messages(townOrCity)
-      )
+      getElementById(view, "details_address_townOrCity-label").text() must be(messages(townOrCity))
       getElementById(view, "details_address_townOrCity").attr("value") must be("")
     }
 
@@ -102,9 +89,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(4)>div:nth-child(4)>label").text() must be(
-        messages(postCode)
-      )
+      getElementById(view, "details_address_postCode-label").text() must be(messages(postCode))
       getElementById(view, "details_address_postCode").attr("value") must be("")
     }
 
@@ -112,9 +97,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
       val view = createView()
 
-      getElementByCss(view, "form>div.form-group>div:nth-child(4)>div:nth-child(5)>label").text() must be(
-        messages(country)
-      )
+      getElementById(view, "details_address_country-label").text() must be(messages(country))
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 

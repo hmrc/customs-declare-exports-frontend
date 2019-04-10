@@ -64,7 +64,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      getElementById(createView(), "title").text() must be(messages(header))
     }
 
     "display section header" in {
@@ -72,17 +72,12 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       getElementById(createView(), "section-header").text() must be(messages("Your references"))
     }
 
-    "display header" in {
-
-      getElementByCss(createView(), "legend>h1").text() must be(messages(header))
-    }
-
     "display empty input with label for DUCR" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(3)>label>span:nth-child(1)").text() must be(messages(ucrInfo))
-      getElementByCss(view, "form>div:nth-child(3)>label>span.form-hint").text() must be(messages(ucrHint))
+      getElementById(view, "ducr_ducr-label").text() must be(messages(ucrInfo))
+      getElementById(view, "ducr_ducr-hint").text() must be(messages(ucrHint))
       getElementById(view, "ducr_ducr").attr("value") must be("")
     }
 
@@ -90,8 +85,8 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(lrnInfo))
-      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(lrnHint))
+      getElementById(view, "lrn-label").text() must be(messages(lrnInfo))
+      getElementById(view, "lrn-hint").text() must be(messages(lrnHint))
       getElementById(view, "lrn").attr("value") must be("")
     }
 

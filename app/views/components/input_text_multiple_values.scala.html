@@ -27,9 +27,9 @@
 
 <div class="form-field @if(field.hasErrors){form-field--error}">
     <label class="form-label" for="@{field.id}">
-        <span class="@if(labelClass.nonEmpty){@labelClass}">@label</span>
+        <span id="@{field.id}-label" class="@if(labelClass.nonEmpty){@labelClass}">@label</span>
         @if(hint.nonEmpty){
-            <span class="form-hint">@hint</span>
+            <span id="@{field.id}-hint" class="form-hint">@hint</span>
         }
         @field.errors.map { error =>
             <span class="error-notification"

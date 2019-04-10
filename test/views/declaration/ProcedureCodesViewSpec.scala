@@ -63,7 +63,7 @@ class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with C
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      getElementById(createView(), "title").text() must be(messages(title))
     }
 
     "display section header" in {
@@ -71,17 +71,12 @@ class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with C
       getElementById(createView(), "section-header").text() must be("Items")
     }
 
-    "display header" in {
-
-      getElementByCss(createView(), "legend>h1").text() must be(messages(title))
-    }
-
     "display empty input with label for Procedure Code" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(procCodeHeader))
-      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(procCodeHeaderHint))
+      getElementById(view, "procedureCode-label").text() must be(messages(procCodeHeader))
+      getElementById(view, "procedureCode-hint").text() must be(messages(procCodeHeaderHint))
       getElementById(view, "procedureCode").attr("value") must be("")
     }
 
@@ -89,8 +84,8 @@ class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with C
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(addProcCodeHeader))
-      getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(
+      getElementById(view, "additionalProcedureCode-label").text() must be(messages(addProcCodeHeader))
+      getElementById(view, "additionalProcedureCode-hint").text() must be(
         messages(addProcCodeHeaderHint)
       )
       getElementById(view, "additionalProcedureCode").attr("value") must be("")

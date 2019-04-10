@@ -41,9 +41,7 @@
                 hint = Some(messages("supplementary.carrier.eori.hint"))
             )
 
-            <span>@messages("supplementary.carrier.address.info")</span>
-
-            @components.address(form, "details.address")
+            @components.address(form, "details.address", Some(messages("supplementary.carrier.address.info")))
         }
 
         @components.submit_button()

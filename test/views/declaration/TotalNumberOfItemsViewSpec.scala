@@ -89,10 +89,8 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(
-        messages(totalNumberOfItems)
-      )
-      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(tnoiHint))
+      getElementById(view, "itemsQuantity-label").text() must be(messages(totalNumberOfItems))
+      getElementById(view, "itemsQuantity-hint").text() must be(messages(tnoiHint))
       getElementById(view, "itemsQuantity").attr("value") must be("")
     }
 
@@ -100,10 +98,8 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(
-        messages(totalAmountInvoiced)
-      )
-      getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint").text() must be(messages(taiHint))
+      getElementById(view, "totalAmountInvoiced-label").text() must be(messages(totalAmountInvoiced))
+      getElementById(view, "totalAmountInvoiced-hint").text() must be(messages(taiHint))
       getElementById(view, "totalAmountInvoiced").attr("value") must be("")
     }
 
@@ -111,8 +107,8 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(messages(exchangeRate))
-      getElementByCss(view, "form>div:nth-child(6)>label>span.form-hint").text() must be(messages(erHint))
+      getElementById(view, "exchangeRate-label").text() must be(messages(exchangeRate))
+      getElementById(view, "exchangeRate-hint").text() must be(messages(erHint))
       getElementById(view, "exchangeRate").attr("value") must be("")
     }
 
@@ -120,10 +116,8 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(7)>label>span:nth-child(1)").text() must be(
-        messages(totalPackageQuantity)
-      )
-      getElementByCss(view, "form>div:nth-child(7)>label>span.form-hint").text() must be(messages(tpqHint))
+      getElementById(view, "totalPackage-label").text() must be(messages(totalPackageQuantity))
+      getElementById(view, "totalPackage-hint").text() must be(messages(tpqHint))
       getElementById(view, "totalPackage").attr("value") must be("")
     }
 

@@ -42,7 +42,7 @@
                    Some(input.value)){checked="checked" }
                    @if(trackGa){data-journey-click="customs-decex-frontend:click:@{input.id}" }/>
 
-            <label class="block-label selection-button-radio" for="@{input.id}">
+            <label id="@{input.id}-label" class="block-label selection-button-radio" for="@{input.id}">
                 @messages(input.messageKey)
             </label>
         </div>

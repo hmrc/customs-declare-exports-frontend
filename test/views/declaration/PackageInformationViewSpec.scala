@@ -20,8 +20,8 @@ import forms.declaration.PackageInformation
 import helpers.views.declaration.{CommonMessages, PackageInformationMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import views.html.declaration.package_information
 import views.declaration.spec.ViewSpec
+import views.html.declaration.package_information
 import views.tags.ViewTest
 
 @ViewTest
@@ -78,8 +78,8 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(4)>label>span:nth-child(1)").text() must be(messages(typesOfPackages))
-      getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint").text() must be(messages(typesOfPackagesHint))
+      getElementById(view, "typesOfPackages-label").text() must be(messages(typesOfPackages))
+      getElementById(view, "typesOfPackages-hint").text() must be(messages(typesOfPackagesHint))
       getElementById(view, "typesOfPackages").attr("value") must be("")
     }
 
@@ -87,7 +87,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span:nth-child(1)").text() must be(messages(numberOfPackages))
+      getElementById(view, "numberOfPackages-label").text() must be(messages(numberOfPackages))
       getElementById(view, "numberOfPackages").attr("value") must be("")
     }
 
@@ -95,8 +95,8 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(6)>label>span:nth-child(1)").text() must be(messages(shippingMarks))
-      getElementByCss(view, "form>div:nth-child(6)>label>span.form-hint").text() must be(messages(shippingMarksHint))
+      getElementById(view, "shippingMarks-label").text() must be(messages(shippingMarks))
+      getElementById(view, "shippingMarks-hint").text() must be(messages(shippingMarksHint))
       getElementById(view, "shippingMarks").attr("value") must be("")
     }
 

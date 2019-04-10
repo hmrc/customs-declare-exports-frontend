@@ -19,7 +19,7 @@
 @(form: Form[_], addressPrefix: String = "", addressHeader: Option[String] = None)(implicit request: Request[_], messages: Messages, countries: List[Country])
 
 @if(addressHeader.nonEmpty) {
-    <span class="heading-24">@addressHeader</span>
+    <span id="address-header" class="heading-24">@addressHeader</span>
 }
 <div class="form-field">
     @components.input_text(

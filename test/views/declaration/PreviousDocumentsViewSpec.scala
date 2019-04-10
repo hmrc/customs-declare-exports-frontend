@@ -89,24 +89,24 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       val optionOne = getElementById(view, "Temporary storage")
       optionOne.attr("checked") must be("")
 
-      getElementByCss(view, "#documentCategory>div:nth-child(2)>label").text() must be(messages(documentX))
+      getElementById(view, "Temporary storage-label").text() must be(messages(documentX))
 
       val optionTwo = getElementById(view, "Simplified declaration")
       optionTwo.attr("checked") must be("")
 
-      getElementByCss(view, "#documentCategory>div:nth-child(3)>label").text() must be(messages(documentY))
+      getElementById(view, "Simplified declaration-label").text() must be(messages(documentY))
 
       val optionThree = getElementById(view, "Previous document")
       optionThree.attr("checked") must be("")
 
-      getElementByCss(view, "#documentCategory>div:nth-child(4)>label").text() must be(messages(documentZ))
+      getElementById(view, "Previous document-label").text() must be(messages(documentZ))
     }
 
     "display empty input with label for Previous document code" in {
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(5)>label>span").text() must be(messages(documentType))
+      getElementById(view, "documentType-label").text() must be(messages(documentType))
       getElementById(view, "documentType").attr("value") must be("")
     }
 
@@ -114,7 +114,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(6)>label>span").text() must be(messages(documentReference))
+      getElementById(view, "documentReference-label").text() must be(messages(documentReference))
       getElementById(view, "documentReference").attr("value") must be("")
     }
 
@@ -122,8 +122,8 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       val view = createView()
 
-      getElementByCss(view, "form>div:nth-child(7)>label>span").text() must be(messages(documentGoodsIdentifier))
-      getElementById(view, "documentReference").attr("value") must be("")
+      getElementById(view, "goodsItemIdentifier-label").text() must be(messages(documentGoodsIdentifier))
+      getElementById(view, "goodsItemIdentifier").attr("value") must be("")
     }
 
     "display \"Back\" button that links to \"Transaction Type\" page" in {

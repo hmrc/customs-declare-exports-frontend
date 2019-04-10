@@ -23,10 +23,10 @@
 )(implicit messages: Messages)
 
 <div class="form-field @if(field.hasErrors){form-field--error}">
-    <label class="form-label" for="@{field.id}">
-        <span class="@labelClass">@label</span>
+    <label " class="form-label" for="@{field.id}">
+        <span id="@{field.id}-label" class="@labelClass">@label</span>
         @hint.map { hint =>
-            <span class="form-hint">@hint</span>
+            <span id="@{field.id}-hint" class="form-hint">@hint</span>
         }
         @field.errors.map { error =>
             <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
