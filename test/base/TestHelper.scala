@@ -20,7 +20,6 @@ import controllers.util.{Add, Remove, SaveAndContinue}
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-import scala.annotation.tailrec
 import scala.util.Random
 
 object TestHelper {
@@ -30,16 +29,9 @@ object TestHelper {
   val maxStringLength = 150
   def createRandomString(length: Int = maxStringLength): String = Random.nextString(length)
 
-  def getDataSeq[A](n: Int, elem: A): Seq[A] = {
-    @tailrec
-    def loop(n: Int, seq: Seq[A]): Seq[A] =
-      if (n == 0) {
-        seq
-      } else {
-        loop(n - 1, seq :+ elem)
-      }
-    loop(n, Seq.empty)
-  }
+  def getDataSeq[A](size: Int, elementBuilder: () => A): Seq[A] = (1 to size).map(_ => elementBuilder())
+  def getDataSeq[A](size: Int, elementBuilder: Int => A, builderParam: Int): Seq[A] =
+    (1 to size).map(_ => elementBuilder(builderParam))
 
   def getCacheMap[A](data: A, formId: String)(implicit writes: Writes[A]): CacheMap =
     CacheMap(formId, Map(formId -> Json.toJson(data)))

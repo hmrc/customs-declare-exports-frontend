@@ -16,10 +16,13 @@
 
 package forms.common
 
+import forms.common.Date._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
+import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class DateSpec extends WordSpec with MustMatchers {
+  import DateSpec._
 
   "Date mapping validation rules" should {
 
@@ -51,10 +54,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
       "provided with no year" in {
 
-        val input = Map(
-          "month" -> "7",
-          "day" -> "13"
-        )
+        val input = Map("month" -> "7", "day" -> "13")
         val expectedErrors = Seq(FormError("", "dateTime.date.error"))
 
         testFailedValidationErrors(input, expectedErrors)
@@ -62,10 +62,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
       "provided with no month" in {
 
-        val input = Map(
-          "year" -> "2003",
-          "day" -> "13"
-        )
+        val input = Map("year" -> "2003", "day" -> "13")
         val expectedErrors = Seq(FormError("", "dateTime.date.error"))
 
         testFailedValidationErrors(input, expectedErrors)
@@ -73,10 +70,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
       "provided with no day" in {
 
-        val input = Map(
-          "year" -> "2003",
-          "month" -> "7"
-        )
+        val input = Map("year" -> "2003", "month" -> "7")
         val expectedErrors = Seq(FormError("", "dateTime.date.error"))
 
         testFailedValidationErrors(input, expectedErrors)
@@ -86,11 +80,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
         "is less than 2000" in {
 
-          val input = Map(
-            "year" -> "1999",
-            "month" -> "7",
-            "day" -> "13"
-          )
+          val input = Map("year" -> "1999", "month" -> "7", "day" -> "13")
           val expectedErrors = Seq(FormError("year", "dateTime.date.year.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -98,11 +88,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
         "is more than 2099" in {
 
-          val input = Map(
-            "year" -> "2100",
-            "month" -> "7",
-            "day" -> "13"
-          )
+          val input = Map("year" -> "2100", "month" -> "7", "day" -> "13")
           val expectedErrors = Seq(FormError("year", "dateTime.date.year.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -110,11 +96,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
         "contains alphanumerical or special character" in {
 
-          val input = Map(
-            "year" -> "20A#",
-            "month" -> "7",
-            "day" -> "13"
-          )
+          val input = Map("year" -> "20A#", "month" -> "7", "day" -> "13")
           val expectedErrors = Seq(FormError("year", "dateTime.date.year.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -125,11 +107,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
         "is less than 1" in {
 
-          val input = Map(
-            "year" -> "2003",
-            "month" -> "0",
-            "day" -> "13"
-          )
+          val input = Map("year" -> "2003", "month" -> "0", "day" -> "13")
           val expectedErrors = Seq(FormError("month", "dateTime.date.month.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -137,11 +115,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
         "is more than 12" in {
 
-          val input = Map(
-            "year" -> "2003",
-            "month" -> "13",
-            "day" -> "13"
-          )
+          val input = Map("year" -> "2003", "month" -> "13", "day" -> "13")
           val expectedErrors = Seq(FormError("month", "dateTime.date.month.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -149,11 +123,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
         "contains alphanumerical or special character" in {
 
-          val input = Map(
-            "year" -> "2003",
-            "month" -> "C#",
-            "day" -> "13"
-          )
+          val input = Map("year" -> "2003", "month" -> "C#", "day" -> "13")
           val expectedErrors = Seq(FormError("month", "dateTime.date.month.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -164,11 +134,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
         "is less than 1" in {
 
-          val input = Map(
-            "year" -> "2003",
-            "month" -> "7",
-            "day" -> "0"
-          )
+          val input = Map("year" -> "2003", "month" -> "7", "day" -> "0")
           val expectedErrors = Seq(FormError("day", "dateTime.date.day.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -176,11 +142,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
         "is more than 31" in {
 
-          val input = Map(
-            "year" -> "2003",
-            "month" -> "7",
-            "day" -> "32"
-          )
+          val input = Map("year" -> "2003", "month" -> "7", "day" -> "32")
           val expectedErrors = Seq(FormError("day", "dateTime.date.day.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -188,11 +150,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
         "contains alphanumerical or special character" in {
 
-          val input = Map(
-            "year" -> "2003",
-            "month" -> "7",
-            "day" -> "C#"
-          )
+          val input = Map("year" -> "2003", "month" -> "7", "day" -> "C#")
           val expectedErrors = Seq(FormError("day", "dateTime.date.day.error"))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -209,11 +167,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
       "provided with correct data" in {
 
-        val input = Map(
-          "year" -> "2003",
-          "month" -> "7",
-          "day" -> "13"
-        )
+        val input = correctDateJSON
         val form = Date.form().bind(input)
 
         form.hasErrors must be(false)
@@ -221,7 +175,7 @@ class DateSpec extends WordSpec with MustMatchers {
 
       "provided with empty data" in {
 
-        val input = Map.empty[String, String]
+        val input = emptyDateJSON
         val form = Date.form().bind(input)
 
         form.hasErrors must be(false)
@@ -229,5 +183,38 @@ class DateSpec extends WordSpec with MustMatchers {
     }
 
   }
+
+}
+
+object DateSpec {
+
+  val correctDate = Date(
+    year = Some("2003"),
+    month = Some("07"),
+    day = Some("13")
+  )
+  val incorrectDate = Date(
+    year = Some("1999"),
+    month = Some("13"),
+    day = Some("33")
+  )
+  val emptyDate = Date(None, None, None)
+
+  val correctDateJSON: JsValue = JsObject(Map(
+    yearKey -> JsString(correctDate.year.get),
+    monthKey -> JsString(correctDate.month.get),
+    dayKey -> JsString(correctDate.day.get)
+  ))
+  val incorrectDateJSON: JsValue = JsObject(Map(
+    yearKey -> JsString(incorrectDate.year.get),
+    monthKey -> JsString(incorrectDate.month.get),
+    dayKey -> JsString(incorrectDate.day.get)
+  ))
+  val emptyDateJSON: JsValue = JsObject(Map(
+    yearKey -> JsString(""),
+    monthKey -> JsString(""),
+    dayKey -> JsString("")
+  ))
+
 
 }

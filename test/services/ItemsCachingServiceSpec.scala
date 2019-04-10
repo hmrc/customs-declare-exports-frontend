@@ -45,7 +45,7 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
   "ItemsCachingService" should {
 
     "create packaging from PackageInformation cache" in {
-      val input = getDataSeq(5, createPackageInformation())
+      val input = getDataSeq(5, createPackageInformation)
       val cacheMap = getCacheMap(input, PackageInformation.formId)
 
       val packages = itemsCachingService.generatePackages(cacheMap).value
@@ -88,7 +88,7 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
         .toString mustBe input.supplementaryUnits.value
     }
 
-    "create Seq ofAdditionalInformation from AdditionalInformationData cache" in {
+    "create Seq of AdditionalInformation from AdditionalInformationData cache" in {
       val input = createAdditionalInformationData()
       val cacheMap = getCacheMap(input, AdditionalInformationData.formId)
       val additionals = itemsCachingService.additionalInfo(cacheMap).value
@@ -103,16 +103,19 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
       val input = createDocumentsProducedData()
       val cacheMap = getCacheMap(input, DocumentsProducedData.formId)
       val goodsItemAdditionalDocs = itemsCachingService.documents(cacheMap).value
-      (input.documents zip goodsItemAdditionalDocs).map {
-        case (expected, actual) =>
-          expected.documentTypeCode.value.zipWithIndex.map {
-            case (c, index) =>
-              if (index == 0) c.toString mustBe actual.categoryCode.value
-          }
-          expected.documentTypeCode.value.drop(1).toString mustBe actual.typeCode.value
-          expected.documentStatus mustBe actual.lpcoExemptionCode
-          expected.documentIdentifier.value + expected.documentPart.value mustBe actual.id.value
-          expected.documentStatusReason mustBe actual.name
+
+      (goodsItemAdditionalDocs zip input.documents).map {
+        case (actual, expected) =>
+          actual.categoryCode.value must equal(expected.documentTypeCode.value.head.toString)
+          actual.typeCode.value must equal(expected.documentTypeCode.value.drop(1))
+          actual.id.value must equal(expected.documentIdentifier.value + expected.documentPart.value)
+          actual.lpcoExemptionCode must equal(expected.documentStatus)
+          actual.name must equal(expected.documentStatusReason)
+          actual.submitter.value.name.value must equal(expected.issuingAuthorityName.value)
+          actual.effectiveDateTime.value.dateTimeString.formatCode must equal("102")
+          actual.effectiveDateTime.value.dateTimeString.value must equal(expected.dateOfValidity.value.toString)
+          actual.writeOff.value.quantity.value.unitCode.value must equal(expected.measurementUnit.value)
+          actual.writeOff.value.quantity.value.value.value must equal(expected.documentQuantity.value)
       }
     }
 
@@ -140,7 +143,7 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
 
     "add goodsItem to cache" in {
 
-      val input = getDataSeq(5, createPackageInformation())
+      val input = getDataSeq(5, createPackageInformation)
       val cacheMap = CacheMap(
         id = "eoriForCache",
         data = getCacheMap(input, PackageInformation.formId).data ++

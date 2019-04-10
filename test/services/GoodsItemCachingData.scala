@@ -17,10 +17,13 @@
 package services
 
 import base.TestHelper._
+import forms.common.Date
 import forms.declaration.Document.AllowedValues.TemporaryStorage
 import forms.declaration._
 import generators.Generators
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import uk.gov.hmrc.wco.dec.{AdditionalInformation, _}
+
 import org.scalacheck.Gen.listOfN
 import uk.gov.hmrc.wco.dec._
 import services.Countries.allCountries
@@ -42,7 +45,7 @@ trait GoodsItemCachingData extends Generators {
   def createProcedureCodesData(): ProcedureCodesData =
     ProcedureCodesData(
       Some(intBetween(1000, 9999).toString),
-      getDataSeq(10, createRandomAlphanumericString(Random.nextInt(5)))
+      getDataSeq(10, createRandomAlphanumericString, Random.nextInt(5))
     )
 
   def createCommodityMeasure(): CommodityMeasure =
@@ -51,7 +54,9 @@ trait GoodsItemCachingData extends Generators {
   def createAdditionalInformation() =
     forms.declaration.AdditionalInformation(createRandomAlphanumericString(5), createRandomString(70))
 
-  def createAdditionalInformationData() = AdditionalInformationData(getDataSeq(5, createAdditionalInformation()))
+  def createAdditionalInformationData() = AdditionalInformationData(getDataSeq(5, createAdditionalInformation))
+
+  def createDocumentsProducedData() = DocumentsProducedData(getDataSeq(10, createDocsProduced))
 
   def createDocsProduced(): DocumentsProduced = DocumentsProduced(
     Some(createRandomAlphanumericString(4)),
@@ -59,14 +64,16 @@ trait GoodsItemCachingData extends Generators {
     Some(createRandomAlphanumericString(5)),
     Some(createRandomAlphanumericString(2)),
     Some(createRandomAlphanumericString(35)),
+    Some(createRandomAlphanumericString(70)),
+    Some(Date(Some("2020"), Some("04"), Some("13"))),
+    Some(createRandomAlphanumericString(4)),
     Some(BigDecimal(123))
   )
-  def createDocumentsProducedData() = DocumentsProducedData(getDataSeq(Random.nextInt(10), createDocsProduced()))
 
   def createItemType(): ItemType = ItemType(
     createRandomAlphanumericString(8),
-    getDataSeq(Random.nextInt(10), createRandomAlphanumericString(4)),
-    getDataSeq(Random.nextInt(10), createRandomAlphanumericString(4)),
+    getDataSeq(Random.nextInt(10), createRandomAlphanumericString, 4),
+    getDataSeq(Random.nextInt(10), createRandomAlphanumericString, 4),
     createRandomString(70),
     Some(createRandomAlphanumericString(8)),
     Some(createRandomAlphanumericString(4)),
@@ -99,7 +106,7 @@ trait GoodsItemCachingData extends Generators {
     goodsMeasure = Some(GoodsMeasure(Some(createMeasure), Some(createMeasure), Some(createMeasure)))
   )
 
-  def createWcoAdditionalInformation =
+  def createWcoAdditionalInformation(): AdditionalInformation =
     uk.gov.hmrc.wco.dec.AdditionalInformation(Some(createRandomAlphanumericString(5)), Some(createRandomString(70)))
 
   def createAdditionalDocument(): GovernmentAgencyGoodsItemAdditionalDocument =
@@ -131,7 +138,7 @@ trait GoodsItemCachingData extends Generators {
     goodsItemIdentifier = Some(Random.nextInt(100).toString)
   )
 
-  def createPreviousDocumentsData(size: Int) = PreviousDocumentsData(getDataSeq(size, createDocument()))
+  def createPreviousDocumentsData(size: Int) = PreviousDocumentsData(getDataSeq(size, createDocument))
 
   def createSeals(size: Int) = listOfN(size, sealArbitrary.arbitrary).suchThat(_.size == size)
 

@@ -95,10 +95,10 @@ class DocumentsProducedController @Inject()(
   ) =
     document match {
       case _ if documents.length >= maxNumberOfItems =>
-        handleErrorPage(Seq(("", "supplementary.addDocument.maximumAmount.error")), document, documents)
+        handleErrorPage(Seq(("", "supplementary.addDocument.error.maximumAmount")), document, documents)
 
       case _ if documents.contains(document) =>
-        handleErrorPage(Seq(("", "supplementary.addDocument.duplicated")), document, documents)
+        handleErrorPage(Seq(("", "supplementary.addDocument.error.duplicated")), document, documents)
 
       case _ => saveAndRedirect(document, documents)
     }
@@ -133,10 +133,10 @@ class DocumentsProducedController @Inject()(
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.documents) match {
       case (_, documents) if documents.length >= maxNumberOfItems =>
-        handleErrorPage(Seq(("", "supplementary.addDocument.maximumAmount.error")), userInput, cachedData.documents)
+        handleErrorPage(Seq(("", "supplementary.addDocument.error.maximumAmount")), userInput, cachedData.documents)
 
       case (document, documents) if documents.contains(document) =>
-        handleErrorPage(Seq(("", "supplementary.addDocument.duplicated")), userInput, cachedData.documents)
+        handleErrorPage(Seq(("", "supplementary.addDocument.error.duplicated")), userInput, cachedData.documents)
 
       case (document, documents) => {
         if (document.isDefined) {
@@ -144,7 +144,7 @@ class DocumentsProducedController @Inject()(
           customsCacheService
             .cache[DocumentsProducedData](goodsItemCacheId, formId, updatedCache)
             .map(_ => Redirect(DocumentsProducedController.displayForm()))
-        } else handleErrorPage(Seq(("", "supplementary.addDocument.isNotDefined")), userInput, cachedData.documents)
+        } else handleErrorPage(Seq(("", "supplementary.addDocument.error.notDefined")), userInput, cachedData.documents)
       }
     }
 
@@ -152,7 +152,6 @@ class DocumentsProducedController @Inject()(
     implicit request: JourneyRequest[_],
     hc: HeaderCarrier
   ): Future[Result] = keys.headOption.fold(errorHandler.displayErrorPage()) { index =>
-
     val updatedCache = cachedData.copy(documents = cachedData.documents.patch(index.toInt, Nil, 1))
     customsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, updatedCache).map { _ =>
       Redirect(DocumentsProducedController.displayForm())
