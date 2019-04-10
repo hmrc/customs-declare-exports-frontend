@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.transport_details
@@ -65,11 +65,11 @@ class TransportDetailsController @Inject()(
       )
   }
 
-  private def redirect(transportDetails: TransportDetails)(implicit request: JourneyRequest[_]) =
-    true match {
-      case transportDetails.container                                      => Redirect(TransportContainerController.displayPage())
-      case seal if request.choice.value == AllowedChoiceValues.StandardDec => Redirect(SealController.displayForm())
-      case _                                                               => Redirect(SummaryPageController.displayPage())
-    }
+  private def redirect(transportDetails: TransportDetails)(implicit request: JourneyRequest[_]):Result =
+
+      if(transportDetails.container) Redirect(TransportContainerController.displayPage())
+      else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(SealController.displayForm())
+      else Redirect(SummaryPageController.displayPage())
+
 
 }
