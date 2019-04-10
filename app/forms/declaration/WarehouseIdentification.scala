@@ -21,7 +21,7 @@ import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
-
+import TransportCodes._
 case class WarehouseIdentification(
   supervisingCustomsOffice: Option[String],
   identificationNumber: Option[String],
@@ -41,8 +41,6 @@ object WarehouseIdentification {
   implicit val format = Json.format[WarehouseIdentification]
 
   val formId = "IdentificationOfWarehouse"
-
-  import ModeOfTransportCodes._
 
   val allowedModeOfTransportCodes =
     Set(Maritime, Rail, Road, Air, PostalConsignment, FixedTransportInstallations, InlandWaterway, Unknown)
@@ -68,15 +66,4 @@ object WarehouseIdentification {
   )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
 
   def form(): Form[WarehouseIdentification] = Form(mapping)
-
-  object ModeOfTransportCodes {
-    val Maritime = "1"
-    val Rail = "2"
-    val Road = "3"
-    val Air = "4"
-    val PostalConsignment = "5"
-    val FixedTransportInstallations = "7"
-    val InlandWaterway = "8"
-    val Unknown = "9"
-  }
 }

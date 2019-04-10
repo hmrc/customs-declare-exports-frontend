@@ -58,9 +58,7 @@ override val messagesApi: MessagesApi)
         borderTransport =>
           customsCacheService
             .cache[BorderTransport](cacheId, BorderTransport.formId, borderTransport)
-            .map(_ => {
-              Redirect(TransportDetailsController.displayForm())
-            })
+            .map(_ => Redirect(TransportDetailsController.displayForm()))
       )
   }
 

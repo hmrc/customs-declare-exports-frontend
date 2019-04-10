@@ -29,7 +29,7 @@ import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.seal
@@ -66,7 +66,7 @@ class SealController @Inject()(
 
   private def processRequest(cachedSeals: Seq[Seal], action: Option[FormAction])(
     implicit request: JourneyRequest[_]
-  ) = {
+  ) :Future[Result] = {
     val boundForm = form.bindFromRequest()
     action match {
       case Some(Add) => addSeal(boundForm, sealsAllowed, cachedSeals)
@@ -82,7 +82,7 @@ class SealController @Inject()(
   private def saveSeal(boundForm: Form[Seal], elementLimit: Int, cachedSeals: Seq[Seal])(
     implicit request: JourneyRequest[_],
     appConfig: AppConfig
-  ) =
+  ) :Future[Result] =
     saveAndContinue(boundForm, cachedSeals, false, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(seal(formWithErrors, cachedSeals))),
       updatedCache =>
@@ -93,20 +93,20 @@ class SealController @Inject()(
         else Future.successful(Redirect(SummaryPageController.displayPage()))
     )
 
-  private def removeSeal(cachedSeals: Seq[Seal], ids: Seq[String])(implicit request: JourneyRequest[_]) =
-    redirect(remove(ids.headOption, cachedSeals))
+  private def removeSeal(cachedSeals: Seq[Seal], ids: Seq[String])(implicit request: JourneyRequest[_]) :Future[Result] =
+    cacheAndRedirect(remove(ids.headOption, cachedSeals))
 
 
   private def addSeal(boundForm: Form[Seal], elementLimit: Int, seals: Seq[Seal])(
     implicit request: JourneyRequest[_],
     appConfig: AppConfig
-  ) =
+  ) :Future[Result] =
     add(boundForm, seals, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(seal(formWithErrors, seals))),
-      updatedCache => redirect(updatedCache)
+      updatedCache => cacheAndRedirect(updatedCache)
     )
 
-  private def redirect(seals: Seq[Seal])(implicit request: JourneyRequest[_]) = cacheService
+  private def cacheAndRedirect(seals: Seq[Seal])(implicit request: JourneyRequest[_]) :Future[Result] = cacheService
     .cache[Seq[Seal]](cacheId, formId, seals)
     .map(_ => Redirect(routes.SealController.displayForm()))
 }

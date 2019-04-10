@@ -42,9 +42,14 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
   val form: Form[Seal] = Form(Seal.formMapping)
 
-  def view(form: Form[Seal] = form, seals: Seq[Seal])(implicit request: FakeRequest[_]): Html =
+  def view(form: Form[Seal], seals: Seq[Seal])(implicit request: FakeRequest[_]): Html =
     seal(form, seals)(appConfig, request, messages)
 
+  before {
+    authorizedUser()
+    withCaching[Seq[Seal]](None, Seal.formId)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
+  }
   after {
     reset(mockCustomsCacheService)
   }
@@ -53,17 +58,13 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
     "return 200 code" in {
       authorizedUser()
-      withCaching[Seq[Seal]](None, Seal.formId)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
 
       val result = route(app, getRequest(uri)).value
       status(result) must be(OK)
     }
 
     "populate the form fields with data from cache" in {
-      authorizedUser()
       val request = getRequest(uri)
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
 
       forAll(listOf[Seal](sealArbitrary.arbitrary)) { seals =>
         withCaching[Seq[Seal]](Some(seals), Seal.formId)
@@ -81,7 +82,6 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
       "user does not have an EORI" in {
         userWithoutEori()
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
         val body = Seq(("id", "A1"))
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
@@ -92,10 +92,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
     "return BAD_REQUEST" when {
 
       "invalid data is submitted" in {
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
-
         forAll(listOf[Seal](sealArbitrary.arbitrary)) { seals =>
-          authorizedUser()
           withCaching[Seq[Seal]](Some(seals), Seal.formId)
 
           val body = Seq(("id", "")) :+ addActionUrlEncoded
@@ -115,9 +112,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
       "with valid data and on click of add" in {
 
         forAll(arbitrary[Seal], listOf[Seal](sealArbitrary.arbitrary)) { (seal, seals) =>
-          authorizedUser()
           withCaching[Seq[Seal]](Some(seals), Seal.formId)
-          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
           val body = Seq(("id", seal.id)) :+ addActionUrlEncoded
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
@@ -139,9 +134,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
         forAll(listOf[Seal](sealArbitrary.arbitrary)) { (seals) =>
           whenever(seals.size > 1) {
-            authorizedUser()
             withCaching[Seq[Seal]](Some(seals), Seal.formId)
-            withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
             val body = Seq(removeActionUrlEncoded((1).toString))
 
             val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
@@ -164,9 +157,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
       "on click of continue" in {
         forAll(arbitrary[Seal]) { seal =>
-          authorizedUser()
           withCaching[Seq[Seal]](None, Seal.formId)
-          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
           val payload = Seq(("id", seal.id)) :+ saveAndContinueActionUrlEncoded
           val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
           status(result) must be(SEE_OTHER)

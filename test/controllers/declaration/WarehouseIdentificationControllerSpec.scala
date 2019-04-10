@@ -19,12 +19,13 @@ package controllers.declaration
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.WarehouseIdentification.ModeOfTransportCodes.Maritime
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
 import helpers.views.declaration.WarehouseIdentificationMessages
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
+import forms.declaration.TransportCodes._
+
 
 class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with WarehouseIdentificationMessages {
 

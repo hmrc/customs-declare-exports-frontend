@@ -21,6 +21,9 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
 @import views.html.declaration.summary._
+@import forms.Choice.AllowedChoiceValues._
+
+
 
 @(suppDecData: SupplementaryDeclarationData)(implicit appConfig: AppConfig, request: JourneyRequest[_], messages: Messages)
 
@@ -28,13 +31,15 @@
     title = messages("supplementary.summary.title"),
     appConfig = appConfig) {
 
-    @{if(request.choice.value == "STD")
+    @{if(request.choice.value == StandardDec)
             components.back_link("/customs-declare-exports/declaration/add-seal")
         else
-            if (suppDecData.transportInformationContainerData.fold(false)(_.containers.size > 0))
-                components.back_link("/customs-declare-exports/declaration/add-transport-containers")
-            else
-                components.back_link("/customs-declare-exports/declaration/transport-details")
+            {
+                if (suppDecData.transportInformationContainerData.fold(false)(_.containers.size > 0))
+                    components.back_link("/customs-declare-exports/declaration/add-transport-containers")
+                else
+                    components.back_link("/customs-declare-exports/declaration/transport-details")
+            }
     }
 
     @components.page_title(title = Some(messages("supplementary.summary.header")))

@@ -127,7 +127,7 @@ class TransportInformationContainersPageControllerSpec
 
         "container with too long name" in {
 
-          val body = Seq(("id", TestHelper.createRandomString(18)), addActionURLEncoded)
+          val body = Seq(("id", TestHelper.createRandomAlphanumericString(18)), addActionURLEncoded)
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)

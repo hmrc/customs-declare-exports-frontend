@@ -41,14 +41,13 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
   val form: Form[BorderTransport] = Form(BorderTransport.formMapping)
 
-  def view(form: Form[BorderTransport] = form, request: FakeRequest[_]): Html =
+  def view(form: Form[BorderTransport], request: FakeRequest[_]): Html =
     border_transport(form)(request, messages, appConfig)
 
   before {
     authorizedUser()
     withCaching[BorderTransport](None, BorderTransport.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
   }
 
   after {
@@ -63,7 +62,6 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
     }
 
     "populate the form fields with data from cache" in {
-      authorizedUser()
       val request = getRequest(uri)
 
       forAll(arbitrary[BorderTransport]) { transport =>
@@ -82,7 +80,6 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
       "user does not have an EORI" in {
         userWithoutEori()
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
         val body = Seq(("typesOfPackages", "A1"))
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
@@ -93,10 +90,6 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
     "return BAD_REQUEST" when {
 
       "invalid data is submitted" in {
-        authorizedUser()
-        withCaching[BorderTransport](None, BorderTransport.formId)
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
         val body = Seq(
           ("borderModeOfTransportCode", ""),
           ("meansOfTransportOnDepartureType", ""),
@@ -120,9 +113,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
       "with valid data and on click of add" in {
 
         forAll(arbitrary[BorderTransport]) { borderTransport =>
-          authorizedUser()
-          withCaching[BorderTransport](None, BorderTransport.formId)
-          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+
           val body = Seq(
             ("borderModeOfTransportCode", borderTransport.borderModeOfTransportCode),
             ("meansOfTransportOnDepartureType", borderTransport.meansOfTransportOnDepartureType),
@@ -150,9 +141,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
       "on click of continue when a record has already been added" in {
         forAll(arbitrary[BorderTransport]) { borderTransport =>
-          authorizedUser()
-          withCaching[BorderTransport](Some(borderTransport), commodityFormId)
-          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+          withCaching[BorderTransport](Some(borderTransport), BorderTransport.formId)
           val payload = Seq(
             ("borderModeOfTransportCode", borderTransport.borderModeOfTransportCode),
             ("meansOfTransportOnDepartureType", borderTransport.meansOfTransportOnDepartureType),
