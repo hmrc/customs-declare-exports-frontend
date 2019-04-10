@@ -22,7 +22,7 @@
 @(appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("notEligible.title"),
+title = messages("notEligible.pageTitle"),
 appConfig = appConfig
 ) {
 @components.back_link("/customs-declare-exports/start")

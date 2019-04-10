@@ -51,7 +51,7 @@ class NotEligibleViewSpec extends ViewSpec with NotEligibleMessages with CommonM
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(title))
+      getElementByCss(createView(), "title").text() must be(messages(pageTitle))
     }
 
     "display header with hint" in {

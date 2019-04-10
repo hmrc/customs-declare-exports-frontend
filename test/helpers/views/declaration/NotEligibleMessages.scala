@@ -20,6 +20,7 @@ trait NotEligibleMessages {
 
   val notEligible: String = "notEligible"
 
+  val pageTitle: String = notEligible + ".pageTitle"
   val title: String = notEligible + ".title"
   val titleLineTwo: String = notEligible + ".titleLineTwo"
   val descriptionPreUrl: String = notEligible + ".descriptionPreUrl"
