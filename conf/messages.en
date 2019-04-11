@@ -396,8 +396,8 @@ supplementary.totalPackageQuantity.empty = Total number of packages cannot be em
 supplementary.totalPackageQuantity.error = Total number of packages is incorrect
 
 supplementary.transportInfo.title = Enter transport details
-supplementary.transportInfo.borderTransportMode.header = 7/4 What transport was used at the boarder?
-supplementary.transportInfo.borderTransportMode.header.hint = The transport that the goods were loaded on when they crossed the boarder
+supplementary.transportInfo.borderTransportMode.header = 7/4 What transport was used at the border?
+supplementary.transportInfo.borderTransportMode.header.hint = The transport that the goods were loaded on when they crossed the border
 supplementary.transportInfo.borderTransportMode.error.empty = Please, choose mode of transport at the border
 supplementary.transportInfo.borderTransportMode.error.incorrect = Please, choose valid mode of transport at the border
 supplementary.transportInfo.transportMode.sea = Sea transport
