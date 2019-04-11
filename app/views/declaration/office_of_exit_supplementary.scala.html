@@ -16,13 +16,13 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes._
-@import forms.declaration.OfficeOfExit
+@import forms.declaration.officeOfExit.OfficeOfExitSupplementary
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[OfficeOfExit])(implicit request: Request[_], messages: Messages)
+@(form: Form[OfficeOfExitSupplementary])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
-    title = messages("supplementary.officeOfExit.title"),
+    title = messages("declaration.officeOfExit.title"),
     appConfig = appConfig
 ) {
     @helpers.form(OfficeOfExitController.saveOffice(), 'autoComplete -> "off") {
@@ -30,14 +30,14 @@
 
         @components.error_summary(form.errors)
 
-        @components.section_header(messages("supplementary.summary.locations.header"))
+        @components.section_header(messages("declaration.summary.locations.header"))
 
-        @components.page_title(Some("supplementary.officeOfExit.title"))
+        @components.page_title(Some("declaration.officeOfExit"))
 
         @components.input_text(
             field = form("officeId"),
             label = "",
-            hint = Some(messages("supplementary.officeOfExit.hint"))
+            hint = Some(messages("declaration.officeOfExit.hint"))
         )
 
         @components.submit_button()

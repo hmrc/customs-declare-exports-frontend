@@ -108,7 +108,6 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
     }
   }
 
-
   "Choice View when filled" should {
 
     "display selected first radio button - Supplementary (SMP)" in {
@@ -154,20 +153,20 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       ensureRadioIsChecked(view, "Submissions")
     }
   }
-  private def ensureAllLabelTextIsCorrect(view: Html): Unit ={
-    val labels: immutable.Seq[Element] =  getElementsByTag(view, "label")
+  private def ensureAllLabelTextIsCorrect(view: Html): Unit = {
+    val labels: immutable.Seq[Element] = getElementsByTag(view, "label")
     labels.forall(elems => elems.getElementsContainingText(messages(supplementaryDec)).isEmpty) must be(false)
     labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) must be(false)
     labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) must be(false)
     labels.forall(elems => elems.getElementsContainingText(messages(recentDec)).isEmpty) must be(false)
   }
 
-  private def ensureRadioIsChecked(view:Html, elementId: String): Unit ={
+  private def ensureRadioIsChecked(view: Html, elementId: String): Unit = {
     val option = getElementById(view, elementId)
     option.attr("checked") must be("checked")
   }
 
-  private def ensureRadioIsUnChecked(view:Html, elementId: String): Unit ={
+  private def ensureRadioIsUnChecked(view: Html, elementId: String): Unit = {
     val option = getElementById(view, elementId)
     option.attr("checked") must be("")
   }

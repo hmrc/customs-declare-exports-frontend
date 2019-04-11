@@ -18,6 +18,7 @@ package models.declaration
 
 import forms.declaration._
 import forms.declaration.destinationCountries.DestinationCountriesSupplementary
+import forms.declaration.officeOfExit.OfficeOfExitSupplementary
 import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
 
@@ -28,7 +29,7 @@ class LocationsSpec extends WordSpec with MustMatchers {
     val goodsLocationMock = mock(classOf[GoodsLocation])
     val procedureCodesMock = mock(classOf[ProcedureCodesData])
     val warehouseIdentificationMock = mock(classOf[WarehouseIdentification])
-    val officeOfExitMock = mock(classOf[OfficeOfExit])
+    val officeOfExitMock = mock(classOf[OfficeOfExitSupplementary])
     val locations = Locations(
       destinationCountries = Some(destinationCountriesMock),
       goodsLocation = Some(goodsLocationMock),

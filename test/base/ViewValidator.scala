@@ -59,13 +59,13 @@ trait ViewValidator extends MustMatchers {
     element
   }
 
-  def getElementsByAttribute(html:Html, attributeName: String): List[Element] = {
+  def getElementsByAttribute(html: Html, attributeName: String): List[Element] = {
     val elements = asDocument(html).getElementsByAttribute(attributeName)
     if (elements == null) throw new Exception(s"Can't find attribute $attributeName on page")
     elements.toList
   }
 
-  def getElementsByTag(html:Html, tag: String): List[Element] = {
+  def getElementsByTag(html: Html, tag: String): List[Element] = {
     val elements = asDocument(html).getElementsByTag(tag)
     if (elements == null) throw new Exception(s"Can't find tag $tag on page")
     elements.toList

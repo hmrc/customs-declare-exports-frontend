@@ -38,7 +38,6 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
 
-
   def customsDeclaration400Response(): OngoingStubbing[Future[HttpResponse]] =
     when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))

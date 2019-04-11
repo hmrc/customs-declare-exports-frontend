@@ -19,13 +19,14 @@ package models.declaration
 import forms.MetadataPropertiesConvertable
 import forms.declaration._
 import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesSupplementary}
+import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitSupplementary}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 case class Locations(
   destinationCountries: Option[DestinationCountriesSupplementary] = None,
   goodsLocation: Option[GoodsLocation] = None,
   warehouseIdentification: Option[WarehouseIdentification] = None,
-  officeOfExit: Option[OfficeOfExit] = None
+  officeOfExit: Option[OfficeOfExitSupplementary] = None
 ) extends SummaryContainer with MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
@@ -50,6 +51,6 @@ object Locations {
     destinationCountries = cacheMap.getEntry[DestinationCountriesSupplementary](DestinationCountries.formId),
     goodsLocation = cacheMap.getEntry[GoodsLocation](GoodsLocation.formId),
     warehouseIdentification = cacheMap.getEntry[WarehouseIdentification](WarehouseIdentification.formId),
-    officeOfExit = cacheMap.getEntry[OfficeOfExit](OfficeOfExit.formId)
+    officeOfExit = cacheMap.getEntry[OfficeOfExitSupplementary](OfficeOfExit.formId)
   )
 }

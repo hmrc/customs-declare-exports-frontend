@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.declaration.officeOfExit
 
 import forms.MetadataPropertiesConvertable
+import play.api.data.Forms
 import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class OfficeOfExit(officeId: String) extends MetadataPropertiesConvertable {
+case class OfficeOfExitSupplementary(officeId: String) extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] = Map("declaration.exitOffice.id" -> officeId)
 }
 
-object OfficeOfExit {
-  implicit val format = Json.format[OfficeOfExit]
-
-  val formId = "OfficeOfExit"
+object OfficeOfExitSupplementary {
+  implicit val format = Json.format[OfficeOfExitSupplementary]
 
   val mapping = Forms.mapping(
     "officeId" -> text()
-      .verifying("supplementary.officeOfExit.empty", _.trim.nonEmpty)
-      .verifying("supplementary.officeOfExit.error", isEmpty or (isAlphanumeric and hasSpecificLength(8)))
-  )(OfficeOfExit.apply)(OfficeOfExit.unapply)
-
-  def form(): Form[OfficeOfExit] = Form(mapping)
+      .verifying("declaration.officeOfExit.empty", nonEmpty)
+      .verifying("declaration.officeOfExit.length", isEmpty or hasSpecificLength(8))
+      .verifying("declaration.officeOfExit.specialCharacters", isEmpty or isAlphanumeric)
+  )(OfficeOfExitSupplementary.apply)(OfficeOfExitSupplementary.unapply)
 }

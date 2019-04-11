@@ -19,7 +19,7 @@
 
 @(locations: Option[Locations])(implicit messages: Messages)
 
-@components.summary_list(Some(messages("supplementary.summary.locations.header"))) {
+@components.summary_list(Some(messages("declaration.summary.locations.header"))) {
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.dispatchCountry"),
         value = locations.flatMap(_.destinationCountries).map(_.countryOfDispatch)

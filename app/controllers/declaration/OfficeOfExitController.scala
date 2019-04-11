@@ -18,44 +18,80 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
-import forms.declaration.OfficeOfExit
+import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
+import forms.declaration.officeOfExit.{OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
+import play.twirl.api.Html
 import services.CustomsCacheService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.office_of_exit
+import views.html.declaration.{office_of_exit_standard, office_of_exit_supplementary}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class OfficeOfExitController @Inject()(
-  appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService
-)(implicit ec: ExecutionContext)
+)(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController with I18nSupport {
-  import forms.declaration.OfficeOfExit._
+  import forms.declaration.officeOfExit.OfficeOfExit._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[OfficeOfExit](cacheId, formId).map {
-      case Some(data) => Ok(office_of_exit(appConfig, form.fill(data)))
-      case _          => Ok(office_of_exit(appConfig, form))
+    request.choice.value match {
+      case SupplementaryDec => supplementaryPage.map(Ok(_))
+      case StandardDec      => standardPage.map(Ok(_))
     }
   }
 
+  private def supplementaryPage()(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Html] =
+    customsCacheService.fetchAndGetEntry[OfficeOfExitSupplementary](cacheId, formId).map {
+      case Some(data) => office_of_exit_supplementary(supplementaryForm.fill(data))
+      case _          => office_of_exit_supplementary(supplementaryForm)
+    }
+
+  private def standardPage()(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Html] =
+    customsCacheService.fetchAndGetEntry[OfficeOfExitStandard](cacheId, formId).map {
+      case Some(data) => office_of_exit_standard(standardForm.fill(data))
+      case _          => office_of_exit_standard(standardForm)
+    }
+
   def saveOffice(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
+    request.choice.value match {
+      case SupplementaryDec => saveSupplementaryOffice()
+      case StandardDec      => saveStandardOffice()
+    }
+  }
+
+  private def saveSupplementaryOffice()(implicit request: JourneyRequest[_]): Future[Result] =
+    supplementaryForm
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[OfficeOfExit]) =>
-          Future.successful(BadRequest(office_of_exit(appConfig, formWithErrors))),
+        (formWithErrors: Form[OfficeOfExitSupplementary]) =>
+          Future.successful(BadRequest(office_of_exit_supplementary(formWithErrors))),
         form =>
-          customsCacheService.cache[OfficeOfExit](cacheId, formId, form).map { _ =>
+          customsCacheService.cache[OfficeOfExitSupplementary](cacheId, formId, form).map { _ =>
             Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm())
         }
       )
-  }
+
+  private def saveStandardOffice()(implicit request: JourneyRequest[_]): Future[Result] =
+    standardForm
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[OfficeOfExitStandard]) => {
+          val formWithAdjustedErrors = OfficeOfExitStandard.adjustCircumstancesError(formWithErrors)
+
+          Future.successful(BadRequest(office_of_exit_standard(formWithAdjustedErrors)))
+        },
+        form =>
+          customsCacheService.cache[OfficeOfExitStandard](cacheId, formId, form).map { _ =>
+            Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm())
+        }
+      )
 }

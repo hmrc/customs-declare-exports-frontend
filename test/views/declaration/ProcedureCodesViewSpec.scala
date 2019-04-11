@@ -85,9 +85,7 @@ class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with C
       val view = createView()
 
       getElementById(view, "additionalProcedureCode-label").text() must be(messages(addProcCodeHeader))
-      getElementById(view, "additionalProcedureCode-hint").text() must be(
-        messages(addProcCodeHeaderHint)
-      )
+      getElementById(view, "additionalProcedureCode-hint").text() must be(messages(addProcCodeHeaderHint))
       getElementById(view, "additionalProcedureCode").attr("value") must be("")
     }
 

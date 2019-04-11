@@ -25,7 +25,7 @@ import forms.declaration.DispatchLocationSpec._
 import forms.declaration.ExporterDetailsSpec._
 import forms.declaration.GoodsItemNumberSpec._
 import forms.declaration.GoodsLocationSpec._
-import forms.declaration.OfficeOfExitSpec._
+import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransactionTypeSpec._
@@ -35,6 +35,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupp
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.destinationCountries.DestinationCountries
+import forms.declaration.officeOfExit.OfficeOfExit
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues._
