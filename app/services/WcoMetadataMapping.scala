@@ -15,12 +15,21 @@
  */
 
 package services
-import forms.declaration.{Document, PreviousDocumentsData}
+import forms.declaration._
 import models.DeclarationFormats._
 import models.declaration.SupplementaryDeclarationData
+import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.wco.dec.{Declaration, GovernmentAgencyGoodsItem, MetaData, PreviousDocument}
-
+import uk.gov.hmrc.wco.dec.{
+  BorderTransportMeans,
+  Declaration,
+  GovernmentAgencyGoodsItem,
+  MetaData,
+  PreviousDocument,
+  TransportEquipment,
+  TransportMeans,
+  Seal => WCOSeal
+}
 object WcoMetadataMapping {
 
   def produceMetaData(cacheMap: CacheMap): MetaData = {
@@ -28,18 +37,75 @@ object WcoMetadataMapping {
     val metaData = createHeaderData(cacheMap)
     val goodsItems =
       cacheMap.getEntry[Seq[GovernmentAgencyGoodsItem]](ExportsItemsCacheIds.itemsId).getOrElse(Seq.empty)
+    val borderTransport = cacheMap.getEntry[BorderTransport](BorderTransport.formId)
+    val transportDetails = cacheMap.getEntry[TransportDetails](TransportDetails.formId)
 
     val goodsShipmentWithGoodsItems =
       metaData.declaration.flatMap(
         _.goodsShipment.map(
-          _.copy(
-            governmentAgencyGoodsItems = goodsItems,
-            previousDocuments = mapPreviousDocumentsForHeaderFromCache(cacheMap)
+          goodsShipment =>
+            goodsShipment.copy(
+              governmentAgencyGoodsItems = goodsItems,
+              previousDocuments = mapPreviousDocumentsForHeaderFromCache(cacheMap),
+              consignment = goodsShipment.consignment.map(
+                _.copy(
+                  transportEquipments = createTransportEquipment(cacheMap),
+                  departureTransportMeans = createTransportMeans(borderTransport),
+                  containerCode = getContainerCode(transportDetails)
+                )
+              )
           )
         )
       )
+    metaData.copy(
+      declaration = metaData.declaration.map(
+        _.copy(
+          goodsShipment = goodsShipmentWithGoodsItems,
+          borderTransportMeans = getBorderTransportMeans(borderTransport, transportDetails)
+        )
+      )
+    )
+  }
 
-    metaData.copy(declaration = metaData.declaration.map(_.copy(goodsShipment = goodsShipmentWithGoodsItems)))
+  private def getContainerCode(transportDetails: Option[TransportDetails]) =
+    transportDetails.map(data => if (data.container) "1" else "0")
+
+  private def createTransportMeans(borderTransport: Option[BorderTransport]): Option[TransportMeans] =
+    borderTransport.map(
+      data =>
+        TransportMeans(
+          identificationTypeCode = Some(data.meansOfTransportOnDepartureType),
+          id = data.meansOfTransportOnDepartureIDNumber
+      )
+    )
+
+  private def getBorderTransportMeans(
+    borderTransport: Option[BorderTransport],
+    transportDetails: Option[TransportDetails]
+  ): Option[BorderTransportMeans] =
+    borderTransport.map(data => createBorderTransportMeans(data.borderModeOfTransportCode.toInt, transportDetails))
+
+  private def createBorderTransportMeans(borderModeOfTransportCode: Int, transportDetails: Option[TransportDetails]) =
+    BorderTransportMeans(
+      modeCode = Some(borderModeOfTransportCode),
+      registrationNationalityCode = getRegistrationNationalityCode(transportDetails),
+      identificationTypeCode = transportDetails.map(_.meansOfTransportCrossingTheBorderType),
+      id = transportDetails.flatMap(_.meansOfTransportCrossingTheBorderIDNumber)
+    )
+
+  private def getRegistrationNationalityCode(transportDetails: Option[TransportDetails]) =
+    transportDetails.flatMap(_.meansOfTransportCrossingTheBorderNationality.flatMap(getCountryCode(_)))
+
+  def getCountryCode(name: String) = allCountries.find(_.countryName == name).map(_.countryCode)
+
+  private def createTransportEquipment(cacheMap: CacheMap): Seq[TransportEquipment] =
+    cacheMap
+      .getEntry[Seq[Seal]](Seal.formId)
+      .map(seals => Seq(TransportEquipment(seals.size, seals = createWcoDecSeals(seals: Seq[Seal]))))
+      .getOrElse(Seq.empty)
+
+  private def createWcoDecSeals(seals: Seq[Seal]) = seals.zipWithIndex.map {
+    case (seal, sequence) => WCOSeal(sequence + 1, Some(seal.id))
   }
 
   def mapPreviousDocumentsForHeaderFromCache(cacheMap: CacheMap): Seq[PreviousDocument] =

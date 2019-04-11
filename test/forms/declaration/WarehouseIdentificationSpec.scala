@@ -16,8 +16,7 @@
 
 package forms.declaration
 
-import forms.declaration.WarehouseIdentification.ModeOfTransportCodes
-import forms.declaration.WarehouseIdentification.ModeOfTransportCodes.Maritime
+import forms.declaration.TransportCodes._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
@@ -55,7 +54,7 @@ object WarehouseIdentificationSpec {
       Map(
         "supervisingCustomsOffice" -> JsString("12345678"),
         "identificationNumber" -> JsString(warehouseTypeCode + warehouseId),
-        "inlandModeOfTransportCode" -> JsString(ModeOfTransportCodes.Rail)
+        "inlandModeOfTransportCode" -> JsString(Rail)
       )
     )
 

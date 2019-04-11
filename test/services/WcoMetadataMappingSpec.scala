@@ -20,20 +20,31 @@ import base.TestHelper.getCacheMap
 import models.DeclarationFormats._
 import models.declaration.SupplementaryDeclarationDataSpec.cacheMapAllRecords
 import org.scalatest.OptionValues
+import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.wco.dec.{Consignment, Declaration, GoodsShipment}
+import uk.gov.hmrc.wco.dec.{BorderTransportMeans, Consignment, GoodsShipment}
 
 class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCachingData with OptionValues {
 
   val expectedItems = createGovernmentAgencyGoodsItemSeq(10)
   val expectedPreviousDocs = createPreviousDocumentsData(6)
   val previousDocsCache = getCacheMap(expectedPreviousDocs, "PreviousDocuments")
+  val expectedSeals = createSeals(10).sample.getOrElse(Seq.empty)
+  val sealsCache = getCacheMap(expectedSeals, "Seal")
+  val borderTransport = getBorderTransport()
+  val transportDetails = getTransportDetails()
+  val borderTransportCache = getCacheMap(borderTransport, "BorderTransport")
+  val transportDetailsCache = getCacheMap(transportDetails, "TransportDetails")
 
   "WcoMetadataMappingSpec" should {
     "produce metadata" in {
       val goodsItemCache = getCacheMap(expectedItems, "exportItems")
       val cacheMap =
-        CacheMap(id = "eoriForCache", data = cacheMapAllRecords.data ++ goodsItemCache.data ++ previousDocsCache.data)
+        CacheMap(
+          id = "eoriForCache",
+          data = cacheMapAllRecords.data ++ goodsItemCache.data ++ previousDocsCache.data ++ sealsCache.data
+            ++ borderTransportCache.data ++ transportDetailsCache.data
+        )
 
       val result = WcoMetadataMapping.produceMetaData(cacheMap)
 
@@ -61,11 +72,34 @@ class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCaching
       goodsShipment.warehouse.map(_.typeCode) mustBe Some("R")
       goodsShipment.consignment must be(defined)
       assertGoodsItem(goodsShipment)
+      assertGoodsLocation(goodsShipment.consignment)
       assertPreviousDocuments(goodsShipment)
       WcoMetadataMapping.declarationUcr(result.declaration) mustBe Some("8GB123456789012-1234567890QWERTYUIO")
+      assertTransportEquipment(goodsShipment.consignment.value)
+      assertTransportMeans(goodsShipment.consignment)
+      assertBorderTransportMeans(result.declaration.flatMap(_.borderTransportMeans))
     }
   }
 
+  private def assertBorderTransportMeans(borderTransportMeans: Option[BorderTransportMeans]) = {
+    borderTransportMeans mustBe defined
+    borderTransportMeans.value.modeCode.value.toString mustBe borderTransport.borderModeOfTransportCode
+    borderTransportMeans.value.identificationTypeCode.value mustBe transportDetails.meansOfTransportCrossingTheBorderType
+    borderTransportMeans.value.id mustBe transportDetails.meansOfTransportCrossingTheBorderIDNumber
+    borderTransportMeans.value.registrationNationalityCode mustBe
+      allCountries
+        .find(_.countryName == transportDetails.meansOfTransportCrossingTheBorderNationality.value)
+        .map(_.countryCode)
+  }
+
+  private def assertTransportMeans(consignment: Option[Consignment]) = {
+    consignment.value.departureTransportMeans.map { actual =>
+      actual.identificationTypeCode.value mustBe borderTransport.meansOfTransportOnDepartureType
+      actual.id mustBe borderTransport.meansOfTransportOnDepartureIDNumber
+    }
+    consignment.value.containerCode.value mustBe "1"
+
+  }
   private def assertGoodsLocation(consignment: Option[Consignment]) = {
     consignment.flatMap(_.goodsLocation) must be(defined)
     val goodsLocation = consignment.flatMap(_.goodsLocation).value
@@ -102,6 +136,16 @@ class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCaching
         actual.typeCode.value mustBe expected.documentType
         actual.id.value mustBe expected.documentReference
         actual.lineNumeric.value mustBe expected.goodsItemIdentifier.value.toInt
+    }
+  }
+
+  private def assertTransportEquipment(consignment: Consignment) = {
+    val actualTransportEquipment = consignment.transportEquipments.headOption.value
+    actualTransportEquipment.sequenceNumeric mustBe expectedSeals.size
+    (actualTransportEquipment.seals zip expectedSeals.zipWithIndex).map {
+      case (actual, (expected, index)) =>
+        actual.id.value mustBe expected.id
+        actual.sequenceNumeric mustBe (index + 1)
     }
   }
 }

@@ -71,7 +71,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("site.back"))
-        resultAsString must include("/declaration/warehouse")
+        resultAsString must include("/declaration/transport-details")
       }
 
       "display \"Accept and submit declaration\" button" in new Test {
@@ -127,6 +127,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.locations.qualifierCode"))
         resultAsString must include(messages("supplementary.summary.locations.additionalQualifier"))
         resultAsString must include(messages("supplementary.summary.locations.warehouseId"))
+        resultAsString must include(messages("supplementary.summary.locations.supervisingCustomsOffice"))
         resultAsString must include(messages("supplementary.summary.locations.officeOfExit"))
       }
 
@@ -140,6 +141,17 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.items.transactionType"))
         resultAsString must include(messages("supplementary.summary.items.itemNumber"))
 
+      }
+
+      "display containers content with cache available" in new Test {
+        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
+          .thenReturn(Future.successful(Some(SupplementaryDeclarationDataSpec.cacheMapAllRecords)))
+
+        val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
+
+        resultAsString must include(messages("supplementary.transportInfo.containers.title"))
+        resultAsString must include(messages("supplementary.transportInfo.containerId.title"))
+        resultAsString must include(messages("container-M1l3s"))
       }
 
       "get the whole supplementary declaration data from cache" in new Test {

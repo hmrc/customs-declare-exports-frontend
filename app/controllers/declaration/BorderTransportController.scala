@@ -18,46 +18,45 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.TransportDetailsController
 import controllers.util.CacheIdGenerator.cacheId
-import forms.declaration.WarehouseIdentification
+import forms.declaration.BorderTransport
+import forms.declaration.BorderTransport._
+import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.warehouse_identification
+import views.html.declaration.border_transport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WarehouseIdentificationController @Inject()(
-  appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
+class BorderTransportController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig, override val messagesApi: MessagesApi)
     extends FrontendController with I18nSupport {
 
-  import forms.declaration.WarehouseIdentification._
-
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[WarehouseIdentification](cacheId, formId).map {
-      case Some(data) => Ok(warehouse_identification(appConfig, form.fill(data)))
-      case _          => Ok(warehouse_identification(appConfig, form))
-    }
+    customsCacheService
+      .fetchAndGetEntry[BorderTransport](cacheId, BorderTransport.formId)
+      .map(data => Ok(border_transport(data.fold(form)(form.fill(_)))))
   }
 
-  def saveWarehouse(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[WarehouseIdentification]) =>
-          Future.successful(BadRequest(warehouse_identification(appConfig, formWithErrors))),
-        form =>
-          customsCacheService.cache[WarehouseIdentification](cacheId, formId, form).map { _ =>
-            Redirect(controllers.declaration.routes.BorderTransportController.displayForm())
-        }
+        (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(border_transport(formWithErrors))),
+        borderTransport =>
+          customsCacheService
+            .cache[BorderTransport](cacheId, BorderTransport.formId, borderTransport)
+            .map(_ => Redirect(TransportDetailsController.displayForm()))
       )
   }
+
 }

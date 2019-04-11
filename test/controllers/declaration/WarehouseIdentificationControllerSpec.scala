@@ -19,12 +19,12 @@ package controllers.declaration
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.WarehouseIdentification.ModeOfTransportCodes.Maritime
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
 import helpers.views.declaration.WarehouseIdentificationMessages
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
+import forms.declaration.TransportCodes._
 
 class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with WarehouseIdentificationMessages {
 
@@ -186,7 +186,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/border-transport"))
     }
 
     "validate request and redirect - correct values" in {
@@ -196,7 +196,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/border-transport"))
     }
   }
 }

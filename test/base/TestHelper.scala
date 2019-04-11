@@ -16,6 +16,7 @@
 
 package base
 
+import controllers.util.{Add, Remove, SaveAndContinue}
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -43,4 +44,7 @@ object TestHelper {
   def getCacheMap[A](data: A, formId: String)(implicit writes: Writes[A]): CacheMap =
     CacheMap(formId, Map(formId -> Json.toJson(data)))
 
+  val addActionUrlEncoded = (Add.toString, "")
+  val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
+  def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 }

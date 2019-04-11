@@ -174,3 +174,9 @@ trait CustomExportsBaseSpec
     when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
 }
+
+object CSRFUtil {
+  implicit class CSRFReplacer(str: String) {
+    def replaceCSRF() = str.replaceAll("name=\"csrfToken\" value=\".*\"/>", "csrfToken1")
+  }
+}
