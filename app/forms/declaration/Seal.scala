@@ -22,7 +22,7 @@ import utils.validators.forms.FieldValidator.{isAlphanumeric, noLongerThan, nonE
 
 case class Seal(id: String)
 
-object Seal  {
+object Seal {
   implicit val format = Json.format[Seal]
 
   val formId = "Seal"
@@ -35,5 +35,3 @@ object Seal  {
         .verifying("standard.transport.sealId.longer.error", noLongerThan(20))
   )(Seal.apply)(Seal.unapply)
 }
-
-

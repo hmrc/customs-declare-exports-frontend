@@ -37,8 +37,7 @@ class BorderTransportController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService
-)(implicit ec: ExecutionContext, appConfig: AppConfig,
-override val messagesApi: MessagesApi)
+)(implicit ec: ExecutionContext, appConfig: AppConfig, override val messagesApi: MessagesApi)
     extends FrontendController with I18nSupport {
 
   def form(): Form[BorderTransport] = Form(BorderTransport.formMapping)
@@ -46,15 +45,14 @@ override val messagesApi: MessagesApi)
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[BorderTransport](cacheId, BorderTransport.formId)
-      .map ( data => Ok(border_transport(data.fold(form)(form.fill(_)))))
+      .map(data => Ok(border_transport(data.fold(form)(form.fill(_)))))
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[BorderTransport]) =>
-          Future.successful(BadRequest(border_transport(formWithErrors))),
+        (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(border_transport(formWithErrors))),
         borderTransport =>
           customsCacheService
             .cache[BorderTransport](cacheId, BorderTransport.formId, borderTransport)

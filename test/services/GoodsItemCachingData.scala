@@ -19,12 +19,14 @@ package services
 import base.TestHelper._
 import forms.declaration.Document.AllowedValues.TemporaryStorage
 import forms.declaration._
+import generators.Generators
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import org.scalacheck.Gen.listOfN
 import uk.gov.hmrc.wco.dec._
-
+import services.Countries.allCountries
 import scala.util.Random
 
-trait GoodsItemCachingData {
+trait GoodsItemCachingData extends Generators {
 
   def intBetween(min: Int, max: Int): Int = min + Random.nextInt((max - min) + 1)
 
@@ -129,5 +131,11 @@ trait GoodsItemCachingData {
   )
 
   def createPreviousDocumentsData(size: Int) = PreviousDocumentsData(getDataSeq(size, createDocument()))
+
+  def createSeals(size: Int) = listOfN(size, sealArbitrary.arbitrary).suchThat(_.size == size)
+
+  def getBorderTransport() = BorderTransport("10", "9", Some(createRandomAlphanumericString(4)))
+
+  def getTransportDetails() = TransportDetails(Some(allCountries(intBetween(1, 20)).countryName), true)
 
 }

@@ -16,7 +16,7 @@
 
 package forms.declaration
 
-import play.api.data.Forms.{optional, text, mapping}
+import play.api.data.Forms.{mapping, optional, text}
 import utils.validators.forms.FieldValidator.{isAlphanumeric, isContainedIn, isEmpty, noLongerThan}
 import TransportCodes._
 import play.api.libs.json.Json
@@ -28,7 +28,7 @@ case class BorderTransport(
   meansOfTransportOnDepartureIDNumber: Option[String]
 )
 object BorderTransport {
-  val formId = "BordeTransport"
+  val formId = "BorderTransport"
 
   implicit val formats = Json.format[BorderTransport]
 

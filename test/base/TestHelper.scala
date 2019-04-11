@@ -44,7 +44,7 @@ object TestHelper {
   def getCacheMap[A](data: A, formId: String)(implicit writes: Writes[A]): CacheMap =
     CacheMap(formId, Map(formId -> Json.toJson(data)))
 
-   val addActionUrlEncoded = (Add.toString, "")
-   val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
-   def removeActionUrlEncoded(value: String) = (Remove.toString, value)
+  val addActionUrlEncoded = (Add.toString, "")
+  val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
+  def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 }

@@ -40,4 +40,3 @@ object TransportInformationContainer {
 
   def form(): Form[TransportInformationContainer] = Form(mapping)
 }
-

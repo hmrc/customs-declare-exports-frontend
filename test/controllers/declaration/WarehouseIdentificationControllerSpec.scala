@@ -26,7 +26,6 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import forms.declaration.TransportCodes._
 
-
 class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with WarehouseIdentificationMessages {
 
   private val uri = uriWithContextPath("/declaration/warehouse")

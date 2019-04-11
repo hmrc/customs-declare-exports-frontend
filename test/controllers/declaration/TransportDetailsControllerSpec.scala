@@ -153,8 +153,8 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
             )
           )
           val nextPage = transportDetails.container match {
-            case  true => Some("/customs-declare-exports/declaration/add-transport-containers")
-            case  _ => Some("/customs-declare-exports/declaration/summary")
+            case true => Some("/customs-declare-exports/declaration/add-transport-containers")
+            case _    => Some("/customs-declare-exports/declaration/summary")
           }
           val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
           status(result) must be(SEE_OTHER)
@@ -177,7 +177,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
         status(result) must be(SEE_OTHER)
         result.futureValue.header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/add-seal"))
       }
-      }
     }
+  }
 
 }

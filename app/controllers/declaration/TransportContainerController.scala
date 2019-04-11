@@ -103,7 +103,6 @@ class TransportContainerController @Inject()(
   ) =
     cacheAndRedirect(remove(ids.headOption, cache.containers))
 
-
   private def addContainer(
     boundForm: Form[TransportInformationContainer],
     elementLimit: Int,

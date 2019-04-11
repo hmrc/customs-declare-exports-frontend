@@ -47,15 +47,15 @@ class BorderTransportSpec
       "meansOfTransportOnDepartureIDNumber is longer than 27 characters" in {
 
         forAll(arbitrary[BorderTransport], alphaNumStr) { (borderTransport, id) =>
-        whenever(id.size > 27) {
-          val data = borderTransport.copy(meansOfTransportOnDepartureIDNumber = Some(id))
-          Form(BorderTransport.formMapping)
-            .fillAndValidate(data)
-            .fold(
-              _ must haveErrorMessage("Reference should be less than 28 alpha numeric characters"),
-              _ => fail("should not succeed")
-            )
-        }
+          whenever(id.size > 27) {
+            val data = borderTransport.copy(meansOfTransportOnDepartureIDNumber = Some(id))
+            Form(BorderTransport.formMapping)
+              .fillAndValidate(data)
+              .fold(
+                _ must haveErrorMessage("Reference should be less than 28 alpha numeric characters"),
+                _ => fail("should not succeed")
+              )
+          }
 
         }
       }
@@ -72,26 +72,18 @@ class BorderTransportSpec
         }
       }
 
-
       "borderModeOfTransportCode is not supplied" in {
         Form(BorderTransport.formMapping)
           .bind(Map.empty[String, String])
           .fold(
-            _ must haveErrorMessage(
-              "Please, choose mode of transport at the border"
-            ),
+            _ must haveErrorMessage("Please, choose mode of transport at the border"),
             _ => fail("should not succeed")
           )
       }
-       "meansOfTransportOnDepartureType data is not supplied" in {
+      "meansOfTransportOnDepartureType data is not supplied" in {
         Form(BorderTransport.formMapping)
           .bind(Map.empty[String, String])
-          .fold(
-            _ must haveErrorMessage(
-              "Please, choose transport details"
-            ),
-            _ => fail("should not succeed")
-          )
+          .fold(_ must haveErrorMessage("Please, choose transport details"), _ => fail("should not succeed"))
       }
     }
   }

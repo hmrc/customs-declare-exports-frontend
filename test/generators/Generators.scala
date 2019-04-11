@@ -121,23 +121,24 @@ trait Generators {
   def transportTypeCodesGen: Gen[String] = oneOf(TransportCodes.allowedMeansOfTransportTypeCodes.toSeq)
   def countryCodesGen: Gen[String] = oneOf(allCountries.map(_.countryName))
 
-  implicit val borderTransportArbitrary : Arbitrary[BorderTransport] = Arbitrary {
-    for{
-      borderModeOfTransportCode <- transportCodesGen
-        meansOfTransportOnDepartureType <- transportTypeCodesGen
-        meansOfTransportOnDepartureIDNumber <- option(alphaNumStr.suchThat(_.nonEmpty).map(_.take(25)))
-    } yield BorderTransport(borderModeOfTransportCode, meansOfTransportOnDepartureType, meansOfTransportOnDepartureIDNumber)
-  }
-  implicit  val transportDetailsArbitrary : Arbitrary[TransportDetails] = Arbitrary {
+  implicit val borderTransportArbitrary: Arbitrary[BorderTransport] = Arbitrary {
     for {
-     code <- countryCodesGen
-     hasContainer <- Arbitrary(oneOf(true, false)).arbitrary
-    } yield TransportDetails(Some(code),hasContainer)
+      borderModeOfTransportCode <- transportCodesGen
+      meansOfTransportOnDepartureType <- transportTypeCodesGen
+      meansOfTransportOnDepartureIDNumber <- option(alphaNumStr.suchThat(_.nonEmpty).map(_.take(25)))
+    } yield
+      BorderTransport(borderModeOfTransportCode, meansOfTransportOnDepartureType, meansOfTransportOnDepartureIDNumber)
+  }
+  implicit val transportDetailsArbitrary: Arbitrary[TransportDetails] = Arbitrary {
+    for {
+      code <- countryCodesGen
+      hasContainer <- Arbitrary(oneOf(true, false)).arbitrary
+    } yield TransportDetails(Some(code), hasContainer)
   }
 
-  implicit val sealArbitrary : Arbitrary[Seal] = Arbitrary {
+  implicit val sealArbitrary: Arbitrary[Seal] = Arbitrary {
     for {
-    id <- alphaNumStr.suchThat(_.nonEmpty).map((_.take(15)))
+      id <- alphaNumStr.suchThat(_.nonEmpty).map((_.take(15)))
     } yield Seal(id)
   }
 

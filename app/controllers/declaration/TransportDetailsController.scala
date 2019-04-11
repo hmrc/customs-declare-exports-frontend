@@ -56,8 +56,7 @@ class TransportDetailsController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[TransportDetails]) =>
-          Future.successful(BadRequest(transport_details(formWithErrors))),
+        (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transport_details(formWithErrors))),
         transportDetails =>
           customsCacheService
             .cache[TransportDetails](cacheId, TransportDetails.formId, transportDetails)
@@ -65,11 +64,9 @@ class TransportDetailsController @Inject()(
       )
   }
 
-  private def redirect(transportDetails: TransportDetails)(implicit request: JourneyRequest[_]):Result =
-
-      if(transportDetails.container) Redirect(TransportContainerController.displayPage())
-      else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(SealController.displayForm())
-      else Redirect(SummaryPageController.displayPage())
-
+  private def redirect(transportDetails: TransportDetails)(implicit request: JourneyRequest[_]): Result =
+    if (transportDetails.container) Redirect(TransportContainerController.displayPage())
+    else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(SealController.displayForm())
+    else Redirect(SummaryPageController.displayPage())
 
 }

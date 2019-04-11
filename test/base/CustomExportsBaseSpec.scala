@@ -51,13 +51,11 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-
 import scala.concurrent.{ExecutionContext, Future}
 
 trait CustomExportsBaseSpec
     extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction
     with MockConnectors with BeforeAndAfter {
-
 
   protected val contextPath: String = "/customs-declare-exports"
 
@@ -178,8 +176,7 @@ trait CustomExportsBaseSpec
 }
 
 object CSRFUtil {
- implicit class CSRFReplacer(str:String) {
+  implicit class CSRFReplacer(str: String) {
     def replaceCSRF() = str.replaceAll("name=\"csrfToken\" value=\".*\"/>", "csrfToken1")
   }
 }
-

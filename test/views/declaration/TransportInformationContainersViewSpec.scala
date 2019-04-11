@@ -102,11 +102,8 @@ class TransportInformationContainersViewSpec
 
     "display one row with data in table" in {
 
-      val view = add_transport_containers(form, Seq(TransportInformationContainer("Test")))(
-        appConfig,
-        fakeRequest,
-        messages
-      )
+      val view =
+        add_transport_containers(form, Seq(TransportInformationContainer("Test")))(appConfig, fakeRequest, messages)
 
       // table header
       getElementByCss(view, "form>div.field-group>table>thead>tr>th").text() must be(messages(ticTitle))

@@ -25,7 +25,7 @@ case class TransportDetails(meansOfTransportCrossingTheBorderNationality: Option
 
 object TransportDetails {
 
- val formId = "transportDetails"
+  val formId = "TransportDetails"
 
   implicit val formats = Json.format[TransportDetails]
 

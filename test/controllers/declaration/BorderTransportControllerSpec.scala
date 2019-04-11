@@ -100,10 +100,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
         val result = route(app, request).value
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result).replaceCSRF mustBe view(
-          form.bindFromRequest()(request),
-          request
-        ).body.replaceCSRF
+        contentAsString(result).replaceCSRF mustBe view(form.bindFromRequest()(request), request).body.replaceCSRF
       }
 
     }
@@ -113,7 +110,6 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
       "with valid data and on click of add" in {
 
         forAll(arbitrary[BorderTransport]) { borderTransport =>
-
           val body = Seq(
             ("borderModeOfTransportCode", borderTransport.borderModeOfTransportCode),
             ("meansOfTransportOnDepartureType", borderTransport.meansOfTransportOnDepartureType),

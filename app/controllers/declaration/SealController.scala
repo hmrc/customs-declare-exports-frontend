@@ -66,7 +66,7 @@ class SealController @Inject()(
 
   private def processRequest(cachedSeals: Seq[Seal], action: Option[FormAction])(
     implicit request: JourneyRequest[_]
-  ) :Future[Result] = {
+  ): Future[Result] = {
     val boundForm = form.bindFromRequest()
     action match {
       case Some(Add) => addSeal(boundForm, sealsAllowed, cachedSeals)
@@ -82,7 +82,7 @@ class SealController @Inject()(
   private def saveSeal(boundForm: Form[Seal], elementLimit: Int, cachedSeals: Seq[Seal])(
     implicit request: JourneyRequest[_],
     appConfig: AppConfig
-  ) :Future[Result] =
+  ): Future[Result] =
     saveAndContinue(boundForm, cachedSeals, false, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(seal(formWithErrors, cachedSeals))),
       updatedCache =>
@@ -93,20 +93,22 @@ class SealController @Inject()(
         else Future.successful(Redirect(SummaryPageController.displayPage()))
     )
 
-  private def removeSeal(cachedSeals: Seq[Seal], ids: Seq[String])(implicit request: JourneyRequest[_]) :Future[Result] =
+  private def removeSeal(cachedSeals: Seq[Seal], ids: Seq[String])(
+    implicit request: JourneyRequest[_]
+  ): Future[Result] =
     cacheAndRedirect(remove(ids.headOption, cachedSeals))
-
 
   private def addSeal(boundForm: Form[Seal], elementLimit: Int, seals: Seq[Seal])(
     implicit request: JourneyRequest[_],
     appConfig: AppConfig
-  ) :Future[Result] =
+  ): Future[Result] =
     add(boundForm, seals, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(seal(formWithErrors, seals))),
       updatedCache => cacheAndRedirect(updatedCache)
     )
 
-  private def cacheAndRedirect(seals: Seq[Seal])(implicit request: JourneyRequest[_]) :Future[Result] = cacheService
-    .cache[Seq[Seal]](cacheId, formId, seals)
-    .map(_ => Redirect(routes.SealController.displayForm()))
+  private def cacheAndRedirect(seals: Seq[Seal])(implicit request: JourneyRequest[_]): Future[Result] =
+    cacheService
+      .cache[Seq[Seal]](cacheId, formId, seals)
+      .map(_ => Redirect(routes.SealController.displayForm()))
 }

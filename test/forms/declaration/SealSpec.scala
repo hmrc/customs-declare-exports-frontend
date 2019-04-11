@@ -26,40 +26,40 @@ import play.api.data.Form
 
 class SealSpec extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers {
 
-    "SealMapping" should {
+  "SealMapping" should {
 
-      "bind" when {
+    "bind" when {
 
-        "valid values are bound" in {
+      "valid values are bound" in {
 
-          forAll { seal: Seal =>
-            Form(Seal.formMapping)
-              .fillAndValidate(seal)
-              .fold(_ => fail("form should not fail"), success => success mustBe seal)
-          }
-        }
-      }
-
-      "fail" when {
-
-        "seal longer than 20 characters is supplied" in {
-
-          forAll(arbitrary[Seal], stringsLongerThan(21)) { (seal, id) =>
-            val data = seal.copy(id =id)
-            Form(Seal.formMapping)
-              .fillAndValidate(data)
-              .fold(
-                _ must haveErrorMessage("Seal identification number must be 20 characters or less"),
-                _ => fail("should not succeed")
-              )
-
-          }
-        }
-        "id not supplied" in {
+        forAll { seal: Seal =>
           Form(Seal.formMapping)
-            .bind(Map[String, String]("id" -> ""))
-            .fold(_ must haveErrorMessage("Please provide seal Id"), _ => fail("should not succeed"))
+            .fillAndValidate(seal)
+            .fold(_ => fail("form should not fail"), success => success mustBe seal)
         }
       }
     }
+
+    "fail" when {
+
+      "seal longer than 20 characters is supplied" in {
+
+        forAll(arbitrary[Seal], stringsLongerThan(21)) { (seal, id) =>
+          val data = seal.copy(id = id)
+          Form(Seal.formMapping)
+            .fillAndValidate(data)
+            .fold(
+              _ must haveErrorMessage("Seal identification number must be 20 characters or less"),
+              _ => fail("should not succeed")
+            )
+
+        }
+      }
+      "id not supplied" in {
+        Form(Seal.formMapping)
+          .bind(Map[String, String]("id" -> ""))
+          .fold(_ must haveErrorMessage("Please provide seal Id"), _ => fail("should not succeed"))
+      }
+    }
   }
+}

@@ -41,4 +41,3 @@ object GoodsItemNumber {
 
   def form(): Form[GoodsItemNumber] = Form(mapping)
 }
-
