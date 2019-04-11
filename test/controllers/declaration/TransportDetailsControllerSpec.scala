@@ -120,7 +120,12 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
             ("container", transportDetails.container.toString),
             (
               "meansOfTransportCrossingTheBorderNationality",
-              transportDetails.meansOfTransportCrossingTheBorderNationality.getOrElse("")
+              transportDetails.meansOfTransportCrossingTheBorderNationality.getOrElse("UK")
+            ),
+            ("meansOfTransportCrossingTheBorderType", transportDetails.meansOfTransportCrossingTheBorderType),
+            (
+              "meansOfTransportCrossingTheBorderIDNumber",
+              transportDetails.meansOfTransportCrossingTheBorderIDNumber.getOrElse("")
             )
           )
 
@@ -149,7 +154,12 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
             ("container", transportDetails.container.toString),
             (
               "meansOfTransportCrossingTheBorderNationality",
-              transportDetails.meansOfTransportCrossingTheBorderNationality.getOrElse("")
+              transportDetails.meansOfTransportCrossingTheBorderNationality.getOrElse("UK")
+            ),
+            ("meansOfTransportCrossingTheBorderType", transportDetails.meansOfTransportCrossingTheBorderType),
+            (
+              "meansOfTransportCrossingTheBorderIDNumber",
+              transportDetails.meansOfTransportCrossingTheBorderIDNumber.getOrElse("")
             )
           )
           val nextPage = transportDetails.container match {
@@ -162,7 +172,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
         }
       }
       "navigate to add-seal page if full dec and user selected no for containers" in {
-        val transportDetails = TransportDetails(Some("Poland"), false)
+        val transportDetails = TransportDetails(Some("Poland"), false, "10", Some("test"))
         authorizedUser()
         withCaching[TransportDetails](None, TransportDetails.formId)
         withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
@@ -170,9 +180,15 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
           ("container", transportDetails.container.toString),
           (
             "meansOfTransportCrossingTheBorderNationality",
-            transportDetails.meansOfTransportCrossingTheBorderNationality.getOrElse("")
+            transportDetails.meansOfTransportCrossingTheBorderNationality.getOrElse("UK")
+          ),
+          ("meansOfTransportCrossingTheBorderType", transportDetails.meansOfTransportCrossingTheBorderType),
+          (
+            "meansOfTransportCrossingTheBorderIDNumber",
+            transportDetails.meansOfTransportCrossingTheBorderIDNumber.getOrElse("")
           )
         )
+
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         status(result) must be(SEE_OTHER)
         result.futureValue.header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/add-seal"))

@@ -42,9 +42,6 @@ object WarehouseIdentification {
 
   val formId = "IdentificationOfWarehouse"
 
-  val allowedModeOfTransportCodes =
-    Set(Maritime, Rail, Road, Air, PostalConsignment, FixedTransportInstallations, InlandWaterway, Unknown)
-
   val mapping = Forms.mapping(
     "supervisingCustomsOffice" -> optional(
       text()

@@ -20,6 +20,8 @@
 @import services.Country
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
+@import forms.declaration.TransportCodes._
+
 @(form: Form[TransportDetails])(implicit request: Request[_], appConfig: AppConfig, messages: Messages, countries: List[Country])
 
 @main_template(
@@ -48,6 +50,25 @@
             'otherErrorFields -> Seq("countryCode")
         )
 
+        @components.input_radio(
+            field = form("meansOfTransportCrossingTheBorderType"),
+            legend = messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header"),
+            hint = Some(messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint")),
+            inputs = Seq(
+            RadioOption("Border_IMOShipIDNumber", IMOShipIDNumber, messages("supplementary.transportInfo.meansOfTransport.IMOShipIDNumber")),
+            RadioOption("Border_NameOfVessel", NameOfVessel, messages("supplementary.transportInfo.meansOfTransport.nameOfVessel")),
+            RadioOption("Border_WagonNumber", WagonNumber, messages("supplementary.transportInfo.meansOfTransport.wagonNumber")),
+            RadioOption("Border_VehicleRegistrationNumber", VehicleRegistrationNumber, messages("supplementary.transportInfo.meansOfTransport.vehicleRegistrationNumber")),
+            RadioOption("Border_IATAFlightNumber", IATAFlightNumber, messages("supplementary.transportInfo.meansOfTransport.IATAFlightNumber")),
+            RadioOption("Border_AircraftRegistrationNumber", AircraftRegistrationNumber, messages("supplementary.transportInfo.meansOfTransport.aircraftRegistrationNumber")),
+            RadioOption("Border_EuropeanVesselIDNumber", EuropeanVesselIDNumber, messages("supplementary.transportInfo.meansOfTransport.europeanVesselIDNumber")),
+            RadioOption("Border_NameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel, messages("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel"))
+           )
+        )
+        @components.input_text(
+            field = form("meansOfTransportCrossingTheBorderIDNumber"),
+            label = messages("supplementary.transportInfo.meansOfTransport.reference.header")
+        )
         @components.input_radio(
             field = form("container"),
             legend = messages("supplementary.transportInfo.container"),

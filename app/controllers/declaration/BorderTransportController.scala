@@ -21,6 +21,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.TransportDetailsController
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.BorderTransport
+import forms.declaration.BorderTransport._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.data.Form
@@ -39,8 +40,6 @@ class BorderTransportController @Inject()(
   customsCacheService: CustomsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig, override val messagesApi: MessagesApi)
     extends FrontendController with I18nSupport {
-
-  def form(): Form[BorderTransport] = Form(BorderTransport.formMapping)
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService

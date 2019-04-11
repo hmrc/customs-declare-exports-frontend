@@ -22,6 +22,7 @@ import controllers.declaration.routes.{SealController, SummaryPageController, Tr
 import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.TransportDetails
+import forms.declaration.TransportDetails._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
@@ -43,8 +44,6 @@ class TransportDetailsController @Inject()(
     extends FrontendController with I18nSupport {
 
   implicit val countries = services.Countries.allCountries
-
-  def form(): Form[TransportDetails] = Form(TransportDetails.formMapping)
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
     customsCacheService

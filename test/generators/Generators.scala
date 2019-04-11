@@ -133,7 +133,15 @@ trait Generators {
     for {
       code <- countryCodesGen
       hasContainer <- Arbitrary(oneOf(true, false)).arbitrary
-    } yield TransportDetails(Some(code), hasContainer)
+      meansOfTransportCrossingTheBorderType <- transportTypeCodesGen
+      meansOfTransportCrossingTheBorderIDNumber <- option(alphaNumStr.suchThat(_.nonEmpty).map(_.take(25)))
+    } yield
+      TransportDetails(
+        Some(code),
+        hasContainer,
+        meansOfTransportCrossingTheBorderType,
+        meansOfTransportCrossingTheBorderIDNumber
+      )
   }
 
   implicit val sealArbitrary: Arbitrary[Seal] = Arbitrary {

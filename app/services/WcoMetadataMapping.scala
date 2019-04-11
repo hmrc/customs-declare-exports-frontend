@@ -61,8 +61,7 @@ object WcoMetadataMapping {
       declaration = metaData.declaration.map(
         _.copy(
           goodsShipment = goodsShipmentWithGoodsItems,
-          borderTransportMeans =
-            createBorderTransportMeans(borderTransport, getRegistrationNationalityCode(transportDetails))
+          borderTransportMeans = getBorderTransportMeans(borderTransport, transportDetails)
         )
       )
     )
@@ -80,16 +79,18 @@ object WcoMetadataMapping {
       )
     )
 
-  private def createBorderTransportMeans(
+  private def getBorderTransportMeans(
     borderTransport: Option[BorderTransport],
-    nationalCode: Option[String]
+    transportDetails: Option[TransportDetails]
   ): Option[BorderTransportMeans] =
-    borderTransport.map(
-      data =>
-        BorderTransportMeans(
-          modeCode = Some(data.borderModeOfTransportCode.toInt),
-          registrationNationalityCode = nationalCode
-      )
+    borderTransport.map(data => createBorderTransportMeans(data.borderModeOfTransportCode.toInt, transportDetails))
+
+  private def createBorderTransportMeans(borderModeOfTransportCode: Int, transportDetails: Option[TransportDetails]) =
+    BorderTransportMeans(
+      modeCode = Some(borderModeOfTransportCode),
+      registrationNationalityCode = getRegistrationNationalityCode(transportDetails),
+      identificationTypeCode = transportDetails.map(_.meansOfTransportCrossingTheBorderType),
+      id = transportDetails.flatMap(_.meansOfTransportCrossingTheBorderIDNumber)
     )
 
   private def getRegistrationNationalityCode(transportDetails: Option[TransportDetails]) =

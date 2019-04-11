@@ -428,6 +428,7 @@ supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel = Name o
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header = 7/15 What nationality was the active means of transport?
 supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.error.incorrect = Please, choose valid active means of transport
 supplementary.transportInfo.meansOfTransport.idNumber.error.length = Reference should be less than 28 alpha numeric characters
+supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length = Reference should be less than 35 alpha numeric characters
 supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters = Reference cannot contain special characters
 supplementary.transportInfo.container = 7/2 Were the goods in a container?
 supplementary.transportInfo.containers.title = 7/10 Transport Information Containers
@@ -673,7 +674,7 @@ supplementary.itemssummary.itemNumber= Item number
 supplementary.addgoodsitems.addallpages=You need to provide input for procedure codes, package information, goods measure, additional information and documents
 
 standard.seal.title=Transport details - seals
-standard.seal.id=Seal identification number
+standard.seal.id= 7/18 Seal identification number
 standard.transport.sealId.empty.error= Please provide seal Id
 standard.transport.sealId.alphaNumeric.error= Seal identification number must be 20 characters or less
 standard.transport.sealId.longer.error= Seal identification number must be 20 characters or less

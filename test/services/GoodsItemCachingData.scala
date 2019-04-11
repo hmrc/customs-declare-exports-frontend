@@ -25,6 +25,7 @@ import org.scalacheck.Gen.listOfN
 import uk.gov.hmrc.wco.dec._
 import services.Countries.allCountries
 import scala.util.Random
+import forms.declaration.TransportCodes._
 
 trait GoodsItemCachingData extends Generators {
 
@@ -134,8 +135,19 @@ trait GoodsItemCachingData extends Generators {
 
   def createSeals(size: Int) = listOfN(size, sealArbitrary.arbitrary).suchThat(_.size == size)
 
-  def getBorderTransport() = BorderTransport("10", "9", Some(createRandomAlphanumericString(4)))
+  def getBorderTransport() =
+    BorderTransport(
+      allowedModeOfTransportCodes.toSeq(intBetween(1, 5)),
+      allowedMeansOfTransportTypeCodes.toSeq(intBetween(1, 5)),
+      Some(createRandomAlphanumericString(4))
+    )
 
-  def getTransportDetails() = TransportDetails(Some(allCountries(intBetween(1, 20)).countryName), true)
+  def getTransportDetails() =
+    TransportDetails(
+      Some(allCountries(intBetween(1, 20)).countryName),
+      true,
+      allowedMeansOfTransportTypeCodes.toSeq(intBetween(1, 5)),
+      Some(createRandomAlphanumericString(20))
+    )
 
 }

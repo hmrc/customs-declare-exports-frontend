@@ -19,9 +19,17 @@ import play.api.data.Forms.mapping
 import play.api.data.Forms.{boolean, optional, text}
 import play.api.libs.json.Json
 import services.Countries.allCountries
-import utils.validators.forms.FieldValidator.isContainedIn
+import utils.validators.forms.FieldValidator.{isAlphanumeric, isContainedIn, isEmpty, noLongerThan}
+import forms.declaration.TransportCodes._
+import play.api.data.Form
+import utils.validators.forms.FieldValidator._
 
-case class TransportDetails(meansOfTransportCrossingTheBorderNationality: Option[String], container: Boolean)
+case class TransportDetails(
+  meansOfTransportCrossingTheBorderNationality: Option[String],
+  container: Boolean,
+  meansOfTransportCrossingTheBorderType: String,
+  meansOfTransportCrossingTheBorderIDNumber: Option[String]
+)
 
 object TransportDetails {
 
@@ -37,7 +45,25 @@ object TransportDetails {
           isContainedIn(allCountries.map(_.countryName))
         )
     ),
-    "container" -> boolean
+    "container" -> boolean,
+    "meansOfTransportCrossingTheBorderType" -> optional(
+      text()
+        .verifying(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect",
+          isEmpty or isContainedIn(allowedMeansOfTransportTypeCodes)
+        )
+    ).verifying("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty", _.isDefined)
+      .transform[String](
+        value => value.getOrElse(""),
+        meansOfTransportCrossingTheBorderType => Some(meansOfTransportCrossingTheBorderType)
+      ),
+    "meansOfTransportCrossingTheBorderIDNumber" -> optional(
+      text()
+        .verifying("supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length", noLongerThan(35))
+        .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters", isAlphanumeric)
+    )
   )(TransportDetails.apply)(TransportDetails.unapply)
+
+  def form(): Form[TransportDetails] = Form(TransportDetails.formMapping)
 
 }

@@ -84,6 +84,8 @@ class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCaching
   private def assertBorderTransportMeans(borderTransportMeans: Option[BorderTransportMeans]) = {
     borderTransportMeans mustBe defined
     borderTransportMeans.value.modeCode.value.toString mustBe borderTransport.borderModeOfTransportCode
+    borderTransportMeans.value.identificationTypeCode.value mustBe transportDetails.meansOfTransportCrossingTheBorderType
+    borderTransportMeans.value.id mustBe transportDetails.meansOfTransportCrossingTheBorderIDNumber
     borderTransportMeans.value.registrationNationalityCode mustBe
       allCountries
         .find(_.countryName == transportDetails.meansOfTransportCrossingTheBorderNationality.value)

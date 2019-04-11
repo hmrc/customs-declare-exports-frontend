@@ -54,7 +54,48 @@ class TransportDetailsSpec
               _ must haveErrorMessage("Please, choose valid active means of transport"),
               _ => fail("should not succeed")
             )
+        }
+      }
 
+      "meansOfTransportCrossingTheBorderType is not provided" in {
+
+        forAll(arbitrary[TransportDetails]) { (transportDetails) =>
+          Form(TransportDetails.formMapping)
+            .bind(
+              Map[String, String](
+                "container" -> "true",
+                "meansOfTransportCrossingTheBorderIDNumber" -> transportDetails.meansOfTransportCrossingTheBorderIDNumber
+                  .getOrElse("12"),
+                "meansOfTransportCrossingTheBorderNationality" -> transportDetails.meansOfTransportCrossingTheBorderNationality
+                  .getOrElse("PL")
+              )
+            )
+            .fold(_ must haveErrorMessage("Please, choose active means of transport"), _ => fail("should not succeed"))
+        }
+      }
+
+      "meansOfTransportCrossingTheBorderIDNumber is longer than 35" in {
+
+        forAll(arbitrary[TransportDetails], stringsLongerThan(36)) { (transportDetails, id) =>
+          val data = transportDetails.copy(meansOfTransportCrossingTheBorderIDNumber = Some(id))
+          Form(TransportDetails.formMapping)
+            .fillAndValidate(data)
+            .fold(
+              _ must haveErrorMessage("Reference should be less than 35 alpha numeric characters"),
+              _ => fail("should not succeed")
+            )
+        }
+      }
+      "meansOfTransportCrossingTheBorderIDNumber is with special characters" in {
+
+        forAll(arbitrary[TransportDetails], stringsWithMaxLength(20)) { (transportDetails, id) =>
+          val data = transportDetails.copy(meansOfTransportCrossingTheBorderIDNumber = Some(id + "£$%"))
+          Form(TransportDetails.formMapping)
+            .fillAndValidate(data)
+            .fold(
+              _ must haveErrorMessage("Reference cannot contain special characters"),
+              _ => fail("should not succeed")
+            )
         }
       }
       "has containers not supplied" in {
@@ -62,6 +103,7 @@ class TransportDetailsSpec
           .bind(Map[String, String]("container" -> ""))
           .fold(_ must haveErrorMessage("Please give an answer"), _ => fail("should not succeed"))
       }
+
     }
   }
 }

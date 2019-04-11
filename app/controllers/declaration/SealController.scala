@@ -45,9 +45,6 @@ class SealController @Inject()(
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController with I18nSupport {
 
-  def form(): Form[Seal] = Form(formMapping)
-  val sealsAllowed = 9999
-
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService
       .fetchAndGetEntry[Seq[Seal]](cacheId, formId)

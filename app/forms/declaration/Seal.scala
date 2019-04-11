@@ -15,7 +15,7 @@
  */
 
 package forms.declaration
-import play.api.data.Forms
+import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.{isAlphanumeric, noLongerThan, nonEmpty}
@@ -34,4 +34,7 @@ object Seal {
         .verifying("standard.transport.sealId.alphaNumeric.error", isAlphanumeric)
         .verifying("standard.transport.sealId.longer.error", noLongerThan(20))
   )(Seal.apply)(Seal.unapply)
+
+  def form(): Form[Seal] = Form(formMapping)
+  val sealsAllowed = 9999
 }

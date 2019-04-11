@@ -19,6 +19,7 @@ package forms.declaration
 import play.api.data.Forms.{mapping, optional, text}
 import utils.validators.forms.FieldValidator.{isAlphanumeric, isContainedIn, isEmpty, noLongerThan}
 import TransportCodes._
+import play.api.data.Form
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
@@ -61,6 +62,9 @@ object BorderTransport {
         .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters", isAlphanumeric)
     )
   )(BorderTransport.apply)(BorderTransport.unapply)
+
+  def form(): Form[BorderTransport] = Form(BorderTransport.formMapping)
+
 }
 
 object TransportCodes {
