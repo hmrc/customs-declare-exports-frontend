@@ -16,13 +16,19 @@
 
 package forms
 
+import forms.cancellation.CancellationChangeReason.{Duplication, NoLongerRequired, OtherReason}
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import uk.gov.hmrc.wco.dec._
 import utils.validators.forms.FieldValidator._
 
-case class CancelDeclaration(functionalReferenceId: String, declarationId: String, statementDescription: String) {
+case class CancelDeclaration(
+  functionalReferenceId: String,
+  declarationId: String,
+  statementDescription: String,
+  changeReason: String
+) {
 
   private val FunctionCode = 13
   private val TypeCode = "INV"
@@ -30,7 +36,6 @@ case class CancelDeclaration(functionalReferenceId: String, declarationId: Strin
   private val PointerSequenceNumeric = 1
   private val PointerDocumentSectionCode1 = "42A"
   private val PointerDocumentSectionCode2 = "06A"
-  private val ChangeReasonCode = "1"
 
   def createCancellationMetadata(eori: String): MetaData =
     MetaData(
@@ -54,7 +59,7 @@ case class CancelDeclaration(functionalReferenceId: String, declarationId: Strin
               )
             )
           ),
-          amendments = Seq(Amendment(changeReasonCode = Some(ChangeReasonCode)))
+          amendments = Seq(Amendment(changeReasonCode = Some(changeReason)))
         )
       )
     )
@@ -83,7 +88,16 @@ object CancelDeclaration {
       .verifying("cancellation.statementDescription.empty", nonEmpty)
       .verifying("cancellation.statementDescription.tooLong", isEmpty or noLongerThan(512))
       .verifying("cancellation.statementDescription.tooShort", isEmpty or noShorterThan(0))
-      .verifying("cancellation.statementDescription.wrongFormat", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
+      .verifying(
+        "cancellation.statementDescription.wrongFormat",
+        isEmpty or isAlphanumericWithAllowedSpecialCharacters
+      ),
+    "changeReason" ->
+      text()
+        .verifying(
+          "cancellation.changeReason.error.wrongValue",
+          isContainedIn(Seq(NoLongerRequired.toString, Duplication.toString, OtherReason.toString))
+        )
   )(CancelDeclaration.apply)(CancelDeclaration.unapply)
 
   def form: Form[CancelDeclaration] = Form(mapping)

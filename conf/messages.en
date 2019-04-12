@@ -119,12 +119,19 @@ cancellation.statementDescription.tooShort = The description must be X digits or
 cancellation.statementDescription.wrongFormat = Enter a description in the correct format
 cancellation.confirmationPage.title = Cancellation confirmation page
 cancellation.confirmationPage.message = Cancellation request has been submitted
+cancellation.changeReason = Cancellation reason
+cancellation.changeReason.error.empty = Please, choose a valid cancellation reason
+cancellation.changeReason.error.wrongValue = Please, choose a valid cancellation reason
 cancellation.submitButton = Submit
 cancellation.error.title = There is a problem
 cancellation.error.heading = You can only request to cancel declarations submitted using this service
 cancellation.error.message = Please try again with correct data
 cancellation.exists.error.heading = You have already requested the cancellation of this declaration
 cancellation.exists.error.message = Please try with different data
+cancellation.reason.duplication = Duplication
+cancellation.reason.otherReason = Other reason
+cancellation.reason.noLongerRequired = No longer required
+
 
 declaration.choice.description = What do you want to do?
 declaration.choice.SMP = Supplementary declaration

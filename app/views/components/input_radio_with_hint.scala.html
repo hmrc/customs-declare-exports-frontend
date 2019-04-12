@@ -28,9 +28,9 @@
 <div class="form-field @if(field.hasErrors){form-field--error}">
     <fieldset class="form-group" id="@{field.id}">
         <legend>
-            <span class="bold-small @if(legendClass.nonEmpty){@{legendClass.get}}">@legend</span>
+            <span id="@{field.id}-label" class="bold-small @if(legendClass.nonEmpty){@{legendClass.get}}">@legend</span>
             @if(hint.nonEmpty){
-            <span class="form-hint">@{hint.get}</span>
+            <span id="@{field.id}-hint" class="form-hint">@{hint.get}</span>
             }
             @field.errors.map { error =>
             <span class="error-notification" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
@@ -43,9 +43,9 @@
                    @if(trackGa){data-journey-click="customs-decex-frontend:click:@{input.id}" }/>
 
             <label class="block-label selection-button-radio" for="@{input.id}">
-                <span class="bold-small">@messages(input.messageKey)</span>
+                <span id="@{input.id}-label" class="bold-small">@messages(input.messageKey)</span>
                 @if(input.hint.nonEmpty){
-                    <span class="form-hint">@{input.hint.get}</span>
+                    <span id="@{input.id}-hint" class="form-hint">@{input.hint.get}</span>
                 }
             </label>
         </div>

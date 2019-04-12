@@ -17,8 +17,8 @@
 package controllers
 
 import base.CustomExportsBaseSpec
-import base.TestHelper._
-import models.requests.{CancellationRequestExists, CancellationRequested, MissingDeclaration}
+import forms.CancelDeclarationSpec
+import models.requests.CancellationRequested
 import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
@@ -31,130 +31,44 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
     authorizedUser()
   }
 
-  val correctCancelJson: JsValue = JsObject(
-    Map(
-      "functionalReferenceId" -> JsString("5GB123456789000-123ABC456DEFIIIII"),
-      "declarationId" -> JsString("DeclarationId"),
-      "statementDescription" -> JsString("StatementDescription")
-    )
-  )
+  "Cancel Declaration Controller on GET" should {
 
-  "Cancel Declaration Controller on display page" should {
-
-    "display \"Submit\" button on page" in {
+    "return 200 code" in {
 
       val result = route(app, getRequest(uri)).get
-      val resultAsString = contentAsString(result)
-
-      resultAsString must include(messages("cancellation.submitButton"))
-      resultAsString must include("button id=\"submit\" class=\"button\"")
-    }
-
-    "display \"Back\" button that links to \"What do you want to do ?\" page" in {
-      val result = route(app, getRequest(uri)).get
-
-      contentAsString(result) must include(messages("site.back"))
-      contentAsString(result) must include("/choice")
-    }
-
-    "return 200 with a success" in {
-      val result = route(app, getRequest(uri)).get
-      val stringResult = contentAsString(result)
-
       status(result) must be(OK)
-      stringResult must include(messages("cancellation.functionalReferenceId"))
-      stringResult must include(messages("cancellation.declarationId"))
-      stringResult must include(messages("cancellation.statementDescription"))
-    }
-
-    "validate form - empty json" in {
-      val emptyJson: JsValue = JsObject(
-        Map(
-          "functionalReferenceId" -> JsString(""),
-          "declarationId" -> JsString(""),
-          "statementDescription" -> JsString("")
-        )
-      )
-
-      val result = route(app, postRequest(uri, emptyJson)).get
-      val stringResult = contentAsString(result)
-
-      status(result) must be(BAD_REQUEST)
-      stringResult must include(messages("cancellation.functionalReferenceId.empty"))
-      stringResult must include(messages("cancellation.declarationId.empty"))
-      stringResult must include(messages("cancellation.statementDescription.empty"))
-    }
-
-    "validate form - too long answers" in {
-      val wrongCancelJson: JsValue = JsObject(
-        Map(
-          "functionalReferenceId" -> JsString(createRandomAlphanumericString(36)),
-          "declarationId" -> JsString(createRandomAlphanumericString(71)),
-          "statementDescription" -> JsString(createRandomAlphanumericString(513))
-        )
-      )
-
-      val result = route(app, postRequest(uri, wrongCancelJson)).get
-      val stringResult = contentAsString(result)
-
-      status(result) must be(BAD_REQUEST)
-      stringResult must include(messages("cancellation.functionalReferenceId.tooLong"))
-      stringResult must include(messages("cancellation.declarationId.tooLong"))
-      stringResult must include(messages("cancellation.statementDescription.tooLong"))
-    }
-
-    "validate form - too short answers" in {
-      val wrongCancelJson: JsValue =
-        JsObject(Map("functionalReferenceId" -> JsString(createRandomAlphanumericString(10))))
-
-      val result = route(app, postRequest(uri, wrongCancelJson)).get
-
-      status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages("cancellation.functionalReferenceId.tooShort"))
-    }
-
-    "redirect to not existing declaration error page" when {
-
-      "user try to cancel not existing declaration" in {
-        successfulCustomsDeclareExportsResponse()
-        successfulCancelDeclarationResponse(MissingDeclaration)
-
-        val result = route(app, postRequest(uri, correctCancelJson)).get
-        val stringResult = contentAsString(result)
-
-        status(result) must be(BAD_REQUEST)
-        stringResult must include(messages("cancellation.error.heading"))
-        stringResult must include(messages("cancellation.error.message"))
-      }
-    }
-
-    "redirect to cancellation request exists page" when {
-
-      "user try to cancel declaration once again" in {
-        successfulCustomsDeclareExportsResponse()
-        successfulCancelDeclarationResponse(CancellationRequestExists)
-
-        val result = route(app, postRequest(uri, correctCancelJson)).get
-        val stringResult = contentAsString(result)
-
-        status(result) must be(BAD_REQUEST)
-        stringResult must include(messages("cancellation.exists.error.heading"))
-        stringResult must include(messages("cancellation.exists.error.message"))
-      }
-    }
-
-    "redirect to confirmation page" when {
-
-      "provided data is correct" in {
-        successfulCustomsDeclareExportsResponse()
-        successfulCancelDeclarationResponse(CancellationRequested)
-
-        val result = route(app, postRequest(uri, correctCancelJson)).get
-        val stringResult = contentAsString(result)
-
-        status(result) must be(OK)
-        stringResult must include(messages("cancellation.confirmationPage.message"))
-      }
     }
   }
+
+  "Cancel Declaration Controller on POST" should {
+
+    "validate request and redirect - all values provided" in {
+
+      successfulCustomsDeclareExportsResponse()
+      successfulCancelDeclarationResponse(CancellationRequested)
+      val result = route(app, postRequest(uri, CancelDeclarationSpec.correctCancelDeclarationJSON)).get
+
+      status(result) must be(OK)
+
+      val stringResult = contentAsString(result)
+      stringResult must include(messages("cancellation.confirmationPage.message"))
+    }
+
+  }
+}
+
+object CancelDeclarationControllerSpec {
+  def buildCancelDeclarationJsonInput(
+    functionalReferenceId: String = "",
+    declarationId: String = "",
+    statementDescription: String = "",
+    changeReason: String = ""
+  ): JsValue = JsObject(
+    Map(
+      "functionalReferenceId" -> JsString(functionalReferenceId),
+      "declarationId" -> JsString(declarationId),
+      "statementDescription" -> JsString(statementDescription),
+      "changeReason" -> JsString(changeReason)
+    )
+  )
 }
