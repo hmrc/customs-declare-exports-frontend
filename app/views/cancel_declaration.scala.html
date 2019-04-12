@@ -19,6 +19,9 @@
 @import forms.CancelDeclaration
 @import uk.gov.hmrc.play.views.html._
 
+@import utils.RadioOption
+@import forms.cancellation.CancellationChangeReason
+@import forms.cancellation.CancellationChangeReason.{NoLongerRequired, Duplication, OtherReason}
 @(appConfig: AppConfig, form: Form[CancelDeclaration])(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -35,17 +38,31 @@
 
         @components.input_text(
             field = form("functionalReferenceId"),
-            label = messages("cancellation.functionalReferenceId")
+            label = messages("cancellation.functionalReferenceId"),
+            labelClass = Some("bold-small")
         )
 
         @components.input_text(
             field = form("declarationId"),
-            label = messages("cancellation.declarationId")
+            label = messages("cancellation.declarationId"),
+            labelClass = Some("bold-small")
         )
 
         @components.input_textarea(
             field = form("statementDescription"),
-            label = messages("cancellation.statementDescription")
+            label = messages("cancellation.statementDescription"),
+            labelClass = Some("bold-small")
+        )
+
+        @components.input_radio_with_hint(
+            field = form("changeReason"),
+            legend = messages("cancellation.changeReason"),
+            inputs = Seq(
+                RadioOption("noLongerRequired", NoLongerRequired.toString, messages("cancellation.reason.noLongerRequired")),
+                RadioOption("duplication", Duplication.toString, messages("cancellation.reason.duplication")),
+                RadioOption("otherReason", OtherReason.toString, messages("cancellation.reason.otherReason"))
+            ),
+            legendClass = Some("bold-small")
         )
 
         @components.submit_button("cancellation.submitButton")
