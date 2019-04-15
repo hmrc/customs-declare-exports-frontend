@@ -22,7 +22,7 @@ import controllers.declaration.routes.SummaryPageController
 import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
-import forms.declaration.Seal
+import forms.declaration.{Seal, TransportDetails}
 import forms.declaration.Seal._
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -48,8 +48,10 @@ class SealController @Inject()(
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService
       .fetchAndGetEntry[Seq[Seal]](cacheId, formId)
-      .map { data =>
-        Ok(seal(form, data.getOrElse(Seq.empty)))
+      .flatMap { seals =>
+        cacheService
+          .fetchAndGetEntry[TransportDetails](cacheId, TransportDetails.formId)
+          .map(data => Ok(seal(form, seals.getOrElse(Seq.empty), data.fold(false)(_.container))))
       }
   }
 
@@ -81,7 +83,7 @@ class SealController @Inject()(
     appConfig: AppConfig
   ): Future[Result] =
     saveAndContinue(boundForm, cachedSeals, false, elementLimit).fold(
-      formWithErrors => Future.successful(BadRequest(seal(formWithErrors, cachedSeals))),
+      formWithErrors => badRequest(formWithErrors, cachedSeals),
       updatedCache =>
         if (updatedCache != cachedSeals)
           cacheService
@@ -99,10 +101,16 @@ class SealController @Inject()(
     implicit request: JourneyRequest[_],
     appConfig: AppConfig
   ): Future[Result] =
-    add(boundForm, seals, elementLimit).fold(
-      formWithErrors => Future.successful(BadRequest(seal(formWithErrors, seals))),
-      updatedCache => cacheAndRedirect(updatedCache)
-    )
+    add(boundForm, seals, elementLimit)
+      .fold(formWithErrors => badRequest(formWithErrors, seals), updatedCache => cacheAndRedirect(updatedCache))
+
+  private def badRequest(
+    formWithErrors: Form[Seal],
+    cachedSeals: Seq[Seal]
+  )(implicit request: JourneyRequest[_], appConfig: AppConfig) =
+    cacheService
+      .fetchAndGetEntry[TransportDetails](cacheId, TransportDetails.formId)
+      .map(data => BadRequest(seal(formWithErrors, cachedSeals, data.fold(false)(_.container))))
 
   private def cacheAndRedirect(seals: Seq[Seal])(implicit request: JourneyRequest[_]): Future[Result] =
     cacheService
