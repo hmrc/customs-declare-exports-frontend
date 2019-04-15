@@ -35,6 +35,8 @@
       headScripts = None)
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/customsdecexfrontend-app.css")' />
+    <script src='@routes.Assets.versioned("javascripts/google.tag.manager.min.js")'> </script>
+
 }
 
 @headerNavLinks = {}
@@ -79,6 +81,10 @@
 @getHelpForm = @{HtmlFormat.empty}
 
 @content = {
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     @uiLayouts.main_content(
       article = mainContent,
       mainClass = mainClass,

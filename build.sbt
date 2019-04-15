@@ -44,6 +44,9 @@ lazy val microservice = Project(appName, file("."))
     Concat.groups := Seq(
       "javascripts/customsdecexfrontend-app.js" -> group(
         Seq("javascripts/show-hide-content.js", "javascripts/customsdecexfrontend.js")
+      ),
+      "javascripts/google.tag.manager.min.js" -> group(
+        Seq("javascripts/google-tag-manager.js")
       )
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
