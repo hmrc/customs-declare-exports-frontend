@@ -65,20 +65,37 @@ class DocumentsProducedControllerSpec
       withCaching[DocumentsProducedData](Some(cachedData), DocumentsProducedData.formId)
 
       val result = route(app, getRequest(uri)).get
-      val page = contentAsString(result)
+      val view = contentAsString(result)
 
       status(result) must be(OK)
-      page must include(document.documentTypeCode.get)
-      page must include(document.documentIdentifier.get)
-      page must include(document.documentPart.get)
-      page must include(document.documentStatus.get)
-      page must include(document.documentStatusReason.get)
-      page must include(document.issuingAuthorityName.get)
-      page must include(document.dateOfValidity.get.year.get)
-      page must include(document.dateOfValidity.get.month.get)
-      page must include(document.dateOfValidity.get.day.get)
-      page must include(document.measurementUnit.get)
-      page must include(document.documentQuantity.get.toString)
+
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)").text() must equal(
+        correctDocumentsProduced.documentTypeCode.get
+      )
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)").text() must equal(
+        correctDocumentsProduced.documentIdentifier.get
+      )
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(3)").text() must equal(
+        correctDocumentsProduced.documentPart.get
+      )
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(4)").text() must equal(
+        correctDocumentsProduced.documentStatus.get
+      )
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(5)").text() must equal(
+        correctDocumentsProduced.documentStatusReason.get
+      )
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(6)").text() must equal(
+        correctDocumentsProduced.issuingAuthorityName.get
+      )
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(7)").text() must equal(
+        correctDocumentsProduced.dateOfValidity.get.toString
+      )
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() must equal(
+        correctDocumentsProduced.measurementUnit.get
+      )
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(9)").text() must equal(
+        correctDocumentsProduced.documentQuantity.get.toString
+      )
     }
   }
 
@@ -289,9 +306,6 @@ object DocumentsProducedControllerSpec {
   val cacheWithMaximumAmountOfHolders = DocumentsProducedData(
     Seq
       .range[Int](100, 200, 1)
-      .map(
-        elem =>
-          correctDocumentsProduced.copy(documentTypeCode = Some(elem.toString))
-      )
+      .map(elem => correctDocumentsProduced.copy(documentTypeCode = Some(elem.toString)))
   )
 }
