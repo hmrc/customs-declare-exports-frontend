@@ -21,7 +21,7 @@ import base.CustomExportsBaseSpec
 import base.TestHelper._
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.Seal
+import forms.declaration.{Seal, TransportDetails}
 import generators.Generators
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -42,12 +42,13 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
   val form: Form[Seal] = Form(Seal.formMapping)
 
-  def view(form: Form[Seal], seals: Seq[Seal])(implicit request: FakeRequest[_]): Html =
-    seal(form, seals)(appConfig, request, messages)
+  def view(form: Form[Seal], seals: Seq[Seal], container: Boolean = false)(implicit request: FakeRequest[_]): Html =
+    seal(form, seals, container)(appConfig, request, messages)
 
   before {
     authorizedUser()
     withCaching[Seq[Seal]](None, Seal.formId)
+    withCaching[TransportDetails](None, TransportDetails.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
   }
   after {
