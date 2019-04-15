@@ -188,33 +188,24 @@ class DateSpec extends WordSpec with MustMatchers {
 
 object DateSpec {
 
-  val correctDate = Date(
-    year = Some("2003"),
-    month = Some("07"),
-    day = Some("13")
-  )
-  val incorrectDate = Date(
-    year = Some("1999"),
-    month = Some("13"),
-    day = Some("33")
-  )
+  val correctDate = Date(year = Some("2003"), month = Some("07"), day = Some("13"))
+  val incorrectDate = Date(year = Some("1999"), month = Some("13"), day = Some("33"))
   val emptyDate = Date(None, None, None)
 
-  val correctDateJSON: JsValue = JsObject(Map(
-    yearKey -> JsString(correctDate.year.get),
-    monthKey -> JsString(correctDate.month.get),
-    dayKey -> JsString(correctDate.day.get)
-  ))
-  val incorrectDateJSON: JsValue = JsObject(Map(
-    yearKey -> JsString(incorrectDate.year.get),
-    monthKey -> JsString(incorrectDate.month.get),
-    dayKey -> JsString(incorrectDate.day.get)
-  ))
-  val emptyDateJSON: JsValue = JsObject(Map(
-    yearKey -> JsString(""),
-    monthKey -> JsString(""),
-    dayKey -> JsString("")
-  ))
-
+  val correctDateJSON: JsValue = JsObject(
+    Map(
+      yearKey -> JsString(correctDate.year.get),
+      monthKey -> JsString(correctDate.month.get),
+      dayKey -> JsString(correctDate.day.get)
+    )
+  )
+  val incorrectDateJSON: JsValue = JsObject(
+    Map(
+      yearKey -> JsString(incorrectDate.year.get),
+      monthKey -> JsString(incorrectDate.month.get),
+      dayKey -> JsString(incorrectDate.day.get)
+    )
+  )
+  val emptyDateJSON: JsValue = JsObject(Map(yearKey -> JsString(""), monthKey -> JsString(""), dayKey -> JsString("")))
 
 }
