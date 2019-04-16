@@ -17,8 +17,9 @@
 package forms.declaration
 
 import base.TestHelper
+import forms.declaration.DocumentsProducedSpec.correctDocumentsProducedJSON
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
 class DocumentSpec extends WordSpec with MustMatchers {
   import DocumentSpec._
@@ -103,6 +104,9 @@ object DocumentSpec {
       "goodsItemIdentifier" -> JsString("123")
     )
   )
+
+  val correctPreviousDocumentsJSONList = JsObject(Map("documents" -> JsArray(Seq(correctPreviousDocumentsJSON))))
+
   val emptyPreviousDocumentsJSON: JsValue = JsObject(
     Map(
       "documentCategory" -> JsString(""),

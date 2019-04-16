@@ -385,6 +385,8 @@ object SupplementaryDeclarationDataSpec {
       ExporterDetails.id -> correctExporterDetailsJSON,
       DeclarantDetails.id -> correctDeclarantDetailsJSON,
       RepresentativeDetails.formId -> correctRepresentativeDetailsJSON,
+      Document.formId -> DocumentSpec.correctPreviousDocumentsJSONList,
+      CarrierDetails.id-> CarrierDetailsSpec.correctCarrierDetailsJSON,
       ConsigneeDetails.id -> correctConsigneeDetailsJSON,
       DeclarationAdditionalActorsData.formId -> correctAdditionalActorsDataJSON,
       DeclarationHoldersData.formId -> correctDeclarationHoldersDataJSON,
