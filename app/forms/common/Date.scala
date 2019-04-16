@@ -19,50 +19,42 @@ package forms.common
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-import play.api.data.Forms.{optional, text}
+import play.api.data.Forms.{number, optional}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.isNumeric
 
-case class Date(year: Option[String], month: Option[String], day: Option[String]) {
+import scala.util.Try
 
-  def isEmpty: Boolean = year.isEmpty && month.isEmpty && day.isEmpty
-  def nonEmpty: Boolean = year.nonEmpty && month.nonEmpty && day.nonEmpty
+case class Date(year: Option[Int], month: Option[Int], day: Option[Int]) {
 
-  override def toString: String = {
-    val newPattern = DateTimeFormatter.ofPattern("yyyyMMdd")
-    LocalDate.of(year.getOrElse("0000").toInt, month.getOrElse("00").toInt, day.getOrElse("00").toInt).format(newPattern)
-  }
+  private val format102 = DateTimeFormatter.ofPattern("yyyyMMdd")
 
+  def to102Format: String = LocalDate.parse(this.toString).format(format102)
+
+  override def toString: String = LocalDate.of(year.getOrElse(0), month.getOrElse(0), day.getOrElse(0)).toString
 }
 
 object Date {
   implicit val format = Json.format[Date]
 
-  private val validYears = 2000 to 2099
-  private val validMonths = 1 to 12
-  private val validDays = 1 to 31
-
   val yearKey = "year"
   val monthKey = "month"
   val dayKey = "day"
 
+  private val isInRange: (Int, Int) => Int => Boolean = (min: Int, max: Int) =>
+    (input: Int) => input >= min && input <= max
+
+  private val isDateFormatValid: Date => Boolean =
+    date => Try(LocalDate.parse(date.toString)).isSuccess
+
   val mapping = Forms
     .mapping(
-      yearKey -> optional(
-        text()
-          .verifying("dateTime.date.year.error", year => isNumeric(year) && validYears.contains(year.toInt))
-      ),
-      monthKey -> optional(
-        text().verifying("dateTime.date.month.error", month => isNumeric(month) && validMonths.contains(month.toInt))
-      ),
-      dayKey -> optional(
-        text().verifying("dateTime.date.day.error", day => isNumeric(day) && validDays.contains(day.toInt))
-      )
+      yearKey -> optional(number().verifying("dateTime.date.year.error.outOfRange", isInRange(2000, 2099)))
+        .verifying("dateTime.date.year.error.empty", _.nonEmpty),
+      monthKey -> optional(number()).verifying("dateTime.date.month.error.empty", _.nonEmpty),
+      dayKey -> optional(number()).verifying("dateTime.date.day.error.empty", _.nonEmpty)
     )(Date.apply)(Date.unapply)
-    .verifying("dateTime.date.error", validateDate(_))
-
-  private def validateDate(date: Date): Boolean = date.isEmpty || date.nonEmpty
+    .verifying("dateTime.date.error", isDateFormatValid)
 
   def form(): Form[Date] = Form(mapping)
 }

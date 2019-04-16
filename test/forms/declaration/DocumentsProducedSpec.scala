@@ -17,8 +17,8 @@
 package forms.declaration
 
 import base.TestHelper
-import forms.common.Date
 import forms.common.Date._
+import forms.common.DateSpec.{correctDate, correctDateJSON}
 import forms.declaration.DocumentsProduced._
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
@@ -174,15 +174,11 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
           val input = JsObject(
             Map(
               dateOfValidityKey -> JsObject(
-                Map("year" -> JsString("1999"), "month" -> JsString("13"), "day" -> JsString("32"))
+                Map(yearKey -> JsString("2000"), monthKey -> JsString("13"), dayKey -> JsString("32"))
               )
             )
           )
-          val expectedErrors = Seq(
-            FormError(dateOfValidityKey + ".year", "dateTime.date.year.error"),
-            FormError(dateOfValidityKey + ".month", "dateTime.date.month.error"),
-            FormError(dateOfValidityKey + ".day", "dateTime.date.day.error")
-          )
+          val expectedErrors = Seq(FormError(dateOfValidityKey, "dateTime.date.error"))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -323,7 +319,7 @@ object DocumentsProducedSpec {
     documentStatus = Some("AB"),
     documentStatusReason = Some("DocumentStatusReason"),
     issuingAuthorityName = Some("Issuing Authority Name"),
-    dateOfValidity = Some(Date(year = Some("2020"), month = Some("04"), day = Some("13"))),
+    dateOfValidity = Some(correctDate),
     measurementUnit = Some("AB12"),
     documentQuantity = Some(BigDecimal("1234567890.123456"))
   )
@@ -335,9 +331,9 @@ object DocumentsProducedSpec {
     "documentStatus" -> "AB",
     "documentStatusReason" -> "DocumentStatusReason",
     issuingAuthorityNameKey -> "Issuing Authority Name",
-    s"$dateOfValidityKey.$yearKey" -> "2020",
-    s"$dateOfValidityKey.$monthKey" -> "04",
-    s"$dateOfValidityKey.$dayKey" -> "13",
+    s"$dateOfValidityKey.$yearKey" -> correctDate.year.get.toString,
+    s"$dateOfValidityKey.$monthKey" -> correctDate.month.get.toString,
+    s"$dateOfValidityKey.$dayKey" -> correctDate.day.get.toString,
     measurementUnitKey -> "AB12",
     "documentQuantity" -> "1234567890.123456"
   )
@@ -350,9 +346,7 @@ object DocumentsProducedSpec {
       "documentStatus" -> JsString("AB"),
       "documentStatusReason" -> JsString("DocumentStatusReason"),
       issuingAuthorityNameKey -> JsString("Issuing Authority Name"),
-      dateOfValidityKey -> JsObject(
-        Map("year" -> JsString("2020"), "month" -> JsString("04"), "day" -> JsString("13"))
-      ),
+      dateOfValidityKey -> correctDateJSON,
       measurementUnitKey -> JsString("AB12"),
       "documentQuantity" -> JsString("1234567890.123456")
     )

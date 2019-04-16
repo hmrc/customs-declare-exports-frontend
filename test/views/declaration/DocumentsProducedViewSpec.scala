@@ -18,10 +18,11 @@ package views.declaration
 
 import base.TestHelper
 import forms.common.Date._
-import forms.common.{Date, DateSpec}
+import forms.common.DateSpec
+import forms.common.DateSpec.{correctDate, incorrectDate}
 import forms.declaration.DocumentsProduced
 import forms.declaration.DocumentsProduced._
-import forms.declaration.DocumentsProducedSpec.correctDocumentsProduced
+import forms.declaration.DocumentsProducedSpec.{correctDocumentsProduced, correctDocumentsProducedMap}
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
 import play.api.data.Form
 import play.twirl.api.Html
@@ -41,7 +42,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       documentStatus = Some("test3"),
       documentStatusReason = Some("test4"),
       issuingAuthorityName = Some("test 5"),
-      dateOfValidity = Some(Date(year = Some("2020"), month = Some("04"), day = Some("13"))),
+      dateOfValidity = Some(correctDate),
       measurementUnit = Some("AB12"),
       documentQuantity = Some(BigDecimal("234.22"))
     )
@@ -303,28 +304,43 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       )
     }
 
-    "display error for Date of Validity" in {
+    "display error for Date of Validity" when {
 
-      val view = createView(
-        DocumentsProduced
-          .form()
-          .fillAndValidate(correctDocumentsProduced.copy(dateOfValidity = Some(DateSpec.incorrectDate)))
-      )
+      "year is out of range (2000-2099)" in {
 
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, "dateTime.date.year.error", s"#${dateOfValidityKey}_$yearKey")
-      checkErrorLink(view, 2, "dateTime.date.month.error", s"#${dateOfValidityKey}_$monthKey")
-      checkErrorLink(view, 3, "dateTime.date.day.error", s"#${dateOfValidityKey}_$dayKey")
+        val view = createView(
+          DocumentsProduced
+            .form()
+            .fillAndValidate(correctDocumentsProduced.copy(dateOfValidity = Some(DateSpec.incorrectDate)))
+        )
 
-      getElementByCss(view, s"#error-message-${dateOfValidityKey}_$yearKey-input").text() must be(
-        messages("dateTime.date.year.error")
-      )
-      getElementByCss(view, s"#error-message-${dateOfValidityKey}_$monthKey-input").text() must be(
-        messages("dateTime.date.month.error")
-      )
-      getElementByCss(view, s"#error-message-${dateOfValidityKey}_$dayKey-input").text() must be(
-        messages("dateTime.date.day.error")
-      )
+        checkErrorsSummary(view)
+        checkErrorLink(view, 1, "dateTime.date.year.error.outOfRange", s"#${dateOfValidityKey}_$yearKey")
+
+        getElementByCss(view, s"#error-message-${dateOfValidityKey}_$yearKey-input").text() must be(
+          messages("dateTime.date.year.error.outOfRange")
+        )
+      }
+
+      "provided with non-existing month and day" in {
+
+        val view = createView(
+          DocumentsProduced
+            .form()
+            .bind(
+              correctDocumentsProducedMap ++ Map(
+                s"$dateOfValidityKey.$monthKey" -> "13",
+                s"$dateOfValidityKey.$dayKey" -> "32")
+            )
+        )
+
+        checkErrorsSummary(view)
+        checkErrorLink(view, 1, "dateTime.date.error", s"#$dateOfValidityKey")
+
+        getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(
+          messages("dateTime.date.error")
+        )
+      }
     }
 
     "display error for Measurement Unit" in {
@@ -373,7 +389,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
             documentStatus = Some("ABC"),
             documentStatusReason = Some(TestHelper.createRandomAlphanumericString(36)),
             issuingAuthorityName = Some(TestHelper.createRandomAlphanumericString(71)),
-            dateOfValidity = Some(Date(year = Some("1999"), month = Some("13"), day = Some("32"))),
+            dateOfValidity = Some(incorrectDate),
             measurementUnit = Some(TestHelper.createRandomAlphanumericString(5)),
             documentQuantity = Some(BigDecimal("12345678901234567"))
           )
@@ -388,11 +404,9 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorLink(view, 4, documentStatusError, s"#$documentStatusKey")
       checkErrorLink(view, 5, documentStatusReasonError, s"#$documentStatusReasonKey")
       checkErrorLink(view, 6, issuingAuthorityNameLengthError, s"#$issuingAuthorityNameKey")
-      checkErrorLink(view, 7, "dateTime.date.year.error", s"#${dateOfValidityKey}_$yearKey")
-      checkErrorLink(view, 8, "dateTime.date.month.error", s"#${dateOfValidityKey}_$monthKey")
-      checkErrorLink(view, 9, "dateTime.date.day.error", s"#${dateOfValidityKey}_$dayKey")
-      checkErrorLink(view, 10, measurementUnitLengthError, s"#$measurementUnitKey")
-      checkErrorLink(view, 11, documentQuantityPrecisionError, s"#$documentQuantityKey")
+      checkErrorLink(view, 7, "dateTime.date.year.error.outOfRange", s"#${dateOfValidityKey}_$yearKey")
+      checkErrorLink(view, 8, measurementUnitLengthError, s"#$measurementUnitKey")
+      checkErrorLink(view, 9, documentQuantityPrecisionError, s"#$documentQuantityKey")
 
       getElementByCss(view, s"#error-message-$documentTypeCodeKey-input").text() must be(
         messages(documentTypeCodeError)
@@ -409,13 +423,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         messages(issuingAuthorityNameLengthError)
       )
       getElementByCss(view, s"#error-message-${dateOfValidityKey}_$yearKey-input").text() must be(
-        messages("dateTime.date.year.error")
-      )
-      getElementByCss(view, s"#error-message-${dateOfValidityKey}_$monthKey-input").text() must be(
-        messages("dateTime.date.month.error")
-      )
-      getElementByCss(view, s"#error-message-${dateOfValidityKey}_$dayKey-input").text() must be(
-        messages("dateTime.date.day.error")
+        messages("dateTime.date.year.error.outOfRange")
       )
       getElementByCss(view, s"#error-message-$measurementUnitKey-input").text() must be(
         messages(measurementUnitLengthError)

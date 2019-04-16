@@ -17,18 +17,17 @@
 package services
 
 import base.TestHelper._
-import forms.common.Date
+import forms.common.DateSpec.correctDate
 import forms.declaration.Document.AllowedValues.TemporaryStorage
+import forms.declaration.TransportCodes._
 import forms.declaration._
 import generators.Generators
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import org.scalacheck.Gen.listOfN
+import services.Countries.allCountries
 import uk.gov.hmrc.wco.dec.{AdditionalInformation, _}
 
-import org.scalacheck.Gen.listOfN
-import uk.gov.hmrc.wco.dec._
-import services.Countries.allCountries
 import scala.util.Random
-import forms.declaration.TransportCodes._
 
 trait GoodsItemCachingData extends Generators {
 
@@ -65,7 +64,7 @@ trait GoodsItemCachingData extends Generators {
     Some(createRandomAlphanumericString(2)),
     Some(createRandomAlphanumericString(35)),
     Some(createRandomAlphanumericString(70)),
-    Some(Date(Some("2020"), Some("04"), Some("13"))),
+    Some(correctDate),
     Some(createRandomAlphanumericString(4)),
     Some(BigDecimal(123))
   )

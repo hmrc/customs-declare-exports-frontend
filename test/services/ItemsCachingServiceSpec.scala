@@ -113,7 +113,7 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
           actual.name must equal(expected.documentStatusReason)
           actual.submitter.value.name.value must equal(expected.issuingAuthorityName.value)
           actual.effectiveDateTime.value.dateTimeString.formatCode must equal("102")
-          actual.effectiveDateTime.value.dateTimeString.value must equal(expected.dateOfValidity.value.toString)
+          actual.effectiveDateTime.value.dateTimeString.value must equal(expected.dateOfValidity.value.to102Format)
           actual.writeOff.value.quantity.value.unitCode.value must equal(expected.measurementUnit.value)
           actual.writeOff.value.quantity.value.value.value must equal(expected.documentQuantity.value)
       }
