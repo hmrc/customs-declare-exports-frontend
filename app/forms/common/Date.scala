@@ -17,6 +17,7 @@
 package forms.common
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
@@ -28,8 +29,10 @@ case class Date(year: Option[String], month: Option[String], day: Option[String]
   def isEmpty: Boolean = year.isEmpty && month.isEmpty && day.isEmpty
   def nonEmpty: Boolean = year.nonEmpty && month.nonEmpty && day.nonEmpty
 
-  override def toString: String =
-    LocalDate.of(year.getOrElse("0000").toInt, month.getOrElse("00").toInt, day.getOrElse("00").toInt).toString
+  override def toString: String = {
+    val newPattern = DateTimeFormatter.ofPattern("yyyyMMdd")
+    LocalDate.of(year.getOrElse("0000").toInt, month.getOrElse("00").toInt, day.getOrElse("00").toInt).format(newPattern)
+  }
 
 }
 

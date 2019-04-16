@@ -184,6 +184,15 @@ class DateSpec extends WordSpec with MustMatchers {
 
   }
 
+  "Date toString method" should {
+
+    "return date in yyyyMMdd format" in {
+
+      val date = correctDate
+      date.toString must equal("20030713")
+    }
+  }
+
 }
 
 object DateSpec {
