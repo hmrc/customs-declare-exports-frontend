@@ -24,6 +24,7 @@ import models.DeclarationFormats._
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import play.api.http.Status.NO_CONTENT
 import services.ExportsItemsCacheIds._
+import services.mapping.CachingMappingHelper
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec._
@@ -60,20 +61,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
   def commodityFromGoodsMeasure(cachedData: CacheMap): Option[Commodity] =
     cachedData
       .getEntry[CommodityMeasure](CommodityMeasure.commodityFormId)
-      .map(mapGoodsMeasure(_))
-
-  private def mapGoodsMeasure(data: CommodityMeasure) =
-    Commodity(
-      goodsMeasure = Some(
-        GoodsMeasure(
-          Some(createMeasure(data.grossMass)),
-          Some(createMeasure(data.netMass)),
-          data.supplementaryUnits.map(createMeasure(_))
-        )
-      )
-    )
-
-  private def createMeasure(unitValue: String) = Measure(Some(defaultMeasureCode), value = Some(BigDecimal(unitValue)))
+      .map(CachingMappingHelper.mapGoodsMeasure(_))
 
   def additionalInfo(cachedData: CacheMap): Option[Seq[AdditionalInformation]] =
     cachedData
@@ -110,25 +98,9 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
             sequenceNumeric = 1,
             statisticalValueAmount =
               Some(Amount(Some(defaultCurrencyCode), value = Some(BigDecimal(item.statisticalValue)))),
-            commodity = Some(commodityFromItemTypes(item))
+            commodity = Some(CachingMappingHelper.commodityFromItemTypes(item))
         )
       )
-
-  private def commodityFromItemTypes(itemType: ItemType): Commodity =
-    Commodity(
-      description = Some(itemType.descriptionOfGoods),
-      classifications = getClassificationsFromItemTypes(itemType),
-      dangerousGoods = itemType.unDangerousGoodsCode.map(code => Seq(DangerousGoods(Some(code)))).getOrElse(Seq.empty)
-    )
-
-  private def getClassificationsFromItemTypes(itemType: ItemType): Seq[Classification] =
-    Seq(
-      Classification(Some(itemType.combinedNomenclatureCode), identificationTypeCode = Some(CombinedNomenclatureCode))
-    ) ++ itemType.cusCode.map(id => Classification(Some(id), identificationTypeCode = Some(CUSCode))) ++
-      itemType.nationalAdditionalCodes.map(
-        code => Classification(Some(code), identificationTypeCode = Some(NationalAdditionalCode))
-      ) ++ itemType.taricAdditionalCodes
-      .map(code => Classification(Some(code), identificationTypeCode = Some(TARICAdditionalCode)))
 
   private def createGoodsItem(seq: Int, cachedData: CacheMap): GovernmentAgencyGoodsItem = {
     val itemTypeData = goodsItemFromItemTypes(cachedData)
