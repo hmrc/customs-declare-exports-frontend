@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter
 import play.api.data.Forms.{number, optional}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import utils.validators.forms.FieldValidator.isInRange
 
 import scala.util.Try
 
@@ -41,16 +42,17 @@ object Date {
   val monthKey = "month"
   val dayKey = "day"
 
-  private val isInRange: (Int, Int) => Int => Boolean = (min: Int, max: Int) =>
-    (input: Int) => input >= min && input <= max
+  private val yearLowerLimit = 2000
+  private val yearUpperLimit = 2099
 
   private val isDateFormatValid: Date => Boolean =
     date => Try(LocalDate.parse(date.toString)).isSuccess
 
   val mapping = Forms
     .mapping(
-      yearKey -> optional(number().verifying("dateTime.date.year.error.outOfRange", isInRange(2000, 2099)))
-        .verifying("dateTime.date.year.error.empty", _.nonEmpty),
+      yearKey -> optional(
+        number().verifying("dateTime.date.year.error.outOfRange", isInRange(yearLowerLimit, yearUpperLimit))
+      ).verifying("dateTime.date.year.error.empty", _.nonEmpty),
       monthKey -> optional(number()).verifying("dateTime.date.month.error.empty", _.nonEmpty),
       dayKey -> optional(number()).verifying("dateTime.date.day.error.empty", _.nonEmpty)
     )(Date.apply)(Date.unapply)
