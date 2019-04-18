@@ -92,9 +92,10 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       id = doc.documentIdentifier.map(_ + doc.documentPart.getOrElse("")),
       lpcoExemptionCode = doc.documentStatus,
       name = doc.documentStatusReason,
-      submitter = Some(GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(name = doc.issuingAuthorityName)),
+      submitter = doc.issuingAuthorityName.map(name =>
+        GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(name = Some(name))),
       effectiveDateTime =
-        doc.dateOfValidity.map(date => DateTimeElement(DateTimeString(formatCode = "102", value = date.toString))),
+        doc.dateOfValidity.map(date => DateTimeElement(DateTimeString(formatCode = dateTimeCode, value = date.toString))),
       writeOff = doc.documentQuantity.map(
         q => WriteOff(quantity = Some(Measure(unitCode = doc.measurementUnit, value = Some(q))))
       )
@@ -186,5 +187,6 @@ object ExportsItemsCacheIds {
     ItemType.id -> "Item type",
     AdditionalInformationData.formId -> "additional information"
   )
+  val dateTimeCode = "102"
 
 }
