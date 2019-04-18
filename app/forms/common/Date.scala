@@ -22,11 +22,10 @@ import java.time.format.DateTimeFormatter
 import play.api.data.Forms.{number, optional}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.isInRange
 
 import scala.util.Try
 
-case class Date(year: Option[Int], month: Option[Int], day: Option[Int]) {
+case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) {
 
   private val format102 = DateTimeFormatter.ofPattern("yyyyMMdd")
 
@@ -42,21 +41,23 @@ object Date {
   val monthKey = "month"
   val dayKey = "day"
 
-  private val yearLowerLimit = 2000
-  private val yearUpperLimit = 2099
+  private val dateLowerLimit = LocalDate.of(1999, 12, 31)
+  private val dateUpperLimit = LocalDate.of(2100, 1, 1)
 
   private val isDateFormatValid: Date => Boolean =
     date => Try(LocalDate.parse(date.toString)).isSuccess
 
+  private val isDateInRange: Date => Boolean = date =>
+    LocalDate.parse(date.toString).isAfter(dateLowerLimit) && LocalDate.parse(date.toString).isBefore(dateUpperLimit)
+
   val mapping = Forms
     .mapping(
-      yearKey -> optional(
-        number().verifying("dateTime.date.year.error.outOfRange", isInRange(yearLowerLimit, yearUpperLimit))
-      ).verifying("dateTime.date.year.error.empty", _.nonEmpty),
+      dayKey -> optional(number()).verifying("dateTime.date.day.error.empty", _.nonEmpty),
       monthKey -> optional(number()).verifying("dateTime.date.month.error.empty", _.nonEmpty),
-      dayKey -> optional(number()).verifying("dateTime.date.day.error.empty", _.nonEmpty)
+      yearKey -> optional(number()).verifying("dateTime.date.year.error.empty", _.nonEmpty)
     )(Date.apply)(Date.unapply)
-    .verifying("dateTime.date.error", isDateFormatValid)
+    .verifying("dateTime.date.error.format", isDateFormatValid)
+    .verifying("dateTime.date.error.outOfRange", date => !isDateFormatValid(date) || isDateInRange(date))
 
   def form(): Form[Date] = Form(mapping)
 }

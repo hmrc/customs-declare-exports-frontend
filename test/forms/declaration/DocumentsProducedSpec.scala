@@ -18,13 +18,15 @@ package forms.declaration
 
 import base.TestHelper
 import forms.common.Date._
-import forms.common.DateSpec.{correctDate, correctDateJSON}
+import forms.common.DateSpec.{correctDate, correctDateJSON, incorrectDate}
 import forms.declaration.DocumentsProduced._
+import helpers.views.components.DateMessages
+import helpers.views.declaration.DocumentsProducedMessages
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class DocumentsProducedSpec extends WordSpec with MustMatchers {
+class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsProducedMessages with DateMessages {
 
   import DocumentsProducedSpec._
 
@@ -37,7 +39,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         "is longer than 4 characters" in {
 
           val input = JsObject(Map(documentTypeCodeKey -> JsString("12345")))
-          val expectedErrors = Seq(FormError(documentTypeCodeKey, "supplementary.addDocument.documentTypeCode.error"))
+          val expectedErrors = Seq(FormError(documentTypeCodeKey, documentTypeCodeError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -45,7 +47,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         "is shorter than 4 characters" in {
 
           val input = JsObject(Map(documentTypeCodeKey -> JsString("123")))
-          val expectedErrors = Seq(FormError(documentTypeCodeKey, "supplementary.addDocument.documentTypeCode.error"))
+          val expectedErrors = Seq(FormError(documentTypeCodeKey, documentTypeCodeError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -53,7 +55,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         "contains special characters" in {
 
           val input = JsObject(Map(documentTypeCodeKey -> JsString("12#$")))
-          val expectedErrors = Seq(FormError(documentTypeCodeKey, "supplementary.addDocument.documentTypeCode.error"))
+          val expectedErrors = Seq(FormError(documentTypeCodeKey, documentTypeCodeError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -65,7 +67,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
           val input = JsObject(Map(documentIdentifierKey -> JsString(TestHelper.createRandomAlphanumericString(31))))
           val expectedErrors =
-            Seq(FormError(documentIdentifierKey, "supplementary.addDocument.documentIdentifier.error"))
+            Seq(FormError(documentIdentifierKey, documentIdentifierError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -74,7 +76,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
           val input = JsObject(Map(documentIdentifierKey -> JsString("12#$")))
           val expectedErrors =
-            Seq(FormError(documentIdentifierKey, "supplementary.addDocument.documentIdentifier.error"))
+            Seq(FormError(documentIdentifierKey, documentIdentifierError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -85,7 +87,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         "is longer than 5 characters" in {
 
           val input = JsObject(Map(documentPartKey -> JsString("123456")))
-          val expectedErrors = Seq(FormError(documentPartKey, "supplementary.addDocument.documentPart.error"))
+          val expectedErrors = Seq(FormError(documentPartKey, documentPartError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -93,7 +95,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         "contains special characters" in {
 
           val input = JsObject(Map(documentPartKey -> JsString("12#$")))
-          val expectedErrors = Seq(FormError(documentPartKey, "supplementary.addDocument.documentPart.error"))
+          val expectedErrors = Seq(FormError(documentPartKey, documentPartError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -104,7 +106,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         "is longer than 2 characters" in {
 
           val input = JsObject(Map(documentStatusKey -> JsString("ABC")))
-          val expectedErrors = Seq(FormError(documentStatusKey, "supplementary.addDocument.documentStatus.error"))
+          val expectedErrors = Seq(FormError(documentStatusKey, documentStatusError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -112,7 +114,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         "contains special characters" in {
 
           val input = JsObject(Map(documentStatusKey -> JsString("A@")))
-          val expectedErrors = Seq(FormError(documentStatusKey, "supplementary.addDocument.documentStatus.error"))
+          val expectedErrors = Seq(FormError(documentStatusKey, documentStatusError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -120,7 +122,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         "contains digits" in {
 
           val input = JsObject(Map(documentStatusKey -> JsString("A4")))
-          val expectedErrors = Seq(FormError(documentStatusKey, "supplementary.addDocument.documentStatus.error"))
+          val expectedErrors = Seq(FormError(documentStatusKey, documentStatusError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -128,7 +130,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         "contains lower case letters" in {
 
           val input = JsObject(Map(documentStatusKey -> JsString("Ab")))
-          val expectedErrors = Seq(FormError(documentStatusKey, "supplementary.addDocument.documentStatus.error"))
+          val expectedErrors = Seq(FormError(documentStatusKey, documentStatusError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -140,7 +142,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
           val input = JsObject(Map(documentStatusReasonKey -> JsString(TestHelper.createRandomAlphanumericString(36))))
           val expectedErrors =
-            Seq(FormError(documentStatusReasonKey, "supplementary.addDocument.documentStatusReason.error"))
+            Seq(FormError(documentStatusReasonKey, documentStatusReasonError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -149,7 +151,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
           val input = JsObject(Map(documentStatusReasonKey -> JsString("AB!@#$")))
           val expectedErrors =
-            Seq(FormError(documentStatusReasonKey, "supplementary.addDocument.documentStatusReason.error"))
+            Seq(FormError(documentStatusReasonKey, documentStatusReasonError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -161,7 +163,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
           val input = JsObject(Map(issuingAuthorityNameKey -> JsString(TestHelper.createRandomAlphanumericString(71))))
           val expectedErrors =
-            Seq(FormError(issuingAuthorityNameKey, "supplementary.addDocument.issuingAuthorityName.error.length"))
+            Seq(FormError(issuingAuthorityNameKey, issuingAuthorityNameLengthError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -178,7 +180,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
               )
             )
           )
-          val expectedErrors = Seq(FormError(dateOfValidityKey, "dateTime.date.error"))
+          val expectedErrors = Seq(FormError(dateOfValidityKey, dateFormatError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -190,7 +192,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
           val input = JsObject(Map(measurementUnitKey -> JsString("AB345")))
           val expectedErrors =
-            Seq(FormError(measurementUnitKey, "supplementary.addDocument.measurementUnit.error.length"))
+            Seq(FormError(measurementUnitKey, measurementUnitLengthError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -199,7 +201,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
           val input = JsObject(Map(measurementUnitKey -> JsString("AB3")))
           val expectedErrors =
-            Seq(FormError(measurementUnitKey, "supplementary.addDocument.measurementUnit.error.length"))
+            Seq(FormError(measurementUnitKey, measurementUnitLengthError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -208,7 +210,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
           val input = JsObject(Map(measurementUnitKey -> JsString("AB#@")))
           val expectedErrors =
-            Seq(FormError(measurementUnitKey, "supplementary.addDocument.measurementUnit.error.specialCharacters"))
+            Seq(FormError(measurementUnitKey, measurementUnitSpecialCharactersError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -220,7 +222,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
           val input = JsObject(Map(documentQuantityKey -> JsString("1234567890.1234567")))
           val expectedErrors =
-            Seq(FormError(documentQuantityKey, "supplementary.addDocument.documentQuantity.error.precision"))
+            Seq(FormError(documentQuantityKey, documentQuantityPrecisionError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -229,7 +231,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
 
           val input = JsObject(Map(documentQuantityKey -> JsString("0.1234567")))
           val expectedErrors =
-            Seq(FormError(documentQuantityKey, "supplementary.addDocument.documentQuantity.error.scale"))
+            Seq(FormError(documentQuantityKey, documentQuantityScaleError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -237,7 +239,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
         "is smaller than zero" in {
 
           val input = JsObject(Map(documentQuantityKey -> JsString("-1.23")))
-          val expectedErrors = Seq(FormError(documentQuantityKey, "supplementary.addDocument.documentQuantity.error"))
+          val expectedErrors = Seq(FormError(documentQuantityKey, documentQuantityError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -246,7 +248,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
       "provided with correct Document Identifier but no Document Part" in {
 
         val input = JsObject(Map(documentIdentifierKey -> JsString("ABCD1234")))
-        val expectedErrors = Seq(FormError("", "supplementary.addDocument.error.documentIdentifierAndPart"))
+        val expectedErrors = Seq(FormError("", documentIdentifierAndPartError))
 
         testFailedValidationErrors(input, expectedErrors)
       }
@@ -254,7 +256,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
       "provided with correct Document Part but no Document Identifier" in {
 
         val input = JsObject(Map(documentPartKey -> JsString("ABC45")))
-        val expectedErrors = Seq(FormError("", "supplementary.addDocument.error.documentIdentifierAndPart"))
+        val expectedErrors = Seq(FormError("", documentIdentifierAndPartError))
 
         testFailedValidationErrors(input, expectedErrors)
       }
@@ -262,7 +264,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
       "provided with correct Measurement Unit but no Document Quantity" in {
 
         val input = JsObject(Map(measurementUnitKey -> JsString("AB34")))
-        val expectedErrors = Seq(FormError("", "supplementary.addDocument.error.measurementUnitAndQuantity"))
+        val expectedErrors = Seq(FormError("", measurementUnitAndQuantityError))
 
         testFailedValidationErrors(input, expectedErrors)
       }
@@ -270,7 +272,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers {
       "provided with correct Document Quantity but no Measurement Unit" in {
 
         val input = JsObject(Map(documentQuantityKey -> JsString("123.45")))
-        val expectedErrors = Seq(FormError("", "supplementary.addDocument.error.measurementUnitAndQuantity"))
+        val expectedErrors = Seq(FormError("", measurementUnitAndQuantityError))
 
         testFailedValidationErrors(input, expectedErrors)
       }
@@ -325,31 +327,57 @@ object DocumentsProducedSpec {
   )
 
   val correctDocumentsProducedMap: Map[String, String] = Map(
-    "documentTypeCode" -> (categoryCode + typeCode),
-    "documentIdentifier" -> "ABCDEF1234567890",
-    "documentPart" -> "ABC12",
-    "documentStatus" -> "AB",
-    "documentStatusReason" -> "DocumentStatusReason",
+    documentTypeCodeKey -> (categoryCode + typeCode),
+    documentIdentifierKey -> "ABCDEF1234567890",
+    documentPartKey -> "ABC12",
+    documentStatusKey -> "AB",
+    documentStatusReasonKey -> "DocumentStatusReason",
     issuingAuthorityNameKey -> "Issuing Authority Name",
     s"$dateOfValidityKey.$yearKey" -> correctDate.year.get.toString,
     s"$dateOfValidityKey.$monthKey" -> correctDate.month.get.toString,
     s"$dateOfValidityKey.$dayKey" -> correctDate.day.get.toString,
     measurementUnitKey -> "AB12",
-    "documentQuantity" -> "1234567890.123456"
+    documentQuantityKey -> "1234567890.123456"
   )
 
   val correctDocumentsProducedJSON: JsValue = JsObject(
     Map(
-      "documentTypeCode" -> JsString(categoryCode + typeCode),
-      "documentIdentifier" -> JsString("ABCDEF1234567890"),
-      "documentPart" -> JsString("ABC12"),
-      "documentStatus" -> JsString("AB"),
-      "documentStatusReason" -> JsString("DocumentStatusReason"),
+      documentTypeCodeKey -> JsString(categoryCode + typeCode),
+      documentIdentifierKey -> JsString("ABCDEF1234567890"),
+      documentPartKey -> JsString("ABC12"),
+      documentStatusKey -> JsString("AB"),
+      documentStatusReasonKey -> JsString("DocumentStatusReason"),
       issuingAuthorityNameKey -> JsString("Issuing Authority Name"),
       dateOfValidityKey -> correctDateJSON,
       measurementUnitKey -> JsString("AB12"),
-      "documentQuantity" -> JsString("1234567890.123456")
+      documentQuantityKey -> JsString("1234567890.123456")
     )
+  )
+
+  val incorrectDocumentsProduced: DocumentsProduced = DocumentsProduced(
+    documentTypeCode = Some(TestHelper.createRandomAlphanumericString(5)),
+    documentIdentifier = Some(TestHelper.createRandomAlphanumericString(31)),
+    documentPart = Some(TestHelper.createRandomAlphanumericString(6)),
+    documentStatus = Some("ABC"),
+    documentStatusReason = Some(TestHelper.createRandomAlphanumericString(36)),
+    issuingAuthorityName = Some(TestHelper.createRandomAlphanumericString(71)),
+    dateOfValidity = Some(incorrectDate),
+    measurementUnit = Some(TestHelper.createRandomAlphanumericString(5)),
+    documentQuantity = Some(BigDecimal("12345678901234567"))
+  )
+
+  val incorrectDocumentsProducedMap: Map[String, String] = Map(
+    documentTypeCodeKey -> TestHelper.createRandomAlphanumericString(5),
+    documentIdentifierKey -> TestHelper.createRandomAlphanumericString(31),
+    documentPartKey -> TestHelper.createRandomAlphanumericString(6),
+    documentStatusKey -> "ABC",
+    documentStatusReasonKey -> TestHelper.createRandomAlphanumericString(36),
+    issuingAuthorityNameKey -> TestHelper.createRandomAlphanumericString(71),
+    s"$dateOfValidityKey.$yearKey" -> incorrectDate.year.get.toString,
+    s"$dateOfValidityKey.$monthKey" -> incorrectDate.month.get.toString,
+    s"$dateOfValidityKey.$dayKey" -> incorrectDate.day.get.toString,
+    measurementUnitKey -> TestHelper.createRandomAlphanumericString(5),
+    documentQuantityKey -> "12345678901234567"
   )
 
   val emptyDocumentsProduced = DocumentsProduced(
@@ -365,30 +393,30 @@ object DocumentsProducedSpec {
   )
 
   val emptyDocumentsProducedMap: Map[String, String] = Map(
-    "documentTypeCode" -> "",
-    "documentIdentifier" -> "",
-    "documentPart" -> "",
-    "documentStatus" -> "",
-    "documentStatusReason" -> "",
+    documentTypeCodeKey -> "",
+    documentIdentifierKey -> "",
+    documentPartKey -> "",
+    documentStatusKey -> "",
+    documentStatusReasonKey -> "",
     issuingAuthorityNameKey -> "",
     s"$dateOfValidityKey.$yearKey" -> "",
     s"$dateOfValidityKey.$monthKey" -> "",
     s"$dateOfValidityKey.$dayKey" -> "",
     measurementUnitKey -> "",
-    "documentQuantity" -> ""
+    documentQuantityKey -> ""
   )
 
   val emptyDocumentsProducedJSON: JsValue = JsObject(
     Map(
-      "documentTypeCode" -> JsString(""),
-      "documentIdentifier" -> JsString(""),
-      "documentPart" -> JsString(""),
-      "documentStatus" -> JsString(""),
-      "documentStatusReason" -> JsString(""),
+      documentTypeCodeKey -> JsString(""),
+      documentIdentifierKey -> JsString(""),
+      documentPartKey -> JsString(""),
+      documentStatusKey -> JsString(""),
+      documentStatusReasonKey -> JsString(""),
       issuingAuthorityNameKey -> JsString(""),
       dateOfValidityKey -> JsObject(Map("year" -> JsString(""), "month" -> JsString(""), "day" -> JsString(""))),
       measurementUnitKey -> JsString(""),
-      "documentQuantity" -> JsString("")
+      documentQuantityKey -> JsString("")
     )
   )
 

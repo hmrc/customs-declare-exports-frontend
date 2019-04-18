@@ -18,11 +18,10 @@ package views.declaration
 
 import base.TestHelper
 import forms.common.Date._
-import forms.common.DateSpec
-import forms.common.DateSpec.{correctDate, incorrectDate}
 import forms.declaration.DocumentsProduced
 import forms.declaration.DocumentsProduced._
-import forms.declaration.DocumentsProducedSpec.{correctDocumentsProduced, correctDocumentsProducedMap}
+import forms.declaration.DocumentsProducedSpec.{correctDocumentsProduced, correctDocumentsProducedMap, incorrectDocumentsProducedMap}
+import helpers.views.components.DateMessages
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
 import play.api.data.Form
 import play.twirl.api.Html
@@ -31,21 +30,9 @@ import views.html.declaration.documents_produced
 import views.tags.ViewTest
 
 @ViewTest
-class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages with CommonMessages {
+class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages with DateMessages with CommonMessages {
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
-  private val filledForm =
-    DocumentsProduced(
-      documentTypeCode = Some("test"),
-      documentIdentifier = Some("test1"),
-      documentPart = Some("test2"),
-      documentStatus = Some("test3"),
-      documentStatusReason = Some("test4"),
-      issuingAuthorityName = Some("test 5"),
-      dateOfValidity = Some(correctDate),
-      measurementUnit = Some("AB12"),
-      documentQuantity = Some(BigDecimal("234.22"))
-    )
 
   private def createView(form: Form[DocumentsProduced] = form, cachedDocuments: Seq[DocumentsProduced] = Seq()): Html =
     documents_produced(appConfig, form, cachedDocuments)(fakeRequest, messages)
@@ -112,40 +99,40 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView()
 
-      getElementById(view, "documentTypeCode-label").text() must be(messages(documentTypeCode))
-      getElementById(view, "documentTypeCode").attr("value") must be("")
+      getElementById(view, s"$documentTypeCodeKey-label").text() must be(messages(documentTypeCode))
+      getElementById(view, s"$documentTypeCodeKey").attr("value") must be("")
     }
 
     "display empty input with label for Document identifier" in {
 
       val view = createView()
 
-      getElementById(view, "documentIdentifier-label").text() must be(messages(documentIdentifier))
-      getElementById(view, "documentIdentifier").attr("value") must be("")
+      getElementById(view, s"$documentIdentifierKey-label").text() must be(messages(documentIdentifier))
+      getElementById(view, s"$documentIdentifierKey").attr("value") must be("")
     }
 
     "display empty input with label for Document part" in {
 
       val view = createView()
 
-      getElementById(view, "documentPart-label").text() must be(messages(documentPart))
-      getElementById(view, "documentPart").attr("value") must be("")
+      getElementById(view, s"$documentPartKey-label").text() must be(messages(documentPart))
+      getElementById(view, s"$documentPartKey").attr("value") must be("")
     }
 
     "display empty input with label for Document status" in {
 
       val view = createView()
 
-      getElementById(view, "documentStatus-label").text() must be(messages(documentStatus))
-      getElementById(view, "documentStatus").attr("value") must be("")
+      getElementById(view, s"$documentStatusKey-label").text() must be(messages(documentStatus))
+      getElementById(view, s"$documentStatusKey").attr("value") must be("")
     }
 
     "display empty input with label for Document status reason" in {
 
       val view = createView()
 
-      getElementById(view, "documentStatusReason-label").text() must be(messages(documentStatusReason))
-      getElementById(view, "documentStatusReason").attr("value") must be("")
+      getElementById(view, s"$documentStatusReasonKey-label").text() must be(messages(documentStatusReason))
+      getElementById(view, s"$documentStatusReasonKey").attr("value") must be("")
     }
 
     "display empty input with label for Issuing Authority Name" in {
@@ -176,8 +163,8 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView()
 
-      getElementById(view, "documentQuantity-label").text() must be(messages(documentQuantity))
-      getElementById(view, "documentQuantity").attr("value") must be("")
+      getElementById(view, s"$documentQuantityKey-label").text() must be(messages(documentQuantity))
+      getElementById(view, s"$documentQuantityKey").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Additional Information' page" in {
@@ -217,9 +204,9 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentTypeCodeError, "#documentTypeCode")
+      checkErrorLink(view, 1, documentTypeCodeError, s"#$documentTypeCodeKey")
 
-      getElementByCss(view, "#error-message-documentTypeCode-input").text() must be(messages(documentTypeCodeError))
+      getElementByCss(view, s"#error-message-$documentTypeCodeKey-input").text() must be(messages(documentTypeCodeError))
     }
 
     "display error for Document identifier" in {
@@ -233,9 +220,9 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentIdentifierError, "#documentIdentifier")
+      checkErrorLink(view, 1, documentIdentifierError, s"#$documentIdentifierKey")
 
-      getElementByCss(view, "#error-message-documentIdentifier-input").text() must be(messages(documentIdentifierError))
+      getElementByCss(view, s"#error-message-$documentIdentifierKey-input").text() must be(messages(documentIdentifierError))
     }
 
     "display error for Document part" in {
@@ -249,9 +236,9 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentPartError, "#documentPart")
+      checkErrorLink(view, 1, documentPartError, s"#$documentPartKey")
 
-      getElementByCss(view, "#error-message-documentPart-input").text() must be(messages(documentPartError))
+      getElementByCss(view, s"#error-message-$documentPartKey-input").text() must be(messages(documentPartError))
     }
 
     "display error for Document status" in {
@@ -263,9 +250,9 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentStatusError, "#documentStatus")
+      checkErrorLink(view, 1, documentStatusError, s"#$documentStatusKey")
 
-      getElementByCss(view, "#error-message-documentStatus-input").text() must be(messages(documentStatusError))
+      getElementByCss(view, s"#error-message-$documentStatusKey-input").text() must be(messages(documentStatusError))
     }
 
     "display error for Document status reason" in {
@@ -279,9 +266,9 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentStatusReasonError, "#documentStatusReason")
+      checkErrorLink(view, 1, documentStatusReasonError, s"#$documentStatusReasonKey")
 
-      getElementByCss(view, "#error-message-documentStatusReason-input").text() must be(
+      getElementByCss(view, s"#error-message-$documentStatusReasonKey-input").text() must be(
         messages(documentStatusReasonError)
       )
     }
@@ -311,14 +298,20 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         val view = createView(
           DocumentsProduced
             .form()
-            .fillAndValidate(correctDocumentsProduced.copy(dateOfValidity = Some(DateSpec.incorrectDate)))
+            .bind(
+              correctDocumentsProducedMap ++ Map(
+                s"$dateOfValidityKey.$yearKey" -> "1999",
+                s"$dateOfValidityKey.$monthKey" -> "12",
+                s"$dateOfValidityKey.$dayKey" -> "30"
+              )
+            )
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, "dateTime.date.year.error.outOfRange", s"#${dateOfValidityKey}_$yearKey")
+        checkErrorLink(view, 1, dateOutOfRangeError, s"#$dateOfValidityKey")
 
-        getElementByCss(view, s"#error-message-${dateOfValidityKey}_$yearKey-input").text() must be(
-          messages("dateTime.date.year.error.outOfRange")
+        getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(
+          messages(dateOutOfRangeError)
         )
       }
 
@@ -330,15 +323,16 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
             .bind(
               correctDocumentsProducedMap ++ Map(
                 s"$dateOfValidityKey.$monthKey" -> "13",
-                s"$dateOfValidityKey.$dayKey" -> "32")
+                s"$dateOfValidityKey.$dayKey" -> "32"
+              )
             )
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, "dateTime.date.error", s"#$dateOfValidityKey")
+        checkErrorLink(view, 1, dateFormatError, s"#$dateOfValidityKey")
 
         getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(
-          messages("dateTime.date.error")
+          messages(dateFormatError)
         )
       }
     }
@@ -370,30 +364,16 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentQuantityPrecisionError, "#documentQuantity")
+      checkErrorLink(view, 1, documentQuantityPrecisionError, s"#$documentQuantityKey")
 
-      getElementByCss(view, "#error-message-documentQuantity-input").text() must be(
+      getElementByCss(view, s"#error-message-$documentQuantityKey-input").text() must be(
         messages(documentQuantityPrecisionError)
       )
     }
 
     "display errors for all fields" in {
 
-      val form = DocumentsProduced
-        .form()
-        .fillAndValidate(
-          DocumentsProduced(
-            documentTypeCode = Some(TestHelper.createRandomAlphanumericString(5)),
-            documentIdentifier = Some(TestHelper.createRandomAlphanumericString(31)),
-            documentPart = Some(TestHelper.createRandomAlphanumericString(6)),
-            documentStatus = Some("ABC"),
-            documentStatusReason = Some(TestHelper.createRandomAlphanumericString(36)),
-            issuingAuthorityName = Some(TestHelper.createRandomAlphanumericString(71)),
-            dateOfValidity = Some(incorrectDate),
-            measurementUnit = Some(TestHelper.createRandomAlphanumericString(5)),
-            documentQuantity = Some(BigDecimal("12345678901234567"))
-          )
-        )
+      val form = DocumentsProduced.form().bind(incorrectDocumentsProducedMap)
 
       val view = createView(form)
 
@@ -404,7 +384,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorLink(view, 4, documentStatusError, s"#$documentStatusKey")
       checkErrorLink(view, 5, documentStatusReasonError, s"#$documentStatusReasonKey")
       checkErrorLink(view, 6, issuingAuthorityNameLengthError, s"#$issuingAuthorityNameKey")
-      checkErrorLink(view, 7, "dateTime.date.year.error.outOfRange", s"#${dateOfValidityKey}_$yearKey")
+      checkErrorLink(view, 7, dateFormatError, s"#$dateOfValidityKey")
       checkErrorLink(view, 8, measurementUnitLengthError, s"#$measurementUnitKey")
       checkErrorLink(view, 9, documentQuantityPrecisionError, s"#$documentQuantityKey")
 
@@ -422,8 +402,8 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementByCss(view, s"#error-message-$issuingAuthorityNameKey-input").text() must be(
         messages(issuingAuthorityNameLengthError)
       )
-      getElementByCss(view, s"#error-message-${dateOfValidityKey}_$yearKey-input").text() must be(
-        messages("dateTime.date.year.error.outOfRange")
+      getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(
+        messages(dateFormatError)
       )
       getElementByCss(view, s"#error-message-$measurementUnitKey-input").text() must be(
         messages(measurementUnitLengthError)
@@ -438,16 +418,21 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
     "display data in all inputs" in {
 
-      val form = DocumentsProduced.form().fill(filledForm)
+      val data = correctDocumentsProduced
+      val form = DocumentsProduced.form().fill(data)
       val view = createView(form)
 
-      getElementById(view, "documentTypeCode").attr("value") must be("test")
-      getElementById(view, "documentIdentifier").attr("value") must be("test1")
-      getElementById(view, "documentPart").attr("value") must be("test2")
-      getElementById(view, "documentStatus").attr("value") must be("test3")
-      getElementById(view, "documentStatusReason").attr("value") must be("test4")
-
-      getElementById(view, "documentQuantity").attr("value") must be("234.22")
+      getElementById(view, documentTypeCodeKey).attr("value") must equal(data.documentTypeCode.value)
+      getElementById(view, documentIdentifierKey).attr("value") must equal(data.documentIdentifier.value)
+      getElementById(view, documentPartKey).attr("value") must equal(data.documentPart.value)
+      getElementById(view, documentStatusKey).attr("value") must equal(data.documentStatus.value)
+      getElementById(view, documentStatusReasonKey).attr("value") must equal(data.documentStatusReason.value)
+      getElementById(view, issuingAuthorityNameKey).attr("value") must equal(data.issuingAuthorityName.value)
+      getElementById(view, s"${dateOfValidityKey}_$dayKey").attr("value") must equal(data.dateOfValidity.value.day.value.toString)
+      getElementById(view, s"${dateOfValidityKey}_$monthKey").attr("value") must equal(data.dateOfValidity.value.month.value.toString)
+      getElementById(view, s"${dateOfValidityKey}_$yearKey").attr("value") must equal(data.dateOfValidity.value.year.value.toString)
+      getElementById(view, measurementUnitKey).attr("value") must equal(data.measurementUnit.value)
+      getElementById(view, documentQuantityKey).attr("value") must equal(data.documentQuantity.value.toString)
     }
 
     "display a table with previously entered document" in {
