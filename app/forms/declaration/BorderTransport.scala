@@ -101,4 +101,21 @@ object TransportCodes {
       EuropeanVesselIDNumber,
       NameOfInlandWaterwayVessel
     )
+
+    val cash = "A"
+    val creditCard = "B"
+    val cheque = "C"
+    val other = "D"
+    val eFunds = "H"
+    val accHolder = "Y"
+    val notPrePaid = "Z"
+
+    val paymentMethods = Map(cash ->	 "standard.transportDetails.paymentMethod.cash",
+      creditCard -> "standard.transportDetails.paymentMethod.creditCard",
+      cheque -> "standard.transportDetails.paymentMethod.cheque",
+      other -> "standard.transportDetails.paymentMethod.other",
+      eFunds -> "standard.transportDetails.paymentMethod.eFunds",
+      accHolder -> "standard.transportDetails.paymentMethod.accHolder",
+      notPrePaid -> "standard.transportDetails.paymentMethod.notPrePaid")
+
 }

@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.CustomExportsBaseSpec
 import forms.declaration.TransportDetails
 import helpers.views.declaration.CommonMessages
 import play.api.data.Form
@@ -26,12 +27,14 @@ import views.html.components.{input_radio, input_text, input_text_autocomplete}
 import utils.RadioOption
 import forms.declaration.TransportCodes._
 import views.html.declaration.transport_details
+import base.TestHelper._
+import forms.Choice.AllowedChoiceValues
 
 @ViewTest
 class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessages {
 
   def createView(form: Form[TransportDetails] = form): Html =
-    transport_details(form)(fakeRequest, appConfig, messages, countries)
+    transport_details(form)(journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec), appConfig, messages, countries)
 
   "TransportDetails View" should {
 
@@ -69,6 +72,7 @@ class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessage
       view.body must include(meansOfTransportCrossingTheBorderType)
       view.body must include(meansOfTransportCrossingTheBorderIDNumber)
       view.body must include(container)
+      view.body must include(paymentMethod)
     }
   }
 
@@ -137,11 +141,19 @@ trait TransportDetailsFields extends ViewSpec {
       )
     )
   ).body
+
   val meansOfTransportCrossingTheBorderIDNumber =
     input_text(field = form("meansOfTransportCrossingTheBorderIDNumber"), label = "Reference").body
+
   val container = input_radio(
     field = form("container"),
     legend = "7/2 Were the goods in a container?",
     inputs = Seq(RadioOption("Yes", "true", messages("site.yes")), RadioOption("No", "false", messages("site.no")))
+  ).body
+
+  val paymentMethod = input_radio(
+    field = form("paymentMethod"),
+    legend = "4/2 Enter transport charges method of payment",
+    inputs = paymentMethods.toSeq.map{case (a,b) => RadioOption(messages(b), a, messages(b))}
   ).body
 }

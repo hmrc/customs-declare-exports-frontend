@@ -120,6 +120,7 @@ trait Generators {
   def transportCodesGen: Gen[String] = oneOf(TransportCodes.allowedModeOfTransportCodes.toSeq)
   def transportTypeCodesGen: Gen[String] = oneOf(TransportCodes.allowedMeansOfTransportTypeCodes.toSeq)
   def countryCodesGen: Gen[String] = oneOf(allCountries.map(_.countryName))
+  def paymentMethodsGen: Gen[String] = oneOf(TransportCodes.paymentMethods.keySet.toSeq)
 
   implicit val borderTransportArbitrary: Arbitrary[BorderTransport] = Arbitrary {
     for {
@@ -135,12 +136,14 @@ trait Generators {
       hasContainer <- Arbitrary(oneOf(true, false)).arbitrary
       meansOfTransportCrossingTheBorderType <- transportTypeCodesGen
       meansOfTransportCrossingTheBorderIDNumber <- option(alphaNumStr.suchThat(_.nonEmpty).map(_.take(25)))
+      paymentMethod <- option(paymentMethodsGen)
     } yield
       TransportDetails(
         Some(code),
         hasContainer,
         meansOfTransportCrossingTheBorderType,
-        meansOfTransportCrossingTheBorderIDNumber
+        meansOfTransportCrossingTheBorderIDNumber,
+        paymentMethod
       )
   }
 

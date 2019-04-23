@@ -462,6 +462,15 @@ supplementary.transportInfo.containerId.empty = Container ID cannot be empty
 supplementary.transportInfo.containerId.error.alphanumeric = Only alphanumeric characters allowed
 supplementary.transportInfo.containerId.error.length = Only 17 alphanumeric characters are allowed
 supplementary.transportInfo.containerId.error = Container ID is incorrect
+standard.transportDetails.paymentMethod = 4/2 Enter transport charges method of payment
+standard.transportDetails.paymentMethod.cash = Payment in cash
+standard.transportDetails.paymentMethod.creditCard = Payment by credit card
+standard.transportDetails.paymentMethod.cheque = Payment by cheque
+standard.transportDetails.paymentMethod.other = Other (e.g. Direct debit to cash account)
+standard.transportDetails.paymentMethod.eFunds = Electronic funds transfer
+standard.transportDetails.paymentMethod.accHolder = Account holder with carrier
+standard.transportDetails.paymentMethod.notPrePaid = Not pre-paid
+standard.transportDetails.paymentMethod.error= Input is not valid
 
 supplementary.totalAmountInvoiced.error = Total amount of invoiced items is incorrect
 supplementary.totalAmountInvoiced.empty = Total amount of invoiced items cannot be empty

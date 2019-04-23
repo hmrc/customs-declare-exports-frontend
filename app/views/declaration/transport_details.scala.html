@@ -21,8 +21,10 @@
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 @import forms.declaration.TransportCodes._
+@import models.requests.JourneyRequest
+@import forms.Choice.AllowedChoiceValues
 
-@(form: Form[TransportDetails])(implicit request: Request[_], appConfig: AppConfig, messages: Messages, countries: List[Country])
+@(form: Form[TransportDetails])(implicit request: JourneyRequest[_], appConfig: AppConfig, messages: Messages, countries: List[Country])
 
 @main_template(
     title = messages("supplementary.transportInfo.title"),
@@ -74,7 +76,13 @@
             legend = messages("supplementary.transportInfo.container"),
             inputs = Seq(RadioOption("Yes", "true", messages("site.yes")), RadioOption("No", "false", messages("site.no")))
         )
-
+        @if(request.choice.value == AllowedChoiceValues.StandardDec){
+            @components.input_radio(
+                field = form("paymentMethod"),
+                legend = messages("standard.transportDetails.paymentMethod"),
+                inputs =  paymentMethods.toSeq.map{case (a,b) => RadioOption(messages(b), a, messages(b))}
+            )
+        }
         @components.submit_button()
     }
 

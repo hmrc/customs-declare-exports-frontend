@@ -104,6 +104,19 @@ class TransportDetailsSpec
           .fold(_ must haveErrorMessage("Please give an answer"), _ => fail("should not succeed"))
       }
 
+      "invalid paymentMethod is supplied" in {
+
+        forAll(arbitrary[TransportDetails], alphaNumStr) { (transportDetails, method) =>
+          val data = transportDetails.copy(paymentMethod = Some(method))
+          Form(TransportDetails.formMapping)
+            .fillAndValidate(data)
+            .fold(
+              _ must haveErrorMessage("Input is not valid"),
+              _ => fail("should not succeed")
+            )
+        }
+      }
+
     }
   }
 }
