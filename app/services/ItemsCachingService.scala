@@ -78,17 +78,29 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
     GovernmentAgencyGoodsItemAdditionalDocument(
       categoryCode = doc.documentTypeCode.map(_.substring(0, 1)),
       typeCode = doc.documentTypeCode.map(_.substring(1)),
-      id = doc.documentIdentifier.map(_ + doc.documentPart.getOrElse("")),
+      id = createAdditionalDocumentId(doc),
       lpcoExemptionCode = doc.documentStatus,
       name = doc.documentStatusReason,
       submitter =
         doc.issuingAuthorityName.map(name => GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(name = Some(name))),
       effectiveDateTime = doc.dateOfValidity
         .map(date => DateTimeElement(DateTimeString(formatCode = dateTimeCode, value = date.to102Format))),
-      writeOff = doc.documentQuantity.map(
-        q => WriteOff(quantity = Some(Measure(unitCode = doc.measurementUnit, value = Some(q))))
-      )
+      writeOff = createAdditionalDocumentWriteOff(doc)
     )
+
+  private def createAdditionalDocumentId(doc: DocumentsProduced): Option[String] =
+    for {
+      documentIdentifierAndPart <- doc.documentIdentifierAndPart
+      documentIdentifier <- documentIdentifierAndPart.documentIdentifier
+      documentPart <- documentIdentifierAndPart.documentPart
+    } yield documentIdentifier + documentPart
+
+  private def createAdditionalDocumentWriteOff(doc: DocumentsProduced): Option[WriteOff] =
+    for {
+      documentWriteOff <- doc.documentWriteOff
+      measurementUnit <- documentWriteOff.measurementUnit
+      quantity <- documentWriteOff.documentQuantity
+    } yield WriteOff(quantity = Some(Measure(unitCode = Some(measurementUnit), value = Some(quantity))))
 
   def goodsItemFromItemTypes(cachedData: CacheMap): Option[GovernmentAgencyGoodsItem] =
     cachedData
