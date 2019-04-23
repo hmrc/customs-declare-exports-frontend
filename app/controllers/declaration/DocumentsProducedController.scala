@@ -21,8 +21,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{DocumentsProducedController, ItemsSummaryController}
 import controllers.util.CacheIdGenerator.{cacheId, goodsItemCacheId}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
-import forms.declaration.DocumentsProduced
-import forms.declaration.DocumentsProduced.form
+import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.DocumentsProduced.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.DocumentsProducedData

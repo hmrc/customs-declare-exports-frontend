@@ -21,6 +21,7 @@ import forms.common.DateSpec.correctDate
 import forms.declaration.Document.AllowedValues.TemporaryStorage
 import forms.declaration.TransportCodes._
 import forms.declaration._
+import forms.declaration.additionaldocuments.DocumentsProduced
 import generators.Generators
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import org.scalacheck.Gen.listOfN

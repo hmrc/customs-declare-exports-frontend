@@ -18,7 +18,8 @@ package services
 import com.google.inject.Inject
 import config.AppConfig
 import forms.declaration.ItemType.IdentificationTypeCodes._
-import forms.declaration.{CommodityMeasure, DocumentsProduced, ItemType, PackageInformation}
+import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.{CommodityMeasure, ItemType, PackageInformation}
 import javax.inject.Singleton
 import models.DeclarationFormats._
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}

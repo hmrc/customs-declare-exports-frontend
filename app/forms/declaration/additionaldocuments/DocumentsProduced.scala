@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.declaration.additionaldocuments
 
 import forms.common.Date
 import play.api.data.Forms._
