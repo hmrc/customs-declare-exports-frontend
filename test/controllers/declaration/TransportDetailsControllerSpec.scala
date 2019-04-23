@@ -19,7 +19,7 @@ package controllers.declaration
 import base.CSRFUtil._
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice
-import forms.Choice.{AllowedChoiceValues, choiceId}
+import forms.Choice.{choiceId, AllowedChoiceValues}
 import forms.declaration.TransportDetails
 import generators.Generators
 import models.requests.JourneyRequest
@@ -71,7 +71,8 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
         val result = route(app, request).value
 
         contentAsString(result).replaceCSRF mustBe
-          view(form.fill(transport), TestHelper.journeyRequest(request, AllowedChoiceValues.SupplementaryDec)).body.replaceCSRF()
+          view(form.fill(transport), TestHelper.journeyRequest(request, AllowedChoiceValues.SupplementaryDec)).body
+            .replaceCSRF()
       }
     }
   }
@@ -103,8 +104,10 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
         val result = route(app, request).value
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result).replaceCSRF mustBe view(form.bindFromRequest()(request),
-          TestHelper.journeyRequest(request,AllowedChoiceValues.SupplementaryDec)).body.replaceCSRF
+        contentAsString(result).replaceCSRF mustBe view(
+          form.bindFromRequest()(request),
+          TestHelper.journeyRequest(request, AllowedChoiceValues.SupplementaryDec)
+        ).body.replaceCSRF
       }
 
     }
@@ -128,7 +131,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
               "meansOfTransportCrossingTheBorderIDNumber",
               transportDetails.meansOfTransportCrossingTheBorderIDNumber.getOrElse("")
             ),
-            ("paymentMethod",transportDetails.paymentMethod.getOrElse(""))
+            ("paymentMethod", transportDetails.paymentMethod.getOrElse(""))
           )
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value

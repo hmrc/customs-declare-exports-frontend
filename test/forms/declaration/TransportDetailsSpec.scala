@@ -110,10 +110,7 @@ class TransportDetailsSpec
           val data = transportDetails.copy(paymentMethod = Some(method))
           Form(TransportDetails.formMapping)
             .fillAndValidate(data)
-            .fold(
-              _ must haveErrorMessage("Input is not valid"),
-              _ => fail("should not succeed")
-            )
+            .fold(_ must haveErrorMessage("Input is not valid"), _ => fail("should not succeed"))
         }
       }
 

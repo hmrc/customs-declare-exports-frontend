@@ -34,7 +34,12 @@ import forms.Choice.AllowedChoiceValues
 class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessages {
 
   def createView(form: Form[TransportDetails] = form): Html =
-    transport_details(form)(journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec), appConfig, messages, countries)
+    transport_details(form)(
+      journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec),
+      appConfig,
+      messages,
+      countries
+    )
 
   "TransportDetails View" should {
 
@@ -154,6 +159,6 @@ trait TransportDetailsFields extends ViewSpec {
   val paymentMethod = input_radio(
     field = form("paymentMethod"),
     legend = "4/2 Enter transport charges method of payment",
-    inputs = paymentMethods.toSeq.map{case (a,b) => RadioOption(messages(b), a, messages(b))}
+    inputs = paymentMethods.toSeq.map { case (a, b) => RadioOption(messages(b), a, messages(b)) }
   ).body
 }

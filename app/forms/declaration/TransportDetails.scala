@@ -65,10 +65,7 @@ object TransportDetails {
     ),
     "paymentMethod" -> optional(
       text()
-        .verifying(
-          "standard.transportDetails.paymentMethod.error",
-          isContainedIn(paymentMethods.keys)
-        )
+        .verifying("standard.transportDetails.paymentMethod.error", isContainedIn(paymentMethods.keys))
     )
   )(TransportDetails.apply)(TransportDetails.unapply)
 

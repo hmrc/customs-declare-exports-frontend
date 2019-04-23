@@ -44,7 +44,9 @@ object TestHelper {
   val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
-  def journeyRequest(fakeRequest: FakeRequest[_], choice:String) : JourneyRequest[_] =
-    JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
-      Choice(choice))
+  def journeyRequest(fakeRequest: FakeRequest[_], choice: String): JourneyRequest[_] =
+    JourneyRequest(
+      AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
+      Choice(choice)
+    )
 }
