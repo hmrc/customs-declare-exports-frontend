@@ -15,8 +15,7 @@
  */
 
 package models.declaration
-
-import forms.declaration.DocumentsProduced
+import forms.declaration.additionaldocuments.DocumentsProduced
 import play.api.libs.json.Json
 
 case class DocumentsProducedData(documents: Seq[DocumentsProduced])

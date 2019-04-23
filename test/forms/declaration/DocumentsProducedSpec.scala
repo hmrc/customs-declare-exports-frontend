@@ -19,7 +19,8 @@ package forms.declaration
 import base.TestHelper
 import forms.common.Date._
 import forms.common.DateSpec.{correctDate, correctDateJSON, incorrectDate}
-import forms.declaration.DocumentsProduced._
+import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.components.DateMessages
 import helpers.views.declaration.DocumentsProducedMessages
 import org.scalatest.{MustMatchers, WordSpec}
