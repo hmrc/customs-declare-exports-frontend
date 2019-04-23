@@ -58,6 +58,9 @@ object FieldValidator {
   val lengthInRange: Int => Int => String => Boolean = (min: Int) =>
     (max: Int) => (input: String) => input.length >= min && input.length <= max
 
+  val isInRange: (Int, Int) => Int => Boolean = (min: Int, max: Int) => (input: Int) =>
+    input >= min && input <= max
+
   val isNumeric: String => Boolean = (input: String) => input.forall(_.isDigit)
 
   val isAllCapitalLetter: String => Boolean = (input: String) => input.forall(_.isUpper)

@@ -88,7 +88,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator isEmpty" should {
+  "FieldValidator isEmpty" should {
     "return false" when {
       "provided with non empty value" in {
         isEmpty(anyString) must be(false)
@@ -116,7 +116,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator noLongerThan" should {
+  "FieldValidator noLongerThan" should {
     "return false" when {
       "provided with negative length value" in {
         val length = -1
@@ -152,7 +152,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidation noShorterThan" should {
+  "FieldValidator noShorterThan" should {
     "return false" when {
       "provided with shorter string" in {
         val length = 20
@@ -187,7 +187,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidation hasSpecificLength" should {
+  "FieldValidator hasSpecificLength" should {
     "return false" when {
       "provided with string shorter than expected value" in {
         val length = 20
@@ -211,7 +211,79 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator isNumeric" should {
+  "FieldValidator isInRange" should {
+    
+    "return false" when {
+
+      "provided with Int just below lower limit" in {
+
+        val lowerLimit = 4
+        val upperLimit = 13
+        val input = lowerLimit - 1
+
+        isInRange(lowerLimit, upperLimit)(input) must be(false)
+      }
+
+      "provided with Int just above upper limit" in {
+
+        val lowerLimit = 4
+        val upperLimit = 13
+        val input = upperLimit + 1
+
+        isInRange(lowerLimit, upperLimit)(input) must be(false)
+      }
+
+      "provided with Int smaller than lower limit" in {
+
+        val lowerLimit = 4
+        val upperLimit = 13
+        val input = -3
+
+        isInRange(lowerLimit, upperLimit)(input) must be(false)
+      }
+
+      "provided with Int bigger than upper limit" in {
+
+        val lowerLimit = 4
+        val upperLimit = 13
+        val input = 1245
+
+        isInRange(lowerLimit, upperLimit)(input) must be(false)
+      }
+    }
+    
+    "return true" when {
+
+      "provided with Int at the lower limit" in {
+
+        val lowerLimit = 4
+        val upperLimit = 13
+        val input = lowerLimit
+
+        isInRange(lowerLimit, upperLimit)(input) must be(true)
+      }
+
+      "provided with Int at the upper limit" in {
+
+        val lowerLimit = 4
+        val upperLimit = 13
+        val input = upperLimit
+
+        isInRange(lowerLimit, upperLimit)(input) must be(true)
+      }
+
+      "provided with Int in the middle of allowed range" in {
+
+        val lowerLimit = 4
+        val upperLimit = 13
+        val input = 10
+
+        isInRange(lowerLimit, upperLimit)(input) must be(true)
+      }
+    }
+  }
+  
+  "FieldValidator isNumeric" should {
     "return false" when {
       "provided with alphabetic character" in {
         val input = "A"
@@ -252,7 +324,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator isAllCapitalLetter" should {
+  "FieldValidator isAllCapitalLetter" should {
     "return false" when {
       "provided with string with numbers" in {
         val input = "ASD123ASD"
@@ -280,7 +352,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator on isAlphabetic" should {
+  "FieldValidator on isAlphabetic" should {
     "return false" when {
       "provided with numeric character" in {
         val input = "1"
@@ -321,7 +393,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator isAlphanumeric" should {
+  "FieldValidator isAlphanumeric" should {
     "return false" when {
       "provided with special character" in {
         val input = "%"
@@ -357,7 +429,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidation isAlphanumericWithSpecialCharacters" should {
+  "FieldValidator isAlphanumericWithSpecialCharacters" should {
     "return false" when {
       "provided with string contains special characters not present in allowed characters set" in {
         val specialCharacters = Set(' ', '$', '@')
@@ -391,7 +463,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidation isAlphanumericWithAllowedSpecialCharacters" should {
+  "FieldValidator isAlphanumericWithAllowedSpecialCharacters" should {
     "return false" when {
       "provided with unsupported special characters" in {
         val input = "%$%$#@"
@@ -425,7 +497,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator startsWithCapitalLetter" should {
+  "FieldValidator startsWithCapitalLetter" should {
     "return false" when {
       "input start with lowercase" in {
         val input = "lowercaseString"
@@ -447,7 +519,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator isContainedIn" should {
+  "FieldValidator isContainedIn" should {
     "return false" when {
       "list is empty" in {
         isContainedIn(List())("element") must be(false)
@@ -467,7 +539,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator containsNotOnlyZeros" should {
+  "FieldValidator containsNotOnlyZeros" should {
     "return false" when {
       "string contains only zero" in {
         containsNotOnlyZeros("0") must be(false)
@@ -504,7 +576,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator isTailNumeric" should {
+  "FieldValidator isTailNumeric" should {
     "return false" when {
       "input is empty" in {
         isTailNumeric("") must be(false)
@@ -526,7 +598,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator hasNoMoreDecimalPlacesThan" should {
+  "FieldValidator hasNoMoreDecimalPlacesThan" should {
     "return false" when {
       "input contains non-numeric characters" in {
         val input = "123A"
@@ -583,7 +655,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
   val totalDecimalLength = 10
   val decimalPlaces = 5
 
-  "FormFieldValidator validate decimal" should {
+  "FieldValidator validate decimal" should {
     "return false" when {
       "input contains letters" in {
         val input = "123.asd213"
@@ -643,7 +715,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator containsDuplicates" should {
+  "FieldValidator containsDuplicates" should {
 
     "return false" when {
       "input contains no value" in {
@@ -685,7 +757,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "FormFieldValidator containsUniques" should {
+  "FieldValidator containsUniques" should {
 
     "return false" when {
       "input contains 2 identical values" in {

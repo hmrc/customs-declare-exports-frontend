@@ -59,10 +59,11 @@ general.inquiries.help.link = General enquires help
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-dateTime.date.error = Please, enter full date
-dateTime.date.year.error = Year format is incorrect
-dateTime.date.month.error = Month format is incorrect
-dateTime.date.day.error = Day format is incorrect
+dateTime.date.error.format = Date format is incorrect
+dateTime.date.error.outOfRange = Date is out of allowed range (2000-01-01 to 2099-12-31)
+dateTime.date.day.error.empty = Day cannot be empty
+dateTime.date.month.error.empty = Month cannot be empty
+dateTime.date.year.error.empty = Year cannot be empty
 dateTime.time.error = Please, enter full time
 dateTime.time.hour.error = Hour format is incorrect
 dateTime.time.minute.error = Minute format is incorrect

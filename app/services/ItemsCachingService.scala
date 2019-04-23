@@ -92,10 +92,10 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       id = doc.documentIdentifier.map(_ + doc.documentPart.getOrElse("")),
       lpcoExemptionCode = doc.documentStatus,
       name = doc.documentStatusReason,
-      submitter = doc.issuingAuthorityName.map(name =>
-        GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(name = Some(name))),
-      effectiveDateTime =
-        doc.dateOfValidity.map(date => DateTimeElement(DateTimeString(formatCode = dateTimeCode, value = date.toString))),
+      submitter =
+        doc.issuingAuthorityName.map(name => GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(name = Some(name))),
+      effectiveDateTime = doc.dateOfValidity
+        .map(date => DateTimeElement(DateTimeString(formatCode = dateTimeCode, value = date.to102Format))),
       writeOff = doc.documentQuantity.map(
         q => WriteOff(quantity = Some(Measure(unitCode = doc.measurementUnit, value = Some(q))))
       )
