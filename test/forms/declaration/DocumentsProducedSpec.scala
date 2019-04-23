@@ -19,6 +19,8 @@ package forms.declaration
 import base.TestHelper
 import forms.common.Date._
 import forms.common.DateSpec.{correctDate, correctDateJSON, incorrectDate}
+import forms.declaration.additionaldocuments.DocumentIdentifierAndPart._
+import forms.declaration.additionaldocuments.DocumentIdentifierAndPartSpec._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.components.DateMessages
@@ -62,41 +64,33 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsPro
         }
       }
 
-      "provided with Document Identifier" which {
+      "provided with Document Identifier and Part" which {
 
-        "is longer than 30 characters" in {
+        "has missing Document Identifier" in {
 
-          val input = JsObject(Map(documentIdentifierKey -> JsString(TestHelper.createRandomAlphanumericString(31))))
-          val expectedErrors =
-            Seq(FormError(documentIdentifierKey, documentIdentifierError))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-
-        "contains special characters" in {
-
-          val input = JsObject(Map(documentIdentifierKey -> JsString("12#$")))
-          val expectedErrors =
-            Seq(FormError(documentIdentifierKey, documentIdentifierError))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-      }
-
-      "provided with Document Part" which {
-
-        "is longer than 5 characters" in {
-
-          val input = JsObject(Map(documentPartKey -> JsString("123456")))
-          val expectedErrors = Seq(FormError(documentPartKey, documentPartError))
+          val input = JsObject(Map(documentIdentifierAndPartKey -> JsObject(Map(documentPartKey -> JsString("ABC12")))))
+          val expectedErrors = Seq(FormError(documentIdentifierAndPartKey, documentIdentifierAndPartError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
-        "contains special characters" in {
+        "has missing Document Part" in {
 
-          val input = JsObject(Map(documentPartKey -> JsString("12#$")))
-          val expectedErrors = Seq(FormError(documentPartKey, documentPartError))
+          val input = JsObject(
+            Map(documentIdentifierAndPartKey -> JsObject(Map(documentIdentifierKey -> JsString("ABCDEF1234567890"))))
+          )
+          val expectedErrors = Seq(FormError(documentIdentifierAndPartKey, documentIdentifierAndPartError))
+
+          testFailedValidationErrors(input, expectedErrors)
+        }
+
+        "contains errors in its fields" in {
+
+          val input = JsObject(Map(documentIdentifierAndPartKey -> incorrectDocumentIdentifierAndPartJSON))
+          val expectedErrors = Seq(
+            FormError(s"$documentIdentifierAndPartKey.$documentIdentifierKey", documentIdentifierError),
+            FormError(s"$documentIdentifierAndPartKey.$documentPartKey", documentPartError)
+          )
 
           testFailedValidationErrors(input, expectedErrors)
         }
@@ -246,22 +240,6 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsPro
         }
       }
 
-      "provided with correct Document Identifier but no Document Part" in {
-
-        val input = JsObject(Map(documentIdentifierKey -> JsString("ABCD1234")))
-        val expectedErrors = Seq(FormError("", documentIdentifierAndPartError))
-
-        testFailedValidationErrors(input, expectedErrors)
-      }
-
-      "provided with correct Document Part but no Document Identifier" in {
-
-        val input = JsObject(Map(documentPartKey -> JsString("ABC45")))
-        val expectedErrors = Seq(FormError("", documentIdentifierAndPartError))
-
-        testFailedValidationErrors(input, expectedErrors)
-      }
-
       "provided with correct Measurement Unit but no Document Quantity" in {
 
         val input = JsObject(Map(measurementUnitKey -> JsString("AB34")))
@@ -317,8 +295,7 @@ object DocumentsProducedSpec {
 
   val correctDocumentsProduced: DocumentsProduced = DocumentsProduced(
     documentTypeCode = Some(categoryCode + typeCode),
-    documentIdentifier = Some("ABCDEF1234567890"),
-    documentPart = Some("ABC12"),
+    documentIdentifierAndPart = Some(correctDocumentIdentifierAndPart),
     documentStatus = Some("AB"),
     documentStatusReason = Some("DocumentStatusReason"),
     issuingAuthorityName = Some("Issuing Authority Name"),
@@ -329,8 +306,8 @@ object DocumentsProducedSpec {
 
   val correctDocumentsProducedMap: Map[String, String] = Map(
     documentTypeCodeKey -> (categoryCode + typeCode),
-    documentIdentifierKey -> "ABCDEF1234567890",
-    documentPartKey -> "ABC12",
+    s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> "ABCDEF1234567890",
+    s"$documentIdentifierAndPartKey.$documentPartKey" -> "ABC12",
     documentStatusKey -> "AB",
     documentStatusReasonKey -> "DocumentStatusReason",
     issuingAuthorityNameKey -> "Issuing Authority Name",
@@ -344,8 +321,7 @@ object DocumentsProducedSpec {
   val correctDocumentsProducedJSON: JsValue = JsObject(
     Map(
       documentTypeCodeKey -> JsString(categoryCode + typeCode),
-      documentIdentifierKey -> JsString("ABCDEF1234567890"),
-      documentPartKey -> JsString("ABC12"),
+      documentIdentifierAndPartKey -> correctDocumentIdentifierAndPartJSON,
       documentStatusKey -> JsString("AB"),
       documentStatusReasonKey -> JsString("DocumentStatusReason"),
       issuingAuthorityNameKey -> JsString("Issuing Authority Name"),
@@ -357,8 +333,7 @@ object DocumentsProducedSpec {
 
   val incorrectDocumentsProduced: DocumentsProduced = DocumentsProduced(
     documentTypeCode = Some(TestHelper.createRandomAlphanumericString(5)),
-    documentIdentifier = Some(TestHelper.createRandomAlphanumericString(31)),
-    documentPart = Some(TestHelper.createRandomAlphanumericString(6)),
+    documentIdentifierAndPart = Some(incorrectDocumentIdentifierAndPart),
     documentStatus = Some("ABC"),
     documentStatusReason = Some(TestHelper.createRandomAlphanumericString(36)),
     issuingAuthorityName = Some(TestHelper.createRandomAlphanumericString(71)),
@@ -369,8 +344,8 @@ object DocumentsProducedSpec {
 
   val incorrectDocumentsProducedMap: Map[String, String] = Map(
     documentTypeCodeKey -> TestHelper.createRandomAlphanumericString(5),
-    documentIdentifierKey -> TestHelper.createRandomAlphanumericString(31),
-    documentPartKey -> TestHelper.createRandomAlphanumericString(6),
+    s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> TestHelper.createRandomAlphanumericString(31),
+    s"$documentIdentifierAndPartKey.$documentPartKey" -> TestHelper.createRandomAlphanumericString(6),
     documentStatusKey -> "ABC",
     documentStatusReasonKey -> TestHelper.createRandomAlphanumericString(36),
     issuingAuthorityNameKey -> TestHelper.createRandomAlphanumericString(71),
@@ -383,8 +358,7 @@ object DocumentsProducedSpec {
 
   val emptyDocumentsProduced = DocumentsProduced(
     documentTypeCode = None,
-    documentIdentifier = None,
-    documentPart = None,
+    documentIdentifierAndPart = None,
     documentStatus = None,
     documentStatusReason = None,
     issuingAuthorityName = None,
@@ -395,8 +369,8 @@ object DocumentsProducedSpec {
 
   val emptyDocumentsProducedMap: Map[String, String] = Map(
     documentTypeCodeKey -> "",
-    documentIdentifierKey -> "",
-    documentPartKey -> "",
+    s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> "",
+    s"$documentIdentifierAndPartKey.$documentPartKey" -> "",
     documentStatusKey -> "",
     documentStatusReasonKey -> "",
     issuingAuthorityNameKey -> "",
@@ -410,8 +384,7 @@ object DocumentsProducedSpec {
   val emptyDocumentsProducedJSON: JsValue = JsObject(
     Map(
       documentTypeCodeKey -> JsString(""),
-      documentIdentifierKey -> JsString(""),
-      documentPartKey -> JsString(""),
+      documentIdentifierAndPartKey -> emptyDocumentIdentifierAndPartJSON,
       documentStatusKey -> JsString(""),
       documentStatusReasonKey -> JsString(""),
       issuingAuthorityNameKey -> JsString(""),

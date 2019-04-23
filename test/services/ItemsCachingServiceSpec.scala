@@ -108,7 +108,9 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
         case (actual, expected) =>
           actual.categoryCode.value must equal(expected.documentTypeCode.value.head.toString)
           actual.typeCode.value must equal(expected.documentTypeCode.value.drop(1))
-          actual.id.value must equal(expected.documentIdentifier.value + expected.documentPart.value)
+          actual.id.value must equal(
+            expected.documentIdentifierAndPart.value.documentIdentifier.value + expected.documentIdentifierAndPart.value.documentPart.value
+          )
           actual.lpcoExemptionCode must equal(expected.documentStatus)
           actual.name must equal(expected.documentStatusReason)
           actual.submitter.value.name.value must equal(expected.issuingAuthorityName.value)

@@ -24,8 +24,7 @@ import utils.validators.forms.FieldValidator._
 
 case class DocumentsProduced(
   documentTypeCode: Option[String],
-  documentIdentifier: Option[String],
-  documentPart: Option[String],
+  documentIdentifierAndPart: Option[DocumentIdentifierAndPart],
   documentStatus: Option[String],
   documentStatusReason: Option[String],
   issuingAuthorityName: Option[String],
@@ -38,8 +37,7 @@ case class DocumentsProduced(
   def isDefined: Boolean =
     List(
       documentTypeCode,
-      documentIdentifier,
-      documentPart,
+      documentIdentifierAndPart,
       documentStatus,
       documentStatusReason,
       issuingAuthorityName,
@@ -59,8 +57,7 @@ object DocumentsProduced {
   private val documentQuantityMaxDecimalPlaces = 6
 
   val documentTypeCodeKey = "documentTypeCode"
-  val documentIdentifierKey = "documentIdentifier"
-  val documentPartKey = "documentPart"
+  val documentIdentifierAndPartKey = "documentIdentifierAndPart"
   val documentStatusKey = "documentStatus"
   val documentStatusReasonKey = "documentStatusReason"
   val issuingAuthorityNameKey = "issuingAuthorityName"
@@ -73,12 +70,7 @@ object DocumentsProduced {
       documentTypeCodeKey -> optional(
         text().verifying("supplementary.addDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)
       ),
-      documentIdentifierKey -> optional(
-        text().verifying("supplementary.addDocument.documentIdentifier.error", isAlphanumeric and noLongerThan(30))
-      ),
-      documentPartKey -> optional(
-        text().verifying("supplementary.addDocument.documentPart.error", isAlphanumeric and noLongerThan(5))
-      ),
+      documentIdentifierAndPartKey -> optional(DocumentIdentifierAndPart.mapping),
       documentStatusKey -> optional(
         text().verifying("supplementary.addDocument.documentStatus.error", noLongerThan(2) and isAllCapitalLetter)
       ),
@@ -115,14 +107,10 @@ object DocumentsProduced {
             .verifying("supplementary.addDocument.documentQuantity.error", _ >= 0)
         )
     )(DocumentsProduced.apply)(DocumentsProduced.unapply)
-    .verifying("supplementary.addDocument.error.documentIdentifierAndPart", validateDocumentIdentifierAndPart(_))
     .verifying(
       "supplementary.addDocument.error.measurementUnitAndQuantity",
       validateMeasurementUnitAndDocumentQuantity(_)
     )
-
-  private def validateDocumentIdentifierAndPart(doc: DocumentsProduced): Boolean =
-    (doc.documentIdentifier.isEmpty && doc.documentPart.isEmpty) || (doc.documentIdentifier.nonEmpty && doc.documentPart.nonEmpty)
 
   private def validateMeasurementUnitAndDocumentQuantity(doc: DocumentsProduced): Boolean =
     (doc.measurementUnit.isEmpty && doc.documentQuantity.isEmpty) || (doc.measurementUnit.nonEmpty && doc.documentQuantity.nonEmpty)

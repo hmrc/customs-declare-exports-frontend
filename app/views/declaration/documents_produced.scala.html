@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import controllers.util.Remove
+@import forms.declaration.additionaldocuments.DocumentIdentifierAndPart._
 @import forms.declaration.additionaldocuments.DocumentsProduced
 @import forms.declaration.additionaldocuments.DocumentsProduced._
 @import uk.gov.hmrc.play.views.html._
@@ -52,8 +53,8 @@
                 @documents.zipWithIndex.map { case (item, index) =>
                     <tr>
                         <td scope="row">@item.documentTypeCode</td>
-                        <td>@item.documentIdentifier</td>
-                        <td>@item.documentPart</td>
+                        <td>@item.documentIdentifierAndPart.map(_.documentIdentifier)</td>
+                        <td>@item.documentIdentifierAndPart.map(_.documentPart)</td>
                         <td>@item.documentStatus</td>
                         <td>@item.documentStatusReason</td>
                         <td>@item.issuingAuthorityName</td>
@@ -79,17 +80,20 @@
             labelClass = Some("bold-small")
         )
 
-        @components.input_text(
-            field = form(documentIdentifierKey),
-            label = messages("supplementary.addDocument.documentIdentifier"),
-            labelClass = Some("bold-small")
-        )
+        @components.form_fields_wrapper(field = form(documentIdentifierAndPartKey)) {
 
-        @components.input_text(
-            field = form(documentPartKey),
-            label = messages("supplementary.addDocument.documentPart"),
-            labelClass = Some("bold-small")
-        )
+            @components.input_text(
+                field = form(s"$documentIdentifierAndPartKey.$documentIdentifierKey"),
+                label = messages("supplementary.addDocument.documentIdentifier"),
+                labelClass = Some("bold-small")
+            )
+
+            @components.input_text(
+                field = form(s"$documentIdentifierAndPartKey.$documentPartKey"),
+                label = messages("supplementary.addDocument.documentPart"),
+                labelClass = Some("bold-small")
+            )
+        }
 
         @components.input_text(
             field = form(documentStatusKey),

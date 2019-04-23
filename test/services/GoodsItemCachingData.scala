@@ -21,7 +21,7 @@ import forms.common.DateSpec.correctDate
 import forms.declaration.Document.AllowedValues.TemporaryStorage
 import forms.declaration.TransportCodes._
 import forms.declaration._
-import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentsProduced}
 import generators.Generators
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import org.scalacheck.Gen.listOfN
@@ -59,15 +59,19 @@ trait GoodsItemCachingData extends Generators {
   def createDocumentsProducedData() = DocumentsProducedData(getDataSeq(10, createDocsProduced))
 
   def createDocsProduced(): DocumentsProduced = DocumentsProduced(
-    Some(createRandomAlphanumericString(4)),
-    Some(createRandomAlphanumericString(30)),
-    Some(createRandomAlphanumericString(5)),
-    Some(createRandomAlphanumericString(2)),
-    Some(createRandomAlphanumericString(35)),
-    Some(createRandomAlphanumericString(70)),
-    Some(correctDate),
-    Some(createRandomAlphanumericString(4)),
-    Some(BigDecimal(123))
+    documentTypeCode = Some(createRandomAlphanumericString(4)),
+    documentIdentifierAndPart = Some(createDocumentIdentifierAndPart()),
+    documentStatus = Some(createRandomAlphanumericString(2)),
+    documentStatusReason = Some(createRandomAlphanumericString(35)),
+    issuingAuthorityName = Some(createRandomAlphanumericString(70)),
+    dateOfValidity = Some(correctDate),
+    measurementUnit = Some(createRandomAlphanumericString(4)),
+    documentQuantity = Some(BigDecimal(123))
+  )
+
+  private def createDocumentIdentifierAndPart(): DocumentIdentifierAndPart = DocumentIdentifierAndPart(
+    documentIdentifier = Some(createRandomAlphanumericString(30)),
+    documentPart = Some(createRandomAlphanumericString(5))
   )
 
   def createItemType(): ItemType = ItemType(

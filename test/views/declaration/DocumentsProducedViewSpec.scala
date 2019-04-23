@@ -18,16 +18,15 @@ package views.declaration
 
 import base.TestHelper
 import forms.common.Date._
-import forms.declaration.DocumentsProduced
-import forms.declaration.DocumentsProduced._
-import forms.declaration.DocumentsProducedSpec.{
-  correctDocumentsProduced,
-  correctDocumentsProducedMap,
-  incorrectDocumentsProducedMap
-}
+import forms.declaration.DocumentsProducedSpec._
+import forms.declaration.additionaldocuments.DocumentIdentifierAndPart._
+import forms.declaration.additionaldocuments.DocumentIdentifierAndPartSpec._
+import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.components.DateMessages
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
 import views.html.declaration.documents_produced
@@ -111,16 +110,20 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView()
 
-      getElementById(view, s"$documentIdentifierKey-label").text() must be(messages(documentIdentifier))
-      getElementById(view, s"$documentIdentifierKey").attr("value") must be("")
+      getElementById(view, s"${documentIdentifierAndPartKey}_$documentIdentifierKey-label").text() must be(
+        messages(documentIdentifier)
+      )
+      getElementById(view, s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must be("")
     }
 
     "display empty input with label for Document part" in {
 
       val view = createView()
 
-      getElementById(view, s"$documentPartKey-label").text() must be(messages(documentPart))
-      getElementById(view, s"$documentPartKey").attr("value") must be("")
+      getElementById(view, s"${documentIdentifierAndPartKey}_$documentPartKey-label").text() must be(
+        messages(documentPart)
+      )
+      getElementById(view, s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") must be("")
     }
 
     "display empty input with label for Document status" in {
@@ -217,36 +220,77 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
     "display error for Document identifier" in {
 
-      val view = createView(
-        DocumentsProduced
-          .form()
-          .fillAndValidate(
-            correctDocumentsProduced.copy(documentIdentifier = Some(TestHelper.createRandomAlphanumericString(31)))
-          )
+      val documentsProducedWithIncorrectDocumentIdentifier = correctDocumentsProduced.copy(
+        documentIdentifierAndPart = Some(
+          correctDocumentIdentifierAndPart
+            .copy(documentIdentifier = Some(incorrectDocumentIdentifierAndPart.documentIdentifier.get))
+        )
       )
+      val view =
+        createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifier)))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentIdentifierError, s"#$documentIdentifierKey")
+      checkErrorLink(view, 1, documentIdentifierError, s"#${documentIdentifierAndPartKey}_$documentIdentifierKey")
 
-      getElementByCss(view, s"#error-message-$documentIdentifierKey-input").text() must be(
-        messages(documentIdentifierError)
-      )
+      getElementByCss(view, s"#error-message-${documentIdentifierAndPartKey}_$documentIdentifierKey-input")
+        .text() must be(messages(documentIdentifierError))
     }
 
     "display error for Document part" in {
 
-      val view = createView(
-        DocumentsProduced
-          .form()
-          .fillAndValidate(
-            correctDocumentsProduced.copy(documentPart = Some(TestHelper.createRandomAlphanumericString(6)))
-          )
+      val documentsProducedWithIncorrectDocumentPart = correctDocumentsProduced.copy(
+        documentIdentifierAndPart = Some(
+          correctDocumentIdentifierAndPart
+            .copy(documentPart = Some(incorrectDocumentIdentifierAndPart.documentPart.get))
+        )
       )
+      val view = createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentPart)))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentPartError, s"#$documentPartKey")
+      checkErrorLink(view, 1, documentPartError, s"#${documentIdentifierAndPartKey}_$documentPartKey")
 
-      getElementByCss(view, s"#error-message-$documentPartKey-input").text() must be(messages(documentPartError))
+      getElementByCss(view, s"#error-message-${documentIdentifierAndPartKey}_$documentPartKey-input").text() must be(
+        messages(documentPartError)
+      )
+    }
+
+    "display error for Document Identifier and Part" when {
+
+      "provided with Document Identifier but no Document Part" in {
+
+        val documentsProducedWithIncorrectDocumentPart = correctDocumentsProduced.copy(
+          documentIdentifierAndPart = Some(
+            emptyDocumentIdentifierAndPart
+              .copy(documentIdentifier = Some(correctDocumentIdentifierAndPart.documentIdentifier.get))
+          )
+        )
+        val view = createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentPart)))
+
+        checkErrorsSummary(view)
+        checkErrorLink(view, 1, documentIdentifierAndPartError, s"#$documentIdentifierAndPartKey")
+
+        getElementByCss(view, s"#error-message-$documentIdentifierAndPartKey-input").text() must be(
+          messages(documentIdentifierAndPartError)
+        )
+      }
+
+      "provided with Document Part but no Document Identifier" in {
+
+        val documentsProducedWithIncorrectDocumentPart = correctDocumentsProduced.copy(
+          documentIdentifierAndPart = Some(
+            emptyDocumentIdentifierAndPart
+              .copy(documentPart = Some(correctDocumentIdentifierAndPart.documentPart.get))
+          )
+        )
+        val view = createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentPart)))
+
+        checkErrorsSummary(view)
+        checkErrorLink(view, 1, documentIdentifierAndPartError, s"#$documentIdentifierAndPartKey")
+
+        getElementByCss(view, s"#error-message-$documentIdentifierAndPartKey-input").text() must be(
+          messages(documentIdentifierAndPartError)
+        )
+      }
     }
 
     "display error for Document status" in {
@@ -383,8 +427,8 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentTypeCodeError, s"#$documentTypeCodeKey")
-      checkErrorLink(view, 2, documentIdentifierError, s"#$documentIdentifierKey")
-      checkErrorLink(view, 3, documentPartError, s"#$documentPartKey")
+      checkErrorLink(view, 2, documentIdentifierError, s"#${documentIdentifierAndPartKey}_$documentIdentifierKey")
+      checkErrorLink(view, 3, documentPartError, s"#${documentIdentifierAndPartKey}_$documentPartKey")
       checkErrorLink(view, 4, documentStatusError, s"#$documentStatusKey")
       checkErrorLink(view, 5, documentStatusReasonError, s"#$documentStatusReasonKey")
       checkErrorLink(view, 6, issuingAuthorityNameLengthError, s"#$issuingAuthorityNameKey")
@@ -395,10 +439,11 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementByCss(view, s"#error-message-$documentTypeCodeKey-input").text() must be(
         messages(documentTypeCodeError)
       )
-      getElementByCss(view, s"#error-message-$documentIdentifierKey-input").text() must be(
-        messages(documentIdentifierError)
+      getElementByCss(view, s"#error-message-${documentIdentifierAndPartKey}_$documentIdentifierKey-input")
+        .text() must be(messages(documentIdentifierError))
+      getElementByCss(view, s"#error-message-${documentIdentifierAndPartKey}_$documentPartKey-input").text() must be(
+        messages(documentPartError)
       )
-      getElementByCss(view, s"#error-message-$documentPartKey-input").text() must be(messages(documentPartError))
       getElementByCss(view, s"#error-message-$documentStatusKey-input").text() must be(messages(documentStatusError))
       getElementByCss(view, s"#error-message-$documentStatusReasonKey-input").text() must be(
         messages(documentStatusReasonError)
@@ -425,8 +470,12 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       val view = createView(form)
 
       getElementById(view, documentTypeCodeKey).attr("value") must equal(data.documentTypeCode.value)
-      getElementById(view, documentIdentifierKey).attr("value") must equal(data.documentIdentifier.value)
-      getElementById(view, documentPartKey).attr("value") must equal(data.documentPart.value)
+      getElementById(view, s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must equal(
+        data.documentIdentifierAndPart.value.documentIdentifier.value
+      )
+      getElementById(view, s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") must equal(
+        data.documentIdentifierAndPart.value.documentPart.value
+      )
       getElementById(view, documentStatusKey).attr("value") must equal(data.documentStatus.value)
       getElementById(view, documentStatusReasonKey).attr("value") must equal(data.documentStatusReason.value)
       getElementById(view, issuingAuthorityNameKey).attr("value") must equal(data.issuingAuthorityName.value)
@@ -479,10 +528,10 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         correctDocumentsProduced.documentTypeCode.get
       )
       getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)").text() must equal(
-        correctDocumentsProduced.documentIdentifier.get
+        correctDocumentsProduced.documentIdentifierAndPart.get.documentIdentifier.get
       )
       getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(3)").text() must equal(
-        correctDocumentsProduced.documentPart.get
+        correctDocumentsProduced.documentIdentifierAndPart.get.documentPart.get
       )
       getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(4)").text() must equal(
         correctDocumentsProduced.documentStatus.get
