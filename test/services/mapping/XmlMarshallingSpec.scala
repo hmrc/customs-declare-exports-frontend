@@ -18,14 +18,22 @@ package services.mapping
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
+import wco.datamodel.wco.metadata_ds_dms._2.{MetaDataAgencyAssignedCustomizationCodeType, MetaDataAgencyAssignedCustomizationVersionCodeType}
 
 class XmlMarshallingSpec extends WordSpec with Matchers with MockitoSugar{
 
-  val expectedPayload = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<MetaData xmlns=\"urn:wco:datamodel:WCO:DocumentMetaData-DMS:2\"/>\n"
+  val expectedPayload = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+    "<MetaData xmlns=\"urn:wco:datamodel:WCO:DocumentMetaData-DMS:2\">\n" +
+    "    <WCODataModelVersionCode>3.6</WCODataModelVersionCode>\n" +
+    "    <WCOTypeName>DEC</WCOTypeName>\n" +
+    "    <ResponsibleCountryCode>GB</ResponsibleCountryCode>\n" +
+    "    <ResponsibleAgencyName>HMRC</ResponsibleAgencyName>\n" +
+    "    <AgencyAssignedCustomizationCode>v2.1</AgencyAssignedCustomizationCode>\n" +
+    "</MetaData>\n"
 
   "XmlMarshalling" should {
-    "generate correct xml payload section when marshalled" in {
-      val metaData  = new MetaData
+    "generate correct xml payload for empty Metadata with defaults when marshalled" in {
+      val metaData  = MetaDataBuilder.build()
 
       import java.io.StringWriter
 
