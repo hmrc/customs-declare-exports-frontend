@@ -17,18 +17,18 @@
 package controllers.declaration
 
 import base.CSRFUtil._
-import base.CustomExportsBaseSpec
+import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.{choiceId, AllowedChoiceValues}
 import forms.declaration.TransportDetails
 import generators.Generators
+import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import org.scalacheck.Arbitrary._
 import org.scalatest.prop.PropertyChecks
 import play.api.data.Form
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import services.Countries
@@ -41,7 +41,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
 
   val form: Form[TransportDetails] = Form(TransportDetails.formMapping)
 
-  def view(form: Form[TransportDetails], request: FakeRequest[_]): Html =
+  def view(form: Form[TransportDetails], request: JourneyRequest[_]): Html =
     transport_details(form)(request, appConfig, messages, countries = Countries.allCountries)
 
   before {
@@ -71,7 +71,8 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
         val result = route(app, request).value
 
         contentAsString(result).replaceCSRF mustBe
-          view(form.fill(transport), request).body.replaceCSRF()
+          view(form.fill(transport), TestHelper.journeyRequest(request, AllowedChoiceValues.SupplementaryDec)).body
+            .replaceCSRF()
       }
     }
   }
@@ -103,7 +104,10 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
         val result = route(app, request).value
 
         status(result) must be(BAD_REQUEST)
-        contentAsString(result).replaceCSRF mustBe view(form.bindFromRequest()(request), request).body.replaceCSRF
+        contentAsString(result).replaceCSRF mustBe view(
+          form.bindFromRequest()(request),
+          TestHelper.journeyRequest(request, AllowedChoiceValues.SupplementaryDec)
+        ).body.replaceCSRF
       }
 
     }
@@ -126,7 +130,8 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
             (
               "meansOfTransportCrossingTheBorderIDNumber",
               transportDetails.meansOfTransportCrossingTheBorderIDNumber.getOrElse("")
-            )
+            ),
+            ("paymentMethod", transportDetails.paymentMethod.getOrElse(""))
           )
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value

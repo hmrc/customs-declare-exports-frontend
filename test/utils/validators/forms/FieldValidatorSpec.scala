@@ -212,7 +212,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
   }
 
   "FieldValidator isInRange" should {
-    
+
     "return false" when {
 
       "provided with Int just below lower limit" in {
@@ -251,7 +251,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
         isInRange(lowerLimit, upperLimit)(input) must be(false)
       }
     }
-    
+
     "return true" when {
 
       "provided with Int at the lower limit" in {
@@ -282,7 +282,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
       }
     }
   }
-  
+
   "FieldValidator isNumeric" should {
     "return false" when {
       "provided with alphabetic character" in {

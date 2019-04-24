@@ -20,7 +20,11 @@ import base.TestHelper
 import forms.common.Date._
 import forms.declaration.DocumentsProduced
 import forms.declaration.DocumentsProduced._
-import forms.declaration.DocumentsProducedSpec.{correctDocumentsProduced, correctDocumentsProducedMap, incorrectDocumentsProducedMap}
+import forms.declaration.DocumentsProducedSpec.{
+  correctDocumentsProduced,
+  correctDocumentsProducedMap,
+  incorrectDocumentsProducedMap
+}
 import helpers.views.components.DateMessages
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
 import play.api.data.Form
@@ -206,7 +210,9 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentTypeCodeError, s"#$documentTypeCodeKey")
 
-      getElementByCss(view, s"#error-message-$documentTypeCodeKey-input").text() must be(messages(documentTypeCodeError))
+      getElementByCss(view, s"#error-message-$documentTypeCodeKey-input").text() must be(
+        messages(documentTypeCodeError)
+      )
     }
 
     "display error for Document identifier" in {
@@ -222,7 +228,9 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentIdentifierError, s"#$documentIdentifierKey")
 
-      getElementByCss(view, s"#error-message-$documentIdentifierKey-input").text() must be(messages(documentIdentifierError))
+      getElementByCss(view, s"#error-message-$documentIdentifierKey-input").text() must be(
+        messages(documentIdentifierError)
+      )
     }
 
     "display error for Document part" in {
@@ -310,9 +318,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, dateOutOfRangeError, s"#$dateOfValidityKey")
 
-        getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(
-          messages(dateOutOfRangeError)
-        )
+        getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(messages(dateOutOfRangeError))
       }
 
       "provided with non-existing month and day" in {
@@ -331,9 +337,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, dateFormatError, s"#$dateOfValidityKey")
 
-        getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(
-          messages(dateFormatError)
-        )
+        getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(messages(dateFormatError))
       }
     }
 
@@ -402,9 +406,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementByCss(view, s"#error-message-$issuingAuthorityNameKey-input").text() must be(
         messages(issuingAuthorityNameLengthError)
       )
-      getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(
-        messages(dateFormatError)
-      )
+      getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(messages(dateFormatError))
       getElementByCss(view, s"#error-message-$measurementUnitKey-input").text() must be(
         messages(measurementUnitLengthError)
       )
@@ -428,9 +430,15 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementById(view, documentStatusKey).attr("value") must equal(data.documentStatus.value)
       getElementById(view, documentStatusReasonKey).attr("value") must equal(data.documentStatusReason.value)
       getElementById(view, issuingAuthorityNameKey).attr("value") must equal(data.issuingAuthorityName.value)
-      getElementById(view, s"${dateOfValidityKey}_$dayKey").attr("value") must equal(data.dateOfValidity.value.day.value.toString)
-      getElementById(view, s"${dateOfValidityKey}_$monthKey").attr("value") must equal(data.dateOfValidity.value.month.value.toString)
-      getElementById(view, s"${dateOfValidityKey}_$yearKey").attr("value") must equal(data.dateOfValidity.value.year.value.toString)
+      getElementById(view, s"${dateOfValidityKey}_$dayKey").attr("value") must equal(
+        data.dateOfValidity.value.day.value.toString
+      )
+      getElementById(view, s"${dateOfValidityKey}_$monthKey").attr("value") must equal(
+        data.dateOfValidity.value.month.value.toString
+      )
+      getElementById(view, s"${dateOfValidityKey}_$yearKey").attr("value") must equal(
+        data.dateOfValidity.value.year.value.toString
+      )
       getElementById(view, measurementUnitKey).attr("value") must equal(data.measurementUnit.value)
       getElementById(view, documentQuantityKey).attr("value") must equal(data.documentQuantity.value.toString)
     }

@@ -28,7 +28,8 @@ case class TransportDetails(
   meansOfTransportCrossingTheBorderNationality: Option[String],
   container: Boolean,
   meansOfTransportCrossingTheBorderType: String,
-  meansOfTransportCrossingTheBorderIDNumber: Option[String]
+  meansOfTransportCrossingTheBorderIDNumber: Option[String],
+  paymentMethod: Option[String] = None
 )
 
 object TransportDetails {
@@ -61,6 +62,10 @@ object TransportDetails {
       text()
         .verifying("supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length", noLongerThan(35))
         .verifying("supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters", isAlphanumeric)
+    ),
+    "paymentMethod" -> optional(
+      text()
+        .verifying("standard.transportDetails.paymentMethod.error", isContainedIn(paymentMethods.keys))
     )
   )(TransportDetails.apply)(TransportDetails.unapply)
 

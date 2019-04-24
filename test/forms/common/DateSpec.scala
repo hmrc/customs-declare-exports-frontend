@@ -44,10 +44,7 @@ class DateSpec extends WordSpec with MustMatchers with DateMessages {
       "provided with year only" in {
 
         val input = Map("year" -> "2003")
-        val expectedErrors = Seq(
-          FormError(monthKey, monthEmptyFieldError),
-          FormError(dayKey, dayEmptyFieldError)
-        )
+        val expectedErrors = Seq(FormError(monthKey, monthEmptyFieldError), FormError(dayKey, dayEmptyFieldError))
 
         testFailedValidationErrors(input, expectedErrors)
       }
@@ -55,10 +52,7 @@ class DateSpec extends WordSpec with MustMatchers with DateMessages {
       "provided with month only" in {
 
         val input = Map("month" -> "7")
-        val expectedErrors = Seq(
-          FormError(yearKey, yearEmptyFieldError),
-          FormError(dayKey, dayEmptyFieldError)
-        )
+        val expectedErrors = Seq(FormError(yearKey, yearEmptyFieldError), FormError(dayKey, dayEmptyFieldError))
 
         testFailedValidationErrors(input, expectedErrors)
       }
@@ -66,10 +60,7 @@ class DateSpec extends WordSpec with MustMatchers with DateMessages {
       "provided with day only" in {
 
         val input = Map("day" -> "13")
-        val expectedErrors = Seq(
-          FormError(yearKey, yearEmptyFieldError),
-          FormError(monthKey, monthEmptyFieldError)
-        )
+        val expectedErrors = Seq(FormError(yearKey, yearEmptyFieldError), FormError(monthKey, monthEmptyFieldError))
 
         testFailedValidationErrors(input, expectedErrors)
       }
@@ -224,13 +215,7 @@ class DateSpec extends WordSpec with MustMatchers with DateMessages {
 
       "provided with date on the lower limit" in {
 
-        val input = JsObject(
-          Map(
-            yearKey -> JsString("2000"),
-            monthKey -> JsString("1"),
-            dayKey -> JsString("1")
-          )
-        )
+        val input = JsObject(Map(yearKey -> JsString("2000"), monthKey -> JsString("1"), dayKey -> JsString("1")))
         val form = Date.form().bind(input)
 
         form.errors must equal(Seq.empty)
@@ -238,13 +223,7 @@ class DateSpec extends WordSpec with MustMatchers with DateMessages {
 
       "provided with date on the upper limit" in {
 
-        val input = JsObject(
-          Map(
-            yearKey -> JsString("2099"),
-            monthKey -> JsString("12"),
-            dayKey -> JsString("31")
-          )
-        )
+        val input = JsObject(Map(yearKey -> JsString("2099"), monthKey -> JsString("12"), dayKey -> JsString("31")))
         val form = Date.form().bind(input)
 
         form.errors must equal(Seq.empty)
@@ -252,13 +231,8 @@ class DateSpec extends WordSpec with MustMatchers with DateMessages {
 
       "provided with correct data but with '0' before month and day" in {
 
-        val input: JsValue = JsObject(
-          Map(
-            yearKey -> JsString("2003"),
-            monthKey -> JsString("01"),
-            dayKey -> JsString("02")
-          )
-        )
+        val input: JsValue =
+          JsObject(Map(yearKey -> JsString("2003"), monthKey -> JsString("01"), dayKey -> JsString("02")))
         val form = Date.form().bind(input)
 
         form.errors must equal(Seq.empty)
@@ -289,7 +263,8 @@ object DateSpec {
   private val incorrectDayValue = 32
 
   val correctDate = Date(year = Some(correctYearValue), month = Some(correctMonthValue), day = Some(correctDayValue))
-  val incorrectDate = Date(year = Some(incorrectYearValue), month = Some(incorrectMonthValue), day = Some(incorrectDayValue))
+  val incorrectDate =
+    Date(year = Some(incorrectYearValue), month = Some(incorrectMonthValue), day = Some(incorrectDayValue))
 
   val correctDateJSON: JsValue = JsObject(
     Map(

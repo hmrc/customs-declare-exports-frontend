@@ -21,7 +21,10 @@ import forms.declaration.ConsigneeDetailsSpec.{correctConsigneeDetailsAddressOnl
 import forms.declaration.DeclarantDetailsSpec.{correctDeclarantDetailsAddressOnly, correctDeclarantDetailsEORIOnly}
 import forms.declaration.DeclarationHolder
 import forms.declaration.ExporterDetailsSpec.{correctExporterDetailsAddressOnly, correctExporterDetailsEORIOnly}
-import forms.declaration.RepresentativeDetailsSpec.{correctRepresentativeDetailsAddressOnly, correctRepresentativeDetailsEORIOnly}
+import forms.declaration.RepresentativeDetailsSpec.{
+  correctRepresentativeDetailsAddressOnly,
+  correctRepresentativeDetailsEORIOnly
+}
 import helpers.views.declaration.summary.PartiesMessages
 import models.declaration.DeclarationAdditionalActorsDataSpec.correctAdditionalActorsData
 import models.declaration.{DeclarationHoldersData, Parties}
