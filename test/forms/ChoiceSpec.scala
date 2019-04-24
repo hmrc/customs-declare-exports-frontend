@@ -45,7 +45,7 @@ class ChoiceSpec extends WordSpec with MustMatchers {
 
     "not attach any error" when {
       "provided with valid input" in {
-        val form = Choice.form().bind(correctChoiceJSON)
+        val form = Choice.form().bind(correctSupplementaryChoiceJSON)
 
         form.hasErrors must be(false)
       }
@@ -59,9 +59,10 @@ object ChoiceSpec {
   val incorrectChoice = Choice("InvalidChoice")
   val emptyChoice = Choice("")
 
-  val correctChoiceJSON: JsValue = createChoiceJSON(SupplementaryDec)
+  val correctSupplementaryChoiceJSON: JsValue = createChoiceJSON(SupplementaryDec)
+  val correctStandardChoiceJSON: JsValue = createChoiceJSON(StandardDec)
   val incorrectChoiceJSON: JsValue = createChoiceJSON("InvalidChoice")
   val emptyChoiceJSON: JsValue = createChoiceJSON()
 
-  def createChoiceJSON(choiceValue: String = ""): JsValue = JsObject(Map("choice" -> JsString(choiceValue)))
+  def createChoiceJSON(choiceValue: String = ""): JsValue = JsObject(Map("value" -> JsString(choiceValue)))
 }

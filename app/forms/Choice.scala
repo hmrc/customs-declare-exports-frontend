@@ -32,11 +32,11 @@ object Choice {
   private val correctChoices = Set(SupplementaryDec, StandardDec, CancelDec, Submissions)
 
   val choiceMapping: Mapping[Choice] = Forms.single(
-    "choice" -> optional(
+    "value" -> optional(
       text()
         .verifying("choicePage.input.error.incorrectValue", isContainedIn(correctChoices))
     ).verifying("choicePage.input.error.empty", _.isDefined)
-      .transform[Choice](value => Choice(value.getOrElse("")), choice => Some(choice.value))
+      .transform[Choice](choice => Choice(choice.getOrElse("")), choice => Some(choice.value))
   )
 
   def form(): Form[Choice] = Form(choiceMapping)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package services.mapping.goodsshipment
+package services.mapping.declaration
 
 import forms.declaration.{ExporterDetails, ExporterDetailsSpec}
 import org.scalatest.{Matchers, WordSpec}

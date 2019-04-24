@@ -15,23 +15,17 @@
  */
 
 package services.mapping.goodsshipment
-import forms.declaration.{EntityDetails, ExporterDetails}
-
-import scala.collection.JavaConverters._
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
+import scala.collection.JavaConverters._
+
 object GoodsShipmentBuilder {
 
-  def build(implicit cacheMap: CacheMap): GoodsShipment =
-    cacheMap
-      .getEntry[ExporterDetails](ExporterDetails.id)
-      .map(data => createGoodsShipment(data.details))
-      .orNull
-
-  private def createGoodsShipment(details: EntityDetails)(implicit cacheMap: CacheMap): GoodsShipment = {
+  def build(implicit cacheMap: CacheMap): GoodsShipment = {
     val goodsShipment = new GoodsShipment()
+
     goodsShipment.setTransactionNatureCode(GoodsShipmentTransactionTypeBuilder.build)
     goodsShipment.setConsignee(ConsigneeBuilder.build)
     goodsShipment.setConsignment(ConsignmentBuilder.build)
@@ -41,7 +35,8 @@ object GoodsShipmentBuilder {
     goodsShipment.setWarehouse(WarehouseBuilder.build)
     goodsShipment.getPreviousDocument
       .addAll(PreviousDocumentsBuilder.build)
-    goodsShipment.getGovernmentAgencyGoodsItem.addAll(GovernmentAgencyGoodsItemBuilder.build.asJava) //TODO: Placeholder for Matt to hook his stuff here
+    goodsShipment.getGovernmentAgencyGoodsItem.addAll(GovernmentAgencyGoodsItemBuilder.build.asJava)
+    goodsShipment.getAEOMutualRecognitionParty.addAll(AEOMutualRecognitionPartiesBuilder.build)
 
     goodsShipment
   }
