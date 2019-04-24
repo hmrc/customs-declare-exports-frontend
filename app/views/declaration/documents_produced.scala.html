@@ -18,6 +18,7 @@
 @import controllers.declaration.routes._
 @import controllers.util.Remove
 @import forms.declaration.additionaldocuments.DocumentIdentifierAndPart._
+@import forms.declaration.additionaldocuments.DocumentWriteOff._
 @import forms.declaration.additionaldocuments.DocumentsProduced
 @import forms.declaration.additionaldocuments.DocumentsProduced._
 @import uk.gov.hmrc.play.views.html._
@@ -59,8 +60,8 @@
                         <td>@item.documentStatusReason</td>
                         <td>@item.issuingAuthorityName</td>
                         <td>@item.dateOfValidity</td>
-                        <td>@item.measurementUnit</td>
-                        <td>@item.documentQuantity</td>
+                        <td>@item.documentWriteOff.map(_.measurementUnit)</td>
+                        <td>@item.documentWriteOff.map(_.documentQuantity)</td>
                         <td><button class="button--secondary" name="@Remove.toString" value="@index">@messages("site.remove")</button></td>
                     </tr>
                 }
@@ -119,17 +120,20 @@
             form = form
         )
 
-        @components.input_text(
-            field = form(measurementUnitKey),
-            label = messages("supplementary.addDocument.measurementUnit"),
-            labelClass = Some("bold-small")
-        )
+        @components.form_fields_wrapper(field = form(documentWriteOffKey)) {
 
-        @components.input_text(
-            field = form(documentQuantityKey),
-            label = messages("supplementary.addDocument.documentQuantity"),
-            labelClass = Some("bold-small")
-        )
+            @components.input_text(
+                field = form(s"$documentWriteOffKey.$measurementUnitKey"),
+                label = messages("supplementary.addDocument.measurementUnit"),
+                labelClass = Some("bold-small")
+            )
+
+            @components.input_text(
+                field = form(s"$documentWriteOffKey.$documentQuantityKey"),
+                label = messages("supplementary.addDocument.documentQuantity"),
+                labelClass = Some("bold-small")
+            )
+        }
 
         @components.add_save_button()
     }

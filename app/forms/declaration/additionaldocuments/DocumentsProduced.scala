@@ -29,8 +29,7 @@ case class DocumentsProduced(
   documentStatusReason: Option[String],
   issuingAuthorityName: Option[String],
   dateOfValidity: Option[Date],
-  measurementUnit: Option[String],
-  documentQuantity: Option[BigDecimal]
+  documentWriteOff: Option[DocumentWriteOff]
 ) {
   implicit val writes = Json.writes[DocumentsProduced]
 
@@ -42,8 +41,7 @@ case class DocumentsProduced(
       documentStatusReason,
       issuingAuthorityName,
       dateOfValidity,
-      measurementUnit,
-      documentQuantity
+      documentWriteOff
     ).exists(_.isDefined)
 }
 
@@ -52,9 +50,6 @@ object DocumentsProduced {
   implicit val format = Json.format[DocumentsProduced]
 
   private val issuingAuthorityNameMaxLength = 70
-  private val measurementUnitMaxLength = 4
-  private val documentQuantityMaxLength = 16
-  private val documentQuantityMaxDecimalPlaces = 6
 
   val documentTypeCodeKey = "documentTypeCode"
   val documentIdentifierAndPartKey = "documentIdentifierAndPart"
@@ -62,8 +57,7 @@ object DocumentsProduced {
   val documentStatusReasonKey = "documentStatusReason"
   val issuingAuthorityNameKey = "issuingAuthorityName"
   val dateOfValidityKey = "dateOfValidity"
-  val measurementUnitKey = "measurementUnit"
-  val documentQuantityKey = "documentQuantity"
+  val documentWriteOffKey = "documentWriteOff"
 
   val mapping = Forms
     .mapping(
@@ -85,35 +79,8 @@ object DocumentsProduced {
           )
       ),
       dateOfValidityKey -> optional(Date.mapping),
-      measurementUnitKey -> optional(
-        text()
-          .verifying(
-            "supplementary.addDocument.measurementUnit.error.length",
-            hasSpecificLength(measurementUnitMaxLength)
-          )
-          .verifying("supplementary.addDocument.measurementUnit.error.specialCharacters", isAlphanumeric)
-      ),
-      documentQuantityKey ->
-        optional(
-          bigDecimal
-            .verifying(
-              "supplementary.addDocument.documentQuantity.error.precision",
-              _.precision <= documentQuantityMaxLength
-            )
-            .verifying(
-              "supplementary.addDocument.documentQuantity.error.scale",
-              _.scale <= documentQuantityMaxDecimalPlaces
-            )
-            .verifying("supplementary.addDocument.documentQuantity.error", _ >= 0)
-        )
+      documentWriteOffKey -> optional(DocumentWriteOff.mapping)
     )(DocumentsProduced.apply)(DocumentsProduced.unapply)
-    .verifying(
-      "supplementary.addDocument.error.measurementUnitAndQuantity",
-      validateMeasurementUnitAndDocumentQuantity(_)
-    )
-
-  private def validateMeasurementUnitAndDocumentQuantity(doc: DocumentsProduced): Boolean =
-    (doc.measurementUnit.isEmpty && doc.documentQuantity.isEmpty) || (doc.measurementUnit.nonEmpty && doc.documentQuantity.nonEmpty)
 
   def form(): Form[DocumentsProduced] = Form(mapping)
 }

@@ -40,7 +40,8 @@
                     <td>@item.documentIdentifierAndPart.map(_.documentPart)</td>
                     <td>@item.documentStatus</td>
                     <td>@item.documentStatusReason</td>
-                    <td>@item.documentQuantity</td>
+                    <td>@item.documentWriteOff.map(_.measurementUnit)</td>
+                    <td>@item.documentWriteOff.map(_.documentQuantity)</td>
                 </tr>
             }
             </tbody>

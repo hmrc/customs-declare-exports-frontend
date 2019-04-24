@@ -21,7 +21,7 @@ import forms.common.DateSpec.correctDate
 import forms.declaration.Document.AllowedValues.TemporaryStorage
 import forms.declaration.TransportCodes._
 import forms.declaration._
-import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentsProduced}
+import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
 import generators.Generators
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import org.scalacheck.Gen.listOfN
@@ -65,13 +65,17 @@ trait GoodsItemCachingData extends Generators {
     documentStatusReason = Some(createRandomAlphanumericString(35)),
     issuingAuthorityName = Some(createRandomAlphanumericString(70)),
     dateOfValidity = Some(correctDate),
-    measurementUnit = Some(createRandomAlphanumericString(4)),
-    documentQuantity = Some(BigDecimal(123))
+    documentWriteOff = Some(createDocumentWriteOff())
   )
 
   private def createDocumentIdentifierAndPart(): DocumentIdentifierAndPart = DocumentIdentifierAndPart(
     documentIdentifier = Some(createRandomAlphanumericString(30)),
     documentPart = Some(createRandomAlphanumericString(5))
+  )
+
+  private def createDocumentWriteOff(): DocumentWriteOff = DocumentWriteOff(
+    measurementUnit = Some(createRandomAlphanumericString(4)),
+    documentQuantity = Some(BigDecimal(123))
   )
 
   def createItemType(): ItemType = ItemType(

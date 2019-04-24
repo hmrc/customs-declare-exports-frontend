@@ -21,6 +21,8 @@ import forms.common.Date._
 import forms.common.DateSpec.{correctDate, correctDateJSON, incorrectDate}
 import forms.declaration.additionaldocuments.DocumentIdentifierAndPart._
 import forms.declaration.additionaldocuments.DocumentIdentifierAndPartSpec._
+import forms.declaration.additionaldocuments.DocumentWriteOff._
+import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.components.DateMessages
@@ -181,79 +183,36 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsPro
         }
       }
 
-      "provided with Measurement Unit" which {
+      "provided with Document WriteOff" which {
 
-        "is longer than 4 characters" in {
+        "has missing Measurement Unit" in {
 
-          val input = JsObject(Map(measurementUnitKey -> JsString("AB345")))
-          val expectedErrors =
-            Seq(FormError(measurementUnitKey, measurementUnitLengthError))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-
-        "is shorter than 4 characters" in {
-
-          val input = JsObject(Map(measurementUnitKey -> JsString("AB3")))
-          val expectedErrors =
-            Seq(FormError(measurementUnitKey, measurementUnitLengthError))
+          val input = JsObject(Map(documentWriteOffKey -> JsObject(Map(documentQuantityKey -> JsString("1234567890.123456")))))
+          val expectedErrors = Seq(FormError(documentWriteOffKey, measurementUnitAndQuantityError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
-        "contains special characters" in {
+        "has missing Document Quantity" in {
 
-          val input = JsObject(Map(measurementUnitKey -> JsString("AB#@")))
-          val expectedErrors =
-            Seq(FormError(measurementUnitKey, measurementUnitSpecialCharactersError))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-      }
-
-      "provided with Document Quantity" which {
-
-        "has more than 16 digits in total" in {
-
-          val input = JsObject(Map(documentQuantityKey -> JsString("1234567890.1234567")))
-          val expectedErrors =
-            Seq(FormError(documentQuantityKey, documentQuantityPrecisionError))
+          val input = JsObject(
+            Map(documentWriteOffKey -> JsObject(Map(measurementUnitKey -> JsString("AB12"))))
+          )
+          val expectedErrors = Seq(FormError(documentWriteOffKey, measurementUnitAndQuantityError))
 
           testFailedValidationErrors(input, expectedErrors)
         }
 
-        "has more than 6 decimal places" in {
+        "contains errors in its fields" in {
 
-          val input = JsObject(Map(documentQuantityKey -> JsString("0.1234567")))
-          val expectedErrors =
-            Seq(FormError(documentQuantityKey, documentQuantityScaleError))
-
-          testFailedValidationErrors(input, expectedErrors)
-        }
-
-        "is smaller than zero" in {
-
-          val input = JsObject(Map(documentQuantityKey -> JsString("-1.23")))
-          val expectedErrors = Seq(FormError(documentQuantityKey, documentQuantityError))
+          val input = JsObject(Map(documentWriteOffKey -> incorrectDocumentWriteOffJSON))
+          val expectedErrors = Seq(
+            FormError(s"$documentWriteOffKey.$measurementUnitKey", measurementUnitLengthError),
+            FormError(s"$documentWriteOffKey.$documentQuantityKey",documentQuantityPrecisionError )
+          )
 
           testFailedValidationErrors(input, expectedErrors)
         }
-      }
-
-      "provided with correct Measurement Unit but no Document Quantity" in {
-
-        val input = JsObject(Map(measurementUnitKey -> JsString("AB34")))
-        val expectedErrors = Seq(FormError("", measurementUnitAndQuantityError))
-
-        testFailedValidationErrors(input, expectedErrors)
-      }
-
-      "provided with correct Document Quantity but no Measurement Unit" in {
-
-        val input = JsObject(Map(documentQuantityKey -> JsString("123.45")))
-        val expectedErrors = Seq(FormError("", measurementUnitAndQuantityError))
-
-        testFailedValidationErrors(input, expectedErrors)
       }
 
       def testFailedValidationErrors(input: JsValue, expectedErrors: Seq[FormError]): Unit = {
@@ -300,8 +259,7 @@ object DocumentsProducedSpec {
     documentStatusReason = Some("DocumentStatusReason"),
     issuingAuthorityName = Some("Issuing Authority Name"),
     dateOfValidity = Some(correctDate),
-    measurementUnit = Some("AB12"),
-    documentQuantity = Some(BigDecimal("1234567890.123456"))
+    documentWriteOff = Some(correctDocumentWriteOff)
   )
 
   val correctDocumentsProducedMap: Map[String, String] = Map(
@@ -314,8 +272,8 @@ object DocumentsProducedSpec {
     s"$dateOfValidityKey.$yearKey" -> correctDate.year.get.toString,
     s"$dateOfValidityKey.$monthKey" -> correctDate.month.get.toString,
     s"$dateOfValidityKey.$dayKey" -> correctDate.day.get.toString,
-    measurementUnitKey -> "AB12",
-    documentQuantityKey -> "1234567890.123456"
+    s"$documentWriteOffKey.$measurementUnitKey" -> "AB12",
+    s"$documentWriteOffKey.$documentQuantityKey" -> "1234567890.123456"
   )
 
   val correctDocumentsProducedJSON: JsValue = JsObject(
@@ -326,8 +284,7 @@ object DocumentsProducedSpec {
       documentStatusReasonKey -> JsString("DocumentStatusReason"),
       issuingAuthorityNameKey -> JsString("Issuing Authority Name"),
       dateOfValidityKey -> correctDateJSON,
-      measurementUnitKey -> JsString("AB12"),
-      documentQuantityKey -> JsString("1234567890.123456")
+      documentWriteOffKey -> correctDocumentWriteOffJSON
     )
   )
 
@@ -338,8 +295,7 @@ object DocumentsProducedSpec {
     documentStatusReason = Some(TestHelper.createRandomAlphanumericString(36)),
     issuingAuthorityName = Some(TestHelper.createRandomAlphanumericString(71)),
     dateOfValidity = Some(incorrectDate),
-    measurementUnit = Some(TestHelper.createRandomAlphanumericString(5)),
-    documentQuantity = Some(BigDecimal("12345678901234567"))
+    documentWriteOff = Some(incorrectDocumentWriteOff)
   )
 
   val incorrectDocumentsProducedMap: Map[String, String] = Map(
@@ -352,8 +308,8 @@ object DocumentsProducedSpec {
     s"$dateOfValidityKey.$yearKey" -> incorrectDate.year.get.toString,
     s"$dateOfValidityKey.$monthKey" -> incorrectDate.month.get.toString,
     s"$dateOfValidityKey.$dayKey" -> incorrectDate.day.get.toString,
-    measurementUnitKey -> TestHelper.createRandomAlphanumericString(5),
-    documentQuantityKey -> "12345678901234567"
+    s"$documentWriteOffKey.$measurementUnitKey" -> TestHelper.createRandomAlphanumericString(5),
+    s"$documentWriteOffKey.$documentQuantityKey" -> "12345678901234567"
   )
 
   val emptyDocumentsProduced = DocumentsProduced(
@@ -363,8 +319,7 @@ object DocumentsProducedSpec {
     documentStatusReason = None,
     issuingAuthorityName = None,
     dateOfValidity = None,
-    measurementUnit = None,
-    documentQuantity = None
+    documentWriteOff = None
   )
 
   val emptyDocumentsProducedMap: Map[String, String] = Map(
@@ -377,8 +332,8 @@ object DocumentsProducedSpec {
     s"$dateOfValidityKey.$yearKey" -> "",
     s"$dateOfValidityKey.$monthKey" -> "",
     s"$dateOfValidityKey.$dayKey" -> "",
-    measurementUnitKey -> "",
-    documentQuantityKey -> ""
+    s"$documentWriteOffKey.$measurementUnitKey" -> "",
+    s"$documentWriteOffKey.$documentQuantityKey" -> ""
   )
 
   val emptyDocumentsProducedJSON: JsValue = JsObject(
@@ -389,8 +344,7 @@ object DocumentsProducedSpec {
       documentStatusReasonKey -> JsString(""),
       issuingAuthorityNameKey -> JsString(""),
       dateOfValidityKey -> JsObject(Map("year" -> JsString(""), "month" -> JsString(""), "day" -> JsString(""))),
-      measurementUnitKey -> JsString(""),
-      documentQuantityKey -> JsString("")
+      documentWriteOffKey -> emptyDocumentWriteOffJSON
     )
   )
 

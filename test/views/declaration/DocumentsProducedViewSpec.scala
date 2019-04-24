@@ -21,6 +21,8 @@ import forms.common.Date._
 import forms.declaration.DocumentsProducedSpec._
 import forms.declaration.additionaldocuments.DocumentIdentifierAndPart._
 import forms.declaration.additionaldocuments.DocumentIdentifierAndPartSpec._
+import forms.declaration.additionaldocuments.DocumentWriteOff._
+import forms.declaration.additionaldocuments.DocumentWriteOffSpec._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.components.DateMessages
@@ -162,16 +164,20 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView()
 
-      getElementById(view, s"$measurementUnitKey-label").text() must be(messages(measurementUnit))
-      getElementById(view, measurementUnitKey).attr("value") must be("")
+      getElementById(view, s"${documentWriteOffKey}_$measurementUnitKey-label").text() must be(
+        messages(measurementUnit)
+      )
+      getElementById(view, s"${documentWriteOffKey}_$measurementUnitKey").attr("value") must be("")
     }
 
     "display empty input with label for Document quantity" in {
 
       val view = createView()
 
-      getElementById(view, s"$documentQuantityKey-label").text() must be(messages(documentQuantity))
-      getElementById(view, s"$documentQuantityKey").attr("value") must be("")
+      getElementById(view, s"${documentWriteOffKey}_$documentQuantityKey-label").text() must be(
+        messages(documentQuantity)
+      )
+      getElementById(view, s"${documentWriteOffKey}_$documentQuantityKey").attr("value") must be("")
     }
 
     "display 'Back' button that links to 'Additional Information' page" in {
@@ -258,13 +264,15 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       "provided with Document Identifier but no Document Part" in {
 
-        val documentsProducedWithIncorrectDocumentPart = correctDocumentsProduced.copy(
+        val documentsProducedWithIncorrectDocumentIdentifierAndPart = correctDocumentsProduced.copy(
           documentIdentifierAndPart = Some(
             emptyDocumentIdentifierAndPart
               .copy(documentIdentifier = Some(correctDocumentIdentifierAndPart.documentIdentifier.get))
           )
         )
-        val view = createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentPart)))
+        val view = createView(
+          DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart))
+        )
 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, documentIdentifierAndPartError, s"#$documentIdentifierAndPartKey")
@@ -276,13 +284,15 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       "provided with Document Part but no Document Identifier" in {
 
-        val documentsProducedWithIncorrectDocumentPart = correctDocumentsProduced.copy(
+        val documentsProducedWithIncorrectDocumentIdentifierAndPart = correctDocumentsProduced.copy(
           documentIdentifierAndPart = Some(
             emptyDocumentIdentifierAndPart
               .copy(documentPart = Some(correctDocumentIdentifierAndPart.documentPart.get))
           )
         )
-        val view = createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentPart)))
+        val view = createView(
+          DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart))
+        )
 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, documentIdentifierAndPartError, s"#$documentIdentifierAndPartKey")
@@ -387,36 +397,70 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
     "display error for Measurement Unit" in {
 
-      val view = createView(
-        DocumentsProduced
-          .form()
-          .fillAndValidate(
-            correctDocumentsProduced.copy(measurementUnit = Some(TestHelper.createRandomAlphanumericString(5)))
-          )
+      val documentsProducedWithIncorrectMeasurementUnit = correctDocumentsProduced.copy(
+        documentWriteOff =
+          Some(correctDocumentWriteOff.copy(measurementUnit = incorrectDocumentWriteOff.measurementUnit))
       )
+      val view = createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectMeasurementUnit)))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, measurementUnitLengthError, s"#$measurementUnitKey")
+      checkErrorLink(view, 1, measurementUnitLengthError, s"#${documentWriteOffKey}_$measurementUnitKey")
 
-      getElementByCss(view, s"#error-message-$measurementUnitKey-input").text() must be(
+      getElementByCss(view, s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() must be(
         messages(measurementUnitLengthError)
       )
     }
 
     "display error for Document quantity" in {
 
-      val view = createView(
-        DocumentsProduced
-          .form()
-          .fillAndValidate(correctDocumentsProduced.copy(documentQuantity = Some(BigDecimal("12345678901234567"))))
+      val documentsProducedWithIncorrectDocumentQuantity = correctDocumentsProduced.copy(
+        documentWriteOff =
+          Some(correctDocumentWriteOff.copy(documentQuantity = incorrectDocumentWriteOff.documentQuantity))
       )
+      val view = createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentQuantity)))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, documentQuantityPrecisionError, s"#$documentQuantityKey")
+      checkErrorLink(view, 1, documentQuantityPrecisionError, s"#${documentWriteOffKey}_$documentQuantityKey")
 
-      getElementByCss(view, s"#error-message-$documentQuantityKey-input").text() must be(
+      getElementByCss(view, s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() must be(
         messages(documentQuantityPrecisionError)
       )
+    }
+
+    "display error for Document WriteOff" when {
+
+      "provided with Measurement Unit but no Document Quantity" in {
+
+        val documentsProducedWithIncorrectDocumentWriteOff = correctDocumentsProduced.copy(
+          documentWriteOff = Some(emptyDocumentWriteOff.copy(measurementUnit = correctDocumentWriteOff.measurementUnit))
+        )
+        val view =
+          createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentWriteOff)))
+
+        checkErrorsSummary(view)
+        checkErrorLink(view, 1, measurementUnitAndQuantityError, s"#$documentWriteOffKey")
+
+        getElementByCss(view, s"#error-message-$documentWriteOffKey-input").text() must be(
+          messages(measurementUnitAndQuantityError)
+        )
+      }
+
+      "provided with Document Quantity but no Measurement Unit" in {
+
+        val documentsProducedWithIncorrectDocumentWriteOff = correctDocumentsProduced.copy(
+          documentWriteOff =
+            Some(emptyDocumentWriteOff.copy(documentQuantity = correctDocumentWriteOff.documentQuantity))
+        )
+        val view =
+          createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentWriteOff)))
+
+        checkErrorsSummary(view)
+        checkErrorLink(view, 1, measurementUnitAndQuantityError, s"#$documentWriteOffKey")
+
+        getElementByCss(view, s"#error-message-$documentWriteOffKey-input").text() must be(
+          messages(measurementUnitAndQuantityError)
+        )
+      }
     }
 
     "display errors for all fields" in {
@@ -433,8 +477,8 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       checkErrorLink(view, 5, documentStatusReasonError, s"#$documentStatusReasonKey")
       checkErrorLink(view, 6, issuingAuthorityNameLengthError, s"#$issuingAuthorityNameKey")
       checkErrorLink(view, 7, dateFormatError, s"#$dateOfValidityKey")
-      checkErrorLink(view, 8, measurementUnitLengthError, s"#$measurementUnitKey")
-      checkErrorLink(view, 9, documentQuantityPrecisionError, s"#$documentQuantityKey")
+      checkErrorLink(view, 8, measurementUnitLengthError, s"#${documentWriteOffKey}_$measurementUnitKey")
+      checkErrorLink(view, 9, documentQuantityPrecisionError, s"#${documentWriteOffKey}_$documentQuantityKey")
 
       getElementByCss(view, s"#error-message-$documentTypeCodeKey-input").text() must be(
         messages(documentTypeCodeError)
@@ -452,10 +496,10 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         messages(issuingAuthorityNameLengthError)
       )
       getElementByCss(view, s"#error-message-$dateOfValidityKey-input").text() must be(messages(dateFormatError))
-      getElementByCss(view, s"#error-message-$measurementUnitKey-input").text() must be(
+      getElementByCss(view, s"#error-message-${documentWriteOffKey}_$measurementUnitKey-input").text() must be(
         messages(measurementUnitLengthError)
       )
-      getElementByCss(view, s"#error-message-$documentQuantityKey-input").text() must be(
+      getElementByCss(view, s"#error-message-${documentWriteOffKey}_$documentQuantityKey-input").text() must be(
         messages(documentQuantityPrecisionError)
       )
     }
@@ -488,8 +532,12 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       getElementById(view, s"${dateOfValidityKey}_$yearKey").attr("value") must equal(
         data.dateOfValidity.value.year.value.toString
       )
-      getElementById(view, measurementUnitKey).attr("value") must equal(data.measurementUnit.value)
-      getElementById(view, documentQuantityKey).attr("value") must equal(data.documentQuantity.value.toString)
+      getElementById(view, s"${documentWriteOffKey}_$measurementUnitKey").attr("value") must equal(
+        data.documentWriteOff.get.measurementUnit.value
+      )
+      getElementById(view, s"${documentWriteOffKey}_$documentQuantityKey").attr("value") must equal(
+        data.documentWriteOff.get.documentQuantity.value.toString
+      )
     }
 
     "display a table with previously entered document" in {
@@ -546,10 +594,10 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         correctDocumentsProduced.dateOfValidity.get.toString
       )
       getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() must equal(
-        correctDocumentsProduced.measurementUnit.get
+        correctDocumentsProduced.documentWriteOff.get.measurementUnit.get
       )
       getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(9)").text() must equal(
-        correctDocumentsProduced.documentQuantity.get.toString
+        correctDocumentsProduced.documentWriteOff.get.documentQuantity.get.toString
       )
 
       val removeButton = getElementByCss(view, "tbody>tr>td:nth-child(10)>button")

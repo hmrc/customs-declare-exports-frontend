@@ -23,7 +23,8 @@ import forms.Choice.choiceId
 import forms.declaration.DocumentsProducedSpec
 import forms.declaration.DocumentsProducedSpec.{correctDocumentsProducedMap, _}
 import forms.declaration.additionaldocuments.DocumentIdentifierAndPart.{documentIdentifierKey, documentPartKey}
-import forms.declaration.additionaldocuments.DocumentsProduced.documentIdentifierAndPartKey
+import forms.declaration.additionaldocuments.DocumentWriteOff.documentQuantityKey
+import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
 import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.formId
@@ -93,10 +94,10 @@ class DocumentsProducedControllerSpec
         correctDocumentsProduced.dateOfValidity.get.toString
       )
       getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() must equal(
-        correctDocumentsProduced.measurementUnit.get
+        correctDocumentsProduced.documentWriteOff.get.measurementUnit.get
       )
       getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(9)").text() must equal(
-        correctDocumentsProduced.documentQuantity.get.toString
+        correctDocumentsProduced.documentWriteOff.get.documentQuantity.get.toString
       )
     }
   }
@@ -144,7 +145,7 @@ class DocumentsProducedControllerSpec
       }
 
       "provided with incorrect document status" in {
-        val incorrectDocumentStatus: JsValue = JsObject(Map("documentStatus" -> JsString("as")))
+        val incorrectDocumentStatus: JsValue = JsObject(Map(documentStatusKey -> JsString("as")))
 
         val result = route(app, postRequest(uri, incorrectDocumentStatus)).get
         status(result) must be(BAD_REQUEST)
@@ -153,7 +154,7 @@ class DocumentsProducedControllerSpec
 
       "provided with incorrect document status reason" in {
         val incorrectDocumentStatusReason: JsValue =
-          JsObject(Map("documentStatusReason" -> JsString(TestHelper.createRandomAlphanumericString(36))))
+          JsObject(Map(documentStatusReasonKey -> JsString(TestHelper.createRandomAlphanumericString(36))))
 
         val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
         status(result) must be(BAD_REQUEST)
@@ -162,7 +163,7 @@ class DocumentsProducedControllerSpec
 
       "provided with incorrect documents quantity" in {
         val incorrectDocumentQuantity: JsValue =
-          JsObject(Map("documentQuantity" -> JsString("123456789012123.1234567")))
+          JsObject(Map(s"$documentWriteOffKey.$documentQuantityKey" -> JsString("123456789012123.1234567")))
 
         val result = route(app, postRequest(uri, incorrectDocumentQuantity)).get
         status(result) must be(BAD_REQUEST)
