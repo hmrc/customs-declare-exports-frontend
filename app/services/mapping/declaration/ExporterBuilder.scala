@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package services.mapping.goodsshipment
+package services.mapping.declaration
 import forms.declaration.{EntityDetails, ExporterDetails}
 import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
