@@ -75,7 +75,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
       "wrong value provided for choice" in {
 
-        val wrongForm = JsObject(Map("choice" -> JsString("test")))
+        val wrongForm = JsObject(Map("value" -> JsString("test")))
         val result = route(app, postRequest(choiceUri, wrongForm)).get
 
         status(result) must be(BAD_REQUEST)
@@ -85,7 +85,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
     "save the choice data to the cache" in {
 
-      val validChoiceForm = JsObject(Map("choice" -> JsString("SMP")))
+      val validChoiceForm = JsObject(Map("value" -> JsString("SMP")))
       route(app, postRequest(choiceUri, validChoiceForm)).get.futureValue
 
       verify(mockCustomsCacheService)
@@ -94,7 +94,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
     "redirect to dispatch location page when \"Supplementary declaration\" is selected" in {
 
-      val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.SupplementaryDec)))
+      val correctForm = JsObject(Map("value" -> JsString(AllowedChoiceValues.SupplementaryDec)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
 
@@ -104,7 +104,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
     "redirect to dispatch location page when \"Standard declaration\" is selected" in {
 
-      val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.StandardDec)))
+      val correctForm = JsObject(Map("value" -> JsString(AllowedChoiceValues.StandardDec)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
 
@@ -114,7 +114,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
     "redirect to cancel declaration page when \"Cancel declaration\" is selected" in {
 
-      val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.CancelDec)))
+      val correctForm = JsObject(Map("value" -> JsString(AllowedChoiceValues.CancelDec)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
 
@@ -124,7 +124,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
     "redirect to submissions page when \"View recent declarations\" is selected" in {
 
-      val correctForm = JsObject(Map("choice" -> JsString(AllowedChoiceValues.Submissions)))
+      val correctForm = JsObject(Map("value" -> JsString(AllowedChoiceValues.Submissions)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
 

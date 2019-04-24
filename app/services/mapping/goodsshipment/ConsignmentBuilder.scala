@@ -15,11 +15,15 @@
  */
 
 package services.mapping.goodsshipment
-import forms.declaration.{CarrierDetails, EntityDetails}
+import forms.declaration.{CarrierDetails, EntityDetails, TransportInformation}
 import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment.{
+  ArrivalTransportMeans,
+  DepartureTransportMeans
+}
 import wco.datamodel.wco.declaration_ds.dms._2._
 
 object ConsignmentBuilder {
@@ -27,10 +31,12 @@ object ConsignmentBuilder {
   def build(implicit cacheMap: CacheMap): GoodsShipment.Consignment =
     cacheMap
       .getEntry[CarrierDetails](CarrierDetails.id)
-      .map(carrierDetails => createConsignment(carrierDetails.details))
+      .map(carrierDetails => createConsignmentAddress(carrierDetails.details))
       .orNull
 
-  private def createConsignment(details: EntityDetails): GoodsShipment.Consignment = {
+  private def createConsignmentAddress(
+    details: EntityDetails
+  )(implicit cacheMap: CacheMap): GoodsShipment.Consignment = {
     val id = new GoodsLocationIdentificationIDType()
     id.setValue(details.eori.orNull)
 
@@ -67,6 +73,53 @@ object ConsignmentBuilder {
 
     val consignment = new GoodsShipment.Consignment()
     consignment.setGoodsLocation(goodsLocation)
+    consignment.setContainerCode(buildContainerCode)
+    consignment.setArrivalTransportMeans(buildArrivalTransportMeans)
+    consignment.setDepartureTransportMeans(buildDepartureTransportMeans())
     consignment
+  }
+
+  private def buildDepartureTransportMeans()(implicit cacheMap: CacheMap): Consignment.DepartureTransportMeans =
+    cacheMap
+      .getEntry[TransportInformation](TransportInformation.id)
+      .map(createDepartureTransportMeans)
+      .orNull
+
+  private def createDepartureTransportMeans(data: TransportInformation): Consignment.DepartureTransportMeans = {
+    val id = new DepartureTransportMeansIdentificationIDType()
+    id.setValue(data.meansOfTransportOnDepartureIDNumber.getOrElse(""))
+
+    val identificationTypeCode = new DepartureTransportMeansIdentificationTypeCodeType()
+    identificationTypeCode.setValue(data.meansOfTransportCrossingTheBorderType)
+
+    val departureTransportMeans = new DepartureTransportMeans()
+    departureTransportMeans.setID(id)
+    departureTransportMeans.setIdentificationTypeCode(identificationTypeCode)
+    departureTransportMeans
+  }
+
+  private def buildArrivalTransportMeans()(implicit cacheMap: CacheMap): Consignment.ArrivalTransportMeans = {
+    val modeCodeType = new ArrivalTransportMeansModeCodeType()
+    modeCodeType.setValue(
+      cacheMap
+        .getEntry[TransportInformation](TransportInformation.id)
+        .map(transportInformation => transportInformation.inlandModeOfTransportCode.getOrElse(""))
+        .getOrElse("")
+    )
+
+    val arrivalTransportMeans = new ArrivalTransportMeans()
+    arrivalTransportMeans.setModeCode(modeCodeType)
+    arrivalTransportMeans
+  }
+
+  private def buildContainerCode()(implicit cacheMap: CacheMap): ConsignmentContainerCodeType = {
+    val codeType = new ConsignmentContainerCodeType()
+    codeType.setValue(
+      cacheMap
+        .getEntry[TransportInformation](TransportInformation.id)
+        .map(transportInformation => if (transportInformation.container) "1" else "0")
+        .getOrElse("0")
+    )
+    codeType
   }
 }

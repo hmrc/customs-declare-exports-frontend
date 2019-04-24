@@ -58,7 +58,7 @@ class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCaching
       result.declaration.flatMap(_.exporter) must be(defined)
       result.declaration.flatMap(_.declarant) must be(defined)
       result.declaration.flatMap(_.agent) must be(defined)
-      result.declaration.flatMap(_.invoiceAmount).flatMap(_.value) must be(Some(BigDecimal("12312312312312.12")))
+      result.declaration.flatMap(_.invoiceAmount).flatMap(_.value) must be(Some(BigDecimal("1212312.12")))
       result.declaration.flatMap(_.invoiceAmount).flatMap(_.currencyId) must be(Some("GBP"))
       result.declaration.value.authorisationHolders.size mustBe 1
       result.declaration.flatMap(_.exitOffice).flatMap(_.id) mustBe Some("123qwe12")

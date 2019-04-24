@@ -97,14 +97,14 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
       val view = createView(Choice.form().bind(Map[String, String]()))
 
-      getElementByCss(view, "#error-message-choice-input").text() must be(messages(choiceEmpty))
+      getElementByCss(view, "#error-message-value-input").text() must be(messages(choiceEmpty))
     }
 
     "display error when choice is incorrect" in {
 
-      val view = createView(Choice.form().bind(Map("choice" -> "incorrect")))
+      val view = createView(Choice.form().bind(Map("value" -> "incorrect")))
 
-      getElementByCss(view, "#error-message-choice-input").text() must be(messages(choiceError))
+      getElementByCss(view, "#error-message-value-input").text() must be(messages(choiceError))
     }
   }
 
