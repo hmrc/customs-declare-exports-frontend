@@ -57,7 +57,7 @@ object TotalNumberOfItemsSpec {
   val correctTotalNumberOfItemsDecimalValuesJSON: JsValue = JsObject(
     Map(
       "itemsQuantity" -> JsString("123"),
-      "totalAmountInvoiced" -> JsString("12312312312312.12"),
+      "totalAmountInvoiced" -> JsString("1212312.12"),
       "exchangeRate" -> JsString("1212121.12345"),
       "totalPackage" -> JsString("123")
     )

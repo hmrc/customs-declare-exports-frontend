@@ -16,6 +16,7 @@
 
 package models.declaration
 
+import forms.{Choice, ChoiceSpec}
 import forms.declaration.ConsigneeDetailsSpec._
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
@@ -376,6 +377,7 @@ object SupplementaryDeclarationDataSpec {
   lazy val cacheMapAllRecords = CacheMap(
     id = "CacheID",
     data = Map(
+      Choice.choiceId -> ChoiceSpec.correctSupplementaryChoiceJSON,
       DispatchLocation.formId -> correctDispatchLocationJSON,
       AdditionalDeclarationTypeSupplementaryDec.formId -> correctAdditionalDeclarationTypeSupplementaryDecJSON,
       ConsignmentReferences.id -> correctConsignmentReferencesJSON,
@@ -392,9 +394,11 @@ object SupplementaryDeclarationDataSpec {
       WarehouseIdentification.formId -> correctWarehouseIdentificationJSON,
       OfficeOfExit.formId -> correctOfficeOfExitJSON,
       TransportInformationContainerData.id -> correctTransportInformationContainerDataJSON,
+      TransportInformation.id -> TransportInformationSpec.correctTransportInformationJSON,
       TotalNumberOfItems.formId -> correctTotalNumberOfItemsDecimalValuesJSON,
       TransactionType.formId -> correctTransactionTypeJSON,
-      GoodsItemNumber.formId -> correctGoodsItemNumberJSON
+      GoodsItemNumber.formId -> correctGoodsItemNumberJSON,
+      DeclarationAdditionalActors.formId -> correctAdditionalActorsDataJSON
     )
   )
 

@@ -16,7 +16,7 @@
 
 package services.mapping.goodsshipment
 
-import forms.declaration.{CarrierDetails, CarrierDetailsSpec}
+import forms.declaration.{CarrierDetails, CarrierDetailsSpec, TransportInformation, TransportInformationSpec}
 import org.scalatest.{Matchers, WordSpec}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -25,14 +25,25 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
   "ConsignmentBuilder" should {
     "correctly map to the WCO-DEC GoodsShipment.Consignment instance" in {
       implicit val cacheMap: CacheMap =
-        CacheMap("CacheID", Map(CarrierDetails.id -> CarrierDetailsSpec.correctCarrierDetailsJSON))
+        CacheMap("CacheID", Map(
+          CarrierDetails.id -> CarrierDetailsSpec.correctCarrierDetailsJSON,
+          TransportInformation.id -> TransportInformationSpec.correctTransportInformationJSON
+        ))
       val consignment = ConsignmentBuilder.build(cacheMap)
       consignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
       consignment.getGoodsLocation.getName.getValue should be("Full Name")
+
       consignment.getGoodsLocation.getAddress.getLine.getValue should be("Address Line")
       consignment.getGoodsLocation.getAddress.getCityName.getValue should be("Town or City")
       consignment.getGoodsLocation.getAddress.getCountryCode.getValue should be("PL")
       consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+      consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+
+      consignment.getContainerCode.getValue should be("1")
+
+      consignment.getArrivalTransportMeans.getModeCode.getValue should be("1")
+      consignment.getDepartureTransportMeans.getID.getValue should be("123112yu78")
+      consignment.getDepartureTransportMeans.getIdentificationTypeCode.getValue should be("40")
     }
   }
 }

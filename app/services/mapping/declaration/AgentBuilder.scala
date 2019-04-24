@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package services.mapping.goodsshipment
-import forms.declaration.{EntityDetails, ExporterDetails}
+package services.mapping.declaration
+
+import forms.declaration.{EntityDetails, RepresentativeDetails}
 import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
-import wco.datamodel.wco.dec_dms._2.Declaration.Exporter
+import wco.datamodel.wco.dec_dms._2.Declaration
+import wco.datamodel.wco.dec_dms._2.Declaration.Agent
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-object ExporterBuilder {
+object AgentBuilder {
 
-  def build(implicit cacheMap: CacheMap): Exporter =
+  def build(implicit cacheMap: CacheMap): Declaration.Agent =
     cacheMap
-      .getEntry[ExporterDetails](ExporterDetails.id)
-      .map(data => createExporter(data.details))
+      .getEntry[RepresentativeDetails](RepresentativeDetails.formId)
+      .map(data => createAgent(data.details))
       .orNull
 
-  private def createExporter(details: EntityDetails): Exporter = {
-    val name = new ExporterNameTextType()
+  private def createAgent(details: EntityDetails): Declaration.Agent = {
+    val agentId = new AgentIdentificationIDType()
+    val agentName = new AgentNameTextType()
+    val agentAddress = new Agent.Address()
 
-    val exporterId = new ExporterIdentificationIDType()
-    val exporterName = new ExporterNameTextType()
-    val exporterAddress = new Exporter.Address()
-
-    exporterId.setValue(details.eori.orNull)
+    agentId.setValue(details.eori.orNull)
 
     details.address.map(address => {
-      exporterName.setValue(address.fullName)
+      agentName.setValue(address.fullName)
 
       val line = new AddressLineTextType()
       line.setValue(address.addressLine)
@@ -55,16 +55,16 @@ object ExporterBuilder {
         allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
       )
 
-      exporterAddress.setLine(line)
-      exporterAddress.setCityName(city)
-      exporterAddress.setCountryCode(countryCode)
-      exporterAddress.setPostcodeID(postcode)
+      agentAddress.setLine(line)
+      agentAddress.setCityName(city)
+      agentAddress.setCountryCode(countryCode)
+      agentAddress.setPostcodeID(postcode)
     })
 
-    val exporter = new Exporter()
-    exporter.setID(exporterId)
-    exporter.setName(exporterName)
-    exporter.setAddress(exporterAddress)
-    exporter
+    val agent = new Declaration.Agent()
+    agent.setID(agentId)
+    agent.setName(agentName)
+    agent.setAddress(agentAddress)
+    agent
   }
 }
