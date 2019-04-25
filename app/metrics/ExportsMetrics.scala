@@ -26,17 +26,11 @@ class ExportsMetrics @Inject()(metrics: Metrics) {
 
   private val timers = Map(
     submissionMetric -> metrics.defaultRegistry.timer(s"$submissionMetric.timer"),
-    arrivalMetric -> metrics.defaultRegistry.timer(s"$arrivalMetric.timer"),
-    departureMetric -> metrics.defaultRegistry.timer(s"$departureMetric.timer"),
-    consolidationMetric -> metrics.defaultRegistry.timer(s"$consolidationMetric.timer"),
     cancelMetric -> metrics.defaultRegistry.timer(s"$cancelMetric.timer")
   )
 
   private val counters = Map(
     submissionMetric -> metrics.defaultRegistry.counter(s"$submissionMetric.counter"),
-    arrivalMetric -> metrics.defaultRegistry.counter(s"$arrivalMetric.counter"),
-    departureMetric -> metrics.defaultRegistry.counter(s"$departureMetric.counter"),
-    consolidationMetric -> metrics.defaultRegistry.counter(s"$consolidationMetric.counter"),
     cancelMetric -> metrics.defaultRegistry.counter(s"$cancelMetric.counter")
   )
 
