@@ -63,6 +63,7 @@ class CancelDeclarationController @Inject()(
             case status: CancellationStatus =>
               status match {
                 case CancellationRequested =>
+                  exportsMetrics.incrementCounter(cancelMetric)
                   Future.successful(Ok(cancellation_confirmation_page(appConfig)))
                 case CancellationRequestExists =>
                   Future.successful(

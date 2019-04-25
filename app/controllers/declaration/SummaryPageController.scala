@@ -101,6 +101,7 @@ class SummaryPageController @Inject()(
       .flatMap {
         case HttpResponse(ACCEPTED, _, _, _) =>
           customsCacheService.remove(cacheId).map { _ =>
+            exportsMetrics.incrementCounter(submissionMetric)
             Redirect(controllers.declaration.routes.ConfirmationPageController.displayPage())
               .flashing(prepareFlashScope(lrn.getOrElse("")))
           }
