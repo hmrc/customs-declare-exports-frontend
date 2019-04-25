@@ -28,7 +28,7 @@ object AdditionalInformationBuilder {
       .getEntry[AdditionalInformationData](AdditionalInformationData.formId)
       .map(_.items.map(mapToWCOAdditionalInformation))
 
-  def mapToWCOAdditionalInformation(info: AdditionalInformation): WCOAdditionalInformation ={
+  def mapToWCOAdditionalInformation(info: AdditionalInformation): WCOAdditionalInformation = {
     val wcoAdditionalInformation = new WCOAdditionalInformation
 
     val additionalInformationStatementCodeType = new AdditionalInformationStatementCodeType
@@ -36,7 +36,6 @@ object AdditionalInformationBuilder {
 
     val additionalInformationStatementDescriptionTextType = new AdditionalInformationStatementDescriptionTextType
     additionalInformationStatementDescriptionTextType.setValue(info.description)
-
 
     wcoAdditionalInformation.setStatementCode(additionalInformationStatementCodeType)
     wcoAdditionalInformation.setStatementDescription(additionalInformationStatementDescriptionTextType)

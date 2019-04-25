@@ -80,14 +80,7 @@ class CommodityBuilderSpec extends WordSpec with Matchers with MockitoSugar {
       )
     )
 
-    testBuilder(
-      descriptionOfGoods,
-      None,
-      netMassString,
-      grossMassString,
-      tariffQuantity,
-      itemType
-    )
+    testBuilder(descriptionOfGoods, None, netMassString, grossMassString, tariffQuantity, itemType)
 
   }
 
@@ -98,7 +91,7 @@ class CommodityBuilderSpec extends WordSpec with Matchers with MockitoSugar {
     grossMassString: String,
     tariffQuantity: String,
     itemType: Some[ItemType]
-  )(implicit  cacheMap: CacheMap) = {
+  )(implicit cacheMap: CacheMap) = {
     val commodityMeasure = CommodityMeasure(Some(tariffQuantity), netMass = netMassString, grossMass = grossMassString)
     when(
       cacheMap
@@ -109,8 +102,8 @@ class CommodityBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
     val mappedCommodity = CommodityBuilder.build.get
     mappedCommodity.getDescription.getValue shouldBe descriptionOfGoods
-    unDangerousGoodsCode.fold(mappedCommodity.getDangerousGoods.isEmpty shouldBe true){
-      code => mappedCommodity.getDangerousGoods.get(0).getUNDGID.getValue shouldBe code
+    unDangerousGoodsCode.fold(mappedCommodity.getDangerousGoods.isEmpty shouldBe true) { code =>
+      mappedCommodity.getDangerousGoods.get(0).getUNDGID.getValue shouldBe code
     }
 
     val goodsMeasure = mappedCommodity.getGoodsMeasure

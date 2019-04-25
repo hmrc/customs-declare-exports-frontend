@@ -32,8 +32,8 @@ class ProcedureCodesBuilderSpec extends WordSpec with Matchers with GovernmentAg
 
       results.isDefined shouldBe true
       val mappedProcedures = results.get
-      mappedProcedures.head.getCurrentCode.getValue shouldBe cachedCode.substring(0,2)
-      mappedProcedures.head.getPreviousCode.getValue shouldBe cachedCode.substring(2,4)
+      mappedProcedures.head.getCurrentCode.getValue shouldBe cachedCode.substring(0, 2)
+      mappedProcedures.head.getPreviousCode.getValue shouldBe cachedCode.substring(2, 4)
 
       mappedProcedures.last.getCurrentCode.getValue shouldBe previousCode
       mappedProcedures.last.getPreviousCode.getValue shouldBe null

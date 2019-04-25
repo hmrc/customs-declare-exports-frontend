@@ -25,9 +25,10 @@ import play.api.libs.json.Reads
 import services.ExportsItemsCacheIds
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem._
-class GovernmentAgencyGoodsItemBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GovernmentAgencyGoodsItemData {
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem}
+class GovernmentAgencyGoodsItemBuilderSpec
+    extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GovernmentAgencyGoodsItemData {
 
   trait SetUp {
     implicit val cacheMap: CacheMap = mock[CacheMap]
@@ -49,12 +50,11 @@ class GovernmentAgencyGoodsItemBuilderSpec extends WordSpec with Matchers with G
     val governmentAgencyGoodsItem = GovernmentAgencyGoodsItem(sequenceNumeric = 1)
 
     when(
-        cacheMap
-      .getEntry[Seq[GovernmentAgencyGoodsItem]](eqTo(ExportsItemsCacheIds.itemsId))(
+      cacheMap
+        .getEntry[Seq[GovernmentAgencyGoodsItem]](eqTo(ExportsItemsCacheIds.itemsId))(
           any[Reads[Seq[GovernmentAgencyGoodsItem]]]
-      )
+        )
     ).thenReturn(Some(Seq(governmentAgencyGoodsItem)))
-
 
   }
 
@@ -69,7 +69,6 @@ class GovernmentAgencyGoodsItemBuilderSpec extends WordSpec with Matchers with G
       val additionalDocuments: util.List[AdditionalDocument] = mappedGoodsItem.getAdditionalDocument
       additionalDocuments.isEmpty shouldBe false
       val firstMappedDocument: AdditionalDocument = additionalDocuments.get(0)
-
 
       val additionalInformations: util.List[AdditionalInformation] = mappedGoodsItem.getAdditionalInformation
       additionalInformations.isEmpty shouldBe false
@@ -93,10 +92,9 @@ class GovernmentAgencyGoodsItemBuilderSpec extends WordSpec with Matchers with G
   }
 
   private def validateGovernmentProcedure(mappedProcedure: GovernmentProcedure) = {
-    mappedProcedure.getCurrentCode.getValue shouldBe cachedCode.substring(0,2)
-    mappedProcedure.getPreviousCode.getValue shouldBe cachedCode.substring(2,4)
+    mappedProcedure.getCurrentCode.getValue shouldBe cachedCode.substring(0, 2)
+    mappedProcedure.getPreviousCode.getValue shouldBe cachedCode.substring(2, 4)
   }
-
 
   private def validatePackaging(packaging: Packaging) = {
     packaging.getQuantityQuantity.getValue shouldBe BigDecimal(packageQuantity).bigDecimal
@@ -119,15 +117,14 @@ class GovernmentAgencyGoodsItemBuilderSpec extends WordSpec with Matchers with G
     goodsMeasure.getTariffQuantity.getValue shouldBe BigDecimal(tariffQuantity).bigDecimal
     goodsMeasure.getTariffQuantity.getUnitCode shouldBe ExportsItemsCacheIds.defaultMeasureCode
   }
-  private def validateAdditionalInformation(additionalInfomation: WCOGovernmentAgencyGoodsItem.AdditionalInformation) = {
+  private def validateAdditionalInformation(
+    additionalInfomation: WCOGovernmentAgencyGoodsItem.AdditionalInformation
+  ) = {
     additionalInfomation.getStatementCode.getValue shouldBe statementCode
     additionalInfomation.getStatementDescription.getValue shouldBe descriptionValue
   }
 
-
-private def validateAdditionalDocuments(
-    firstMappedDocument: WCOGovernmentAgencyGoodsItem.AdditionalDocument
-  ) = {
+  private def validateAdditionalDocuments(firstMappedDocument: WCOGovernmentAgencyGoodsItem.AdditionalDocument) = {
     firstMappedDocument.getCategoryCode.getValue shouldBe documentAndAdditionalDocumentTypeCode.substring(0, 1)
     firstMappedDocument.getTypeCode.getValue shouldBe documentAndAdditionalDocumentTypeCode.substring(1)
     firstMappedDocument.getID.getValue shouldBe documentIdentifier + documentPart

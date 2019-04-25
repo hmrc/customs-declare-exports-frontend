@@ -20,31 +20,26 @@ import services.ExportsItemsCacheIds
 import services.mapping.CachingMappingHelper.getClassificationsFromItemTypes
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec._
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.Commodity.{
-  Classification => WCOClassification,
-  DangerousGoods => WCODangerousGoods,
-  GoodsMeasure => WCOGoodsMeasure
-}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.Commodity.{Classification => WCOClassification, DangerousGoods => WCODangerousGoods, GoodsMeasure => WCOGoodsMeasure}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.{Commodity => WCOCommodity}
 import wco.datamodel.wco.declaration_ds.dms._2._
 
 object CommodityBuilder {
 
-
-  def build(implicit cacheMap: CacheMap): Option[WCOCommodity] = {
+  def build(implicit cacheMap: CacheMap): Option[WCOCommodity] =
     cacheMap
       .getEntry[ItemType](ItemType.id)
       .map(
-    item => // get all codes create classification
-    mapCommodity(item)
-    )
-  }
+        item => // get all codes create classification
+          mapCommodity(item)
+      )
 
   private def mapCommodity(item: ItemType)(implicit cacheMap: CacheMap): WCOCommodity = {
     val commodity = new WCOCommodity
 
     val classifications = getClassificationsFromItemTypes(item)
-    val dangerousGoods: Option[Seq[WCODangerousGoods]] = item.unDangerousGoodsCode.map(code => Seq(mapDangerousGoods(code)))
+    val dangerousGoods: Option[Seq[WCODangerousGoods]] =
+      item.unDangerousGoodsCode.map(code => Seq(mapDangerousGoods(code)))
 
     val commodityDescriptionTextType = new CommodityDescriptionTextType
     commodityDescriptionTextType.setValue(item.descriptionOfGoods)
@@ -59,12 +54,12 @@ object CommodityBuilder {
     commodity
   }
 
-  private def buildMeasures(implicit cacheMap: CacheMap): Option[WCOGoodsMeasure] = {
-    cacheMap.getEntry[CommodityMeasure](CommodityMeasure.commodityFormId)
+  private def buildMeasures(implicit cacheMap: CacheMap): Option[WCOGoodsMeasure] =
+    cacheMap
+      .getEntry[CommodityMeasure](CommodityMeasure.commodityFormId)
       .map(mapGoodsMeasure)
-  }
 
-  private def mapClassification(classification: Classification): WCOClassification ={
+  private def mapClassification(classification: Classification): WCOClassification = {
     val wcoClassification = new WCOClassification
 
     val typeCode = new ClassificationIdentificationTypeCodeType
@@ -77,7 +72,7 @@ object CommodityBuilder {
     wcoClassification
   }
 
-  private def mapDangerousGoods(code: String) : WCODangerousGoods ={
+  private def mapDangerousGoods(code: String): WCODangerousGoods = {
     val dangerousGoods = new WCODangerousGoods
     val goodsUNDGIDType = new DangerousGoodsUNDGIDType
     goodsUNDGIDType.setValue(code)
@@ -86,7 +81,7 @@ object CommodityBuilder {
     dangerousGoods
   }
 
-  private def mapGoodsMeasure(data: CommodityMeasure) : WCOGoodsMeasure = {
+  private def mapGoodsMeasure(data: CommodityMeasure): WCOGoodsMeasure = {
 
     val goodsMeasure = new WCOGoodsMeasure()
 
@@ -111,6 +106,5 @@ object CommodityBuilder {
 
     goodsMeasure
   }
-
 
 }

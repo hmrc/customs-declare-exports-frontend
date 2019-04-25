@@ -187,7 +187,8 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsPro
 
         "has missing Measurement Unit" in {
 
-          val input = JsObject(Map(documentWriteOffKey -> JsObject(Map(documentQuantityKey -> JsString("1234567890.123456")))))
+          val input =
+            JsObject(Map(documentWriteOffKey -> JsObject(Map(documentQuantityKey -> JsString("1234567890.123456")))))
           val expectedErrors = Seq(FormError(documentWriteOffKey, measurementUnitAndQuantityError))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -195,9 +196,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsPro
 
         "has missing Document Quantity" in {
 
-          val input = JsObject(
-            Map(documentWriteOffKey -> JsObject(Map(measurementUnitKey -> JsString("AB12"))))
-          )
+          val input = JsObject(Map(documentWriteOffKey -> JsObject(Map(measurementUnitKey -> JsString("AB12")))))
           val expectedErrors = Seq(FormError(documentWriteOffKey, measurementUnitAndQuantityError))
 
           testFailedValidationErrors(input, expectedErrors)
@@ -208,7 +207,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsPro
           val input = JsObject(Map(documentWriteOffKey -> incorrectDocumentWriteOffJSON))
           val expectedErrors = Seq(
             FormError(s"$documentWriteOffKey.$measurementUnitKey", measurementUnitLengthError),
-            FormError(s"$documentWriteOffKey.$documentQuantityKey",documentQuantityPrecisionError )
+            FormError(s"$documentWriteOffKey.$documentQuantityKey", documentQuantityPrecisionError)
           )
 
           testFailedValidationErrors(input, expectedErrors)

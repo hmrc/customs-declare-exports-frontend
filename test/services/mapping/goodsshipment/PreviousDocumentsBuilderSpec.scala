@@ -16,13 +16,13 @@
 
 package services.mapping.goodsshipment
 
-import org.mockito.Mockito.when
 import forms.declaration.{Document, DocumentSpec, PreviousDocumentsData}
+import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSugar{
+class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
   "PreviousDocumentsBuilder " should {
     "correctly map to a WCO-DEC GoodsShipment.PreviousDocuments instance" in {
@@ -39,7 +39,7 @@ class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSu
     "handle empty documents when mapping to WCO-DEC GoodsShipment.PreviousDocuments" in {
       implicit val cacheMap: CacheMap = mock[CacheMap]
       when(cacheMap.getEntry[PreviousDocumentsData](Document.formId))
-          .thenReturn(None)
+        .thenReturn(None)
 
       val previousDoc = PreviousDocumentsBuilder.build(cacheMap)
       previousDoc.isEmpty shouldBe true

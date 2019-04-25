@@ -23,25 +23,25 @@ class AdditionalDocumentsBuilderSpec extends WordSpec with Matchers with Governm
 
   "AdditionalDocumentsBuilder" should {
     "map correctly when values are present" in {
-        implicit val cacheMap: CacheMap = mock[CacheMap]
-        setUpAdditionalDocuments()
+      implicit val cacheMap: CacheMap = mock[CacheMap]
+      setUpAdditionalDocuments()
 
-        val mappedDocuments = AdditionalDocumentsBuilder.build().get
-        mappedDocuments.isEmpty shouldBe false
+      val mappedDocuments = AdditionalDocumentsBuilder.build().get
+      mappedDocuments.isEmpty shouldBe false
       val firstMappedDocument = mappedDocuments.head
 
-        firstMappedDocument.getCategoryCode.getValue shouldBe documentAndAdditionalDocumentTypeCode.substring(0,1)
-        firstMappedDocument.getTypeCode.getValue shouldBe documentAndAdditionalDocumentTypeCode.substring(1)
-        firstMappedDocument.getID.getValue shouldBe documentIdentifier + documentPart
-        firstMappedDocument.getLPCOExemptionCode.getValue shouldBe documentStatus
-        firstMappedDocument.getName.getValue shouldBe documentStatus + documentStatusReason
-        firstMappedDocument.getSubmitter.getName.getValue shouldBe issusingAuthorityName
+      firstMappedDocument.getCategoryCode.getValue shouldBe documentAndAdditionalDocumentTypeCode.substring(0, 1)
+      firstMappedDocument.getTypeCode.getValue shouldBe documentAndAdditionalDocumentTypeCode.substring(1)
+      firstMappedDocument.getID.getValue shouldBe documentIdentifier + documentPart
+      firstMappedDocument.getLPCOExemptionCode.getValue shouldBe documentStatus
+      firstMappedDocument.getName.getValue shouldBe documentStatus + documentStatusReason
+      firstMappedDocument.getSubmitter.getName.getValue shouldBe issusingAuthorityName
 
-        val writeoff = firstMappedDocument.getWriteOff
-        writeoff.getAmountAmount shouldBe null
-        val writeOffQuantity = writeoff.getQuantityQuantity
-        writeOffQuantity.getUnitCode shouldBe measurementUnit
-        writeOffQuantity.getValue shouldBe documentQuantity.bigDecimal
+      val writeoff = firstMappedDocument.getWriteOff
+      writeoff.getAmountAmount shouldBe null
+      val writeOffQuantity = writeoff.getQuantityQuantity
+      writeOffQuantity.getUnitCode shouldBe measurementUnit
+      writeOffQuantity.getValue shouldBe documentQuantity.bigDecimal
     }
   }
 }

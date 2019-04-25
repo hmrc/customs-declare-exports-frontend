@@ -23,40 +23,35 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-trait GovernmentAgencyGoodsItemMocks extends MockitoSugar with GovernmentAgencyGoodsItemData{
+trait GovernmentAgencyGoodsItemMocks extends MockitoSugar with GovernmentAgencyGoodsItemData {
 
   def setUpAdditionalDocuments()(implicit cacheMap: CacheMap) {
     when(cacheMap.getEntry[DocumentsProducedData](eqTo(DocumentsProducedData.formId))(any()))
       .thenReturn(Some(documentsProducedData))
   }
 
-  def setUpAdditionalInformation()(implicit cacheMap: CacheMap): Unit = {
+  def setUpAdditionalInformation()(implicit cacheMap: CacheMap): Unit =
     when(
       cacheMap
         .getEntry[AdditionalInformationData](eqTo(AdditionalInformationData.formId))(any())
     ).thenReturn(Some(additionalInformationData))
-  }
 
-  def setUpPackageInformation()(implicit cacheMap: CacheMap): Unit ={
+  def setUpPackageInformation()(implicit cacheMap: CacheMap): Unit =
     when(
       cacheMap
         .getEntry[Seq[PackageInformation]](eqTo(PackageInformation.formId))(any[Reads[Seq[PackageInformation]]])
     ).thenReturn(Some(Seq(packageInformation)))
-  }
 
-  def setUpItemType()(implicit cacheMap: CacheMap): Unit = {
+  def setUpItemType()(implicit cacheMap: CacheMap): Unit =
     when(cacheMap.getEntry[ItemType](eqTo(ItemType.id))(any[Reads[ItemType]])).thenReturn(itemType)
-  }
 
-  def setUpCommodityMeasure()(implicit cacheMap: CacheMap): Unit = {
+  def setUpCommodityMeasure()(implicit cacheMap: CacheMap): Unit =
     when(cacheMap.getEntry[CommodityMeasure](eqTo(CommodityMeasure.commodityFormId))(any()))
       .thenReturn(Some(commodityMeasure))
-  }
 
-  def setUpProcedureCodes()(implicit cacheMap: CacheMap): Unit = {
+  def setUpProcedureCodes()(implicit cacheMap: CacheMap): Unit =
     when(
       cacheMap
         .getEntry[ProcedureCodesData](eqTo(ProcedureCodesData.formId))(any())
     ).thenReturn(Some(procedureCodesData))
-  }
 }

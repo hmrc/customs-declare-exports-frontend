@@ -16,9 +16,9 @@
 
 package services.mapping.governmentagencygoodsitem
 import forms.declaration.ItemType
+import models.DeclarationFormats._
 import services.ExportsItemsCacheIds
 import services.ExportsItemsCacheIds.defaultCurrencyCode
-import models.DeclarationFormats._
 import services.mapping.CachingMappingHelper
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.{Amount, GovernmentAgencyGoodsItem}
@@ -48,21 +48,23 @@ object GovernmentAgencyGoodsItemBuilder {
     statisticalValueAmountType.setCurrencyID(maybeStatisticalValueAmount.flatMap(_.currencyId).orNull)
     statisticalValueAmountType.setValue(maybeStatisticalValueAmount.flatMap(_.value).orNull.bigDecimal)
 
-    wcoGovernmentAgencyGoodsItem.setSequenceNumeric(
-      BigDecimal(governmentAgencyGoodsItem.sequenceNumeric).bigDecimal
-    )
+    wcoGovernmentAgencyGoodsItem.setSequenceNumeric(BigDecimal(governmentAgencyGoodsItem.sequenceNumeric).bigDecimal)
 
     PackageBuilder.build
       .getOrElse(Seq.empty)
       .foreach(packingItem => wcoGovernmentAgencyGoodsItem.getPackaging.add(packingItem))
 
-    ProcedureCodesBuilder.build.getOrElse(Seq.empty)
+    ProcedureCodesBuilder.build
+      .getOrElse(Seq.empty)
       .foreach(procedureCode => wcoGovernmentAgencyGoodsItem.getGovernmentProcedure.add(procedureCode))
 
-    AdditionalInformationBuilder.build.getOrElse(Seq.empty)
+    AdditionalInformationBuilder.build
+      .getOrElse(Seq.empty)
       .foreach(info => wcoGovernmentAgencyGoodsItem.getAdditionalInformation.add(info))
 
-    AdditionalDocumentsBuilder.build().getOrElse(Seq.empty)
+    AdditionalDocumentsBuilder
+      .build()
+      .getOrElse(Seq.empty)
       .foreach(doc => wcoGovernmentAgencyGoodsItem.getAdditionalDocument.add(doc))
 
     wcoGovernmentAgencyGoodsItem.setStatisticalValueAmount(statisticalValueAmountType)

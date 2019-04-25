@@ -23,42 +23,42 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-class AdditionalInformationBuilderSpec extends WordSpec with Matchers with MockitoSugar{
+class AdditionalInformationBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
   "AdditionalInformationBuilder" should {
-     "map correctly when values are present" in {
+    "map correctly when values are present" in {
 
-       val statementCode = "code"
-       val descriptionValue = "description"
-       val additionalInformation = AdditionalInformation(statementCode, descriptionValue)
-       val additionalInformationData = AdditionalInformationData(Seq(additionalInformation))
+      val statementCode = "code"
+      val descriptionValue = "description"
+      val additionalInformation = AdditionalInformation(statementCode, descriptionValue)
+      val additionalInformationData = AdditionalInformationData(Seq(additionalInformation))
 
+      implicit val cacheMap: CacheMap = mock[CacheMap]
+      when(
+        cacheMap
+          .getEntry[AdditionalInformationData](AdditionalInformationData.formId)
+      ).thenReturn(Some(additionalInformationData))
 
-       implicit val cacheMap: CacheMap = mock[CacheMap]
-       when( cacheMap
-         .getEntry[AdditionalInformationData](AdditionalInformationData.formId))
-           .thenReturn(Some(additionalInformationData))
-
-       val mappedAdditionalInformation = AdditionalInformationBuilder.build().get
-         mappedAdditionalInformation.isEmpty shouldBe false
-         mappedAdditionalInformation.head.getStatementCode.getValue shouldBe statementCode
-         mappedAdditionalInformation.head.getStatementDescription.getValue shouldBe descriptionValue
-     }
+      val mappedAdditionalInformation = AdditionalInformationBuilder.build().get
+      mappedAdditionalInformation.isEmpty shouldBe false
+      mappedAdditionalInformation.head.getStatementCode.getValue shouldBe statementCode
+      mappedAdditionalInformation.head.getStatementDescription.getValue shouldBe descriptionValue
+    }
 
     "map correctly when values are not Present" in {
 
       val additionalInformationData = AdditionalInformationData(Seq())
 
-
       implicit val cacheMap: CacheMap = mock[CacheMap]
-      when( cacheMap
-        .getEntry[AdditionalInformationData](AdditionalInformationData.formId))
-        .thenReturn(Some(additionalInformationData))
+      when(
+        cacheMap
+          .getEntry[AdditionalInformationData](AdditionalInformationData.formId)
+      ).thenReturn(Some(additionalInformationData))
 
       val mappedAdditionalInformation = AdditionalInformationBuilder.build().get
       mappedAdditionalInformation.isEmpty shouldBe true
 
     }
-   }
+  }
 
 }

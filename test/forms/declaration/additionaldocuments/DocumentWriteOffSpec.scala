@@ -118,17 +118,21 @@ object DocumentWriteOffSpec {
   )
 
   val incorrectDocumentWriteOff =
-    DocumentWriteOff(measurementUnit = Some(TestHelper.createRandomAlphanumericString(5)), documentQuantity = Some(BigDecimal("12345678901234567")))
+    DocumentWriteOff(
+      measurementUnit = Some(TestHelper.createRandomAlphanumericString(5)),
+      documentQuantity = Some(BigDecimal("12345678901234567"))
+    )
 
   val incorrectDocumentWriteOffJSON = JsObject(
-    Map(measurementUnitKey -> JsString(TestHelper.createRandomAlphanumericString(5)), documentQuantityKey -> JsString("12345678901234567"))
+    Map(
+      measurementUnitKey -> JsString(TestHelper.createRandomAlphanumericString(5)),
+      documentQuantityKey -> JsString("12345678901234567")
+    )
   )
 
   val emptyDocumentWriteOff =
     DocumentWriteOff(measurementUnit = None, documentQuantity = None)
 
-  val emptyDocumentWriteOffJSON = JsObject(
-    Map(measurementUnitKey -> JsString(""), documentQuantityKey -> JsString(""))
-  )
+  val emptyDocumentWriteOffJSON = JsObject(Map(measurementUnitKey -> JsString(""), documentQuantityKey -> JsString("")))
 
 }
