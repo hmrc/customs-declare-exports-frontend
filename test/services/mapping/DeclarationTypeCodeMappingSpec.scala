@@ -22,37 +22,42 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupp
 import org.scalatest.{Matchers, WordSpec}
 import services.mapping.DeclarationTypeCodeMapping.additionalDeclarationTypeAndDispatchLocationToDeclarationTypeCode
 
-class DeclarationTypeCodeMappingSpec extends WordSpec with Matchers{
+class DeclarationTypeCodeMappingSpec extends WordSpec with Matchers {
 
+  "DeclarationTypeCodeMapping" should {
 
+    "return CodeType with value EXZ for OutsideEU and Standard" in {
+      val dispatchLocation = DispatchLocation(AllowedDispatchLocations.OutsideEU)
+      val additionalDeclarationTypeCode = AdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard)
+      val codeType = additionalDeclarationTypeAndDispatchLocationToDeclarationTypeCode(
+        Some(dispatchLocation),
+        Some(additionalDeclarationTypeCode)
+      )
+      codeType.getValue should be("EXZ")
+    }
 
- "DeclarationTypeCodeMapping" should {
+    "return CodeType with value COY for SpecialFiscalTerritory and Simplified" in {
+      val dispatchLocation = DispatchLocation(AllowedDispatchLocations.SpecialFiscalTerritory)
+      val additionalDeclarationTypeCode = AdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Simplified)
+      val codeType = additionalDeclarationTypeAndDispatchLocationToDeclarationTypeCode(
+        Some(dispatchLocation),
+        Some(additionalDeclarationTypeCode)
+      )
+      codeType.getValue should be("COY")
+    }
 
-   "return CodeType with value EXZ for OutsideEU and Standard" in {
-     val dispatchLocation = DispatchLocation(AllowedDispatchLocations.OutsideEU)
-     val additionalDeclarationTypeCode = AdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard)
-     val codeType = additionalDeclarationTypeAndDispatchLocationToDeclarationTypeCode(Some(dispatchLocation), Some(additionalDeclarationTypeCode))
-     codeType.getValue should be("EXZ")
-   }
+    "return CodeType with value Y for None and Simplified" in {
+      val additionalDeclarationTypeCode = AdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Simplified)
+      val codeType =
+        additionalDeclarationTypeAndDispatchLocationToDeclarationTypeCode(None, Some(additionalDeclarationTypeCode))
+      codeType.getValue should be("Y")
+    }
 
-   "return CodeType with value COY for SpecialFiscalTerritory and Simplified" in {
-     val dispatchLocation = DispatchLocation(AllowedDispatchLocations.SpecialFiscalTerritory)
-     val additionalDeclarationTypeCode = AdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Simplified)
-     val codeType = additionalDeclarationTypeAndDispatchLocationToDeclarationTypeCode(Some(dispatchLocation), Some(additionalDeclarationTypeCode))
-     codeType.getValue should be("COY")
-   }
-
-   "return CodeType with value Y for None and Simplified" in {
-     val additionalDeclarationTypeCode = AdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Simplified)
-     val codeType = additionalDeclarationTypeAndDispatchLocationToDeclarationTypeCode(None, Some(additionalDeclarationTypeCode))
-     codeType.getValue should be("Y")
-   }
-
-   "return CodeType with value EX for OutsideEU and None" in {
-     val dispatchLocation = DispatchLocation(AllowedDispatchLocations.OutsideEU)
-     val codeType = additionalDeclarationTypeAndDispatchLocationToDeclarationTypeCode(Some(dispatchLocation), None)
-     codeType.getValue should be("EX")
-   }
- }
+    "return CodeType with value EX for OutsideEU and None" in {
+      val dispatchLocation = DispatchLocation(AllowedDispatchLocations.OutsideEU)
+      val codeType = additionalDeclarationTypeAndDispatchLocationToDeclarationTypeCode(Some(dispatchLocation), None)
+      codeType.getValue should be("EX")
+    }
+  }
 
 }

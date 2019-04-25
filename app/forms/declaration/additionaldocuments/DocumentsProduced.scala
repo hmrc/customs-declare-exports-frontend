@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.declaration
+package forms.declaration.additionaldocuments
 
 import forms.common.Date
 import play.api.data.Forms._
@@ -24,28 +24,24 @@ import utils.validators.forms.FieldValidator._
 
 case class DocumentsProduced(
   documentTypeCode: Option[String],
-  documentIdentifier: Option[String],
-  documentPart: Option[String],
+  documentIdentifierAndPart: Option[DocumentIdentifierAndPart],
   documentStatus: Option[String],
   documentStatusReason: Option[String],
   issuingAuthorityName: Option[String],
   dateOfValidity: Option[Date],
-  measurementUnit: Option[String],
-  documentQuantity: Option[BigDecimal]
+  documentWriteOff: Option[DocumentWriteOff]
 ) {
   implicit val writes = Json.writes[DocumentsProduced]
 
   def isDefined: Boolean =
     List(
       documentTypeCode,
-      documentIdentifier,
-      documentPart,
+      documentIdentifierAndPart,
       documentStatus,
       documentStatusReason,
       issuingAuthorityName,
       dateOfValidity,
-      measurementUnit,
-      documentQuantity
+      documentWriteOff
     ).exists(_.isDefined)
 }
 
@@ -54,31 +50,21 @@ object DocumentsProduced {
   implicit val format = Json.format[DocumentsProduced]
 
   private val issuingAuthorityNameMaxLength = 70
-  private val measurementUnitMaxLength = 4
-  private val documentQuantityMaxLength = 16
-  private val documentQuantityMaxDecimalPlaces = 6
 
   val documentTypeCodeKey = "documentTypeCode"
-  val documentIdentifierKey = "documentIdentifier"
-  val documentPartKey = "documentPart"
+  val documentIdentifierAndPartKey = "documentIdentifierAndPart"
   val documentStatusKey = "documentStatus"
   val documentStatusReasonKey = "documentStatusReason"
   val issuingAuthorityNameKey = "issuingAuthorityName"
   val dateOfValidityKey = "dateOfValidity"
-  val measurementUnitKey = "measurementUnit"
-  val documentQuantityKey = "documentQuantity"
+  val documentWriteOffKey = "documentWriteOff"
 
   val mapping = Forms
     .mapping(
       documentTypeCodeKey -> optional(
         text().verifying("supplementary.addDocument.documentTypeCode.error", hasSpecificLength(4) and isAlphanumeric)
       ),
-      documentIdentifierKey -> optional(
-        text().verifying("supplementary.addDocument.documentIdentifier.error", isAlphanumeric and noLongerThan(30))
-      ),
-      documentPartKey -> optional(
-        text().verifying("supplementary.addDocument.documentPart.error", isAlphanumeric and noLongerThan(5))
-      ),
+      documentIdentifierAndPartKey -> optional(DocumentIdentifierAndPart.mapping),
       documentStatusKey -> optional(
         text().verifying("supplementary.addDocument.documentStatus.error", noLongerThan(2) and isAllCapitalLetter)
       ),
@@ -93,39 +79,8 @@ object DocumentsProduced {
           )
       ),
       dateOfValidityKey -> optional(Date.mapping),
-      measurementUnitKey -> optional(
-        text()
-          .verifying(
-            "supplementary.addDocument.measurementUnit.error.length",
-            hasSpecificLength(measurementUnitMaxLength)
-          )
-          .verifying("supplementary.addDocument.measurementUnit.error.specialCharacters", isAlphanumeric)
-      ),
-      documentQuantityKey ->
-        optional(
-          bigDecimal
-            .verifying(
-              "supplementary.addDocument.documentQuantity.error.precision",
-              _.precision <= documentQuantityMaxLength
-            )
-            .verifying(
-              "supplementary.addDocument.documentQuantity.error.scale",
-              _.scale <= documentQuantityMaxDecimalPlaces
-            )
-            .verifying("supplementary.addDocument.documentQuantity.error", _ >= 0)
-        )
+      documentWriteOffKey -> optional(DocumentWriteOff.mapping)
     )(DocumentsProduced.apply)(DocumentsProduced.unapply)
-    .verifying("supplementary.addDocument.error.documentIdentifierAndPart", validateDocumentIdentifierAndPart(_))
-    .verifying(
-      "supplementary.addDocument.error.measurementUnitAndQuantity",
-      validateMeasurementUnitAndDocumentQuantity(_)
-    )
-
-  private def validateDocumentIdentifierAndPart(doc: DocumentsProduced): Boolean =
-    (doc.documentIdentifier.isEmpty && doc.documentPart.isEmpty) || (doc.documentIdentifier.nonEmpty && doc.documentPart.nonEmpty)
-
-  private def validateMeasurementUnitAndDocumentQuantity(doc: DocumentsProduced): Boolean =
-    (doc.measurementUnit.isEmpty && doc.documentQuantity.isEmpty) || (doc.measurementUnit.nonEmpty && doc.documentQuantity.nonEmpty)
 
   def form(): Form[DocumentsProduced] = Form(mapping)
 }

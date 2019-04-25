@@ -24,7 +24,7 @@ class CachingMappingHelperSpec extends WordSpec with Matchers {
     "mapGoodsMeasure correctly When tariffQuantity grossMassMeasure netWeightMeasure provided" in {
 
       val commodityMeasure = CommodityMeasure(Some("10"), "100.00", "100.00")
-      val goodsMeasure =  CachingMappingHelper.mapGoodsMeasure(commodityMeasure).goodsMeasure.get
+      val goodsMeasure = CachingMappingHelper.mapGoodsMeasure(commodityMeasure).goodsMeasure.get
 
       goodsMeasure.tariffQuantity.get.value.get shouldBe 10
       goodsMeasure.grossMassMeasure.get.value.get shouldBe 100.00
@@ -35,7 +35,7 @@ class CachingMappingHelperSpec extends WordSpec with Matchers {
 
       val commodityMeasure = CommodityMeasure(None, "100.00", "100.00")
 
-      val goodsMeasure =  CachingMappingHelper.mapGoodsMeasure(commodityMeasure).goodsMeasure.get
+      val goodsMeasure = CachingMappingHelper.mapGoodsMeasure(commodityMeasure).goodsMeasure.get
       goodsMeasure.tariffQuantity shouldBe None
       goodsMeasure.grossMassMeasure.get.value.get shouldBe 100.00
       goodsMeasure.netWeightMeasure.get.value.get shouldBe 100.00

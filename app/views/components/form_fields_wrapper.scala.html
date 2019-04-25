@@ -16,7 +16,7 @@
 
 @(field: Field)(content: Html)(implicit messages: Messages)
 
-<div class="form-group @if(field.hasErrors){form-field--error}">
+<div class="form-field @if(field.hasErrors){form-field--error}">
     @field.errors.map { error =>
         <label class="form-label" id="@{field.id}">
             <span class="error-notification" id="error-message-@{field.id}-input">
@@ -24,7 +24,5 @@
             </span>
         </label>
     }
-
     @content
-
 </div>

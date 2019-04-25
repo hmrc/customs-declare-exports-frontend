@@ -17,23 +17,29 @@
 package services.mapping.governmentagencygoodsitem
 import models.declaration.ProcedureCodesData
 import uk.gov.hmrc.http.cache.client.CacheMap
-
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.GovernmentProcedure
 import wco.datamodel.wco.declaration_ds.dms._2.{GovernmentProcedureCurrentCodeType, GovernmentProcedurePreviousCodeType}
 
 object ProcedureCodesBuilder {
 
-  def build(implicit cacheMap: CacheMap): Option[Seq[GovernmentProcedure]] = {
+  def build(implicit cacheMap: CacheMap): Option[Seq[GovernmentProcedure]] =
     cacheMap
-        .getEntry[ProcedureCodesData](ProcedureCodesData.formId)
-        .map(
-          form =>
-            Seq(createGovernmentProcedure(form.procedureCode.map(_.substring(0, 2)), form.procedureCode.map(_.substring(2, 4))))
-              ++ form.additionalProcedureCodes.map(code => createGovernmentProcedure(Some(code)))
-        )
-  }
+      .getEntry[ProcedureCodesData](ProcedureCodesData.formId)
+      .map(
+        form =>
+          Seq(
+            createGovernmentProcedure(
+              form.procedureCode.map(_.substring(0, 2)),
+              form.procedureCode.map(_.substring(2, 4))
+            )
+          )
+            ++ form.additionalProcedureCodes.map(code => createGovernmentProcedure(Some(code)))
+      )
 
-  private def createGovernmentProcedure(currentCode : Option[String] = None, previousCode: Option[String] = None): GovernmentProcedure ={
+  private def createGovernmentProcedure(
+    currentCode: Option[String] = None,
+    previousCode: Option[String] = None
+  ): GovernmentProcedure = {
     val governmentProcedure = new GovernmentProcedure
 
     val currentCodeType = new GovernmentProcedureCurrentCodeType

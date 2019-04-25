@@ -21,9 +21,8 @@ import wco.datamodel.wco.metadata_ds_dms._2._
 
 object MetaDataBuilder {
 
-  def build() : MetaData = {
+  def build(): MetaData =
     buildMetaData()
-  }
 
   private def buildMetaData(): MetaData = {
     val metaData = new MetaData
@@ -31,11 +30,9 @@ object MetaDataBuilder {
     metaData
   }
 
-  private def populateMetaDataMandatoryDefaults(metaData : MetaData){
+  private def populateMetaDataMandatoryDefaults(metaData: MetaData) {
     val agencyAssignedCustomizationCodeType = new MetaDataAgencyAssignedCustomizationCodeType
-    agencyAssignedCustomizationCodeType.setValue(
-      SchemaMandatoryValues.agencyAssignedCustomizationVersionCode
-    )
+    agencyAssignedCustomizationCodeType.setValue(SchemaMandatoryValues.agencyAssignedCustomizationVersionCode)
 
     val metaDataResponsibleAgencyNameTextType = new MetaDataResponsibleAgencyNameTextType
     metaDataResponsibleAgencyNameTextType.setValue(SchemaMandatoryValues.responsibleAgencyName)
@@ -55,6 +52,5 @@ object MetaDataBuilder {
     metaData.setWCODataModelVersionCode(metaDataWCODataModelVersionCodeType)
     metaData.setWCOTypeName(metaDataWCOTypeNameTextType)
   }
-
 
 }

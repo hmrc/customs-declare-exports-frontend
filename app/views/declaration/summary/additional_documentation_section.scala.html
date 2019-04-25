@@ -15,7 +15,7 @@
  *@
 
 @import models.declaration.DocumentsProducedData
-@import models.viewmodels.HtmlTableRow
+
 @(additionalDocumentationData: Option[DocumentsProducedData])(implicit messages: Messages)
 
 @components.summary_list(Some(messages("supplementary.summary.additionalDocumentation.header"))) {
@@ -36,11 +36,12 @@
             @for(item <- additionalDocumentationData.map(_.documents).get) {
                 <tr>
                     <td scope="row">@item.documentTypeCode</td>
-                    <td>@item.documentIdentifier</td>
-                    <td>@item.documentPart</td>
+                    <td>@item.documentIdentifierAndPart.map(_.documentIdentifier)</td>
+                    <td>@item.documentIdentifierAndPart.map(_.documentPart)</td>
                     <td>@item.documentStatus</td>
                     <td>@item.documentStatusReason</td>
-                    <td>@item.documentQuantity</td>
+                    <td>@item.documentWriteOff.map(_.measurementUnit)</td>
+                    <td>@item.documentWriteOff.map(_.documentQuantity)</td>
                 </tr>
             }
             </tbody>

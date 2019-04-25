@@ -17,6 +17,7 @@
 package services.mapping.governmentagencygoodsitem
 import forms.common.Date
 import forms.declaration._
+import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 
 trait GovernmentAgencyGoodsItemData {
@@ -36,20 +37,23 @@ trait GovernmentAgencyGoodsItemData {
 
   val documentsProduced: Seq[DocumentsProduced] = Seq(
     DocumentsProduced(
-      Some(documentAndAdditionalDocumentTypeCode),
-      Some(documentIdentifier),
-      Some(documentPart),
-      Some(documentStatus),
-      Some(documentStatus + documentStatusReason),
-      Some(issusingAuthorityName),
-      Some(dateOfValidity),
-      Some(measurementUnit),
-      Some(documentQuantity)
+      documentTypeCode = Some(documentAndAdditionalDocumentTypeCode),
+      documentIdentifierAndPart = Some(DocumentIdentifierAndPart(
+        documentIdentifier = Some(documentIdentifier),
+        documentPart =  Some(documentPart)
+      )),
+      documentStatus = Some(documentStatus),
+      documentStatusReason = Some(documentStatus + documentStatusReason),
+      issuingAuthorityName = Some(issusingAuthorityName),
+      dateOfValidity = Some(dateOfValidity),
+      documentWriteOff = Some(DocumentWriteOff(
+        measurementUnit = Some(measurementUnit),
+        documentQuantity = Some(documentQuantity)
+      ))
     )
   )
 
   val documentsProducedData = DocumentsProducedData(documentsProduced)
-
 
   //Package Information Data
   val shippingMarksValue = "shippingMarks"
@@ -87,7 +91,6 @@ trait GovernmentAgencyGoodsItemData {
   val previousCodes = Seq(previousCode)
   val cachedCode = "CUPR"
   val procedureCodesData = ProcedureCodesData(Some(cachedCode), previousCodes)
-
 
   //Additional Information data
   val statementCode = "code"

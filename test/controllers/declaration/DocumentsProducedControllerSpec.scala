@@ -22,6 +22,9 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.DocumentsProducedSpec
 import forms.declaration.DocumentsProducedSpec.{correctDocumentsProducedMap, _}
+import forms.declaration.additionaldocuments.DocumentIdentifierAndPart.{documentIdentifierKey, documentPartKey}
+import forms.declaration.additionaldocuments.DocumentWriteOff.documentQuantityKey
+import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
 import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.formId
@@ -73,10 +76,10 @@ class DocumentsProducedControllerSpec
         correctDocumentsProduced.documentTypeCode.get
       )
       getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)").text() must equal(
-        correctDocumentsProduced.documentIdentifier.get
+        correctDocumentsProduced.documentIdentifierAndPart.get.documentIdentifier.get
       )
       getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(3)").text() must equal(
-        correctDocumentsProduced.documentPart.get
+        correctDocumentsProduced.documentIdentifierAndPart.get.documentPart.get
       )
       getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(4)").text() must equal(
         correctDocumentsProduced.documentStatus.get
@@ -91,10 +94,10 @@ class DocumentsProducedControllerSpec
         correctDocumentsProduced.dateOfValidity.get.toString
       )
       getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() must equal(
-        correctDocumentsProduced.measurementUnit.get
+        correctDocumentsProduced.documentWriteOff.get.measurementUnit.get
       )
       getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(9)").text() must equal(
-        correctDocumentsProduced.documentQuantity.get.toString
+        correctDocumentsProduced.documentWriteOff.get.documentQuantity.get.toString
       )
     }
   }
@@ -113,7 +116,13 @@ class DocumentsProducedControllerSpec
 
       "provided with incorrect document identifier" in {
         val incorrectDocumentIdentifier: JsValue =
-          JsObject(Map("documentIdentifier" -> JsString(TestHelper.createRandomAlphanumericString(31))))
+          JsObject(
+            Map(
+              s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> JsString(
+                TestHelper.createRandomAlphanumericString(31)
+              )
+            )
+          )
 
         val result = route(app, postRequest(uri, incorrectDocumentIdentifier)).get
         status(result) must be(BAD_REQUEST)
@@ -122,7 +131,13 @@ class DocumentsProducedControllerSpec
 
       "provided with incorrect document part" in {
         val incorrectDocumentPart: JsValue =
-          JsObject(Map("documentPart" -> JsString(TestHelper.createRandomAlphanumericString(6))))
+          JsObject(
+            Map(
+              s"$documentIdentifierAndPartKey.$documentPartKey" -> JsString(
+                TestHelper.createRandomAlphanumericString(6)
+              )
+            )
+          )
 
         val result = route(app, postRequest(uri, incorrectDocumentPart)).get
         status(result) must be(BAD_REQUEST)
@@ -130,7 +145,7 @@ class DocumentsProducedControllerSpec
       }
 
       "provided with incorrect document status" in {
-        val incorrectDocumentStatus: JsValue = JsObject(Map("documentStatus" -> JsString("as")))
+        val incorrectDocumentStatus: JsValue = JsObject(Map(documentStatusKey -> JsString("as")))
 
         val result = route(app, postRequest(uri, incorrectDocumentStatus)).get
         status(result) must be(BAD_REQUEST)
@@ -139,7 +154,7 @@ class DocumentsProducedControllerSpec
 
       "provided with incorrect document status reason" in {
         val incorrectDocumentStatusReason: JsValue =
-          JsObject(Map("documentStatusReason" -> JsString(TestHelper.createRandomAlphanumericString(36))))
+          JsObject(Map(documentStatusReasonKey -> JsString(TestHelper.createRandomAlphanumericString(36))))
 
         val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
         status(result) must be(BAD_REQUEST)
@@ -148,7 +163,7 @@ class DocumentsProducedControllerSpec
 
       "provided with incorrect documents quantity" in {
         val incorrectDocumentQuantity: JsValue =
-          JsObject(Map("documentQuantity" -> JsString("123456789012123.1234567")))
+          JsObject(Map(s"$documentWriteOffKey.$documentQuantityKey" -> JsString("123456789012123.1234567")))
 
         val result = route(app, postRequest(uri, incorrectDocumentQuantity)).get
         status(result) must be(BAD_REQUEST)
@@ -229,7 +244,7 @@ class DocumentsProducedControllerSpec
 
         withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
-        val newDocument = correctDocumentsProducedMap + ("documentIdentifier" -> "DOCID123")
+        val newDocument = correctDocumentsProducedMap + (s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> "DOCID123")
         val body = newDocument.toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
@@ -290,7 +305,7 @@ class DocumentsProducedControllerSpec
 
         withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
-        val newDocument = correctDocumentsProducedMap + ("documentIdentifier" -> "DOCID123")
+        val newDocument = correctDocumentsProducedMap + (s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> "DOCID123")
         val body = newDocument.toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header

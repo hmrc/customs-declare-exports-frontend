@@ -29,7 +29,7 @@ class PackageBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoo
       val mappedItems = PackageBuilder.build.getOrElse(Seq.empty)
 
       mappedItems.length should be(1)
-      val wcoPackaging =  mappedItems.head
+      val wcoPackaging = mappedItems.head
       wcoPackaging.getQuantityQuantity.getValue shouldBe BigDecimal(packageQuantity).bigDecimal
       wcoPackaging.getMarksNumbersID.getValue shouldBe shippingMarksValue
       wcoPackaging.getTypeCode.getValue shouldBe packageTypeValue
