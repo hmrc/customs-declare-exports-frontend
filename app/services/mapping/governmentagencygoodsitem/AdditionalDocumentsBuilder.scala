@@ -15,24 +15,15 @@
  */
 
 package services.mapping.governmentagencygoodsitem
-import forms.declaration.DocumentsProduced
+
+import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
 import models.declaration.DocumentsProducedData
 import services.ExportsItemsCacheIds.dateTimeCode
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument.{
-  Submitter,
-  WriteOff
-}
-import wco.datamodel.wco.declaration_ds.dms._2.{
-  AdditionalDocumentEffectiveDateTimeType,
-  SubmitterNameTextType,
-  WriteOffQuantityQuantityType,
-  _
-}
-import wco.datamodel.wco.declaration_ds.dms._2.AdditionalDocumentEffectiveDateTimeType.{
-  DateTimeString => WCODateTimeString
-}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument.{Submitter, WriteOff}
+import wco.datamodel.wco.declaration_ds.dms._2.AdditionalDocumentEffectiveDateTimeType.{DateTimeString => WCODateTimeString}
+import wco.datamodel.wco.declaration_ds.dms._2.{AdditionalDocumentEffectiveDateTimeType, SubmitterNameTextType, WriteOffQuantityQuantityType, _}
 
 object AdditionalDocumentsBuilder {
 
@@ -50,9 +41,7 @@ object AdditionalDocumentsBuilder {
     additionalDocumentTypeCodeType.setValue(doc.documentTypeCode.map(_.substring(1)).orNull)
 
     val additionalDocumentIdentificationIDType = new AdditionalDocumentIdentificationIDType
-    additionalDocumentIdentificationIDType.setValue(
-      doc.documentIdentifier.map(_ + doc.documentPart.getOrElse("")).orNull
-    )
+    additionalDocumentIdentificationIDType.setValue(mapDocumentIdentificationIDType(doc).orNull)
 
     val additionalDocumentLPCOExemptionCodeType = new AdditionalDocumentLPCOExemptionCodeType
     additionalDocumentLPCOExemptionCodeType.setValue(doc.documentStatus.orNull)
@@ -76,16 +65,22 @@ object AdditionalDocumentsBuilder {
     additionalDocument.setSubmitter(doc.issuingAuthorityName.map(name => mapSubmitter(name = Some(name))).orNull)
     additionalDocument.setEffectiveDateTime(additionalDocumentEffectiveDateTimeType)
 
-    additionalDocument.setWriteOff(mapWriteOff(doc.documentQuantity.map(q => q.bigDecimal), doc.measurementUnit))
+    additionalDocument.setWriteOff(mapWriteOff(doc.documentWriteOff))
 
     additionalDocument
   }
 
-  private def mapWriteOff(quantity: Option[BigDecimal], measurementUnit: Option[String]): WriteOff = {
+  private def mapDocumentIdentificationIDType(document: DocumentsProduced): Option[String] = for {
+      identifierAndPart <- document.documentIdentifierAndPart
+      documentIdentifier <- identifierAndPart.documentIdentifier
+      documentPart <- identifierAndPart.documentPart
+    } yield documentIdentifier + documentPart
+
+  private def mapWriteOff(writeOff: Option[DocumentWriteOff]): WriteOff = {
     val writeoff = new WriteOff
     val quantityType = new WriteOffQuantityQuantityType
-    quantityType.setValue(quantity.map(value => value.bigDecimal).orNull)
-    quantityType.setUnitCode(measurementUnit.orNull)
+    quantityType.setValue(writeOff.flatMap(_.documentQuantity.map(quantity => quantity.bigDecimal)).orNull)
+    quantityType.setUnitCode(writeOff.flatMap(_.measurementUnit).orNull)
 
     writeoff.setQuantityQuantity(quantityType)
     writeoff
@@ -105,6 +100,5 @@ object AdditionalDocumentsBuilder {
 
     submitter
   }
-
 
 }
