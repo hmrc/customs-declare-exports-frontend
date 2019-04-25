@@ -76,14 +76,14 @@ object AdditionalDocumentsBuilder {
       documentPart <- identifierAndPart.documentPart
     } yield documentIdentifier + documentPart
 
-  private def mapWriteOff(writeOff: Option[DocumentWriteOff]): WriteOff = {
-    val writeoff = new WriteOff
+  private def mapWriteOff(documentWriteOff: Option[DocumentWriteOff]): WriteOff = {
+    val writeOff = new WriteOff
     val quantityType = new WriteOffQuantityQuantityType
-    quantityType.setValue(writeOff.flatMap(_.documentQuantity.map(quantity => quantity.bigDecimal)).orNull)
-    quantityType.setUnitCode(writeOff.flatMap(_.measurementUnit).orNull)
+    quantityType.setValue(documentWriteOff.flatMap(_.documentQuantity.map(quantity => quantity.bigDecimal)).orNull)
+    quantityType.setUnitCode(documentWriteOff.flatMap(_.measurementUnit).orNull)
 
-    writeoff.setQuantityQuantity(quantityType)
-    writeoff
+    writeOff.setQuantityQuantity(quantityType)
+    writeOff
   }
 
   private def mapSubmitter(name: Option[String], role: Option[String] = None): Submitter = {
