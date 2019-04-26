@@ -38,18 +38,15 @@ trait GovernmentAgencyGoodsItemData {
   val documentsProduced: Seq[DocumentsProduced] = Seq(
     DocumentsProduced(
       documentTypeCode = Some(documentAndAdditionalDocumentTypeCode),
-      documentIdentifierAndPart = Some(DocumentIdentifierAndPart(
-        documentIdentifier = Some(documentIdentifier),
-        documentPart =  Some(documentPart)
-      )),
+      documentIdentifierAndPart = Some(
+        DocumentIdentifierAndPart(documentIdentifier = Some(documentIdentifier), documentPart = Some(documentPart))
+      ),
       documentStatus = Some(documentStatus),
       documentStatusReason = Some(documentStatus + documentStatusReason),
       issuingAuthorityName = Some(issusingAuthorityName),
       dateOfValidity = Some(dateOfValidity),
-      documentWriteOff = Some(DocumentWriteOff(
-        measurementUnit = Some(measurementUnit),
-        documentQuantity = Some(documentQuantity)
-      ))
+      documentWriteOff =
+        Some(DocumentWriteOff(measurementUnit = Some(measurementUnit), documentQuantity = Some(documentQuantity)))
     )
   )
 

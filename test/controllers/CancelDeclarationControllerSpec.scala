@@ -18,6 +18,7 @@ package controllers
 
 import base.CustomExportsBaseSpec
 import forms.CancelDeclarationSpec
+import metrics.MetricIdentifiers
 import models.requests.CancellationRequested
 import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString, JsValue}
@@ -54,6 +55,20 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
       stringResult must include(messages("cancellation.confirmationPage.message"))
     }
 
+    "record cancellation timing and increase the Success Counter when response is OK" in {
+      val timer = metrics.timers(MetricIdentifiers.cancelMetric).getCount
+      val counter = metrics.counters(MetricIdentifiers.cancelMetric).getCount
+      successfulCustomsDeclareExportsResponse()
+      successfulCancelDeclarationResponse(CancellationRequested)
+      val result = route(app, postRequest(uri, CancelDeclarationSpec.correctCancelDeclarationJSON)).get
+
+      status(result) must be(OK)
+
+      val stringResult = contentAsString(result)
+      stringResult must include(messages("cancellation.confirmationPage.message"))
+      metrics.timers(MetricIdentifiers.cancelMetric).getCount mustBe timer + 1
+      metrics.counters(MetricIdentifiers.cancelMetric).getCount mustBe counter + 1
+    }
   }
 }
 

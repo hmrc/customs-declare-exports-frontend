@@ -34,7 +34,13 @@ class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar {
       val declarantAddressLine = "addressLine"
       val declarantAddressPostCode = "postCode"
 
-      val declarantAddress = new Address(declarantName, declarantAddressLine, declarantAddressCity, declarantAddressPostCode, "United Kingdom")
+      val declarantAddress = new Address(
+        declarantName,
+        declarantAddressLine,
+        declarantAddressCity,
+        declarantAddressPostCode,
+        "United Kingdom"
+      )
       val entityDetails = new EntityDetails(eori = Some("GB12767562756"), Some(declarantAddress))
       val declarantDetails = new DeclarantDetails(entityDetails)
 

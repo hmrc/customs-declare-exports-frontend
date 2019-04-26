@@ -54,8 +54,9 @@ class CancelDeclarationController @Inject()(
         (formWithErrors: Form[CancelDeclaration]) =>
           Future.successful(BadRequest(cancel_declaration(appConfig, formWithErrors))),
         form => {
+          val context = exportsMetrics.startTimer(cancelMetric)
+
           val metadata = form.createCancellationMetadata(request.user.eori)
-          exportsMetrics.startTimer(cancelMetric)
 
           val mrn = form.declarationId
 
@@ -64,6 +65,7 @@ class CancelDeclarationController @Inject()(
               status match {
                 case CancellationRequested =>
                   exportsMetrics.incrementCounter(cancelMetric)
+                  context.stop()
                   Future.successful(Ok(cancellation_confirmation_page(appConfig)))
                 case CancellationRequestExists =>
                   Future.successful(

@@ -22,7 +22,9 @@ import services.ExportsItemsCacheIds.defaultCurrencyCode
 import services.mapping.CachingMappingHelper
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.{Amount, GovernmentAgencyGoodsItem}
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
+  GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
+}
 import wco.datamodel.wco.declaration_ds.dms._2.GovernmentAgencyGoodsItemStatisticalValueAmountType
 
 object GovernmentAgencyGoodsItemBuilder {

@@ -30,7 +30,10 @@ import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransactionTypeSpec._
-import forms.declaration.TransportInformationContainerSpec.{correctTransportInformationContainerData, correctTransportInformationContainerDataJSON}
+import forms.declaration.TransportInformationContainerSpec.{
+  correctTransportInformationContainerData,
+  correctTransportInformationContainerDataJSON
+}
 import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec

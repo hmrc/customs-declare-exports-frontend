@@ -25,10 +25,13 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
   "ConsignmentBuilder" should {
     "correctly map to the WCO-DEC GoodsShipment.Consignment instance" in {
       implicit val cacheMap: CacheMap =
-        CacheMap("CacheID", Map(
-          CarrierDetails.id -> CarrierDetailsSpec.correctCarrierDetailsJSON,
-          TransportInformation.id -> TransportInformationSpec.correctTransportInformationJSON
-        ))
+        CacheMap(
+          "CacheID",
+          Map(
+            CarrierDetails.id -> CarrierDetailsSpec.correctCarrierDetailsJSON,
+            TransportInformation.id -> TransportInformationSpec.correctTransportInformationJSON
+          )
+        )
       val consignment = ConsignmentBuilder.build(cacheMap)
       consignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
       consignment.getGoodsLocation.getName.getValue should be("Full Name")

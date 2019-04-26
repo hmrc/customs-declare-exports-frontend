@@ -19,16 +19,18 @@ import forms.declaration.DeclarationHolder
 import models.declaration.DeclarationHoldersData
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.AuthorisationHolder
-import wco.datamodel.wco.declaration_ds.dms._2.{AuthorisationHolderCategoryCodeType, AuthorisationHolderIdentificationIDType}
+import wco.datamodel.wco.declaration_ds.dms._2.{
+  AuthorisationHolderCategoryCodeType,
+  AuthorisationHolderIdentificationIDType
+}
 
 object AuthorisationHoldersBuilder {
 
-  def build(implicit cacheMap: CacheMap): Seq[AuthorisationHolder] = {
+  def build(implicit cacheMap: CacheMap): Seq[AuthorisationHolder] =
     cacheMap
       .getEntry[DeclarationHoldersData](DeclarationHoldersData.formId)
       .map(holdersData => holdersData.holders.map(holder => mapToAuthorisationHolder(holder)))
       .orNull
-  }
 
   def mapToAuthorisationHolder(holder: DeclarationHolder): AuthorisationHolder = {
     val authorisationHolder = new AuthorisationHolder()

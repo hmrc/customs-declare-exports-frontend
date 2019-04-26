@@ -24,12 +24,12 @@ import metrics.MetricIdentifiers._
 @Singleton
 class ExportsMetrics @Inject()(metrics: Metrics) {
 
-  private val timers = Map(
+  val timers = Map(
     submissionMetric -> metrics.defaultRegistry.timer(s"$submissionMetric.timer"),
     cancelMetric -> metrics.defaultRegistry.timer(s"$cancelMetric.timer")
   )
 
-  private val counters = Map(
+  val counters = Map(
     submissionMetric -> metrics.defaultRegistry.counter(s"$submissionMetric.counter"),
     cancelMetric -> metrics.defaultRegistry.counter(s"$cancelMetric.counter")
   )
