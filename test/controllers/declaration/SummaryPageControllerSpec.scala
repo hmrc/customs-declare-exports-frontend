@@ -226,7 +226,8 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         f.get("LRN") must be(defined)
         f("LRN") must equal("123ABC")
       }
-      "record cancellation timing and increase the Success Counter when response is OK" in new Test {
+
+      "record submission timing and increase the Success Counter when response is OK" in new Test {
         val timer = metrics.timers(MetricIdentifiers.submissionMetric).getCount
         val counter = metrics.counters(MetricIdentifiers.submissionMetric).getCount
 
