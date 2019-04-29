@@ -84,6 +84,8 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
 
   lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
 
+  lazy val useNewMappingStrategy = getConfBool("features.use-new-wco-dec-mapping-strategy", false)
+
   lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
 
   lazy val nrsServiceUrl: String = baseUrl("nrs")

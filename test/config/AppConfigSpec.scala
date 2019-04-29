@@ -41,6 +41,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
         |microservice.services.nrs.apikey=cds-exports
         |microservice.services.features.default=disabled
         |microservice.services.features.welsh-translation=false
+        |microservice.services.features.use-new-wco-dec-mapping-strategy=true
         |microservice.services.auth.port=9988
         |microservice.services.customs-declare-exports.host=localhoste
         |microservice.services.customs-declare-exports.port=9875
@@ -78,6 +79,12 @@ class AppConfigSpec extends CustomExportsBaseSpec {
 
     "have login URL" in {
       validConfigService.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
+    }
+
+    "have use-new-wco-dec-mapping-strategy feature flag set as true" in {
+      validConfigService.getConfBool("features.use-new-wco-dec-mapping-strategy", false) must be(
+        true
+      )
     }
 
     // what is continue URL - redirect ?
@@ -149,6 +156,12 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       validConfigService.nrsApiKey must be("cds-exports")
     }
 
+  }
+
+  "when use-new-wco-dec-mapping-strategy feature flag is not defined, default to false" in {
+    emptyConfigService.getConfBool("features.use-new-wco-dec-mapping-strategy", false) must be(
+      false
+    )
   }
 
   "throw an exception when google-analytics.host is missing" in {
