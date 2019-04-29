@@ -30,8 +30,7 @@ import models.requests.JourneyRequest
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import services.WcoMetadataMapping._
-import services.{CustomsCacheService, NRSService}
+import services.{CustomsCacheService, NRSService, WcoMetadataMapper}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -48,7 +47,8 @@ class SummaryPageController @Inject()(
   customsCacheService: CustomsCacheService,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   exportsMetrics: ExportsMetrics,
-  nrsService: NRSService
+  nrsService: NRSService,
+  wcoMetadataMapper: WcoMetadataMapper
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
@@ -74,31 +74,16 @@ class SummaryPageController @Inject()(
       }
   }
 
-  private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
-    Logger.error(logMessage)
-    InternalServerError(
-      errorHandler.standardErrorTemplate(
-        pageTitle = messagesApi("global.error.title"),
-        heading = messagesApi("global.error.heading"),
-        message = messagesApi("global.error.message")
-      )
-    )
-  }
-
-  private def prepareFlashScope(lrn: String) =
-    Flash(Map("LRN" -> lrn))
-
   private def handleDecSubmission(
     cacheMap: CacheMap
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
     val timerContext = exportsMetrics.startTimer(submissionMetric)
 
-    val metaData = produceMetaData(cacheMap)
+    val metaData = wcoMetadataMapper.produceMetaData(cacheMap)
 
-    val lrn = metaData.declaration.flatMap(_.functionalReferenceId)
-    val ducr = declarationUcr(metaData.declaration).getOrElse("")
-
-    val payload = metaData.toXml
+    val lrn = wcoMetadataMapper.declarationLrn(metaData)
+    val ducr = wcoMetadataMapper.declarationUcr(metaData)
+    val payload = wcoMetadataMapper.toXml(metaData)
 
     customsDeclareExportsConnector
       .submitExportDeclaration(ducr, lrn, payload)
@@ -113,5 +98,19 @@ class SummaryPageController @Inject()(
         case error =>
           Future.successful(handleError(s"Error from Customs Declarations API ${error.toString}"))
       }
+  }
+
+  private def prepareFlashScope(lrn: String) =
+    Flash(Map("LRN" -> lrn))
+
+  private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
+    Logger.error(logMessage)
+    InternalServerError(
+      errorHandler.standardErrorTemplate(
+        pageTitle = messagesApi("global.error.title"),
+        heading = messagesApi("global.error.heading"),
+        message = messagesApi("global.error.message")
+      )
+    )
   }
 }

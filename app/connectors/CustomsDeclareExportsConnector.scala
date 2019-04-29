@@ -35,7 +35,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   private[connectors] def get(url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     httpClient.GET(url, Seq())
 
-  def submitExportDeclaration(ducr: String, lrn: Option[String], payload: String)(
+  def submitExportDeclaration(ducr: Option[String], lrn: Option[String], payload: String)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[HttpResponse] =
@@ -46,7 +46,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
         Seq(
           (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
           (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
-          ("X-DUCR", ducr),
+          ("X-DUCR", ducr.getOrElse("")),
           ("X-LRN", lrn.getOrElse(""))
         )
       )

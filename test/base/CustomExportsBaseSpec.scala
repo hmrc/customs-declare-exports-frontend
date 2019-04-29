@@ -46,7 +46,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAs
 import play.api.test.FakeRequest
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
-import services.{CustomsCacheService, ItemsCachingService, NRSService}
+import services._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -72,7 +72,8 @@ trait CustomExportsBaseSpec
       bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
       bind[NrsConnector].to(mockNrsConnector),
       bind[NRSService].to(mockNrsService),
-      bind[ItemsCachingService].to(mockItemsCachingService)
+      bind[ItemsCachingService].to(mockItemsCachingService),
+      bind[WcoMetadataMapper].to(new WcoMetadataMapper with WcoMetadataJavaMappingStrategy)
     )
     .build()
 

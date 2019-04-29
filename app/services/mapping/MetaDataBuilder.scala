@@ -15,22 +15,20 @@
  */
 
 package services.mapping
+import javax.xml.bind.JAXBElement
+import javax.xml.namespace.QName
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
+import services.mapping.declaration.DeclarationBuilder
+import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 import wco.datamodel.wco.metadata_ds_dms._2._
 
 object MetaDataBuilder {
 
-  def build(): MetaData =
-    buildMetaData()
-
-  private def buildMetaData(): MetaData = {
+  def build(cacheMap: CacheMap): MetaData = {
     val metaData = new MetaData
-    populateMetaDataMandatoryDefaults(metaData)
-    metaData
-  }
 
-  private def populateMetaDataMandatoryDefaults(metaData: MetaData) {
     val agencyAssignedCustomizationCodeType = new MetaDataAgencyAssignedCustomizationCodeType
     agencyAssignedCustomizationCodeType.setValue(SchemaMandatoryValues.agencyAssignedCustomizationVersionCode)
 
@@ -51,6 +49,14 @@ object MetaDataBuilder {
     metaData.setResponsibleCountryCode(metaDataResponsibleCountryCodeType)
     metaData.setWCODataModelVersionCode(metaDataWCODataModelVersionCodeType)
     metaData.setWCOTypeName(metaDataWCOTypeNameTextType)
-  }
 
+    val element: JAXBElement[Declaration] = new JAXBElement[Declaration](
+      new QName("urn:wco:datamodel:WCO:DEC-DMS:2", "Declaration"),
+      classOf[Declaration],
+      DeclarationBuilder.build(cacheMap)
+    )
+    metaData.setAny(element)
+
+    metaData
+  }
 }

@@ -24,7 +24,7 @@ import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.{BorderTransportMeans, Consignment, GoodsShipment}
 
-class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCachingData with OptionValues {
+class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with GoodsItemCachingData with OptionValues {
 
   val expectedItems = createGovernmentAgencyGoodsItemSeq(10)
   val expectedPreviousDocs = createPreviousDocumentsData(6)
@@ -36,7 +36,7 @@ class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCaching
   val borderTransportCache = getCacheMap(borderTransport, "BorderTransport")
   val transportDetailsCache = getCacheMap(transportDetails, "TransportDetails")
 
-  "WcoMetadataMappingSpec" should {
+  "WcoMetadataScalaMappingSpec" should {
     "produce metadata" in {
       val goodsItemCache = getCacheMap(expectedItems, "exportItems")
       val cacheMap =
@@ -46,7 +46,8 @@ class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCaching
             ++ borderTransportCache.data ++ transportDetailsCache.data
         )
 
-      val result = WcoMetadataMapping.produceMetaData(cacheMap)
+      val mapper = new WcoMetadataMapper with WcoMetadataScalaMappingStrategy
+      val result = mapper.produceMetaData(cacheMap)
 
       result.declaration must be(defined)
 
@@ -74,10 +75,12 @@ class WcoMetadataMappingSpec extends CustomExportsBaseSpec with GoodsItemCaching
       assertGoodsItem(goodsShipment)
       assertGoodsLocation(goodsShipment.consignment)
       assertPreviousDocuments(goodsShipment)
-      WcoMetadataMapping.declarationUcr(result.declaration) mustBe Some("8GB123456789012-1234567890QWERTYUIO")
       assertTransportEquipment(goodsShipment.consignment.value)
       assertTransportMeans(goodsShipment.consignment)
       assertBorderTransportMeans(result.declaration.flatMap(_.borderTransportMeans))
+
+      mapper.declarationUcr(result) mustBe Some("8GB123456789012-1234567890QWERTYUIO")
+      mapper.declarationLrn(result) mustBe Some("123ABC")
     }
   }
 
