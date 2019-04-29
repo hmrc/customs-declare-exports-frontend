@@ -16,7 +16,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "bootstrap-play-25" % "4.6.0",
     "uk.gov.hmrc" %% "play-language" % "3.4.0",
     "com.thoughtworks.xstream" % "xstream" % "1.4.10",
-    "uk.gov.hmrc" %% "wco-dec" % "0.29.0",
+    "uk.gov.hmrc" %% "wco-dec" % "0.30.0",
     "ai.x"         %% "play-json-extensions" % "0.9.0"
   )
 
