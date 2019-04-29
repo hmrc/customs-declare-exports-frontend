@@ -20,6 +20,7 @@ import base.CustomExportsBaseSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
 import play.api.{Configuration, Environment}
+import services.{WcoMetadataJavaMappingStrategy, WcoMetadataScalaMappingStrategy}
 
 class AppConfigSpec extends CustomExportsBaseSpec {
 
@@ -81,10 +82,11 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       validConfigService.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
     }
 
-    "have use-new-wco-dec-mapping-strategy feature flag set as true" in {
+    "create the WcoMetadataJavaMappingStrategy when use-new-wco-dec-mapping-strategy feature flag set as true" in {
       validConfigService.getConfBool("features.use-new-wco-dec-mapping-strategy", false) must be(
         true
       )
+      validConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataJavaMappingStrategy] must be(true)
     }
 
     // what is continue URL - redirect ?
@@ -158,10 +160,12 @@ class AppConfigSpec extends CustomExportsBaseSpec {
 
   }
 
-  "when use-new-wco-dec-mapping-strategy feature flag is not defined, default to false" in {
+  "create the WcoMetadataScalaMappingStrategy when use-new-wco-dec-mapping-strategy feature flag is not set" in {
     emptyConfigService.getConfBool("features.use-new-wco-dec-mapping-strategy", false) must be(
       false
     )
+
+    emptyConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataScalaMappingStrategy] must be(true)
   }
 
   "throw an exception when google-analytics.host is missing" in {

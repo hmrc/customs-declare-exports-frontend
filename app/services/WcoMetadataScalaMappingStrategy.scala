@@ -22,7 +22,6 @@ import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.{
   BorderTransportMeans,
-  Declaration,
   GovernmentAgencyGoodsItem,
   MetaData,
   PreviousDocument,
@@ -30,9 +29,10 @@ import uk.gov.hmrc.wco.dec.{
   TransportMeans,
   Seal => WCOSeal
 }
-object WcoMetadataMapping {
 
-  def produceMetaData(cacheMap: CacheMap): MetaData = {
+trait WcoMetadataScalaMappingStrategy extends WcoMetadataMappingStrategy {
+
+  override def produceMetaData(cacheMap: CacheMap): MetaData = {
 
     val metaData = createHeaderData(cacheMap)
     val goodsItems =
@@ -125,8 +125,14 @@ object WcoMetadataMapping {
   private def createHeaderData(cacheMap: CacheMap): MetaData =
     MetaData.fromProperties(SupplementaryDeclarationData(cacheMap).toMetadataProperties())
 
-  //DUCR : Declaration unique consignment reference
-  def declarationUcr(declaration: Option[Declaration]): Option[String] =
-    declaration.flatMap(_.goodsShipment.flatMap(_.ucr.flatMap(_.traderAssignedReferenceId)))
+  override def declarationUcr(metaData: Any): Option[String] =
+    metaData
+      .asInstanceOf[MetaData]
+      .declaration
+      .flatMap(_.goodsShipment.flatMap(_.ucr.flatMap(_.traderAssignedReferenceId)))
 
+  override def declarationLrn(metaData: Any): Option[String] =
+    metaData.asInstanceOf[MetaData].declaration.flatMap(_.functionalReferenceId)
+
+  override def toXml(metaData: Any): String = metaData.asInstanceOf[MetaData].toXml
 }

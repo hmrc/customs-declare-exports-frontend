@@ -15,25 +15,19 @@
  */
 
 package services.mapping
+import models.declaration.SupplementaryDeclarationDataSpec
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
+
+import scala.io.Source
 
 class XmlMarshallingSpec extends WordSpec with Matchers with MockitoSugar {
 
-  val expectedPayload = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-    "<MetaData xmlns=\"urn:wco:datamodel:WCO:DocumentMetaData-DMS:2\">\n" +
-    "    <WCODataModelVersionCode>3.6</WCODataModelVersionCode>\n" +
-    "    <WCOTypeName>DEC</WCOTypeName>\n" +
-    "    <ResponsibleCountryCode>GB</ResponsibleCountryCode>\n" +
-    "    <ResponsibleAgencyName>HMRC</ResponsibleAgencyName>\n" +
-    "    <AgencyAssignedCustomizationCode>v2.1</AgencyAssignedCustomizationCode>\n" +
-    "</MetaData>\n"
-
   "XmlMarshalling" should {
     "generate correct xml payload for empty Metadata with defaults when marshalled" in {
-      val metaData = MetaDataBuilder.build()
+
+      val metaData = MetaDataBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords)
 
       import java.io.StringWriter
 
@@ -50,7 +44,7 @@ class XmlMarshallingSpec extends WordSpec with Matchers with MockitoSugar {
         jaxbMarshaller.marshal(metaData, sw)
         //Verify XML Content
         val xmlContent = sw.toString
-        xmlContent should be(expectedPayload)
+        xmlContent should include(Source.fromURL(getClass.getResource("/wco_dec_metadata.xml")).mkString)
       } catch {
         case e: JAXBException =>
           e.printStackTrace()

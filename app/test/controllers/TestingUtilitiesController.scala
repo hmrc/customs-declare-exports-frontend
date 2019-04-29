@@ -56,7 +56,7 @@ class TestingUtilitiesController @Inject()(
   }
 
   private def callConnector(lrn: String, ducr: String, metaData: MetaData)(implicit hc: HeaderCarrier): Future[Result] =
-    connector.submitExportDeclaration(ducr, Some(lrn), metaData.toXml).map { _ =>
+    connector.submitExportDeclaration(Some(ducr), Some(lrn), metaData.toXml).map { _ =>
       Logger.debug("######### Declaration submitted successfully")
       Created("")
     } recover {

@@ -15,21 +15,23 @@
  */
 
 package services.mapping
+import javax.xml.bind.JAXBElement
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
+import models.declaration.SupplementaryDeclarationDataSpec
 import org.scalatest.{Matchers, WordSpec}
+import wco.datamodel.wco.dec_dms._2.Declaration
 
 class MetaDataBuilderSpec extends WordSpec with Matchers {
 
   "MetaDataBuilder" should {
     "build wco MetaData with correct defaultValues" in {
-      val emptyDefaultMetaData = MetaDataBuilder.build
-      emptyDefaultMetaData.getWCOTypeName.getValue shouldBe SchemaMandatoryValues.wcoTypeName
-      emptyDefaultMetaData.getWCODataModelVersionCode.getValue shouldBe SchemaMandatoryValues.wcoDataModelVersionCode
-      emptyDefaultMetaData.getResponsibleAgencyName.getValue shouldBe SchemaMandatoryValues.responsibleAgencyName
-      emptyDefaultMetaData.getResponsibleCountryCode.getValue shouldBe SchemaMandatoryValues.responsibleCountryCode
-      emptyDefaultMetaData.getAgencyAssignedCustomizationCode.getValue shouldBe SchemaMandatoryValues.agencyAssignedCustomizationVersionCode
-
+      val metaData = MetaDataBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords)
+      metaData.getWCOTypeName.getValue shouldBe SchemaMandatoryValues.wcoTypeName
+      metaData.getWCODataModelVersionCode.getValue shouldBe SchemaMandatoryValues.wcoDataModelVersionCode
+      metaData.getResponsibleAgencyName.getValue shouldBe SchemaMandatoryValues.responsibleAgencyName
+      metaData.getResponsibleCountryCode.getValue shouldBe SchemaMandatoryValues.responsibleCountryCode
+      metaData.getAgencyAssignedCustomizationCode.getValue shouldBe SchemaMandatoryValues.agencyAssignedCustomizationVersionCode
+      metaData.getAny.asInstanceOf[JAXBElement[Declaration]].getValue should not be (null)
     }
   }
-
 }
