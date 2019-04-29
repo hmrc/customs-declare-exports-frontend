@@ -18,8 +18,13 @@ package services.mapping.governmentagencygoodsitem
 import forms.declaration.AdditionalInformation
 import models.declaration.AdditionalInformationData
 import uk.gov.hmrc.http.cache.client.CacheMap
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.{AdditionalInformation => WCOAdditionalInformation}
-import wco.datamodel.wco.declaration_ds.dms._2.{AdditionalInformationStatementCodeType, AdditionalInformationStatementDescriptionTextType}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.{
+  AdditionalInformation => WCOAdditionalInformation
+}
+import wco.datamodel.wco.declaration_ds.dms._2.{
+  AdditionalInformationStatementCodeType,
+  AdditionalInformationStatementDescriptionTextType
+}
 
 object AdditionalInformationBuilder {
 

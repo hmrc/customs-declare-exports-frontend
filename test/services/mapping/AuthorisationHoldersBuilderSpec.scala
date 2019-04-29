@@ -38,7 +38,6 @@ class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with Mockit
       val decHolder2 =
         new DeclarationHolder(authorisationTypeCode = Some(decHolder2TypeCode), eori = Some(decHolder2Eori))
 
-
       val declarationHoldersData = new DeclarationHoldersData(Seq(decHolder1, decHolder2))
       implicit val cacheMap = mock[CacheMap]
       when(cacheMap.getEntry[DeclarationHoldersData](eqTo(DeclarationHoldersData.formId))(any()))

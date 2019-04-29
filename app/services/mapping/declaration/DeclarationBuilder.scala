@@ -42,7 +42,7 @@ object DeclarationBuilder {
     declaration.setTotalPackageQuantity(TotalPackageQuantityBuilder.build)
     declaration.setTypeCode(TypeCodeBuilder.build)
     declaration.getCurrencyExchange.addAll(CurrencyExchangeBuilder.build)
-    
+
     declaration
   }
 }

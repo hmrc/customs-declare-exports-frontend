@@ -18,7 +18,11 @@ package services.mapping.governmentagencygoodsitem
 import forms.declaration.PackageInformation
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.Packaging
-import wco.datamodel.wco.declaration_ds.dms._2.{PackagingMarksNumbersIDType, PackagingQuantityQuantityType, PackagingTypeCodeType}
+import wco.datamodel.wco.declaration_ds.dms._2.{
+  PackagingMarksNumbersIDType,
+  PackagingQuantityQuantityType,
+  PackagingTypeCodeType
+}
 
 object PackageBuilder {
 

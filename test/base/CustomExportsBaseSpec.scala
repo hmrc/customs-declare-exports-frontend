@@ -61,7 +61,6 @@ trait CustomExportsBaseSpec
 
   val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
   val mockNrsService: NRSService = mock[NRSService]
-  val mockMetrics: ExportsMetrics = mock[ExportsMetrics]
   val mockItemsCachingService: ItemsCachingService = mock[ItemsCachingService]
 
   SharedMetricRegistries.clear()
@@ -73,7 +72,6 @@ trait CustomExportsBaseSpec
       bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
       bind[NrsConnector].to(mockNrsConnector),
       bind[NRSService].to(mockNrsService),
-      bind[ExportsMetrics].to(mockMetrics),
       bind[ItemsCachingService].to(mockItemsCachingService)
     )
     .build()
@@ -87,6 +85,8 @@ trait CustomExportsBaseSpec
   def appConfig: AppConfig = injector.instanceOf[AppConfig]
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+
+  val metrics = app.injector.instanceOf[ExportsMetrics]
 
   val cfg: CSRFConfig = injector.instanceOf[CSRFConfigProvider].get
 

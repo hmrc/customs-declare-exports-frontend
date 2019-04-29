@@ -19,7 +19,7 @@ package forms.declaration.additionaldocuments
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import utils.validators.forms.FieldValidator.{PredicateOpsForFunctions, isAlphanumeric, noLongerThan}
+import utils.validators.forms.FieldValidator.{isAlphanumeric, noLongerThan, PredicateOpsForFunctions}
 
 case class DocumentIdentifierAndPart(documentIdentifier: Option[String], documentPart: Option[String])
 

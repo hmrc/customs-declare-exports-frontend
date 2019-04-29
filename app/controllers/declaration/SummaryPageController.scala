@@ -68,7 +68,6 @@ class SummaryPageController @Inject()(
     implicit request =>
       customsCacheService.fetch(cacheId).flatMap {
         case Some(cacheMap) =>
-          exportsMetrics.startTimer(submissionMetric)
           handleDecSubmission(cacheMap)
         case None =>
           Future.successful(handleError(s"Could not obtain data from DB"))
@@ -92,6 +91,8 @@ class SummaryPageController @Inject()(
   private def handleDecSubmission(
     cacheMap: CacheMap
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+    val timerContext = exportsMetrics.startTimer(submissionMetric)
+
     val metaData = produceMetaData(cacheMap)
 
     val lrn = metaData.declaration.flatMap(_.functionalReferenceId)
@@ -102,6 +103,7 @@ class SummaryPageController @Inject()(
         case HttpResponse(ACCEPTED, _, _, _) =>
           customsCacheService.remove(cacheId).map { _ =>
             exportsMetrics.incrementCounter(submissionMetric)
+            timerContext.stop()
             Redirect(controllers.declaration.routes.ConfirmationPageController.displayPage())
               .flashing(prepareFlashScope(lrn.getOrElse("")))
           }

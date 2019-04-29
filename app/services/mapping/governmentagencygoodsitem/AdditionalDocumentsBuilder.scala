@@ -21,9 +21,19 @@ import models.declaration.DocumentsProducedData
 import services.ExportsItemsCacheIds.dateTimeCode
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument.{Submitter, WriteOff}
-import wco.datamodel.wco.declaration_ds.dms._2.AdditionalDocumentEffectiveDateTimeType.{DateTimeString => WCODateTimeString}
-import wco.datamodel.wco.declaration_ds.dms._2.{AdditionalDocumentEffectiveDateTimeType, SubmitterNameTextType, WriteOffQuantityQuantityType, _}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument.{
+  Submitter,
+  WriteOff
+}
+import wco.datamodel.wco.declaration_ds.dms._2.AdditionalDocumentEffectiveDateTimeType.{
+  DateTimeString => WCODateTimeString
+}
+import wco.datamodel.wco.declaration_ds.dms._2.{
+  AdditionalDocumentEffectiveDateTimeType,
+  SubmitterNameTextType,
+  WriteOffQuantityQuantityType,
+  _
+}
 
 object AdditionalDocumentsBuilder {
 
@@ -70,7 +80,8 @@ object AdditionalDocumentsBuilder {
     additionalDocument
   }
 
-  private def mapDocumentIdentificationIDType(document: DocumentsProduced): Option[String] = for {
+  private def mapDocumentIdentificationIDType(document: DocumentsProduced): Option[String] =
+    for {
       identifierAndPart <- document.documentIdentifierAndPart
       documentIdentifier <- identifierAndPart.documentIdentifier
       documentPart <- identifierAndPart.documentPart

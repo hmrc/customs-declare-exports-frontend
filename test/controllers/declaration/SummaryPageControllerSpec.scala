@@ -21,6 +21,7 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.ConsignmentReferencesSpec.correctConsignmentReferencesJSON
 import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
+import metrics.MetricIdentifiers
 import models.declaration.SupplementaryDeclarationDataSpec
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -47,7 +48,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     reset(mockCustomsCacheService)
     reset(mockNrsService)
     reset(mockCustomsDeclareExportsConnector)
-    reset(mockMetrics)
 
     authorizedUser()
     withCaching(None, eoriForCache)
@@ -226,6 +226,20 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         f.get("LRN") must be(defined)
         f("LRN") must equal("123ABC")
       }
+
+      "record submission timing and increase the Success Counter when response is OK" in new Test {
+        val timer = metrics.timers(MetricIdentifiers.submissionMetric).getCount
+        val counter = metrics.counters(MetricIdentifiers.submissionMetric).getCount
+
+        val result = route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
+        val header = result.header
+
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/confirmation"))
+
+        metrics.timers(MetricIdentifiers.submissionMetric).getCount mustBe timer + 1
+        metrics.counters(MetricIdentifiers.submissionMetric).getCount mustBe counter + 1
+      }
+
     }
 
     "got error from Customs Declarations" should {
