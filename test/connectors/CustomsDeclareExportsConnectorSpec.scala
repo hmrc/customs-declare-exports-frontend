@@ -42,7 +42,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
       )
 
       val client = new CustomsDeclareExportsConnector(appConfig, http)
-      val response = client.submitExportDeclaration("", None, metadata)(hc, ec)
+      val response = client.submitExportDeclaration("", None, metadata.toXml)(hc, ec)
 
       response.futureValue.status must be(ACCEPTED)
     }
