@@ -96,9 +96,12 @@ class SummaryPageController @Inject()(
     val metaData = produceMetaData(cacheMap)
 
     val lrn = metaData.declaration.flatMap(_.functionalReferenceId)
+    val ducr = declarationUcr(metaData.declaration).getOrElse("")
+
+    val payload = metaData.toXml
 
     customsDeclareExportsConnector
-      .submitExportDeclaration(declarationUcr(metaData.declaration).getOrElse(""), lrn, metaData)
+      .submitExportDeclaration(ducr, lrn, payload)
       .flatMap {
         case HttpResponse(ACCEPTED, _, _, _) =>
           customsCacheService.remove(cacheId).map { _ =>
@@ -111,5 +114,4 @@ class SummaryPageController @Inject()(
           Future.successful(handleError(s"Error from Customs Declarations API ${error.toString}"))
       }
   }
-
 }

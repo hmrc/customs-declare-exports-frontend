@@ -35,14 +35,14 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   private[connectors] def get(url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     httpClient.GET(url, Seq())
 
-  def submitExportDeclaration(ducr: String, lrn: Option[String], metadata: MetaData)(
+  def submitExportDeclaration(ducr: String, lrn: Option[String], payload: String)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[HttpResponse] =
     httpClient
       .POSTString[HttpResponse](
         s"${appConfig.customsDeclareExports}${appConfig.submitDeclaration}",
-        metadata.toXml,
+      payload,
         Seq(
           (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
           (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
