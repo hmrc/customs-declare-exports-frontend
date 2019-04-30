@@ -79,11 +79,11 @@ class SummaryPageController @Inject()(
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
     val timerContext = exportsMetrics.startTimer(submissionMetric)
 
-    val metaData = wcoMetadataMapper.produceMetaData(cacheMap)
+    val metaData = wcoMetadataMapper.getMetaData(cacheMap)
 
-    val lrn = wcoMetadataMapper.declarationLrn(metaData)
-    val ducr = wcoMetadataMapper.declarationUcr(metaData)
-    val payload = wcoMetadataMapper.toXml(metaData)
+    val lrn = wcoMetadataMapper.getDeclarationLrn(metaData)
+    val ducr = wcoMetadataMapper.getDeclarationLrn(metaData)
+    val payload = wcoMetadataMapper.serialise(metaData)
 
     customsDeclareExportsConnector
       .submitExportDeclaration(ducr, lrn, payload)
