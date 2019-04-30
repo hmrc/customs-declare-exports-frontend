@@ -31,13 +31,12 @@ object UCRBuilder {
 
   private def createUCR(data: ConsignmentReferences): UCR = {
 
-    val id = new UCRIdentificationIDType()
+
 
     val traderAssignedReferenceID = new UCRTraderAssignedReferenceIDType()
     traderAssignedReferenceID.setValue(data.ducr.getOrElse(Ducr("")).ducr)
 
     val warehouse = new UCR()
-    warehouse.setID(id)
     warehouse.setTraderAssignedReferenceID(traderAssignedReferenceID)
     warehouse
   }

@@ -15,9 +15,14 @@
  */
 
 package services.mapping
+
+import javax.xml.bind.JAXBElement
+import javax.xml.namespace.QName
 import models.declaration.SupplementaryDeclarationDataSpec
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
+import services.mapping.declaration.DeclarationBuilder
+import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
 import scala.io.Source
@@ -29,6 +34,7 @@ class XmlMarshallingSpec extends WordSpec with Matchers with MockitoSugar {
 
       val metaData = MetaDataBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords)
 
+      populateDeclaration(metaData)
       import java.io.StringWriter
 
       import javax.xml.bind.{JAXBContext, JAXBException, Marshaller}
@@ -37,7 +43,9 @@ class XmlMarshallingSpec extends WordSpec with Matchers with MockitoSugar {
         //Create Marshaller
         val jaxbMarshaller = jaxbContext.createMarshaller
         //Required formatting??
+
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
+
         //Print XML String to Console
         val sw = new StringWriter
         //Write XML to StringWriter
@@ -50,5 +58,16 @@ class XmlMarshallingSpec extends WordSpec with Matchers with MockitoSugar {
           e.printStackTrace()
       }
     }
+  }
+
+  private def populateDeclaration(metaData: MetaData): Unit = {
+    val declaration = DeclarationBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords)
+
+    val element: JAXBElement[Declaration] = new JAXBElement[Declaration](
+      new QName("urn:wco:datamodel:WCO:DEC-DMS:2", "Declaration"),
+      classOf[Declaration],
+      declaration
+    )
+    metaData.setAny(element)
   }
 }

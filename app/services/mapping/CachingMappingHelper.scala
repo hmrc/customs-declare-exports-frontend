@@ -16,14 +16,11 @@
 
 package services.mapping
 import forms.declaration.{CommodityMeasure, ItemType}
-import forms.declaration.ItemType.IdentificationTypeCodes.{
-  CUSCode,
-  CombinedNomenclatureCode,
-  NationalAdditionalCode,
-  TARICAdditionalCode
-}
+import forms.declaration.ItemType.IdentificationTypeCodes.{CUSCode, CombinedNomenclatureCode, NationalAdditionalCode, TARICAdditionalCode}
+import models.declaration.governmentagencygoodsitem.{Classification, Commodity, DangerousGoods, GoodsMeasure, Measure}
 import services.ExportsItemsCacheIds.defaultMeasureCode
-import uk.gov.hmrc.wco.dec._
+
+
 
 object CachingMappingHelper {
 

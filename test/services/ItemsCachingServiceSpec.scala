@@ -94,8 +94,8 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
       val additionals = itemsCachingService.additionalInfo(cacheMap).value
       (input.items zip additionals).map {
         case (expected, actual) =>
-          expected.code mustBe actual.statementCode.value
-          expected.description mustBe actual.statementDescription.value
+          expected.code mustBe actual.code
+          expected.description mustBe actual.description
       }
     }
 

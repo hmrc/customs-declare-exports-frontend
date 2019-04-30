@@ -27,7 +27,7 @@ class UCRBuilderSpec extends WordSpec with Matchers {
       implicit val cacheMap =
         CacheMap("CacheID", Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.correctConsignmentReferencesJSON))
       val ucrObject = UCRBuilder.build(cacheMap)
-      ucrObject.getID.getValue should be(null)
+      ucrObject.getID should be(null)
       ucrObject.getTraderAssignedReferenceID.getValue should be("8GB123456789012-1234567890QWERTYUIO")
     }
   }

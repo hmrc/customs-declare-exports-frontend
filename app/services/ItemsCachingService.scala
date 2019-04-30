@@ -22,20 +22,29 @@ import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.{CommodityMeasure, ItemType, PackageInformation}
 import javax.inject.Singleton
 import models.DeclarationFormats._
+import models.declaration.governmentagencygoodsitem.Formats._
+import models.declaration.governmentagencygoodsitem.{
+  DateTimeElement,
+  DateTimeString,
+  GovernmentAgencyGoodsItem,
+  GovernmentAgencyGoodsItemAdditionalDocument,
+  GovernmentAgencyGoodsItemAdditionalDocumentSubmitter,
+  Measure,
+  WriteOff
+}
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import play.api.http.Status.NO_CONTENT
 import services.ExportsItemsCacheIds._
 import services.mapping.CachingMappingHelper
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.wco.dec._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig: AppConfig) {
 
-  def generatePackages(cachedData: CacheMap): Option[Seq[Packaging]] =
+  def generatePackages(cachedData: CacheMap): Option[Seq[models.declaration.governmentagencygoodsitem.Packaging]] =
     cachedData
       .getEntry[Seq[PackageInformation]](PackageInformation.formId)
       .map(_.zipWithIndex.map {
@@ -43,31 +52,38 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
           createPackaging(packageInfo, index)
       })
 
-  private def createPackaging(packageInfo: PackageInformation, index: Int) = Packaging(
-    sequenceNumeric = Some(index),
-    typeCode = packageInfo.typesOfPackages,
-    quantity = packageInfo.numberOfPackages,
-    marksNumbersId = packageInfo.shippingMarks
-  )
+  private def createPackaging(packageInfo: PackageInformation, index: Int) =
+    models.declaration.governmentagencygoodsitem.Packaging(
+      sequenceNumeric = Some(index),
+      typeCode = packageInfo.typesOfPackages,
+      quantity = packageInfo.numberOfPackages,
+      marksNumbersId = packageInfo.shippingMarks
+    )
 
-  def procedureCodes(cachedData: CacheMap): Option[Seq[GovernmentProcedure]] =
+  def procedureCodes(
+    cachedData: CacheMap
+  ): Option[Seq[models.declaration.governmentagencygoodsitem.GovernmentProcedure]] =
     cachedData
       .getEntry[ProcedureCodesData](ProcedureCodesData.formId)
       .map(
         form =>
-          Seq(GovernmentProcedure(form.procedureCode.map(_.substring(0, 2)), form.procedureCode.map(_.substring(2, 4))))
-            ++ form.additionalProcedureCodes.map(code => GovernmentProcedure(Some(code)))
+          Seq(
+            models.declaration.governmentagencygoodsitem
+              .GovernmentProcedure(form.procedureCode.map(_.substring(0, 2)), form.procedureCode.map(_.substring(2, 4)))
+          )
+            ++ form.additionalProcedureCodes
+              .map(code => models.declaration.governmentagencygoodsitem.GovernmentProcedure(Some(code)))
       )
 
-  def commodityFromGoodsMeasure(cachedData: CacheMap): Option[Commodity] =
+  def commodityFromGoodsMeasure(cachedData: CacheMap): Option[models.declaration.governmentagencygoodsitem.Commodity] =
     cachedData
       .getEntry[CommodityMeasure](CommodityMeasure.commodityFormId)
       .map(CachingMappingHelper.mapGoodsMeasure(_))
 
-  def additionalInfo(cachedData: CacheMap): Option[Seq[AdditionalInformation]] =
+  def additionalInfo(cachedData: CacheMap): Option[Seq[forms.declaration.AdditionalInformation]] =
     cachedData
       .getEntry[AdditionalInformationData](AdditionalInformationData.formId)
-      .map(_.items.map(info => AdditionalInformation(Some(info.code), Some(info.description))))
+      .map(_.items.map(info => forms.declaration.AdditionalInformation(info.code, info.description)))
 
   def documents(cachedData: CacheMap): Option[Seq[GovernmentAgencyGoodsItemAdditionalDocument]] =
     cachedData
@@ -102,22 +118,28 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       quantity <- documentWriteOff.documentQuantity
     } yield WriteOff(quantity = Some(Measure(unitCode = Some(measurementUnit), value = Some(quantity))))
 
-  def goodsItemFromItemTypes(cachedData: CacheMap): Option[GovernmentAgencyGoodsItem] =
+  def goodsItemFromItemTypes(
+    cachedData: CacheMap
+  ): Option[models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem] =
     cachedData
       .getEntry[ItemType](ItemType.id)
       .map(
         item => // get all codes create classification
-          GovernmentAgencyGoodsItem(
+          models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem(
             sequenceNumeric = 1,
-            statisticalValueAmount =
-              Some(Amount(Some(defaultCurrencyCode), value = Some(BigDecimal(item.statisticalValue)))),
+            statisticalValueAmount = Some(
+              models.declaration.governmentagencygoodsitem
+                .Amount(Some(defaultCurrencyCode), value = Some(BigDecimal(item.statisticalValue)))
+            ),
             commodity = Some(CachingMappingHelper.commodityFromItemTypes(item))
         )
       )
 
   private def createGoodsItem(seq: Int, cachedData: CacheMap): GovernmentAgencyGoodsItem = {
     val itemTypeData = goodsItemFromItemTypes(cachedData)
-    val commodity = itemTypeData.fold(Commodity())(_.commodity.getOrElse(Commodity()))
+    val commodity = itemTypeData.fold(models.declaration.governmentagencygoodsitem.Commodity())(
+      _.commodity.getOrElse(models.declaration.governmentagencygoodsitem.Commodity())
+    )
     val updatedCommodity = commodity.copy(goodsMeasure = commodityFromGoodsMeasure(cachedData).flatMap(_.goodsMeasure))
 
     GovernmentAgencyGoodsItem(

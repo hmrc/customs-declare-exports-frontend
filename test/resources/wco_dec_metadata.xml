@@ -91,11 +91,99 @@
             </ns3:Consignment>
             <ns3:Destination>
                 <ns3:CountryCode>PL</ns3:CountryCode>
-                <ns3:RegionID/>
             </ns3:Destination>
             <ns3:ExportCountry>
                 <ns3:ID>PL</ns3:ID>
             </ns3:ExportCountry>
+            <ns3:GovernmentAgencyGoodsItem>
+                <ns3:SequenceNumeric>0</ns3:SequenceNumeric>
+                <ns3:StatisticalValueAmount currencyID="GBP">12</ns3:StatisticalValueAmount>
+                <ns3:AdditionalDocument>
+                    <ns3:CategoryCode>1</ns3:CategoryCode>
+                    <ns3:EffectiveDateTime>
+                        <ns2:DateTimeString formatCode="102">20191212</ns2:DateTimeString>
+                    </ns3:EffectiveDateTime>
+                    <ns3:ID>docIdDocPart</ns3:ID>
+                    <ns3:Name>statusReason</ns3:Name>
+                    <ns3:TypeCode>23</ns3:TypeCode>
+                    <ns3:LPCOExemptionCode>567</ns3:LPCOExemptionCode>
+                    <ns3:Submitter>
+                        <ns3:Name>issuingAuthName</ns3:Name>
+                    </ns3:Submitter>
+                    <ns3:WriteOff>
+                        <ns3:QuantityQuantity unitCode="KGM">12</ns3:QuantityQuantity>
+                    </ns3:WriteOff>
+                </ns3:AdditionalDocument>
+                <ns3:AdditionalInformation>
+                    <ns3:StatementCode>code</ns3:StatementCode>
+                    <ns3:StatementDescription>description</ns3:StatementDescription>
+                </ns3:AdditionalInformation>
+                <ns3:Commodity>
+                    <ns3:Description>description</ns3:Description>
+                    <ns3:Classification>
+                        <ns3:ID>nonClamCode</ns3:ID>
+                        <ns3:IdentificationTypeCode>TSP</ns3:IdentificationTypeCode>
+                    </ns3:Classification>
+                    <ns3:Classification>
+                        <ns3:ID>CustCode</ns3:ID>
+                        <ns3:IdentificationTypeCode>CV</ns3:IdentificationTypeCode>
+                    </ns3:Classification>
+                    <ns3:Classification>
+                        <ns3:ID>nationalAddCode1</ns3:ID>
+                        <ns3:IdentificationTypeCode>GN</ns3:IdentificationTypeCode>
+                    </ns3:Classification>
+                    <ns3:Classification>
+                        <ns3:ID>nationalAddCode2</ns3:ID>
+                        <ns3:IdentificationTypeCode>GN</ns3:IdentificationTypeCode>
+                    </ns3:Classification>
+                    <ns3:Classification>
+                        <ns3:ID>nationalAddCode3</ns3:ID>
+                        <ns3:IdentificationTypeCode>GN</ns3:IdentificationTypeCode>
+                    </ns3:Classification>
+                    <ns3:Classification>
+                        <ns3:ID>tarricCode1</ns3:ID>
+                        <ns3:IdentificationTypeCode>TRA</ns3:IdentificationTypeCode>
+                    </ns3:Classification>
+                    <ns3:Classification>
+                        <ns3:ID>tarricCode2</ns3:ID>
+                        <ns3:IdentificationTypeCode>TRA</ns3:IdentificationTypeCode>
+                    </ns3:Classification>
+                    <ns3:Classification>
+                        <ns3:ID>tarricCode3</ns3:ID>
+                        <ns3:IdentificationTypeCode>TRA</ns3:IdentificationTypeCode>
+                    </ns3:Classification>
+                    <ns3:DangerousGoods>
+                        <ns3:UNDGID>999</ns3:UNDGID>
+                    </ns3:DangerousGoods>
+                    <ns3:GoodsMeasure>
+                        <ns3:GrossMassMeasure unitCode="KGM">23</ns3:GrossMassMeasure>
+                        <ns3:NetNetWeightMeasure unitCode="KGM">23</ns3:NetNetWeightMeasure>
+                        <ns3:TariffQuantity unitCode="KGM">2</ns3:TariffQuantity>
+                    </ns3:GoodsMeasure>
+                </ns3:Commodity>
+                <ns3:GovernmentProcedure>
+                    <ns3:CurrentCode>pr</ns3:CurrentCode>
+                    <ns3:PreviousCode>oc</ns3:PreviousCode>
+                </ns3:GovernmentProcedure>
+                <ns3:GovernmentProcedure>
+                    <ns3:CurrentCode>code1</ns3:CurrentCode>
+                </ns3:GovernmentProcedure>
+                <ns3:GovernmentProcedure>
+                    <ns3:CurrentCode>code2</ns3:CurrentCode>
+                </ns3:GovernmentProcedure>
+                <ns3:Packaging>
+                    <ns3:SequenceNumeric>0</ns3:SequenceNumeric>
+                    <ns3:MarksNumbersID>mark1</ns3:MarksNumbersID>
+                    <ns3:QuantityQuantity>2</ns3:QuantityQuantity>
+                    <ns3:TypeCode>AA</ns3:TypeCode>
+                </ns3:Packaging>
+                <ns3:Packaging>
+                    <ns3:SequenceNumeric>1</ns3:SequenceNumeric>
+                    <ns3:MarksNumbersID>mark2</ns3:MarksNumbersID>
+                    <ns3:QuantityQuantity>4</ns3:QuantityQuantity>
+                    <ns3:TypeCode>AB</ns3:TypeCode>
+                </ns3:Packaging>
+            </ns3:GovernmentAgencyGoodsItem>
             <ns3:PreviousDocument>
                 <ns3:CategoryCode>X</ns3:CategoryCode>
                 <ns3:ID>DocumentReference</ns3:ID>
@@ -103,7 +191,6 @@
                 <ns3:LineNumeric>123</ns3:LineNumeric>
             </ns3:PreviousDocument>
             <ns3:UCR>
-                <ns3:ID/>
                 <ns3:TraderAssignedReferenceID>8GB123456789012-1234567890QWERTYUIO</ns3:TraderAssignedReferenceID>
             </ns3:UCR>
             <ns3:Warehouse>

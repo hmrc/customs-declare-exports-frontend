@@ -17,8 +17,8 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import uk.gov.hmrc.play.views.html._
-@import uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem
 @import forms.declaration.ItemType.IdentificationTypeCodes._
+@import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 
 @(items: Seq[GovernmentAgencyGoodsItem])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -126,10 +126,11 @@ messages("supplementary.itemssummary.table.multiple.heading", items.size)
                         </ol></td>
 
                         <td scope="row"><ol type="1">@item.additionalInformations.map(a =>
-                            <li>{a.statementCode.getOrElse("")}</li>)
+                            <li>{a.code}</li>)
                         </ol></td>
                         <td scope="row"><ol type="1">@item.additionalInformations.map(a =>
-                            <li>{a.statementDescription.getOrElse("")}</li>)
+                            <li>{a
+                                    .description}</li>)
                         </ol></td>
                     </tr>
                     }
