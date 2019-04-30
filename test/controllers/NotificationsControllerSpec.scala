@@ -38,8 +38,6 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("notifications.title"))
       stringResult must include(messages("notifications.status"))
       stringResult must include(messages("notifications.dateAndTime"))
-      stringResult must include(messages("notifications.reference"))
-      stringResult must include(messages("notifications.additionalInformation"))
     }
 
     "return list of notifications for submission" in {
@@ -53,8 +51,6 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("notifications.title"))
       stringResult must include(messages("notifications.status"))
       stringResult must include(messages("notifications.dateAndTime"))
-      stringResult must include(messages("notifications.reference"))
-      stringResult must include(messages("notifications.additionalInformation"))
     }
 
     "return list of submissions" in {
@@ -66,8 +62,6 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(OK)
       stringResult must include(messages("submissions.title"))
-      stringResult must include(messages("submissions.eori"))
-      stringResult must include(messages("submissions.conversationId"))
       stringResult must include(messages("submissions.ducr"))
       stringResult must include(messages("submissions.lrn"))
       stringResult must include(messages("submissions.mrn"))

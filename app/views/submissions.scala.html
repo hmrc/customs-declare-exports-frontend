@@ -31,8 +31,6 @@
     <div>
         <table>
             <tr class="table-row table-head">
-                <th class="table-cell">@messages("submissions.eori")</th>
-                <th class="table-cell">@messages("submissions.conversationId")</th>
                 <th class="table-cell">@messages("submissions.ducr")</th>
                 <th class="table-cell">@messages("submissions.lrn")</th>
                 <th class="table-cell">@messages("submissions.mrn")</th>
@@ -43,12 +41,10 @@
 
             @for(submission <- submissions){
                 <tr class="table-row">
-                    <td class="table-cell">@submission.eori</td>
-                    <td class="table-cell">@submission.conversationId</td>
                     <td class="table-cell">@submission.ducr</td>
                     <td class="table-cell">@submission.lrn.getOrElse("")</td>
                     <td class="table-cell">@submission.mrn.getOrElse("")</td>
-                    <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault()).format(Instant.ofEpochMilli(submission.submittedTimestamp))</td>
+                    <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(Instant.ofEpochMilli(submission.submittedTimestamp))</td>
                     <td class="table-cell">@submission.status</td>
                     <td class="table-cell">
                         <a href="/customs-declare-exports/notifications/@submission.conversationId">
