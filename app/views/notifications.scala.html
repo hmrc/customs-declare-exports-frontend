@@ -36,8 +36,6 @@
                 <th class="table-cell">@messages("submissions.conversationId")</th>
                 <th class="table-cell">@messages("notifications.status")</th>
                 <th class="table-cell">@messages("notifications.dateAndTime")</th>
-                <th class="table-cell">@messages("notifications.reference")</th>
-                <th class="table-cell">@messages("notifications.additionalInformation")</th>
             </tr>
 
             @for(notification <- notifications){
@@ -46,9 +44,7 @@
                         <td class="table-cell">@notification.eori</td>
                         <td class="table-cell">@notification.conversationId</td>
                         <td class="table-cell">@Status.retrieveFromResponse(response)</td>
-                        <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault()).format(Instant.from(DateTimeFormatter.ofPattern("yyyyMMddHHmmssX").parse(response.issueDateTime.map(_.dateTimeString.value).getOrElse(""))))</td>
-                        <td class="table-cell">@response.functionalReferenceId.getOrElse("")</td>
-                        <td class="table-cell"></td>
+                        <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(Instant.from(DateTimeFormatter.ofPattern("yyyyMMddHHmmssX").parse(response.issueDateTime.map(_.dateTimeString.value).getOrElse(""))))</td>
                     </tr>
                 }
             }
