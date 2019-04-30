@@ -18,13 +18,13 @@ package services.mapping.governmentagencygoodsitem
 
 import java.util
 
+import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Reads
 import services.ExportsItemsCacheIds
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem._
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
   GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem

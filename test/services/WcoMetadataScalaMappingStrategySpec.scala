@@ -18,7 +18,9 @@ package services
 import base.CustomExportsBaseSpec
 import base.TestHelper.getCacheMap
 import models.DeclarationFormats._
+import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.SupplementaryDeclarationDataSpec.cacheMapAllRecords
+import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import org.scalatest.OptionValues
 import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -26,13 +28,16 @@ import uk.gov.hmrc.wco.dec.{BorderTransportMeans, Consignment, GoodsShipment}
 
 class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with GoodsItemCachingData with OptionValues {
 
-  val expectedItems = createGovernmentAgencyGoodsItemSeq(10)
+  val expectedItems: Seq[GovernmentAgencyGoodsItem] = createGovernmentAgencyGoodsItemSeq(10)
+
+  lazy val expectedWcoItems: Seq[uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem] = createWcoGovernmentAgencyGoodsItems(expectedItems)
+
   val expectedPreviousDocs = createPreviousDocumentsData(6)
   val previousDocsCache = getCacheMap(expectedPreviousDocs, "PreviousDocuments")
   val expectedSeals = createSeals(10).sample.getOrElse(Seq.empty)
   val sealsCache = getCacheMap(expectedSeals, "Seal")
-  val borderTransport = getBorderTransport()
-  val transportDetails = getTransportDetails()
+  val borderTransport = getBorderTransport
+  val transportDetails = getTransportDetails
   val borderTransportCache = getCacheMap(borderTransport, "BorderTransport")
   val transportDetailsCache = getCacheMap(transportDetails, "TransportDetails")
 
@@ -122,7 +127,8 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
     goodsShipment.governmentAgencyGoodsItems.map(_.additionalDocuments.size mustBe 8)
     goodsShipment.governmentAgencyGoodsItems.map(_.additionalInformations.size mustBe 7)
 
-    (goodsShipment.governmentAgencyGoodsItems zip expectedItems).map {
+
+    (goodsShipment.governmentAgencyGoodsItems zip expectedWcoItems).map {
       case (actual, expected) =>
         actual.governmentProcedures mustBe expected.governmentProcedures
         actual.additionalDocuments mustBe expected.additionalDocuments

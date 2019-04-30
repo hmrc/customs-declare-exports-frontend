@@ -59,11 +59,10 @@ object AdditionalDocumentsBuilder {
     val additionalDocumentNameTextType = new AdditionalDocumentNameTextType
     additionalDocumentNameTextType.setValue(doc.documentStatusReason.orNull)
 
-    val dateFormat = new java.text.SimpleDateFormat("yyyyMMdd")
     val additionalDocumentEffectiveDateTimeType = new AdditionalDocumentEffectiveDateTimeType
     val dateTimeString = new WCODateTimeString
     dateTimeString.setFormatCode(dateTimeCode)
-    dateTimeString.setValue(doc.dateOfValidity.map(date => date.toString).orNull)
+    dateTimeString.setValue(doc.dateOfValidity.map(date => date.to102Format).orNull)
 
     additionalDocumentEffectiveDateTimeType.setDateTimeString(dateTimeString)
 
@@ -103,11 +102,14 @@ object AdditionalDocumentsBuilder {
     val submitterNameTextType = new SubmitterNameTextType
     submitterNameTextType.setValue(name.orNull)
 
-    val submitterRoleCodeType = new SubmitterRoleCodeType
-    submitterRoleCodeType.setValue(role.orNull)
+    role.foreach{ roleValue =>
+        val submitterRoleCodeType = new SubmitterRoleCodeType
+        submitterRoleCodeType.setValue(roleValue)
+        submitter.setRoleCode(submitterRoleCodeType)
+    }
 
     submitter.setName(submitterNameTextType)
-    submitter.setRoleCode(submitterRoleCodeType)
+
 
     submitter
   }

@@ -29,10 +29,11 @@ import org.scalatest.MustMatchers
 import org.scalatest.prop.PropertyChecks
 import play.api.data.Form
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
+import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemData
 import uk.gov.hmrc.wco.dec.MetaData
 import utils.validators.forms.FieldValidator.isAlphanumeric
 class TransportInformationContainerSpec
-    extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers {
+    extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers  with GovernmentAgencyGoodsItemData{
 
   "Method toMetadataProperties" should {
 

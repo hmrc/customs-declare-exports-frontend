@@ -16,10 +16,12 @@
 
 package models.declaration
 
+import forms.common.Date
 import forms.{Choice, ChoiceSpec}
 import forms.declaration.ConsigneeDetailsSpec._
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
+import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActorsJSON
 import forms.declaration.DestinationCountriesSupplementarySpec._
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import forms.declaration.DispatchLocationSpec._
@@ -39,6 +41,7 @@ import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
+import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.declaration.DeclarationAdditionalActorsDataSpec._
@@ -46,9 +49,19 @@ import models.declaration.DeclarationHoldersDataSpec._
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues._
 import models.declaration.dectype.DeclarationTypeSupplementary
 import models.declaration.dectype.DeclarationTypeSupplementarySpec._
+import models.declaration.governmentagencygoodsitem.{
+  Amount,
+  Commodity,
+  GoodsMeasure,
+  GovernmentAgencyGoodsItem,
+  GovernmentAgencyGoodsItemAdditionalDocument,
+  Measure
+}
 import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsArray, JsObject, JsString, JsValue, Json}
+import services.ExportsItemsCacheIds
+import models.declaration.governmentagencygoodsitem.Formats._
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
@@ -376,7 +389,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 }
 
 object SupplementaryDeclarationDataSpec {
-
+  val date = Date(Some(12), Some(12), Some(2019))
   lazy val cacheMapAllRecords = CacheMap(
     id = "CacheID",
     data = Map(
@@ -401,9 +414,82 @@ object SupplementaryDeclarationDataSpec {
       TotalNumberOfItems.formId -> correctTotalNumberOfItemsDecimalValuesJSON,
       TransactionType.formId -> correctTransactionTypeJSON,
       GoodsItemNumber.formId -> correctGoodsItemNumberJSON,
-      DeclarationAdditionalActors.formId -> correctAdditionalActorsDataJSON
+      DeclarationAdditionalActors.formId -> correctAdditionalActorsDataJSON,
+      AdditionalInformationData.formId -> Json.toJson(
+        AdditionalInformationData(items = Seq(AdditionalInformation("code", "description")))
+      ),
+      DocumentsProducedData.formId -> Json.toJson(
+        DocumentsProducedData(
+          documents = Seq(
+            DocumentsProduced(
+              documentTypeCode = Some("123"),
+              documentIdentifierAndPart = Some(DocumentIdentifierAndPart(Some("docId"), Some("DocPart"))),
+              documentStatus = Some("567"),
+              documentStatusReason = Some("statusReason"),
+              issuingAuthorityName = Some("issuingAuthName"),
+              dateOfValidity = Some(date),
+              documentWriteOff =
+                Some(DocumentWriteOff(measurementUnit = Some("KGM"), documentQuantity = Some(BigDecimal(12))))
+            )
+          )
+        )
+      ),
+      ProcedureCodesData.formId -> Json.toJson(
+        ProcedureCodesData(procedureCode = Some("procedureCode"), additionalProcedureCodes = Seq("code1", "code2"))
+      ),
+      PackageInformation.formId -> Json.toJson(
+        Seq(
+          PackageInformation(
+            typesOfPackages = Some("AA"),
+            numberOfPackages = Some(2),
+            shippingMarks = Some("mark1")
+          ),
+          PackageInformation(
+            typesOfPackages = Some("AB"),
+            numberOfPackages = Some(4),
+            shippingMarks = Some("mark2")
+          )
+        )
+      ),
+      ExportsItemsCacheIds.itemsId -> correctGovernmentAgencyGoodsItemJSON,
+      CommodityMeasure.commodityFormId -> Json.toJson(
+        CommodityMeasure(supplementaryUnits = Some("2"), netMass = "23", grossMass = "23")
+      ),
+      ItemType.id -> Json.toJson(
+        ItemType(
+          combinedNomenclatureCode = "nonClamCode",
+          taricAdditionalCodes = Seq("tarricCode1", "tarricCode2", "tarricCode3"),
+          nationalAdditionalCodes = Seq("nationalAddCode1", "nationalAddCode2", "nationalAddCode3"),
+          descriptionOfGoods = "description",
+          cusCode = Some("CustCode"),
+          unDangerousGoodsCode = Some("999"),
+          statisticalValue = "12"
+        )
+      )
     )
   )
+
+  def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
+    GovernmentAgencyGoodsItem(
+      sequenceNumeric = 0,
+      statisticalValueAmount = Some(Amount(Some("GBP"), Some(BigDecimal(12)))),
+      commodity = None, //parsed from cached CommodityForm
+      additionalInformations = Seq(),
+      additionalDocuments = Seq(),
+      governmentProcedures = Seq(),
+      packagings = Seq()
+    )
+
+  lazy val correctGovernmentAgencyGoodsItemJSON: JsValue = JsArray(Seq(Json.toJson(createGovernmentAgencyGoodsItem())))
+
+  lazy val correctStatisticalValueAmountJSON: JsValue =
+    JsObject(Map("currencyId" -> JsString("GBP"), "value" -> JsString("44")))
+
+  val correctPackingJSON: JsValue = JsObject(
+    Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
+  )
+
+  lazy val correctPackageInformationJSON: JsValue = JsArray(Seq(correctPackageInformationJSON))
 
   lazy val supplementaryDeclarationDataAllValues = SupplementaryDeclarationData(
     declarationType = Some(correctDeclarationType),

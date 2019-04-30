@@ -21,13 +21,15 @@ import controllers.util.CacheIdGenerator.cacheId
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.DeclarationFormats._
+import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import services.CustomsCacheService
 import services.ExportsItemsCacheIds.itemsId
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem
 import views.html.declaration.items_summary
+import models.declaration.governmentagencygoodsitem.Formats._
+import play.api.Logger
 
 import scala.concurrent.ExecutionContext
 
@@ -42,6 +44,8 @@ class ItemsSummaryController @Inject()(
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService
       .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
-      .map(items => Ok(items_summary(items.getOrElse(Seq.empty))))
+      .map(items => {
+        Ok(items_summary(items.getOrElse(Seq.empty)))
+      })
   }
 }

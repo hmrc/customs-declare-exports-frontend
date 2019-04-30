@@ -45,11 +45,13 @@ object ProcedureCodesBuilder {
     val currentCodeType = new GovernmentProcedureCurrentCodeType
     currentCodeType.setValue(currentCode.orNull)
 
-    val previousCodeType = new GovernmentProcedurePreviousCodeType
-    previousCodeType.setValue(previousCode.orNull)
+    previousCode.foreach { previousCodeValue =>
+      val previousCodeType = new GovernmentProcedurePreviousCodeType
+      previousCodeType.setValue(previousCodeValue)
+      governmentProcedure.setPreviousCode(previousCodeType)
+    }
 
     governmentProcedure.setCurrentCode(currentCodeType)
-    governmentProcedure.setPreviousCode(previousCodeType)
 
     governmentProcedure
   }

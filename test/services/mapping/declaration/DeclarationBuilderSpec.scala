@@ -105,7 +105,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
 
     declaration.getGoodsShipment.getExportCountry.getID.getValue should be("PL")
 
-    declaration.getGoodsShipment.getUCR.getID.getValue should be(null)
+    declaration.getGoodsShipment.getUCR.getID should be(null)
     declaration.getGoodsShipment.getUCR.getTraderAssignedReferenceID.getValue should be(
       "8GB123456789012-1234567890QWERTYUIO"
     )

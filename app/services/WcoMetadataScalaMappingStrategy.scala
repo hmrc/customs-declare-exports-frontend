@@ -17,16 +17,36 @@
 package services
 import forms.declaration._
 import models.DeclarationFormats._
-import models.declaration.SupplementaryDeclarationData
+import models.declaration.governmentagencygoodsitem.Formats._
+import models.declaration.{governmentagencygoodsitem, SupplementaryDeclarationData}
+import play.api.Logger
+import play.api.libs.json.Json
 import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
+import models.declaration.governmentagencygoodsitem.{
+  Classification,
+  Commodity,
+  DangerousGoods,
+  GoodsMeasure,
+  Packaging,
+  GovernmentAgencyGoodsItem => InternalAgencyGoodsItem
+}
+import uk.gov.hmrc.wco.dec
 import uk.gov.hmrc.wco.dec.{
+  Amount,
   BorderTransportMeans,
+  DateTimeElement,
+  DateTimeString,
+  Declaration,
   GovernmentAgencyGoodsItem,
+  GovernmentAgencyGoodsItemAdditionalDocument,
+  GovernmentAgencyGoodsItemAdditionalDocumentSubmitter,
+  Measure,
   MetaData,
   PreviousDocument,
   TransportEquipment,
   TransportMeans,
+  WriteOff,
   Seal => WCOSeal
 }
 
@@ -36,7 +56,13 @@ trait WcoMetadataScalaMappingStrategy extends WcoMetadataMappingStrategy {
 
     val metaData = createHeaderData(cacheMap)
     val goodsItems =
-      cacheMap.getEntry[Seq[GovernmentAgencyGoodsItem]](ExportsItemsCacheIds.itemsId).getOrElse(Seq.empty)
+      cacheMap
+        .getEntry[Seq[InternalAgencyGoodsItem]](ExportsItemsCacheIds.itemsId)
+        .getOrElse(Seq.empty)
+        .map(item => {
+          WcoMetadataScalaMapper.mapGoodsItem(item)
+        })
+
     val borderTransport = cacheMap.getEntry[BorderTransport](BorderTransport.formId)
     val transportDetails = cacheMap.getEntry[TransportDetails](TransportDetails.formId)
 
@@ -66,6 +92,7 @@ trait WcoMetadataScalaMappingStrategy extends WcoMetadataMappingStrategy {
       )
     )
   }
+
 
   private def getContainerCode(transportDetails: Option[TransportDetails]) =
     transportDetails.map(data => if (data.container) "1" else "0")
@@ -136,3 +163,4 @@ trait WcoMetadataScalaMappingStrategy extends WcoMetadataMappingStrategy {
 
   override def toXml(metaData: Any): String = metaData.asInstanceOf[MetaData].toXml
 }
+

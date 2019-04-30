@@ -44,7 +44,7 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers {
 
       goodsShipment.getExportCountry.getID.getValue should be("PL")
 
-      goodsShipment.getUCR.getID.getValue should be(null)
+      goodsShipment.getUCR.getID should be(null)
       goodsShipment.getUCR.getTraderAssignedReferenceID.getValue should be("8GB123456789012-1234567890QWERTYUIO")
 
       goodsShipment.getWarehouse.getID.getValue should be("1234567GB")

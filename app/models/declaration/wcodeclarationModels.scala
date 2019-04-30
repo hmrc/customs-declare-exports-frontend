@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-package services
+package models.declaration
 
-import uk.gov.hmrc.http.cache.client.CacheMap
-
-class WcoMetadataMapper {
-
-  self: WcoMetadataMappingStrategy =>
-
-  def getMetaData(cacheMap: CacheMap): Any =
-    self.produceMetaData(cacheMap)
-
-  def getDeclarationUcr(metaData: Any): Option[String] = self.declarationUcr(metaData)
-
-  def getDeclarationLrn(metaData: Any): Option[String] = self.declarationLrn(metaData)
-
-  def serialise(metaData: Any): String = toXml(metaData)
-
-}
+case class BorderTransportMeans(name: Option[String] = None, // max 35 chars,
+                                id: Option[String] = None, // max 35 chars,
+                                identificationTypeCode: Option[String] = None, // max 17 chars
+                                typeCode: Option[String] = None, // max 4 chars
+                                registrationNationalityCode: Option[String] = None, // 2 chars [a-zA-Z] when present; presumably ISO 3166-1 alpha2
+                                modeCode: Option[Int] = None) // 0-9

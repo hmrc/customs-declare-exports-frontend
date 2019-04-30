@@ -36,7 +36,7 @@ class ProcedureCodesBuilderSpec extends WordSpec with Matchers with GovernmentAg
       mappedProcedures.head.getPreviousCode.getValue shouldBe cachedCode.substring(2, 4)
 
       mappedProcedures.last.getCurrentCode.getValue shouldBe previousCode
-      mappedProcedures.last.getPreviousCode.getValue shouldBe null
+      mappedProcedures.last.getPreviousCode shouldBe null
     }
   }
 

@@ -40,11 +40,9 @@ object DestinationBuilder {
         .getOrElse("")
     )
 
-    var regionId = new DestinationRegionIDType()
 
     val destination = new Destination()
     destination.setCountryCode(countryCode)
-    destination.setRegionID(regionId)
     destination
   }
 }
