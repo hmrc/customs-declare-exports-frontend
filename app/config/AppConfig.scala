@@ -23,7 +23,7 @@ import features.{Feature, FeatureStatus}
 import play.api.Mode.Mode
 import play.api.i18n.Lang
 import play.api.{Configuration, Environment}
-import services.{WcoMetadataJavaMappingStrategy, WcoMetadataMapper, WcoMetadataScalaMappingStrategy}
+import services.{WcoMetadataJavaMappingStrategy, WcoMetadataMapper, WcoMetadataMappingStrategy, WcoMetadataScalaMappingStrategy}
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 
 @Singleton
@@ -99,7 +99,7 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
 
-  def wcoMetadataMapper(): WcoMetadataMapper =
+  def wcoMetadataMapper(): WcoMetadataMapper with WcoMetadataMappingStrategy =
     if (useNewMappingStrategy)
       new WcoMetadataMapper with WcoMetadataJavaMappingStrategy
     else new WcoMetadataMapper with WcoMetadataScalaMappingStrategy

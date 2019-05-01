@@ -30,7 +30,7 @@ import models.requests.JourneyRequest
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import services.{CustomsCacheService, NRSService, WcoMetadataMapper}
+import services._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -47,8 +47,7 @@ class SummaryPageController @Inject()(
   customsCacheService: CustomsCacheService,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   exportsMetrics: ExportsMetrics,
-  nrsService: NRSService,
-  wcoMetadataMapper: WcoMetadataMapper
+  nrsService: NRSService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
@@ -79,11 +78,12 @@ class SummaryPageController @Inject()(
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
     val timerContext = exportsMetrics.startTimer(submissionMetric)
 
-    val metaData = wcoMetadataMapper.getMetaData(cacheMap)
+    val mapper = appConfig.wcoMetadataMapper
+    val metaData = mapper.getMetaData(cacheMap)
 
-    val lrn = wcoMetadataMapper.getDeclarationLrn(metaData)
-    val ducr = wcoMetadataMapper.getDeclarationLrn(metaData)
-    val payload = wcoMetadataMapper.serialise(metaData)
+    val lrn = mapper.getDeclarationLrn(metaData)
+    val ducr = mapper.getDeclarationLrn(metaData)
+    val payload = mapper.serialise(metaData)
 
     customsDeclareExportsConnector
       .submitExportDeclaration(ducr, lrn, payload)
