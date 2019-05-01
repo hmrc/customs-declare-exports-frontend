@@ -25,10 +25,9 @@ class WcoMetadataMapper {
   def getMetaData(cacheMap: CacheMap): Any =
     self.produceMetaData(cacheMap)
 
-  def getDeclarationUcr(metaData: Any): Option[String] = self.declarationUcr(metaData)
+  def getDeclarationDucr(metaData: Any): Option[String] = self.declarationUcr(metaData)
 
   def getDeclarationLrn(metaData: Any): Option[String] = self.declarationLrn(metaData)
 
   def serialise(metaData: Any): String = toXml(metaData)
-
 }
