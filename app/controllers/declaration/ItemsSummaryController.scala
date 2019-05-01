@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.DeclarationFormats._
+import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -28,8 +28,6 @@ import services.CustomsCacheService
 import services.ExportsItemsCacheIds.itemsId
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.items_summary
-import models.declaration.governmentagencygoodsitem.Formats._
-import play.api.Logger
 
 import scala.concurrent.ExecutionContext
 

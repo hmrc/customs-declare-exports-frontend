@@ -82,7 +82,7 @@ class SummaryPageController @Inject()(
     val metaData = mapper.getMetaData(cacheMap)
 
     val lrn = mapper.getDeclarationLrn(metaData)
-    val ducr = mapper.getDeclarationLrn(metaData)
+    val ducr = mapper.getDeclarationDucr(metaData)
     val payload = mapper.serialise(metaData)
 
     customsDeclareExportsConnector
