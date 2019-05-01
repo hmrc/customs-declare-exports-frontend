@@ -699,12 +699,12 @@ supplementary.continue.mandatory = You must add at least one item
 
 supplementary.startNewDec = Start a new declaration
 
-supplementary.itemsAdd.title=Declare all items involved in this export
-supplementary.itemsAdd.title.hint=An item is an individual goods type that is identified by a commodity code, for example a computer or an aluminium pipe
-supplementary.itemssummary.table.heading=1 Export item added
-supplementary.itemssummary.table.multiple.heading={0} Export items added
-supplementary.itemssummary.itemNumber= Item number
-supplementary.addgoodsitems.addallpages=You need to provide input for procedure codes, package information, goods measure, additional information and documents
+supplementary.itemsAdd.title = Declare all items involved in this export
+supplementary.itemsAdd.title.hint = An item is an individual goods type that is identified by a commodity code, for example a computer or an aluminium pipe
+supplementary.itemssummary.table.heading = 1 Export item added
+supplementary.itemssummary.table.multiple.heading = {0} Export items added
+supplementary.itemssummary.itemNumber = Item number
+supplementary.addgoodsitems.addallpages.error = Date of validity cannot be empty
 
 standard.seal.title=Transport details - seals
 standard.seal.id= 7/18 Seal identification number
