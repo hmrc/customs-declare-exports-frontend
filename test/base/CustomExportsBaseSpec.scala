@@ -129,6 +129,7 @@ trait CustomExportsBaseSpec
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
     val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+
     FakeRequest("POST", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
