@@ -16,7 +16,8 @@ object AppDependencies {
     "uk.gov.hmrc" %% "bootstrap-play-25" % "4.11.0",
     "uk.gov.hmrc" %% "play-language" % "3.4.0",
     "uk.gov.hmrc" %% "wco-dec" % "0.30.0",
-    "ai.x" %% "play-json-extensions" % "0.9.0"
+    "ai.x" %% "play-json-extensions" % "0.9.0",
+    "uk.gov.hmrc" %% "play-whitelist-filter" % "2.0.0"
   )
 
   val test = Seq(
