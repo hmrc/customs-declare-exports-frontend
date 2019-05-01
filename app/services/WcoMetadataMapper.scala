@@ -23,11 +23,11 @@ class WcoMetadataMapper {
   self: WcoMetadataMappingStrategy =>
 
   def getMetaData(cacheMap: CacheMap): Any =
-    produceMetaData(cacheMap)
+    self.produceMetaData(cacheMap)
 
-  def getDeclarationUcr(metaData: Any): Option[String] = declarationUcr(metaData)
+  def getDeclarationUcr(metaData: Any): Option[String] = self.declarationUcr(metaData)
 
-  def getDeclarationLrn(metaData: Any): Option[String] = declarationLrn(metaData)
+  def getDeclarationLrn(metaData: Any): Option[String] = self.declarationLrn(metaData)
 
-  def serialise(metaData: Any): String = toXml(metaData)
+  def serialise(metaData: Any): String = self.toXml(metaData)
 }

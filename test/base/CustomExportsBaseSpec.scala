@@ -72,8 +72,7 @@ trait CustomExportsBaseSpec
       bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
       bind[NrsConnector].to(mockNrsConnector),
       bind[NRSService].to(mockNrsService),
-      bind[ItemsCachingService].to(mockItemsCachingService),
-      bind[WcoMetadataMapper].to(new WcoMetadataMapper with WcoMetadataJavaMappingStrategy)
+      bind[ItemsCachingService].to(mockItemsCachingService)
     )
     .build()
 
