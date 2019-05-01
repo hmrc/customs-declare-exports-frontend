@@ -15,7 +15,6 @@ object AppDependencies {
     "uk.gov.hmrc" %% "http-caching-client" % "8.3.0",
     "uk.gov.hmrc" %% "bootstrap-play-25" % "4.11.0",
     "uk.gov.hmrc" %% "play-language" % "3.4.0",
-    "com.thoughtworks.xstream" % "xstream" % "1.4.11.1",
     "uk.gov.hmrc" %% "wco-dec" % "0.30.0",
     "ai.x" %% "play-json-extensions" % "0.9.0"
   )
