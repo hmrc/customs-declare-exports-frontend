@@ -16,12 +16,15 @@
 
 package config
 
+import java.util.Base64
+
 import com.google.inject.{Inject, Singleton}
 import features.Feature.Feature
 import features.FeatureStatus.FeatureStatus
 import features.{Feature, FeatureStatus}
 import play.api.Mode.Mode
 import play.api.i18n.Lang
+import play.api.mvc.Call
 import play.api.{Configuration, Environment}
 import services.{WcoMetadataJavaMappingStrategy, WcoMetadataMapper, WcoMetadataMappingStrategy, WcoMetadataScalaMappingStrategy}
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
@@ -120,4 +123,28 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   private def feature2Key(feature: Feature): String = s"microservice.services.features.$feature"
 
   private def str2FeatureStatus(str: String): FeatureStatus = FeatureStatus.withName(str)
+
+  private def whitelistConfig(key: String): Seq[String] =
+    Some(
+      new String(
+        Base64.getDecoder.decode(
+          runModeConfiguration
+            .getString(key)
+            .getOrElse("")
+        ),
+        "UTF-8"
+      )
+    ).map(_.split(",")).getOrElse(Array.empty).toSeq
+
+  val shutterPageToWhitelist: String = "whitelist.shutterPage"
+  val whitelistedIps: String = "whitelist.ips"
+  val whitelistExcludedPathsDefined: String = "whitelist.excludedPaths"
+  val whitelisted: String = "whitelist.enabled"
+
+  lazy val shutterPage: String = getString(shutterPageToWhitelist)
+  lazy val whitelistIps: Seq[String] = whitelistConfig(whitelistedIps)
+  lazy val whitelistExcludedPaths: Seq[Call] =
+    whitelistConfig(whitelistExcludedPathsDefined).map(path => Call("GET", path))
+  lazy val whiteListEnabled: Boolean = getBoolean(whitelisted)
+
 }
