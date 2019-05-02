@@ -85,7 +85,8 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
 
   lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
 
-  lazy val useNewMappingStrategy = getConfBool("features.use-new-wco-dec-mapping-strategy", false)
+  lazy val useNewMappingStrategy =
+    runModeConfiguration.getBoolean("microservice.services.features.use-new-wco-dec-mapping-strategy").getOrElse(false)
 
   lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
 
