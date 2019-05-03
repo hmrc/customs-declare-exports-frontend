@@ -19,6 +19,7 @@ package config
 import base.CustomExportsBaseSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
+import forms.Choice
 import play.api.{Configuration, Environment}
 import services.{WcoMetadataJavaMappingStrategy, WcoMetadataScalaMappingStrategy}
 
@@ -37,6 +38,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
         |google-analytics.host=localhostGoogle
         |countryCodesCsvFilename=mdg-country-codes.csv
         |countryCodesJsonFilename=location-autocomplete-canonical-list.json
+        |list-of-available-journeys="SMP,STD,CAN,SUB"
         |microservice.services.nrs.host=localhostnrs
         |microservice.services.nrs.port=7654
         |microservice.services.nrs.apikey=cds-exports
@@ -85,6 +87,16 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     "create the WcoMetadataJavaMappingStrategy when use-new-wco-dec-mapping-strategy feature flag set as true" in {
       validConfigService.getConfBool("features.use-new-wco-dec-mapping-strategy", false) must be(true)
       validConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataJavaMappingStrategy] must be(true)
+    }
+
+    "load the Choice options when list-of-available-journeys is defined" in {
+      val choices = validConfigService.availableJourneys()
+      choices.size must be(4)
+
+      choices must contain(Choice(Choice.AllowedChoiceValues.StandardDec))
+      choices must contain(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
+      choices must contain(Choice(Choice.AllowedChoiceValues.CancelDec))
+      choices must contain(Choice(Choice.AllowedChoiceValues.Submissions))
     }
 
     // what is continue URL - redirect ?
@@ -163,6 +175,13 @@ class AppConfigSpec extends CustomExportsBaseSpec {
 
     emptyConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataScalaMappingStrategy] must be(true)
   }
+
+  "empty Choice options when list-of-available-journeys is not defined" in {
+    emptyConfigService.availableJourneys().size must be(1)
+    emptyConfigService.availableJourneys() must contain(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
+  }
+
+
 
   "throw an exception when google-analytics.host is missing" in {
     intercept[Exception](emptyConfigService.analyticsHost).getMessage must be(

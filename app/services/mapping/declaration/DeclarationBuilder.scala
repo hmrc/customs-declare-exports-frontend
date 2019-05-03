@@ -16,9 +16,6 @@
 
 package services.mapping.declaration
 
-import java.util.Collections
-
-import org.apache.commons.lang3.StringUtils
 import services.mapping.goodsshipment.GoodsShipmentBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
