@@ -27,7 +27,18 @@ import models.declaration.{AdditionalInformationData, DocumentsProducedData, Pro
 import org.scalacheck.Gen
 import org.scalacheck.Gen.listOfN
 import services.Countries.allCountries
-import uk.gov.hmrc.wco.dec.{Amount, Classification, Commodity, GoodsMeasure, GovernmentAgencyGoodsItem, GovernmentAgencyGoodsItemAdditionalDocument, GovernmentProcedure, Measure, Packaging, WriteOff}
+import uk.gov.hmrc.wco.dec.{
+  Amount,
+  Classification,
+  Commodity,
+  GoodsMeasure,
+  GovernmentAgencyGoodsItem,
+  GovernmentAgencyGoodsItemAdditionalDocument,
+  GovernmentProcedure,
+  Measure,
+  Packaging,
+  WriteOff
+}
 
 import scala.util.Random
 
@@ -88,14 +99,16 @@ trait GoodsItemCachingData extends Generators {
 
   def createWcoAmount(): Amount = Amount(value = Some(Random.nextDouble()))
 
-  def createAmount(): models.declaration.governmentagencygoodsitem.Amount = models.declaration.governmentagencygoodsitem.Amount(value = Some(Random.nextDouble()))
+  def createAmount(): models.declaration.governmentagencygoodsitem.Amount =
+    models.declaration.governmentagencygoodsitem.Amount(value = Some(Random.nextDouble()))
 
   def createWcoMeasure(): Measure = Measure(value = Some(Random.nextDouble()))
 
-  def createMeasure(): models.declaration.governmentagencygoodsitem.Measure = models.declaration.governmentagencygoodsitem.Measure(value = Some(Random.nextDouble()))
+  def createMeasure(): models.declaration.governmentagencygoodsitem.Measure =
+    models.declaration.governmentagencygoodsitem.Measure(value = Some(Random.nextDouble()))
 
   def createWcoClassification(): Classification =
-   Classification(
+    Classification(
       Some(createRandomAlphanumericString(4)),
       identificationTypeCode = Some(createRandomAlphanumericString(4))
     )
@@ -110,10 +123,11 @@ trait GoodsItemCachingData extends Generators {
     GovernmentProcedure(Some(createRandomAlphanumericString(8)), Some(createRandomAlphanumericString(4)))
 
   def createGovernmentProcedure(): models.declaration.governmentagencygoodsitem.GovernmentProcedure =
-    models.declaration.governmentagencygoodsitem.GovernmentProcedure(Some(createRandomAlphanumericString(8)), Some(createRandomAlphanumericString(4)))
+    models.declaration.governmentagencygoodsitem
+      .GovernmentProcedure(Some(createRandomAlphanumericString(8)), Some(createRandomAlphanumericString(4)))
 
   def createWcoPackaging(): Packaging =
-   Packaging(
+    Packaging(
       Some(Random.nextInt()),
       Some(createRandomAlphanumericString(2)),
       Some(Random.nextInt(20)),
@@ -133,18 +147,20 @@ trait GoodsItemCachingData extends Generators {
     goodsMeasure = Some(GoodsMeasure(Some(createWcoMeasure()), Some(createWcoMeasure()), Some(createWcoMeasure())))
   )
 
-  def createCommodity(): models.declaration.governmentagencygoodsitem.Commodity = models.declaration.governmentagencygoodsitem.Commodity(
-    classifications = getDataSeq(10, createClassification),
-    goodsMeasure = Some(models.declaration.governmentagencygoodsitem.GoodsMeasure(Some(createMeasure()), Some(createMeasure()), Some(createMeasure())))
-  )
+  def createCommodity(): models.declaration.governmentagencygoodsitem.Commodity =
+    models.declaration.governmentagencygoodsitem.Commodity(
+      classifications = getDataSeq(10, createClassification),
+      goodsMeasure = Some(
+        models.declaration.governmentagencygoodsitem
+          .GoodsMeasure(Some(createMeasure()), Some(createMeasure()), Some(createMeasure()))
+      )
+    )
 
   def createWcoAdditionalInformation(): uk.gov.hmrc.wco.dec.AdditionalInformation =
     uk.gov.hmrc.wco.dec.AdditionalInformation(Some(createRandomAlphanumericString(5)), Some(createRandomString(70)))
 
-
   def createAdditionalInformation(): forms.declaration.AdditionalInformation =
     forms.declaration.AdditionalInformation(createRandomAlphanumericString(5), createRandomString(70))
-
 
   def createWcoAdditionalDocument(): GovernmentAgencyGoodsItemAdditionalDocument =
     GovernmentAgencyGoodsItemAdditionalDocument(
@@ -156,7 +172,8 @@ trait GoodsItemCachingData extends Generators {
       writeOff = Some(WriteOff(Some(createWcoMeasure())))
     )
 
-  def createAdditionalDocument(): models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItemAdditionalDocument =
+  def createAdditionalDocument()
+    : models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItemAdditionalDocument =
     models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItemAdditionalDocument(
       Some(createRandomAlphanumericString(5)),
       typeCode = Some(createRandomAlphanumericString(3)),
@@ -166,31 +183,35 @@ trait GoodsItemCachingData extends Generators {
       writeOff = Some(models.declaration.governmentagencygoodsitem.WriteOff(Some(createMeasure())))
     )
 
- def  createWcoGovernmentAgencyGoodsItem(index: Int) = GovernmentAgencyGoodsItem(
-   sequenceNumeric = index,
-   statisticalValueAmount = Some(createWcoAmount()),
-   additionalDocuments = getDataSeq(8, createWcoAdditionalDocument),
-   additionalInformations = getDataSeq(7, createWcoAdditionalInformation),
-   commodity = Some(createWcoCommodity()),
-   governmentProcedures = getDataSeq(6, createWcoGovernmentProcedure),
-   packagings = getDataSeq(5, createWcoPackaging)
- )
-
-  def createGovernmentAgencyGoodsItem(index: Int) = models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem(
+  def createWcoGovernmentAgencyGoodsItem(index: Int) = GovernmentAgencyGoodsItem(
     sequenceNumeric = index,
-    statisticalValueAmount = Some(createAmount()),
-    additionalDocuments = getDataSeq(8, createAdditionalDocument),
-    additionalInformations = getDataSeq(7, createAdditionalInformation),
-    commodity = Some(createCommodity()),
-    governmentProcedures = getDataSeq(6, createGovernmentProcedure),
-    packagings = getDataSeq(size = 5, createPackaging)
+    statisticalValueAmount = Some(createWcoAmount()),
+    additionalDocuments = getDataSeq(8, createWcoAdditionalDocument),
+    additionalInformations = getDataSeq(7, createWcoAdditionalInformation),
+    commodity = Some(createWcoCommodity()),
+    governmentProcedures = getDataSeq(6, createWcoGovernmentProcedure),
+    packagings = getDataSeq(5, createWcoPackaging)
   )
 
-  def createWcoGovernmentAgencyGoodsItems(expectedItems: Seq[models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem]): Seq[GovernmentAgencyGoodsItem] = {
-    expectedItems.map(item => WcoMetadataScalaMapper.mapGoodsItem(item))
-  }
+  def createGovernmentAgencyGoodsItem(index: Int) =
+    models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem(
+      sequenceNumeric = index,
+      statisticalValueAmount = Some(createAmount()),
+      additionalDocuments = getDataSeq(8, createAdditionalDocument),
+      additionalInformations = getDataSeq(7, createAdditionalInformation),
+      commodity = Some(createCommodity()),
+      governmentProcedures = getDataSeq(6, createGovernmentProcedure),
+      packagings = getDataSeq(size = 5, createPackaging)
+    )
 
-  def createGovernmentAgencyGoodsItemSeq(size: Int = 5): Seq[models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem] =
+  def createWcoGovernmentAgencyGoodsItems(
+    expectedItems: Seq[models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem]
+  ): Seq[GovernmentAgencyGoodsItem] =
+    expectedItems.map(item => WcoMetadataScalaMapper.mapGoodsItem(item))
+
+  def createGovernmentAgencyGoodsItemSeq(
+    size: Int = 5
+  ): Seq[models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem] =
     for (i <- 1 to size) yield createGovernmentAgencyGoodsItem(i)
 
   def createDocument() = Document(

@@ -68,7 +68,7 @@ class SummaryPageController @Inject()(
     implicit request =>
       customsCacheService.fetch(cacheId).flatMap {
         case Some(cacheMap) => handleDecSubmission(cacheMap)
-        case None => Future.successful(handleError("Could not obtain data from DB"))
+        case None           => Future.successful(handleError("Could not obtain data from DB"))
       }
   }
 

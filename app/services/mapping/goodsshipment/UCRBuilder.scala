@@ -31,8 +31,6 @@ object UCRBuilder {
 
   private def createUCR(data: ConsignmentReferences): UCR = {
 
-
-
     val traderAssignedReferenceID = new UCRTraderAssignedReferenceIDType()
     traderAssignedReferenceID.setValue(data.ducr.getOrElse(Ducr("")).ducr)
 

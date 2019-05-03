@@ -83,9 +83,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     }
 
     "create the WcoMetadataJavaMappingStrategy when use-new-wco-dec-mapping-strategy feature flag set as true" in {
-      validConfigService.getConfBool("features.use-new-wco-dec-mapping-strategy", false) must be(
-        true
-      )
+      validConfigService.getConfBool("features.use-new-wco-dec-mapping-strategy", false) must be(true)
       validConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataJavaMappingStrategy] must be(true)
     }
 
@@ -161,9 +159,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
   }
 
   "create the WcoMetadataScalaMappingStrategy when use-new-wco-dec-mapping-strategy feature flag is not set" in {
-    emptyConfigService.getConfBool("features.use-new-wco-dec-mapping-strategy", false) must be(
-      false
-    )
+    emptyConfigService.getConfBool("features.use-new-wco-dec-mapping-strategy", false) must be(false)
 
     emptyConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataScalaMappingStrategy] must be(true)
   }

@@ -33,7 +33,8 @@ import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemData
 import uk.gov.hmrc.wco.dec.MetaData
 import utils.validators.forms.FieldValidator.isAlphanumeric
 class TransportInformationContainerSpec
-    extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers  with GovernmentAgencyGoodsItemData{
+    extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers
+    with GovernmentAgencyGoodsItemData {
 
   "Method toMetadataProperties" should {
 

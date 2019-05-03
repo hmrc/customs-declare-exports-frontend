@@ -44,7 +44,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     httpClient
       .POSTString[HttpResponse](
         s"${appConfig.customsDeclareExports}${appConfig.submitDeclaration}",
-      payload,
+        payload,
         Seq(
           (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
           (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),

@@ -16,17 +16,19 @@
 
 package models.declaration.governmentagencygoodsitem
 
-case class Commodity(description: Option[String] = None,
-                     classifications: Seq[Classification] = Seq.empty,
-                     dangerousGoods: Seq[DangerousGoods] = Seq.empty,
-                     goodsMeasure: Option[GoodsMeasure] = None)
+case class Commodity(
+  description: Option[String] = None,
+  classifications: Seq[Classification] = Seq.empty,
+  dangerousGoods: Seq[DangerousGoods] = Seq.empty,
+  goodsMeasure: Option[GoodsMeasure] = None
+)
 
 case class DangerousGoods(undgid: Option[String] = None)
 
+case class GoodsMeasure(
+  grossMassMeasure: Option[Measure] = None,
+  netWeightMeasure: Option[Measure] = None,
+  tariffQuantity: Option[Measure] = None
+)
 
-case class GoodsMeasure(grossMassMeasure: Option[Measure] = None,
-                        netWeightMeasure: Option[Measure] = None,
-                        tariffQuantity: Option[Measure] = None)
-
-case class Measure(unitCode: Option[String] = None,
-                   value: Option[BigDecimal] = None)
+case class Measure(unitCode: Option[String] = None, value: Option[BigDecimal] = None)

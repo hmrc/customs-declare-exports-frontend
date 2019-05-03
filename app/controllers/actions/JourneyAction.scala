@@ -41,7 +41,7 @@ case class JourneyAction @Inject()(customsCacheService: CustomsCacheService)(imp
 
     customsCacheService.fetchAndGetEntry[Choice](eoriCacheId()(request), choiceId).map {
       case Some(choice) => Right(JourneyRequest(request, choice))
-      case _            =>
+      case _ =>
         logger.error(s"Could not obtain journey type for ${eoriCacheId()(request)}")
         Left(Conflict("Could not obtain information about journey type"))
     }

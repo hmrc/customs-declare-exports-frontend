@@ -16,9 +16,11 @@
 
 package models.declaration
 
-case class BorderTransportMeans(name: Option[String] = None, // max 35 chars,
-                                id: Option[String] = None, // max 35 chars,
-                                identificationTypeCode: Option[String] = None, // max 17 chars
-                                typeCode: Option[String] = None, // max 4 chars
-                                registrationNationalityCode: Option[String] = None, // 2 chars [a-zA-Z] when present; presumably ISO 3166-1 alpha2
-                                modeCode: Option[Int] = None) // 0-9
+case class BorderTransportMeans(
+  name: Option[String] = None, // max 35 chars,
+  id: Option[String] = None, // max 35 chars,
+  identificationTypeCode: Option[String] = None, // max 17 chars
+  typeCode: Option[String] = None, // max 4 chars
+  registrationNationalityCode: Option[String] = None, // 2 chars [a-zA-Z] when present; presumably ISO 3166-1 alpha2
+  modeCode: Option[Int] = None
+) // 0-9

@@ -102,14 +102,13 @@ object AdditionalDocumentsBuilder {
     val submitterNameTextType = new SubmitterNameTextType
     submitterNameTextType.setValue(name.orNull)
 
-    role.foreach{ roleValue =>
-        val submitterRoleCodeType = new SubmitterRoleCodeType
-        submitterRoleCodeType.setValue(roleValue)
-        submitter.setRoleCode(submitterRoleCodeType)
+    role.foreach { roleValue =>
+      val submitterRoleCodeType = new SubmitterRoleCodeType
+      submitterRoleCodeType.setValue(roleValue)
+      submitter.setRoleCode(submitterRoleCodeType)
     }
 
     submitter.setName(submitterNameTextType)
-
 
     submitter
   }

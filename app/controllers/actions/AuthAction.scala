@@ -50,7 +50,6 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)(implic
         case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments ~ agentCode ~
               confidenceLevel ~ authNino ~ saUtr ~ dateOfBirth ~ agentInformation ~ groupIdentifier ~
               credentialRole ~ mdtpInformation ~ itmpName ~ itmpDateOfBirth ~ itmpAddress ~ credentialStrength ~ loginTimes =>
-
           val eori = getEoriFromEnrolments(allEnrolments)
 
           validateEnrollments(eori, externalId)

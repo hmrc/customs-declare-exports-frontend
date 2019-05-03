@@ -93,7 +93,6 @@ trait WcoMetadataScalaMappingStrategy extends WcoMetadataMappingStrategy {
     )
   }
 
-
   private def getContainerCode(transportDetails: Option[TransportDetails]) =
     transportDetails.map(data => if (data.container) "1" else "0")
 
@@ -163,4 +162,3 @@ trait WcoMetadataScalaMappingStrategy extends WcoMetadataMappingStrategy {
 
   override def toXml(metaData: Any): String = metaData.asInstanceOf[MetaData].toXml
 }
-

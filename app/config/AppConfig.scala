@@ -26,7 +26,12 @@ import play.api.Mode.Mode
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment, Logger}
-import services.{WcoMetadataJavaMappingStrategy, WcoMetadataMapper, WcoMetadataMappingStrategy, WcoMetadataScalaMappingStrategy}
+import services.{
+  WcoMetadataJavaMappingStrategy,
+  WcoMetadataMapper,
+  WcoMetadataMappingStrategy,
+  WcoMetadataScalaMappingStrategy
+}
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 
 @Singleton
@@ -109,8 +114,7 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
     if (useNewMappingStrategy) {
       logger.warn("Using WcoMetadataJavaMappingStrategy as the WCO-DEC mapper")
       new WcoMetadataMapper with WcoMetadataJavaMappingStrategy
-    }
-    else {
+    } else {
       logger.warn("Using WcoMetadataScalaMappingStrategy as the WCO-DEC mapper")
       new WcoMetadataMapper with WcoMetadataScalaMappingStrategy
     }
