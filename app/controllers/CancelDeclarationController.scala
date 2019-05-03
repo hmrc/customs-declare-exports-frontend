@@ -26,6 +26,7 @@ import javax.inject.Inject
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers._
 import models.requests._
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
@@ -42,6 +43,8 @@ class CancelDeclarationController @Inject()(
   exportsMetrics: ExportsMetrics
 )(implicit val messagesApi: MessagesApi, ec: ExecutionContext)
     extends FrontendController with I18nSupport {
+
+  private val logger = Logger(this.getClass())
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
     Future.successful(Ok(cancel_declaration(appConfig, CancelDeclaration.form)))
@@ -68,6 +71,7 @@ class CancelDeclarationController @Inject()(
                   context.stop()
                   Future.successful(Ok(cancellation_confirmation_page(appConfig)))
                 case CancellationRequestExists =>
+                  logger.error(s"Cancellation for declaration with mrn $mrn exists")
                   Future.successful(
                     BadRequest(
                       errorHandler.standardErrorTemplate(
@@ -78,6 +82,7 @@ class CancelDeclarationController @Inject()(
                     )
                   )
                 case MissingDeclaration =>
+                  logger.error(s"Declaration with mrn $mrn doesn't exists")
                   Future.successful(
                     BadRequest(
                       errorHandler.standardErrorTemplate(
@@ -88,7 +93,9 @@ class CancelDeclarationController @Inject()(
                     )
                   )
               }
-            case _ => errorHandler.displayErrorPage()
+            case _ =>
+              logger.error("Internal server error during cancellation")
+              errorHandler.displayErrorPage()
           }
         }
       )

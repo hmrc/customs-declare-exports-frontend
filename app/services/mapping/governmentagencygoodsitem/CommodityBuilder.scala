@@ -21,7 +21,11 @@ import services.ExportsItemsCacheIds
 import services.mapping.CachingMappingHelper
 import services.mapping.CachingMappingHelper.getClassificationsFromItemTypes
 import uk.gov.hmrc.http.cache.client.CacheMap
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.Commodity.{Classification => WCOClassification, DangerousGoods => WCODangerousGoods, GoodsMeasure => WCOGoodsMeasure}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.Commodity.{
+  Classification => WCOClassification,
+  DangerousGoods => WCODangerousGoods,
+  GoodsMeasure => WCOGoodsMeasure
+}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.{Commodity => WCOCommodity}
 import wco.datamodel.wco.declaration_ds.dms._2._
 

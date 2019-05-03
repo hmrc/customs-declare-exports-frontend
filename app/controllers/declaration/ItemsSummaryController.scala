@@ -42,8 +42,6 @@ class ItemsSummaryController @Inject()(
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService
       .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
-      .map(items => {
-        Ok(items_summary(items.getOrElse(Seq.empty)))
-      })
+      .map(items => Ok(items_summary(items.getOrElse(Seq.empty))))
   }
 }

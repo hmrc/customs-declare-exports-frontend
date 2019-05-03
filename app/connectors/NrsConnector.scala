@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class NrsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
-  val logger: Logger = Logger(this.getClass)
+  private val logger: Logger = Logger(this.getClass)
   val xApiKeyHeader = "X-API-Key"
 
   val nrsSubmissionUrl: String = s"${appConfig.nrsServiceUrl}/submission"

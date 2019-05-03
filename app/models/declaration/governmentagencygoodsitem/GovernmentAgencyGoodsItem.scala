@@ -32,27 +32,26 @@ object Formats {
   implicit val packagingformats = Json.format[Packaging]
   implicit val governmentProcedureFormats = Json.format[GovernmentProcedure]
   implicit val writeOffformats = Json.format[WriteOff]
-  implicit val governmentAgencyGoodsItemAdditionalDocumentSubmitterformats = Json.format[GovernmentAgencyGoodsItemAdditionalDocumentSubmitter]
-  implicit val governmentAgencyGoodsItemAdditionalDocumentformats = Json.format[GovernmentAgencyGoodsItemAdditionalDocument]
+  implicit val governmentAgencyGoodsItemAdditionalDocumentSubmitterformats =
+    Json.format[GovernmentAgencyGoodsItemAdditionalDocumentSubmitter]
+  implicit val governmentAgencyGoodsItemAdditionalDocumentformats =
+    Json.format[GovernmentAgencyGoodsItemAdditionalDocument]
   implicit val goodsMeasureormats = Json.format[GoodsMeasure]
   implicit val dangerousGoodsformats = Json.format[DangerousGoods]
   implicit val commodityformats = Json.format[Commodity]
   implicit val governmentAgencyGoodsItemformats = Json.format[GovernmentAgencyGoodsItem]
 }
 case class GovernmentAgencyGoodsItem(
-                                      sequenceNumeric: Int,
-                                      statisticalValueAmount: Option[Amount] = None,
-                                      commodity: Option[Commodity] = None,
-                                      additionalInformations: Seq[AdditionalInformation] = Seq.empty,
-                                      additionalDocuments: Seq[GovernmentAgencyGoodsItemAdditionalDocument] = Seq.empty,
-                                      governmentProcedures: Seq[GovernmentProcedure] = Seq.empty,
-                                      packagings: Seq[Packaging] = Seq.empty
+  sequenceNumeric: Int,
+  statisticalValueAmount: Option[Amount] = None,
+  commodity: Option[Commodity] = None,
+  additionalInformations: Seq[AdditionalInformation] = Seq.empty,
+  additionalDocuments: Seq[GovernmentAgencyGoodsItemAdditionalDocument] = Seq.empty,
+  governmentProcedures: Seq[GovernmentProcedure] = Seq.empty,
+  packagings: Seq[Packaging] = Seq.empty
 )
 
-case class Amount(
-  currencyId: Option[String] = None,
-  value: Option[BigDecimal] = None
-)
+case class Amount(currencyId: Option[String] = None, value: Option[BigDecimal] = None)
 
 case class Classification(
   id: Option[String] = None,
@@ -61,34 +60,36 @@ case class Classification(
   bindingTariffReferenceId: Option[String] = None
 )
 
-case class Packaging(sequenceNumeric: Option[Int] = None,
-                     marksNumbersId: Option[String] = None,
-                     quantity: Option[Int] = None,
-                     typeCode: Option[String] = None)
+case class Packaging(
+  sequenceNumeric: Option[Int] = None,
+  marksNumbersId: Option[String] = None,
+  quantity: Option[Int] = None,
+  typeCode: Option[String] = None
+)
 
-case class GovernmentProcedure(currentCode: Option[String] = None,
-                               previousCode: Option[String] = None)
+case class GovernmentProcedure(currentCode: Option[String] = None, previousCode: Option[String] = None)
 
-case class GovernmentAgencyGoodsItemAdditionalDocument(categoryCode: Option[String] = None,
-                                                       effectiveDateTime: Option[DateTimeElement] = None,
-                                                       id: Option[String] = None,
-                                                       name: Option[String] = None,
-                                                       typeCode: Option[String] = None,
-                                                       lpcoExemptionCode: Option[String] = None,
-                                                       submitter: Option[GovernmentAgencyGoodsItemAdditionalDocumentSubmitter] = None,
-                                                       writeOff: Option[WriteOff] = None)
+case class GovernmentAgencyGoodsItemAdditionalDocument(
+  categoryCode: Option[String] = None,
+  effectiveDateTime: Option[DateTimeElement] = None,
+  id: Option[String] = None,
+  name: Option[String] = None,
+  typeCode: Option[String] = None,
+  lpcoExemptionCode: Option[String] = None,
+  submitter: Option[GovernmentAgencyGoodsItemAdditionalDocumentSubmitter] = None,
+  writeOff: Option[WriteOff] = None
+)
 
-case class WriteOff(quantity: Option[Measure] = None,
-                    amount: Option[Amount] = None)
+case class WriteOff(quantity: Option[Measure] = None, amount: Option[Amount] = None)
 
-case class GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(name: Option[String] = None,
-                                                                roleCode: Option[String] = None)
+case class GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(
+  name: Option[String] = None,
+  roleCode: Option[String] = None
+)
 
 case class DateTimeElement(dateTimeString: DateTimeString)
 
-
-case class DateTimeString(formatCode: String,
-                          value: String) {
+case class DateTimeString(formatCode: String, value: String) {
   import DateTimeFormats._
 
   def time(): ZonedDateTime = formatCode match {

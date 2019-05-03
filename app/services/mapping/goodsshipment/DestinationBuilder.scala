@@ -40,7 +40,6 @@ object DestinationBuilder {
         .getOrElse("")
     )
 
-
     val destination = new Destination()
     destination.setCountryCode(countryCode)
     destination

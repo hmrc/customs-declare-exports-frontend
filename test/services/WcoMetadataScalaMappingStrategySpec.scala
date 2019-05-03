@@ -30,7 +30,9 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
 
   val expectedItems: Seq[GovernmentAgencyGoodsItem] = createGovernmentAgencyGoodsItemSeq(10)
 
-  lazy val expectedWcoItems: Seq[uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem] = createWcoGovernmentAgencyGoodsItems(expectedItems)
+  lazy val expectedWcoItems: Seq[uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem] = createWcoGovernmentAgencyGoodsItems(
+    expectedItems
+  )
 
   val expectedPreviousDocs = createPreviousDocumentsData(6)
   val previousDocsCache = getCacheMap(expectedPreviousDocs, "PreviousDocuments")
@@ -126,7 +128,6 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
     goodsShipment.governmentAgencyGoodsItems.map(_.governmentProcedures.size mustBe 6)
     goodsShipment.governmentAgencyGoodsItems.map(_.additionalDocuments.size mustBe 8)
     goodsShipment.governmentAgencyGoodsItems.map(_.additionalInformations.size mustBe 7)
-
 
     (goodsShipment.governmentAgencyGoodsItems zip expectedWcoItems).map {
       case (actual, expected) =>

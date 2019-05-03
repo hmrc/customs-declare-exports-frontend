@@ -439,16 +439,8 @@ object SupplementaryDeclarationDataSpec {
       ),
       PackageInformation.formId -> Json.toJson(
         Seq(
-          PackageInformation(
-            typesOfPackages = Some("AA"),
-            numberOfPackages = Some(2),
-            shippingMarks = Some("mark1")
-          ),
-          PackageInformation(
-            typesOfPackages = Some("AB"),
-            numberOfPackages = Some(4),
-            shippingMarks = Some("mark2")
-          )
+          PackageInformation(typesOfPackages = Some("AA"), numberOfPackages = Some(2), shippingMarks = Some("mark1")),
+          PackageInformation(typesOfPackages = Some("AB"), numberOfPackages = Some(4), shippingMarks = Some("mark2"))
         )
       ),
       ExportsItemsCacheIds.itemsId -> correctGovernmentAgencyGoodsItemJSON,

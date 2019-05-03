@@ -19,6 +19,7 @@ package controllers.actions
 import com.google.inject.{ImplementedBy, Inject}
 import models.requests.AuthenticatedRequest
 import models.{IdentityData, SignedInUser}
+import play.api.Logger
 import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
 import uk.gov.hmrc.auth.core.retrieve.Retrievals.{agentCode, _}
 import uk.gov.hmrc.auth.core.retrieve.~
@@ -30,6 +31,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionImpl @Inject()(override val authConnector: AuthConnector)(implicit ec: ExecutionContext)
     extends AuthAction with AuthorisedFunctions {
+
+  private val logger = Logger(this.getClass())
 
   override def invokeBlock[A](
     request: Request[A],
@@ -47,15 +50,9 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)(implic
         case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments ~ agentCode ~
               confidenceLevel ~ authNino ~ saUtr ~ dateOfBirth ~ agentInformation ~ groupIdentifier ~
               credentialRole ~ mdtpInformation ~ itmpName ~ itmpDateOfBirth ~ itmpAddress ~ credentialStrength ~ loginTimes =>
-          val eori = allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber"))
+          val eori = getEoriFromEnrolments(allEnrolments)
 
-          if (eori.isEmpty) {
-            throw new InsufficientEnrolments()
-          }
-
-          if (externalId.isEmpty) {
-            throw NoExternalId()
-          }
+          validateEnrollments(eori, externalId)
 
           val identityData = IdentityData(
             internalId,
@@ -80,11 +77,25 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)(implic
             Some(loginTimes)
           )
 
-          val cdsLoggedInUser =
-            SignedInUser(eori.get.value, allEnrolments, identityData)
+          val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments, identityData)
 
           block(AuthenticatedRequest(request, cdsLoggedInUser))
       }
+  }
+
+  private def getEoriFromEnrolments(enrolments: Enrolments): Option[EnrolmentIdentifier] =
+    enrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber"))
+
+  private def validateEnrollments(eori: Option[EnrolmentIdentifier], externalId: Option[String]): Unit = {
+    if (eori.isEmpty) {
+      logger.error("User doesn't have eori")
+      throw InsufficientEnrolments()
+    }
+
+    if (externalId.isEmpty) {
+      logger.error("User doesn't have external Id")
+      throw NoExternalId()
+    }
   }
 }
 
