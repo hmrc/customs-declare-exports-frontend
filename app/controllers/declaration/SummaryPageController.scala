@@ -52,6 +52,7 @@ class SummaryPageController @Inject()(
     extends FrontendController with I18nSupport {
 
   implicit val appConfigImpl: AppConfig = appConfig
+  private val logger = Logger(this.getClass())
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetch(cacheId).map {
@@ -66,10 +67,8 @@ class SummaryPageController @Inject()(
   def submitSupplementaryDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       customsCacheService.fetch(cacheId).flatMap {
-        case Some(cacheMap) =>
-          handleDecSubmission(cacheMap)
-        case None =>
-          Future.successful(handleError(s"Could not obtain data from DB"))
+        case Some(cacheMap) => handleDecSubmission(cacheMap)
+        case None => Future.successful(handleError("Could not obtain data from DB"))
       }
   }
 
@@ -104,7 +103,7 @@ class SummaryPageController @Inject()(
     Flash(Map("LRN" -> lrn))
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
-    Logger.error(logMessage)
+    logger.error(logMessage)
     InternalServerError(
       errorHandler.standardErrorTemplate(
         pageTitle = messagesApi("global.error.title"),

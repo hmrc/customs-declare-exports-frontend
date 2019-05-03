@@ -32,6 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
 
+  private val logger = Logger(this.getClass())
+
   private[connectors] def get(url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     httpClient.GET(url, Seq())
 
@@ -51,7 +53,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
         )
       )
       .map { response =>
-        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS response is --> ${response.toString}")
+        logger.debug(s"CUSTOMS_DECLARE_EXPORTS response is --> ${response.toString}")
         response
       }
 
@@ -68,7 +70,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
   def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionData]] =
     httpClient.GET[Seq[SubmissionData]](s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissions}").map {
       response =>
-        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
+        logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
         response
     }
 
@@ -87,7 +89,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
         )
       )
       .map { response =>
-        Logger.debug(s"CUSTOMS_DECLARE_EXPORTS cancel declaration response is --> ${response.toString}")
+        logger.debug(s"CUSTOMS_DECLARE_EXPORTS cancel declaration response is --> ${response.toString}")
         response
       }
 }
