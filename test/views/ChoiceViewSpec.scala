@@ -16,10 +16,13 @@
 
 package views
 
+import com.typesafe.config.{Config, ConfigFactory}
+import config.AppConfig
 import forms.Choice
 import helpers.views.declaration.{ChoiceMessages, CommonMessages}
 import org.jsoup.nodes.Element
 import play.api.data.Form
+import play.api.{Configuration, Environment}
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
 import views.html.choice_page
@@ -31,7 +34,7 @@ import scala.collection.immutable
 class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
   private val form: Form[Choice] = Choice.form()
-  private def createView(form: Form[Choice] = form): Html = choice_page(appConfig, form)
+  private def createView(form: Form[Choice] = form): Html = choice_page(form)
 
   "Choice View" should {
 
@@ -72,6 +75,28 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       ensureRadioIsUnChecked(view, "Standard declaration")
       ensureRadioIsUnChecked(view, "Cancel declaration")
       ensureRadioIsUnChecked(view, "Submissions")
+    }
+
+    "display only Supplementary radio button with description" in {
+
+      val supplementaryConfig: Config =
+        ConfigFactory.parseString("""
+        |list-of-available-journeys="SMP"
+        |google-analytics.token=N/A
+        |google-analytics.host=localhostGoogle
+
+      """.stripMargin)
+
+      val supplementaryAppConfig = new AppConfig(Configuration(supplementaryConfig), Environment.simple())
+
+      val view = choice_page(Choice.form().fill(Choice("SMP")))(
+        appConfig = supplementaryAppConfig,
+        messages = messages,
+        request = fakeRequest
+      )
+      ensureSupplementaryLabelIsCorrect(view)
+
+      ensureRadioIsChecked(view, "Supplementary declaration")
     }
 
     "display \"Back\" button that links to \"Make an export declaration\" page" in {
@@ -159,6 +184,14 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
     labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) must be(false)
     labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) must be(false)
     labels.forall(elems => elems.getElementsContainingText(messages(recentDec)).isEmpty) must be(false)
+  }
+
+  private def ensureSupplementaryLabelIsCorrect(view: Html): Unit = {
+    val labels: immutable.Seq[Element] = getElementsByTag(view, "label")
+    labels.forall(elems => elems.getElementsContainingText(messages(supplementaryDec)).isEmpty) must be(false)
+    labels.forall(elems => elems.getElementsContainingText(messages(standardDec)).isEmpty) must be(true)
+    labels.forall(elems => elems.getElementsContainingText(messages(cancelDec)).isEmpty) must be(true)
+    labels.forall(elems => elems.getElementsContainingText(messages(recentDec)).isEmpty) must be(true)
   }
 
   private def ensureRadioIsChecked(view: Html, elementId: String): Unit = {

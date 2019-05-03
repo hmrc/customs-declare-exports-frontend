@@ -121,14 +121,13 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
       new WcoMetadataMapper with WcoMetadataScalaMappingStrategy
     }
 
-  def availableJourneys(): Seq[Choice] =
+  def availableJourneys(): Seq[String] =
     runModeConfiguration
       .getString("list-of-available-journeys")
       .map(
         _.split(",")
-          .map(new Choice(_))
       )
-      .getOrElse(Array(Choice(SupplementaryDec)))
+      .getOrElse(Array(Choice.AllowedChoiceValues.SupplementaryDec))
       .toSeq
 
   def featureStatus(feature: Feature): FeatureStatus =

@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
-@(appConfig: AppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
     @main_template(
         title = messages("declaration.choice.description"),
@@ -40,7 +40,7 @@
                     RadioOption("Standard declaration", StandardDec, messages("declaration.choice.STD")),
                     RadioOption("Cancel declaration", CancelDec, messages("declaration.choice.CAN")),
                     RadioOption("Submissions", Submissions, messages("declaration.choice.SUB"))
-                )
+                ).filter(radioOption => appConfig.availableJourneys().contains(radioOption.value))
             )
 
             @components.submit_button()

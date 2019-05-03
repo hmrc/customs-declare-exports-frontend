@@ -93,10 +93,10 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       val choices = validConfigService.availableJourneys()
       choices.size must be(4)
 
-      choices must contain(Choice(Choice.AllowedChoiceValues.StandardDec))
-      choices must contain(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
-      choices must contain(Choice(Choice.AllowedChoiceValues.CancelDec))
-      choices must contain(Choice(Choice.AllowedChoiceValues.Submissions))
+      choices must contain(Choice.AllowedChoiceValues.StandardDec)
+      choices must contain(Choice.AllowedChoiceValues.SupplementaryDec)
+      choices must contain(Choice.AllowedChoiceValues.CancelDec)
+      choices must contain(Choice.AllowedChoiceValues.Submissions)
     }
 
     // what is continue URL - redirect ?
@@ -178,7 +178,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
 
   "empty Choice options when list-of-available-journeys is not defined" in {
     emptyConfigService.availableJourneys().size must be(1)
-    emptyConfigService.availableJourneys() must contain(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
+    emptyConfigService.availableJourneys() must contain(Choice.AllowedChoiceValues.SupplementaryDec)
   }
 
 
