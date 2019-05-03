@@ -25,13 +25,15 @@ import features.{Feature, FeatureStatus}
 import play.api.Mode.Mode
 import play.api.i18n.Lang
 import play.api.mvc.Call
-import play.api.{Configuration, Environment}
+import play.api.{Configuration, Environment, Logger}
 import services.{WcoMetadataJavaMappingStrategy, WcoMetadataMapper, WcoMetadataMappingStrategy, WcoMetadataScalaMappingStrategy}
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 
 @Singleton
 class AppConfig @Inject()(override val runModeConfiguration: Configuration, val environment: Environment)
     extends ServicesConfig with AppName {
+
+  private val logger = Logger(this.getClass())
 
   override protected def mode: Mode = environment.mode
 
@@ -104,9 +106,14 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
 
   def wcoMetadataMapper(): WcoMetadataMapper with WcoMetadataMappingStrategy =
-    if (useNewMappingStrategy)
+    if (useNewMappingStrategy) {
+      logger.warn("Using WcoMetadataJavaMappingStrategy as the WCO-DEC mapper")
       new WcoMetadataMapper with WcoMetadataJavaMappingStrategy
-    else new WcoMetadataMapper with WcoMetadataScalaMappingStrategy
+    }
+    else {
+      logger.warn("Using WcoMetadataScalaMappingStrategy as the WCO-DEC mapper")
+      new WcoMetadataMapper with WcoMetadataScalaMappingStrategy
+    }
 
   def featureStatus(feature: Feature): FeatureStatus =
     sys.props
