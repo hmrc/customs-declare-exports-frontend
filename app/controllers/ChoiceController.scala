@@ -34,18 +34,17 @@ import views.html.choice_page
 import scala.concurrent.{ExecutionContext, Future}
 
 class ChoiceController @Inject()(
-  appConfig: AppConfig,
   override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController with I18nSupport {
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, choiceId).map {
-      case Some(data) => Ok(choice_page(appConfig, Choice.form().fill(data)))
-      case _          => Ok(choice_page(appConfig, Choice.form()))
+      case Some(data) => Ok(choice_page(Choice.form().fill(data)))
+      case _          => Ok(choice_page(Choice.form()))
     }
   }
 
@@ -53,7 +52,7 @@ class ChoiceController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choice_page(appConfig, formWithErrors))),
+        (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choice_page(formWithErrors))),
         validChoice =>
           customsCacheService.cache[Choice](eoriCacheId, choiceId, validChoice).map { _ =>
             validChoice.value match {
