@@ -22,6 +22,8 @@ import com.google.inject.{Inject, Singleton}
 import features.Feature.Feature
 import features.FeatureStatus.FeatureStatus
 import features.{Feature, FeatureStatus}
+import forms.Choice
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import play.api.Mode.Mode
 import play.api.i18n.Lang
 import play.api.mvc.Call
@@ -118,6 +120,16 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
       logger.warn("Using WcoMetadataScalaMappingStrategy as the WCO-DEC mapper")
       new WcoMetadataMapper with WcoMetadataScalaMappingStrategy
     }
+
+  def availableJourneys(): Seq[Choice] =
+    runModeConfiguration
+      .getString("list-of-available-journeys")
+      .map(
+        _.split(",")
+          .map(new Choice(_))
+      )
+      .getOrElse(Array(Choice(SupplementaryDec)))
+      .toSeq
 
   def featureStatus(feature: Feature): FeatureStatus =
     sys.props
