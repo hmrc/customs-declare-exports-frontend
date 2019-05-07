@@ -15,6 +15,8 @@
  */
 
 package services.mapping.governmentagencygoodsitem
+import java.util.Objects
+
 import forms.declaration.ItemType
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
@@ -46,9 +48,13 @@ object GovernmentAgencyGoodsItemBuilder {
 
     val wcoGovernmentAgencyGoodsItem = new WCOGovernmentAgencyGoodsItem
 
-    val statisticalValueAmountType = new GovernmentAgencyGoodsItemStatisticalValueAmountType
-    statisticalValueAmountType.setCurrencyID(maybeStatisticalValueAmount.flatMap(_.currencyId).orNull)
-    statisticalValueAmountType.setValue(maybeStatisticalValueAmount.flatMap(_.value.map(_.bigDecimal)).orNull)
+    val statisticalAmount = maybeStatisticalValueAmount.flatMap(_.value.map(_.bigDecimal)).orNull
+    if (Objects.nonNull(statisticalAmount)) {
+      val statisticalValueAmountType = new GovernmentAgencyGoodsItemStatisticalValueAmountType
+      statisticalValueAmountType.setCurrencyID(maybeStatisticalValueAmount.flatMap(_.currencyId).orNull)
+      statisticalValueAmountType.setValue(statisticalAmount)
+      wcoGovernmentAgencyGoodsItem.setStatisticalValueAmount(statisticalValueAmountType)
+    }
 
     wcoGovernmentAgencyGoodsItem.setSequenceNumeric(BigDecimal(governmentAgencyGoodsItem.sequenceNumeric).bigDecimal)
 
@@ -69,7 +75,6 @@ object GovernmentAgencyGoodsItemBuilder {
       .getOrElse(Seq.empty)
       .foreach(doc => wcoGovernmentAgencyGoodsItem.getAdditionalDocument.add(doc))
 
-    wcoGovernmentAgencyGoodsItem.setStatisticalValueAmount(statisticalValueAmountType)
     wcoGovernmentAgencyGoodsItem.setCommodity(CommodityBuilder.build.orNull)
     wcoGovernmentAgencyGoodsItem
   }
