@@ -18,6 +18,7 @@ package services.mapping.governmentagencygoodsitem
 
 import java.util
 
+import forms.declaration.ItemType
 import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
@@ -26,9 +27,7 @@ import play.api.libs.json.Reads
 import services.ExportsItemsCacheIds
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem._
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
-  GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
-}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem}
 class GovernmentAgencyGoodsItemBuilderSpec
     extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GovernmentAgencyGoodsItemData {
 
@@ -90,6 +89,14 @@ class GovernmentAgencyGoodsItemBuilderSpec
       validateCommodity(commodity)
       validatePackaging(firstPackaging)
       validateGovernmentProcedure(firstProcedure)
+
+    }
+
+    "map correctly if ItemType is None " in new SetUp() {
+
+      when(cacheMap.getEntry[ItemType](eqTo(ItemType.id))(any[Reads[ItemType]])).thenReturn(None)
+      val mappedGoodsItemList: List[WCOGovernmentAgencyGoodsItem] = GovernmentAgencyGoodsItemBuilder.build
+      mappedGoodsItemList.isEmpty shouldBe false
     }
   }
 

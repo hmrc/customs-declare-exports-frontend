@@ -48,7 +48,7 @@ object GovernmentAgencyGoodsItemBuilder {
 
     val statisticalValueAmountType = new GovernmentAgencyGoodsItemStatisticalValueAmountType
     statisticalValueAmountType.setCurrencyID(maybeStatisticalValueAmount.flatMap(_.currencyId).orNull)
-    statisticalValueAmountType.setValue(maybeStatisticalValueAmount.flatMap(_.value).orNull.bigDecimal)
+    statisticalValueAmountType.setValue(maybeStatisticalValueAmount.flatMap(_.value.map(_.bigDecimal)).orNull)
 
     wcoGovernmentAgencyGoodsItem.setSequenceNumeric(BigDecimal(governmentAgencyGoodsItem.sequenceNumeric).bigDecimal)
 
