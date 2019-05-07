@@ -124,9 +124,7 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   def availableJourneys(): Seq[String] =
     runModeConfiguration
       .getString("list-of-available-journeys")
-      .map(
-        _.split(",")
-      )
+      .map(_.split(","))
       .getOrElse(Array(Choice.AllowedChoiceValues.SupplementaryDec))
       .toSeq
 

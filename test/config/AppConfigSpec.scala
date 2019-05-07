@@ -181,8 +181,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     emptyConfigService.availableJourneys() must contain(Choice.AllowedChoiceValues.SupplementaryDec)
   }
 
-
-
   "throw an exception when google-analytics.host is missing" in {
     intercept[Exception](emptyConfigService.analyticsHost).getMessage must be(
       "Missing configuration key: google-analytics.host"

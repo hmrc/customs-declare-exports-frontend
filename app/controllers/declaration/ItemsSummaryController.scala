@@ -15,6 +15,7 @@
  */
 
 package controllers.declaration
+
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
