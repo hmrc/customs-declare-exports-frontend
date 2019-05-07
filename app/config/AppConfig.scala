@@ -27,7 +27,11 @@ import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import play.api.Mode.Mode
 import play.api.i18n.Lang
 import play.api.mvc.Call
+<<<<<<< HEAD
 import play.api.{Configuration, Environment, Logger}
+=======
+import play.api.{Configuration, Environment}
+>>>>>>> [CEDS-1142] - Audit Service for frontend with single audit event
 import services.{
   WcoMetadataJavaMappingStrategy,
   WcoMetadataMapper,

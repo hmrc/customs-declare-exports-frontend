@@ -17,28 +17,20 @@
 package services
 
 import base.TestHelper._
-import base.{CustomExportsBaseSpec, TestHelper}
+import base.CustomExportsBaseSpec
 import forms.declaration.{CommodityMeasure, ItemType, PackageInformation}
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
-import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.OptionValues
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.http.logging.Authorization
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HttpResponse}
 import uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem
 
 import scala.concurrent.Future
 
 class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachingData with OptionValues {
-
-  implicit val hc: HeaderCarrier =
-    HeaderCarrier(
-      authorization = Some(Authorization(TestHelper.createRandomString(255))),
-      nsStamp = DateTime.now().getMillis
-    )
 
   val itemsCachingService = new ItemsCachingService(mockCustomsCacheService)(appConfig)
 

@@ -17,22 +17,19 @@
 package controllers.declaration
 
 import config.AppConfig
-import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.ConsignmentReferences
 import handlers.ErrorHandler
 import javax.inject.Inject
-import metrics.ExportsMetrics
-import metrics.MetricIdentifiers.submissionMetric
 import models.declaration.SupplementaryDeclarationData
 import models.requests.JourneyRequest
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services._
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.summary.{summary_page, summary_page_no_data}
 
@@ -45,9 +42,7 @@ class SummaryPageController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
-  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
-  exportsMetrics: ExportsMetrics,
-  nrsService: NRSService
+  submissionService: SubmissionService
 )(implicit ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
@@ -74,33 +69,13 @@ class SummaryPageController @Inject()(
 
   private def handleDecSubmission(
     cacheMap: CacheMap
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
-    val timerContext = exportsMetrics.startTimer(submissionMetric)
-
-    val mapper = appConfig.wcoMetadataMapper
-    val metaData = mapper.getMetaData(cacheMap)
-
-    val lrn = mapper.getDeclarationLrn(metaData)
-    val ducr = mapper.getDeclarationDucr(metaData)
-    val payload = mapper.serialise(metaData)
-
-    customsDeclareExportsConnector
-      .submitExportDeclaration(ducr, lrn, payload)
-      .flatMap {
-        case HttpResponse(ACCEPTED, _, _, _) =>
-          customsCacheService.remove(cacheId).map { _ =>
-            exportsMetrics.incrementCounter(submissionMetric)
-            timerContext.stop()
-            Redirect(controllers.declaration.routes.ConfirmationPageController.displayPage())
-              .flashing(prepareFlashScope(lrn.getOrElse("")))
-          }
-        case error =>
-          Future.successful(handleError(s"Error from Customs Declarations API ${error.toString}"))
-      }
-  }
-
-  private def prepareFlashScope(lrn: String) =
-    Flash(Map("LRN" -> lrn))
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+    submissionService.submit(cacheMap).map {
+      case Some(lrn) =>
+        Redirect(controllers.declaration.routes.ConfirmationPageController.displayPage())
+          .flashing(Flash(Map("LRN" -> lrn)))
+      case _ => handleError(s"Error from Customs Declarations API")
+    }
 
   private def handleError(logMessage: String)(implicit request: Request[_]): Result = {
     logger.error(logMessage)
