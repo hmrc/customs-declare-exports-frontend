@@ -19,7 +19,7 @@ import forms.Ducr
 import forms.declaration.ConsignmentReferences
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.UCR
-import wco.datamodel.wco.declaration_ds.dms._2.{UCRIdentificationIDType, UCRTraderAssignedReferenceIDType}
+import wco.datamodel.wco.declaration_ds.dms._2.UCRTraderAssignedReferenceIDType
 
 object UCRBuilder {
 
@@ -31,12 +31,17 @@ object UCRBuilder {
 
   private def createUCR(data: ConsignmentReferences): UCR = {
 
-    val traderAssignedReferenceID = new UCRTraderAssignedReferenceIDType()
-    traderAssignedReferenceID.setValue(data.ducr.getOrElse(Ducr("")).ducr)
+    val ducr = data.ducr.getOrElse(Ducr("")).ducr
+    if (!ducr.isEmpty) {
 
-    val warehouse = new UCR()
-    warehouse.setTraderAssignedReferenceID(traderAssignedReferenceID)
-    warehouse
+      val traderAssignedReferenceID = new UCRTraderAssignedReferenceIDType()
+      traderAssignedReferenceID.setValue(ducr)
+
+      val warehouse = new UCR()
+      warehouse.setTraderAssignedReferenceID(traderAssignedReferenceID)
+      return warehouse
+    }
+    return null
   }
 
 }
