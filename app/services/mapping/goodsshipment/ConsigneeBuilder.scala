@@ -30,14 +30,20 @@ object ConsigneeBuilder {
       .orNull
 
   private def createConsignee(details: EntityDetails): GoodsShipment.Consignee = {
+    val consignee = new GoodsShipment.Consignee()
+
     val id = new ConsigneeIdentificationIDType()
     id.setValue(details.eori.orNull)
-
-    val name = new ConsigneeNameTextType()
+    consignee.setID(id)
 
     val consigneeAddress = new GoodsShipment.Consignee.Address()
     details.address.map(address => {
-      name.setValue(address.fullName)
+
+      if (!Option(address.fullName).getOrElse("").isEmpty) {
+        val name = new ConsigneeNameTextType()
+        name.setValue(address.fullName)
+        consignee.setName(name)
+      }
 
       val line = new AddressLineTextType()
       line.setValue(address.addressLine)
@@ -59,9 +65,6 @@ object ConsigneeBuilder {
       consigneeAddress.setPostcodeID(postcode)
     })
 
-    val consignee = new GoodsShipment.Consignee()
-    consignee.setID(id)
-    consignee.setName(name)
     consignee.setAddress(consigneeAddress)
     consignee
   }

@@ -32,14 +32,21 @@ object AgentBuilder {
       .orNull
 
   private def createAgent(details: EntityDetails): Declaration.Agent = {
+    val agent = new Declaration.Agent()
+
     val agentId = new AgentIdentificationIDType()
-    val agentName = new AgentNameTextType()
+    agentId.setValue(details.eori.orNull)
+    agent.setID(agentId)
+
     val agentAddress = new Agent.Address()
 
-    agentId.setValue(details.eori.orNull)
-
     details.address.map(address => {
-      agentName.setValue(address.fullName)
+
+      if (!Option(address.fullName).getOrElse("").isEmpty) {
+        val agentName = new AgentNameTextType()
+        agentName.setValue(address.fullName)
+        agent.setName(agentName)
+      }
 
       val line = new AddressLineTextType()
       line.setValue(address.addressLine)
@@ -61,9 +68,6 @@ object AgentBuilder {
       agentAddress.setPostcodeID(postcode)
     })
 
-    val agent = new Declaration.Agent()
-    agent.setID(agentId)
-    agent.setName(agentName)
     agent.setAddress(agentAddress)
     agent
   }

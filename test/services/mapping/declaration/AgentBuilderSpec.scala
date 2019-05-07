@@ -22,19 +22,36 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 class AgentBuilderSpec extends WordSpec with Matchers {
 
   "AgentBuilder" should {
-    "correctly map to the WCO-DEC Agent instance" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(RepresentativeDetails.formId -> RepresentativeDetailsSpec.correctRepresentativeDetailsJSON)
-        )
-      val agent = AgentBuilder.build(cacheMap)
-      agent.getID.getValue should be("9GB1234567ABCDEF")
-      agent.getName.getValue should be("Full Name")
-      agent.getAddress.getLine.getValue should be("Address Line")
-      agent.getAddress.getCityName.getValue should be("Town or City")
-      agent.getAddress.getCountryCode.getValue should be("PL")
-      agent.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+    "correctly map to the WCO-DEC Agent instance" when {
+      "all data is supplied" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap(
+            "CacheID",
+            Map(RepresentativeDetails.formId -> RepresentativeDetailsSpec.correctRepresentativeDetailsJSON)
+          )
+        val agent = AgentBuilder.build(cacheMap)
+        agent.getID.getValue should be("9GB1234567ABCDEF")
+        agent.getName.getValue should be("Full Name")
+        agent.getAddress.getLine.getValue should be("Address Line")
+        agent.getAddress.getCityName.getValue should be("Town or City")
+        agent.getAddress.getCountryCode.getValue should be("PL")
+        agent.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+      }
+
+      "fullname is not supplied" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap(
+            "CacheID",
+            Map(RepresentativeDetails.formId -> RepresentativeDetailsSpec.representativeDetailsWithEmptyFullNameJSON)
+          )
+        val agent = AgentBuilder.build(cacheMap)
+        agent.getID.getValue should be("9GB1234567ABCDEF")
+        agent.getName should be(null)
+        agent.getAddress.getLine.getValue should be("Address Line")
+        agent.getAddress.getCityName.getValue should be("Town or City")
+        agent.getAddress.getCountryCode.getValue should be("PL")
+        agent.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+      }
     }
   }
 }

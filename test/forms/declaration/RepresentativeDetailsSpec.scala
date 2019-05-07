@@ -92,6 +92,13 @@ object RepresentativeDetailsSpec {
   val correctRepresentativeDetailsJSON: JsValue = JsObject(
     Map("details" -> correctEntityDetailsJSON, "statusCode" -> JsString(DirectRepresentative))
   )
+
+  val representativeDetailsWithEmptyFullNameJSON: JsValue = JsObject(
+    Map(
+      "details" -> EntityDetailsSpec.entityDetailsWithEmptyFullNameJSON,
+      "statusCode" -> JsString(DirectRepresentative)
+    )
+  )
   val correctRepresentativeDetailsEORIOnlyJSON: JsValue = JsObject(
     Map("details" -> correctEntityDetailsEORIOnlyJSON, "statusCode" -> JsString(DirectRepresentative))
   )
