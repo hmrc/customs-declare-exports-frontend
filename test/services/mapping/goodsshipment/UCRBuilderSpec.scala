@@ -23,12 +23,28 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 class UCRBuilderSpec extends WordSpec with Matchers {
 
   "UCRBuilder" should {
-    "correctly map to the WCO-DEC GoodsShipment.UCR instance" in {
-      implicit val cacheMap =
-        CacheMap("CacheID", Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.correctConsignmentReferencesJSON))
-      val ucrObject = UCRBuilder.build(cacheMap)
-      ucrObject.getID should be(null)
-      ucrObject.getTraderAssignedReferenceID.getValue should be("8GB123456789012-1234567890QWERTYUIO")
+    "correctly map to the WCO-DEC GoodsShipment.UCR instance" when {
+      "ducr supplied" in {
+
+        implicit val cacheMap =
+          CacheMap(
+            "CacheID",
+            Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.correctConsignmentReferencesJSON)
+          )
+        val ucrObject = UCRBuilder.build(cacheMap)
+        ucrObject.getID should be(null)
+        ucrObject.getTraderAssignedReferenceID.getValue should be("8GB123456789012-1234567890QWERTYUIO")
+      }
+
+      "ducr not supplied" in {
+        implicit val cacheMap =
+          CacheMap(
+            "CacheID",
+            Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.emptyConsignmentReferencesJSON)
+          )
+        val ucrObject = UCRBuilder.build(cacheMap)
+        ucrObject should be(null)
+      }
     }
   }
 }
