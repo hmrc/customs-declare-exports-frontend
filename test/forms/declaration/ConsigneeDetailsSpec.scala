@@ -78,4 +78,6 @@ object ConsigneeDetailsSpec {
   val correctConsigneeDetailsAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))
   val incorrectConsigneeDetailsJSON: JsValue = JsObject(Map("details" -> incorrectEntityDetailsJSON))
   val emptyConsigneeDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
+
+  val entityDetailsWithEmptyFullNameJSON: JsValue = JsObject(Map("details" -> EntityDetailsSpec.entityDetailsWithEmptyFullNameJSON))
 }

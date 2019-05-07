@@ -17,6 +17,7 @@
 package forms.common
 
 import base.TestHelper._
+import forms.common.AddressSpec.addressWithEmptyFullname
 import org.scalatest.{MustMatchers, WordSpec}
 
 class AddressSpec extends WordSpec with MustMatchers {
@@ -219,11 +220,20 @@ object AddressSpec {
     country = "abc"
   )
 
+  val addressWithEmptyFullname = Address(
+    fullName = "",
+    addressLine = "Address Line",
+    townOrCity = "Town or City",
+    postCode = "AB12 34CD",
+    country = "Poland"
+  )
+
   val emptyAddress = Address("", "", "", "", "")
 
   val correctAddressJSON: JsValue = Json.toJson(correctAddress)
   val incorrectAddressJSON: JsValue = Json.toJson(incorrectAddress)
   val emptyAddressJSON: JsValue = Json.toJson(emptyAddress)
+  val addressWithEmptyFullnameJSON: JsValue = Json.toJson(addressWithEmptyFullname)
 
   def buildAddressInputMap(address: Address): Map[String, String] = buildAddressInputMap(
     fullName = address.fullName,

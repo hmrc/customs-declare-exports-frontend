@@ -30,16 +30,21 @@ object ExporterBuilder {
       .orNull
 
   private def createExporter(details: EntityDetails): Exporter = {
-    val name = new ExporterNameTextType()
+    val exporter = new Exporter()
 
     val exporterId = new ExporterIdentificationIDType()
-    val exporterName = new ExporterNameTextType()
+    exporterId.setValue(details.eori.orNull)
+    exporter.setID(exporterId)
+
     val exporterAddress = new Exporter.Address()
 
-    exporterId.setValue(details.eori.orNull)
-
     details.address.map(address => {
-      exporterName.setValue(address.fullName)
+
+      if (!Option(address.fullName).getOrElse("").isEmpty) {
+        val exporterName = new ExporterNameTextType()
+        exporterName.setValue(address.fullName)
+        exporter.setName(exporterName)
+      }
 
       val line = new AddressLineTextType()
       line.setValue(address.addressLine)
@@ -61,9 +66,6 @@ object ExporterBuilder {
       exporterAddress.setPostcodeID(postcode)
     })
 
-    val exporter = new Exporter()
-    exporter.setID(exporterId)
-    exporter.setName(exporterName)
     exporter.setAddress(exporterAddress)
     exporter
   }
