@@ -93,10 +93,10 @@ class GovernmentAgencyGoodsItemBuilderSpec
     }
 
     "map correctly if ItemType is None " in new SetUp() {
-
       when(cacheMap.getEntry[ItemType](eqTo(ItemType.id))(any[Reads[ItemType]])).thenReturn(None)
       val mappedGoodsItemList: List[WCOGovernmentAgencyGoodsItem] = GovernmentAgencyGoodsItemBuilder.build
       mappedGoodsItemList.isEmpty shouldBe false
+      mappedGoodsItemList.head.getStatisticalValueAmount shouldBe null
     }
   }
 
