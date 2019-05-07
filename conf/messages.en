@@ -331,7 +331,7 @@ supplementary.goodsLocation.city.error = City is incorrect
 
 supplementary.procedureCodes.title = Procedure Codes
 supplementary.procedureCodes.procedureCode.header = 1/10 Enter the procedure code
-supplementary.procedureCodes.procedureCode.item.header = 1/10 Procedure code
+supplementary.procedureCodes.procedureCode.item.header = Procedure code
 supplementary.procedureCodes.procedureCode.header.hint = A 4 digit code, made up of the requested procedure and the previous procedure
 supplementary.procedureCodes.procedureCode.error.empty = Procedure code cannot be empty
 supplementary.procedureCodes.procedureCode.error.length = Procedure code must be exactly 4 characters long
@@ -700,10 +700,13 @@ supplementary.continue.mandatory = You must add at least one item
 supplementary.startNewDec = Start a new declaration
 
 supplementary.itemsAdd.title = Declare all items involved in this export
+supplementary.itemsAdd.titleWithItem = You have added 1 item
+supplementary.itemsAdd.titleWithItems = You have added {0} items
 supplementary.itemsAdd.title.hint = An item is an individual goods type that is identified by a commodity code, for example a computer or an aluminium pipe
-supplementary.itemssummary.table.heading = 1 Export item added
-supplementary.itemssummary.table.multiple.heading = {0} Export items added
-supplementary.itemssummary.itemNumber = Item number
+supplementary.itemsSummary.itemNumber = Item number
+supplementary.itemsSummary.procedureCode = Procedure code
+supplementary.itemsSummary.commodityCode = Commodity code
+supplementary.itemsSummary.noOfPackages = Number of packages
 supplementary.addgoodsitems.addallpages.error = Date of validity cannot be empty
 
 standard.seal.title=Transport details - seals
