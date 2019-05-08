@@ -42,6 +42,8 @@ class SubmissionService @Inject()(
   exportsMetrics: ExportsMetrics
 ) {
 
+  private val logger = Logger(this.getClass())
+
   def submit(
     cacheMap: CacheMap
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
@@ -58,7 +60,7 @@ class SubmissionService @Inject()(
           data.lrn
         }
       case error =>
-        Logger.error(s"Error response from backend ${error.body}")
+        logger.error(s"Error response from backend ${error.body}")
         auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Failure.toString))
         Future.successful(None)
     }

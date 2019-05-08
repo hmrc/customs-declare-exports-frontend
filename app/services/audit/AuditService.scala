@@ -32,6 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
+  private val logger = Logger(this.getClass())
+
   def audit(audit: Audit, auditData: Map[String, String])(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val event = createAuditEvent(audit: Audit, auditData: Map[String, String])
     connector.sendEvent(event).map(handleResponse(_, audit.toString))
@@ -58,13 +60,13 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
 
   private def handleResponse(result: AuditResult, auditType: String) = result match {
     case Success =>
-      Logger.debug(s"Exports ${auditType} audit successful")
+      logger.debug(s"Exports ${auditType} audit successful")
       Success
     case Failure(err, _) =>
-      Logger.warn(s"Exports ${auditType} Audit Error, message: $err")
+      logger.warn(s"Exports ${auditType} Audit Error, message: $err")
       Failure(err)
     case Disabled =>
-      Logger.warn(s"Auditing Disabled")
+      logger.warn(s"Auditing Disabled")
       Disabled
   }
   private def getAuditTags(transactionName: String, path: String)(implicit hc: HeaderCarrier) =
