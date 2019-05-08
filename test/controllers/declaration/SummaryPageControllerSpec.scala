@@ -21,7 +21,6 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.ConsignmentReferencesSpec.correctConsignmentReferencesJSON
 import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
-import metrics.MetricIdentifiers
 import models.declaration.SupplementaryDeclarationDataSpec
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -29,7 +28,7 @@ import org.mockito.verification.VerificationMode
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.wco.dec.MetaData
 
 import scala.concurrent.Future
@@ -37,7 +36,6 @@ import scala.concurrent.Future
 class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
   private trait Test {
-    //implicit val headerCarrierMock = mock[HeaderCarrier]
     val summaryPageUri = uriWithContextPath("/declaration/summary")
     val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
     val emptyMetadata: MetaData = MetaData(response = Seq.empty)
