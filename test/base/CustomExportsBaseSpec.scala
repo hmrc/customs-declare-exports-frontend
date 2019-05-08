@@ -25,6 +25,7 @@ import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
+import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -48,8 +49,10 @@ import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services._
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.logging.Authorization
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -62,6 +65,12 @@ trait CustomExportsBaseSpec
   val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
   val mockNrsService: NRSService = mock[NRSService]
   val mockItemsCachingService: ItemsCachingService = mock[ItemsCachingService]
+
+  implicit val hc: HeaderCarrier =
+    HeaderCarrier(
+      authorization = Some(Authorization(TestHelper.createRandomString(255))),
+      nsStamp = DateTime.now().getMillis
+    )
 
   SharedMetricRegistries.clear()
 

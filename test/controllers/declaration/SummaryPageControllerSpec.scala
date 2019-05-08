@@ -21,7 +21,6 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.ConsignmentReferencesSpec.correctConsignmentReferencesJSON
 import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
-import metrics.MetricIdentifiers
 import models.declaration.SupplementaryDeclarationDataSpec
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -29,7 +28,7 @@ import org.mockito.verification.VerificationMode
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.wco.dec.MetaData
 
 import scala.concurrent.Future
@@ -37,7 +36,6 @@ import scala.concurrent.Future
 class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
   private trait Test {
-    implicit val headerCarrierMock = mock[HeaderCarrier]
     val summaryPageUri = uriWithContextPath("/declaration/summary")
     val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
     val emptyMetadata: MetaData = MetaData(response = Seq.empty)
@@ -226,20 +224,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         f.get("LRN") must be(defined)
         f("LRN") must equal("123ABC")
       }
-
-      "record submission timing and increase the Success Counter when response is OK" in new Test {
-        val timer = metrics.timers(MetricIdentifiers.submissionMetric).getCount
-        val counter = metrics.counters(MetricIdentifiers.submissionMetric).getCount
-
-        val result = route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-        val header = result.header
-
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/confirmation"))
-
-        metrics.timers(MetricIdentifiers.submissionMetric).getCount mustBe timer + 1
-        metrics.counters(MetricIdentifiers.submissionMetric).getCount mustBe counter + 1
-      }
-
     }
 
     "got error from Customs Declarations" should {

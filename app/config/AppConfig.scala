@@ -23,7 +23,6 @@ import features.Feature.Feature
 import features.FeatureStatus.FeatureStatus
 import features.{Feature, FeatureStatus}
 import forms.Choice
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import play.api.Mode.Mode
 import play.api.i18n.Lang
 import play.api.mvc.Call
