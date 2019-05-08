@@ -17,14 +17,16 @@
 package services.audit
 
 import base.CustomExportsBaseSpec
+import models.declaration.SupplementaryDeclarationDataSpec.cacheMapAllRecords
 import org.mockito.ArgumentMatchers
 import org.scalatest.OptionValues
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import org.mockito.Mockito.{verify, when}
 import services.audit.EventData.{DUCR, EORI, LRN, SubmissionResult}
 import uk.gov.hmrc.play.audit.AuditExtensions
-import uk.gov.hmrc.play.audit.model.DataEvent
+import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 import org.mockito.ArgumentMatchers.any
+import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 
@@ -34,6 +36,7 @@ class AuditServiceSpec extends AuditTestSupport with OptionValues {
 
   before {
     mockSendEvent()
+    mockSendCompletePayload()
   }
   "AuditService" should {
 
@@ -42,6 +45,19 @@ class AuditServiceSpec extends AuditTestSupport with OptionValues {
       verify(mockAuditConnector).sendEvent(ArgumentMatchers.refEq(event, "eventId", "generatedAt"))(any(), any())
     }
 
+    "audit full payload" in {
+      auditService.auditAllPagesUserInput(cacheMapAllRecords)
+      verify(mockAuditConnector).sendExtendedEvent(ArgumentMatchers.refEq(extendedEvent, "eventId", "generatedAt"))(
+        any(),
+        any()
+      )
+
+    }
+    "audit full payload success" in {
+      val res = auditService.auditAllPagesUserInput(cacheMapAllRecords).futureValue
+      res mustBe AuditResult.Success
+
+    }
     "audit with a success" in {
       val res = auditService.audit(AuditTypes.Submission, auditData).futureValue
       res mustBe AuditResult.Success
@@ -84,6 +100,21 @@ trait AuditTestSupport extends CustomExportsBaseSpec {
     detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails() ++ auditData
   )
 
+  val extendedEvent = ExtendedDataEvent(
+    auditSource = appConfig.appName,
+    auditType = AuditTypes.SubmissionPayload.toString,
+    tags = AuditExtensions
+      .auditHeaderCarrier(hc)
+      .toAuditTags(
+        transactionName = s"Export-Declaration-${AuditTypes.SubmissionPayload.toString}-payload-request",
+        path = s"customs-declare-exports/${AuditTypes.SubmissionPayload.toString}/full-payload"
+      ),
+    detail = Json
+      .toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails())
+      .as[JsObject]
+      .deepMerge(Json.toJson(cacheMapAllRecords).as[JsObject])
+  )
+
   val auditFailure = Failure("Event sending failed")
 
   val auditService = new AuditService(mockAuditConnector, appConfig)
@@ -91,6 +122,14 @@ trait AuditTestSupport extends CustomExportsBaseSpec {
   def mockSendEvent(evenToAudit: DataEvent = event, result: AuditResult = Success) =
     when(
       mockAuditConnector.sendEvent(ArgumentMatchers.refEq(evenToAudit, "eventId", "generatedAt"))(
+        ArgumentMatchers.any[HeaderCarrier],
+        ArgumentMatchers.any[ExecutionContext]
+      )
+    ) thenReturn Future.successful(result)
+
+  def mockSendCompletePayload(result: AuditResult = Success) =
+    when(
+      mockAuditConnector.sendExtendedEvent(ArgumentMatchers.refEq(extendedEvent, "eventId", "generatedAt"))(
         ArgumentMatchers.any[HeaderCarrier],
         ArgumentMatchers.any[ExecutionContext]
       )

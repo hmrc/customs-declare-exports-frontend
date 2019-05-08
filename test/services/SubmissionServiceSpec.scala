@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{route, OK}
+import play.api.test.Helpers.OK
 import services.audit.AuditService
 import uk.gov.hmrc.http.HttpResponse
 
@@ -77,6 +77,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
       result.value mustBe "123ABC"
       verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
       verify(mockAuditService, times(1)).audit(any(), any())(any())
+      verify(mockAuditService, times(1)).auditAllPagesUserInput(any())(any())
     }
 
     "record submission timing and increase the Success Counter when response is OK" in {
