@@ -51,7 +51,7 @@ class SubmissionService @Inject()(
     val timerContext = exportsMetrics.startTimer(submissionMetric)
     val data = format(cacheMap)
     auditService.auditAllPagesUserInput(cacheMap)
-    exportsConnector.submitExportDeclaration(data.lrn, data.ducr, data.payload).flatMap {
+    exportsConnector.submitExportDeclaration(data.ducr, data.lrn, data.payload).flatMap {
       case HttpResponse(ACCEPTED, _, _, _) =>
         cacheService.remove(cacheId).map { _ =>
           auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Success.toString))

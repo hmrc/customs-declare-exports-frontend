@@ -57,7 +57,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
       declaration.getExporter.getAddress.getCountryCode.getValue should be("PL")
       declaration.getExporter.getAddress.getPostcodeID.getValue should be("AB12 34CD")
 
-      declaration.getFunctionalReferenceID.getValue should be("123ABC")
+      declaration.getFunctionalReferenceID.getValue should be("123LRN")
 
       declaration.getFunctionCode.getValue should be("9")
 

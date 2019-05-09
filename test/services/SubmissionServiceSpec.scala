@@ -55,13 +55,13 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
 
     "submit cached data to backend" in {
       val result = submissionService.submit(cacheMapAllRecords).futureValue
-      result.value mustBe "123ABC"
+      result.value mustBe "123LRN"
       verify(mockCustomsCacheService, times(1)).remove(any())(any(), any())
 
     }
     "handle success response" in {
       val result = submissionService.submit(cacheMapAllRecords).futureValue
-      result.value mustBe "123ABC"
+      result.value mustBe "123LRN"
       verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
     }
 
@@ -74,7 +74,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
 
     "audit a submission" in {
       val result = submissionService.submit(cacheMapAllRecords).futureValue
-      result.value mustBe "123ABC"
+      result.value mustBe "123LRN"
       verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
       verify(mockAuditService, times(1)).audit(any(), any())(any())
       verify(mockAuditService, times(1)).auditAllPagesUserInput(any())(any())
@@ -85,7 +85,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
       val counter = metrics.counters(MetricIdentifiers.submissionMetric).getCount
 
       val result = submissionService.submit(cacheMapAllRecords).futureValue
-      result.value mustBe "123ABC"
+      result.value mustBe "123LRN"
 
       metrics.timers(MetricIdentifiers.submissionMetric).getCount mustBe timer + 1
       metrics.counters(MetricIdentifiers.submissionMetric).getCount mustBe counter + 1

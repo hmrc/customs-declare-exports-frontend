@@ -59,7 +59,7 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
       result.declaration must be(defined)
 
       result.declaration.flatMap(_.typeCode) mustBe Some("EXY")
-      result.declaration.flatMap(_.functionalReferenceId) mustBe Some("123ABC")
+      result.declaration.flatMap(_.functionalReferenceId) mustBe Some("123LRN")
       result.declaration.flatMap(_.goodsShipment).flatMap(_.ucr).flatMap(_.traderAssignedReferenceId) mustBe
         Some("8GB123456789012-1234567890QWERTYUIO")
 
@@ -87,7 +87,7 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
       assertBorderTransportMeans(result.declaration.flatMap(_.borderTransportMeans))
 
       mapper.declarationUcr(result) mustBe Some("8GB123456789012-1234567890QWERTYUIO")
-      mapper.declarationLrn(result) mustBe Some("123ABC")
+      mapper.declarationLrn(result) mustBe Some("123LRN")
     }
   }
 

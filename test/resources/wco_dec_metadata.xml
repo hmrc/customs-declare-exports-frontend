@@ -7,7 +7,7 @@
     <AgencyAssignedCustomizationCode>v2.1</AgencyAssignedCustomizationCode>
     <ns3:Declaration>
         <ns3:FunctionCode>9</ns3:FunctionCode>
-        <ns3:FunctionalReferenceID>123ABC</ns3:FunctionalReferenceID>
+        <ns3:FunctionalReferenceID>123LRN</ns3:FunctionalReferenceID>
         <ns3:TypeCode>EXY</ns3:TypeCode>
         <ns3:GoodsItemQuantity>123</ns3:GoodsItemQuantity>
         <ns3:InvoiceAmount currencyID="GBP">1212312.12</ns3:InvoiceAmount>
