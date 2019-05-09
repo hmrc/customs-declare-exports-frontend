@@ -805,9 +805,8 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
 
       "name is incorrect" in {
 
-        isValidName("Robert'); DROP TABLE Students;--") must be(false)
-        isValidName("Þór Eldon") must be(false)
-        isValidName("James D@t") must be(false)
+        isValidName("Weasfd'); DROP TABLE Students;--") must be(false)
+        isValidName("Kasdas D@t") must be(false)
       }
     }
 
@@ -815,17 +814,14 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
 
       "name is correct" in {
 
-        isValidName("Mathias d'Arras") must be(true)
-        isValidName("Martin Luther King, Jr.") must be(true)
-        isValidName("Hector Sausage-Hausen") must be(true)
-        isValidName("John Doe") must be(true)
-        isValidName("John Paul Jones") must be(true)
-        isValidName("Julia Louis-Dreyfus") must be(true)
-        isValidName("Jean-Paul Sartre") must be(true)
-        isValidName("Richard O'Brien") must be(true)
-        isValidName("Bouty McBoutface") must be(true)
-        isValidName("Eithne Ní Bhraonáin") must be(true)
-        isValidName("Madonna") must be(true)
+        isValidName("Masdjxz d'Arras") must be(true)
+        isValidName("FAsdas Lasjs ur, Jr.") must be(true)
+        isValidName("Hasewr Sausage-Vsgh") must be(true)
+        isValidName("Okjh Wert") must be(true)
+        isValidName("Gds VXz Werty") must be(true)
+        isValidName("Vgasjs O'asc") must be(true)
+        isValidName("Þósauy Wergas") must be(true)
+        isValidName("Awerfds Ní Bashjadnáin") must be(true)
       }
     }
   }

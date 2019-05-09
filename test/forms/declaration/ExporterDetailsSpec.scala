@@ -71,5 +71,7 @@ object ExporterDetailsSpec {
   val incorrectExporterDetailsJSON: JsValue = JsObject(Map("details" -> incorrectEntityDetailsJSON))
   val emptyExporterDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 
-  val exporterDetailsWithEmptyFullNameJSON: JsValue = JsObject(Map("details" -> EntityDetailsSpec.entityDetailsWithEmptyFullNameJSON))
+  val exporterDetailsWithEmptyFullNameJSON: JsValue = JsObject(
+    Map("details" -> EntityDetailsSpec.entityDetailsWithEmptyFullNameJSON)
+  )
 }

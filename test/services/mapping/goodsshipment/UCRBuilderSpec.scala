@@ -38,10 +38,7 @@ class UCRBuilderSpec extends WordSpec with Matchers {
 
       "ducr not supplied" in {
         implicit val cacheMap =
-          CacheMap(
-            "CacheID",
-            Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.emptyConsignmentReferencesJSON)
-          )
+          CacheMap("CacheID", Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.emptyConsignmentReferencesJSON))
         val ucrObject = UCRBuilder.build(cacheMap)
         ucrObject should be(null)
       }

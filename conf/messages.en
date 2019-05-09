@@ -52,7 +52,8 @@ site.submit = Submit
 site.backToChoice = Back to choice page
 site.add = Add
 site.remove = Remove
-site.add.item= Add item
+site.add.item = Add item
+site.add.anotherItem = Add another item
 
 general.inquiries.help.link = General enquires help
 

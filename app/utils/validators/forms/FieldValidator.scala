@@ -105,7 +105,7 @@ object FieldValidator {
 
   val ofPattern: String => String => Boolean = (pattern: String) => (input: String) => input.matches(pattern)
 
-  private val namePattern = "[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+"
+  private val namePattern = "[\\p{IsLatin} ,.'-]+"
 
   val isValidName: String => Boolean = (name: String) => name.matches(namePattern)
 }
