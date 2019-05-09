@@ -297,11 +297,11 @@ supplementary.declarationHolders.duplicated = You cannot add the same holder
 
 declaration.destinationCountries.title = Countries of dispatch and destination
 declaration.destinationCountries.countryOfDestination = 5/8 What is the destination country?
-declaration.destinationCountries.countryOfDestination.hint = The 2 digit code of where the goods are being exported to.
+declaration.destinationCountries.countryOfDestination.hint = The country where the goods are being exported to.
 declaration.destinationCountries.countryOfDestination.error = Country of destination is incorrect
 declaration.destinationCountries.countryOfDestination.empty = Country of destination cannot be empty
 declaration.destinationCountries.countryOfDispatch = 5/14 Enter the country of dispatch code
-declaration.destinationCountries.countryOfDispatch.hint = The 2 digit code of the country the goods were first moved from.
+declaration.destinationCountries.countryOfDispatch.hint = The country the goods were first moved from.
 declaration.destinationCountries.countryOfDispatch.empty = Country of dispatch cannot be empty
 declaration.destinationCountries.countryOfDispatch.error = Country of dispatch is incorrect
 declaration.destinationCountries.countriesOfRouting = 5/18 Enter the country of routing codes

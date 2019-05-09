@@ -35,7 +35,7 @@ object ExportCountryBuilder {
     val id = new ExportCountryCountryCodeType()
     id.setValue(
       allCountries
-        .find(country => data.countryOfDispatch.contains(country.countryName))
+        .find(country => data.countryOfDispatch.contains(country.countryCode))
         .map(_.countryCode)
         .getOrElse("")
     )
