@@ -25,8 +25,13 @@ object GoodsShipmentTransactionTypeBuilder {
   def build(implicit cacheMap: CacheMap): GoodsShipmentTransactionNatureCodeType =
     cacheMap
       .getEntry[TransactionType](TransactionType.formId)
+      .filter(transactionType => isDefined(transactionType))
       .map(createTransactionNatureCode)
       .orNull
+
+  private def isDefined(transactionType: TransactionType): Boolean =
+    transactionType.documentTypeCode.nonEmpty &&
+      transactionType.identifier.getOrElse("").nonEmpty
 
   private def createTransactionNatureCode(data: TransactionType): GoodsShipmentTransactionNatureCodeType = {
 

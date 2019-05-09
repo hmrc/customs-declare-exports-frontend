@@ -105,8 +105,6 @@ object DocumentSpec {
     )
   )
 
-  val correctPreviousDocumentsJSONList = JsObject(Map("documents" -> JsArray(Seq(correctPreviousDocumentsJSON))))
-
   val emptyPreviousDocumentsJSON: JsValue = JsObject(
     Map(
       "documentCategory" -> JsString(""),
@@ -131,5 +129,8 @@ object DocumentSpec {
       "goodsItemIdentifier" -> JsString("Incorrect identifier")
     )
   )
+
+  val correctPreviousDocumentsJSONList = JsObject(Map("documents" -> JsArray(Seq(correctPreviousDocumentsJSON))))
+  val emptyPreviousDocumentsJSONList = JsObject(Map("documents" -> JsArray(Seq(emptyPreviousDocumentsJSON))))
 
 }

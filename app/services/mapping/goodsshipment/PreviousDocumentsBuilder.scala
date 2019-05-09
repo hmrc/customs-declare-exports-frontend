@@ -33,28 +33,47 @@ object PreviousDocumentsBuilder {
   def build(implicit cacheMap: CacheMap): util.List[GoodsShipment.PreviousDocument] =
     cacheMap
       .getEntry[PreviousDocumentsData](Document.formId)
+      .filter(isDefined)
       .map(_.documents.map(createPreviousDocuments))
       .getOrElse(Seq.empty)
       .toList
       .asJava
 
+  private def isDefined(previousDocumentsData: PreviousDocumentsData): Boolean =
+    previousDocumentsData.documents.nonEmpty && previousDocumentsData.documents.forall(
+      doc =>
+        doc.goodsItemIdentifier.getOrElse("").nonEmpty ||
+          doc.documentReference.nonEmpty ||
+          doc.documentReference.nonEmpty ||
+          doc.documentCategory.nonEmpty
+    )
+
   private def createPreviousDocuments(document: Document): GoodsShipment.PreviousDocument = {
-    val categoryCode = new PreviousDocumentCategoryCodeType()
-    categoryCode.setValue(document.documentCategory)
-
-    val id = new PreviousDocumentIdentificationIDType()
-    id.setValue(document.documentReference)
-
-    val lineNumeric = new java.math.BigDecimal(document.goodsItemIdentifier.orNull)
-
-    val typeCode = new PreviousDocumentTypeCodeType()
-    typeCode.setValue(document.documentType)
-
     val previousDocument = new GoodsShipment.PreviousDocument()
-    previousDocument.setCategoryCode(categoryCode)
-    previousDocument.setID(id)
-    previousDocument.setLineNumeric(lineNumeric)
-    previousDocument.setTypeCode(typeCode)
+
+    if (document.documentCategory.nonEmpty) {
+      val categoryCode = new PreviousDocumentCategoryCodeType()
+      categoryCode.setValue(document.documentCategory)
+      previousDocument.setCategoryCode(categoryCode)
+    }
+
+    if (document.documentReference.nonEmpty) {
+      val id = new PreviousDocumentIdentificationIDType()
+      id.setValue(document.documentReference)
+      previousDocument.setID(id)
+    }
+
+    if (document.goodsItemIdentifier.getOrElse("").nonEmpty) {
+      val lineNumeric = new java.math.BigDecimal(document.goodsItemIdentifier.get)
+      previousDocument.setLineNumeric(lineNumeric)
+    }
+
+    if (document.documentType.nonEmpty) {
+      val typeCode = new PreviousDocumentTypeCodeType()
+      typeCode.setValue(document.documentType)
+      previousDocument.setTypeCode(typeCode)
+    }
+
     previousDocument
   }
 }

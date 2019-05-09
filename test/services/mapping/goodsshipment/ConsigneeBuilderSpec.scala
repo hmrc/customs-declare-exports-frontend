@@ -18,17 +18,27 @@ package services.mapping.goodsshipment
 
 import forms.declaration.{ConsigneeDetails, ConsigneeDetailsSpec}
 import org.scalatest.{Matchers, WordSpec}
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class ConsigneeBuilderSpec extends WordSpec with Matchers {
 
   "ConsigneeBuilder" should {
     "correctly map to the WCO-DEC GoodsShipment.Consignee instance" when {
-      "all data is supplied " in {
+      "only eori is supplied " in {
         implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(ConsigneeDetails.id -> ConsigneeDetailsSpec.correctConsigneeDetailsJSON))
+          CacheMap("CacheID", Map(ConsigneeDetails.id -> ConsigneeDetailsSpec.correctConsigneeDetailsEORIOnlyJSON))
         val consignee = ConsigneeBuilder.build(cacheMap)
         consignee.getID.getValue should be("9GB1234567ABCDEF")
+        consignee.getName should be(null)
+        consignee.getAddress should be(null)
+      }
+
+      "only address is supplied " in {
+        implicit val cacheMap: CacheMap =
+          CacheMap("CacheID", Map(ConsigneeDetails.id -> ConsigneeDetailsSpec.correctConsigneeDetailsAddressOnlyJSON))
+        val consignee = ConsigneeBuilder.build(cacheMap)
+        consignee.getID should be(null)
         consignee.getName.getValue should be("Full Name")
         consignee.getAddress.getLine.getValue should be("Address Line")
         consignee.getAddress.getCityName.getValue should be("Town or City")
@@ -36,17 +46,50 @@ class ConsigneeBuilderSpec extends WordSpec with Matchers {
         consignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
       }
 
-      "fullname is not supplied" in {
+      "empty data is supplied " in {
         implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(ConsigneeDetails.id -> ConsigneeDetailsSpec.entityDetailsWithEmptyFullNameJSON))
+          CacheMap("CacheID", Map(ConsigneeDetails.id -> ConsigneeDetailsSpec.emptyConsigneeDetailsJSON))
+        ConsigneeBuilder.build(cacheMap) should be(null)
+      }
+
+      "'address.fullname' is not supplied" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap("CacheID", Map(ConsigneeDetails.id -> setupCacheData(eori = "", fullName = "")))
         val consignee = ConsigneeBuilder.build(cacheMap)
-        consignee.getID.getValue should be("9GB1234567ABCDEF")
+        consignee.getID should be(null)
         consignee.getName should be(null)
         consignee.getAddress.getLine.getValue should be("Address Line")
         consignee.getAddress.getCityName.getValue should be("Town or City")
-        consignee.getAddress.getCountryCode.getValue should be("PL")
+        consignee.getAddress.getCountryCode.getValue should be("PT")
         consignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
       }
     }
+  }
+
+  private def setupCacheData(
+    eori: String = "9GB1234567ABCDEF",
+    fullName: String = "fullname",
+    addressLine: String = "Address Line",
+    townOrCity: String = "Town or City",
+    postCode: String = "AB12 34CD",
+    country: String = "Portugal"
+  ) = {
+    val objectJson: JsValue = JsObject(
+      Map(
+        "eori" -> JsString(eori),
+        "address" -> JsObject(
+          Map(
+            "fullName" -> JsString(fullName),
+            "addressLine" -> JsString(addressLine),
+            "townOrCity" -> JsString(townOrCity),
+            "postCode" -> JsString(postCode),
+            "country" -> JsString(country)
+          )
+        )
+      )
+    )
+
+    val objectsJSONList = JsObject(Map("details" -> objectJson))
+    objectsJSONList
   }
 }

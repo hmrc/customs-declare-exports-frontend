@@ -237,7 +237,7 @@ object EntityDetailsSpec {
     Map("eori" -> JsString("9GB1234567ABCDEF"), "address" -> AddressSpec.addressWithEmptyFullnameJSON)
   )
   val correctEntityDetailsEORIOnlyJSON: JsValue = JsObject(
-    Map("eori" -> JsString("9GB1234567ABCDEF"), "address" -> JsString(""))
+    Map("eori" -> JsString("9GB1234567ABCDEF"), "address" -> AddressSpec.emptyAddressJSON)
   )
   val correctEntityDetailsAddressOnlyJSON: JsValue = JsObject(
     Map("eori" -> JsString(""), "address" -> AddressSpec.correctAddressJSON)
@@ -248,7 +248,7 @@ object EntityDetailsSpec {
       "address" -> AddressSpec.incorrectAddressJSON
     )
   )
-  val emptyEntityDetailsJSON: JsValue = JsObject(Map("eori" -> JsString(""), "address" -> JsString("")))
+  val emptyEntityDetailsJSON: JsValue = JsObject(Map("eori" -> JsString(""), "address" -> AddressSpec.emptyAddressJSON))
 
   def buildEntityInputMap(entityDetails: EntityDetails): Map[String, String] = buildEntityInputMap(
     eori = entityDetails.eori.getOrElse(""),

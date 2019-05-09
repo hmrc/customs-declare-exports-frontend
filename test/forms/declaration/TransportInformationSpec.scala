@@ -36,4 +36,17 @@ object TransportInformationSpec {
         "container" -> JsBoolean(true)
       )
     )
+  val emptyTransportInformationJSON: JsValue =
+    JsObject(
+      Map(
+        "inlandModeOfTransportCode" -> JsString(""),
+        "borderModeOfTransportCode" -> JsString(""),
+        "meansOfTransportOnDepartureType" -> JsString(""),
+        "meansOfTransportOnDepartureIDNumber" -> JsString(""),
+        "meansOfTransportCrossingTheBorderType" -> JsString(""),
+        "meansOfTransportCrossingTheBorderIDNumber" -> JsString(""),
+        "meansOfTransportCrossingTheBorderNationality" -> JsString(""),
+        "container" -> JsBoolean(false)
+      )
+    )
 }

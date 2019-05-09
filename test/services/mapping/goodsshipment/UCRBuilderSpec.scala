@@ -17,10 +17,12 @@
 package services.mapping.goodsshipment
 
 import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
+import org.mockito.Mockito.when
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-class UCRBuilderSpec extends WordSpec with Matchers {
+class UCRBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
   "UCRBuilder" should {
     "correctly map to the WCO-DEC GoodsShipment.UCR instance" when {
@@ -39,9 +41,16 @@ class UCRBuilderSpec extends WordSpec with Matchers {
       "ducr not supplied" in {
         implicit val cacheMap =
           CacheMap("CacheID", Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.emptyConsignmentReferencesJSON))
-        val ucrObject = UCRBuilder.build(cacheMap)
-        ucrObject should be(null)
+        UCRBuilder.build(cacheMap) should be(null)
       }
+
+      "Nothing is supplied" in {
+        implicit val cacheMap: CacheMap = mock[CacheMap]
+        when(cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.id))
+          .thenReturn(None)
+        UCRBuilder.build(cacheMap) should be(null)
+      }
+
     }
   }
 }

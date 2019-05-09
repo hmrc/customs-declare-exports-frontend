@@ -25,20 +25,24 @@ object WarehouseBuilder {
   def build(implicit cacheMap: CacheMap): Warehouse =
     cacheMap
       .getEntry[WarehouseIdentification](WarehouseIdentification.formId)
+      .filter(isDefined)
       .map(createWarehouse)
       .orNull
 
+  private def isDefined(warehouse: WarehouseIdentification): Boolean =
+    warehouse.identificationNumber.getOrElse("").nonEmpty
+
   private def createWarehouse(data: WarehouseIdentification): Warehouse = {
+    val warehouse = new Warehouse()
 
     val id = new WarehouseIdentificationIDType()
     id.setValue(data.identificationNumber.map(_.drop(1).toString).getOrElse(""))
+    warehouse.setID(id)
 
     val typeCode = new WarehouseTypeCodeType()
     typeCode.setValue(data.identificationNumber.flatMap(_.headOption).fold("")(_.toString))
-
-    val warehouse = new Warehouse()
-    warehouse.setID(id)
     warehouse.setTypeCode(typeCode)
+
     warehouse
   }
 }

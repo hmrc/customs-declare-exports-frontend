@@ -60,14 +60,7 @@
                 <ns3:RoleCode>CS</ns3:RoleCode>
             </ns3:AEOMutualRecognitionParty>
             <ns3:Consignee>
-                <ns3:Name>Full Name</ns3:Name>
                 <ns3:ID>9GB1234567ABCDEF</ns3:ID>
-                <ns3:Address>
-                    <ns3:CityName>Town or City</ns3:CityName>
-                    <ns3:CountryCode>PL</ns3:CountryCode>
-                    <ns3:Line>Address Line</ns3:Line>
-                    <ns3:PostcodeID>AB12 34CD</ns3:PostcodeID>
-                </ns3:Address>
             </ns3:Consignee>
             <ns3:Consignment>
                 <ns3:ContainerCode>1</ns3:ContainerCode>
@@ -79,14 +72,7 @@
                     <ns3:IdentificationTypeCode>40</ns3:IdentificationTypeCode>
                 </ns3:DepartureTransportMeans>
                 <ns3:GoodsLocation>
-                    <ns3:Name>Full Name</ns3:Name>
                     <ns3:ID>9GB1234567ABCDEF</ns3:ID>
-                    <ns3:Address>
-                        <ns3:CityName>Town or City</ns3:CityName>
-                        <ns3:CountryCode>PL</ns3:CountryCode>
-                        <ns3:Line>Address Line</ns3:Line>
-                        <ns3:PostcodeID>AB12 34CD</ns3:PostcodeID>
-                    </ns3:Address>
                 </ns3:GoodsLocation>
             </ns3:Consignment>
             <ns3:Destination>

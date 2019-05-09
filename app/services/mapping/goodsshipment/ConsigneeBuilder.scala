@@ -26,46 +26,60 @@ object ConsigneeBuilder {
   def build(implicit cacheMap: CacheMap): GoodsShipment.Consignee =
     cacheMap
       .getEntry[ConsigneeDetails](ConsigneeDetails.id)
+      .filter(isDefined)
       .map(consigneeDetails => createConsignee(consigneeDetails.details))
       .orNull
+
+  private def isDefined(consigneeDetails: ConsigneeDetails): Boolean =
+    consigneeDetails.details.eori.getOrElse("").nonEmpty ||
+      (consigneeDetails.details.address.isDefined && consigneeDetails.details.address.get.isDefined())
 
   private def createConsignee(details: EntityDetails): GoodsShipment.Consignee = {
     val consignee = new GoodsShipment.Consignee()
 
-    val id = new ConsigneeIdentificationIDType()
-    id.setValue(details.eori.orNull)
-    consignee.setID(id)
+    if (details.eori.getOrElse("").nonEmpty) {
+      val id = new ConsigneeIdentificationIDType()
+      id.setValue(details.eori.orNull)
+      consignee.setID(id)
+    } else {
+      val consigneeAddress = new GoodsShipment.Consignee.Address()
+      details.address.foreach(address => {
 
-    val consigneeAddress = new GoodsShipment.Consignee.Address()
-    details.address.map(address => {
+        if (address.fullName.nonEmpty) {
+          val name = new ConsigneeNameTextType()
+          name.setValue(address.fullName)
+          consignee.setName(name)
+        }
 
-      if (!Option(address.fullName).getOrElse("").isEmpty) {
-        val name = new ConsigneeNameTextType()
-        name.setValue(address.fullName)
-        consignee.setName(name)
-      }
+        if (address.addressLine.nonEmpty) {
+          val line = new AddressLineTextType()
+          line.setValue(address.addressLine)
+          consigneeAddress.setLine(line)
+        }
 
-      val line = new AddressLineTextType()
-      line.setValue(address.addressLine)
+        if (address.townOrCity.nonEmpty) {
+          val city = new AddressCityNameTextType
+          city.setValue(address.townOrCity)
+          consigneeAddress.setCityName(city)
+        }
 
-      val city = new AddressCityNameTextType
-      city.setValue(address.townOrCity)
+        if (address.postCode.nonEmpty) {
+          val postcode = new AddressPostcodeIDType()
+          postcode.setValue(address.postCode)
+          consigneeAddress.setPostcodeID(postcode)
+        }
 
-      val postcode = new AddressPostcodeIDType()
-      postcode.setValue(address.postCode)
+        if (address.country.nonEmpty) {
+          val countryCode = new AddressCountryCodeType
+          countryCode.setValue(
+            allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
+          )
+          consigneeAddress.setCountryCode(countryCode)
+        }
+      })
+      consignee.setAddress(consigneeAddress)
+    }
 
-      val countryCode = new AddressCountryCodeType
-      countryCode.setValue(
-        allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
-      )
-
-      consigneeAddress.setLine(line)
-      consigneeAddress.setCityName(city)
-      consigneeAddress.setCountryCode(countryCode)
-      consigneeAddress.setPostcodeID(postcode)
-    })
-
-    consignee.setAddress(consigneeAddress)
     consignee
   }
 }

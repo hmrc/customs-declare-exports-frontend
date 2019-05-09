@@ -17,21 +17,42 @@
 package services.mapping.goodsshipment
 
 import forms.declaration.{WarehouseIdentification, WarehouseIdentificationSpec}
+import org.mockito.Mockito.when
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-class WarehouseBuilderSpec extends WordSpec with Matchers {
+class WarehouseBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
   "WarehouseBuilder" should {
-    "correctly map to the WCO-DEC Warehouse instance" in {
-      implicit val cacheMap =
-        CacheMap(
-          "CacheID",
-          Map(WarehouseIdentification.formId -> WarehouseIdentificationSpec.correctWarehouseIdentificationJSON)
-        )
-      val warehouse = WarehouseBuilder.build(cacheMap)
-      warehouse.getID.getValue should be("1234567GB")
-      warehouse.getTypeCode.getValue should be("R")
+    "correctly map to the WCO-DEC Warehouse instance" when {
+      "identificationNumber is supplied" in {
+        implicit val cacheMap =
+          CacheMap(
+            "CacheID",
+            Map(WarehouseIdentification.formId -> WarehouseIdentificationSpec.correctWarehouseIdentificationJSON)
+          )
+        val warehouse = WarehouseBuilder.build(cacheMap)
+        warehouse.getID.getValue should be("1234567GB")
+        warehouse.getTypeCode.getValue should be("R")
+      }
+
+      "identificationNumber is not supplied" in {
+        implicit val cacheMap =
+          CacheMap(
+            "CacheID",
+            Map(WarehouseIdentification.formId -> WarehouseIdentificationSpec.emptyWarehouseIdentificationJSON)
+          )
+        WarehouseBuilder.build(cacheMap) should be(null)
+      }
+
+      "Nothing is supplied" in {
+        implicit val cacheMap: CacheMap = mock[CacheMap]
+        when(cacheMap.getEntry[WarehouseIdentification](WarehouseIdentification.formId))
+          .thenReturn(None)
+        WarehouseBuilder.build(cacheMap) should be(null)
+      }
+
     }
   }
 }

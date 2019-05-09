@@ -31,21 +31,34 @@ object AEOMutualRecognitionPartiesBuilder {
   def build(implicit cacheMap: CacheMap): util.List[GoodsShipment.AEOMutualRecognitionParty] =
     cacheMap
       .getEntry[DeclarationAdditionalActorsData](DeclarationAdditionalActors.formId)
-      .map(_.actors.map(createAdditionalActors))
+      .filter(_.actors.nonEmpty)
+      .map(
+        _.actors
+          .filter(actor => isDefined(actor))
+          .map(createAdditionalActors)
+      )
       .getOrElse(Seq.empty)
       .toList
       .asJava
 
+  private def isDefined(actor: DeclarationAdditionalActors): Boolean =
+    actor.eori.getOrElse("").nonEmpty || actor.partyType.getOrElse("").nonEmpty
+
   private def createAdditionalActors(actor: DeclarationAdditionalActors): GoodsShipment.AEOMutualRecognitionParty = {
-    val id = new AEOMutualRecognitionPartyIdentificationIDType()
-    id.setValue(actor.eori.orNull)
-
-    val roleCode = new AEOMutualRecognitionPartyRoleCodeType()
-    roleCode.setValue(actor.partyType.orNull)
-
     val previousDocument = new GoodsShipment.AEOMutualRecognitionParty()
-    previousDocument.setID(id)
-    previousDocument.setRoleCode(roleCode)
+
+    if (actor.eori.getOrElse("").nonEmpty) {
+      val id = new AEOMutualRecognitionPartyIdentificationIDType()
+      id.setValue(actor.eori.get)
+      previousDocument.setID(id)
+    }
+
+    if (actor.partyType.getOrElse("").nonEmpty) {
+      val roleCode = new AEOMutualRecognitionPartyRoleCodeType()
+      roleCode.setValue(actor.partyType.orNull)
+      previousDocument.setRoleCode(roleCode)
+    }
+    
     previousDocument
   }
 }
