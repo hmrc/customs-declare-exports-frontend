@@ -28,7 +28,10 @@ case class Address(
   townOrCity: String, // alphanumeric length 1 - 35
   postCode: String, // alphanumeric length 1 - 9
   country: String // full country name, convert to 2 upper case alphabetic characters for backend
-)
+) {
+  def isDefined(): Boolean =
+    fullName.nonEmpty || addressLine.nonEmpty || townOrCity.nonEmpty || postCode.nonEmpty || country.nonEmpty
+}
 
 object Address {
   implicit val format = Json.format[Address]

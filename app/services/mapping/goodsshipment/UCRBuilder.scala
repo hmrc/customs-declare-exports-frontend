@@ -26,22 +26,19 @@ object UCRBuilder {
   def build(implicit cacheMap: CacheMap): UCR =
     cacheMap
       .getEntry[ConsignmentReferences](ConsignmentReferences.id)
+      .filter(isDefined)
       .map(createUCR)
       .orNull
 
+  private def isDefined(reference: ConsignmentReferences): Boolean = reference.ducr.getOrElse(Ducr("")).ducr.nonEmpty
+
   private def createUCR(data: ConsignmentReferences): UCR = {
 
-    val ducr = data.ducr.getOrElse(Ducr("")).ducr
-    if (!ducr.isEmpty) {
+    val traderAssignedReferenceID = new UCRTraderAssignedReferenceIDType()
+    traderAssignedReferenceID.setValue(data.ducr.getOrElse(Ducr("")).ducr)
 
-      val traderAssignedReferenceID = new UCRTraderAssignedReferenceIDType()
-      traderAssignedReferenceID.setValue(ducr)
-
-      val warehouse = new UCR()
-      warehouse.setTraderAssignedReferenceID(traderAssignedReferenceID)
-      return warehouse
-    }
-    return null
+    val warehouse = new UCR()
+    warehouse.setTraderAssignedReferenceID(traderAssignedReferenceID)
+    warehouse
   }
-
 }

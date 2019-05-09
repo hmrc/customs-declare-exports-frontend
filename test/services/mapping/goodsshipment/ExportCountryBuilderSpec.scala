@@ -24,16 +24,28 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 class ExportCountryBuilderSpec extends WordSpec with Matchers {
 
   "ExportCountryBuilder" should {
-    "correctly map to the WCO-DEC GoodsShipment.ExportCountries instance" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(
-            DestinationCountries.formId -> DestinationCountriesSupplementarySpec.correctDestinationCountriesSupplementaryJSON
+    "correctly map to the WCO-DEC GoodsShipment.ExportCountries instance" when {
+      "countryOfDispatch has been supplied" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap(
+            "CacheID",
+            Map(
+              DestinationCountries.formId -> DestinationCountriesSupplementarySpec.correctDestinationCountriesSupplementaryJSON
+            )
           )
-        )
-      val obj = ExportCountryBuilder.build(cacheMap)
-      obj.getID.getValue should be("PL")
+        val obj = ExportCountryBuilder.build(cacheMap)
+        obj.getID.getValue should be("PL")
+      }
+      "countryOfDispatch has not been supplied" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap(
+            "CacheID",
+            Map(
+              DestinationCountries.formId -> DestinationCountriesSupplementarySpec.emptyDestinationCountriesSupplementaryJSON
+            )
+          )
+        ExportCountryBuilder.build(cacheMap) should be(null)
+      }
     }
   }
 }

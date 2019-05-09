@@ -20,15 +20,18 @@ import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Destination
-import wco.datamodel.wco.declaration_ds.dms._2.{DestinationCountryCodeType, DestinationRegionIDType}
+import wco.datamodel.wco.declaration_ds.dms._2.DestinationCountryCodeType
 
 object DestinationBuilder {
 
   def build(implicit cacheMap: CacheMap): GoodsShipment.Destination =
     cacheMap
       .getEntry[DestinationCountriesSupplementary](DestinationCountries.formId)
+      .filter(isDefined)
       .map(createExportCountry)
       .orNull
+
+  private def isDefined(country: DestinationCountriesSupplementary): Boolean = country.countryOfDestination.nonEmpty
 
   private def createExportCountry(data: DestinationCountriesSupplementary): GoodsShipment.Destination = {
 

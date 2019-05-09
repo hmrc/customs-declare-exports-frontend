@@ -19,22 +19,33 @@ package services.mapping.goodsshipment
 import forms.declaration.DestinationCountriesSupplementarySpec
 import forms.declaration.destinationCountries.DestinationCountries
 import org.scalatest.{Matchers, WordSpec}
-
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class DestinationBuilderSpec extends WordSpec with Matchers {
 
   "DestinationBuilder" should {
-    "correctly map to the WCO-DEC GoodsShipment.Destination instance" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(
-            DestinationCountries.formId -> DestinationCountriesSupplementarySpec.correctDestinationCountriesSupplementaryJSON
+    "correctly map to the WCO-DEC GoodsShipment.Destination instance" when {
+      "countryOfDestination has been supplied" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap(
+            "CacheID",
+            Map(
+              DestinationCountries.formId -> DestinationCountriesSupplementarySpec.correctDestinationCountriesSupplementaryJSON
+            )
           )
-        )
-      val destination = DestinationBuilder.build(cacheMap)
-      destination.getCountryCode.getValue should be("PL")
+        val destination = DestinationBuilder.build(cacheMap)
+        destination.getCountryCode.getValue should be("PL")
+      }
+      "countryOfDestination has not been supplied" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap(
+            "CacheID",
+            Map(
+              DestinationCountries.formId -> DestinationCountriesSupplementarySpec.emptyDestinationCountriesSupplementaryJSON
+            )
+          )
+        DestinationBuilder.build(cacheMap) should be(null)
+      }
     }
   }
 }
