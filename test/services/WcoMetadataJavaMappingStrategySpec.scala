@@ -47,7 +47,7 @@ class WcoMetadataJavaMappingStrategySpec extends WordSpec with Matchers {
       val mapper = new WcoMetadataMapper with WcoMetadataJavaMappingStrategy
       val metaData = mapper.produceMetaData(SupplementaryDeclarationDataSpec.cacheMapAllRecords)
 
-      mapper.declarationLrn(metaData) should be(Some("123ABC"))
+      mapper.declarationLrn(metaData) should be(Some("123LRN"))
     }
 
     "marshall the metadata correctly" in {

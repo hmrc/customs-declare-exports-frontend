@@ -222,7 +222,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
         val f = flash(result)
         f.get("LRN") must be(defined)
-        f("LRN") must equal("123ABC")
+        f("LRN") must equal("123LRN")
       }
     }
 

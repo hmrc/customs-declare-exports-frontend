@@ -41,15 +41,15 @@ class ConsignmentReferencesSpec extends WordSpec with MustMatchers {
 object ConsignmentReferencesSpec {
   val exemplaryDucr = "8GB123456789012-1234567890QWERTYUIO"
 
-  val correctConsignmentReferences = ConsignmentReferences(ducr = Some(Ducr(ducr = exemplaryDucr)), lrn = "123ABC")
-  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = None, lrn = "123ABC")
+  val correctConsignmentReferences = ConsignmentReferences(ducr = Some(Ducr(ducr = exemplaryDucr)), lrn = "123LRN")
+  val correctConsignmentReferencesNoDucr = ConsignmentReferences(ducr = None, lrn = "123LRN")
   val emptyConsignmentReferences = ConsignmentReferences(ducr = None, lrn = "")
 
   val correctConsignmentReferencesJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("123ABC"))
+    Map("ducr" -> JsObject(Map("ducr" -> JsString(exemplaryDucr))), "lrn" -> JsString("123LRN"))
   )
   val correctConsignmentReferencesNoDucrJSON: JsValue = JsObject(
-    Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString("123ABC"))
+    Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString("123LRN"))
   )
   val emptyConsignmentReferencesJSON: JsValue = JsObject(
     Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString(""))

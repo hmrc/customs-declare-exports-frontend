@@ -26,7 +26,7 @@ class FunctionalReferenceIdBuilderSpec extends WordSpec with Matchers {
       implicit val cacheMap: CacheMap =
         CacheMap("CacheID", Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.correctConsignmentReferencesJSON))
       val referenceIDType = FunctionalReferenceIdBuilder.build(cacheMap)
-      referenceIDType.getValue should be("123ABC")
+      referenceIDType.getValue should be("123LRN")
     }
   }
 }
