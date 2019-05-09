@@ -28,10 +28,10 @@ case class DestinationCountriesSupplementary(countryOfDispatch: String, countryO
   override def toMetadataProperties(): Map[String, String] =
     Map(
       "declaration.goodsShipment.exportCountry.id" ->
-        allCountries.find(country => countryOfDispatch.contains(country.countryName)).map(_.countryCode).getOrElse(""),
+        allCountries.find(country => countryOfDispatch.contains(country.countryCode)).map(_.countryCode).getOrElse(""),
       "declaration.goodsShipment.destination.countryCode" ->
         allCountries
-          .find(country => countryOfDestination.contains(country.countryName))
+          .find(country => countryOfDestination.contains(country.countryCode))
           .map(_.countryCode)
           .getOrElse("")
     )
@@ -45,13 +45,13 @@ object DestinationCountriesSupplementary {
       .verifying("declaration.destinationCountries.countryOfDispatch.empty", _.trim.nonEmpty)
       .verifying(
         "declaration.destinationCountries.countryOfDispatch.error",
-        input => input.isEmpty || allCountries.exists(country => country.countryName == input)
+        input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
       ),
     "countryOfDestination" -> text()
       .verifying("declaration.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
       .verifying(
         "declaration.destinationCountries.countryOfDestination.error",
-        input => input.isEmpty || allCountries.exists(country => country.countryName == input)
+        input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
       )
   )(DestinationCountriesSupplementary.apply)(DestinationCountriesSupplementary.unapply)
 }

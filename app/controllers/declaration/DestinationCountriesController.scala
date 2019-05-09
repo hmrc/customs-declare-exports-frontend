@@ -30,7 +30,8 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call}
 import play.twirl.api.Html
-import services.CustomsCacheService
+import services.{Country, CustomsCacheService}
+import services.countries.Countries
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.validators.forms.supplementary.DestinationCountriesValidator
@@ -44,11 +45,12 @@ class DestinationCountriesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
+  countries: Countries,
   errorHandler: ErrorHandler
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
-  implicit val countries = services.Countries.allCountries
+  implicit val countryList: List[Country] = countries.all
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.choice.value match {

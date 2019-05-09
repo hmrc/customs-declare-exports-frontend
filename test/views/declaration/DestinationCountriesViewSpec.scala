@@ -94,7 +94,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
     "display error when dispatch country is empty" in {
 
       val view = createView(
-        DestinationCountries.supplementaryForm.fillAndValidate(DestinationCountriesSupplementary("", "Germany"))
+        DestinationCountries.supplementaryForm.fillAndValidate(DestinationCountriesSupplementary("", "DE"))
       )
 
       checkErrorsSummary(view)
@@ -107,7 +107,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       val view = createView(
         DestinationCountries.supplementaryForm
-          .fillAndValidate(DestinationCountriesSupplementary(TestHelper.createRandomAlphanumericString(10), "Germany"))
+          .fillAndValidate(DestinationCountriesSupplementary(TestHelper.createRandomAlphanumericString(10), "DE"))
       )
 
       checkErrorsSummary(view)
@@ -119,7 +119,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
     "display error when destination country is empty" in {
 
       val view = createView(
-        DestinationCountries.supplementaryForm.fillAndValidate(DestinationCountriesSupplementary("Germany", ""))
+        DestinationCountries.supplementaryForm.fillAndValidate(DestinationCountriesSupplementary("DE", ""))
       )
 
       checkErrorsSummary(view)
@@ -132,7 +132,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
 
       val view = createView(
         DestinationCountries.supplementaryForm
-          .fillAndValidate(DestinationCountriesSupplementary("Germany", TestHelper.createRandomAlphanumericString(10)))
+          .fillAndValidate(DestinationCountriesSupplementary("DE", TestHelper.createRandomAlphanumericString(10)))
       )
 
       checkErrorsSummary(view)
@@ -204,28 +204,28 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
     "display data for both countries in inputs" in {
 
       val view =
-        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("Ukraine", "Poland")))
+        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("UA", "PL")))
 
-      getElementById(view, "countryOfDispatch").attr("value") must be("Ukraine")
-      getElementById(view, "countryOfDestination").attr("value") must be("Poland")
+      getSelectedValue(view, "countryOfDispatch") must be("UA")
+      getSelectedValue(view, "countryOfDestination") must be("PL")
     }
 
     "display data only for dispatch country input" in {
 
       val view =
-        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("Ukraine", "")))
+        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("UA", "")))
 
-      getElementById(view, "countryOfDispatch").attr("value") must be("Ukraine")
-      getElementById(view, "countryOfDestination").attr("value") must be("")
+      getSelectedValue(view, "countryOfDispatch") must be("UA")
+      getSelectedValue(view, "countryOfDestination") must be("")
     }
 
     "display data only for destination country input" in {
 
       val view =
-        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("", "Poland")))
+        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("", "PL")))
 
-      getElementById(view, "countryOfDispatch").attr("value") must be("")
-      getElementById(view, "countryOfDestination").attr("value") must be("Poland")
+      getSelectedValue(view, "countryOfDispatch") must be("")
+      getSelectedValue(view, "countryOfDestination") must be("PL")
     }
   }
 }

@@ -35,7 +35,7 @@ object DestinationBuilder {
     val countryCode = new DestinationCountryCodeType()
     countryCode.setValue(
       allCountries
-        .find(country => data.countryOfDestination.contains(country.countryName))
+        .find(country => data.countryOfDestination.contains(country.countryCode))
         .map(_.countryCode)
         .getOrElse("")
     )

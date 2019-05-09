@@ -38,19 +38,19 @@ class DestinationCountriesSupplementarySpec extends WordSpec with MustMatchers {
 }
 
 object DestinationCountriesSupplementarySpec {
-  val correctDestinationCountriesSupplementary = DestinationCountriesSupplementary("Poland", "Poland")
+  val correctDestinationCountriesSupplementary = DestinationCountriesSupplementary("PL", "PL")
 
   val emptyDestinationCountriesSupplementary = DestinationCountriesSupplementary("", "")
   val incorrectDestinationCountriesSupplementary = DestinationCountriesSupplementary("Country", "Country")
 
   val correctDestinationCountriesSupplementaryJSON: JsValue = JsObject(
-    Map("countryOfDestination" -> JsString("Poland"), "countryOfDispatch" -> JsString("Poland"))
+    Map("countryOfDestination" -> JsString("PL"), "countryOfDispatch" -> JsString("PL"))
   )
   val emptyDestinationCountriesSupplementaryJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString(""), "countryOfDispatch" -> JsString(""))
   )
   val emptyDestinationCountrySupplementaryJSON: JsValue = JsObject(
-    Map("countryOfDestination" -> JsString(""), "countryOfDispatch" -> JsString("Malawi"))
+    Map("countryOfDestination" -> JsString(""), "countryOfDispatch" -> JsString("MW"))
   )
   val incorrectDestinationCountriesSupplementaryJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString("Country"), "countryOfDispatch" -> JsString("Country"))
