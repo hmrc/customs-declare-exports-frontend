@@ -34,12 +34,12 @@ object Address {
   implicit val format = Json.format[Address]
 
   private val validateAddressField: Int => String => Boolean =
-    (length: Int) => (input: String) => noLongerThan(length)(input) && isAlphanumeric(input.replaceAll(" ", ""))
+    (length: Int) => (input: String) => noLongerThan(length)(input) and isAlphanumeric(input.replaceAll(" ", ""))
 
   val mapping = Forms.mapping(
     "fullName" -> text()
       .verifying("supplementary.address.fullName.empty", nonEmpty)
-      .verifying("supplementary.address.fullName.error", validateAddressField(70)),
+      .verifying("supplementary.address.fullName.error", isEmpty or (isValidName and noLongerThan(70))),
     "addressLine" -> text()
       .verifying("supplementary.address.addressLine.empty", nonEmpty)
       .verifying("supplementary.address.addressLine.error", validateAddressField(70)),

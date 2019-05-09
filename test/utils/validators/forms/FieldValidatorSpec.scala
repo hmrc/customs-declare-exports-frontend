@@ -799,4 +799,34 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
     }
   }
 
+  "FieldValidator isValidName" should {
+
+    "return false" when {
+
+      "name is incorrect" in {
+
+        isValidName("Robert'); DROP TABLE Students;--") must be(false)
+        isValidName("Þór Eldon") must be(false)
+        isValidName("James D@t") must be(false)
+      }
+    }
+
+    "return true" when {
+
+      "name is correct" in {
+
+        isValidName("Mathias d'Arras") must be(true)
+        isValidName("Martin Luther King, Jr.") must be(true)
+        isValidName("Hector Sausage-Hausen") must be(true)
+        isValidName("John Doe") must be(true)
+        isValidName("John Paul Jones") must be(true)
+        isValidName("Julia Louis-Dreyfus") must be(true)
+        isValidName("Jean-Paul Sartre") must be(true)
+        isValidName("Richard O'Brien") must be(true)
+        isValidName("Bouty McBoutface") must be(true)
+        isValidName("Eithne Ní Bhraonáin") must be(true)
+        isValidName("Madonna") must be(true)
+      }
+    }
+  }
 }
