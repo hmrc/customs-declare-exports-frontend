@@ -79,5 +79,7 @@ object ConsigneeDetailsSpec {
   val incorrectConsigneeDetailsJSON: JsValue = JsObject(Map("details" -> incorrectEntityDetailsJSON))
   val emptyConsigneeDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 
-  val entityDetailsWithEmptyFullNameJSON: JsValue = JsObject(Map("details" -> EntityDetailsSpec.entityDetailsWithEmptyFullNameJSON))
+  val entityDetailsWithEmptyFullNameJSON: JsValue = JsObject(
+    Map("details" -> EntityDetailsSpec.entityDetailsWithEmptyFullNameJSON)
+  )
 }
