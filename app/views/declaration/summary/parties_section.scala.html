@@ -60,15 +60,15 @@
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.representativeId"),
-        value = parties.flatMap(_.representativeDetails).flatMap(_.details.eori)
+        value = parties.flatMap(_.representativeDetails).flatMap(_.details.flatMap(_.eori))
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.representativeAddress"),
-        value = extractAddressValues(parties.flatMap(_.representativeDetails).flatMap(_.details.address))
+        value = extractAddressValues(parties.flatMap(_.representativeDetails).flatMap(_.details.flatMap(_.address)))
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.parties.representationType"),
-        value = parties.flatMap(_.representativeDetails).map(_.statusCode)
+        value = parties.flatMap(_.representativeDetails).flatMap(_.statusCode)
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(

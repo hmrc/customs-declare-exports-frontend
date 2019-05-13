@@ -29,13 +29,13 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
       val representativeDetails = correctRepresentativeDetails
       val countryCode = "PL"
       val expectedRepresentativeAddressProperties: Map[String, String] = Map(
-        "declaration.agent.id" -> representativeDetails.details.eori.get,
-        "declaration.agent.name" -> representativeDetails.details.address.get.fullName,
-        "declaration.agent.address.line" -> representativeDetails.details.address.get.addressLine,
-        "declaration.agent.address.cityName" -> representativeDetails.details.address.get.townOrCity,
-        "declaration.agent.address.postcodeId" -> representativeDetails.details.address.get.postCode,
+        "declaration.agent.id" -> representativeDetails.details.flatMap(_.eori).get,
+        "declaration.agent.name" -> representativeDetails.details.flatMap(_.address).get.fullName,
+        "declaration.agent.address.line" -> representativeDetails.details.flatMap(_.address).get.addressLine,
+        "declaration.agent.address.cityName" -> representativeDetails.details.flatMap(_.address).get.townOrCity,
+        "declaration.agent.address.postcodeId" -> representativeDetails.details.flatMap(_.address).get.postCode,
         "declaration.agent.address.countryCode" -> countryCode,
-        "declaration.agent.functionCode" -> representativeDetails.statusCode
+        "declaration.agent.functionCode" -> representativeDetails.statusCode.get
       )
 
       representativeDetails.toMetadataProperties() must equal(expectedRepresentativeAddressProperties)
@@ -79,15 +79,15 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
 
 object RepresentativeDetailsSpec {
   val correctRepresentativeDetails =
-    RepresentativeDetails(details = EntityDetailsSpec.correctEntityDetails, statusCode = DirectRepresentative)
+    RepresentativeDetails(details = Some(EntityDetailsSpec.correctEntityDetails), statusCode = Some(DirectRepresentative))
   val correctRepresentativeDetailsEORIOnly =
-    RepresentativeDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly, statusCode = DirectRepresentative)
+    RepresentativeDetails(details = Some(EntityDetailsSpec.correctEntityDetailsEORIOnly), statusCode = Some(DirectRepresentative))
   val correctRepresentativeDetailsAddressOnly = RepresentativeDetails(
-    details = EntityDetailsSpec.correctEntityDetailsAddressOnly,
-    statusCode = DirectRepresentative
+    details = Some(EntityDetailsSpec.correctEntityDetailsAddressOnly),
+    statusCode = Some(DirectRepresentative)
   )
   val emptyRepresentativeDetails =
-    RepresentativeDetails(details = EntityDetailsSpec.emptyEntityDetails, statusCode = "")
+    RepresentativeDetails(details = None, statusCode = None)
 
   val correctRepresentativeDetailsJSON: JsValue = JsObject(
     Map("details" -> correctEntityDetailsJSON, "statusCode" -> JsString(DirectRepresentative))
