@@ -18,29 +18,33 @@ package services.mapping.declaration
 
 import forms.declaration.{ExporterDetails, ExporterDetailsSpec}
 import org.scalatest.{Matchers, WordSpec}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class ExporterBuilderSpec extends WordSpec with Matchers {
 
   "ExporterBuilder" should {
     "correctly map to the WCO-DEC Exporter instance" when {
-      "all data is supplied" in {
+      "only EORI is supplied" in {
         implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(ExporterDetails.id -> ExporterDetailsSpec.correctExporterDetailsJSON))
-        val exporter = ExporterBuilder.build(cacheMap)
-        exporter.getID.getValue should be("9GB1234567ABCDEF")
-        exporter.getName.getValue should be("Full Name")
-        exporter.getAddress.getLine.getValue should be("Address Line")
-        exporter.getAddress.getCityName.getValue should be("Town or City")
-        exporter.getAddress.getCountryCode.getValue should be("PL")
-        exporter.getAddress.getPostcodeID.getValue should be("AB12 34CD")
-      }
-      "fullname is not supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(ExporterDetails.id -> ExporterDetailsSpec.exporterDetailsWithEmptyFullNameJSON))
+          CacheMap(
+            "CacheID",
+            Map(ExporterDetails.id -> Json.toJson(ExporterDetailsSpec.correctExporterDetailsEORIOnly))
+          )
         val exporter = ExporterBuilder.build(cacheMap)
         exporter.getID.getValue should be("9GB1234567ABCDEF")
         exporter.getName should be(null)
+        exporter.getAddress should be(null)
+      }
+      "only address is not supplied" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap(
+            "CacheID",
+            Map(ExporterDetails.id -> Json.toJson(ExporterDetailsSpec.correctExporterDetailsAddressOnly))
+          )
+        val exporter = ExporterBuilder.build(cacheMap)
+        exporter.getID should be(null)
+        exporter.getName.getValue should be("Full Name")
         exporter.getAddress.getLine.getValue should be("Address Line")
         exporter.getAddress.getCityName.getValue should be("Town or City")
         exporter.getAddress.getCountryCode.getValue should be("PL")

@@ -15,8 +15,8 @@
  */
 
 package services.mapping.declaration
+import forms.common.Address
 import forms.declaration.{EntityDetails, ExporterDetails}
-import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.Exporter
 import wco.datamodel.wco.declaration_ds.dms._2._
@@ -26,47 +26,58 @@ object ExporterBuilder {
   def build(implicit cacheMap: CacheMap): Exporter =
     cacheMap
       .getEntry[ExporterDetails](ExporterDetails.id)
+      .filter(isDefined)
       .map(data => createExporter(data.details))
       .orNull
+
+  private def isDefined(exporterDetails: ExporterDetails): Boolean =
+    exporterDetails.details.eori.isDefined || exporterDetails.details.address.isDefined
 
   private def createExporter(details: EntityDetails): Exporter = {
     val exporter = new Exporter()
 
-    val exporterId = new ExporterIdentificationIDType()
-    exporterId.setValue(details.eori.orNull)
-    exporter.setID(exporterId)
-
-    val exporterAddress = new Exporter.Address()
-
-    details.address.map(address => {
-
-      if (!Option(address.fullName).getOrElse("").isEmpty) {
-        val exporterName = new ExporterNameTextType()
-        exporterName.setValue(address.fullName)
-        exporter.setName(exporterName)
-      }
-
-      val line = new AddressLineTextType()
-      line.setValue(address.addressLine)
-
-      val city = new AddressCityNameTextType
-      city.setValue(address.townOrCity)
-
-      val postcode = new AddressPostcodeIDType()
-      postcode.setValue(address.postCode)
-
-      val countryCode = new AddressCountryCodeType
-      countryCode.setValue(
-        allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
-      )
-
-      exporterAddress.setLine(line)
-      exporterAddress.setCityName(city)
-      exporterAddress.setCountryCode(countryCode)
-      exporterAddress.setPostcodeID(postcode)
+    details.eori.map(eori => {
+      val exporterIdentificationIDType = new ExporterIdentificationIDType
+      exporterIdentificationIDType.setValue(eori)
+      exporter.setID(exporterIdentificationIDType)
     })
 
-    exporter.setAddress(exporterAddress)
+    details.address.map(address => {
+      val exporterNameTextType = new ExporterNameTextType
+      exporterNameTextType.setValue(address.fullName)
+      exporter.setName(exporterNameTextType)
+      exporter.setAddress(mapAddress(address))
+    })
+
     exporter
   }
+
+  private def mapAddress(address: Address): Exporter.Address = {
+    val declarantAddress = new Exporter.Address
+
+    val addressLineTextType = new AddressLineTextType
+    addressLineTextType.setValue(address.addressLine)
+
+    val addressCityNameTextType = new AddressCityNameTextType
+    addressCityNameTextType.setValue(address.townOrCity)
+
+    val addressPostcodeIDType = new AddressPostcodeIDType
+    addressPostcodeIDType.setValue(address.postCode)
+
+    val addressCountryCodeType = new AddressCountryCodeType
+    addressCountryCodeType.setValue(
+      services.Countries.allCountries
+        .find(country => address.country.contains(country.countryName))
+        .map(_.countryCode)
+        .getOrElse("")
+    )
+
+    declarantAddress.setLine(addressLineTextType)
+    declarantAddress.setCityName(addressCityNameTextType)
+    declarantAddress.setPostcodeID(addressPostcodeIDType)
+    declarantAddress.setCountryCode(addressCountryCodeType)
+
+    declarantAddress
+  }
+
 }

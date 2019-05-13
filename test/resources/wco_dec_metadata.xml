@@ -13,14 +13,7 @@
         <ns3:InvoiceAmount currencyID="GBP">1212312.12</ns3:InvoiceAmount>
         <ns3:TotalPackageQuantity>123</ns3:TotalPackageQuantity>
         <ns3:Agent>
-            <ns3:Name>Full Name</ns3:Name>
             <ns3:ID>9GB1234567ABCDEF</ns3:ID>
-            <ns3:Address>
-                <ns3:CityName>Town or City</ns3:CityName>
-                <ns3:CountryCode>PL</ns3:CountryCode>
-                <ns3:Line>Address Line</ns3:Line>
-                <ns3:PostcodeID>AB12 34CD</ns3:PostcodeID>
-            </ns3:Address>
         </ns3:Agent>
         <ns3:BorderTransportMeans>
             <ns3:ID>1234567878ui</ns3:ID>
@@ -32,13 +25,7 @@
             <ns3:RateNumeric>1212121.12345</ns3:RateNumeric>
         </ns3:CurrencyExchange>
         <ns3:Declarant>
-            <ns3:Name>Full Name</ns3:Name>
-            <ns3:Address>
-                <ns3:CityName>Town or City</ns3:CityName>
-                <ns3:CountryCode>PL</ns3:CountryCode>
-                <ns3:Line>Address Line</ns3:Line>
-                <ns3:PostcodeID>AB12 34CD</ns3:PostcodeID>
-            </ns3:Address>
+            <ns3:ID>9GB1234567ABCDEF</ns3:ID>
         </ns3:Declarant>
         <ns3:ExitOffice>
             <ns3:ID>123qwe12</ns3:ID>
