@@ -75,9 +75,9 @@ class RepresentativeDetailsPageControllerSpec
 
     "display the form page with error for empty field" when {
 
-      "status is empty" in {
+      "status is empty but eori provided" in {
 
-        val emptyForm = buildRepresentativeDetailsJsonInput()
+        val emptyForm = buildRepresentativeDetailsJsonInput(eori = "12345678")
         val result = route(app, postRequest(uri, emptyForm)).get
 
         status(result) must be(BAD_REQUEST)
@@ -203,11 +203,18 @@ class RepresentativeDetailsPageControllerSpec
         )
     }
 
-    "return 303 code" in {
+    "return 303 code" when {
+      "data is correct" in {
+        val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
 
-      val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
+        status(result) must be(SEE_OTHER)
+      }
 
-      status(result) must be(SEE_OTHER)
+      "data is empty" in {
+        val result = route(app, postRequest(uri, JsObject(Map[String, JsValue]().empty))).get
+
+        status(result) must be(SEE_OTHER)
+      }
     }
 
     "redirect to Additional Actors page if on supplementary journey" in {

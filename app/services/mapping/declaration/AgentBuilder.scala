@@ -28,7 +28,7 @@ object AgentBuilder {
   def build(implicit cacheMap: CacheMap): Declaration.Agent =
     cacheMap
       .getEntry[RepresentativeDetails](RepresentativeDetails.formId)
-      .map(data => createAgent(data.details))
+      .map(data => createAgent(data.details.orNull))
       .orNull
 
   private def createAgent(details: EntityDetails): Declaration.Agent = {

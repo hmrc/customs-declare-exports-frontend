@@ -266,7 +266,7 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
         getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(1)")
           .text() must equal(messages(representativeId))
         getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(7)>td:nth-child(2)")
-          .text() must equal(representativeDetails.details.eori.get)
+          .text() must equal(representativeDetails.details.flatMap(_.eori).get)
       }
 
       "display 'Representative address' table row with proper value" in {
@@ -277,7 +277,7 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
         getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(1)")
           .text() must equal(messages(representativeAddress))
         getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(8)>td:nth-child(2)")
-          .text() must equal(extractAddress(representativeDetails.details.address.get))
+          .text() must equal(extractAddress(representativeDetails.details.flatMap(_.address).get))
       }
 
       "display 'Representation type' table row with proper value" in {
@@ -288,7 +288,7 @@ class PartiesSectionViewSpec extends ViewSpec with PartiesMessages {
         getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(1)")
           .text() must equal(messages(representationType))
         getElementByCss(view, "table:nth-child(1)>tbody:nth-child(2)>tr:nth-child(9)>td:nth-child(2)")
-          .text() must equal(representativeDetails.statusCode)
+          .text() must equal(representativeDetails.statusCode.get)
       }
 
       "display 'Authorised party EORI' table row with proper value" in {

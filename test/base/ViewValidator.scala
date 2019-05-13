@@ -99,6 +99,7 @@ trait ViewValidator extends MustMatchers {
     getElementByCss(page, "div.error-summary.error-summary--show>p").text() must be(messages("error.summary.text"))
   }
 
+  @deprecated("Please use ViewValidator.checkErrorLink based on the elementId not css", "2019-05-13")
   def checkErrorLink(page: String, child: Int, error: String, href: String)(implicit messages: Messages): Unit = {
 
     val errorLink = getElementByCss(page, "div.error-summary.error-summary--show>ul>li:nth-child(" + child + ")>a")
@@ -107,9 +108,26 @@ trait ViewValidator extends MustMatchers {
     errorLink.attr("href") must be(href)
   }
 
+  @deprecated("Please use ViewValidator.checkErrorLink based on the elementId not css", "2019-05-13")
   def checkErrorLink(html: Html, child: Int, error: String, href: String)(implicit messages: Messages): Unit = {
 
     val errorLink = getElementByCss(html, "div.error-summary.error-summary--show>ul>li:nth-child(" + child + ")>a")
+
+    errorLink.text() must be(messages(error))
+    errorLink.attr("href") must be(href)
+  }
+
+  def checkErrorLink(page: String, elementId: String, error: String, href: String)(implicit messages: Messages): Unit = {
+
+    val errorLink = getElementById(page, elementId)
+
+    errorLink.text() must be(messages(error))
+    errorLink.attr("href") must be(href)
+  }
+
+  def checkErrorLink(html: Html, elementId: String, error: String, href: String)(implicit messages: Messages): Unit = {
+
+    val errorLink = getElementById(html, elementId)
 
     errorLink.text() must be(messages(error))
     errorLink.attr("href") must be(href)

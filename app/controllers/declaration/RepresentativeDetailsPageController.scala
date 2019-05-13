@@ -60,7 +60,7 @@ class RepresentativeDetailsPageController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>
-          Future.successful(BadRequest(representative_details(appConfig, formWithErrors))),
+          Future.successful(BadRequest(representative_details(appConfig, RepresentativeDetails.adjustErrors(formWithErrors)))),
         validRepresentativeDetails =>
           customsCacheService
             .cache[RepresentativeDetails](cacheId, RepresentativeDetails.formId, validRepresentativeDetails)
