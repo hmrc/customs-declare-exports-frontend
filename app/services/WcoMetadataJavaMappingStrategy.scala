@@ -27,8 +27,8 @@ trait WcoMetadataJavaMappingStrategy extends WcoMetadataMappingStrategy {
   override def produceMetaData(cacheMap: CacheMap): MetaData =
     MetaDataBuilder.build(cacheMap)
 
-  override def declarationUcr(metaData: Any): Option[String] =
-    Option(
+  override def declarationUcr(metaData: Any): Option[String] = {
+    val ucr = Option(
       metaData
         .asInstanceOf[MetaData]
         .getAny
@@ -36,9 +36,12 @@ trait WcoMetadataJavaMappingStrategy extends WcoMetadataMappingStrategy {
         .getValue
         .getGoodsShipment
         .getUCR
-        .getTraderAssignedReferenceID
-        .getValue
-    ).orElse(Some(""))
+    )
+
+    ucr
+      .map(_.getTraderAssignedReferenceID.getValue)
+      .orElse(Some(""))
+  }
 
   override def declarationLrn(metaData: Any): Option[String] =
     Option(
