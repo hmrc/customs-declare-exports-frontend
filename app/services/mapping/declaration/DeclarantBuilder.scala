@@ -20,35 +20,40 @@ import forms.declaration.DeclarantDetails
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Declarant
-import wco.datamodel.wco.declaration_ds.dms._2._
+import wco.datamodel.wco.declaration_ds.dms._2.{DeclarantIdentificationIDType, _}
 
 object DeclarantBuilder {
 
   def build(implicit cacheMap: CacheMap): Declaration.Declarant =
     cacheMap
       .getEntry[DeclarantDetails](DeclarantDetails.id)
+      .filter(isDefined)
       .map(declarantDetails => mapToWCODeclarant(declarantDetails))
       .orNull
 
-  def mapToWCODeclarant(declarantDetails: DeclarantDetails): Declarant = {
+  private def mapToWCODeclarant(declarantDetails: DeclarantDetails): Declarant = {
+
     val declarant = new Declarant
 
-    val declarantAddress = declarantDetails.details.address match {
-      case Some(address) => {
-        val declarantNameTextType = new DeclarantNameTextType
-        declarantNameTextType.setValue(address.fullName)
-        declarant.setName(declarantNameTextType)
-        mapToWCODeclarantAddress(address)
-      }
-      case _ => new Declarant.Address
-    }
+    declarantDetails.details.eori.map(eori => {
+      val declarantIdentificationIDType = new DeclarantIdentificationIDType
+      declarantIdentificationIDType.setValue(eori)
+      declarant.setID(declarantIdentificationIDType)
+    })
 
-    declarant.setAddress(declarantAddress)
+    declarantDetails.details.address.map(address => {
+      val declarantNameTextType = new DeclarantNameTextType
+      declarantNameTextType.setValue(address.fullName)
+      declarant.setName(declarantNameTextType)
+      declarant.setAddress(mapAddress(address))
+    })
+
     declarant
   }
 
-  private def mapToWCODeclarantAddress(address: Address): Declarant.Address = {
+  private def mapAddress(address: Address): Declarant.Address = {
     val declarantAddress = new Declarant.Address
+
     val addressLineTextType = new AddressLineTextType
     addressLineTextType.setValue(address.addressLine)
 
@@ -74,4 +79,7 @@ object DeclarantBuilder {
       .find(country => addressCountry.contains(country.countryName))
       .map(_.countryCode)
       .getOrElse("")
+
+  private def isDefined(declarantDetails: DeclarantDetails): Boolean =
+    declarantDetails.details.eori.isDefined || declarantDetails.details.address.isDefined
 }

@@ -26,11 +26,8 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
       val declaration = DeclarationBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords)
 
       declaration.getAgent.getID.getValue should be("9GB1234567ABCDEF")
-      declaration.getAgent.getName.getValue should be("Full Name")
-      declaration.getAgent.getAddress.getLine.getValue should be("Address Line")
-      declaration.getAgent.getAddress.getCityName.getValue should be("Town or City")
-      declaration.getAgent.getAddress.getCountryCode.getValue should be("PL")
-      declaration.getAgent.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+      declaration.getAgent.getName should be(null)
+      declaration.getAgent.getAddress should be(null)
 
       declaration.getBorderTransportMeans.getID.getValue should be("1234567878ui")
       declaration.getBorderTransportMeans.getIdentificationTypeCode.getValue should be("40")
@@ -41,12 +38,9 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
 
       declaration.getCurrencyExchange.get(0).getRateNumeric.doubleValue() should be(1212121.12345)
 
-      declaration.getDeclarant.getID should be(null)
-      declaration.getDeclarant.getName.getValue should be("Full Name")
-      declaration.getDeclarant.getAddress.getLine.getValue should be("Address Line")
-      declaration.getDeclarant.getAddress.getCityName.getValue should be("Town or City")
-      declaration.getDeclarant.getAddress.getPostcodeID.getValue should be("AB12 34CD")
-      declaration.getDeclarant.getAddress.getCountryCode.getValue should be("PL")
+      declaration.getDeclarant.getID.getValue should be("9GB1234567ABCDEF")
+      declaration.getDeclarant.getName should be(null)
+      declaration.getDeclarant.getAddress should be(null)
 
       declaration.getExitOffice.getID.getValue should be("123qwe12")
 

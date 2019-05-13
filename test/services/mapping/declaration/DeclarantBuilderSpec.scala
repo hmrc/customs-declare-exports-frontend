@@ -15,45 +15,45 @@
  */
 
 package services.mapping.declaration
-import forms.common.Address
-import forms.declaration.{DeclarantDetails, EntityDetails}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.when
+import forms.declaration.{DeclarantDetails, DeclarantDetailsSpec}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
   "DeclarantBuilder" should {
-    "build wco declarant successfully given Declarant Details" in {
-      implicit val cacheMap = mock[CacheMap]
+    "build wco declarant successfully " when {
+      "only address has been supplied" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap(
+            "CacheID",
+            Map(DeclarantDetails.id -> Json.toJson(DeclarantDetailsSpec.correctDeclarantDetailsAddressOnly))
+          )
 
-      val declarantName = "Long Distance Clara"
-      val declarantAddressCity = "townOrCity"
-      val declarantAddressLine = "addressLine"
-      val declarantAddressPostCode = "postCode"
+        val declarant = DeclarantBuilder.build(cacheMap)
 
-      val declarantAddress = new Address(
-        declarantName,
-        declarantAddressLine,
-        declarantAddressCity,
-        declarantAddressPostCode,
-        "United Kingdom"
-      )
-      val entityDetails = new EntityDetails(eori = Some("GB12767562756"), Some(declarantAddress))
-      val declarantDetails = new DeclarantDetails(entityDetails)
+        declarant.getID should be(null)
+        declarant.getName.getValue should be("Full Name")
+        declarant.getAddress.getLine.getValue should be("Address Line")
+        declarant.getAddress.getCityName.getValue should be("Town or City")
+        declarant.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+        declarant.getAddress.getCountryCode.getValue should be("PL")
+      }
 
-      when(cacheMap.getEntry[DeclarantDetails](eqTo(DeclarantDetails.id))(any()))
-        .thenReturn(Some(declarantDetails))
+      "only eori has been supplied" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap(
+            "CacheID",
+            Map(DeclarantDetails.id -> Json.toJson(DeclarantDetailsSpec.correctDeclarantDetailsEORIOnly))
+          )
 
-      val mappedDeclarant = DeclarantBuilder.build
-      mappedDeclarant.getName.getValue shouldBe declarantName
-      val mappedAddress = mappedDeclarant.getAddress
-      mappedAddress.getCityName.getValue shouldBe declarantAddressCity
-      mappedAddress.getLine.getValue shouldBe declarantAddressLine
-      mappedAddress.getPostcodeID.getValue shouldBe declarantAddressPostCode
-      mappedAddress.getCountryCode.getValue shouldBe "GB"
+        val declarant = DeclarantBuilder.build(cacheMap)
+        declarant.getID.getValue should be("9GB1234567ABCDEF")
+        declarant.getAddress should be(null)
+        declarant.getName should be(null)
+      }
     }
   }
 }

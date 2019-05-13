@@ -17,11 +17,9 @@
 package models.declaration
 
 import forms.common.Date
-import forms.{Choice, ChoiceSpec}
 import forms.declaration.ConsigneeDetailsSpec._
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
-import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActorsJSON
 import forms.declaration.DestinationCountriesSupplementarySpec._
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import forms.declaration.DispatchLocationSpec._
@@ -44,24 +42,18 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupp
 import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
+import forms.{Choice, ChoiceSpec}
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues._
 import models.declaration.dectype.DeclarationTypeSupplementary
 import models.declaration.dectype.DeclarationTypeSupplementarySpec._
-import models.declaration.governmentagencygoodsitem.{
-  Amount,
-  Commodity,
-  GoodsMeasure,
-  GovernmentAgencyGoodsItem,
-  GovernmentAgencyGoodsItemAdditionalDocument,
-  Measure
-}
+import models.declaration.governmentagencygoodsitem.Formats._
+import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
 import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.{JsArray, JsObject, JsString, JsValue, Json}
+import play.api.libs.json._
 import services.ExportsItemsCacheIds
-import models.declaration.governmentagencygoodsitem.Formats._
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
@@ -389,7 +381,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 }
 
 object SupplementaryDeclarationDataSpec {
-  val date = Date(Some(12), Some(12), Some(2019))
   lazy val cacheMapAllRecords = CacheMap(
     id = "CacheID",
     data = Map(
@@ -398,7 +389,7 @@ object SupplementaryDeclarationDataSpec {
       AdditionalDeclarationTypeSupplementaryDec.formId -> correctAdditionalDeclarationTypeSupplementaryDecJSON,
       ConsignmentReferences.id -> correctConsignmentReferencesJSON,
       ExporterDetails.id -> correctExporterDetailsJSON,
-      DeclarantDetails.id -> correctDeclarantDetailsJSON,
+      DeclarantDetails.id -> Json.toJson(DeclarantDetailsSpec.correctDeclarantDetailsEORIOnly),
       RepresentativeDetails.formId -> correctRepresentativeDetailsJSON,
       Document.formId -> DocumentSpec.correctPreviousDocumentsJSONList,
       CarrierDetails.id -> CarrierDetailsSpec.correctCarrierDetailsJSON,
@@ -460,29 +451,10 @@ object SupplementaryDeclarationDataSpec {
       )
     )
   )
-
-  def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
-    GovernmentAgencyGoodsItem(
-      sequenceNumeric = 0,
-      statisticalValueAmount = Some(Amount(Some("GBP"), Some(BigDecimal(12)))),
-      commodity = None, //parsed from cached CommodityForm
-      additionalInformations = Seq(),
-      additionalDocuments = Seq(),
-      governmentProcedures = Seq(),
-      packagings = Seq()
-    )
-
   lazy val correctGovernmentAgencyGoodsItemJSON: JsValue = JsArray(Seq(Json.toJson(createGovernmentAgencyGoodsItem())))
-
   lazy val correctStatisticalValueAmountJSON: JsValue =
     JsObject(Map("currencyId" -> JsString("GBP"), "value" -> JsString("44")))
-
-  val correctPackingJSON: JsValue = JsObject(
-    Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
-  )
-
   lazy val correctPackageInformationJSON: JsValue = JsArray(Seq(correctPackageInformationJSON))
-
   lazy val supplementaryDeclarationDataAllValues = SupplementaryDeclarationData(
     declarationType = Some(correctDeclarationType),
     consignmentReferences = Some(correctConsignmentReferences),
@@ -512,4 +484,19 @@ object SupplementaryDeclarationDataSpec {
       )
     )
   )
+  val date = Date(Some(12), Some(12), Some(2019))
+  val correctPackingJSON: JsValue = JsObject(
+    Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
+  )
+
+  def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
+    GovernmentAgencyGoodsItem(
+      sequenceNumeric = 0,
+      statisticalValueAmount = Some(Amount(Some("GBP"), Some(BigDecimal(12)))),
+      commodity = None, //parsed from cached CommodityForm
+      additionalInformations = Seq(),
+      additionalDocuments = Seq(),
+      governmentProcedures = Seq(),
+      packagings = Seq()
+    )
 }
