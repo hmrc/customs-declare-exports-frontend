@@ -84,6 +84,7 @@ class SubmissionService @Inject()(
   ) =
     Map(
       EORI.toString -> request.authenticatedRequest.user.eori,
+      DecType.toString -> request.choice.value,
       LRN.toString -> lrn.getOrElse(""),
       DUCR.toString -> ducr.getOrElse(""),
       SubmissionResult.toString -> result

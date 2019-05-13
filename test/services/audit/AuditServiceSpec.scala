@@ -112,7 +112,7 @@ trait AuditTestSupport extends CustomExportsBaseSpec {
     detail = Json
       .toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails())
       .as[JsObject]
-      .deepMerge(Json.toJson(cacheMapAllRecords).as[JsObject])
+      .deepMerge(Json.toJson(cacheMapAllRecords.data).as[JsObject])
   )
 
   val auditFailure = Failure("Event sending failed")

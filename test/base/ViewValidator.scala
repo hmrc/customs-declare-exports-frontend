@@ -59,12 +59,17 @@ trait ViewValidator extends MustMatchers {
     element
   }
 
-  def getSelectedValue(html: Html, name: String): String = {
-    asDocument(html).getElementById(name).children().map { option =>
-      if(option.hasAttr("selected")) option.`val`()
-      else ""
-    }.filter(_.nonEmpty).headOption.getOrElse("")
-  }
+  def getSelectedValue(html: Html, name: String): String =
+    asDocument(html)
+      .getElementById(name)
+      .children()
+      .map { option =>
+        if (option.hasAttr("selected")) option.`val`()
+        else ""
+      }
+      .filter(_.nonEmpty)
+      .headOption
+      .getOrElse("")
 
   def getElementsByAttribute(html: Html, attributeName: String): List[Element] = {
     val elements = asDocument(html).getElementsByAttribute(attributeName)
