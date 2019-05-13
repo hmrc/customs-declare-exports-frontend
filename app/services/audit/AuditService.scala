@@ -78,11 +78,10 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
       )
 
   private def getAuditDetails(cacheMap: CacheMap)(implicit hc: HeaderCarrier) = {
-    val data = Json.toJson(cacheMap).as[JsObject]
+    val data = Json.toJson(cacheMap.data).as[JsObject]
     val hcAuditDetails = Json.toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails()).as[JsObject]
     hcAuditDetails.deepMerge(data)
   }
-
 }
 
 object AuditTypes extends Enumeration {
@@ -91,5 +90,5 @@ object AuditTypes extends Enumeration {
 }
 object EventData extends Enumeration {
   type Data = Value
-  val EORI, LRN, DUCR, SubmissionResult, Success, Failure = Value
+  val EORI, LRN, DUCR, DecType, SubmissionResult, Success, Failure = Value
 }

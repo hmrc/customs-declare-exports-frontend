@@ -58,7 +58,7 @@ object AEOMutualRecognitionPartiesBuilder {
       roleCode.setValue(actor.partyType.orNull)
       previousDocument.setRoleCode(roleCode)
     }
-    
+
     previousDocument
   }
 }

@@ -20,12 +20,14 @@ import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice.AllowedChoiceValues
 import metrics.MetricIdentifiers
 import models.declaration.SupplementaryDeclarationDataSpec._
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.FakeRequest
 import play.api.test.Helpers.OK
-import services.audit.AuditService
+import services.audit.EventData._
+import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
@@ -43,6 +45,14 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
   }
 
   implicit val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
+
+  val auditData = Map(
+    EORI.toString -> request.authenticatedRequest.user.eori,
+    LRN.toString -> "123LRN",
+    DUCR.toString -> "8GB123456789012-1234567890QWERTYUIO",
+    DecType.toString -> "SMP",
+    SubmissionResult.toString -> "Success"
+  )
   val submissionService = new SubmissionService(
     appConfig,
     mockCustomsCacheService,
@@ -78,6 +88,10 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
       verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
       verify(mockAuditService, times(1)).audit(any(), any())(any())
       verify(mockAuditService, times(1)).auditAllPagesUserInput(any())(any())
+      verify(mockAuditService)
+        .audit(ArgumentMatchers.eq(AuditTypes.Submission), ArgumentMatchers.eq[Map[String, String]](auditData))(any())
+      verify(mockAuditService).auditAllPagesUserInput(ArgumentMatchers.refEq(cacheMapAllRecords))(any())
+
     }
 
     "record submission timing and increase the Success Counter when response is OK" in {
