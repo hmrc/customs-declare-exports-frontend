@@ -226,10 +226,10 @@ supplementary.carrier.eori.hint = The number starts with a country code, for exa
 supplementary.carrier.address.info = 3/31 Enter exporter’s name and address
 
 supplementary.representative.title = Add representative
-supplementary.representative.header = Was a representative used?
+supplementary.representative.header = Was a representative used? (optional)
 supplementary.representative.eori.info = 3/20 EORI number
 supplementary.representative.address.info = 3/19 Enter representative’s name and address
-supplementary.representative.representationType.header = 3/21 What type of representation is being used?
+supplementary.representative.representationType.header = 3/21 What type of representation is being used? (optional)
 supplementary.representative.representationType.error.empty = Please, choose your representative status
 supplementary.representative.representationType.error.wrongValue = Please, choose valid representative status
 supplementary.representative.representationType.declarant = I am declaring for the company I work for or own
