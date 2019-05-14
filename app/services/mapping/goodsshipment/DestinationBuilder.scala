@@ -15,7 +15,9 @@
  */
 
 package services.mapping.goodsshipment
-import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesSupplementary}
+import forms.Choice
+import forms.Choice.AllowedChoiceValues
+import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard, DestinationCountriesSupplementary}
 import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
@@ -26,19 +28,35 @@ object DestinationBuilder {
 
   def build(implicit cacheMap: CacheMap): GoodsShipment.Destination =
     cacheMap
-      .getEntry[DestinationCountriesSupplementary](DestinationCountries.formId)
-      .filter(isDefined)
-      .map(createExportCountry)
+      .getEntry[Choice](Choice.choiceId)
+      .map {
+        case Choice(AllowedChoiceValues.SupplementaryDec) => buildSupplementary(cacheMap)
+        case Choice(AllowedChoiceValues.StandardDec)      => buildStandard(cacheMap)
+      }
       .orNull
 
-  private def isDefined(country: DestinationCountriesSupplementary): Boolean = country.countryOfDestination.nonEmpty
+  def buildSupplementary(implicit cacheMap: CacheMap): GoodsShipment.Destination =
+    cacheMap
+      .getEntry[DestinationCountriesSupplementary](DestinationCountries.formId)
+      .filter(data => isDefined(data.countryOfDestination))
+      .map(data => createExportCountry(data.countryOfDestination))
+      .orNull
 
-  private def createExportCountry(data: DestinationCountriesSupplementary): GoodsShipment.Destination = {
+  def buildStandard(implicit cacheMap: CacheMap): GoodsShipment.Destination =
+    cacheMap
+      .getEntry[DestinationCountriesStandard](DestinationCountries.formId)
+      .filter(data => isDefined(data.countryOfDestination))
+      .map(data => createExportCountry(data.countryOfDestination))
+      .orNull
+
+  private def isDefined(countryOfDestination: String): Boolean = countryOfDestination.nonEmpty
+
+  private def createExportCountry(countryOfDestination: String): GoodsShipment.Destination = {
 
     val countryCode = new DestinationCountryCodeType()
     countryCode.setValue(
       allCountries
-        .find(country => data.countryOfDestination.contains(country.countryCode))
+        .find(country => countryOfDestination.contains(country.countryCode))
         .map(_.countryCode)
         .getOrElse("")
     )
