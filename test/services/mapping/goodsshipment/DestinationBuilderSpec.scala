@@ -17,34 +17,67 @@
 package services.mapping.goodsshipment
 
 import forms.declaration.DestinationCountriesSupplementarySpec
-import forms.declaration.destinationCountries.DestinationCountries
+import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard}
+import forms.{Choice, ChoiceSpec}
 import org.scalatest.{Matchers, WordSpec}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class DestinationBuilderSpec extends WordSpec with Matchers {
 
   "DestinationBuilder" should {
     "correctly map to the WCO-DEC GoodsShipment.Destination instance" when {
-      "countryOfDestination has been supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(
-              DestinationCountries.formId -> DestinationCountriesSupplementarySpec.correctDestinationCountriesSupplementaryJSON
+      "submitting a supplementary journey" when {
+
+        "countryOfDestination has been supplied" in {
+          implicit val cacheMap: CacheMap =
+            CacheMap(
+              "CacheID",
+              Map(
+                Choice.choiceId -> ChoiceSpec.correctSupplementaryChoiceJSON,
+                DestinationCountries.formId -> DestinationCountriesSupplementarySpec.correctDestinationCountriesSupplementaryJSON
+              )
             )
-          )
-        val destination = DestinationBuilder.build(cacheMap)
-        destination.getCountryCode.getValue should be("PL")
+          val destination = DestinationBuilder.build(cacheMap)
+          destination.getCountryCode.getValue should be("PL")
+        }
+        "countryOfDestination has not been supplied" in {
+          implicit val cacheMap: CacheMap =
+            CacheMap(
+              "CacheID",
+              Map(
+                Choice.choiceId -> ChoiceSpec.correctSupplementaryChoiceJSON,
+                DestinationCountries.formId -> DestinationCountriesSupplementarySpec.emptyDestinationCountriesSupplementaryJSON
+              )
+            )
+          DestinationBuilder.build(cacheMap) should be(null)
+        }
       }
-      "countryOfDestination has not been supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(
-              DestinationCountries.formId -> DestinationCountriesSupplementarySpec.emptyDestinationCountriesSupplementaryJSON
+
+      "submitting a standard journey" when {
+        "countryOfDestination has been supplied" in {
+          implicit val cacheMap: CacheMap =
+            CacheMap(
+              "CacheID",
+              Map(
+                Choice.choiceId -> ChoiceSpec.correctStandardChoiceJSON,
+                DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("GB", Seq("PT"), "PL"))
+              )
             )
-          )
-        DestinationBuilder.build(cacheMap) should be(null)
+          val destination = DestinationBuilder.build(cacheMap)
+          destination.getCountryCode.getValue should be("PL")
+        }
+        "countryOfDestination has not been supplied" in {
+          implicit val cacheMap: CacheMap =
+            CacheMap(
+              "CacheID",
+              Map(
+                Choice.choiceId -> ChoiceSpec.correctStandardChoiceJSON,
+                DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("", Seq(""), ""))
+              )
+            )
+          DestinationBuilder.build(cacheMap) should be(null)
+        }
       }
     }
   }
