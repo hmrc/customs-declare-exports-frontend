@@ -55,13 +55,6 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       getElementById(view, "section-header").text() must be(messages("Parties"))
     }
 
-    "display header" in {
-
-      val view = createView()
-
-      getElementByCss(view, "legend>h1").text() must be(messages(title))
-    }
-
     "display empty input with label for EORI" in {
 
       val view = createView()
@@ -141,9 +134,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       val view = createView(ConsigneeDetails.form().bind(Map[String, String]()))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, eoriOrAddressEmpty, "#details")
+      checkErrorLink(view, "details-error", eoriOrAddressEmpty, "#details")
 
-      getElementByCss(view, "#error-message-details-input").text() must be(messages(eoriOrAddressEmpty))
+      getElementById(view, "error-message-details-input").text() must be(messages(eoriOrAddressEmpty))
     }
 
     "display error when EORI is provided, but is incorrect" in {
@@ -155,9 +148,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, eoriError, "#details_eori")
+      checkErrorLink(view, "details.eori-error", eoriError, "#details_eori")
 
-      getElementByCss(view, "#error-message-details_eori-input").text() must be(messages(eoriError))
+      getElementById(view, "error-message-details_eori-input").text() must be(messages(eoriError))
     }
 
     "display error for empty Full name" in {
@@ -171,9 +164,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, fullNameEmpty, "#details_address_fullName")
+      checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
 
-      getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+      getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
     }
 
     "display error for incorrect Full name" in {
@@ -194,9 +187,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, fullNameError, "#details_address_fullName")
+      checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
 
-      getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+      getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameError))
     }
 
     "display error for empty Address" in {
@@ -210,9 +203,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, addressLineEmpty, "#details_address_addressLine")
+      checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
 
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+      getElementById(view, "error-message-details_address_addressLine-input").text() must be(
         messages(addressLineEmpty)
       )
     }
@@ -233,9 +226,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, addressLineError, "#details_address_addressLine")
+      checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
 
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+      getElementById(view, "error-message-details_address_addressLine-input").text() must be(
         messages(addressLineError)
       )
     }
@@ -251,9 +244,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, townOrCityEmpty, "#details_address_townOrCity")
+      checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
 
-      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+      getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
     }
 
     "display error for incorrect Town or city" in {
@@ -280,9 +273,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, townOrCityError, "#details_address_townOrCity")
+      checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
 
-      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+      getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
     }
 
     "display error for empty Postcode" in {
@@ -295,9 +288,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
           )
       )
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, postCodeEmpty, "#details_address_postCode")
+      checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
 
-      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+      getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
     }
 
     "display error for incorrect Postcode" in {
@@ -324,9 +317,9 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, postCodeError, "#details_address_postCode")
+      checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
 
-      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+      getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
     }
 
     "display error for empty Country" in {
@@ -340,7 +333,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, countryEmpty, "#details_address_country")
+      checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
       getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
     }
@@ -358,7 +351,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, countryError, "#details_address_country")
+      checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
       getElementByCss(view, "span.error-message").text() must be(messages(countryError))
     }
@@ -372,16 +365,16 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, addressLineEmpty, "#details_address_addressLine")
-      checkErrorLink(view, 2, townOrCityEmpty, "#details_address_townOrCity")
-      checkErrorLink(view, 3, postCodeEmpty, "#details_address_postCode")
-      checkErrorLink(view, 4, countryEmpty, "#details_address_country")
+      checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
+      checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
+      checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
+      checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+      getElementById(view, "error-message-details_address_addressLine-input").text() must be(
         messages(addressLineEmpty)
       )
-      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
-      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+      getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+      getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
 
     }
@@ -395,17 +388,17 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, fullNameEmpty, "#details_address_fullName")
-      checkErrorLink(view, 2, addressLineEmpty, "#details_address_addressLine")
-      checkErrorLink(view, 3, townOrCityEmpty, "#details_address_townOrCity")
-      checkErrorLink(view, 4, postCodeEmpty, "#details_address_postCode")
+      checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
+      checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
+      checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
+      checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
 
-      getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+      getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+      getElementById(view, "error-message-details_address_addressLine-input").text() must be(
         messages(addressLineEmpty)
       )
-      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
-      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+      getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
+      getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
     }
 
     "display errors when everything except Full name is incorrect" in {
@@ -432,16 +425,16 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, addressLineError, "#details_address_addressLine")
-      checkErrorLink(view, 2, townOrCityError, "#details_address_townOrCity")
-      checkErrorLink(view, 3, postCodeError, "#details_address_postCode")
-      checkErrorLink(view, 4, countryError, "#details_address_country")
+      checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
+      checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
+      checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
+      checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+      getElementById(view, "error-message-details_address_addressLine-input").text() must be(
         messages(addressLineError)
       )
-      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
-      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+      getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+      getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       getElementByCss(view, "span.error-message").text() must be(messages(countryError))
     }
 
@@ -469,17 +462,17 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, fullNameError, "#details_address_fullName")
-      checkErrorLink(view, 2, addressLineError, "#details_address_addressLine")
-      checkErrorLink(view, 3, townOrCityError, "#details_address_townOrCity")
-      checkErrorLink(view, 4, postCodeError, "#details_address_postCode")
+      checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
+      checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
+      checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
+      checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
 
-      getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameError))
-      getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+      getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+      getElementById(view, "error-message-details_address_addressLine-input").text() must be(
         messages(addressLineError)
       )
-      getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
-      getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+      getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
+      getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
     }
   }
 
