@@ -45,6 +45,8 @@ object FieldValidator {
     s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$"
   private val allowedSpecialChars = Set(',', '.', '-', '\'', '/', ' ')
 
+  private val allowedHyphenChar = Set('-')
+
   val isEmpty: String => Boolean = (input: String) => input.isEmpty
 
   val nonEmpty: String => Boolean = (input: String) => input.trim.nonEmpty
@@ -73,6 +75,9 @@ object FieldValidator {
 
   val isAlphanumericWithAllowedSpecialCharacters: String => Boolean = (input: String) =>
     input.filter(!_.isLetterOrDigit).forall(allowedSpecialChars)
+
+  val isAlphanumericWithAllowedHyphenCharacter: String => Boolean = (input: String) =>
+    input.filter(!_.isLetterOrDigit).forall(allowedHyphenChar)
 
   val startsWithCapitalLetter: String => Boolean = (input: String) => input.headOption.exists(_.isUpper)
 

@@ -525,7 +525,7 @@ declaration.itemType.statisticalValue.error.wrongFormat = Format of this value i
 
 supplementary.previousDocuments = Previous documents
 supplementary.previousDocuments.title = 2/1 Enter previous DUCR or MUCR references assigned to these goods
-supplementary.previousDocuments.hint = For example, 8GB-123456789101-SHIP1
+supplementary.previousDocuments.hint = For example, 8GB123456789101-SHIP1
 supplementary.previousDocuments.documentCategory.error.empty = Document category cannot be empty
 supplementary.previousDocuments.documentCategory.error.incorrect = Document category is incorrect
 supplementary.previousDocuments.X = Temporary storage
@@ -536,7 +536,7 @@ supplementary.previousDocuments.documentType.hint = For example, MCR.
 supplementary.previousDocuments.documentType.error = Previous document code is incorrect
 supplementary.previousDocuments.documentType.empty = Previous document code cannot be empty
 supplementary.previousDocuments.documentReference = Enter the reference of the previous document
-supplementary.previousDocuments.documentReference.hint = For example, 8GB-123456789101-SHIP1.
+supplementary.previousDocuments.documentReference.hint = For example, 8GB123456789101-SHIP1.
 supplementary.previousDocuments.documentReference.error = Reference for the DUCR or MUCR is incorrect
 supplementary.previousDocuments.documentReference.empty = Reference for the DUCR or MUCR cannot be empty
 supplementary.previousDocuments.goodsItemIdentifier = Enter the goods item this previous document relates to

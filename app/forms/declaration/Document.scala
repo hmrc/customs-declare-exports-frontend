@@ -51,7 +51,7 @@ object Document {
       .verifying("supplementary.previousDocuments.documentReference.empty", nonEmpty)
       .verifying(
         "supplementary.previousDocuments.documentReference.error",
-        isEmpty or (isAlphanumeric and noLongerThan(35))
+        isEmpty or (isAlphanumericWithAllowedHyphenCharacter and noLongerThan(35))
       ),
     "goodsItemIdentifier" -> optional(
       text().verifying("supplementary.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3))
