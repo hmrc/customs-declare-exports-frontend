@@ -28,6 +28,7 @@ import forms.declaration.destinationCountries.{
 }
 import helpers.views.declaration.DestinationCountriesMessages
 import play.api.test.Helpers._
+import org.mockito.Mockito.reset
 
 class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with DestinationCountriesMessages {
 
@@ -36,6 +37,9 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
+  before {
+    reset(mockCustomsCacheService)
+  }
   trait SupplementarySetUp {
     authorizedUser()
     withCaching[DestinationCountriesSupplementary](None)
@@ -84,7 +88,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       "user is during standard declaration" in new StandardSetUp {
 
-        val cachedData = DestinationCountriesStandard("Poland", Seq("Slovakia", "Italy"), "England")
+        val cachedData = DestinationCountriesStandard("Poland", Seq("Slovakia", "Italy"), "United Kingdom")
         withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
 
         val result = route(app, getRequest(uri)).get
@@ -94,7 +98,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         page must include("Poland")
         page must include("Slovakia")
         page must include("Italy")
-        page must include("England")
+        page must include("United Kingdom")
       }
     }
   }
@@ -196,11 +200,11 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       }
     }
 
-    "validate input and add country of routing if value is correct" in {
+    "validate input and add country of routing if value is correct" in new StandardSetUp{
 
       val body = Seq(
         ("countryOfDispatch", ""),
-        ("countriesOfRouting[]", "Poland"),
+        ("countriesOfRouting[]", "PL"),
         ("countryOfDestination", ""),
         addActionUrlEncoded
       )
@@ -280,13 +284,13 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       "user is during standard declaration and provide correct values" in new StandardSetUp {
 
-        val cachedData = DestinationCountriesStandard("", Seq("Slovakia", "Italy"), "")
+        val cachedData = DestinationCountriesStandard("", Seq("SK", "IT"), "")
         withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
 
         val body = Seq(
-          ("countryOfDispatch", "Poland"),
+          ("countryOfDispatch", "PL"),
           ("countriesOfRouting[]", ""),
-          ("countryOfDestination", "Poland"),
+          ("countryOfDestination", "PL"),
           saveAndContinueActionUrlEncoded
         )
 
