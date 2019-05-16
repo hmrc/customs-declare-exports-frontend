@@ -18,10 +18,11 @@ package services
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
 import models.declaration.SupplementaryDeclarationDataSpec
 import org.scalatest.{Matchers, WordSpec}
+import uk.gov.hmrc.wco.dec.MetaData
 
 import scala.io.Source
 
-class WcoMetadataJavaMappingStrategySpec extends WordSpec with Matchers {
+class WcoMetadataJavaMappingStrategySpec extends WordSpec with Matchers with SchemaValidation {
 
   "WcoMetadataJavaMappingSpec" should {
     "produce metadata" in {
@@ -55,6 +56,8 @@ class WcoMetadataJavaMappingStrategySpec extends WordSpec with Matchers {
       val metaData = mapper.produceMetaData(SupplementaryDeclarationDataSpec.cacheMapAllRecords)
 
       mapper.toXml(metaData) should include(Source.fromURL(getClass.getResource("/wco_dec_metadata.xml")).mkString)
+
+      validateXmlAgainstSchema(mapper.serialise(metaData))
     }
   }
 }
