@@ -30,11 +30,14 @@ object SupervisingOfficeBuilder {
       .orNull
 
   private def createSupervisingOffice(data: WarehouseIdentification): SupervisingOffice = {
-    val iDType = new SupervisingOfficeIdentificationIDType()
-    iDType.setValue(data.supervisingCustomsOffice.orNull)
-
     val supervisingOffice = new SupervisingOffice()
-    supervisingOffice.setID(iDType)
+
+    if(data.supervisingCustomsOffice.getOrElse("").nonEmpty) {
+      val iDType = new SupervisingOfficeIdentificationIDType()
+      iDType.setValue(data.supervisingCustomsOffice.get)
+      supervisingOffice.setID(iDType)
+    }
+
     supervisingOffice
   }
 }
