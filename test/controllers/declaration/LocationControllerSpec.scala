@@ -72,7 +72,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       stringResult must include(messages(qualifierOfIdentError))
       stringResult must include(messages(identOfLocationError))
       stringResult must include(messages(additionalIdentifierError))
-      stringResult must include(messages(streetAndNumberError))
+      stringResult must include(messages(locationAddressError))
       stringResult must include(messages(logPostCodeError))
       stringResult must include(messages(cityError))
     }

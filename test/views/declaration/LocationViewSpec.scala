@@ -42,7 +42,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       assertMessage(qualifierOfIdent, "Qualifier code")
       assertMessage(identOfLocation, "Identification of location")
       assertMessage(additionalIdentifier, "Location code and Additional Qualifier")
-      assertMessage(streetAndNumber, "Street and number")
+      assertMessage(locationAddress, "Address Line 1")
       assertMessage(logPostCode, "Postcode")
       assertMessage(city, "City")
     }
@@ -55,7 +55,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       assertMessage(qualifierOfIdentError, "Qualifier of the identification is incorrect")
       assertMessage(identOfLocationError, "Identification of location is incorrect")
       assertMessage(additionalIdentifierError, "Additional identifier is incorrect")
-      assertMessage(streetAndNumberError, "Street and number is incorrect")
+      assertMessage(locationAddressError, "Address Line 1 is incorrect")
       assertMessage(logPostCodeError, "Postcode is incorrect")
       assertMessage(cityError, "City is incorrect")
     }
@@ -122,8 +122,8 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementById(view, "streetAndNumber-label").text() must be(messages(streetAndNumber))
-      getElementById(view, "streetAndNumber").attr("value") must be("")
+      getElementById(view, "addressLine-label").text() must be(messages(locationAddress))
+      getElementById(view, "addressLine").attr("value") must be("")
     }
 
     "display empty input with label for Postcode" in {
@@ -303,9 +303,9 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       val view = createView(form)
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, streetAndNumberError, "#streetAndNumber")
+      checkErrorLink(view, 1, locationAddressError, "#addressLine")
 
-      getElementByCss(view, "#error-message-streetAndNumber-input").text() must be(messages(streetAndNumberError))
+      getElementByCss(view, "#error-message-addressLine-input").text() must be(messages(locationAddressError))
     }
 
     "display error for incorrect Postcode" in {
@@ -380,7 +380,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorLink(view, 3, qualifierOfIdentError, "#qualifierOfIdentification")
       checkErrorLink(view, 4, identOfLocationError, "#identificationOfLocation")
       checkErrorLink(view, 5, additionalIdentifierError, "#additionalIdentifier")
-      checkErrorLink(view, 6, streetAndNumberError, "#streetAndNumber")
+      checkErrorLink(view, 6, locationAddressError, "#addressLine")
       checkErrorLink(view, 7, logPostCodeError, "#postCode")
       checkErrorLink(view, 8, cityError, "#city")
 
@@ -422,7 +422,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorLink(view, 2, typeOfLocationError, "#typeOfLocation")
       checkErrorLink(view, 3, qualifierOfIdentError, "#qualifierOfIdentification")
       checkErrorLink(view, 4, additionalIdentifierError, "#additionalIdentifier")
-      checkErrorLink(view, 5, streetAndNumberError, "#streetAndNumber")
+      checkErrorLink(view, 5, locationAddressError, "#addressLine")
       checkErrorLink(view, 6, logPostCodeError, "#postCode")
       checkErrorLink(view, 7, cityError, "#city")
 
@@ -468,7 +468,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       getElementById(view, "qualifierOfIdentification").attr("value") must be("CD")
       getElementById(view, "identificationOfLocation").attr("value") must be("TST")
       getElementById(view, "additionalIdentifier").attr("value") must be(ladditionalInformation)
-      getElementById(view, "streetAndNumber").attr("value") must be(lstreetAndNumber)
+      getElementById(view, "addressLine").attr("value") must be(lstreetAndNumber)
       getElementById(view, "postCode").attr("value") must be(lpostCode)
       getElementById(view, "city").attr("value") must be(lcity)
     }
