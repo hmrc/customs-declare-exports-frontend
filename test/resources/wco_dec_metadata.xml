@@ -15,6 +15,14 @@
         <ns3:Agent>
             <ns3:ID>9GB1234567ABCDEF</ns3:ID>
         </ns3:Agent>
+        <ns3:AuthorisationHolder>
+            <ns3:ID>PL213472539481923</ns3:ID>
+            <ns3:CategoryCode>1234</ns3:CategoryCode>
+        </ns3:AuthorisationHolder>
+        <ns3:AuthorisationHolder>
+            <ns3:ID>PT213472539481923</ns3:ID>
+            <ns3:CategoryCode>4321</ns3:CategoryCode>
+        </ns3:AuthorisationHolder>
         <ns3:BorderTransportMeans>
             <ns3:ID>1234567878ui</ns3:ID>
             <ns3:IdentificationTypeCode>40</ns3:IdentificationTypeCode>
