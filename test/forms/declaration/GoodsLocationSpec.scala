@@ -46,7 +46,7 @@ class GoodsLocationSpec extends WordSpec with MustMatchers {
       actualGoodsLocation.address.get.typeCode must be(defined)
       actualGoodsLocation.address.get.typeCode.get must equal(goodsLocation.qualifierOfIdentification)
       actualGoodsLocation.address.get.line must be(defined)
-      actualGoodsLocation.address.get.line.get must equal(goodsLocation.streetAndNumber.get)
+      actualGoodsLocation.address.get.line.get must equal(goodsLocation.addressLine.get)
       actualGoodsLocation.address.get.cityName must be(defined)
       actualGoodsLocation.address.get.cityName.get must equal(goodsLocation.city.get)
       actualGoodsLocation.address.get.postcodeId must be(defined)
@@ -64,7 +64,7 @@ object GoodsLocationSpec {
     qualifierOfIdentification = "Q",
     identificationOfLocation = Some("LOC"),
     additionalIdentifier = Some("Additional Identifier"),
-    streetAndNumber = Some("Street and Number"),
+    addressLine = Some("Street and Number"),
     postCode = Some("Postcode"),
     city = Some("City")
   )
@@ -74,7 +74,7 @@ object GoodsLocationSpec {
     qualifierOfIdentification = "",
     identificationOfLocation = None,
     additionalIdentifier = None,
-    streetAndNumber = None,
+    addressLine = None,
     postCode = None,
     city = None
   )
@@ -86,7 +86,7 @@ object GoodsLocationSpec {
       "qualifierOfIdentification" -> JsString("Q"),
       "identificationOfLocation" -> JsString("LOC"),
       "additionalIdentifier" -> JsString("Additional identifier"),
-      "streetAndNumber" -> JsString("Street and number"),
+      "addressLine" -> JsString("Street and number"),
       "postCode" -> JsString("Postcode"),
       "city" -> JsString("City")
     )
@@ -98,7 +98,7 @@ object GoodsLocationSpec {
       "qualifierOfIdentification" -> JsString(""),
       "identificationOfLocation" -> JsString(""),
       "additionalIdentifier" -> JsString(""),
-      "streetAndNumber" -> JsString(""),
+      "addressLine" -> JsString(""),
       "postCode" -> JsString(""),
       "city" -> JsString("")
     )
@@ -110,7 +110,7 @@ object GoodsLocationSpec {
       "qualifierOfIdentification" -> JsString(TestHelper.createRandomAlphanumericString(2)),
       "identificationOfLocation" -> JsString(TestHelper.createRandomAlphanumericString(4)),
       "additionalIdentifier" -> JsString(TestHelper.createRandomAlphanumericString(33)),
-      "streetAndNumber" -> JsString(TestHelper.createRandomAlphanumericString(71)),
+      "addressLine" -> JsString(TestHelper.createRandomAlphanumericString(71)),
       "postCode" -> JsString(TestHelper.createRandomAlphanumericString(10)),
       "city" -> JsString(TestHelper.createRandomAlphanumericString(36))
     )

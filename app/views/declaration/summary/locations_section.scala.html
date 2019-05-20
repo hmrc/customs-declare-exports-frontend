@@ -48,7 +48,7 @@
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.goodsExaminationAddress"),
         value = Seq(
-            locations.flatMap(_.goodsLocation).flatMap(_.streetAndNumber),
+            locations.flatMap(_.goodsLocation).flatMap(_.addressLine),
             locations.flatMap(_.goodsLocation).flatMap(_.city),
             locations.flatMap(_.goodsLocation).flatMap(_.postCode),
             locations.flatMap(_.goodsLocation).map(_.country)
