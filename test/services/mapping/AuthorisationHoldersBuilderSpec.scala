@@ -17,10 +17,10 @@
 package services.mapping
 import forms.declaration.DeclarationHolder
 import models.declaration.DeclarationHoldersData
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with MockitoSugar {
@@ -28,15 +28,11 @@ class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with Mockit
   "AuthorisationHolders" should {
     "correctly mapped to wco AuthorisationHolder" in {
 
-      val decHolder1TypeCode = "decHolder1TypeCode"
-      val decHolder1Eori = "decHolder1Eori"
       val decHolder1 =
-        new DeclarationHolder(authorisationTypeCode = Some(decHolder1TypeCode), eori = Some(decHolder1Eori))
+        new DeclarationHolder(authorisationTypeCode = Some("decHolder1TypeCode"), eori = Some("decHolder1Eori"))
 
-      val decHolder2TypeCode = "decHolder2TypeCode"
-      val decHolder2Eori = "decHolder2Eori"
       val decHolder2 =
-        new DeclarationHolder(authorisationTypeCode = Some(decHolder2TypeCode), eori = Some(decHolder2Eori))
+        new DeclarationHolder(authorisationTypeCode = Some("decHolder2TypeCode"), eori = Some("decHolder2Eori"))
 
       val declarationHoldersData = new DeclarationHoldersData(Seq(decHolder1, decHolder2))
       implicit val cacheMap = mock[CacheMap]
@@ -46,12 +42,11 @@ class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with Mockit
       val mappedAuthHolder = AuthorisationHoldersBuilder.build
       mappedAuthHolder.isEmpty shouldBe false
       mappedAuthHolder.size shouldBe declarationHoldersData.holders.size
-      mappedAuthHolder.head.getCategoryCode.getValue shouldBe decHolder1TypeCode
-      mappedAuthHolder.head.getID.getValue shouldBe decHolder1Eori
+      mappedAuthHolder.get(0).getCategoryCode.getValue should be("decHolder1TypeCode")
+      mappedAuthHolder.get(0).getID.getValue should be("decHolder1Eori")
 
-      mappedAuthHolder.last.getCategoryCode.getValue shouldBe decHolder2TypeCode
-      mappedAuthHolder.last.getID.getValue shouldBe decHolder2Eori
-
+      mappedAuthHolder.get(1).getCategoryCode.getValue should be("decHolder2TypeCode")
+      mappedAuthHolder.get(1).getID.getValue should be("decHolder2Eori")
     }
   }
 

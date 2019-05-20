@@ -16,6 +16,7 @@
 
 package services.mapping.declaration
 
+import services.mapping.AuthorisationHoldersBuilder
 import services.mapping.goodsshipment.GoodsShipmentBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
@@ -41,6 +42,11 @@ object DeclarationBuilder {
     declaration.setSupervisingOffice(SupervisingOfficeBuilder.build)
     declaration.setTotalPackageQuantity(TotalPackageQuantityBuilder.build)
     declaration.setTypeCode(TypeCodeBuilder.build)
+
+    val authorisationHolders = AuthorisationHoldersBuilder.build
+    if (authorisationHolders != null && !authorisationHolders.isEmpty) {
+      declaration.getAuthorisationHolder.addAll(authorisationHolders)
+    }
 
     val currencyExchangeList = CurrencyExchangeBuilder.build
     if (currencyExchangeList != null && !currencyExchangeList.isEmpty) {
