@@ -15,6 +15,7 @@
  */
 
 package services.mapping.goodsshipment
+import forms.Choice
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
@@ -23,7 +24,7 @@ import scala.collection.JavaConverters._
 
 object GoodsShipmentBuilder {
 
-  def build(implicit cacheMap: CacheMap): GoodsShipment = {
+  def build(implicit cacheMap: CacheMap, choice: Choice): GoodsShipment = {
     val goodsShipment = new GoodsShipment()
 
     goodsShipment.setTransactionNatureCode(GoodsShipmentTransactionTypeBuilder.build)

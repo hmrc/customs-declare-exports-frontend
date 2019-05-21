@@ -25,9 +25,8 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 
 object SpecificCircumstancesCodeBuilder {
 
-  def build(implicit cacheMap: CacheMap): DeclarationSpecificCircumstancesCodeCodeType =
-    cacheMap
-      .getEntry[Choice](Choice.choiceId)
+  def build(implicit cacheMap: CacheMap, choice: Choice): DeclarationSpecificCircumstancesCodeCodeType =
+   Option(choice)
       .filter(choice => choice.value.equals(AllowedChoiceValues.StandardDec))
       .map(buildCircumstancesCode)
       .orNull

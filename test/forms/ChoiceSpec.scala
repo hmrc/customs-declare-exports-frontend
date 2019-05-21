@@ -55,7 +55,8 @@ class ChoiceSpec extends WordSpec with MustMatchers {
 }
 
 object ChoiceSpec {
-  val correctChoice = Choice(SupplementaryDec)
+  val supplementaryChoice = Choice(SupplementaryDec)
+  val standardChoice = Choice(StandardDec)
   val incorrectChoice = Choice("InvalidChoice")
   val emptyChoice = Choice("")
 

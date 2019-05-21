@@ -16,6 +16,7 @@
 
 package services.mapping
 
+import forms.ChoiceSpec.supplementaryChoice
 import javax.xml.bind.JAXBElement
 import javax.xml.namespace.QName
 import models.declaration.SupplementaryDeclarationDataSpec
@@ -32,7 +33,7 @@ class XmlMarshallingSpec extends WordSpec with Matchers with MockitoSugar {
   "XmlMarshalling" should {
     "generate correct xml payload for empty Metadata with defaults when marshalled" in {
 
-      val metaData = MetaDataBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords)
+      val metaData = MetaDataBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
 
       populateDeclaration(metaData)
       import java.io.StringWriter
@@ -61,7 +62,7 @@ class XmlMarshallingSpec extends WordSpec with Matchers with MockitoSugar {
   }
 
   private def populateDeclaration(metaData: MetaData): Unit = {
-    val declaration = DeclarationBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords)
+    val declaration = DeclarationBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
 
     val element: JAXBElement[Declaration] = new JAXBElement[Declaration](
       new QName("urn:wco:datamodel:WCO:DEC-DMS:2", "Declaration"),

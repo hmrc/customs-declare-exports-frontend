@@ -16,9 +16,9 @@
 
 package services.mapping.goodsshipment
 
+import forms.ChoiceSpec
 import forms.declaration.DestinationCountriesSupplementarySpec
 import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard}
-import forms.{Choice, ChoiceSpec}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -34,11 +34,10 @@ class DestinationBuilderSpec extends WordSpec with Matchers {
             CacheMap(
               "CacheID",
               Map(
-                Choice.choiceId -> ChoiceSpec.correctSupplementaryChoiceJSON,
                 DestinationCountries.formId -> DestinationCountriesSupplementarySpec.correctDestinationCountriesSupplementaryJSON
               )
             )
-          val destination = DestinationBuilder.build(cacheMap)
+          val destination = DestinationBuilder.build(cacheMap, ChoiceSpec.supplementaryChoice)
           destination.getCountryCode.getValue should be("PL")
         }
         "countryOfDestination has not been supplied" in {
@@ -46,11 +45,10 @@ class DestinationBuilderSpec extends WordSpec with Matchers {
             CacheMap(
               "CacheID",
               Map(
-                Choice.choiceId -> ChoiceSpec.correctSupplementaryChoiceJSON,
                 DestinationCountries.formId -> DestinationCountriesSupplementarySpec.emptyDestinationCountriesSupplementaryJSON
               )
             )
-          DestinationBuilder.build(cacheMap) should be(null)
+          DestinationBuilder.build(cacheMap, ChoiceSpec.supplementaryChoice) should be(null)
         }
       }
 
@@ -59,24 +57,18 @@ class DestinationBuilderSpec extends WordSpec with Matchers {
           implicit val cacheMap: CacheMap =
             CacheMap(
               "CacheID",
-              Map(
-                Choice.choiceId -> ChoiceSpec.correctStandardChoiceJSON,
-                DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("GB", Seq("PT"), "PL"))
-              )
+              Map(DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("GB", Seq("PT"), "PL")))
             )
-          val destination = DestinationBuilder.build(cacheMap)
+          val destination = DestinationBuilder.build(cacheMap, ChoiceSpec.standardChoice)
           destination.getCountryCode.getValue should be("PL")
         }
         "countryOfDestination has not been supplied" in {
           implicit val cacheMap: CacheMap =
             CacheMap(
               "CacheID",
-              Map(
-                Choice.choiceId -> ChoiceSpec.correctStandardChoiceJSON,
-                DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("", Seq(""), ""))
-              )
+              Map(DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("", Seq(""), "")))
             )
-          DestinationBuilder.build(cacheMap) should be(null)
+          DestinationBuilder.build(cacheMap, ChoiceSpec.standardChoice) should be(null)
         }
       }
     }
