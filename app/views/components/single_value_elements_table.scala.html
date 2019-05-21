@@ -20,19 +20,17 @@
     elements: Seq[String],
     buttonMessagesKey: String = "site.remove"
 )(implicit messages: Messages)
-@if(elements.nonEmpty) {
 
-    <div class="field-group">
-        <table >
-        @for(elem <- elements) {
-            <tr>
-                <th>@elem</th>
-                <th>
-                    <button class="button--secondary" name="@Remove.toString" value="@elem">@messages(buttonMessagesKey)</button>
-                </th>
-            </tr>
-        }
-        </table>
-        <br><br>
-    </div>
-}
+<div class="field-group">
+    <table >
+    @for(elem <- elements) {
+        <tr>
+            <th>@elem</th>
+            <th>
+                <button class="button--secondary" name="@Remove.toString" value="@elem">@messages(buttonMessagesKey)</button>
+            </th>
+        </tr>
+    }
+    </table>
+    <br><br>
+</div>

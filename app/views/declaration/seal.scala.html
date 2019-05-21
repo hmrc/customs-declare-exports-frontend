@@ -19,6 +19,7 @@
 @import forms.declaration.Seal
 @import uk.gov.hmrc.play.views.html._
 @import controllers.util.Remove
+
 @(form: Form[Seal], seals: Seq[Seal], hasContainers:Boolean)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
@@ -26,17 +27,17 @@
     appConfig = appConfig
 ) {
 
-    @{if(hasContainers) components.back_link("/customs-declare-exports/declaration/add-transport-containers")
-        else  components.back_link("/customs-declare-exports/declaration/transport-details")
-}
+    @{
+        if(hasContainers)   components.back_link("/customs-declare-exports/declaration/add-transport-containers")
+        else                components.back_link("/customs-declare-exports/declaration/transport-details")
+    }
 
-    @helpers.form(SealController.submitForm(), 'autoComplete -> "off") {
+    @components.error_summary(form.errors)
 
-        @components.error_summary(form.errors)
+    @components.page_title(Some("standard.seal.title"), None)
 
-        @components.page_title(Some("standard.seal.title"), None)
-
-        @if(seals.nonEmpty) {
+    @if(seals.nonEmpty) {
+        @helpers.form(SealController.submitForm(), 'autoComplete -> "off") {
             <div class="field-group">
                 <table >
                     <thead>
@@ -57,7 +58,9 @@
                 <br><br>
             </div>
         }
+    }
 
+    @helpers.form(SealController.submitForm(), 'autoComplete -> "off") {
         @components.input_text(
             field = form("id"),
             label = messages("standard.seal.id")

@@ -16,16 +16,16 @@
 
 package services
 
-import base.TestHelper._
 import base.CustomExportsBaseSpec
+import base.TestHelper._
 import forms.declaration.{CommodityMeasure, ItemType, PackageInformation}
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.OptionValues
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.http.{HttpResponse}
 import uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem
 
 import scala.concurrent.Future
@@ -68,9 +68,9 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
       val cacheMap = getCacheMap(input, CommodityMeasure.commodityFormId)
       val commodity = itemsCachingService.commodityFromGoodsMeasure(cacheMap).value
       commodity.goodsMeasure.getOrElse(fail()).grossMassMeasure.value.unitCode.value.toString mustBe "KGM"
-      commodity.goodsMeasure.getOrElse(fail()).grossMassMeasure.value.value.value.toString mustBe input.grossMass
+      commodity.goodsMeasure.getOrElse(fail()).grossMassMeasure.value.value.value mustBe BigDecimal(input.grossMass)
       commodity.goodsMeasure.getOrElse(fail()).netWeightMeasure.value.unitCode.value.toString mustBe "KGM"
-      commodity.goodsMeasure.getOrElse(fail()).netWeightMeasure.value.value.value.toString mustBe input.netMass
+      commodity.goodsMeasure.getOrElse(fail()).netWeightMeasure.value.value.value mustBe BigDecimal(input.netMass)
       commodity.goodsMeasure
         .getOrElse(fail())
         .tariffQuantity

@@ -57,7 +57,7 @@ class TransportContainerController @Inject()(
       }
   }
 
-  def handlePost(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest()
 
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
