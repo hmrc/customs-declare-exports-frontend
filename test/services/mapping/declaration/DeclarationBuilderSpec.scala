@@ -15,6 +15,7 @@
  */
 
 package services.mapping.declaration
+import forms.ChoiceSpec.supplementaryChoice
 import models.declaration.SupplementaryDeclarationDataSpec
 import org.scalatest.{Matchers, WordSpec}
 import wco.datamodel.wco.dec_dms._2.Declaration
@@ -23,7 +24,8 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
 
   "DeclarationBuilder" should {
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance" in {
-      val declaration = DeclarationBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords)
+      val declaration =
+        DeclarationBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
 
       declaration.getAgent.getID.getValue should be("9GB1234567ABCDEF")
       declaration.getAgent.getName should be(null)

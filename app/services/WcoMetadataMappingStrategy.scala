@@ -16,11 +16,12 @@
 
 package services
 
+import forms.Choice
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 trait WcoMetadataMappingStrategy {
 
-  def produceMetaData(cacheMap: CacheMap): Any
+  def produceMetaData(cacheMap: CacheMap, choice: Choice): Any
 
   def declarationUcr(metaData: Any): Option[String]
 

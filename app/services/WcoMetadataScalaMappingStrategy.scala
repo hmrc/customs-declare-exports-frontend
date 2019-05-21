@@ -15,44 +15,25 @@
  */
 
 package services
+import forms.Choice
 import forms.declaration._
-import models.DeclarationFormats._
+import models.declaration.SupplementaryDeclarationData
 import models.declaration.governmentagencygoodsitem.Formats._
-import models.declaration.{governmentagencygoodsitem, SupplementaryDeclarationData}
-import play.api.Logger
-import play.api.libs.json.Json
+import models.declaration.governmentagencygoodsitem.{GovernmentAgencyGoodsItem => InternalAgencyGoodsItem}
 import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
-import models.declaration.governmentagencygoodsitem.{
-  Classification,
-  Commodity,
-  DangerousGoods,
-  GoodsMeasure,
-  Packaging,
-  GovernmentAgencyGoodsItem => InternalAgencyGoodsItem
-}
-import uk.gov.hmrc.wco.dec
 import uk.gov.hmrc.wco.dec.{
-  Amount,
   BorderTransportMeans,
-  DateTimeElement,
-  DateTimeString,
-  Declaration,
-  GovernmentAgencyGoodsItem,
-  GovernmentAgencyGoodsItemAdditionalDocument,
-  GovernmentAgencyGoodsItemAdditionalDocumentSubmitter,
-  Measure,
   MetaData,
   PreviousDocument,
   TransportEquipment,
   TransportMeans,
-  WriteOff,
   Seal => WCOSeal
 }
 
 trait WcoMetadataScalaMappingStrategy extends WcoMetadataMappingStrategy {
 
-  override def produceMetaData(cacheMap: CacheMap): MetaData = {
+  override def produceMetaData(cacheMap: CacheMap, choice: Choice): MetaData = {
 
     val metaData = createHeaderData(cacheMap)
     val goodsItems =
