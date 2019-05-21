@@ -68,7 +68,7 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
       result.declaration.flatMap(_.agent) must be(defined)
       result.declaration.flatMap(_.invoiceAmount).flatMap(_.value) must be(Some(BigDecimal("1212312.12")))
       result.declaration.flatMap(_.invoiceAmount).flatMap(_.currencyId) must be(Some("GBP"))
-      result.declaration.value.authorisationHolders.size mustBe 1
+      result.declaration.value.authorisationHolders.size mustBe 2
       result.declaration.flatMap(_.exitOffice).flatMap(_.id) mustBe Some("123qwe12")
       result.declaration.flatMap(_.goodsShipment) must be(defined)
       val goodsShipment = result.declaration.flatMap(_.goodsShipment).value
