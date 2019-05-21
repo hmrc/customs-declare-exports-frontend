@@ -33,16 +33,17 @@
     title = messages("supplementary.packageInformation.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(PackageInformationController.submitForm(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/declaration/item-type")
 
-        @components.error_summary(form.errors)
+    @components.back_link("/customs-declare-exports/declaration/item-type")
 
-        @components.section_header(messages("supplementary.items"))
+    @components.error_summary(form.errors)
 
-        @components.page_title(Some("supplementary.packageInformation.title"))
+    @components.section_header(messages("supplementary.items"))
 
-        @if(packages.nonEmpty) {
+    @components.page_title(Some("supplementary.packageInformation.title"))
+
+    @if(packages.nonEmpty) {
+        @helpers.form(PackageInformationController.submitForm(), 'autoComplete -> "off") {
             <table class="form-group">
                 <caption>@tableHeader</caption>
                 <thead>
@@ -60,14 +61,18 @@
                     <td>@item.numberOfPackages</td>
                     <td>@item.shippingMarks</td>
                     <td>
-                        <button class="button--secondary" name=@messages("site.remove") value="@index">@messages("site.remove")</button>
+                        <button class="button--secondary" name=@messages("site.remove") value=@index>
+                            @messages("site.remove")
+                        </button>
                     </td>
                 </tr>
                 }
                 </tbody>
             </table>
         }
+    }
 
+    @helpers.form(PackageInformationController.submitForm(), 'autoComplete -> "off") {
         @components.input_text(
             field = form("typesOfPackages"),
             label = messages("supplementary.packageInformation.typesOfPackages"),

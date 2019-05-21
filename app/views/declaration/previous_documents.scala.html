@@ -27,14 +27,15 @@
     title = messages("supplementary.previousDocuments"),
     appConfig = appConfig
 ) {
-    @helpers.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/declaration/transaction-type")
 
-        @components.error_summary(form.errors)
+    @components.back_link("/customs-declare-exports/declaration/transaction-type")
 
-        @components.section_header(messages("supplementary.consignmentReferences.heading"))
+    @components.error_summary(form.errors)
 
-        @if(documents.nonEmpty) {
+    @components.section_header(messages("supplementary.consignmentReferences.heading"))
+
+    @if(documents.nonEmpty) {
+        @helpers.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
             <table class="form-group">
                 <caption>@messages("supplementary.previousDocuments")</caption>
                 <thead>
@@ -54,14 +55,18 @@
                     <td>@document.documentReference</td>
                     <td>@document.goodsItemIdentifier.getOrElse("")</td>
                     <td>
-                        <button class="button--secondary" name=@messages("site.remove") value="@index">@messages("site.remove") </button>
+                        <button class="button--secondary" name=@messages("site.remove") value=@index>
+                            @messages("site.remove")
+                        </button>
                     </td>
                 </tr>
                 }
                 </tbody>
             </table>
         }
+    }
 
+    @helpers.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
         @components.page_title(Some("supplementary.previousDocuments.title"), Some("supplementary.previousDocuments.hint"))
 
         @components.input_radio(

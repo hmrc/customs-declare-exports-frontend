@@ -26,23 +26,24 @@
     title = messages("supplementary.additionalInformation"),
     appConfig = appConfig
 ) {
-    @helpers.form(AdditionalInformationController.saveAdditionalInfo(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/declaration/commodity-measure")
 
-        @components.error_summary(form.errors)
+    @components.back_link("/customs-declare-exports/declaration/commodity-measure")
 
-        @components.section_header(messages("supplementary.summary.yourReferences.header"))
+    @components.error_summary(form.errors)
 
-        @components.page_title(Some("supplementary.additionalInformation.title"))
+    @components.section_header(messages("supplementary.summary.yourReferences.header"))
 
-        @if(items.nonEmpty) {
+    @components.page_title(Some("supplementary.additionalInformation.title"))
+
+    @if(items.nonEmpty) {
+        @helpers.form(AdditionalInformationController.saveAdditionalInfo(), 'autoComplete -> "off") {
             <div class="field-group">
                 <table >
                 @items.zipWithIndex.map { case (item, index) =>
                 <tr>
                     <th>@item</th>
                     <th>
-                        <button class="button--secondary" name="@Remove.toString" value="@index">@messages("site.remove")</button>
+                        <button class="button--secondary" name="@Remove.toString" value=@index>@messages("site.remove")</button>
                 </th>
                 </tr>
                 }
@@ -50,7 +51,9 @@
                 <br><br>
             </div>
         }
+    }
 
+    @helpers.form(AdditionalInformationController.saveAdditionalInfo(), 'autoComplete -> "off") {
         @components.input_text(
             field = form("code"),
             label = messages("supplementary.additionalInformation.code"),

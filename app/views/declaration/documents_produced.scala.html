@@ -30,11 +30,10 @@
     appConfig = appConfig
 ) {
 
-    @helpers.form(DocumentsProducedController.saveForm(), 'autoComplete -> "off") {
+    @components.back_link("/customs-declare-exports/declaration/additional-information")
 
-        @components.back_link("/customs-declare-exports/declaration/additional-information")
-
-        @if(documents.nonEmpty) {
+    @if(documents.nonEmpty) {
+        @helpers.form(DocumentsProducedController.saveForm(), 'autoComplete -> "off") {
             <table class="form-group">
                 <thead>
                     <tr>
@@ -62,19 +61,21 @@
                         <td>@item.dateOfValidity</td>
                         <td>@item.documentWriteOff.map(_.measurementUnit)</td>
                         <td>@item.documentWriteOff.map(_.documentQuantity)</td>
-                        <td><button class="button--secondary" name="@Remove.toString" value="@index">@messages("site.remove")</button></td>
+                        <td><button class="button--secondary" name=@Remove.toString value=@index>@messages("site.remove")</button></td>
                     </tr>
                 }
                 </tbody>
             </table>
         }
+    }
 
-        @components.error_summary(form.errors)
+    @components.error_summary(form.errors)
 
-        @components.section_header(messages("supplementary.summary.yourReferences.header"))
+    @components.section_header(messages("supplementary.summary.yourReferences.header"))
 
-        @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
+    @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
 
+    @helpers.form(DocumentsProducedController.saveForm(), 'autoComplete -> "off") {
         @components.input_text(
             field = form(documentTypeCodeKey),
             label = messages("supplementary.addDocument.documentTypeCode"),
