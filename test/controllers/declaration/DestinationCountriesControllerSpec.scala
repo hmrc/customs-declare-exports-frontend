@@ -21,14 +21,10 @@ import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.DestinationCountriesSupplementarySpec._
-import forms.declaration.destinationCountries.{
-  DestinationCountries,
-  DestinationCountriesStandard,
-  DestinationCountriesSupplementary
-}
+import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard, DestinationCountriesSupplementary}
 import helpers.views.declaration.DestinationCountriesMessages
-import play.api.test.Helpers._
 import org.mockito.Mockito.reset
+import play.api.test.Helpers._
 
 class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with DestinationCountriesMessages {
 
@@ -211,7 +207,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-      status(result) must be(SEE_OTHER)
+      status(result) must be(OK)
     }
 
     "show error message for standard declaration" when {
@@ -260,7 +256,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) must be(OK)
       }
     }
 

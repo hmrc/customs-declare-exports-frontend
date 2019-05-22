@@ -21,7 +21,7 @@
 @import services.Country
 @import uk.gov.hmrc.play.views.html._
 
-@(form: Form[DestinationCountriesStandard], routingCountries: Seq[String])(implicit request: Request[_], messages: Messages, countries: List[Country], appConfig: AppConfig)
+@(form: Form[DestinationCountriesStandard], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages, countries: List[Country], appConfig: AppConfig)
 
 @main_template(
     title = messages("declaration.destinationCountries.title"),
