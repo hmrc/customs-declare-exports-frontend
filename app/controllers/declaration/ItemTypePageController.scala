@@ -78,8 +78,8 @@ class ItemTypePageController @Inject()(
     val itemTypeUpdated = updateCachedItemTypeAddition(itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnAddition(itemTypeUpdated) match {
       case Valid =>
-        customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, itemTypeUpdated).map { _ =>
-          Redirect(controllers.declaration.routes.ItemTypePageController.displayPage())
+        customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, itemTypeUpdated).flatMap { _ =>
+          refreshPage(itemTypeInput)
         }
       case Invalid(errors) =>
         val formWithErrors =
@@ -161,13 +161,34 @@ class ItemTypePageController @Inject()(
 
       val itemTypeUpdated = fieldName match {
         case `taricAdditionalCodesKey` =>
-          itemTypeCached.copy(taricAdditionalCodes = itemTypeCached.taricAdditionalCodes.patch(index, Nil, 1))
+          itemTypeCached.copy(taricAdditionalCodes = removeElement(itemTypeCached.taricAdditionalCodes, index))
         case `nationalAdditionalCodesKey` =>
-          itemTypeCached.copy(nationalAdditionalCodes = itemTypeCached.nationalAdditionalCodes.patch(index, Nil, 1))
+          itemTypeCached.copy(nationalAdditionalCodes = removeElement(itemTypeCached.nationalAdditionalCodes, index))
       }
-      customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, itemTypeUpdated).map { _ =>
-        Redirect(controllers.declaration.routes.ItemTypePageController.displayPage())
+      customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, itemTypeUpdated).flatMap { _ =>
+        val itemTypeInput: ItemType = ItemType.form.bindFromRequest().value.getOrElse(ItemType.empty)
+        refreshPage(itemTypeInput)
       }
-    } else Future.successful(Redirect(controllers.declaration.routes.ItemTypePageController.displayPage()))
+    } else {
+      val itemTypeInput: ItemType = ItemType.form.bindFromRequest().value.getOrElse(ItemType.empty)
+      refreshPage(itemTypeInput)
+    }
+
+  private def removeElement[A](collection: Seq[A], indexToRemove: Int): Seq[A] = collection.patch(indexToRemove, Nil, 1)
+
+  private def refreshPage(itemTypeInput: ItemType)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+    customsCacheService.fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id).map {
+      case Some(cachedData) =>
+        Ok(
+          item_type(
+            appConfig,
+            ItemType.form.fill(itemTypeInput),
+            cachedData.taricAdditionalCodes,
+            cachedData.nationalAdditionalCodes
+          )
+        )
+      case _ =>
+        Ok(item_type(appConfig, ItemType.form))
+    }
 
 }
