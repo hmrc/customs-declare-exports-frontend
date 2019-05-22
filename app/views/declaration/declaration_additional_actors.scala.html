@@ -17,34 +17,34 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import controllers.util.Remove
+@import forms.Choice.AllowedChoiceValues._
 @import forms.declaration.DeclarationAdditionalActors
 @import forms.declaration.DeclarationAdditionalActors.PartyType._
-@import models.declaration.DeclarationAdditionalActorsData
-@import uk.gov.hmrc.play.views.html._
-@import forms.Choice.AllowedChoiceValues._
-@import utils.RadioOption
 @import models.requests.JourneyRequest
+@import uk.gov.hmrc.play.views.html._
+@import utils.RadioOption
+
 @(appConfig: AppConfig, form: Form[DeclarationAdditionalActors], actors: Seq[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.additionalActors.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
 
-        @{
-            request.choice.value match {
-                case SupplementaryDec => components.back_link("/customs-declare-exports/declaration/representative-details")
-                case StandardDec      => components.back_link("/customs-declare-exports/declaration/carrier-details")
-            }
+    @{
+        request.choice.value match {
+            case SupplementaryDec => components.back_link("/customs-declare-exports/declaration/representative-details")
+            case StandardDec      => components.back_link("/customs-declare-exports/declaration/carrier-details")
         }
+    }
 
-        @components.error_summary(form.errors)
+    @components.error_summary(form.errors)
 
-        @components.section_header(messages("supplementary.summary.parties.header"))
-        @components.page_title(Some("supplementary.additionalActors.title"), Some(""))
+    @components.section_header(messages("supplementary.summary.parties.header"))
+    @components.page_title(Some("supplementary.additionalActors.title"), Some(""))
 
-        @if(actors.nonEmpty) {
+    @if(actors.nonEmpty) {
+        @helpers.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
             <table class="form-group">
                 <thead>
                     <tr>
@@ -64,10 +64,12 @@
                 </tbody>
             </table>
         }
+    }
 
 
-        <span class="heading-24">@messages("supplementary.additionalActors.partyType")</span>
+    <span class="heading-24">@messages("supplementary.additionalActors.partyType")</span>
 
+    @helpers.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
         @components.input_radio(
             field = form("partyType"),
             legend = "",
