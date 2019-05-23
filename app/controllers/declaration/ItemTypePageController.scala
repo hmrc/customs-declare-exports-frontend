@@ -30,11 +30,13 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.collections.Removable.RemovableSeq
 import utils.validators.forms.supplementary.ItemTypeValidator
 import utils.validators.forms.{Invalid, Valid}
 import views.html.declaration.item_type
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class ItemTypePageController @Inject()(
   appConfig: AppConfig,
@@ -154,27 +156,26 @@ class ItemTypePageController @Inject()(
 
   private def handleRemoval(keys: Seq[String], itemTypeCached: ItemType)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    if (keys.nonEmpty) {
-      val fieldName = keys.head.split("_")(0)
-      val index = keys.head.split("_")(1).toInt
+  ): Future[Result] = {
+    val key = keys.headOption.getOrElse("")
+    val label = Label(key)
 
-      val itemTypeUpdated = fieldName match {
-        case `taricAdditionalCodesKey` =>
-          itemTypeCached.copy(taricAdditionalCodes = removeElement(itemTypeCached.taricAdditionalCodes, index))
-        case `nationalAdditionalCodesKey` =>
-          itemTypeCached.copy(nationalAdditionalCodes = removeElement(itemTypeCached.nationalAdditionalCodes, index))
-      }
-      customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, itemTypeUpdated).flatMap { _ =>
-        val itemTypeInput: ItemType = ItemType.form.bindFromRequest().value.getOrElse(ItemType.empty)
-        refreshPage(itemTypeInput)
-      }
-    } else {
+    val itemTypeUpdated = label.name match {
+      case `taricAdditionalCodesKey` =>
+        itemTypeCached.copy(taricAdditionalCodes = removeElement(itemTypeCached.taricAdditionalCodes, label.index))
+      case `nationalAdditionalCodesKey` =>
+        itemTypeCached.copy(
+          nationalAdditionalCodes = removeElement(itemTypeCached.nationalAdditionalCodes, label.index)
+        )
+    }
+    customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, itemTypeUpdated).flatMap { _ =>
       val itemTypeInput: ItemType = ItemType.form.bindFromRequest().value.getOrElse(ItemType.empty)
       refreshPage(itemTypeInput)
     }
+  }
 
-  private def removeElement[A](collection: Seq[A], indexToRemove: Int): Seq[A] = collection.patch(indexToRemove, Nil, 1)
+  private def removeElement(collection: Seq[String], indexToRemove: Int): Seq[String] =
+    collection.removeByIdx(indexToRemove)
 
   private def refreshPage(itemTypeInput: ItemType)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     customsCacheService.fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id).map {
@@ -190,5 +191,21 @@ class ItemTypePageController @Inject()(
       case _ =>
         Ok(item_type(appConfig, ItemType.form))
     }
+
+  private case class Label(name: String, index: Int)
+  private object Label {
+
+    def apply(str: String): Label =
+      if (isFormatCorrect(str)) {
+        val name = str.split("_")(0)
+        val idx = str.split("_")(1)
+        new Label(name, idx.toInt)
+      } else throw new IllegalArgumentException(messagesApi("error.removeAction.incorrectFormat"))
+
+    private def isFormatCorrect(str: String): Boolean = {
+      val labelElements = str.split("_")
+      (labelElements.length == 2) && Try(labelElements(1).toInt).isSuccess
+    }
+  }
 
 }

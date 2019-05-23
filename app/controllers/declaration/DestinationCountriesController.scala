@@ -26,6 +26,7 @@ import forms.declaration.destinationCountries._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
+import play.api.Logger
 import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
@@ -33,11 +34,13 @@ import services.countries.Countries
 import services.{Country, CustomsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.collections.Removable.RemovableSeq
 import utils.validators.forms.supplementary.DestinationCountriesValidator
 import utils.validators.forms.{Invalid, Valid}
 import views.html.declaration.{destination_countries_standard, destination_countries_supplementary}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class DestinationCountriesController @Inject()(
   override val messagesApi: MessagesApi,
@@ -49,6 +52,7 @@ class DestinationCountriesController @Inject()(
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController with I18nSupport {
 
+  private val logger = Logger(this.getClass())
   implicit val countryList: List[Country] = countries.all
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -122,8 +126,9 @@ class DestinationCountriesController @Inject()(
 
     DestinationCountriesValidator.validateOnAddition(countriesStandardUpdated) match {
       case Valid =>
-        customsCacheService.cache[DestinationCountriesStandard](cacheId, formId, countriesStandardUpdated).flatMap { _ =>
-          refreshPage(countriesStandardInput)
+        customsCacheService.cache[DestinationCountriesStandard](cacheId, formId, countriesStandardUpdated).flatMap {
+          _ =>
+            refreshPage(countriesStandardInput)
         }
       case Invalid(errors) =>
         Future.successful(
@@ -178,20 +183,24 @@ class DestinationCountriesController @Inject()(
   private def removeRoutingCountry(keys: Seq[String], cachedData: DestinationCountriesStandard)(
     implicit request: JourneyRequest[_]
   ): Future[Result] = {
-    val key = keys.headOption.getOrElse("")
+    val key = if (isKeysFormatCorrect(keys)) {
+      keys.head.toInt
+    } else throw new IllegalArgumentException("Data format for removal request is incorrect")
 
     val updatedCountries = removeElement(cachedData.countriesOfRouting, key)
 
     val updatedCache = cachedData.copy(countriesOfRouting = updatedCountries)
 
     customsCacheService.cache[DestinationCountriesStandard](cacheId, formId, updatedCache).flatMap { _ =>
-      val destinationCountriesInput = standardForm().bindFromRequest().value.getOrElse(DestinationCountriesStandard.empty())
+      val destinationCountriesInput =
+        standardForm().bindFromRequest().value.getOrElse(DestinationCountriesStandard.empty())
       refreshPage(destinationCountriesInput)
     }
   }
 
-  private def removeElement[A](collection: Seq[A], indexToRemove: String): Seq[A] =
-    collection.zipWithIndex.filter(_._2.toString != indexToRemove).map(_._1)
+  private def isKeysFormatCorrect(keys: Seq[String]): Boolean = keys.length == 1 && Try(keys.head.toInt).isSuccess
+
+  private def removeElement[A](collection: Seq[A], indexToRemove: Int): Seq[A] = collection.removeByIdx(indexToRemove)
 
   private def refreshPage(
     inputDestinationCountries: DestinationCountriesStandard
