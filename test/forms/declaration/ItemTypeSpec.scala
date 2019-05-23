@@ -36,7 +36,7 @@ object ItemTypeSpec {
     unDangerousGoodsCode = Some(unDangerousGoodsCode),
     statisticalValue = statisticalValue
   )
-  val mandatoryOnlyItemType = ItemType(
+  val mandatoryFieldsOnlyItemType = ItemType(
     combinedNomenclatureCode = combinedNomenclatureCode,
     taricAdditionalCodes = Nil,
     nationalAdditionalCodes = Nil,
@@ -65,7 +65,7 @@ object ItemTypeSpec {
       "statisticalValue" -> JsString(statisticalValue)
     )
   )
-  val mandatoryOnlyItemTypeJSON: JsValue = JsObject(
+  val mandatoryFieldsOnlyItemTypeJSON: JsValue = JsObject(
     Map(
       "combinedNomenclatureCode" -> JsString(combinedNomenclatureCode),
       "taricAdditionalCode" -> JsArray(Seq(JsString(""))),
@@ -85,5 +85,24 @@ object ItemTypeSpec {
       "statisticalValue" -> JsString("")
     )
   )
+
+  val correctItemTypeMap: Map[String, String] =
+    Map(
+      "combinedNomenclatureCode" -> combinedNomenclatureCode ,
+      "taricAdditionalCode[0]" -> taricAdditionalCode ,
+      "nationalAdditionalCode[0]" -> nationalAdditionalCode ,
+      "descriptionOfGoods" -> descriptionOfGoods ,
+      "cusCode" -> cusCode ,
+      "statisticalValue" -> statisticalValue
+    )
+  val mandatoryFieldsOnlyItemTypeMap: Map[String, String] =
+    Map(
+      "combinedNomenclatureCode" -> combinedNomenclatureCode ,
+      "taricAdditionalCode[0]" -> taricAdditionalCode ,
+      "nationalAdditionalCode[0]" -> nationalAdditionalCode ,
+      "descriptionOfGoods" -> descriptionOfGoods ,
+      "cusCode" -> cusCode ,
+      "statisticalValue" -> statisticalValue
+    )
 
 }

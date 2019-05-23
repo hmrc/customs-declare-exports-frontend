@@ -16,13 +16,15 @@
 
 package controllers.util
 
-sealed trait FormAction
+sealed trait FormAction {
+  def label: String = this.getClass.getSimpleName.replace("$", "")
+}
 
 object FormAction {
-  private val addLabel = Add.toString
-  private val saveAndContinueLabel = SaveAndContinue.toString
-  private val continueLabel = Continue.toString
-  private val removeLabel = Remove.toString
+  private val addLabel = "Add"
+  private val saveAndContinueLabel = "SaveAndContinue"
+  private val continueLabel = "Continue"
+  private val removeLabel = "Remove"
 
   def fromUrlEncoded(input: Map[String, Seq[String]]): FormAction =
     input.flatMap {

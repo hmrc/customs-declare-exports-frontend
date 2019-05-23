@@ -252,7 +252,8 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val cachedData = DestinationCountriesStandard("Poland", Seq("Slovakia", "Italy"), "England")
         withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
 
-        val body = (Remove.toString, "Slovakia")
+        val action = Remove(Seq("0"))
+        val body = (action.label, action.keys.head)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 

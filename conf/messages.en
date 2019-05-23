@@ -21,6 +21,7 @@ error.ducr = Incorrect DUCR
 error.ducr.empty = DUCR number can not be empty
 error.ducr.format = DUCR number is in incorrect format
 error.mucr.format = MUCR number is in incorrect format
+error.removeAction.incorrectFormat = Data format for removal request is incorrect
 
 index.title =Export Declarations
 index.heading=Customs Export Declarations
