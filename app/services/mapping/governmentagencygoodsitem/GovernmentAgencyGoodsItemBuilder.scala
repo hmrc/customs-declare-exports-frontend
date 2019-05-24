@@ -29,14 +29,17 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
 }
 import wco.datamodel.wco.declaration_ds.dms._2.GovernmentAgencyGoodsItemStatisticalValueAmountType
 
+import scala.collection.JavaConverters._
+
 object GovernmentAgencyGoodsItemBuilder {
 
-  def build(implicit cacheMap: CacheMap): List[WCOGovernmentAgencyGoodsItem] =
+  def build(implicit cacheMap: CacheMap): java.util.List[WCOGovernmentAgencyGoodsItem] =
     cacheMap
       .getEntry[Seq[GovernmentAgencyGoodsItem]](ExportsItemsCacheIds.itemsId)
       .getOrElse(Seq.empty)
       .map(goodsItem => createWCOGovernmentAgencyGoodsItem(goodsItem))
       .toList
+      .asJava
 
   def createWCOGovernmentAgencyGoodsItem(
     governmentAgencyGoodsItem: GovernmentAgencyGoodsItem
@@ -58,24 +61,29 @@ object GovernmentAgencyGoodsItemBuilder {
 
     wcoGovernmentAgencyGoodsItem.setSequenceNumeric(BigDecimal(governmentAgencyGoodsItem.sequenceNumeric).bigDecimal)
 
-    PackageBuilder.build
-      .getOrElse(Seq.empty)
-      .foreach(packingItem => wcoGovernmentAgencyGoodsItem.getPackaging.add(packingItem))
+    if (governmentAgencyGoodsItem.packagings.nonEmpty) {
+      wcoGovernmentAgencyGoodsItem.getPackaging.addAll(PackagingBuilder.build(governmentAgencyGoodsItem.packagings))
+    }
 
-    ProcedureCodesBuilder.build
-      .getOrElse(Seq.empty)
-      .foreach(procedureCode => wcoGovernmentAgencyGoodsItem.getGovernmentProcedure.add(procedureCode))
+    if (governmentAgencyGoodsItem.governmentProcedures.nonEmpty) {
+      wcoGovernmentAgencyGoodsItem.getGovernmentProcedure.addAll(
+        GovernmentProcedureBuilder.build(governmentAgencyGoodsItem.governmentProcedures)
+      )
+    }
 
-    AdditionalInformationBuilder.build
-      .getOrElse(Seq.empty)
-      .foreach(info => wcoGovernmentAgencyGoodsItem.getAdditionalInformation.add(info))
+    if (governmentAgencyGoodsItem.additionalInformations.nonEmpty) {
+      wcoGovernmentAgencyGoodsItem.getAdditionalInformation.addAll(
+        AdditionalInformationBuilder.build(governmentAgencyGoodsItem.additionalInformations)
+      )
+    }
 
-    AdditionalDocumentsBuilder
-      .build()
-      .getOrElse(Seq.empty)
-      .foreach(doc => wcoGovernmentAgencyGoodsItem.getAdditionalDocument.add(doc))
+    if (governmentAgencyGoodsItem.additionalDocuments.nonEmpty) {
+      wcoGovernmentAgencyGoodsItem.getAdditionalDocument.addAll(
+        AdditionalDocumentsBuilder.build(governmentAgencyGoodsItem.additionalDocuments)
+      )
+    }
 
-    wcoGovernmentAgencyGoodsItem.setCommodity(CommodityBuilder.build.orNull)
+    wcoGovernmentAgencyGoodsItem.setCommodity(CommodityBuilder.build(governmentAgencyGoodsItem.commodity))
     wcoGovernmentAgencyGoodsItem
   }
 
@@ -83,7 +91,7 @@ object GovernmentAgencyGoodsItemBuilder {
     cachedData
       .getEntry[ItemType](ItemType.id)
       .map(
-        item => // get all codes create classification
+        item =>
           GovernmentAgencyGoodsItem(
             sequenceNumeric = 1,
             statisticalValueAmount =

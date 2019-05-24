@@ -16,28 +16,20 @@
 
 package services.mapping.governmentagencygoodsitem
 
+import models.declaration.governmentagencygoodsitem.GovernmentProcedure
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.http.cache.client.CacheMap
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
 
-class GovernmentProcedureBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks {
+class GovernmentProcedureBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemData {
 
-//  "ProcedureCodesBuilder" should {
-//    "build governmentProcedure correctly" in {
-//
-//      implicit val cacheMap = mock[CacheMap]
-//      setUpProcedureCodes()
-//
-//      val results: Option[Seq[GovernmentAgencyGoodsItem.GovernmentProcedure]] = GovernmentProcedureBuilder.build
-//
-//      results.isDefined shouldBe true
-//      val mappedProcedures = results.get
-//      mappedProcedures.head.getCurrentCode.getValue shouldBe cachedCode.substring(0, 2)
-//      mappedProcedures.head.getPreviousCode.getValue shouldBe cachedCode.substring(2, 4)
-//
-//      mappedProcedures.last.getCurrentCode.getValue shouldBe previousCode
-//      mappedProcedures.last.getPreviousCode shouldBe null
-//    }
-//  }
+  "ProcedureCodesBuilder" should {
+    "build governmentProcedure correctly" in {
 
+      val governmentProcedure = GovernmentProcedure(Some("CUPR"), Some("1stPrevcode"))
+
+      val procedures = GovernmentProcedureBuilder.build(Seq(governmentProcedure))
+
+      procedures.get(0).getCurrentCode.getValue shouldBe governmentProcedure.currentCode.get
+      procedures.get(0).getPreviousCode.getValue shouldBe governmentProcedure.previousCode.get
+    }
+  }
 }

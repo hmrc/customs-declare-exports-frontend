@@ -16,25 +16,25 @@
 
 package services.mapping.governmentagencygoodsitem
 
+import models.declaration.governmentagencygoodsitem.Packaging
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.http.cache.client.CacheMap
+import services.GoodsItemCachingData
 
-class PackagingBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks {
+class PackagingBuilderSpec
+    extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GoodsItemCachingData {
 
-//  "PackageBuilder" should {
-//    "map correctly to wco Packaging" in {
-//      implicit val cacheMap = mock[CacheMap]
-//      setUpPackageInformation()
-//
-//      val mappedItems = PackagingBuilder.build.getOrElse(Seq.empty)
-//
-//      mappedItems.length should be(1)
-//      val wcoPackaging = mappedItems.head
-//      wcoPackaging.getQuantityQuantity.getValue shouldBe BigDecimal(packageQuantity).bigDecimal
-//      wcoPackaging.getMarksNumbersID.getValue shouldBe shippingMarksValue
-//      wcoPackaging.getTypeCode.getValue shouldBe packageTypeValue
-//
-//    }
-//  }
+  "PackageBuilder" should {
+    "map correctly to wco Packaging" in {
+
+      val packagingInformation = Packaging(Some(1), Some("123"), Some(12), Some("R"))
+
+      val items = PackagingBuilder.build(Seq(packagingInformation))
+
+      items.size() should be(1)
+      items.get(0).getQuantityQuantity.getValue shouldBe BigDecimal(packagingInformation.quantity.get).bigDecimal
+      items.get(0).getMarksNumbersID.getValue shouldBe packagingInformation.marksNumbersId.get
+      items.get(0).getTypeCode.getValue shouldBe packagingInformation.typeCode.get
+    }
+  }
 
 }

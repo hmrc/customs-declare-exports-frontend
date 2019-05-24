@@ -27,10 +27,10 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 object PresentationOfficeBuilder {
 
   def build(implicit cacheMap: CacheMap, choice: Choice): Declaration.PresentationOffice =
-    Option(choice)
-      .filter(choice => choice.value.equals(AllowedChoiceValues.StandardDec))
-      .map(buildPresentationOffice)
-      .orNull
+    choice match {
+      case Choice(AllowedChoiceValues.StandardDec)      => buildPresentationOffice(choice)
+      case Choice(AllowedChoiceValues.SupplementaryDec) => null
+    }
 
   private def buildPresentationOffice(choice: Choice)(implicit cacheMap: CacheMap): Declaration.PresentationOffice =
     cacheMap

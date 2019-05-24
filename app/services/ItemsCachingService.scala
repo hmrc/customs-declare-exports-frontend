@@ -17,21 +17,11 @@
 package services
 import com.google.inject.Inject
 import config.AppConfig
-import forms.declaration.ItemType.IdentificationTypeCodes._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.{CommodityMeasure, ItemType, PackageInformation}
 import javax.inject.Singleton
-import models.DeclarationFormats._
 import models.declaration.governmentagencygoodsitem.Formats._
-import models.declaration.governmentagencygoodsitem.{
-  DateTimeElement,
-  DateTimeString,
-  GovernmentAgencyGoodsItem,
-  GovernmentAgencyGoodsItemAdditionalDocument,
-  GovernmentAgencyGoodsItemAdditionalDocumentSubmitter,
-  Measure,
-  WriteOff
-}
+import models.declaration.governmentagencygoodsitem._
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import play.api.http.Status.NO_CONTENT
 import services.ExportsItemsCacheIds._
@@ -43,6 +33,52 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig: AppConfig) {
+
+  /*
+    Fetch cache elements of all the pages using goodsItemCacheId for pages procedure codes, itemType, packaging, goods measure,
+    additional information , documents produced.
+    create related wco-dec elements
+    create goods item for the cache and append to items already added in the cache
+    save updated items to cache and remove the elements in goodsItemCacheId
+   */
+  def addItemToCache(
+    goodsItemCacheId: String,
+    cacheId: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
+    cacheService.fetch(goodsItemCacheId).flatMap {
+      case Some(cachedData) =>
+        cacheService
+          .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
+          .flatMap(
+            items =>
+              cacheService
+                .cache[Seq[GovernmentAgencyGoodsItem]](
+                  cacheId,
+                  itemsId,
+                  items.getOrElse(Seq.empty) :+ createGoodsItem(items.fold(0)(_.size), cachedData)
+                )
+                .flatMap(_ => cacheService.remove(goodsItemCacheId).map(_.status == NO_CONTENT))
+          )
+      case None => Future.successful(false)
+    }
+
+  private def createGoodsItem(seq: Int, cachedData: CacheMap): GovernmentAgencyGoodsItem = {
+    val itemTypeData = goodsItemFromItemTypes(cachedData)
+    val commodity = itemTypeData.fold(models.declaration.governmentagencygoodsitem.Commodity())(
+      _.commodity.getOrElse(models.declaration.governmentagencygoodsitem.Commodity())
+    )
+    val updatedCommodity = commodity.copy(goodsMeasure = commodityFromGoodsMeasure(cachedData).flatMap(_.goodsMeasure))
+
+    GovernmentAgencyGoodsItem(
+      sequenceNumeric = seq + 1,
+      statisticalValueAmount = itemTypeData.flatMap(_.statisticalValueAmount),
+      packagings = generatePackages(cachedData).getOrElse(Seq.empty),
+      governmentProcedures = procedureCodes(cachedData).getOrElse(Seq.empty),
+      commodity = Some(updatedCommodity),
+      additionalInformations = additionalInfo(cachedData).getOrElse(Seq.empty),
+      additionalDocuments = documents(cachedData).getOrElse(Seq.empty)
+    )
+  }
 
   def generatePackages(cachedData: CacheMap): Option[Seq[models.declaration.governmentagencygoodsitem.Packaging]] =
     cachedData
@@ -134,51 +170,6 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
             commodity = Some(CachingMappingHelper.commodityFromItemTypes(item))
         )
       )
-
-  private def createGoodsItem(seq: Int, cachedData: CacheMap): GovernmentAgencyGoodsItem = {
-    val itemTypeData = goodsItemFromItemTypes(cachedData)
-    val commodity = itemTypeData.fold(models.declaration.governmentagencygoodsitem.Commodity())(
-      _.commodity.getOrElse(models.declaration.governmentagencygoodsitem.Commodity())
-    )
-    val updatedCommodity = commodity.copy(goodsMeasure = commodityFromGoodsMeasure(cachedData).flatMap(_.goodsMeasure))
-
-    GovernmentAgencyGoodsItem(
-      sequenceNumeric = seq + 1,
-      statisticalValueAmount = itemTypeData.flatMap(_.statisticalValueAmount),
-      packagings = generatePackages(cachedData).getOrElse(Seq.empty),
-      governmentProcedures = procedureCodes(cachedData).getOrElse(Seq.empty),
-      commodity = Some(updatedCommodity),
-      additionalInformations = additionalInfo(cachedData).getOrElse(Seq.empty),
-      additionalDocuments = documents(cachedData).getOrElse(Seq.empty)
-    )
-  }
-  /*
-    Fetch cache elements of all the pages using goodsItemCacheId for pages procedure codes, itemType, packaging, goods measure,
-    additional information , documents produced.
-    create related wco-dec elements
-    create goods item for the cache and append to items already added in the cache
-    save updated items to cache and remove the elements in goodsItemCacheId
-   */
-  def addItemToCache(
-    goodsItemCacheId: String,
-    cacheId: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
-    cacheService.fetch(goodsItemCacheId).flatMap {
-      case Some(cachedData) =>
-        cacheService
-          .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
-          .flatMap(
-            items =>
-              cacheService
-                .cache[Seq[GovernmentAgencyGoodsItem]](
-                  cacheId,
-                  itemsId,
-                  items.getOrElse(Seq.empty) :+ createGoodsItem(items.fold(0)(_.size), cachedData)
-                )
-                .flatMap(_ => cacheService.remove(goodsItemCacheId).map(_.status == NO_CONTENT))
-          )
-      case None => Future.successful(false)
-    }
 
 }
 

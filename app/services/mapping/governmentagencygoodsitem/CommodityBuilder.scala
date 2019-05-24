@@ -15,12 +15,8 @@
  */
 
 package services.mapping.governmentagencygoodsitem
-import forms.declaration.{CommodityMeasure, ItemType}
-import models.declaration.governmentagencygoodsitem.Classification
+import models.declaration.governmentagencygoodsitem.{Classification, Commodity, DangerousGoods, GoodsMeasure}
 import services.ExportsItemsCacheIds
-import services.mapping.CachingMappingHelper
-import services.mapping.CachingMappingHelper.getClassificationsFromItemTypes
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.Commodity.{
   Classification => WCOClassification,
   DangerousGoods => WCODangerousGoods,
@@ -29,88 +25,97 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGo
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.{Commodity => WCOCommodity}
 import wco.datamodel.wco.declaration_ds.dms._2._
 
+import scala.collection.JavaConverters._
+
 object CommodityBuilder {
 
-  def build(implicit cacheMap: CacheMap): Option[WCOCommodity] =
-    cacheMap
-      .getEntry[ItemType](ItemType.id)
-      .map(
-        item => // get all codes create classification
-          mapCommodity(item)
-      )
-
-  private def mapCommodity(item: ItemType)(implicit cacheMap: CacheMap): WCOCommodity = {
-    val commodity = new WCOCommodity
-
-    val classifications = getClassificationsFromItemTypes(item)
-    val dangerousGoods: Option[Seq[WCODangerousGoods]] =
-      item.unDangerousGoodsCode.map(code => Seq(mapDangerousGoods(code)))
-
-    val commodityDescriptionTextType = new CommodityDescriptionTextType
-    commodityDescriptionTextType.setValue(item.descriptionOfGoods)
-
-    commodity.setDescription(commodityDescriptionTextType)
-
-    dangerousGoods.getOrElse(Seq.empty).foreach(commodity.getDangerousGoods.add(_))
-
-    classifications.foreach(classification => commodity.getClassification.add(mapClassification(classification)))
-
-    commodity.setGoodsMeasure(buildMeasures.orNull)
+  def build(commodity: Option[Commodity]): WCOCommodity =
     commodity
+      .map(item => mapCommodity(item))
+      .orNull
+
+  private def mapCommodity(commodity: Commodity): WCOCommodity = {
+    val wcoCommodity = new WCOCommodity
+
+    commodity.description.foreach { text =>
+      val commodityDescriptionTextType = new CommodityDescriptionTextType
+      commodityDescriptionTextType.setValue(text)
+      wcoCommodity.setDescription(commodityDescriptionTextType)
+    }
+
+    if (commodity.classifications.nonEmpty) {
+      wcoCommodity.getClassification.addAll(mapClassification(commodity.classifications))
+    }
+
+    if (commodity.dangerousGoods.nonEmpty) {
+      wcoCommodity.getDangerousGoods.addAll(mapDangerousGoods(commodity.dangerousGoods))
+    }
+
+    if (commodity.goodsMeasure.isDefined) {
+      wcoCommodity.setGoodsMeasure(mapGoodsMeasure(commodity.goodsMeasure.head))
+    }
+
+    wcoCommodity
   }
 
-  private def buildMeasures(implicit cacheMap: CacheMap): Option[WCOGoodsMeasure] =
-    cacheMap
-      .getEntry[CommodityMeasure](CommodityMeasure.commodityFormId)
-      .map(mapGoodsMeasure)
+  private def mapClassification(classifications: Seq[Classification]): java.util.List[WCOClassification] =
+    classifications
+      .map(classification => {
+        val wcoClassification = new WCOClassification
+        classification.identificationTypeCode.foreach { value =>
+          val typeCode = new ClassificationIdentificationTypeCodeType
+          typeCode.setValue(value)
+          wcoClassification.setIdentificationTypeCode(typeCode)
+        }
 
-  private def mapClassification(classification: Classification): WCOClassification = {
-    val wcoClassification = new WCOClassification
+        classification.id.foreach { value =>
+          val id = new ClassificationIdentificationIDType
+          id.setValue(value)
+          wcoClassification.setID(id)
+        }
+        wcoClassification
+      })
+      .toList
+      .asJava
 
-    val typeCode = new ClassificationIdentificationTypeCodeType
-    typeCode.setValue(classification.identificationTypeCode.orNull)
-
-    val id = new ClassificationIdentificationIDType
-    id.setValue(classification.id.orNull)
-
-    wcoClassification.setIdentificationTypeCode(typeCode)
-    wcoClassification.setID(id)
-    wcoClassification
-  }
-
-  private def mapDangerousGoods(code: String): WCODangerousGoods = {
-    val dangerousGoods = new WCODangerousGoods
-    val goodsUNDGIDType = new DangerousGoodsUNDGIDType
-    goodsUNDGIDType.setValue(code)
-    dangerousGoods.setUNDGID(goodsUNDGIDType)
-
+  private def mapDangerousGoods(dangerousGoods: Seq[DangerousGoods]): java.util.List[WCODangerousGoods] =
     dangerousGoods
-  }
+      .map(good => {
+        val wcoDangerousGoods = new WCODangerousGoods
+        val goodsUNDGIDType = new DangerousGoodsUNDGIDType
+        goodsUNDGIDType.setValue(good.undgid.get)
+        wcoDangerousGoods.setUNDGID(goodsUNDGIDType)
 
-  private def mapGoodsMeasure(data: CommodityMeasure): WCOGoodsMeasure = {
+        wcoDangerousGoods
+      })
+      .toList
+      .asJava
+
+  private def mapGoodsMeasure(data: GoodsMeasure): WCOGoodsMeasure = {
 
     val goodsMeasure = new WCOGoodsMeasure()
 
-    val grossMassMeasureType = new GoodsMeasureGrossMassMeasureType
-    grossMassMeasureType.setValue(BigDecimal(data.grossMass).bigDecimal)
-    grossMassMeasureType.setUnitCode(ExportsItemsCacheIds.defaultMeasureCode)
+    data.netWeightMeasure.foreach { measure =>
+      val netWeightMeasureType = new GoodsMeasureNetNetWeightMeasureType
+      netWeightMeasureType.setUnitCode(ExportsItemsCacheIds.defaultMeasureCode)
+      netWeightMeasureType.setValue(measure.value.get.bigDecimal)
+      goodsMeasure.setNetNetWeightMeasure(netWeightMeasureType)
+    }
 
-    val netWeightMeasureType = new GoodsMeasureNetNetWeightMeasureType
-    netWeightMeasureType.setUnitCode(ExportsItemsCacheIds.defaultMeasureCode)
-    netWeightMeasureType.setValue(BigDecimal(data.netMass).bigDecimal)
+    data.grossMassMeasure.foreach { measure =>
+      val grossMassMeasureType = new GoodsMeasureGrossMassMeasureType
+      grossMassMeasureType.setValue(measure.value.get.bigDecimal)
+      grossMassMeasureType.setUnitCode(ExportsItemsCacheIds.defaultMeasureCode)
+      goodsMeasure.setGrossMassMeasure(grossMassMeasureType)
+    }
 
-    val tarriffQuantity = data.supplementaryUnits.map(quantity => {
+    data.tariffQuantity.foreach { tariff =>
       val mappedQuantity = new GoodsMeasureTariffQuantityType
       mappedQuantity.setUnitCode(ExportsItemsCacheIds.defaultMeasureCode)
-      mappedQuantity.setValue(BigDecimal(quantity).bigDecimal)
-      mappedQuantity
-    })
-
-    goodsMeasure.setGrossMassMeasure(grossMassMeasureType)
-    goodsMeasure.setNetNetWeightMeasure(netWeightMeasureType)
-    goodsMeasure.setTariffQuantity(tarriffQuantity.orNull)
+      mappedQuantity.setValue(tariff.value.get.bigDecimal)
+      goodsMeasure.setTariffQuantity(mappedQuantity)
+    }
 
     goodsMeasure
   }
-
 }
