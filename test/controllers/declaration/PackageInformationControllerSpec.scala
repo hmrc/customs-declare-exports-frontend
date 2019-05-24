@@ -158,7 +158,7 @@ class PackageInformationControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, shippingMarksError, "#shippingMarks")
+        checkErrorLink(page, 1, shippingMarksLengthError, "#shippingMarks")
       }
 
       "display error when item already exist" in {
@@ -242,7 +242,7 @@ class PackageInformationControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, shippingMarksError, "#shippingMarks")
+        checkErrorLink(page, 1, shippingMarksLengthError, "#shippingMarks")
         checkErrorLink(page, 2, piGlobalUseAdd, "#")
       }
     }
