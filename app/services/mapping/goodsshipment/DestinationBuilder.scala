@@ -31,10 +31,10 @@ import wco.datamodel.wco.declaration_ds.dms._2.DestinationCountryCodeType
 object DestinationBuilder {
 
   def build(implicit cacheMap: CacheMap, choice: Choice): GoodsShipment.Destination =
-    Option(choice).map {
+    choice match {
       case Choice(AllowedChoiceValues.SupplementaryDec) => buildSupplementary(cacheMap)
       case Choice(AllowedChoiceValues.StandardDec)      => buildStandard(cacheMap)
-    }.orNull
+    }
 
   def buildSupplementary(implicit cacheMap: CacheMap): GoodsShipment.Destination =
     cacheMap

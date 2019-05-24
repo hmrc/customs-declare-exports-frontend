@@ -27,10 +27,10 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 object ExitOfficeBuilder {
 
   def build(implicit cacheMap: CacheMap, choice: Choice): Declaration.ExitOffice =
-    Option(choice).map {
+    choice match {
       case Choice(AllowedChoiceValues.SupplementaryDec) => buildExitOfficeFromSupplementary(cacheMap)
       case Choice(AllowedChoiceValues.StandardDec)      => buildExitOfficeFromStandard(cacheMap)
-    }.orNull
+    }
 
   private def buildExitOfficeFromStandard(implicit cacheMap: CacheMap): Declaration.ExitOffice =
     cacheMap

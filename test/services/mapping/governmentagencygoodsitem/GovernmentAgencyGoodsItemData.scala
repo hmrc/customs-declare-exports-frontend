@@ -18,7 +18,10 @@ package services.mapping.governmentagencygoodsitem
 import forms.common.Date
 import forms.declaration._
 import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
+import models.declaration.governmentagencygoodsitem._
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+
+import scala.math.BigDecimal
 
 trait GovernmentAgencyGoodsItemData {
 
@@ -33,7 +36,7 @@ trait GovernmentAgencyGoodsItemData {
   val documentStatusReason = "Reason"
   val issusingAuthorityName = "issuingAuthorityName"
 
-  val measurementUnit = "KGM"
+  val measurementUnit = "kg"
 
   val documentsProduced: Seq[DocumentsProduced] = Seq(
     DocumentsProduced(
@@ -95,4 +98,7 @@ trait GovernmentAgencyGoodsItemData {
   val additionalInformation = AdditionalInformation(statementCode, descriptionValue)
   val additionalInformationData = AdditionalInformationData(Seq(additionalInformation))
 
+  val amount = Amount(Some("GBP"), Some(BigDecimal(123)))
+  val goodsMeasure = GoodsMeasure(Some(Measure(Some("kg"), Some(BigDecimal(10)))))
+  val commodity = Commodity(Some("someDescription"), Seq(), Seq(), Some(goodsMeasure))
 }

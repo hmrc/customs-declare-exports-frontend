@@ -30,10 +30,7 @@ import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransactionTypeSpec._
-import forms.declaration.TransportInformationContainerSpec.{
-  correctTransportInformationContainerData,
-  correctTransportInformationContainerDataJSON
-}
+import forms.declaration.TransportInformationContainerSpec.{correctTransportInformationContainerData, correctTransportInformationContainerDataJSON}
 import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec
@@ -54,6 +51,7 @@ import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
 import services.ExportsItemsCacheIds
+import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilderSpec
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
@@ -434,7 +432,7 @@ object SupplementaryDeclarationDataSpec {
           PackageInformation(typesOfPackages = Some("AB"), numberOfPackages = Some(4), shippingMarks = Some("mark2"))
         )
       ),
-      ExportsItemsCacheIds.itemsId -> correctGovernmentAgencyGoodsItemJSON,
+      ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemBuilderSpec.itemsJsonList,
       CommodityMeasure.commodityFormId -> Json.toJson(
         CommodityMeasure(supplementaryUnits = Some("2"), netMass = "23", grossMass = "23")
       ),

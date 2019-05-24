@@ -16,8 +16,6 @@
 
 package services.mapping.governmentagencygoodsitem
 import forms.declaration.AdditionalInformation
-import models.declaration.AdditionalInformationData
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.{
   AdditionalInformation => WCOAdditionalInformation
 }
@@ -26,14 +24,17 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
   AdditionalInformationStatementDescriptionTextType
 }
 
+import scala.collection.JavaConverters._
+
 object AdditionalInformationBuilder {
 
-  def build()(implicit cacheMap: CacheMap): Option[Seq[WCOAdditionalInformation]] =
-    cacheMap
-      .getEntry[AdditionalInformationData](AdditionalInformationData.formId)
-      .map(_.items.map(mapToWCOAdditionalInformation))
+  def build(additionalInformations: Seq[AdditionalInformation]): java.util.List[WCOAdditionalInformation] =
+    additionalInformations
+      .map(buildAdditionalInformation)
+      .toList
+      .asJava
 
-  def mapToWCOAdditionalInformation(info: AdditionalInformation): WCOAdditionalInformation = {
+  def buildAdditionalInformation(info: AdditionalInformation): WCOAdditionalInformation = {
     val wcoAdditionalInformation = new WCOAdditionalInformation
 
     val additionalInformationStatementCodeType = new AdditionalInformationStatementCodeType

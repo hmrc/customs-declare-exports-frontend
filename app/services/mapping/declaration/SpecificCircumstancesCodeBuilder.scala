@@ -26,10 +26,10 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 object SpecificCircumstancesCodeBuilder {
 
   def build(implicit cacheMap: CacheMap, choice: Choice): DeclarationSpecificCircumstancesCodeCodeType =
-   Option(choice)
-      .filter(choice => choice.value.equals(AllowedChoiceValues.StandardDec))
-      .map(buildCircumstancesCode)
-      .orNull
+    choice match {
+      case Choice(AllowedChoiceValues.StandardDec)      => buildCircumstancesCode(choice)
+      case Choice(AllowedChoiceValues.SupplementaryDec) => null
+    }
 
   private def buildCircumstancesCode(
     choice: Choice
