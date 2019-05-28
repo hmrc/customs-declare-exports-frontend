@@ -28,8 +28,8 @@ import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData._
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.i18n.I18nSupport
+import play.api.mvc._
 import services.CustomsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -39,13 +39,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ProcedureCodesPageController @Inject()(
   appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService
+  customsCacheService: CustomsCacheService,
+  mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ProcedureCodesData](goodsItemCacheId, formId).map {

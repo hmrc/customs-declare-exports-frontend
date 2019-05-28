@@ -26,8 +26,8 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.package_information
@@ -38,9 +38,10 @@ class PackageInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  cacheService: CustomsCacheService
-)(implicit ec: ExecutionContext, appConfig: AppConfig, override val messagesApi: MessagesApi)
-    extends FrontendController with I18nSupport {
+  cacheService: CustomsCacheService,
+  mcc: MessagesControllerComponents
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc) with I18nSupport {
 
   val packagesMaxElements = 99
 

@@ -26,8 +26,8 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc._
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.collections.Removable.RemovableSeq
@@ -40,13 +40,13 @@ import scala.util.Try
 
 class ItemTypePageController @Inject()(
   appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService
+  customsCacheService: CustomsCacheService,
+  mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id).map {
@@ -200,7 +200,7 @@ class ItemTypePageController @Inject()(
         val name = str.split("_")(0)
         val idx = str.split("_")(1)
         new Label(name, idx.toInt)
-      } else throw new IllegalArgumentException(messagesApi("error.removeAction.incorrectFormat"))
+      } else throw new IllegalArgumentException("Data format for removal request is incorrect")
 
     private def isFormatCorrect(str: String): Boolean = {
       val labelElements = str.split("_")

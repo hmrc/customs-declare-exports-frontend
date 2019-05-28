@@ -25,8 +25,8 @@ import forms.Choice._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.choice_page
@@ -34,12 +34,12 @@ import views.html.choice_page
 import scala.concurrent.{ExecutionContext, Future}
 
 class ChoiceController @Inject()(
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   customsCacheService: CustomsCacheService,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, choiceId).map {

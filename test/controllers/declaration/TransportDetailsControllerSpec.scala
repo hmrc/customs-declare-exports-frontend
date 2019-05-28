@@ -29,6 +29,7 @@ import org.mockito.Mockito.{reset, verify}
 import org.scalacheck.Arbitrary._
 import org.scalatest.prop.PropertyChecks
 import play.api.data.Form
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import services.Countries
@@ -64,7 +65,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
 
     "populate the form fields with data from cache" in {
       authorizedUser()
-      val request = getRequest(uri)
+      val request = addCSRFToken(getRequest(uri))
 
       forAll(arbitrary[TransportDetails]) { transport =>
         withCaching[TransportDetails](Some(transport), TransportDetails.formId)

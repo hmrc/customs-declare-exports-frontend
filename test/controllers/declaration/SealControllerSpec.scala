@@ -30,7 +30,8 @@ import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen.listOf
 import org.scalatest.prop.PropertyChecks
 import play.api.data.Form
-import play.api.test.FakeRequest
+import play.api.mvc.Request
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
@@ -42,7 +43,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
   val form: Form[Seal] = Form(Seal.formMapping)
 
-  def view(form: Form[Seal], seals: Seq[Seal], container: Boolean = false)(implicit request: FakeRequest[_]): Html =
+  def view(form: Form[Seal], seals: Seq[Seal], container: Boolean = false)(implicit request: Request[_]): Html =
     seal(form, seals, container)(appConfig, request, messages)
 
   before {
@@ -65,14 +66,13 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
     }
 
     "populate the form fields with data from cache" in {
-      val request = getRequest(uri)
+      val request = addCSRFToken(getRequest(uri))
 
       forAll(listOf[Seal](sealArbitrary.arbitrary)) { seals =>
         withCaching[Seq[Seal]](Some(seals), Seal.formId)
         val result = route(app, request).value
 
-        contentAsString(result).replaceCSRF mustBe
-          view(form, seals)(request).body.replaceCSRF()
+        contentAsString(result).replaceCSRF mustBe view(form, seals)(request).body.replaceCSRF()
       }
     }
   }

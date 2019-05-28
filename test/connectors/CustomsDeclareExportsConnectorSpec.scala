@@ -34,6 +34,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
 
     "POST to Customs Declare Exports endpoint to submit declaration" in {
       val http = new MockHttpClient(
+        mockWSClient,
         expectedExportsUrl(appConfig.submitDeclaration),
         metadata.toXml,
         submissionHeaders,
@@ -48,7 +49,8 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
     }
 
     "GET to Customs Declare Exports endpoint to fetch notifications" in {
-      val http = new MockHttpClient(expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
+      val http =
+        new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
       val client = new CustomsDeclareExportsConnector(appConfig, http)
       val response = client.fetchNotifications()(hc, ec)
 
@@ -56,7 +58,8 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
     }
 
     "GET to Customs Declare Exports endpoint to fetch notifications by conversationId" in {
-      val http = new MockHttpClient(expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
+      val http =
+        new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
       val client = new CustomsDeclareExportsConnector(appConfig, http)
       val response = client.fetchNotificationsByConversationId(conversationId)(hc, ec)
 
@@ -64,7 +67,8 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
     }
 
     "GET to Customs Declare Exports endpoint to fetch submissions" in {
-      val http = new MockHttpClient(expectedExportsUrl(appConfig.fetchSubmissions), None, result = submissions)
+      val http =
+        new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchSubmissions), None, result = submissions)
       val client = new CustomsDeclareExportsConnector(appConfig, http)
       val response = client.fetchSubmissions()(hc, ec)
 
@@ -73,6 +77,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
 
     "POST to Customs Declare Exports endpoint to submit cancellation" in {
       val http = new MockHttpClient(
+        mockWSClient,
         expectedExportsUrl(appConfig.cancelDeclaration),
         metadata.toXml,
         cancellationHeaders,

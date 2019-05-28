@@ -25,13 +25,13 @@ class UnauthorisedControllerSpec extends CustomExportsBaseSpec {
   "Unauthorised Controller" must {
 
     "return 200 for a GET" in {
-      val result = new UnauthorisedController(appConfig, messagesApi).onPageLoad()(fakeRequest)
+      val result = new UnauthorisedController(appConfig, mcc).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
     }
 
     "return the correct view for a GET" in {
-      val result = new UnauthorisedController(appConfig, messagesApi).onPageLoad()(fakeRequest)
+      val result = new UnauthorisedController(appConfig, mcc).onPageLoad()(fakeRequest)
 
       contentAsString(result) mustBe unauthorised(appConfig)(fakeRequest, messages).toString
     }

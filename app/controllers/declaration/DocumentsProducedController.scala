@@ -29,8 +29,8 @@ import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.{formId, maxNumberOfItems}
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.i18n.I18nSupport
+import play.api.mvc._
 import services.{CustomsCacheService, ItemsCachingService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -40,14 +40,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DocumentsProducedController @Inject()(
   appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
-  itemsCache: ItemsCachingService
+  itemsCache: ItemsCachingService,
+  mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService

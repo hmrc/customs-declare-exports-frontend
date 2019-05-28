@@ -21,14 +21,15 @@ import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import forms.Choice
 import models.requests.{AuthenticatedRequest, JourneyRequest}
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.mvc.{AnyContentAsEmpty, Flash}
 import play.api.test.FakeRequest
 import services.{Countries, Country}
 
-trait ViewSpec extends PlaySpec with OneAppPerSuite with ViewValidator {
+trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator {
 
   lazy val basePrefix = "supplementary."
   lazy val addressPrefix = "supplementary.address."

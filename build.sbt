@@ -13,12 +13,13 @@ import uk.gov.hmrc.{SbtArtifactory, SbtAutoBuildPlugin}
 val appName = "customs-declare-exports-frontend"
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
+  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory, SbtWeb)
   .settings(
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     majorVersion := 0,
+    scalaVersion := "2.11.12",
     scalafmtFailTest in ThisBuild := false
   )
   .configs(IntegrationTest)
@@ -49,7 +50,7 @@ lazy val microservice = Project(appName, file("."))
       )
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
-    UglifyKeys.compressOptions := Seq("unused=false", "dead_code=false"),
+    uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
     pipelineStages := Seq(digest),
     // below line required to force asset pipeline to operate in dev rather than only prod
     pipelineStages in Assets := Seq(concat, uglify),

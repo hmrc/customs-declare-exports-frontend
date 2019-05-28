@@ -22,8 +22,8 @@ import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.CarrierDetails
 import javax.inject.Inject
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.carrier_details
@@ -34,12 +34,12 @@ import scala.concurrent.{ExecutionContext, Future}
   * This controller is not used in supp dec journey
   */
 class CarrierDetailsPageController @Inject()(
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService
+  customsCacheService: CustomsCacheService,
+  mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   implicit val countries = services.Countries.allCountries
 

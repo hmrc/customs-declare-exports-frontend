@@ -23,34 +23,29 @@ import features.Feature.Feature
 import features.FeatureStatus.FeatureStatus
 import features.{Feature, FeatureStatus}
 import forms.Choice
-import play.api.Mode.Mode
+import javax.inject.Named
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment, Logger}
-import services.{
-  WcoMetadataJavaMappingStrategy,
-  WcoMetadataMapper,
-  WcoMetadataMappingStrategy,
-  WcoMetadataScalaMappingStrategy
-}
-import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
+import services.{WcoMetadataJavaMappingStrategy, WcoMetadataMapper, WcoMetadataMappingStrategy, WcoMetadataScalaMappingStrategy}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class AppConfig @Inject()(override val runModeConfiguration: Configuration, val environment: Environment)
-    extends ServicesConfig with AppName {
+class AppConfig @Inject()(
+  val runModeConfiguration: Configuration,
+  val environment: Environment,
+  servicesConfig: ServicesConfig,
+  @Named("appName") val appName: String
+) {
 
   private val logger = Logger(this.getClass())
 
-  override protected def mode: Mode = environment.mode
-
-  override protected def appNameConfiguration: Configuration = runModeConfiguration
-
   private def loadConfig(key: String): String =
-    runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+    runModeConfiguration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   lazy val keyStoreSource: String = appName
-  lazy val keyStoreUrl: String = baseUrl("keystore")
-  lazy val sessionCacheDomain: String = getConfString(
+  lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")
+  lazy val sessionCacheDomain: String = servicesConfig.getConfString(
     "cachable.session-cache.domain",
     throw new Exception(s"Could not find config 'cachable.session-cache.domain'")
   )
@@ -58,53 +53,53 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
   lazy val analyticsHost = loadConfig(s"google-analytics.host")
 
-  lazy val authUrl = baseUrl("auth")
+  lazy val authUrl = servicesConfig.baseUrl("auth")
   lazy val loginUrl = loadConfig("urls.login")
   lazy val loginContinueUrl = loadConfig("urls.loginContinue")
 
-  lazy val customsDeclareExports = baseUrl("customs-declare-exports")
+  lazy val customsDeclareExports = servicesConfig.baseUrl("customs-declare-exports")
 
-  lazy val submitDeclaration = getConfString(
+  lazy val submitDeclaration = servicesConfig.getConfString(
     "customs-declare-exports.submit-declaration",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports submit declaration URI")
   )
 
-  lazy val fetchSubmissions = getConfString(
+  lazy val fetchSubmissions = servicesConfig.getConfString(
     "customs-declare-exports.fetch-submissions",
     throw new IllegalStateException("Missing configuration for Customs Declaration Exports fetch submission URI")
   )
 
-  lazy val fetchNotifications = getConfString(
+  lazy val fetchNotifications = servicesConfig.getConfString(
     "customs-declare-exports.fetch-notifications",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports fetch notification URI")
   )
 
-  lazy val fetchSubmissionNotifications = getConfString(
+  lazy val fetchSubmissionNotifications = servicesConfig.getConfString(
     "customs-declare-exports.fetch-submission-notifications",
     throw new IllegalStateException(
       "Missing configuration for Customs Declaration Export fetch submission notification URI"
     )
   )
 
-  lazy val cancelDeclaration = getConfString(
+  lazy val cancelDeclaration = servicesConfig.getConfString(
     "customs-declare-exports.cancel-declaration",
     throw new IllegalStateException("Missing configuration for Customs Declaration Export cancel declaration URI")
   )
 
   lazy val languageTranslationEnabled =
-    runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
+    runModeConfiguration.getOptional[Boolean]("microservice.services.features.welsh-translation").getOrElse(true)
 
   lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
 
   lazy val useNewMappingStrategy =
-    runModeConfiguration.getBoolean("microservice.services.features.use-new-wco-dec-mapping-strategy").getOrElse(false)
+    runModeConfiguration.getOptional[Boolean]("microservice.services.features.use-new-wco-dec-mapping-strategy").getOrElse(false)
 
   lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
 
-  lazy val nrsServiceUrl: String = baseUrl("nrs")
+  lazy val nrsServiceUrl: String = servicesConfig.baseUrl("nrs")
 
   lazy val nrsApiKey =
-    getConfString("nrs.apikey", throw new IllegalStateException("Missing configuration for nrs apikey"))
+    servicesConfig.getConfString("nrs.apikey", throw new IllegalStateException("Missing configuration for nrs apikey"))
 
   def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 
@@ -122,7 +117,7 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
 
   def availableJourneys(): Seq[String] =
     runModeConfiguration
-      .getString("list-of-available-journeys")
+      .getOptional[String]("list-of-available-journeys")
       .map(_.split(","))
       .getOrElse(Array(Choice.AllowedChoiceValues.SupplementaryDec))
       .toSeq
@@ -132,7 +127,7 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
       .get(feature2Key(feature))
       .map(str2FeatureStatus)
       .getOrElse(
-        runModeConfiguration.getString(feature2Key(feature)).map(str2FeatureStatus).getOrElse(defaultFeatureStatus)
+        runModeConfiguration.getOptional[String](feature2Key(feature)).map(str2FeatureStatus).getOrElse(defaultFeatureStatus)
       )
 
   def isFeatureOn(feature: Feature): Boolean = featureStatus(feature) == FeatureStatus.enabled
@@ -149,7 +144,7 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
       new String(
         Base64.getDecoder.decode(
           runModeConfiguration
-            .getString(key)
+            .getOptional[String](key)
             .getOrElse("")
         ),
         "UTF-8"
@@ -161,10 +156,10 @@ class AppConfig @Inject()(override val runModeConfiguration: Configuration, val 
   val whitelistExcludedPathsDefined: String = "whitelist.excludedPaths"
   val whitelisted: String = "whitelist.enabled"
 
-  lazy val shutterPage: String = getString(shutterPageToWhitelist)
+  lazy val shutterPage: String = servicesConfig.getString(shutterPageToWhitelist)
   lazy val whitelistIps: Seq[String] = whitelistConfig(whitelistedIps)
   lazy val whitelistExcludedPaths: Seq[Call] =
     whitelistConfig(whitelistExcludedPathsDefined).map(path => Call("GET", path))
-  lazy val whiteListEnabled: Boolean = getBoolean(whitelisted)
+  lazy val whiteListEnabled: Boolean = servicesConfig.getBoolean(whitelisted)
 
 }

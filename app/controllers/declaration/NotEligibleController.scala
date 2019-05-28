@@ -19,8 +19,8 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import javax.inject.Inject
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.not_eligible
 
@@ -28,11 +28,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class NotEligibleController @Inject()(
   appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
-  journeyType: JourneyAction
+  journeyType: JourneyAction,
+  mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     Future.successful(Ok(not_eligible(appConfig)))

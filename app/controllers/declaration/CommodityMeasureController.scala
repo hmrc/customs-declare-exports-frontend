@@ -24,8 +24,8 @@ import forms.declaration.PackageInformation.formId
 import forms.declaration.{CommodityMeasure, PackageInformation}
 import javax.inject.Inject
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.goods_measure
@@ -33,12 +33,12 @@ import views.html.declaration.goods_measure
 import scala.concurrent.{ExecutionContext, Future}
 
 class CommodityMeasureController @Inject()(
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  cacheService: CustomsCacheService
+  cacheService: CustomsCacheService,
+  mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService

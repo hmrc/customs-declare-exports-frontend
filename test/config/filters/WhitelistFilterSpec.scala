@@ -20,15 +20,19 @@ import config.AppConfig
 import play.api.{Application, Configuration, Environment}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+import play.api.Mode.Test
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Results.Ok
 import play.api.mvc.{Action, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 class WhitelistFilterSpec extends PlaySpec with GuiceOneServerPerSuite {
 
-  lazy val mockConfig = new MockAppConfig(app.configuration)
+  val runMode = new RunMode(app.configuration, Test)
+  val servicesConfig = new ServicesConfig(app.configuration, runMode)
+  val mockConfig = new MockAppConfig(app.configuration, servicesConfig, "AppName")
 
   override implicit lazy val app: Application =
     new GuiceApplicationBuilder()
@@ -76,8 +80,8 @@ class WhitelistFilterSpec extends PlaySpec with GuiceOneServerPerSuite {
   }
 }
 
-class MockAppConfig(override val runModeConfiguration: Configuration)
-    extends AppConfig(runModeConfiguration, Environment.simple()) {
+class MockAppConfig(override val runModeConfiguration: Configuration, servicesConfig: ServicesConfig, appName: String)
+    extends AppConfig(runModeConfiguration, Environment.simple(), servicesConfig, appName) {
   override lazy val analyticsToken: String = ""
   override lazy val analyticsHost: String = ""
   override lazy val whiteListEnabled: Boolean = false

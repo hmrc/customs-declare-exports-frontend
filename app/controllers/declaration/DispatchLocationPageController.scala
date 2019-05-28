@@ -23,8 +23,8 @@ import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import javax.inject.Inject
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.dispatch_location
@@ -32,12 +32,12 @@ import views.html.declaration.dispatch_location
 import scala.concurrent.{ExecutionContext, Future}
 
 class DispatchLocationPageController @Inject()(
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService
+  customsCacheService: CustomsCacheService,
+  mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
