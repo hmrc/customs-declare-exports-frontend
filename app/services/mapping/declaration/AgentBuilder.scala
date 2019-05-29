@@ -16,7 +16,7 @@
 
 package services.mapping.declaration
 
-import forms.declaration.{EntityDetails, RepresentativeDetails}
+import forms.declaration.RepresentativeDetails
 import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
@@ -29,50 +29,66 @@ object AgentBuilder {
     cacheMap
       .getEntry[RepresentativeDetails](RepresentativeDetails.formId)
       .filter(isDefined)
-      .map(data => createAgent(data.details.get))
+      .map(data => createAgent(data))
       .orNull
 
   private def isDefined(representativeDetails: RepresentativeDetails): Boolean =
     representativeDetails.details.isDefined && (representativeDetails.details.get.eori.isDefined || representativeDetails.details.get.address.isDefined)
 
-  private def createAgent(details: EntityDetails): Declaration.Agent = {
+  private def createAgent(data: RepresentativeDetails): Declaration.Agent = {
     val agent = new Declaration.Agent()
 
-    if (details.eori.isDefined) {
-      val agentId = new AgentIdentificationIDType()
-      agentId.setValue(details.eori.get)
-      agent.setID(agentId)
-    } else {
+    agent.setFunctionCode(setStatusCode(data))
 
-      val agentAddress = new Agent.Address()
+    data.details.map(
+      details =>
+        if (details.eori.isDefined) {
+          val agentId = new AgentIdentificationIDType()
+          agentId.setValue(details.eori.get)
+          agent.setID(agentId)
+        } else {
 
-      details.address.map(address => {
+          val agentAddress = new Agent.Address()
 
-        val agentName = new AgentNameTextType()
-        agentName.setValue(address.fullName)
+          details.address.map(address => {
 
-        val line = new AddressLineTextType()
-        line.setValue(address.addressLine)
+            val agentName = new AgentNameTextType()
+            agentName.setValue(address.fullName)
 
-        val city = new AddressCityNameTextType
-        city.setValue(address.townOrCity)
+            val line = new AddressLineTextType()
+            line.setValue(address.addressLine)
 
-        val postcode = new AddressPostcodeIDType()
-        postcode.setValue(address.postCode)
+            val city = new AddressCityNameTextType
+            city.setValue(address.townOrCity)
 
-        val countryCode = new AddressCountryCodeType
-        countryCode.setValue(
-          allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
-        )
+            val postcode = new AddressPostcodeIDType()
+            postcode.setValue(address.postCode)
 
-        agent.setName(agentName)
-        agentAddress.setLine(line)
-        agentAddress.setCityName(city)
-        agentAddress.setCountryCode(countryCode)
-        agentAddress.setPostcodeID(postcode)
-      })
-      agent.setAddress(agentAddress)
-    }
+            val countryCode = new AddressCountryCodeType
+            countryCode.setValue(
+              allCountries
+                .find(country => address.country.contains(country.countryName))
+                .map(_.countryCode)
+                .getOrElse("")
+            )
+
+            agent.setName(agentName)
+            agentAddress.setLine(line)
+            agentAddress.setCityName(city)
+            agentAddress.setCountryCode(countryCode)
+            agentAddress.setPostcodeID(postcode)
+          })
+          agent.setAddress(agentAddress)
+      }
+    )
     agent
   }
+  private def setStatusCode(data: RepresentativeDetails) =
+    data.statusCode
+      .map(value => {
+        val functionCodeType = new AgentFunctionCodeType()
+        functionCodeType.setValue(value)
+        functionCodeType
+      })
+      .orNull
 }

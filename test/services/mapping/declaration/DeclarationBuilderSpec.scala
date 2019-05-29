@@ -30,6 +30,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
       declaration.getAgent.getID.getValue should be("9GB1234567ABCDEF")
       declaration.getAgent.getName should be(null)
       declaration.getAgent.getAddress should be(null)
+      declaration.getAgent.getFunctionCode.getValue should be("2")
 
       declaration.getBorderTransportMeans.getID.getValue should be("1234567878ui")
       declaration.getBorderTransportMeans.getIdentificationTypeCode.getValue should be("40")

@@ -34,6 +34,7 @@ class AgentBuilderSpec extends WordSpec with Matchers {
         agent.getID.getValue should be("9GB1234567ABCDEF")
         agent.getName should be(null)
         agent.getAddress should be(null)
+        agent.getFunctionCode.getValue should be("2")
       }
 
       "only Address is supplied" in {
@@ -52,6 +53,7 @@ class AgentBuilderSpec extends WordSpec with Matchers {
         agent.getAddress.getCityName.getValue should be("Town or City")
         agent.getAddress.getCountryCode.getValue should be("PL")
         agent.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+        agent.getFunctionCode.getValue should be("2")
       }
     }
   }
