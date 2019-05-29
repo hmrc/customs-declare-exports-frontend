@@ -16,7 +16,7 @@
 
 package services.mapping.declaration
 
-import forms.declaration.TransportInformation
+import forms.declaration.{BorderTransport, TransportDetails}
 import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
@@ -29,32 +29,42 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
 
 object BorderTransportMeansBuilder {
 
-  def build(implicit cacheMap: CacheMap): Declaration.BorderTransportMeans =
+  def build(implicit cacheMap: CacheMap): Declaration.BorderTransportMeans = {
+
+    val borderTransport = cacheMap
+      .getEntry[BorderTransport](BorderTransport.formId)
+
     cacheMap
-      .getEntry[TransportInformation](TransportInformation.id)
-      .filter(isDefined)
-      .map(createBorderTransportMeans)
+      .getEntry[TransportDetails](TransportDetails.formId)
+      .filter(data => isDefined(data))
+      .map(data => createBorderTransportMeans(data, borderTransport))
       .orNull
+  }
 
-  private def isDefined(transportInformation: TransportInformation): Boolean =
-    transportInformation.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
-      transportInformation.meansOfTransportCrossingTheBorderType.nonEmpty ||
-      transportInformation.borderModeOfTransportCode.nonEmpty
+  private def isDefined(transportDetails: TransportDetails): Boolean =
+    transportDetails.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
+      transportDetails.meansOfTransportCrossingTheBorderType.nonEmpty ||
+      transportDetails.meansOfTransportCrossingTheBorderNationality.nonEmpty
 
-  private def createBorderTransportMeans(data: TransportInformation): Declaration.BorderTransportMeans = {
+  private def createBorderTransportMeans(
+    data: TransportDetails,
+    borderTransport: Option[BorderTransport]
+  ): Declaration.BorderTransportMeans = {
     val transportMeans = new Declaration.BorderTransportMeans()
 
-    if (data.meansOfTransportCrossingTheBorderIDNumber.isDefined) {
+    data.meansOfTransportCrossingTheBorderIDNumber.foreach { value =>
       val id = new BorderTransportMeansIdentificationIDType()
-      id.setValue(data.meansOfTransportCrossingTheBorderIDNumber.getOrElse(""))
+      id.setValue(value)
       transportMeans.setID(id)
     }
 
-    if (data.borderModeOfTransportCode.nonEmpty) {
-      val modeCode = new BorderTransportMeansModeCodeType()
-      modeCode.setValue(data.borderModeOfTransportCode)
-      transportMeans.setModeCode(modeCode)
-    }
+    borderTransport
+      .filter(transport => transport.borderModeOfTransportCode.nonEmpty)
+      .map(transport => {
+        val modeCode = new BorderTransportMeansModeCodeType()
+        modeCode.setValue(transport.borderModeOfTransportCode)
+        transportMeans.setModeCode(modeCode)
+      })
 
     if (data.meansOfTransportCrossingTheBorderType.nonEmpty) {
       val identificationTypeCode = new BorderTransportMeansIdentificationTypeCodeType()

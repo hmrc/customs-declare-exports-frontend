@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <MetaData xmlns="urn:wco:datamodel:WCO:DocumentMetaData-DMS:2" xmlns:ns2="urn:wco:datamodel:WCO:Declaration_DS:DMS:2" xmlns:ns3="urn:wco:datamodel:WCO:DEC-DMS:2">
     <WCODataModelVersionCode>3.6</WCODataModelVersionCode>
     <WCOTypeName>DEC</WCOTypeName>
@@ -59,14 +58,7 @@
                 <ns3:ID>9GB1234567ABCDEF</ns3:ID>
             </ns3:Consignee>
             <ns3:Consignment>
-                <ns3:ContainerCode>1</ns3:ContainerCode>
-                <ns3:ArrivalTransportMeans>
-                    <ns3:ModeCode>1</ns3:ModeCode>
-                </ns3:ArrivalTransportMeans>
-                <ns3:DepartureTransportMeans>
-                    <ns3:ID>123112yu78</ns3:ID>
-                    <ns3:IdentificationTypeCode>40</ns3:IdentificationTypeCode>
-                </ns3:DepartureTransportMeans>
+                <ns3:ContainerCode>0</ns3:ContainerCode>
                 <ns3:GoodsLocation>
                     <ns3:ID>9GB1234567ABCDEF</ns3:ID>
                 </ns3:GoodsLocation>

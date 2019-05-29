@@ -399,7 +399,9 @@ object SupplementaryDeclarationDataSpec {
       WarehouseIdentification.formId -> correctWarehouseIdentificationJSON,
       OfficeOfExit.formId -> correctOfficeOfExitJSON,
       TransportInformationContainerData.id -> correctTransportInformationContainerDataJSON,
-      TransportInformation.id -> TransportInformationSpec.correctTransportInformationJSON,
+      TransportDetails.formId -> Json.toJson(
+        TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))),
+        BorderTransport.formId -> Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
       TotalNumberOfItems.formId -> correctTotalNumberOfItemsDecimalValuesJSON,
       TransactionType.formId -> correctTransactionTypeJSON,
       GoodsItemNumber.formId -> correctGoodsItemNumberJSON,
