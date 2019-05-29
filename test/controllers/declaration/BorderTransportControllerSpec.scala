@@ -20,8 +20,7 @@ import base.CSRFUtil._
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.CommodityMeasure.commodityFormId
-import forms.declaration.{BorderTransport, CommodityMeasure}
+import forms.declaration.BorderTransport
 import generators.Generators
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -29,7 +28,8 @@ import org.mockito.Mockito.{reset, verify}
 import org.scalacheck.Arbitrary._
 import org.scalatest.prop.PropertyChecks
 import play.api.data.Form
-import play.api.test.FakeRequest
+import play.api.mvc.Request
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
@@ -41,7 +41,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
   val form: Form[BorderTransport] = Form(BorderTransport.formMapping)
 
-  def view(form: Form[BorderTransport], request: FakeRequest[_]): Html =
+  def view(form: Form[BorderTransport], request: Request[_]): Html =
     border_transport(form)(request, messages, appConfig)
 
   before {
@@ -62,7 +62,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
     }
 
     "populate the form fields with data from cache" in {
-      val request = getRequest(uri)
+      val request = addCSRFToken(getRequest(uri))
 
       forAll(arbitrary[BorderTransport]) { transport =>
         withCaching[BorderTransport](Some(transport), BorderTransport.formId)

@@ -18,13 +18,19 @@ package controllers.actions
 
 import models.requests.AuthenticatedRequest
 import models.{IdentityData, SignedInUser}
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{AnyContent, BodyParser, Request, Result}
+import play.api.test.Helpers._
+import play.api.test.NoMaterializer
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 object FakeAuthAction extends AuthAction {
+
+  override val executionContext: ExecutionContext = global
+  override val parser: BodyParser[AnyContent] = stubPlayBodyParsers(NoMaterializer).defaultBodyParser
 
   val defaultUser = newUser("0771123680108", "Ext-1234-5678")
 
@@ -57,6 +63,9 @@ object FakeAuthAction extends AuthAction {
 }
 
 class TestAuthAction extends AuthAction {
+  override val executionContext: ExecutionContext = ???
+  override val parser: BodyParser[AnyContent] = ???
+
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
     block(AuthenticatedRequest(request, FakeAuthAction.defaultUser))
 }

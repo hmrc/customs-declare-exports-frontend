@@ -23,8 +23,8 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import services.ExportsItemsCacheIds.itemsId
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -36,9 +36,10 @@ class ItemsSummaryController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  cacheService: CustomsCacheService
-)(implicit ec: ExecutionContext, appConfig: AppConfig, override val messagesApi: MessagesApi)
-    extends FrontendController with I18nSupport {
+  cacheService: CustomsCacheService,
+  mcc: MessagesControllerComponents
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService

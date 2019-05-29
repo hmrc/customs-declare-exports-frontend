@@ -21,9 +21,11 @@ import config.AppConfig
 import forms.Choice
 import helpers.views.declaration.{ChoiceMessages, CommonMessages}
 import org.jsoup.nodes.Element
+import play.api.Mode.Test
 import play.api.data.Form
 import play.api.{Configuration, Environment}
 import play.twirl.api.Html
+import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import views.declaration.spec.ViewSpec
 import views.html.choice_page
 import views.tags.ViewTest
@@ -84,10 +86,12 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
         |list-of-available-journeys="SMP"
         |google-analytics.token=N/A
         |google-analytics.host=localhostGoogle
-
       """.stripMargin)
 
-      val supplementaryAppConfig = new AppConfig(Configuration(supplementaryConfig), Environment.simple())
+      val conf: Configuration = Configuration(supplementaryConfig)
+      val runMode: RunMode = new RunMode(conf, Test)
+      val servicesConfig = new ServicesConfig(conf, runMode)
+      val supplementaryAppConfig = new AppConfig(conf, Environment.simple(), servicesConfig, "AppName")
 
       val view = choice_page(Choice.form().fill(Choice("SMP")))(
         appConfig = supplementaryAppConfig,

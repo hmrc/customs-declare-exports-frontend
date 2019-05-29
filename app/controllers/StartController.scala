@@ -18,16 +18,15 @@ package controllers
 
 import config.AppConfig
 import javax.inject.Inject
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.start_page
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class StartController @Inject()(appConfig: AppConfig, override val messagesApi: MessagesApi)(
-  implicit ec: ExecutionContext
-) extends FrontendController with I18nSupport {
+class StartController @Inject()(appConfig: AppConfig, mcc: MessagesControllerComponents)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayStartPage(): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(start_page(appConfig)))

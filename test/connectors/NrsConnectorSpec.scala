@@ -53,7 +53,7 @@ class NrsConnectorSpec extends CustomExportsBaseSpec {
     val nrsSubmission = NRSSubmission(submission.toString, nrsMetadata)
     val expectedUrl = s"${appConfig.nrsServiceUrl}/submission"
     val http =
-      new MockHttpClient(expectedUrl, nrsSubmission, expectedHeaders, false, NrsSubmissionResponse("submissionId1"))
+      new MockHttpClient(mockWSClient, expectedUrl, nrsSubmission, expectedHeaders, false, NrsSubmissionResponse("submissionId1"))
     val client = new NrsConnector(appConfig, http)
     test(client.submitNonRepudiation(nrsSubmission)(hc, ec))
   }

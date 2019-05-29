@@ -21,6 +21,7 @@ import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.libs.json.{Json, Writes}
+import play.api.mvc.Request
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -45,6 +46,12 @@ object TestHelper {
   def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   def journeyRequest(fakeRequest: FakeRequest[_], choice: String): JourneyRequest[_] =
+    JourneyRequest(
+      AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
+      Choice(choice)
+    )
+
+  def journeyRequest(fakeRequest: Request[_], choice: String): JourneyRequest[_] =
     JourneyRequest(
       AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
       Choice(choice)

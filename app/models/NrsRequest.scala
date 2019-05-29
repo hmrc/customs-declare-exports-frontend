@@ -19,6 +19,8 @@ package models
 import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.functional.syntax.{unlift, _}
 import play.api.libs.json._
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, LoginTimes, Name, _}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 import uk.gov.hmrc.http.controllers.RestFormats

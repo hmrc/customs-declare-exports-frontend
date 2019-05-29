@@ -20,8 +20,10 @@ import base.CustomExportsBaseSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import features.{Feature, FeatureStatus}
 import forms.Choice
+import play.api.Mode.Test
 import play.api.{Configuration, Environment}
 import services.{WcoMetadataJavaMappingStrategy, WcoMetadataScalaMappingStrategy}
+import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 class AppConfigSpec extends CustomExportsBaseSpec {
 
@@ -61,7 +63,9 @@ class AppConfigSpec extends CustomExportsBaseSpec {
   val validServicesConfiguration = Configuration(validAppConfig)
   private val emptyServicesConfiguration = Configuration(emptyAppConfig)
 
-  private def appConfig(conf: Configuration) = new AppConfig(conf, environment)
+  private def runMode(conf: Configuration): RunMode = new RunMode(conf, Test)
+  private def servicesConfig(conf: Configuration) = new ServicesConfig(conf, runMode(conf))
+  private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
 
   val validConfigService: AppConfig = appConfig(validServicesConfiguration)
   val emptyConfigService: AppConfig = appConfig(emptyServicesConfiguration)
@@ -85,7 +89,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     }
 
     "create the WcoMetadataJavaMappingStrategy when use-new-wco-dec-mapping-strategy feature flag set as true" in {
-      validConfigService.getConfBool("features.use-new-wco-dec-mapping-strategy", false) must be(true)
       validConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataJavaMappingStrategy] must be(true)
     }
 
@@ -171,8 +174,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
   }
 
   "create the WcoMetadataScalaMappingStrategy when use-new-wco-dec-mapping-strategy feature flag is not set" in {
-    emptyConfigService.getConfBool("features.use-new-wco-dec-mapping-strategy", false) must be(false)
-
     emptyConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataScalaMappingStrategy] must be(true)
   }
 

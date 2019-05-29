@@ -28,8 +28,8 @@ import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.Logger
 import play.api.data.{Form, FormError}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.countries.Countries
 import services.{Country, CustomsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -43,14 +43,14 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class DestinationCountriesController @Inject()(
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   countries: Countries,
-  errorHandler: ErrorHandler
+  errorHandler: ErrorHandler,
+  mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass())
   implicit val countryList: List[Country] = countries.all

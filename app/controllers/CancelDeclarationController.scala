@@ -28,8 +28,8 @@ import metrics.MetricIdentifiers._
 import models.requests._
 import play.api.Logger
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.{cancel_declaration, cancellation_confirmation_page}
 
@@ -40,9 +40,10 @@ class CancelDeclarationController @Inject()(
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   errorHandler: ErrorHandler,
-  exportsMetrics: ExportsMetrics
-)(implicit val messagesApi: MessagesApi, ec: ExecutionContext)
-    extends FrontendController with I18nSupport {
+  exportsMetrics: ExportsMetrics,
+  mcc: MessagesControllerComponents
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass())
 
@@ -75,9 +76,9 @@ class CancelDeclarationController @Inject()(
                   Future.successful(
                     BadRequest(
                       errorHandler.standardErrorTemplate(
-                        pageTitle = messagesApi("cancellation.error.title"),
-                        heading = messagesApi("cancellation.exists.error.heading"),
-                        message = messagesApi("cancellation.exists.error.message")
+                        pageTitle = Messages("cancellation.error.title"),
+                        heading = Messages("cancellation.exists.error.heading"),
+                        message = Messages("cancellation.exists.error.message")
                       )
                     )
                   )
@@ -86,9 +87,9 @@ class CancelDeclarationController @Inject()(
                   Future.successful(
                     BadRequest(
                       errorHandler.standardErrorTemplate(
-                        pageTitle = messagesApi("cancellation.error.title"),
-                        heading = messagesApi("cancellation.error.heading"),
-                        message = messagesApi("cancellation.error.message")
+                        pageTitle = Messages("cancellation.error.title"),
+                        heading = Messages("cancellation.error.heading"),
+                        message = Messages("cancellation.error.message")
                       )
                     )
                   )
