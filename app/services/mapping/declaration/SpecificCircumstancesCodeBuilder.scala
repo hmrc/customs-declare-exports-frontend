@@ -36,12 +36,13 @@ object SpecificCircumstancesCodeBuilder {
   )(implicit cacheMap: CacheMap): DeclarationSpecificCircumstancesCodeCodeType =
     cacheMap
       .getEntry[OfficeOfExitStandard](OfficeOfExit.formId)
+      .filter(data => data.circumstancesCode == yes)
       .map(createCircumstancesCode)
       .orNull
 
   private def createCircumstancesCode(data: OfficeOfExitStandard): DeclarationSpecificCircumstancesCodeCodeType = {
     val circumstancesCode = new DeclarationSpecificCircumstancesCodeCodeType()
-    circumstancesCode.setValue(if (data.circumstancesCode == yes) "A20" else "")
+    circumstancesCode.setValue("A20")
     circumstancesCode
   }
 }
