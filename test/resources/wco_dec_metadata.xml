@@ -14,6 +14,7 @@
         <ns3:TotalPackageQuantity>123</ns3:TotalPackageQuantity>
         <ns3:Agent>
             <ns3:ID>9GB1234567ABCDEF</ns3:ID>
+            <ns3:FunctionCode>2</ns3:FunctionCode>
         </ns3:Agent>
         <ns3:AuthorisationHolder>
             <ns3:ID>PL213472539481923</ns3:ID>
