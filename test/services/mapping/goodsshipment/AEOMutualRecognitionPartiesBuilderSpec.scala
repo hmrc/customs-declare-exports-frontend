@@ -15,7 +15,6 @@
  */
 
 package services.mapping.goodsshipment
-import forms.declaration.DeclarationAdditionalActors
 import models.declaration.{DeclarationAdditionalActorsData, DeclarationAdditionalActorsDataSpec}
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -32,7 +31,7 @@ class AEOMutualRecognitionPartiesBuilderSpec extends WordSpec with Matchers with
           CacheMap(
             "CacheID",
             Map(
-              DeclarationAdditionalActors.formId -> DeclarationAdditionalActorsDataSpec.correctAdditionalActorsDataJSON
+              DeclarationAdditionalActorsData.formId -> DeclarationAdditionalActorsDataSpec.correctAdditionalActorsDataJSON
             )
           )
         val actors = AEOMutualRecognitionPartiesBuilder.build(cacheMap)
@@ -43,7 +42,7 @@ class AEOMutualRecognitionPartiesBuilderSpec extends WordSpec with Matchers with
 
       "'eori' has not been supplied" in {
         implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(DeclarationAdditionalActors.formId -> setupCacheData(eori = "")))
+          CacheMap("CacheID", Map(DeclarationAdditionalActorsData.formId -> setupCacheData(eori = "")))
         val actors = AEOMutualRecognitionPartiesBuilder.build(cacheMap)
         actors.size should be(1)
         actors.get(0).getID should be(null)
@@ -52,7 +51,7 @@ class AEOMutualRecognitionPartiesBuilderSpec extends WordSpec with Matchers with
 
       "'partyType' has not been supplied" in {
         implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(DeclarationAdditionalActors.formId -> setupCacheData(partyType = "")))
+          CacheMap("CacheID", Map(DeclarationAdditionalActorsData.formId -> setupCacheData(partyType = "")))
         val actors = AEOMutualRecognitionPartiesBuilder.build(cacheMap)
         actors.size should be(1)
         actors.get(0).getID.getValue should be("eori1")
@@ -61,7 +60,7 @@ class AEOMutualRecognitionPartiesBuilderSpec extends WordSpec with Matchers with
 
       "handle no documents when mapping to WCO-DEC GoodsShipment.AEOMutualRecognitionParties" in {
         implicit val cacheMap: CacheMap = mock[CacheMap]
-        when(cacheMap.getEntry[DeclarationAdditionalActorsData](DeclarationAdditionalActors.formId))
+        when(cacheMap.getEntry[DeclarationAdditionalActorsData](DeclarationAdditionalActorsData.formId))
           .thenReturn(None)
 
         val actors = AEOMutualRecognitionPartiesBuilder.build(cacheMap)
@@ -72,7 +71,9 @@ class AEOMutualRecognitionPartiesBuilderSpec extends WordSpec with Matchers with
         implicit val cacheMap: CacheMap =
           CacheMap(
             "CacheID",
-            Map(DeclarationAdditionalActors.formId -> DeclarationAdditionalActorsDataSpec.emptyAdditionalActorsDataJSON)
+            Map(
+              DeclarationAdditionalActorsData.formId -> DeclarationAdditionalActorsDataSpec.emptyAdditionalActorsDataJSON
+            )
           )
         val actors = AEOMutualRecognitionPartiesBuilder.build(cacheMap)
         actors.isEmpty shouldBe true
