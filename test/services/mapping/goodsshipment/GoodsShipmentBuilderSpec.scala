@@ -33,8 +33,6 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers {
       goodsShipment.getConsignee.getAddress should be(null)
 
       goodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
-      goodsShipment.getConsignment.getGoodsLocation.getName should be(null)
-      goodsShipment.getConsignment.getGoodsLocation.getAddress should be(null)
 
       goodsShipment.getDestination.getCountryCode.getValue should be("PL")
 

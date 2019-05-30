@@ -16,8 +16,11 @@
 
 package services.mapping.goodsshipment
 
-import forms.declaration.{CarrierDetails, CarrierDetailsSpec, TransportInformation, TransportInformationSpec}
+import forms.common.Address
+import forms.declaration._
 import org.scalatest.{Matchers, WordSpec}
+import play.api.libs.json.Json
+import services.mapping.goodsshipment.consignment.ConsignmentBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class ConsignmentBuilderSpec extends WordSpec with Matchers {
@@ -29,86 +32,64 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
           CacheMap(
             "CacheID",
             Map(
-              CarrierDetails.id -> CarrierDetailsSpec.correctCarrierDetailsEORIOnlyJSON,
-              TransportInformation.id -> TransportInformationSpec.correctTransportInformationJSON
+              CarrierDetails.id ->
+                Json.toJson(CarrierDetails(details = EntityDetails(Some("9GB1234567ABCDEF"), None))),
+              BorderTransport.formId ->
+                Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
+              TransportDetails.formId -> Json
+                .toJson(TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))),
+              WarehouseIdentification.formId -> WarehouseIdentificationSpec.correctWarehouseIdentificationJSON
             )
           )
         val consignment = ConsignmentBuilder.build(cacheMap)
-        consignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
-
-        consignment.getGoodsLocation.getName should be(null)
-        consignment.getGoodsLocation.getAddress should be(null)
 
         consignment.getContainerCode.getValue should be("1")
 
-        consignment.getArrivalTransportMeans.getModeCode.getValue should be("1")
+        consignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
+        consignment.getGoodsLocation.getName should be(null)
+        consignment.getGoodsLocation.getAddress should be(null)
+
         consignment.getDepartureTransportMeans.getID.getValue should be("123112yu78")
         consignment.getDepartureTransportMeans.getIdentificationTypeCode.getValue should be("40")
+
+        consignment.getArrivalTransportMeans.getModeCode.getValue should be("2")
       }
+
       "all data has been supplied with address only" in {
         implicit val cacheMap: CacheMap =
           CacheMap(
             "CacheID",
             Map(
-              CarrierDetails.id -> CarrierDetailsSpec.correctCarrierDetailsAddressOnlyJSON,
-              TransportInformation.id -> TransportInformationSpec.correctTransportInformationJSON
+              CarrierDetails.id ->
+                Json.toJson(
+                  CarrierDetails(
+                    details = EntityDetails(
+                      None,
+                      Some(Address("Full Name", "Address Line", "Town or City", "AB12 CD3", "Poland"))
+                    )
+                  )
+                ),
+              BorderTransport.formId ->
+                Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
+              TransportDetails.formId -> Json
+                .toJson(TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))),
+              WarehouseIdentification.formId -> WarehouseIdentificationSpec.correctWarehouseIdentificationJSON
             )
           )
         val consignment = ConsignmentBuilder.build(cacheMap)
+        consignment.getContainerCode.getValue should be("1")
+
         consignment.getGoodsLocation.getID should be(null)
         consignment.getGoodsLocation.getName.getValue should be("Full Name")
-
         consignment.getGoodsLocation.getAddress.getLine.getValue should be("Address Line")
         consignment.getGoodsLocation.getAddress.getCityName.getValue should be("Town or City")
         consignment.getGoodsLocation.getAddress.getCountryCode.getValue should be("PL")
-        consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 34CD")
-        consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+        consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
 
-        consignment.getContainerCode.getValue should be("1")
-
-        consignment.getArrivalTransportMeans.getModeCode.getValue should be("1")
         consignment.getDepartureTransportMeans.getID.getValue should be("123112yu78")
         consignment.getDepartureTransportMeans.getIdentificationTypeCode.getValue should be("40")
-      }
 
-      "no carrier data has been supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(
-              CarrierDetails.id -> CarrierDetailsSpec.emptyCarrierDetailsJSON,
-              TransportInformation.id -> TransportInformationSpec.correctTransportInformationJSON
-            )
-          )
-        val consignment = ConsignmentBuilder.build(cacheMap)
-        consignment.getGoodsLocation should be(null)
-
-        consignment.getContainerCode.getValue should be("1")
-
-        consignment.getArrivalTransportMeans.getModeCode.getValue should be("1")
-        consignment.getDepartureTransportMeans.getID.getValue should be("123112yu78")
-        consignment.getDepartureTransportMeans.getIdentificationTypeCode.getValue should be("40")
-      }
-
-      "no transport information data has been supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(
-              CarrierDetails.id -> CarrierDetailsSpec.correctCarrierDetailsEORIOnlyJSON,
-              TransportInformation.id -> TransportInformationSpec.emptyTransportInformationJSON
-            )
-          )
-        val consignment = ConsignmentBuilder.build(cacheMap)
-        consignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
-
-        consignment.getGoodsLocation.getName should be(null)
-        consignment.getGoodsLocation.getAddress should be(null)
-
-        consignment.getContainerCode.getValue should be("0")
-
-        consignment.getArrivalTransportMeans should be(null)
-        consignment.getDepartureTransportMeans should be(null)
+        consignment.getArrivalTransportMeans.getModeCode.getValue should be("2")
       }
     }
   }
