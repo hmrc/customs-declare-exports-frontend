@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package services
+package utils.collections
 
-import forms.Choice
-import uk.gov.hmrc.http.cache.client.CacheMap
+object Removable {
+  implicit class RemovableSeq[A](seq: Seq[A]) extends Seq[A] {
 
-trait WcoMetadataMappingStrategy {
+    /**
+    * Removes an element at given index, providing the collection is defined this index.
+      * @param idx - index of the element to remove
+      * @return - new Sequence without element at given index
+      */
+    def removeByIdx(idx: Int): RemovableSeq[A] = {
+      val (start, _ :: end) = seq.splitAt(idx)
+      start ++ end
+    }
 
-  def produceMetaData(cacheMap: CacheMap, choice: Choice): Any
-
-  def declarationUcr(metaData: Any): Option[String]
-
-  def declarationLrn(metaData: Any): Option[String]
-
-  def toXml(metaData: Any): String
+    override def length: Int = seq.length
+    override def apply(idx: Int): A = seq.apply(idx)
+    override def iterator: Iterator[A] = seq.iterator
+  }
 }

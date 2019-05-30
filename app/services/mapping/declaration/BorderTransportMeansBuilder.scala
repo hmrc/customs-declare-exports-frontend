@@ -32,33 +32,47 @@ object BorderTransportMeansBuilder {
   def build(implicit cacheMap: CacheMap): Declaration.BorderTransportMeans =
     cacheMap
       .getEntry[TransportInformation](TransportInformation.id)
+      .filter(isDefined)
       .map(createBorderTransportMeans)
       .orNull
 
+  private def isDefined(transportInformation: TransportInformation): Boolean =
+    transportInformation.meansOfTransportCrossingTheBorderIDNumber.isDefined ||
+      transportInformation.meansOfTransportCrossingTheBorderType.nonEmpty ||
+      transportInformation.borderModeOfTransportCode.nonEmpty
+
   private def createBorderTransportMeans(data: TransportInformation): Declaration.BorderTransportMeans = {
-
-    val id = new BorderTransportMeansIdentificationIDType()
-    id.setValue(data.meansOfTransportCrossingTheBorderIDNumber.getOrElse(""))
-
-    val modeCode = new BorderTransportMeansModeCodeType()
-    modeCode.setValue(data.borderModeOfTransportCode)
-
-    val identificationTypeCode = new BorderTransportMeansIdentificationTypeCodeType()
-    identificationTypeCode.setValue(data.meansOfTransportCrossingTheBorderType)
-
-    val registrationNationalityCode = new BorderTransportMeansRegistrationNationalityCodeType()
-    registrationNationalityCode.setValue(
-      allCountries
-        .find(country => data.meansOfTransportCrossingTheBorderNationality.contains(country.countryName))
-        .map(_.countryCode)
-        .getOrElse("")
-    )
-
     val transportMeans = new Declaration.BorderTransportMeans()
-    transportMeans.setID(id)
-    transportMeans.setIdentificationTypeCode(identificationTypeCode)
-    transportMeans.setModeCode(modeCode)
-    transportMeans.setRegistrationNationalityCode(registrationNationalityCode)
+
+    if (data.meansOfTransportCrossingTheBorderIDNumber.isDefined) {
+      val id = new BorderTransportMeansIdentificationIDType()
+      id.setValue(data.meansOfTransportCrossingTheBorderIDNumber.getOrElse(""))
+      transportMeans.setID(id)
+    }
+
+    if (data.borderModeOfTransportCode.nonEmpty) {
+      val modeCode = new BorderTransportMeansModeCodeType()
+      modeCode.setValue(data.borderModeOfTransportCode)
+      transportMeans.setModeCode(modeCode)
+    }
+
+    if (data.meansOfTransportCrossingTheBorderType.nonEmpty) {
+      val identificationTypeCode = new BorderTransportMeansIdentificationTypeCodeType()
+      identificationTypeCode.setValue(data.meansOfTransportCrossingTheBorderType)
+      transportMeans.setIdentificationTypeCode(identificationTypeCode)
+    }
+
+    if (data.meansOfTransportCrossingTheBorderNationality.isDefined) {
+      val registrationNationalityCode = new BorderTransportMeansRegistrationNationalityCodeType()
+      registrationNationalityCode.setValue(
+        allCountries
+          .find(country => data.meansOfTransportCrossingTheBorderNationality.contains(country.countryName))
+          .map(_.countryCode)
+          .getOrElse("")
+      )
+      transportMeans.setRegistrationNationalityCode(registrationNationalityCode)
+    }
+
     transportMeans
   }
 }

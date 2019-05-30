@@ -6,24 +6,24 @@ object AppDependencies {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "play-conditional-form-mapping" % "0.2.0",
-    "uk.gov.hmrc" %% "play-reactivemongo" % "6.7.0",
+    "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.1.0-play-26",
+    "uk.gov.hmrc" %% "simple-reactivemongo" % "7.19.0-play-26",
     "uk.gov.hmrc" %% "logback-json-logger" % "4.6.0",
-    "uk.gov.hmrc" %% "govuk-template" % "5.35.0-play-25",
-    "uk.gov.hmrc" %% "play-health" % "3.14.0-play-25",
-    "uk.gov.hmrc" %% "play-ui" % "7.39.0-play-25",
-    "uk.gov.hmrc" %% "http-caching-client" % "8.3.0",
-    "uk.gov.hmrc" %% "bootstrap-play-25" % "4.11.0",
-    "uk.gov.hmrc" %% "play-language" % "3.4.0",
+    "uk.gov.hmrc" %% "govuk-template" % "5.35.0-play-26",
+    "uk.gov.hmrc" %% "play-health" % "3.14.0-play-26",
+    "uk.gov.hmrc" %% "play-ui" % "7.39.0-play-26",
+    "uk.gov.hmrc" %% "http-caching-client" % "8.4.0-play-26",
+    "uk.gov.hmrc" %% "bootstrap-play-26" % "0.39.0",
     "uk.gov.hmrc" %% "wco-dec" % "0.30.0",
-    "ai.x" %% "play-json-extensions" % "0.9.0",
-    "uk.gov.hmrc" %% "play-whitelist-filter" % "2.0.0"
+    "ai.x" %% "play-json-extensions" % "0.30.1",
+    "uk.gov.hmrc" %% "play-whitelist-filter" % "3.1.0-play-26",
+    "com.typesafe.play" %% "play-json-joda" % "2.6.10"
   )
 
   val test = Seq(
-    "uk.gov.hmrc" %% "hmrctest" % "3.8.0-play-25" % "test",
+    "uk.gov.hmrc" %% "hmrctest" % "3.8.0-play-26" % "test",
     "org.scalatest" %% "scalatest" % "3.0.5" % "test",
-    "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % "test",
+    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test",
     "org.pegdown" % "pegdown" % "1.6.0" % "test",
     "org.jsoup" % "jsoup" % "1.11.3" % "test",
     "com.typesafe.play" %% "play-test" % PlayVersion.current % "test",

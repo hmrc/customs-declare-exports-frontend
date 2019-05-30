@@ -16,10 +16,9 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes._
+@import controllers.util.Remove
 @import forms.declaration.TransportInformationContainer
 @import uk.gov.hmrc.play.views.html._
-@import utils.RadioOption
-@import controllers.util.Remove
 @(form: Form[TransportInformationContainer], containers: Seq[TransportInformationContainer])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
@@ -29,14 +28,12 @@
 
     @components.back_link("/customs-declare-exports/declaration/transport-details")
 
-    @helpers.form(TransportContainerController.handlePost(), 'autoComplete -> "off") {
+    @components.error_summary(form.errors)
 
-        @components.error_summary(form.errors)
+    @components.page_title(Some("supplementary.transportInfo.containers.title"), None)
 
-        @components.page_title(Some("supplementary.transportInfo.containers.title"), None)
-
-
-        @if(containers.nonEmpty) {
+    @if(containers.nonEmpty) {
+        @helpers.form(TransportContainerController.submitForm(), 'autoComplete -> "off") {
             <div class="field-group">
                 <table >
                     <thead>
@@ -49,7 +46,7 @@
                     <tr>
                         <td>@container.id</td>
                         <td>
-                            <button class="button--secondary" name="@Remove.toString" value="@index">@messages("site.remove")</button>
+                            <button class="button--secondary" name=@Remove.toString value=@index>@messages("site.remove")</button>
                         </td>
                     </tr>
                 }
@@ -57,8 +54,9 @@
                 <br><br>
             </div>
         }
+    }
 
-
+    @helpers.form(TransportContainerController.submitForm(), 'autoComplete -> "off") {
         @components.input_text(
             field = form("id"),
             label = messages("supplementary.transportInfo.containerId")

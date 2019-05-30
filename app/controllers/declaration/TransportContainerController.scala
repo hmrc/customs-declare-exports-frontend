@@ -31,8 +31,8 @@ import models.declaration.TransportInformationContainerData
 import models.declaration.TransportInformationContainerData.{id, maxNumberOfItems}
 import models.requests.JourneyRequest
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.add_transport_containers
@@ -40,13 +40,13 @@ import views.html.declaration.add_transport_containers
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportContainerController @Inject()(
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService
+  customsCacheService: CustomsCacheService,
+  mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
@@ -57,7 +57,7 @@ class TransportContainerController @Inject()(
       }
   }
 
-  def handlePost(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest()
 
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))

@@ -15,107 +15,72 @@
  */
 
 package services.mapping.governmentagencygoodsitem
-import forms.declaration.{CommodityMeasure, ItemType}
-import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
+import models.declaration.governmentagencygoodsitem._
 import org.scalatest.{Matchers, WordSpec}
-import services.ExportsItemsCacheIds
-import uk.gov.hmrc.http.cache.client.CacheMap
 
-class CommodityBuilderSpec extends WordSpec with Matchers with MockitoSugar {
+class CommodityBuilderSpec
+    extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GovernmentAgencyGoodsItemData {
 
   "CommodityBuilder" should {
 
     "map commodity item successfully when dangerous goods present" in {
-
-      implicit val cacheMap: CacheMap = mock[CacheMap]
-      val descriptionOfGoods = "descriptionOfGoods"
-      val unDangerousGoodsCode = "unDangerousGoodsCode"
-      val netMassString = "15.00"
-      val grossMassString = "25.00"
-      val tariffQuantity = "31"
-
-      val itemType = Some(
-        ItemType(
-          "combinedNomenclatureCode",
-          Seq("taricAdditionalCodes"),
-          Seq("nationalAdditionalCodes"),
-          descriptionOfGoods,
-          Some("cusCode"),
-          Some(unDangerousGoodsCode),
-          "statisticalValue"
-        )
+      val commodity = Commodity(
+        Some("commodityDescription"),
+        Seq(CommodityBuilderSpec.classifications),
+        Seq(CommodityBuilderSpec.dangerousGoods),
+        Some(CommodityBuilderSpec.goodsMeasure)
       )
+      val mappedCommodity = CommodityBuilder.build(Some(commodity))
+      mappedCommodity.getDescription.getValue should be("commodityDescription")
 
-      testBuilder(
-        descriptionOfGoods,
-        Some(unDangerousGoodsCode),
-        netMassString,
-        grossMassString,
-        tariffQuantity,
-        itemType
-      )
+      mappedCommodity.getClassification.get(0).getID.getValue should be("classificationsId")
+      mappedCommodity.getClassification.get(0).getIdentificationTypeCode.getValue should be("identificationTypeCode")
 
-    }
-  }
+      mappedCommodity.getDangerousGoods.get(0).getUNDGID.getValue should be("identificationTypeCode")
 
-  "map commodity item successfully when dangerous goods not present" in {
+      mappedCommodity.getGoodsMeasure.getGrossMassMeasure.getUnitCode should be("KGM")
+      mappedCommodity.getGoodsMeasure.getGrossMassMeasure.getValue.intValue() should be(100)
 
-    implicit val cacheMap: CacheMap = mock[CacheMap]
-    val descriptionOfGoods = "descriptionOfGoods"
-    val unDangerousGoodsCode = "unDangerousGoodsCode"
-    val netMassString = "15.00"
-    val grossMassString = "25.00"
-    val tariffQuantity = "31"
+      mappedCommodity.getGoodsMeasure.getNetNetWeightMeasure.getUnitCode should be("KGM")
+      mappedCommodity.getGoodsMeasure.getNetNetWeightMeasure.getValue.intValue() should be(90)
 
-    val itemType = Some(
-      ItemType(
-        "combinedNomenclatureCode",
-        Seq("taricAdditionalCodes"),
-        Seq("nationalAdditionalCodes"),
-        descriptionOfGoods,
-        Some("cusCode"),
-        None,
-        "statisticalValue"
-      )
-    )
-
-    testBuilder(descriptionOfGoods, None, netMassString, grossMassString, tariffQuantity, itemType)
-
-  }
-
-  def testBuilder(
-    descriptionOfGoods: String,
-    unDangerousGoodsCode: Option[String],
-    netMassString: String,
-    grossMassString: String,
-    tariffQuantity: String,
-    itemType: Some[ItemType]
-  )(implicit cacheMap: CacheMap) = {
-    val commodityMeasure = CommodityMeasure(Some(tariffQuantity), netMass = netMassString, grossMass = grossMassString)
-    when(
-      cacheMap
-        .getEntry[ItemType](ItemType.id)
-    ).thenReturn(itemType)
-
-    when(cacheMap.getEntry[CommodityMeasure](CommodityMeasure.commodityFormId)).thenReturn(Some(commodityMeasure))
-
-    val mappedCommodity = CommodityBuilder.build.get
-    mappedCommodity.getDescription.getValue shouldBe descriptionOfGoods
-    unDangerousGoodsCode.fold(mappedCommodity.getDangerousGoods.isEmpty shouldBe true) { code =>
-      mappedCommodity.getDangerousGoods.get(0).getUNDGID.getValue shouldBe code
+      mappedCommodity.getGoodsMeasure.getTariffQuantity.getUnitCode should be("KGM")
+      mappedCommodity.getGoodsMeasure.getTariffQuantity.getValue.intValue() should be(2)
     }
 
-    val goodsMeasure = mappedCommodity.getGoodsMeasure
+    "map commodity item successfully when dangerous goods not present" in {
+      val commodity = Commodity(
+        Some("commodityDescription"),
+        Seq(CommodityBuilderSpec.classifications),
+        Seq(CommodityBuilderSpec.dangerousGoods),
+        None
+      )
+      val mappedCommodity = CommodityBuilder.build(Some(commodity))
+      mappedCommodity.getDescription.getValue should be("commodityDescription")
 
-    goodsMeasure.getNetNetWeightMeasure.getValue shouldBe BigDecimal(netMassString).bigDecimal
-    goodsMeasure.getNetNetWeightMeasure.getUnitCode shouldBe ExportsItemsCacheIds.defaultMeasureCode
+      mappedCommodity.getClassification.get(0).getID.getValue should be("classificationsId")
+      mappedCommodity.getClassification.get(0).getIdentificationTypeCode.getValue should be("identificationTypeCode")
 
-    goodsMeasure.getGrossMassMeasure.getValue shouldBe BigDecimal(grossMassString).bigDecimal
-    goodsMeasure.getGrossMassMeasure.getUnitCode shouldBe ExportsItemsCacheIds.defaultMeasureCode
+      mappedCommodity.getDangerousGoods.get(0).getUNDGID.getValue should be("identificationTypeCode")
 
-    goodsMeasure.getTariffQuantity.getValue shouldBe BigDecimal(tariffQuantity).bigDecimal
-    goodsMeasure.getTariffQuantity.getUnitCode shouldBe ExportsItemsCacheIds.defaultMeasureCode
+      mappedCommodity.getGoodsMeasure should be(null)
+    }
   }
+}
 
+object CommodityBuilderSpec {
+  val grossMassMeasure = Measure(Some("kg"), Some(BigDecimal(100)))
+  val netWeightMeasure = Measure(Some("kg"), Some(BigDecimal(90)))
+  val tariffQuantity = Measure(Some("kg"), Some(BigDecimal(2)))
+
+  val goodsMeasure = GoodsMeasure(Some(grossMassMeasure), Some(netWeightMeasure), Some(tariffQuantity))
+
+  val dangerousGoods = DangerousGoods(Some("identificationTypeCode"))
+
+  val classifications = Classification(
+    Some("classificationsId"),
+    Some("nameCodeId"),
+    Some("identificationTypeCode"),
+    Some("bindingTariffReferenceId")
+  )
 }

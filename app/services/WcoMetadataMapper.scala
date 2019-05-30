@@ -16,14 +16,15 @@
 
 package services
 
+import forms.Choice
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class WcoMetadataMapper {
 
   self: WcoMetadataMappingStrategy =>
 
-  def getMetaData(cacheMap: CacheMap): Any =
-    self.produceMetaData(cacheMap)
+  def getMetaData(cacheMap: CacheMap, choice: Choice): Any =
+    self.produceMetaData(cacheMap, choice)
 
   def getDeclarationDucr(metaData: Any): Option[String] = self.declarationUcr(metaData)
 

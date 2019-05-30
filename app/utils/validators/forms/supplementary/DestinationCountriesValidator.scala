@@ -42,7 +42,7 @@ object DestinationCountriesValidator extends Validator[DestinationCountriesStand
         .verifying("declaration.destinationCountries.countriesOfRouting.empty", _.trim.nonEmpty)
         .verifying(
           "declaration.destinationCountries.countriesOfRouting.error",
-          input => input.isEmpty || allCountries.exists(country => country.countryName == input)
+          input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
         )
     ).verifying("supplementary.duplication", areAllElementsUnique)
       .verifying("supplementary.limit", countries => countries.size <= DestinationCountriesStandard.limit),
@@ -54,14 +54,14 @@ object DestinationCountriesValidator extends Validator[DestinationCountriesStand
       .verifying("declaration.destinationCountries.countryOfDispatch.empty", _.trim.nonEmpty)
       .verifying(
         "declaration.destinationCountries.countryOfDispatch.error",
-        input => input.isEmpty || allCountries.exists(country => country.countryName == input)
+        input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
       ),
     "countriesOfRouting" -> seq(
       text()
         .verifying("declaration.destinationCountries.countriesOfRouting.empty", _.trim.nonEmpty)
         .verifying(
           "declaration.destinationCountries.countriesOfRouting.error",
-          input => input.isEmpty || allCountries.exists(country => country.countryName == input)
+          input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
         )
     ).verifying("supplementary.duplication", areAllElementsUnique)
       .verifying("supplementary.limit", countries => countries.size <= DestinationCountriesStandard.limit)
@@ -70,7 +70,7 @@ object DestinationCountriesValidator extends Validator[DestinationCountriesStand
       .verifying("declaration.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
       .verifying(
         "declaration.destinationCountries.countryOfDestination.error",
-        input => input.isEmpty || allCountries.exists(country => country.countryName == input)
+        input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
       )
   )(DestinationCountriesStandard.apply)(DestinationCountriesStandard.unapply)
 

@@ -25,24 +25,24 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 
 object SpecificCircumstancesCodeBuilder {
 
-  def build(implicit cacheMap: CacheMap): DeclarationSpecificCircumstancesCodeCodeType =
-    cacheMap
-      .getEntry[Choice](Choice.choiceId)
-      .filter(choice => choice.value.equals(AllowedChoiceValues.StandardDec))
-      .map(buildCircumstancesCode)
-      .orNull
+  def build(implicit cacheMap: CacheMap, choice: Choice): DeclarationSpecificCircumstancesCodeCodeType =
+    choice match {
+      case Choice(AllowedChoiceValues.StandardDec)      => buildCircumstancesCode(choice)
+      case Choice(AllowedChoiceValues.SupplementaryDec) => null
+    }
 
   private def buildCircumstancesCode(
     choice: Choice
   )(implicit cacheMap: CacheMap): DeclarationSpecificCircumstancesCodeCodeType =
     cacheMap
       .getEntry[OfficeOfExitStandard](OfficeOfExit.formId)
+      .filter(data => data.circumstancesCode == yes)
       .map(createCircumstancesCode)
       .orNull
 
   private def createCircumstancesCode(data: OfficeOfExitStandard): DeclarationSpecificCircumstancesCodeCodeType = {
     val circumstancesCode = new DeclarationSpecificCircumstancesCodeCodeType()
-    circumstancesCode.setValue(if (data.circumstancesCode == yes) "A20" else "")
+    circumstancesCode.setValue("A20")
     circumstancesCode
   }
 }

@@ -37,10 +37,10 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
     "have proper messages for labels" in {
 
       assertMessage(title, "Add representative")
-      assertMessage(header, "Was a representative used?")
+      assertMessage(header, "Was a representative used? (optional)")
       assertMessage(eoriInfo, "3/20 EORI number")
       assertMessage(addressInfo, "3/19 Enter representative’s name and address")
-      assertMessage(repTypeHeader, "3/21 What type of representation is being used?")
+      assertMessage(repTypeHeader, "3/21 What type of representation is being used? (optional)")
       assertMessage(repTypeDeclarant, "I am declaring for the company I work for or own")
       assertMessage(repTypeDirect, "Direct representative")
       assertMessage(repTypeIndirect, "Indirect representative")
@@ -110,7 +110,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
     "display three radio buttons with description (not selected)" in {
 
-      val view = createView(RepresentativeDetails.form().fill(RepresentativeDetails(EntityDetails(None, None), "")))
+      val view = createView(RepresentativeDetails.form().fill(RepresentativeDetails(None, None)))
 
       val optionDirect = getElementById(view, "statusCode_direct")
       optionDirect.attr("checked") must be("")
@@ -144,66 +144,58 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
   "Representative Details View for invalid input" can {
 
-    "display errors when nothing is entered" in {
-
-      val view = createView(RepresentativeDetails.form().bind(Map[String, String]()))
-
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, eoriOrAddressEmpty, "#details")
-      checkErrorLink(view, 2, repTypeErrorEmpty, "#statusCode")
-
-      getElementByCss(view, "#error-message-details-input").text() must be(messages(eoriOrAddressEmpty))
-      getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
-    }
-
     "status is not selected" when {
 
       "display errors when only EORI is entered" in {
 
         val view = createView(
-          RepresentativeDetails
-            .form()
-            .bind(
-              Map(
-                "details.eori" -> "1234",
-                "details.address.fullName" -> "",
-                "details.address.addressLine" -> "",
-                "details.address.townOrCity" -> "",
-                "details.address.postCode" -> "",
-                "details.address.country" -> "",
-                "statusCode" -> ""
+          RepresentativeDetails.adjustErrors(
+            RepresentativeDetails
+              .form()
+              .bind(
+                Map(
+                  "details.eori" -> "1234",
+                  "details.address.fullName" -> "",
+                  "details.address.addressLine" -> "",
+                  "details.address.townOrCity" -> "",
+                  "details.address.postCode" -> "",
+                  "details.address.country" -> "",
+                  "statusCode" -> ""
+                )
               )
-            )
+          )
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "statusCode-error", repTypeErrorEmpty, "#statusCode")
 
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        getElementById(view, "error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
       }
 
       "display errors when only address is entered" in {
 
         val view = createView(
-          RepresentativeDetails
-            .form()
-            .bind(
-              Map(
-                "details.eori" -> "",
-                "details.address.fullName" -> "Test",
-                "details.address.addressLine" -> "Test",
-                "details.address.townOrCity" -> "Test",
-                "details.address.postCode" -> "Test",
-                "details.address.country" -> "Poland",
-                "statusCode" -> ""
+          RepresentativeDetails.adjustErrors(
+            RepresentativeDetails
+              .form()
+              .bind(
+                Map(
+                  "details.eori" -> "",
+                  "details.address.fullName" -> "Test",
+                  "details.address.addressLine" -> "Test",
+                  "details.address.townOrCity" -> "Test",
+                  "details.address.postCode" -> "Test",
+                  "details.address.country" -> "Poland",
+                  "statusCode" -> ""
+                )
               )
-            )
+          )
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "statusCode-error", repTypeErrorEmpty, "#statusCode")
 
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        getElementById(view, "error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
       }
 
       "display errors when EORI is incorrect" in {
@@ -225,11 +217,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, eoriError, "#details_eori")
-        checkErrorLink(view, 2, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.eori-error", eoriError, "#details_eori")
 
-        getElementByCss(view, "#error-message-details_eori-input").text() must be(messages(eoriError))
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        getElementById(view, "error-message-details_eori-input").text() must be(messages(eoriError))
       }
 
       "display errors for empty Full name" in {
@@ -251,11 +241,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, fullNameEmpty, "#details_address_fullName")
-        checkErrorLink(view, 2, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
 
-        getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
       }
 
       "display errors for incorrect Full name" in {
@@ -277,11 +265,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, fullNameError, "#details_address_fullName")
-        checkErrorLink(view, 2, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
 
-        getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameError))
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameError))
       }
 
       "display errors for empty Address" in {
@@ -303,13 +289,11 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, 2, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
 
-        getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
       }
 
       "display errors for incorrect Address" in {
@@ -331,13 +315,11 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, 2, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
 
-        getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
       }
 
       "display errors for empty Town or city" in {
@@ -359,13 +341,11 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, 2, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
 
-        getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
           messages(townOrCityEmpty)
         )
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
       }
 
       "display errors for incorrect Town or city" in {
@@ -387,13 +367,11 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, 2, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
 
-        getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
           messages(townOrCityError)
         )
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
       }
 
       "display errors for empty Postcode" in {
@@ -415,11 +393,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, postCodeEmpty, "#details_address_postCode")
-        checkErrorLink(view, 2, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
 
-        getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       }
 
       "display errors for incorrect Postcode" in {
@@ -441,11 +417,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, postCodeError, "#details_address_postCode")
-        checkErrorLink(view, 2, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
 
-        getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeError))
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       }
 
       "display errors for empty Country" in {
@@ -467,11 +441,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, countryEmpty, "#details_address_country")
-        checkErrorLink(view, 2, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
         getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
       }
 
       "display errors for incorrect Country" in {
@@ -493,11 +465,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, countryError, "#details_address_country")
-        checkErrorLink(view, 2, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
         getElementByCss(view, "span.error-message").text() must be(messages(countryError))
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
       }
 
       "display errors when everything except Full name is empty" in {
@@ -519,22 +489,19 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, 2, townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, 3, postCodeEmpty, "#details_address_postCode")
-        checkErrorLink(view, 4, countryEmpty, "#details_address_country")
-        checkErrorLink(view, 5, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
+        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
+        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
+        checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
-        getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
           messages(townOrCityEmpty)
         )
-        getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
         getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
-
       }
 
       "display errors when everything except Country is empty" in {
@@ -556,21 +523,19 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, fullNameEmpty, "#details_address_fullName")
-        checkErrorLink(view, 2, addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, 3, townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, 4, postCodeEmpty, "#details_address_postCode")
-        checkErrorLink(view, 5, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
+        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
+        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
+        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
 
-        getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
-        getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
           messages(townOrCityEmpty)
         )
-        getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       }
 
       "display errors when everything except Full name is incorrect" in {
@@ -592,21 +557,19 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, 2, townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, 3, postCodeError, "#details_address_postCode")
-        checkErrorLink(view, 4, countryError, "#details_address_country")
-        checkErrorLink(view, 5, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
+        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
+        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
+        checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
-        getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
           messages(townOrCityError)
         )
-        getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
         getElementByCss(view, "span.error-message").text() must be(messages(countryError))
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
       }
 
       "display errors when everything except Country is incorrect" in {
@@ -628,21 +591,19 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, fullNameError, "#details_address_fullName")
-        checkErrorLink(view, 2, addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, 3, townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, 4, postCodeError, "#details_address_postCode")
-        checkErrorLink(view, 5, repTypeErrorEmpty, "#statusCode")
+        checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
+        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
+        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
+        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
 
-        getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameError))
-        getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
           messages(townOrCityError)
         )
-        getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeError))
-        getElementByCss(view, "#error-message-statusCode-input").text() must be(messages(repTypeErrorEmpty))
+        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       }
     }
 
@@ -667,9 +628,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, eoriError, "#details_eori")
+        checkErrorLink(view, "details.eori-error", eoriError, "#details_eori")
 
-        getElementByCss(view, "#error-message-details_eori-input").text() must be(messages(eoriError))
+        getElementById(view, "error-message-details_eori-input").text() must be(messages(eoriError))
       }
 
       "display errors for empty Full name" in {
@@ -691,9 +652,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, fullNameEmpty, "#details_address_fullName")
+        checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
 
-        getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
       }
 
       "display errors for incorrect Full name" in {
@@ -715,9 +676,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, fullNameError, "#details_address_fullName")
+        checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
 
-        getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameError))
       }
 
       "display errors for empty Address" in {
@@ -739,9 +700,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, addressLineEmpty, "#details_address_addressLine")
+        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
 
-        getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
       }
@@ -765,9 +726,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, addressLineError, "#details_address_addressLine")
+        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
 
-        getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
       }
@@ -791,9 +752,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, townOrCityEmpty, "#details_address_townOrCity")
+        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
 
-        getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
           messages(townOrCityEmpty)
         )
       }
@@ -817,9 +778,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, townOrCityError, "#details_address_townOrCity")
+        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
 
-        getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
           messages(townOrCityError)
         )
       }
@@ -843,9 +804,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, postCodeEmpty, "#details_address_postCode")
+        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
 
-        getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       }
 
       "display errors for incorrect Postcode" in {
@@ -867,9 +828,9 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, postCodeError, "#details_address_postCode")
+        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
 
-        getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       }
 
       "display errors for empty Country" in {
@@ -891,7 +852,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, countryEmpty, "#details_address_country")
+        checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
         getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
       }
@@ -915,7 +876,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, countryError, "#details_address_country")
+        checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
         getElementByCss(view, "span.error-message").text() must be(messages(countryError))
       }
@@ -939,18 +900,18 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, 2, townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, 3, postCodeEmpty, "#details_address_postCode")
-        checkErrorLink(view, 4, countryEmpty, "#details_address_country")
+        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
+        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
+        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
+        checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
-        getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
           messages(townOrCityEmpty)
         )
-        getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
         getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
       }
 
@@ -973,19 +934,19 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, fullNameEmpty, "#details_address_fullName")
-        checkErrorLink(view, 2, addressLineEmpty, "#details_address_addressLine")
-        checkErrorLink(view, 3, townOrCityEmpty, "#details_address_townOrCity")
-        checkErrorLink(view, 4, postCodeEmpty, "#details_address_postCode")
+        checkErrorLink(view, "details.address.fullName-error", fullNameEmpty, "#details_address_fullName")
+        checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
+        checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
+        checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
 
-        getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
-        getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
+        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
           messages(townOrCityEmpty)
         )
-        getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
+        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       }
 
       "display errors when everything except Full name is incorrect" in {
@@ -1007,18 +968,18 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, 2, townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, 3, postCodeError, "#details_address_postCode")
-        checkErrorLink(view, 4, countryError, "#details_address_country")
+        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
+        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
+        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
+        checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
-        getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
           messages(townOrCityError)
         )
-        getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
         getElementByCss(view, "span.error-message").text() must be(messages(countryError))
       }
 
@@ -1041,19 +1002,19 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, 1, fullNameError, "#details_address_fullName")
-        checkErrorLink(view, 2, addressLineError, "#details_address_addressLine")
-        checkErrorLink(view, 3, townOrCityError, "#details_address_townOrCity")
-        checkErrorLink(view, 4, postCodeError, "#details_address_postCode")
+        checkErrorLink(view, "details.address.fullName-error", fullNameError, "#details_address_fullName")
+        checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
+        checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
+        checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
 
-        getElementByCss(view, "#error-message-details_address_fullName-input").text() must be(messages(fullNameError))
-        getElementByCss(view, "#error-message-details_address_addressLine-input").text() must be(
+        getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameError))
+        getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementByCss(view, "#error-message-details_address_townOrCity-input").text() must be(
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
           messages(townOrCityError)
         )
-        getElementByCss(view, "#error-message-details_address_postCode-input").text() must be(messages(postCodeError))
+        getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       }
     }
   }

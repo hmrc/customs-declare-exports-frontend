@@ -16,25 +16,20 @@
 
 package services.mapping.governmentagencygoodsitem
 
+import models.declaration.governmentagencygoodsitem.GovernmentProcedure
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.http.cache.client.CacheMap
 
-class PackageBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks {
+class GovernmentProcedureBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemData {
 
-  "PackageBuilder" should {
-    "map correctly to wco Packaging" in {
-      implicit val cacheMap = mock[CacheMap]
-      setUpPackageInformation()
+  "ProcedureCodesBuilder" should {
+    "build governmentProcedure correctly" in {
 
-      val mappedItems = PackageBuilder.build.getOrElse(Seq.empty)
+      val governmentProcedure = GovernmentProcedure(Some("CUPR"), Some("1stPrevcode"))
 
-      mappedItems.length should be(1)
-      val wcoPackaging = mappedItems.head
-      wcoPackaging.getQuantityQuantity.getValue shouldBe BigDecimal(packageQuantity).bigDecimal
-      wcoPackaging.getMarksNumbersID.getValue shouldBe shippingMarksValue
-      wcoPackaging.getTypeCode.getValue shouldBe packageTypeValue
+      val procedures = GovernmentProcedureBuilder.build(Seq(governmentProcedure))
 
+      procedures.get(0).getCurrentCode.getValue shouldBe governmentProcedure.currentCode.get
+      procedures.get(0).getPreviousCode.getValue shouldBe governmentProcedure.previousCode.get
     }
   }
-
 }

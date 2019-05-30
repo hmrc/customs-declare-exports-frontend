@@ -15,10 +15,11 @@
  */
 
 package services.mapping.declaration
-import forms.declaration.officeOfExit.OfficeOfExit
+import forms.ChoiceSpec
+import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard}
 import forms.declaration.{OfficeOfExitStandardSpec, OfficeOfExitSupplementarySpec}
-import forms.{Choice, ChoiceSpec}
 import org.scalatest.{Matchers, WordSpec}
+import play.api.libs.json._
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class SpecificCircumstancesCodeBuilderSpec extends WordSpec with Matchers {
@@ -26,28 +27,25 @@ class SpecificCircumstancesCodeBuilderSpec extends WordSpec with Matchers {
   "SpecificCircumstancesCodeBuilder" should {
     "correctly map to the WCO-DEC CircumstancesCode to null for a supplementary journey" in {
       implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(
-            Choice.choiceId -> ChoiceSpec.correctSupplementaryChoiceJSON,
-            OfficeOfExit.formId -> OfficeOfExitSupplementarySpec.correctOfficeOfExitJSON
-          )
-        )
-      val circumstancesCode = SpecificCircumstancesCodeBuilder.build(cacheMap)
+        CacheMap("CacheID", Map(OfficeOfExit.formId -> OfficeOfExitSupplementarySpec.correctOfficeOfExitJSON))
+      val circumstancesCode = SpecificCircumstancesCodeBuilder.build(cacheMap, ChoiceSpec.supplementaryChoice)
       circumstancesCode should be(null)
     }
 
-    "correctly map to the WCO-DEC CircumstancesCode instance for a standard journey" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(
-            Choice.choiceId -> ChoiceSpec.correctStandardChoiceJSON,
-            OfficeOfExit.formId -> OfficeOfExitStandardSpec.correctOfficeOfExitJSON
-          )
-        )
-      val circumstancesCode = SpecificCircumstancesCodeBuilder.build(cacheMap)
-      circumstancesCode.getValue should be("A20")
+    "correctly map to the WCO-DEC CircumstancesCode instance for a standard journey" when {
+      "circumstancesCode is 'Yes'" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap("CacheID", Map(OfficeOfExit.formId -> OfficeOfExitStandardSpec.correctOfficeOfExitJSON))
+        val circumstancesCode = SpecificCircumstancesCodeBuilder.build(cacheMap, ChoiceSpec.standardChoice)
+        circumstancesCode.getValue should be("A20")
+      }
+
+      "circumstancesCode is 'No'" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap("CacheID", Map(OfficeOfExit.formId -> Json.toJson(OfficeOfExitStandard("123qwe12", "123", "No"))))
+        val circumstancesCode = SpecificCircumstancesCodeBuilder.build(cacheMap, ChoiceSpec.standardChoice)
+        circumstancesCode should be(null)
+      }
     }
   }
 }

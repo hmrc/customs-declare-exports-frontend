@@ -23,7 +23,7 @@ import javax.inject.{Inject, Singleton}
 import models.SignedInUser
 import play.api.Logger
 import play.api.libs.json.{Json, OFormat}
-import play.api.mvc.{Action, Result}
+import play.api.mvc.{Action, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.wco.dec.MetaData
@@ -34,9 +34,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class TestingUtilitiesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  connector: CustomsDeclareExportsConnector
+  connector: CustomsDeclareExportsConnector,
+  mcc: MessagesControllerComponents
 )(implicit val appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController {
+    extends FrontendController(mcc) {
 
   def submitDeclarationXml: Action[String] = authenticate.async(parse.tolerantText) { implicit authenticatedRequest =>
     implicit val user: SignedInUser = authenticatedRequest.user

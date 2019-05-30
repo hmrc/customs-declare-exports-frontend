@@ -17,48 +17,26 @@
 package services.mapping.governmentagencygoodsitem
 
 import forms.declaration.AdditionalInformation
-import models.declaration.AdditionalInformationData
-import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.http.cache.client.CacheMap
 
 class AdditionalInformationBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
   "AdditionalInformationBuilder" should {
     "map correctly when values are present" in {
 
-      val statementCode = "code"
-      val descriptionValue = "description"
-      val additionalInformation = AdditionalInformation(statementCode, descriptionValue)
-      val additionalInformationData = AdditionalInformationData(Seq(additionalInformation))
+      val additionalInformation = AdditionalInformation("code", "description")
 
-      implicit val cacheMap: CacheMap = mock[CacheMap]
-      when(
-        cacheMap
-          .getEntry[AdditionalInformationData](AdditionalInformationData.formId)
-      ).thenReturn(Some(additionalInformationData))
-
-      val mappedAdditionalInformation = AdditionalInformationBuilder.build().get
+      val mappedAdditionalInformation = AdditionalInformationBuilder.build(Seq(additionalInformation))
       mappedAdditionalInformation.isEmpty shouldBe false
-      mappedAdditionalInformation.head.getStatementCode.getValue shouldBe statementCode
-      mappedAdditionalInformation.head.getStatementDescription.getValue shouldBe descriptionValue
+      mappedAdditionalInformation.get(0).getStatementCode.getValue shouldBe additionalInformation.code
+      mappedAdditionalInformation.get(0).getStatementDescription.getValue shouldBe additionalInformation.description
     }
 
     "map correctly when values are not Present" in {
 
-      val additionalInformationData = AdditionalInformationData(Seq())
-
-      implicit val cacheMap: CacheMap = mock[CacheMap]
-      when(
-        cacheMap
-          .getEntry[AdditionalInformationData](AdditionalInformationData.formId)
-      ).thenReturn(Some(additionalInformationData))
-
-      val mappedAdditionalInformation = AdditionalInformationBuilder.build().get
+      val mappedAdditionalInformation = AdditionalInformationBuilder.build(Seq())
       mappedAdditionalInformation.isEmpty shouldBe true
-
     }
   }
-
 }

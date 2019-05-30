@@ -19,7 +19,7 @@ package handlers
 import config.AppConfig
 import controllers.routes
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Request, RequestHeader, Result, Results}
 import play.api.mvc.Results.BadRequest
 import play.api.{Configuration, Environment}
@@ -31,7 +31,7 @@ import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 import scala.concurrent.Future
 
 @Singleton
-class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi)
+class ErrorHandler @Inject()(appConfig: AppConfig, override val messagesApi: MessagesApi)
     extends FrontendErrorHandler with I18nSupport with AuthRedirects {
   override def config: Configuration = appConfig.runModeConfiguration
 
@@ -52,18 +52,18 @@ class ErrorHandler @Inject()(appConfig: AppConfig, val messagesApi: MessagesApi)
     Future.successful(
       BadRequest(
         standardErrorTemplate(
-          pageTitle = messagesApi("global.error.title"),
-          heading = messagesApi("global.error.heading"),
-          message = messagesApi("global.error.message")
+          pageTitle = Messages("global.error.title"),
+          heading = Messages("global.error.heading"),
+          message = Messages("global.error.message")
         )
       )
     )
 
   def globalErrorTemplate()(implicit request: Request[_]): Html =
     views.html.error_template(
-      pageTitle = messagesApi("global.error.title"),
-      heading = messagesApi("global.error.heading"),
-      message = messagesApi("global.error.message"),
+      pageTitle = Messages("global.error.title"),
+      heading = Messages("global.error.heading"),
+      message = Messages("global.error.message"),
       appConfig = appConfig
     )
 }

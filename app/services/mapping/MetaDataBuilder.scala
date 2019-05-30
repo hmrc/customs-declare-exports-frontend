@@ -15,6 +15,7 @@
  */
 
 package services.mapping
+import forms.Choice
 import javax.xml.bind.JAXBElement
 import javax.xml.namespace.QName
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
@@ -26,7 +27,7 @@ import wco.datamodel.wco.metadata_ds_dms._2._
 
 object MetaDataBuilder {
 
-  def build(cacheMap: CacheMap): MetaData = {
+  def build(cacheMap: CacheMap, choice: Choice): MetaData = {
     val metaData = new MetaData
 
     val agencyAssignedCustomizationCodeType = new MetaDataAgencyAssignedCustomizationCodeType
@@ -53,7 +54,7 @@ object MetaDataBuilder {
     val element: JAXBElement[Declaration] = new JAXBElement[Declaration](
       new QName("urn:wco:datamodel:WCO:DEC-DMS:2", "Declaration"),
       classOf[Declaration],
-      DeclarationBuilder.build(cacheMap)
+      DeclarationBuilder.build(cacheMap, choice)
     )
     metaData.setAny(element)
 

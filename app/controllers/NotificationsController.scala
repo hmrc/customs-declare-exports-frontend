@@ -20,19 +20,19 @@ import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.ExecutionContext
 
 class NotificationsController @Inject()(
   appConfig: AppConfig,
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
-  customsDeclareExportsConnector: CustomsDeclareExportsConnector
+  customsDeclareExportsConnector: CustomsDeclareExportsConnector,
+  mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def listOfNotifications(): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.fetchNotifications().map { results =>

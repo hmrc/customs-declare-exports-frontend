@@ -25,17 +25,22 @@
     title = messages("supplementary.declarationHolder.title"),
     appConfig = appConfig
 ) {
+
+    @components.back_link("/customs-declare-exports/declaration/additional-actors")
+
+    @components.error_summary(form.errors)
+
+    @components.section_header(messages("supplementary.summary.parties.header"))
+
+    @components.page_title(Some("supplementary.declarationHolder.title"))
+
+    @if(holders.nonEmpty) {
+        @helpers.form(DeclarationHolderController.submitHoldersOfAuthorisation(), 'autoComplete -> "off") {
+            @components.single_value_elements_table(holders.map(_.toString))
+        }
+    }
+
     @helpers.form(DeclarationHolderController.submitHoldersOfAuthorisation(), 'autoComplete -> "off") {
-        @components.back_link("/customs-declare-exports/declaration/additional-actors")
-
-        @components.error_summary(form.errors)
-
-        @components.section_header(messages("supplementary.summary.parties.header"))
-
-        @components.page_title(Some("supplementary.declarationHolder.title"))
-
-        @components.single_value_elements_table(holders.map(_.toString))
-
         @components.input_text(
             field = form("authorisationTypeCode"),
             label = messages("supplementary.declarationHolder.authorisationCode"),

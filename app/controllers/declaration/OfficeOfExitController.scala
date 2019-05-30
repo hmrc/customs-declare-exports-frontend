@@ -23,8 +23,8 @@ import forms.declaration.officeOfExit.{OfficeOfExitStandard, OfficeOfExitSupplem
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import play.twirl.api.Html
 import services.CustomsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,12 +34,12 @@ import views.html.declaration.{office_of_exit_standard, office_of_exit_supplemen
 import scala.concurrent.{ExecutionContext, Future}
 
 class OfficeOfExitController @Inject()(
-  override val messagesApi: MessagesApi,
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService
+  customsCacheService: CustomsCacheService,
+  mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
   import forms.declaration.officeOfExit.OfficeOfExit._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

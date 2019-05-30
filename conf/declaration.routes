@@ -94,7 +94,7 @@ POST        /office-of-exit                 controllers.declaration.OfficeOfExit
 
 GET         /add-transport-containers       controllers.declaration.TransportContainerController.displayPage()
 
-POST        /add-transport-containers       controllers.declaration.TransportContainerController.handlePost()
+POST        /add-transport-containers       controllers.declaration.TransportContainerController.submitForm()
 
 # Total number of items
 

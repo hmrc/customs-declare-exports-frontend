@@ -53,7 +53,8 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       assertMessage(numberOfPackagesEmpty, "Number of packages can not be empty")
       assertMessage(numberOfPackagesError, "Number of packages must be greater than 0 and less than 99999")
       assertMessage(shippingMarksEmpty, "Shipping marks can not be empty")
-      assertMessage(shippingMarksError, "Shipping marks can only be up to 42 characters")
+      assertMessage(shippingMarksLengthError, "Shipping marks can only be up to 42 characters")
+      assertMessage(shippingMarksCharacterError, "Shipping marks can not accept invalid characters")
     }
   }
 

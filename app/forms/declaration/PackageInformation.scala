@@ -50,14 +50,17 @@ object PackageInformation {
         optional(
           number.verifying("supplementary.packageInformation.numberOfPackages.error", (q => q > 0 && q <= 999999))
         ),
-      "shippingMarks" -> optional(
+     "shippingMarks" -> optional(
         text()
           .verifying(
-            "supplementary.packageInformation.shippingMarks.error",
-            isEmpty or (isAlphanumeric and noLongerThan(42))
-          )
-          .verifying("supplementary.packageInformation.shippingMarks.empty", nonEmpty)
+            "supplementary.packageInformation.shippingMarks.characterError",
+            isEmpty or (isAlphanumericWithAllowedSpecialCharacters)
       )
+          .verifying(
+            "supplementary.packageInformation.shippingMarks.lengthError",
+           isEmpty or noLongerThan(42))
+          .verifying("supplementary.packageInformation.shippingMarks.empty", nonEmpty)
+  )
     )(PackageInformation.apply)(PackageInformation.unapply)
     .verifying(
       "You must provide 6/9 item packaged, 6/10 Shipping Marks, 6/11 Number of Packages  for a package to be added",

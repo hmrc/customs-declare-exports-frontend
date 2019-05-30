@@ -21,7 +21,7 @@
 @import services.Country
 @import uk.gov.hmrc.play.views.html._
 
-@(form: Form[DestinationCountriesStandard], routingCountries: Seq[String])(implicit request: Request[_], messages: Messages, countries: List[Country], appConfig: AppConfig)
+@(form: Form[DestinationCountriesStandard], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages, countries: List[Country], appConfig: AppConfig)
 
 @main_template(
     title = messages("declaration.destinationCountries.title"),
@@ -34,20 +34,34 @@
 
         @components.page_title(Some("declaration.destinationCountries.title"))
 
-        @components.input_text_autocomplete(form)(
-            field = form("countryOfDispatch"),
-            label = messages("declaration.destinationCountries.countryOfDispatch"),
-            'autocomplete -> "off",
-            '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
-            '_labelClass -> "bold-small",
-            '_hintText -> messages("declaration.destinationCountries.countryOfDispatch.hint"),
-            'spellcheck -> "false",
-            'ariaautocomplete -> "list",
-            'ariahaspopup -> "true",
-            'ariaowns -> "suggestions-list",
-            'ariaactivedescendant -> "true",
-            'otherErrorFields -> Seq("countryCode")
-        )
+        <script type="text/javascript">
+            function initialiseSelect(selectName){
+                var selectElements = document.getElementsByName(selectName);
+                var selectElement = selectElements[selectElements.length - 1];
+                openregisterLocationPicker({
+                    defaultValue: '',
+                    selectElement: selectElement,
+                    url: '@routes.Assets.versioned("javascripts/location-autocomplete-graph.json")'
+                });
+                var inputElement = document.getElementsByClassName('autocomplete__input');
+                inputElement = inputElement[inputElement.length - 1];
+                inputElement.setAttribute('autocomplete', 'false' + selectElements.length);
+                if (selectElement.classList.contains("form-control-error")) {
+                    inputElement.classList.add("form-control-error");
+                }
+            }
+        </script>
+
+        <div id="country-of-dispatch-field" class="inline-block">
+            @components.country_field(
+                form,
+                "countryOfDispatch",
+                "declaration.destinationCountries.countryOfDispatch",
+                Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
+                messages("declaration.destinationCountries.countryOfDispatch.empty"),
+                countries
+            )
+        </div>
 
         <br/>
         <br/>
@@ -74,20 +88,16 @@
             </div>
         }
 
-        @components.input_text_autocomplete(form)(
-            field = form("countriesOfRouting[]"),
-            label = messages("declaration.destinationCountries.countriesOfRouting"),
-            'autocomplete -> "off",
-            '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
-            '_labelClass -> "bold-small",
-            '_hintText -> messages("declaration.destinationCountries.countryOfDestination.hint"),
-            'spellcheck -> "false",
-            'ariaautocomplete -> "list",
-            'ariahaspopup -> "true",
-            'ariaowns -> "suggestions-list",
-            'ariaactivedescendant -> "true",
-            'otherErrorFields -> Seq("countryCode")
+        <div id="country-of-dispatch-field" class="inline-block">
+        @components.country_field(
+            form,
+            "countriesOfRouting[]",
+            "declaration.destinationCountries.countriesOfRouting",
+            None,
+            messages("declaration.destinationCountries.countryOfDispatch.empty"),
+            countries
         )
+        </div>
 
         <br/>
 
@@ -97,19 +107,16 @@
 
         <br/>
 
-        @components.input_text_autocomplete(form)(
-            field = form("countryOfDestination"),
-            label = messages("declaration.destinationCountries.countryOfDestination"),
-            'autocomplete -> "off",
-            '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
-            '_labelClass -> "bold-small",
-            'spellcheck -> "false",
-            'ariaautocomplete -> "list",
-            'ariahaspopup -> "true",
-            'ariaowns -> "suggestions-list",
-            'ariaactivedescendant -> "true",
-            'otherErrorFields -> Seq("countryCode")
-        )
+        <div id="country-of-destination-field" class="inline-block">
+            @components.country_field(
+                form,
+                "countryOfDestination",
+                "declaration.destinationCountries.countryOfDestination",
+                Some(messages("declaration.destinationCountries.countryOfDestination.hint")),
+                messages("declaration.destinationCountries.countryOfDestination.empty"),
+                countries
+            )
+        </div>
 
         <div class="section align='right'">
             <button id="submit" class="button" name="@SaveAndContinue.toString">@messages("site.save_and_continue")</button>

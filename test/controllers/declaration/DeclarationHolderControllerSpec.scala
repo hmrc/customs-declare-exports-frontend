@@ -68,9 +68,9 @@ class DeclarationHolderControllerSpec
 
     "validate request and show error" when {
 
-      "adding holder" when {
+      "adding holder" which {
 
-        "without EORI number" in {
+        "has no EORI number" in {
 
           val body = Seq(("authorisationTypeCode", "1234"), addActionUrlEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -84,7 +84,7 @@ class DeclarationHolderControllerSpec
           getElementByCss(page, "#error-message-eori-input").text() must be(messages(eoriEmpty))
         }
 
-        "with longer EORI" in {
+        "has longer EORI" in {
           val body = Seq(("eori", createRandomAlphanumericString(18)), addActionUrlEncoded)
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -93,7 +93,7 @@ class DeclarationHolderControllerSpec
           contentAsString(result) must include(messages(eoriError))
         }
 
-        "with EORI with special characters" in {
+        "has EORI with special characters" in {
 
           val body = Seq(("authorisationTypeCode", "1234"), ("eori", "e@#$1"), addActionUrlEncoded)
 
@@ -103,7 +103,7 @@ class DeclarationHolderControllerSpec
           contentAsString(result) must include(messages(eoriError))
         }
 
-        "without Authorisation code" in {
+        "has no Authorisation code" in {
 
           val body = Seq(("eori", "eori1"), addActionUrlEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -119,7 +119,7 @@ class DeclarationHolderControllerSpec
           )
         }
 
-        "with longer Authorisation code" in {
+        "has longer Authorisation code" in {
 
           val body = Seq(("authorisationTypeCode", "12345"), ("eori", "eori1"), addActionUrlEncoded)
 
@@ -129,7 +129,7 @@ class DeclarationHolderControllerSpec
           contentAsString(result) must include(messages(authorisationCodeError))
         }
 
-        "with Authorisation code with special characters" in {
+        "has Authorisation code with special characters" in {
 
           val body = Seq(("authorisationTypeCode", "1$#4"), ("eori", "eori1"), addActionUrlEncoded)
 
@@ -139,7 +139,7 @@ class DeclarationHolderControllerSpec
           contentAsString(result) must include(messages(authorisationCodeError))
         }
 
-        "with both inputs empty" in {
+        "has both inputs empty" in {
 
           val body = addActionUrlEncoded
 
@@ -158,7 +158,7 @@ class DeclarationHolderControllerSpec
           getElementByCss(page, "#error-message-eori-input").text() must be(messages(eoriEmpty))
         }
 
-        "with duplicated holder" in {
+        "is duplicated" in {
 
           val cachedData = DeclarationHoldersData(Seq(DeclarationHolder(Some("1234"), Some("eori"))))
           withCaching[DeclarationHoldersData](Some(cachedData), formId)
@@ -173,7 +173,7 @@ class DeclarationHolderControllerSpec
           checkErrorLink(page, 1, duplicatedItem, "#")
         }
 
-        "with more than 99 holders" in {
+        "has more than 99 holders" in {
 
           withCaching[DeclarationHoldersData](Some(cacheWithMaximumAmountOfHolders), formId)
           val body = Seq(("authorisationTypeCode", "1234"), ("eori", "eori1"), addActionUrlEncoded)
@@ -188,9 +188,9 @@ class DeclarationHolderControllerSpec
         }
       }
 
-      "saving holder" when {
+      "saving holder" which {
 
-        "without EORI number" in {
+        "has no EORI number" in {
 
           withCaching[DeclarationHoldersData](None, formId)
 
@@ -206,7 +206,7 @@ class DeclarationHolderControllerSpec
           getElementByCss(page, "#error-message-eori-input").text() must be(messages(eoriEmpty))
         }
 
-        "with longer EORI" in {
+        "has longer EORI" in {
 
           withCaching[DeclarationHoldersData](None, formId)
 
@@ -217,7 +217,7 @@ class DeclarationHolderControllerSpec
           contentAsString(result) must include(messages(eoriError))
         }
 
-        "with EORI with special characters" in {
+        "has EORI with special characters" in {
 
           withCaching[DeclarationHoldersData](None, formId)
 
@@ -228,7 +228,7 @@ class DeclarationHolderControllerSpec
           contentAsString(result) must include(messages(eoriError))
         }
 
-        "without Authorisation code" in {
+        "has no Authorisation code" in {
 
           withCaching[DeclarationHoldersData](None, formId)
 
@@ -246,7 +246,7 @@ class DeclarationHolderControllerSpec
           )
         }
 
-        "with longer Authorisation code" in {
+        "has longer Authorisation code" in {
 
           withCaching[DeclarationHoldersData](None, formId)
 
@@ -257,7 +257,7 @@ class DeclarationHolderControllerSpec
           contentAsString(result) must include(messages(authorisationCodeError))
         }
 
-        "with Authorisation code with special characters" in {
+        "has Authorisation code with special characters" in {
 
           withCaching[DeclarationHoldersData](None, formId)
 
@@ -268,7 +268,7 @@ class DeclarationHolderControllerSpec
           contentAsString(result) must include(messages(authorisationCodeError))
         }
 
-        "with both input empty" in {
+        "has both input empty" in {
 
           val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionUrlEncoded)).get
           val page = contentAsString(result)
@@ -285,7 +285,7 @@ class DeclarationHolderControllerSpec
           getElementByCss(page, "#error-message-eori-input").text() must be(messages(eoriEmpty))
         }
 
-        "with duplicated holder" in {
+        "has duplicated holder" in {
 
           val cachedData = DeclarationHoldersData(Seq(DeclarationHolder(Some("1234"), Some("eori"))))
           withCaching[DeclarationHoldersData](Some(cachedData), formId)
@@ -300,7 +300,7 @@ class DeclarationHolderControllerSpec
           checkErrorLink(page, 1, duplicatedItem, "#")
         }
 
-        "with more than 99 holders" in {
+        "has more than 99 holders" in {
 
           withCaching[DeclarationHoldersData](Some(cacheWithMaximumAmountOfHolders), formId)
 

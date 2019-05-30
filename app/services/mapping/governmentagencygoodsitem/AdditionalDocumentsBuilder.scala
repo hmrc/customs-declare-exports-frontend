@@ -16,14 +16,11 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import forms.declaration.additionaldocuments.{DocumentWriteOff, DocumentsProduced}
-import models.declaration.DocumentsProducedData
-import services.ExportsItemsCacheIds.dateTimeCode
-import uk.gov.hmrc.http.cache.client.CacheMap
+import models.declaration.governmentagencygoodsitem.{GovernmentAgencyGoodsItemAdditionalDocument, WriteOff}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument.{
   Submitter,
-  WriteOff
+  WriteOff => WCOWriteOff
 }
 import wco.datamodel.wco.declaration_ds.dms._2.AdditionalDocumentEffectiveDateTimeType.{
   DateTimeString => WCODateTimeString
@@ -35,62 +32,79 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
   _
 }
 
+import scala.collection.JavaConverters._
+
 object AdditionalDocumentsBuilder {
 
-  def build()(implicit cachedMap: CacheMap): Option[Seq[AdditionalDocument]] =
-    cachedMap
-      .getEntry[DocumentsProducedData](DocumentsProducedData.formId)
-      .map(_.documents.map(mapWCOAdditionalDocument(_)))
+  def build(procedureCodes: Seq[GovernmentAgencyGoodsItemAdditionalDocument]): java.util.List[AdditionalDocument] =
+    procedureCodes
+      .map(document => createAdditionalDocument(document))
+      .toList
+      .asJava
 
-  private def mapWCOAdditionalDocument(doc: DocumentsProduced): AdditionalDocument = {
+  private def createAdditionalDocument(doc: GovernmentAgencyGoodsItemAdditionalDocument): AdditionalDocument = {
     val additionalDocument = new AdditionalDocument
-    val additionalDocumentCategoryCodeType = new AdditionalDocumentCategoryCodeType
-    additionalDocumentCategoryCodeType.setValue(doc.documentTypeCode.map(_.substring(0, 1)).orNull)
 
-    val additionalDocumentTypeCodeType = new AdditionalDocumentTypeCodeType
-    additionalDocumentTypeCodeType.setValue(doc.documentTypeCode.map(_.substring(1)).orNull)
+    doc.categoryCode.foreach { categoryCode =>
+      val additionalDocumentCategoryCodeType = new AdditionalDocumentCategoryCodeType
+      additionalDocumentCategoryCodeType.setValue(categoryCode.substring(0, 1))
+      additionalDocument.setCategoryCode(additionalDocumentCategoryCodeType)
+    }
 
-    val additionalDocumentIdentificationIDType = new AdditionalDocumentIdentificationIDType
-    additionalDocumentIdentificationIDType.setValue(mapDocumentIdentificationIDType(doc).orNull)
+    doc.typeCode.foreach { typeCode =>
+      val additionalDocumentTypeCodeType = new AdditionalDocumentTypeCodeType
+      additionalDocumentTypeCodeType.setValue(typeCode.substring(1))
+      additionalDocument.setTypeCode(additionalDocumentTypeCodeType)
+    }
 
-    val additionalDocumentLPCOExemptionCodeType = new AdditionalDocumentLPCOExemptionCodeType
-    additionalDocumentLPCOExemptionCodeType.setValue(doc.documentStatus.orNull)
+    doc.id.foreach { id =>
+      val additionalDocumentIdentificationIDType = new AdditionalDocumentIdentificationIDType
+      additionalDocumentIdentificationIDType.setValue(id)
+      additionalDocument.setID(additionalDocumentIdentificationIDType)
+    }
 
-    val additionalDocumentNameTextType = new AdditionalDocumentNameTextType
-    additionalDocumentNameTextType.setValue(doc.documentStatusReason.orNull)
+    doc.lpcoExemptionCode.foreach { exemptionCode =>
+      val additionalDocumentLPCOExemptionCodeType = new AdditionalDocumentLPCOExemptionCodeType
+      additionalDocumentLPCOExemptionCodeType.setValue(exemptionCode)
+      additionalDocument.setLPCOExemptionCode(additionalDocumentLPCOExemptionCodeType)
+    }
 
-    val additionalDocumentEffectiveDateTimeType = new AdditionalDocumentEffectiveDateTimeType
-    val dateTimeString = new WCODateTimeString
-    dateTimeString.setFormatCode(dateTimeCode)
-    dateTimeString.setValue(doc.dateOfValidity.map(date => date.to102Format).orNull)
+    doc.name.foreach { name =>
+      val additionalDocumentNameTextType = new AdditionalDocumentNameTextType
+      additionalDocumentNameTextType.setValue(name)
+      additionalDocument.setName(additionalDocumentNameTextType)
+    }
 
-    additionalDocumentEffectiveDateTimeType.setDateTimeString(dateTimeString)
+    doc.effectiveDateTime.foreach { validityDate =>
+      val additionalDocumentEffectiveDateTimeType = new AdditionalDocumentEffectiveDateTimeType
+      val dateTimeString = new WCODateTimeString
+      dateTimeString.setFormatCode(validityDate.dateTimeString.formatCode)
+      dateTimeString.setValue(validityDate.dateTimeString.value)
 
-    additionalDocument.setCategoryCode(additionalDocumentCategoryCodeType)
-    additionalDocument.setTypeCode(additionalDocumentTypeCodeType)
-    additionalDocument.setID(additionalDocumentIdentificationIDType)
-    additionalDocument.setLPCOExemptionCode(additionalDocumentLPCOExemptionCodeType)
-    additionalDocument.setName(additionalDocumentNameTextType)
-    additionalDocument.setSubmitter(doc.issuingAuthorityName.map(name => mapSubmitter(name = Some(name))).orNull)
-    additionalDocument.setEffectiveDateTime(additionalDocumentEffectiveDateTimeType)
+      additionalDocumentEffectiveDateTimeType.setDateTimeString(dateTimeString)
+      additionalDocument.setEffectiveDateTime(additionalDocumentEffectiveDateTimeType)
+    }
 
-    additionalDocument.setWriteOff(mapWriteOff(doc.documentWriteOff))
+    doc.submitter.foreach { submitter =>
+      additionalDocument.setSubmitter(mapSubmitter(name = submitter.name))
+    }
+
+    doc.writeOff.foreach(writeOff => additionalDocument.setWriteOff(mapWriteOff(writeOff)))
 
     additionalDocument
   }
 
-  private def mapDocumentIdentificationIDType(document: DocumentsProduced): Option[String] =
-    for {
-      identifierAndPart <- document.documentIdentifierAndPart
-      documentIdentifier <- identifierAndPart.documentIdentifier
-      documentPart <- identifierAndPart.documentPart
-    } yield documentIdentifier + documentPart
-
-  private def mapWriteOff(documentWriteOff: Option[DocumentWriteOff]): WriteOff = {
-    val writeOff = new WriteOff
+  private def mapWriteOff(documentWriteOff: WriteOff): WCOWriteOff = {
+    val writeOff = new WCOWriteOff
     val quantityType = new WriteOffQuantityQuantityType
-    quantityType.setValue(documentWriteOff.flatMap(_.documentQuantity.map(quantity => quantity.bigDecimal)).orNull)
-    quantityType.setUnitCode(documentWriteOff.flatMap(_.measurementUnit).orNull)
+
+    documentWriteOff.amount.foreach { quantity =>
+      quantityType.setValue(quantity.value.get.bigDecimal)
+    }
+    documentWriteOff.quantity.foreach { measure =>
+      quantityType.setUnitCode(measure.unitCode.get)
+      quantityType.setValue(measure.value.get.bigDecimal)
+    }
 
     writeOff.setQuantityQuantity(quantityType)
     writeOff
@@ -99,8 +113,11 @@ object AdditionalDocumentsBuilder {
   private def mapSubmitter(name: Option[String], role: Option[String] = None): Submitter = {
     val submitter = new Submitter
 
-    val submitterNameTextType = new SubmitterNameTextType
-    submitterNameTextType.setValue(name.orNull)
+    name.foreach { nameValue =>
+      val submitterNameTextType = new SubmitterNameTextType
+      submitterNameTextType.setValue(nameValue)
+      submitter.setName(submitterNameTextType)
+    }
 
     role.foreach { roleValue =>
       val submitterRoleCodeType = new SubmitterRoleCodeType
@@ -108,9 +125,6 @@ object AdditionalDocumentsBuilder {
       submitter.setRoleCode(submitterRoleCodeType)
     }
 
-    submitter.setName(submitterNameTextType)
-
     submitter
   }
-
 }

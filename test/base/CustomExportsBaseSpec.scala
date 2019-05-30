@@ -41,19 +41,18 @@ import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.concurrent.Execution.Implicits
 import play.api.libs.json.JsValue
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson}
+import play.api.libs.ws.WSClient
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, MessagesControllerComponents}
 import play.api.test.FakeRequest
-import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services._
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.logging.Authorization
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 trait CustomExportsBaseSpec
@@ -87,11 +86,13 @@ trait CustomExportsBaseSpec
 
   implicit val mat: Materializer = app.materializer
 
-  implicit val ec: ExecutionContext = Implicits.defaultContext
+  implicit val ec: ExecutionContext = global
 
   def injector: Injector = app.injector
 
   def appConfig: AppConfig = injector.instanceOf[AppConfig]
+
+  def mcc: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
@@ -111,6 +112,8 @@ trait CustomExportsBaseSpec
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 
+  val mockWSClient = mock[WSClient]
+
   protected def uriWithContextPath(path: String): String = s"$contextPath$path"
 
   protected def getRequest(
@@ -121,11 +124,10 @@ trait CustomExportsBaseSpec
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+
     FakeRequest("GET", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
-      .copyFakeRequest(tags = tags)
   }
 
   protected def postRequest(
@@ -137,13 +139,11 @@ trait CustomExportsBaseSpec
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
 
     FakeRequest("POST", uri)
       .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
       .withSession(session.toSeq: _*)
       .withJsonBody(body)
-      .copyFakeRequest(tags = tags)
   }
 
   protected def postRequestFormUrlEncoded(
@@ -154,12 +154,11 @@ trait CustomExportsBaseSpec
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
-    val tags = Map(Token.NameRequestTag -> cfg.tokenName, Token.RequestTag -> token)
+
     FakeRequest("POST", uri)
       .withHeaders(Map(cfg.headerName -> token).toSeq: _*)
       .withSession(session.toSeq: _*)
       .withFormUrlEncodedBody(body: _*)
-      .copyFakeRequest(tags = tags)
   }
 
   def withCaching[T](form: Option[Form[T]]): OngoingStubbing[Future[CacheMap]] = {
@@ -187,6 +186,6 @@ trait CustomExportsBaseSpec
 
 object CSRFUtil {
   implicit class CSRFReplacer(str: String) {
-    def replaceCSRF() = str.replaceAll("name=\"csrfToken\" value=\".*\"/>", "csrfToken1")
+    def replaceCSRF(): String = str.replaceAll("name=\"csrfToken\" value=\".*\"/>", "csrfToken1")
   }
 }

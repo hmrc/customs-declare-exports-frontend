@@ -36,7 +36,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
       assertMessage(previousDocuments, "Previous documents")
       assertMessage(title, "2/1 Enter previous DUCR or MUCR references assigned to these goods")
-      assertMessage(hint, "For example, 8GB-123456789101-SHIP1")
+      assertMessage(hint, "For example, 8GB123456789101-SHIP1")
       assertMessage(documentX, "Temporary storage")
       assertMessage(documentY, "Simplified declaration")
       assertMessage(documentZ, "Previous document")

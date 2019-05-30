@@ -29,7 +29,7 @@ case class GoodsLocation(
   qualifierOfIdentification: String,
   identificationOfLocation: Option[String],
   additionalIdentifier: Option[String],
-  streetAndNumber: Option[String],
+  addressLine: Option[String],
   postCode: Option[String],
   city: Option[String]
 ) extends MetadataPropertiesConvertable {
@@ -40,7 +40,7 @@ case class GoodsLocation(
       "declaration.goodsShipment.consignment.goodsLocation.name" -> identificationOfLocation.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.id" -> additionalIdentifier.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.typeCode" -> qualifierOfIdentification,
-      "declaration.goodsShipment.consignment.goodsLocation.address.line" -> streetAndNumber.getOrElse(""),
+      "declaration.goodsShipment.consignment.goodsLocation.address.line" -> addressLine.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.postcodeId" -> postCode.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.cityName" -> city.getOrElse(""),
       "declaration.goodsShipment.consignment.goodsLocation.address.countryCode" ->
@@ -84,21 +84,27 @@ object GoodsLocation {
       text()
         .verifying(
           "supplementary.goodsLocation.additionalIdentifier.error",
-          input => isAlphanumeric(input.replaceAll(" ", "")) && noLongerThan(32)(input)
+          input => isAlphanumeric(input.replaceAll(" ", "")) and noLongerThan(32)(input)
         )
     ),
-    "streetAndNumber" -> optional(
+    "addressLine" -> optional(
       text().verifying(
-        "supplementary.goodsLocation.streetAndNumber.error",
-        input => isAlphanumeric(input.replaceAll(" ", "")) && noLongerThan(70)(input)
+        "supplementary.goodsLocation.addressLine.error",
+        isAlphanumericWithAllowedSpecialCharacters and noLongerThan(70)
       )
     ),
     "postCode" -> optional(
-      text().verifying("supplementary.goodsLocation.postCode.error", isAlphanumeric and noLongerThan(9))
+      text().verifying(
+        "supplementary.goodsLocation.postCode.error",
+        isAlphanumericWithAllowedSpecialCharacters and noLongerThan(9)
+      )
     ),
     "city" -> optional(
       text()
-        .verifying("supplementary.goodsLocation.city.error", isAlphanumeric and noLongerThan(35))
+        .verifying(
+          "supplementary.goodsLocation.city.error",
+          isAlphanumericWithAllowedSpecialCharacters and noLongerThan(35)
+        )
     )
   )(GoodsLocation.apply)(GoodsLocation.unapply)
 

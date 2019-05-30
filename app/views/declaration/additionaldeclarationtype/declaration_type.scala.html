@@ -15,7 +15,6 @@
  *@
 
 @import config.AppConfig
-@import controllers._
 @import forms.Choice.AllowedChoiceValues._
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 @import models.requests.JourneyRequest
@@ -30,7 +29,7 @@
 
     @components.back_link("/customs-declare-exports/declaration/dispatch-location")
 
-    @helpers.form(declaration.routes.AdditionalDeclarationTypePageController.submitForm(), 'autoComplete -> "off") {
+    @helpers.form(controllers.declaration.routes.AdditionalDeclarationTypePageController.submitForm(), 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
 

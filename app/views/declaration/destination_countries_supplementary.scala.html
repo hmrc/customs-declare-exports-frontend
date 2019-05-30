@@ -19,8 +19,8 @@
 @import forms.declaration.destinationCountries.DestinationCountriesSupplementary
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
-
 @import services.Country
+
 @(form: Form[DestinationCountriesSupplementary])(implicit request: JourneyRequest[_], messages: Messages, countries: List[Country], appConfig: AppConfig)
 
 @main_template(
@@ -55,21 +55,25 @@
         </script>
 
         <div id="country-of-dispatch-field" class="inline-block">
-        @components.country_field(form,
-            "countryOfDispatch",
-            "declaration.destinationCountries.countryOfDispatch",
-            Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
-            messages("declaration.destinationCountries.countryOfDispatch.empty"),
-            countries)
+            @components.country_field(
+                form,
+                "countryOfDispatch",
+                "declaration.destinationCountries.countryOfDispatch",
+                Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
+                messages("declaration.destinationCountries.countryOfDispatch.empty"),
+                countries
+            )
         </div>
 
         <div id="country-of-destination-field" class="inline-block">
-        @components.country_field(form,
-            "countryOfDestination",
-            "declaration.destinationCountries.countryOfDestination",
-            Some(messages("declaration.destinationCountries.countryOfDestination.hint")),
-            messages("declaration.destinationCountries.countryOfDestination.empty"),
-            countries)
+            @components.country_field(
+                form,
+                "countryOfDestination",
+                "declaration.destinationCountries.countryOfDestination",
+                Some(messages("declaration.destinationCountries.countryOfDestination.hint")),
+                messages("declaration.destinationCountries.countryOfDestination.empty"),
+                countries
+            )
         </div>
 
         @components.submit_button()

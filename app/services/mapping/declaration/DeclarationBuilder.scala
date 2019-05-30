@@ -16,13 +16,15 @@
 
 package services.mapping.declaration
 
+import forms.Choice
+import services.mapping.AuthorisationHoldersBuilder
 import services.mapping.goodsshipment.GoodsShipmentBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 object DeclarationBuilder {
 
-  def build(implicit cacheMap: CacheMap): Declaration = {
+  def build(implicit cacheMap: CacheMap, choice: Choice): Declaration = {
     val declaration = new Declaration()
 
     declaration.setFunctionCode(FunctionCodeBuilder.build)
@@ -41,6 +43,11 @@ object DeclarationBuilder {
     declaration.setSupervisingOffice(SupervisingOfficeBuilder.build)
     declaration.setTotalPackageQuantity(TotalPackageQuantityBuilder.build)
     declaration.setTypeCode(TypeCodeBuilder.build)
+
+    val authorisationHolders = AuthorisationHoldersBuilder.build
+    if (authorisationHolders != null && !authorisationHolders.isEmpty) {
+      declaration.getAuthorisationHolder.addAll(authorisationHolders)
+    }
 
     val currencyExchangeList = CurrencyExchangeBuilder.build
     if (currencyExchangeList != null && !currencyExchangeList.isEmpty) {

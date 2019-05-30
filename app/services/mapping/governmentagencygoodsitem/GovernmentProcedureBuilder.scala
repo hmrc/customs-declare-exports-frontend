@@ -15,26 +15,20 @@
  */
 
 package services.mapping.governmentagencygoodsitem
-import models.declaration.ProcedureCodesData
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.GovernmentProcedure
 import wco.datamodel.wco.declaration_ds.dms._2.{GovernmentProcedureCurrentCodeType, GovernmentProcedurePreviousCodeType}
 
-object ProcedureCodesBuilder {
+import scala.collection.JavaConverters._
 
-  def build(implicit cacheMap: CacheMap): Option[Seq[GovernmentProcedure]] =
-    cacheMap
-      .getEntry[ProcedureCodesData](ProcedureCodesData.formId)
-      .map(
-        form =>
-          Seq(
-            createGovernmentProcedure(
-              form.procedureCode.map(_.substring(0, 2)),
-              form.procedureCode.map(_.substring(2, 4))
-            )
-          )
-            ++ form.additionalProcedureCodes.map(code => createGovernmentProcedure(Some(code)))
-      )
+object GovernmentProcedureBuilder {
+
+  def build(
+    procedureCodes: Seq[models.declaration.governmentagencygoodsitem.GovernmentProcedure]
+  ): java.util.List[GovernmentProcedure] =
+    procedureCodes
+      .map(procedureCode => createGovernmentProcedure(procedureCode.currentCode, procedureCode.previousCode))
+      .toList
+      .asJava
 
   private def createGovernmentProcedure(
     currentCode: Option[String] = None,
@@ -42,16 +36,17 @@ object ProcedureCodesBuilder {
   ): GovernmentProcedure = {
     val governmentProcedure = new GovernmentProcedure
 
-    val currentCodeType = new GovernmentProcedureCurrentCodeType
-    currentCodeType.setValue(currentCode.orNull)
-
-    previousCode.foreach { previousCodeValue =>
-      val previousCodeType = new GovernmentProcedurePreviousCodeType
-      previousCodeType.setValue(previousCodeValue)
-      governmentProcedure.setPreviousCode(previousCodeType)
+    currentCode.foreach { value =>
+      val currentCodeType = new GovernmentProcedureCurrentCodeType
+      currentCodeType.setValue(value)
+      governmentProcedure.setCurrentCode(currentCodeType)
     }
 
-    governmentProcedure.setCurrentCode(currentCodeType)
+    previousCode.foreach { value =>
+      val previousCodeType = new GovernmentProcedurePreviousCodeType
+      previousCodeType.setValue(value)
+      governmentProcedure.setPreviousCode(previousCodeType)
+    }
 
     governmentProcedure
   }

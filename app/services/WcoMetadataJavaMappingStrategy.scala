@@ -16,6 +16,7 @@
 
 package services
 
+import forms.Choice
 import javax.xml.bind.JAXBElement
 import services.mapping.MetaDataBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -24,11 +25,11 @@ import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
 trait WcoMetadataJavaMappingStrategy extends WcoMetadataMappingStrategy {
 
-  override def produceMetaData(cacheMap: CacheMap): MetaData =
-    MetaDataBuilder.build(cacheMap)
+  override def produceMetaData(cacheMap: CacheMap, choice: Choice): MetaData =
+    MetaDataBuilder.build(cacheMap, choice)
 
-  override def declarationUcr(metaData: Any): Option[String] =
-    Option(
+  override def declarationUcr(metaData: Any): Option[String] = {
+    val ucr = Option(
       metaData
         .asInstanceOf[MetaData]
         .getAny
@@ -36,9 +37,12 @@ trait WcoMetadataJavaMappingStrategy extends WcoMetadataMappingStrategy {
         .getValue
         .getGoodsShipment
         .getUCR
-        .getTraderAssignedReferenceID
-        .getValue
-    ).orElse(Some(""))
+    )
+
+    ucr
+      .map(_.getTraderAssignedReferenceID.getValue)
+      .orElse(Some(""))
+  }
 
   override def declarationLrn(metaData: Any): Option[String] =
     Option(

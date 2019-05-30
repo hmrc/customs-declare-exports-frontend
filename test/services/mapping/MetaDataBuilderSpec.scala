@@ -15,6 +15,7 @@
  */
 
 package services.mapping
+import forms.ChoiceSpec.supplementaryChoice
 import javax.xml.bind.JAXBElement
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
 import models.declaration.SupplementaryDeclarationDataSpec
@@ -25,7 +26,7 @@ class MetaDataBuilderSpec extends WordSpec with Matchers {
 
   "MetaDataBuilder" should {
     "build wco MetaData with correct defaultValues" in {
-      val metaData = MetaDataBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords)
+      val metaData = MetaDataBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
       metaData.getWCOTypeName.getValue shouldBe SchemaMandatoryValues.wcoTypeName
       metaData.getWCODataModelVersionCode.getValue shouldBe SchemaMandatoryValues.wcoDataModelVersionCode
       metaData.getResponsibleAgencyName.getValue shouldBe SchemaMandatoryValues.responsibleAgencyName

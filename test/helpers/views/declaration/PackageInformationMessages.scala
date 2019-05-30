@@ -37,6 +37,7 @@ trait PackageInformationMessages {
   val piGlobalAddOne: String = packageInformation + ".global.addOne"
   val shippingMarks: String = packageInformation + ".shippingMarks"
   val shippingMarksHint: String = packageInformation + ".shippingMarks.hint"
-  val shippingMarksError: String = packageInformation + ".shippingMarks.error"
+  val shippingMarksLengthError: String = packageInformation + ".shippingMarks.lengthError"
+  val shippingMarksCharacterError: String = packageInformation + ".shippingMarks.characterError"
   val shippingMarksEmpty: String = packageInformation + ".shippingMarks.empty"
 }

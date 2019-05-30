@@ -17,9 +17,9 @@
 package services
 import base.CustomExportsBaseSpec
 import base.TestHelper.getCacheMap
-import models.DeclarationFormats._
-import models.declaration.governmentagencygoodsitem.Formats._
+import forms.ChoiceSpec.supplementaryChoice
 import models.declaration.SupplementaryDeclarationDataSpec.cacheMapAllRecords
+import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import org.scalatest.OptionValues
 import services.Countries.allCountries
@@ -28,12 +28,10 @@ import uk.gov.hmrc.wco.dec.{BorderTransportMeans, Consignment, GoodsShipment}
 
 class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with GoodsItemCachingData with OptionValues {
 
-  val expectedItems: Seq[GovernmentAgencyGoodsItem] = createGovernmentAgencyGoodsItemSeq(10)
-
   lazy val expectedWcoItems: Seq[uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem] = createWcoGovernmentAgencyGoodsItems(
     expectedItems
   )
-
+  val expectedItems: Seq[GovernmentAgencyGoodsItem] = createGovernmentAgencyGoodsItemSeq(10)
   val expectedPreviousDocs = createPreviousDocumentsData(6)
   val previousDocsCache = getCacheMap(expectedPreviousDocs, "PreviousDocuments")
   val expectedSeals = createSeals(10).sample.getOrElse(Seq.empty)
@@ -54,7 +52,7 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
         )
 
       val mapper = new WcoMetadataMapper with WcoMetadataScalaMappingStrategy
-      val result = mapper.produceMetaData(cacheMap)
+      val result = mapper.produceMetaData(cacheMap, supplementaryChoice)
 
       result.declaration must be(defined)
 
@@ -68,7 +66,7 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
       result.declaration.flatMap(_.agent) must be(defined)
       result.declaration.flatMap(_.invoiceAmount).flatMap(_.value) must be(Some(BigDecimal("1212312.12")))
       result.declaration.flatMap(_.invoiceAmount).flatMap(_.currencyId) must be(Some("GBP"))
-      result.declaration.value.authorisationHolders.size mustBe 1
+      result.declaration.value.authorisationHolders.size mustBe 2
       result.declaration.flatMap(_.exitOffice).flatMap(_.id) mustBe Some("123qwe12")
       result.declaration.flatMap(_.goodsShipment) must be(defined)
       val goodsShipment = result.declaration.flatMap(_.goodsShipment).value

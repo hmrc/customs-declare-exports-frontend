@@ -15,6 +15,8 @@
  */
 
 package services.mapping
+import java.util
+
 import forms.declaration.DeclarationHolder
 import models.declaration.DeclarationHoldersData
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -24,13 +26,24 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
   AuthorisationHolderIdentificationIDType
 }
 
+import scala.collection.JavaConverters._
+
 object AuthorisationHoldersBuilder {
 
-  def build(implicit cacheMap: CacheMap): Seq[AuthorisationHolder] =
+  def build(implicit cacheMap: CacheMap): util.List[AuthorisationHolder] =
     cacheMap
       .getEntry[DeclarationHoldersData](DeclarationHoldersData.formId)
-      .map(holdersData => holdersData.holders.map(holder => mapToAuthorisationHolder(holder)))
+      .map(
+        holdersData =>
+          holdersData.holders
+            .filter(holder => isDefined(holder))
+            .map(holder => mapToAuthorisationHolder(holder))
+            .toList
+            .asJava
+      )
       .orNull
+
+  def isDefined(holder: DeclarationHolder): Boolean = holder.authorisationTypeCode.isDefined && holder.eori.nonEmpty
 
   def mapToAuthorisationHolder(holder: DeclarationHolder): AuthorisationHolder = {
     val authorisationHolder = new AuthorisationHolder()
