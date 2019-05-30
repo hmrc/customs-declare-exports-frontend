@@ -25,7 +25,8 @@ import utils.validators.forms.FieldValidator._
 case class GoodsItemNumber(goodItemNumber: String) extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] = Map(
-    "declaration.goodsShipment.governmentAgencyGoodsItems[0].sequenceNumeric" -> goodItemNumber
+    "declaration.goodsShipment.governmentAgencyGoodsItems[0].sequenceNumeric" -> goodItemNumber,
+    "declaration.goodsItemQuantity" -> goodItemNumber
   )
 }
 

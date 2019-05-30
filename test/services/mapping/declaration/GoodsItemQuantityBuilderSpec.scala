@@ -15,21 +15,114 @@
  */
 
 package services.mapping.declaration
-import forms.declaration.{TotalNumberOfItems, TotalNumberOfItemsSpec}
+
 import org.scalatest.{Matchers, WordSpec}
+import play.api.libs.json._
+import services.ExportsItemsCacheIds
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers {
 
   "GoodsItemQuantityBuilder" should {
-    "correctly map to the WCO-DEC GoodsItemQuantity instance" in {
+    "correctly map to the WCO-DEC an empty GovernmentGoodsItemQuantity instance" in {
       implicit val cacheMap: CacheMap =
         CacheMap(
           "CacheID",
-          Map(TotalNumberOfItems.formId -> TotalNumberOfItemsSpec.correctTotalNumberOfItemsDecimalValuesJSON)
+          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.emptyGovernmentGoodsItem)
         )
       val goodsItemQuantityType = GoodsItemQuantityBuilder.build(cacheMap)
-      goodsItemQuantityType.getValue.intValue() should be(123)
+      goodsItemQuantityType.getValue.intValue() should be(0)
+    }
+
+    "correctly map to the WCO-DEC a single GovernmentGoodsItemQuantity instance" in {
+      implicit val cacheMap: CacheMap =
+      CacheMap(
+      "CacheID",
+            Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.singleGovernmentGoodsItem)
+      )
+      val goodsItemQuantityType = GoodsItemQuantityBuilder.build(cacheMap)
+      goodsItemQuantityType.getValue.intValue() should be(1)
+    }
+
+    "correctly map to the WCO-DEC multiple GovernmentGoodsItemQuantity instances" in {
+      implicit val cacheMap: CacheMap =
+        CacheMap(
+          "CacheID",
+          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.multipleGovernmentGoodsItem)
+        )
+      val goodsItemQuantityType = GoodsItemQuantityBuilder.build(cacheMap)
+      goodsItemQuantityType.getValue.intValue() should be(2)
     }
   }
+}
+
+object GovernmentAgencyGoodsItemSpec {
+
+  val emptyGovernmentGoodsItem: JsValue =
+    JsArray(
+      Seq.empty
+    )
+
+  val singleGovernmentGoodsItem: JsValue =
+    JsArray(
+      Seq(
+        JsObject(
+          Map(
+            "sequenceNumeric" -> JsNumber(1),
+            "statisticalValueAmount" -> JsObject(Map(
+              "currencyId" -> JsString("1"),
+              "value" -> JsString("1")
+            )),
+            "commodity" -> JsObject(Map(
+              "dangerousGoods" -> JsArray(),
+              "classifications" -> JsArray()
+            )),
+            "additionalInformations" -> JsArray(),
+            "additionalDocuments" -> JsArray(),
+            "governmentProcedures" -> JsArray(),
+            "packagings" -> JsArray()
+          )
+        )
+      )
+    )
+
+  val multipleGovernmentGoodsItem: JsValue =
+    JsArray(
+      Seq(
+        JsObject(
+          Map(
+            "sequenceNumeric" -> JsNumber(2),
+            "statisticalValueAmount" -> JsObject(Map(
+              "currencyId" -> JsString("34"),
+              "value" -> JsString("34")
+            )),
+            "commodity" -> JsObject(Map(
+              "dangerousGoods" -> JsArray(),
+              "classifications" -> JsArray()
+            )),
+            "additionalInformations" -> JsArray(),
+            "additionalDocuments" -> JsArray(),
+            "governmentProcedures" -> JsArray(),
+            "packagings" -> JsArray()
+          )
+        ),
+        JsObject(
+          Map(
+            "sequenceNumeric" -> JsNumber(1),
+            "statisticalValueAmount" -> JsObject(Map(
+              "currencyId" -> JsString("56"),
+              "value" -> JsString("56")
+            )),
+            "commodity" -> JsObject(Map(
+              "dangerousGoods" -> JsArray(),
+              "classifications" -> JsArray()
+            )),
+            "additionalInformations" -> JsArray(),
+            "additionalDocuments" -> JsArray(),
+            "governmentProcedures" -> JsArray(),
+            "packagings" -> JsArray()
+          )
+        )
+      )
+    )
 }
