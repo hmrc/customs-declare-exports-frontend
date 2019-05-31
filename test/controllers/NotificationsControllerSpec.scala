@@ -17,6 +17,8 @@
 package controllers
 
 import base.CustomExportsBaseSpec
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.test.Helpers._
 
 class NotificationsControllerSpec extends CustomExportsBaseSpec {
@@ -27,7 +29,7 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
 
   "NotificationController" should {
 
-    "return list of notification" in {
+    "return list of all notifications" in {
       authorizedUser()
       listOfNotifications()
 
@@ -38,9 +40,11 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("notifications.title"))
       stringResult must include(messages("notifications.status"))
       stringResult must include(messages("notifications.dateAndTime"))
+
+      verify(mockCustomsDeclareExportsConnector, times(1)).fetchNotifications()(any(), any())
     }
 
-    "return list of notifications for submission" in {
+    "return list of notifications for single submission" in {
       authorizedUser()
       listOfSubmissionNotifications()
 
@@ -51,23 +55,8 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("notifications.title"))
       stringResult must include(messages("notifications.status"))
       stringResult must include(messages("notifications.dateAndTime"))
-    }
 
-    "return list of submissions" in {
-      authorizedUser()
-      listOfSubmissions()
-
-      val result = route(app, getRequest(submissionsUri)).get
-      val stringResult = contentAsString(result)
-
-      status(result) must be(OK)
-      stringResult must include(messages("submissions.title"))
-      stringResult must include(messages("submissions.ducr"))
-      stringResult must include(messages("submissions.lrn"))
-      stringResult must include(messages("submissions.mrn"))
-      stringResult must include(messages("submissions.submittedTimestamp"))
-      stringResult must include(messages("submissions.status"))
-      stringResult must include(messages("submissions.noOfNotifications"))
+      verify(mockCustomsDeclareExportsConnector, times(1)).fetchNotificationsByConversationId(any())(any(), any())
     }
   }
 }

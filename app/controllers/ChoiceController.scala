@@ -61,7 +61,7 @@ class ChoiceController @Inject()(
               case CancelDec =>
                 Redirect(controllers.routes.CancelDeclarationController.displayForm())
               case Submissions =>
-                Redirect(controllers.routes.NotificationsController.listOfSubmissions())
+                Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
               case _ =>
                 Redirect(controllers.routes.ChoiceController.displayChoiceForm())
             }

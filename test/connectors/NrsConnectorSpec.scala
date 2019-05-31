@@ -17,16 +17,12 @@
 package connectors
 
 import base.ExportsTestData._
-import base.{CustomExportsBaseSpec, MockHttpClient, TestHelper}
+import base.{CustomExportsBaseSpec, MockHttpClient}
 import models._
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.Authorization
 
 import scala.concurrent.Future
 
 class NrsConnectorSpec extends CustomExportsBaseSpec {
-
-  val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"), Accepted)
 
   val expectedHeaders: Seq[(String, String)] =
     Seq(("Content-Type", "application/json"), ("X-API-Key", appConfig.nrsApiKey))
@@ -50,7 +46,7 @@ class NrsConnectorSpec extends CustomExportsBaseSpec {
   }
 
   def submitNonRepudiation()(test: Future[NrsSubmissionResponse] => Unit): Unit = {
-    val nrsSubmission = NRSSubmission(submission.toString, nrsMetadata)
+    val nrsSubmission = NRSSubmission("", nrsMetadata)
     val expectedUrl = s"${appConfig.nrsServiceUrl}/submission"
     val http =
       new MockHttpClient(

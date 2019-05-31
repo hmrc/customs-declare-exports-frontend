@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.mockito.MockitoSugar
-import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST, OK}
+import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
@@ -52,24 +52,23 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsDeclareExportsConnector.fetchNotificationsByConversationId(any())(any(), any()))
       .thenReturn(
         Future.successful(
-          Seq(ExportsNotification(conversationId = "1234", eori = "eori", metadata = DeclarationMetadata()))
+          Seq(ExportsNotification(conversationId = "conversationId", eori = "eori", metadata = DeclarationMetadata()))
         )
       )
 
-  def listOfSubmissions(): OngoingStubbing[Future[Seq[SubmissionData]]] =
+  def listOfSubmissions(): OngoingStubbing[Future[Seq[Submission]]] =
     when(mockCustomsDeclareExportsConnector.fetchSubmissions()(any(), any()))
       .thenReturn(
         Future.successful(
           Seq(
-            SubmissionData(
+            Submission(
               eori = "eori",
               conversationId = "conversationId",
               ducr = "ducr",
               mrn = None,
               lrn = None,
               submittedTimestamp = System.currentTimeMillis(),
-              status = Accepted,
-              noOfNotifications = 0
+              status = Accepted
             )
           )
         )
