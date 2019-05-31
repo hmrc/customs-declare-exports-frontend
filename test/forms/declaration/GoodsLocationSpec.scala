@@ -81,14 +81,14 @@ object GoodsLocationSpec {
 
   val correctGoodsLocationJSON: JsValue = JsObject(
     Map(
-      "country" -> JsString("United Kingdom"),
+      "country" -> JsString("Poland"),
       "typeOfLocation" -> JsString("T"),
       "qualifierOfIdentification" -> JsString("Q"),
       "identificationOfLocation" -> JsString("LOC"),
-      "additionalIdentifier" -> JsString("Additional identifier"),
-      "addressLine" -> JsString("Street and number"),
-      "postCode" -> JsString("Postcode"),
-      "city" -> JsString("City")
+      "additionalIdentifier" -> JsString("9GB1234567ABCDEF"),
+      "addressLine" -> JsString("Address Line"),
+      "postCode" -> JsString("AB12 CD3"),
+      "city" -> JsString("Town or City")
     )
   )
   val emptyGoodsLocationJSON: JsValue = JsObject(

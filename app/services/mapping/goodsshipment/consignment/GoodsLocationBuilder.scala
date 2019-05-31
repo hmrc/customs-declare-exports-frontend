@@ -15,7 +15,7 @@
  */
 
 package services.mapping.goodsshipment.consignment
-import forms.declaration.{CarrierDetails, EntityDetails}
+import forms.declaration.GoodsLocation
 import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment
@@ -25,62 +25,71 @@ object GoodsLocationBuilder {
 
   def build()(implicit cacheMap: CacheMap): Consignment.GoodsLocation =
     cacheMap
-      .getEntry[CarrierDetails](CarrierDetails.id)
+      .getEntry[GoodsLocation](GoodsLocation.formId)
       .filter(isDefined)
-      .map(carrierDetails => buildEoriOrAddress(carrierDetails.details))
+      .map(goods => buildEoriOrAddress(goods))
       .orNull
 
-  private def isDefined(carrierDetails: CarrierDetails) =
-    carrierDetails.details.eori.isDefined ||
-      carrierDetails.details.address.isDefined
+  private def isDefined(goodsLocation: GoodsLocation) =
+    goodsLocation.additionalIdentifier.isDefined ||
+      goodsLocation.postCode.isDefined
 
-  private def buildEoriOrAddress(details: EntityDetails) = {
+  private def buildEoriOrAddress(goods: GoodsLocation) = {
     val goodsLocation = new Consignment.GoodsLocation()
 
-    details.eori.foreach { value =>
+    goods.additionalIdentifier.foreach { value =>
       val id = new GoodsLocationIdentificationIDType()
       id.setValue(value)
       goodsLocation.setID(id)
     }
 
-    details.address.foreach { address =>
-      val goodsAddress = new Consignment.GoodsLocation.Address()
-      details.address.map(address => {
-
-        if (address.fullName.nonEmpty) {
-          val name = new GoodsLocationNameTextType()
-          name.setValue(address.fullName)
-          goodsLocation.setName(name)
-        }
-
-        if (address.addressLine.nonEmpty) {
-          val line = new AddressLineTextType()
-          line.setValue(address.addressLine)
-          goodsAddress.setLine(line)
-        }
-
-        if (address.townOrCity.nonEmpty) {
-          val city = new AddressCityNameTextType
-          city.setValue(address.townOrCity)
-          goodsAddress.setCityName(city)
-        }
-
-        if (address.postCode.nonEmpty) {
-          val postcode = new AddressPostcodeIDType()
-          postcode.setValue(address.postCode)
-          goodsAddress.setPostcodeID(postcode)
-        }
-
-        if (address.country.nonEmpty) {
-          val countryCode = new AddressCountryCodeType
-          countryCode.setValue(
-            allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
-          )
-          goodsAddress.setCountryCode(countryCode)
-        }
-      })
-      goodsLocation.setAddress(goodsAddress)
+    if (goods.typeOfLocation.nonEmpty) {
+      val goodsTypeCode = new GoodsLocationTypeCodeType()
+      goodsTypeCode.setValue(goods.typeOfLocation)
+      goodsLocation.setTypeCode(goodsTypeCode)
     }
+
+    goods.identificationOfLocation.foreach { value =>
+      val name = new GoodsLocationNameTextType()
+      name.setValue(value)
+      goodsLocation.setName(name)
+    }
+
+    if (goods.postCode.isDefined) {
+      goodsLocation.setAddress(createAddress(goods))
+    }
+
     goodsLocation
+  }
+
+  private def createAddress(goods: GoodsLocation): Consignment.GoodsLocation.Address = {
+    val goodsAddress = new Consignment.GoodsLocation.Address()
+
+    goods.addressLine.foreach { value =>
+      val line = new AddressLineTextType()
+      line.setValue(value)
+      goodsAddress.setLine(line)
+    }
+
+    goods.city.foreach { value =>
+      val city = new AddressCityNameTextType
+      city.setValue(value)
+      goodsAddress.setCityName(city)
+    }
+
+    goods.postCode.foreach { value =>
+      val postcode = new AddressPostcodeIDType()
+      postcode.setValue(value)
+      goodsAddress.setPostcodeID(postcode)
+    }
+
+    if (goods.country.nonEmpty) {
+      val countryCode = new AddressCountryCodeType
+      countryCode.setValue(
+        allCountries.find(country => goods.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
+      )
+      goodsAddress.setCountryCode(countryCode)
+    }
+    goodsAddress
   }
 }

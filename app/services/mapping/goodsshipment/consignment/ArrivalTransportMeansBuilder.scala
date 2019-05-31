@@ -27,12 +27,12 @@ object ArrivalTransportMeansBuilder {
     cacheMap
       .getEntry[WarehouseIdentification](WarehouseIdentification.formId)
       .filter(_.inlandModeOfTransportCode.getOrElse("").nonEmpty)
-      .map(transportInformation => {
+      .map { transportInformation =>
         val arrivalTransportMeans = new ArrivalTransportMeans()
         val modeCodeType = new ArrivalTransportMeansModeCodeType()
         modeCodeType.setValue(transportInformation.inlandModeOfTransportCode.get)
         arrivalTransportMeans.setModeCode(modeCodeType)
         arrivalTransportMeans
-      })
+      }
       .orNull
 }

@@ -50,45 +50,44 @@ object AgentBuilder {
 
           val agentAddress = new Agent.Address()
 
-          details.address.map(address => {
+          details.address.map {
+            address =>
+              val agentName = new AgentNameTextType()
+              agentName.setValue(address.fullName)
 
-            val agentName = new AgentNameTextType()
-            agentName.setValue(address.fullName)
+              val line = new AddressLineTextType()
+              line.setValue(address.addressLine)
 
-            val line = new AddressLineTextType()
-            line.setValue(address.addressLine)
+              val city = new AddressCityNameTextType
+              city.setValue(address.townOrCity)
 
-            val city = new AddressCityNameTextType
-            city.setValue(address.townOrCity)
+              val postcode = new AddressPostcodeIDType()
+              postcode.setValue(address.postCode)
 
-            val postcode = new AddressPostcodeIDType()
-            postcode.setValue(address.postCode)
+              val countryCode = new AddressCountryCodeType
+              countryCode.setValue(
+                allCountries
+                  .find(country => address.country.contains(country.countryName))
+                  .map(_.countryCode)
+                  .getOrElse("")
+              )
 
-            val countryCode = new AddressCountryCodeType
-            countryCode.setValue(
-              allCountries
-                .find(country => address.country.contains(country.countryName))
-                .map(_.countryCode)
-                .getOrElse("")
-            )
+              agent.setName(agentName)
+              agentAddress.setLine(line)
+              agentAddress.setCityName(city)
+              agentAddress.setCountryCode(countryCode)
+              agentAddress.setPostcodeID(postcode)
+          }
 
-            agent.setName(agentName)
-            agentAddress.setLine(line)
-            agentAddress.setCityName(city)
-            agentAddress.setCountryCode(countryCode)
-            agentAddress.setPostcodeID(postcode)
-          })
           agent.setAddress(agentAddress)
       }
     )
     agent
   }
   private def setStatusCode(data: RepresentativeDetails) =
-    data.statusCode
-      .map(value => {
-        val functionCodeType = new AgentFunctionCodeType()
-        functionCodeType.setValue(value)
-        functionCodeType
-      })
-      .orNull
+    data.statusCode.map { value =>
+      val functionCodeType = new AgentFunctionCodeType()
+      functionCodeType.setValue(value)
+      functionCodeType
+    }.orNull
 }

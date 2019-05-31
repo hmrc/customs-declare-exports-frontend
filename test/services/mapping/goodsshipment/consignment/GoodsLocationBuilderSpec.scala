@@ -15,59 +15,30 @@
  */
 
 package services.mapping.goodsshipment.consignment
-import forms.common.Address
-import forms.declaration.{CarrierDetails, EntityDetails}
+import forms.declaration.{GoodsLocation, GoodsLocationSpec}
 import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class GoodsLocationBuilderSpec extends WordSpec with Matchers {
 
   "GoodsLocationBuilder" should {
-    "correctly map GoodsLocation instance" when {
-      "when only eori is supplied " in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(
-              CarrierDetails.id ->
-                Json.toJson(CarrierDetails(details = EntityDetails(Some("9GB1234567ABCDEF"), None)))
-            )
+    "correctly map GoodsLocation instance" in {
+      implicit val cacheMap: CacheMap =
+        CacheMap(
+          "CacheID",
+          Map(
+            GoodsLocation.formId ->
+              GoodsLocationSpec.correctGoodsLocationJSON
           )
-        val goodsLocation = GoodsLocationBuilder.build
-        goodsLocation.getID.getValue should be("9GB1234567ABCDEF")
-        goodsLocation.getAddress should be(null)
-        goodsLocation.getName should be(null)
-        goodsLocation.getTypeCode should be(null)
-      }
-
-      "when only address is supplied " in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(
-              CarrierDetails.id ->
-                Json.toJson(
-                  CarrierDetails(
-                    details = EntityDetails(
-                      None,
-                      Some(Address("Full Name", "Address Line", "Town or City", "AB12 CD3", "Poland"))
-                    )
-                  )
-                )
-            )
-          )
-        val goodsLocation = GoodsLocationBuilder.build
-        goodsLocation.getID should be(null)
-        goodsLocation.getAddress.getLine.getValue should be("Address Line")
-        goodsLocation.getAddress.getCityName.getValue should be("Town or City")
-        goodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
-        goodsLocation.getAddress.getCountryCode.getValue should be("PL")
-        goodsLocation.getName.getValue should be("Full Name")
-        goodsLocation.getTypeCode should be(null)
-      }
-
+        )
+      val goodsLocation = GoodsLocationBuilder.build
+      goodsLocation.getID.getValue should be("9GB1234567ABCDEF")
+      goodsLocation.getAddress.getLine.getValue should be("Address Line")
+      goodsLocation.getAddress.getCityName.getValue should be("Town or City")
+      goodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
+      goodsLocation.getAddress.getCountryCode.getValue should be("PL")
+      goodsLocation.getName.getValue should be("LOC")
+      goodsLocation.getTypeCode.getValue should be("T")
     }
   }
-
 }
