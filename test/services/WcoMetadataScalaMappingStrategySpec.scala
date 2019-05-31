@@ -111,13 +111,13 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
   private def assertGoodsLocation(consignment: Option[Consignment]) = {
     consignment.flatMap(_.goodsLocation) must be(defined)
     val goodsLocation = consignment.flatMap(_.goodsLocation).value
-    goodsLocation.id mustBe Some("Additional identifier")
+    goodsLocation.id mustBe Some("9GB1234567ABCDEF")
     goodsLocation.typeCode mustBe Some("T")
     goodsLocation.address must be(defined)
     goodsLocation.address.value.typeCode.value mustBe ("Q")
-    goodsLocation.address.value.postcodeId.value mustBe ("Postcode")
-    goodsLocation.address.value.countryCode.value mustBe ("GB")
-    goodsLocation.address.value.cityName.value mustBe ("City")
+    goodsLocation.address.value.postcodeId.value mustBe ("AB12 CD3")
+    goodsLocation.address.value.countryCode.value mustBe ("PL")
+    goodsLocation.address.value.cityName.value mustBe ("Town or City")
 
   }
 
