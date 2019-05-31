@@ -32,7 +32,13 @@ object GoodsLocationBuilder {
 
   private def isDefined(goodsLocation: GoodsLocation) =
     goodsLocation.additionalIdentifier.isDefined ||
-      goodsLocation.postCode.isDefined
+      goodsLocation.postCode.isDefined ||
+      goodsLocation.country.nonEmpty ||
+      goodsLocation.city.nonEmpty ||
+      goodsLocation.addressLine.nonEmpty ||
+      goodsLocation.identificationOfLocation.nonEmpty ||
+      goodsLocation.qualifierOfIdentification.nonEmpty ||
+      goodsLocation.typeOfLocation.nonEmpty
 
   private def buildEoriOrAddress(goods: GoodsLocation) = {
     val goodsLocation = new Consignment.GoodsLocation()
