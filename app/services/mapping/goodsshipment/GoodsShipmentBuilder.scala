@@ -16,6 +16,7 @@
 
 package services.mapping.goodsshipment
 import forms.Choice
+import services.mapping.goodsshipment.consignment.ConsignmentBuilder
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment

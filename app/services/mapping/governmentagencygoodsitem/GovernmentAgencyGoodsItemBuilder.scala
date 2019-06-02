@@ -15,14 +15,9 @@
  */
 
 package services.mapping.governmentagencygoodsitem
-import java.util.Objects
-
-import forms.declaration.ItemType
 import models.declaration.governmentagencygoodsitem.Formats._
-import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
+import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import services.ExportsItemsCacheIds
-import services.ExportsItemsCacheIds.defaultCurrencyCode
-import services.mapping.CachingMappingHelper
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
   GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
@@ -45,17 +40,18 @@ object GovernmentAgencyGoodsItemBuilder {
     governmentAgencyGoodsItem: GovernmentAgencyGoodsItem
   )(implicit cacheMap: CacheMap): WCOGovernmentAgencyGoodsItem = {
 
-    val itemTypeData = goodsItemFromItemTypes(cacheMap)
-
-    val maybeStatisticalValueAmount = itemTypeData.flatMap(_.statisticalValueAmount)
-
     val wcoGovernmentAgencyGoodsItem = new WCOGovernmentAgencyGoodsItem
 
-    val statisticalAmount = maybeStatisticalValueAmount.flatMap(_.value.map(_.bigDecimal)).orNull
-    if (Objects.nonNull(statisticalAmount)) {
+    governmentAgencyGoodsItem.statisticalValueAmount.foreach { statisticalAmount =>
       val statisticalValueAmountType = new GovernmentAgencyGoodsItemStatisticalValueAmountType
-      statisticalValueAmountType.setCurrencyID(maybeStatisticalValueAmount.flatMap(_.currencyId).orNull)
-      statisticalValueAmountType.setValue(statisticalAmount)
+      statisticalAmount.currencyId.foreach { value =>
+        statisticalValueAmountType.setCurrencyID(value)
+      }
+
+      statisticalAmount.value.foreach { value =>
+        statisticalValueAmountType.setValue(new java.math.BigDecimal(value.bigDecimal.doubleValue()))
+      }
+
       wcoGovernmentAgencyGoodsItem.setStatisticalValueAmount(statisticalValueAmountType)
     }
 
@@ -86,18 +82,5 @@ object GovernmentAgencyGoodsItemBuilder {
     wcoGovernmentAgencyGoodsItem.setCommodity(CommodityBuilder.build(governmentAgencyGoodsItem.commodity))
     wcoGovernmentAgencyGoodsItem
   }
-
-  def goodsItemFromItemTypes(cachedData: CacheMap): Option[GovernmentAgencyGoodsItem] =
-    cachedData
-      .getEntry[ItemType](ItemType.id)
-      .map(
-        item =>
-          GovernmentAgencyGoodsItem(
-            sequenceNumeric = 1,
-            statisticalValueAmount =
-              Some(Amount(Some(defaultCurrencyCode), value = Some(BigDecimal(item.statisticalValue)))),
-            commodity = Some(CachingMappingHelper.commodityFromItemTypes(item))
-        )
-      )
 
 }

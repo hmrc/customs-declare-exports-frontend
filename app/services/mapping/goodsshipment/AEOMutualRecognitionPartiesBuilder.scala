@@ -30,7 +30,7 @@ object AEOMutualRecognitionPartiesBuilder {
 
   def build(implicit cacheMap: CacheMap): util.List[GoodsShipment.AEOMutualRecognitionParty] =
     cacheMap
-      .getEntry[DeclarationAdditionalActorsData](DeclarationAdditionalActors.formId)
+      .getEntry[DeclarationAdditionalActorsData](DeclarationAdditionalActorsData.formId)
       .filter(_.actors.nonEmpty)
       .map(
         _.actors

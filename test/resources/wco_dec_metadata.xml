@@ -14,6 +14,7 @@
         <ns3:TotalPackageQuantity>123</ns3:TotalPackageQuantity>
         <ns3:Agent>
             <ns3:ID>9GB1234567ABCDEF</ns3:ID>
+            <ns3:FunctionCode>2</ns3:FunctionCode>
         </ns3:Agent>
         <ns3:AuthorisationHolder>
             <ns3:ID>PL213472539481923</ns3:ID>
@@ -60,14 +61,22 @@
             <ns3:Consignment>
                 <ns3:ContainerCode>1</ns3:ContainerCode>
                 <ns3:ArrivalTransportMeans>
-                    <ns3:ModeCode>1</ns3:ModeCode>
+                    <ns3:ModeCode>2</ns3:ModeCode>
                 </ns3:ArrivalTransportMeans>
                 <ns3:DepartureTransportMeans>
                     <ns3:ID>123112yu78</ns3:ID>
                     <ns3:IdentificationTypeCode>40</ns3:IdentificationTypeCode>
                 </ns3:DepartureTransportMeans>
                 <ns3:GoodsLocation>
+                    <ns3:Name>LOC</ns3:Name>
                     <ns3:ID>9GB1234567ABCDEF</ns3:ID>
+                    <ns3:TypeCode>T</ns3:TypeCode>
+                    <ns3:Address>
+                        <ns3:CityName>Town or City</ns3:CityName>
+                        <ns3:CountryCode>PL</ns3:CountryCode>
+                        <ns3:Line>Address Line</ns3:Line>
+                        <ns3:PostcodeID>AB12 CD3</ns3:PostcodeID>
+                    </ns3:Address>
                 </ns3:GoodsLocation>
             </ns3:Consignment>
             <ns3:Destination>
@@ -78,7 +87,7 @@
             </ns3:ExportCountry>
             <ns3:GovernmentAgencyGoodsItem>
                 <ns3:SequenceNumeric>1</ns3:SequenceNumeric>
-                <ns3:StatisticalValueAmount currencyID="GBP">12</ns3:StatisticalValueAmount>
+                <ns3:StatisticalValueAmount currencyID="GBP">100</ns3:StatisticalValueAmount>
                 <ns3:AdditionalDocument>
                     <ns3:CategoryCode>1</ns3:CategoryCode>
                     <ns3:EffectiveDateTime>

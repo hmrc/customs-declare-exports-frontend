@@ -30,6 +30,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
       declaration.getAgent.getID.getValue should be("9GB1234567ABCDEF")
       declaration.getAgent.getName should be(null)
       declaration.getAgent.getAddress should be(null)
+      declaration.getAgent.getFunctionCode.getValue should be("2")
 
       declaration.getBorderTransportMeans.getID.getValue should be("1234567878ui")
       declaration.getBorderTransportMeans.getIdentificationTypeCode.getValue should be("40")
@@ -84,8 +85,12 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
     declaration.getGoodsShipment.getConsignee.getAddress should be(null)
 
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getName should be(null)
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress should be(null)
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getName.getValue should be("LOC")
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getLine.getValue should be("Address Line")
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getCityName.getValue should be("Town or City")
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getCountryCode.getValue should be("PL")
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getTypeCode should be(null)
 
     declaration.getGoodsShipment.getDestination.getCountryCode.getValue should be("PL")
 
