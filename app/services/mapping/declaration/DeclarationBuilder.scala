@@ -42,6 +42,7 @@ object DeclarationBuilder {
     declaration.setSpecificCircumstancesCodeCode(SpecificCircumstancesCodeBuilder.build)
     declaration.setSupervisingOffice(SupervisingOfficeBuilder.build)
     declaration.setTotalPackageQuantity(TotalPackageQuantityBuilder.build)
+    declaration.setConsignment(ConsignmentBuilder.build)
     declaration.setTypeCode(TypeCodeBuilder.build)
 
     val authorisationHolders = AuthorisationHoldersBuilder.build
