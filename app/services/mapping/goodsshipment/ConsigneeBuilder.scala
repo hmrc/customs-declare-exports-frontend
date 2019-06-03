@@ -37,46 +37,46 @@ object ConsigneeBuilder {
   private def createConsignee(details: EntityDetails): GoodsShipment.Consignee = {
     val consignee = new GoodsShipment.Consignee()
 
-    if (details.eori.getOrElse("").nonEmpty) {
+    details.eori.foreach { value =>
       val id = new ConsigneeIdentificationIDType()
       id.setValue(details.eori.orNull)
       consignee.setID(id)
-    } else {
+    }
+
+    details.address.foreach { address =>
       val consigneeAddress = new GoodsShipment.Consignee.Address()
-      details.address.foreach(address => {
 
-        if (address.fullName.nonEmpty) {
-          val name = new ConsigneeNameTextType()
-          name.setValue(address.fullName)
-          consignee.setName(name)
-        }
+      if (address.fullName.nonEmpty) {
+        val name = new ConsigneeNameTextType()
+        name.setValue(address.fullName)
+        consignee.setName(name)
+      }
 
-        if (address.addressLine.nonEmpty) {
-          val line = new AddressLineTextType()
-          line.setValue(address.addressLine)
-          consigneeAddress.setLine(line)
-        }
+      if (address.addressLine.nonEmpty) {
+        val line = new AddressLineTextType()
+        line.setValue(address.addressLine)
+        consigneeAddress.setLine(line)
+      }
 
-        if (address.townOrCity.nonEmpty) {
-          val city = new AddressCityNameTextType
-          city.setValue(address.townOrCity)
-          consigneeAddress.setCityName(city)
-        }
+      if (address.townOrCity.nonEmpty) {
+        val city = new AddressCityNameTextType
+        city.setValue(address.townOrCity)
+        consigneeAddress.setCityName(city)
+      }
 
-        if (address.postCode.nonEmpty) {
-          val postcode = new AddressPostcodeIDType()
-          postcode.setValue(address.postCode)
-          consigneeAddress.setPostcodeID(postcode)
-        }
+      if (address.postCode.nonEmpty) {
+        val postcode = new AddressPostcodeIDType()
+        postcode.setValue(address.postCode)
+        consigneeAddress.setPostcodeID(postcode)
+      }
 
-        if (address.country.nonEmpty) {
-          val countryCode = new AddressCountryCodeType
-          countryCode.setValue(
-            allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
-          )
-          consigneeAddress.setCountryCode(countryCode)
-        }
-      })
+      if (address.country.nonEmpty) {
+        val countryCode = new AddressCountryCodeType
+        countryCode.setValue(
+          allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
+        )
+        consigneeAddress.setCountryCode(countryCode)
+      }
       consignee.setAddress(consigneeAddress)
     }
 
