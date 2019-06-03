@@ -23,8 +23,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.Retrievals._
-import uk.gov.hmrc.auth.core.retrieve._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.~
 
 import scala.concurrent.Future
 
@@ -62,7 +62,7 @@ trait MockAuthAction extends MockitoSugar {
                                         new ~(
                                           new ~(
                                             new ~(
-                                              new ~(user.identityData.credentials.get, user.identityData.name.get),
+                                              new ~(user.identityData.credentials, user.identityData.name),
                                               user.identityData.email
                                             ),
                                             user.identityData.externalId
@@ -91,11 +91,11 @@ trait MockAuthAction extends MockitoSugar {
                     ),
                     Some(nrsMdtpInformation)
                   ),
-                  nrsItmpName
+                  Some(nrsItmpName)
                 ),
                 nrsDateOfBirth
               ),
-              nrsItmpAddress
+              Some(nrsItmpAddress)
             ),
             nrsCredentialStrength
           ),
@@ -135,7 +135,7 @@ trait MockAuthAction extends MockitoSugar {
                                         new ~(
                                           new ~(
                                             new ~(
-                                              new ~(user.identityData.credentials.get, user.identityData.name.get),
+                                              new ~(user.identityData.credentials, user.identityData.name),
                                               user.identityData.email
                                             ),
                                             user.identityData.externalId
@@ -164,11 +164,11 @@ trait MockAuthAction extends MockitoSugar {
                     ),
                     Some(nrsMdtpInformation)
                   ),
-                  nrsItmpName
+                  Some(nrsItmpName)
                 ),
                 nrsDateOfBirth
               ),
-              nrsItmpAddress
+              Some(nrsItmpAddress)
             ),
             nrsCredentialStrength
           ),
@@ -208,7 +208,7 @@ trait MockAuthAction extends MockitoSugar {
                                         new ~(
                                           new ~(
                                             new ~(
-                                              new ~(user.identityData.credentials.get, user.identityData.name.get),
+                                              new ~(user.identityData.credentials, user.identityData.name),
                                               user.identityData.email
                                             ),
                                             None
@@ -237,11 +237,11 @@ trait MockAuthAction extends MockitoSugar {
                     ),
                     Some(nrsMdtpInformation)
                   ),
-                  nrsItmpName
+                  Some(nrsItmpName)
                 ),
                 nrsDateOfBirth
               ),
-              nrsItmpAddress
+              Some(nrsItmpAddress)
             ),
             nrsCredentialStrength
           ),

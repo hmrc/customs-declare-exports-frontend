@@ -21,7 +21,7 @@ import models.requests.AuthenticatedRequest
 import models.{IdentityData, SignedInUser}
 import play.api.Logger
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.retrieve.Retrievals.{agentCode, _}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{agentCode, _}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{NoActiveSession, _}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,16 +29,15 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: MessagesControllerComponents)
-    extends AuthAction with AuthorisedFunctions {
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: MessagesControllerComponents) extends AuthAction with AuthorisedFunctions {
 
   implicit override val executionContext: ExecutionContext = mcc.executionContext
   override val parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
-  private val logger = Logger(this.getClass())
+  private val logger = Logger(classOf[AuthActionImpl])
 
   override def invokeBlock[A](
     request: Request[A],
-    block: (AuthenticatedRequest[A]) => Future[Result]
+    block: AuthenticatedRequest[A] => Future[Result]
   ): Future[Result] = {
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -60,20 +59,20 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: M
             internalId,
             externalId,
             agentCode,
-            Some(credentials),
+            credentials,
             Some(confidenceLevel),
             authNino,
             saUtr,
-            Some(name),
+            name,
             dateOfBirth,
             email,
             Some(agentInformation),
             groupIdentifier,
             credentialRole.map(res => res.toJson.toString()),
             mdtpInformation,
-            Some(itmpName),
+            itmpName,
             itmpDateOfBirth,
-            Some(itmpAddress),
+            itmpAddress,
             affinityGroup,
             credentialStrength,
             Some(loginTimes)

@@ -15,6 +15,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "http-caching-client" % "8.4.0-play-26",
     "uk.gov.hmrc" %% "bootstrap-play-26" % "0.39.0",
     "uk.gov.hmrc" %% "wco-dec" % "0.30.0",
+    "uk.gov.hmrc" %% "auth-client" % "2.22.0-play-26",
     "ai.x" %% "play-json-extensions" % "0.30.1",
     "uk.gov.hmrc" %% "play-whitelist-filter" % "3.1.0-play-26",
     "com.typesafe.play" %% "play-json-joda" % "2.6.10"
