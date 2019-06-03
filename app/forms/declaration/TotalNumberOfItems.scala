@@ -23,7 +23,6 @@ import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
 case class TotalNumberOfItems(
-  itemsQuantity: String,
   totalAmountInvoiced: String,
   exchangeRate: String,
   totalPackage: String
@@ -31,7 +30,6 @@ case class TotalNumberOfItems(
 
   override def toMetadataProperties(): Map[String, String] =
     Map(
-      "declaration.goodsItemQuantity" -> itemsQuantity,
       "declaration.invoiceAmount.value" -> totalAmountInvoiced,
       "declaration.invoiceAmount.currencyId" -> "GBP",
       "declaration.currencyExchanges[0].rateNumeric" -> exchangeRate,
@@ -48,12 +46,6 @@ object TotalNumberOfItems {
   val exchangeRatePattern = "[0-9]{1,12}|[[0-9]{1,7}[.][0-9]{1,5}]{3,13}"
 
   val mapping = Forms.mapping(
-    "itemsQuantity" -> text()
-      .verifying("supplementary.totalNumberOfItems.empty", nonEmpty)
-      .verifying(
-        "supplementary.totalNumberOfItems.error",
-        isEmpty or (isNumeric and noLongerThan(3) and containsNotOnlyZeros)
-      ),
     "totalAmountInvoiced" -> text()
       .verifying("supplementary.totalAmountInvoiced.empty", nonEmpty)
       .verifying("supplementary.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern)),

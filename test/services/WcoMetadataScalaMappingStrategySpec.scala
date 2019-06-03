@@ -69,6 +69,7 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
       result.declaration.value.authorisationHolders.size mustBe 2
       result.declaration.flatMap(_.exitOffice).flatMap(_.id) mustBe Some("123qwe12")
       result.declaration.flatMap(_.goodsShipment) must be(defined)
+      result.declaration.flatMap(_.goodsItemQuantity) must be(Some(expectedItems.size))
       val goodsShipment = result.declaration.flatMap(_.goodsShipment).value
       goodsShipment.aeoMutualRecognitionParties.headOption mustBe defined
 

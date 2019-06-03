@@ -24,7 +24,6 @@ import forms.declaration.DestinationCountriesSupplementarySpec._
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import forms.declaration.DispatchLocationSpec._
 import forms.declaration.ExporterDetailsSpec._
-import forms.declaration.GoodsItemNumberSpec._
 import forms.declaration.GoodsLocationSpec._
 import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
@@ -404,7 +403,6 @@ object SupplementaryDeclarationDataSpec {
         BorderTransport.formId -> Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
       TotalNumberOfItems.formId -> correctTotalNumberOfItemsDecimalValuesJSON,
       TransactionType.formId -> correctTransactionTypeJSON,
-      GoodsItemNumber.formId -> correctGoodsItemNumberJSON,
       DeclarationAdditionalActors.formId -> correctAdditionalActorsDataJSON,
       AdditionalInformationData.formId -> Json.toJson(
         AdditionalInformationData(items = Seq(AdditionalInformation("code", "description")))
@@ -479,8 +477,7 @@ object SupplementaryDeclarationDataSpec {
     items = Some(
       Items(
         totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
-        transactionType = Some(correctTransactionType),
-        goodsItemNumber = Some(correctGoodsItemNumber)
+        transactionType = Some(correctTransactionType)
       )
     )
   )

@@ -58,7 +58,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
 
       declaration.getFunctionCode.getValue should be("9")
 
-      declaration.getGoodsItemQuantity.getValue.intValue() should be(123)
+      declaration.getGoodsItemQuantity.getValue.intValue() should be(1)
 
       declaration.getInvoiceAmount.getValue.doubleValue() should be(1212312.12)
       declaration.getInvoiceAmount.getCurrencyID should be("GBP")

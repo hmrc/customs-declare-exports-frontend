@@ -46,14 +46,13 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
     "read item from cache and display it" in {
 
-      val cachedData = TotalNumberOfItems("163.2", "7987.1", "1.33", " 631.1")
+      val cachedData = TotalNumberOfItems("7987.1", "1.33", " 631.1")
       withCaching[TotalNumberOfItems](Some(cachedData), "TotalNumberOfItems")
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)
-      page must include("163.2")
       page must include("7987.1")
       page must include("1.33")
       page must include("631.1")
@@ -67,7 +66,6 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       val allFields: JsValue =
         JsObject(
           Map(
-            "itemsQuantity" -> JsString("100"),
             "totalAmountInvoiced" -> JsString("456"),
             "exchangeRate" -> JsString("789"),
             "totalPackage" -> JsString("123")
@@ -85,7 +83,6 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       val allFields: JsValue =
         JsObject(
           Map(
-            "itemsQuantity" -> JsString("100"),
             "totalAmountInvoiced" -> JsString("456.78"),
             "exchangeRate" -> JsString("789.789"),
             "totalPackage" -> JsString("123")
@@ -114,7 +111,6 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
       status(result) must be(BAD_REQUEST)
 
-      contentAsString(result) must include(messages(tnoiError))
       contentAsString(result) must include(messages(taiError))
       contentAsString(result) must include(messages(erError))
       contentAsString(result) must include(messages(tpqError))
@@ -125,7 +121,6 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       val allFields: JsValue =
         JsObject(
           Map(
-            "itemsQuantity" -> JsString("1234"),
             "totalAmountInvoiced" -> JsString("12312312312312123"),
             "exchangeRate" -> JsString("1212121231123123"),
             "totalPackage" -> JsString("123456789")
@@ -135,35 +130,15 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
       status(result) must be(BAD_REQUEST)
 
-      contentAsString(result) must include(messages(tnoiError))
       contentAsString(result) must include(messages(taiError))
       contentAsString(result) must include(messages(erError))
       contentAsString(result) must include(messages(tpqError))
-    }
-
-    "validate request and redirect - Total Number of Items is 0" in {
-
-      val incorrectTotalNumber: JsValue =
-        JsObject(
-          Map(
-            "itemsQuantity" -> JsString("000"),
-            "totalAmountInvoiced" -> JsString("999.99"),
-            "exchangeRate" -> JsString("999999.99999"),
-            "totalPackage" -> JsString("123")
-          )
-        )
-      val result = route(app, postRequest(uri, incorrectTotalNumber)).get
-
-      status(result) must be(BAD_REQUEST)
-
-      contentAsString(result) must include(messages(tnoiError))
     }
 
     "validate request and redirect - Total Amount Invoiced / Exchange Rate too long decimal format" in {
 
       val allFields: JsValue = JsObject(
         Map(
-          "itemsQuantity" -> JsString("100"),
           "totalAmountInvoiced" -> JsString("12312312312312.122"),
           "exchangeRate" -> JsString("1212121.123456"),
           "totalPackage" -> JsString("123")
@@ -181,7 +156,6 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
       val allFields: JsValue = JsObject(
         Map(
-          "itemsQuantity" -> JsString("100"),
           "totalAmountInvoiced" -> JsString("12312312312312123.12"),
           "exchangeRate" -> JsString("1212121231.12345"),
           "totalPackage" -> JsString("123")

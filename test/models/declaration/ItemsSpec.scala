@@ -25,16 +25,12 @@ class ItemsSpec extends WordSpec with MustMatchers {
   private trait SimpleTest {
     val totalNumberOfItemsMock = mock(classOf[TotalNumberOfItems])
     val transactionTypeMock = mock(classOf[TransactionType])
-    val itemNumberMock = mock(classOf[GoodsItemNumber])
     val items = Items(
       totalNumberOfItems = Some(totalNumberOfItemsMock),
-      transactionType = Some(transactionTypeMock),
-      goodsItemNumber = Some(itemNumberMock)
-    )
+      transactionType = Some(transactionTypeMock))
 
     when(totalNumberOfItemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
     when(transactionTypeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-    when(itemNumberMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
   }
 
   private trait TestMapConcatenation extends SimpleTest {
@@ -43,7 +39,6 @@ class ItemsSpec extends WordSpec with MustMatchers {
     val itemNumberMap = Map("GoodItemNumber" -> "GoodItemNumberValue")
     when(totalNumberOfItemsMock.toMetadataProperties()).thenReturn(totalNumberOfItemsMap)
     when(transactionTypeMock.toMetadataProperties()).thenReturn(transactionTypeMap)
-    when(itemNumberMock.toMetadataProperties()).thenReturn(itemNumberMap)
   }
 
   "Items" when {
@@ -54,11 +49,10 @@ class ItemsSpec extends WordSpec with MustMatchers {
 
         verify(totalNumberOfItemsMock, times(1)).toMetadataProperties()
         verify(transactionTypeMock, times(1)).toMetadataProperties()
-        verify(itemNumberMock, times(1)).toMetadataProperties()
       }
 
       "return Map being sum of all Maps from sub-objects" in new TestMapConcatenation {
-        items.toMetadataProperties() must equal(totalNumberOfItemsMap ++ transactionTypeMap ++ itemNumberMap)
+        items.toMetadataProperties() must equal(totalNumberOfItemsMap ++ transactionTypeMap)
       }
     }
   }

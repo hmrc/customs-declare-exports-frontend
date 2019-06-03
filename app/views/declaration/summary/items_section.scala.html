@@ -25,10 +25,6 @@
 
 @components.summary_list(Some(messages("supplementary.summary.items.header"))) {
     @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.numberOfItems"),
-        value = items.flatMap(_.totalNumberOfItems).map(_.itemsQuantity)
-    ))
-    @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.amountInvoiced"),
         value = items.flatMap(_.totalNumberOfItems).map(_.totalAmountInvoiced)
     ))
@@ -47,11 +43,6 @@
             items.flatMap(_.transactionType).map(_.documentTypeCode),
             items.flatMap(_.transactionType).flatMap(_.identifier)
         )
-    ))
-
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.itemNumber"),
-        value = items.flatMap(_.goodsItemNumber).map(_.goodItemNumber)
     ))
 
 }

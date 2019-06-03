@@ -16,22 +16,27 @@
 
 package services.mapping.declaration
 
-import forms.declaration.TotalNumberOfItems
+import models.declaration.governmentagencygoodsitem.{Formats, GovernmentAgencyGoodsItem}
+import play.api.libs.json.Reads
+import services.ExportsItemsCacheIds
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.declaration_ds.dms._2._
 
 object GoodsItemQuantityBuilder {
 
+  implicit private val goodsItemSequenceReads: Reads[Seq[GovernmentAgencyGoodsItem]] =
+    Reads.seq(Formats.governmentAgencyGoodsItemFormat)
+
   def build(implicit cacheMap: CacheMap): DeclarationGoodsItemQuantityType =
     cacheMap
-      .getEntry[TotalNumberOfItems](TotalNumberOfItems.formId)
-      .map(createGoodsItemQuantity)
+      .getEntry[Seq[GovernmentAgencyGoodsItem]](ExportsItemsCacheIds.itemsId)
+      .map(goodsItems => createGoodsItemQuantity(goodsItems))
       .orNull
 
-  private def createGoodsItemQuantity(data: TotalNumberOfItems): DeclarationGoodsItemQuantityType = {
+  private def createGoodsItemQuantity(items: Seq[GovernmentAgencyGoodsItem]): DeclarationGoodsItemQuantityType = {
     val goodsQuantity = new DeclarationGoodsItemQuantityType()
 
-    goodsQuantity.setValue(new java.math.BigDecimal(data.itemsQuantity))
+    goodsQuantity.setValue(new java.math.BigDecimal(items.size))
     goodsQuantity
   }
 }

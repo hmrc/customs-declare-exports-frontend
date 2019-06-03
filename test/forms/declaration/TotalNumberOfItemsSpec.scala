@@ -25,7 +25,6 @@ class TotalNumberOfItemsSpec extends WordSpec with MustMatchers {
     "return proper Metadata Properties" in {
       val totalNumberOfItems = correctTotalNumberOfItemsDecimalValues
       val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.goodsItemQuantity" -> totalNumberOfItems.itemsQuantity,
         "declaration.invoiceAmount.value" -> totalNumberOfItems.totalAmountInvoiced,
         "declaration.invoiceAmount.currencyId" -> "GBP",
         "declaration.currencyExchanges[0].rateNumeric" -> totalNumberOfItems.exchangeRate,
@@ -40,23 +39,20 @@ class TotalNumberOfItemsSpec extends WordSpec with MustMatchers {
 
 object TotalNumberOfItemsSpec {
   val correctTotalNumberOfItemsDecimalValues = TotalNumberOfItems(
-    itemsQuantity = "123",
     totalAmountInvoiced = "12312312312312.12",
     exchangeRate = "1212121.12345",
     totalPackage = "123"
   )
   val correctTotalNumberOfItemsIntegerValues = TotalNumberOfItems(
-    itemsQuantity = "123",
     totalAmountInvoiced = "12312312312312",
     exchangeRate = "123123123123",
     totalPackage = "123"
   )
   val emptyTotalNumberOfItems =
-    TotalNumberOfItems(itemsQuantity = "", totalAmountInvoiced = "", exchangeRate = "", totalPackage = "")
+    TotalNumberOfItems(totalAmountInvoiced = "", exchangeRate = "", totalPackage = "")
 
   val correctTotalNumberOfItemsDecimalValuesJSON: JsValue = JsObject(
     Map(
-      "itemsQuantity" -> JsString("123"),
       "totalAmountInvoiced" -> JsString("1212312.12"),
       "exchangeRate" -> JsString("1212121.12345"),
       "totalPackage" -> JsString("123")
@@ -64,7 +60,6 @@ object TotalNumberOfItemsSpec {
   )
   val correctTotalNumberOfItemsIntegerValuesJSON: JsValue = JsObject(
     Map(
-      "itemsQuantity" -> JsString("123"),
       "totalAmountInvoiced" -> JsString("12312312312312"),
       "exchangeRate" -> JsString("123123123123"),
       "totalPackage" -> JsString("123")
@@ -72,7 +67,6 @@ object TotalNumberOfItemsSpec {
   )
   val emptyTotalNumberOfItemsJSON: JsValue = JsObject(
     Map(
-      "itemsQuantity" -> JsString(""),
       "totalAmountInvoiced" -> JsString(""),
       "exchangeRate" -> JsString(""),
       "totalPackage" -> JsString("")

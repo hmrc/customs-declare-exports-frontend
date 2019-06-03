@@ -68,7 +68,8 @@ trait WcoMetadataScalaMappingStrategy extends WcoMetadataMappingStrategy {
       declaration = metaData.declaration.map(
         _.copy(
           goodsShipment = goodsShipmentWithGoodsItems,
-          borderTransportMeans = getBorderTransportMeans(borderTransport, transportDetails)
+          borderTransportMeans = getBorderTransportMeans(borderTransport, transportDetails),
+          goodsItemQuantity = goodsShipmentWithGoodsItems.map(_.governmentAgencyGoodsItems.size)
         )
       )
     )

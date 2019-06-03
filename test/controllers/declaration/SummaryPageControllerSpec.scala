@@ -133,12 +133,9 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.items.header"))
-        resultAsString must include(messages("supplementary.summary.items.numberOfItems"))
         resultAsString must include(messages("supplementary.summary.items.amountInvoiced"))
         resultAsString must include(messages("supplementary.summary.items.exchangeRate"))
         resultAsString must include(messages("supplementary.summary.items.transactionType"))
-        resultAsString must include(messages("supplementary.summary.items.itemNumber"))
-
       }
 
       "display containers content with cache available" in new Test {
