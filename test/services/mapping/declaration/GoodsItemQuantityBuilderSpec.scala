@@ -28,7 +28,7 @@ class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers {
       implicit val cacheMap: CacheMap =
         CacheMap(
           "CacheID",
-          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.emptyGovernmentGoodsItem)
+          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.createGovernmentAgencyGoodsItemsListJson(0))
         )
       val goodsItemQuantityType = GoodsItemQuantityBuilder.build(cacheMap)
       goodsItemQuantityType.getValue.intValue() should be(0)
@@ -36,10 +36,10 @@ class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers {
 
     "correctly map to the WCO-DEC a single GovernmentGoodsItemQuantity instance" in {
       implicit val cacheMap: CacheMap =
-      CacheMap(
-      "CacheID",
-            Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.singleGovernmentGoodsItem)
-      )
+        CacheMap(
+          "CacheID",
+          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.createGovernmentAgencyGoodsItemsListJson(1))
+        )
       val goodsItemQuantityType = GoodsItemQuantityBuilder.build(cacheMap)
       goodsItemQuantityType.getValue.intValue() should be(1)
     }
@@ -48,81 +48,29 @@ class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers {
       implicit val cacheMap: CacheMap =
         CacheMap(
           "CacheID",
-          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.multipleGovernmentGoodsItem)
+          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.createGovernmentAgencyGoodsItemsListJson(3))
         )
       val goodsItemQuantityType = GoodsItemQuantityBuilder.build(cacheMap)
-      goodsItemQuantityType.getValue.intValue() should be(2)
+      goodsItemQuantityType.getValue.intValue() should be(3)
     }
   }
 }
 
 object GovernmentAgencyGoodsItemSpec {
 
-  val emptyGovernmentGoodsItem: JsValue =
-    JsArray(
-      Seq.empty
-    )
-
-  val singleGovernmentGoodsItem: JsValue =
-    JsArray(
-      Seq(
-        JsObject(
-          Map(
-            "sequenceNumeric" -> JsNumber(1),
-            "statisticalValueAmount" -> JsObject(Map(
-              "currencyId" -> JsString("1"),
-              "value" -> JsString("1")
-            )),
-            "commodity" -> JsObject(Map(
-              "dangerousGoods" -> JsArray(),
-              "classifications" -> JsArray()
-            )),
-            "additionalInformations" -> JsArray(),
-            "additionalDocuments" -> JsArray(),
-            "governmentProcedures" -> JsArray(),
-            "packagings" -> JsArray()
-          )
-        )
-      )
-    )
-
-  val multipleGovernmentGoodsItem: JsValue =
-    JsArray(
-      Seq(
-        JsObject(
-          Map(
-            "sequenceNumeric" -> JsNumber(2),
-            "statisticalValueAmount" -> JsObject(Map(
-              "currencyId" -> JsString("34"),
-              "value" -> JsString("34")
-            )),
-            "commodity" -> JsObject(Map(
-              "dangerousGoods" -> JsArray(),
-              "classifications" -> JsArray()
-            )),
-            "additionalInformations" -> JsArray(),
-            "additionalDocuments" -> JsArray(),
-            "governmentProcedures" -> JsArray(),
-            "packagings" -> JsArray()
-          )
+  def createGovernmentAgencyGoodsItemsListJson(length: Int): JsValue = JsArray((1 to length).map { seqNumeric =>
+    JsObject(
+      Map(
+        "sequenceNumeric" -> JsNumber(seqNumeric),
+        "statisticalValueAmount" -> JsObject(
+          Map("currencyId" -> JsString((seqNumeric + 11).toString), "value" -> JsString((seqNumeric + 13).toString))
         ),
-        JsObject(
-          Map(
-            "sequenceNumeric" -> JsNumber(1),
-            "statisticalValueAmount" -> JsObject(Map(
-              "currencyId" -> JsString("56"),
-              "value" -> JsString("56")
-            )),
-            "commodity" -> JsObject(Map(
-              "dangerousGoods" -> JsArray(),
-              "classifications" -> JsArray()
-            )),
-            "additionalInformations" -> JsArray(),
-            "additionalDocuments" -> JsArray(),
-            "governmentProcedures" -> JsArray(),
-            "packagings" -> JsArray()
-          )
-        )
+        "commodity" -> JsObject(Map("dangerousGoods" -> JsArray(), "classifications" -> JsArray())),
+        "additionalInformations" -> JsArray(),
+        "additionalDocuments" -> JsArray(),
+        "governmentProcedures" -> JsArray(),
+        "packagings" -> JsArray()
       )
     )
+  })
 }

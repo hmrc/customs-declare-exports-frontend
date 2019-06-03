@@ -25,7 +25,6 @@ class ItemsSpec extends WordSpec with MustMatchers {
   private trait SimpleTest {
     val totalNumberOfItemsMock = mock(classOf[TotalNumberOfItems])
     val transactionTypeMock = mock(classOf[TransactionType])
-    val itemNumberMock = mock(classOf[GoodsItemNumber])
     val items = Items(
       totalNumberOfItems = Some(totalNumberOfItemsMock),
       transactionType = Some(transactionTypeMock))
