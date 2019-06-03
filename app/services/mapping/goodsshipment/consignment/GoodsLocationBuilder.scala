@@ -61,7 +61,7 @@ object GoodsLocationBuilder {
       goodsLocation.setName(name)
     }
 
-    if (goods.postCode.isDefined) {
+    if (goods.addressLine.isDefined || goods.city.isDefined || goods.postCode.isDefined || goods.country.nonEmpty) {
       goodsLocation.setAddress(createAddress(goods))
     }
 
