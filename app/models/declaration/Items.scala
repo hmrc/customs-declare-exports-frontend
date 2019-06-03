@@ -22,21 +22,18 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 
 case class Items(
   totalNumberOfItems: Option[TotalNumberOfItems] = None,
-  transactionType: Option[TransactionType] = None,
-  goodsItemNumber: Option[GoodsItemNumber] = None
+  transactionType: Option[TransactionType] = None
 ) extends SummaryContainer with MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
     Seq(
       totalNumberOfItems.map(_.toMetadataProperties()),
-      transactionType.map(_.toMetadataProperties()),
-      goodsItemNumber.map(_.toMetadataProperties())
+      transactionType.map(_.toMetadataProperties())
     ).flatten.fold(Map.empty)(_ ++ _)
 
   override def isEmpty: Boolean =
     totalNumberOfItems.isEmpty &&
-      transactionType.isEmpty &&
-      goodsItemNumber.isEmpty
+      transactionType.isEmpty
 }
 
 object Items {
@@ -44,7 +41,5 @@ object Items {
 
   def apply(cacheMap: CacheMap): Items = Items(
     totalNumberOfItems = cacheMap.getEntry[TotalNumberOfItems](TotalNumberOfItems.formId),
-    transactionType = cacheMap.getEntry[TransactionType](TransactionType.formId),
-    goodsItemNumber = cacheMap.getEntry[GoodsItemNumber](GoodsItemNumber.formId)
-  )
+    transactionType = cacheMap.getEntry[TransactionType](TransactionType.formId))
 }

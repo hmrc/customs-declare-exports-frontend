@@ -45,9 +45,4 @@
         )
     ))
 
-    @components.table_row_no_change_link(HtmlTableRow(
-        label = messages("supplementary.summary.items.itemNumber"),
-        value = items.flatMap(_.goodsItemNumber).map(_.goodItemNumber)
-    ))
-
 }
