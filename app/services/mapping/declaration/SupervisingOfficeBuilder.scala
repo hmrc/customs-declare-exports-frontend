@@ -32,7 +32,7 @@ object SupervisingOfficeBuilder {
   private def createSupervisingOffice(data: WarehouseIdentification): SupervisingOffice = {
     val supervisingOffice = new SupervisingOffice()
 
-    if(data.supervisingCustomsOffice.getOrElse("").nonEmpty) {
+    if (data.supervisingCustomsOffice.getOrElse("").nonEmpty) {
       val iDType = new SupervisingOfficeIdentificationIDType()
       iDType.setValue(data.supervisingCustomsOffice.get)
       supervisingOffice.setID(iDType)

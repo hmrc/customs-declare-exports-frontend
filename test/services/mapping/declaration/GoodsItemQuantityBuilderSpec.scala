@@ -58,19 +58,20 @@ class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers {
 
 object GovernmentAgencyGoodsItemSpec {
 
-  def createGovernmentAgencyGoodsItemsListJson(length: Int): JsValue = JsArray((1 to length).map { seqNumeric =>
-    JsObject(
-      Map(
-        "sequenceNumeric" -> JsNumber(seqNumeric),
-        "statisticalValueAmount" -> JsObject(
-          Map("currencyId" -> JsString((seqNumeric + 11).toString), "value" -> JsString((seqNumeric + 13).toString))
-        ),
-        "commodity" -> JsObject(Map("dangerousGoods" -> JsArray(), "classifications" -> JsArray())),
-        "additionalInformations" -> JsArray(),
-        "additionalDocuments" -> JsArray(),
-        "governmentProcedures" -> JsArray(),
-        "packagings" -> JsArray()
+  def createGovernmentAgencyGoodsItemsListJson(length: Int): JsValue =
+    JsArray((1 to length).map { seqNumeric =>
+      JsObject(
+        Map(
+          "sequenceNumeric" -> JsNumber(seqNumeric),
+          "statisticalValueAmount" -> JsObject(
+            Map("currencyId" -> JsString((seqNumeric + 11).toString), "value" -> JsString((seqNumeric + 13).toString))
+          ),
+          "commodity" -> JsObject(Map("dangerousGoods" -> JsArray(), "classifications" -> JsArray())),
+          "additionalInformations" -> JsArray(),
+          "additionalDocuments" -> JsArray(),
+          "governmentProcedures" -> JsArray(),
+          "packagings" -> JsArray()
+        )
       )
-    )
-  })
+    })
 }

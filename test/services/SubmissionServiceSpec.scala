@@ -17,6 +17,7 @@
 package services
 
 import base.{CustomExportsBaseSpec, TestHelper}
+import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import metrics.MetricIdentifiers
 import models.declaration.SupplementaryDeclarationDataSpec._
@@ -24,6 +25,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.OK
 import services.audit.EventData._
@@ -90,8 +92,6 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
       verify(mockAuditService, times(1)).auditAllPagesUserInput(any())(any())
       verify(mockAuditService)
         .audit(ArgumentMatchers.eq(AuditTypes.Submission), ArgumentMatchers.eq[Map[String, String]](auditData))(any())
-      verify(mockAuditService).auditAllPagesUserInput(ArgumentMatchers.refEq(cacheMapAllRecords))(any())
-
     }
 
     "record submission timing and increase the Success Counter when response is OK" in {

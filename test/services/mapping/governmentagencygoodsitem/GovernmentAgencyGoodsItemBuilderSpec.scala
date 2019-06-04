@@ -133,7 +133,9 @@ object GovernmentAgencyGoodsItemBuilderSpec {
   val additionalInformations: JsValue = JsObject(
     Map("code" -> JsString("code"), "description" -> JsString("description"))
   )
-  val firstGovernmentProcedure: JsValue = JsObject(Map("currentCode" -> JsString("CU"), "previousCode" -> JsString("PR")))
+  val firstGovernmentProcedure: JsValue = JsObject(
+    Map("currentCode" -> JsString("CU"), "previousCode" -> JsString("PR"))
+  )
   val secondGovernmentProcedure: JsValue = JsObject(Map("currentCode" -> JsString("CC"), "previousCode" -> JsNull))
   val thirdGovernmentProcedure: JsValue = JsObject(Map("currentCode" -> JsString("PR"), "previousCode" -> JsNull))
 
@@ -193,7 +195,9 @@ object GovernmentAgencyGoodsItemBuilderSpec {
       "commodity" -> commodityJson,
       "additionalInformations" -> JsArray(Seq(additionalInformations)),
       "additionalDocuments" -> JsArray(Seq(additionalDocuments)),
-      "governmentProcedures" -> JsArray(Seq(firstGovernmentProcedure, secondGovernmentProcedure, thirdGovernmentProcedure)),
+      "governmentProcedures" -> JsArray(
+        Seq(firstGovernmentProcedure, secondGovernmentProcedure, thirdGovernmentProcedure)
+      ),
       "packagings" -> JsArray(Seq(firstPackagingJson, secondPackagingJson))
     )
   )

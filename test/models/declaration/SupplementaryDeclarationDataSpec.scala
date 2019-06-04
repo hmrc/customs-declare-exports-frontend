@@ -29,7 +29,10 @@ import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransactionTypeSpec._
-import forms.declaration.TransportInformationContainerSpec.{correctTransportInformationContainerData, correctTransportInformationContainerDataJSON}
+import forms.declaration.TransportInformationContainerSpec.{
+  correctTransportInformationContainerData,
+  correctTransportInformationContainerDataJSON
+}
 import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec
@@ -399,8 +402,9 @@ object SupplementaryDeclarationDataSpec {
       OfficeOfExit.formId -> correctOfficeOfExitJSON,
       TransportInformationContainerData.id -> correctTransportInformationContainerDataJSON,
       TransportDetails.formId -> Json.toJson(
-        TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))),
-        BorderTransport.formId -> Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
+        TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))
+      ),
+      BorderTransport.formId -> Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
       TotalNumberOfItems.formId -> correctTotalNumberOfItemsDecimalValuesJSON,
       TransactionType.formId -> correctTransactionTypeJSON,
       DeclarationAdditionalActors.formId -> correctAdditionalActorsDataJSON,

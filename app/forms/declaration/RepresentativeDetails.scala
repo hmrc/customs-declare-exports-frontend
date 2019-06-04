@@ -42,7 +42,10 @@ case class RepresentativeDetails(
         "declaration.agent.address.cityName" -> details.address.map(_.townOrCity).getOrElse(""),
         "declaration.agent.address.postcodeId" -> details.address.map(_.postCode).getOrElse(""),
         "declaration.agent.address.countryCode" ->
-          allCountries.find(country => details.address.fold(false)(_.country.contains(country.countryName))).map(_.countryCode).getOrElse("")
+          allCountries
+            .find(country => details.address.fold(false)(_.country.contains(country.countryName)))
+            .map(_.countryCode)
+            .getOrElse("")
       )
     case None => Map.empty
   }
@@ -58,17 +61,24 @@ object RepresentativeDetails {
 
   val formId = "RepresentativeDetails"
 
-  val mapping = Forms.mapping(
-    "details" -> optional(EntityDetails.mapping),
-    "statusCode" -> optional(
-      text().verifying(
-        "supplementary.representative.representationType.error.wrongValue",
-        isContainedIn(representativeStatusCodeAllowedValues)
+  val mapping = Forms
+    .mapping(
+      "details" -> optional(EntityDetails.mapping),
+      "statusCode" -> optional(
+        text().verifying(
+          "supplementary.representative.representationType.error.wrongValue",
+          isContainedIn(representativeStatusCodeAllowedValues)
+        )
       )
+    )(RepresentativeDetails.apply)(RepresentativeDetails.unapply)
+    .verifying(
+      "supplementary.namedEntityDetails.error",
+      details => details.details.nonEmpty || details.statusCode.isEmpty
     )
-  )(RepresentativeDetails.apply)(RepresentativeDetails.unapply)
-    .verifying("supplementary.namedEntityDetails.error", details => details.details.nonEmpty || details.statusCode.isEmpty)
-    .verifying("supplementary.representative.representationType.error.empty", details => details.details.isEmpty || details.statusCode.nonEmpty)
+    .verifying(
+      "supplementary.representative.representationType.error.empty",
+      details => details.details.isEmpty || details.statusCode.nonEmpty
+    )
 
   def form(): Form[RepresentativeDetails] = Form(mapping)
 
@@ -76,7 +86,8 @@ object RepresentativeDetails {
 
     val newErrors = formWithErrors.errors.map { error =>
       if (error.message == "supplementary.namedEntityDetails.error") error.copy(key = "details")
-      else if (error.message == "supplementary.representative.representationType.error.empty") error.copy(key = "statusCode")
+      else if (error.message == "supplementary.representative.representationType.error.empty")
+        error.copy(key = "statusCode")
       else error
     }
 

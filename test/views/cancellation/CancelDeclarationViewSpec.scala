@@ -210,7 +210,12 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "functionalReferenceId-error", "cancellation.functionalReferenceId.wrongFormat", "#functionalReferenceId")
+        checkErrorLink(
+          view,
+          "functionalReferenceId-error",
+          "cancellation.functionalReferenceId.wrongFormat",
+          "#functionalReferenceId"
+        )
 
         getElementById(view, "error-message-functionalReferenceId-input").text() must be(
           messages("cancellation.functionalReferenceId.wrongFormat")
@@ -282,7 +287,12 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "statementDescription-error", "cancellation.statementDescription.tooLong", "#statementDescription")
+        checkErrorLink(
+          view,
+          "statementDescription-error",
+          "cancellation.statementDescription.tooLong",
+          "#statementDescription"
+        )
 
         getElementById(view, "error-message-statementDescription-input").text() must be(
           messages("cancellation.statementDescription.tooLong")
@@ -304,7 +314,12 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
         )
 
         checkErrorsSummary(view)
-        checkErrorLink(view, "statementDescription-error", "cancellation.statementDescription.wrongFormat", "#statementDescription")
+        checkErrorLink(
+          view,
+          "statementDescription-error",
+          "cancellation.statementDescription.wrongFormat",
+          "#statementDescription"
+        )
 
         getElementById(view, "error-message-statementDescription-input").text() must be(
           messages("cancellation.statementDescription.wrongFormat")

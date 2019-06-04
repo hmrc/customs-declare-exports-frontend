@@ -46,7 +46,7 @@ class AuditServiceSpec extends AuditTestSupport with OptionValues {
     }
 
     "audit full payload" in {
-      auditService.auditAllPagesUserInput(cacheMapAllRecords)
+      auditService.auditAllPagesUserInput(Json.toJson(cacheMapAllRecords.data).as[JsObject])
       verify(mockAuditConnector).sendExtendedEvent(ArgumentMatchers.refEq(extendedEvent, "eventId", "generatedAt"))(
         any(),
         any()
@@ -54,7 +54,7 @@ class AuditServiceSpec extends AuditTestSupport with OptionValues {
 
     }
     "audit full payload success" in {
-      val res = auditService.auditAllPagesUserInput(cacheMapAllRecords).futureValue
+      val res = auditService.auditAllPagesUserInput(Json.toJson(cacheMapAllRecords.data).as[JsObject]).futureValue
       res mustBe AuditResult.Success
 
     }

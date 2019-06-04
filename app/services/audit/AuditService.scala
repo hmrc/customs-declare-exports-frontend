@@ -19,7 +19,7 @@ package services.audit
 import com.google.inject.Inject
 import config.AppConfig
 import play.api.Logger
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import services.audit.AuditTypes.Audit
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -39,13 +39,13 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
     connector.sendEvent(event).map(handleResponse(_, audit.toString))
   }
 
-  def auditAllPagesUserInput(cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+  def auditAllPagesUserInput(userInput: JsObject)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val auditType = AuditTypes.SubmissionPayload.toString
     val extendedEvent = ExtendedDataEvent(
       auditSource = appConfig.appName,
       auditType = auditType,
       tags = getAuditTags(s"${auditType}-payload-request", s"${auditType}/full-payload"),
-      detail = getAuditDetails(cacheMap: CacheMap)
+      detail = getAuditDetails(userInput)
     )
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
   }
@@ -77,10 +77,9 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
         path = s"customs-declare-exports/${path}"
       )
 
-  private def getAuditDetails(cacheMap: CacheMap)(implicit hc: HeaderCarrier) = {
-    val data = Json.toJson(cacheMap.data).as[JsObject]
+  private def getAuditDetails(userInput: JsObject)(implicit hc: HeaderCarrier) = {
     val hcAuditDetails = Json.toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails()).as[JsObject]
-    hcAuditDetails.deepMerge(data)
+    hcAuditDetails.deepMerge(userInput)
   }
 }
 

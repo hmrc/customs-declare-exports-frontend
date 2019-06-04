@@ -47,9 +47,9 @@ object CancellationStatus {
   implicit object CancellationStatusReads extends Reads[CancellationStatus] {
     def reads(jsValue: JsValue): JsResult[CancellationStatus] = jsValue match {
       case JsString("CancellationRequestExists") => JsSuccess(CancellationRequestExists)
-      case JsString("CancellationRequested") => JsSuccess(CancellationRequested)
-      case JsString("MissingDeclaration") => JsSuccess(MissingDeclaration)
-      case _ => JsError("Incorrect cancellation status")
+      case JsString("CancellationRequested")     => JsSuccess(CancellationRequested)
+      case JsString("MissingDeclaration")        => JsSuccess(MissingDeclaration)
+      case _                                     => JsError("Incorrect cancellation status")
     }
   }
 

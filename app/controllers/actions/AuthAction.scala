@@ -29,16 +29,14 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: MessagesControllerComponents) extends AuthAction with AuthorisedFunctions {
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: MessagesControllerComponents)
+    extends AuthAction with AuthorisedFunctions {
 
   implicit override val executionContext: ExecutionContext = mcc.executionContext
   override val parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
   private val logger = Logger(classOf[AuthActionImpl])
 
-  override def invokeBlock[A](
-    request: Request[A],
-    block: AuthenticatedRequest[A] => Future[Result]
-  ): Future[Result] = {
+  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
@@ -101,6 +99,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: M
 }
 
 @ImplementedBy(classOf[AuthActionImpl])
-trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
+trait AuthAction
+    extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
 case class NoExternalId() extends NoActiveSession("No externalId was found")
