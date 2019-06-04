@@ -28,6 +28,7 @@
     appConfig = appConfig
 ) {
     @helpers.form(DestinationCountriesController.saveCountries(), 'autoComplete -> "off") {
+
         @components.back_link("/customs-declare-exports/declaration/holder-of-authorisation")
 
         @components.error_summary(form.errors)
@@ -36,25 +37,7 @@
 
         @components.page_title(Some("declaration.destinationCountries.title"))
 
-        <script type="text/javascript">
-                function initialiseSelect(selectName){
-                    var selectElements = document.getElementsByName(selectName);
-                    var selectElement = selectElements[selectElements.length - 1];
-                    openregisterLocationPicker({
-                        defaultValue: '',
-                        selectElement: selectElement,
-                        url: '@routes.Assets.versioned("javascripts/location-autocomplete-graph.json")'
-                    });
-                    var inputElement = document.getElementsByClassName('autocomplete__input');
-                    inputElement = inputElement[inputElement.length - 1];
-                    inputElement.setAttribute('autocomplete', 'false' + selectElements.length);
-                    if (selectElement.classList.contains("form-control-error")) {
-                        inputElement.classList.add("form-control-error");
-                    }
-                }
-        </script>
-
-        <div id="country-of-dispatch-field" class="inline-block">
+        <div id="country-of-dispatch-field" class="inline-block form-group">
             @components.country_field(
                 form,
                 "countryOfDispatch",
@@ -65,7 +48,7 @@
             )
         </div>
 
-        <div id="country-of-destination-field" class="inline-block">
+        <div id="country-of-destination-field" class="inline-block form-group">
             @components.country_field(
                 form,
                 "countryOfDestination",

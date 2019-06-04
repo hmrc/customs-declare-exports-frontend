@@ -43,9 +43,10 @@ import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.JsValue
 import play.api.libs.ws.WSClient
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, MessagesControllerComponents}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import services._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -119,31 +120,35 @@ trait CustomExportsBaseSpec
   protected def getRequest(
     uri: String,
     headers: Map[String, String] = Map.empty
-  ): FakeRequest[AnyContentAsEmpty.type] = {
+  ): Request[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
-    FakeRequest("GET", uri)
-      .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
-      .withSession(session.toSeq: _*)
+    addCSRFToken(
+      FakeRequest("GET", uri)
+        .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
+        .withSession(session.toSeq: _*)
+    )
   }
 
   protected def postRequest(
     uri: String,
     body: JsValue,
     headers: Map[String, String] = Map.empty
-  ): FakeRequest[AnyContentAsJson] = {
+  ): Request[AnyContentAsJson] = {
     val session: Map[String, String] = Map(
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
-    FakeRequest("POST", uri)
-      .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
-      .withSession(session.toSeq: _*)
-      .withJsonBody(body)
+    addCSRFToken(
+      FakeRequest("POST", uri)
+        .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
+        .withSession(session.toSeq: _*)
+        .withJsonBody(body)
+    )
   }
 
   protected def postRequestFormUrlEncoded(

@@ -14,45 +14,74 @@
  * limitations under the License.
  *@
 
-@import services .Country
+@import services.Country
 @import views.html.helper._
 
 @(form: Form[_], field: String, label: String, hintText: Option[String], emptySelectValue: String, countries: List[Country], args: (Symbol, Any)*)(implicit messages: Messages)
 
-@elements = @{
-    FieldElements(form(field).id, form(field), null, args.toMap, messages)
-}
-@allErrors = @{
-    elements.errors ++ args.flatMap {
-        case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
-        case _ => Seq.empty
+    @*
+        Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
+        JQuery treats [] as element's attribute and tried evaluated this.
+        To avoid problems, we need to remove [] from field.
+    *@
+    @fieldWithoutBrackets = @{field.replace("[]", "")}
+
+    @elements = @{
+        FieldElements(form(field).id, form(field), null, args.toMap, messages)
     }
-}
 
-@selectedValue = @{ form(field).value match { case Some(x) => x case None => "" case x => x }}
-
-<div id="@field-country-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
-    <label id="@(field)-label" for="@field" class="form-label-bold">
-        @messages(label)
-
-        @if(allErrors.nonEmpty) {
-            @allErrors.map { error => <span class="error-message">@Messages(error)</span> }
+    @allErrors = @{
+        elements.errors ++ args.flatMap {
+            case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
+            case _ => Seq.empty
         }
-        @if( hintText.isDefined ) { <span class="form-hint"
-        id="@(field)-hint">@hintText.get</span> }
+    }
 
-    </label>
-    <select id="@field" name="@(field)" class="form-control @if(allErrors.nonEmpty) {form-control-error}">
-        <option value="">@emptySelectValue</option>
-        @for(option <- countries.map(c => (c.countryCode, c.countryName))) {
-            <option id="@field-@option._1"
-            value="@option._1"
-                @if(selectedValue==option._1){selected="selected"}>@option._2</option>
+    @selectedValue = @{
+        form(field).value match {
+            case Some(x) => x
+            case None => ""
+            case x => x
         }
-    </select>
-</div>
+    }
+
+    <style>
+        .custom-combobox-input {
+            border: 2px solid #000000;
+            border-right: none;
+        }
+    </style>
 
     <script type="text/javascript">
-        initialiseSelect("@(field)");
+        document.addEventListener("DOMContentLoaded", function (event) {
+            $(function () {
+                $("#@(fieldWithoutBrackets)").combobox();
+                $("#toggle").on("click", function () {
+                    $("#@(fieldWithoutBrackets)").toggle();
+                });
+            });
+
+        });
     </script>
 
+    <div id="@fieldWithoutBrackets-country-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
+        <label id="@(fieldWithoutBrackets)-label" for="@fieldWithoutBrackets" class="form-label-bold">
+            @messages(label)
+
+            @if(allErrors.nonEmpty) {
+                @allErrors.map { error => <span class="error-message">@Messages(error)</span> }
+            }
+
+            @if(hintText.isDefined) {
+                <span class="form-hint"
+                id="@(fieldWithoutBrackets)-hint">@hintText.get</span>
+            }
+        </label>
+
+        <select id="@(fieldWithoutBrackets)" name="@(field)">
+            <option value="">@emptySelectValue</option>
+            @for(option <- countries.map(c => (c.countryCode, c.countryName))) {
+                <option value="@option._1" @if(selectedValue == option._1) {selected="selected"}>@option._2 - @option._1</option>
+            }
+        </select>
+    </div>
