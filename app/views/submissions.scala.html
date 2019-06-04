@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@import java.time.{Instant, ZoneId}
 @import java.time.format.DateTimeFormatter
+@import java.time.{Instant, ZoneId}
 
 @import config.AppConfig
 
@@ -39,16 +39,16 @@
                 <th class="table-cell">@messages("submissions.noOfNotifications")</th>
             </tr>
 
-            @for(submission <- submissions){
+            @for( (submission, notificationsAmount) <- submissions ){
                 <tr class="table-row">
-                    <td class="table-cell">@submission._1.ducr</td>
-                    <td class="table-cell">@submission._1.lrn.getOrElse("")</td>
-                    <td class="table-cell">@submission._1.mrn.getOrElse("")</td>
-                    <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(Instant.ofEpochMilli(submission._1.submittedTimestamp))</td>
-                    <td class="table-cell">@submission._1.status</td>
+                    <td class="table-cell">@submission.ducr</td>
+                    <td class="table-cell">@submission.lrn.getOrElse("")</td>
+                    <td class="table-cell">@submission.mrn.getOrElse("")</td>
+                    <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(Instant.ofEpochMilli(submission.submittedTimestamp))</td>
+                    <td class="table-cell">@submission.status</td>
                     <td class="table-cell">
-                        <a href="/customs-declare-exports/notifications/@submission._1.conversationId">
-                            @submission._2
+                        <a href="/customs-declare-exports/notifications/@submission.conversationId">
+                            @notificationsAmount
                         </a>
                     </td>
                 </tr>
