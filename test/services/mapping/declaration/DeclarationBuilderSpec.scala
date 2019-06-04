@@ -81,8 +81,11 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
     declaration.getGoodsShipment.getTransactionNatureCode.getValue should be("11")
 
     declaration.getGoodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")
-    declaration.getGoodsShipment.getConsignee.getName should be(null)
-    declaration.getGoodsShipment.getConsignee.getAddress should be(null)
+    declaration.getGoodsShipment.getConsignee.getName.getValue should be("Full Name")
+    declaration.getGoodsShipment.getConsignee.getAddress.getLine.getValue should be("Address Line")
+    declaration.getGoodsShipment.getConsignee.getAddress.getCityName.getValue should be("Town or City")
+    declaration.getGoodsShipment.getConsignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+    declaration.getGoodsShipment.getConsignee.getAddress.getCountryCode.getValue should be("PL")
 
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getName.getValue should be("LOC")
