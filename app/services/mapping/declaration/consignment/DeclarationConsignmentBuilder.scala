@@ -18,11 +18,11 @@ package services.mapping.declaration
 
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
-import services.mapping.declaration.consignment.IteneraryBuilder
+import services.mapping.declaration.consignment.{FreightBuilder, IteneraryBuilder}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-object ConsignmentBuilder {
+object DeclarationConsignmentBuilder {
 
   def build(implicit cacheMap: CacheMap, choice: Choice): Declaration.Consignment =
     choice match {
@@ -33,11 +33,13 @@ object ConsignmentBuilder {
   private def buildCircumstancesCode(implicit cacheMap: CacheMap, choice: Choice): Declaration.Consignment = {
     val consignment = new Declaration.Consignment()
 
+    consignment.setFreight(FreightBuilder.build)
+
     val iteneraries = IteneraryBuilder.build
     if (!iteneraries.isEmpty) {
       consignment.getItinerary.addAll(iteneraries)
     }
-    
+
     consignment
   }
 

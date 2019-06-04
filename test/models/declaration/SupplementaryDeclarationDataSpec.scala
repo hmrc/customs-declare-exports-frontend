@@ -39,7 +39,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupp
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
-import forms.declaration.destinationCountries.DestinationCountries
+import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard}
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, ChoiceSpec}
 import models.declaration.DeclarationAdditionalActorsDataSpec._

@@ -29,8 +29,13 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers {
       goodsShipment.getTransactionNatureCode.getValue should be("11")
 
       goodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")
-      goodsShipment.getConsignee.getName should be(null)
-      goodsShipment.getConsignee.getAddress should be(null)
+      goodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")
+      goodsShipment.getConsignee.getName.getValue should be("Full Name")
+      goodsShipment.getConsignee.getAddress.getLine.getValue should be("Address Line")
+      goodsShipment.getConsignee.getAddress.getCityName.getValue should be("Town or City")
+      goodsShipment.getConsignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+      goodsShipment.getConsignee.getAddress.getCountryCode.getValue should be("PL")
+
 
       goodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
 
