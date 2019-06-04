@@ -104,7 +104,7 @@ class SubmissionService @Inject()(
 
   protected case class FormattedData(lrn: Option[String], ducr: Option[String], payload: String)
 
-  def getCachedData(cacheMap: CacheMap)(implicit request: JourneyRequest[_]) = {
+  def getCachedData(cacheMap: CacheMap)(implicit request: JourneyRequest[_]): JsObject = {
 
     val userInput = Map(
       "AdditionalDeclarationType" ->
