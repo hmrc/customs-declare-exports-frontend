@@ -21,7 +21,11 @@ import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.DestinationCountriesSupplementarySpec._
-import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard, DestinationCountriesSupplementary}
+import forms.declaration.destinationCountries.{
+  DestinationCountries,
+  DestinationCountriesStandard,
+  DestinationCountriesSupplementary
+}
 import helpers.views.declaration.DestinationCountriesMessages
 import org.mockito.Mockito.reset
 import play.api.test.Helpers._
@@ -196,7 +200,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       }
     }
 
-    "validate input and add country of routing if value is correct" in new StandardSetUp{
+    "validate input and add country of routing if value is correct" in new StandardSetUp {
 
       val body = Seq(
         ("countryOfDispatch", ""),

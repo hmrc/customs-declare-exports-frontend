@@ -24,10 +24,12 @@ import javax.xml.transform.{Source => XmlSource}
 import javax.xml.validation.{Schema, SchemaFactory}
 import play.api.Logger
 
-
 trait SchemaValidation {
   private val schemas =
-    Seq("/wco-declaration-schemas/declaration/DocumentMetaData_2_DMS.xsd", "/wco-declaration-schemas/declaration/WCO_DEC_2_DMS.xsd")
+    Seq(
+      "/wco-declaration-schemas/declaration/DocumentMetaData_2_DMS.xsd",
+      "/wco-declaration-schemas/declaration/WCO_DEC_2_DMS.xsd"
+    )
 
   def validateXmlAgainstSchema(xml: String): Unit = {
     val schema: Schema = {
@@ -46,7 +48,7 @@ trait SchemaValidation {
     } catch {
       case e: Exception =>
         Logger.error(s"Invalid XML: ${e.getMessage}\n$xml", e)
-       throw e
+        throw e
     }
     Logger.debug("schema validation passed")
   }

@@ -20,7 +20,12 @@ import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
-import forms.declaration.additionaldeclarationtype.{AdditionalDeclarationType, AdditionalDeclarationTypeStandardDec, AdditionalDeclarationTypeSupplementaryDec, AdditionalDeclarationTypeTrait}
+import forms.declaration.additionaldeclarationtype.{
+  AdditionalDeclarationType,
+  AdditionalDeclarationTypeStandardDec,
+  AdditionalDeclarationTypeSupplementaryDec,
+  AdditionalDeclarationTypeTrait
+}
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form

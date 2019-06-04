@@ -27,7 +27,12 @@ import javax.inject.Named
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment, Logger}
-import services.{WcoMetadataJavaMappingStrategy, WcoMetadataMapper, WcoMetadataMappingStrategy, WcoMetadataScalaMappingStrategy}
+import services.{
+  WcoMetadataJavaMappingStrategy,
+  WcoMetadataMapper,
+  WcoMetadataMappingStrategy,
+  WcoMetadataScalaMappingStrategy
+}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
@@ -92,7 +97,9 @@ class AppConfig @Inject()(
   lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
 
   lazy val useNewMappingStrategy =
-    runModeConfiguration.getOptional[Boolean]("microservice.services.features.use-new-wco-dec-mapping-strategy").getOrElse(false)
+    runModeConfiguration
+      .getOptional[Boolean]("microservice.services.features.use-new-wco-dec-mapping-strategy")
+      .getOrElse(false)
 
   lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
 
@@ -127,7 +134,10 @@ class AppConfig @Inject()(
       .get(feature2Key(feature))
       .map(str2FeatureStatus)
       .getOrElse(
-        runModeConfiguration.getOptional[String](feature2Key(feature)).map(str2FeatureStatus).getOrElse(defaultFeatureStatus)
+        runModeConfiguration
+          .getOptional[String](feature2Key(feature))
+          .map(str2FeatureStatus)
+          .getOrElse(defaultFeatureStatus)
       )
 
   def isFeatureOn(feature: Feature): Boolean = featureStatus(feature) == FeatureStatus.enabled

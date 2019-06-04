@@ -27,7 +27,7 @@ object ConsignmentBuilder {
     consignment.setContainerCode(ContainerCodeBuilder.build)
     consignment.setArrivalTransportMeans(ArrivalTransportMeansBuilder.build)
     consignment.setDepartureTransportMeans(DepartureTransportMeansBuilder.build)
-    
+
     consignment
   }
 }

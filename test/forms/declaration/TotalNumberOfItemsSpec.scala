@@ -38,16 +38,10 @@ class TotalNumberOfItemsSpec extends WordSpec with MustMatchers {
 }
 
 object TotalNumberOfItemsSpec {
-  val correctTotalNumberOfItemsDecimalValues = TotalNumberOfItems(
-    totalAmountInvoiced = "12312312312312.12",
-    exchangeRate = "1212121.12345",
-    totalPackage = "123"
-  )
-  val correctTotalNumberOfItemsIntegerValues = TotalNumberOfItems(
-    totalAmountInvoiced = "12312312312312",
-    exchangeRate = "123123123123",
-    totalPackage = "123"
-  )
+  val correctTotalNumberOfItemsDecimalValues =
+    TotalNumberOfItems(totalAmountInvoiced = "12312312312312.12", exchangeRate = "1212121.12345", totalPackage = "123")
+  val correctTotalNumberOfItemsIntegerValues =
+    TotalNumberOfItems(totalAmountInvoiced = "12312312312312", exchangeRate = "123123123123", totalPackage = "123")
   val emptyTotalNumberOfItems =
     TotalNumberOfItems(totalAmountInvoiced = "", exchangeRate = "", totalPackage = "")
 
@@ -66,10 +60,6 @@ object TotalNumberOfItemsSpec {
     )
   )
   val emptyTotalNumberOfItemsJSON: JsValue = JsObject(
-    Map(
-      "totalAmountInvoiced" -> JsString(""),
-      "exchangeRate" -> JsString(""),
-      "totalPackage" -> JsString("")
-    )
+    Map("totalAmountInvoiced" -> JsString(""), "exchangeRate" -> JsString(""), "totalPackage" -> JsString(""))
   )
 }

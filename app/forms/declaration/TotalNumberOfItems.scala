@@ -22,11 +22,8 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class TotalNumberOfItems(
-  totalAmountInvoiced: String,
-  exchangeRate: String,
-  totalPackage: String
-) extends MetadataPropertiesConvertable {
+case class TotalNumberOfItems(totalAmountInvoiced: String, exchangeRate: String, totalPackage: String)
+    extends MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
     Map(

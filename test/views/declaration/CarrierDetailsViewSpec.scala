@@ -198,9 +198,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
       checkErrorsSummary(view)
       checkErrorLink(view, "details.address.addressLine-error", addressLineEmpty, "#details_address_addressLine")
 
-      getElementById(view, "error-message-details_address_addressLine-input").text() must be(
-        messages(addressLineEmpty)
-      )
+      getElementById(view, "error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
     }
 
     "display error for incorrect Address" in {
@@ -221,9 +219,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
       checkErrorsSummary(view)
       checkErrorLink(view, "details.address.addressLine-error", addressLineError, "#details_address_addressLine")
 
-      getElementById(view, "error-message-details_address_addressLine-input").text() must be(
-        messages(addressLineError)
-      )
+      getElementById(view, "error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
     }
 
     "display error for empty Town or city" in {
@@ -363,9 +359,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
       checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
       checkErrorLink(view, "details.address.country-error", countryEmpty, "#details_address_country")
 
-      getElementById(view, "error-message-details_address_addressLine-input").text() must be(
-        messages(addressLineEmpty)
-      )
+      getElementById(view, "error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
       getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
       getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
@@ -387,9 +381,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
       checkErrorLink(view, "details.address.postCode-error", postCodeEmpty, "#details_address_postCode")
 
       getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameEmpty))
-      getElementById(view, "error-message-details_address_addressLine-input").text() must be(
-        messages(addressLineEmpty)
-      )
+      getElementById(view, "error-message-details_address_addressLine-input").text() must be(messages(addressLineEmpty))
       getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
       getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
     }
@@ -423,9 +415,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
       checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
       checkErrorLink(view, "details.address.country-error", countryError, "#details_address_country")
 
-      getElementById(view, "error-message-details_address_addressLine-input").text() must be(
-        messages(addressLineError)
-      )
+      getElementById(view, "error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
       getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
       getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       getElementByCss(view, "span.error-message").text() must be(messages(countryError))
@@ -461,9 +451,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
       checkErrorLink(view, "details.address.postCode-error", postCodeError, "#details_address_postCode")
 
       getElementById(view, "error-message-details_address_fullName-input").text() must be(messages(fullNameError))
-      getElementById(view, "error-message-details_address_addressLine-input").text() must be(
-        messages(addressLineError)
-      )
+      getElementById(view, "error-message-details_address_addressLine-input").text() must be(messages(addressLineError))
       getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
       getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
     }

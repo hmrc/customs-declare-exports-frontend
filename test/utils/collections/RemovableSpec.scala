@@ -50,7 +50,7 @@ class RemovableSpec extends WordSpec with MustMatchers {
       }
 
       def assertIndexOutOfBoundsExceptionBeingThrown(collection: Seq[_], indexToRemove: Int): Unit =
-        an [IndexOutOfBoundsException] should be thrownBy collection.removeByIdx(indexToRemove)
+        an[IndexOutOfBoundsException] should be thrownBy collection.removeByIdx(indexToRemove)
     }
 
     "return empty sequence" when {

@@ -88,20 +88,20 @@ object ItemTypeSpec {
 
   val correctItemTypeMap: Map[String, String] =
     Map(
-      "combinedNomenclatureCode" -> combinedNomenclatureCode ,
-      "taricAdditionalCode[0]" -> taricAdditionalCode ,
-      "nationalAdditionalCode[0]" -> nationalAdditionalCode ,
-      "descriptionOfGoods" -> descriptionOfGoods ,
-      "cusCode" -> cusCode ,
+      "combinedNomenclatureCode" -> combinedNomenclatureCode,
+      "taricAdditionalCode[0]" -> taricAdditionalCode,
+      "nationalAdditionalCode[0]" -> nationalAdditionalCode,
+      "descriptionOfGoods" -> descriptionOfGoods,
+      "cusCode" -> cusCode,
       "statisticalValue" -> statisticalValue
     )
   val mandatoryFieldsOnlyItemTypeMap: Map[String, String] =
     Map(
-      "combinedNomenclatureCode" -> combinedNomenclatureCode ,
-      "taricAdditionalCode[0]" -> taricAdditionalCode ,
-      "nationalAdditionalCode[0]" -> nationalAdditionalCode ,
-      "descriptionOfGoods" -> descriptionOfGoods ,
-      "cusCode" -> cusCode ,
+      "combinedNomenclatureCode" -> combinedNomenclatureCode,
+      "taricAdditionalCode[0]" -> taricAdditionalCode,
+      "nationalAdditionalCode[0]" -> nationalAdditionalCode,
+      "descriptionOfGoods" -> descriptionOfGoods,
+      "cusCode" -> cusCode,
       "statisticalValue" -> statisticalValue
     )
 

@@ -31,7 +31,7 @@ object Removable {
     def removeByIdx(index: Int): RemovableSeq[A] = {
       if (index < 0 || index >= length) throw new IndexOutOfBoundsException
 
-      val (start, _ +: end ) = seq.splitAt(index)
+      val (start, _ +: end) = seq.splitAt(index)
       start ++ end
     }
 

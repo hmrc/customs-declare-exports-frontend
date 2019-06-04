@@ -122,7 +122,9 @@ trait ViewValidator extends MustMatchers {
     errorLink.attr("href") must be(href)
   }
 
-  def checkErrorLink(page: String, elementId: String, error: String, href: String)(implicit messages: Messages): Unit = {
+  def checkErrorLink(page: String, elementId: String, error: String, href: String)(
+    implicit messages: Messages
+  ): Unit = {
 
     val errorLink = getElementById(page, elementId)
 

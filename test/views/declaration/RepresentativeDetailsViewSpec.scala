@@ -343,9 +343,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
 
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
-          messages(townOrCityEmpty)
-        )
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
       }
 
       "display errors for incorrect Town or city" in {
@@ -369,9 +367,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
 
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
-          messages(townOrCityError)
-        )
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
       }
 
       "display errors for empty Postcode" in {
@@ -497,9 +493,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
-          messages(townOrCityEmpty)
-        )
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
         getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
         getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
       }
@@ -532,9 +526,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
-          messages(townOrCityEmpty)
-        )
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
         getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       }
 
@@ -565,9 +557,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
-          messages(townOrCityError)
-        )
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
         getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
         getElementByCss(view, "span.error-message").text() must be(messages(countryError))
       }
@@ -600,9 +590,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
-          messages(townOrCityError)
-        )
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
         getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       }
     }
@@ -754,9 +742,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.townOrCity-error", townOrCityEmpty, "#details_address_townOrCity")
 
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
-          messages(townOrCityEmpty)
-        )
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
       }
 
       "display errors for incorrect Town or city" in {
@@ -780,9 +766,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         checkErrorsSummary(view)
         checkErrorLink(view, "details.address.townOrCity-error", townOrCityError, "#details_address_townOrCity")
 
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
-          messages(townOrCityError)
-        )
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
       }
 
       "display errors for empty Postcode" in {
@@ -908,9 +892,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
-          messages(townOrCityEmpty)
-        )
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
         getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
         getElementByCss(view, "span.error-message").text() must be(messages(countryEmpty))
       }
@@ -943,9 +925,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineEmpty)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
-          messages(townOrCityEmpty)
-        )
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityEmpty))
         getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeEmpty))
       }
 
@@ -976,9 +956,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
-          messages(townOrCityError)
-        )
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
         getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
         getElementByCss(view, "span.error-message").text() must be(messages(countryError))
       }
@@ -1011,9 +989,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
         getElementById(view, "error-message-details_address_addressLine-input").text() must be(
           messages(addressLineError)
         )
-        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(
-          messages(townOrCityError)
-        )
+        getElementById(view, "error-message-details_address_townOrCity-input").text() must be(messages(townOrCityError))
         getElementById(view, "error-message-details_address_postCode-input").text() must be(messages(postCodeError))
       }
     }

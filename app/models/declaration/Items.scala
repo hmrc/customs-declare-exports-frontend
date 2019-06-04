@@ -20,16 +20,12 @@ import forms.MetadataPropertiesConvertable
 import forms.declaration._
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-case class Items(
-  totalNumberOfItems: Option[TotalNumberOfItems] = None,
-  transactionType: Option[TransactionType] = None
-) extends SummaryContainer with MetadataPropertiesConvertable {
+case class Items(totalNumberOfItems: Option[TotalNumberOfItems] = None, transactionType: Option[TransactionType] = None)
+    extends SummaryContainer with MetadataPropertiesConvertable {
 
   override def toMetadataProperties(): Map[String, String] =
-    Seq(
-      totalNumberOfItems.map(_.toMetadataProperties()),
-      transactionType.map(_.toMetadataProperties())
-    ).flatten.fold(Map.empty)(_ ++ _)
+    Seq(totalNumberOfItems.map(_.toMetadataProperties()), transactionType.map(_.toMetadataProperties())).flatten
+      .fold(Map.empty)(_ ++ _)
 
   override def isEmpty: Boolean =
     totalNumberOfItems.isEmpty &&
@@ -39,7 +35,9 @@ case class Items(
 object Items {
   val id = "Items"
 
-  def apply(cacheMap: CacheMap): Items = Items(
-    totalNumberOfItems = cacheMap.getEntry[TotalNumberOfItems](TotalNumberOfItems.formId),
-    transactionType = cacheMap.getEntry[TransactionType](TransactionType.formId))
+  def apply(cacheMap: CacheMap): Items =
+    Items(
+      totalNumberOfItems = cacheMap.getEntry[TotalNumberOfItems](TotalNumberOfItems.formId),
+      transactionType = cacheMap.getEntry[TransactionType](TransactionType.formId)
+    )
 }
