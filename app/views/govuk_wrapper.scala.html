@@ -40,12 +40,14 @@
 
     <script src='@routes.Assets.versioned("javascripts/google.tag.manager.min.js")'> </script>
     <script src="@routes.Assets.versioned("javascripts/location-autocomplete.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("javascripts/autocomplete.js")" type="text/javascript"></script>
     <script type="text/javascript">
             function countryFilter(country) {
                 return true;
             }
     </script>
 
+    <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/vendor/jquery-ui.css")' type="text/css" >
 }
 
 @headerNavLinks = {}
@@ -67,7 +69,7 @@
       ssoUrl = None,
       scriptElem = scriptElem,
       gaCalls = None)
-      <script src='@routes.Assets.versioned("javascripts/customsdecexfrontend-app.min.js")'> </script>
+     <script src='@routes.Assets.versioned("javascripts/vendor/jquery/jquery-ui.js")'></script>
 }
 
 @footerTop = {}
