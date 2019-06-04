@@ -16,30 +16,30 @@
 
 package models.declaration.governmentagencygoodsitem
 
-import java.time.{LocalDate, ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, ZoneId, ZonedDateTime}
 
 import forms.declaration.AdditionalInformation
 import play.api.libs.json.Json
 
 object Formats {
 
-  implicit val amountformats = Json.format[Amount]
-  implicit val measureformats = Json.format[Measure]
-  implicit val dateTimeStringformats = Json.format[DateTimeString]
-  implicit val dateTimeElementformats = Json.format[DateTimeElement]
-  implicit val classificationFormats = Json.format[Classification]
-  implicit val packagingformats = Json.format[Packaging]
-  implicit val governmentProcedureFormats = Json.format[GovernmentProcedure]
-  implicit val writeOffformats = Json.format[WriteOff]
-  implicit val governmentAgencyGoodsItemAdditionalDocumentSubmitterformats =
+  implicit val amountFormat = Json.format[Amount]
+  implicit val measureFormat = Json.format[Measure]
+  implicit val dateTimeStringFormat = Json.format[DateTimeString]
+  implicit val dateTimeElementFormat = Json.format[DateTimeElement]
+  implicit val classificationFormat = Json.format[Classification]
+  implicit val packagingFormat = Json.format[Packaging]
+  implicit val governmentProcedureFormat = Json.format[GovernmentProcedure]
+  implicit val writeOffFormat = Json.format[WriteOff]
+  implicit val governmentAgencyGoodsItemAdditionalDocumentSubmitterformat =
     Json.format[GovernmentAgencyGoodsItemAdditionalDocumentSubmitter]
-  implicit val governmentAgencyGoodsItemAdditionalDocumentformats =
+  implicit val governmentAgencyGoodsItemAdditionalDocumentFormat =
     Json.format[GovernmentAgencyGoodsItemAdditionalDocument]
-  implicit val goodsMeasureormats = Json.format[GoodsMeasure]
-  implicit val dangerousGoodsformats = Json.format[DangerousGoods]
-  implicit val commodityformats = Json.format[Commodity]
-  implicit val governmentAgencyGoodsItemformats = Json.format[GovernmentAgencyGoodsItem]
+  implicit val goodsMeasureFormat = Json.format[GoodsMeasure]
+  implicit val dangerousGoodsFormat = Json.format[DangerousGoods]
+  implicit val commodityFormat = Json.format[Commodity]
+  implicit val governmentAgencyGoodsItemFormat = Json.format[GovernmentAgencyGoodsItem]
 }
 case class GovernmentAgencyGoodsItem(
   sequenceNumeric: Int,

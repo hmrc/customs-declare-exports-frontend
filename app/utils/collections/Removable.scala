@@ -20,12 +20,18 @@ object Removable {
   implicit class RemovableSeq[A](seq: Seq[A]) extends Seq[A] {
 
     /**
-    * Removes an element at given index, providing the collection is defined this index.
-      * @param idx - index of the element to remove
-      * @return - new Sequence without element at given index
+      * Removes the element at the specified position in this sequence.
+      * Shifts any subsequent elements to the left (subtracts one from their indices).
+      * Returns new sequence without the element at the specified position.
+      *
+      * @param index - the index of the element to be removed
+      * @return new sequence without the element at the specified position
+      * @throws IndexOutOfBoundsException - if the index is out of range (index < 0 || index >= length)
       */
-    def removeByIdx(idx: Int): RemovableSeq[A] = {
-      val (start, _ :: end) = seq.splitAt(idx)
+    def removeByIdx(index: Int): RemovableSeq[A] = {
+      if (index < 0 || index >= length) throw new IndexOutOfBoundsException
+
+      val (start, _ +: end ) = seq.splitAt(index)
       start ++ end
     }
 
