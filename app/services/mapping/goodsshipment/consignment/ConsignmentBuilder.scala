@@ -15,18 +15,24 @@
  */
 
 package services.mapping.goodsshipment.consignment
+import forms.Choice
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 object ConsignmentBuilder {
 
-  def build(implicit cacheMap: CacheMap): GoodsShipment.Consignment = {
+  def build(implicit cacheMap: CacheMap, choice: Choice): GoodsShipment.Consignment = {
     val consignment = new GoodsShipment.Consignment()
 
     consignment.setGoodsLocation(GoodsLocationBuilder.build)
     consignment.setContainerCode(ContainerCodeBuilder.build)
     consignment.setArrivalTransportMeans(ArrivalTransportMeansBuilder.build)
     consignment.setDepartureTransportMeans(DepartureTransportMeansBuilder.build)
+
+    val transportEquipments = TransportEquipmentBuilder.build
+    if (!transportEquipments.isEmpty) {
+      consignment.getTransportEquipment.addAll(transportEquipments)
+    }
 
     consignment
   }
