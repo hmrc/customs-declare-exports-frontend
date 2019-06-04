@@ -118,5 +118,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
     declaration.getGoodsShipment.getAEOMutualRecognitionParty.size should be(1)
     declaration.getGoodsShipment.getAEOMutualRecognitionParty.get(0).getID.getValue should be("eori1")
     declaration.getGoodsShipment.getAEOMutualRecognitionParty.get(0).getRoleCode.getValue should be("CS")
+
+    declaration.getGoodsShipment.getConsignment.getTransportEquipment.size() should be(0)
   }
 }
