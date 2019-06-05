@@ -22,26 +22,12 @@ case class Submission(
   eori: String,
   conversationId: String,
   ducr: String,
-  lrn: Option[String] = None,
-  mrn: Option[String] = None,
+  mrn: Option[String],
+  lrn: Option[String],
+  submittedTimestamp: Long,
   status: Status
 )
 
 object Submission {
   implicit val format = Json.format[Submission]
-}
-
-case class SubmissionData(
-  eori: String,
-  conversationId: String,
-  ducr: String,
-  mrn: Option[String],
-  lrn: Option[String],
-  submittedTimestamp: Long,
-  status: Status,
-  noOfNotifications: Int
-)
-
-object SubmissionData {
-  implicit val format = Json.format[SubmissionData]
 }

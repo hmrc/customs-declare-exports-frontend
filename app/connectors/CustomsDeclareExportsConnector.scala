@@ -67,8 +67,8 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
       s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissionNotifications}/$conversationId"
     )
 
-  def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[SubmissionData]] =
-    httpClient.GET[Seq[SubmissionData]](s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissions}").map {
+  def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =
+    httpClient.GET[Seq[Submission]](s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissions}").map {
       response =>
         logger.debug(s"CUSTOMS_DECLARE_EXPORTS fetch submission response is --> ${response.toString}")
         response

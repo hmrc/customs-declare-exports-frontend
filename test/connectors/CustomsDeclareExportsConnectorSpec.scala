@@ -96,7 +96,6 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
 }
 
 object CustomsDeclareExportsConnectorSpec {
-  val submission = Submission("eori", "id", "ducr", Some("lrn"), Some("mrn"), Accepted)
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomAlphanumericString(255))))
   val mrn = TestHelper.createRandomAlphanumericString(10)
   val metadata = MetaData()
@@ -107,15 +106,14 @@ object CustomsDeclareExportsConnectorSpec {
     ExportsNotification(conversationId = conversationId, eori = eori, metadata = DeclarationMetadata())
   val notifications = Seq(exportNotification)
 
-  val submissionData = SubmissionData(
+  val submissionData = Submission(
     eori = eori,
     conversationId = conversationId,
     ducr = "",
     mrn = Some(mrn),
     lrn = None,
     submittedTimestamp = 20190318,
-    status = Cancelled,
-    noOfNotifications = 2
+    status = Cancelled
   )
   val submissions = Seq(submissionData)
 

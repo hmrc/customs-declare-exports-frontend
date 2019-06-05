@@ -14,7 +14,7 @@ GET        /notifications/:conversationId               controllers.Notification
 
 # Submissions
 
-GET        /submissions                                 controllers.NotificationsController.listOfSubmissions()
+GET        /submissions                                 controllers.SubmissionsController.displayListOfSubmissions()
 
 # Cancel declaration
 

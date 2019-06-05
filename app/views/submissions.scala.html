@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-@import java.time.Instant
-@import java.time.ZoneId
 @import java.time.format.DateTimeFormatter
+@import java.time.{Instant, ZoneId}
 
-@(appConfig: AppConfig, submissions: Seq[SubmissionData])(implicit request: Request[_], messages: Messages)
+@import config.AppConfig
+
+@(appConfig: AppConfig, submissions: Seq[(Submission, Int)])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("submissions.title"),
@@ -39,7 +39,7 @@
                 <th class="table-cell">@messages("submissions.noOfNotifications")</th>
             </tr>
 
-            @for(submission <- submissions){
+            @for( (submission, notificationsAmount) <- submissions ){
                 <tr class="table-row">
                     <td class="table-cell">@submission.ducr</td>
                     <td class="table-cell">@submission.lrn.getOrElse("")</td>
@@ -48,7 +48,7 @@
                     <td class="table-cell">@submission.status</td>
                     <td class="table-cell">
                         <a href="/customs-declare-exports/notifications/@submission.conversationId">
-                            @submission.noOfNotifications
+                            @notificationsAmount
                         </a>
                     </td>
                 </tr>
