@@ -19,6 +19,7 @@ package services.mapping.declaration
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import services.mapping.declaration.consignment.{FreightBuilder, IteneraryBuilder}
+import services.mapping.goodsshipment.consignment.ConsignmentCarrierBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
@@ -39,6 +40,8 @@ object DeclarationConsignmentBuilder {
     if (!iteneraries.isEmpty) {
       consignment.getItinerary.addAll(iteneraries)
     }
+
+    consignment.setCarrier(ConsignmentCarrierBuilder.build)
 
     consignment
   }
