@@ -47,6 +47,7 @@ object TransportEquipmentBuilder {
     val transportEquipment = new GoodsShipment.Consignment.TransportEquipment()
     transportEquipment.setSequenceNumeric(new java.math.BigDecimal(seals.size))
     transportEquipment.getSeal.addAll(seals.zipWithIndex.map(data => createSeal(data)).toList.asJava)
+    transportEquipment.getSeal
     Seq(transportEquipment)
   }
 

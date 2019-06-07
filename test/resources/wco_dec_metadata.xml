@@ -72,7 +72,7 @@
                 </ns3:ArrivalTransportMeans>
                 <ns3:DepartureTransportMeans>
                     <ns3:ID>123112yu78</ns3:ID>
-                    <ns3:IdentificationTypeCode>40</ns3:IdentificationTypeCode>
+                    <ns3:IdentificationTypeCode>10</ns3:IdentificationTypeCode>
                 </ns3:DepartureTransportMeans>
                 <ns3:GoodsLocation>
                     <ns3:Name>LOC</ns3:Name>

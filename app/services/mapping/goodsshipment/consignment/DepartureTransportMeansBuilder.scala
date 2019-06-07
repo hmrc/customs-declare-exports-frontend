@@ -15,7 +15,7 @@
  */
 
 package services.mapping.goodsshipment.consignment
-import forms.declaration.{BorderTransport, TransportDetails}
+import forms.declaration.BorderTransport
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment.DepartureTransportMeans
@@ -26,37 +26,27 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
 
 object DepartureTransportMeansBuilder {
 
-  def build()(implicit cacheMap: CacheMap): Consignment.DepartureTransportMeans = {
-    val borderTransport = cacheMap
-      .getEntry[BorderTransport](BorderTransport.formId)
-
+  def build()(implicit cacheMap: CacheMap): Consignment.DepartureTransportMeans =
     cacheMap
-      .getEntry[TransportDetails](TransportDetails.formId)
-      .filter(transportDetails => isDefined(transportDetails, borderTransport))
-      .map(transportDetails => createDepartureTransportMeans(transportDetails, borderTransport))
+      .getEntry[BorderTransport](BorderTransport.formId)
+      .filter(borderTransport => isDefined(borderTransport))
+      .map(borderTransport => createDepartureTransportMeans(borderTransport))
       .orNull
-  }
-  private def isDefined(transportDetails: TransportDetails, borderTransport: Option[BorderTransport]): Boolean =
-    borderTransport.forall(border => border.meansOfTransportOnDepartureIDNumber.nonEmpty) ||
-      transportDetails.meansOfTransportCrossingTheBorderType.nonEmpty
+  private def isDefined(borderTransport: BorderTransport): Boolean =
+    borderTransport.meansOfTransportOnDepartureIDNumber.nonEmpty || borderTransport.meansOfTransportOnDepartureType.nonEmpty
 
-  private def createDepartureTransportMeans(
-    transportDetails: TransportDetails,
-    borderTransport: Option[BorderTransport]
-  ): Consignment.DepartureTransportMeans = {
+  private def createDepartureTransportMeans(borderTransport: BorderTransport): Consignment.DepartureTransportMeans = {
     val departureTransportMeans = new DepartureTransportMeans()
 
-    borderTransport.foreach { border =>
-      border.meansOfTransportOnDepartureIDNumber.foreach { idValue =>
-        val id = new DepartureTransportMeansIdentificationIDType()
-        id.setValue(idValue)
-        departureTransportMeans.setID(id)
-      }
+    borderTransport.meansOfTransportOnDepartureIDNumber.foreach { idValue =>
+      val id = new DepartureTransportMeansIdentificationIDType()
+      id.setValue(idValue)
+      departureTransportMeans.setID(id)
     }
 
-    if (transportDetails.meansOfTransportCrossingTheBorderType.nonEmpty) {
+    if (borderTransport.meansOfTransportOnDepartureType.nonEmpty) {
       val identificationTypeCode = new DepartureTransportMeansIdentificationTypeCodeType()
-      identificationTypeCode.setValue(transportDetails.meansOfTransportCrossingTheBorderType)
+      identificationTypeCode.setValue(borderTransport.meansOfTransportOnDepartureType)
       departureTransportMeans.setIdentificationTypeCode(identificationTypeCode)
     }
 
