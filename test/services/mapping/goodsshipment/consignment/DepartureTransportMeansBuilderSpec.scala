@@ -15,7 +15,7 @@
  */
 
 package services.mapping.goodsshipment.consignment
-import forms.declaration.{BorderTransport, TransportDetails}
+import forms.declaration.BorderTransport
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -28,14 +28,12 @@ class DepartureTransportMeansBuilderSpec extends WordSpec with Matchers {
           "CacheID",
           Map(
             BorderTransport.formId ->
-              Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
-            TransportDetails.formId -> Json
-              .toJson(TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A")))
+              Json.toJson(BorderTransport("3", "10", Some("123112yu78")))
           )
         )
       val departureTransportMeans = DepartureTransportMeansBuilder.build
       departureTransportMeans.getID.getValue should be("123112yu78")
-      departureTransportMeans.getIdentificationTypeCode.getValue should be("40")
+      departureTransportMeans.getIdentificationTypeCode.getValue should be("10")
       departureTransportMeans.getName should be(null)
       departureTransportMeans.getTypeCode should be(null)
       departureTransportMeans.getModeCode should be(null)

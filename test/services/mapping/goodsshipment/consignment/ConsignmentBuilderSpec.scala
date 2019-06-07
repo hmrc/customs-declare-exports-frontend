@@ -54,7 +54,7 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
         consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
 
         consignment.getDepartureTransportMeans.getID.getValue should be("123112yu78")
-        consignment.getDepartureTransportMeans.getIdentificationTypeCode.getValue should be("40")
+        consignment.getDepartureTransportMeans.getIdentificationTypeCode.getValue should be("10")
 
         consignment.getArrivalTransportMeans.getModeCode.getValue should be("2")
         consignment.getTransportEquipment.size() should be(0)
@@ -87,7 +87,7 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
         consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
 
         consignment.getDepartureTransportMeans.getID.getValue should be("123112yu78")
-        consignment.getDepartureTransportMeans.getIdentificationTypeCode.getValue should be("40")
+        consignment.getDepartureTransportMeans.getIdentificationTypeCode.getValue should be("10")
 
         consignment.getArrivalTransportMeans.getModeCode.getValue should be("2")
 
