@@ -103,7 +103,7 @@ object CustomsDeclareExportsConnectorSpec {
   val conversationId = TestHelper.createRandomAlphanumericString(10)
   val eori = TestHelper.createRandomAlphanumericString(15)
   val exportNotification =
-    ExportsNotification(conversationId = conversationId, eori = eori, metadata = DeclarationMetadata())
+    DeclarationNotification(conversationId = conversationId, eori = eori, metadata = DeclarationMetadata())
   val notifications = Seq(exportNotification)
 
   val submissionData = Submission(

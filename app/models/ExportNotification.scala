@@ -22,7 +22,7 @@ import play.api.libs.json.JodaReads._
 import play.api.libs.json.Json
 import uk.gov.hmrc.wco.dec._
 
-case class ExportsNotification(
+case class DeclarationNotification(
   dateTimeReceived: DateTime = DateTime.now(),
   conversationId: String,
   eori: String,
@@ -44,7 +44,7 @@ object DeclarationMetadata {
   implicit val declarationMetadataFormats = Json.format[DeclarationMetadata]
 }
 
-object ExportsNotification {
+object DeclarationNotification {
   implicit val measureFormats = Json.format[Measure]
   implicit val amountFormats = Json.format[Amount]
   implicit val dateTimeStringFormats = Json.format[DateTimeString]
@@ -70,5 +70,5 @@ object ExportsNotification {
   implicit val responseDeclarationFormats = Json.format[ResponseDeclaration]
 
   implicit val responseFormats = Json.format[Response]
-  implicit val exportsNotificationFormats = Json.format[ExportsNotification]
+  implicit val exportsNotificationFormats = Json.format[DeclarationNotification]
 }

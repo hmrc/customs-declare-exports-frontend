@@ -42,17 +42,17 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
-  def listOfNotifications(): OngoingStubbing[Future[Seq[ExportsNotification]]] =
+  def listOfNotifications(): OngoingStubbing[Future[Seq[DeclarationNotification]]] =
     when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
       .thenReturn(
-        Future.successful(Seq(ExportsNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty)))
+        Future.successful(Seq(DeclarationNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty)))
       )
 
-  def listOfSubmissionNotifications(): OngoingStubbing[Future[Seq[ExportsNotification]]] =
+  def listOfSubmissionNotifications(): OngoingStubbing[Future[Seq[DeclarationNotification]]] =
     when(mockCustomsDeclareExportsConnector.fetchNotificationsByConversationId(any())(any(), any()))
       .thenReturn(
         Future.successful(
-          Seq(ExportsNotification(conversationId = "conversationId", eori = "eori", metadata = DeclarationMetadata()))
+          Seq(DeclarationNotification(conversationId = "conversationId", eori = "eori", metadata = DeclarationMetadata()))
         )
       )
 
