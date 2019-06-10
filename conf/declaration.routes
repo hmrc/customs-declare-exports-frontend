@@ -84,6 +84,12 @@ GET         /warehouse                      controllers.declaration.WarehouseIde
 
 POST        /warehouse                      controllers.declaration.WarehouseIdentificationController.saveWarehouse()
 
+# Fiscal Information
+
+GET         /fiscal-information             controllers.declaration.FiscalInformationController.displayPage()
+
+POST        /fiscal-information             controllers.declaration.FiscalInformationController.saveFiscalInformation()
+
 # Office of exit
 
 GET         /office-of-exit                 controllers.declaration.OfficeOfExitController.displayForm()

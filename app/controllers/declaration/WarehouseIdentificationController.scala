@@ -19,11 +19,13 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
-import forms.declaration.WarehouseIdentification
+import forms.declaration.{ProcedureCodes, WarehouseIdentification}
 import javax.inject.Inject
+import models.declaration.ProcedureCodesData
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.warehouse_identification
@@ -55,9 +57,18 @@ class WarehouseIdentificationController @Inject()(
         (formWithErrors: Form[WarehouseIdentification]) =>
           Future.successful(BadRequest(warehouse_identification(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[WarehouseIdentification](cacheId, formId, form).map { _ =>
-            Redirect(controllers.declaration.routes.BorderTransportController.displayForm())
+          customsCacheService.cache[WarehouseIdentification](cacheId, formId, form).flatMap { _ =>
+            specifyNextPage()
         }
       )
   }
+
+  private def specifyNextPage()(implicit journeyRequest: JourneyRequest[_]): Future[Result] =
+    customsCacheService.fetchAndGetEntry[ProcedureCodes](cacheId, ProcedureCodesData.formId).map {
+      case Some(ProcedureCodes(Some(_), _)) =>
+        Redirect(controllers.declaration.routes.FiscalInformationController.displayPage())
+      case _ =>
+        Redirect(controllers.declaration.routes.BorderTransportController.displayForm())
+    }
+
 }

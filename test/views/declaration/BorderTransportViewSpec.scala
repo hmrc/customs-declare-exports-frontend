@@ -30,40 +30,48 @@ import forms.declaration.TransportCodes._
 @ViewTest
 class BorderTransportViewSpec extends BorderTransportFields with CommonMessages {
 
-  def createView(form: Form[BorderTransport] = form): Html =
-    border_transport(form)(fakeRequest, messages, appConfig)
+  def createView(form: Form[BorderTransport] = form, hasFiscalInformation: Boolean): Html =
+    border_transport(form, hasFiscalInformation)(fakeRequest, messages, appConfig)
 
   "BorderTransport View" should {
 
     "display page title" in {
-      val view = createView()
+      val view = createView(hasFiscalInformation = false)
 
       getElementById(view, "title").text() must be(messages("supplementary.transportInfo.title"))
     }
 
     "display header" in {
-      val view = createView()
+      val view = createView(hasFiscalInformation = false)
 
       getElementByCss(view, "legend>h1").text() must be(messages("supplementary.transportInfo.title"))
     }
 
     "display \"Back\" button that links to \"Warehouse\" page" in {
 
-      val backButton = getElementById(createView(), "link-back")
+      val backButton = getElementById(createView(hasFiscalInformation = false), "link-back")
 
       backButton.text() must be(messages(backCaption))
       backButton.attr("href") must be("/customs-declare-exports/declaration/warehouse")
     }
 
+    "display \"Back\" button that links to \"Fiscal Information\" page" in {
+
+      val backButton = getElementById(createView(hasFiscalInformation = true), "link-back")
+
+      backButton.text() must be(messages(backCaption))
+      backButton.attr("href") must be("/customs-declare-exports/declaration/fiscal-information")
+    }
+
     "display \"Save and continue\" button on page" in {
-      val view = createView()
+      val view = createView(hasFiscalInformation = false)
 
       val saveButton = getElementByCss(view, "#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
     }
 
     "have labels for all fields" in {
-      val view = createView()
+      val view = createView(hasFiscalInformation = false)
       getElementById(view, "borderModeOfTransportCode")
         .getElementsByClass("form-hint")
         .text() mustBe "The transport that the goods were loaded on when they crossed the border"

@@ -20,7 +20,7 @@ import base.CSRFUtil._
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.BorderTransport
+import forms.declaration.{BorderTransport, FiscalInformation}
 import generators.Generators
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -37,16 +37,16 @@ import views.html.declaration.border_transport
 
 class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks {
 
+  val form: Form[BorderTransport] = Form(BorderTransport.formMapping)
   private val uri = uriWithContextPath("/declaration/border-transport")
 
-  val form: Form[BorderTransport] = Form(BorderTransport.formMapping)
-
   def view(form: Form[BorderTransport], request: Request[_]): Html =
-    border_transport(form)(request, messages, appConfig)
+    border_transport(form, false)(request, messages, appConfig)
 
   before {
     authorizedUser()
     withCaching[BorderTransport](None, BorderTransport.formId)
+    withCaching[FiscalInformation](None, FiscalInformation.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 

@@ -20,10 +20,11 @@ import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.TransportDetailsController
 import controllers.util.CacheIdGenerator.cacheId
-import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport._
+import forms.declaration.{BorderTransport, FiscalInformation}
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,24 +41,34 @@ class BorderTransportController @Inject()(
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with I18nSupport {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+
     customsCacheService
       .fetchAndGetEntry[BorderTransport](cacheId, BorderTransport.formId)
-      .map(data => Ok(border_transport(data.fold(form)(form.fill(_)))))
+      .flatMap { borderTransportData =>
+        customsCacheService
+          .fetchAndGetEntry[FiscalInformation](cacheId, FiscalInformation.formId)
+          .map(data => Ok(border_transport(borderTransportData.fold(form)(form.fill(_)), data.fold(false)(_.onwardSupplyRelief == "Yes"))))
+      }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(border_transport(formWithErrors))),
-        borderTransport =>
-          customsCacheService
-            .cache[BorderTransport](cacheId, BorderTransport.formId, borderTransport)
-            .map(_ => Redirect(TransportDetailsController.displayForm()))
-      )
-  }
+    def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[BorderTransport]) => badRequest(formWithErrors),
+          borderTransport =>
+            customsCacheService
+              .cache[BorderTransport](cacheId, BorderTransport.formId, borderTransport)
+              .map(_ => Redirect(TransportDetailsController.displayForm()))
+        )
+    }
+
+    def badRequest(formWithErrors: Form[BorderTransport])(implicit request: JourneyRequest[_], appConfig: AppConfig) =
+      customsCacheService
+        .fetchAndGetEntry[FiscalInformation](cacheId, FiscalInformation.formId)
+        .map(data => BadRequest(border_transport(formWithErrors, data.fold(false)(_.onwardSupplyRelief == "Yes"))))
 
 }

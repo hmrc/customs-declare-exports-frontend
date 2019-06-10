@@ -112,7 +112,6 @@ object GovernmentAgencyGoodsItemBuilderSpec {
       "typeCode" -> JsString("AA")
     )
   )
-
   val secondPackagingJson: JsValue = JsObject(
     Map(
       "sequenceNumeric" -> JsNumber(1),

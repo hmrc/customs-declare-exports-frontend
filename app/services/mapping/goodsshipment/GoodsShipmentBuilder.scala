@@ -17,7 +17,7 @@
 package services.mapping.goodsshipment
 import forms.Choice
 import services.mapping.goodsshipment.consignment.ConsignmentBuilder
-import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilder
+import services.mapping.governmentagencygoodsitem.{DomesticDutyTaxPartyBuilder, GovernmentAgencyGoodsItemBuilder}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
@@ -37,6 +37,11 @@ object GoodsShipmentBuilder {
       .addAll(PreviousDocumentsBuilder.build)
     goodsShipment.getGovernmentAgencyGoodsItem.addAll(GovernmentAgencyGoodsItemBuilder.build)
     goodsShipment.getAEOMutualRecognitionParty.addAll(AEOMutualRecognitionPartiesBuilder.build)
+
+    val domesticDutyTaxes = DomesticDutyTaxPartyBuilder.build
+    if (!domesticDutyTaxes.isEmpty) {
+      goodsShipment.getDomesticDutyTaxParty.addAll(domesticDutyTaxes)
+    }
 
     goodsShipment
   }
