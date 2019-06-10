@@ -126,6 +126,12 @@ GET         /additional-information         controllers.declaration.AdditionalIn
 
 POST        /additional-information         controllers.declaration.AdditionalInformationController.saveAdditionalInfo()
 
+# Fiscal Information
+
+GET         /fiscal-information             controllers.declaration.FiscalInformationController.displayPage()
+
+POST        /fiscal-information             controllers.declaration.FiscalInformationController.saveFiscalInformation()
+
 # Transaction type
 
 GET         /transaction-type               controllers.declaration.TransactionTypeController.displayForm()

@@ -64,6 +64,7 @@ class TransportDetailsController @Inject()(
       )
   }
 
+  //TODO: Add tests
   private def redirect(transportDetails: TransportDetails)(implicit request: JourneyRequest[_]): Result =
     if (transportDetails.container) Redirect(TransportContainerController.displayPage())
     else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(SealController.displayForm())
