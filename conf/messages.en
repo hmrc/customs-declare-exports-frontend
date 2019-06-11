@@ -375,7 +375,7 @@ supplementary.warehouse.inlandTransportMode.header = 7/5 What was the inland mod
 supplementary.warehouse.inlandTransportMode.header.hint = The transport that will move the goods from their inland supervision to the port of arrival
 supplementary.warehouse.inlandTransportMode.error.incorrect = Please, choose valid inland mode of transport
 
-declaration.fiscalInformation.title = 3/40 Do you want to claim Onward Supply Relief (OSR)?
+declaration.fiscalInformation.title = 3/40 Do you want to claim {0} Onward Supply Relief {0} (OSR)?
 declaration.fiscalInformation.header = Fiscal information
 declaration.fiscalInformation.onwardSupplyRelief =
 declaration.fiscalInformation.onwardSupplyRelief.error = Please enter a value

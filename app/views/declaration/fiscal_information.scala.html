@@ -36,9 +36,9 @@
 
    @components.section_header(messages("declaration.fiscalInformation.header"))
 
-   @components.page_title(Some("declaration.fiscalInformation.title"))
+   @components.page_title_break_line(Some("declaration.fiscalInformation.title"))
 
-   @components.input_radio(
+   @components.input_radio_inline(
      field = form("onwardSupplyRelief"),
      legend = messages("declaration.fiscalInformation.onwardSupplyRelief"),
      inputs = Seq(
