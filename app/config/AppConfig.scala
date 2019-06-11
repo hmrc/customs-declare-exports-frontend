@@ -27,12 +27,7 @@ import javax.inject.Named
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment, Logger}
-import services.{
-  WcoMetadataJavaMappingStrategy,
-  WcoMetadataMapper,
-  WcoMetadataMappingStrategy,
-  WcoMetadataScalaMappingStrategy
-}
+import services.{WcoMetadataJavaMappingStrategy, WcoMetadataMapper, WcoMetadataMappingStrategy}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
@@ -96,11 +91,6 @@ class AppConfig @Inject()(
 
   lazy val countriesCsvFilename: String = loadConfig("countryCodesCsvFilename")
 
-  lazy val useNewMappingStrategy =
-    runModeConfiguration
-      .getOptional[Boolean]("microservice.services.features.use-new-wco-dec-mapping-strategy")
-      .getOrElse(false)
-
   lazy val countryCodesJsonFilename: String = loadConfig("countryCodesJsonFilename")
 
   lazy val nrsServiceUrl: String = servicesConfig.baseUrl("nrs")
@@ -113,13 +103,9 @@ class AppConfig @Inject()(
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
 
-  def wcoMetadataMapper(): WcoMetadataMapper with WcoMetadataMappingStrategy =
-    if (useNewMappingStrategy) {
+  def wcoMetadataMapper(): WcoMetadataMapper with WcoMetadataMappingStrategy = {
       logger.warn("Using WcoMetadataJavaMappingStrategy as the WCO-DEC mapper")
       new WcoMetadataMapper with WcoMetadataJavaMappingStrategy
-    } else {
-      logger.warn("Using WcoMetadataScalaMappingStrategy as the WCO-DEC mapper")
-      new WcoMetadataMapper with WcoMetadataScalaMappingStrategy
     }
 
   def availableJourneys(): Seq[String] =

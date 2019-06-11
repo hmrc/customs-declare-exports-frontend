@@ -22,7 +22,7 @@ import features.{Feature, FeatureStatus}
 import forms.Choice
 import play.api.Mode.Test
 import play.api.{Configuration, Environment}
-import services.{WcoMetadataJavaMappingStrategy, WcoMetadataScalaMappingStrategy}
+import services.WcoMetadataJavaMappingStrategy
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 class AppConfigSpec extends CustomExportsBaseSpec {
@@ -46,7 +46,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
         |microservice.services.nrs.apikey=cds-exports
         |microservice.services.features.default=disabled
         |microservice.services.features.welsh-translation=false
-        |microservice.services.features.use-new-wco-dec-mapping-strategy=true
         |microservice.services.auth.port=9988
         |microservice.services.customs-declare-exports.host=localhoste
         |microservice.services.customs-declare-exports.port=9875
@@ -88,7 +87,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       validConfigService.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
     }
 
-    "create the WcoMetadataJavaMappingStrategy when use-new-wco-dec-mapping-strategy feature flag set as true" in {
+    "the WcoMetadataJavaMappingStrategy should be set as the default Mapping Strategy" in {
       validConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataJavaMappingStrategy] must be(true)
     }
 
@@ -171,10 +170,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       validConfigService.nrsApiKey must be("cds-exports")
     }
 
-  }
-
-  "create the WcoMetadataScalaMappingStrategy when use-new-wco-dec-mapping-strategy feature flag is not set" in {
-    emptyConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataScalaMappingStrategy] must be(true)
   }
 
   "empty Choice options when list-of-available-journeys is not defined" in {
