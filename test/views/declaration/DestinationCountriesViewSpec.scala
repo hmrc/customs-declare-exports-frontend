@@ -21,6 +21,7 @@ import forms.declaration.destinationCountries.{DestinationCountries, Destination
 import helpers.views.declaration.{CommonMessages, DestinationCountriesMessages}
 import play.api.data.Form
 import play.twirl.api.Html
+import services.model.AutoCompleteItem
 import views.declaration.spec.ViewSpec
 import views.html.declaration.destination_countries_supplementary
 import views.tags.ViewTest
@@ -29,8 +30,10 @@ import views.tags.ViewTest
 class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMessages with CommonMessages {
 
   private val form: Form[DestinationCountriesSupplementary] = DestinationCountries.supplementaryForm
+
   private def createView(form: Form[DestinationCountriesSupplementary] = form): Html =
-    destination_countries_supplementary(form)(fakeJourneyRequest("SMP"), messages, countries, appConfig)
+    destination_countries_supplementary(form)(fakeJourneyRequest("SMP"), messages,
+      countries.map(country => AutoCompleteItem(country.countryName, country.countryCode)), appConfig)
 
   "Destination Countries View" should {
 

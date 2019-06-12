@@ -18,10 +18,10 @@
 @import controllers.declaration.routes._
 @import controllers.util.{Add, Remove, SaveAndContinue}
 @import forms.declaration.destinationCountries.DestinationCountriesStandard
-@import services.Country
 @import uk.gov.hmrc.play.views.html._
 
-@(form: Form[DestinationCountriesStandard], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages, countries: List[Country], appConfig: AppConfig)
+@import services.model.AutoCompleteItem
+@(form: Form[DestinationCountriesStandard], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages, countries: List[AutoCompleteItem], appConfig: AppConfig)
 
 @main_template(
     title = messages("declaration.destinationCountries.title"),
@@ -36,7 +36,7 @@
         @components.page_title(Some("declaration.destinationCountries.title"))
 
         <div id="country-of-dispatch-field" class="inline-block form-group">
-            @components.country_field(
+            @components.autocomplete_field(
                 form,
                 "countryOfDispatch",
                 "declaration.destinationCountries.countryOfDispatch",
@@ -72,7 +72,7 @@
         }
 
         <div id="country-of-routing-field" class="inline-block form-group">
-            @components.country_field(
+            @components.autocomplete_field(
                 form,
                 "countriesOfRouting[]",
                 "declaration.destinationCountries.countriesOfRouting",
@@ -91,7 +91,7 @@
         <br/>
 
         <div id="country-of-destination-field" class="inline-block form-group">
-            @components.country_field(
+            @components.autocomplete_field(
                 form,
                 "countryOfDestination",
                 "declaration.destinationCountries.countryOfDestination",
