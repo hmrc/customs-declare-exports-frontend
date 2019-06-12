@@ -47,7 +47,7 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
     "return 200 code" in {
 
       val result = route(app, getRequest(dispatchLocationUri)).get
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "populate the form fields with data from cache" in {
@@ -74,7 +74,7 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
       val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.OutsideEU)
       val result = route(app, postRequest(dispatchLocationUri, validForm)).get
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
     }
 
     "redirect to 'Additional Declaration Type' page" when {

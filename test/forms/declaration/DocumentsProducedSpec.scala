@@ -225,13 +225,13 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsPro
       "provided with correct data" in {
 
         val form = DocumentsProduced.form().bind(correctDocumentsProducedJSON)
-        form.hasErrors must be(false)
+        form.hasErrors mustBe false
       }
 
       "provided with empty data" in {
 
         val form = DocumentsProduced.form().bind(emptyDocumentsProducedJSON)
-        form.hasErrors must be(false)
+        form.hasErrors mustBe false
       }
 
       "provided with Issuing Authority Name containing special characters" in {
@@ -239,7 +239,7 @@ class DocumentsProducedSpec extends WordSpec with MustMatchers with DocumentsPro
         val input = JsObject(Map(issuingAuthorityNameKey -> JsString("Issuing Authority Name with ''' added")))
         val form = DocumentsProduced.form().bind(input)
 
-        form.hasErrors must be(false)
+        form.hasErrors mustBe false
       }
     }
 

@@ -41,7 +41,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
       withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in {
@@ -54,7 +54,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       page must include("99980")
       page must include("CaptainAmerica")
       page must include("Test Street")
@@ -97,7 +97,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
         val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
       }
 
@@ -107,7 +107,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
         val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
       }
 
@@ -117,7 +117,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
         val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
       }
     }
@@ -130,7 +130,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
         val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
       }
 
@@ -140,7 +140,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
         val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
       }
 
@@ -150,7 +150,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
         val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
       }
     }

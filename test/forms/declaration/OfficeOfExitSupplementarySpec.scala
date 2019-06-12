@@ -28,7 +28,7 @@ class OfficeOfExitSupplementarySpec extends WordSpec with MustMatchers {
       val officeOfExit = correctOfficeOfExit
       val expectedMetadataProperties: Map[String, String] = Map("declaration.exitOffice.id" -> officeOfExit.officeId)
 
-      officeOfExit.toMetadataProperties() must equal(expectedMetadataProperties)
+      officeOfExit.toMetadataProperties() mustEqual expectedMetadataProperties
     }
   }
 

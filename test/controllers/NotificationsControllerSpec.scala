@@ -36,7 +36,7 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, getRequest(notificationsUri)).get
       val stringResult = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       stringResult must include(messages("notifications.title"))
       stringResult must include(messages("notifications.status"))
       stringResult must include(messages("notifications.dateAndTime"))
@@ -51,7 +51,7 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, getRequest(submissionNotificationsUri)).get
       val stringResult = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       stringResult must include(messages("notifications.title"))
       stringResult must include(messages("notifications.status"))
       stringResult must include(messages("notifications.dateAndTime"))

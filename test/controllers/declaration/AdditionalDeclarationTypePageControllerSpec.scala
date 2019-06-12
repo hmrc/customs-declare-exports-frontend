@@ -96,13 +96,13 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
       "used for Standard Declaration" in new TestStandardJourney {
 
         val result = route(app, getRequest(additionalDeclarationTypeUri)).get
-        status(result) must be(OK)
+        status(result) mustBe OK
       }
 
       "used for Supplementary Declaration" in new TestSupplementaryJourney {
 
         val result = route(app, getRequest(additionalDeclarationTypeUri)).get
-        status(result) must be(OK)
+        status(result) mustBe OK
       }
     }
 
@@ -167,7 +167,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
         val validForm = buildAdditionalDeclarationTypeTestData(PreLodged)
         val result = route(app, postRequest(additionalDeclarationTypeUri, validForm)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
 
       "used for Supplementary Declaration" in new TestSupplementaryJourney {
@@ -175,7 +175,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
         val validForm = buildAdditionalDeclarationTypeTestData(Simplified)
         val result = route(app, postRequest(additionalDeclarationTypeUri, validForm)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
     }
 

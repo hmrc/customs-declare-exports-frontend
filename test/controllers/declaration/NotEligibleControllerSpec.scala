@@ -34,7 +34,7 @@ class NotEligibleControllerSpec extends CustomExportsBaseSpec {
 
       val result = route(app, getRequest(uriWithContextPath("/declaration/not-eligible"))).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
   }
 }

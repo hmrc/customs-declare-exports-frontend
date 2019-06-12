@@ -33,8 +33,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val fullNameError = form.errors.find(_.key == "fullName")
-        fullNameError must be(defined)
-        fullNameError.get.message must equal("supplementary.address.fullName.empty")
+        fullNameError mustBe defined
+        fullNameError.get.message mustEqual "supplementary.address.fullName.empty"
       }
 
       "provided with input longer than 70 characters" in {
@@ -43,8 +43,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val fullNameError = form.errors.find(_.key == "fullName")
-        fullNameError must be(defined)
-        fullNameError.get.message must equal("supplementary.address.fullName.error")
+        fullNameError mustBe defined
+        fullNameError.get.message mustEqual "supplementary.address.fullName.error"
       }
 
       "provided with input containing special characters" in {
@@ -52,8 +52,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val fullNameError = form.errors.find(_.key == "fullName")
-        fullNameError must be(defined)
-        fullNameError.get.message must equal("supplementary.address.fullName.error")
+        fullNameError mustBe defined
+        fullNameError.get.message mustEqual "supplementary.address.fullName.error"
       }
     }
 
@@ -63,8 +63,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val addressLineError = form.errors.find(_.key == "addressLine")
-        addressLineError must be(defined)
-        addressLineError.get.message must equal("supplementary.address.addressLine.empty")
+        addressLineError mustBe defined
+        addressLineError.get.message mustEqual "supplementary.address.addressLine.empty"
       }
 
       "provided with input longer than 70 characters" in {
@@ -72,8 +72,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val addressLineError = form.errors.find(_.key == "addressLine")
-        addressLineError must be(defined)
-        addressLineError.get.message must equal("supplementary.address.addressLine.error")
+        addressLineError mustBe defined
+        addressLineError.get.message mustEqual "supplementary.address.addressLine.error"
       }
 
       "provided with input containing special characters" in {
@@ -81,8 +81,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val addressLineError = form.errors.find(_.key == "addressLine")
-        addressLineError must be(defined)
-        addressLineError.get.message must equal("supplementary.address.addressLine.error")
+        addressLineError mustBe defined
+        addressLineError.get.message mustEqual "supplementary.address.addressLine.error"
       }
     }
 
@@ -92,8 +92,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val townOrCityError = form.errors.find(_.key == "townOrCity")
-        townOrCityError must be(defined)
-        townOrCityError.get.message must equal("supplementary.address.townOrCity.empty")
+        townOrCityError mustBe defined
+        townOrCityError.get.message mustEqual "supplementary.address.townOrCity.empty"
       }
 
       "provided with input longer than 35 characters" in {
@@ -101,8 +101,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val townOrCityError = form.errors.find(_.key == "townOrCity")
-        townOrCityError must be(defined)
-        townOrCityError.get.message must equal("supplementary.address.townOrCity.error")
+        townOrCityError mustBe defined
+        townOrCityError.get.message mustEqual "supplementary.address.townOrCity.error"
       }
 
       "provided with input containing special characters" in {
@@ -110,8 +110,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val townOrCityError = form.errors.find(_.key == "townOrCity")
-        townOrCityError must be(defined)
-        townOrCityError.get.message must equal("supplementary.address.townOrCity.error")
+        townOrCityError mustBe defined
+        townOrCityError.get.message mustEqual "supplementary.address.townOrCity.error"
       }
     }
 
@@ -121,8 +121,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val postCodeError = form.errors.find(_.key == "postCode")
-        postCodeError must be(defined)
-        postCodeError.get.message must equal("supplementary.address.postCode.empty")
+        postCodeError mustBe defined
+        postCodeError.get.message mustEqual "supplementary.address.postCode.empty"
       }
 
       "provided with input in wrong format" in {
@@ -130,8 +130,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val postCodeError = form.errors.find(_.key == "postCode")
-        postCodeError must be(defined)
-        postCodeError.get.message must equal("supplementary.address.postCode.error")
+        postCodeError mustBe defined
+        postCodeError.get.message mustEqual "supplementary.address.postCode.error"
       }
 
       "provided with input containing special characters" in {
@@ -139,8 +139,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val postCodeError = form.errors.find(_.key == "postCode")
-        postCodeError must be(defined)
-        postCodeError.get.message must equal("supplementary.address.postCode.error")
+        postCodeError mustBe defined
+        postCodeError.get.message mustEqual "supplementary.address.postCode.error"
       }
     }
 
@@ -150,8 +150,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val countryError = form.errors.find(_.key == "country")
-        countryError must be(defined)
-        countryError.get.message must equal("supplementary.address.country.empty")
+        countryError mustBe defined
+        countryError.get.message mustEqual "supplementary.address.country.empty"
       }
 
       "provided with non-existing country name" in {
@@ -159,8 +159,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val countryError = form.errors.find(_.key == "country")
-        countryError must be(defined)
-        countryError.get.message must equal("supplementary.address.country.error")
+        countryError mustBe defined
+        countryError.get.message mustEqual "supplementary.address.country.error"
       }
 
       "provided with input containing special characters" in {
@@ -168,8 +168,8 @@ class AddressSpec extends WordSpec with MustMatchers {
         val form = Address.form().bind(input)
 
         val countryError = form.errors.find(_.key == "country")
-        countryError must be(defined)
-        countryError.get.message must equal("supplementary.address.country.error")
+        countryError mustBe defined
+        countryError.get.message mustEqual "supplementary.address.country.error"
       }
     }
 
@@ -180,9 +180,9 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val form = Address.form().bind(correctAddressJSON)
 
-        form.errors must be(empty)
-        form.value must be(defined)
-        form.value.get must equal(expectedAddress)
+        form.errors mustBe empty
+        form.value mustBe defined
+        form.value.get mustEqual expectedAddress
       }
 
       "provided with full input, containing spaces in fields" in {
@@ -191,9 +191,9 @@ class AddressSpec extends WordSpec with MustMatchers {
 
         val form = Address.form().bind(input)
 
-        form.errors must be(empty)
-        form.value must be(defined)
-        form.value.get must equal(expectedAddress)
+        form.errors mustBe empty
+        form.value mustBe defined
+        form.value.get mustEqual expectedAddress
       }
     }
   }

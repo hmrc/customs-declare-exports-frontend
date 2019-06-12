@@ -40,7 +40,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
     "return 200 status code" in {
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in {
@@ -52,7 +52,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       page must include("Spain")
       page must include("BAFTA Street")
       page must include("LS37BH")
@@ -67,7 +67,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val result = route(app, postRequest(uri, incorrectGoodsLocationJSON)).get
       val stringResult = contentAsString(result)
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       stringResult must include(messages(typeOfLocationError))
       stringResult must include(messages(qualifierOfIdentError))
       stringResult must include(messages(identOfLocationError))
@@ -82,7 +82,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val result = route(app, postRequest(uri, emptyGoodsLocationJSON)).get
       val stringResult = contentAsString(result)
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       stringResult must include(messages(typeOfLocationEmpty))
       stringResult must include(messages(qualifierOfIdentEmpty))
     }
@@ -102,7 +102,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val result = route(app, postRequest(uri, correctGoodsLocation)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/office-of-exit"))
     }
 
@@ -111,7 +111,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val result = route(app, postRequest(uri, correctGoodsLocationJSON)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/office-of-exit"))
     }
   }

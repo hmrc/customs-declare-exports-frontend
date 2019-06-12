@@ -39,7 +39,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
     "return 200 status code" in {
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in {
@@ -52,7 +52,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       page must include("67890")
       page must include("WonderWoman")
       page must include("Test Street")
@@ -68,7 +68,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       val result = route(app, postRequest(uri, emptyDeclarantDetailsJSON)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
     }
 
     "validate request and redirect - only EORI provided" in {
@@ -76,7 +76,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, correctDeclarantDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/representative-details"))
     }
 
@@ -85,7 +85,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, correctDeclarantDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/representative-details"))
     }
 
@@ -94,7 +94,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, correctDeclarantDetailsJSON)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/representative-details"))
     }
   }

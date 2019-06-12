@@ -91,10 +91,8 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
           val cacheMap = CacheMap("CacheID", Map(DispatchLocation.formId -> correctDispatchLocationJSON))
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
-          supplementaryDeclarationData.declarationType must be(defined)
-          supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(
-            AllowedDispatchLocations.OutsideEU
-          )
+          supplementaryDeclarationData.declarationType mustBe defined
+          supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation mustEqual AllowedDispatchLocations.OutsideEU
           supplementaryDeclarationData.declarationType.get.additionalDeclarationType mustNot be(defined)
         }
 
@@ -108,11 +106,9 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
             )
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
-          supplementaryDeclarationData.declarationType must be(defined)
+          supplementaryDeclarationData.declarationType mustBe defined
           supplementaryDeclarationData.declarationType.get.dispatchLocation mustNot be(defined)
-          supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.additionalDeclarationType must equal(
-            AllowedAdditionalDeclarationTypes.Simplified
-          )
+          supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.additionalDeclarationType mustEqual AllowedAdditionalDeclarationTypes.Simplified
         }
 
         "CacheMap contains records for both DispatchLocation and AdditionalDeclarationType" in {
@@ -126,13 +122,9 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
-          supplementaryDeclarationData.declarationType must be(defined)
-          supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(
-            AllowedDispatchLocations.OutsideEU
-          )
-          supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.additionalDeclarationType must equal(
-            AllowedAdditionalDeclarationTypes.Simplified
-          )
+          supplementaryDeclarationData.declarationType mustBe defined
+          supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation mustEqual AllowedDispatchLocations.OutsideEU
+          supplementaryDeclarationData.declarationType.get.additionalDeclarationType.get.additionalDeclarationType mustEqual AllowedAdditionalDeclarationTypes.Simplified
         }
 
         "CacheMap contains records for neither DispatchLocation nor AdditionalDeclarationType" in {
@@ -150,10 +142,10 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
-          supplementaryDeclarationData.consignmentReferences must be(defined)
-          supplementaryDeclarationData.consignmentReferences.get.lrn must equal(consignmentReferences.lrn)
-          supplementaryDeclarationData.consignmentReferences.get.ducr must be(defined)
-          supplementaryDeclarationData.consignmentReferences.get.ducr.get must equal(consignmentReferences.ducr.get)
+          supplementaryDeclarationData.consignmentReferences mustBe defined
+          supplementaryDeclarationData.consignmentReferences.get.lrn mustEqual consignmentReferences.lrn
+          supplementaryDeclarationData.consignmentReferences.get.ducr mustBe defined
+          supplementaryDeclarationData.consignmentReferences.get.ducr.get mustEqual consignmentReferences.ducr.get
         }
 
         "CacheMap contains 2 records" in {
@@ -170,13 +162,13 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
-          supplementaryDeclarationData.consignmentReferences must be(defined)
-          supplementaryDeclarationData.consignmentReferences.get.lrn must equal(consignmentReferences.lrn)
-          supplementaryDeclarationData.consignmentReferences.get.ducr must be(defined)
-          supplementaryDeclarationData.consignmentReferences.get.ducr.get must equal(consignmentReferences.ducr.get)
-          supplementaryDeclarationData.parties must be(defined)
-          supplementaryDeclarationData.parties.get.exporterDetails must be(defined)
-          supplementaryDeclarationData.parties.get.exporterDetails.get must equal(exporterDetails)
+          supplementaryDeclarationData.consignmentReferences mustBe defined
+          supplementaryDeclarationData.consignmentReferences.get.lrn mustEqual consignmentReferences.lrn
+          supplementaryDeclarationData.consignmentReferences.get.ducr mustBe defined
+          supplementaryDeclarationData.consignmentReferences.get.ducr.get mustEqual consignmentReferences.ducr.get
+          supplementaryDeclarationData.parties mustBe defined
+          supplementaryDeclarationData.parties.get.exporterDetails mustBe defined
+          supplementaryDeclarationData.parties.get.exporterDetails.get mustEqual exporterDetails
         }
 
         "CacheMap contains 2 records and 3 foreign keys" in {
@@ -196,33 +188,33 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
-          supplementaryDeclarationData.consignmentReferences must be(defined)
-          supplementaryDeclarationData.consignmentReferences.get.lrn must equal(consignmentReferences.lrn)
-          supplementaryDeclarationData.consignmentReferences.get.ducr must be(defined)
-          supplementaryDeclarationData.consignmentReferences.get.ducr.get must equal(consignmentReferences.ducr.get)
-          supplementaryDeclarationData.parties must be(defined)
-          supplementaryDeclarationData.parties.get.exporterDetails must be(defined)
-          supplementaryDeclarationData.parties.get.exporterDetails.get must equal(exporterDetails)
+          supplementaryDeclarationData.consignmentReferences mustBe defined
+          supplementaryDeclarationData.consignmentReferences.get.lrn mustEqual consignmentReferences.lrn
+          supplementaryDeclarationData.consignmentReferences.get.ducr mustBe defined
+          supplementaryDeclarationData.consignmentReferences.get.ducr.get mustEqual consignmentReferences.ducr.get
+          supplementaryDeclarationData.parties mustBe defined
+          supplementaryDeclarationData.parties.get.exporterDetails mustBe defined
+          supplementaryDeclarationData.parties.get.exporterDetails.get mustEqual exporterDetails
         }
 
         "CacheMap contains all records" in {
           val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMapAllRecords)
 
-          supplementaryDeclarationData.declarationType must be(defined)
-          supplementaryDeclarationData.consignmentReferences must be(defined)
-          supplementaryDeclarationData.parties must be(defined)
-          supplementaryDeclarationData.parties.get.exporterDetails must be(defined)
-          supplementaryDeclarationData.parties.get.declarantDetails must be(defined)
-          supplementaryDeclarationData.parties.get.representativeDetails must be(defined)
-          supplementaryDeclarationData.parties.get.declarationAdditionalActorsData must be(defined)
+          supplementaryDeclarationData.declarationType mustBe defined
+          supplementaryDeclarationData.consignmentReferences mustBe defined
+          supplementaryDeclarationData.parties mustBe defined
+          supplementaryDeclarationData.parties.get.exporterDetails mustBe defined
+          supplementaryDeclarationData.parties.get.declarantDetails mustBe defined
+          supplementaryDeclarationData.parties.get.representativeDetails mustBe defined
+          supplementaryDeclarationData.parties.get.declarationAdditionalActorsData mustBe defined
 
-          supplementaryDeclarationData.parties.get.declarationHoldersData must be(defined)
-          supplementaryDeclarationData.locations must be(defined)
-          supplementaryDeclarationData.locations.get.destinationCountries must be(defined)
-          supplementaryDeclarationData.locations.get.goodsLocation must be(defined)
-          supplementaryDeclarationData.locations.get.warehouseIdentification must be(defined)
-          supplementaryDeclarationData.locations.get.officeOfExit must be(defined)
-          supplementaryDeclarationData.transportInformationContainerData must be(defined)
+          supplementaryDeclarationData.parties.get.declarationHoldersData mustBe defined
+          supplementaryDeclarationData.locations mustBe defined
+          supplementaryDeclarationData.locations.get.destinationCountries mustBe defined
+          supplementaryDeclarationData.locations.get.goodsLocation mustBe defined
+          supplementaryDeclarationData.locations.get.warehouseIdentification mustBe defined
+          supplementaryDeclarationData.locations.get.officeOfExit mustBe defined
+          supplementaryDeclarationData.transportInformationContainerData mustBe defined
         }
       }
 
@@ -236,7 +228,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         val supplementaryDeclarationData = SupplementaryDeclarationData()
         val map = supplementaryDeclarationData.toMap
 
-        map must equal(Map.empty)
+        map mustEqual Map.empty
       }
     }
 
@@ -247,10 +239,10 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
         val map = supplementaryDeclarationData.toMap
 
-        map.size must equal(1)
+        map.size mustEqual 1
         map.keys must contain(Parties.id)
-        map.get(Parties.id) must be(defined)
-        map(Parties.id) must equal(parties)
+        map.get(Parties.id) mustBe defined
+        map(Parties.id) mustEqual parties
       }
     }
 
@@ -258,18 +250,17 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
       "return Map with 3 elements" in {
         val declarationType = correctDeclarationType
         val parties = Parties(exporterDetails = Some(correctExporterDetails))
-        val supplementaryDeclarationData =
-          SupplementaryDeclarationData(declarationType = Some(declarationType), parties = Some(parties))
+        val supplementaryDeclarationData = SupplementaryDeclarationData(declarationType = Some(declarationType), parties = Some(parties))
 
         val map = supplementaryDeclarationData.toMap
 
-        map.size must equal(2)
+        map.size mustEqual 2
         map.keys must contain(DeclarationTypeSupplementary.id)
-        map.get(DeclarationTypeSupplementary.id) must be(defined)
-        map(DeclarationTypeSupplementary.id) must equal(declarationType)
+        map.get(DeclarationTypeSupplementary.id) mustBe defined
+        map(DeclarationTypeSupplementary.id) mustEqual declarationType
         map.keys must contain(Parties.id)
-        map.get(Parties.id) must be(defined)
-        map(Parties.id) must equal(parties)
+        map.get(Parties.id) mustBe defined
+        map(Parties.id) mustEqual parties
       }
     }
 
@@ -280,19 +271,19 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
         val map = data.toMap
 
         val supplementaryDeclarationDataFieldsAmount = 6
-        map.size must equal(supplementaryDeclarationDataFieldsAmount)
+        map.size mustEqual supplementaryDeclarationDataFieldsAmount
 
         map.keys must contain(DeclarationTypeSupplementary.id)
-        map(DeclarationTypeSupplementary.id) must equal(data.declarationType.get)
+        map(DeclarationTypeSupplementary.id) mustEqual data.declarationType.get
         map.keys must contain(ConsignmentReferences.id)
-        map(ConsignmentReferences.id) must equal(data.consignmentReferences.get)
+        map(ConsignmentReferences.id) mustEqual data.consignmentReferences.get
         map.keys must contain(Parties.id)
-        map(Parties.id) must equal(data.parties.get)
+        map(Parties.id) mustEqual data.parties.get
         map.keys must contain(Locations.id)
-        map(Locations.id) must equal(data.locations.get)
-        map(TransportInformationContainerData.id) must equal(data.transportInformationContainerData.get)
+        map(Locations.id) mustEqual data.locations.get
+        map(TransportInformationContainerData.id) mustEqual data.transportInformationContainerData.get
         map.keys must contain(Items.id)
-        map(Items.id) must equal(data.items.get)
+        map(Items.id) mustEqual data.items.get
       }
     }
 

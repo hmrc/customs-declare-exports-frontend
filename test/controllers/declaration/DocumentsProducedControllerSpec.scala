@@ -58,7 +58,7 @@ class DocumentsProducedControllerSpec
     "return 200 with a success" in {
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in {
@@ -70,35 +70,17 @@ class DocumentsProducedControllerSpec
       val result = route(app, getRequest(uri)).get
       val view = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
 
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)").text() must equal(
-        correctDocumentsProduced.documentTypeCode.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)").text() must equal(
-        correctDocumentsProduced.documentIdentifierAndPart.get.documentIdentifier.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(3)").text() must equal(
-        correctDocumentsProduced.documentIdentifierAndPart.get.documentPart.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(4)").text() must equal(
-        correctDocumentsProduced.documentStatus.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(5)").text() must equal(
-        correctDocumentsProduced.documentStatusReason.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(6)").text() must equal(
-        correctDocumentsProduced.issuingAuthorityName.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(7)").text() must equal(
-        correctDocumentsProduced.dateOfValidity.get.toString
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() must equal(
-        correctDocumentsProduced.documentWriteOff.get.measurementUnit.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(9)").text() must equal(
-        correctDocumentsProduced.documentWriteOff.get.documentQuantity.get.toString
-      )
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)").text() mustEqual correctDocumentsProduced.documentTypeCode.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)").text() mustEqual correctDocumentsProduced.documentIdentifierAndPart.get.documentIdentifier.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(3)").text() mustEqual correctDocumentsProduced.documentIdentifierAndPart.get.documentPart.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(4)").text() mustEqual correctDocumentsProduced.documentStatus.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(5)").text() mustEqual correctDocumentsProduced.documentStatusReason.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(6)").text() mustEqual correctDocumentsProduced.issuingAuthorityName.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(7)").text() mustEqual correctDocumentsProduced.dateOfValidity.get.toString
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() mustEqual correctDocumentsProduced.documentWriteOff.get.measurementUnit.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(9)").text() mustEqual correctDocumentsProduced.documentWriteOff.get.documentQuantity.get.toString
     }
   }
 
@@ -110,7 +92,7 @@ class DocumentsProducedControllerSpec
         val incorrectDocumentTypeCode: JsValue = JsObject(Map("documentTypeCode" -> JsString("abcdf")))
 
         val result = route(app, postRequest(uri, incorrectDocumentTypeCode)).get
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(documentTypeCodeError))
       }
 
@@ -125,7 +107,7 @@ class DocumentsProducedControllerSpec
           )
 
         val result = route(app, postRequest(uri, incorrectDocumentIdentifier)).get
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(documentIdentifierError))
       }
 
@@ -140,7 +122,7 @@ class DocumentsProducedControllerSpec
           )
 
         val result = route(app, postRequest(uri, incorrectDocumentPart)).get
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(documentPartError))
       }
 
@@ -148,7 +130,7 @@ class DocumentsProducedControllerSpec
         val incorrectDocumentStatus: JsValue = JsObject(Map(documentStatusKey -> JsString("as")))
 
         val result = route(app, postRequest(uri, incorrectDocumentStatus)).get
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(documentStatusError))
       }
 
@@ -157,7 +139,7 @@ class DocumentsProducedControllerSpec
           JsObject(Map(documentStatusReasonKey -> JsString(TestHelper.createRandomAlphanumericString(36))))
 
         val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(documentStatusReasonError))
       }
 
@@ -166,7 +148,7 @@ class DocumentsProducedControllerSpec
           JsObject(Map(s"$documentWriteOffKey.$documentQuantityKey" -> JsString("123456789012123.1234567")))
 
         val result = route(app, postRequest(uri, incorrectDocumentQuantity)).get
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(documentQuantityPrecisionError))
       }
 
@@ -178,7 +160,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
         val stringResult = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         stringResult must include(messages(globalErrorTitle))
         stringResult must include(messages(globalErrorHeading))
         stringResult must include(messages(globalErrorMessage))
@@ -193,7 +175,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, duplicatedItemError, "#")
@@ -209,7 +191,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, notDefinedError, "#")
@@ -223,7 +205,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, maximumAmountReachedError, "#")
@@ -237,7 +219,7 @@ class DocumentsProducedControllerSpec
         val body = correctDocumentsProducedMap.toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
 
       "that does not exist in cache" in {
@@ -248,7 +230,7 @@ class DocumentsProducedControllerSpec
         val body = newDocument.toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
     }
 
@@ -262,7 +244,7 @@ class DocumentsProducedControllerSpec
         val body = removeActionUrlEncoded(firstElementIndex)
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
     }
 
@@ -275,7 +257,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
@@ -287,7 +269,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
@@ -297,7 +279,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
@@ -310,7 +292,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
     }

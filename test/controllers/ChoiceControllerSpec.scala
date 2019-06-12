@@ -44,7 +44,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
     "return 200 status code" in {
       val result = route(app, getRequest(choiceUri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in {
@@ -55,7 +55,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
       val result = route(app, getRequest(choiceUri)).get
       val stringResult = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       stringResult must include("value=\"SMP\" checked=\"checked\"")
     }
   }
@@ -69,7 +69,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
         val emptyForm = JsObject(Map("" -> JsString("")))
         val result = route(app, postRequest(choiceUri, emptyForm)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(choiceEmpty))
       }
 
@@ -78,7 +78,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
         val wrongForm = JsObject(Map("value" -> JsString("test")))
         val result = route(app, postRequest(choiceUri, wrongForm)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(choiceError))
       }
     }
@@ -98,7 +98,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/dispatch-location"))
     }
 
@@ -108,7 +108,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/dispatch-location"))
     }
 
@@ -118,7 +118,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/cancel-declaration"))
     }
 
@@ -128,7 +128,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
       val result = route(app, postRequest(choiceUri, correctForm)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/submissions"))
     }
   }

@@ -325,13 +325,11 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       }
 
       def assertViewDataEntered(view: Html, itemType: ItemType): Unit = {
-        getElementById(view, "combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
-        getElementById(view, "descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
-        getElementById(view, "cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
-        getElementById(view, "unDangerousGoodsCode").attr("value") must equal(
-          itemType.unDangerousGoodsCode.getOrElse("")
-        )
-        getElementById(view, "statisticalValue").attr("value") must equal(itemType.statisticalValue)
+        getElementById(view, "combinedNomenclatureCode").attr("value") mustEqual itemType.combinedNomenclatureCode
+        getElementById(view, "descriptionOfGoods").text() mustEqual itemType.descriptionOfGoods
+        getElementById(view, "cusCode").attr("value") mustEqual itemType.cusCode.getOrElse("")
+        getElementById(view, "unDangerousGoodsCode").attr("value") mustEqual itemType.unDangerousGoodsCode.getOrElse("")
+        getElementById(view, "statisticalValue").attr("value") mustEqual itemType.statisticalValue
       }
     }
 
@@ -370,10 +368,10 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       }
 
       def assertViewDataEntered(view: Html, itemType: ItemType): Unit = {
-        getElementById(view, "combinedNomenclatureCode").attr("value") must equal(itemType.combinedNomenclatureCode)
-        getElementById(view, "descriptionOfGoods").text() must equal(itemType.descriptionOfGoods)
-        getElementById(view, "cusCode").attr("value") must equal(itemType.cusCode.getOrElse(""))
-        getElementById(view, "statisticalValue").attr("value") must equal(itemType.statisticalValue)
+        getElementById(view, "combinedNomenclatureCode").attr("value") mustEqual itemType.combinedNomenclatureCode
+        getElementById(view, "descriptionOfGoods").text() mustEqual itemType.descriptionOfGoods
+        getElementById(view, "cusCode").attr("value") mustEqual itemType.cusCode.getOrElse("")
+        getElementById(view, "statisticalValue").attr("value") mustEqual itemType.statisticalValue
       }
     }
 

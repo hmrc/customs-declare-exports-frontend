@@ -60,7 +60,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
 
     "return 200 code" in {
       val result = route(app, getRequest(uri)).value
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "populate the form fields with data from cache" in {
@@ -104,7 +104,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
 
         val result = route(app, request).value
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result).replaceCSRF mustBe view(
           form.bindFromRequest()(request),
           TestHelper.journeyRequest(request, AllowedChoiceValues.SupplementaryDec)
@@ -137,7 +137,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
-          status(result) must be(SEE_OTHER)
+          status(result) mustBe SEE_OTHER
 
           verify(mockCustomsCacheService)
             .cache[TransportDetails](
@@ -173,7 +173,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
             case _    => Some("/customs-declare-exports/declaration/summary")
           }
           val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
-          status(result) must be(SEE_OTHER)
+          status(result) mustBe SEE_OTHER
           result.futureValue.header.headers.get("Location") must be(nextPage)
         }
       }
@@ -196,7 +196,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
         )
 
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         result.futureValue.header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/add-seal"))
       }
     }

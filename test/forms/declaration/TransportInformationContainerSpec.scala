@@ -32,8 +32,9 @@ import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemData
 import uk.gov.hmrc.wco.dec.MetaData
 import utils.validators.forms.FieldValidator.isAlphanumeric
+
 class TransportInformationContainerSpec
-    extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers
+  extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers
     with GovernmentAgencyGoodsItemData {
 
   "Method toMetadataProperties" should {
@@ -46,7 +47,7 @@ class TransportInformationContainerSpec
         "declaration.goodsShipment.consignment.transportEquipments[0].id" -> transportInformationContainerData.containers.head.id
       )
 
-      transportInformationContainerData.toMetadataProperties() must equal(expectedProperties)
+      transportInformationContainerData.toMetadataProperties() mustEqual expectedProperties
     }
 
     "map correctly" in {
@@ -54,20 +55,19 @@ class TransportInformationContainerSpec
       val transportInformationContainerData = correctTransportInformationContainerData
       val metadata = MetaData.fromProperties(transportInformationContainerData.toMetadataProperties())
 
-      metadata.declaration must be(defined)
-      metadata.declaration.get.goodsShipment must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment must be(defined)
+      metadata.declaration mustBe defined
+      metadata.declaration.get.goodsShipment mustBe defined
+      metadata.declaration.get.goodsShipment.get.consignment mustBe defined
       metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments mustNot be(empty)
-      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments.head.id must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments.head.id.get must equal(
+      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments.head.id mustBe defined
+      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments.head.id.get mustEqual
         transportInformationContainerData.containers.head.id
-      )
     }
   }
 
   "Transport Information Object object" should {
     "contains correct limit value" in {
-      TransportInformationContainerData.maxNumberOfItems must be(9999)
+      TransportInformationContainerData.maxNumberOfItems mustBe 9999
     }
   }
 

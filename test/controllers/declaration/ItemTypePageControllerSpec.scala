@@ -30,8 +30,7 @@ import org.mockito.Mockito.{reset, verify}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
 
-class ItemTypePageControllerSpec
-    extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages {
+class ItemTypePageControllerSpec extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages with ScalaFutures {
   import ItemTypePageControllerSpec._
 
   private val uri = uriWithContextPath("/declaration/item-type")
@@ -51,7 +50,7 @@ class ItemTypePageControllerSpec
     "return 200 status code" in {
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in {
@@ -62,7 +61,7 @@ class ItemTypePageControllerSpec
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       page must include("5555")
       page must include("6666")
       page must include("7777")
@@ -114,7 +113,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, cncErrorEmpty, "#combinedNomenclatureCode")
@@ -132,7 +131,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, cncErrorLength, "#combinedNomenclatureCode")
@@ -152,7 +151,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, cncErrorSpecialCharacters, "#combinedNomenclatureCode")
@@ -173,7 +172,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, taricErrorLength, "#taricAdditionalCode_")
@@ -192,7 +191,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, taricErrorSpecialCharacters, "#taricAdditionalCode_")
@@ -214,7 +213,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, nacErrorLength, "#nationalAdditionalCode_")
@@ -234,7 +233,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, nacErrorSpecialCharacters, "#nationalAdditionalCode_")
@@ -255,7 +254,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, descriptionErrorEmpty, "#descriptionOfGoods")
@@ -277,7 +276,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, descriptionErrorLength, "#descriptionOfGoods")
@@ -300,7 +299,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, cusCodeErrorLength, "#cusCode")
@@ -321,7 +320,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, cusCodeErrorSpecialCharacters, "#cusCode")
@@ -338,7 +337,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, statisticalErrorEmpty, "#statisticalValue")
@@ -356,7 +355,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, statisticalErrorLength, "#statisticalValue")
@@ -376,7 +375,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, statisticalErrorWrongFormat, "#statisticalValue")
@@ -392,7 +391,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, cncErrorEmpty, "#combinedNomenclatureCode")
@@ -417,7 +416,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, cncErrorLength, "#combinedNomenclatureCode")
@@ -452,7 +451,7 @@ class ItemTypePageControllerSpec
       "return 303 code" in {
         val userInput = addActionTypeToFormData(SaveAndContinue, correctItemTypeMap)
         val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
 
       "redirect to 'Add Package Information' page" when {
@@ -490,7 +489,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, taricErrorDuplicate, "#taricAdditionalCode_")
@@ -512,7 +511,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, taricErrorMaxAmount, "#taricAdditionalCode_")
@@ -534,7 +533,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, nacErrorDuplicate, "#nationalAdditionalCode_")
@@ -556,7 +555,7 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, nacErrorMaxAmount, "#nationalAdditionalCode_")
@@ -639,7 +638,7 @@ class ItemTypePageControllerSpec
 
         val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
 
-        status(result) must be(OK)
+        status(result) mustBe OK
       }
 
       "refresh Item Type page" in {
@@ -663,11 +662,9 @@ class ItemTypePageControllerSpec
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_")), Map.empty)
           withCaching[ItemType](Some(cachedItemType), ItemType.id)
 
-          val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
-          ScalaFutures.whenReady(result.failed) { exc =>
-            exc.getMessage must equal(messages("error.removeAction.incorrectFormat"))
-            exc mustBe an[IllegalArgumentException]
-          }
+          val e = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.failed.futureValue
+          e mustBe an[IllegalArgumentException]
+          e.getMessage mustEqual messages("error.removeAction.incorrectFormat")
         }
 
         "provided with incorrect index value" in {
@@ -676,11 +673,9 @@ class ItemTypePageControllerSpec
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_incorrectIndex")), Map.empty)
           withCaching[ItemType](Some(cachedItemType), ItemType.id)
 
-          val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
-          ScalaFutures.whenReady(result.failed) { exc =>
-            exc.getMessage must equal(messages("error.removeAction.incorrectFormat"))
-            exc mustBe an[IllegalArgumentException]
-          }
+          val e = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.failed.futureValue
+          e mustBe an[IllegalArgumentException]
+          e.getMessage mustEqual messages("error.removeAction.incorrectFormat")
         }
       }
 
@@ -694,8 +689,7 @@ class ItemTypePageControllerSpec
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
-          val expectedUpdatedItemType =
-            cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes.tail)
+          val expectedUpdatedItemType = cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes.tail)
           verify(mockCustomsCacheService)
             .cache[ItemType](any(), ArgumentMatchers.eq(ItemType.id), ArgumentMatchers.eq(expectedUpdatedItemType))(
               any(),
@@ -750,7 +744,7 @@ class ItemTypePageControllerSpec
 
         val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
 
-        status(result) must be(OK)
+        status(result) mustBe OK
       }
 
       "refresh Item Type page" in {

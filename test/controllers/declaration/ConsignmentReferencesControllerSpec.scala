@@ -50,7 +50,7 @@ class ConsignmentReferencesControllerSpec
     "return 200 code" in {
 
       val result = route(app, getRequest(uri)).get
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "not populate the form fields if cache is empty" in {
@@ -102,7 +102,7 @@ class ConsignmentReferencesControllerSpec
 
       val result = route(app, postRequest(uri, correctConsignmentReferencesJSON)).get
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
     }
 
     "redirect to \"Exporter Details\" page" in {

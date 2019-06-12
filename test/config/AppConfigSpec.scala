@@ -89,7 +89,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     }
 
     "create the WcoMetadataJavaMappingStrategy when use-new-wco-dec-mapping-strategy feature flag set as true" in {
-      validConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataJavaMappingStrategy] must be(true)
+      validConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataJavaMappingStrategy] mustBe true
     }
 
     "load the Choice options when list-of-available-journeys is defined" in {
@@ -108,15 +108,15 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     }
 
     "have language translation enabled field" in {
-      validConfigService.languageTranslationEnabled must be(false)
+      validConfigService.languageTranslationEnabled mustBe false
     }
 
     "have language map with English" in {
-      validConfigService.languageMap.get("english").isDefined must be(true)
+      validConfigService.languageMap.get("english").isDefined mustBe true
     }
 
     "have language map with Cymraeg" in {
-      validConfigService.languageMap.get("cymraeg").isDefined must be(true)
+      validConfigService.languageMap.get("cymraeg").isDefined mustBe true
     }
 
     "have default feature status" in {
@@ -128,7 +128,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     }
 
     "return correct value for isFeatureOn method" in {
-      validConfigService.isFeatureOn(Feature.default) must be(false)
+      validConfigService.isFeatureOn(Feature.default) mustBe false
     }
 
     "have customs declare exports" in {
@@ -174,7 +174,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
   }
 
   "create the WcoMetadataScalaMappingStrategy when use-new-wco-dec-mapping-strategy feature flag is not set" in {
-    emptyConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataScalaMappingStrategy] must be(true)
+    emptyConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataScalaMappingStrategy] mustBe true
   }
 
   "empty Choice options when list-of-available-journeys is not defined" in {

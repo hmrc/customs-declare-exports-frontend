@@ -46,7 +46,7 @@ class PreviousDocumentsControllerSpec
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in {
@@ -59,7 +59,7 @@ class PreviousDocumentsControllerSpec
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
 
       page must include("X")
       page must include("HX")
@@ -77,7 +77,7 @@ class PreviousDocumentsControllerSpec
         val body = correctDocument :+ addActionURLEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
 
       "item is not duplicated" in {
@@ -95,7 +95,7 @@ class PreviousDocumentsControllerSpec
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
     }
 
@@ -109,7 +109,7 @@ class PreviousDocumentsControllerSpec
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
     }
 
@@ -122,7 +122,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentCategoryEmpty, "#documentCategory")
@@ -141,7 +141,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentCategoryEmpty, "#documentCategory")
@@ -156,7 +156,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentTypeEmpty, "#documentType")
@@ -171,7 +171,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentReferenceEmpty, "#documentReference")
@@ -186,7 +186,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentCategoryError, "#documentCategory")
@@ -201,7 +201,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentTypeError, "#documentType")
@@ -216,7 +216,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentReferenceError, "#documentReference")
@@ -231,7 +231,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentGoodsIdentifierError, "#goodsItemIdentifier")
@@ -249,7 +249,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, duplication, "#")
@@ -268,7 +268,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, limit, "#")
@@ -284,7 +284,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, continueMandatory, "#")
@@ -297,7 +297,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentCategoryEmpty, "#documentCategory")
@@ -312,7 +312,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentTypeEmpty, "#documentType")
@@ -327,7 +327,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentReferenceEmpty, "#documentReference")
@@ -342,7 +342,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentCategoryError, "#documentCategory")
@@ -357,7 +357,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentTypeError, "#documentType")
@@ -372,7 +372,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentReferenceError, "#documentReference")
@@ -387,7 +387,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentGoodsIdentifierError, "#goodsItemIdentifier")
@@ -406,7 +406,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, duplication, "#")
@@ -439,7 +439,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
@@ -451,7 +451,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
@@ -470,7 +470,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
     }

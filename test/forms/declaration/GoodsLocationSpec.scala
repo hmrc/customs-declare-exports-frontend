@@ -30,29 +30,29 @@ class GoodsLocationSpec extends WordSpec with MustMatchers {
 
       val metadata = MetaData.fromProperties(goodsLocation.toMetadataProperties())
 
-      metadata.declaration must be(defined)
-      metadata.declaration.get.goodsShipment must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation must be(defined)
+      metadata.declaration mustBe defined
+      metadata.declaration.get.goodsShipment mustBe defined
+      metadata.declaration.get.goodsShipment.get.consignment mustBe defined
+      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation mustBe defined
 
       val actualGoodsLocation = metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get
-      actualGoodsLocation.name must be(defined)
-      actualGoodsLocation.name.get must equal(goodsLocation.identificationOfLocation.get)
-      actualGoodsLocation.id must be(defined)
-      actualGoodsLocation.id.get must equal(goodsLocation.additionalIdentifier.get)
-      actualGoodsLocation.typeCode must be(defined)
-      actualGoodsLocation.typeCode.get must equal(goodsLocation.typeOfLocation)
-      actualGoodsLocation.address must be(defined)
-      actualGoodsLocation.address.get.typeCode must be(defined)
-      actualGoodsLocation.address.get.typeCode.get must equal(goodsLocation.qualifierOfIdentification)
-      actualGoodsLocation.address.get.line must be(defined)
-      actualGoodsLocation.address.get.line.get must equal(goodsLocation.addressLine.get)
-      actualGoodsLocation.address.get.cityName must be(defined)
-      actualGoodsLocation.address.get.cityName.get must equal(goodsLocation.city.get)
-      actualGoodsLocation.address.get.postcodeId must be(defined)
-      actualGoodsLocation.address.get.postcodeId.get must equal(goodsLocation.postCode.get)
-      actualGoodsLocation.address.get.countryCode must be(defined)
-      actualGoodsLocation.address.get.countryCode.get must equal("GB")
+      actualGoodsLocation.name mustBe defined
+      actualGoodsLocation.name.get mustEqual goodsLocation.identificationOfLocation.get
+      actualGoodsLocation.id mustBe defined
+      actualGoodsLocation.id.get mustEqual goodsLocation.additionalIdentifier.get
+      actualGoodsLocation.typeCode mustBe defined
+      actualGoodsLocation.typeCode.get mustEqual goodsLocation.typeOfLocation
+      actualGoodsLocation.address mustBe defined
+      actualGoodsLocation.address.get.typeCode mustBe defined
+      actualGoodsLocation.address.get.typeCode.get mustEqual goodsLocation.qualifierOfIdentification
+      actualGoodsLocation.address.get.line mustBe defined
+      actualGoodsLocation.address.get.line.get mustEqual goodsLocation.addressLine.get
+      actualGoodsLocation.address.get.cityName mustBe defined
+      actualGoodsLocation.address.get.cityName.get mustEqual goodsLocation.city.get
+      actualGoodsLocation.address.get.postcodeId mustBe defined
+      actualGoodsLocation.address.get.postcodeId.get mustEqual goodsLocation.postCode.get
+      actualGoodsLocation.address.get.countryCode mustBe defined
+      actualGoodsLocation.address.get.countryCode.get mustEqual "GB"
     }
   }
 }

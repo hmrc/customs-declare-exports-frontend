@@ -31,7 +31,7 @@ class TotalNumberOfItemsSpec extends WordSpec with MustMatchers {
         "declaration.totalPackageQuantity" -> totalNumberOfItems.totalPackage
       )
 
-      totalNumberOfItems.toMetadataProperties() must equal(expectedMetadataProperties)
+      totalNumberOfItems.toMetadataProperties() mustEqual expectedMetadataProperties
     }
   }
 

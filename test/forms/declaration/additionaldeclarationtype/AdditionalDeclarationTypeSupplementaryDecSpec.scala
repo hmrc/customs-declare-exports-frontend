@@ -30,18 +30,18 @@ class AdditionalDeclarationTypeSupplementaryDecSpec extends WordSpec with MustMa
         val form =
           AdditionalDeclarationTypeSupplementaryDec.form().bind(emptyAdditionalDeclarationTypeSupplementaryDecJSON)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.declarationType.inputText.error.empty")
+        form.hasErrors mustBe true
+        form.errors.length mustEqual 1
+        form.errors.head.message mustEqual "declaration.declarationType.inputText.error.empty"
       }
 
       "provided with a value not defined in AllowedAdditionalDeclarationTypes" in {
         val form =
           AdditionalDeclarationTypeSupplementaryDec.form().bind(incorrectAdditionalDeclarationTypeSupplementaryDecJSON)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.declarationType.inputText.error.incorrect")
+        form.hasErrors mustBe true
+        form.errors.length mustEqual 1
+        form.errors.head.message mustEqual "declaration.declarationType.inputText.error.incorrect"
       }
     }
 
@@ -50,11 +50,10 @@ class AdditionalDeclarationTypeSupplementaryDecSpec extends WordSpec with MustMa
         val form =
           AdditionalDeclarationTypeSupplementaryDec.form().bind(correctAdditionalDeclarationTypeSupplementaryDecJSON)
 
-        form.hasErrors must be(false)
+        form.hasErrors mustBe false
       }
     }
   }
-
 }
 
 object AdditionalDeclarationTypeSupplementaryDecSpec {

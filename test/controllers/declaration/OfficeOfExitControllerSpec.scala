@@ -48,7 +48,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in new SupplementarySetUp {
@@ -58,7 +58,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       contentAsString(result) must include("999AAA45")
     }
   }
@@ -69,7 +69,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in new StandardSetUp {
@@ -82,7 +82,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       page must include(officeId)
       page must include(presentationOfficeId)
       page must include(circumstancesCode)
@@ -95,7 +95,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       val result = route(app, postRequest(uri, incorrectOfficeOfExitJSON)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(officeOfExitLength))
     }
 
@@ -103,7 +103,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       val result = route(app, postRequest(uri, emptyOfficeOfExitJSON)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(officeOfExitEmpty))
     }
 
@@ -112,7 +112,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val result = route(app, postRequest(uri, correctOfficeOfExitJSON)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/total-numbers-of-items"))
     }
   }
@@ -129,7 +129,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       val result = route(app, postRequest(uri, incorrectOfficeOfExit)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
     }
 
     "return Bad Request for empty form" in {
@@ -139,7 +139,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       val result = route(app, postRequest(uri, emptyOfficeOfExit)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
     }
 
     "redirect to Total Numbers of Items page" in {
@@ -154,7 +154,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val result = route(app, postRequest(uri, correctOfficeOfExit)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/total-numbers-of-items"))
     }
   }

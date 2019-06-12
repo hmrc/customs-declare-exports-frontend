@@ -32,10 +32,9 @@ class OfficeOfExitStandardSpec extends WordSpec with MustMatchers {
         "declaration.specificCircumstancesCode" -> "A20"
       )
 
-      officeOfExit.toMetadataProperties() must equal(expectedMetadataProperties)
+      officeOfExit.toMetadataProperties() mustEqual expectedMetadataProperties
     }
   }
-
 }
 
 object OfficeOfExitStandardSpec {

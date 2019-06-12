@@ -41,7 +41,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in {
@@ -52,7 +52,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       page must include("7987.1")
       page must include("1.33")
       page must include("631.1")
@@ -74,7 +74,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       val result = route(app, postRequest(uri, allFields)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/transaction-type"))
     }
 
@@ -91,7 +91,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       val result = route(app, postRequest(uri, allFields)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/transaction-type"))
     }
@@ -109,7 +109,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
         )
       val result = route(app, postRequest(uri, allFields)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
 
       contentAsString(result) must include(messages(taiError))
       contentAsString(result) must include(messages(erError))
@@ -128,7 +128,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
         )
       val result = route(app, postRequest(uri, allFields)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
 
       contentAsString(result) must include(messages(taiError))
       contentAsString(result) must include(messages(erError))
@@ -146,7 +146,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       )
 
       val result = route(app, postRequest(uri, allFields)).get
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
 
       contentAsString(result) must include(messages(taiError))
       contentAsString(result) must include(messages(erError))
@@ -163,7 +163,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       )
 
       val result = route(app, postRequest(uri, allFields)).get
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
 
       contentAsString(result) must include(messages(taiError))
       contentAsString(result) must include(messages(erError))

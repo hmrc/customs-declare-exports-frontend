@@ -34,8 +34,8 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
         form.errors mustNot be(empty)
         val wholeFormErrorName = ""
         val wholeFormError = form.errors.find(_.key == wholeFormErrorName)
-        wholeFormError must be(defined)
-        wholeFormError.get.message must equal("supplementary.namedEntityDetails.error")
+        wholeFormError mustBe defined
+        wholeFormError.get.message mustEqual "supplementary.namedEntityDetails.error"
       }
     }
 
@@ -48,8 +48,8 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
         form.errors mustNot be(empty)
         val eoriError = form.errors.find(_.key == "eori")
-        eoriError must be(defined)
-        eoriError.get.message must equal("supplementary.eori.error")
+        eoriError mustBe defined
+        eoriError.get.message mustEqual "supplementary.eori.error"
       }
 
       "Address is empty & EORI contains special characters" in {
@@ -60,8 +60,8 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
         form.errors mustNot be(empty)
         val eoriError = form.errors.find(_.key == "eori")
-        eoriError must be(defined)
-        eoriError.get.message must equal("supplementary.eori.error")
+        eoriError mustBe defined
+        eoriError.get.message mustEqual "supplementary.eori.error"
       }
 
       "Address is correct but EORI is wrong" in {
@@ -79,8 +79,8 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
         form.errors mustNot be(empty)
         val eoriError = form.errors.find(_.key == "eori")
-        eoriError must be(defined)
-        eoriError.get.message must equal("supplementary.eori.error")
+        eoriError mustBe defined
+        eoriError.get.message mustEqual "supplementary.eori.error"
       }
     }
 
@@ -99,9 +99,9 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
         form.errors mustNot be(empty)
         val addressError = form.errors.find(_.key.contains("address."))
-        addressError must be(defined)
-        addressError.get.messages.size must equal(1)
-        addressError.get.message must equal("supplementary.address.fullName.error")
+        addressError mustBe defined
+        addressError.get.messages.size mustEqual 1
+        addressError.get.message mustEqual "supplementary.address.fullName.error"
       }
 
       "EORI is empty & Address has errors in all fields" in {
@@ -118,7 +118,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
         form.errors mustNot be(empty)
         val addressErrors = form.errors.filter(_.key.contains("address."))
-        addressErrors.size must equal(5)
+        addressErrors.size mustEqual 5
         addressErrors.map(_.message) must contain("supplementary.address.fullName.error")
         addressErrors.map(_.message) must contain("supplementary.address.addressLine.empty")
         addressErrors.map(_.message) must contain("supplementary.address.townOrCity.error")
@@ -141,7 +141,7 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
         form.errors mustNot be(empty)
         val addressErrors = form.errors.filter(_.key.contains("address."))
-        addressErrors.size must equal(5)
+        addressErrors.size mustEqual 5
         addressErrors.map(_.message) must contain("supplementary.address.fullName.error")
         addressErrors.map(_.message) must contain("supplementary.address.addressLine.empty")
         addressErrors.map(_.message) must contain("supplementary.address.townOrCity.error")
@@ -166,12 +166,12 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
         form.errors mustNot be(empty)
         val eoriError = form.errors.find(_.key == "eori")
-        eoriError must be(defined)
-        eoriError.get.messages.size must equal(1)
-        eoriError.get.message must equal("supplementary.eori.error")
+        eoriError mustBe defined
+        eoriError.get.messages.size mustEqual 1
+        eoriError.get.message mustEqual "supplementary.eori.error"
 
         val addressErrors = form.errors.filter(_.key.contains("address."))
-        addressErrors.size must equal(5)
+        addressErrors.size mustEqual 5
         addressErrors.map(_.message) must contain("supplementary.address.fullName.error")
         addressErrors.map(_.message) must contain("supplementary.address.addressLine.empty")
         addressErrors.map(_.message) must contain("supplementary.address.townOrCity.error")
@@ -186,10 +186,10 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
         val form = EntityDetails.form().bind(input)
 
-        form.errors must be(empty)
-        form.value must be(defined)
-        form.value.get.eori must be(defined)
-        form.value.get.eori.get must equal(correctEntityDetails.eori.get)
+        form.errors mustBe empty
+        form.value mustBe defined
+        form.value.get.eori mustBe defined
+        form.value.get.eori.get mustEqual correctEntityDetails.eori.get
       }
 
       "EORI is empty & Address is correct" in {
@@ -197,10 +197,10 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
         val form = EntityDetails.form().bind(input)
 
-        form.errors must be(empty)
-        form.value must be(defined)
-        form.value.get.address must be(defined)
-        form.value.get.address.get must equal(correctEntityDetails.address.get)
+        form.errors mustBe empty
+        form.value mustBe defined
+        form.value.get.address mustBe defined
+        form.value.get.address.get mustEqual correctEntityDetails.address.get
       }
 
       "Both EORI & Address are correct" in {
@@ -208,12 +208,12 @@ class EntityDetailsSpec extends WordSpec with MustMatchers {
 
         val form = EntityDetails.form().bind(input)
 
-        form.errors must be(empty)
-        form.value must be(defined)
-        form.value.get.eori must be(defined)
-        form.value.get.eori.get must equal(correctEntityDetails.eori.get)
-        form.value.get.address must be(defined)
-        form.value.get.address.get must equal(correctEntityDetails.address.get)
+        form.errors mustBe empty
+        form.value mustBe defined
+        form.value.get.eori mustBe defined
+        form.value.get.eori.get mustEqual correctEntityDetails.eori.get
+        form.value.get.address mustBe defined
+        form.value.get.address.get mustEqual correctEntityDetails.address.get
       }
     }
   }

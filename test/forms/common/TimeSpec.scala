@@ -108,7 +108,7 @@ class TimeSpec extends WordSpec with MustMatchers {
         val input = Map("hour" -> "15", "minute" -> "17")
         val form = Time.form().bind(input)
 
-        form.hasErrors must be(false)
+        form.hasErrors mustBe false
       }
 
       "provided with empty data" in {
@@ -116,7 +116,7 @@ class TimeSpec extends WordSpec with MustMatchers {
         val input = Map.empty[String, String]
         val form = Time.form().bind(input)
 
-        form.hasErrors must be(false)
+        form.hasErrors mustBe false
       }
     }
 

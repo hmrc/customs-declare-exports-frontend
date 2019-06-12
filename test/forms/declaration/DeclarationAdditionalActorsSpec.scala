@@ -29,9 +29,9 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
       "provided with empty input for party type" in {
         val form = DeclarationAdditionalActors.form().bind(correctEORIPartyNotSelectedJSON)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.partyType.empty")
+        form.hasErrors mustBe true
+        form.errors.length mustEqual 1
+        form.errors.head.message mustEqual "supplementary.partyType.empty"
       }
 
       "provided with unknown value for party type" in {
@@ -39,9 +39,9 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
           JsObject(Map("eori" -> JsString("eori1"), "partyType" -> JsString("Incorrect")))
         val form = DeclarationAdditionalActors.form().bind(declarationAdditionalActorsInputData)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.partyType.error")
+        form.hasErrors mustBe true
+        form.errors.length mustEqual 1
+        form.errors.head.message mustEqual "supplementary.partyType.error"
       }
     }
 
@@ -49,7 +49,7 @@ class DeclarationAdditionalActorsSpec extends WordSpec with MustMatchers {
       "provided with valie input" in {
         val form = DeclarationAdditionalActors.form().bind(correctAdditionalActorsJSON)
 
-        form.hasErrors must be(false)
+        form.hasErrors mustBe false
       }
     }
   }

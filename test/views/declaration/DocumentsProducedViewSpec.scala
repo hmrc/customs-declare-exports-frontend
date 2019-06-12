@@ -513,92 +513,41 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       val form = DocumentsProduced.form().fill(data)
       val view = createView(form)
 
-      getElementById(view, documentTypeCodeKey).attr("value") must equal(data.documentTypeCode.value)
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") must equal(
-        data.documentIdentifierAndPart.value.documentIdentifier.value
-      )
-      getElementById(view, s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") must equal(
-        data.documentIdentifierAndPart.value.documentPart.value
-      )
-      getElementById(view, documentStatusKey).attr("value") must equal(data.documentStatus.value)
-      getElementById(view, documentStatusReasonKey).attr("value") must equal(data.documentStatusReason.value)
-      getElementById(view, issuingAuthorityNameKey).attr("value") must equal(data.issuingAuthorityName.value)
-      getElementById(view, s"${dateOfValidityKey}_$dayKey").attr("value") must equal(
-        data.dateOfValidity.value.day.value.toString
-      )
-      getElementById(view, s"${dateOfValidityKey}_$monthKey").attr("value") must equal(
-        data.dateOfValidity.value.month.value.toString
-      )
-      getElementById(view, s"${dateOfValidityKey}_$yearKey").attr("value") must equal(
-        data.dateOfValidity.value.year.value.toString
-      )
-      getElementById(view, s"${documentWriteOffKey}_$measurementUnitKey").attr("value") must equal(
-        data.documentWriteOff.get.measurementUnit.value
-      )
-      getElementById(view, s"${documentWriteOffKey}_$documentQuantityKey").attr("value") must equal(
-        data.documentWriteOff.get.documentQuantity.value.toString
-      )
+      getElementById(view, documentTypeCodeKey).attr("value") mustEqual data.documentTypeCode.value
+      getElementById(view, s"${documentIdentifierAndPartKey}_$documentIdentifierKey").attr("value") mustEqual data.documentIdentifierAndPart.value.documentIdentifier.value
+      getElementById(view, s"${documentIdentifierAndPartKey}_$documentPartKey").attr("value") mustEqual data.documentIdentifierAndPart.value.documentPart.value
+      getElementById(view, documentStatusKey).attr("value") mustEqual data.documentStatus.value
+      getElementById(view, documentStatusReasonKey).attr("value") mustEqual data.documentStatusReason.value
+      getElementById(view, issuingAuthorityNameKey).attr("value") mustEqual data.issuingAuthorityName.value
+      getElementById(view, s"${dateOfValidityKey}_$dayKey").attr("value") mustEqual data.dateOfValidity.value.day.value.toString
+      getElementById(view, s"${dateOfValidityKey}_$monthKey").attr("value") mustEqual data.dateOfValidity.value.month.value.toString
+      getElementById(view, s"${dateOfValidityKey}_$yearKey").attr("value") mustEqual data.dateOfValidity.value.year.value.toString
+      getElementById(view, s"${documentWriteOffKey}_$measurementUnitKey").attr("value") mustEqual data.documentWriteOff.get.measurementUnit.value
+      getElementById(view, s"${documentWriteOffKey}_$documentQuantityKey").attr("value") mustEqual data.documentWriteOff.get.documentQuantity.value.toString
     }
 
     "display a table with previously entered document" in {
 
       val view = createView(cachedDocuments = Seq(correctDocumentsProduced))
 
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(1)").text() must equal(
-        messages(documentTypeCode)
-      )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(2)").text() must equal(
-        messages(documentIdentifier)
-      )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(3)").text() must equal(
-        messages(documentPart)
-      )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(4)").text() must equal(
-        messages(documentStatus)
-      )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(5)").text() must equal(
-        messages(documentStatusReason)
-      )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(6)").text() must equal(
-        messages(issuingAuthorityName)
-      )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(7)").text() must equal(
-        messages(dateOfValidity)
-      )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(8)").text() must equal(
-        messages(measurementUnit)
-      )
-      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(9)").text() must equal(
-        messages(documentQuantity)
-      )
-
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)").text() must equal(
-        correctDocumentsProduced.documentTypeCode.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)").text() must equal(
-        correctDocumentsProduced.documentIdentifierAndPart.get.documentIdentifier.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(3)").text() must equal(
-        correctDocumentsProduced.documentIdentifierAndPart.get.documentPart.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(4)").text() must equal(
-        correctDocumentsProduced.documentStatus.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(5)").text() must equal(
-        correctDocumentsProduced.documentStatusReason.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(6)").text() must equal(
-        correctDocumentsProduced.issuingAuthorityName.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(7)").text() must equal(
-        correctDocumentsProduced.dateOfValidity.get.toString
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() must equal(
-        correctDocumentsProduced.documentWriteOff.get.measurementUnit.get
-      )
-      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(9)").text() must equal(
-        correctDocumentsProduced.documentWriteOff.get.documentQuantity.get.toString
-      )
+      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(1)").text() mustEqual messages(documentTypeCode)
+      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(2)").text() mustEqual messages(documentIdentifier)
+      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(3)").text() mustEqual messages(documentPart)
+      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(4)").text() mustEqual messages(documentStatus)
+      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(5)").text() mustEqual messages(documentStatusReason)
+      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(6)").text() mustEqual messages(issuingAuthorityName)
+      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(7)").text() mustEqual messages(dateOfValidity)
+      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(8)").text() mustEqual messages(measurementUnit)
+      getElementByCss(view, "table.form-group>thead:nth-child(1)>tr:nth-child(1)>th:nth-child(9)").text() mustEqual messages(documentQuantity)
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(1)").text() mustEqual correctDocumentsProduced.documentTypeCode.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(2)").text() mustEqual correctDocumentsProduced.documentIdentifierAndPart.get.documentIdentifier.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(3)").text() mustEqual correctDocumentsProduced.documentIdentifierAndPart.get.documentPart.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(4)").text() mustEqual correctDocumentsProduced.documentStatus.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(5)").text() mustEqual correctDocumentsProduced.documentStatusReason.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(6)").text() mustEqual correctDocumentsProduced.issuingAuthorityName.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(7)").text() mustEqual correctDocumentsProduced.dateOfValidity.get.toString
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(8)").text() mustEqual correctDocumentsProduced.documentWriteOff.get.measurementUnit.get
+      getElementByCss(view, "table.form-group>tbody:nth-child(2)>tr:nth-child(1)>td:nth-child(9)").text() mustEqual correctDocumentsProduced.documentWriteOff.get.documentQuantity.get.toString
 
       val removeButton = getElementByCss(view, "tbody>tr>td:nth-child(10)>button")
       val firstItemIndex = "0"

@@ -38,7 +38,7 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
         "declaration.agent.functionCode" -> representativeDetails.statusCode.get
       )
 
-      representativeDetails.toMetadataProperties() must equal(expectedRepresentativeAddressProperties)
+      representativeDetails.toMetadataProperties() mustEqual expectedRepresentativeAddressProperties
     }
   }
 
@@ -49,9 +49,9 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
         val representativeDetailsWithoutStatusCode = JsObject(Map("details" -> correctEntityDetailsJSON))
         val form = RepresentativeDetails.form().bind(representativeDetailsWithoutStatusCode)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.representative.representationType.error.empty")
+        form.hasErrors mustBe true
+        form.errors.length mustEqual 1
+        form.errors.head.message mustEqual "supplementary.representative.representationType.error.empty"
       }
 
       "provided with unrecognized status code" in {
@@ -59,9 +59,9 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
           JsObject(Map("details" -> correctEntityDetailsJSON, "statusCode" -> JsString("Invalid")))
         val form = RepresentativeDetails.form().bind(representativeDetailsWithoutStatusCode)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.representative.representationType.error.wrongValue")
+        form.hasErrors mustBe true
+        form.errors.length mustEqual 1
+        form.errors.head.message mustEqual "supplementary.representative.representationType.error.wrongValue"
       }
     }
 
@@ -69,7 +69,7 @@ class RepresentativeDetailsSpec extends WordSpec with MustMatchers {
       "provided with valid value for status code" in {
         val form = RepresentativeDetails.form().bind(correctRepresentativeDetailsJSON)
 
-        form.hasErrors must be(false)
+        form.hasErrors mustBe false
       }
     }
 

@@ -32,7 +32,7 @@ class DeclarationHoldersDataSpec extends WordSpec with MustMatchers {
         "declaration.authorisationHolders[0].id" -> declarationHolders.holders.head.eori.get
       )
 
-      declarationHolders.toMetadataProperties() must equal(expectedMetadataProperties)
+      declarationHolders.toMetadataProperties() mustEqual expectedMetadataProperties
     }
   }
 

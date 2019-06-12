@@ -37,9 +37,9 @@ class DocumentSpec extends WordSpec with MustMatchers {
         )
         val form = Document.form().bind(documentInputData)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.previousDocuments.documentCategory.error.empty")
+        form.hasErrors mustBe true
+        form.errors.length mustEqual 1
+        form.errors.head.message mustEqual "supplementary.previousDocuments.documentCategory.error.empty"
       }
 
       "provided with unknown document category" in {
@@ -53,9 +53,9 @@ class DocumentSpec extends WordSpec with MustMatchers {
         )
         val form = Document.form().bind(documentInputData)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("supplementary.previousDocuments.documentCategory.error.incorrect")
+        form.hasErrors mustBe true
+        form.errors.length mustEqual 1
+        form.errors.head.message mustEqual "supplementary.previousDocuments.documentCategory.error.incorrect"
       }
     }
 
@@ -63,7 +63,7 @@ class DocumentSpec extends WordSpec with MustMatchers {
       "provided with valid input" in {
         val form = Document.form().bind(correctPreviousDocumentsJSON)
 
-        form.hasErrors must be(false)
+        form.hasErrors mustBe false
       }
     }
 

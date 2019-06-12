@@ -34,9 +34,9 @@ class DeclarationTypeSupplementarySpec extends WordSpec with MustMatchers {
 
       val metadata = MetaData.fromProperties(declarationType.toMetadataProperties())
 
-      metadata.declaration must be(defined)
-      metadata.declaration.get.typeCode must be(defined)
-      metadata.declaration.get.typeCode.get must equal(expectedTypeCode)
+      metadata.declaration mustBe defined
+      metadata.declaration.get.typeCode mustBe defined
+      metadata.declaration.get.typeCode.get mustEqual expectedTypeCode
     }
   }
 

@@ -35,7 +35,7 @@ class SubmissionsControllerSpec extends CustomExportsBaseSpec {
 
       val result = route(app, getRequest(submissionsUri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "display submissions page with number of notifications for each submission" in {
@@ -64,7 +64,7 @@ class SubmissionsControllerSpec extends CustomExportsBaseSpec {
 
       val result = route(app, getRequest(submissionsUri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
 
       val inOrderCheck = Mockito.inOrder(mockCustomsDeclareExportsConnector)
       inOrderCheck.verify(mockCustomsDeclareExportsConnector).fetchSubmissions()(any(), any())

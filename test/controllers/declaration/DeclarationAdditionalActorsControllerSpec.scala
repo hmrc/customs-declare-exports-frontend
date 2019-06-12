@@ -53,7 +53,7 @@ class DeclarationAdditionalActorsControllerSpec
     "return 200 status code" in {
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in {
@@ -64,7 +64,7 @@ class DeclarationAdditionalActorsControllerSpec
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
 
       page must include("112233")
       page must include("CS")
@@ -112,7 +112,7 @@ class DeclarationAdditionalActorsControllerSpec
 
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
           page must include(messages(eoriError))
           page must include(messages(partyTypeEmpty))
         }
@@ -123,7 +123,7 @@ class DeclarationAdditionalActorsControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
           page must include(messages(partyTypeEmpty))
         }
 
@@ -133,7 +133,7 @@ class DeclarationAdditionalActorsControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
           page must include(messages(partyTypeError))
         }
 
@@ -144,7 +144,7 @@ class DeclarationAdditionalActorsControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, maximumActorsError, "#")
@@ -157,7 +157,7 @@ class DeclarationAdditionalActorsControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, duplicatedActorsError, "#")
@@ -176,7 +176,7 @@ class DeclarationAdditionalActorsControllerSpec
 
           val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
-          status(result) must be(SEE_OTHER)
+          status(result) mustBe SEE_OTHER
         }
       }
 
@@ -188,7 +188,7 @@ class DeclarationAdditionalActorsControllerSpec
 
           val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
         }
       }
     }
@@ -223,7 +223,7 @@ class DeclarationAdditionalActorsControllerSpec
 
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
           page must include(messages(eoriError))
           page must include(messages(partyTypeEmpty))
         }
@@ -234,7 +234,7 @@ class DeclarationAdditionalActorsControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
           page must include(messages(partyTypeEmpty))
         }
 
@@ -244,7 +244,7 @@ class DeclarationAdditionalActorsControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
           page must include(messages(partyTypeError))
         }
 
@@ -255,7 +255,7 @@ class DeclarationAdditionalActorsControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, maximumActorsError, "#")
@@ -268,7 +268,7 @@ class DeclarationAdditionalActorsControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, duplicatedActorsError, "#")
@@ -310,7 +310,7 @@ class DeclarationAdditionalActorsControllerSpec
 
     val header = result.futureValue.header
 
-    status(result) must be(SEE_OTHER)
+    status(result) mustBe SEE_OTHER
     header.headers.get("Location") must be(Some(expectedPath))
   }
 
@@ -323,7 +323,7 @@ class DeclarationAdditionalActorsControllerSpec
     val body = data.toSeq :+ action
     val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-    status(result) must be(BAD_REQUEST)
+    status(result) mustBe BAD_REQUEST
 
     maybeExpectedErrorMessagePath.fold() { expectedErrorMessagePath =>
       val stringResult = contentAsString(result)

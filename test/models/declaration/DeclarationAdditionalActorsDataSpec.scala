@@ -33,7 +33,7 @@ class DeclarationAdditionalActorsDataSpec extends WordSpec with MustMatchers {
         "declaration.goodsShipment.aeoMutualRecognitionParties[1].roleCode" -> correctAdditionalActors2.partyType.get
       )
 
-      additionalActorsData.toMetadataProperties() must equal(expectedMetadataProperties)
+      additionalActorsData.toMetadataProperties() mustEqual expectedMetadataProperties
     }
   }
 }

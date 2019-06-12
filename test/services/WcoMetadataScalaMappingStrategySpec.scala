@@ -54,21 +54,21 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
       val mapper = new WcoMetadataMapper with WcoMetadataScalaMappingStrategy
       val result = mapper.produceMetaData(cacheMap, supplementaryChoice)
 
-      result.declaration must be(defined)
+      result.declaration mustBe defined
 
       result.declaration.flatMap(_.typeCode) mustBe Some("EXY")
       result.declaration.flatMap(_.functionalReferenceId) mustBe Some("123LRN")
       result.declaration.flatMap(_.goodsShipment).flatMap(_.ucr).flatMap(_.traderAssignedReferenceId) mustBe
         Some("8GB123456789012-1234567890QWERTYUIO")
 
-      result.declaration.flatMap(_.exporter) must be(defined)
-      result.declaration.flatMap(_.declarant) must be(defined)
-      result.declaration.flatMap(_.agent) must be(defined)
+      result.declaration.flatMap(_.exporter) mustBe defined
+      result.declaration.flatMap(_.declarant) mustBe defined
+      result.declaration.flatMap(_.agent) mustBe defined
       result.declaration.flatMap(_.invoiceAmount).flatMap(_.value) must be(Some(BigDecimal("1212312.12")))
       result.declaration.flatMap(_.invoiceAmount).flatMap(_.currencyId) must be(Some("GBP"))
       result.declaration.value.authorisationHolders.size mustBe 2
       result.declaration.flatMap(_.exitOffice).flatMap(_.id) mustBe Some("123qwe12")
-      result.declaration.flatMap(_.goodsShipment) must be(defined)
+      result.declaration.flatMap(_.goodsShipment) mustBe defined
       result.declaration.flatMap(_.goodsItemQuantity) must be(Some(expectedItems.size))
       val goodsShipment = result.declaration.flatMap(_.goodsShipment).value
       goodsShipment.aeoMutualRecognitionParties.headOption mustBe defined
@@ -77,7 +77,7 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
       goodsShipment.exportCountry.map(_.id) mustBe Some("PL")
       goodsShipment.warehouse.flatMap(_.id) mustBe Some("1234567GB")
       goodsShipment.warehouse.map(_.typeCode) mustBe Some("R")
-      goodsShipment.consignment must be(defined)
+      goodsShipment.consignment mustBe defined
       assertGoodsItem(goodsShipment)
       assertGoodsLocation(goodsShipment.consignment)
       assertPreviousDocuments(goodsShipment)
@@ -110,11 +110,11 @@ class WcoMetadataScalaMappingStrategySpec extends CustomExportsBaseSpec with Goo
 
   }
   private def assertGoodsLocation(consignment: Option[Consignment]) = {
-    consignment.flatMap(_.goodsLocation) must be(defined)
+    consignment.flatMap(_.goodsLocation) mustBe defined
     val goodsLocation = consignment.flatMap(_.goodsLocation).value
     goodsLocation.id mustBe Some("9GB1234567ABCDEF")
     goodsLocation.typeCode mustBe Some("T")
-    goodsLocation.address must be(defined)
+    goodsLocation.address mustBe defined
     goodsLocation.address.value.typeCode.value mustBe ("Q")
     goodsLocation.address.value.postcodeId.value mustBe ("AB12 CD3")
     goodsLocation.address.value.countryCode.value mustBe ("PL")

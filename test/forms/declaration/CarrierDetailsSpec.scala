@@ -30,23 +30,23 @@ class CarrierDetailsSpec extends WordSpec with MustMatchers {
       val carrierDetails = correctCarrierDetails
       val metadata = MetaData.fromProperties(carrierDetails.toMetadataProperties())
 
-      metadata.declaration must be(defined)
-      metadata.declaration.get.goodsShipment must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.id must be(defined)
+      metadata.declaration mustBe defined
+      metadata.declaration.get.goodsShipment mustBe defined
+      metadata.declaration.get.goodsShipment.get.consignment mustBe defined
+      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.id mustBe defined
       metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.id.get must be(
         carrierDetails.details.eori.get
       )
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.name must be(defined)
+      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.name mustBe defined
       metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.name.get must be(
         carrierDetails.details.address.get.fullName
       )
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.line must be(defined)
+      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address mustBe defined
+      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.line mustBe defined
       metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.line.get must be(
         carrierDetails.details.address.get.addressLine
       )
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.cityName must be(defined)
+      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.cityName mustBe defined
       metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.cityName.get must be(
         carrierDetails.details.address.get.townOrCity
       )

@@ -29,17 +29,17 @@ class ChoiceSpec extends WordSpec with MustMatchers {
       "provided with  empty input" in {
         val form = Choice.form().bind(emptyChoiceJSON)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("choicePage.input.error.empty")
+        form.hasErrors mustBe true
+        form.errors.length mustEqual 1
+        form.errors.head.message mustEqual "choicePage.input.error.empty"
       }
 
       "provided with a value not defined in AllowedChoiceValues" in {
         val form = Choice.form().bind(incorrectChoiceJSON)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("choicePage.input.error.incorrectValue")
+        form.hasErrors mustBe true
+        form.errors.length mustEqual 1
+        form.errors.head.message mustEqual "choicePage.input.error.incorrectValue"
       }
     }
 
@@ -47,7 +47,7 @@ class ChoiceSpec extends WordSpec with MustMatchers {
       "provided with valid input" in {
         val form = Choice.form().bind(correctSupplementaryChoiceJSON)
 
-        form.hasErrors must be(false)
+        form.hasErrors mustBe false
       }
     }
   }

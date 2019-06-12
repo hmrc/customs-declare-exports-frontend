@@ -76,9 +76,8 @@ class PartiesSpec extends WordSpec with MustMatchers {
       }
 
       "return Map being sum of all Maps from sub-objects" in new TestMapConcatenation {
-        parties.toMetadataProperties() must equal(
+        parties.toMetadataProperties() mustEqual 
           exporterDetailsMap ++ consigneeDetailsMap ++ declarantDetailsMap ++ representativeDetailsMap ++ declarationAdditionalActorsDataMap ++ declarationHolderMap
-        )
       }
     }
   }

@@ -28,7 +28,7 @@ class TransactionTypeSpec extends WordSpec with MustMatchers {
         "declaration.goodsShipment.transactionNatureCode" -> (transactionType.documentTypeCode + transactionType.identifier.get)
       )
 
-      transactionType.toMetadataProperties() must equal(expectedMetadataProperties)
+      transactionType.toMetadataProperties() mustEqual expectedMetadataProperties
     }
   }
 

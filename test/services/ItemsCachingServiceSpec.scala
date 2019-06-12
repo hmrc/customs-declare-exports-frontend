@@ -98,23 +98,18 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
 
       (goodsItemAdditionalDocs zip input.documents).map {
         case (actual, expected) =>
-          actual.categoryCode.value must equal(expected.documentTypeCode.value.head.toString)
-          actual.typeCode.value must equal(expected.documentTypeCode.value.drop(1))
-          actual.id.value must equal(
+          actual.categoryCode.value mustEqual expected.documentTypeCode.value.head.toString
+          actual.typeCode.value mustEqual expected.documentTypeCode.value.drop(1)
+          actual.id.value mustEqual
             expected.documentIdentifierAndPart.value.documentIdentifier.value +
               expected.documentIdentifierAndPart.value.documentPart.value
-          )
-          actual.lpcoExemptionCode must equal(expected.documentStatus)
-          actual.name must equal(expected.documentStatusReason)
-          actual.submitter.value.name.value must equal(expected.issuingAuthorityName.value)
-          actual.effectiveDateTime.value.dateTimeString.formatCode must equal("102")
-          actual.effectiveDateTime.value.dateTimeString.value must equal(expected.dateOfValidity.value.to102Format)
-          actual.writeOff.value.quantity.value.unitCode.value must equal(
-            expected.documentWriteOff.value.measurementUnit.value
-          )
-          actual.writeOff.value.quantity.value.value.value must equal(
-            expected.documentWriteOff.value.documentQuantity.value
-          )
+          actual.lpcoExemptionCode mustEqual expected.documentStatus
+          actual.name mustEqual expected.documentStatusReason
+          actual.submitter.value.name.value mustEqual expected.issuingAuthorityName.value
+          actual.effectiveDateTime.value.dateTimeString.formatCode mustEqual "102"
+          actual.effectiveDateTime.value.dateTimeString.value mustEqual expected.dateOfValidity.value.to102Format
+          actual.writeOff.value.quantity.value.unitCode.value mustEqual expected.documentWriteOff.value.measurementUnit.value
+          actual.writeOff.value.quantity.value.value.value mustEqual expected.documentWriteOff.value.documentQuantity.value
       }
     }
 
@@ -136,8 +131,8 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
       }
 
       val dangerousGoods = goodsItem.commodity.value.dangerousGoods
-      dangerousGoods.size must equal(1)
-      dangerousGoods.head.undgid.value must equal(input.unDangerousGoodsCode.get)
+      dangerousGoods.size mustEqual 1
+      dangerousGoods.head.undgid.value mustEqual input.unDangerousGoodsCode.get
     }
 
     "add goodsItem to cache" in {
@@ -163,10 +158,10 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
       //TODO : Check specific goodsItem is being added
       verify(mockCustomsCacheService)
         .cache[Seq[GovernmentAgencyGoodsItem]](
-          ArgumentMatchers.eq("cacheId"),
-          ArgumentMatchers.eq("exportItems"),
-          any()
-        )(any(), any(), any())
+        ArgumentMatchers.eq("cacheId"),
+        ArgumentMatchers.eq("exportItems"),
+        any()
+      )(any(), any(), any())
       verify(mockCustomsCacheService)
         .remove(ArgumentMatchers.eq("goodsItemCacheId"))(any(), any())
     }

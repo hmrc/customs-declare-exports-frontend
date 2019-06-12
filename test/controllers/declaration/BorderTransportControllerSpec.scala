@@ -58,7 +58,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
     "return 200 code" in {
       val result = route(app, getRequest(uri)).value
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "populate the form fields with data from cache" in {
@@ -99,7 +99,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
         val result = route(app, request).value
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result).replaceCSRF mustBe view(form.bindFromRequest()(request), request).body.replaceCSRF
       }
 
@@ -118,7 +118,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
-          status(result) must be(SEE_OTHER)
+          status(result) mustBe SEE_OTHER
           result.futureValue.header.headers.get("Location") must be(
             Some("/customs-declare-exports/declaration/transport-details")
           )
@@ -144,7 +144,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
             ("meansOfTransportOnDepartureIDNumber", borderTransport.meansOfTransportOnDepartureIDNumber.getOrElse(""))
           )
           val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
-          status(result) must be(SEE_OTHER)
+          status(result) mustBe SEE_OTHER
           result.futureValue.header.headers.get("Location") must be(
             Some("/customs-declare-exports/declaration/transport-details")
           )

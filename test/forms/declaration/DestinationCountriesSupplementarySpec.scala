@@ -31,7 +31,7 @@ class DestinationCountriesSupplementarySpec extends WordSpec with MustMatchers {
         "declaration.goodsShipment.exportCountry.id" -> "PL"
       )
 
-      destinationCountries.toMetadataProperties() must equal(expectedMetadataProperties)
+      destinationCountries.toMetadataProperties() mustEqual expectedMetadataProperties
     }
   }
 

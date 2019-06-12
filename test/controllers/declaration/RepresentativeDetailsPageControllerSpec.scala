@@ -52,7 +52,7 @@ class RepresentativeDetailsPageControllerSpec
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "not populate the form fields if cache is empty" in {
@@ -80,7 +80,7 @@ class RepresentativeDetailsPageControllerSpec
         val emptyForm = buildRepresentativeDetailsJsonInput(eori = "12345678")
         val result = route(app, postRequest(uri, emptyForm)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(repTypeErrorEmpty))
       }
 
@@ -89,7 +89,7 @@ class RepresentativeDetailsPageControllerSpec
         val emptyForm = buildRepresentativeDetailsJsonInput(status = "2")
         val result = route(app, postRequest(uri, emptyForm)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(eoriOrAddressEmpty))
       }
     }
@@ -101,7 +101,7 @@ class RepresentativeDetailsPageControllerSpec
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(eoriError))
       }
 
@@ -110,7 +110,7 @@ class RepresentativeDetailsPageControllerSpec
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(fullNameError))
       }
 
@@ -119,7 +119,7 @@ class RepresentativeDetailsPageControllerSpec
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(addressLineError))
       }
 
@@ -128,7 +128,7 @@ class RepresentativeDetailsPageControllerSpec
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(townOrCityError))
       }
 
@@ -137,7 +137,7 @@ class RepresentativeDetailsPageControllerSpec
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(postCodeError))
       }
 
@@ -146,7 +146,7 @@ class RepresentativeDetailsPageControllerSpec
         val incorrectFormData = incorrectRepresentativeDetails
         val result = route(app, postRequest(uri, incorrectFormData)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(countryError))
       }
     }
@@ -158,7 +158,7 @@ class RepresentativeDetailsPageControllerSpec
       val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
     }
 
@@ -168,7 +168,7 @@ class RepresentativeDetailsPageControllerSpec
       val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/carrier-details"))
     }
 
@@ -177,7 +177,7 @@ class RepresentativeDetailsPageControllerSpec
       val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
     }
 
@@ -187,7 +187,7 @@ class RepresentativeDetailsPageControllerSpec
       val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/carrier-details"))
     }
 
@@ -207,13 +207,13 @@ class RepresentativeDetailsPageControllerSpec
       "data is correct" in {
         val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
 
       "data is empty" in {
         val result = route(app, postRequest(uri, JsObject(Map[String, JsValue]().empty))).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
     }
 

@@ -29,17 +29,17 @@ class AdditionalDeclarationTypeStandardDecSpec extends WordSpec with MustMatcher
       "provided with empty input" in {
         val form = AdditionalDeclarationTypeStandardDec.form().bind(emptyAdditionalDeclarationTypeStandardDecJSON)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.declarationType.inputText.error.empty")
+        form.hasErrors mustBe true
+        form.errors.length mustEqual 1
+        form.errors.head.message mustEqual "declaration.declarationType.inputText.error.empty"
       }
 
       "provided with a value not defined in AllowedAdditionalDeclarationTypes" in {
         val form = AdditionalDeclarationTypeStandardDec.form().bind(incorrectAdditionalDeclarationTypeStandardDecJSON)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.declarationType.inputText.error.incorrect")
+        form.hasErrors mustBe true
+        form.errors.length mustEqual 1
+        form.errors.head.message mustEqual "declaration.declarationType.inputText.error.incorrect"
       }
     }
 
@@ -47,7 +47,7 @@ class AdditionalDeclarationTypeStandardDecSpec extends WordSpec with MustMatcher
       "provided with valid input" in {
         val form = AdditionalDeclarationTypeStandardDec.form().bind(correctAdditionalDeclarationTypeStandardDecJSON)
 
-        form.hasErrors must be(false)
+        form.hasErrors mustBe false
       }
     }
   }

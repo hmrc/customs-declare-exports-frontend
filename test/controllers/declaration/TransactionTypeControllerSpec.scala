@@ -40,7 +40,7 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with Transacti
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in {
@@ -51,7 +51,7 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with Transacti
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       page must include("AAA9")
       page must include("FancyShoes")
     }
@@ -63,7 +63,7 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with Transacti
 
       val result = route(app, postRequest(uri, emptyTransactionTypeJSON)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(documentTypeCodeEmpty))
     }
 
@@ -72,7 +72,7 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with Transacti
       val result = route(app, postRequest(uri, incorrectTransactionTypeJSON)).get
       val stringResult = contentAsString(result)
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
 
       stringResult must include(messages(documentTypeCodeError))
       stringResult must include(messages(identifierError))
@@ -83,7 +83,7 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with Transacti
       val result = route(app, postRequest(uri, correctTransactionTypeJSON)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/previous-documents"))
     }

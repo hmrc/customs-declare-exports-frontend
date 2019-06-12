@@ -37,7 +37,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
     "return 200 code" in {
 
       val result = route(app, getRequest(uri)).get
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
   }
 
@@ -49,7 +49,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
       successfulCancelDeclarationResponse(CancellationRequested)
       val result = route(app, postRequest(uri, CancelDeclarationSpec.correctCancelDeclarationJSON)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
 
       val stringResult = contentAsString(result)
       stringResult must include(messages("cancellation.confirmationPage.message"))
@@ -62,7 +62,7 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeA
       successfulCancelDeclarationResponse(CancellationRequested)
       val result = route(app, postRequest(uri, CancelDeclarationSpec.correctCancelDeclarationJSON)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
 
       val stringResult = contentAsString(result)
       stringResult must include(messages("cancellation.confirmationPage.message"))

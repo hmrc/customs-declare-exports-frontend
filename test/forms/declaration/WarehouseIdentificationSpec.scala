@@ -33,7 +33,7 @@ class WarehouseIdentificationSpec extends WordSpec with MustMatchers {
         "declaration.goodsShipment.consignment.arrivalTransportMeans.modeCode" -> inlandModeOfTransportCode
       )
 
-      warehouseIdentification.toMetadataProperties() must equal(expectedMetadataProperties)
+      warehouseIdentification.toMetadataProperties() mustEqual expectedMetadataProperties
     }
   }
 

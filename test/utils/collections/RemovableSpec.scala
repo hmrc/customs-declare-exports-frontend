@@ -49,7 +49,7 @@ class RemovableSpec extends WordSpec with MustMatchers {
         assertIndexOutOfBoundsExceptionBeingThrown(collection, indexToRemove)
       }
 
-      def assertIndexOutOfBoundsExceptionBeingThrown(collection: Seq[_], indexToRemove: Int): Unit =
+      def assertIndexOutOfBoundsExceptionBeingThrown(collection: Seq[_], indexToRemove: Int) =
         an[IndexOutOfBoundsException] should be thrownBy collection.removeByIdx(indexToRemove)
     }
 
@@ -59,7 +59,7 @@ class RemovableSpec extends WordSpec with MustMatchers {
         val collection = Seq("single-element")
         val indexToRemove = 0
 
-        collection.removeByIdx(indexToRemove) must equal(Seq.empty[String])
+        collection.removeByIdx(indexToRemove) mustEqual Seq.empty[String]
       }
     }
 
@@ -70,7 +70,7 @@ class RemovableSpec extends WordSpec with MustMatchers {
         val indexToRemove = 0
         val expectedOutput = Seq("b", "c", "d", "e")
 
-        collection.removeByIdx(indexToRemove) must equal(expectedOutput)
+        collection.removeByIdx(indexToRemove) mustEqual expectedOutput
       }
 
       "removing the last element in the sequence" in {
@@ -78,7 +78,7 @@ class RemovableSpec extends WordSpec with MustMatchers {
         val indexToRemove = collection.length - 1
         val expectedOutput = Seq("a", "b", "c", "d")
 
-        collection.removeByIdx(indexToRemove) must equal(expectedOutput)
+        collection.removeByIdx(indexToRemove) mustEqual expectedOutput
       }
 
       "removing an element from the middle of the sequence" in {
@@ -86,10 +86,8 @@ class RemovableSpec extends WordSpec with MustMatchers {
         val indexToRemove = 2
         val expectedOutput = Seq("a", "b", "d", "e")
 
-        collection.removeByIdx(indexToRemove) must equal(expectedOutput)
+        collection.removeByIdx(indexToRemove) mustEqual expectedOutput
       }
     }
-
   }
-
 }

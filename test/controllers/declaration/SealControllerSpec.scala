@@ -62,7 +62,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
       authorizedUser()
 
       val result = route(app, getRequest(uri)).value
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "populate the form fields with data from cache" in {
@@ -101,7 +101,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
           val result = route(app, request).value
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
           contentAsString(result).replaceCSRF mustBe view(form.bindFromRequest()(request), seals)(request).body.replaceCSRF
         }
       }
@@ -118,7 +118,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
-          status(result) must be(SEE_OTHER)
+          status(result) mustBe SEE_OTHER
           val updatedSeals = seals :+ seal
           verify(mockCustomsCacheService)
             .cache[Seq[Seal]](any(), ArgumentMatchers.eq(Seal.formId), ArgumentMatchers.eq(updatedSeals))(
@@ -140,7 +140,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
             val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
-            status(result) must be(SEE_OTHER)
+            status(result) mustBe SEE_OTHER
             val updatedSeals = seals.zipWithIndex.filter(_._2 != 1).map(_._1)
             verify(mockCustomsCacheService)
               .cache[Seq[Seal]](any(), ArgumentMatchers.eq(Seal.formId), ArgumentMatchers.eq(updatedSeals))(
@@ -161,7 +161,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
           withCaching[Seq[Seal]](None, Seal.formId)
           val payload = Seq(("id", seal.id)) :+ saveAndContinueActionUrlEncoded
           val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
-          status(result) must be(SEE_OTHER)
+          status(result) mustBe SEE_OTHER
           result.futureValue.header.headers.get("Location") must be(
             Some("/customs-declare-exports/declaration/summary")
           )

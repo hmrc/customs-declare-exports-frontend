@@ -35,7 +35,7 @@ class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with Confirma
 
       val result = route(app, getRequest(uriWithContextPath("/declaration/confirmation"))).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
   }
 }

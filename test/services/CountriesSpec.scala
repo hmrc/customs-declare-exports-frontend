@@ -23,11 +23,11 @@ class CountriesSpec extends CustomExportsBaseSpec {
 
   "Countries" should {
     "give all countries with codes in alphabetical order of country name with filtering according to permitted MDG values" in {
-      allCountries.contains(Country("Afghanistan", "AF")) must be(true)
-      allCountries.contains(Country("Curaçao", "CW")) must be(true)
-      allCountries.contains(Country("Réunion", "RE")) must be(true)
-      allCountries.contains(Country("Zimbabwe", "ZW")) must be(true)
-      allCountries.contains(Country("Åland Islands", "AX")) must be(true)
+      allCountries.contains(Country("Afghanistan", "AF")) mustBe true
+      allCountries.contains(Country("Curaçao", "CW")) mustBe true
+      allCountries.contains(Country("Réunion", "RE")) mustBe true
+      allCountries.contains(Country("Zimbabwe", "ZW")) mustBe true
+      allCountries.contains(Country("Åland Islands", "AX")) mustBe true
     }
   }
 }

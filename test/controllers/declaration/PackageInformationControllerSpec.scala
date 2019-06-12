@@ -67,7 +67,7 @@ class PackageInformationControllerSpec
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read data from cache" in {
@@ -125,7 +125,7 @@ class PackageInformationControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, typesOfPackagesError, "#typesOfPackages")
@@ -140,7 +140,7 @@ class PackageInformationControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, numberOfPackagesError, "#numberOfPackages")
@@ -155,7 +155,7 @@ class PackageInformationControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, shippingMarksLengthError, "#shippingMarks")
@@ -173,7 +173,7 @@ class PackageInformationControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, piGlobalDuplicate, "#")
@@ -189,7 +189,7 @@ class PackageInformationControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, piGlobalLimit, "#")
@@ -207,7 +207,7 @@ class PackageInformationControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, typesOfPackagesError, "#typesOfPackages")
@@ -223,7 +223,7 @@ class PackageInformationControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, numberOfPackagesError, "#numberOfPackages")
@@ -239,7 +239,7 @@ class PackageInformationControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         val page = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, shippingMarksLengthError, "#shippingMarks")
@@ -274,7 +274,7 @@ class PackageInformationControllerSpec
           val result = route(app, getRequest(uri)).value
           val stringResult = contentAsString(result)
 
-          status(result) must be(OK)
+          status(result) mustBe OK
           stringResult must include(messages(title))
           stringResult must include(messages(typesOfPackages))
           stringResult must include(messages(typesOfPackagesHint))
@@ -293,7 +293,7 @@ class PackageInformationControllerSpec
           withCaching[List[PackageInformation]](cachedData, formId)
 
           val result = route(app, getRequest(uri)).value
-          status(result) must be(OK)
+          status(result) mustBe OK
 
           val stringResult = contentAsString(result)
 
@@ -329,7 +329,7 @@ class PackageInformationControllerSpec
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
           contentAsString(result) must include(messages(typesOfPackagesError))
         }
       }
@@ -344,7 +344,7 @@ class PackageInformationControllerSpec
 
             val payload = toMap(packaging).toSeq :+ addActionUrlEncoded
             val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
-            status(result) must be(SEE_OTHER)
+            status(result) mustBe SEE_OTHER
 
             result.futureValue.header.headers.get("Location") must be(
               Some("/customs-declare-exports/declaration/package-information")
@@ -369,7 +369,7 @@ class PackageInformationControllerSpec
 
           val result = route(app, postRequestFormUrlEncoded(uri, Seq(saveAndContinueActionUrlEncoded): _*)).value
           val page = contentAsString(result)
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
 
@@ -393,7 +393,7 @@ class PackageInformationControllerSpec
             val payload = toMap(packaging).toSeq :+ saveAndContinueActionUrlEncoded
             val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
             val page = contentAsString(result)
-            status(result) must be(BAD_REQUEST)
+            status(result) mustBe BAD_REQUEST
 
             checkErrorsSummary(page)
             checkErrorLink(page, 1, piGlobalUseAdd, "#")
@@ -412,7 +412,7 @@ class PackageInformationControllerSpec
               val packaging = packagingSeq.head
               val payload = toMap(packaging).toSeq :+ removeActionUrlEncoded("0")
               val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
-              status(result) must be(SEE_OTHER)
+              status(result) mustBe SEE_OTHER
               result.futureValue.header.headers.get("Location") must be(
                 Some("/customs-declare-exports/declaration/package-information")
               )
@@ -436,7 +436,7 @@ class PackageInformationControllerSpec
             withCaching[Seq[PackageInformation]](Some(Seq(packaging)), formId)
 
             val result = route(app, postRequestFormUrlEncoded(uri, Seq(saveAndContinueActionUrlEncoded): _*)).value
-            status(result) must be(SEE_OTHER)
+            status(result) mustBe SEE_OTHER
             result.futureValue.header.headers.get("Location") must be(
               Some("/customs-declare-exports/declaration/commodity-measure")
             )

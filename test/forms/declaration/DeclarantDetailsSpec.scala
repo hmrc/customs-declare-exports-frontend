@@ -35,7 +35,7 @@ class DeclarantDetailsSpec extends WordSpec with MustMatchers {
         "declaration.declarant.address.countryCode" -> countryCode
       )
 
-      declarantDetails.toMetadataProperties() must equal(expectedDeclarantDetailsProperties)
+      declarantDetails.toMetadataProperties() mustEqual expectedDeclarantDetailsProperties
     }
   }
 

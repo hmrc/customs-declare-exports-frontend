@@ -46,7 +46,7 @@ class ProcedureCodesPageControllerSpec
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in {
@@ -57,7 +57,7 @@ class ProcedureCodesPageControllerSpec
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
 
       getElementByCss(page, "table>tbody>tr>th:nth-child(1)").text() must be("123")
       getElementByCss(page, "table>tbody>tr>th:nth-child(2)>button").text() must be(messages(removeCaption))
@@ -82,7 +82,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorEmpty, "#additionalProcedureCode")
@@ -99,7 +99,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, procCodeErrorLength, "#procedureCode")
@@ -114,7 +114,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, procCodeErrorLength, "#procedureCode")
@@ -129,7 +129,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, procCodeErrorSpecialCharacters, "#procedureCode")
@@ -146,7 +146,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorEmpty, "#additionalProcedureCode")
@@ -163,7 +163,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorLength, "#additionalProcedureCode")
@@ -180,7 +180,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorLength, "#additionalProcedureCode")
@@ -197,7 +197,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorSpecialCharacters, "#additionalProcedureCode")
@@ -216,7 +216,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorDuplication, "#additionalProcedureCode")
@@ -234,7 +234,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorMaxAmount, "#")
@@ -250,7 +250,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, procCodeErrorEmpty, "#procedureCode")
@@ -269,7 +269,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, procCodeErrorEmpty, "#procedureCode")
@@ -284,7 +284,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, procCodeErrorLength, "#procedureCode")
@@ -299,7 +299,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, procCodeErrorLength, "#procedureCode")
@@ -314,7 +314,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, procCodeErrorSpecialCharacters, "#procedureCode")
@@ -331,7 +331,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorMandatory, "#additionalProcedureCode")
@@ -348,7 +348,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorLength, "#additionalProcedureCode")
@@ -365,7 +365,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorLength, "#additionalProcedureCode")
@@ -382,7 +382,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorSpecialCharacters, "#additionalProcedureCode")
@@ -401,7 +401,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorDuplication, "#additionalProcedureCode")
@@ -419,7 +419,7 @@ class ProcedureCodesPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, addProcCodeErrorMaxAmount, "#")
@@ -435,7 +435,7 @@ class ProcedureCodesPageControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
         val stringResult = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         stringResult must include(messages(globalErrorTitle))
         stringResult must include(messages(globalErrorHeading))
         stringResult must include(messages(globalErrorMessage))
@@ -453,7 +453,7 @@ class ProcedureCodesPageControllerSpec
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
 
       "user provides additional code that does not exist in cache " in {
@@ -465,7 +465,7 @@ class ProcedureCodesPageControllerSpec
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
     }
 
@@ -480,7 +480,7 @@ class ProcedureCodesPageControllerSpec
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
     }
 
@@ -493,7 +493,7 @@ class ProcedureCodesPageControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/item-type"))
       }
 
@@ -506,7 +506,7 @@ class ProcedureCodesPageControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/item-type"))
       }
     }

@@ -60,14 +60,14 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val result = route(app, getRequest(uri)).get
 
-        status(result) must be(OK)
+        status(result) mustBe OK
       }
 
       "user is during standard declaration" in new StandardSetUp {
 
         val result = route(app, getRequest(uri)).get
 
-        status(result) must be(OK)
+        status(result) mustBe OK
       }
     }
 
@@ -81,7 +81,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
 
-        status(result) must be(OK)
+        status(result) mustBe OK
         page must include("Netherlands")
         page must include("Belgium")
       }
@@ -94,7 +94,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
 
-        status(result) must be(OK)
+        status(result) mustBe OK
         page must include("Poland")
         page must include("Slovakia")
         page must include("Italy")
@@ -110,7 +110,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       val result = route(app, postRequest(uri, incorrectDestinationCountriesSupplementaryJSON)).get
       val stringResult = contentAsString(result)
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       stringResult must include(messages(countryOfDestinationError))
       stringResult must include(messages(countryOfDispatchError))
     }
@@ -126,7 +126,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(countriesOfRoutingError))
     }
 
@@ -136,7 +136,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val result = route(app, postRequest(uri, emptyDestinationCountriesSupplementaryJSON)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(countryOfDispatchEmpty))
       }
 
@@ -151,7 +151,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(countryOfDispatchEmpty))
       }
     }
@@ -169,7 +169,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(countriesOfRoutingEmpty))
       }
     }
@@ -180,7 +180,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val result = route(app, postRequest(uri, emptyDestinationCountrySupplementaryJSON)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(countryOfDestinationEmpty))
       }
 
@@ -195,7 +195,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages(countryOfDestinationEmpty))
       }
     }
@@ -211,7 +211,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "show error message for standard declaration" when {
@@ -229,7 +229,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         )
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages("supplementary.limit"))
       }
 
@@ -245,7 +245,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         )
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(messages("supplementary.duplication"))
       }
     }
@@ -261,7 +261,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
-        status(result) must be(OK)
+        status(result) mustBe OK
       }
     }
 
@@ -269,7 +269,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       val result = route(app, postRequestFormUrlEncoded(uri)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
     }
 
     "validate user input and redirect to location of goods page" when {
@@ -279,7 +279,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val result = route(app, postRequest(uri, correctDestinationCountriesSupplementaryJSON)).get
         val header = result.futureValue.header
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/location-of-goods"))
       }
 
@@ -297,7 +297,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
     }
   }

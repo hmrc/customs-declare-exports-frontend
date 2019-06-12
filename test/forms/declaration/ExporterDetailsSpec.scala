@@ -30,27 +30,21 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers {
 
       val metadata = MetaData.fromProperties(exporterDetails.toMetadataProperties())
 
-      metadata.declaration must be(defined)
-      metadata.declaration.get.exporter must be(defined)
-      metadata.declaration.get.exporter.get.id must be(defined)
-      metadata.declaration.get.exporter.get.id.get must equal(exporterDetails.details.eori.get)
-      metadata.declaration.get.exporter.get.name must be(defined)
-      metadata.declaration.get.exporter.get.name.get must equal(exporterDetails.details.address.get.fullName)
-      metadata.declaration.get.exporter.get.address must be(defined)
-      metadata.declaration.get.exporter.get.address.get.line must be(defined)
-      metadata.declaration.get.exporter.get.address.get.line.get must equal(
-        exporterDetails.details.address.get.addressLine
-      )
-      metadata.declaration.get.exporter.get.address.get.cityName must be(defined)
-      metadata.declaration.get.exporter.get.address.get.cityName.get must equal(
-        exporterDetails.details.address.get.townOrCity
-      )
-      metadata.declaration.get.exporter.get.address.get.postcodeId must be(defined)
-      metadata.declaration.get.exporter.get.address.get.postcodeId.get must equal(
-        exporterDetails.details.address.get.postCode
-      )
-      metadata.declaration.get.exporter.get.address.get.countryCode must be(defined)
-      metadata.declaration.get.exporter.get.address.get.countryCode.get must equal(countryCode)
+      metadata.declaration mustBe defined
+      metadata.declaration.get.exporter mustBe defined
+      metadata.declaration.get.exporter.get.id mustBe defined
+      metadata.declaration.get.exporter.get.id.get mustEqual exporterDetails.details.eori.get
+      metadata.declaration.get.exporter.get.name mustBe defined
+      metadata.declaration.get.exporter.get.name.get mustEqual exporterDetails.details.address.get.fullName
+      metadata.declaration.get.exporter.get.address mustBe defined
+      metadata.declaration.get.exporter.get.address.get.line mustBe defined
+      metadata.declaration.get.exporter.get.address.get.line.get mustEqual exporterDetails.details.address.get.addressLine
+      metadata.declaration.get.exporter.get.address.get.cityName mustBe defined
+      metadata.declaration.get.exporter.get.address.get.cityName.get mustEqual exporterDetails.details.address.get.townOrCity
+      metadata.declaration.get.exporter.get.address.get.postcodeId mustBe defined
+      metadata.declaration.get.exporter.get.address.get.postcodeId.get mustEqual exporterDetails.details.address.get.postCode
+      metadata.declaration.get.exporter.get.address.get.countryCode mustBe defined
+      metadata.declaration.get.exporter.get.address.get.countryCode.get mustEqual countryCode
     }
   }
 

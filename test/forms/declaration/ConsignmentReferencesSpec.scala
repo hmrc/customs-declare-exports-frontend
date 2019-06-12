@@ -32,7 +32,7 @@ class ConsignmentReferencesSpec extends WordSpec with MustMatchers {
           "declaration.functionalReferenceId" -> consignmentReferences.lrn
         )
 
-      consignmentReferences.toMetadataProperties() must equal(expectedConsignmentReferencesProperties)
+      consignmentReferences.toMetadataProperties() mustEqual expectedConsignmentReferencesProperties
     }
   }
 
@@ -54,5 +54,4 @@ object ConsignmentReferencesSpec {
   val emptyConsignmentReferencesJSON: JsValue = JsObject(
     Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString(""))
   )
-
 }

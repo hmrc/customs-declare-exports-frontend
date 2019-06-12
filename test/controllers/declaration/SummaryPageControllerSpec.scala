@@ -62,7 +62,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     "there is data in cache for supplementary declaration" should {
       "return 200 code" in new Test {
         val result = route(app, getRequest(summaryPageUri)).get
-        status(result) must be(OK)
+        status(result) mustBe OK
       }
 
       "display \"Back\" button that links to \"Export-items\" page" in new Test {
@@ -200,7 +200,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
       "return 303 code" in new Test {
         val result = route(app, postRequest(summaryPageUri, emptyForm)).get
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
 
       "redirect to confirmation page" in new Test {
@@ -218,8 +218,8 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         val result = route(app, postRequest(summaryPageUri, emptyForm)).get
 
         val f = flash(result)
-        f.get("LRN") must be(defined)
-        f("LRN") must equal("123LRN")
+        f.get("LRN") mustBe defined
+        f("LRN") mustEqual "123LRN"
       }
     }
 

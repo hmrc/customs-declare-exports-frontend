@@ -42,7 +42,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "display correct hints and questions" in {
@@ -74,7 +74,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       page must include("Office")
       page must include("SecretStash")
       page must include("Sea transport")
@@ -96,7 +96,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
       val page = contentAsString(result)
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
 
       page must include(messages(supervisingCustomsOfficeError))
       page must include(messages(identificationNumberError))
@@ -109,7 +109,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(identificationNumberError))
     }
 
@@ -120,7 +120,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(identificationNumberError))
     }
 
@@ -131,7 +131,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(identificationNumberError))
     }
 
@@ -142,7 +142,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       val result = route(app, postRequest(uri, incorrectWarehouseOffice)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(supervisingCustomsOfficeError))
     }
 
@@ -153,7 +153,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       val result = route(app, postRequest(uri, incorrectWarehouseOffice)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(supervisingCustomsOfficeError))
     }
 
@@ -164,7 +164,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       val result = route(app, postRequest(uri, incorrectWarehouseOffice)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(supervisingCustomsOfficeError))
     }
 
@@ -175,7 +175,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       val result = route(app, postRequest(uri, incorrectTransportCode)).get
 
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(inlandTransportModeError))
     }
 
@@ -184,7 +184,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       val result = route(app, postRequest(uri, emptyWarehouseIdentificationJSON)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/border-transport"))
     }
@@ -194,7 +194,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       val result = route(app, postRequest(uri, correctWarehouseIdentificationJSON)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/border-transport"))
     }

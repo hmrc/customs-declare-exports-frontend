@@ -57,7 +57,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
           val result = route(app, getRequest(uri)).value
           val stringResult = contentAsString(result)
 
-          status(result) must be(OK)
+          status(result) mustBe OK
           stringResult must include(messages("supplementary.itemsAdd.title"))
           stringResult must include(messages("supplementary.itemsAdd.title.hint"))
         }
@@ -72,7 +72,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
           withCaching[Seq[GovernmentAgencyGoodsItem]](Some(cachedData), formId)
 
           val result = route(app, getRequest(uri)).value
-          status(result) must be(OK)
+          status(result) mustBe OK
 
           val stringResult = contentAsString(result)
 
@@ -88,7 +88,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
           withCaching[Seq[GovernmentAgencyGoodsItem]](Some(cachedData), formId)
 
           val result = route(app, getRequest(uri)).value
-          status(result) must be(OK)
+          status(result) mustBe OK
 
           val stringResult = contentAsString(result)
 

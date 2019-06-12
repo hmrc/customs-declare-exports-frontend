@@ -68,9 +68,7 @@ class LocationsSpec extends WordSpec with MustMatchers {
       }
 
       "return Map being sum of all Maps from sub-objects" in new TestMapConcatenation {
-        locations.toMetadataProperties() must equal(
-          destinationCountriesMap ++ goodsLocationMap ++ warehouseIdentificationMap ++ officeOfExitMap
-        )
+        locations.toMetadataProperties() mustEqual destinationCountriesMap ++ goodsLocationMap ++ warehouseIdentificationMap ++ officeOfExitMap
       }
     }
   }

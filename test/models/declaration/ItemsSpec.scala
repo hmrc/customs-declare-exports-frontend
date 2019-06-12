@@ -50,7 +50,7 @@ class ItemsSpec extends WordSpec with MustMatchers {
       }
 
       "return Map being sum of all Maps from sub-objects" in new TestMapConcatenation {
-        items.toMetadataProperties() must equal(totalNumberOfItemsMap ++ transactionTypeMap)
+        items.toMetadataProperties() mustEqual totalNumberOfItemsMap ++ transactionTypeMap
       }
     }
   }

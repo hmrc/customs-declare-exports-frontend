@@ -48,7 +48,7 @@ class TransportInformationContainersPageControllerSpec
 
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
 
     "read item from cache and display it" in {
@@ -59,7 +59,7 @@ class TransportInformationContainersPageControllerSpec
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
-      status(result) must be(OK)
+      status(result) mustBe OK
       page must include("DeliveredBestGoods")
     }
   }
@@ -74,7 +74,7 @@ class TransportInformationContainersPageControllerSpec
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
 
       "that does not exist in cache" in {
@@ -86,7 +86,7 @@ class TransportInformationContainersPageControllerSpec
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
     }
 
@@ -102,7 +102,7 @@ class TransportInformationContainersPageControllerSpec
         val body = removeActionURLEncoded("0")
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) mustBe SEE_OTHER
       }
     }
 
@@ -117,7 +117,7 @@ class TransportInformationContainersPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, ticEmpty, "#id")
@@ -132,7 +132,7 @@ class TransportInformationContainersPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, ticErrorLength, "#id")
@@ -147,7 +147,7 @@ class TransportInformationContainersPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, ticErrorAlphaNumeric, "#id")
@@ -164,7 +164,7 @@ class TransportInformationContainersPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, duplication, "#")
@@ -177,7 +177,7 @@ class TransportInformationContainersPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, limit, "#")
@@ -193,7 +193,7 @@ class TransportInformationContainersPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, continueMandatory, "#")
@@ -208,7 +208,7 @@ class TransportInformationContainersPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, duplication, "#")
@@ -221,7 +221,7 @@ class TransportInformationContainersPageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
           val page = contentAsString(result)
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, limit, "#")
@@ -238,7 +238,7 @@ class TransportInformationContainersPageControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
         val stringResult = contentAsString(result)
 
-        status(result) must be(BAD_REQUEST)
+        status(result) mustBe BAD_REQUEST
 
         stringResult must include(messages(globalErrorTitle))
         stringResult must include(messages(globalErrorHeading))
@@ -256,7 +256,7 @@ class TransportInformationContainersPageControllerSpec
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
     }
 
@@ -267,7 +267,7 @@ class TransportInformationContainersPageControllerSpec
       val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionURLEncoded)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
     }
 
@@ -280,7 +280,7 @@ class TransportInformationContainersPageControllerSpec
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
       val header = result.futureValue.header
 
-      status(result) must be(SEE_OTHER)
+      status(result) mustBe SEE_OTHER
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
     }
   }

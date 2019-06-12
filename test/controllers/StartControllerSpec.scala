@@ -28,7 +28,7 @@ class StartControllerSpec extends CustomExportsBaseSpec {
     "return 200 status code" in {
       val result = route(app, getRequest(uri)).get
 
-      status(result) must be(OK)
+      status(result) mustBe OK
     }
   }
 }

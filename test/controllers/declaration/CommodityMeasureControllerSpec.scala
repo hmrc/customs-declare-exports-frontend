@@ -65,7 +65,7 @@ class CommodityMeasureControllerSpec
           withCaching[Seq[PackageInformation]](Some(packages), "PackageInformation")
           val result = route(app, getRequest(uri)).value
           val stringResult = contentAsString(result)
-          status(result) must be(OK)
+          status(result) mustBe OK
           stringResult must include(messages(title))
           stringResult must include(messages(supplementaryUnits))
           stringResult must include(messages(supplementaryUnitsHint))
@@ -82,7 +82,7 @@ class CommodityMeasureControllerSpec
           withCaching[CommodityMeasure](None, commodityFormId)
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
           val result = route(app, getRequest(uri)).value
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
           contentAsString(result) must include("You must add package information to proceed")
 
         }
@@ -114,7 +114,7 @@ class CommodityMeasureControllerSpec
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
-          status(result) must be(BAD_REQUEST)
+          status(result) mustBe BAD_REQUEST
           val content = contentAsString(result)
           content must include(messages(netMassEmpty))
           content must include(messages(grossMassEmpty))
@@ -139,7 +139,7 @@ class CommodityMeasureControllerSpec
 
             val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
-            status(result) must be(SEE_OTHER)
+            status(result) mustBe SEE_OTHER
             result.futureValue.header.headers.get("Location") must be(
               Some("/customs-declare-exports/declaration/additional-information")
             )
@@ -167,7 +167,7 @@ class CommodityMeasureControllerSpec
               ("grossMass", commodityMeasure.grossMass)
             )
             val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
-            status(result) must be(SEE_OTHER)
+            status(result) mustBe SEE_OTHER
             result.futureValue.header.headers.get("Location") must be(
               Some("/customs-declare-exports/declaration/additional-information")
             )
