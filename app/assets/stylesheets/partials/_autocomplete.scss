@@ -10,6 +10,12 @@ table {
   background-position: top;
 }
 
+.custom-combobox-input {
+  border: 2px solid #000000;
+  border-right: none;
+  padding:5px 0px 0px 5px;
+}
+
 .custom-combobox {
   position: relative;
   display: inline-block;
@@ -22,9 +28,4 @@ table {
   bottom: 0;
   margin-left: -1px;
   padding: 0;
-}
-
-.custom-combobox-input {
-  border: 2px solid #000000;
-  border-right: none;
 }

@@ -31,6 +31,7 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.countries.Countries
+import services.model.AutoCompleteItem
 import services.{Country, CustomsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -53,7 +54,11 @@ class DestinationCountriesController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass())
-  implicit val countryList: List[Country] = countries.all
+  implicit val countryList: List[AutoCompleteItem] = getCountryData(countries.all)
+
+    def getCountryData(countries: List[Country]): List[AutoCompleteItem] ={
+      countries.map(country => AutoCompleteItem(country.countryName, country.countryCode))
+    }
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.choice.value match {

@@ -21,7 +21,8 @@
 @import uk.gov.hmrc.play.views.html._
 @import services.Country
 
-@(form: Form[DestinationCountriesSupplementary])(implicit request: JourneyRequest[_], messages: Messages, countries: List[Country], appConfig: AppConfig)
+@import services.model.AutoCompleteItem
+@(form: Form[DestinationCountriesSupplementary])(implicit request: JourneyRequest[_], messages: Messages, countries: List[AutoCompleteItem], appConfig: AppConfig)
 
 @main_template(
     title = messages("declaration.destinationCountries.title"),
@@ -38,7 +39,7 @@
         @components.page_title(Some("declaration.destinationCountries.title"))
 
         <div id="country-of-dispatch-field" class="inline-block form-group">
-            @components.country_field(
+            @components.autocomplete_field(
                 form,
                 "countryOfDispatch",
                 "declaration.destinationCountries.countryOfDispatch",
@@ -49,7 +50,7 @@
         </div>
 
         <div id="country-of-destination-field" class="inline-block form-group">
-            @components.country_field(
+            @components.autocomplete_field(
                 form,
                 "countryOfDestination",
                 "declaration.destinationCountries.countryOfDestination",

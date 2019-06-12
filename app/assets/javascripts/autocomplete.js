@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 this.input = $("<input>")
                     .appendTo(this.wrapper)
                     .val(value)
-                    .attr("title", "")
+                    .attr("autocomplete", "off")
                     .addClass("custom-combobox-input ui-state-default ui-corner-left")
                     .autocomplete({
                         delay: 0,

@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import services.Country
 @import views.html.helper._
 
-@(form: Form[_], field: String, label: String, hintText: Option[String], emptySelectValue: String, countries: List[Country], args: (Symbol, Any)*)(implicit messages: Messages)
+@import services.model.AutoCompleteItem
+@(form: Form[_], field: String, label: String, hintText: Option[String], emptySelectValue: String, items: List[AutoCompleteItem], args: (Symbol, Any)*)(implicit messages: Messages)
 
     @*
         Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
@@ -45,12 +45,6 @@
         }
     }
 
-    <style>
-        .custom-combobox-input {
-            border: 2px solid #000000;
-            border-right: none;
-        }
-    </style>
 
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function (event) {
@@ -64,7 +58,7 @@
         });
     </script>
 
-    <div id="@fieldWithoutBrackets-country-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
+    <div id="@fieldWithoutBrackets-autocomplete-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
         <label id="@(fieldWithoutBrackets)-label" for="@fieldWithoutBrackets" class="form-label-bold">
             @messages(label)
 
@@ -80,7 +74,7 @@
 
         <select id="@(fieldWithoutBrackets)" name="@(field)">
             <option value="">@emptySelectValue</option>
-            @for(option <- countries.map(c => (c.countryCode, c.countryName))) {
+            @for(option <- items.map(i => (i.value, i.label))) {
                 <option value="@option._1" @if(selectedValue == option._1) {selected="selected"}>@option._2 - @option._1</option>
             }
         </select>
