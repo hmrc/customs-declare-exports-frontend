@@ -16,41 +16,12 @@
 
 package forms.declaration
 
-import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, FormError, Forms}
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import services.Countries.allCountries
 import utils.validators.forms.FieldValidator.isContainedIn
 
-case class RepresentativeDetails(
-  details: Option[EntityDetails],
-  statusCode: Option[String] //  numeric, [1] or [2] or [3]
-) extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.agent.id" -> details.flatMap(_.eori).getOrElse(""),
-      "declaration.agent.functionCode" -> statusCode.getOrElse("")
-    ) ++ buildAddressProperties()
-
-  private def buildAddressProperties(): Map[String, String] = details match {
-    case Some(details) =>
-      Map(
-        "declaration.agent.name" -> details.address.map(_.fullName).getOrElse(""),
-        "declaration.agent.address.line" -> details.address.map(_.addressLine).getOrElse(""),
-        "declaration.agent.address.cityName" -> details.address.map(_.townOrCity).getOrElse(""),
-        "declaration.agent.address.postcodeId" -> details.address.map(_.postCode).getOrElse(""),
-        "declaration.agent.address.countryCode" ->
-          allCountries
-            .find(country => details.address.fold(false)(_.country.contains(country.countryName)))
-            .map(_.countryCode)
-            .getOrElse("")
-      )
-    case None => Map.empty
-  }
-
-}
+case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Option[String])
 
 object RepresentativeDetails {
   implicit val format = Json.format[RepresentativeDetails]

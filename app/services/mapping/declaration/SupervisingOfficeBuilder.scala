@@ -26,15 +26,18 @@ object SupervisingOfficeBuilder {
   def build(implicit cacheMap: CacheMap): SupervisingOffice =
     cacheMap
       .getEntry[WarehouseIdentification](WarehouseIdentification.formId)
+      .filter(isDefined)
       .map(createSupervisingOffice)
       .orNull
+
+  private def isDefined(data: WarehouseIdentification): Boolean = data.supervisingCustomsOffice.isDefined
 
   private def createSupervisingOffice(data: WarehouseIdentification): SupervisingOffice = {
     val supervisingOffice = new SupervisingOffice()
 
-    if (data.supervisingCustomsOffice.getOrElse("").nonEmpty) {
+    data.supervisingCustomsOffice.foreach { value =>
       val iDType = new SupervisingOfficeIdentificationIDType()
-      iDType.setValue(data.supervisingCustomsOffice.get)
+      iDType.setValue(value)
       supervisingOffice.setID(iDType)
     }
 

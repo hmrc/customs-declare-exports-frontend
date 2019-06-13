@@ -16,23 +16,12 @@
 
 package forms.declaration
 
-import forms.MetadataPropertiesConvertable
-import play.api.data.Forms.{optional, text}
+import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
 case class TotalNumberOfItems(totalAmountInvoiced: String, exchangeRate: String, totalPackage: String)
-    extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.invoiceAmount.value" -> totalAmountInvoiced,
-      "declaration.invoiceAmount.currencyId" -> "GBP",
-      "declaration.currencyExchanges[0].rateNumeric" -> exchangeRate,
-      "declaration.totalPackageQuantity" -> totalPackage
-    )
-}
 
 object TotalNumberOfItems {
   implicit val format = Json.format[TotalNumberOfItems]

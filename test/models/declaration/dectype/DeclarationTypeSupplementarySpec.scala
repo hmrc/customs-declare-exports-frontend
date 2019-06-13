@@ -20,27 +20,7 @@ import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.declaration.DispatchLocationSpec._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes.Simplified
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
-import uk.gov.hmrc.wco.dec.MetaData
-
-class DeclarationTypeSupplementarySpec extends WordSpec with MustMatchers {
-  import DeclarationTypeSupplementarySpec._
-
-  "Method toMetadataProperties" should {
-    "return proper Metadata Properties" in {
-      val declarationType = correctDeclarationType
-      val expectedTypeCode = declarationType.dispatchLocation.get.dispatchLocation + declarationType.additionalDeclarationType.get.additionalDeclarationType
-
-      val metadata = MetaData.fromProperties(declarationType.toMetadataProperties())
-
-      metadata.declaration must be(defined)
-      metadata.declaration.get.typeCode must be(defined)
-      metadata.declaration.get.typeCode.get must equal(expectedTypeCode)
-    }
-  }
-
-}
 
 object DeclarationTypeSupplementarySpec {
   val correctDeclarationType =

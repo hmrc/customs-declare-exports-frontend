@@ -20,6 +20,7 @@ import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class UCRBuilderSpec extends WordSpec with Matchers with MockitoSugar {
@@ -40,7 +41,7 @@ class UCRBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
       "ducr not supplied" in {
         implicit val cacheMap =
-          CacheMap("CacheID", Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.emptyConsignmentReferencesJSON))
+          CacheMap("CacheID", Map(ConsignmentReferences.id -> Json.toJson(ConsignmentReferences(None, "123LRN"))))
         UCRBuilder.build(cacheMap) should be(null)
       }
 

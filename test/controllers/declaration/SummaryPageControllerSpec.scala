@@ -27,8 +27,8 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.verification.VerificationMode
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.wco.dec.MetaData
 
 import scala.concurrent.Future
@@ -146,7 +146,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
         resultAsString must include(messages("supplementary.transportInfo.containers.title"))
         resultAsString must include(messages("supplementary.transportInfo.containerId.title"))
-        resultAsString must include(messages("container-M1l3s"))
+        resultAsString must include(messages("M1l3s"))
       }
 
       "get the whole supplementary declaration data from cache" in new Test {

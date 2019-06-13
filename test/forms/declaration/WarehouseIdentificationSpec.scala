@@ -17,27 +17,7 @@
 package forms.declaration
 
 import forms.declaration.TransportCodes._
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
-
-class WarehouseIdentificationSpec extends WordSpec with MustMatchers {
-  import WarehouseIdentificationSpec._
-
-  "Method toMetadataProperties" should {
-    "return proper Metadata Properties" in {
-      val warehouseIdentification = correctWarehouseIdentification
-      val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.warehouse.id" -> warehouseId,
-        "declaration.goodsShipment.warehouse.typeCode" -> warehouseTypeCode,
-        "declaration.supervisingOffice.id" -> office,
-        "declaration.goodsShipment.consignment.arrivalTransportMeans.modeCode" -> inlandModeOfTransportCode
-      )
-
-      warehouseIdentification.toMetadataProperties() must equal(expectedMetadataProperties)
-    }
-  }
-
-}
 
 object WarehouseIdentificationSpec {
   private val warehouseTypeCode = "R"
@@ -48,7 +28,6 @@ object WarehouseIdentificationSpec {
   val correctWarehouseIdentification =
     WarehouseIdentification(Some(office), Some(warehouseTypeCode + warehouseId), Some(inlandModeOfTransportCode))
   val emptyWarehouseIdentification = WarehouseIdentification(None, None, None)
-
   val correctWarehouseIdentificationJSON: JsValue =
     JsObject(
       Map(
@@ -57,7 +36,6 @@ object WarehouseIdentificationSpec {
         "inlandModeOfTransportCode" -> JsString(Rail)
       )
     )
-
   val emptyWarehouseIdentificationJSON: JsValue =
     JsObject(
       Map(

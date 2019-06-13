@@ -16,16 +16,11 @@
 
 package models.declaration
 
-import forms.MetadataPropertiesConvertable
 import forms.declaration._
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 case class Items(totalNumberOfItems: Option[TotalNumberOfItems] = None, transactionType: Option[TransactionType] = None)
-    extends SummaryContainer with MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Seq(totalNumberOfItems.map(_.toMetadataProperties()), transactionType.map(_.toMetadataProperties())).flatten
-      .fold(Map.empty)(_ ++ _)
+    extends SummaryContainer {
 
   override def isEmpty: Boolean =
     totalNumberOfItems.isEmpty &&

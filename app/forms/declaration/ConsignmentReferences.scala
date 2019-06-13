@@ -16,7 +16,7 @@
 
 package forms.declaration
 
-import forms.{Ducr, MetadataPropertiesConvertable}
+import forms.Ducr
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -24,15 +24,8 @@ import utils.validators.forms.FieldValidator._
 
 case class ConsignmentReferences(
   ducr: Option[Ducr],
-  lrn: String // alphanumeric, up to 22 characters
-) extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.ucr.traderAssignedReferenceId" -> ducr.getOrElse(Ducr("")).ducr,
-      "declaration.functionalReferenceId" -> lrn
-    )
-}
+  lrn: String
+)
 
 object ConsignmentReferences {
   implicit val format = Json.format[ConsignmentReferences]

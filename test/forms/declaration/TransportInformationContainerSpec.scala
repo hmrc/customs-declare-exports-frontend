@@ -19,7 +19,6 @@ package forms.declaration
 import base.CustomExportsBaseSpec
 import forms.FormMatchers
 import forms.declaration.TransportInformationContainer.{mapping, maxContainerIdLength}
-import forms.declaration.TransportInformationContainerSpec._
 import generators.Generators
 import models.declaration.TransportInformationContainerData
 import org.scalacheck.Arbitrary
@@ -28,42 +27,12 @@ import org.scalacheck.Gen.{alphaNumStr, asciiStr}
 import org.scalatest.MustMatchers
 import org.scalatest.prop.PropertyChecks
 import play.api.data.Form
-import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
+import play.api.libs.json._
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemData
-import uk.gov.hmrc.wco.dec.MetaData
 import utils.validators.forms.FieldValidator.isAlphanumeric
 class TransportInformationContainerSpec
     extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers
     with GovernmentAgencyGoodsItemData {
-
-  "Method toMetadataProperties" should {
-
-    "return proper Metadata Properties" in {
-
-      val transportInformationContainerData = correctTransportInformationContainerData
-
-      val expectedProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.consignment.transportEquipments[0].id" -> transportInformationContainerData.containers.head.id
-      )
-
-      transportInformationContainerData.toMetadataProperties() must equal(expectedProperties)
-    }
-
-    "map correctly" in {
-
-      val transportInformationContainerData = correctTransportInformationContainerData
-      val metadata = MetaData.fromProperties(transportInformationContainerData.toMetadataProperties())
-
-      metadata.declaration must be(defined)
-      metadata.declaration.get.goodsShipment must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments mustNot be(empty)
-      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments.head.id must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.transportEquipments.head.id.get must equal(
-        transportInformationContainerData.containers.head.id
-      )
-    }
-  }
 
   "Transport Information Object object" should {
     "contains correct limit value" in {
@@ -114,20 +83,12 @@ class TransportInformationContainerSpec
 }
 
 object TransportInformationContainerSpec {
-  private val containerId = "id"
-
   val correctTransportInformationContainerData =
     TransportInformationContainerData(Seq(TransportInformationContainer(id = "M1l3s")))
-
   val emptyTransportInformationContainerData = TransportInformationContainer("")
-
   val correctTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("container-M1l3s")))
-
   val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
-
   val emptyTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("")))
-
-  val correctTransportInformationContainerDataJSON: JsValue = JsObject(
-    Map("containers" -> JsArray(Seq(correctTransportInformationContainerJSON)))
-  )
+  val correctTransportInformationContainerDataJSON: JsValue = Json.toJson(correctTransportInformationContainerData)
+  private val containerId = "id"
 }

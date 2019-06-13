@@ -16,26 +16,16 @@
 
 package forms.declaration
 
-import forms.MetadataPropertiesConvertable
+import forms.declaration.TransportCodes._
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
-import TransportCodes._
 case class WarehouseIdentification(
   supervisingCustomsOffice: Option[String],
   identificationNumber: Option[String],
   inlandModeOfTransportCode: Option[String]
-) extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.warehouse.typeCode" -> identificationNumber.flatMap(_.headOption).fold("")(_.toString),
-      "declaration.goodsShipment.warehouse.id" -> identificationNumber.map(_.drop(1).toString).getOrElse(""),
-      "declaration.supervisingOffice.id" -> supervisingCustomsOffice.getOrElse(""),
-      "declaration.goodsShipment.consignment.arrivalTransportMeans.modeCode" -> inlandModeOfTransportCode.getOrElse("")
-    )
-}
+)
 
 object WarehouseIdentification {
   implicit val format = Json.format[WarehouseIdentification]

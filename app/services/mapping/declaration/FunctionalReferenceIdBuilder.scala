@@ -23,6 +23,7 @@ object FunctionalReferenceIdBuilder {
   def build(implicit cacheMap: CacheMap): DeclarationFunctionalReferenceIDType =
     cacheMap
       .getEntry[ConsignmentReferences](ConsignmentReferences.id)
+      .filter(data => data.lrn.nonEmpty)
       .map(createFunctionalReferenceId)
       .orNull
 

@@ -16,7 +16,6 @@
 
 package models.declaration
 
-import forms.MetadataPropertiesConvertable
 import forms.declaration._
 import models.declaration.dectype.DeclarationTypeSupplementary
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -28,7 +27,7 @@ case class SupplementaryDeclarationData(
   locations: Option[Locations] = None,
   transportInformationContainerData: Option[TransportInformationContainerData] = None,
   items: Option[Items] = None
-) extends SummaryContainer with MetadataPropertiesConvertable {
+) extends SummaryContainer {
 
   import SupplementaryDeclarationData.SchemaMandatoryValues._
 
@@ -41,22 +40,7 @@ case class SupplementaryDeclarationData(
     "agencyAssignedCustomizationVersionCode" -> agencyAssignedCustomizationVersionCode
   )
 
-  override def toMetadataProperties(): Map[String, String] =
-    this.toMap.values
-      .foldLeft(schemaMandatoryFields) { (map, convertable) =>
-        map ++ convertable.toMetadataProperties()
-      }
-      .filter(_._2.nonEmpty)
-
-  override def isEmpty: Boolean =
-    declarationType.isEmpty &&
-      consignmentReferences.isEmpty &&
-      parties.isEmpty &&
-      locations.isEmpty &&
-      transportInformationContainerData.isEmpty &&
-      items.isEmpty
-
-  def toMap: Map[String, MetadataPropertiesConvertable] =
+  def toMap: Map[String, Product with Serializable] =
     Map(
       DeclarationTypeSupplementary.id -> declarationType,
       ConsignmentReferences.id -> consignmentReferences,
@@ -65,6 +49,14 @@ case class SupplementaryDeclarationData(
       TransportInformationContainerData.id -> transportInformationContainerData,
       Items.id -> items
     ).collect { case (key, Some(data)) => (key, data) }
+
+  override def isEmpty: Boolean =
+    declarationType.isEmpty &&
+      consignmentReferences.isEmpty &&
+      parties.isEmpty &&
+      locations.isEmpty &&
+      transportInformationContainerData.isEmpty &&
+      items.isEmpty
 }
 
 object SupplementaryDeclarationData {

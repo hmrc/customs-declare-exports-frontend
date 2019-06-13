@@ -16,7 +16,6 @@
 
 package models.declaration
 
-import forms.MetadataPropertiesConvertable
 import forms.declaration._
 import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesSupplementary}
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitSupplementary}
@@ -27,16 +26,8 @@ case class Locations(
   goodsLocation: Option[GoodsLocation] = None,
   warehouseIdentification: Option[WarehouseIdentification] = None,
   officeOfExit: Option[OfficeOfExitSupplementary] = None
-) extends SummaryContainer with MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Seq(
-      destinationCountries.map(_.toMetadataProperties()),
-      goodsLocation.map(_.toMetadataProperties()),
-      warehouseIdentification.map(_.toMetadataProperties()),
-      officeOfExit.map(_.toMetadataProperties())
-    ).flatten.fold(Map.empty)(_ ++ _)
-
+) extends SummaryContainer {
+  
   def isEmpty: Boolean =
     destinationCountries.isEmpty &&
       goodsLocation.isEmpty &&

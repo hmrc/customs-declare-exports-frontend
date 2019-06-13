@@ -16,7 +16,6 @@
 
 package models.declaration
 
-import forms.MetadataPropertiesConvertable
 import forms.declaration._
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -27,17 +26,7 @@ case class Parties(
   representativeDetails: Option[RepresentativeDetails] = None,
   declarationAdditionalActorsData: Option[DeclarationAdditionalActorsData] = None,
   declarationHoldersData: Option[DeclarationHoldersData] = None
-) extends SummaryContainer with MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Seq(
-      exporterDetails.map(_.toMetadataProperties()),
-      consigneeDetails.map(_.toMetadataProperties()),
-      declarantDetails.map(_.toMetadataProperties()),
-      representativeDetails.map(_.toMetadataProperties()),
-      declarationAdditionalActorsData.map(_.toMetadataProperties()),
-      declarationHoldersData.map(_.toMetadataProperties())
-    ).flatten.fold(Map.empty)(_ ++ _)
+) extends SummaryContainer {
 
   def isEmpty: Boolean =
     exporterDetails.isEmpty &&
