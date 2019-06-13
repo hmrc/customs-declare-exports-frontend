@@ -16,10 +16,11 @@
 
 package services.mapping.goodsshipment
 
-import forms.declaration.{WarehouseIdentification, WarehouseIdentificationSpec}
+import forms.declaration.WarehouseIdentification
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class WarehouseBuilderSpec extends WordSpec with Matchers with MockitoSugar {
@@ -30,7 +31,10 @@ class WarehouseBuilderSpec extends WordSpec with Matchers with MockitoSugar {
         implicit val cacheMap =
           CacheMap(
             "CacheID",
-            Map(WarehouseIdentification.formId -> WarehouseIdentificationSpec.correctWarehouseIdentificationJSON)
+            Map(
+              WarehouseIdentification.formId -> Json
+                .toJson(WarehouseIdentification(Some("12345678"), Some("R1234567GB"), Some("2")))
+            )
           )
         val warehouse = WarehouseBuilder.build(cacheMap)
         warehouse.getID.getValue should be("1234567GB")
@@ -41,7 +45,9 @@ class WarehouseBuilderSpec extends WordSpec with Matchers with MockitoSugar {
         implicit val cacheMap =
           CacheMap(
             "CacheID",
-            Map(WarehouseIdentification.formId -> WarehouseIdentificationSpec.emptyWarehouseIdentificationJSON)
+            Map(
+              WarehouseIdentification.formId -> Json.toJson(WarehouseIdentification(Some("something"), None, Some("2")))
+            )
           )
         WarehouseBuilder.build(cacheMap) should be(null)
       }

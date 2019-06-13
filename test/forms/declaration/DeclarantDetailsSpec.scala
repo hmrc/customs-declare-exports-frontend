@@ -16,30 +16,7 @@
 
 package forms.declaration
 
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsValue}
-
-class DeclarantDetailsSpec extends WordSpec with MustMatchers {
-  import DeclarantDetailsSpec._
-
-  "Method toMetadataProperties" should {
-    "return proper Metadata Properties" in {
-      val declarantDetails = correctDeclarantDetails
-      val countryCode = "PL"
-      val expectedDeclarantDetailsProperties: Map[String, String] = Map(
-        "declaration.declarant.id" -> declarantDetails.details.eori.get,
-        "declaration.declarant.name" -> declarantDetails.details.address.get.fullName,
-        "declaration.declarant.address.line" -> declarantDetails.details.address.get.addressLine,
-        "declaration.declarant.address.cityName" -> declarantDetails.details.address.get.townOrCity,
-        "declaration.declarant.address.postcodeId" -> declarantDetails.details.address.get.postCode,
-        "declaration.declarant.address.countryCode" -> countryCode
-      )
-
-      declarantDetails.toMetadataProperties() must equal(expectedDeclarantDetailsProperties)
-    }
-  }
-
-}
 
 object DeclarantDetailsSpec {
   import forms.declaration.EntityDetailsSpec._
@@ -47,13 +24,9 @@ object DeclarantDetailsSpec {
   val correctDeclarantDetails = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetails)
   val correctDeclarantDetailsEORIOnly = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
   val correctDeclarantDetailsAddressOnly = DeclarantDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly)
-  val incorrectDeclarantDetails = DeclarantDetails(details = EntityDetailsSpec.incorrectEntityDetails)
-  val emptyDeclarantDetails = DeclarantDetails(details = EntityDetailsSpec.emptyEntityDetails)
 
   val correctDeclarantDetailsJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON))
   val correctDeclarantDetailsEORIOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsEORIOnlyJSON))
   val correctDeclarantDetailsAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))
-  val incorrectDeclarantDetailsJSON: JsValue = JsObject(Map("details" -> incorrectEntityDetailsJSON))
   val emptyDeclarantDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
-
 }

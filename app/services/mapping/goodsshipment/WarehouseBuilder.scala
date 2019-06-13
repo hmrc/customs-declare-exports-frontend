@@ -30,7 +30,7 @@ object WarehouseBuilder {
       .orNull
 
   private def isDefined(warehouse: WarehouseIdentification): Boolean =
-    warehouse.identificationNumber.getOrElse("").nonEmpty
+    warehouse.identificationNumber.isDefined
 
   private def createWarehouse(data: WarehouseIdentification): Warehouse = {
     val warehouse = new Warehouse()

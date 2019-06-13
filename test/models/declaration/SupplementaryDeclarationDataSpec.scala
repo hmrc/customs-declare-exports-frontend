@@ -39,17 +39,14 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupp
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
-import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard}
+import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, ChoiceSpec}
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
-import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues._
-import models.declaration.dectype.DeclarationTypeSupplementary
 import models.declaration.dectype.DeclarationTypeSupplementarySpec._
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
-import org.mockito.Mockito.{mock, times, verify, when}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
 import services.ExportsItemsCacheIds
@@ -228,156 +225,6 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
 
     }
   }
-
-  "Method toMap" when {
-
-    "SupplementaryDeclarationData contains no data" should {
-      "return empty Map" in {
-        val supplementaryDeclarationData = SupplementaryDeclarationData()
-        val map = supplementaryDeclarationData.toMap
-
-        map must equal(Map.empty)
-      }
-    }
-
-    "SupplementaryDeclarationData contains single field populated" should {
-      "return Map with single element" in {
-        val parties = Parties(exporterDetails = Some(correctExporterDetails))
-        val supplementaryDeclarationData = SupplementaryDeclarationData(parties = Some(parties))
-
-        val map = supplementaryDeclarationData.toMap
-
-        map.size must equal(1)
-        map.keys must contain(Parties.id)
-        map.get(Parties.id) must be(defined)
-        map(Parties.id) must equal(parties)
-      }
-    }
-
-    "SupplementaryDeclarationData contains 3 fields populated" should {
-      "return Map with 3 elements" in {
-        val declarationType = correctDeclarationType
-        val parties = Parties(exporterDetails = Some(correctExporterDetails))
-        val supplementaryDeclarationData =
-          SupplementaryDeclarationData(declarationType = Some(declarationType), parties = Some(parties))
-
-        val map = supplementaryDeclarationData.toMap
-
-        map.size must equal(2)
-        map.keys must contain(DeclarationTypeSupplementary.id)
-        map.get(DeclarationTypeSupplementary.id) must be(defined)
-        map(DeclarationTypeSupplementary.id) must equal(declarationType)
-        map.keys must contain(Parties.id)
-        map.get(Parties.id) must be(defined)
-        map(Parties.id) must equal(parties)
-      }
-    }
-
-    "SupplementaryDeclarationData contains all fields populated" should {
-      "return Map with all elements" in {
-        val data = supplementaryDeclarationDataAllValues
-
-        val map = data.toMap
-
-        val supplementaryDeclarationDataFieldsAmount = 6
-        map.size must equal(supplementaryDeclarationDataFieldsAmount)
-
-        map.keys must contain(DeclarationTypeSupplementary.id)
-        map(DeclarationTypeSupplementary.id) must equal(data.declarationType.get)
-        map.keys must contain(ConsignmentReferences.id)
-        map(ConsignmentReferences.id) must equal(data.consignmentReferences.get)
-        map.keys must contain(Parties.id)
-        map(Parties.id) must equal(data.parties.get)
-        map.keys must contain(Locations.id)
-        map(Locations.id) must equal(data.locations.get)
-        map(TransportInformationContainerData.id) must equal(data.transportInformationContainerData.get)
-        map.keys must contain(Items.id)
-        map(Items.id) must equal(data.items.get)
-      }
-    }
-
-  }
-
-  "Method toMetadataProperties" should {
-
-    "contain mandatory values" in new SimpleTest {
-      val functionCodeTuple = ("declaration.functionCode", functionCode)
-      val wcoDataModelVersionCodeTuple = ("wcoDataModelVersionCode", wcoDataModelVersionCode)
-      val wcoTypeNameTuple = ("wcoTypeName", wcoTypeName)
-      val responsibleCountryCodeTuple = ("responsibleCountryCode", responsibleCountryCode)
-      val responsibleAgencyNameTuple = ("responsibleAgencyName", responsibleAgencyName)
-      val agencyAssignedCustomizationVersionCodeTuple =
-        ("agencyAssignedCustomizationVersionCode", agencyAssignedCustomizationVersionCode)
-
-      val metadataProperties: Map[String, String] = supplementaryDeclarationData.toMetadataProperties()
-
-      metadataProperties must contain(functionCodeTuple)
-      metadataProperties must contain(wcoDataModelVersionCodeTuple)
-      metadataProperties must contain(wcoTypeNameTuple)
-      metadataProperties must contain(responsibleCountryCodeTuple)
-      metadataProperties must contain(responsibleAgencyNameTuple)
-      metadataProperties must contain(agencyAssignedCustomizationVersionCodeTuple)
-    }
-
-    "invoke the same method on every sub-element contained" in new SimpleTest {
-      supplementaryDeclarationData.toMetadataProperties()
-
-      verify(declarationTypeMock, times(1)).toMetadataProperties()
-      verify(consignmentReferencesMock, times(1)).toMetadataProperties()
-      verify(partiesMock, times(1)).toMetadataProperties()
-      verify(locationsMock, times(1)).toMetadataProperties()
-      verify(itemsMock, times(1)).toMetadataProperties()
-    }
-
-    "return Map being sum of all Maps returned by sub-elements" in new TestMapConcatenation {
-      val metadataProperties: Map[String, String] = supplementaryDeclarationData.toMetadataProperties()
-
-      metadataProperties must contain(declarationTypeTuple)
-      metadataProperties must contain(consignmentReferencesTuple)
-      metadataProperties must contain(partiesTuple)
-      metadataProperties must contain(locationsTuple)
-      metadataProperties must contain(itemsTuple)
-    }
-  }
-
-  trait SimpleTest {
-    val declarationTypeMock = mock(classOf[DeclarationTypeSupplementary])
-    val consignmentReferencesMock = mock(classOf[ConsignmentReferences])
-    val partiesMock = mock(classOf[Parties])
-    val locationsMock = mock(classOf[Locations])
-    val transportInformationContainerDataMock = mock(classOf[TransportInformationContainerData])
-    val itemsMock = mock(classOf[Items])
-    val supplementaryDeclarationData = SupplementaryDeclarationData(
-      declarationType = Some(declarationTypeMock),
-      consignmentReferences = Some(consignmentReferencesMock),
-      parties = Some(partiesMock),
-      locations = Some(locationsMock),
-      transportInformationContainerData = Some(transportInformationContainerDataMock),
-      items = Some(itemsMock)
-    )
-
-    when(declarationTypeMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-    when(consignmentReferencesMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-    when(partiesMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-    when(locationsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-    when(transportInformationContainerDataMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-    when(itemsMock.toMetadataProperties()).thenReturn(Map.empty[String, String])
-  }
-
-  trait TestMapConcatenation extends SimpleTest {
-    val declarationTypeTuple = ("DeclarationType", "DeclarationTypeValue")
-    val consignmentReferencesTuple = ("ConsignmentReferences", "ConsignmentReferencesValue")
-    val partiesTuple = ("Parties", "PartiesValue")
-    val locationsTuple = ("Locations", "LocationsValue")
-    val transportInformationContainerTuple = ("TransportInformationContainer", "TransportInformationContainerValue")
-    val itemsTuple = ("Items", "ItemsValue")
-    when(declarationTypeMock.toMetadataProperties()).thenReturn(Map(declarationTypeTuple))
-    when(consignmentReferencesMock.toMetadataProperties()).thenReturn(Map(consignmentReferencesTuple))
-    when(partiesMock.toMetadataProperties()).thenReturn(Map(partiesTuple))
-    when(locationsMock.toMetadataProperties()).thenReturn(Map(locationsTuple))
-    when(itemsMock.toMetadataProperties()).thenReturn(Map(itemsTuple))
-  }
-
 }
 
 object SupplementaryDeclarationDataSpec {

@@ -15,51 +15,16 @@
  */
 
 package forms.declaration
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
-
-class TotalNumberOfItemsSpec extends WordSpec with MustMatchers {
-  import TotalNumberOfItemsSpec._
-
-  "Method toMetadataProperties" should {
-    "return proper Metadata Properties" in {
-      val totalNumberOfItems = correctTotalNumberOfItemsDecimalValues
-      val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.invoiceAmount.value" -> totalNumberOfItems.totalAmountInvoiced,
-        "declaration.invoiceAmount.currencyId" -> "GBP",
-        "declaration.currencyExchanges[0].rateNumeric" -> totalNumberOfItems.exchangeRate,
-        "declaration.totalPackageQuantity" -> totalNumberOfItems.totalPackage
-      )
-
-      totalNumberOfItems.toMetadataProperties() must equal(expectedMetadataProperties)
-    }
-  }
-
-}
 
 object TotalNumberOfItemsSpec {
   val correctTotalNumberOfItemsDecimalValues =
     TotalNumberOfItems(totalAmountInvoiced = "12312312312312.12", exchangeRate = "1212121.12345", totalPackage = "123")
-  val correctTotalNumberOfItemsIntegerValues =
-    TotalNumberOfItems(totalAmountInvoiced = "12312312312312", exchangeRate = "123123123123", totalPackage = "123")
-  val emptyTotalNumberOfItems =
-    TotalNumberOfItems(totalAmountInvoiced = "", exchangeRate = "", totalPackage = "")
-
   val correctTotalNumberOfItemsDecimalValuesJSON: JsValue = JsObject(
     Map(
       "totalAmountInvoiced" -> JsString("1212312.12"),
       "exchangeRate" -> JsString("1212121.12345"),
       "totalPackage" -> JsString("123")
     )
-  )
-  val correctTotalNumberOfItemsIntegerValuesJSON: JsValue = JsObject(
-    Map(
-      "totalAmountInvoiced" -> JsString("12312312312312"),
-      "exchangeRate" -> JsString("123123123123"),
-      "totalPackage" -> JsString("123")
-    )
-  )
-  val emptyTotalNumberOfItemsJSON: JsValue = JsObject(
-    Map("totalAmountInvoiced" -> JsString(""), "exchangeRate" -> JsString(""), "totalPackage" -> JsString(""))
   )
 }

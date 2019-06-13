@@ -16,7 +16,6 @@
 
 package forms.declaration
 
-import forms.MetadataPropertiesConvertable
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
@@ -32,21 +31,7 @@ case class GoodsLocation(
   addressLine: Option[String],
   postCode: Option[String],
   city: Option[String]
-) extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.consignment.goodsLocation.typeCode" -> typeOfLocation,
-      "declaration.goodsShipment.consignment.goodsLocation.name" -> identificationOfLocation.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.id" -> additionalIdentifier.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.address.typeCode" -> qualifierOfIdentification,
-      "declaration.goodsShipment.consignment.goodsLocation.address.line" -> addressLine.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.address.postcodeId" -> postCode.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.address.cityName" -> city.getOrElse(""),
-      "declaration.goodsShipment.consignment.goodsLocation.address.countryCode" ->
-        allCountries.find(c => country.equals(c.countryName)).map(_.countryCode).getOrElse("")
-    )
-}
+)
 
 object GoodsLocation {
   implicit val format = Json.format[GoodsLocation]

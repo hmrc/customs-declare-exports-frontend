@@ -28,5 +28,12 @@ class FunctionalReferenceIdBuilderSpec extends WordSpec with Matchers {
       val referenceIDType = FunctionalReferenceIdBuilder.build(cacheMap)
       referenceIDType.getValue should be("123LRN")
     }
+
+    "not map to the WCO-DEC FunctionalReferenceId instance if lrn is empty" in {
+      implicit val cacheMap: CacheMap =
+        CacheMap("CacheID", Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.emptyConsignmentReferencesJSON))
+      val referenceIDType = FunctionalReferenceIdBuilder.build(cacheMap)
+      referenceIDType should be(null)
+    }
   }
 }

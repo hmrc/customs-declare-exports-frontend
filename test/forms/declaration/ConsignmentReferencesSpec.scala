@@ -17,26 +17,7 @@
 package forms.declaration
 
 import forms.Ducr
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
-
-class ConsignmentReferencesSpec extends WordSpec with MustMatchers {
-  import ConsignmentReferencesSpec._
-
-  "ConsignmentReferences" should {
-    "convert itself to consignment references properties" in {
-      val consignmentReferences = correctConsignmentReferences
-      val expectedConsignmentReferencesProperties: Map[String, String] =
-        Map(
-          "declaration.goodsShipment.ucr.traderAssignedReferenceId" -> consignmentReferences.ducr.get.ducr,
-          "declaration.functionalReferenceId" -> consignmentReferences.lrn
-        )
-
-      consignmentReferences.toMetadataProperties() must equal(expectedConsignmentReferencesProperties)
-    }
-  }
-
-}
 
 object ConsignmentReferencesSpec {
   val exemplaryDucr = "8GB123456789012-1234567890QWERTYUIO"
@@ -54,5 +35,4 @@ object ConsignmentReferencesSpec {
   val emptyConsignmentReferencesJSON: JsValue = JsObject(
     Map("ducr" -> JsObject(Map("ducr" -> JsString(""))), "lrn" -> JsString(""))
   )
-
 }

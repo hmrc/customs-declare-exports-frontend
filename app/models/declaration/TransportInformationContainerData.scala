@@ -16,17 +16,10 @@
 
 package models.declaration
 
-import forms.MetadataPropertiesConvertable
 import forms.declaration.TransportInformationContainer
 import play.api.libs.json.Json
 
-case class TransportInformationContainerData(containers: Seq[TransportInformationContainer])
-    extends MetadataPropertiesConvertable {
-  override def toMetadataProperties(): Map[String, String] =
-    containers.zipWithIndex.map { container =>
-      Map("declaration.goodsShipment.consignment.transportEquipments[" + container._2 + "].id" -> container._1.id)
-    }.fold(Map.empty)(_ ++ _)
-
+case class TransportInformationContainerData(containers: Seq[TransportInformationContainer]) {
   def containsItem(container: TransportInformationContainer): Boolean = containers.contains(container)
 }
 

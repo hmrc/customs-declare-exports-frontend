@@ -15,7 +15,6 @@
  */
 
 package services.mapping.goodsshipment
-import forms.Ducr
 import forms.declaration.ConsignmentReferences
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.UCR
@@ -30,15 +29,17 @@ object UCRBuilder {
       .map(createUCR)
       .orNull
 
-  private def isDefined(reference: ConsignmentReferences): Boolean = reference.ducr.getOrElse(Ducr("")).ducr.nonEmpty
+  private def isDefined(reference: ConsignmentReferences): Boolean = reference.ducr.isDefined
 
   private def createUCR(data: ConsignmentReferences): UCR = {
-
-    val traderAssignedReferenceID = new UCRTraderAssignedReferenceIDType()
-    traderAssignedReferenceID.setValue(data.ducr.getOrElse(Ducr("")).ducr)
-
     val warehouse = new UCR()
-    warehouse.setTraderAssignedReferenceID(traderAssignedReferenceID)
+
+    data.ducr.foreach { value =>
+      val traderAssignedReferenceID = new UCRTraderAssignedReferenceIDType()
+      traderAssignedReferenceID.setValue(value.ducr)
+      warehouse.setTraderAssignedReferenceID(traderAssignedReferenceID)
+    }
+
     warehouse
   }
 }

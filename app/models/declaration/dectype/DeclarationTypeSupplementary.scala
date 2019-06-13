@@ -16,7 +16,6 @@
 
 package models.declaration.dectype
 
-import forms.MetadataPropertiesConvertable
 import forms.declaration.DispatchLocation
 import forms.declaration.additionaldeclarationtype.{
   AdditionalDeclarationType,
@@ -28,14 +27,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 case class DeclarationTypeSupplementary(
   dispatchLocation: Option[DispatchLocation],
   additionalDeclarationType: Option[AdditionalDeclarationType]
-) extends SummaryContainer with MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] = {
-    val propertiesKey = "declaration.typeCode"
-    val propertiesValue = dispatchLocation.map(_.dispatchLocation).getOrElse("") +
-      additionalDeclarationType.map(_.additionalDeclarationType).getOrElse("")
-    Map(propertiesKey -> propertiesValue)
-  }
+) extends SummaryContainer {
 
   override def isEmpty: Boolean = dispatchLocation.isEmpty && additionalDeclarationType.isEmpty
 }

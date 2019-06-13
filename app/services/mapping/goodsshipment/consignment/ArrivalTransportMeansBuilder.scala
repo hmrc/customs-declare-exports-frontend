@@ -26,13 +26,19 @@ object ArrivalTransportMeansBuilder {
   def build(implicit cacheMap: CacheMap): GoodsShipment.Consignment.ArrivalTransportMeans =
     cacheMap
       .getEntry[WarehouseIdentification](WarehouseIdentification.formId)
-      .filter(_.inlandModeOfTransportCode.getOrElse("").nonEmpty)
-      .map { transportInformation =>
-        val arrivalTransportMeans = new ArrivalTransportMeans()
-        val modeCodeType = new ArrivalTransportMeansModeCodeType()
-        modeCodeType.setValue(transportInformation.inlandModeOfTransportCode.get)
-        arrivalTransportMeans.setModeCode(modeCodeType)
-        arrivalTransportMeans
-      }
+      .filter(_.inlandModeOfTransportCode.isDefined)
+      .map(createArrivalTrasportMeans)
       .orNull
+
+  private def createArrivalTrasportMeans(transportInformation: WarehouseIdentification) = {
+    val arrivalTransportMeans = new ArrivalTransportMeans()
+
+    transportInformation.inlandModeOfTransportCode.foreach { value =>
+      val modeCodeType = new ArrivalTransportMeansModeCodeType()
+      modeCodeType.setValue(value)
+      arrivalTransportMeans.setModeCode(modeCodeType)
+    }
+    
+    arrivalTransportMeans
+  }
 }
