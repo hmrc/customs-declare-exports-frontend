@@ -104,9 +104,9 @@ class AppConfig @Inject()(
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
 
   def wcoMetadataMapper(): WcoMetadataMapper with WcoMetadataMappingStrategy = {
-      logger.warn("Using WcoMetadataJavaMappingStrategy as the WCO-DEC mapper")
-      new WcoMetadataMapper with WcoMetadataJavaMappingStrategy
-    }
+    logger.warn("Using WcoMetadataJavaMappingStrategy as the WCO-DEC mapper")
+    new WcoMetadataMapper with WcoMetadataJavaMappingStrategy
+  }
 
   def availableJourneys(): Seq[String] =
     runModeConfiguration

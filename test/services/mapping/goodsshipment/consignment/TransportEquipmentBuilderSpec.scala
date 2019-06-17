@@ -35,7 +35,7 @@ class TransportEquipmentBuilderSpec extends WordSpec with Matchers {
         transportEquipments.size() should be(1)
         transportEquipments.get(0).getSeal.size() should be(2)
         transportEquipments.get(0).getSequenceNumeric.intValue() should be(2)
-        
+
         transportEquipments.get(0).getSeal.get(0).getID.getValue should be("first")
         transportEquipments.get(0).getSeal.get(0).getSequenceNumeric.intValue() should be(1)
         transportEquipments.get(0).getSeal.get(1).getID.getValue should be("second")

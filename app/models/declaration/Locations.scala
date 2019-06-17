@@ -27,7 +27,7 @@ case class Locations(
   warehouseIdentification: Option[WarehouseIdentification] = None,
   officeOfExit: Option[OfficeOfExitSupplementary] = None
 ) extends SummaryContainer {
-  
+
   def isEmpty: Boolean =
     destinationCountries.isEmpty &&
       goodsLocation.isEmpty &&

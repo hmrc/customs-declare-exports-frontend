@@ -32,7 +32,7 @@ class SubmissionsController @Inject()(
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayListOfSubmissions(): Action[AnyContent] = authenticate.async { implicit request =>
     for {

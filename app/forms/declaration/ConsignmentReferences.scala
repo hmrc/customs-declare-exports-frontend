@@ -22,10 +22,7 @@ import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class ConsignmentReferences(
-  ducr: Option[Ducr],
-  lrn: String
-)
+case class ConsignmentReferences(ducr: Option[Ducr], lrn: String)
 
 object ConsignmentReferences {
   implicit val format = Json.format[ConsignmentReferences]
