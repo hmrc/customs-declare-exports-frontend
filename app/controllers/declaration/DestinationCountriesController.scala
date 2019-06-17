@@ -56,9 +56,8 @@ class DestinationCountriesController @Inject()(
   private val logger = Logger(this.getClass())
   implicit val countryList: List[AutoCompleteItem] = getCountryData(countries.all)
 
-    def getCountryData(countries: List[Country]): List[AutoCompleteItem] ={
-      countries.map(country => AutoCompleteItem(country.countryName, country.countryCode))
-    }
+  def getCountryData(countries: List[Country]): List[AutoCompleteItem] =
+    countries.map(country => AutoCompleteItem(country.countryName, country.countryCode))
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.choice.value match {

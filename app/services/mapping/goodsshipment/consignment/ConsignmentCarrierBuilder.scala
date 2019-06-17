@@ -28,14 +28,11 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 
 object ConsignmentCarrierBuilder {
 
-
   def build()(implicit cacheMap: CacheMap, choice: Choice): Declaration.Consignment.Carrier =
     choice match {
       case Choice(AllowedChoiceValues.StandardDec)      => buildCarrierDetails
       case Choice(AllowedChoiceValues.SupplementaryDec) => null
     }
-
-
 
   def buildCarrierDetails()(implicit cacheMap: CacheMap): Declaration.Consignment.Carrier =
     cacheMap

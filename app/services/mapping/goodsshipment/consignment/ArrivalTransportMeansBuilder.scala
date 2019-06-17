@@ -38,7 +38,7 @@ object ArrivalTransportMeansBuilder {
       modeCodeType.setValue(value)
       arrivalTransportMeans.setModeCode(modeCodeType)
     }
-    
+
     arrivalTransportMeans
   }
 }
