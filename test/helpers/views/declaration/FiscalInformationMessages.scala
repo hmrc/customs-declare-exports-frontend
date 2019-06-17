@@ -25,7 +25,6 @@ trait FiscalInformationMessages {
   val yes: String = "site.yes"
   val no: String = "site.no"
 
-  // TODO: Try to get rid of one error
   val errorMessageIncorrect: String = fiscalInformation + ".onwardSupplyRelief.error"
   val errorMessageEmpty: String = "error.required"
 }

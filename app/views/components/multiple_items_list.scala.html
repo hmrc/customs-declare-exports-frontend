@@ -14,15 +14,23 @@
  * limitations under the License.
  *@
 
-@(title: Option[String] = None, subtitle: Option[String] = None)(implicit messages: Messages)
+@import controllers.util.Remove
 
-<fieldset>
-    <legend class="heading-large" role="heading" aria="" level="1">
-        @if(title.nonEmpty) {
-            <h1 id="title" style="margin:0">@Html(messages(title.get, "</br>"))</h1>
-        }
-        @if(subtitle.nonEmpty) {
-            <span class="form-hint">@messages(subtitle.get)</span>
-        }
-    </legend>
-</fieldset>
+@(elements: Seq[String])(implicit messages: Messages)
+
+@if(elements.nonEmpty) {
+    <div class="field-group">
+        <table>
+            @for(element <- elements.zipWithIndex) {
+                <tr>
+                    <th>@element._1</th>
+                    <th>
+                        <button class="button--secondary" name="@Remove.toString" value="@{element._2}">@messages("site.remove")</button>
+                    </th>
+                </tr>
+            }
+        </table>
+        <br/>
+        <br/>
+    </div>
+}

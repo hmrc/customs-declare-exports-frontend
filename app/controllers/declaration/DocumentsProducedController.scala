@@ -18,7 +18,6 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{DocumentsProducedController, ItemsSummaryController}
 import controllers.util.CacheIdGenerator.{cacheId, goodsItemCacheId}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.additionaldocuments.DocumentsProduced
@@ -111,18 +110,15 @@ class DocumentsProducedController @Inject()(
       val updateDocs = DocumentsProducedData(documents :+ document)
       customsCacheService
         .cache[DocumentsProducedData](goodsItemCacheId, formId, updateDocs)
-        .flatMap { _ =>
-          addGoodsItem(document, updateDocs.documents)
-        }
-    } else
-      addGoodsItem(document)
+        .flatMap(_ => addGoodsItem(document, updateDocs.documents))
+    } else addGoodsItem(document)
 
   private def addGoodsItem(
     document: DocumentsProduced,
     docs: Seq[DocumentsProduced] = Seq.empty
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier) =
     itemsCache.addItemToCache(goodsItemCacheId, cacheId).flatMap {
-      case true => Future.successful(Redirect(ItemsSummaryController.displayForm()))
+      case true => Future.successful(Redirect(routes.FiscalInformationController.displayPage()))
       case false =>
         handleErrorPage(Seq(("", "supplementary.addgoodsitems.addallpages.error")), document, docs)
     }
@@ -143,7 +139,7 @@ class DocumentsProducedController @Inject()(
           val updatedCache = DocumentsProducedData(documents :+ document)
           customsCacheService
             .cache[DocumentsProducedData](goodsItemCacheId, formId, updatedCache)
-            .map(_ => Redirect(DocumentsProducedController.displayForm()))
+            .map(_ => Redirect(routes.DocumentsProducedController.displayForm()))
         } else handleErrorPage(Seq(("", "supplementary.addDocument.error.notDefined")), userInput, cachedData.documents)
       }
     }
@@ -154,7 +150,7 @@ class DocumentsProducedController @Inject()(
   ): Future[Result] = keys.headOption.fold(errorHandler.displayErrorPage()) { index =>
     val updatedCache = cachedData.copy(documents = cachedData.documents.patch(index.toInt, Nil, 1))
     customsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, updatedCache).map { _ =>
-      Redirect(DocumentsProducedController.displayForm())
+      Redirect(routes.DocumentsProducedController.displayForm())
     }
   }
 

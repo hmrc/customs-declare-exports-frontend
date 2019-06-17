@@ -18,7 +18,6 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.SummaryPageController
 import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
@@ -88,8 +87,8 @@ class SealController @Inject()(
         if (updatedCache != cachedSeals)
           cacheService
             .cache[Seq[Seal]](cacheId, formId, updatedCache)
-            .map(_ => Redirect(SummaryPageController.displayPage()))
-        else Future.successful(Redirect(SummaryPageController.displayPage()))
+            .map(_ => Redirect(routes.SummaryPageController.displayPage()))
+        else Future.successful(Redirect(routes.SummaryPageController.displayPage()))
     )
 
   private def removeSeal(cachedSeals: Seq[Seal], ids: Seq[String])(

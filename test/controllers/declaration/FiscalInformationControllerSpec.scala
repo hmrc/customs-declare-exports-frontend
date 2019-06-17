@@ -30,7 +30,8 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
   private val uri: String = uriWithContextPath("/declaration/fiscal-information")
   private val emptyFiscalInformationJson: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("")))
   private val incorrectFiscalInformation: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("NeitherRadioOption")))
-  private val correctFiscalInformation: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("Yes")))
+  private val fiscalInformationWithYes: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("Yes")))
+  private val fiscalInformationWithNo: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("No")))
 
   trait SetUp {
     authorizedUser()
@@ -91,14 +92,22 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
 
     }
 
-    "redirect to 'TODO' page" in new SupplementarySetUp {
+    "redirect to 'AdditionalFiscalReferences' page when choice is yes" in new SupplementarySetUp {
 
-      val result = route(app, postRequest(uri, correctFiscalInformation)).get
+      val result = route(app, postRequest(uri, fiscalInformationWithYes)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("TODO"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-fiscal-references"))
+    }
 
+    "redirect to 'ItemsSummary' page when choice is no" in new SupplementarySetUp {
+
+      val result = route(app, postRequest(uri, fiscalInformationWithNo)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
     }
   }
 
@@ -144,14 +153,22 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
 
     }
 
-    "redirect to 'TODO' page" in new StandardSetUp {
+    "redirect to 'AdditionalFiscalReferences' page when choice is yes" in new StandardSetUp {
 
-      val result = route(app, postRequest(uri, correctFiscalInformation)).get
+      val result = route(app, postRequest(uri, fiscalInformationWithYes)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("TODO"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-fiscal-references"))
+    }
 
+    "redirect to 'ItemsSummary' page when choice is no" in new StandardSetUp {
+
+      val result = route(app, postRequest(uri, fiscalInformationWithNo)).get
+      val header = result.futureValue.header
+
+      status(result) must be(SEE_OTHER)
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
     }
   }
 }

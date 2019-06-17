@@ -20,7 +20,7 @@
 @import forms.declaration.ItemType.IdentificationTypeCodes._
 @import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 
-@(items: Seq[GovernmentAgencyGoodsItem])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(items: Seq[GovernmentAgencyGoodsItem], hasFiscalInformation: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("supplementary.items"),

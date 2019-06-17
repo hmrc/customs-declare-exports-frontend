@@ -19,18 +19,22 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
+import forms.declaration.FiscalInformation
+import forms.declaration.FiscalInformation.formId
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import services.ExportsItemsCacheIds.itemsId
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.items_summary
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ItemsSummaryController @Inject()(
   authenticate: AuthAction,
@@ -44,6 +48,15 @@ class ItemsSummaryController @Inject()(
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService
       .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
-      .map(items => Ok(items_summary(items.getOrElse(Seq.empty))))
+      .zip(hasFiscalInformation())
+      .map { case (items, hasFiscalInformation) =>
+        Ok(items_summary(items.getOrElse(Seq.empty), hasFiscalInformation))
+      }
   }
+
+  def hasFiscalInformation()(implicit journeyRequest: JourneyRequest[_], hc: HeaderCarrier): Future[Boolean] =
+    cacheService.fetchAndGetEntry[FiscalInformation](cacheId, formId).map {
+      case Some(data) => data.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes
+      case None => false
+    }
 }

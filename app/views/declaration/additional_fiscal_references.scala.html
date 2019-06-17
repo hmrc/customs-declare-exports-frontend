@@ -16,38 +16,37 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes._
-@import forms.declaration.FiscalInformation
-@import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers._
+@import forms.declaration.AdditionalFiscalReference
 @import uk.gov.hmrc.play.views.html._
-@import utils.RadioOption
 
-@(form: Form[FiscalInformation])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@import forms.declaration.AdditionalFiscalReferencesData
+@(form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
-    title = messages("declaration.fiscalInformation.header"),
+    title = messages(""),
     appConfig = appConfig
 ) {
 
-    @helper.form(FiscalInformationController.saveFiscalInformation(), 'autoComplete -> "off") {
+    @helper.form(AdditionalFiscalReferencesController.saveReferences(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link("/customs-declare-exports/declaration/add-document")
+        @components.back_link("/customs-declare-exports/declaration/fiscal-information")
 
         @components.error_summary(form.errors)
 
         @components.section_header(messages("declaration.fiscalInformation.header"))
 
-        @components.page_title(Some("declaration.fiscalInformation.title"))
+        @components.page_title(Some("Page title"))
 
-        @components.input_radio_inline(
-            field = form("onwardSupplyRelief"),
-            legend = "",
-            inputs = Seq(
-                RadioOption("Yes", yes, messages("site.yes")),
-                RadioOption("No", no, messages("site.no"))
-            )
+        @components.multiple_items_list(additionalReferences.filter(_.reference.isDefined).map(_.reference.get))
+
+        @components.input_text(
+            field = form("additionalFiscalReference"),
+            label = "Additional references question",
+            hint = Some("Some hint"),
+            labelClass = Some("bold-small")
         )
 
-        @components.submit_button()
+        @components.add_save_button()
     }
 }

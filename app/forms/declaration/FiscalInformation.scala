@@ -16,22 +16,13 @@
 
 package forms.declaration
 
-import forms.MetadataPropertiesConvertable
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.text
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator.{isContainedIn, isEmpty, nonEmpty}
 import utils.validators.forms.FieldValidator._
 
-case class FiscalInformation(onwardSupplyRelief: String) extends MetadataPropertiesConvertable {
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.domesticDutyTaxParty.id" -> fiscalInformationForMetaData
-    )
-
-  import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
-  private val fiscalInformationForMetaData: String = if (onwardSupplyRelief == yes) "FR1" else ""
-}
+case class FiscalInformation(onwardSupplyRelief: String)
 
 object FiscalInformation {
 

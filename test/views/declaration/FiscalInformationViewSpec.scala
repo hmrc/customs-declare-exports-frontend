@@ -19,6 +19,8 @@ package views.declaration
 import forms.declaration.FiscalInformation
 import helpers.views.declaration.{CommonMessages, FiscalInformationMessages}
 import play.api.data.Form
+import play.api.mvc.Request
+import play.api.test.CSRFTokenHelper._
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
 import views.html.declaration.fiscal_information
@@ -29,20 +31,20 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
   private def createView(form: Form[FiscalInformation] = form): Html =
-    fiscal_information(form)(fakeRequest, appConfig, messages)
+    fiscal_information(form)(fakeRequest.withCSRFToken.asInstanceOf[Request[_]], appConfig, messages)
 
   "Fiscal Information View" should {
 
     "have proper messages for labels" in {
 
-      assertMessage(title, "3/40 Do you want to claim {0} Onward Supply Relief {0} (OSR)?")
+      assertMessage(title, "3/40 Do you want to claim Onward Supply Relief (OSR)?")
       assertMessage(header, "Fiscal information")
       assertMessage(yes, "Yes")
       assertMessage(no, "No")
     }
     "have proper messages for error labels" in {
       assertMessage(errorMessageEmpty, "Please enter a value")
-      assertMessage(errorMessageIncorrect, "Please enter a value")
+      assertMessage(errorMessageIncorrect, "Please enter a value - TODO")
     }
   }
 
@@ -77,7 +79,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/warehouse")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/add-document")
     }
 
     "display \"Save and continue\" button" in {
