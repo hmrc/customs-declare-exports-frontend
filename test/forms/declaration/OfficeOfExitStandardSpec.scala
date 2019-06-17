@@ -16,52 +16,13 @@
 
 package forms.declaration
 
-import forms.declaration.officeOfExit.OfficeOfExitStandard
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-class OfficeOfExitStandardSpec extends WordSpec with MustMatchers {
-  import OfficeOfExitStandardSpec._
-
-  "Method toMetadataProperties" should {
-    "return proper Metadata Properties" in {
-      val officeOfExit = correctOfficeOfExit
-      val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.exitOffice.id" -> officeOfExit.officeId,
-        "declaration.presentationOffice.id" -> officeOfExit.presentationOfficeId,
-        "declaration.specificCircumstancesCode" -> "A20"
-      )
-
-      officeOfExit.toMetadataProperties() must equal(expectedMetadataProperties)
-    }
-  }
-
-}
-
 object OfficeOfExitStandardSpec {
-  val correctOfficeOfExit = OfficeOfExitStandard(
-    officeId = "123qwe12",
-    presentationOfficeId = "123",
-    circumstancesCode = OfficeOfExitStandard.AllowedCircumstancesCodeAnswers.yes
-  )
-  val emptyOfficeOfExit = OfficeOfExitStandard(officeId = "", presentationOfficeId = "", circumstancesCode = "Yes")
-  val incorrectOfficeOfExit =
-    OfficeOfExitStandard(officeId = "office", presentationOfficeId = "123!!!", circumstancesCode = "Yes")
-
   val correctOfficeOfExitJSON: JsValue = JsObject(
     Map(
       "officeId" -> JsString("123qwe12"),
       "presentationOfficeId" -> JsString("123"),
-      "circumstancesCode" -> JsString("Yes")
-    )
-  )
-  val emptyOfficeOfExitJSON: JsValue = JsObject(
-    Map("officeId" -> JsString(""), "presentationOfficeId" -> JsString(""), "circumstancesCode" -> JsString(""))
-  )
-  val incorrectOfficeOfExitJSON: JsValue = JsObject(
-    Map(
-      "officeId" -> JsString("office"),
-      "presentationOfficeId" -> JsString("123!!!"),
       "circumstancesCode" -> JsString("Yes")
     )
   )

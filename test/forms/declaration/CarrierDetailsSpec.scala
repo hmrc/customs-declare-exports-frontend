@@ -16,71 +16,13 @@
 
 package forms.declaration
 
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsValue}
-import services.Countries.allCountries
-import uk.gov.hmrc.wco.dec.MetaData
-
-class CarrierDetailsSpec extends WordSpec with MustMatchers {
-  import CarrierDetailsSpec._
-
-  "Method toMetadataProperties" should {
-    "map correctly" in {
-
-      val carrierDetails = correctCarrierDetails
-      val metadata = MetaData.fromProperties(carrierDetails.toMetadataProperties())
-
-      metadata.declaration must be(defined)
-      metadata.declaration.get.goodsShipment must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.id must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.id.get must be(
-        carrierDetails.details.eori.get
-      )
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.name must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.name.get must be(
-        carrierDetails.details.address.get.fullName
-      )
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.line must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.line.get must be(
-        carrierDetails.details.address.get.addressLine
-      )
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.cityName must be(defined)
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.cityName.get must be(
-        carrierDetails.details.address.get.townOrCity
-      )
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.postcodeId must be(
-        defined
-      )
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.postcodeId.get must be(
-        carrierDetails.details.address.get.postCode
-      )
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.countryCode must be(
-        defined
-      )
-      metadata.declaration.get.goodsShipment.get.consignment.get.goodsLocation.get.address.get.countryCode.get must be(
-        allCountries
-          .find(country => carrierDetails.details.address.get.country.contains(country.countryName))
-          .map(_.countryCode)
-          .getOrElse("")
-      )
-    }
-  }
-}
 
 object CarrierDetailsSpec {
   import forms.declaration.EntityDetailsSpec._
 
-  val correctCarrierDetails = CarrierDetails(details = EntityDetailsSpec.correctEntityDetails)
-  val correctCarrierDetailsEORIOnly = CarrierDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
-  val correctCarrierDetailsAddressOnly = CarrierDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly)
-  val incorrectCarrierDetails = CarrierDetails(details = EntityDetailsSpec.incorrectEntityDetails)
-  val emptyCarrierDetails = CarrierDetails(details = EntityDetailsSpec.emptyEntityDetails)
-
   val correctCarrierDetailsJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON))
   val correctCarrierDetailsEORIOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsEORIOnlyJSON))
   val correctCarrierDetailsAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))
-  val incorrectCarrierDetailsJSON: JsValue = JsObject(Map("details" -> incorrectEntityDetailsJSON))
   val emptyCarrierDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
 }

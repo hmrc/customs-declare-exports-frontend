@@ -16,26 +16,12 @@
 
 package forms.declaration.destinationCountries
 
-import forms.MetadataPropertiesConvertable
+import play.api.data.Forms
 import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import services.Countries.allCountries
 
 case class DestinationCountriesSupplementary(countryOfDispatch: String, countryOfDestination: String)
-    extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.goodsShipment.exportCountry.id" ->
-        allCountries.find(country => countryOfDispatch.contains(country.countryCode)).map(_.countryCode).getOrElse(""),
-      "declaration.goodsShipment.destination.countryCode" ->
-        allCountries
-          .find(country => countryOfDestination.contains(country.countryCode))
-          .map(_.countryCode)
-          .getOrElse("")
-    )
-}
 
 object DestinationCountriesSupplementary {
   implicit val format = Json.format[DestinationCountriesSupplementary]

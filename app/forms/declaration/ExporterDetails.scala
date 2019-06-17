@@ -15,30 +15,10 @@
  */
 
 package forms.declaration
-import forms.MetadataPropertiesConvertable
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import services.Countries.allCountries
 
-case class ExporterDetails(details: EntityDetails) extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] =
-    Map("declaration.exporter.id" -> details.eori.getOrElse("")) ++ buildAddressProperties()
-
-  private def buildAddressProperties(): Map[String, String] = details.address match {
-    case Some(address) =>
-      Map(
-        "declaration.exporter.name" -> address.fullName,
-        "declaration.exporter.address.line" -> address.addressLine,
-        "declaration.exporter.address.cityName" -> address.townOrCity,
-        "declaration.exporter.address.postcodeId" -> address.postCode,
-        "declaration.exporter.address.countryCode" ->
-          allCountries.find(country => address.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
-      )
-    case None => Map.empty
-  }
-
-}
+case class ExporterDetails(details: EntityDetails)
 
 object ExporterDetails {
   implicit val format = Json.format[ExporterDetails]

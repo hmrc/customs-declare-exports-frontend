@@ -16,16 +16,12 @@
 
 package forms.declaration.officeOfExit
 
-import forms.MetadataPropertiesConvertable
 import play.api.data.Forms
 import play.api.data.Forms.text
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class OfficeOfExitSupplementary(officeId: String) extends MetadataPropertiesConvertable {
-
-  override def toMetadataProperties(): Map[String, String] = Map("declaration.exitOffice.id" -> officeId)
-}
+case class OfficeOfExitSupplementary(officeId: String)
 
 object OfficeOfExitSupplementary {
   implicit val format = Json.format[OfficeOfExitSupplementary]

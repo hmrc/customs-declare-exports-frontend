@@ -19,10 +19,9 @@ package services.audit
 import com.google.inject.Inject
 import config.AppConfig
 import play.api.Logger
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsObject, Json}
 import services.audit.AuditTypes.Audit
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
@@ -39,17 +38,6 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
     connector.sendEvent(event).map(handleResponse(_, audit.toString))
   }
 
-  def auditAllPagesUserInput(userInput: JsObject)(implicit hc: HeaderCarrier): Future[AuditResult] = {
-    val auditType = AuditTypes.SubmissionPayload.toString
-    val extendedEvent = ExtendedDataEvent(
-      auditSource = appConfig.appName,
-      auditType = auditType,
-      tags = getAuditTags(s"${auditType}-payload-request", s"${auditType}/full-payload"),
-      detail = getAuditDetails(userInput)
-    )
-    connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
-  }
-
   private def createAuditEvent(audit: Audit, auditData: Map[String, String])(implicit hc: HeaderCarrier) =
     DataEvent(
       auditSource = appConfig.appName,
@@ -57,6 +45,14 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
       tags = getAuditTags(s"${audit.toString}-request", path = s"${audit.toString}"),
       detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails() ++ auditData
     )
+
+  private def getAuditTags(transactionName: String, path: String)(implicit hc: HeaderCarrier) =
+    AuditExtensions
+      .auditHeaderCarrier(hc)
+      .toAuditTags(
+        transactionName = s"Export-Declaration-${transactionName}",
+        path = s"customs-declare-exports/${path}"
+      )
 
   private def handleResponse(result: AuditResult, auditType: String) = result match {
     case Success =>
@@ -69,13 +65,17 @@ class AuditService @Inject()(connector: AuditConnector, appConfig: AppConfig)(im
       logger.warn(s"Auditing Disabled")
       Disabled
   }
-  private def getAuditTags(transactionName: String, path: String)(implicit hc: HeaderCarrier) =
-    AuditExtensions
-      .auditHeaderCarrier(hc)
-      .toAuditTags(
-        transactionName = s"Export-Declaration-${transactionName}",
-        path = s"customs-declare-exports/${path}"
-      )
+
+  def auditAllPagesUserInput(userInput: JsObject)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+    val auditType = AuditTypes.SubmissionPayload.toString
+    val extendedEvent = ExtendedDataEvent(
+      auditSource = appConfig.appName,
+      auditType = auditType,
+      tags = getAuditTags(s"${auditType}-payload-request", s"${auditType}/full-payload"),
+      detail = getAuditDetails(userInput)
+    )
+    connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
+  }
 
   private def getAuditDetails(userInput: JsObject)(implicit hc: HeaderCarrier) = {
     val hcAuditDetails = Json.toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails()).as[JsObject]

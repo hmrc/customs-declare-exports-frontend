@@ -16,21 +16,10 @@
 
 package models.declaration
 
-import forms.MetadataPropertiesConvertable
 import forms.declaration.DeclarationAdditionalActors
 import play.api.libs.json.Json
 
-case class DeclarationAdditionalActorsData(actors: Seq[DeclarationAdditionalActors])
-    extends MetadataPropertiesConvertable {
-  override def toMetadataProperties(): Map[String, String] =
-    actors.zipWithIndex.map { actor =>
-      Map(
-        "declaration.goodsShipment.aeoMutualRecognitionParties[" + actor._2 + "].id" -> actor._1.eori.getOrElse(""),
-        "declaration.goodsShipment.aeoMutualRecognitionParties[" + actor._2 + "].roleCode" -> actor._1.partyType
-          .getOrElse("")
-      )
-    }.fold(Map.empty)(_ ++ _)
-
+case class DeclarationAdditionalActorsData(actors: Seq[DeclarationAdditionalActors]) {
   def containsItem(actor: DeclarationAdditionalActors): Boolean = actors.contains(actor)
 }
 
