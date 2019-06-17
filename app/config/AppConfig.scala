@@ -27,7 +27,7 @@ import javax.inject.Named
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment, Logger}
-import services.{WcoMetadataJavaMappingStrategy, WcoMetadataMapper, WcoMetadataMappingStrategy}
+
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
@@ -102,11 +102,6 @@ class AppConfig @Inject()(
 
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
-
-  def wcoMetadataMapper(): WcoMetadataMapper with WcoMetadataMappingStrategy = {
-    logger.warn("Using WcoMetadataJavaMappingStrategy as the WCO-DEC mapper")
-    new WcoMetadataMapper with WcoMetadataJavaMappingStrategy
-  }
 
   def availableJourneys(): Seq[String] =
     runModeConfiguration
