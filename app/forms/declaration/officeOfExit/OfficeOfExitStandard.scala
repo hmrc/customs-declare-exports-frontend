@@ -16,36 +16,17 @@
 
 package forms.declaration.officeOfExit
 
-import forms.MetadataPropertiesConvertable
-import play.api.data.{Form, Forms}
+import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers.{no, yes}
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
 case class OfficeOfExitStandard(officeId: String, presentationOfficeId: String, circumstancesCode: String)
-    extends MetadataPropertiesConvertable {
-  override def toMetadataProperties(): Map[String, String] =
-    Map(
-      "declaration.exitOffice.id" -> officeId,
-      "declaration.presentationOffice.id" -> presentationOfficeId,
-      "declaration.specificCircumstancesCode" -> circumstancesCodeForMetadata
-    )
-
-  import OfficeOfExitStandard.AllowedCircumstancesCodeAnswers.yes
-  private val circumstancesCodeForMetadata: String = if (circumstancesCode == yes) "A20" else ""
-}
 
 object OfficeOfExitStandard {
   implicit val format = Json.format[OfficeOfExitStandard]
-
-  object AllowedCircumstancesCodeAnswers {
-    val yes = "Yes"
-    val no = "No"
-  }
-  import AllowedCircumstancesCodeAnswers._
-
   val allowedValues: Seq[String] = Seq(yes, no)
-
   val mapping = Forms.mapping(
     "officeId" -> text()
       .verifying("declaration.officeOfExit.empty", nonEmpty)
@@ -68,5 +49,10 @@ object OfficeOfExitStandard {
     }
 
     form.copy(errors = errors)
+  }
+
+  object AllowedCircumstancesCodeAnswers {
+    val yes = "Yes"
+    val no = "No"
   }
 }

@@ -16,45 +16,7 @@
 
 package forms.declaration
 
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsValue}
-import uk.gov.hmrc.wco.dec.MetaData
-
-class ExporterDetailsSpec extends WordSpec with MustMatchers {
-  import ExporterDetailsSpec._
-
-  "Method toMetadataProperties" should {
-    "return proper Metadata Properties" in {
-      val exporterDetails = correctExporterDetails
-      val countryCode = "PL"
-
-      val metadata = MetaData.fromProperties(exporterDetails.toMetadataProperties())
-
-      metadata.declaration must be(defined)
-      metadata.declaration.get.exporter must be(defined)
-      metadata.declaration.get.exporter.get.id must be(defined)
-      metadata.declaration.get.exporter.get.id.get must equal(exporterDetails.details.eori.get)
-      metadata.declaration.get.exporter.get.name must be(defined)
-      metadata.declaration.get.exporter.get.name.get must equal(exporterDetails.details.address.get.fullName)
-      metadata.declaration.get.exporter.get.address must be(defined)
-      metadata.declaration.get.exporter.get.address.get.line must be(defined)
-      metadata.declaration.get.exporter.get.address.get.line.get must equal(
-        exporterDetails.details.address.get.addressLine
-      )
-      metadata.declaration.get.exporter.get.address.get.cityName must be(defined)
-      metadata.declaration.get.exporter.get.address.get.cityName.get must equal(
-        exporterDetails.details.address.get.townOrCity
-      )
-      metadata.declaration.get.exporter.get.address.get.postcodeId must be(defined)
-      metadata.declaration.get.exporter.get.address.get.postcodeId.get must equal(
-        exporterDetails.details.address.get.postCode
-      )
-      metadata.declaration.get.exporter.get.address.get.countryCode must be(defined)
-      metadata.declaration.get.exporter.get.address.get.countryCode.get must equal(countryCode)
-    }
-  }
-
-}
 
 object ExporterDetailsSpec {
   import forms.declaration.EntityDetailsSpec._
@@ -62,16 +24,10 @@ object ExporterDetailsSpec {
   val correctExporterDetails = ExporterDetails(details = EntityDetailsSpec.correctEntityDetails)
   val correctExporterDetailsEORIOnly = ExporterDetails(details = EntityDetailsSpec.correctEntityDetailsEORIOnly)
   val correctExporterDetailsAddressOnly = ExporterDetails(details = EntityDetailsSpec.correctEntityDetailsAddressOnly)
-  val incorrectExporterDetails = ExporterDetails(details = EntityDetailsSpec.incorrectEntityDetails)
-  val emptyExporterDetails = ExporterDetails(details = EntityDetailsSpec.emptyEntityDetails)
 
   val correctExporterDetailsJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsJSON))
   val correctExporterDetailsEORIOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsEORIOnlyJSON))
   val correctExporterDetailsAddressOnlyJSON: JsValue = JsObject(Map("details" -> correctEntityDetailsAddressOnlyJSON))
   val incorrectExporterDetailsJSON: JsValue = JsObject(Map("details" -> incorrectEntityDetailsJSON))
   val emptyExporterDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
-
-  val exporterDetailsWithEmptyFullNameJSON: JsValue = JsObject(
-    Map("details" -> EntityDetailsSpec.entityDetailsWithEmptyFullNameJSON)
-  )
 }

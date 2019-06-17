@@ -16,20 +16,10 @@
 
 package models.declaration
 
-import forms.MetadataPropertiesConvertable
 import forms.declaration.DeclarationHolder
 import play.api.libs.json.Json
 
-case class DeclarationHoldersData(holders: Seq[DeclarationHolder]) extends MetadataPropertiesConvertable {
-  override def toMetadataProperties(): Map[String, String] =
-    holders.zipWithIndex.map { holderWithId =>
-      Map(
-        "declaration.authorisationHolders[" + holderWithId._2 + "].categoryCode" -> holderWithId._1.authorisationTypeCode
-          .getOrElse(""),
-        "declaration.authorisationHolders[" + holderWithId._2 + "].id" -> holderWithId._1.eori.getOrElse("")
-      )
-    }.fold(Map.empty)(_ ++ _)
-
+case class DeclarationHoldersData(holders: Seq[DeclarationHolder]) {
   def containsHolder(holder: DeclarationHolder): Boolean = holders.contains(holder)
 }
 

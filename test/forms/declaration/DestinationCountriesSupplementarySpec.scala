@@ -17,31 +17,10 @@
 package forms.declaration
 
 import forms.declaration.destinationCountries.DestinationCountriesSupplementary
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
-
-class DestinationCountriesSupplementarySpec extends WordSpec with MustMatchers {
-  import DestinationCountriesSupplementarySpec._
-
-  "Method toMetadataProperties" should {
-    "return proper Metadata Properties" in {
-      val destinationCountries = correctDestinationCountriesSupplementary
-      val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.destination.countryCode" -> "PL",
-        "declaration.goodsShipment.exportCountry.id" -> "PL"
-      )
-
-      destinationCountries.toMetadataProperties() must equal(expectedMetadataProperties)
-    }
-  }
-
-}
 
 object DestinationCountriesSupplementarySpec {
   val correctDestinationCountriesSupplementary = DestinationCountriesSupplementary("PL", "PL")
-
-  val emptyDestinationCountriesSupplementary = DestinationCountriesSupplementary("", "")
-  val incorrectDestinationCountriesSupplementary = DestinationCountriesSupplementary("Country", "Country")
 
   val correctDestinationCountriesSupplementaryJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString("PL"), "countryOfDispatch" -> JsString("PL"))

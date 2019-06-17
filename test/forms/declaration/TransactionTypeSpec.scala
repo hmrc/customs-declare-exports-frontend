@@ -15,29 +15,10 @@
  */
 
 package forms.declaration
-import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsObject, JsString, JsValue}
-
-class TransactionTypeSpec extends WordSpec with MustMatchers {
-  import TransactionTypeSpec._
-
-  "Method toMetadataProperties" should {
-    "return proper Metadata Properties" in {
-      val transactionType = correctTransactionType
-      val expectedMetadataProperties: Map[String, String] = Map(
-        "declaration.goodsShipment.transactionNatureCode" -> (transactionType.documentTypeCode + transactionType.identifier.get)
-      )
-
-      transactionType.toMetadataProperties() must equal(expectedMetadataProperties)
-    }
-  }
-
-}
 
 object TransactionTypeSpec {
   val correctTransactionType = TransactionType(documentTypeCode = "1", identifier = Some("1"))
-  val emptyTransactionType = TransactionType(documentTypeCode = "", identifier = None)
-  val incorrectTransactionType = TransactionType(documentTypeCode = "123", identifier = Some("123"))
 
   val correctTransactionTypeJSON: JsValue = JsObject(
     Map("documentTypeCode" -> JsString("1"), "identifier" -> JsString("1"))
