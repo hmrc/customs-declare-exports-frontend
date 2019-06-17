@@ -17,7 +17,6 @@
 package services
 
 import base.{CustomExportsBaseSpec, TestHelper}
-import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import metrics.MetricIdentifiers
 import models.declaration.SupplementaryDeclarationDataSpec._
@@ -25,7 +24,6 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
-import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.OK
 import services.audit.EventData._
@@ -33,17 +31,26 @@ import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
+import scala.io.Source
 
 class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
 
   val mockAuditService = mock[AuditService]
+  val mapper = mock[WcoMetadataMapper]
   before {
     reset(mockCustomsCacheService)
     reset(mockCustomsDeclareExportsConnector)
     reset(mockAuditService)
+    reset(mapper)
     successfulCustomsDeclareExportsResponse()
     when(mockCustomsCacheService.remove(anyString())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK)))
+    when(mapper.toXml(any()))
+      .thenReturn(Source.fromURL(getClass.getResource("/wco_dec_metadata.xml")).mkString)
+    when(mapper.declarationUcr(any()))
+      .thenReturn(Some("8GB123456789012-1234567890QWERTYUIO"))
+    when(mapper.declarationLrn(any()))
+      .thenReturn(Some("123LRN"))
   }
 
   implicit val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
@@ -60,7 +67,8 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
     mockCustomsCacheService,
     mockCustomsDeclareExportsConnector,
     mockAuditService,
-    metrics
+    metrics,
+    mapper
   )
 
   "SubmissionService" should {

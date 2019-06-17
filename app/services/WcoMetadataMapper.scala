@@ -17,18 +17,54 @@
 package services
 
 import forms.Choice
+import javax.xml.bind.JAXBElement
+import services.mapping.MetaDataBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
+import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
 class WcoMetadataMapper {
 
-  self: WcoMetadataMappingStrategy =>
+  def produceMetaData(cacheMap: CacheMap, choice: Choice): MetaData =
+    MetaDataBuilder.build(cacheMap, choice)
 
-  def getMetaData(cacheMap: CacheMap, choice: Choice): Any =
-    self.produceMetaData(cacheMap, choice)
+  def declarationUcr(metaData: Any): Option[String] = {
+    val ucr = Option(
+      metaData
+        .asInstanceOf[MetaData]
+        .getAny
+        .asInstanceOf[JAXBElement[Declaration]]
+        .getValue
+        .getGoodsShipment
+        .getUCR
+    )
 
-  def getDeclarationDucr(metaData: Any): Option[String] = self.declarationUcr(metaData)
+    ucr
+      .map(_.getTraderAssignedReferenceID.getValue)
+      .orElse(Some(""))
+  }
 
-  def getDeclarationLrn(metaData: Any): Option[String] = self.declarationLrn(metaData)
+  def declarationLrn(metaData: Any): Option[String] =
+    Option(
+      metaData
+        .asInstanceOf[MetaData]
+        .getAny
+        .asInstanceOf[JAXBElement[Declaration]]
+        .getValue
+        .getFunctionalReferenceID
+        .getValue
+    ).orElse(Some(""))
 
-  def serialise(metaData: Any): String = toXml(metaData)
+  def toXml(metaData: Any): String = {
+    import java.io.StringWriter
+
+    import javax.xml.bind.{JAXBContext, Marshaller}
+
+    val jaxbMarshaller = JAXBContext.newInstance(classOf[MetaData]).createMarshaller
+    jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
+
+    val sw = new StringWriter
+    jaxbMarshaller.marshal(metaData.asInstanceOf[MetaData], sw)
+    sw.toString
+  }
 }

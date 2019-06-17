@@ -22,7 +22,6 @@ import features.{Feature, FeatureStatus}
 import forms.Choice
 import play.api.Mode.Test
 import play.api.{Configuration, Environment}
-import services.WcoMetadataJavaMappingStrategy
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 class AppConfigSpec extends CustomExportsBaseSpec {
@@ -85,10 +84,6 @@ class AppConfigSpec extends CustomExportsBaseSpec {
 
     "have login URL" in {
       validConfigService.loginUrl must be("http://localhost:9949/auth-login-stub/gg-sign-in")
-    }
-
-    "the WcoMetadataJavaMappingStrategy should be set as the default Mapping Strategy" in {
-      validConfigService.wcoMetadataMapper().isInstanceOf[WcoMetadataJavaMappingStrategy] must be(true)
     }
 
     "load the Choice options when list-of-available-journeys is defined" in {

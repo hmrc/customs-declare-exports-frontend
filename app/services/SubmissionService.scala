@@ -23,29 +23,25 @@ import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import forms.declaration.destinationCountries.{
-  DestinationCountries,
-  DestinationCountriesStandard,
-  DestinationCountriesSupplementary
-}
+import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard, DestinationCountriesSupplementary}
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import forms.declaration.{DeclarantDetails, _}
 import javax.inject.Singleton
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
+import models.declaration.governmentagencygoodsitem.Formats._
+import models.declaration.governmentagencygoodsitem.{GovernmentAgencyGoodsItem => InternalAgencyGoodsItem}
 import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, TransportInformationContainerData}
 import models.requests.JourneyRequest
 import play.api.Logger
 import play.api.http.Status.ACCEPTED
+import play.api.libs.json.{JsObject, Json}
 import services.audit.EventData._
 import services.audit.{AuditService, AuditTypes}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import models.declaration.governmentagencygoodsitem.{GovernmentAgencyGoodsItem => InternalAgencyGoodsItem}
 
 import scala.concurrent.{ExecutionContext, Future}
-import models.declaration.governmentagencygoodsitem.Formats._
-import play.api.libs.json.{JsObject, Json}
 
 @Singleton
 class SubmissionService @Inject()(
@@ -53,7 +49,8 @@ class SubmissionService @Inject()(
   cacheService: CustomsCacheService,
   exportsConnector: CustomsDeclareExportsConnector,
   auditService: AuditService,
-  exportsMetrics: ExportsMetrics
+  exportsMetrics: ExportsMetrics,
+  mapper: WcoMetadataMapper
 ) {
 
   private val logger = Logger(this.getClass())
@@ -81,12 +78,11 @@ class SubmissionService @Inject()(
   }
 
   private def format(cacheMap: CacheMap, choice: Choice): FormattedData = {
-    val mapper = appConfig.wcoMetadataMapper
-    val metaData = mapper.getMetaData(cacheMap, choice)
+    val metaData = mapper.produceMetaData(cacheMap, choice)
 
-    val lrn = mapper.getDeclarationLrn(metaData)
-    val ducr = mapper.getDeclarationDucr(metaData)
-    val payload = mapper.serialise(metaData)
+    val lrn = mapper.declarationLrn(metaData)
+    val ducr = mapper.declarationUcr(metaData)
+    val payload = mapper.toXml(metaData)
 
     FormattedData(lrn, ducr, payload)
   }
@@ -101,8 +97,6 @@ class SubmissionService @Inject()(
       DUCR.toString -> ducr.getOrElse(""),
       SubmissionResult.toString -> result
     )
-
-  protected case class FormattedData(lrn: Option[String], ducr: Option[String], payload: String)
 
   def getCachedData(cacheMap: CacheMap)(implicit request: JourneyRequest[_]): JsObject = {
 
@@ -162,4 +156,6 @@ class SubmissionService @Inject()(
     if (request.choice.value == AllowedChoiceValues.SupplementaryDec)
       Json.toJson(cacheMap.getEntry[OfficeOfExitSupplementary](OfficeOfExit.formId))
     else Json.toJson(cacheMap.getEntry[OfficeOfExitStandard](OfficeOfExit.formId))
+
+  protected case class FormattedData(lrn: Option[String], ducr: Option[String], payload: String)
 }
