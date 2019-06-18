@@ -45,7 +45,7 @@ class SealViewSpec extends SealFields with CommonMessages {
       getElementByCss(view, "legend>h1").text() must be(messages("standard.seal.title"))
     }
 
-    "display \"Back\" button that links to \"add-transport-containers\"  or \"transport-details\" page" in {
+    "display 'Back' button that links to 'add-transport-containers'  or 'transport-details' page" in {
       val view = createView()
 
       val backLinkContainer = getElementById(createView(container = true), "link-back")
@@ -59,7 +59,7 @@ class SealViewSpec extends SealFields with CommonMessages {
       backLinkTrader.attr("href") must be("/customs-declare-exports/declaration/transport-details")
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Save and continue' button on page" in {
       val view = createView()
 
       val saveButton = getElementByCss(view, "#submit")

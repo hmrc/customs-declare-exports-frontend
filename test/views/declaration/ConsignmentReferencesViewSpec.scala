@@ -90,7 +90,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       getElementById(view, "lrn").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Declaration Type\" page" in {
+    "display 'Back' button that links to 'Declaration Type' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -98,7 +98,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
       backButton.attr("href") must be("/customs-declare-exports/declaration/type")
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Save and continue' button on page" in {
 
       val view = createView()
 

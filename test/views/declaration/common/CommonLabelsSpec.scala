@@ -24,19 +24,19 @@ class CommonLabelsSpec extends ViewSpec with CommonMessages {
 
   "Button labels" should {
 
-    "have proper value for \"Back\" button" in {
+    "have proper value for 'Back' button" in {
       assertMessage(backCaption, "Back")
     }
 
-    "have proper value for \"Remove\" button" in {
+    "have proper value for 'Remove' button" in {
       assertMessage(removeCaption, "Remove")
     }
 
-    "have proper value for \"Add\" button" in {
+    "have proper value for 'Add' button" in {
       assertMessage(addCaption, "Add")
     }
 
-    "have proper value for \"Save and continue\" button" in {
+    "have proper value for 'Save and continue' button" in {
       assertMessage(saveAndContinueCaption, "Save and continue")
     }
   }

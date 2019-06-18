@@ -103,7 +103,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       ensureRadioIsChecked(view, "Supplementary declaration")
     }
 
-    "display \"Back\" button that links to \"Make an export declaration\" page" in {
+    "display 'Back' button that links to 'Make an export declaration' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -111,7 +111,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       backButton.attr("href") must be("start")
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Save and continue' button on page" in {
 
       val view = createView()
 

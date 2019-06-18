@@ -105,7 +105,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Consignee Details\" page" in {
+    "display 'Back' button that links to 'Consignee Details' page" in {
 
       val view = declarant_details(appConfig, form)(fakeJourneyRequest(StandardDec), messages, countries)
       val backButton = getElementById(view, "link-back")
@@ -114,7 +114,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
       backButton.attr("href") must be("/customs-declare-exports/declaration/consignee-details")
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Save and continue' button on page" in {
 
       val saveButton = getElementByCss(createView(), "#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))

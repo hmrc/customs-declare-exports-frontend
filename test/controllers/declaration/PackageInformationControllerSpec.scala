@@ -336,7 +336,7 @@ class PackageInformationControllerSpec
 
       "add item to the cache" when {
 
-        "with valid data and user press \"Add\"" in {
+        "with valid data and user press 'Add'" in {
 
           forAll(arbitrary[PackageInformation]) { packaging =>
             authorizedUser()
@@ -362,7 +362,7 @@ class PackageInformationControllerSpec
 
       "show global error" when {
 
-        "when no packages added and user press \"Save and continue\"" in {
+        "when no packages added and user press 'Save and continue'" in {
 
           authorizedUser()
           withCaching[List[PackageInformation]](None, formId)
@@ -384,7 +384,7 @@ class PackageInformationControllerSpec
           checkErrorLink(page, 2, piGlobalAddOne, "#")
         }
 
-        "when user entered data and press \"Save and continue\"" in {
+        "when user entered data and press 'Save and continue'" in {
 
           forAll(arbitrary[PackageInformation]) { packaging =>
             authorizedUser()
@@ -429,7 +429,7 @@ class PackageInformationControllerSpec
 
       "navigate to Additional Information" when {
 
-        "user press \"Save and continue\" and a record has already been added" in {
+        "user press 'Save and continue' and a record has already been added" in {
 
           forAll(arbitrary[PackageInformation]) { packaging =>
             authorizedUser()

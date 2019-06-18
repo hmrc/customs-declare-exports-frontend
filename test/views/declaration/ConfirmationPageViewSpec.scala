@@ -71,7 +71,7 @@ class ConfirmationPageViewSpec extends ViewSpec with ConfirmationMessages {
       )
     }
 
-    "display an \"Check your notification status in the dashboard\" empty link without conversationId" in {
+    "display an 'Check your notification status in the dashboard' empty link without conversationId" in {
 
       val view = createView()
 
@@ -80,7 +80,7 @@ class ConfirmationPageViewSpec extends ViewSpec with ConfirmationMessages {
       link.attr("href") must be("/customs-declare-exports/submissions")
     }
 
-    "display a \"Submit another declaration\" button that links to \"What do you want to do ?\" page" in {
+    "display a 'Submit another declaration' button that links to 'What do you want to do ?' page" in {
 
       val view = createView()
 

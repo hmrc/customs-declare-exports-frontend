@@ -105,7 +105,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
       getElementById(view, "totalPackage").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Transport Information\" page" in {
+    "display 'Back' button that links to 'Transport Information' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -113,7 +113,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
       backButton.attr("href") must be("/customs-declare-exports/declaration/office-of-exit")
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Save and continue' button on page" in {
 
       val view = createView()
 

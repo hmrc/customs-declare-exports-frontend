@@ -74,12 +74,12 @@ class StartViewSpec extends ViewSpec with StartMessages {
       getElementByCss(createView(), "title").text() must be(messages(title))
     }
 
-    "display \"Export\" header" in {
+    "display 'Export' header" in {
 
       getElementByCss(createView(), "h1").text() must be(messages(heading))
     }
 
-    "display \"Export\" description" in {
+    "display 'Export' description" in {
 
       getElementByCss(createView(), "article>div>div>p:nth-child(2)").text() must be(messages(description))
     }
@@ -103,7 +103,7 @@ class StartViewSpec extends ViewSpec with StartMessages {
         )
       }
 
-      "link in second element to \"EORI\" page" in {
+      "link in second element to 'EORI' page" in {
 
         val link = getElementByCss(createView(), "article>div>div>ul>li:nth-child(2)>a")
 
@@ -133,7 +133,7 @@ class StartViewSpec extends ViewSpec with StartMessages {
         )
       }
 
-      "link in sixth element to \"Commodity codes\" page" in {
+      "link in sixth element to 'Commodity codes' page" in {
 
         val link = getElementByCss(createView(), "article>div>div>ul>li:nth-child(6)>a")
 
@@ -148,7 +148,7 @@ class StartViewSpec extends ViewSpec with StartMessages {
         )
       }
 
-      "link in seventh element to\"Customs procedure codes\" page" in {
+      "link in seventh element to'Customs procedure codes' page" in {
 
         val link = getElementByCss(createView(), "article>div>div>ul>li:nth-child(7)>a")
 
@@ -159,7 +159,7 @@ class StartViewSpec extends ViewSpec with StartMessages {
       }
     }
 
-    "display \"Start Now\" button" in {
+    "display 'Start Now' button" in {
 
       getElementByCss(createView(), "article>div>div>p:nth-child(5)>a").text() must be(messages(buttonName))
     }
@@ -169,19 +169,19 @@ class StartViewSpec extends ViewSpec with StartMessages {
       getElementByCss(createView(), "article>div>div>p:nth-child(6)").text() must be(messages(additionalInformation))
     }
 
-    "display \"Help and Support\" header" in {
+    "display 'Help and Support' header" in {
 
       getElementByCss(createView(), "article>div>div>div>h2").text() must be(messages(referenceTitle))
     }
 
-    "display \"Help and Support\" description" in {
+    "display 'Help and Support' description" in {
 
       getElementByCss(createView(), "#content > article > div > div > div > p:nth-child(2)").text() must be(
         messages(reference) + " " + messages(referenceNumber) + " " + messages(referenceText)
       )
     }
 
-    "display link to \"General Enquires page\"" in {
+    "display link to 'General Enquires page'" in {
 
       val link = getElementByCss(createView(), "article>div>div>div>p:nth-child(3)>a")
 

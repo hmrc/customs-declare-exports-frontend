@@ -76,7 +76,7 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
       getElementByCss(createView(), "legend>h1").text() must be(messages(title))
     }
 
-    "display \"Back\" button that links to \"Supervising Office\" page" in {
+    "display 'Back' button that links to 'Supervising Office' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -84,7 +84,7 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
       backButton.attr("href") must be("/customs-declare-exports/declaration/export-items")
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Save and continue' button on page" in {
 
       val view = createView()
 

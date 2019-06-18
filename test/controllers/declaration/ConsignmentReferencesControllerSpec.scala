@@ -105,7 +105,7 @@ class ConsignmentReferencesControllerSpec
       status(result) must be(SEE_OTHER)
     }
 
-    "redirect to \"Exporter Details\" page" in {
+    "redirect to 'Exporter Details' page" in {
 
       val result = route(app, postRequest(uri, correctConsignmentReferencesJSON)).get
       val header = result.futureValue.header

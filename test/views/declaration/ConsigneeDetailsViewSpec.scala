@@ -112,7 +112,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Exporter Details\" page" in {
+    "display 'Back' button that links to 'Exporter Details' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -120,7 +120,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
       backButton.attr("href") must be("/customs-declare-exports/declaration/exporter-details")
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Save and continue' button on page" in {
 
       val saveButton = getElementByCss(createView(), "#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))

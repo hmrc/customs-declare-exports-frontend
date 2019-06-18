@@ -125,7 +125,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
       optionIndirectLabel.text() must be(messages(repTypeIndirect))
     }
 
-    "display \"Back\" button that links to \"Declarant Details\" page" in {
+    "display 'Back' button that links to 'Declarant Details' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -133,7 +133,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
       backButton.attr("href") must be("/customs-declare-exports/declaration/declarant-details")
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Save and continue' button on page" in {
 
       val view = createView()
 

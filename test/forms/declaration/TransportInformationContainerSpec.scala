@@ -83,6 +83,7 @@ class TransportInformationContainerSpec
 }
 
 object TransportInformationContainerSpec {
+  private val containerId = "id"
   val correctTransportInformationContainerData =
     TransportInformationContainerData(Seq(TransportInformationContainer(id = "M1l3s")))
   val emptyTransportInformationContainerData = TransportInformationContainer("")
@@ -90,5 +91,4 @@ object TransportInformationContainerSpec {
   val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
   val emptyTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("")))
   val correctTransportInformationContainerDataJSON: JsValue = Json.toJson(correctTransportInformationContainerData)
-  private val containerId = "id"
 }
