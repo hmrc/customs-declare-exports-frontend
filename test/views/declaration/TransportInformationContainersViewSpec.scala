@@ -71,7 +71,7 @@ class TransportInformationContainersViewSpec
       getElementById(view, "id").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Transport Information\" page" in {
+    "display 'Back' button that links to 'Transport Information' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -79,7 +79,7 @@ class TransportInformationContainersViewSpec
       backButton.attr("href") must be("/customs-declare-exports/declaration/transport-details")
     }
 
-    "display both \"Add\" and \"Save and continue\" button on page" in {
+    "display both 'Add' and 'Save and continue' button on page" in {
 
       val view = createView()
 

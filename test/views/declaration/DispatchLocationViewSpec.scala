@@ -80,7 +80,7 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
       optionTwoLabel.text() must be(messages(specialFiscalTerritory))
     }
 
-    "display \"Back\" button that links to \"What do you want to do ?\" page" in {
+    "display 'Back' button that links to 'What do you want to do ?' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -88,7 +88,7 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
       backButton.attr("href") must be("/customs-declare-exports/choice")
     }
 
-    "display \"Save and continue\" button" in {
+    "display 'Save and continue' button" in {
 
       val saveButton = getElementByCss(createView(), "#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))

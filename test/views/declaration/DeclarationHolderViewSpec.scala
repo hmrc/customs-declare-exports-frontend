@@ -80,7 +80,7 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
       getElementById(view, "eori").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Additional Information\" page" in {
+    "display 'Back' button that links to 'Additional Information' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -88,7 +88,7 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
       backButton.attr("href") must be("/customs-declare-exports/declaration/additional-actors")
     }
 
-    "display both \"Add\" and \"Save and continue\" button on page" in {
+    "display both 'Add' and 'Save and continue' button on page" in {
 
       val view = createView()
 

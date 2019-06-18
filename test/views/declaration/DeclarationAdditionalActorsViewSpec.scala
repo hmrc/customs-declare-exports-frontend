@@ -101,7 +101,7 @@ class DeclarationAdditionalActorsViewSpec
       optionFourLabel.text() must be(messages(warehouseKeeper))
     }
 
-    "display \"Back\" button that links to \"Representative Details\" page if on Supplementary journey" in {
+    "display 'Back' button that links to 'Representative Details' page if on Supplementary journey" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -109,7 +109,7 @@ class DeclarationAdditionalActorsViewSpec
       backButton.attr("href") must be("/customs-declare-exports/declaration/representative-details")
     }
 
-    "display \"Back\" button that links to \"Carrier Details\" page if on Standard Journey" in {
+    "display 'Back' button that links to 'Carrier Details' page if on Standard Journey" in {
 
       val view = declaration_additional_actors(appConfig, form, Seq())(fakeJourneyRequest(StandardDec), messages)
       val backButton = getElementById(view, "link-back")
@@ -118,7 +118,7 @@ class DeclarationAdditionalActorsViewSpec
       backButton.attr("href") must be("/customs-declare-exports/declaration/carrier-details")
     }
 
-    "display both \"Add\" and \"Save and continue\" button on page" in {
+    "display both 'Add' and 'Save and continue' button on page" in {
 
       val view = createView()
 

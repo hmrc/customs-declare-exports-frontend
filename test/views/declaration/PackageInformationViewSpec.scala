@@ -101,7 +101,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       getElementById(view, "shippingMarks").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Item Type\" page" in {
+    "display 'Back' button that links to 'Item Type' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -109,7 +109,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       backButton.attr("href") must be("/customs-declare-exports/declaration/item-type")
     }
 
-    "display both \"Add\" and \"Save and continue\" button on page" in {
+    "display both 'Add' and 'Save and continue' button on page" in {
 
       val view = createView()
 

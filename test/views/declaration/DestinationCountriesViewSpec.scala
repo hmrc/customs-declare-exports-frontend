@@ -81,7 +81,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       getElementById(view, "countryOfDestination").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Declaration holder of authorisation\" page" in {
+    "display 'Back' button that links to 'Declaration holder of authorisation' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -89,7 +89,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       backButton.attr("href") must be("/customs-declare-exports/declaration/holder-of-authorisation")
     }
 
-    "display \"Save and continue\" button" in {
+    "display 'Save and continue' button" in {
 
       val saveButton = getElementByCss(createView(), "#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))

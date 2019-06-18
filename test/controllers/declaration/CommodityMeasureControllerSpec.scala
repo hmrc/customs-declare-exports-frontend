@@ -154,7 +154,7 @@ class CommodityMeasureControllerSpec
         }
       }
 
-      "navigate to \"Additional Information\" page" when {
+      "navigate to 'Additional Information' page" when {
 
         "on click of continue when a record has already been added" in {
           forAll(arbitrary[CommodityMeasure]) { commodityMeasure =>

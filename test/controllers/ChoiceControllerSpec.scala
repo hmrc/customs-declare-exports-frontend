@@ -92,7 +92,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
         .cache[Choice](any(), ArgumentMatchers.eq(Choice.choiceId), any())(any(), any(), any())
     }
 
-    "redirect to dispatch location page when \"Supplementary declaration\" is selected" in {
+    "redirect to dispatch location page when 'Supplementary declaration' is selected" in {
 
       val correctForm = JsObject(Map("value" -> JsString(AllowedChoiceValues.SupplementaryDec)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
@@ -102,7 +102,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/dispatch-location"))
     }
 
-    "redirect to dispatch location page when \"Standard declaration\" is selected" in {
+    "redirect to dispatch location page when 'Standard declaration' is selected" in {
 
       val correctForm = JsObject(Map("value" -> JsString(AllowedChoiceValues.StandardDec)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
@@ -112,7 +112,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/dispatch-location"))
     }
 
-    "redirect to cancel declaration page when \"Cancel declaration\" is selected" in {
+    "redirect to cancel declaration page when 'Cancel declaration' is selected" in {
 
       val correctForm = JsObject(Map("value" -> JsString(AllowedChoiceValues.CancelDec)))
       val result = route(app, postRequest(choiceUri, correctForm)).get
@@ -122,7 +122,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
       header.headers.get("Location") must be(Some("/customs-declare-exports/cancel-declaration"))
     }
 
-    "redirect to submissions page when \"View recent declarations\" is selected" in {
+    "redirect to submissions page when 'View recent declarations' is selected" in {
 
       val correctForm = JsObject(Map("value" -> JsString(AllowedChoiceValues.Submissions)))
       val result = route(app, postRequest(choiceUri, correctForm)).get

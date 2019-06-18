@@ -606,7 +606,7 @@ class FieldValidatorSpec extends WordSpec with MustMatchers {
         isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) must be(false)
       }
 
-      "input contains decimal separator other than \".\"" in {
+      "input contains decimal separator other than '.'" in {
         val input = "123,1"
         val decimalPlaces = 1
         isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces)(input) must be(false)

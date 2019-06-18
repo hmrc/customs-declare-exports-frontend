@@ -133,7 +133,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
       }
     }
 
-    "navigate to \"transport-details\" page" when {
+    "navigate to 'transport-details' page" when {
 
       "on click of continue when a record has already been added" in {
         forAll(arbitrary[BorderTransport]) { borderTransport =>

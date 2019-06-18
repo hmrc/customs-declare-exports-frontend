@@ -105,7 +105,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
       getElementById(view, "details.address.country").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Representative Details\" page" in {
+    "display 'Back' button that links to 'Representative Details' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -113,7 +113,7 @@ class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with C
       backButton.attr("href") must be("/customs-declare-exports/declaration/representative-details")
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Save and continue' button on page" in {
 
       val saveButton = getElementByCss(createView(), "#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))

@@ -65,14 +65,14 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         status(result) must be(OK)
       }
 
-      "display \"Back\" button that links to \"Export-items\" page" in new Test {
+      "display 'Back' button that links to 'Export-items' page" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("site.back"))
         resultAsString must include("/declaration/transport-details")
       }
 
-      "display \"Accept and submit declaration\" button" in new Test {
+      "display 'Accept and submit declaration' button" in new Test {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("site.acceptAndSubmitDeclaration"))

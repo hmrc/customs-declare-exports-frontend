@@ -66,7 +66,7 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
       getElementById(view, "officeId").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Location of Goods\" page" in {
+    "display 'Back' button that links to 'Location of Goods' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -74,7 +74,7 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
       backButton.attr("href") must be("/customs-declare-exports/declaration/location-of-goods")
     }
 
-    "display \"Save and continue\" button" in {
+    "display 'Save and continue' button" in {
 
       val saveButton = getElementByCss(createView(), "#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))

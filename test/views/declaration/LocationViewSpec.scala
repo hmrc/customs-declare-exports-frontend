@@ -142,7 +142,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       getElementById(view, "city").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Destination Countries\" page" in {
+    "display 'Back' button that links to 'Destination Countries' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -150,7 +150,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       backButton.attr("href") must be("/customs-declare-exports/declaration/destination-countries")
     }
 
-    "display \"Save and continue\" button" in {
+    "display 'Save and continue' button" in {
 
       val saveButton = getElementByCss(createView(), "#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))

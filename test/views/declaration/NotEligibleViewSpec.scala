@@ -81,7 +81,7 @@ class NotEligibleViewSpec extends ViewSpec with NotEligibleMessages with CommonM
       getElementsByCss(view, "p:nth-child(5)").text() must be(messages(referenceText))
     }
 
-    "display \"Back\" button that links to \"Make declaration\" page" in {
+    "display 'Back' button that links to 'Make declaration' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 

@@ -85,7 +85,7 @@ class TransactionTypeViewSpec extends ViewSpec with TransactionTypeMessages with
       getElementById(view, "identifier").attr("value") must be("")
     }
 
-    "display \"Back\" button that links to \"Total Number Of Items\" page" in {
+    "display 'Back' button that links to 'Total Number Of Items' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -93,7 +93,7 @@ class TransactionTypeViewSpec extends ViewSpec with TransactionTypeMessages with
       backButton.attr("href") must be("/customs-declare-exports/declaration/total-numbers-of-items")
     }
 
-    "display \"Save and continue\" button on page" in {
+    "display 'Save and continue' button on page" in {
 
       val view = createView()
 
