@@ -32,7 +32,6 @@ object ProcedureCodes {
   private val procedureCodeLength = 4
   private val additionalProcedureCodeLength = 3
 
-  val CodeForFiscalReferences = "1042"
 
   val mapping = Forms.mapping(
     "procedureCode" -> optional(

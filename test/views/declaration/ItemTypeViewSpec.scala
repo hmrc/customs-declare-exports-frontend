@@ -180,12 +180,12 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
         getElementsByCss(createView(journeyType = AllowedChoiceValues.StandardDec), "#add").size() must be(2)
       }
 
-      "display 'Back' button that links to 'procedure-codes' page" in {
+      "display 'Back' button that links to 'fiscal-information' page" in {
 
         val backButton = getElementById(createView(journeyType = AllowedChoiceValues.StandardDec), "link-back")
 
         backButton.text() must be(messages(backCaption))
-        backButton.attr("href") must be("/customs-declare-exports/declaration/procedure-codes")
+        backButton.attr("href") must be("/customs-declare-exports/declaration/fiscal-information")
       }
 
       "display 'Save and continue' button" in {
@@ -263,12 +263,12 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
         getElementsByCss(createView(journeyType = AllowedChoiceValues.SupplementaryDec), "#add").size() must be(2)
       }
 
-      "display 'Back' button that links to 'procedure-codes' page" in {
+      "display 'Back' button that links to 'fiscal-information' page" in {
 
         val backButton = getElementById(createView(journeyType = AllowedChoiceValues.SupplementaryDec), "link-back")
 
         backButton.text() must be(messages(backCaption))
-        backButton.attr("href") must be("/customs-declare-exports/declaration/procedure-codes")
+        backButton.attr("href") must be("/customs-declare-exports/declaration/fiscal-information")
       }
 
       "display 'Save and continue' button" in {

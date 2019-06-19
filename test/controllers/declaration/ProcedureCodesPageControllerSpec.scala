@@ -494,7 +494,7 @@ class ProcedureCodesPageControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/item-type"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/fiscal-information"))
       }
 
       "user fill only procedure code with some additional codes already added" in {
@@ -507,7 +507,7 @@ class ProcedureCodesPageControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/item-type"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/fiscal-information"))
       }
     }
   }

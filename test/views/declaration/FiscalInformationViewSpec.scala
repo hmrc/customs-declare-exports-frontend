@@ -37,8 +37,8 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
 
     "have proper messages for labels" in {
 
-      assertMessage(title, "3/40 Do you want to claim Onward Supply Relief (OSR)?")
-      assertMessage(header, "Fiscal information")
+      assertMessage(title, "Onward Supply Relief (OSR)")
+      assertMessage(header, "Item 1")
       assertMessage(yes, "Yes")
       assertMessage(no, "No")
     }
@@ -52,7 +52,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
 
     "display page title" in {
       getElementById(createView(), "title").text() must be(
-        messages("3/40 Do you want to claim Onward Supply Relief (OSR)?")
+        messages(title)
       )
     }
 

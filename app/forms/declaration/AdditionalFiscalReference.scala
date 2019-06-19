@@ -29,17 +29,17 @@ object AdditionalFiscalReference {
 
   val mapping = Forms.mapping(
     "country" -> text()
-      .verifying("declaration.fiscalReferences.country.empty", _.trim.nonEmpty)
+      .verifying("declaration.additionalFiscalReferences.country.empty", _.trim.nonEmpty)
       .verifying(
-        "declaration.fiscalReferences.country.error",
+        "declaration.additionalFiscalReferences.country.error",
         input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
       ),
     "reference" -> text()
-      .verifying("declaration.fiscalReferences.reference.empty", _.trim.nonEmpty)
-      .verifying("declaration.fiscalReferences.reference.error", isAlphanumeric and noLongerThan(15))
+      .verifying("declaration.additionalFiscalReferences.reference.empty", _.trim.nonEmpty)
+      .verifying("declaration.additionalFiscalReferences.reference.error", isAlphanumeric and noLongerThan(15))
   )(AdditionalFiscalReference.apply)(AdditionalFiscalReference.unapply)
 
-  val form: Form[AdditionalFiscalReference] = Form(mapping)
+  def form(): Form[AdditionalFiscalReference] = Form(mapping)
 }
 
 case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalReference])

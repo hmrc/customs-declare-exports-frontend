@@ -276,7 +276,7 @@ class DocumentsProducedControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/fiscal-information"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
       "provided with empty form and with existing cache" in {
@@ -288,7 +288,7 @@ class DocumentsProducedControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/fiscal-information"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
       "provided with a valid document and with empty cache" in {
@@ -298,7 +298,7 @@ class DocumentsProducedControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/fiscal-information"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
 
       "provided with a valid document and with existing cache" in {
@@ -311,7 +311,7 @@ class DocumentsProducedControllerSpec
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/fiscal-information"))
+        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
       }
     }
   }

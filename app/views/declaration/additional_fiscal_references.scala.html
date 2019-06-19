@@ -23,7 +23,7 @@
 @(form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], countries: List[AutoCompleteItem], appConfig: AppConfig, messages: Messages)
 
 @main_template(
-    title = messages("declaration.additionalFiscalInformation.title"),
+    title = messages("declaration.additionalFiscalReferences.title"),
     appConfig = appConfig
 ) {
 
@@ -36,9 +36,9 @@
 
         @components.section_header(messages("declaration.fiscalInformation.header"))
 
-        @components.page_title(Some(messages("declaration.additionalFiscalInformation.title")))
+        @components.page_title(Some(messages("declaration.additionalFiscalReferences.title")))
 
-        <h3>@messages("declaration.additionalFiscalInformation.numbers.header")</h3>
+        <h3>@messages("declaration.additionalFiscalReferences.numbers.header")</h3>
 
         @components.multiple_items_list(additionalReferences.map(elem => elem.country + elem.reference))
 
@@ -46,16 +46,16 @@
             @components.autocomplete_field(
                 form,
                 "country",
-                messages("declaration.additionalFiscalInformation.country"),
+                messages("declaration.additionalFiscalReferences.country"),
                 None,
-                messages("declaration.additionalFiscalInformation.country.empty"),
+                messages("declaration.additionalFiscalReferences.country.empty"),
                 countries
             )
         </div>
 
         @components.input_text(
             field = form("reference"),
-            label = messages("declaration.additionalFiscalInformation.VATnumber"),
+            label = messages("declaration.additionalFiscalReferences.reference"),
             hint = None,
             labelClass = Some("bold-small")
         )

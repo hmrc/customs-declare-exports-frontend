@@ -109,7 +109,7 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/item-type"))
     }
   }
 
@@ -170,7 +170,7 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/item-type"))
     }
   }
 }
