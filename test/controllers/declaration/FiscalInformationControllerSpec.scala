@@ -29,7 +29,9 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
 
   private val uri: String = uriWithContextPath("/declaration/fiscal-information")
   private val emptyFiscalInformationJson: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("")))
-  private val incorrectFiscalInformation: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("NeitherRadioOption")))
+  private val incorrectFiscalInformation: JsValue = JsObject(
+    Map("onwardSupplyRelief" -> JsString("NeitherRadioOption"))
+  )
   private val fiscalInformationWithYes: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("Yes")))
   private val fiscalInformationWithNo: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("No")))
 

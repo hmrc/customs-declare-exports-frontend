@@ -30,7 +30,9 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.CustomsCacheService
+import services.countries.Countries
+import services.model.AutoCompleteItem
+import services.{Country, CustomsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.additional_fiscal_references
 
@@ -39,11 +41,17 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalFiscalReferencesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
+  countries: Countries,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
+
+  implicit val countryList: List[AutoCompleteItem] = getCountryData(countries.all)
+
+  def getCountryData(countries: List[Country]): List[AutoCompleteItem] =
+    countries.map(country => AutoCompleteItem(country.countryName, country.countryCode))
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[AdditionalFiscalReferencesData](goodsItemCacheId, formId).map {
@@ -103,8 +111,8 @@ class AdditionalFiscalReferencesController @Inject()(
                 formId,
                 AdditionalFiscalReferencesData(updatedCache)
               )
-              .map(_ => Redirect(routes.ItemsSummaryController.displayForm()))
-          else Future.successful(Redirect(routes.ItemsSummaryController.displayForm()))
+              .map(_ => Redirect(routes.ItemTypePageController.displayPage()))
+          else Future.successful(Redirect(routes.ItemTypePageController.displayPage()))
       )
 
   private def removeReference(values: Seq[String], cachedData: AdditionalFiscalReferencesData)(

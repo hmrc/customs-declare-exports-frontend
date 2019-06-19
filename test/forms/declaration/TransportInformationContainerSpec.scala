@@ -30,6 +30,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemData
 import utils.validators.forms.FieldValidator.isAlphanumeric
+
 class TransportInformationContainerSpec
     extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers
     with GovernmentAgencyGoodsItemData {

@@ -23,7 +23,11 @@ import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard, DestinationCountriesSupplementary}
+import forms.declaration.destinationCountries.{
+  DestinationCountries,
+  DestinationCountriesStandard,
+  DestinationCountriesSupplementary
+}
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import forms.declaration.{DeclarantDetails, _}
 import javax.inject.Singleton

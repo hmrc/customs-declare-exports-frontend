@@ -17,18 +17,27 @@
 package forms.declaration
 
 import play.api.data.{Form, Forms}
-import play.api.data.Forms.{optional, text}
+import play.api.data.Forms.text
 import play.api.libs.json.Json
+import services.Countries.allCountries
+import utils.validators.forms.FieldValidator._
 
-case class AdditionalFiscalReference(reference: Option[String])
+case class AdditionalFiscalReference(country: String, reference: String)
 
 object AdditionalFiscalReference {
   implicit val format = Json.format[AdditionalFiscalReference]
 
   val mapping = Forms.mapping(
-    "additionalFiscalReference" -> optional(text())
-  )(AdditionalFiscalReference.apply)(
-    AdditionalFiscalReference.unapply)
+    "country" -> text()
+      .verifying("declaration.fiscalReferences.country.empty", _.trim.nonEmpty)
+      .verifying(
+        "declaration.fiscalReferences.country.error",
+        input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
+      ),
+    "reference" -> text()
+      .verifying("declaration.fiscalReferences.reference.empty", _.trim.nonEmpty)
+      .verifying("declaration.fiscalReferences.reference.error", isAlphanumeric and noLongerThan(15))
+  )(AdditionalFiscalReference.apply)(AdditionalFiscalReference.unapply)
 
   val form: Form[AdditionalFiscalReference] = Form(mapping)
 }

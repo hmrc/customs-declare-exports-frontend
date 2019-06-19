@@ -51,7 +51,9 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
   "Fiscal Information View on empty page" should {
 
     "display page title" in {
-      getElementById(createView(), "title").text() must be(messages("3/40 Do you want to claim Onward Supply Relief (OSR)?"))
+      getElementById(createView(), "title").text() must be(
+        messages("3/40 Do you want to claim Onward Supply Relief (OSR)?")
+      )
     }
 
     "display section header" in {

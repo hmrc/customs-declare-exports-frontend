@@ -118,7 +118,7 @@ class DocumentsProducedController @Inject()(
     docs: Seq[DocumentsProduced] = Seq.empty
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier) =
     itemsCache.addItemToCache(goodsItemCacheId, cacheId).flatMap {
-      case true => Future.successful(Redirect(routes.FiscalInformationController.displayPage()))
+      case true => Future.successful(Redirect(routes.ItemsSummaryController.displayForm()))
       case false =>
         handleErrorPage(Seq(("", "supplementary.addgoodsitems.addallpages.error")), document, docs)
     }

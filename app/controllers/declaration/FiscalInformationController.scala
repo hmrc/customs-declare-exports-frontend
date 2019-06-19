@@ -18,7 +18,7 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
+import controllers.util.CacheIdGenerator.goodsItemCacheId
 import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation.{form, formId}
 import javax.inject.Inject
@@ -37,12 +37,12 @@ class FiscalInformationController @Inject()(
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[FiscalInformation](cacheId, formId).map {
+    customsCacheService.fetchAndGetEntry[FiscalInformation](goodsItemCacheId, formId).map {
       case Some(data) => Ok(fiscal_information(form.fill(data)))
-      case _ =>          Ok(fiscal_information(form))
+      case _          => Ok(fiscal_information(form))
     }
   }
 
@@ -50,18 +50,17 @@ class FiscalInformationController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[FiscalInformation]) =>
-          Future.successful(BadRequest(fiscal_information(formWithErrors))),
+        (formWithErrors: Form[FiscalInformation]) => Future.successful(BadRequest(fiscal_information(formWithErrors))),
         validFiscalInformation =>
           customsCacheService
-            .cache[FiscalInformation](cacheId, formId, validFiscalInformation)
+            .cache[FiscalInformation](goodsItemCacheId, formId, validFiscalInformation)
             .map(_ => specifyNextPage(validFiscalInformation))
       )
   }
 
   private def specifyNextPage(answer: FiscalInformation): Result =
-    if(answer.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes)
+    if (answer.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes)
       Redirect(routes.AdditionalFiscalReferencesController.displayPage())
-    else Redirect(routes.ItemsSummaryController.displayForm())
+    else Redirect(routes.ItemTypePageController.displayPage())
 
 }

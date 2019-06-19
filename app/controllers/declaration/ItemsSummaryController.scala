@@ -49,14 +49,15 @@ class ItemsSummaryController @Inject()(
     cacheService
       .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
       .zip(hasFiscalInformation())
-      .map { case (items, hasFiscalInformation) =>
-        Ok(items_summary(items.getOrElse(Seq.empty), hasFiscalInformation))
+      .map {
+        case (items, hasFiscalInformation) =>
+          Ok(items_summary(items.getOrElse(Seq.empty), hasFiscalInformation))
       }
   }
 
   def hasFiscalInformation()(implicit journeyRequest: JourneyRequest[_], hc: HeaderCarrier): Future[Boolean] =
     cacheService.fetchAndGetEntry[FiscalInformation](cacheId, formId).map {
       case Some(data) => data.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes
-      case None => false
+      case None       => false
     }
 }

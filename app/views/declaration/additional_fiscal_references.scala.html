@@ -16,14 +16,14 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes._
-@import forms.declaration.AdditionalFiscalReference
+@import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 @import uk.gov.hmrc.play.views.html._
+@import services.model.AutoCompleteItem
 
-@import forms.declaration.AdditionalFiscalReferencesData
-@(form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@(form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], countries: List[AutoCompleteItem], appConfig: AppConfig, messages: Messages)
 
 @main_template(
-    title = messages(""),
+    title = messages("declaration.additionalFiscalInformation.title"),
     appConfig = appConfig
 ) {
 
@@ -36,14 +36,27 @@
 
         @components.section_header(messages("declaration.fiscalInformation.header"))
 
-        @components.page_title(Some("Page title"))
+        @components.page_title(Some(messages("declaration.additionalFiscalInformation.title")))
 
-        @components.multiple_items_list(additionalReferences.filter(_.reference.isDefined).map(_.reference.get))
+        <h3>@messages("declaration.additionalFiscalInformation.numbers.header")</h3>
+
+        @components.multiple_items_list(additionalReferences.map(elem => elem.country + elem.reference))
+
+        <div id="country-of-dispatch-field" class="inline-block form-group">
+            @components.autocomplete_field(
+                form,
+                "country",
+                messages("declaration.additionalFiscalInformation.country"),
+                None,
+                messages("declaration.additionalFiscalInformation.country.empty"),
+                countries
+            )
+        </div>
 
         @components.input_text(
-            field = form("additionalFiscalReference"),
-            label = "Additional references question",
-            hint = Some("Some hint"),
+            field = form("reference"),
+            label = messages("declaration.additionalFiscalInformation.VATnumber"),
+            hint = None,
             labelClass = Some("bold-small")
         )
 

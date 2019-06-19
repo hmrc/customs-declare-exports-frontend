@@ -22,7 +22,8 @@ import play.api.libs.json._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
-class DomesticDutyTaxPartyBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GovernmentAgencyGoodsItemData {
+class DomesticDutyTaxPartyBuilderSpec
+    extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GovernmentAgencyGoodsItemData {
 
   "DomesticDutyTaxPartyBuilder" should {
     "map correctly if option is 'Yes'" in {
@@ -38,7 +39,7 @@ class DomesticDutyTaxPartyBuilderSpec extends WordSpec with Matchers with Govern
 
     "should not create list of DomesticDutyTaxParty if option is 'No'" in {
       implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(FiscalInformation.formId -> Json.toJson(FiscalInformation("No"))))
+        CacheMap("CacheID", Map(FiscalInformation.formId -> Json.toJson(FiscalInformation("No"))))
 
       val domesticDutyTaxParties: java.util.List[GoodsShipment.DomesticDutyTaxParty] = DomesticDutyTaxPartyBuilder.build
       domesticDutyTaxParties.isEmpty shouldBe true
