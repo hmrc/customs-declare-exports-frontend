@@ -19,9 +19,8 @@ package views.declaration
 import forms.declaration.FiscalInformation
 import helpers.views.declaration.{CommonMessages, FiscalInformationMessages}
 import play.api.data.Form
-import play.api.mvc.Request
-import play.api.test.CSRFTokenHelper._
 import play.twirl.api.Html
+import utils.FakeRequestCSRFSupport._
 import views.declaration.spec.ViewSpec
 import views.html.declaration.fiscal_information
 import views.tags.ViewTest
@@ -31,7 +30,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
   private def createView(form: Form[FiscalInformation] = form): Html =
-    fiscal_information(form)(fakeRequest.withCSRFToken.asInstanceOf[Request[_]], appConfig, messages)
+    fiscal_information(form)(fakeRequest.withCSRFToken, appConfig, messages)
 
   "Fiscal Information View" should {
 

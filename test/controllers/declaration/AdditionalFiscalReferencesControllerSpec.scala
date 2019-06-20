@@ -21,9 +21,8 @@ import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
-import play.api.test.CSRFTokenHelper._
-import play.api.mvc.{AnyContentAsFormUrlEncoded, AnyContentAsJson, Request}
 import play.api.test.Helpers._
+import utils.FakeRequestCSRFSupport._
 
 class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
 
@@ -76,7 +75,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       "form contains errors during adding item" in {
         val body = Seq(("country", "hello"), ("reference", "12345"), addActionUrlEncoded)
         val request =
-          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
+          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken
 
         val Some(result) = route(app, request)
 
@@ -86,7 +85,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       "form contains errors during saving" in {
         val body = Seq(("country", "hello"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
         val request =
-          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
+          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken
 
         val Some(result) = route(app, request)
 
@@ -99,7 +98,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       "user adds correct item" in {
         val body = Seq(("country", "FR"), ("reference", "12345"), addActionUrlEncoded)
         val request =
-          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
+          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken
 
         val Some(result) = route(app, request)
 
@@ -113,7 +112,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
 
         val body = Seq(saveAndContinueActionUrlEncoded)
         val request =
-          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
+          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken
 
         val Some(result) = route(app, request)
 
@@ -124,7 +123,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       "user clicks save with form filled" in {
         val body = Seq(("country", "FR"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
         val request =
-          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
+          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken
 
         val Some(result) = route(app, request)
 
