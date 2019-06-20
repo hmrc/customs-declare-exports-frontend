@@ -16,7 +16,8 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import forms.declaration.FiscalInformation
+import forms.declaration
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -26,22 +27,28 @@ class DomesticDutyTaxPartyBuilderSpec
     extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GovernmentAgencyGoodsItemData {
 
   "DomesticDutyTaxPartyBuilder" should {
-    "map correctly if option is 'Yes'" in {
+    "map correctly if cache contain Additional Fiscal References" in {
       implicit val cacheMap: CacheMap =
-        CacheMap("CacheID", Map(FiscalInformation.formId -> Json.toJson(FiscalInformation("Yes"))))
+        CacheMap(
+          "CacheID",
+          Map(
+            AdditionalFiscalReferencesData.formId -> Json
+              .toJson(declaration.AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
+          )
+        )
 
       val domesticDutyTaxParties: java.util.List[GoodsShipment.DomesticDutyTaxParty] = DomesticDutyTaxPartyBuilder.build
       domesticDutyTaxParties.size() should be(1)
-      domesticDutyTaxParties.get(0).getID should be(null)
+      domesticDutyTaxParties.get(0).getID.getValue should be("PL12345")
       domesticDutyTaxParties.get(0).getRoleCode.getValue should be("FR1")
 
     }
 
-    "should not create list of DomesticDutyTaxParty if option is 'No'" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap("CacheID", Map(FiscalInformation.formId -> Json.toJson(FiscalInformation("No"))))
+    "should not create list of DomesticDutyTaxParty if user doesn't add any Additional Fiscal References" in {
+      implicit val cacheMap: CacheMap = CacheMap("CacheID", Map.empty)
 
       val domesticDutyTaxParties: java.util.List[GoodsShipment.DomesticDutyTaxParty] = DomesticDutyTaxPartyBuilder.build
+
       domesticDutyTaxParties.isEmpty shouldBe true
     }
   }

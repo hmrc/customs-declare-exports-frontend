@@ -16,32 +16,34 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import forms.declaration.FiscalInformation
+import forms.declaration.AdditionalFiscalReferencesData
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.DomesticDutyTaxParty
-import wco.datamodel.wco.declaration_ds.dms._2.DomesticDutyTaxPartyRoleCodeType
+import wco.datamodel.wco.declaration_ds.dms._2.{DomesticDutyTaxPartyIdentificationIDType, DomesticDutyTaxPartyRoleCodeType}
 
 import scala.collection.JavaConverters._
 
 object DomesticDutyTaxPartyBuilder {
 
   def build(implicit cacheMap: CacheMap): java.util.List[DomesticDutyTaxParty] =
-    cacheMap
-      .getEntry[FiscalInformation](FiscalInformation.formId)
-      .filter(_.onwardSupplyRelief == "Yes")
-      .map(information => createDomesticDutyTaxParty(information))
+    cacheMap.getEntry[AdditionalFiscalReferencesData](AdditionalFiscalReferencesData.formId)
+      .map(references => createDomesticDutyTaxParty(references))
       .toList
       .asJava
 
-  def createDomesticDutyTaxParty(information: FiscalInformation)(implicit cacheMap: CacheMap): DomesticDutyTaxParty = {
+  def createDomesticDutyTaxParty(referencesData: AdditionalFiscalReferencesData)(implicit cacheMap: CacheMap): DomesticDutyTaxParty = {
 
     val domesticDutyTaxParty = new DomesticDutyTaxParty
 
-    if (information.onwardSupplyRelief.nonEmpty) {
+    referencesData.references.foreach { fiscalReference =>
       val roleCodeType = new DomesticDutyTaxPartyRoleCodeType
+      val referenceIdType = new DomesticDutyTaxPartyIdentificationIDType
       roleCodeType.setValue("FR1")
+      referenceIdType.setValue(fiscalReference.country + fiscalReference.reference)
       domesticDutyTaxParty.setRoleCode(roleCodeType)
+      domesticDutyTaxParty.setID(referenceIdType)
     }
+
     domesticDutyTaxParty
   }
 }
