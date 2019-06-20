@@ -51,9 +51,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
   "Fiscal Information View on empty page" should {
 
     "display page title" in {
-      getElementById(createView(), "title").text() must be(
-        messages(title)
-      )
+      getElementById(createView(), "title").text() must be(messages(title))
     }
 
     "display section header" in {

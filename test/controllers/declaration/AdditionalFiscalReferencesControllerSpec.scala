@@ -48,9 +48,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
 
     "read item from cache and display it" in {
 
-      val cachedData = AdditionalFiscalReferencesData(
-        Seq(AdditionalFiscalReference("France", "7232"))
-      )
+      val cachedData = AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("France", "7232")))
       withCaching[AdditionalFiscalReferencesData](Some(cachedData), AdditionalFiscalReferencesData.formId)
 
       val result = route(app, getRequest(uri)).get
@@ -65,8 +63,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
   "Additional Fiscal References Controller on POST" should {
 
     "remove item from the cache" in {
-      val cachedData = AdditionalFiscalReferencesData(
-        Seq(AdditionalFiscalReference("FR", "7232")))
+      val cachedData = AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("FR", "7232")))
       withCaching[AdditionalFiscalReferencesData](Some(cachedData), AdditionalFiscalReferencesData.formId)
 
       val body = (Remove.toString, "0")
@@ -78,7 +75,8 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
 
       "form contains errors during adding item" in {
         val body = Seq(("country", "hello"), ("reference", "12345"), addActionUrlEncoded)
-        val request = postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
+        val request =
+          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
 
         val result = route(app, request).get
 
@@ -87,7 +85,8 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
 
       "form contains errors during saving" in {
         val body = Seq(("country", "hello"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
-        val request = postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
+        val request =
+          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
 
         val result = route(app, request).get
 
@@ -99,7 +98,8 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
 
       "user adds correct item" in {
         val body = Seq(("country", "FR"), ("reference", "12345"), addActionUrlEncoded)
-        val request = postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
+        val request =
+          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
 
         val result = route(app, request).get
 
@@ -108,12 +108,12 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       }
 
       "user clicks save with empty form and item in the cache" in {
-        val cachedData = AdditionalFiscalReferencesData(
-          Seq(AdditionalFiscalReference("FR", "7232")))
+        val cachedData = AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("FR", "7232")))
         withCaching[AdditionalFiscalReferencesData](Some(cachedData), AdditionalFiscalReferencesData.formId)
 
         val body = Seq(saveAndContinueActionUrlEncoded)
-        val request = postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
+        val request =
+          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
 
         val result = route(app, request).get
 
@@ -123,7 +123,8 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
 
       "user clicks save with form filled" in {
         val body = Seq(("country", "FR"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
-        val request = postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
+        val request =
+          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
 
         val result = route(app, request).get
 

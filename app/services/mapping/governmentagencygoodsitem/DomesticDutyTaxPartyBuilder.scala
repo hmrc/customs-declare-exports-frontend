@@ -19,19 +19,25 @@ package services.mapping.governmentagencygoodsitem
 import forms.declaration.AdditionalFiscalReferencesData
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.DomesticDutyTaxParty
-import wco.datamodel.wco.declaration_ds.dms._2.{DomesticDutyTaxPartyIdentificationIDType, DomesticDutyTaxPartyRoleCodeType}
+import wco.datamodel.wco.declaration_ds.dms._2.{
+  DomesticDutyTaxPartyIdentificationIDType,
+  DomesticDutyTaxPartyRoleCodeType
+}
 
 import scala.collection.JavaConverters._
 
 object DomesticDutyTaxPartyBuilder {
 
   def build(implicit cacheMap: CacheMap): java.util.List[DomesticDutyTaxParty] =
-    cacheMap.getEntry[AdditionalFiscalReferencesData](AdditionalFiscalReferencesData.formId)
+    cacheMap
+      .getEntry[AdditionalFiscalReferencesData](AdditionalFiscalReferencesData.formId)
       .map(references => createDomesticDutyTaxParty(references))
       .toList
       .asJava
 
-  def createDomesticDutyTaxParty(referencesData: AdditionalFiscalReferencesData)(implicit cacheMap: CacheMap): DomesticDutyTaxParty = {
+  def createDomesticDutyTaxParty(
+    referencesData: AdditionalFiscalReferencesData
+  )(implicit cacheMap: CacheMap): DomesticDutyTaxParty = {
 
     val domesticDutyTaxParty = new DomesticDutyTaxParty
 
