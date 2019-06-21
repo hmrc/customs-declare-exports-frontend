@@ -41,7 +41,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
   "Additional Fiscal References Controller on GET" should {
 
     "return 200 status code" in {
-      val result = route(app, getRequest(uri)).get
+      val Some(result) = route(app, getRequest(uri))
 
       status(result) must be(OK)
     }
@@ -51,7 +51,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       val cachedData = AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("France", "7232")))
       withCaching[AdditionalFiscalReferencesData](Some(cachedData), AdditionalFiscalReferencesData.formId)
 
-      val result = route(app, getRequest(uri)).get
+      val Some(result) = route(app, getRequest(uri))
       val page = contentAsString(result)
 
       status(result) must be(OK)
@@ -67,7 +67,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       withCaching[AdditionalFiscalReferencesData](Some(cachedData), AdditionalFiscalReferencesData.formId)
 
       val body = (Remove.toString, "0")
-      val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+      val Some(result) = route(app, postRequestFormUrlEncoded(uri, body))
 
       status(result) must be(SEE_OTHER)
     }
@@ -78,7 +78,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
         val request =
           postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
 
-        val result = route(app, request).get
+        val Some(result) = route(app, request)
 
         status(result) must be(BAD_REQUEST)
       }
@@ -88,7 +88,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
         val request =
           postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
 
-        val result = route(app, request).get
+        val Some(result) = route(app, request)
 
         status(result) must be(BAD_REQUEST)
       }
@@ -101,7 +101,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
         val request =
           postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
 
-        val result = route(app, request).get
+        val Some(result) = route(app, request)
 
         status(result) must be(SEE_OTHER)
 
@@ -115,7 +115,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
         val request =
           postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
 
-        val result = route(app, request).get
+        val Some(result) = route(app, request)
 
         status(result) must be(SEE_OTHER)
 
@@ -126,7 +126,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
         val request =
           postRequestFormUrlEncoded(uri, body: _*).withCSRFToken.asInstanceOf[Request[AnyContentAsFormUrlEncoded]]
 
-        val result = route(app, request).get
+        val Some(result) = route(app, request)
 
         status(result) must be(SEE_OTHER)
 

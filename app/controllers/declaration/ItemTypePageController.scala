@@ -39,13 +39,12 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class ItemTypePageController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext)
+)(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -53,18 +52,17 @@ class ItemTypePageController @Inject()(
       .fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id)
       .zip(hasAdditionalFiscalReferences)
       .map {
-        case (Some(data), hasFiscalReferences) =>
+        case (Some(itemType), hasFiscalReferences) =>
           Ok(
             item_type(
-              appConfig,
-              ItemType.form.fill(data),
+              ItemType.form.fill(itemType),
               hasFiscalReferences,
-              data.taricAdditionalCodes,
-              data.nationalAdditionalCodes
+              itemType.taricAdditionalCodes,
+              itemType.nationalAdditionalCodes
             )
           )
         case (_, hasFiscalReferences) =>
-          Ok(item_type(appConfig, ItemType.form, hasFiscalReferences))
+          Ok(item_type(ItemType.form, hasFiscalReferences))
       }
   }
 
@@ -106,7 +104,6 @@ class ItemTypePageController @Inject()(
         Future.successful(
           BadRequest(
             item_type(
-              appConfig,
               adjustDataKeys(formWithErrors),
               hasFiscalReferences,
               itemTypeCache.taricAdditionalCodes,
@@ -138,7 +135,6 @@ class ItemTypePageController @Inject()(
         Future.successful(
           BadRequest(
             item_type(
-              appConfig,
               adjustDataKeys(formWithErrors),
               hasFiscalReferences,
               itemTypeCache.taricAdditionalCodes,
@@ -203,7 +199,6 @@ class ItemTypePageController @Inject()(
       case Some(cachedData) =>
         Ok(
           item_type(
-            appConfig,
             ItemType.form.fill(itemTypeInput),
             hasFiscalReferences,
             cachedData.taricAdditionalCodes,
@@ -211,7 +206,7 @@ class ItemTypePageController @Inject()(
           )
         )
       case _ =>
-        Ok(item_type(appConfig, ItemType.form, hasFiscalReferences))
+        Ok(item_type(ItemType.form, hasFiscalReferences))
     }
 
   private case class Label(name: String, index: Int)

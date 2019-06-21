@@ -74,7 +74,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
       optionTwoLabel.text() must be(messages(no))
     }
 
-    "display \"Back\" button that links to \"Warehouse\" page" in {
+    "display 'Back' button that links to 'Warehouse' page" in {
 
       val backButton = getElementById(createView(), "link-back")
 
@@ -82,7 +82,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
       backButton.attr("href") must be("/customs-declare-exports/declaration/add-document")
     }
 
-    "display \"Save and continue\" button" in {
+    "display 'Save and continue' button" in {
 
       val saveButton = getElementByCss(createView(), "#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))

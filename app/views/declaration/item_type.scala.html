@@ -24,12 +24,11 @@
 @import uk.gov.hmrc.play.views.html._
 
 @(
-    appConfig: AppConfig,
     form: Form[ItemType],
     hasAdditionalFiscalReferences: Boolean,
     taricAdditionalCodes: Seq[String] = Seq.empty,
     nationalAdditionalCodes: Seq[String] = Seq.empty
-)(implicit request: JourneyRequest[_], messages: Messages)
+)(implicit appConfig: AppConfig, request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = messages("declaration.itemType.title"),

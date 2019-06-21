@@ -31,13 +31,14 @@ import services.model.AutoCompleteItem
 class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalReferencesMessages with CommonMessages {
 
   private val form: Form[AdditionalFiscalReference] = AdditionalFiscalReference.form()
+  val countryList = countries.map(country => AutoCompleteItem(country.countryName, country.countryCode))
+
   private def createView(
     form: Form[AdditionalFiscalReference] = form,
     references: Seq[AdditionalFiscalReference] = Seq.empty
   ): Html =
-    additional_fiscal_references(form, references)(
+    additional_fiscal_references(form, countryList, references)(
       fakeRequest.withCSRFToken.asInstanceOf[Request[_]],
-      countries.map(country => AutoCompleteItem(country.countryName, country.countryCode)),
       appConfig,
       messages
     )

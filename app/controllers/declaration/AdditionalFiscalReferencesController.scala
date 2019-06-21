@@ -48,15 +48,15 @@ class AdditionalFiscalReferencesController @Inject()(
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countryList: List[AutoCompleteItem] = getCountryData(countries.all)
+  val countryList: List[AutoCompleteItem] = getCountryData(countries.all)
 
   def getCountryData(countries: List[Country]): List[AutoCompleteItem] =
     countries.map(country => AutoCompleteItem(country.countryName, country.countryCode))
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[AdditionalFiscalReferencesData](goodsItemCacheId, formId).map {
-      case Some(data) => Ok(additional_fiscal_references(form, data.references))
-      case _          => Ok(additional_fiscal_references(form))
+      case Some(data) => Ok(additional_fiscal_references(form, countryList, data.references))
+      case _          => Ok(additional_fiscal_references(form, countryList))
     }
   }
 
@@ -85,7 +85,7 @@ class AdditionalFiscalReferencesController @Inject()(
     MultipleItemsHelper
       .add(form, cachedData.references, limit)
       .fold(
-        formWithErrors => badRequest(formWithErrors, cachedData.references),
+        formWithErrors => Future.successful(badRequest(formWithErrors, cachedData.references)),
         updatedCache =>
           customsCacheService
             .cache[AdditionalFiscalReferencesData](
@@ -102,7 +102,7 @@ class AdditionalFiscalReferencesController @Inject()(
     MultipleItemsHelper
       .saveAndContinue(form, cachedData.references, true, limit)
       .fold(
-        formWithErrors => badRequest(formWithErrors, cachedData.references),
+        formWithErrors => Future.successful(badRequest(formWithErrors, cachedData.references)),
         updatedCache =>
           if (updatedCache != cachedData.references)
             customsCacheService
@@ -127,6 +127,5 @@ class AdditionalFiscalReferencesController @Inject()(
 
   private def badRequest(formWithErrors: Form[AdditionalFiscalReference], references: Seq[AdditionalFiscalReference])(
     implicit request: JourneyRequest[_]
-  ): Future[Result] =
-    Future.successful(BadRequest(additional_fiscal_references(formWithErrors, references)))
+  ): Result = BadRequest(additional_fiscal_references(formWithErrors, countryList, references))
 }
