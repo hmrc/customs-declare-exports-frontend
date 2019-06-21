@@ -32,7 +32,7 @@ object AdditionalFiscalReference {
       .verifying("declaration.additionalFiscalReferences.country.empty", _.trim.nonEmpty)
       .verifying(
         "declaration.additionalFiscalReferences.country.error",
-        input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
+        input => input.isEmpty || allCountries.exists(_.countryCode == input)
       ),
     "reference" -> text()
       .verifying("declaration.additionalFiscalReferences.reference.empty", _.trim.nonEmpty)

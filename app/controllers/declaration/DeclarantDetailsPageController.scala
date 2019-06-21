@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.model.AutoCompleteItem
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.declarant_details
 
@@ -39,7 +40,7 @@ class DeclarantDetailsPageController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countries = services.Countries.allCountries
+  implicit val countries = services.Countries.allCountries map (c => AutoCompleteItem(c.countryName, c.countryCode))
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[DeclarantDetails](cacheId, DeclarantDetails.id).map {

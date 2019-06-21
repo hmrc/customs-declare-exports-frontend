@@ -17,14 +17,14 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.TransportDetails
-@import services.Country
+@import services.model.AutoCompleteItem
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 @import forms.declaration.TransportCodes._
 @import models.requests.JourneyRequest
 @import forms.Choice.AllowedChoiceValues
 
-@(form: Form[TransportDetails])(implicit request: JourneyRequest[_], appConfig: AppConfig, messages: Messages, countries: List[Country])
+@(form: Form[TransportDetails])(implicit request: JourneyRequest[_], appConfig: AppConfig, messages: Messages, countries: List[AutoCompleteItem])
 
 @main_template(
     title = messages("supplementary.transportInfo.title"),

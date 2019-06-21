@@ -17,10 +17,10 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.ConsigneeDetails
-@import services.Country
+@import services.model.AutoCompleteItem
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[ConsigneeDetails])(implicit request: Request[_], messages: Messages, countries: List[Country])
+@(appConfig: AppConfig, form: Form[ConsigneeDetails])(implicit request: Request[_], messages: Messages, countries: List[AutoCompleteItem])
 
 @main_template(
     title = messages("supplementary.consignee.title"),

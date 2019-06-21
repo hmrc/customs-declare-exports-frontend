@@ -45,7 +45,7 @@
         <div id="country-of-dispatch-field" class="inline-block form-group">
             @components.autocomplete_field(
                 form,
-                "country",
+                form("country"),
                 messages("declaration.additionalFiscalReferences.country"),
                 None,
                 messages("declaration.additionalFiscalReferences.country.empty"),
