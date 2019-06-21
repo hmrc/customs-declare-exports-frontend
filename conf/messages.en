@@ -375,6 +375,19 @@ supplementary.warehouse.inlandTransportMode.header = 7/5 What was the inland mod
 supplementary.warehouse.inlandTransportMode.header.hint = The transport that will move the goods from their inland supervision to the port of arrival
 supplementary.warehouse.inlandTransportMode.error.incorrect = Please, choose valid inland mode of transport
 
+declaration.fiscalInformation.title = Onward Supply Relief (OSR)
+declaration.fiscalInformation.question = Do you want to claim OSR?
+declaration.fiscalInformation.onwardSupplyRelief.error = Please enter a value - TODO
+declaration.fiscalInformation.header = Item 1
+declaration.additionalFiscalReferences.title = 3/40 What are the exporter''s VAT details?
+declaration.additionalFiscalReferences.numbers.header = VAT number
+declaration.additionalFiscalReferences.country = Country
+declaration.additionalFiscalReferences.country.empty = Country cannot be empty
+declaration.additionalFiscalReferences.country.error = Country is incorrect
+declaration.additionalFiscalReferences.reference = VAT number
+declaration.additionalFiscalReferences.reference.empty = VAT number cannot be empty
+declaration.additionalFiscalReferences.reference.error = VAT number is incorrect
+
 supplementary.addDocument.title = 2/3 Do you need to add any documents?
 supplementary.addDocument.hint = Including certificates, authorisations or additional references
 supplementary.addDocument.documentTypeCode = Document type code

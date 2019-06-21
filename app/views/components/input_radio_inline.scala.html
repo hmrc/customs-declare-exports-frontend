@@ -17,29 +17,31 @@
 @import utils.RadioOption
 
 @(
-    field: Field,
-    legend: String,
-    legendClass: Option[String] = None,
-    hint: Option[String] = None,
-    trackGa: Boolean = false,
-    inputs: Seq[RadioOption]
+field: Field,
+legend: String,
+legendClass: Option[String] = None,
+hint: Option[String] = None,
+trackGa: Boolean = false,
+inputs: Seq[RadioOption]
 )(implicit messages: Messages)
 
 <div class="form-field @if(field.hasErrors){form-field--error}">
-    <fieldset class="form-group" id="@{field.id}">
+    <fieldset class="inline" id="@{field.id}">
         <legend>
             <span class="bold-small @if(legendClass.nonEmpty){@{legendClass.get}}">@legend</span>
             @if(hint.nonEmpty){
-                <span class="form-hint">@{hint.get}</span>
+            <span class="form-hint">@{hint.get}</span>
             }
             @field.errors.map { error =>
-                <span class="error-notification" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
+            <span class="error-notification" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
             }
         </legend>
+        <br>
         @for(input <- inputs) {
         <div class="multiple-choice">
-            <input id="@{input.id}" type="radio" name="@{field.id}" value="@{input.value}" @if(field.value==Some(input.value)){checked="checked" }
-                @if(trackGa){data-journey-click="customs-decex-frontend:click:@{input.id}" }/>
+            <input id="@{input.id}" type="radio" name="@{field.id}" value="@{input.value}" @if(field.value==
+                   Some(input.value)){checked="checked" }
+                   @if(trackGa){data-journey-click="customs-decex-frontend:click:@{input.id}" }/>
 
             <label id="@{input.id}-label" class="block-label selection-button-radio" for="@{input.id}">
                 @messages(input.messageKey)

@@ -111,7 +111,7 @@ class ProcedureCodesPageController @Inject()(
         val updatedCache = ProcedureCodesData(userInput.procedureCode, seq :+ code)
 
         customsCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, updatedCache).map { _ =>
-          Redirect(controllers.declaration.routes.ProcedureCodesPageController.displayPage())
+          Redirect(routes.ProcedureCodesPageController.displayPage())
         }
     }
 
@@ -124,7 +124,7 @@ class ProcedureCodesPageController @Inject()(
         cachedData.copy(additionalProcedureCodes = cachedData.additionalProcedureCodes.filterNot(_ == code))
 
       customsCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, updatedCache).map { _ =>
-        Redirect(controllers.declaration.routes.ProcedureCodesPageController.displayPage())
+        Redirect(routes.ProcedureCodesPageController.displayPage())
       }
     } else errorHandler.displayErrorPage()
 
@@ -140,7 +140,7 @@ class ProcedureCodesPageController @Inject()(
             val procedureCodes = ProcedureCodesData(Some(procedureCode), Seq(additionalCode))
 
             customsCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, procedureCodes).map { _ =>
-              Redirect(controllers.declaration.routes.ItemTypePageController.displayPage())
+              Redirect(routes.FiscalInformationController.displayPage())
             }
 
           case ProcedureCodes(procedureCode, additionalCode) =>
@@ -185,7 +185,7 @@ class ProcedureCodesPageController @Inject()(
             )
 
             customsCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, updatedCache).map { _ =>
-              Redirect(controllers.declaration.routes.ItemTypePageController.displayPage())
+              Redirect(routes.FiscalInformationController.displayPage())
             }
         }
     }

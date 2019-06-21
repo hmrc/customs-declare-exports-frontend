@@ -68,5 +68,4 @@ class TransportDetailsController @Inject()(
     if (transportDetails.container) Redirect(TransportContainerController.displayPage())
     else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(SealController.displayForm())
     else Redirect(SummaryPageController.displayPage())
-
 }

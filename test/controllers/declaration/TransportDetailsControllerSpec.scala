@@ -49,7 +49,6 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
     authorizedUser()
     withCaching[TransportDetails](None, TransportDetails.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
   }
 
   after {
@@ -59,11 +58,13 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
   "GET" should {
 
     "return 200 code" in {
+
       val result = route(app, getRequest(uri)).value
       status(result) must be(OK)
     }
 
     "populate the form fields with data from cache" in {
+
       authorizedUser()
       val request = addCSRFToken(getRequest(uri))
 
@@ -83,6 +84,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
     "return UNAUTHORIZED" when {
 
       "user does not have an EORI" in {
+
         userWithoutEori()
         withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
         val body = Seq(("typesOfPackages", "A1"))
@@ -95,6 +97,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
     "return BAD_REQUEST" when {
 
       "invalid data is submitted" in {
+
         authorizedUser()
         withCaching[TransportDetails](None, TransportDetails.formId)
         withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
@@ -110,7 +113,6 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
           TestHelper.journeyRequest(request, AllowedChoiceValues.SupplementaryDec)
         ).body.replaceCSRF
       }
-
     }
 
     "add input to the cache" when {
@@ -152,10 +154,12 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
     "navigate to respective page" when {
 
       "on click of continue" in {
+
         forAll(arbitrary[TransportDetails]) { transportDetails =>
           authorizedUser()
           withCaching[TransportDetails](Some(transportDetails), TransportDetails.formId)
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+
           val payload = Seq(
             ("container", transportDetails.container.toString),
             (
@@ -168,16 +172,21 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
               transportDetails.meansOfTransportCrossingTheBorderIDNumber.getOrElse("")
             )
           )
+
           val nextPage = transportDetails.container match {
             case true => Some("/customs-declare-exports/declaration/add-transport-containers")
             case _    => Some("/customs-declare-exports/declaration/summary")
           }
+
           val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
+
           status(result) must be(SEE_OTHER)
           result.futureValue.header.headers.get("Location") must be(nextPage)
         }
       }
+
       "navigate to add-seal page if full dec and user selected no for containers" in {
+
         val transportDetails = TransportDetails(Some("Poland"), false, "10", Some("test"))
         authorizedUser()
         withCaching[TransportDetails](None, TransportDetails.formId)
@@ -201,5 +210,4 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
       }
     }
   }
-
 }

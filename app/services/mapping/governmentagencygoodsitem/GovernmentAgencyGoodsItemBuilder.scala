@@ -15,6 +15,7 @@
  */
 
 package services.mapping.governmentagencygoodsitem
+
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import services.ExportsItemsCacheIds

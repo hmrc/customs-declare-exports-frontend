@@ -1,177 +1,189 @@
 # Declaration type
 
-GET         /dispatch-location              controllers.declaration.DispatchLocationPageController.displayPage()
+GET         /dispatch-location                   controllers.declaration.DispatchLocationPageController.displayPage()
 
-POST        /dispatch-location              controllers.declaration.DispatchLocationPageController.submitForm()
+POST        /dispatch-location                   controllers.declaration.DispatchLocationPageController.submitForm()
 
-GET         /type                           controllers.declaration.AdditionalDeclarationTypePageController.displayPage()
+GET         /type                                controllers.declaration.AdditionalDeclarationTypePageController.displayPage()
 
-POST        /type                           controllers.declaration.AdditionalDeclarationTypePageController.submitForm()
+POST        /type                                controllers.declaration.AdditionalDeclarationTypePageController.submitForm()
 
 # Not Eligible
 
-GET         /not-eligible                   controllers.declaration.NotEligibleController.displayPage()
+GET         /not-eligible                        controllers.declaration.NotEligibleController.displayPage()
 
 # Consignment references
 
-GET         /consignment-references         controllers.declaration.ConsignmentReferencesController.displayPage()
+GET         /consignment-references              controllers.declaration.ConsignmentReferencesController.displayPage()
 
-POST        /consignment-references         controllers.declaration.ConsignmentReferencesController.submitConsignmentReferences()
+POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitConsignmentReferences()
 
 # Exporter address
 
-GET         /exporter-details               controllers.declaration.ExporterDetailsPageController.displayForm()
+GET         /exporter-details                    controllers.declaration.ExporterDetailsPageController.displayForm()
 
-POST        /exporter-details               controllers.declaration.ExporterDetailsPageController.saveAddress()
+POST        /exporter-details                    controllers.declaration.ExporterDetailsPageController.saveAddress()
 
 # Declarant address
 
-GET         /declarant-details              controllers.declaration.DeclarantDetailsPageController.displayForm()
+GET         /declarant-details                   controllers.declaration.DeclarantDetailsPageController.displayForm()
 
-POST        /declarant-details              controllers.declaration.DeclarantDetailsPageController.saveAddress()
+POST        /declarant-details                   controllers.declaration.DeclarantDetailsPageController.saveAddress()
 
 # Representative details
 
-GET         /representative-details         controllers.declaration.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
+GET         /representative-details              controllers.declaration.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
 
-POST        /representative-details         controllers.declaration.RepresentativeDetailsPageController.submitRepresentativeDetails()
+POST        /representative-details              controllers.declaration.RepresentativeDetailsPageController.submitRepresentativeDetails()
 
 # Consignee details
 
-GET         /consignee-details              controllers.declaration.ConsigneeDetailsPageController.displayForm()
+GET         /consignee-details                   controllers.declaration.ConsigneeDetailsPageController.displayForm()
 
-POST        /consignee-details              controllers.declaration.ConsigneeDetailsPageController.saveAddress()
+POST        /consignee-details                   controllers.declaration.ConsigneeDetailsPageController.saveAddress()
 
 # Carrier details
 
-GET         /carrier-details              controllers.declaration.CarrierDetailsPageController.displayForm()
+GET         /carrier-details                     controllers.declaration.CarrierDetailsPageController.displayForm()
 
-POST        /carrier-details              controllers.declaration.CarrierDetailsPageController.saveAddress()
+POST        /carrier-details                     controllers.declaration.CarrierDetailsPageController.saveAddress()
 
 # Declaration additional address
 
-GET         /additional-actors              controllers.declaration.DeclarationAdditionalActorsController.displayForm()
+GET         /additional-actors                   controllers.declaration.DeclarationAdditionalActorsController.displayForm()
 
-POST        /additional-actors              controllers.declaration.DeclarationAdditionalActorsController.saveForm()
+POST        /additional-actors                   controllers.declaration.DeclarationAdditionalActorsController.saveForm()
 
 # Declaration holder of authorisation
 
-GET         /holder-of-authorisation        controllers.declaration.DeclarationHolderController.displayForm()
+GET         /holder-of-authorisation             controllers.declaration.DeclarationHolderController.displayForm()
 
-POST        /holder-of-authorisation        controllers.declaration.DeclarationHolderController.submitHoldersOfAuthorisation()
+POST        /holder-of-authorisation             controllers.declaration.DeclarationHolderController.submitHoldersOfAuthorisation()
 
 # Destination countries
 
-GET         /destination-countries          controllers.declaration.DestinationCountriesController.displayForm()
+GET         /destination-countries               controllers.declaration.DestinationCountriesController.displayForm()
 
-POST        /destination-countries          controllers.declaration.DestinationCountriesController.saveCountries()
+POST        /destination-countries               controllers.declaration.DestinationCountriesController.saveCountries()
 
 # Location of goods
 
-GET         /location-of-goods              controllers.declaration.LocationController.displayForm()
+GET         /location-of-goods                   controllers.declaration.LocationController.displayForm()
 
-POST        /location-of-goods              controllers.declaration.LocationController.saveLocation()
+POST        /location-of-goods                   controllers.declaration.LocationController.saveLocation()
 
 # Procedure codes
 
-GET         /procedure-codes                controllers.declaration.ProcedureCodesPageController.displayPage()
+GET         /procedure-codes                     controllers.declaration.ProcedureCodesPageController.displayPage()
 
-POST        /procedure-codes                controllers.declaration.ProcedureCodesPageController.submitProcedureCodes()
+POST        /procedure-codes                     controllers.declaration.ProcedureCodesPageController.submitProcedureCodes()
 
 # Identification of a Warehouse
 
-GET         /warehouse                      controllers.declaration.WarehouseIdentificationController.displayForm()
+GET         /warehouse                           controllers.declaration.WarehouseIdentificationController.displayForm()
 
-POST        /warehouse                      controllers.declaration.WarehouseIdentificationController.saveWarehouse()
+POST        /warehouse                           controllers.declaration.WarehouseIdentificationController.saveWarehouse()
 
 # Office of exit
 
-GET         /office-of-exit                 controllers.declaration.OfficeOfExitController.displayForm()
+GET         /office-of-exit                      controllers.declaration.OfficeOfExitController.displayForm()
 
-POST        /office-of-exit                 controllers.declaration.OfficeOfExitController.saveOffice()
+POST        /office-of-exit                      controllers.declaration.OfficeOfExitController.saveOffice()
 
 # Transport Information Containers
 
-GET         /add-transport-containers       controllers.declaration.TransportContainerController.displayPage()
+GET         /add-transport-containers            controllers.declaration.TransportContainerController.displayPage()
 
-POST        /add-transport-containers       controllers.declaration.TransportContainerController.submitForm()
+POST        /add-transport-containers            controllers.declaration.TransportContainerController.submitForm()
 
 # Total number of items
 
-GET         /total-numbers-of-items         controllers.declaration.TotalNumberOfItemsController.displayForm()
+GET         /total-numbers-of-items              controllers.declaration.TotalNumberOfItemsController.displayForm()
 
-POST        /total-numbers-of-items         controllers.declaration.TotalNumberOfItemsController.saveNoOfItems()
+POST        /total-numbers-of-items              controllers.declaration.TotalNumberOfItemsController.saveNoOfItems()
 
 # Add Documents
 
-GET         /add-document                   controllers.declaration.DocumentsProducedController.displayForm()
+GET         /add-document                        controllers.declaration.DocumentsProducedController.displayForm()
 
-POST        /add-document                   controllers.declaration.DocumentsProducedController.saveForm()
+POST        /add-document                        controllers.declaration.DocumentsProducedController.saveForm()
 
 # Item Type
 
-GET         /item-type                      controllers.declaration.ItemTypePageController.displayPage()
+GET         /item-type                           controllers.declaration.ItemTypePageController.displayPage()
 
-POST        /item-type                      controllers.declaration.ItemTypePageController.submitItemType()
+POST        /item-type                           controllers.declaration.ItemTypePageController.submitItemType()
 
 # Previous documents
 
-GET         /previous-documents             controllers.declaration.PreviousDocumentsController.displayForm()
+GET         /previous-documents                  controllers.declaration.PreviousDocumentsController.displayForm()
 
-POST        /previous-documents             controllers.declaration.PreviousDocumentsController.savePreviousDocuments()
+POST        /previous-documents                  controllers.declaration.PreviousDocumentsController.savePreviousDocuments()
 
 # Additional information
 
-GET         /additional-information         controllers.declaration.AdditionalInformationController.displayForm()
+GET         /additional-information              controllers.declaration.AdditionalInformationController.displayForm()
 
-POST        /additional-information         controllers.declaration.AdditionalInformationController.saveAdditionalInfo()
+POST        /additional-information              controllers.declaration.AdditionalInformationController.saveAdditionalInfo()
 
 # Transaction type
 
-GET         /transaction-type               controllers.declaration.TransactionTypeController.displayForm()
+GET         /transaction-type                    controllers.declaration.TransactionTypeController.displayForm()
 
-POST        /transaction-type               controllers.declaration.TransactionTypeController.saveTransactionType()
+POST        /transaction-type                    controllers.declaration.TransactionTypeController.saveTransactionType()
 
 # Package Information
 
-GET         /package-information            controllers.declaration.PackageInformationController.displayForm()
+GET         /package-information                 controllers.declaration.PackageInformationController.displayForm()
 
-POST        /package-information            controllers.declaration.PackageInformationController.submitForm()
+POST        /package-information                 controllers.declaration.PackageInformationController.submitForm()
 
 # Commodity Measure Information
 
-GET         /commodity-measure              controllers.declaration.CommodityMeasureController.displayForm()
+GET         /commodity-measure                   controllers.declaration.CommodityMeasureController.displayForm()
 
-POST        /commodity-measure              controllers.declaration.CommodityMeasureController.submitForm()
+POST        /commodity-measure                   controllers.declaration.CommodityMeasureController.submitForm()
+
+# Fiscal Information
+
+GET         /fiscal-information                  controllers.declaration.FiscalInformationController.displayPage()
+
+POST        /fiscal-information                  controllers.declaration.FiscalInformationController.saveFiscalInformation()
+
+# Additional Fiscal References
+
+GET         /additional-fiscal-references        controllers.declaration.AdditionalFiscalReferencesController.displayPage()
+
+POST        /additional-fiscal-references        controllers.declaration.AdditionalFiscalReferencesController.saveReferences()
 
 # Items Summary
 
-GET         /export-items                   controllers.declaration.ItemsSummaryController.displayForm()
+GET         /export-items                        controllers.declaration.ItemsSummaryController.displayForm()
 
 # Border Transport
 
-GET         /border-transport              controllers.declaration.BorderTransportController.displayForm()
+GET         /border-transport                    controllers.declaration.BorderTransportController.displayForm()
 
-POST        /border-transport              controllers.declaration.BorderTransportController.submitForm()
+POST        /border-transport                    controllers.declaration.BorderTransportController.submitForm()
 
 # Transport Details
 
-GET         /transport-details              controllers.declaration.TransportDetailsController.displayForm()
+GET         /transport-details                   controllers.declaration.TransportDetailsController.displayForm()
 
-POST        /transport-details              controllers.declaration.TransportDetailsController.submitForm()
+POST        /transport-details                   controllers.declaration.TransportDetailsController.submitForm()
 
 # Seal
 
-GET         /add-seal              controllers.declaration.SealController.displayForm()
+GET         /add-seal                            controllers.declaration.SealController.displayForm()
 
-POST        /add-seal              controllers.declaration.SealController.submitForm()
+POST        /add-seal                            controllers.declaration.SealController.submitForm()
 
 # Summary
 
-GET         /summary                        controllers.declaration.SummaryPageController.displayPage()
+GET         /summary                             controllers.declaration.SummaryPageController.displayPage()
 
-POST        /summary                        controllers.declaration.SummaryPageController.submitSupplementaryDeclaration()
+POST        /summary                             controllers.declaration.SummaryPageController.submitSupplementaryDeclaration()
 
 # Confirmation
 
-GET         /confirmation                   controllers.declaration.ConfirmationPageController.displayPage()
+GET         /confirmation                        controllers.declaration.ConfirmationPageController.displayPage()

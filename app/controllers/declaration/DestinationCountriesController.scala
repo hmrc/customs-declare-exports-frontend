@@ -26,7 +26,6 @@ import forms.declaration.destinationCountries._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import play.api.Logger
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -53,7 +52,6 @@ class DestinationCountriesController @Inject()(
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  private val logger = Logger(this.getClass())
   implicit val countryList: List[AutoCompleteItem] = getCountryData(countries.all)
 
   def getCountryData(countries: List[Country]): List[AutoCompleteItem] =

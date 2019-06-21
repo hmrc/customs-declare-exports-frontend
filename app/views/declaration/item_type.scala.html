@@ -24,11 +24,11 @@
 @import uk.gov.hmrc.play.views.html._
 
 @(
-    appConfig: AppConfig,
     form: Form[ItemType],
+    hasAdditionalFiscalReferences: Boolean,
     taricAdditionalCodes: Seq[String] = Seq.empty,
     nationalAdditionalCodes: Seq[String] = Seq.empty
-)(implicit request: JourneyRequest[_], messages: Messages)
+)(implicit appConfig: AppConfig, request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = messages("declaration.itemType.title"),
@@ -36,7 +36,12 @@
 ) {
 
     @helpers.form(ItemTypePageController.submitItemType(), 'autocomplete -> "off") {
-        @components.back_link("/customs-declare-exports/declaration/procedure-codes")
+
+        @{
+          if(hasAdditionalFiscalReferences) components.back_link("/customs-declare-exports/declaration/additional-fiscal-references")
+          else components.back_link("/customs-declare-exports/declaration/fiscal-information")
+        }
+
 
         @components.error_summary(form.errors)
 

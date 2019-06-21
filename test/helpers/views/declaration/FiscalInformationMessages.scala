@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(headerTitle: String)
+package helpers.views.declaration
 
-<span id="section-header" class="pre-heading">@headerTitle</span>
+trait FiscalInformationMessages {
+
+  val fiscalInformation: String = "declaration.fiscalInformation"
+
+  val title: String = fiscalInformation + ".title"
+  val header: String = fiscalInformation + ".header"
+  val yes: String = "site.yes"
+  val no: String = "site.no"
+
+  val errorMessageIncorrect: String = fiscalInformation + ".onwardSupplyRelief.error"
+  val errorMessageEmpty: String = "error.required"
+}

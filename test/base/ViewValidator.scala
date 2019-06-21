@@ -28,6 +28,7 @@ trait ViewValidator extends MustMatchers {
   private def asDocument(html: Html): Document = Jsoup.parse(html.toString())
   private def asDocument(page: String): Document = Jsoup.parse(page)
 
+  //TODO Remove methods based on the CSS, stay and use those based on the ID
   def getElementByCss(html: Html, selector: String): Element = {
 
     val elements = asDocument(html).select(selector)

@@ -1,0 +1,80 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.declaration.routes._
+@import forms.declaration.FiscalInformation
+@import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers._
+@import uk.gov.hmrc.play.views.html._
+@import utils.RadioOption
+
+@(form: Form[FiscalInformation])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+
+@main_template(
+    title = messages("declaration.fiscalInformation.header"),
+    appConfig = appConfig
+) {
+
+    @helper.form(FiscalInformationController.saveFiscalInformation(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @components.back_link("/customs-declare-exports/declaration/add-document")
+
+        @components.error_summary(form.errors)
+
+        @components.section_header(messages("declaration.fiscalInformation.header"))
+
+        @components.page_title(Some("declaration.fiscalInformation.title"))
+
+        <p>
+            If you have entered a procedure code which starts ‘10 42’, please state whether you would like to claim for OSR.
+        </p><br>
+
+        <style>
+            .grey-border-left {
+                border-left: 5px solid #bfc1c3;
+                padding-left: 2.2em;
+            }
+        </style>
+
+        <details class="govuk-details" role="group">
+            <summary class="govuk-details__summary" role="button" aria-controls="details-content-b789d1b8-fdb1-4d59-970d-d1d42eafa90f" aria-expanded="false">
+                <span class="govuk-details__summary-text">
+                    You can claim OSR if:
+                </span>
+            </summary>
+                <ul class="list list-bullet grey-border-left">
+                    <li>you are VAT registered in the UK</li>
+                    <li>you regularly import goods</li>
+                    <li>you are an agent registered for VAT in the UK and you have been appointed to act on behalf of an importer based in another country, who is not registered for VAT in the UK</li>
+                    <li>you imported the goods no more than one month ago</li>
+                    <li>the goods exported should be exactly the same as when they were imported</li>
+                </ul>
+        </details>
+        <br>
+
+        @components.input_radio_inline(
+            field = form("onwardSupplyRelief"),
+            legend = messages("declaration.fiscalInformation.question"),
+            inputs = Seq(
+                RadioOption("Yes", yes, messages("site.yes")),
+                RadioOption("No", no, messages("site.no"))
+            )
+        )
+
+        @components.submit_button()
+    }
+}

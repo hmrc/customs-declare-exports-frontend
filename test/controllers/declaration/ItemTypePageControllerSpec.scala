@@ -20,7 +20,7 @@ import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.ItemType
+import forms.declaration.{FiscalInformation, ItemType}
 import forms.declaration.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
 import forms.declaration.ItemTypeSpec._
 import helpers.views.declaration.{CommonMessages, ItemTypeMessages}
@@ -40,6 +40,7 @@ class ItemTypePageControllerSpec
     authorizedUser()
     withCaching[ItemType](None, ItemType.id)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    withCaching[FiscalInformation](None, FiscalInformation.formId)
   }
 
   after {

@@ -50,26 +50,7 @@
         <br/>
         <h2>Countries of routing</h2>
 
-        @if(routingCountries.nonEmpty) {
-            <div class="field-group">
-                <table >
-                @for(routingCountry <- routingCountries.zipWithIndex) {
-                    <tr>
-                        <th>@routingCountry._1</th>
-                        <th>
-                            <button
-                            class="button--secondary"
-                            name="@Remove.toString"
-                            value="@{
-                                routingCountry._2
-                            }">@messages("site.remove")</button>
-                        </th>
-                    </tr>
-                }
-                </table>
-                <br/><br/>
-            </div>
-        }
+        @components.multiple_items_list(routingCountries)
 
         <div id="country-of-routing-field" class="inline-block form-group">
             @components.autocomplete_field(

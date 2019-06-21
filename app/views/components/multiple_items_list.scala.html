@@ -14,6 +14,23 @@
  * limitations under the License.
  *@
 
-@(headerTitle: String)
+@import controllers.util.Remove
 
-<span id="section-header" class="pre-heading">@headerTitle</span>
+@(elements: Seq[String])(implicit messages: Messages)
+
+@if(elements.nonEmpty) {
+    <div class="field-group">
+        <table>
+            @for(element <- elements.zipWithIndex) {
+                <tr>
+                    <th>@element._1</th>
+                    <th>
+                        <button class="button--secondary" name="@Remove.toString" value="@{element._2}">@messages("site.remove")</button>
+                    </th>
+                </tr>
+            }
+        </table>
+        <br/>
+        <br/>
+    </div>
+}
