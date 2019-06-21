@@ -44,7 +44,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
     }
     "have proper messages for error labels" in {
       assertMessage(errorMessageEmpty, "Please enter a value")
-      assertMessage(errorMessageIncorrect, "Please enter a value - TODO")
+      assertMessage(errorMessageIncorrect, "Please enter a value")
     }
   }
 
@@ -79,7 +79,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/add-document")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/procedure-codes")
     }
 
     "display 'Save and continue' button" in {
