@@ -16,8 +16,11 @@
 
 package base
 
+import java.time.LocalDateTime
+
 import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import models._
+import models.declaration.notifications.Notification
 import models.requests.CancellationStatus
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
@@ -42,18 +45,18 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
-  def listOfNotifications(): OngoingStubbing[Future[Seq[DeclarationNotification]]] =
+  def listOfNotifications(): OngoingStubbing[Future[Seq[Notification]]] =
     when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
       .thenReturn(
-        Future.successful(Seq(DeclarationNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty)))
+        Future.successful(Seq(Notification("convId", "mrn", LocalDateTime.now(), "01", None, Seq.empty, "payload")))
       )
 
-  def listOfSubmissionNotifications(): OngoingStubbing[Future[Seq[DeclarationNotification]]] =
-    when(mockCustomsDeclareExportsConnector.fetchNotificationsByConversationId(any())(any(), any()))
+  def listOfSubmissionNotifications(): OngoingStubbing[Future[Seq[Notification]]] =
+    when(mockCustomsDeclareExportsConnector.fetchNotificationsByMrn(any())(any(), any()))
       .thenReturn(
         Future.successful(
           Seq(
-            DeclarationNotification(conversationId = "conversationId", eori = "eori", metadata = DeclarationMetadata())
+            Notification("convID", "mrn", LocalDateTime.now, "01", None, Seq.empty, "payload")
           )
         )
       )

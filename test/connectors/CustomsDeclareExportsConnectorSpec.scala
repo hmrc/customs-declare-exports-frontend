@@ -16,9 +16,12 @@
 
 package connectors
 
+import java.time.LocalDateTime
+
 import base.TestHelper._
 import base.{CustomExportsBaseSpec, MockHttpClient, TestHelper}
 import models._
+import models.declaration.notifications.Notification
 import models.requests.CancellationRequested
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
@@ -61,7 +64,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
       val http =
         new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
       val client = new CustomsDeclareExportsConnector(appConfig, http)
-      val response = client.fetchNotificationsByConversationId(conversationId)(hc, ec)
+      val response = client.fetchNotificationsByMrn(conversationId)(hc, ec)
 
       response.futureValue must be(notifications)
     }
@@ -103,7 +106,7 @@ object CustomsDeclareExportsConnectorSpec {
   val conversationId = TestHelper.createRandomAlphanumericString(10)
   val eori = TestHelper.createRandomAlphanumericString(15)
   val exportNotification =
-    DeclarationNotification(conversationId = conversationId, eori = eori, metadata = DeclarationMetadata())
+    Notification(conversationId, mrn, LocalDateTime.now, "01", None, Seq.empty, "payload")
   val notifications = Seq(exportNotification)
 
   val submissionData = Submission(

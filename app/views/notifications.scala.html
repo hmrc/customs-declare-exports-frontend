@@ -16,11 +16,12 @@
 
 @import config.AppConfig
 @import models.Status
+@import models.declaration.notifications.Notification
 @import java.time.Instant
 @import java.time.ZoneId
 @import java.time.format.DateTimeFormatter
 
-@(appConfig: AppConfig, notifications: Seq[DeclarationNotification])(implicit request: Request[_], messages: Messages)
+@(eori: String, notifications: Seq[Notification])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
     title = messages("notifications.title"),
@@ -39,14 +40,12 @@
             </tr>
 
             @for(notification <- notifications){
-                @for(response <- notification.response){
-                    <tr class="table-row">
-                        <td class="table-cell">@notification.eori</td>
-                        <td class="table-cell">@notification.conversationId</td>
-                        <td class="table-cell">@Status.retrieveFromResponse(response)</td>
-                        <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(Instant.from(DateTimeFormatter.ofPattern("yyyyMMddHHmmssX").parse(response.issueDateTime.map(_.dateTimeString.value).getOrElse(""))))</td>
-                    </tr>
-                }
+                <tr class="table-row">
+                    <td class="table-cell">@eori</td>
+                    <td class="table-cell">@notification.conversationId</td>
+                    <td class="table-cell">@Status.retrieve(notification.functionCode, notification.nameCode)</td>
+                    <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssued)</td>
+                </tr>
             }
         </table>
     </div>

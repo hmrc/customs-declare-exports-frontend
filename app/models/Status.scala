@@ -85,6 +85,27 @@ object Status {
       case "18"                                                                  => AwaitingExitResults
       case _                                                                     => UnknownStatus
     }
+
+  def retrieve(functionCode: String, nameCode: Option[String]): Status =
+    functionCode match {
+      case "Pending" => Pending
+      case "Cancellation Requested" => RequestedCancellation
+      case "01" => Accepted
+      case "02" => Received
+      case "03" => Rejected
+      case "05" => UndergoingPhysicalCheck
+      case "06" => AdditionalDocumentsRequired
+      case "07" => Amended
+      case "08" => Released
+      case "09" => Cleared
+      case "10" => Cancelled
+      case "11" if nameCode == Some("39") => CustomsPositionGranted
+      case "11" if nameCode == Some("41") => CustomsPositionDenied
+      case "16" => GoodsHaveExitedTheCommunity
+      case "17" => DeclarationHandledExternally
+      case "18" => AwaitingExitResults
+      case _ => UnknownStatus
+    }
 }
 
 case object Pending extends Status

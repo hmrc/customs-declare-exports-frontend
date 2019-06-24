@@ -47,7 +47,7 @@
                     <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(Instant.ofEpochMilli(submission.submittedTimestamp))</td>
                     <td class="table-cell">@submission.status</td>
                     <td class="table-cell">
-                        <a href="/customs-declare-exports/notifications/@submission.conversationId">
+                        <a @if(submission.mrn.isDefined) {href="/customs-declare-exports/notifications/@submission.mrn.get"}>
                             @notificationsAmount
                         </a>
                     </td>
