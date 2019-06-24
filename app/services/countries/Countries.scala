@@ -29,15 +29,6 @@ import scala.io.Source
 class Countries @Inject()(appConfig: AppConfig, environment: Environment) {
   private val countriesFilename: String = appConfig.countryCodesJsonFilename
 
-  private def mdgCountryCodes(fileName: String): List[String] =
-    Source
-      .fromInputStream(environment.classLoader.getResourceAsStream(fileName))
-      .getLines()
-      .mkString
-      .split(',')
-      .map(_.replace("\"", ""))
-      .toList
-
   private val countries: List[Country] = {
     def fromJsonFile: List[Country] =
       Json.parse(environment.classLoader.getResourceAsStream(countriesFilename)) match {
