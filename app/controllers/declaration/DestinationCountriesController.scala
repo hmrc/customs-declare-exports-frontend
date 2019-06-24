@@ -52,10 +52,7 @@ class DestinationCountriesController @Inject()(
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countryList: List[AutoCompleteItem] = getCountryData(countries.all)
-
-  def getCountryData(countries: List[Country]): List[AutoCompleteItem] =
-    countries.map(country => AutoCompleteItem(country.countryName, country.countryCode))
+  implicit val countryList: List[Country] = countries.all
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.choice.value match {

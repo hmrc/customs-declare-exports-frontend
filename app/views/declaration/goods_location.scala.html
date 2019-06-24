@@ -17,10 +17,10 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.GoodsLocation
-@import services.model.AutoCompleteItem
+@import services.Country
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[GoodsLocation])(implicit request: Request[_], messages: Messages, countries: List[AutoCompleteItem])
+@(appConfig: AppConfig, form: Form[GoodsLocation])(implicit request: Request[_], messages: Messages, countries: List[Country])
 
     @main_template(
         title = messages("supplementary.goodsLocation"),

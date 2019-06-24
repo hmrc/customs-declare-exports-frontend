@@ -47,16 +47,11 @@ class AdditionalFiscalReferencesController @Inject()(
   mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
-
-  val countryList: List[AutoCompleteItem] = getCountryData(countries.all)
-
-  def getCountryData(countries: List[Country]): List[AutoCompleteItem] =
-    countries.map(country => AutoCompleteItem(country.countryName, country.countryCode))
-
+  
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[AdditionalFiscalReferencesData](goodsItemCacheId, formId).map {
-      case Some(data) => Ok(additional_fiscal_references(form, countryList, data.references))
-      case _          => Ok(additional_fiscal_references(form, countryList))
+      case Some(data) => Ok(additional_fiscal_references(form, countries.all, data.references))
+      case _          => Ok(additional_fiscal_references(form, countries.all))
     }
   }
 
@@ -127,5 +122,5 @@ class AdditionalFiscalReferencesController @Inject()(
 
   private def badRequest(formWithErrors: Form[AdditionalFiscalReference], references: Seq[AdditionalFiscalReference])(
     implicit request: JourneyRequest[_]
-  ): Result = BadRequest(additional_fiscal_references(formWithErrors, countryList, references))
+  ): Result = BadRequest(additional_fiscal_references(formWithErrors, countries.all, references))
 }

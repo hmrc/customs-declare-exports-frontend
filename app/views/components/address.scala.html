@@ -14,10 +14,9 @@
  * limitations under the License.
  *@
 
-@import services.model.AutoCompleteItem
+@import services.Country
 
-
-@(form: Form[_], addressPrefix: String = "", addressHeader: Option[String] = None)(implicit request: Request[_], messages: Messages, countries: List[AutoCompleteItem])
+@(form: Form[_], addressPrefix: String = "", addressHeader: Option[String] = None)(implicit request: Request[_], messages: Messages, countries: List[Country])
 
 @if(addressHeader.nonEmpty) {
     <span id="address-header" class="heading-24">@addressHeader</span>
@@ -43,18 +42,6 @@
         label = messages("supplementary.address.postCode")
     )
 
-@*    NEW*@
-    
-    @components.autocomplete_field(
-        form,
-        form(s"$addressPrefix.country"),
-        messages("supplementary.address.country"),
-        Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
-        messages("declaration.destinationCountries.countryOfDispatch.empty"),
-        countries
-    )
-
-@*    OLD*@
     @components.input_text_autocomplete(form)(
         field = form(s"$addressPrefix.country"),
         label = messages("supplementary.address.country"),

@@ -19,10 +19,10 @@
 @import forms.declaration.destinationCountries.DestinationCountriesSupplementary
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
-@import services.model.AutoCompleteItem
+@import services.Country
 
 @import services.model.AutoCompleteItem
-@(form: Form[DestinationCountriesSupplementary])(implicit request: JourneyRequest[_], messages: Messages, countries: List[AutoCompleteItem], appConfig: AppConfig)
+@(form: Form[DestinationCountriesSupplementary])(implicit request: JourneyRequest[_], messages: Messages, countries: List[Country], appConfig: AppConfig)
 
 @main_template(
     title = messages("declaration.destinationCountries.title"),
@@ -45,7 +45,7 @@
                 "declaration.destinationCountries.countryOfDispatch",
                 Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
                 messages("declaration.destinationCountries.countryOfDispatch.empty"),
-                countries
+                AutoCompleteItem.from(countries)
             )
         </div>
 
@@ -56,7 +56,7 @@
                 "declaration.destinationCountries.countryOfDestination",
                 Some(messages("declaration.destinationCountries.countryOfDestination.hint")),
                 messages("declaration.destinationCountries.countryOfDestination.empty"),
-                countries
+                AutoCompleteItem.from(countries)
             )
         </div>
 

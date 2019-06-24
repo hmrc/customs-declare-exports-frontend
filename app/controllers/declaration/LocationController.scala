@@ -25,7 +25,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
-import services.model.AutoCompleteItem
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.goods_location
 
@@ -41,7 +40,7 @@ class LocationController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
   import forms.declaration.GoodsLocation._
 
-  implicit val countries = services.Countries.allCountries map (c => AutoCompleteItem(c.countryName, c.countryCode))
+  implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[GoodsLocation](cacheId, formId).map {

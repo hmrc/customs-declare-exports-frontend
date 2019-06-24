@@ -18,11 +18,11 @@
 @import controllers.declaration.routes._
 @import forms.declaration.RepresentativeDetails
 @import forms.declaration.RepresentativeDetails.StatusCodes._
-@import services.model.AutoCompleteItem
+@import services.Country
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
-@(appConfig: AppConfig, form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages, countries: List[AutoCompleteItem])
+@(appConfig: AppConfig, form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages, countries: List[Country])
 
 @main_template(
     title = messages("supplementary.representative.title"),

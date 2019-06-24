@@ -30,7 +30,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.CustomsCacheService
-import services.model.AutoCompleteItem
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.transport_details
 
@@ -45,7 +44,7 @@ class TransportDetailsController @Inject()(
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countries = services.Countries.allCountries map (c => AutoCompleteItem(c.countryName, c.countryCode))
+  implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
     customsCacheService

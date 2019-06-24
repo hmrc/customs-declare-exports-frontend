@@ -35,7 +35,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
     destination_countries_supplementary(form)(
       fakeJourneyRequest("SMP"),
       messages,
-      countries.map(country => AutoCompleteItem(country.countryName, country.countryCode)),
+      countries,
       appConfig
     )
 

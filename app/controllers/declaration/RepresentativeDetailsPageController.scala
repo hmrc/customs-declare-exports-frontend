@@ -28,7 +28,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
-import services.model.AutoCompleteItem
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.representative_details
 
@@ -44,7 +43,7 @@ class RepresentativeDetailsPageController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countries = services.Countries.allCountries map (c => AutoCompleteItem(c.countryName, c.countryCode))
+  implicit val countries = services.Countries.allCountries
 
   def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>

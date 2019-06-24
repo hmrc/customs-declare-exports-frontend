@@ -17,12 +17,12 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.DeclarantDetails
-@import services.model.AutoCompleteItem
+@import services.Country
 @import uk.gov.hmrc.play.views.html._
 @import forms.Choice.AllowedChoiceValues._
 @import models.requests.JourneyRequest
 
-@(appConfig: AppConfig, form: Form[DeclarantDetails])(implicit request: JourneyRequest[_], messages: Messages, countries: List[AutoCompleteItem])
+@(appConfig: AppConfig, form: Form[DeclarantDetails])(implicit request: JourneyRequest[_], messages: Messages, countries: List[Country])
 
 @main_template(
     title = messages("supplementary.declarant.title"),

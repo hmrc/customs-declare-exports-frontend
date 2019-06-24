@@ -20,7 +20,8 @@
 @import uk.gov.hmrc.play.views.html._
 @import services.model.AutoCompleteItem
 
-@(form: Form[AdditionalFiscalReference], countries: List[AutoCompleteItem], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@import services.Country
+@(form: Form[AdditionalFiscalReference], countries: List[Country], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
     title = messages("declaration.additionalFiscalReferences.title"),
@@ -49,7 +50,7 @@
                 messages("declaration.additionalFiscalReferences.country"),
                 None,
                 messages("declaration.additionalFiscalReferences.country.empty"),
-                countries
+                AutoCompleteItem.from(countries)
             )
         </div>
 
