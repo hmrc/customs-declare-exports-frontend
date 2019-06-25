@@ -42,7 +42,7 @@ class NotificationsController @Inject()(
   def listOfNotificationsForSubmission(mrn: String): Action[AnyContent] =
     authenticate.async { implicit request =>
       customsDeclareExportsConnector.fetchNotificationsByMrn(mrn).map { results =>
-        Ok(views.html.submission_notifications(appConfig, results.reverse))
+        Ok(views.html.submission_notifications(results.reverse))
       }
     }
 

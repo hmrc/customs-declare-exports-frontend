@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package models.declaration.submissions
+
+import java.time.LocalDateTime
 
 import play.api.libs.json.Json
 
-case class Submission(
-  eori: String,
+case class Action(
+  requestType: RequestType,
   conversationId: String,
-  ducr: String,
-  mrn: Option[String],
-  lrn: Option[String],
-  submittedTimestamp: Long,
-  status: Status
+  requestTimestamp: LocalDateTime = LocalDateTime.now()
 )
 
-object Submission {
-  implicit val format = Json.format[Submission]
+object Action {
+  implicit val format = Json.format[Action]
 }

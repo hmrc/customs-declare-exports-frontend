@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package models.declaration.submissions
 
 import play.api.libs.json._
 import uk.gov.hmrc.wco.dec.Response
 
-sealed trait Status
+sealed trait SubmissionStatus
 
-object Status {
+object SubmissionStatus {
 
-  implicit object StatusFormat extends Format[Status] {
-    def reads(status: JsValue): JsResult[Status] = status match {
+  implicit object StatusFormat extends Format[SubmissionStatus] {
+    def reads(status: JsValue): JsResult[SubmissionStatus] = status match {
       case JsString("Pending")                => JsSuccess(Pending)
       case JsString("Cancellation Requested") => JsSuccess(RequestedCancellation)
       case JsString("01")                     => JsSuccess(Accepted)
@@ -44,7 +44,7 @@ object Status {
       case _                                  => JsSuccess(UnknownStatus)
     }
 
-    def writes(status: Status): JsValue = status match {
+    def writes(status: SubmissionStatus): JsValue = status match {
       case Pending                      => JsString("Pending")
       case RequestedCancellation        => JsString("Cancellation Requested")
       case Accepted                     => JsString("01")
@@ -65,7 +65,7 @@ object Status {
     }
   }
 
-  def retrieveFromResponse(response: Response): Status =
+  def retrieveFromResponse(response: Response): SubmissionStatus =
     response.functionCode match {
       case "Pending"                                                             => Pending
       case "Cancellation Requested"                                              => RequestedCancellation
@@ -86,76 +86,76 @@ object Status {
       case _                                                                     => UnknownStatus
     }
 
-  def retrieve(functionCode: String, nameCode: Option[String]): Status =
+  def retrieve(functionCode: String, nameCode: Option[String]): SubmissionStatus =
     functionCode match {
-      case "Pending" => Pending
-      case "Cancellation Requested" => RequestedCancellation
-      case "01" => Accepted
-      case "02" => Received
-      case "03" => Rejected
-      case "05" => UndergoingPhysicalCheck
-      case "06" => AdditionalDocumentsRequired
-      case "07" => Amended
-      case "08" => Released
-      case "09" => Cleared
-      case "10" => Cancelled
-      case "11" if nameCode == Some("39") => CustomsPositionGranted
-      case "11" if nameCode == Some("41") => CustomsPositionDenied
-      case "16" => GoodsHaveExitedTheCommunity
-      case "17" => DeclarationHandledExternally
-      case "18" => AwaitingExitResults
-      case _ => UnknownStatus
+      case "Pending"                       => Pending
+      case "Cancellation Requested"        => RequestedCancellation
+      case "01"                            => Accepted
+      case "02"                            => Received
+      case "03"                            => Rejected
+      case "05"                            => UndergoingPhysicalCheck
+      case "06"                            => AdditionalDocumentsRequired
+      case "07"                            => Amended
+      case "08"                            => Released
+      case "09"                            => Cleared
+      case "10"                            => Cancelled
+      case "11" if nameCode.contains("39") => CustomsPositionGranted
+      case "11" if nameCode.contains("41") => CustomsPositionDenied
+      case "16"                            => GoodsHaveExitedTheCommunity
+      case "17"                            => DeclarationHandledExternally
+      case "18"                            => AwaitingExitResults
+      case _                               => UnknownStatus
     }
 }
 
-case object Pending extends Status
+case object Pending extends SubmissionStatus
 
-case object Accepted extends Status
+case object Accepted extends SubmissionStatus
 
-case object Received extends Status
+case object Received extends SubmissionStatus
 
-case object Rejected extends Status
+case object Rejected extends SubmissionStatus
 
-case object UndergoingPhysicalCheck extends Status {
+case object UndergoingPhysicalCheck extends SubmissionStatus {
   override def toString(): String = "Undergoing Physical Check"
 }
 
-case object AdditionalDocumentsRequired extends Status {
+case object AdditionalDocumentsRequired extends SubmissionStatus {
   override def toString(): String = "Additional Documents Required"
 }
 
-case object Amended extends Status
+case object Amended extends SubmissionStatus
 
-case object Released extends Status
+case object Released extends SubmissionStatus
 
-case object Cleared extends Status
+case object Cleared extends SubmissionStatus
 
-case object Cancelled extends Status
+case object Cancelled extends SubmissionStatus
 
-case object RequestedCancellation extends Status {
+case object RequestedCancellation extends SubmissionStatus {
   override def toString: String = "Cancellation Requested"
 }
 
-case object CustomsPositionGranted extends Status {
+case object CustomsPositionGranted extends SubmissionStatus {
   override def toString(): String = "Customs Position Granted"
 }
 
-case object CustomsPositionDenied extends Status {
+case object CustomsPositionDenied extends SubmissionStatus {
   override def toString(): String = "Customs Position Denied"
 }
 
-case object GoodsHaveExitedTheCommunity extends Status {
+case object GoodsHaveExitedTheCommunity extends SubmissionStatus {
   override def toString(): String = "Goods Have Exited The Community"
 }
 
-case object DeclarationHandledExternally extends Status {
+case object DeclarationHandledExternally extends SubmissionStatus {
   override def toString(): String = "Declaration Handled Externally"
 }
 
-case object AwaitingExitResults extends Status {
+case object AwaitingExitResults extends SubmissionStatus {
   override def toString(): String = "Awaiting Exit Results"
 }
 
-case object UnknownStatus extends Status {
+case object UnknownStatus extends SubmissionStatus {
   override def toString(): String = "Unknown status"
 }

@@ -20,6 +20,7 @@ import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models._
 import models.declaration.notifications.Notification
+import models.declaration.submissions.Submission
 import models.requests.CancellationStatus
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}

@@ -17,11 +17,12 @@
 package connectors
 
 import java.time.LocalDateTime
+import java.util.UUID
 
 import base.TestHelper._
 import base.{CustomExportsBaseSpec, MockHttpClient, TestHelper}
-import models._
 import models.declaration.notifications.Notification
+import models.declaration.submissions.{Action, Submission, SubmissionRequest}
 import models.requests.CancellationRequested
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
@@ -110,13 +111,14 @@ object CustomsDeclareExportsConnectorSpec {
   val notifications = Seq(exportNotification)
 
   val submissionData = Submission(
-    eori = eori,
-    conversationId = conversationId,
-    ducr = "",
-    mrn = Some(mrn),
-    lrn = None,
-    submittedTimestamp = 20190318,
-    status = Cancelled
+    uuid = UUID.randomUUID().toString,
+    eori = "eori",
+    lrn = "lrn",
+    mrn = None,
+    ducr = None,
+    actions = Seq(
+      Action(requestType = SubmissionRequest, conversationId = "conversationID", requestTimestamp = LocalDateTime.now())
+    )
   )
   val submissions = Seq(submissionData)
 

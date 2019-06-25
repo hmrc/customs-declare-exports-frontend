@@ -14,28 +14,21 @@
  * limitations under the License.
  */
 
-package models.declaration.notifications
+package models.declaration.submissions
 
-import java.time.LocalDateTime
+import java.util.UUID
 
 import play.api.libs.json.Json
 
-case class Notification(
-  conversationId: String,
-  mrn: String,
-  dateTimeIssued: LocalDateTime,
-  functionCode: String,
-  nameCode: Option[String],
-  errors: Seq[NotificationError],
-  payload: String
-) extends Ordered[Notification] {
+case class Submission(
+  uuid: String = UUID.randomUUID().toString,
+  eori: String,
+  lrn: String,
+  mrn: Option[String] = None,
+  ducr: Option[String] = None,
+  actions: Seq[Action] = Seq.empty
+)
 
-  def compare(that: Notification): Int =
-    if (this.dateTimeIssued == that.dateTimeIssued) 0
-    else if (this.dateTimeIssued.isAfter(that.dateTimeIssued)) 1
-    else -1
-}
-
-object Notification {
-  implicit val format = Json.format[Notification]
+object Submission {
+  implicit val formats = Json.format[Submission]
 }

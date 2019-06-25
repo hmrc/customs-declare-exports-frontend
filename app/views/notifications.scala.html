@@ -14,12 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-@import models.Status
-@import models.declaration.notifications.Notification
-@import java.time.Instant
-@import java.time.ZoneId
 @import java.time.format.DateTimeFormatter
+
+@import config.AppConfig
+@import models.declaration.notifications.Notification
+@import models.declaration.submissions.SubmissionStatus
 
 @(eori: String, notifications: Seq[Notification])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
@@ -43,7 +42,7 @@
                 <tr class="table-row">
                     <td class="table-cell">@eori</td>
                     <td class="table-cell">@notification.conversationId</td>
-                    <td class="table-cell">@Status.retrieve(notification.functionCode, notification.nameCode)</td>
+                    <td class="table-cell">@SubmissionStatus.retrieve(notification.functionCode, notification.nameCode)</td>
                     <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssued)</td>
                 </tr>
             }

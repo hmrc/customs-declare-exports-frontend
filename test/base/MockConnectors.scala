@@ -17,12 +17,13 @@
 package base
 
 import java.time.LocalDateTime
+import java.util.UUID
 
 import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import models._
 import models.declaration.notifications.Notification
+import models.declaration.submissions.{Action, Submission, SubmissionRequest}
 import models.requests.CancellationStatus
-import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
@@ -67,13 +68,18 @@ trait MockConnectors extends MockitoSugar {
         Future.successful(
           Seq(
             Submission(
+              uuid = UUID.randomUUID().toString,
               eori = "eori",
-              conversationId = "conversationId",
-              ducr = "ducr",
+              lrn = "lrn",
               mrn = None,
-              lrn = None,
-              submittedTimestamp = System.currentTimeMillis(),
-              status = Accepted
+              ducr = None,
+              actions = Seq(
+                Action(
+                  requestType = SubmissionRequest,
+                  conversationId = "conversationID",
+                  requestTimestamp = LocalDateTime.now()
+                )
+              )
             )
           )
         )

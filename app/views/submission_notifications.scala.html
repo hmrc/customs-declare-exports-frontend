@@ -14,14 +14,13 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-@import models.Status
-@import java.time.Instant
-@import java.time.ZoneId
 @import java.time.format.DateTimeFormatter
-@import models.declaration.notifications.Notification
 
-@(appConfig: AppConfig, notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
+@import config.AppConfig
+@import models.declaration.notifications.Notification
+@import models.declaration.submissions.SubmissionStatus
+
+@(notifications: Seq[Notification])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
     title = messages("notifications.title"),
@@ -41,7 +40,7 @@
 
             @for(notification <- notifications){
                 <tr class="table-row">
-                    <td class="table-cell">@Status.retrieve(notification.functionCode, notification.nameCode)</td>
+                    <td class="table-cell">@SubmissionStatus.retrieve(notification.functionCode, notification.nameCode)</td>
                     <td class="table-cell">@DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(notification.dateTimeIssued)</td>
                 </tr>
             }
