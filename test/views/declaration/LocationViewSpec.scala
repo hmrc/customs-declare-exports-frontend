@@ -30,7 +30,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
   private val form: Form[GoodsLocation] = GoodsLocation.form()
   private def createView(form: Form[GoodsLocation] = form): Html =
-    goods_location(appConfig, form)(fakeRequest, messages, countries)
+    goods_location(appConfig, form)(fakeRequest, messages)
 
   "Location View" should {
 

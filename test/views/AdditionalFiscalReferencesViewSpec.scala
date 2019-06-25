@@ -20,24 +20,22 @@ import forms.declaration.AdditionalFiscalReference
 import helpers.views.declaration.{AdditionalFiscalReferencesMessages, CommonMessages}
 import play.api.data.Form
 import play.api.mvc.Request
+import play.api.test.CSRFTokenHelper._
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
 import views.html.declaration.additional_fiscal_references
 import views.tags.ViewTest
-import play.api.test.CSRFTokenHelper._
-import services.model.AutoCompleteItem
 
 @ViewTest
 class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalReferencesMessages with CommonMessages {
 
   private val form: Form[AdditionalFiscalReference] = AdditionalFiscalReference.form()
-  val countryList = countries.map(country => AutoCompleteItem(country.countryName, country.countryCode))
 
   private def createView(
     form: Form[AdditionalFiscalReference] = form,
     references: Seq[AdditionalFiscalReference] = Seq.empty
   ): Html =
-    additional_fiscal_references(form, countryList, references)(
+    additional_fiscal_references(form, references)(
       fakeRequest.withCSRFToken.asInstanceOf[Request[_]],
       appConfig,
       messages

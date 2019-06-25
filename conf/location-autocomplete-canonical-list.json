@@ -1,279 +1,235 @@
 [
   [
-    "Abu Dhabi",
-    "territory:AE-AZ"
+    "Andorra",
+    "country:AD"
+  ],
+  [
+    "United Arab Emirates",
+    "country:AE"
   ],
   [
     "Afghanistan",
     "country:AF"
   ],
   [
-    "Ajman",
-    "territory:AE-AJ"
+    "Antigua and Barbuda",
+    "country:AG"
   ],
   [
-    "Akrotiri",
-    "territory:XQZ"
+    "Anguilla",
+    "country:AI"
   ],
   [
     "Albania",
     "country:AL"
   ],
   [
-    "Algeria",
-    "country:DZ"
+    "Armenia",
+    "country:AM"
   ],
   [
-    "American Samoa",
-    "territory:AS"
-  ],
-  [
-    "Andorra",
-    "country:AD"
-  ],
-  [
-    "Angola",
+    "Angola including Cabinda",
     "country:AO"
   ],
   [
-    "Anguilla",
-    "territory:AI"
-  ],
-  [
     "Antarctica",
-    "territory:AQ"
-  ],
-  [
-    "Antigua and Barbuda",
-    "country:AG"
+    "country:AQ"
   ],
   [
     "Argentina",
     "country:AR"
   ],
   [
-    "Armenia",
-    "country:AM"
-  ],
-  [
-    "Aruba",
-    "territory:AW"
-  ],
-  [
-    "Ascension",
-    "territory:SH-AC"
-  ],
-  [
-    "Australia",
-    "country:AU"
+    "American Samoa",
+    "country:AS"
   ],
   [
     "Austria",
     "country:AT"
   ],
   [
+    "Australia",
+    "country:AU"
+  ],
+  [
+    "Aruba",
+    "country:AW"
+  ],
+  [
     "Azerbaijan",
     "country:AZ"
-  ],
-  [
-    "Bahrain",
-    "country:BH"
-  ],
-  [
-    "Baker Island",
-    "territory:UM-81"
-  ],
-  [
-    "Bangladesh",
-    "country:BD"
-  ],
-  [
-    "Barbados",
-    "country:BB"
-  ],
-  [
-    "Belarus",
-    "country:BY"
-  ],
-  [
-    "Belgium",
-    "country:BE"
-  ],
-  [
-    "Belize",
-    "country:BZ"
-  ],
-  [
-    "Benin",
-    "country:BJ"
-  ],
-  [
-    "Bermuda",
-    "territory:BM"
-  ],
-  [
-    "Bhutan",
-    "country:BT"
-  ],
-  [
-    "Bolivia",
-    "country:BO"
-  ],
-  [
-    "Bonaire",
-    "territory:BQ-BO"
   ],
   [
     "Bosnia and Herzegovina",
     "country:BA"
   ],
   [
-    "Botswana",
-    "country:BW"
+    "Barbados",
+    "country:BB"
   ],
   [
-    "Bouvet Island",
-    "territory:BV"
+    "Bangladesh",
+    "country:BD"
   ],
   [
-    "Brazil",
-    "country:BR"
-  ],
-  [
-    "British Antarctic Territory",
-    "territory:BAT"
-  ],
-  [
-    "British Indian Ocean Territory",
-    "territory:IO"
-  ],
-  [
-    "British Virgin Islands",
-    "territory:VG"
-  ],
-  [
-    "Brunei",
-    "country:BN"
-  ],
-  [
-    "Bulgaria",
-    "country:BG"
+    "Belgium",
+    "country:BE"
   ],
   [
     "Burkina Faso",
     "country:BF"
   ],
   [
-    "Burma",
-    "country:MM"
+    "Bulgaria",
+    "country:BG"
+  ],
+  [
+    "Bahrain",
+    "country:BH"
   ],
   [
     "Burundi",
     "country:BI"
   ],
   [
-    "Cambodia",
-    "country:KH"
+    "Benin",
+    "country:BJ"
   ],
   [
-    "Cameroon",
-    "country:CM"
+    "Saint Barthélemy",
+    "country:BL"
+  ],
+  [
+    "Bermuda",
+    "country:BM"
+  ],
+  [
+    "Brunei Darussalam",
+    "country:BN"
+  ],
+  [
+    "Bolivia (Plurinational State of)",
+    "country:BO"
+  ],
+  [
+    "Bonaire, Sint Eustatius and Saba",
+    "country:BQ"
+  ],
+  [
+    "Brazil",
+    "country:BR"
+  ],
+  [
+    "Bahamas",
+    "country:BS"
+  ],
+  [
+    "Bhutan",
+    "country:BT"
+  ],
+  [
+    "Bouvet Island",
+    "country:BV"
+  ],
+  [
+    "Botswana",
+    "country:BW"
+  ],
+  [
+    "Belarus",
+    "country:BY"
+  ],
+  [
+    "Belize",
+    "country:BZ"
   ],
   [
     "Canada",
     "country:CA"
   ],
   [
-    "Cape Verde",
-    "country:CV"
+    "Cocos (Keeling) Islands",
+    "country:CC"
   ],
   [
-    "Cayman Islands",
-    "territory:KY"
+    "Congo (the Democratic Republic of the)",
+    "country:CD"
   ],
   [
     "Central African Republic",
     "country:CF"
   ],
   [
-    "Ceuta",
-    "territory:ES-CE"
+    "Congo",
+    "country:CG"
   ],
   [
-    "Chad",
-    "country:TD"
+    "Switzerland",
+    "country:CH"
+  ],
+  [
+    "Côte d'Ivoire",
+    "country:CI"
+  ],
+  [
+    "Cook Islands",
+    "country:CK"
   ],
   [
     "Chile",
     "country:CL"
   ],
   [
+    "Cameroon",
+    "country:CM"
+  ],
+  [
     "China",
     "country:CN"
-  ],
-  [
-    "Christmas Island",
-    "territory:CX"
-  ],
-  [
-    "Cocos (Keeling) Islands",
-    "territory:CC"
   ],
   [
     "Colombia",
     "country:CO"
   ],
   [
-    "Comoros",
-    "country:KM"
-  ],
-  [
-    "Congo",
-    "country:CG"
-  ],
-  [
-    "Congo (Democratic Republic)",
-    "country:CD"
-  ],
-  [
-    "Cook Islands",
-    "territory:CK"
-  ],
-  [
     "Costa Rica",
     "country:CR"
-  ],
-  [
-    "Croatia",
-    "country:HR"
   ],
   [
     "Cuba",
     "country:CU"
   ],
   [
+    "Cape Verde",
+    "country:CV"
+  ],
+  [
     "Curaçao",
-    "territory:CW"
+    "country:CW"
+  ],
+  [
+    "Christmas Island",
+    "country:CX"
   ],
   [
     "Cyprus",
     "country:CY"
   ],
   [
-    "Czechia",
+    "Czech Republic",
     "country:CZ"
   ],
   [
-    "Denmark",
-    "country:DK"
-  ],
-  [
-    "Dhekelia",
-    "territory:XXD"
+    "Germany",
+    "country:DE"
   ],
   [
     "Djibouti",
     "country:DJ"
+  ],
+  [
+    "Denmark",
+    "country:DK"
   ],
   [
     "Dominica",
@@ -284,88 +240,84 @@
     "country:DO"
   ],
   [
-    "Dubai",
-    "territory:AE-DU"
-  ],
-  [
-    "East Timor",
-    "country:TL"
+    "Algeria",
+    "country:DZ"
   ],
   [
     "Ecuador",
     "country:EC"
   ],
   [
+    "Estonia",
+    "country:EE"
+  ],
+  [
     "Egypt",
     "country:EG"
   ],
   [
-    "El Salvador",
-    "country:SV"
-  ],
-  [
-    "Equatorial Guinea",
-    "country:GQ"
+    "Western Sahara",
+    "country:EH"
   ],
   [
     "Eritrea",
     "country:ER"
   ],
   [
-    "Estonia",
-    "country:EE"
+    "Spain",
+    "country:ES"
   ],
   [
     "Ethiopia",
     "country:ET"
   ],
   [
-    "Falkland Islands",
-    "territory:FK"
-  ],
-  [
-    "Faroe Islands",
-    "territory:FO"
-  ],
-  [
-    "Fiji",
-    "country:FJ"
+    "European Union",
+    "country:EU"
   ],
   [
     "Finland",
     "country:FI"
   ],
   [
+    "Fiji",
+    "country:FJ"
+  ],
+  [
+    "Falkland Islands",
+    "country:FK"
+  ],
+  [
+    "Micronesia (Federated States of)",
+    "country:FM"
+  ],
+  [
+    "Faroe Islands",
+    "country:FO"
+  ],
+  [
     "France",
     "country:FR"
-  ],
-  [
-    "French Guiana",
-    "territory:GF"
-  ],
-  [
-    "French Polynesia",
-    "territory:PF"
-  ],
-  [
-    "French Southern Territories",
-    "territory:TF"
-  ],
-  [
-    "Fujairah",
-    "territory:AE-FU"
   ],
   [
     "Gabon",
     "country:GA"
   ],
   [
+    "United Kingdom",
+    "country:GB"
+  ],
+  [
+    "Grenada",
+    "country:GD"
+  ],
+  [
     "Georgia",
     "country:GE"
   ],
   [
-    "Germany",
-    "country:DE"
+    "Guernsey",
+    "country:GG"
   ],
   [
     "Ghana",
@@ -373,39 +325,39 @@
   ],
   [
     "Gibraltar",
-    "territory:GI"
+    "country:GI"
+  ],
+  [
+    "Greenland",
+    "country:GL"
+  ],
+  [
+    "Gambia",
+    "country:GM"
+  ],
+  [
+    "Guinea",
+    "country:GN"
+  ],
+  [
+    "Equatorial Guinea",
+    "country:GQ"
   ],
   [
     "Greece",
     "country:GR"
   ],
   [
-    "Greenland",
-    "territory:GL"
-  ],
-  [
-    "Grenada",
-    "country:GD"
-  ],
-  [
-    "Guadeloupe",
-    "territory:GP"
-  ],
-  [
-    "Guam",
-    "territory:GU"
+    "South Georgia and the South Sandwich Islands",
+    "country:GS"
   ],
   [
     "Guatemala",
     "country:GT"
   ],
   [
-    "Guernsey",
-    "territory:GG"
-  ],
-  [
-    "Guinea",
-    "country:GN"
+    "Guam",
+    "country:GU"
   ],
   [
     "Guinea-Bissau",
@@ -416,148 +368,156 @@
     "country:GY"
   ],
   [
-    "Haiti",
-    "country:HT"
+    "Hong Kong",
+    "country:HK"
   ],
   [
     "Heard Island and McDonald Islands",
-    "territory:HM"
+    "country:HM"
   ],
   [
     "Honduras",
     "country:HN"
   ],
   [
-    "Hong Kong",
-    "territory:HK"
+    "Croatia",
+    "country:HR"
   ],
   [
-    "Howland Island",
-    "territory:UM-84"
+    "Haiti",
+    "country:HT"
   ],
   [
     "Hungary",
     "country:HU"
   ],
   [
-    "Iceland",
-    "country:IS"
-  ],
-  [
-    "India",
-    "country:IN"
-  ],
-  [
     "Indonesia",
     "country:ID"
-  ],
-  [
-    "Iran",
-    "country:IR"
-  ],
-  [
-    "Iraq",
-    "country:IQ"
   ],
   [
     "Ireland",
     "country:IE"
   ],
   [
-    "Isle of Man",
-    "territory:IM"
-  ],
-  [
     "Israel",
     "country:IL"
+  ],
+  [
+    "Isle of Man",
+    "country:IM"
+  ],
+  [
+    "India",
+    "country:IN"
+  ],
+  [
+    "British Indian Ocean Territory",
+    "country:IO"
+  ],
+  [
+    "Iraq",
+    "country:IQ"
+  ],
+  [
+    "Iran (Islamic Republic of)",
+    "country:IR"
+  ],
+  [
+    "Iceland",
+    "country:IS"
   ],
   [
     "Italy",
     "country:IT"
   ],
   [
-    "Ivory Coast",
-    "country:CI"
+    "Jersey",
+    "country:JE"
   ],
   [
     "Jamaica",
     "country:JM"
   ],
   [
-    "Japan",
-    "country:JP"
-  ],
-  [
-    "Jarvis Island",
-    "territory:UM-86"
-  ],
-  [
-    "Jersey",
-    "territory:JE"
-  ],
-  [
-    "Johnston Atoll",
-    "territory:UM-67"
-  ],
-  [
     "Jordan",
     "country:JO"
   ],
   [
-    "Kazakhstan",
-    "country:KZ"
+    "Japan",
+    "country:JP"
   ],
   [
     "Kenya",
     "country:KE"
   ],
   [
-    "Kingman Reef",
-    "territory:UM-89"
+    "Kyrgyz Republic",
+    "country:KG"
+  ],
+  [
+    "Cambodia",
+    "country:KH"
   ],
   [
     "Kiribati",
     "country:KI"
   ],
   [
-    "Kosovo",
-    "country:XK"
+    "Comoros",
+    "country:KM"
+  ],
+  [
+    "Saint Kitts and Nevis",
+    "country:KN"
+  ],
+  [
+    "Korea (the Democratic People's Republic of)",
+    "country:KP"
+  ],
+  [
+    "Korea (the Republic of)",
+    "country:KR"
   ],
   [
     "Kuwait",
     "country:KW"
   ],
   [
-    "Kyrgyzstan",
-    "country:KG"
+    "Cayman Islands",
+    "country:KY"
   ],
   [
-    "Laos",
+    "Kazakhstan",
+    "country:KZ"
+  ],
+  [
+    "Lao People's Democratic Republic",
     "country:LA"
-  ],
-  [
-    "Latvia",
-    "country:LV"
   ],
   [
     "Lebanon",
     "country:LB"
   ],
   [
-    "Lesotho",
-    "country:LS"
+    "Saint Lucia",
+    "country:LC"
+  ],
+  [
+    "Liechtenstein",
+    "country:LI"
+  ],
+  [
+    "Sri Lanka",
+    "country:LK"
   ],
   [
     "Liberia",
     "country:LR"
   ],
   [
-    "Libya",
-    "country:LY"
-  ],
-  [
-    "Liechtenstein",
-    "country:LI"
+    "Lesotho",
+    "country:LS"
   ],
   [
     "Lithuania",
@@ -568,96 +528,92 @@
     "country:LU"
   ],
   [
-    "Macao",
-    "territory:MO"
+    "Latvia",
+    "country:LV"
   ],
   [
-    "Macedonia",
-    "country:MK"
+    "Libya",
+    "country:LY"
   ],
   [
-    "Madagascar",
-    "country:MG"
+    "Morocco",
+    "country:MA"
   ],
   [
-    "Malawi",
-    "country:MW"
-  ],
-  [
-    "Malaysia",
-    "country:MY"
-  ],
-  [
-    "Maldives",
-    "country:MV"
-  ],
-  [
-    "Mali",
-    "country:ML"
-  ],
-  [
-    "Malta",
-    "country:MT"
-  ],
-  [
-    "Marshall Islands",
-    "country:MH"
-  ],
-  [
-    "Martinique",
-    "territory:MQ"
-  ],
-  [
-    "Mauritania",
-    "country:MR"
-  ],
-  [
-    "Mauritius",
-    "country:MU"
-  ],
-  [
-    "Mayotte",
-    "territory:YT"
-  ],
-  [
-    "Melilla",
-    "territory:ES-ML"
-  ],
-  [
-    "Mexico",
-    "country:MX"
-  ],
-  [
-    "Micronesia",
-    "country:FM"
-  ],
-  [
-    "Midway Islands",
-    "territory:UM-71"
-  ],
-  [
-    "Moldova",
+    "Moldova (the Republic of)",
     "country:MD"
-  ],
-  [
-    "Monaco",
-    "country:MC"
-  ],
-  [
-    "Mongolia",
-    "country:MN"
   ],
   [
     "Montenegro",
     "country:ME"
   ],
   [
-    "Montserrat",
-    "territory:MS"
+    "Madagascar",
+    "country:MG"
   ],
   [
-    "Morocco",
-    "country:MA"
+    "Marshall Islands",
+    "country:MH"
+  ],
+  [
+    "Macedonia (the former Yugoslav Republic of)",
+    "country:MK"
+  ],
+  [
+    "Mali",
+    "country:ML"
+  ],
+  [
+    "Myanmar",
+    "country:MM"
+  ],
+  [
+    "Mongolia",
+    "country:MN"
+  ],
+  [
+    "Macao",
+    "country:MO"
+  ],
+  [
+    "Northern Mariana Islands",
+    "country:MP"
+  ],
+  [
+    "Martinique",
+    "country:MQ"
+  ],
+  [
+    "Mauritania",
+    "country:MR"
+  ],
+  [
+    "Montserrat",
+    "country:MS"
+  ],
+  [
+    "Malta",
+    "country:MT"
+  ],
+  [
+    "Mauritius",
+    "country:MU"
+  ],
+  [
+    "Maldives",
+    "country:MV"
+  ],
+  [
+    "Malawi",
+    "country:MW"
+  ],
+  [
+    "Mexico",
+    "country:MX"
+  ],
+  [
+    "Malaysia",
+    "country:MY"
   ],
   [
     "Mozambique",
@@ -668,131 +624,115 @@
     "country:NA"
   ],
   [
-    "Nauru",
-    "country:NR"
-  ],
-  [
-    "Navassa Island",
-    "territory:UM-76"
-  ],
-  [
-    "Nepal",
-    "country:NP"
-  ],
-  [
-    "Netherlands",
-    "country:NL"
-  ],
-  [
     "New Caledonia",
-    "territory:NC"
-  ],
-  [
-    "New Zealand",
-    "country:NZ"
-  ],
-  [
-    "Nicaragua",
-    "country:NI"
+    "country:NC"
   ],
   [
     "Niger",
     "country:NE"
   ],
   [
+    "Norfolk Island",
+    "country:NF"
+  ],
+  [
     "Nigeria",
     "country:NG"
   ],
   [
-    "Niue",
-    "territory:NU"
+    "Nicaragua",
+    "country:NI"
   ],
   [
-    "Norfolk Island",
-    "territory:NF"
-  ],
-  [
-    "North Korea",
-    "country:KP"
-  ],
-  [
-    "Northern Mariana Islands",
-    "territory:MP"
+    "Netherlands",
+    "country:NL"
   ],
   [
     "Norway",
     "country:NO"
   ],
   [
-    "Occupied Palestinian Territories",
-    "territory:PS"
+    "Nepal",
+    "country:NP"
+  ],
+  [
+    "Nauru",
+    "country:NR"
+  ],
+  [
+    "Niue",
+    "country:NU"
+  ],
+  [
+    "New Zealand",
+    "country:NZ"
   ],
   [
     "Oman",
     "country:OM"
   ],
   [
-    "Pakistan",
-    "country:PK"
-  ],
-  [
-    "Palau",
-    "country:PW"
-  ],
-  [
-    "Palmyra Atoll",
-    "territory:UM-95"
-  ],
-  [
     "Panama",
     "country:PA"
-  ],
-  [
-    "Papua New Guinea",
-    "country:PG"
-  ],
-  [
-    "Paraguay",
-    "country:PY"
   ],
   [
     "Peru",
     "country:PE"
   ],
   [
+    "French Polynesia",
+    "country:PF"
+  ],
+  [
+    "Papua New Guinea",
+    "country:PG"
+  ],
+  [
     "Philippines",
     "country:PH"
   ],
   [
-    "Pitcairn, Henderson, Ducie and Oeno Islands",
-    "territory:PN"
+    "Pakistan",
+    "country:PK"
   ],
   [
     "Poland",
     "country:PL"
   ],
   [
+    "Saint Pierre and Miquelon",
+    "country:PM"
+  ],
+  [
+    "Pitcairn",
+    "country:PN"
+  ],
+  [
+    "Occupied Palestinian Territory",
+    "country:PS"
+  ],
+  [
     "Portugal",
     "country:PT"
   ],
   [
-    "Puerto Rico",
-    "territory:PR"
+    "Palau",
+    "country:PW"
+  ],
+  [
+    "Paraguay",
+    "country:PY"
   ],
   [
     "Qatar",
     "country:QA"
   ],
   [
-    "Ras al-Khaimah",
-    "territory:AE-RK"
-  ],
-  [
     "Romania",
     "country:RO"
   ],
   [
-    "Russia",
+    "Russian Federation",
     "country:RU"
   ],
   [
@@ -800,299 +740,91 @@
     "country:RW"
   ],
   [
-    "Réunion",
-    "territory:RE"
-  ],
-  [
-    "Saba",
-    "territory:BQ-SA"
-  ],
-  [
-    "Saint Barthélemy",
-    "territory:BL"
-  ],
-  [
-    "Saint Helena",
-    "territory:SH-HL"
-  ],
-  [
-    "Saint Pierre and Miquelon",
-    "territory:PM"
-  ],
-  [
-    "Saint-Martin (French part)",
-    "territory:MF"
-  ],
-  [
-    "Samoa",
-    "country:WS"
-  ],
-  [
-    "San Marino",
-    "country:SM"
-  ],
-  [
-    "Sao Tome and Principe",
-    "country:ST"
-  ],
-  [
     "Saudi Arabia",
     "country:SA"
-  ],
-  [
-    "Senegal",
-    "country:SN"
-  ],
-  [
-    "Serbia",
-    "country:RS"
-  ],
-  [
-    "Seychelles",
-    "country:SC"
-  ],
-  [
-    "Sharjah",
-    "territory:AE-SH"
-  ],
-  [
-    "Sierra Leone",
-    "country:SL"
-  ],
-  [
-    "Singapore",
-    "country:SG"
-  ],
-  [
-    "Sint Eustatius",
-    "territory:BQ-SE"
-  ],
-  [
-    "Sint Maarten (Dutch part)",
-    "territory:SX"
-  ],
-  [
-    "Slovakia",
-    "country:SK"
-  ],
-  [
-    "Slovenia",
-    "country:SI"
   ],
   [
     "Solomon Islands",
     "country:SB"
   ],
   [
-    "Somalia",
-    "country:SO"
-  ],
-  [
-    "South Africa",
-    "country:ZA"
-  ],
-  [
-    "South Georgia and South Sandwich Islands",
-    "territory:GS"
-  ],
-  [
-    "South Korea",
-    "country:KR"
-  ],
-  [
-    "South Sudan",
-    "country:SS"
-  ],
-  [
-    "Spain",
-    "country:ES"
-  ],
-  [
-    "Sri Lanka",
-    "country:LK"
-  ],
-  [
-    "St Kitts and Nevis",
-    "country:KN"
-  ],
-  [
-    "St Lucia",
-    "country:LC"
-  ],
-  [
-    "St Vincent",
-    "country:VC"
+    "Seychelles",
+    "country:SC"
   ],
   [
     "Sudan",
     "country:SD"
   ],
   [
+    "Sweden",
+    "country:SE"
+  ],
+  [
+    "Singapore",
+    "country:SG"
+  ],
+  [
+    "Saint Helena",
+    "country:SH"
+  ],
+  [
+    "Slovenia",
+    "country:SI"
+  ],
+  [
+    "Slovakia",
+    "country:SK"
+  ],
+  [
+    "Sierra Leone",
+    "country:SL"
+  ],
+  [
+    "San Marino",
+    "country:SM"
+  ],
+  [
+    "Senegal",
+    "country:SN"
+  ],
+  [
+    "Somalia",
+    "country:SO"
+  ],
+  [
     "Suriname",
     "country:SR"
   ],
   [
-    "Svalbard and Jan Mayen",
-    "territory:SJ"
+    "South Sudan",
+    "country:SS"
+  ],
+  [
+    "Sao Tome and Principe",
+    "country:ST"
+  ],
+  [
+    "El Salvador",
+    "country:SV"
+  ],
+  [
+    "Sint Maarten (Dutch part)",
+    "country:SX"
+  ],
+  [
+    "Syrian Arab Republic",
+    "country:SY"
   ],
   [
     "Swaziland",
     "country:SZ"
   ],
   [
-    "Sweden",
-    "country:SE"
-  ],
-  [
-    "Switzerland",
-    "country:CH"
-  ],
-  [
-    "Syria",
-    "country:SY"
-  ],
-  [
-    "Taiwan",
-    "territory:TW"
-  ],
-  [
-    "Tajikistan",
-    "country:TJ"
-  ],
-  [
-    "Tanzania",
-    "country:TZ"
-  ],
-  [
-    "Thailand",
-    "country:TH"
-  ],
-  [
-    "The Bahamas",
-    "country:BS"
-  ],
-  [
-    "The Gambia",
-    "country:GM"
-  ],
-  [
-    "Togo",
-    "country:TG"
-  ],
-  [
-    "Tokelau",
-    "territory:TK"
-  ],
-  [
-    "Tonga",
-    "country:TO"
-  ],
-  [
-    "Trinidad and Tobago",
-    "country:TT"
-  ],
-  [
-    "Tristan da Cunha",
-    "territory:SH-TA"
-  ],
-  [
-    "Tunisia",
-    "country:TN"
-  ],
-  [
-    "Turkey",
-    "country:TR"
-  ],
-  [
-    "Turkmenistan",
-    "country:TM"
-  ],
-  [
     "Turks and Caicos Islands",
-    "territory:TC"
+    "country:TC"
   ],
   [
-    "Tuvalu",
-    "country:TV"
-  ],
-  [
-    "Uganda",
-    "country:UG"
-  ],
-  [
-    "Ukraine",
-    "country:UA"
-  ],
-  [
-    "Umm al-Quwain",
-    "territory:AE-UQ"
-  ],
-  [
-    "United Arab Emirates",
-    "country:AE"
-  ],
-  [
-    "United Kingdom",
-    "country:GB"
-  ],
-  [
-    "United States",
-    "country:US"
-  ],
-  [
-    "United States Virgin Islands",
-    "territory:VI"
-  ],
-  [
-    "Uruguay",
-    "country:UY"
-  ],
-  [
-    "Uzbekistan",
-    "country:UZ"
-  ],
-  [
-    "Vanuatu",
-    "country:VU"
-  ],
-  [
-    "Vatican City",
-    "country:VA"
-  ],
-  [
-    "Venezuela",
-    "country:VE"
-  ],
-  [
-    "Vietnam",
-    "country:VN"
-  ],
-  [
-    "Wake Island",
-    "territory:UM-79"
-  ],
-  [
-    "Wallis and Futuna",
-    "territory:WF"
-  ],
-  [
-    "Western Sahara",
-    "territory:EH"
-  ],
-  [
-    "Yemen",
-    "country:YE"
-  ],
-  [
-    "Zambia",
-    "country:ZM"
-  ],
-  [
-    "Zimbabwe",
-    "country:ZW"
-  ],
-  [
-    "Åland Islands",
-    "territory:AX"
+    "Chad",
+    "country:TD"
   ]
 ]

@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.TestHelper
-import forms.declaration.{EntityDetails, RepresentativeDetails}
+import forms.declaration.RepresentativeDetails
 import helpers.views.declaration.{CommonMessages, RepresentativeDetailsMessages}
 import play.api.data.Form
 import play.twirl.api.Html
@@ -30,7 +30,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
   private val form: Form[RepresentativeDetails] = RepresentativeDetails.form()
   private def createView(form: Form[RepresentativeDetails] = form): Html =
-    representative_details(appConfig, form)(fakeRequest, messages, countries)
+    representative_details(appConfig, form)(fakeRequest, messages)
 
   "Representative Details View" should {
 

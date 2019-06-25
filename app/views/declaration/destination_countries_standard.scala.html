@@ -19,9 +19,9 @@
 @import controllers.util.{Add, Remove, SaveAndContinue}
 @import forms.declaration.destinationCountries.DestinationCountriesStandard
 @import uk.gov.hmrc.play.views.html._
-
-@import services.model.AutoCompleteItem
-@(form: Form[DestinationCountriesStandard], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages, countries: List[AutoCompleteItem], appConfig: AppConfig)
+@import services.model.{AutoCompleteItem, Country}
+@import services.Countries
+@(form: Form[DestinationCountriesStandard], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("declaration.destinationCountries.title"),
@@ -38,11 +38,11 @@
         <div id="country-of-dispatch-field" class="inline-block form-group">
             @components.autocomplete_field(
                 form,
-                "countryOfDispatch",
+                form("countryOfDispatch"),
                 "declaration.destinationCountries.countryOfDispatch",
                 Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
                 messages("declaration.destinationCountries.countryOfDispatch.empty"),
-                countries
+                AutoCompleteItem.from(Countries.allCountries)
             )
         </div>
 
@@ -55,11 +55,11 @@
         <div id="country-of-routing-field" class="inline-block form-group">
             @components.autocomplete_field(
                 form,
-                "countriesOfRouting[]",
+                form("countriesOfRouting[]"),
                 "declaration.destinationCountries.countriesOfRouting",
                 None,
                 messages("declaration.destinationCountries.countriesOfRouting.empty"),
-                countries
+                AutoCompleteItem.from(Countries.allCountries)
             )
         </div>
 
@@ -74,11 +74,11 @@
         <div id="country-of-destination-field" class="inline-block form-group">
             @components.autocomplete_field(
                 form,
-                "countryOfDestination",
+                form("countryOfDestination"),
                 "declaration.destinationCountries.countryOfDestination",
                 Some(messages("declaration.destinationCountries.countryOfDestination.hint")),
                 messages("declaration.destinationCountries.countryOfDestination.empty"),
-                countries
+                AutoCompleteItem.from(Countries.allCountries)
             )
         </div>
 

@@ -19,10 +19,9 @@
 @import forms.declaration.destinationCountries.DestinationCountriesSupplementary
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
-@import services.Country
-
-@import services.model.AutoCompleteItem
-@(form: Form[DestinationCountriesSupplementary])(implicit request: JourneyRequest[_], messages: Messages, countries: List[AutoCompleteItem], appConfig: AppConfig)
+@import services.model.{AutoCompleteItem, Country}
+@import services.Countries
+@(form: Form[DestinationCountriesSupplementary])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("declaration.destinationCountries.title"),
@@ -41,22 +40,22 @@
         <div id="country-of-dispatch-field" class="inline-block form-group">
             @components.autocomplete_field(
                 form,
-                "countryOfDispatch",
+                form("countryOfDispatch"),
                 "declaration.destinationCountries.countryOfDispatch",
                 Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
                 messages("declaration.destinationCountries.countryOfDispatch.empty"),
-                countries
+                AutoCompleteItem.from(Countries.allCountries)
             )
         </div>
 
         <div id="country-of-destination-field" class="inline-block form-group">
             @components.autocomplete_field(
                 form,
-                "countryOfDestination",
+                form("countryOfDestination"),
                 "declaration.destinationCountries.countryOfDestination",
                 Some(messages("declaration.destinationCountries.countryOfDestination.hint")),
                 messages("declaration.destinationCountries.countryOfDestination.empty"),
-                countries
+                AutoCompleteItem.from(Countries.allCountries)
             )
         </div>
 

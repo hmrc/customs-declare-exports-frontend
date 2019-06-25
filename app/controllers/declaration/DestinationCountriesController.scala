@@ -29,9 +29,7 @@ import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.countries.Countries
-import services.model.AutoCompleteItem
-import services.{Country, CustomsCacheService}
+import services.CustomsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.collections.Removable.RemovableSeq
@@ -46,16 +44,10 @@ class DestinationCountriesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
-  countries: Countries,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
-
-  implicit val countryList: List[AutoCompleteItem] = getCountryData(countries.all)
-
-  def getCountryData(countries: List[Country]): List[AutoCompleteItem] =
-    countries.map(country => AutoCompleteItem(country.countryName, country.countryCode))
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.choice.value match {
@@ -102,7 +94,7 @@ class DestinationCountriesController @Inject()(
       )
 
   private def handleSubmitStandard()(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
     val cachedData = customsCacheService
       .fetchAndGetEntry[DestinationCountriesStandard](cacheId, formId)
@@ -136,7 +128,7 @@ class DestinationCountriesController @Inject()(
         Future.successful(
           BadRequest(
             destination_countries_standard(
-              adjustDataKeys(countriesStandardForm).copy(errors = errors.map(adjustErrorKey(_))),
+              adjustDataKeys(countriesStandardForm).copy(errors = errors.map(adjustErrorKey)),
               cachedData.countriesOfRouting
             )
           )
@@ -162,7 +154,7 @@ class DestinationCountriesController @Inject()(
         Future.successful(
           BadRequest(
             destination_countries_standard(
-              adjustDataKeys(countriesStandardForm).copy(errors = errors.map(adjustErrorKey(_))),
+              adjustDataKeys(countriesStandardForm).copy(errors = errors.map(adjustErrorKey)),
               cachedData.countriesOfRouting
             )
           )

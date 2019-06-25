@@ -41,8 +41,6 @@ class CarrierDetailsPageController @Inject()(
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countries = services.Countries.allCountries
-
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[CarrierDetails](cacheId, CarrierDetails.id).map {
       case Some(data) => Ok(carrier_details(CarrierDetails.form.fill(data)))

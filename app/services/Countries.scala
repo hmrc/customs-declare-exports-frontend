@@ -17,25 +17,9 @@
 package services
 
 import play.api.libs.json._
-
-import scala.io.Source
-
-case class Country(countryName: String, countryCode: String)
-
-case object Country {
-  implicit val formats = Json.format[Country]
-}
+import services.model.Country
 
 object Countries {
-
-  private val mdgCountryCodes: List[String] =
-    Source
-      .fromInputStream(getClass.getResourceAsStream("/mdg-country-codes.csv"))
-      .getLines()
-      .mkString
-      .split(',')
-      .map(_.replace("\"", ""))
-      .toList
 
   private val countries: List[Country] = {
     val jsonFile = getClass.getResourceAsStream("/location-autocomplete-canonical-list.json")

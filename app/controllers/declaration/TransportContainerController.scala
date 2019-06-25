@@ -18,7 +18,7 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{SealController, SummaryPageController, TransportContainerController}
+import controllers.declaration.routes._
 import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}

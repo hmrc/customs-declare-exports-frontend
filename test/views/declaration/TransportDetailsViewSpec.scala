@@ -16,19 +16,18 @@
 
 package views.declaration
 
-import base.CustomExportsBaseSpec
+import base.TestHelper._
+import forms.Choice.AllowedChoiceValues
+import forms.declaration.TransportCodes._
 import forms.declaration.TransportDetails
 import helpers.views.declaration.CommonMessages
 import play.api.data.Form
 import play.twirl.api.Html
-import views.declaration.spec.ViewSpec
-import views.tags.ViewTest
-import views.html.components.{input_radio, input_text, input_text_autocomplete}
 import utils.RadioOption
-import forms.declaration.TransportCodes._
+import views.declaration.spec.ViewSpec
+import views.html.components.{input_radio, input_text, input_text_autocomplete}
 import views.html.declaration.transport_details
-import base.TestHelper._
-import forms.Choice.AllowedChoiceValues
+import views.tags.ViewTest
 
 @ViewTest
 class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessages {
@@ -37,8 +36,7 @@ class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessage
     transport_details(form)(
       journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec),
       appConfig,
-      messages,
-      countries
+      messages
     )
 
   "TransportDetails View" should {

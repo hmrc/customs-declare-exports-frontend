@@ -18,7 +18,7 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{SealController, SummaryPageController, TransportContainerController}
+import controllers.declaration.routes._
 import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.TransportDetails
@@ -43,8 +43,6 @@ class TransportDetailsController @Inject()(
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
-
-  implicit val countries = services.Countries.allCountries
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
     customsCacheService

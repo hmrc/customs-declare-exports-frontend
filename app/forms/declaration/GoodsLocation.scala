@@ -44,7 +44,7 @@ object GoodsLocation {
         .verifying("supplementary.address.country.empty", _.trim.nonEmpty)
         .verifying(
           "supplementary.address.country.error",
-          input => input.trim.isEmpty || allCountries.exists(country => country.countryName == input)
+          input => input.trim.isEmpty || allCountries.exists(_.countryName == input)
         ),
     "typeOfLocation" -> text()
       .verifying("supplementary.goodsLocation.typeOfLocation.empty", nonEmpty)

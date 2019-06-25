@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package services
+package services.model
 
-import base.CustomExportsBaseSpec
-import services.Countries.allCountries
-import services.model.Country
+import uk.gov.hmrc.play.test.UnitSpec
 
-class CountriesSpec extends CustomExportsBaseSpec {
+class AutoCompleteItemTest extends UnitSpec {
 
-  "Countries" should {
-    
-    "give all countries with codes in alphabetical order of country name with filtering according to permitted MDG values" in {
-      val threeCountries = allCountries.filter(c => c.countryName == "Afghanistan" || c.countryName == "Mali" || c.countryName == "Suriname")
-      threeCountries mustBe List(Country("Afghanistan", "AF"), Country("Mali", "ML"), Country("Suriname", "SR"))
+  "AutoCompleteItemTest" should {
+    "Map from Country" in {
+      AutoCompleteItem.from(List(Country("name", "code"))) shouldBe List(AutoCompleteItem("name", "code"))
     }
   }
+
 }

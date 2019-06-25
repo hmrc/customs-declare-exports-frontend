@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package services
+package services.model
 
-import base.CustomExportsBaseSpec
-import services.Countries.allCountries
-import services.model.Country
+import play.api.libs.json.Json
 
-class CountriesSpec extends CustomExportsBaseSpec {
-
-  "Countries" should {
-    
-    "give all countries with codes in alphabetical order of country name with filtering according to permitted MDG values" in {
-      val threeCountries = allCountries.filter(c => c.countryName == "Afghanistan" || c.countryName == "Mali" || c.countryName == "Suriname")
-      threeCountries mustBe List(Country("Afghanistan", "AF"), Country("Mali", "ML"), Country("Suriname", "SR"))
-    }
-  }
+case object Country {
+  implicit val formats = Json.format[Country]
 }
+
+case class Country(countryName: String, countryCode: String)

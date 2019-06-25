@@ -39,8 +39,6 @@ class DeclarantDetailsPageController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countries = services.Countries.allCountries
-
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[DeclarantDetails](cacheId, DeclarantDetails.id).map {
       case Some(data) => Ok(declarant_details(appConfig, DeclarantDetails.form.fill(data)))

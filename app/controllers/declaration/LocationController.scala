@@ -40,8 +40,6 @@ class LocationController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
   import forms.declaration.GoodsLocation._
 
-  implicit val countries = services.Countries.allCountries
-
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[GoodsLocation](cacheId, formId).map {
       case Some(data) => Ok(goods_location(appConfig, form.fill(data)))

@@ -17,10 +17,10 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.CarrierDetails
-@import services.Country
+@import services.model.Country
 @import uk.gov.hmrc.play.views.html._
 
-@(form: Form[CarrierDetails])(implicit appConfig: AppConfig, request: Request[_], messages: Messages, countries: List[Country])
+@(form: Form[CarrierDetails])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.carrier.title"),

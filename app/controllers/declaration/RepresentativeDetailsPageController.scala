@@ -43,8 +43,6 @@ class RepresentativeDetailsPageController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countries = services.Countries.allCountries
-
   def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       customsCacheService

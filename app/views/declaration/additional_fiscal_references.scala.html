@@ -18,9 +18,9 @@
 @import controllers.declaration.routes._
 @import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 @import uk.gov.hmrc.play.views.html._
-@import services.model.AutoCompleteItem
-
-@(form: Form[AdditionalFiscalReference], countries: List[AutoCompleteItem], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@import services.model.{AutoCompleteItem, Country}
+@import services.Countries
+@(form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
     title = messages("declaration.additionalFiscalReferences.title"),
@@ -45,11 +45,11 @@
         <div id="country-of-dispatch-field" class="inline-block form-group">
             @components.autocomplete_field(
                 form,
-                "country",
+                form("country"),
                 messages("declaration.additionalFiscalReferences.country"),
                 None,
                 messages("declaration.additionalFiscalReferences.country.empty"),
-                countries
+                AutoCompleteItem.from(Countries.allCountries)
             )
         </div>
 

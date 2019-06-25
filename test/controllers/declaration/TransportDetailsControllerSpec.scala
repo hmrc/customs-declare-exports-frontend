@@ -19,7 +19,7 @@ package controllers.declaration
 import base.CSRFUtil._
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice
-import forms.Choice.{choiceId, AllowedChoiceValues}
+import forms.Choice.{AllowedChoiceValues, choiceId}
 import forms.declaration.TransportDetails
 import generators.Generators
 import models.requests.JourneyRequest
@@ -32,7 +32,6 @@ import play.api.data.Form
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import services.Countries
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import views.html.declaration.transport_details
 
@@ -43,7 +42,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
   val form: Form[TransportDetails] = Form(TransportDetails.formMapping)
 
   def view(form: Form[TransportDetails], request: JourneyRequest[_]): Html =
-    transport_details(form)(request, appConfig, messages, countries = Countries.allCountries)
+    transport_details(form)(request, appConfig, messages)
 
   before {
     authorizedUser()

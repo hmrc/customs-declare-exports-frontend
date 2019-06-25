@@ -31,13 +31,13 @@ object DestinationCountriesSupplementary {
       .verifying("declaration.destinationCountries.countryOfDispatch.empty", _.trim.nonEmpty)
       .verifying(
         "declaration.destinationCountries.countryOfDispatch.error",
-        input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
+        input => input.isEmpty || allCountries.exists(_.countryCode == input)
       ),
     "countryOfDestination" -> text()
       .verifying("declaration.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
       .verifying(
         "declaration.destinationCountries.countryOfDestination.error",
-        input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
+        input => input.isEmpty || allCountries.exists(_.countryCode == input)
       )
   )(DestinationCountriesSupplementary.apply)(DestinationCountriesSupplementary.unapply)
 }

@@ -27,7 +27,8 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.mvc.{AnyContentAsEmpty, Flash}
 import play.api.test.FakeRequest
-import services.{Countries, Country}
+import services.Countries
+import services.model.Country
 
 trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator {
 
@@ -41,7 +42,6 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator {
   implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
   implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
   implicit lazy val flash: Flash = new Flash()
-  implicit lazy val countries: List[Country] = Countries.allCountries
 
   def assertMessage(key: String, expected: String): Unit = messages(key) must be(expected)
 

@@ -39,8 +39,6 @@ class ExporterDetailsPageController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countries = services.Countries.allCountries
-
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ExporterDetails](cacheId, ExporterDetails.id).map {
       case Some(data) => Ok(exporter_details(appConfig, ExporterDetails.form.fill(data)))

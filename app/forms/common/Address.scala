@@ -56,7 +56,7 @@ object Address {
       .verifying("supplementary.address.country.empty", nonEmpty)
       .verifying(
         "supplementary.address.country.error",
-        input => input.isEmpty || allCountries.exists(country => country.countryName == input)
+        input => input.isEmpty || allCountries.exists(_.countryName == input)
       )
   )(Address.apply)(Address.unapply)
 
