@@ -24,9 +24,9 @@ class CountriesSpec extends CustomExportsBaseSpec {
 
   "Countries" should {
     
-    "give all countries with codes in alphabetical order of country name with filtering according to permitted MDG values" in {
-      val threeCountries = allCountries.filter(c => c.countryName == "Afghanistan" || c.countryName == "Mali" || c.countryName == "Suriname")
-      threeCountries mustBe List(Country("Afghanistan", "AF"), Country("Mali", "ML"), Country("Suriname", "SR"))
+    "give all countries with codes in alphabetical order of country name" in {
+      val threeCountries = allCountries.filter(c => c.countryName == "Afghanistan" || c.countryName == "Mayotte" || c.countryName == "Zimbabwe")
+      threeCountries mustBe List(Country("Afghanistan", "AF"), Country("Mayotte", "YT"), Country("Zimbabwe", "ZW"))
     }
   }
 }

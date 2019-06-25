@@ -826,5 +826,157 @@
   [
     "Chad",
     "country:TD"
+  ],
+  [
+    "French Southern Territories",
+    "country:TF"
+  ],
+  [
+    "Togo",
+    "country:TG"
+  ],
+  [
+    "Thailand",
+    "country:TH"
+  ],
+  [
+    "Tajikistan",
+    "country:TJ"
+  ],
+  [
+    "Tokelau",
+    "country:TK"
+  ],
+  [
+    "Timor-Leste",
+    "country:TL"
+  ],
+  [
+    "Turkmenistan",
+    "country:TM"
+  ],
+  [
+    "Tunisia",
+    "country:TN"
+  ],
+  [
+    "Tonga",
+    "country:TO"
+  ],
+  [
+    "Turkey",
+    "country:TR"
+  ],
+  [
+    "Trinidad and Tobago",
+    "country:TT"
+  ],
+  [
+    "Tuvalu",
+    "country:TV"
+  ],
+  [
+    "Taiwan",
+    "country:TW"
+  ],
+  [
+    "Tanzania",
+    "country:TZ"
+  ],
+  [
+    "Ukraine",
+    "country:UA"
+  ],
+  [
+    "Uganda",
+    "country:UG"
+  ],
+  [
+    "United States Minor Outlying Islands",
+    "country:UM"
+  ],
+  [
+    "United States of America",
+    "country:US"
+  ],
+  [
+    "Uruguay",
+    "country:UY"
+  ],
+  [
+    "Uzbekistan",
+    "country:UZ"
+  ],
+  [
+    "Holy See (Vatican City State)",
+    "country:VA"
+  ],
+  [
+    "Saint Vincent and the Grenadines",
+    "country:VC"
+  ],
+  [
+    "Venezuela (Bolivarian Republic of)",
+    "country:VE"
+  ],
+  [
+    "Virgin Islands (British)",
+    "country:VG"
+  ],
+  [
+    "Virgin Islands (U.S.)",
+    "country:VI"
+  ],
+  [
+    "Vietnam",
+    "country:VN"
+  ],
+  [
+    "Vanuatu",
+    "country:VU"
+  ],
+  [
+    "Wallis and Futuna",
+    "country:WF"
+  ],
+  [
+    "Samoa",
+    "country:WS"
+  ],
+  [
+    "Ceuta",
+    "country:XC"
+  ],
+  [
+    "Kosovo",
+    "country:XK"
+  ],
+  [
+    "Melilla",
+    "country:XL"
+  ],
+  [
+    "Serbia",
+    "country:XS"
+  ],
+  [
+    "Yemen",
+    "country:YE"
+  ],
+  [
+    "Mayotte",
+    "country:YT"
+  ],
+  [
+    "South Africa",
+    "country:ZA"
+  ],
+  [
+    "Zambia",
+    "country:ZM"
+  ],
+  [
+    "Zimbabwe",
+    "country:ZW"
   ]
 ]
