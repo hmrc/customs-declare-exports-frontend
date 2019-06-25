@@ -24,7 +24,6 @@ import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.Countries.allCountries
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.exporter_details
@@ -42,8 +41,8 @@ class ExporterDetailsPageController @Inject()(
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ExporterDetails](cacheId, ExporterDetails.id).map {
-      case Some(data) => Ok(exporter_details(appConfig, ExporterDetails.form.fill(data), allCountries))
-      case _          => Ok(exporter_details(appConfig, ExporterDetails.form, allCountries))
+      case Some(data) => Ok(exporter_details(appConfig, ExporterDetails.form.fill(data)))
+      case _          => Ok(exporter_details(appConfig, ExporterDetails.form))
     }
   }
 
@@ -52,7 +51,7 @@ class ExporterDetailsPageController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ExporterDetails]) =>
-          Future.successful(BadRequest(exporter_details(appConfig, formWithErrors, allCountries))),
+          Future.successful(BadRequest(exporter_details(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[ExporterDetails](cacheId, ExporterDetails.id, form).map { _ =>
             Redirect(controllers.declaration.routes.ConsigneeDetailsPageController.displayForm())

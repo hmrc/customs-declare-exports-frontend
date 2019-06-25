@@ -32,7 +32,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
   private val form: Form[DeclarantDetails] = DeclarantDetails.form()
   private def createView(form: Form[DeclarantDetails] = form): Html =
-    declarant_details(appConfig, form, countries)(fakeJourneyRequest(SupplementaryDec), messages)
+    declarant_details(appConfig, form)(fakeJourneyRequest(SupplementaryDec), messages)
 
   "Declarant Details View" should {
 
@@ -107,7 +107,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display 'Back' button that links to 'Consignee Details' page" in {
 
-      val view = declarant_details(appConfig, form, countries)(fakeJourneyRequest(StandardDec), messages)
+      val view = declarant_details(appConfig, form)(fakeJourneyRequest(StandardDec), messages)
       val backButton = getElementById(view, "link-back")
 
       backButton.text() must be(messages(backCaption))

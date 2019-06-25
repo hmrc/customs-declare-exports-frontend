@@ -18,7 +18,6 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{SealController, SummaryPageController, TransportContainerController}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.TransportDetails
@@ -29,7 +28,6 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.Countries.allCountries
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.transport_details
@@ -48,14 +46,14 @@ class TransportDetailsController @Inject()(
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[TransportDetails](cacheId, TransportDetails.formId)
-      .map(data => Ok(transport_details(data.fold(form)(form.fill(_)), allCountries)))
+      .map(data => Ok(transport_details(data.fold(form)(form.fill(_)))))
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transport_details(formWithErrors, allCountries))),
+        (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transport_details(formWithErrors))),
         transportDetails =>
           customsCacheService
             .cache[TransportDetails](cacheId, TransportDetails.formId, transportDetails)

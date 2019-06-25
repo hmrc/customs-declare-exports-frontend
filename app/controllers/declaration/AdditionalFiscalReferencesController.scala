@@ -29,7 +29,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.{Countries, CustomsCacheService}
+import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.additional_fiscal_references
 
@@ -46,8 +46,8 @@ class AdditionalFiscalReferencesController @Inject()(
   
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[AdditionalFiscalReferencesData](goodsItemCacheId, formId).map {
-      case Some(data) => Ok(additional_fiscal_references(form, Countries.allCountries, data.references))
-      case _          => Ok(additional_fiscal_references(form, Countries.allCountries))
+      case Some(data) => Ok(additional_fiscal_references(form, data.references))
+      case _          => Ok(additional_fiscal_references(form))
     }
   }
 
@@ -118,5 +118,5 @@ class AdditionalFiscalReferencesController @Inject()(
 
   private def badRequest(formWithErrors: Form[AdditionalFiscalReference], references: Seq[AdditionalFiscalReference])(
     implicit request: JourneyRequest[_]
-  ): Result = BadRequest(additional_fiscal_references(formWithErrors, Countries.allCountries, references))
+  ): Result = BadRequest(additional_fiscal_references(formWithErrors, references))
 }

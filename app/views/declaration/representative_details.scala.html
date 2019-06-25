@@ -22,7 +22,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
-@(appConfig: AppConfig, form: Form[RepresentativeDetails], countries: List[Country])(implicit request: Request[_], messages: Messages)
+@(appConfig: AppConfig, form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.representative.title"),
@@ -52,7 +52,7 @@
 
             <p>Or</p>
 
-            @components.address(form, countries, "details.address", Some(messages("supplementary.representative.address.info")))
+            @components.address(form, "details.address", Some(messages("supplementary.representative.address.info")))
         }
 
         @components.page_title(title = Some("supplementary.representative.representationType.header"))

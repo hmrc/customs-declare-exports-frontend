@@ -27,7 +27,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.consignee_details
-import services.Countries.allCountries
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,8 +44,8 @@ class ConsigneeDetailsPageController @Inject()(
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ConsigneeDetails](cacheId, ConsigneeDetails.id).map {
-      case Some(data) => Ok(consignee_details(appConfig, ConsigneeDetails.form.fill(data), allCountries))
-      case _          => Ok(consignee_details(appConfig, ConsigneeDetails.form, allCountries))
+      case Some(data) => Ok(consignee_details(appConfig, ConsigneeDetails.form.fill(data)))
+      case _          => Ok(consignee_details(appConfig, ConsigneeDetails.form))
     }
   }
 
@@ -55,7 +54,7 @@ class ConsigneeDetailsPageController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsigneeDetails]) =>
-          Future.successful(BadRequest(consignee_details(appConfig, formWithErrors, allCountries))),
+          Future.successful(BadRequest(consignee_details(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[ConsigneeDetails](cacheId, ConsigneeDetails.id, form).map { _ =>
             Redirect(controllers.declaration.routes.DeclarantDetailsPageController.displayForm())

@@ -31,7 +31,7 @@ class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with
 
   private val form: Form[ExporterDetails] = ExporterDetails.form()
   private def createView(form: Form[ExporterDetails] = form): Html =
-    exporter_details(appConfig, form, countries)(fakeRequest, messages)
+    exporter_details(appConfig, form)(fakeRequest, messages)
 
   "Exporter Details View" should {
 

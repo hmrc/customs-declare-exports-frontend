@@ -24,7 +24,7 @@
 @import forms.Choice.AllowedChoiceValues
 @import services.model.Country
 
-@(form: Form[TransportDetails], countries: List[Country])(implicit request: JourneyRequest[_], appConfig: AppConfig, messages: Messages)
+@(form: Form[TransportDetails])(implicit request: JourneyRequest[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
     title = messages("supplementary.transportInfo.title"),
