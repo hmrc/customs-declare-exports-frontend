@@ -43,7 +43,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
   val form: Form[TransportDetails] = Form(TransportDetails.formMapping)
 
   def view(form: Form[TransportDetails], request: JourneyRequest[_]): Html =
-    transport_details(form)(request, appConfig, messages, countries = Countries.allCountries)
+    transport_details(form, Countries.allCountries)(request, appConfig, messages)
 
   before {
     authorizedUser()

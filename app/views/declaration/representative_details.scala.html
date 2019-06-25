@@ -22,7 +22,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import utils.RadioOption
 
-@(appConfig: AppConfig, form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages, countries: List[Country])
+@(appConfig: AppConfig, form: Form[RepresentativeDetails], countries: List[Country])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.representative.title"),

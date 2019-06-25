@@ -27,6 +27,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.Countries.allCountries
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.representative_details
@@ -43,15 +44,13 @@ class RepresentativeDetailsPageController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countries = services.Countries.allCountries
-
   def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       customsCacheService
         .fetchAndGetEntry[RepresentativeDetails](cacheId, RepresentativeDetails.formId)
         .map {
-          case Some(data) => Ok(representative_details(appConfig, RepresentativeDetails.form.fill(data)))
-          case _          => Ok(representative_details(appConfig, RepresentativeDetails.form))
+          case Some(data) => Ok(representative_details(appConfig, RepresentativeDetails.form.fill(data), allCountries))
+          case _          => Ok(representative_details(appConfig, RepresentativeDetails.form, allCountries))
         }
   }
 
@@ -61,7 +60,7 @@ class RepresentativeDetailsPageController @Inject()(
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>
           Future.successful(
-            BadRequest(representative_details(appConfig, RepresentativeDetails.adjustErrors(formWithErrors)))
+            BadRequest(representative_details(appConfig, RepresentativeDetails.adjustErrors(formWithErrors), allCountries))
         ),
         validRepresentativeDetails =>
           customsCacheService

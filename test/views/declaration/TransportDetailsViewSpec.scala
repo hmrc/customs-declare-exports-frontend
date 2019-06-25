@@ -34,11 +34,10 @@ import forms.Choice.AllowedChoiceValues
 class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessages {
 
   def createView(form: Form[TransportDetails] = form): Html =
-    transport_details(form)(
+    transport_details(form, countries)(
       journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec),
       appConfig,
-      messages,
-      countries
+      messages
     )
 
   "TransportDetails View" should {

@@ -30,7 +30,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
   private val form: Form[RepresentativeDetails] = RepresentativeDetails.form()
   private def createView(form: Form[RepresentativeDetails] = form): Html =
-    representative_details(appConfig, form)(fakeRequest, messages, countries)
+    representative_details(appConfig, form, countries)(fakeRequest, messages)
 
   "Representative Details View" should {
 

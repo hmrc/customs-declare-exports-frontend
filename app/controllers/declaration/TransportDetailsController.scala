@@ -29,6 +29,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.Countries.allCountries
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.transport_details
@@ -44,19 +45,17 @@ class TransportDetailsController @Inject()(
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countries = services.Countries.allCountries
-
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[TransportDetails](cacheId, TransportDetails.formId)
-      .map(data => Ok(transport_details(data.fold(form)(form.fill(_)))))
+      .map(data => Ok(transport_details(data.fold(form)(form.fill(_)), allCountries)))
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transport_details(formWithErrors))),
+        (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transport_details(formWithErrors, allCountries))),
         transportDetails =>
           customsCacheService
             .cache[TransportDetails](cacheId, TransportDetails.formId, transportDetails)

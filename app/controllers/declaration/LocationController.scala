@@ -24,6 +24,7 @@ import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.Countries.allCountries
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.goods_location
@@ -40,12 +41,10 @@ class LocationController @Inject()(
     extends FrontendController(mcc) with I18nSupport {
   import forms.declaration.GoodsLocation._
 
-  implicit val countries = services.Countries.allCountries
-
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[GoodsLocation](cacheId, formId).map {
-      case Some(data) => Ok(goods_location(appConfig, form.fill(data)))
-      case _          => Ok(goods_location(appConfig, form))
+      case Some(data) => Ok(goods_location(appConfig, form.fill(data), allCountries))
+      case _          => Ok(goods_location(appConfig, form, allCountries))
     }
   }
 
@@ -54,7 +53,7 @@ class LocationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[GoodsLocation]) =>
-          Future.successful(BadRequest(goods_location(appConfig, formWithErrors))),
+          Future.successful(BadRequest(goods_location(appConfig, formWithErrors, allCountries))),
         form =>
           customsCacheService.cache[GoodsLocation](cacheId, formId, form).map { _ =>
             Redirect(controllers.declaration.routes.OfficeOfExitController.displayForm())
