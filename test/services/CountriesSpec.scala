@@ -18,6 +18,7 @@ package services
 
 import base.CustomExportsBaseSpec
 import services.Countries.allCountries
+import services.model.Country
 
 class CountriesSpec extends CustomExportsBaseSpec {
 

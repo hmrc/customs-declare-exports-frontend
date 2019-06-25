@@ -16,8 +16,10 @@
 
 package services.model
 
-case class AutoCompleteItem(label: String, value: String)
+import play.api.libs.json.Json
 
-object AutoCompleteItem {
-  def from(countries: List[Country]): List[AutoCompleteItem] = countries map (c => AutoCompleteItem(c.countryName, c.countryCode))
+case object Country {
+  implicit val formats = Json.format[Country]
 }
+
+case class Country(countryName: String, countryCode: String)

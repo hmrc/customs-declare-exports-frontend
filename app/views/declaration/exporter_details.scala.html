@@ -17,7 +17,7 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.ExporterDetails
-@import services.Country
+@import services.model.Country
 @import uk.gov.hmrc.play.views.html._
 
 @(appConfig: AppConfig, form: Form[ExporterDetails])(implicit request: Request[_], messages: Messages, countries: List[Country])

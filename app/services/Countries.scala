@@ -17,13 +17,7 @@
 package services
 
 import play.api.libs.json._
-import services.model.AutoCompleteItem
-
-case class Country(countryName: String, countryCode: String)
-
-case object Country {
-  implicit val formats = Json.format[Country]
-}
+import services.model.Country
 
 object Countries {
 

@@ -19,20 +19,17 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.goodsItemCacheId
-import controllers.util._
-import controllers.util.MultipleItemsHelper
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
+import controllers.util.{MultipleItemsHelper, _}
 import forms.declaration.AdditionalFiscalReference.form
 import forms.declaration.AdditionalFiscalReferencesData._
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.countries.Countries
-import services.model.AutoCompleteItem
-import services.{Country, CustomsCacheService}
+import services.{Countries, CustomsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.additional_fiscal_references
 
@@ -41,7 +38,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalFiscalReferencesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  countries: Countries,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents
@@ -50,8 +46,8 @@ class AdditionalFiscalReferencesController @Inject()(
   
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[AdditionalFiscalReferencesData](goodsItemCacheId, formId).map {
-      case Some(data) => Ok(additional_fiscal_references(form, countries.all, data.references))
-      case _          => Ok(additional_fiscal_references(form, countries.all))
+      case Some(data) => Ok(additional_fiscal_references(form, Countries.allCountries, data.references))
+      case _          => Ok(additional_fiscal_references(form, Countries.allCountries))
     }
   }
 
@@ -122,5 +118,5 @@ class AdditionalFiscalReferencesController @Inject()(
 
   private def badRequest(formWithErrors: Form[AdditionalFiscalReference], references: Seq[AdditionalFiscalReference])(
     implicit request: JourneyRequest[_]
-  ): Result = BadRequest(additional_fiscal_references(formWithErrors, countries.all, references))
+  ): Result = BadRequest(additional_fiscal_references(formWithErrors, Countries.allCountries, references))
 }

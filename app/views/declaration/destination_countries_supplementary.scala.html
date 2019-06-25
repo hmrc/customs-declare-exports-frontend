@@ -19,9 +19,7 @@
 @import forms.declaration.destinationCountries.DestinationCountriesSupplementary
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
-@import services.Country
-
-@import services.model.AutoCompleteItem
+@import services.model.{AutoCompleteItem, Country}
 @(form: Form[DestinationCountriesSupplementary], countries: List[Country])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(

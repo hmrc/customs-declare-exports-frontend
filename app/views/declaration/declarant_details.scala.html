@@ -17,10 +17,10 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.DeclarantDetails
-@import services.Country
 @import uk.gov.hmrc.play.views.html._
 @import forms.Choice.AllowedChoiceValues._
 @import models.requests.JourneyRequest
+@import services.model.Country
 
 @(appConfig: AppConfig, form: Form[DeclarantDetails])(implicit request: JourneyRequest[_], messages: Messages, countries: List[Country])
 

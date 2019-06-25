@@ -18,9 +18,7 @@
 @import controllers.declaration.routes._
 @import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 @import uk.gov.hmrc.play.views.html._
-@import services.model.AutoCompleteItem
-
-@import services.Country
+@import services.model.{AutoCompleteItem, Country}
 @(form: Form[AdditionalFiscalReference], countries: List[Country], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
