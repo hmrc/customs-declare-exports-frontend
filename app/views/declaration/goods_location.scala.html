@@ -17,8 +17,9 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.GoodsLocation
-@import services.model.Country
 @import uk.gov.hmrc.play.views.html._
+@import services.model.AutoCompleteItem
+@import services.Countries
 
 @(appConfig: AppConfig, form: Form[GoodsLocation])(implicit request: Request[_], messages: Messages)
 
@@ -76,19 +77,22 @@
                 label = messages("supplementary.goodsLocation.postCode"),
                 labelClass = Some("bold-small")
             )
-
-            @components.input_text_autocomplete(form)(
-                field = form("country"),
-                label = messages("supplementary.address.country"),
-                'autocomplete -> "off",
-                '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
-                'spellcheck -> "false",
-                'ariaautocomplete -> "list",
-                'ariahaspopup -> "true",
-                'ariaowns -> "suggestions-list",
-                'ariaactivedescendant -> "true",
-                'otherErrorFields -> Seq("countryCode")
-            )
+           
+            @components.autocomplete_field(
+                form("country"),
+                "supplementary.address.country",
+                   None,
+                   messages("declaration.destinationCountries.countriesOfRouting.empty"),
+                   AutoCompleteItem.from(Countries.allCountries),
+                   'autocomplete -> "off",
+                   '_inputClass -> "form-control form-control--block",
+                   'spellcheck -> "false",
+                   'ariaautocomplete -> "list",
+                   'ariahaspopup -> "true",
+                   'ariaowns -> "suggestions-list",
+                   'ariaactivedescendant -> "true",
+                   'otherErrorFields -> Seq("countryCode")
+               )
 
             @components.submit_button()
         }
