@@ -15,6 +15,7 @@
  */
 
 package services
+
 import forms.ChoiceSpec.supplementaryChoice
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
 import models.declaration.SupplementaryDeclarationDataSpec
