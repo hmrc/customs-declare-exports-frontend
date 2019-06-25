@@ -27,6 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.carrier_details
+import services.Countries.allCountries
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,12 +42,10 @@ class CarrierDetailsPageController @Inject()(
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countries = services.Countries.allCountries
-
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[CarrierDetails](cacheId, CarrierDetails.id).map {
-      case Some(data) => Ok(carrier_details(CarrierDetails.form.fill(data)))
-      case _          => Ok(carrier_details(CarrierDetails.form))
+      case Some(data) => Ok(carrier_details(CarrierDetails.form.fill(data), allCountries))
+      case _          => Ok(carrier_details(CarrierDetails.form, allCountries))
     }
   }
 
@@ -54,7 +53,7 @@ class CarrierDetailsPageController @Inject()(
     CarrierDetails.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrier_details(formWithErrors))),
+        (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrier_details(formWithErrors, allCountries))),
         form =>
           customsCacheService.cache[CarrierDetails](cacheId, CarrierDetails.id, form).map { _ =>
             Redirect(controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm())

@@ -29,6 +29,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.declarant_details
 
 import scala.concurrent.{ExecutionContext, Future}
+import services.Countries.allCountries
 
 class DeclarantDetailsPageController @Inject()(
   appConfig: AppConfig,
@@ -39,12 +40,10 @@ class DeclarantDetailsPageController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
-  implicit val countries = services.Countries.allCountries
-
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[DeclarantDetails](cacheId, DeclarantDetails.id).map {
-      case Some(data) => Ok(declarant_details(appConfig, DeclarantDetails.form.fill(data)))
-      case _          => Ok(declarant_details(appConfig, DeclarantDetails.form))
+      case Some(data) => Ok(declarant_details(appConfig, DeclarantDetails.form.fill(data), allCountries))
+      case _          => Ok(declarant_details(appConfig, DeclarantDetails.form, allCountries))
     }
   }
 
@@ -53,7 +52,7 @@ class DeclarantDetailsPageController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[DeclarantDetails]) =>
-          Future.successful(BadRequest(declarant_details(appConfig, formWithErrors))),
+          Future.successful(BadRequest(declarant_details(appConfig, formWithErrors, allCountries))),
         form =>
           customsCacheService.cache[DeclarantDetails](cacheId, DeclarantDetails.id, form).map { _ =>
             Redirect(

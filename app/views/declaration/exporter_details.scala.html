@@ -20,7 +20,7 @@
 @import services.model.Country
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[ExporterDetails])(implicit request: Request[_], messages: Messages, countries: List[Country])
+@(appConfig: AppConfig, form: Form[ExporterDetails], countries: List[Country])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.consignor.title"),
@@ -48,7 +48,7 @@
 
             <p>Or</p>
 
-            @components.address(form, "details.address", Some(messages("supplementary.consignor.address.info")))
+            @components.address(form, countries, "details.address", Some(messages("supplementary.consignor.address.info")))
         }
 
         @components.submit_button()

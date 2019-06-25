@@ -22,7 +22,7 @@
 @import models.requests.JourneyRequest
 @import services.model.Country
 
-@(appConfig: AppConfig, form: Form[DeclarantDetails])(implicit request: JourneyRequest[_], messages: Messages, countries: List[Country])
+@(appConfig: AppConfig, form: Form[DeclarantDetails], countries: List[Country])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.declarant.title"),
@@ -51,7 +51,7 @@
 
             <p>Or</p>
 
-            @components.address(form, "details.address", Some(messages("supplementary.declarant.address.info")))
+            @components.address(form, countries, "details.address", Some(messages("supplementary.declarant.address.info")))
         }
 
         @components.submit_button()
