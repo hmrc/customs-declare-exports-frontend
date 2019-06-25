@@ -16,8 +16,12 @@
 
 package controllers
 
+import java.time.LocalDateTime
+import java.util.UUID
+
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.declaration.{ModelCacheable, SessionIdAware}
 import controllers.util.CacheIdGenerator.eoriCacheId
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
@@ -28,23 +32,27 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.choice_page
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ChoiceController @Inject()(
-  authenticate: AuthAction,
-  customsCacheService: CustomsCacheService,
-  errorHandler: ErrorHandler,
-  mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+                                  authenticate: AuthAction,
+                                  customsCacheService: CustomsCacheService,
+                                  exportsCacheService: ExportsCacheService,
+                                  errorHandler: ErrorHandler,
+                                  mcc: MessagesControllerComponents
+                                )(implicit ec: ExecutionContext, appConfig: AppConfig)
+  extends {
+    val cacheService = exportsCacheService
+  } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, choiceId).map {
       case Some(data) => Ok(choice_page(Choice.form().fill(data)))
-      case _          => Ok(choice_page(Choice.form()))
+      case _ => Ok(choice_page(Choice.form()))
     }
   }
 
@@ -57,6 +65,11 @@ class ChoiceController @Inject()(
           customsCacheService.cache[Choice](eoriCacheId, choiceId, validChoice).map { _ =>
             validChoice.value match {
               case SupplementaryDec | StandardDec =>
+
+                val createdDateTime = LocalDateTime.now
+                val model = ExportsCacheModel(authenticatedSessionId, UUID.randomUUID().toString, createdDateTime, createdDateTime, validChoice.value)
+                exportsCacheService.update(authenticatedSessionId, model)
+
                 Redirect(controllers.declaration.routes.DispatchLocationPageController.displayPage())
               case CancelDec =>
                 Redirect(controllers.routes.CancelDeclarationController.displayForm())
@@ -65,7 +78,9 @@ class ChoiceController @Inject()(
               case _ =>
                 Redirect(controllers.routes.ChoiceController.displayChoiceForm())
             }
-        }
+          }
       )
   }
+
+
 }

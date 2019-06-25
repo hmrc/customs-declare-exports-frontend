@@ -31,6 +31,7 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.procedure_codes
@@ -38,14 +39,15 @@ import views.html.declaration.procedure_codes
 import scala.concurrent.{ExecutionContext, Future}
 
 class ProcedureCodesPageController @Inject()(
-  appConfig: AppConfig,
-  authenticate: AuthAction,
-  journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+                                              appConfig: AppConfig,
+                                              authenticate: AuthAction,
+                                              journeyType: JourneyAction,
+                                              errorHandler: ErrorHandler,
+                                              customsCacheService: CustomsCacheService,
+                                              exportsCacheService: ExportsCacheService,
+                                              mcc: MessagesControllerComponents
+                                            )(implicit ec: ExecutionContext)
+  extends {val cacheService = exportsCacheService} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ProcedureCodesData](goodsItemCacheId, formId).map {
@@ -58,7 +60,7 @@ class ProcedureCodesPageController @Inject()(
   def submitProcedureCodes(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest()
 
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
     val cachedData = customsCacheService
       .fetchAndGetEntry[ProcedureCodesData](goodsItemCacheId, formId)
@@ -71,20 +73,30 @@ class ProcedureCodesPageController @Inject()(
             Future.successful(BadRequest(procedure_codes(appConfig, formWithErrors, cache.additionalProcedureCodes))),
           validForm => {
             actionTypeOpt match {
-              case Some(Add)             => addAnotherCodeHandler(validForm, cache)
-              case Some(SaveAndContinue) => saveAndContinueHandler(validForm, cache)
-              case Some(Remove(values))  => removeCodeHandler(retrieveProcedureCode(values), cache)
-              case _                     => errorHandler.displayErrorPage()
+              case Some(Add) => addAnotherCodeHandler(validForm, cache)
+              case Some(SaveAndContinue) => {
+                updateCache(journeySessionId, validForm)
+                saveAndContinueHandler(validForm, cache)
+              }
+              case Some(Remove(values)) => removeCodeHandler(retrieveProcedureCode(values), cache)
+              case _ => errorHandler.displayErrorPage()
             }
           }
         )
     }
   }
 
+  private def updateCache(sessionId: String, procedureCodes: ProcedureCodes): Future[Either[String, ExportsCacheModel]] = {
+    updateHeaderLevelCache(sessionId, model => {
+      val item = model.items.head.copy(procedureCodes = Some(procedureCodes))
+      exportsCacheService.update(sessionId, model.copy(items = List(item)))
+    })
+  }
+
   private def addAnotherCodeHandler(
-    userInput: ProcedureCodes,
-    cachedData: ProcedureCodesData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+                                     userInput: ProcedureCodes,
+                                     cachedData: ProcedureCodesData
+                                   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput.additionalProcedureCode, cachedData.additionalProcedureCodes) match {
       case (_, codes) if codes.length >= limitOfCodes =>
         handleErrorPage(
@@ -116,9 +128,9 @@ class ProcedureCodesPageController @Inject()(
     }
 
   private def removeCodeHandler(
-    code: String,
-    cachedData: ProcedureCodesData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+                                 code: String,
+                                 cachedData: ProcedureCodesData
+                               )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     if (cachedData.containsAdditionalCode(code)) {
       val updatedCache =
         cachedData.copy(additionalProcedureCodes = cachedData.additionalProcedureCodes.filterNot(_ == code))
@@ -130,9 +142,9 @@ class ProcedureCodesPageController @Inject()(
 
   //scalastyle:off method.length
   private def saveAndContinueHandler(
-    userInput: ProcedureCodes,
-    cachedData: ProcedureCodesData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+                                      userInput: ProcedureCodes,
+                                      cachedData: ProcedureCodesData
+                                    )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.additionalProcedureCodes) match {
       case (procedureCode, Seq()) =>
         procedureCode match {
@@ -189,15 +201,16 @@ class ProcedureCodesPageController @Inject()(
             }
         }
     }
+
   //scalastyle:on method.length
 
   private def retrieveProcedureCode(values: Seq[String]): String = values.headOption.getOrElse("")
 
   private def handleErrorPage(
-    fieldWithError: Seq[(String, String)],
-    userInput: ProcedureCodes,
-    additionalProcedureCodes: Seq[String]
-  )(implicit request: Request[_]): Future[Result] = {
+                               fieldWithError: Seq[(String, String)],
+                               userInput: ProcedureCodes,
+                               additionalProcedureCodes: Seq[String]
+                             )(implicit request: Request[_]): Future[Result] = {
     val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
 
     val formWithError = form.fill(userInput).copy(errors = updatedErrors)
