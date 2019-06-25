@@ -22,7 +22,7 @@
 
 @import services.model.AutoCompleteItem
 @import services.Country
-@(form: Form[DestinationCountriesStandard], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages, countries: List[Country], appConfig: AppConfig)
+@(form: Form[DestinationCountriesStandard], countries: List[Country], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("declaration.destinationCountries.title"),
