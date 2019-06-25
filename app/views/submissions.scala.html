@@ -18,9 +18,9 @@
 @import java.time.format.DateTimeFormatter
 
 @import config.AppConfig
-@import models.declaration.submissions.{Submission, SubmissionRequest, SubmissionStatus}
-
-@(appConfig: AppConfig, submissions: Seq[(Submission, Int, SubmissionStatus)])(implicit request: Request[_], messages: Messages)
+@import models.declaration.notifications.Notification
+@import models.declaration.submissions.{Submission, SubmissionRequest, SubmissionStatus, UnknownStatus}
+@(appConfig: AppConfig, submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("submissions.title"),
@@ -40,16 +40,16 @@
                 <th class="table-cell">@messages("submissions.noOfNotifications")</th>
             </tr>
 
-            @for( (submission, notificationsAmount, status) <- submissions ){
+            @for( (submission, notifications) <- submissions ){
                 <tr class="table-row">
                     <td class="table-cell">@submission.ducr</td>
                     <td class="table-cell">@submission.lrn</td>
                     <td class="table-cell">@submission.mrn.getOrElse("")</td>
                     <td class="table-cell">@{submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(_))}</td>
-                    <td class="table-cell">@status</td>
+                    <td class="table-cell">@{notifications.headOption.map(n => SubmissionStatus.retrieve(n.conversationId, n.nameCode)).getOrElse(UnknownStatus)}</td>
                     <td class="table-cell">
                         <a @if(submission.mrn.isDefined) {href="/customs-declare-exports/notifications/@submission.mrn.get"}>
-                            @notificationsAmount
+                            @{notifications.length}
                         </a>
                     </td>
                 </tr>

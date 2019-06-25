@@ -19,8 +19,8 @@ package controllers
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
+import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
-import models.declaration.submissions.{SubmissionStatus, UnknownStatus}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -39,15 +39,10 @@ class SubmissionsController @Inject()(
     for {
       submissions <- customsDeclareExportsConnector.fetchSubmissions()
       notifications <- customsDeclareExportsConnector.fetchNotifications()
-      result = submissions.map { submission =>
-        val conversationIds = submission.actions.map(_.conversationId)
-        val notificationsAmount =
-          notifications.count(notification => conversationIds.contains(notification.conversationId))
-        val submissionStatus = notifications.filter(n => conversationIds.contains(n.conversationId)).sorted.reverse.headOption.map(n => SubmissionStatus.retrieve(n.conversationId, n.nameCode))
-        (submission, notificationsAmount, submissionStatus.getOrElse(UnknownStatus))
-      }
 
-    } yield Ok(views.html.submissions(appConfig, result))
+      result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
+
+    } yield Ok(views.html.submissions(appConfig, result.toSeq))
   }
 
 }
