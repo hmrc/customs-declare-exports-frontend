@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.exporter_details
 
@@ -35,9 +36,12 @@ class ExporterDetailsPageController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ExporterDetails](cacheId, ExporterDetails.id).map {
@@ -52,10 +56,18 @@ class ExporterDetailsPageController @Inject()(
       .fold(
         (formWithErrors: Form[ExporterDetails]) =>
           Future.successful(BadRequest(exporter_details(appConfig, formWithErrors))),
-        form =>
+        form => {
+          updateCache(journeySessionId, form)
+
           customsCacheService.cache[ExporterDetails](cacheId, ExporterDetails.id, form).map { _ =>
             Redirect(controllers.declaration.routes.ConsigneeDetailsPageController.displayForm())
+          }
         }
       )
   }
+
+  private def updateCache(sessionId: String, formData: ExporterDetails): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(sessionId, model => {
+      exportsCacheService.update(sessionId, model.copy(exporterDetails = Some(formData)))
+    })
 }

@@ -159,6 +159,7 @@ POST        /additional-fiscal-references        controllers.declaration.Additio
 # Items Summary
 
 GET         /export-items                        controllers.declaration.ItemsSummaryController.displayForm()
+POST        /export-items                        controllers.declaration.ItemsSummaryController.addItem()
 
 # Border Transport
 
