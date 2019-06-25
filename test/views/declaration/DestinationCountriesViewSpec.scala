@@ -208,19 +208,19 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
     "display data for both countries in inputs" in {
 
       val view =
-        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("UA", "PL")))
+        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("GB", "PL")))
 
-      getSelectedValue(view, "countryOfDispatch") must be("UA")
-      getSelectedValue(view, "countryOfDestination") must be("PL")
+      getSelectedValue(view, "countryOfDispatch") mustBe "GB"
+      getSelectedValue(view, "countryOfDestination") mustBe "PL"
     }
 
     "display data only for dispatch country input" in {
 
       val view =
-        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("UA", "")))
+        createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("GB", "")))
 
-      getSelectedValue(view, "countryOfDispatch") must be("UA")
-      getSelectedValue(view, "countryOfDestination") must be("")
+      getSelectedValue(view, "countryOfDispatch") mustBe "GB"
+      getSelectedValue(view, "countryOfDestination") mustBe ""
     }
 
     "display data only for destination country input" in {
@@ -228,8 +228,8 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
       val view =
         createView(DestinationCountries.supplementaryForm.fill(DestinationCountriesSupplementary("", "PL")))
 
-      getSelectedValue(view, "countryOfDispatch") must be("")
-      getSelectedValue(view, "countryOfDestination") must be("PL")
+      getSelectedValue(view, "countryOfDispatch") mustBe ""
+      getSelectedValue(view, "countryOfDestination") mustBe "PL"
     }
   }
 }

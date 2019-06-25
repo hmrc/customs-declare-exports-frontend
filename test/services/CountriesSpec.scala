@@ -23,12 +23,10 @@ import services.model.Country
 class CountriesSpec extends CustomExportsBaseSpec {
 
   "Countries" should {
+    
     "give all countries with codes in alphabetical order of country name with filtering according to permitted MDG values" in {
-      allCountries.contains(Country("Afghanistan", "AF")) must be(true)
-      allCountries.contains(Country("Curaçao", "CW")) must be(true)
-      allCountries.contains(Country("Réunion", "RE")) must be(true)
-      allCountries.contains(Country("Zimbabwe", "ZW")) must be(true)
-      allCountries.contains(Country("Åland Islands", "AX")) must be(true)
+      val threeCountries = allCountries.filter(c => c.countryName == "Afghanistan" || c.countryName == "Mali" || c.countryName == "Suriname")
+      threeCountries mustBe List(Country("Afghanistan", "AF"), Country("Mali", "ML"), Country("Suriname", "SR"))
     }
   }
 }
