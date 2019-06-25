@@ -39,7 +39,6 @@
 
         <div id="country-of-dispatch-field" class="inline-block form-group">
             @components.autocomplete_field(
-                form,
                 form("countryOfDispatch"),
                 "declaration.destinationCountries.countryOfDispatch",
                 Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
@@ -50,7 +49,6 @@
 
         <div id="country-of-destination-field" class="inline-block form-group">
             @components.autocomplete_field(
-                form,
                 form("countryOfDestination"),
                 "declaration.destinationCountries.countryOfDestination",
                 Some(messages("declaration.destinationCountries.countryOfDestination.hint")),

@@ -101,8 +101,8 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
       val view = createView()
 
-      getElementById(view, "details_address_country-label").text() must be(messages(country))
-      getElementById(view, "details.address.country").attr("value") must be("")
+      getElementById(view, "details.address.country-label").text() mustBe "Country"
+      getElementById(view, "details.address.country").attr("value") mustBe ""
     }
 
     "display 'Back' button that links to 'Consignee Details' page" in {
