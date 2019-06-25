@@ -12,6 +12,8 @@ import uk.gov.hmrc.{SbtArtifactory, SbtAutoBuildPlugin}
 
 val appName = "customs-declare-exports-frontend"
 
+PlayKeys.devSettings := Seq("play.server.http.port" -> "6791")
+
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory, SbtWeb)
   .settings(
