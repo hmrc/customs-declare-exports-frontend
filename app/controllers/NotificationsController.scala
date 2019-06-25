@@ -35,14 +35,14 @@ class NotificationsController @Inject()(
 
   def listOfNotifications(): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.fetchNotifications().map { results =>
-      Ok(views.html.notifications(request.user.eori, results.reverse))
+      Ok(views.html.notifications(request.user.eori, results.sorted.reverse))
     }
   }
 
   def listOfNotificationsForSubmission(mrn: String): Action[AnyContent] =
     authenticate.async { implicit request =>
       customsDeclareExportsConnector.fetchNotificationsByMrn(mrn).map { results =>
-        Ok(views.html.submission_notifications(results.reverse))
+        Ok(views.html.submission_notifications(results.sorted.reverse))
       }
     }
 
