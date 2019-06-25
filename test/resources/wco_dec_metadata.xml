@@ -89,6 +89,14 @@
             <ns3:Destination>
                 <ns3:CountryCode>PL</ns3:CountryCode>
             </ns3:Destination>
+            <ns3:DomesticDutyTaxParty>
+                <ns3:ID>PL12345</ns3:ID>
+                <ns3:RoleCode>FR1</ns3:RoleCode>
+            </ns3:DomesticDutyTaxParty>
+            <ns3:DomesticDutyTaxParty>
+                <ns3:ID>FR54321</ns3:ID>
+                <ns3:RoleCode>FR1</ns3:RoleCode>
+            </ns3:DomesticDutyTaxParty>
             <ns3:ExportCountry>
                 <ns3:ID>PL</ns3:ID>
             </ns3:ExportCountry>

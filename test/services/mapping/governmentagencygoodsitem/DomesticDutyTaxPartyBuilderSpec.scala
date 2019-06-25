@@ -16,32 +16,53 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import forms.declaration
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.DomesticDutyTaxParty
 
 class DomesticDutyTaxPartyBuilderSpec
     extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GovernmentAgencyGoodsItemData {
 
   "DomesticDutyTaxPartyBuilder" should {
-    "map correctly if cache contain Additional Fiscal References" in {
+    "map correctly if cache contains Additional Fiscal References" in {
       implicit val cacheMap: CacheMap =
         CacheMap(
           "CacheID",
           Map(
             AdditionalFiscalReferencesData.formId -> Json
-              .toJson(declaration.AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
+              .toJson(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
           )
         )
 
-      val domesticDutyTaxParties: java.util.List[GoodsShipment.DomesticDutyTaxParty] = DomesticDutyTaxPartyBuilder.build
+      val domesticDutyTaxParties: java.util.List[DomesticDutyTaxParty] = DomesticDutyTaxPartyBuilder.build
       domesticDutyTaxParties.size() should be(1)
       domesticDutyTaxParties.get(0).getID.getValue should be("PL12345")
       domesticDutyTaxParties.get(0).getRoleCode.getValue should be("FR1")
+    }
 
+    "map correctly if cache contains more than one Additional Fiscal References" in {
+      implicit val cacheMap: CacheMap =
+        CacheMap(
+          "CacheID",
+          Map(
+            AdditionalFiscalReferencesData.formId -> Json.toJson(
+              AdditionalFiscalReferencesData(
+                Seq(AdditionalFiscalReference("PL", "12345"), AdditionalFiscalReference("FR", "54321"))
+              )
+            )
+          )
+        )
+
+      val domesticDutyTaxParties: java.util.List[DomesticDutyTaxParty] = DomesticDutyTaxPartyBuilder.build
+
+      domesticDutyTaxParties.size() should be(2)
+      domesticDutyTaxParties.get(0).getID.getValue should be("PL12345")
+      domesticDutyTaxParties.get(0).getRoleCode.getValue should be("FR1")
+      domesticDutyTaxParties.get(1).getID.getValue should be("FR54321")
+      domesticDutyTaxParties.get(1).getRoleCode.getValue should be("FR1")
     }
 
     "should not create list of DomesticDutyTaxParty if user doesn't add any Additional Fiscal References" in {

@@ -16,7 +16,7 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import forms.declaration.AdditionalFiscalReferencesData
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.DomesticDutyTaxParty
 import wco.datamodel.wco.declaration_ds.dms._2.{
@@ -31,24 +31,24 @@ object DomesticDutyTaxPartyBuilder {
   def build(implicit cacheMap: CacheMap): java.util.List[DomesticDutyTaxParty] =
     cacheMap
       .getEntry[AdditionalFiscalReferencesData](AdditionalFiscalReferencesData.formId)
-      .map(references => createDomesticDutyTaxParty(references))
+      .map(referencesData => referencesData.references.map(ref => createDomesticDutyTaxParty(ref)))
+      .getOrElse(Seq.empty)
       .toList
       .asJava
 
   def createDomesticDutyTaxParty(
-    referencesData: AdditionalFiscalReferencesData
+    additionalFiscalReference: AdditionalFiscalReference
   )(implicit cacheMap: CacheMap): DomesticDutyTaxParty = {
 
     val domesticDutyTaxParty = new DomesticDutyTaxParty
 
-    referencesData.references.foreach { fiscalReference =>
-      val roleCodeType = new DomesticDutyTaxPartyRoleCodeType
-      val referenceIdType = new DomesticDutyTaxPartyIdentificationIDType
-      roleCodeType.setValue("FR1")
-      referenceIdType.setValue(fiscalReference.country + fiscalReference.reference)
-      domesticDutyTaxParty.setRoleCode(roleCodeType)
-      domesticDutyTaxParty.setID(referenceIdType)
-    }
+    val roleCodeType = new DomesticDutyTaxPartyRoleCodeType
+    val referenceIdType = new DomesticDutyTaxPartyIdentificationIDType
+
+    roleCodeType.setValue("FR1")
+    referenceIdType.setValue(additionalFiscalReference.country + additionalFiscalReference.reference)
+    domesticDutyTaxParty.setRoleCode(roleCodeType)
+    domesticDutyTaxParty.setID(referenceIdType)
 
     domesticDutyTaxParty
   }
