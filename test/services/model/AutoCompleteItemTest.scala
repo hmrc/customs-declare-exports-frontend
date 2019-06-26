@@ -21,8 +21,14 @@ import uk.gov.hmrc.play.test.UnitSpec
 class AutoCompleteItemTest extends UnitSpec {
 
   "AutoCompleteItemTest" should {
-    "Map from Country" in {
-      AutoCompleteItem.from(List(Country("name", "code"))) shouldBe List(AutoCompleteItem("name", "code"))
+    "Map from Country" when {
+      "Value is default" in {
+        AutoCompleteItem.from(List(Country("name", "code"))) shouldBe List(AutoCompleteItem("name", "name"))
+      }
+
+      "Value is specified" in {
+        AutoCompleteItem.from(List(Country("name", "code")), _.countryCode) shouldBe List(AutoCompleteItem("name", "code"))
+      }
     }
   }
 

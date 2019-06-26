@@ -41,7 +41,7 @@
                 "declaration.destinationCountries.countryOfDispatch",
                 Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
                 messages("declaration.destinationCountries.countryOfDispatch.empty"),
-                AutoCompleteItem.from(Countries.allCountries)
+                AutoCompleteItem.from(Countries.allCountries, _.countryCode)
             )
         </div>
 
@@ -57,7 +57,7 @@
                 "declaration.destinationCountries.countriesOfRouting",
                 None,
                 messages("declaration.destinationCountries.countriesOfRouting.empty"),
-                AutoCompleteItem.from(Countries.allCountries)
+                AutoCompleteItem.from(Countries.allCountries, _.countryCode)
             )
         </div>
 
@@ -75,7 +75,7 @@
                 "declaration.destinationCountries.countryOfDestination",
                 Some(messages("declaration.destinationCountries.countryOfDestination.hint")),
                 messages("declaration.destinationCountries.countryOfDestination.empty"),
-                AutoCompleteItem.from(Countries.allCountries)
+                AutoCompleteItem.from(Countries.allCountries, _.countryCode)
             )
         </div>
 
