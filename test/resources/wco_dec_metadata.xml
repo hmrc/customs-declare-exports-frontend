@@ -104,13 +104,13 @@
                 <ns3:SequenceNumeric>1</ns3:SequenceNumeric>
                 <ns3:StatisticalValueAmount currencyID="GBP">100</ns3:StatisticalValueAmount>
                 <ns3:AdditionalDocument>
-                    <ns3:CategoryCode>1</ns3:CategoryCode>
+                    <ns3:CategoryCode>C</ns3:CategoryCode>
                     <ns3:EffectiveDateTime>
                         <ns2:DateTimeString formatCode="102">20170101</ns2:DateTimeString>
                     </ns3:EffectiveDateTime>
                     <ns3:ID>SYSUYSU12324554</ns3:ID>
                     <ns3:Name>PENDINGReason</ns3:Name>
-                    <ns3:TypeCode>A</ns3:TypeCode>
+                    <ns3:TypeCode>501</ns3:TypeCode>
                     <ns3:LPCOExemptionCode>PND</ns3:LPCOExemptionCode>
                     <ns3:Submitter>
                         <ns3:Name>issuingAuthorityName</ns3:Name>

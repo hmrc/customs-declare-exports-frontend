@@ -19,7 +19,7 @@ package controllers.declaration
 import base.CSRFUtil._
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice
-import forms.Choice.{AllowedChoiceValues, choiceId}
+import forms.Choice.{choiceId, AllowedChoiceValues}
 import forms.declaration.TransportDetails
 import generators.Generators
 import models.requests.JourneyRequest

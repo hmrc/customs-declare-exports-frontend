@@ -28,7 +28,7 @@ trait GovernmentAgencyGoodsItemData {
   //Document Produced Data
   val documentQuantity = BigDecimal(10)
   val dateOfValidity = Date(Some(25), Some(4), Some(2019))
-  val documentAndAdditionalDocumentTypeCode = "1A"
+  val documentAndAdditionalDocumentTypeCode = "C501"
 
   val documentIdentifier = "SYSUYSU"
   val documentPart = "12324554"

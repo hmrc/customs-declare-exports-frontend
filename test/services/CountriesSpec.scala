@@ -23,9 +23,11 @@ import services.model.Country
 class CountriesSpec extends CustomExportsBaseSpec {
 
   "Countries" should {
-    
+
     "give all countries with codes in alphabetical order of country name" in {
-      val threeCountries = allCountries.filter(c => c.countryName == "Afghanistan" || c.countryName == "Mayotte" || c.countryName == "Zimbabwe")
+      val threeCountries = allCountries.filter(
+        c => c.countryName == "Afghanistan" || c.countryName == "Mayotte" || c.countryName == "Zimbabwe"
+      )
       threeCountries mustBe List(Country("Afghanistan", "AF"), Country("Mayotte", "YT"), Country("Zimbabwe", "ZW"))
     }
   }

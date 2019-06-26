@@ -43,7 +43,7 @@ class AdditionalFiscalReferencesController @Inject()(
   mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
-  
+
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[AdditionalFiscalReferencesData](goodsItemCacheId, formId).map {
       case Some(data) => Ok(additional_fiscal_references(form, data.references))

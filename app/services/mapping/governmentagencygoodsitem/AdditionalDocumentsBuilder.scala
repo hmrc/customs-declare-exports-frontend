@@ -47,13 +47,13 @@ object AdditionalDocumentsBuilder {
 
     doc.categoryCode.foreach { categoryCode =>
       val additionalDocumentCategoryCodeType = new AdditionalDocumentCategoryCodeType
-      additionalDocumentCategoryCodeType.setValue(categoryCode.substring(0, 1))
+      additionalDocumentCategoryCodeType.setValue(categoryCode)
       additionalDocument.setCategoryCode(additionalDocumentCategoryCodeType)
     }
 
     doc.typeCode.foreach { typeCode =>
       val additionalDocumentTypeCodeType = new AdditionalDocumentTypeCodeType
-      additionalDocumentTypeCodeType.setValue(typeCode.substring(1))
+      additionalDocumentTypeCodeType.setValue(typeCode)
       additionalDocument.setTypeCode(additionalDocumentTypeCodeType)
     }
 

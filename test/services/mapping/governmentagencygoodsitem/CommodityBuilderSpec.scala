@@ -15,11 +15,11 @@
  */
 
 package services.mapping.governmentagencygoodsitem
+
 import models.declaration.governmentagencygoodsitem._
 import org.scalatest.{Matchers, WordSpec}
 
-class CommodityBuilderSpec
-    extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GovernmentAgencyGoodsItemData {
+class CommodityBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemData {
 
   "CommodityBuilder" should {
 
