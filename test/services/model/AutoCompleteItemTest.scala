@@ -27,7 +27,9 @@ class AutoCompleteItemTest extends UnitSpec {
       }
 
       "Value is specified" in {
-        AutoCompleteItem.from(List(Country("name", "code")), _.countryCode) shouldBe List(AutoCompleteItem("name", "code"))
+        AutoCompleteItem.from(List(Country("name", "code")), _.countryCode) shouldBe List(
+          AutoCompleteItem("name", "code")
+        )
       }
     }
   }

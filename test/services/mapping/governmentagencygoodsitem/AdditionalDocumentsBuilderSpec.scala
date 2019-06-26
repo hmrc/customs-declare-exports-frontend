@@ -19,8 +19,7 @@ package services.mapping.governmentagencygoodsitem
 import models.declaration.governmentagencygoodsitem._
 import org.scalatest.{Matchers, WordSpec}
 
-class AdditionalDocumentsBuilderSpec
-    extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GovernmentAgencyGoodsItemData {
+class AdditionalDocumentsBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemData {
   "AdditionalDocumentsBuilder" should {
     "map correctly when values are present" in {
 
@@ -31,11 +30,11 @@ class AdditionalDocumentsBuilderSpec
       val dateTimeString = DateTimeString("102", "20170304")
       val dateTimeElement = DateTimeElement(dateTimeString)
       val additionalDocument = GovernmentAgencyGoodsItemAdditionalDocument(
-        Some("123"),
+        Some("C"),
         Some(dateTimeElement),
         Some("123"),
         Some("PENDINGReason"),
-        Some("1A"),
+        Some("501"),
         Some("PENDING"),
         Some(submitter),
         Some(writeOff)
