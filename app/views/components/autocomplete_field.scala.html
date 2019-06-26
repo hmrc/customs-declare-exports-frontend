@@ -28,6 +28,11 @@ To avoid problems, we need to remove [] from field.
     field.name.replace("[]", "")
 }
 
+@fieldNameForJQuery = @{
+    fieldNameWithoutBrackets.replaceAll("\\.", """\\\\.""")
+}
+
+
 @elements = @{
     FieldElements(field.id, field, null, args.toMap, messages)
 }
@@ -44,15 +49,15 @@ To avoid problems, we need to remove [] from field.
 }
 
 <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function (event) {
-            $(function () {
-                $("#@(fieldNameWithoutBrackets)").combobox();
-                $("#toggle").on("click", function () {
-                    $("#@(fieldNameWithoutBrackets)").toggle();
-                });
+    document.addEventListener("DOMContentLoaded", function (event) {
+        $(function () {
+            $("#@(fieldNameForJQuery)").combobox();
+            $("#toggle").on("click", function () {
+                $("#@(fieldNameForJQuery)").toggle();
             });
-
         });
+
+    });
 </script>
 
 <div id="@fieldNameWithoutBrackets-autocomplete-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
