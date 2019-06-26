@@ -48,7 +48,7 @@
                 messages("declaration.additionalFiscalReferences.country"),
                 None,
                 messages("declaration.additionalFiscalReferences.country.empty"),
-                AutoCompleteItem.from(Countries.allCountries)
+                AutoCompleteItem.from(Countries.allCountries, _.countryCode)
             )
         </div>
 
