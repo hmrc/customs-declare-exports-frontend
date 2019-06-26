@@ -31,11 +31,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
   private val form: Form[DestinationCountriesSupplementary] = DestinationCountries.supplementaryForm
 
   private def createView(form: Form[DestinationCountriesSupplementary] = form): Html =
-    destination_countries_supplementary(form)(
-      fakeJourneyRequest("SMP"),
-      messages,
-      appConfig
-    )
+    destination_countries_supplementary(form)(fakeJourneyRequest("SMP"), messages, appConfig)
 
   "Destination Countries View" should {
 

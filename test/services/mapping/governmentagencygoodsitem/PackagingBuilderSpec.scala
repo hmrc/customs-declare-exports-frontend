@@ -20,8 +20,7 @@ import models.declaration.governmentagencygoodsitem.Packaging
 import org.scalatest.{Matchers, WordSpec}
 import services.GoodsItemCachingData
 
-class PackagingBuilderSpec
-    extends WordSpec with Matchers with GoodsItemCachingData {
+class PackagingBuilderSpec extends WordSpec with Matchers with GoodsItemCachingData {
 
   "PackageBuilder" should {
     "map correctly to wco Packaging" in {

@@ -35,11 +35,7 @@ import views.tags.ViewTest
 class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessages {
 
   def createView(form: Form[TransportDetails] = form): Html =
-    transport_details(form)(
-      journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec),
-      appConfig,
-      messages
-    )
+    transport_details(form)(journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec), appConfig, messages)
 
   "TransportDetails View" should {
 
@@ -87,20 +83,20 @@ trait TransportDetailsFields extends ViewSpec {
   val form: Form[TransportDetails] = TransportDetails.form()
 
   val meansOfTransportCrossingTheBorderNationality = autocomplete_field(
-             form("meansOfTransportCrossingTheBorderNationality"),
-             "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header",
-             None,
-             messages("declaration.destinationCountries.countriesOfRouting.empty"),
-             AutoCompleteItem.from(Countries.allCountries),
-             'autocomplete -> "off",
-             '_inputClass -> "form-control form-control--block",
-             'spellcheck -> "false",
-             'ariaautocomplete -> "list",
-             'ariahaspopup -> "true",
-             'ariaowns -> "suggestions-list",
-             'ariaactivedescendant -> "true",
-             'otherErrorFields -> Seq("countryCode")
-         ).body
+    form("meansOfTransportCrossingTheBorderNationality"),
+    "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header",
+    None,
+    messages("declaration.destinationCountries.countriesOfRouting.empty"),
+    AutoCompleteItem.from(Countries.allCountries),
+    'autocomplete -> "off",
+    '_inputClass -> "form-control form-control--block",
+    'spellcheck -> "false",
+    'ariaautocomplete -> "list",
+    'ariahaspopup -> "true",
+    'ariaowns -> "suggestions-list",
+    'ariaactivedescendant -> "true",
+    'otherErrorFields -> Seq("countryCode")
+  ).body
 
   val meansOfTransportCrossingTheBorderType = input_radio(
     field = form("meansOfTransportCrossingTheBorderType"),

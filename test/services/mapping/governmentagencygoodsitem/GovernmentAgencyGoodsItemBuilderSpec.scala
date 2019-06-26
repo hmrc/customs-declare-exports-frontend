@@ -25,8 +25,7 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
   GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
 }
 
-class GovernmentAgencyGoodsItemBuilderSpec
-    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData {
+class GovernmentAgencyGoodsItemBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemData {
 
   "GovernmentAgencyGoodsItemBuilder" should {
     "map to WCO model correctly " in {

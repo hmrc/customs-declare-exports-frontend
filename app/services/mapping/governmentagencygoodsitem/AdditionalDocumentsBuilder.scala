@@ -45,7 +45,6 @@ object AdditionalDocumentsBuilder {
   private def createAdditionalDocument(doc: GovernmentAgencyGoodsItemAdditionalDocument): AdditionalDocument = {
     val additionalDocument = new AdditionalDocument
 
-
     //TODO IT'S FIXED< CHECK TESTS AND ADD THIS CASE
     // CategoryCode and TypeCode - double check value inside, try with TypeCode C501
     doc.categoryCode.foreach { categoryCode =>
