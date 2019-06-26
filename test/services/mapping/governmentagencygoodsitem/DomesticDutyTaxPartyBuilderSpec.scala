@@ -24,7 +24,7 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.DomesticDutyTaxParty
 
 class DomesticDutyTaxPartyBuilderSpec
-    extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GovernmentAgencyGoodsItemData {
+    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData {
 
   "DomesticDutyTaxPartyBuilder" should {
     "map correctly if cache contains Additional Fiscal References" in {

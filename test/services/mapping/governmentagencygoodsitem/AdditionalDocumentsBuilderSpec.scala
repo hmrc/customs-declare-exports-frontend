@@ -20,7 +20,7 @@ import models.declaration.governmentagencygoodsitem._
 import org.scalatest.{Matchers, WordSpec}
 
 class AdditionalDocumentsBuilderSpec
-    extends WordSpec with Matchers with GovernmentAgencyGoodsItemMocks with GovernmentAgencyGoodsItemData {
+    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData {
   "AdditionalDocumentsBuilder" should {
     "map correctly when values are present" in {
 
