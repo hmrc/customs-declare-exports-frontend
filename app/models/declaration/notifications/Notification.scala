@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-package services.model
+package models.declaration.notifications
 
-import uk.gov.hmrc.play.test.UnitSpec
+import java.time.LocalDateTime
 
-class AutoCompleteItemTest extends UnitSpec {
+import play.api.libs.json.Json
 
-  "AutoCompleteItemTest" should {
-    "Map from Country" when {
-      "Value is default" in {
-        AutoCompleteItem.from(List(Country("name", "code"))) shouldBe List(AutoCompleteItem("name - code", "name"))
-      }
+case class Notification(
+  conversationId: String,
+  mrn: String,
+  dateTimeIssued: LocalDateTime,
+  functionCode: String,
+  nameCode: Option[String],
+  errors: Seq[NotificationError],
+  payload: String
+) extends Ordered[Notification] {
 
-      "Value is specified" in {
-        AutoCompleteItem.from(List(Country("name", "code")), _.countryCode) shouldBe List(
-          AutoCompleteItem("name - code", "code")
-        )
-      }
-    }
-  }
+  def compare(that: Notification): Int =
+    if (this.dateTimeIssued == that.dateTimeIssued) 0
+    else if (this.dateTimeIssued.isAfter(that.dateTimeIssued)) 1
+    else -1
+}
 
+object Notification {
+  implicit val format = Json.format[Notification]
 }

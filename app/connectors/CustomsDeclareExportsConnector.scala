@@ -19,6 +19,8 @@ package connectors
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models._
+import models.declaration.notifications.Notification
+import models.declaration.submissions.Submission
 import models.requests.CancellationStatus
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
@@ -57,14 +59,14 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
         response
       }
 
-  def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[DeclarationNotification]] =
-    httpClient.GET[Seq[DeclarationNotification]](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}")
+  def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
+    httpClient.GET[Seq[Notification]](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}")
 
-  def fetchNotificationsByConversationId(
-    conversationId: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[DeclarationNotification]] =
-    httpClient.GET[Seq[DeclarationNotification]](
-      s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissionNotifications}/$conversationId"
+  def fetchNotificationsByMrn(
+    mrn: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
+    httpClient.GET[Seq[Notification]](
+      s"${appConfig.customsDeclareExports}${appConfig.fetchSubmissionNotifications}/$mrn"
     )
 
   def fetchSubmissions()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Submission]] =

@@ -14,24 +14,12 @@
  * limitations under the License.
  */
 
-package services.model
+package models.declaration.notifications
 
-import uk.gov.hmrc.play.test.UnitSpec
+import play.api.libs.json.Json
 
-class AutoCompleteItemTest extends UnitSpec {
+case class NotificationError(validationCode: String, pointers: Seq[ErrorPointer])
 
-  "AutoCompleteItemTest" should {
-    "Map from Country" when {
-      "Value is default" in {
-        AutoCompleteItem.from(List(Country("name", "code"))) shouldBe List(AutoCompleteItem("name - code", "name"))
-      }
-
-      "Value is specified" in {
-        AutoCompleteItem.from(List(Country("name", "code")), _.countryCode) shouldBe List(
-          AutoCompleteItem("name - code", "code")
-        )
-      }
-    }
-  }
-
+object NotificationError {
+  implicit val format = Json.format[NotificationError]
 }

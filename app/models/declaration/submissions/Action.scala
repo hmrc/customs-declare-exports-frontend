@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package services.model
+package models.declaration.submissions
 
-import uk.gov.hmrc.play.test.UnitSpec
+import java.time.LocalDateTime
 
-class AutoCompleteItemTest extends UnitSpec {
+import play.api.libs.json.Json
 
-  "AutoCompleteItemTest" should {
-    "Map from Country" when {
-      "Value is default" in {
-        AutoCompleteItem.from(List(Country("name", "code"))) shouldBe List(AutoCompleteItem("name - code", "name"))
-      }
+case class Action(
+  requestType: RequestType,
+  conversationId: String,
+  requestTimestamp: LocalDateTime = LocalDateTime.now()
+)
 
-      "Value is specified" in {
-        AutoCompleteItem.from(List(Country("name", "code")), _.countryCode) shouldBe List(
-          AutoCompleteItem("name - code", "code")
-        )
-      }
-    }
-  }
-
+object Action {
+  implicit val format = Json.format[Action]
 }

@@ -19,6 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
+import controllers.util.SubmissionDisplayHelper
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,10 +39,10 @@ class SubmissionsController @Inject()(
     for {
       submissions <- customsDeclareExportsConnector.fetchSubmissions()
       notifications <- customsDeclareExportsConnector.fetchNotifications()
-      result = submissions.map { submission =>
-        (submission, notifications.count(notification => notification.conversationId == submission.conversationId))
-      }
-    } yield Ok(views.html.submissions(appConfig, result))
+
+      result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
+
+    } yield Ok(views.html.submissions(appConfig, result.toSeq))
   }
 
 }

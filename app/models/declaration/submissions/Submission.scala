@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package services.model
+package models.declaration.submissions
 
-import uk.gov.hmrc.play.test.UnitSpec
+import java.util.UUID
 
-class AutoCompleteItemTest extends UnitSpec {
+import play.api.libs.json.Json
 
-  "AutoCompleteItemTest" should {
-    "Map from Country" when {
-      "Value is default" in {
-        AutoCompleteItem.from(List(Country("name", "code"))) shouldBe List(AutoCompleteItem("name - code", "name"))
-      }
+case class Submission(
+  uuid: String = UUID.randomUUID().toString,
+  eori: String,
+  lrn: String,
+  mrn: Option[String] = None,
+  ducr: Option[String] = None,
+  actions: Seq[Action] = Seq.empty
+)
 
-      "Value is specified" in {
-        AutoCompleteItem.from(List(Country("name", "code")), _.countryCode) shouldBe List(
-          AutoCompleteItem("name - code", "code")
-        )
-      }
-    }
-  }
-
+object Submission {
+  implicit val formats = Json.format[Submission]
 }

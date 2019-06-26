@@ -27,23 +27,22 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.ExecutionContext
 
 class NotificationsController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
   def listOfNotifications(): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.fetchNotifications().map { results =>
-      Ok(views.html.notifications(appConfig, results))
+      Ok(views.html.notifications(request.user.eori, results.sorted.reverse))
     }
   }
 
-  def listOfNotificationsForSubmission(conversationId: String): Action[AnyContent] =
+  def listOfNotificationsForSubmission(mrn: String): Action[AnyContent] =
     authenticate.async { implicit request =>
-      customsDeclareExportsConnector.fetchNotificationsByConversationId(conversationId).map { results =>
-        Ok(views.html.submission_notifications(appConfig, results))
+      customsDeclareExportsConnector.fetchNotificationsByMrn(mrn).map { results =>
+        Ok(views.html.submission_notifications(results.sorted.reverse))
       }
     }
 

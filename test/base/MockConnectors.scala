@@ -16,10 +16,14 @@
 
 package base
 
+import java.time.LocalDateTime
+import java.util.UUID
+
 import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import models._
+import models.declaration.notifications.Notification
+import models.declaration.submissions.{Action, Submission, SubmissionRequest}
 import models.requests.CancellationStatus
-import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
@@ -42,20 +46,16 @@ trait MockConnectors extends MockitoSugar {
     when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
-  def listOfNotifications(): OngoingStubbing[Future[Seq[DeclarationNotification]]] =
+  def listOfNotifications(): OngoingStubbing[Future[Seq[Notification]]] =
     when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))
       .thenReturn(
-        Future.successful(Seq(DeclarationNotification(DateTime.now(), "", "", None, DeclarationMetadata(), Seq.empty)))
+        Future.successful(Seq(Notification("convId", "mrn", LocalDateTime.now(), "01", None, Seq.empty, "payload")))
       )
 
-  def listOfSubmissionNotifications(): OngoingStubbing[Future[Seq[DeclarationNotification]]] =
-    when(mockCustomsDeclareExportsConnector.fetchNotificationsByConversationId(any())(any(), any()))
+  def listOfSubmissionNotifications(): OngoingStubbing[Future[Seq[Notification]]] =
+    when(mockCustomsDeclareExportsConnector.fetchNotificationsByMrn(any())(any(), any()))
       .thenReturn(
-        Future.successful(
-          Seq(
-            DeclarationNotification(conversationId = "conversationId", eori = "eori", metadata = DeclarationMetadata())
-          )
-        )
+        Future.successful(Seq(Notification("convID", "mrn", LocalDateTime.now, "01", None, Seq.empty, "payload")))
       )
 
   def listOfSubmissions(): OngoingStubbing[Future[Seq[Submission]]] =
@@ -64,13 +64,18 @@ trait MockConnectors extends MockitoSugar {
         Future.successful(
           Seq(
             Submission(
+              uuid = UUID.randomUUID().toString,
               eori = "eori",
-              conversationId = "conversationId",
-              ducr = "ducr",
+              lrn = "lrn",
               mrn = None,
-              lrn = None,
-              submittedTimestamp = System.currentTimeMillis(),
-              status = Accepted
+              ducr = None,
+              actions = Seq(
+                Action(
+                  requestType = SubmissionRequest,
+                  conversationId = "conversationID",
+                  requestTimestamp = LocalDateTime.now()
+                )
+              )
             )
           )
         )

@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package models.declaration.notifications
 
 import play.api.libs.json.Json
 
-case class Submission(
-  eori: String,
-  conversationId: String,
-  ducr: String,
-  mrn: Option[String],
-  lrn: Option[String],
-  submittedTimestamp: Long,
-  status: Status
-)
+case class ErrorPointer(documentSectionCode: String, tagId: Option[String] = None)
 
-object Submission {
-  implicit val format = Json.format[Submission]
+object ErrorPointer {
+  implicit val format = Json.format[ErrorPointer]
 }

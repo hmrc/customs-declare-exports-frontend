@@ -56,7 +56,7 @@ class NotificationsControllerSpec extends CustomExportsBaseSpec {
       stringResult must include(messages("notifications.status"))
       stringResult must include(messages("notifications.dateAndTime"))
 
-      verify(mockCustomsDeclareExportsConnector, times(1)).fetchNotificationsByConversationId(any())(any(), any())
+      verify(mockCustomsDeclareExportsConnector, times(1)).fetchNotificationsByMrn(any())(any(), any())
     }
   }
 }

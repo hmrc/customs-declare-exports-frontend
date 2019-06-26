@@ -10,7 +10,7 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /notifications                               controllers.NotificationsController.listOfNotifications()
 
-GET        /notifications/:conversationId               controllers.NotificationsController.listOfNotificationsForSubmission(conversationId: String)
+GET        /notifications/:mrn                          controllers.NotificationsController.listOfNotificationsForSubmission(mrn: String)
 
 # Submissions
 
