@@ -16,8 +16,6 @@
 
 @import services.model.Country
 
-@import services.model.AutoCompleteItem
-@import services.Countries
 @(form: Form[_], addressPrefix: String = "", addressHeader: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
 @if(addressHeader.nonEmpty) {
@@ -44,14 +42,11 @@
         label = messages("supplementary.address.postCode")
     )
 
-    @components.autocomplete_field(
-        form(s"$addressPrefix.country"),
-        "supplementary.address.country",
-        None,
-        messages("declaration.destinationCountries.countriesOfRouting.empty"),
-        AutoCompleteItem.from(Countries.allCountries),
+    @components.input_text_autocomplete(form)(
+        field = form(s"$addressPrefix.country"),
+        label = messages("supplementary.address.country"),
         'autocomplete -> "off",
-        '_inputClass -> "form-control form-control--block",
+        '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
         'spellcheck -> "false",
         'ariaautocomplete -> "list",
         'ariahaspopup -> "true",

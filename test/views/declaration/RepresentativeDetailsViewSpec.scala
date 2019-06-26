@@ -104,8 +104,8 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
 
       val view = createView()
 
-      getElementById(view, "details.address.country-label").text() mustBe "Country"
-      getElementById(view, "details.address.country").attr("value") mustBe ""
+      getElementById(view, "details_address_country-label").text() must be(messages(country))
+      getElementById(view, "details.address.country").attr("value") must be("")
     }
 
     "display three radio buttons with description (not selected)" in {

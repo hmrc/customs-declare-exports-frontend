@@ -23,11 +23,9 @@ import forms.declaration.TransportDetails
 import helpers.views.declaration.CommonMessages
 import play.api.data.Form
 import play.twirl.api.Html
-import services.Countries
-import services.model.AutoCompleteItem
 import utils.RadioOption
 import views.declaration.spec.ViewSpec
-import views.html.components.{autocomplete_field, input_radio, input_text}
+import views.html.components.{input_radio, input_text, input_text_autocomplete}
 import views.html.declaration.transport_details
 import views.tags.ViewTest
 
@@ -86,21 +84,18 @@ class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessage
 trait TransportDetailsFields extends ViewSpec {
   val form: Form[TransportDetails] = TransportDetails.form()
 
-  val meansOfTransportCrossingTheBorderNationality = autocomplete_field(
-             form("meansOfTransportCrossingTheBorderNationality"),
-             "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header",
-             None,
-             messages("declaration.destinationCountries.countriesOfRouting.empty"),
-             AutoCompleteItem.from(Countries.allCountries),
-             'autocomplete -> "off",
-             '_inputClass -> "form-control form-control--block",
-             'spellcheck -> "false",
-             'ariaautocomplete -> "list",
-             'ariahaspopup -> "true",
-             'ariaowns -> "suggestions-list",
-             'ariaactivedescendant -> "true",
-             'otherErrorFields -> Seq("countryCode")
-         ).body
+  val meansOfTransportCrossingTheBorderNationality = input_text_autocomplete(form)(
+    field = form("meansOfTransportCrossingTheBorderNationality"),
+    label = "7/15 What nationality was the active means of transport?",
+    'autocomplete -> "off",
+    '_inputClass -> "form-control form-control--block js-choose-country-auto-complete",
+    'spellcheck -> "false",
+    'ariaautocomplete -> "list",
+    'ariahaspopup -> "true",
+    'ariaowns -> "suggestions-list",
+    'ariaactivedescendant -> "true",
+    'otherErrorFields -> Seq("countryCode")
+  ).body
 
   val meansOfTransportCrossingTheBorderType = input_radio(
     field = form("meansOfTransportCrossingTheBorderType"),
