@@ -19,143 +19,138 @@ package models.declaration.submissions
 import play.api.libs.json._
 import uk.gov.hmrc.wco.dec.Response
 
-sealed trait SubmissionStatus
+sealed trait SubmissionStatus {
+  val fullCode: String
+}
 
 object SubmissionStatus {
 
   implicit object StatusFormat extends Format[SubmissionStatus] {
     def reads(status: JsValue): JsResult[SubmissionStatus] = status match {
-      case JsString("Pending")                => JsSuccess(Pending)
-      case JsString("Cancellation Requested") => JsSuccess(RequestedCancellation)
-      case JsString("01")                     => JsSuccess(Accepted)
-      case JsString("02")                     => JsSuccess(Received)
-      case JsString("03")                     => JsSuccess(Rejected)
-      case JsString("05")                     => JsSuccess(UndergoingPhysicalCheck)
-      case JsString("06")                     => JsSuccess(AdditionalDocumentsRequired)
-      case JsString("07")                     => JsSuccess(Amended)
-      case JsString("08")                     => JsSuccess(Released)
-      case JsString("09")                     => JsSuccess(Cleared)
-      case JsString("10")                     => JsSuccess(Cancelled)
-      case JsString("1139")                   => JsSuccess(CustomsPositionGranted)
-      case JsString("1141")                   => JsSuccess(CustomsPositionDenied)
-      case JsString("16")                     => JsSuccess(GoodsHaveExitedTheCommunity)
-      case JsString("17")                     => JsSuccess(DeclarationHandledExternally)
-      case JsString("18")                     => JsSuccess(AwaitingExitResults)
-      case _                                  => JsSuccess(UnknownStatus)
+      case JsString(code) => JsSuccess(getStatusOrUnknown(code))
+      case _              => JsSuccess(UnknownStatus)
     }
 
-    def writes(status: SubmissionStatus): JsValue = status match {
-      case Pending                      => JsString("Pending")
-      case RequestedCancellation        => JsString("Cancellation Requested")
-      case Accepted                     => JsString("01")
-      case Received                     => JsString("02")
-      case Rejected                     => JsString("03")
-      case UndergoingPhysicalCheck      => JsString("05")
-      case AdditionalDocumentsRequired  => JsString("06")
-      case Amended                      => JsString("07")
-      case Released                     => JsString("08")
-      case Cleared                      => JsString("09")
-      case Cancelled                    => JsString("10")
-      case CustomsPositionGranted       => JsString("1139")
-      case CustomsPositionDenied        => JsString("1141")
-      case GoodsHaveExitedTheCommunity  => JsString("16")
-      case DeclarationHandledExternally => JsString("17")
-      case AwaitingExitResults          => JsString("18")
-      case UnknownStatus                => JsString("UnknownStatus")
-    }
+    def writes(status: SubmissionStatus): JsValue = JsString(status.fullCode)
   }
 
-  def retrieveFromResponse(response: Response): SubmissionStatus =
-    response.functionCode match {
-      case "Pending"                                                             => Pending
-      case "Cancellation Requested"                                              => RequestedCancellation
-      case "01"                                                                  => Accepted
-      case "02"                                                                  => Received
-      case "03"                                                                  => Rejected
-      case "05"                                                                  => UndergoingPhysicalCheck
-      case "06"                                                                  => AdditionalDocumentsRequired
-      case "07"                                                                  => Amended
-      case "08"                                                                  => Released
-      case "09"                                                                  => Cleared
-      case "10"                                                                  => Cancelled
-      case "11" if response.status.headOption.flatMap(_.nameCode).contains("39") => CustomsPositionGranted
-      case "11" if response.status.headOption.flatMap(_.nameCode).contains("41") => CustomsPositionDenied
-      case "16"                                                                  => GoodsHaveExitedTheCommunity
-      case "17"                                                                  => DeclarationHandledExternally
-      case "18"                                                                  => AwaitingExitResults
-      case _                                                                     => UnknownStatus
-    }
+  def retrieveFromResponse(response: Response): SubmissionStatus = {
+    val searchKey = response.functionCode + response.status.headOption.flatMap(_.nameCode).getOrElse("")
+    getStatusOrUnknown(searchKey)
+  }
 
   def retrieve(functionCode: String, nameCode: Option[String]): SubmissionStatus =
-    functionCode match {
-      case "Pending"                       => Pending
-      case "Cancellation Requested"        => RequestedCancellation
-      case "01"                            => Accepted
-      case "02"                            => Received
-      case "03"                            => Rejected
-      case "05"                            => UndergoingPhysicalCheck
-      case "06"                            => AdditionalDocumentsRequired
-      case "07"                            => Amended
-      case "08"                            => Released
-      case "09"                            => Cleared
-      case "10"                            => Cancelled
-      case "11" if nameCode.contains("39") => CustomsPositionGranted
-      case "11" if nameCode.contains("41") => CustomsPositionDenied
-      case "16"                            => GoodsHaveExitedTheCommunity
-      case "17"                            => DeclarationHandledExternally
-      case "18"                            => AwaitingExitResults
-      case _                               => UnknownStatus
+    getStatusOrUnknown(functionCode + nameCode.getOrElse(""))
+
+  private def getStatusOrUnknown(searchKey: String): SubmissionStatus =
+    codesMap.get(searchKey) match {
+      case Some(status) => status
+      case None         => UnknownStatus
     }
+
+  private val codesMap: Map[String, SubmissionStatus] = Map(
+    Pending.fullCode -> Pending,
+    RequestedCancellation.fullCode -> RequestedCancellation,
+    Accepted.fullCode -> Accepted,
+    Received.fullCode -> Received,
+    Rejected.fullCode -> Rejected,
+    UndergoingPhysicalCheck.fullCode -> UndergoingPhysicalCheck,
+    AdditionalDocumentsRequired.fullCode -> AdditionalDocumentsRequired,
+    Amended.fullCode -> Amended,
+    Released.fullCode -> Released,
+    Cleared.fullCode -> Cleared,
+    Cancelled.fullCode -> Cancelled,
+    CustomsPositionGranted.fullCode -> CustomsPositionGranted,
+    CustomsPositionDenied.fullCode -> CustomsPositionDenied,
+    GoodsHaveExitedTheCommunity.fullCode -> GoodsHaveExitedTheCommunity,
+    DeclarationHandledExternally.fullCode -> DeclarationHandledExternally,
+    AwaitingExitResults.fullCode -> AwaitingExitResults,
+    UnknownStatus.fullCode -> UnknownStatus
+  )
 }
 
-case object Pending extends SubmissionStatus
+case object Pending extends SubmissionStatus {
+  val fullCode: String = "Pending"
+}
 
-case object Accepted extends SubmissionStatus
+case object RequestedCancellation extends SubmissionStatus {
+  val fullCode: String = "Cancellation Requested"
 
-case object Received extends SubmissionStatus
+  override def toString: String = "Cancellation Requested"
+}
 
-case object Rejected extends SubmissionStatus
+case object Accepted extends SubmissionStatus {
+  val fullCode: String = "01"
+}
+
+case object Received extends SubmissionStatus {
+  val fullCode: String = "02"
+}
+
+case object Rejected extends SubmissionStatus {
+  val fullCode: String = "03"
+}
 
 case object UndergoingPhysicalCheck extends SubmissionStatus {
+  val fullCode: String = "05"
+
   override def toString(): String = "Undergoing Physical Check"
 }
 
 case object AdditionalDocumentsRequired extends SubmissionStatus {
+  val fullCode: String = "06"
+
   override def toString(): String = "Additional Documents Required"
 }
 
-case object Amended extends SubmissionStatus
+case object Amended extends SubmissionStatus {
+  val fullCode: String = "07"
+}
 
-case object Released extends SubmissionStatus
+case object Released extends SubmissionStatus {
+  val fullCode: String = "08"
+}
 
-case object Cleared extends SubmissionStatus
+case object Cleared extends SubmissionStatus {
+  val fullCode: String = "09"
+}
 
-case object Cancelled extends SubmissionStatus
-
-case object RequestedCancellation extends SubmissionStatus {
-  override def toString: String = "Cancellation Requested"
+case object Cancelled extends SubmissionStatus {
+  val fullCode: String = "10"
 }
 
 case object CustomsPositionGranted extends SubmissionStatus {
+  val fullCode: String = "1139"
+
   override def toString(): String = "Customs Position Granted"
 }
 
 case object CustomsPositionDenied extends SubmissionStatus {
+  val fullCode: String = "1141"
+
   override def toString(): String = "Customs Position Denied"
 }
 
 case object GoodsHaveExitedTheCommunity extends SubmissionStatus {
+  val fullCode: String = "16"
+
   override def toString(): String = "Goods Have Exited The Community"
 }
 
 case object DeclarationHandledExternally extends SubmissionStatus {
+  val fullCode: String = "17"
+
   override def toString(): String = "Declaration Handled Externally"
 }
 
 case object AwaitingExitResults extends SubmissionStatus {
+  val fullCode: String = "18"
+
   override def toString(): String = "Awaiting Exit Results"
 }
 
 case object UnknownStatus extends SubmissionStatus {
+  val fullCode: String = "UnknownStatus"
+
   override def toString(): String = "Unknown status"
 }
