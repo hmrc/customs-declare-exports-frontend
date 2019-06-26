@@ -26,6 +26,7 @@ import javax.inject.Inject
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import models.requests.JourneyRequest
+import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
@@ -50,8 +51,10 @@ class ItemsSummaryController @Inject()(
       .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
       .zip(hasFiscalInformation())
       .map {
-        case (items, hasFiscalInformation) =>
+        case (items, hasFiscalInformation) => {
+          Logger.warn("######### " + items)
           Ok(items_summary(items.getOrElse(Seq.empty), hasFiscalInformation))
+        }
       }
   }
 

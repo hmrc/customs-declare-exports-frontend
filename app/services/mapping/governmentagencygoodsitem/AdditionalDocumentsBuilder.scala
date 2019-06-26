@@ -45,15 +45,18 @@ object AdditionalDocumentsBuilder {
   private def createAdditionalDocument(doc: GovernmentAgencyGoodsItemAdditionalDocument): AdditionalDocument = {
     val additionalDocument = new AdditionalDocument
 
+
+    //TODO IT'S FIXED< CHECK TESTS AND ADD THIS CASE
+    // CategoryCode and TypeCode - double check value inside, try with TypeCode C501
     doc.categoryCode.foreach { categoryCode =>
       val additionalDocumentCategoryCodeType = new AdditionalDocumentCategoryCodeType
-      additionalDocumentCategoryCodeType.setValue(categoryCode.substring(0, 1))
+      additionalDocumentCategoryCodeType.setValue(categoryCode)
       additionalDocument.setCategoryCode(additionalDocumentCategoryCodeType)
     }
 
     doc.typeCode.foreach { typeCode =>
       val additionalDocumentTypeCodeType = new AdditionalDocumentTypeCodeType
-      additionalDocumentTypeCodeType.setValue(typeCode.substring(1))
+      additionalDocumentTypeCodeType.setValue(typeCode)
       additionalDocument.setTypeCode(additionalDocumentTypeCodeType)
     }
 

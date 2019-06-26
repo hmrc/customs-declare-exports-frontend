@@ -31,11 +31,11 @@ class AdditionalDocumentsBuilderSpec
       val dateTimeString = DateTimeString("102", "20170304")
       val dateTimeElement = DateTimeElement(dateTimeString)
       val additionalDocument = GovernmentAgencyGoodsItemAdditionalDocument(
-        Some("123"),
+        Some("C"),
         Some(dateTimeElement),
         Some("123"),
         Some("PENDINGReason"),
-        Some("1A"),
+        Some("501"),
         Some("PENDING"),
         Some(submitter),
         Some(writeOff)

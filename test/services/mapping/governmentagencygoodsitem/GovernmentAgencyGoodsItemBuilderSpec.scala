@@ -177,11 +177,11 @@ object GovernmentAgencyGoodsItemBuilderSpec {
 
   val additionalDocuments: JsValue = JsObject(
     Map(
-      "categoryCode" -> JsString("1A"),
+      "categoryCode" -> JsString("C"),
       "effectiveDateTime" -> dateTimeElement,
       "id" -> JsString("SYSUYSU12324554"),
       "name" -> JsString("PENDINGReason"),
-      "typeCode" -> JsString("1A"),
+      "typeCode" -> JsString("501"),
       "lpcoExemptionCode" -> JsString("PND"),
       "submitter" -> documentSubmitter,
       "writeOff" -> writeOff
