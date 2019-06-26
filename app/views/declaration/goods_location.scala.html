@@ -77,22 +77,22 @@
                 label = messages("supplementary.goodsLocation.postCode"),
                 labelClass = Some("bold-small")
             )
-           
+
             @components.autocomplete_field(
                 form("country"),
                 "supplementary.address.country",
-                   None,
-                   messages("declaration.destinationCountries.countriesOfRouting.empty"),
-                   AutoCompleteItem.from(Countries.allCountries),
-                   'autocomplete -> "off",
-                   '_inputClass -> "form-control form-control--block",
-                   'spellcheck -> "false",
-                   'ariaautocomplete -> "list",
-                   'ariahaspopup -> "true",
-                   'ariaowns -> "suggestions-list",
-                   'ariaactivedescendant -> "true",
-                   'otherErrorFields -> Seq("countryCode")
-               )
+                None,
+                messages("supplementary.address.country.empty"),
+                AutoCompleteItem.from(Countries.allCountries),
+                'autocomplete -> "off",
+                '_inputClass -> "form-control form-control--block",
+                'spellcheck -> "false",
+                'ariaautocomplete -> "list",
+                'ariahaspopup -> "true",
+                'ariaowns -> "suggestions-list",
+                'ariaactivedescendant -> "true",
+                'otherErrorFields -> Seq("countryCode")
+            )
 
             @components.submit_button()
         }
