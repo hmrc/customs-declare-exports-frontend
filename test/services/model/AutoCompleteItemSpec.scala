@@ -16,10 +16,10 @@
 
 package services.model
 
-import services.PackageType
+import services.{DocumentType, PackageType}
 import uk.gov.hmrc.play.test.UnitSpec
 
-class AutoCompleteItemTest extends UnitSpec {
+class AutoCompleteItemSpec extends UnitSpec {
 
   "AutoCompleteItemTest" should {
     "Map from Country" when {
@@ -35,7 +35,14 @@ class AutoCompleteItemTest extends UnitSpec {
     }
 
     "Map from PackageType" in {
-      AutoCompleteItem.from(List(PackageType("code", "description"))) shouldBe List(AutoCompleteItem("description - code", "code"))
+      AutoCompleteItem.from(List(PackageType("code", "description"))) shouldBe List(
+        AutoCompleteItem("description - code", "code")
+      )
+    }
+    "Map from document type" in {
+      AutoCompleteItem.fromDocumentType(List(DocumentType("description", "code"))) shouldBe (List(
+        AutoCompleteItem("description - code", "code")
+      ))
     }
   }
 

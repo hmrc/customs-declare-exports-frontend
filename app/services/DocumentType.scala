@@ -16,23 +16,15 @@
 
 package services
 
-import utils.FileUtil
+import utils.JsonFile
 
-import scala.util.matching.Regex
+case class DocumentType(description: String, code: String)
 
-case class PackageType(code: String, description: String)
+object DocumentType {
 
-object PackageType {
+  private val deserialiser: (String, String) => DocumentType = (a: String, b: String) => DocumentType(a, b)
 
-  private val regex: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
-
-  lazy val all: List[PackageType] = FileUtil
-    .read("package-types.csv")
-    .tail
-    .map {
-      case regex(code: String, description: String) =>
-        PackageType(code, description)
-    }
+  val allDocuments: List[DocumentType] = JsonFile
+    .readFromJsonFile("/document-type-autocomplete-list.json", deserialiser)
     .sortBy(_.description)
-
 }

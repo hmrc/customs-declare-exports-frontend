@@ -52,7 +52,7 @@ class PreviousDocumentsControllerSpec
     "read item from cache and display it" in {
 
       withCaching[PreviousDocumentsData](
-        Some(PreviousDocumentsData(Seq(Document("X", "HX", "XH", Some("UX"))))),
+        Some(PreviousDocumentsData(Seq(Document("X", "MCR", "XH", Some("UX"))))),
         formId
       )
 
@@ -62,7 +62,7 @@ class PreviousDocumentsControllerSpec
       status(result) must be(OK)
 
       page must include("X")
-      page must include("HX")
+      page must include("MCR")
       page must include("XH")
       page must include("UX")
     }
@@ -87,7 +87,7 @@ class PreviousDocumentsControllerSpec
         val document =
           Seq(
             ("documentCategory", "Y"),
-            ("documentType", "2"),
+            ("documentType", "DCR"),
             ("documentReference", "B"),
             ("goodsItemIdentifier", "2")
           )
@@ -125,13 +125,13 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentCategoryEmpty, "#documentCategory")
-        checkErrorLink(page, 2, documentTypeEmpty, "#documentType")
-        checkErrorLink(page, 3, documentReferenceEmpty, "#documentReference")
+        checkErrorLink(page, "documentCategory-error", documentCategoryEmpty, "#documentCategory")
+        checkErrorLink(page, "documentType-error", documentTypeEmpty, "#documentType")
+        checkErrorLink(page, "documentReference-error", documentReferenceEmpty, "#documentReference")
 
-        getElementByCss(page, "#error-message-documentCategory-input").text() must be(messages(documentCategoryEmpty))
-        getElementByCss(page, "#error-message-documentType-input").text() must be(messages(documentTypeEmpty))
-        getElementByCss(page, "#error-message-documentReference-input").text() must be(messages(documentReferenceEmpty))
+        getElementById(page, "error-message-documentCategory-input").text() must be(messages(documentCategoryEmpty))
+        getElementById(page, "error-message-documentType-input").text() must be(messages(documentTypeEmpty))
+        getElementById(page, "error-message-documentReference-input").text() must be(messages(documentReferenceEmpty))
       }
 
       "item doesn't contain document category" in {
@@ -144,9 +144,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentCategoryEmpty, "#documentCategory")
+        checkErrorLink(page, "documentCategory-error", documentCategoryEmpty, "#documentCategory")
 
-        getElementByCss(page, "#error-message-documentCategory-input").text() must be(messages(documentCategoryEmpty))
+        getElementById(page, "error-message-documentCategory-input").text() must be(messages(documentCategoryEmpty))
       }
 
       "item doesn't contain document type" in {
@@ -159,9 +159,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentTypeEmpty, "#documentType")
+        checkErrorLink(page, "documentType-error", documentTypeEmpty, "#documentType")
 
-        getElementByCss(page, "#error-message-documentType-input").text() must be(messages(documentTypeEmpty))
+        getElementById(page, "error-message-documentType-input").text() must be(messages(documentTypeEmpty))
       }
 
       "item doesn't contain document reference" in {
@@ -174,9 +174,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentReferenceEmpty, "#documentReference")
+        checkErrorLink(page, "documentReference-error", documentReferenceEmpty, "#documentReference")
 
-        getElementByCss(page, "#error-message-documentReference-input").text() must be(messages(documentReferenceEmpty))
+        getElementById(page, "error-message-documentReference-input").text() must be(messages(documentReferenceEmpty))
       }
 
       "item contains incorrect document category" in {
@@ -189,9 +189,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentCategoryError, "#documentCategory")
+        checkErrorLink(page, "documentCategory-error", documentCategoryError, "#documentCategory")
 
-        getElementByCss(page, "#error-message-documentCategory-input").text() must be(messages(documentCategoryError))
+        getElementById(page, "error-message-documentCategory-input").text() must be(messages(documentCategoryError))
       }
 
       "item contains incorrect document type" in {
@@ -204,9 +204,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentTypeError, "#documentType")
+        checkErrorLink(page, "documentType-error", documentTypeError, "#documentType")
 
-        getElementByCss(page, "#error-message-documentType-input").text() must be(messages(documentTypeError))
+        getElementById(page, "error-message-documentType-input").text() must be(messages(documentTypeError))
       }
 
       "item contains incorrect document reference" in {
@@ -219,9 +219,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentReferenceError, "#documentReference")
+        checkErrorLink(page, "documentReference-error", documentReferenceError, "#documentReference")
 
-        getElementByCss(page, "#error-message-documentReference-input").text() must be(messages(documentReferenceError))
+        getElementById(page, "error-message-documentReference-input").text() must be(messages(documentReferenceError))
       }
 
       "item contains incorrect goods item identifier" in {
@@ -236,7 +236,7 @@ class PreviousDocumentsControllerSpec
         checkErrorsSummary(page)
         checkErrorLink(page, 1, documentGoodsIdentifierError, "#goodsItemIdentifier")
 
-        getElementByCss(page, "#error-message-goodsItemIdentifier-input").text() must be(
+        getElementById(page, "error-message-goodsItemIdentifier-input").text() must be(
           messages(documentGoodsIdentifierError)
         )
       }
@@ -261,7 +261,7 @@ class PreviousDocumentsControllerSpec
 
         val body = Seq(
           ("documentCategory", "Y"),
-          ("documentType", "1"),
+          ("documentType", "MCR"),
           ("documentReference", "A"),
           ("goodsItemIdentifier", "1")
         ) :+ addActionURLEncoded
@@ -300,9 +300,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentCategoryEmpty, "#documentCategory")
+        checkErrorLink(page, "documentCategory-error", documentCategoryEmpty, "#documentCategory")
 
-        getElementByCss(page, "#error-message-documentCategory-input").text() must be(messages(documentCategoryEmpty))
+        getElementById(page, "error-message-documentCategory-input").text() must be(messages(documentCategoryEmpty))
       }
 
       "item doesn't contain document type" in {
@@ -315,9 +315,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentTypeEmpty, "#documentType")
+        checkErrorLink(page, "documentType-error", documentTypeEmpty, "#documentType")
 
-        getElementByCss(page, "#error-message-documentType-input").text() must be(messages(documentTypeEmpty))
+        getElementById(page, "error-message-documentType-input").text() must be(messages(documentTypeEmpty))
       }
 
       "item doesn't contain document reference" in {
@@ -330,9 +330,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentReferenceEmpty, "#documentReference")
+        checkErrorLink(page, "documentReference-error", documentReferenceEmpty, "#documentReference")
 
-        getElementByCss(page, "#error-message-documentReference-input").text() must be(messages(documentReferenceEmpty))
+        getElementById(page, "error-message-documentReference-input").text() must be(messages(documentReferenceEmpty))
       }
 
       "item contains incorrect document category" in {
@@ -345,9 +345,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentCategoryError, "#documentCategory")
+        checkErrorLink(page, "documentCategory-error", documentCategoryError, "#documentCategory")
 
-        getElementByCss(page, "#error-message-documentCategory-input").text() must be(messages(documentCategoryError))
+        getElementById(page, "error-message-documentCategory-input").text() must be(messages(documentCategoryError))
       }
 
       "item contains incorrect document type" in {
@@ -360,9 +360,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentTypeError, "#documentType")
+        checkErrorLink(page, "documentType-error", documentTypeError, "#documentType")
 
-        getElementByCss(page, "#error-message-documentType-input").text() must be(messages(documentTypeError))
+        getElementById(page, "error-message-documentType-input").text() must be(messages(documentTypeError))
       }
 
       "item contains incorrect document reference" in {
@@ -375,9 +375,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentReferenceError, "#documentReference")
+        checkErrorLink(page, "documentReference-error", documentReferenceError, "#documentReference")
 
-        getElementByCss(page, "#error-message-documentReference-input").text() must be(messages(documentReferenceError))
+        getElementById(page, "error-message-documentReference-input").text() must be(messages(documentReferenceError))
       }
 
       "item contains incorrect goods item identifier" in {
@@ -390,9 +390,9 @@ class PreviousDocumentsControllerSpec
         status(result) must be(BAD_REQUEST)
 
         checkErrorsSummary(page)
-        checkErrorLink(page, 1, documentGoodsIdentifierError, "#goodsItemIdentifier")
+        checkErrorLink(page, "goodsItemIdentifier-error", documentGoodsIdentifierError, "#goodsItemIdentifier")
 
-        getElementByCss(page, "#error-message-goodsItemIdentifier-input").text() must be(
+        getElementById(page, "error-message-goodsItemIdentifier-input").text() must be(
           messages(documentGoodsIdentifierError)
         )
       }
@@ -418,9 +418,9 @@ class PreviousDocumentsControllerSpec
 
         val body = Seq(
           ("documentCategory", "Y"),
-          ("documentType", "1"),
-          ("documentReference", "A"),
-          ("goodsItemIdentifier", "1")
+          ("documentType", "MRN"),
+          ("documentReference", "B"),
+          ("goodsItemIdentifier", "3")
         ) :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -461,7 +461,7 @@ class PreviousDocumentsControllerSpec
         val document =
           Seq(
             ("documentCategory", "Y"),
-            ("documentType", "2"),
+            ("documentType", "MCR"),
             ("documentReference", "B"),
             ("goodsItemIdentifier", "2")
           )
@@ -479,22 +479,22 @@ class PreviousDocumentsControllerSpec
 
 object PreviousDocumentsControllerSpec {
   val correctDocument =
-    Seq(("documentCategory", "X"), ("documentType", "1"), ("documentReference", "A"), ("goodsItemIdentifier", "1"))
+    Seq(("documentCategory", "X"), ("documentType", "MCR"), ("documentReference", "A"), ("goodsItemIdentifier", "1"))
 
   val emptyDocument =
     Seq(("documentCategory", ""), ("documentType", ""), ("documentReference", ""), ("goodsItemIdentifier", ""))
 
   val documentWithoutCategory =
-    Seq(("documentCategory", ""), ("documentType", "1"), ("documentReference", "A"), ("goodsItemIdentifier", "1"))
+    Seq(("documentCategory", ""), ("documentType", "MCR"), ("documentReference", "A"), ("goodsItemIdentifier", "1"))
 
   val documentWithoutType =
     Seq(("documentCategory", "X"), ("documentType", ""), ("documentReference", "A"), ("goodsItemIdentifier", "1"))
 
   val documentWithoutReference =
-    Seq(("documentCategory", "X"), ("documentType", "1"), ("documentReference", ""), ("goodsItemIdentifier", "1"))
+    Seq(("documentCategory", "X"), ("documentType", "MCR"), ("documentReference", ""), ("goodsItemIdentifier", "1"))
 
   val documentWithIncorrectCategory =
-    Seq(("documentCategory", "A"), ("documentType", "1"), ("documentReference", "A"), ("goodsItemIdentifier", "1"))
+    Seq(("documentCategory", "A"), ("documentType", "MCR"), ("documentReference", "A"), ("goodsItemIdentifier", "1"))
 
   val documentWithIncorrectType =
     Seq(("documentCategory", "X"), ("documentType", "1234"), ("documentReference", "A"), ("goodsItemIdentifier", "1"))
@@ -505,15 +505,20 @@ object PreviousDocumentsControllerSpec {
   val documentWithIncorrectReference =
     Seq(
       ("documentCategory", "X"),
-      ("documentType", "1"),
+      ("documentType", "MCR"),
       ("documentReference", incorrectReference),
       ("goodsItemIdentifier", "1")
     )
 
   val documentWithIncorrectIdentifier =
-    Seq(("documentCategory", "X"), ("documentType", "1"), ("documentReference", "A"), ("goodsItemIdentifier", "1234"))
+    Seq(
+      ("documentCategory", "X"),
+      ("documentType", "MCR"),
+      ("documentReference", "A"),
+      ("goodsItemIdentifier", "asbfd")
+    )
 
-  val document = Document("X", "1", "A", Some("1"))
+  val document = Document("X", "MCR", "A", Some("1"))
 
   val cachedData = PreviousDocumentsData(Seq(document))
 

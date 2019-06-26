@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package services
+package utils
 
-import utils.FileUtil
+import play.api.libs.json.{JsArray, JsString, Json}
 
-import scala.util.matching.Regex
+object JsonFile {
+  def readFromJsonFile[T](file: String, deserializer: (String, String) => T): List[T] = {
+    val jsonFile = getClass.getResourceAsStream(file)
 
-case class PackageType(code: String, description: String)
-
-object PackageType {
-
-  private val regex: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
-
-  lazy val all: List[PackageType] = FileUtil
-    .read("package-types.csv")
-    .tail
-    .map {
-      case regex(code: String, description: String) =>
-        PackageType(code, description)
+    Json.parse(jsonFile) match {
+      case JsArray(cs) =>
+        cs.toList.collect {
+          case JsArray(Seq(label: JsString, code: JsString)) =>
+            deserializer(label.value, code.value)
+        }
+      case _ => throw new IllegalArgumentException("Could not read JSON array from : " + jsonFile)
     }
-    .sortBy(_.description)
-
+  }
 }

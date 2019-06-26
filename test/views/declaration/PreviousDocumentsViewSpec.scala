@@ -58,7 +58,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       assertMessage(documentTypeError, "Previous document code is incorrect")
       assertMessage(documentReferenceEmpty, "Reference for the DUCR or MUCR cannot be empty")
       assertMessage(documentReferenceError, "Reference for the DUCR or MUCR is incorrect")
-      assertMessage(documentGoodsIdentifierError, "This field is incorrect")
+      assertMessage(documentGoodsIdentifierError, "Goods item identifier is incorrect")
     }
   }
 
