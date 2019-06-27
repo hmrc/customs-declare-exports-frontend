@@ -19,12 +19,11 @@ package views
 import forms.declaration.AdditionalFiscalReference
 import helpers.views.declaration.{AdditionalFiscalReferencesMessages, CommonMessages}
 import play.api.data.Form
-import play.api.mvc.Request
-import play.api.test.CSRFTokenHelper._
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
 import views.html.declaration.additional_fiscal_references
 import views.tags.ViewTest
+import utils.FakeRequestCSRFSupport._
 
 @ViewTest
 class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalReferencesMessages with CommonMessages {
@@ -35,11 +34,7 @@ class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalR
     form: Form[AdditionalFiscalReference] = form,
     references: Seq[AdditionalFiscalReference] = Seq.empty
   ): Html =
-    additional_fiscal_references(form, references)(
-      fakeRequest.withCSRFToken.asInstanceOf[Request[_]],
-      appConfig,
-      messages
-    )
+    additional_fiscal_references(form, references)(fakeRequest.withCSRFToken, appConfig, messages)
 
   "Additional Fiscal References View" should {
 

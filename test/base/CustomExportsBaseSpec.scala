@@ -46,12 +46,12 @@ import play.api.libs.ws.WSClient
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
-import play.api.test.CSRFTokenHelper.addCSRFToken
 import services._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -123,11 +123,10 @@ trait CustomExportsBaseSpec
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
-    addCSRFToken(
-      FakeRequest("GET", uri)
-        .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
-        .withSession(session.toSeq: _*)
-    )
+    FakeRequest("GET", uri)
+      .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
+      .withSession(session.toSeq: _*)
+      .withCSRFToken
   }
 
   protected def postRequest(
@@ -140,12 +139,11 @@ trait CustomExportsBaseSpec
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
-    addCSRFToken(
-      FakeRequest("POST", uri)
-        .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
-        .withSession(session.toSeq: _*)
-        .withJsonBody(body)
-    )
+    FakeRequest("POST", uri)
+      .withHeaders((Map(cfg.headerName -> token) ++ headers).toSeq: _*)
+      .withSession(session.toSeq: _*)
+      .withJsonBody(body)
+      .withCSRFToken
   }
 
   protected def postRequestFormUrlEncoded(
