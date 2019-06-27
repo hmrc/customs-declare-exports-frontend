@@ -297,11 +297,6 @@ object SupplementaryDeclarationDataSpec {
           unDangerousGoodsCode = Some("999"),
           statisticalValue = "12"
         )
-      ),
-      AdditionalFiscalReferencesData.formId -> Json.toJson(
-        AdditionalFiscalReferencesData(
-          Seq(AdditionalFiscalReference("PL", "12345"), AdditionalFiscalReference("FR", "54321"))
-        )
       )
     )
   )

@@ -18,7 +18,7 @@ package services
 import com.google.inject.Inject
 import config.AppConfig
 import forms.declaration.additionaldocuments.DocumentsProduced
-import forms.declaration.{CommodityMeasure, ItemType, PackageInformation}
+import forms.declaration._
 import javax.inject.Singleton
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem._
@@ -76,7 +76,8 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       governmentProcedures = procedureCodes(cachedData).getOrElse(Seq.empty),
       commodity = Some(updatedCommodity),
       additionalInformations = additionalInfo(cachedData).getOrElse(Seq.empty),
-      additionalDocuments = documents(cachedData).getOrElse(Seq.empty)
+      additionalDocuments = documents(cachedData).getOrElse(Seq.empty),
+      fiscalReferences = fiscalReferences(cachedData).getOrElse(Seq.empty)
     )
   }
 
@@ -124,7 +125,12 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
   def documents(cachedData: CacheMap): Option[Seq[GovernmentAgencyGoodsItemAdditionalDocument]] =
     cachedData
       .getEntry[DocumentsProducedData](DocumentsProducedData.formId)
-      .map(_.documents.map(createGoodsItemAdditionalDocument(_)))
+      .map(_.documents.map(createGoodsItemAdditionalDocument))
+
+  def fiscalReferences(cachedData: CacheMap): Option[Seq[AdditionalFiscalReference]] =
+    cachedData
+      .getEntry[AdditionalFiscalReferencesData](AdditionalFiscalReferencesData.formId)
+      .map(_.references)
 
   private def createGoodsItemAdditionalDocument(doc: DocumentsProduced) =
     GovernmentAgencyGoodsItemAdditionalDocument(

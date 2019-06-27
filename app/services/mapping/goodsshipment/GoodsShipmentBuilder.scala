@@ -38,11 +38,6 @@ object GoodsShipmentBuilder {
     goodsShipment.getGovernmentAgencyGoodsItem.addAll(GovernmentAgencyGoodsItemBuilder.build)
     goodsShipment.getAEOMutualRecognitionParty.addAll(AEOMutualRecognitionPartiesBuilder.build)
 
-    val domesticDutyTaxes = DomesticDutyTaxPartyBuilder.build
-    if (!domesticDutyTaxes.isEmpty) {
-      goodsShipment.getDomesticDutyTaxParty.addAll(domesticDutyTaxes)
-    }
-
     goodsShipment
   }
 }
