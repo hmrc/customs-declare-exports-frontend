@@ -16,7 +16,8 @@
 
 package services
 
-import scala.io.Source
+import utils.FileUtil
+
 import scala.util.matching.Regex
 
 
@@ -26,23 +27,10 @@ object PackageType {
 
   private val regex: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
 
-  private def fromFile: List[PackageType] = readLines("package-types.csv")
+  lazy val all: List[PackageType] = FileUtil.read("package-types.csv")
     .tail.map {
-      case regex(code: String, description: String) =>
-        PackageType(code, description)
-    }.sortBy(_.description)
-
-
-  private def readLines(path: String): List[String] = {
-    val source = Source.fromURL(getClass.getClassLoader.getResource(path), "UTF-8")
-    try {
-      source.getLines().toList
-    } finally {
-      source.close()
-    }
-  }
-
-
-  lazy val all: List[PackageType] = fromFile
+    case regex(code: String, description: String) =>
+      PackageType(code, description)
+  }.sortBy(_.description)
 
 }
