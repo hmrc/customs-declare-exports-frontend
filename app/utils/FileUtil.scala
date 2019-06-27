@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package services.model
+package utils
 
-import services.PackageType
+import scala.io.Source
 
-case class AutoCompleteItem(label: String, value: String)
+object FileUtil {
 
-object AutoCompleteItem {
-  def from(countries: List[Country], value: Country => String = _.countryName): List[AutoCompleteItem] =
-    countries map (c => AutoCompleteItem(s"${c.countryName} - ${c.countryCode}", value(c)))
+  def read(path: String): List[String] = {
+    val source = Source.fromURL(getClass.getClassLoader.getResource(path), "UTF-8")
+    try {
+      source.getLines().toList
+    } finally {
+      source.close()
+    }
+  }
 
-  def from(packageTypes: List[PackageType]): List[AutoCompleteItem] =
-    packageTypes map (c => AutoCompleteItem(s"${c.description} - ${c.code}", c.code))
 }

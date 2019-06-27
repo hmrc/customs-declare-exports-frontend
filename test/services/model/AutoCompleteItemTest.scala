@@ -16,6 +16,7 @@
 
 package services.model
 
+import services.PackageType
 import uk.gov.hmrc.play.test.UnitSpec
 
 class AutoCompleteItemTest extends UnitSpec {
@@ -31,6 +32,10 @@ class AutoCompleteItemTest extends UnitSpec {
           AutoCompleteItem("name - code", "code")
         )
       }
+    }
+
+    "Map from PackageType" in {
+      AutoCompleteItem.from(List(PackageType("code", "description"))) shouldBe List(AutoCompleteItem("description - code", "code"))
     }
   }
 

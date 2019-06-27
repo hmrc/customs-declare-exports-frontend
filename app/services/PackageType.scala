@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package services.model
+package services
 
-import services.PackageType
+import utils.FileUtil
 
-case class AutoCompleteItem(label: String, value: String)
+import scala.util.matching.Regex
 
-object AutoCompleteItem {
-  def from(countries: List[Country], value: Country => String = _.countryName): List[AutoCompleteItem] =
-    countries map (c => AutoCompleteItem(s"${c.countryName} - ${c.countryCode}", value(c)))
 
-  def from(packageTypes: List[PackageType]): List[AutoCompleteItem] =
-    packageTypes map (c => AutoCompleteItem(s"${c.description} - ${c.code}", c.code))
+case class PackageType(code: String, description: String)
+
+object PackageType {
+
+  private val regex: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
+
+  lazy val all: List[PackageType] = FileUtil.read("package-types.csv")
+    .tail.map {
+    case regex(code: String, description: String) =>
+      PackageType(code, description)
+  }.sortBy(_.description)
+
 }

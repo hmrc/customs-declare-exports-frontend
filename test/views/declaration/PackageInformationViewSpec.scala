@@ -39,8 +39,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       assertMessage(remove, "Remove Packaging Information")
       assertMessage(tableHeading, "1 Package added")
       assertMessage(tableMultipleHeading, "{0} Packages added")
-      assertMessage(typesOfPackages, "6/9 How was this item packaged?")
-      assertMessage(typesOfPackagesHint, "Enter the 2 digit code, for example PA for pallets")
+      assertMessage(typesOfPackages, "6/9 Package Type")
       assertMessage(numberOfPackages, "6/10 Number of this package type")
       assertMessage(shippingMarks, "6/11 Shipping marks")
       assertMessage(shippingMarksHint, "Any mark or numbers on transport units and packages which can help us find it")
@@ -80,7 +79,6 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       val view = createView()
 
       getElementById(view, "typesOfPackages-label").text() must be(messages(typesOfPackages))
-      getElementById(view, "typesOfPackages-hint").text() must be(messages(typesOfPackagesHint))
       getElementById(view, "typesOfPackages").attr("value") must be("")
     }
 
