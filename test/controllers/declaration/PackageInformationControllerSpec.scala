@@ -277,7 +277,6 @@ class PackageInformationControllerSpec
           status(result) must be(OK)
           stringResult must include(messages(title))
           stringResult must include(messages(typesOfPackages))
-          stringResult must include(messages(typesOfPackagesHint))
           stringResult must include(messages(numberOfPackages))
           stringResult must include(messages(shippingMarks))
           stringResult must include(messages(shippingMarksHint))

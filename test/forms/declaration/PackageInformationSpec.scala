@@ -23,6 +23,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.MustMatchers
 import org.scalatest.prop.PropertyChecks
 import play.api.data.Form
+import services.PackageType
 
 class PackageInformationSpec
     extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers {
@@ -82,11 +83,11 @@ class PackageInformationSpec
         }
       }
 
-      "typesOfPackages length not equal to 2" in {
-
-        forAll(arbitrary[PackageInformation], minStringLength(3)) { (packaging, typeCode) =>
-          whenever(typeCode.nonEmpty) {
-            val data = packaging.copy(typesOfPackages = Some(typeCode))
+      "typesOfPackages not in list" in {
+        val permitted = PackageType.all.map(_.code).toSet
+        forAll(arbitrary[PackageInformation], nonEmptyString) { (packaging, pkgTypeCode) =>
+          whenever(!permitted.contains(pkgTypeCode)) {
+            val data = packaging.copy(typesOfPackages = Some(pkgTypeCode))
             Form(PackageInformation.mapping)
               .fillAndValidate(data)
               .fold(

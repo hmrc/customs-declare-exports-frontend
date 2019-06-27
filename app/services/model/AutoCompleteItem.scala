@@ -16,9 +16,14 @@
 
 package services.model
 
+import services.PackageType
+
 case class AutoCompleteItem(label: String, value: String)
 
 object AutoCompleteItem {
   def from(countries: List[Country], value: Country => String = _.countryName): List[AutoCompleteItem] =
     countries map (c => AutoCompleteItem(s"${c.countryName} - ${c.countryCode}", value(c)))
+
+  def from(packageTypes: List[PackageType]): List[AutoCompleteItem] =
+    packageTypes map (c => AutoCompleteItem(s"${c.description} - ${c.code}", c.code))
 }

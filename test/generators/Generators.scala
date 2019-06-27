@@ -21,6 +21,7 @@ import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
 import services.Countries.allCountries
+import services.PackageType
 
 trait Generators {
 
@@ -99,7 +100,7 @@ trait Generators {
   implicit val arbitraryPackaging: Arbitrary[PackageInformation] = Arbitrary {
     for {
       noOfPackages <- option(choose[Int](1, 99999))
-      typeOfPackages <- option(alphaNumStr.suchThat(_.nonEmpty).map(_.take(2)))
+      typeOfPackages <- option(oneOf(PackageType.all.map(_.code)))
       marksNumbersId <- alphaNumStr.map(_.take(40))
       if typeOfPackages.exists(_.size == 2) && marksNumbersId.size > 0
     } yield PackageInformation(typeOfPackages, noOfPackages, Some(marksNumbersId))
