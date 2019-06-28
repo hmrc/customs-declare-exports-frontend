@@ -63,13 +63,13 @@ To avoid problems, we need to remove [] from field.
 <div id="@fieldNameWithoutBrackets-autocomplete-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
     <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="form-label-bold">
         @messages(label)
-
-        @allErrors.map { error => <span class="error-message">@messages(error)</span> }
-
-        @hintText.map { ht =>
-            <span class="form-hint" id="@(fieldNameWithoutBrackets)-hint">@ht</span>
-        }
     </label>
+
+    @allErrors.map { error => <span id="error-message-@{field.name}-input" class="error-message">@messages(error)</span> }
+
+    @hintText.map { ht =>
+        <span class="form-hint" id="@(fieldNameWithoutBrackets)-hint">@ht</span>
+    }
 
     <select class="form-control" id="@(fieldNameWithoutBrackets)" name="@field.name" value="@field.value">
         <option value="">@emptySelectValue</option>

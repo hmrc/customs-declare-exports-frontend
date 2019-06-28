@@ -113,7 +113,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
     declaration.getGoodsShipment.getPreviousDocument.get(0).getID.getValue should be("DocumentReference")
     declaration.getGoodsShipment.getPreviousDocument.get(0).getCategoryCode.getValue should be("X")
     declaration.getGoodsShipment.getPreviousDocument.get(0).getLineNumeric.intValue() should be(123)
-    declaration.getGoodsShipment.getPreviousDocument.get(0).getTypeCode.getValue should be("ABC")
+    declaration.getGoodsShipment.getPreviousDocument.get(0).getTypeCode.getValue should be("MCR")
 
     declaration.getGoodsShipment.getAEOMutualRecognitionParty.size should be(1)
     declaration.getGoodsShipment.getAEOMutualRecognitionParty.get(0).getID.getValue should be("eori1")

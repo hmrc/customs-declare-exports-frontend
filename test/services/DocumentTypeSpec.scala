@@ -16,23 +16,20 @@
 
 package services
 
-import utils.FileUtil
+import org.scalatest.{MustMatchers, WordSpec}
+import services.DocumentType.allDocuments
 
-import scala.util.matching.Regex
+class DocumentTypeSpec extends WordSpec with MustMatchers {
 
-case class PackageType(code: String, description: String)
+  "Document Type" should {
 
-object PackageType {
+    "return document type in correct order" in {
 
-  private val regex: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
-
-  lazy val all: List[PackageType] = FileUtil
-    .read("package-types.csv")
-    .tail
-    .map {
-      case regex(code: String, description: String) =>
-        PackageType(code, description)
+      val threeTypes =
+        allDocuments.filter(d => d.description == "MUCR" || d.description == "DUCR" || d.description == "Other")
+      val expectedResult = List(DocumentType("DUCR", "DCR"), DocumentType("MUCR", "MCR"), DocumentType("Other", "ZZZ"))
+      threeTypes must be(expectedResult)
     }
-    .sortBy(_.description)
+  }
 
 }

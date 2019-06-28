@@ -168,7 +168,7 @@
             <ns3:PreviousDocument>
                 <ns3:CategoryCode>X</ns3:CategoryCode>
                 <ns3:ID>DocumentReference</ns3:ID>
-                <ns3:TypeCode>ABC</ns3:TypeCode>
+                <ns3:TypeCode>MCR</ns3:TypeCode>
                 <ns3:LineNumeric>123</ns3:LineNumeric>
             </ns3:PreviousDocument>
             <ns3:UCR>

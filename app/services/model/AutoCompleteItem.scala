@@ -16,7 +16,7 @@
 
 package services.model
 
-import services.PackageType
+import services.{DocumentType, PackageType}
 
 case class AutoCompleteItem(label: String, value: String)
 
@@ -26,4 +26,7 @@ object AutoCompleteItem {
 
   def from(packageTypes: List[PackageType]): List[AutoCompleteItem] =
     packageTypes map (c => AutoCompleteItem(s"${c.description} - ${c.code}", c.code))
+
+  def fromDocumentType(documents: List[DocumentType]): List[AutoCompleteItem] =
+    documents map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
 }

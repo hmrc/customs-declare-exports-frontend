@@ -19,6 +19,7 @@ package forms.declaration
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import services.DocumentType
 import utils.validators.forms.FieldValidator._
 
 case class Document(
@@ -46,7 +47,10 @@ object Document {
       .transform[String](optValue => optValue.getOrElse(""), docCategory => Some(docCategory)),
     "documentType" -> text()
       .verifying("supplementary.previousDocuments.documentType.empty", nonEmpty)
-      .verifying("supplementary.previousDocuments.documentType.error", isEmpty or (isAlphanumeric and noLongerThan(3))),
+      .verifying(
+        "supplementary.previousDocuments.documentType.error",
+        isEmpty or isContainedIn(DocumentType.allDocuments.map(_.code))
+      ),
     "documentReference" -> text()
       .verifying("supplementary.previousDocuments.documentReference.empty", nonEmpty)
       .verifying(

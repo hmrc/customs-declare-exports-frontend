@@ -52,7 +52,7 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers {
       goodsShipment.getPreviousDocument.get(0).getID.getValue should be("DocumentReference")
       goodsShipment.getPreviousDocument.get(0).getCategoryCode.getValue should be("X")
       goodsShipment.getPreviousDocument.get(0).getLineNumeric.intValue() should be(123)
-      goodsShipment.getPreviousDocument.get(0).getTypeCode.getValue should be("ABC")
+      goodsShipment.getPreviousDocument.get(0).getTypeCode.getValue should be("MCR")
 
       goodsShipment.getAEOMutualRecognitionParty.size should be(1)
       goodsShipment.getAEOMutualRecognitionParty.get(0).getID.getValue should be("eori1")

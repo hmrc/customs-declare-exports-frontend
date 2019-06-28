@@ -34,7 +34,7 @@ class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSu
       previousDoc.get(0).getID.getValue should be("DocumentReference")
       previousDoc.get(0).getCategoryCode.getValue should be("X")
       previousDoc.get(0).getLineNumeric.intValue() should be(123)
-      previousDoc.get(0).getTypeCode.getValue should be("ABC")
+      previousDoc.get(0).getTypeCode.getValue should be("MCR")
     }
 
     "handle no documents when mapping to WCO-DEC GoodsShipment.PreviousDocuments" in {

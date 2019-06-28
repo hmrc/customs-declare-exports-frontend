@@ -30,7 +30,7 @@ class DocumentSpec extends WordSpec with MustMatchers {
       "provided with empty document category" in {
         val documentInputData = JsObject(
           Map(
-            "documentType" -> JsString("ABC"),
+            "documentType" -> JsString("MCR"),
             "documentReference" -> JsString("DocumentReference"),
             "goodsItemIdentifier" -> JsString("123")
           )
@@ -46,7 +46,7 @@ class DocumentSpec extends WordSpec with MustMatchers {
         val documentInputData = JsObject(
           Map(
             "documentCategory" -> JsString("Unknown category"),
-            "documentType" -> JsString("ABC"),
+            "documentType" -> JsString("MCR"),
             "documentReference" -> JsString("DocumentReference"),
             "goodsItemIdentifier" -> JsString("123")
           )
@@ -99,7 +99,7 @@ object DocumentSpec {
   val correctPreviousDocumentsJSON: JsValue = JsObject(
     Map(
       "documentCategory" -> JsString(TemporaryStorage),
-      "documentType" -> JsString("ABC"),
+      "documentType" -> JsString("MCR"),
       "documentReference" -> JsString("DocumentReference"),
       "goodsItemIdentifier" -> JsString("123")
     )
