@@ -26,7 +26,7 @@ import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
-import services.cache.{ExportsCacheService, ExportsCacheModel}
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.additionaldeclarationtype.declaration_type
 
@@ -39,9 +39,9 @@ class AdditionalDeclarationTypePageController @Inject()(
   exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends  {
+    extends {
   val cacheService = exportsCacheService
-}  with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val decType = extractFormType(request)
@@ -58,12 +58,12 @@ class AdditionalDeclarationTypePageController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(declaration_type(formWithErrors))),
-        validAdditionalDeclarationType => {
-          updateCache(journeySessionId, validAdditionalDeclarationType)
-          customsCacheService
-            .cache[AdditionalDeclarationType](cacheId, decType.formId, validAdditionalDeclarationType)
-            .map(_ => Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage()))
-        }
+        validAdditionalDeclarationType =>
+          for {
+            _ <- updateCache(journeySessionId, validAdditionalDeclarationType)
+            - <- customsCacheService
+              .cache[AdditionalDeclarationType](cacheId, decType.formId, validAdditionalDeclarationType)
+          } yield Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
       )
   }
 

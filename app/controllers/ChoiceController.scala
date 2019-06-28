@@ -28,6 +28,7 @@ import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,20 +40,22 @@ import views.html.choice_page
 import scala.concurrent.{ExecutionContext, Future}
 
 class ChoiceController @Inject()(
-                                  authenticate: AuthAction,
-                                  customsCacheService: CustomsCacheService,
-                                  exportsCacheService: ExportsCacheService,
-                                  errorHandler: ErrorHandler,
-                                  mcc: MessagesControllerComponents
-                                )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends {
-    val cacheService = exportsCacheService
-  } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+  authenticate: AuthAction,
+  customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
+  errorHandler: ErrorHandler,
+  mcc: MessagesControllerComponents
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+
+  val logger = Logger.apply(this.getClass)
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, choiceId).map {
       case Some(data) => Ok(choice_page(Choice.form().fill(data)))
-      case _ => Ok(choice_page(Choice.form()))
+      case _          => Ok(choice_page(Choice.form()))
     }
   }
 
@@ -61,26 +64,35 @@ class ChoiceController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choice_page(formWithErrors))),
-        validChoice =>
-          customsCacheService.cache[Choice](eoriCacheId, choiceId, validChoice).map { _ =>
-            validChoice.value match {
-              case SupplementaryDec | StandardDec =>
+        validChoice => {
 
-                val createdDateTime = LocalDateTime.now
-                val model = ExportsCacheModel(authenticatedSessionId, UUID.randomUUID().toString, createdDateTime, createdDateTime, validChoice.value)
-                exportsCacheService.update(authenticatedSessionId, model)
-
-                Redirect(controllers.declaration.routes.DispatchLocationPageController.displayPage())
-              case CancelDec =>
-                Redirect(controllers.routes.CancelDeclarationController.displayForm())
-              case Submissions =>
-                Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
-              case _ =>
-                Redirect(controllers.routes.ChoiceController.displayChoiceForm())
-            }
+          (for {
+            _ <- customsCacheService.cache[Choice](eoriCacheId, choiceId, validChoice)
+            _ <- exportsCacheService.update(
+              authenticatedSessionId,
+              ExportsCacheModel(
+                authenticatedSessionId,
+                UUID.randomUUID().toString,
+                createdDateTime = LocalDateTime.now,
+                updatedDateTime = LocalDateTime.now,
+                validChoice.value
+              )
+            )
+          } yield ()).map {
+            _ =>
+              validChoice.value match {
+                case SupplementaryDec | StandardDec =>
+                  Redirect(controllers.declaration.routes.DispatchLocationPageController.displayPage())
+                case CancelDec =>
+                  Redirect(controllers.routes.CancelDeclarationController.displayForm())
+                case Submissions =>
+                  Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
+                case _ =>
+                  Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+              }
           }
+        }
       )
   }
-
 
 }

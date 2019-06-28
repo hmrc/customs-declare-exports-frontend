@@ -25,22 +25,20 @@ import scala.concurrent.{ExecutionContext, Future}
 trait ModelCacheable {
   val cacheService: ExportsCacheService
 
-
-  protected def updateHeaderLevelCache(sessionId: String,
-                                       update: ExportsCacheModel => Future[Either[String, ExportsCacheModel]])
-                                      (implicit ec: ExecutionContext): Future[Either[String, ExportsCacheModel]] =
+  protected def updateHeaderLevelCache(
+    sessionId: String,
+    update: ExportsCacheModel => Future[Either[String, ExportsCacheModel]]
+  )(implicit ec: ExecutionContext): Future[Either[String, ExportsCacheModel]] =
     cacheService.get(sessionId).flatMap {
       case Right(model) => update(model)
     }
 
-
-
 }
 
 trait SessionIdAware {
-  def journeySessionId(implicit request: JourneyRequest[AnyContent]) =
+  def journeySessionId(implicit request: JourneyRequest[_]) =
     request.authenticatedRequest.session.data("sessionId")
 
-   def authenticatedSessionId(implicit request: AuthenticatedRequest[AnyContent]) =
+  def authenticatedSessionId(implicit request: AuthenticatedRequest[AnyContent]) =
     request.session.data("sessionId")
 }

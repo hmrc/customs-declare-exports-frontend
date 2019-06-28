@@ -16,9 +16,6 @@
 
 package services.cache
 
-
-import java.time.LocalDateTime
-
 import base.CustomExportsBaseSpec
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -30,32 +27,55 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
 
   val mockRepo = mock[ExportsCacheModelRepository]
   val service = new ExportsCacheService(mockRepo)
+  val sessionId = "12345"
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     reset(mockRepo)
+
+  "ExportsCacheService" when {
+
+    "on get" should {
+
+      //TODO does this add value?
+      "return a cached model when exist" in {
+        val returnedModel = createModel(sessionId)
+        when(mockRepo.get(sessionId))
+          .thenReturn(Future.successful(Right(returnedModel)))
+
+        val result = service.get(sessionId).futureValue
+        result must be(Right(returnedModel))
+      }
+
+      //TODO does this add value?
+      "return a left error when doesn't exist" in {
+        when(mockRepo.get(sessionId))
+          .thenReturn(Future.successful(Left("some error")))
+
+        val result = service.get(sessionId).futureValue
+        result must be(Left("some error"))
+      }
+    }
+
+    "on upsert" should {
+
+      "update returns a model when upsert is successful" in {
+        val returnedModel = createModel(sessionId)
+        when(mockRepo.upsert(any(), any()))
+          .thenReturn(Future.successful(Some(returnedModel)))
+
+        val result = service.update(sessionId, returnedModel).futureValue
+        result must be(Right(returnedModel))
+      }
+    }
+
+    "update returns a String with an error message when upsert is unsuccessful" in {
+      val returnedModel = createModel(sessionId)
+      when(mockRepo.upsert(any(), any()))
+        .thenReturn(Future.successful(None))
+
+      val result = service.update(sessionId, returnedModel).futureValue
+      result must be(Left(s"Unable to retrieve a model for session id $sessionId"))
+    }
   }
 
-  "ExportsCacheService" should {
-
-    val model = ExportsCacheModel("SessionId", "draftId", LocalDateTime.now(), LocalDateTime.now(), "choice")
-
-    "return a Left with error message when repository throws exception" in {
-      val errorMessage = "some error message"
-      when(mockRepo.save(any())).thenReturn(Future.failed(new RuntimeException(errorMessage)))
-
-      service.save(model).futureValue must be(Left(errorMessage))
-    }
-
-    "return a Right Unit when repository successfully saves model" in {
-      when(mockRepo.save(any())).thenReturn(Future.successful(true))
-
-      service.save(model).futureValue must be(Right(()))
-    }
-
-    "return a Left with error message when repository fails to save model" in {
-      when(mockRepo.save(any())).thenReturn(Future.successful(false))
-
-      service.save(model).futureValue must be(Left("Failed saving cacheModel"))
-    }
-  }
 }

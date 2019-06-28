@@ -60,13 +60,12 @@ class ConsignmentReferencesController @Inject()(
       .fold(
         (formWithErrors: Form[ConsignmentReferences]) =>
           Future.successful(BadRequest(consignment_references(appConfig, formWithErrors))),
-        validConsignmentReferences => {
-         updateCache(journeySessionId, validConsignmentReferences)
-
-          customsCacheService
-            .cache[ConsignmentReferences](cacheId, ConsignmentReferences.id, validConsignmentReferences)
-            .map(_ => Redirect(controllers.declaration.routes.ExporterDetailsPageController.displayForm()))
-        }
+        validConsignmentReferences =>
+          for {
+            _ <- updateCache(journeySessionId, validConsignmentReferences)
+            _ <- customsCacheService
+              .cache[ConsignmentReferences](cacheId, ConsignmentReferences.id, validConsignmentReferences)
+          } yield Redirect(controllers.declaration.routes.ExporterDetailsPageController.displayForm())
       )
   }
 
@@ -77,6 +76,5 @@ class ConsignmentReferencesController @Inject()(
     updateHeaderLevelCache(sessionId, model => {
       exportsCacheService.update(sessionId, model.copy(consignmentReferences = Some(formData)))
     })
-
 
 }
