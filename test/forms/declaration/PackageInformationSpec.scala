@@ -23,7 +23,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.MustMatchers
 import org.scalatest.prop.PropertyChecks
 import play.api.data.Form
-import services.PackageType
+import services.PackageTypes
 
 class PackageInformationSpec
     extends CustomExportsBaseSpec with MustMatchers with PropertyChecks with Generators with FormMatchers {
@@ -84,7 +84,7 @@ class PackageInformationSpec
       }
 
       "typesOfPackages not in list" in {
-        val permitted = PackageType.all.map(_.code).toSet
+        val permitted = PackageTypes.all.map(_.code).toSet
         forAll(arbitrary[PackageInformation], nonEmptyString) { (packaging, pkgTypeCode) =>
           whenever(!permitted.contains(pkgTypeCode)) {
             val data = packaging.copy(typesOfPackages = Some(pkgTypeCode))

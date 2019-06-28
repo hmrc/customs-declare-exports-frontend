@@ -16,7 +16,7 @@
 
 package services.model
 
-import services.{DocumentType, PackageType}
+import services.DocumentType
 
 case class AutoCompleteItem(label: String, value: String)
 

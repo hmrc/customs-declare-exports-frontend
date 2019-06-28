@@ -16,7 +16,7 @@
 
 package services.model
 
-import services.{DocumentType, PackageType}
+import services.DocumentType
 import uk.gov.hmrc.play.test.UnitSpec
 
 class AutoCompleteItemSpec extends UnitSpec {
