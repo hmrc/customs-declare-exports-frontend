@@ -18,7 +18,7 @@ package services.mapping.declaration
 
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard}
+import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.PresentationOffice
@@ -34,7 +34,7 @@ object PresentationOfficeBuilder {
 
   private def buildPresentationOffice(choice: Choice)(implicit cacheMap: CacheMap): Declaration.PresentationOffice =
     cacheMap
-      .getEntry[OfficeOfExitStandard](OfficeOfExit.formId)
+      .getEntry[OfficeOfExitStandard](OfficeOfExitForms.formId)
       .map(createPresentationOffice)
       .orNull
 

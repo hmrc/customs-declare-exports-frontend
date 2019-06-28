@@ -18,7 +18,7 @@ package models.declaration
 
 import forms.declaration._
 import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesSupplementary}
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitSupplementary}
+import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitSupplementary}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 case class Locations(
@@ -42,6 +42,6 @@ object Locations {
     destinationCountries = cacheMap.getEntry[DestinationCountriesSupplementary](DestinationCountries.formId),
     goodsLocation = cacheMap.getEntry[GoodsLocation](GoodsLocation.formId),
     warehouseIdentification = cacheMap.getEntry[WarehouseIdentification](WarehouseIdentification.formId),
-    officeOfExit = cacheMap.getEntry[OfficeOfExitSupplementary](OfficeOfExit.formId)
+    officeOfExit = cacheMap.getEntry[OfficeOfExitSupplementary](OfficeOfExitForms.formId)
   )
 }
