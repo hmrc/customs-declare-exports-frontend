@@ -20,7 +20,7 @@ import helpers.views.declaration.OfficeOfExitMessages
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 
-class OfficeOfExitSpec extends WordSpec with MustMatchers with OfficeOfExitMessages {
+class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExitMessages {
 
   trait SetUp {
     val officeFieldId = "officeId"

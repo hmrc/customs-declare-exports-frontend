@@ -16,11 +16,15 @@
 
 package services
 
-import services.model.{OfficeOfExit, PackageType}
+import services.model.OfficeOfExit
+
+import scala.util.matching.Regex
 
 object OfficeOfExits extends CSVReader {
+  
+  val regexPattern: Regex = """^"?([^",]+)"?,(\w+)$""".r
 
-  lazy val all: List[OfficeOfExit] = readIgnoringHeaderRow { (code, description) =>
+  lazy val all: List[OfficeOfExit] = readIgnoringHeaderRow("office-of-exits.csv") { (description, code) =>
     OfficeOfExit(code, description)
   }.sortBy(_.description)
 }

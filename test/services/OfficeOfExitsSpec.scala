@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package utils
+package services
 
-import scala.io.Source
+import org.scalatest.{Matchers, MustMatchers, WordSpec}
+import services.model.OfficeOfExit
 
-object FileUtil {
+class OfficeOfExitsSpec extends WordSpec with Matchers {
 
-  def read(path: String): List[String] = {
-    val source = Source.fromURL(getClass.getClassLoader.getResource(path), "UTF-8")
-    try {
-      source.getLines().toList
-    } finally {
-      source.close()
+  "OfficeOfExits" should {
+
+    "read values from CSV and order by description, alphabetically ascending" in {
+      OfficeOfExits.all should contain inOrder(
+        OfficeOfExit("GB000411", "Aberdeen Airport"),
+        OfficeOfExit("GB000060", "Dover/Folkestone Eurotunnel Freight"),
+        OfficeOfExit("GB003280", "Workington")
+      )
     }
   }
-
 }

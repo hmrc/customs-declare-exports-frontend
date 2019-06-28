@@ -16,15 +16,24 @@
 
 package services
 
-import utils.FileUtil
-
+import scala.io.Source
 import scala.util.matching.Regex
 
 trait CSVReader {
 
-  val regexPattern: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
+  val regexPattern: Regex
 
-  def readIgnoringHeaderRow[T](convert: (String, String) => T): List[T] = FileUtil.read("package-types.csv").tail.map {
-    case regexPattern(code: String, description: String) => convert(code, description)
+  def readIgnoringHeaderRow[T](filename: String)(convert: (String, String) => T): List[T] =
+    read(filename).tail.map {
+      case regexPattern(col1: String, col2: String) => convert(col1, col2)
+    }
+
+  private def read(path: String): List[String] = {
+    val source = Source.fromURL(getClass.getClassLoader.getResource(path), "UTF-8")
+    try {
+      source.getLines().toList
+    } finally {
+      source.close()
+    }
   }
 }
