@@ -21,8 +21,7 @@ import java.util.UUID
 import forms.declaration.ProcedureCodes
 import play.api.libs.json.Json
 
-case class ExportItem(id: UUID = UUID.randomUUID(),
-                      procedureCodes: Option[ProcedureCodes] = None)
+case class ExportItem(id: UUID = UUID.randomUUID(), procedureCodes: Option[ProcedureCodes] = None)
 
 object ExportItem {
   implicit val format = Json.format[ExportItem]

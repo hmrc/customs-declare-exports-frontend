@@ -16,6 +16,7 @@
 
 package base
 
+import java.time.LocalDateTime
 import java.util.UUID
 
 import akka.stream.Materializer
@@ -47,6 +48,7 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services._
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.logging.Authorization
@@ -63,6 +65,7 @@ trait CustomExportsBaseSpec
   protected val contextPath: String = "/customs-declare-exports"
 
   val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
+  val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
   val mockNrsService: NRSService = mock[NRSService]
   val mockItemsCachingService: ItemsCachingService = mock[ItemsCachingService]
 
@@ -78,6 +81,7 @@ trait CustomExportsBaseSpec
     .overrides(
       bind[AuthConnector].to(mockAuthConnector),
       bind[CustomsCacheService].to(mockCustomsCacheService),
+      bind[ExportsCacheService].to(mockExportsCacheService),
       bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
       bind[NrsConnector].to(mockNrsConnector),
       bind[NRSService].to(mockNrsService),
@@ -179,9 +183,34 @@ trait CustomExportsBaseSpec
       .thenReturn(Future.successful(CacheMap(id, Map.empty)))
   }
 
+  def withNewCaching(dataToReturn: ExportsCacheModel) {
+    when(
+      mockExportsCacheService
+        .update(any(), any[ExportsCacheModel])
+    ).thenReturn(Future.successful(Right(dataToReturn)))
+
+    when(
+      mockExportsCacheService
+        .get(any())
+    ).thenReturn(Future.successful(Right(dataToReturn)))
+
+  }
+
   def withNrsSubmission(): OngoingStubbing[Future[NrsSubmissionResponse]] =
     when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
+
+  def createModel(existingSessionId: String): ExportsCacheModel =
+    ExportsCacheModel(
+      sessionId = existingSessionId,
+      draftId = "",
+      createdDateTime = LocalDateTime.now(),
+      updatedDateTime = LocalDateTime.now(),
+      choice = "SMP",
+      items = List.empty
+    )
+
+  def createModel(): ExportsCacheModel = createModel("")
 }
 
 object CSRFUtil {

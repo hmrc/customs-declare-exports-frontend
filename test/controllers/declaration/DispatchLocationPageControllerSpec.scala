@@ -26,6 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
 
@@ -34,12 +35,14 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
 
   before {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[DispatchLocation](None, DispatchLocation.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   after {
     reset(mockCustomsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Declaration Type Controller on GET" should {
@@ -67,6 +70,9 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
 
       verify(mockCustomsCacheService)
         .cache[DispatchLocation](any(), ArgumentMatchers.eq(DispatchLocation.formId), any())(any(), any(), any())
+
+      verify(mockExportsCacheService).update(any(), any[ExportsCacheModel])
+      verify(mockExportsCacheService).get(any())
     }
 
     "return 303 code" in {

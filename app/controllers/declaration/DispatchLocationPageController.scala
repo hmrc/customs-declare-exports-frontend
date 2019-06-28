@@ -41,7 +41,7 @@ class DispatchLocationPageController @Inject()(
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
-} with  FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
@@ -59,13 +59,10 @@ class DispatchLocationPageController @Inject()(
       .fold(
         (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatch_location(formWithErrors))),
         validDispatchLocation => {
-          updateCache(journeySessionId, validDispatchLocation)
-
-          customsCacheService
-            .cache[DispatchLocation](cacheId, DispatchLocation.formId, validDispatchLocation)
-            .map { _ =>
-              Redirect(specifyNextPage(validDispatchLocation))
-            }
+          for {
+            _ <- updateCache(journeySessionId, validDispatchLocation)
+            _ <- customsCacheService.cache[DispatchLocation](cacheId, DispatchLocation.formId, validDispatchLocation)
+          } yield Redirect(specifyNextPage(validDispatchLocation))
         }
       )
   }
@@ -82,7 +79,5 @@ class DispatchLocationPageController @Inject()(
     updateHeaderLevelCache(sessionId, model => {
       exportsCacheService.update(sessionId, model.copy(dispatchLocation = Some(formData)))
     })
-
-
 
 }

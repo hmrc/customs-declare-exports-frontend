@@ -41,19 +41,11 @@ class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent)(implicit
 
   implicit val journeyFormats = ExportsCacheModel.format
 
-  def get(sessionId: String): Future[Option[ExportsCacheModel]] =
-    find("sessionId" -> sessionId).map(_.headOption)
-
-  def getWithEither(sessionId: String): Future[Either[String, ExportsCacheModel]] =
+  def get(sessionId: String): Future[Either[String, ExportsCacheModel]] =
     find("sessionId" -> sessionId).map(_.headOption).map {
       case Some(model) => Right(model)
       case None        => Left(s"Unable to find model with sessionID: $sessionId")
     }
-
-  def save(journeyCacheModel: ExportsCacheModel): Future[Boolean] = insert(journeyCacheModel).map { res =>
-    if (!res.ok) logger.error(s"Errors when persisting cacheModel: ${res.writeErrors.mkString("--")}")
-    res.ok
-  }
 
   def upsert(sessionId: String, journeyCacheModel: ExportsCacheModel): Future[Option[ExportsCacheModel]] =
     collection

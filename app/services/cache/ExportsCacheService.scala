@@ -19,38 +19,18 @@ package services.cache
 import java.time.LocalDateTime.now
 
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ExportsCacheService @Inject()(journeyCacheModelRepo: ExportsCacheModelRepository)(implicit ec: ExecutionContext) {
-  private val logger = Logger(this.getClass)
 
-  def get(sessionId: String): Future[Either[String, ExportsCacheModel]] = journeyCacheModelRepo.getWithEither(sessionId)
+  def get(sessionId: String): Future[Either[String, ExportsCacheModel]] = journeyCacheModelRepo.get(sessionId)
 
-  def getBySessionIdAndFormId(sessionId: String): Future[Option[ExportsCacheModel]] = journeyCacheModelRepo.get(sessionId)
-
-  def update(sessionId: String, model: ExportsCacheModel): Future[Either[String, ExportsCacheModel]] = {
+  def update(sessionId: String, model: ExportsCacheModel): Future[Either[String, ExportsCacheModel]] =
     journeyCacheModelRepo.upsert(sessionId, model.copy(updatedDateTime = now())).map {
       case Some(retrievedModel) => Right(retrievedModel)
-      case None => Left("unable to sss")
+      case None                 => Left(s"Unable to retrieve a model for session id $sessionId")
     }
-  }.recover {
-    case exception: Throwable =>
-      logger.error(s"There is a problem saving the cacheModel with exception: ${exception.getMessage}")
-      Left(exception.getMessage)
-  }
 
-  def save(model: ExportsCacheModel): Future[Either[String, Unit]] = {
-    journeyCacheModelRepo.save(model).map {
-      case false => Left("Failed saving cacheModel")
-      case true => Right(())
-    }.recover {
-      case exception: Throwable =>
-        logger.error(s"There is a problem saving the cacheModel with exception: ${exception.getMessage}")
-        Left(exception.getMessage)
-    }
-  }
 }
-

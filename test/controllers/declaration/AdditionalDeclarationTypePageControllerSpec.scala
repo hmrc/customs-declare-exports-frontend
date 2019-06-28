@@ -34,6 +34,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
@@ -50,6 +51,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
     val journeyRequest = JourneyRequest(authenticatedRequest, Choice(AllowedChoiceValues.StandardDec))
     val cacheId = CacheIdGenerator.cacheId()(journeyRequest)
 
+    withNewCaching(createModel())
     withCaching[Choice](Some(Choice(AllowedChoiceValues.StandardDec)), choiceId)
     mockCacheBehaviour(cacheId, AdditionalDeclarationTypeStandardDec.formId)(None)
   }
@@ -58,6 +60,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
     val journeyRequest = JourneyRequest(authenticatedRequest, Choice(AllowedChoiceValues.SupplementaryDec))
     val cacheId = CacheIdGenerator.cacheId()(journeyRequest)
 
+    withNewCaching(createModel())
     withCaching[Choice](Some(Choice(AllowedChoiceValues.SupplementaryDec)), choiceId)
     mockCacheBehaviour(cacheId, AdditionalDeclarationTypeStandardDec.formId)(None)
   }
@@ -87,6 +90,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
 
   after {
     reset(mockCustomsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Additional Declaration Type Controller on GET" should {
@@ -145,6 +149,9 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
           ArgumentMatchers.eq(AdditionalDeclarationTypeSupplementaryDec.formId),
           any()
         )(any(), any(), any())
+
+        verify(mockExportsCacheService).update(any(), any[ExportsCacheModel])
+        verify(mockExportsCacheService).get(any())
       }
 
       "used for Supplementary Declaration" in new TestSupplementaryJourney {
@@ -157,6 +164,9 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
           ArgumentMatchers.eq(AdditionalDeclarationTypeSupplementaryDec.formId),
           any()
         )(any(), any(), any())
+
+        verify(mockExportsCacheService).update(any(), any[ExportsCacheModel])
+        verify(mockExportsCacheService).get(any())
       }
     }
 

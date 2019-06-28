@@ -56,13 +56,11 @@ class ExporterDetailsPageController @Inject()(
       .fold(
         (formWithErrors: Form[ExporterDetails]) =>
           Future.successful(BadRequest(exporter_details(appConfig, formWithErrors))),
-        form => {
-          updateCache(journeySessionId, form)
-
-          customsCacheService.cache[ExporterDetails](cacheId, ExporterDetails.id, form).map { _ =>
-            Redirect(controllers.declaration.routes.ConsigneeDetailsPageController.displayForm())
-          }
-        }
+        form =>
+          for {
+            _ <- updateCache(journeySessionId, form)
+            _ <- customsCacheService.cache[ExporterDetails](cacheId, ExporterDetails.id, form)
+          } yield Redirect(controllers.declaration.routes.ConsigneeDetailsPageController.displayForm())
       )
   }
 

@@ -37,12 +37,14 @@ class ConsignmentReferencesControllerSpec
 
   before {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   after {
     reset(mockCustomsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Consignment References Controller on GET" should {
@@ -95,6 +97,8 @@ class ConsignmentReferencesControllerSpec
             any(),
             any()
           )
+        verify(mockExportsCacheService).update(any(), any())
+        verify(mockExportsCacheService).get(any())
       }
     }
 
