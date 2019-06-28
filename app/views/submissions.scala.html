@@ -27,6 +27,8 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
+    @components.back_link("choice")
+
     <h1>@messages("submissions.title")</h1>
 
     <div>
@@ -44,11 +46,11 @@
                 <tr class="table-row">
                     <td class="table-cell">@submission.ducr</td>
                     <td class="table-cell">@submission.lrn</td>
-                    <td class="table-cell">@submission.mrn.getOrElse("")</td>
+                    <td class="table-cell">@submission.mrn</td>
                     <td class="table-cell">@{submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(_))}</td>
-                    <td class="table-cell">@{notifications.headOption.map(n => SubmissionStatus.retrieve(n.conversationId, n.nameCode)).getOrElse(UnknownStatus)}</td>
+                    <td class="table-cell">@{notifications.headOption.map(n => SubmissionStatus.retrieve(n.functionCode, n.nameCode)).getOrElse(UnknownStatus)}</td>
                     <td class="table-cell">
-                        <a @if(submission.mrn.isDefined) {href="/customs-declare-exports/notifications/@submission.mrn.get"}>
+                        <a @if(submission.mrn.isDefined) {href="@routes.NotificationsController.listOfNotificationsForSubmission(submission.mrn.get)"}>
                             @{notifications.length}
                         </a>
                     </td>
@@ -57,5 +59,5 @@
         </table>
     </div>
 
-    @components.button_link("supplementary.startNewDec", "/customs-declare-exports/choice")
+    @components.button_link("supplementary.startNewDec", routes.ChoiceController.displayChoiceForm().url)
 }
