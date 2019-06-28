@@ -16,6 +16,7 @@
 
 package services.mapping.governmentagencygoodsitem
 
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import models.declaration.governmentagencygoodsitem.{Commodity => _, GovernmentProcedure => _, Packaging => _}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
@@ -197,7 +198,13 @@ object GovernmentAgencyGoodsItemBuilderSpec {
       "governmentProcedures" -> JsArray(
         Seq(firstGovernmentProcedure, secondGovernmentProcedure, thirdGovernmentProcedure)
       ),
-      "packagings" -> JsArray(Seq(firstPackagingJson, secondPackagingJson))
+      "packagings" -> JsArray(Seq(firstPackagingJson, secondPackagingJson)),
+      "fiscalReferences" -> JsArray(
+        Seq(
+          Json.toJson(AdditionalFiscalReference("PL", "12345")),
+          Json.toJson(AdditionalFiscalReference("FR", "54321"))
+        )
+      )
     )
   )
 

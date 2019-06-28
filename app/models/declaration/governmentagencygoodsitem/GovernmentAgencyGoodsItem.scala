@@ -19,7 +19,7 @@ package models.declaration.governmentagencygoodsitem
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZoneId, ZonedDateTime}
 
-import forms.declaration.AdditionalInformation
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, AdditionalInformation}
 import play.api.libs.json.Json
 
 object Formats {
@@ -48,7 +48,8 @@ case class GovernmentAgencyGoodsItem(
   additionalInformations: Seq[AdditionalInformation] = Seq.empty,
   additionalDocuments: Seq[GovernmentAgencyGoodsItemAdditionalDocument] = Seq.empty,
   governmentProcedures: Seq[GovernmentProcedure] = Seq.empty,
-  packagings: Seq[Packaging] = Seq.empty
+  packagings: Seq[Packaging] = Seq.empty,
+  fiscalReferences: Seq[AdditionalFiscalReference] = Seq.empty
 )
 
 case class Amount(currencyId: Option[String] = None, value: Option[BigDecimal] = None)

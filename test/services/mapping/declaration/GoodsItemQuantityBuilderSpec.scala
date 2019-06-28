@@ -70,7 +70,8 @@ object GovernmentAgencyGoodsItemSpec {
           "additionalInformations" -> JsArray(),
           "additionalDocuments" -> JsArray(),
           "governmentProcedures" -> JsArray(),
-          "packagings" -> JsArray()
+          "packagings" -> JsArray(),
+          "fiscalReferences" -> JsArray()
         )
       )
     })

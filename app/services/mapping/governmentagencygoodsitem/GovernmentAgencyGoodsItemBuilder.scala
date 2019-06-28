@@ -80,6 +80,12 @@ object GovernmentAgencyGoodsItemBuilder {
       )
     }
 
+    if (governmentAgencyGoodsItem.fiscalReferences.nonEmpty) {
+      wcoGovernmentAgencyGoodsItem.getDomesticDutyTaxParty.addAll(
+        DomesticDutyTaxPartyBuilder.build(governmentAgencyGoodsItem.fiscalReferences)
+      )
+    }
+
     wcoGovernmentAgencyGoodsItem.setCommodity(CommodityBuilder.build(governmentAgencyGoodsItem.commodity))
     wcoGovernmentAgencyGoodsItem
   }

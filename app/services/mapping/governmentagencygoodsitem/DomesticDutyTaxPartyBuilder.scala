@@ -16,9 +16,8 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
-import uk.gov.hmrc.http.cache.client.CacheMap
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.DomesticDutyTaxParty
+import forms.declaration.AdditionalFiscalReference
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.DomesticDutyTaxParty
 import wco.datamodel.wco.declaration_ds.dms._2.{
   DomesticDutyTaxPartyIdentificationIDType,
   DomesticDutyTaxPartyRoleCodeType
@@ -28,17 +27,10 @@ import scala.collection.JavaConverters._
 
 object DomesticDutyTaxPartyBuilder {
 
-  def build(implicit cacheMap: CacheMap): java.util.List[DomesticDutyTaxParty] =
-    cacheMap
-      .getEntry[AdditionalFiscalReferencesData](AdditionalFiscalReferencesData.formId)
-      .map(referencesData => referencesData.references.map(ref => createDomesticDutyTaxParty(ref)))
-      .getOrElse(Seq.empty)
-      .toList
-      .asJava
+  def build(fiscalReferences: Seq[AdditionalFiscalReference]): java.util.List[DomesticDutyTaxParty] =
+    fiscalReferences.map(ref => createDomesticDutyTaxParty(ref)).toList.asJava
 
-  def createDomesticDutyTaxParty(
-    additionalFiscalReference: AdditionalFiscalReference
-  )(implicit cacheMap: CacheMap): DomesticDutyTaxParty = {
+  def createDomesticDutyTaxParty(additionalFiscalReference: AdditionalFiscalReference): DomesticDutyTaxParty = {
 
     val domesticDutyTaxParty = new DomesticDutyTaxParty
 
