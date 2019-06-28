@@ -19,7 +19,7 @@ package services.mapping.declaration
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers.yes
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard}
+import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.declaration_ds.dms._2._
 
@@ -35,7 +35,7 @@ object SpecificCircumstancesCodeBuilder {
     choice: Choice
   )(implicit cacheMap: CacheMap): DeclarationSpecificCircumstancesCodeCodeType =
     cacheMap
-      .getEntry[OfficeOfExitStandard](OfficeOfExit.formId)
+      .getEntry[OfficeOfExitStandard](OfficeOfExitForms.formId)
       .filter(data => data.circumstancesCode == yes)
       .map(createCircumstancesCode)
       .orNull

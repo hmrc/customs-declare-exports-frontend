@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package forms.declaration.officeOfExit
-import play.api.data.Form
+package services
 
-object OfficeOfExit {
-  val formId = "OfficeOfExit"
+import services.model.{OfficeOfExit, PackageType}
 
-  def supplementaryForm(): Form[OfficeOfExitSupplementary] = Form(OfficeOfExitSupplementary.mapping)
+object OfficeOfExits extends CSVReader {
 
-  def standardForm(): Form[OfficeOfExitStandard] = Form(OfficeOfExitStandard.mapping)
+  lazy val all: List[OfficeOfExit] = readIgnoringHeaderRow { (code, description) =>
+    OfficeOfExit(code, description)
+  }.sortBy(_.description)
 }

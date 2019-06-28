@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package services
+package forms.declaration.officeOfExit
+import play.api.data.Form
 
-import utils.FileUtil
+object OfficeOfExitForms {
+  val formId = "OfficeOfExit"
 
-import scala.util.matching.Regex
+  def supplementaryForm(): Form[OfficeOfExitSupplementary] = Form(OfficeOfExitSupplementary.mapping)
 
-trait CSVReader {
-
-  val regexPattern: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
-
-  def readIgnoringHeaderRow[T](convert: (String, String) => T): List[T] = FileUtil.read("package-types.csv").tail.map {
-    case regexPattern(code: String, description: String) => convert(code, description)
-  }
+  def standardForm(): Form[OfficeOfExitStandard] = Form(OfficeOfExitStandard.mapping)
 }

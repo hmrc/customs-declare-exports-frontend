@@ -15,7 +15,7 @@
  */
 
 package views.declaration
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard}
+import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard}
 import helpers.views.declaration.{CommonMessages, OfficeOfExitMessages}
 import play.api.data.Form
 import play.twirl.api.Html
@@ -26,7 +26,7 @@ import views.tags.ViewTest
 @ViewTest
 class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages with CommonMessages {
 
-  private val form: Form[OfficeOfExitStandard] = OfficeOfExit.standardForm()
+  private val form: Form[OfficeOfExitStandard] = OfficeOfExitForms.standardForm()
   private def createView(form: Form[OfficeOfExitStandard] = form): Html =
     office_of_exit_standard(form)(fakeRequest, appConfig, messages)
 
@@ -108,7 +108,7 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
       "display errors when all inputs are empty" in {
         val data = OfficeOfExitStandard("", "", "")
-        val form = OfficeOfExit.standardForm.fillAndValidate(data)
+        val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form)
 
         checkErrorsSummary(view)
@@ -130,7 +130,7 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
       "display errors when all inputs are incorrect" in {
         val data = OfficeOfExitStandard("123456", "654321", "Yes")
-        val form = OfficeOfExit.standardForm.fillAndValidate(data)
+        val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form)
 
         checkErrorsSummary(view)
@@ -148,7 +148,7 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
       "display errors when office of exit and presentation office contains special characters" in {
         val data = OfficeOfExitStandard("12#$%^78", "87^%$#21", "Yes")
-        val form = OfficeOfExit.standardForm.fillAndValidate(data)
+        val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form)
 
         checkErrorsSummary(view)

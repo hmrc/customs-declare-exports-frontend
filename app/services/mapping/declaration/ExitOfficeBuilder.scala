@@ -18,7 +18,7 @@ package services.mapping.declaration
 
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
+import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.ExitOffice
@@ -34,7 +34,7 @@ object ExitOfficeBuilder {
 
   private def buildExitOfficeFromStandard(implicit cacheMap: CacheMap): Declaration.ExitOffice =
     cacheMap
-      .getEntry[OfficeOfExitStandard](OfficeOfExit.formId)
+      .getEntry[OfficeOfExitStandard](OfficeOfExitForms.formId)
       .map(createExitOfficeFromStandardJourney)
       .orNull
 
@@ -49,7 +49,7 @@ object ExitOfficeBuilder {
 
   private def buildExitOfficeFromSupplementary(implicit cacheMap: CacheMap): Declaration.ExitOffice =
     cacheMap
-      .getEntry[OfficeOfExitSupplementary](OfficeOfExit.formId)
+      .getEntry[OfficeOfExitSupplementary](OfficeOfExitForms.formId)
       .map(createExitOfficeFromSupplementaryJourney)
       .orNull
 

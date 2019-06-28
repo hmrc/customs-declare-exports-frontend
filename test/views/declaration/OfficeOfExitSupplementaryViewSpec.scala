@@ -15,7 +15,7 @@
  */
 
 package views.declaration
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitSupplementary}
+import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitSupplementary}
 import helpers.views.declaration.{CommonMessages, OfficeOfExitMessages}
 import play.api.data.Form
 import play.twirl.api.Html
@@ -26,7 +26,7 @@ import views.tags.ViewTest
 @ViewTest
 class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessages with CommonMessages {
 
-  private val form: Form[OfficeOfExitSupplementary] = OfficeOfExit.supplementaryForm()
+  private val form: Form[OfficeOfExitSupplementary] = OfficeOfExitForms.supplementaryForm()
   private def createView(form: Form[OfficeOfExitSupplementary] = form): Html =
     office_of_exit_supplementary(form)(fakeRequest, appConfig, messages)
 
@@ -85,7 +85,7 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
 
     "display error when Office of Exit is incorrect" in {
 
-      val view = createView(OfficeOfExit.supplementaryForm.fillAndValidate(OfficeOfExitSupplementary("123456789")))
+      val view = createView(OfficeOfExitForms.supplementaryForm.fillAndValidate(OfficeOfExitSupplementary("123456789")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, officeOfExitLength, "#officeId")
@@ -95,7 +95,7 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
 
     "display error when Office of Exit is empty" in {
 
-      val view = createView(OfficeOfExit.supplementaryForm.fillAndValidate(OfficeOfExitSupplementary("")))
+      val view = createView(OfficeOfExitForms.supplementaryForm.fillAndValidate(OfficeOfExitSupplementary("")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, officeOfExitEmpty, "#officeId")
@@ -108,7 +108,7 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
 
     "display data in Office of Exit input" in {
 
-      val view = createView(OfficeOfExit.supplementaryForm.fill(OfficeOfExitSupplementary("12345678")))
+      val view = createView(OfficeOfExitForms.supplementaryForm.fill(OfficeOfExitSupplementary("12345678")))
 
       getElementById(view, "officeId").attr("value") must be("12345678")
     }

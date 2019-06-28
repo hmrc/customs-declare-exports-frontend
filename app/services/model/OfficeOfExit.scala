@@ -14,17 +14,6 @@
  * limitations under the License.
  */
 
-package services
+package services.model
 
-import utils.FileUtil
-
-import scala.util.matching.Regex
-
-trait CSVReader {
-
-  val regexPattern: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
-
-  def readIgnoringHeaderRow[T](convert: (String, String) => T): List[T] = FileUtil.read("package-types.csv").tail.map {
-    case regexPattern(code: String, description: String) => convert(code, description)
-  }
-}
+case class OfficeOfExit(code: String, description: String) 

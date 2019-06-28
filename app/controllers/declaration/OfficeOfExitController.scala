@@ -40,7 +40,7 @@ class OfficeOfExitController @Inject()(
   mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
-  import forms.declaration.officeOfExit.OfficeOfExit._
+  import forms.declaration.officeOfExit.OfficeOfExitForms._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.choice.value match {

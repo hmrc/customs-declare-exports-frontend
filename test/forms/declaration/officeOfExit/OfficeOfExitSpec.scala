@@ -27,11 +27,11 @@ class OfficeOfExitSpec extends WordSpec with MustMatchers with OfficeOfExitMessa
   }
 
   trait SupplementarySetUp extends SetUp {
-    val supplementaryForm = OfficeOfExit.supplementaryForm
+    val supplementaryForm = OfficeOfExitForms.supplementaryForm
   }
 
   trait StandardSetUp extends SetUp {
-    val standardForm = OfficeOfExit.standardForm
+    val standardForm = OfficeOfExitForms.standardForm
 
     val presentationOfficeFieldId = "presentationOfficeId"
     val circumstancesCodeFieldId = "circumstancesCode"
