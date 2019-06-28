@@ -27,7 +27,7 @@
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @components.back_link("choice")
+    @components.back_link(routes.ChoiceController.displayChoiceForm().url)
 
     <h1>@messages("submissions.title")</h1>
 
