@@ -16,13 +16,12 @@
 
 package services
 
+import services.model.PackageType
 import utils.FileUtil
 
 import scala.util.matching.Regex
 
-case class PackageType(code: String, description: String)
-
-object PackageType {
+object PackageTypes {
 
   private val regex: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
 

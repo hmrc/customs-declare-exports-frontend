@@ -19,7 +19,7 @@ package forms.declaration
 import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import services.PackageType
+import services.PackageTypes
 import utils.validators.forms.FieldValidator._
 
 case class PackageInformation(
@@ -43,7 +43,7 @@ object PackageInformation {
         text()
           .verifying(
             "supplementary.packageInformation.typesOfPackages.error",
-            isEmpty or isContainedIn(PackageType.all.map(_.code))
+            isEmpty or isContainedIn(PackageTypes.all.map(_.code))
           )
           .verifying("supplementary.packageInformation.typesOfPackages.empty", nonEmpty)
       ),
