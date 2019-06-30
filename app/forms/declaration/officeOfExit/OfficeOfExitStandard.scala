@@ -26,7 +26,6 @@ case class OfficeOfExitStandard(officeId: String, presentationOfficeId: String, 
 
 object OfficeOfExitStandard {
   implicit val format = Json.format[OfficeOfExitStandard]
-  val allowedValues: Seq[String] = Seq(yes, no)
   val mapping = Forms.mapping(
     "officeId" -> text()
       .verifying("declaration.officeOfExit.empty", nonEmpty)
@@ -38,7 +37,7 @@ object OfficeOfExitStandard {
       .verifying("standard.officeOfExit.presentationOffice.specialCharacters", isEmpty or isAlphanumeric),
     "circumstancesCode" -> text()
       .verifying("standard.officeOfExit.circumstancesCode.empty", nonEmpty)
-      .verifying("standard.officeOfExit.circumstancesCode.error", isEmpty or isContainedIn(allowedValues))
+      .verifying("standard.officeOfExit.circumstancesCode.error", isEmpty or isContainedIn(Seq(yes, no)))
   )(OfficeOfExitStandard.apply)(OfficeOfExitStandard.unapply)
 
   def adjustCircumstancesError(form: Form[OfficeOfExitStandard]): Form[OfficeOfExitStandard] = {

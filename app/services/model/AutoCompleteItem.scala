@@ -34,7 +34,7 @@ object AutoCompleteItem {
     documents map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
   }
 
-  def fromOfficeOfExit(offices: List[OfficeOfExit]) = {
+  def fromOfficeOfExit(offices: List[OfficeOfExit]): List[AutoCompleteItem] = {
     offices map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
   }
 }

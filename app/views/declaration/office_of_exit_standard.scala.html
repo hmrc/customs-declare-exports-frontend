@@ -22,6 +22,8 @@
 @import utils.RadioOption
 @import forms.declaration.officeOfExit.OfficeOfExitForms
 
+@import services.model.AutoCompleteItem
+@import services.OfficeOfExits
 @(form: Form[OfficeOfExitStandard])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
@@ -38,18 +40,20 @@
 
       @components.page_title(Some("declaration.officeOfExit.title"))
 
-      @components.input_text(
+      @components.autocomplete_field(
           field = form("officeId"),
           label = messages("declaration.officeOfExit"),
-          hint = Some(messages("declaration.officeOfExit.hint")),
-          labelClass = Some("bold-small")
+          hintText = Some(messages("declaration.officeOfExit.hint")),
+          messages("standard.officeOfExit.empty"),
+          AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
       )
 
-      @components.input_text(
-          field = form("presentationOfficeId"),
-          label = messages("standard.officeOfExit.presentationOffice"),
-          hint = Some(messages("standard.officeOfExit.presentationOffice.hint")),
-          labelClass = Some("bold-small")
+      @components.autocomplete_field(
+          form("presentationOfficeId"),
+          messages("standard.officeOfExit.presentationOffice"),
+          Some(messages("standard.officeOfExit.presentationOffice.hint")),
+          messages("standard.officeOfExit.presentationOffice.empty"),
+          AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
       )
 
       @components.input_radio(
