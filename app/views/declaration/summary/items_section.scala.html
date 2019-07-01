@@ -19,10 +19,6 @@
 
 @(items: Option[Items])(implicit messages: Messages)
 
-@concatenateOptions(opt_1: Option[String], opt_2: Option[String]) = @{
-    Some(opt_1.getOrElse("") + opt_2.getOrElse(""))
-}
-
 @components.summary_list(Some(messages("supplementary.summary.items.header"))) {
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.amountInvoiced"),
@@ -39,10 +35,8 @@
 
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.items.transactionType"),
-        value = concatenateOptions(
-            items.flatMap(_.transactionType).map(_.documentTypeCode),
-            items.flatMap(_.transactionType).flatMap(_.identifier)
-        )
+        value = items.flatMap(_.natureOfTransaction).map(_.natureType)
+
     ))
 
 }

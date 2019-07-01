@@ -84,8 +84,6 @@ trait GoodsItemCachingData extends Generators {
     forms.declaration.AdditionalInformation(createRandomAlphanumericString(5), createRandomString(70))
 
   def createFiscalReferences(): AdditionalFiscalReferencesData = AdditionalFiscalReferencesData(
-    Seq(
-      AdditionalFiscalReference("FR", createRandomAlphanumericString(8))
-    )
+    Seq(AdditionalFiscalReference("FR", createRandomAlphanumericString(8)))
   )
 }

@@ -128,9 +128,9 @@ POST        /additional-information              controllers.declaration.Additio
 
 # Transaction type
 
-GET         /transaction-type                    controllers.declaration.TransactionTypeController.displayForm()
+GET         /nature-of-transaction               controllers.declaration.NatureOfTransactionController.displayForm()
 
-POST        /transaction-type                    controllers.declaration.TransactionTypeController.saveTransactionType()
+POST        /nature-of-transaction               controllers.declaration.NatureOfTransactionController.saveTransactionType()
 
 # Package Information
 

@@ -19,41 +19,40 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
-import forms.declaration.TransactionType
-import forms.declaration.TransactionType.{form, formId}
+import forms.declaration.NatureOfTransaction
+import forms.declaration.NatureOfTransaction._
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.transaction_type
+import views.html.declaration.nature_of_transaction
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TransactionTypeController @Inject()(
-  appConfig: AppConfig,
+class NatureOfTransactionController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext)
+)(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[TransactionType](cacheId, formId).map {
-      case Some(data) => Ok(transaction_type(appConfig, form.fill(data)))
-      case _          => Ok(transaction_type(appConfig, form))
+    customsCacheService.fetchAndGetEntry[NatureOfTransaction](cacheId, formId).map {
+      case Some(data) => Ok(nature_of_transaction(form.fill(data)))
+      case _          => Ok(nature_of_transaction(form))
     }
   }
 
   def saveTransactionType(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form.bindFromRequest
       .fold(
-        (formWithErrors: Form[TransactionType]) =>
-          Future.successful(BadRequest(transaction_type(appConfig, formWithErrors))),
+        (formWithErrors: Form[NatureOfTransaction]) =>
+          Future.successful(BadRequest(nature_of_transaction(adjustErrors(formWithErrors)))),
         form =>
-          customsCacheService.cache[TransactionType](cacheId, formId, form).map { _ =>
+          customsCacheService.cache[NatureOfTransaction](cacheId, formId, form).map { _ =>
             Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm())
         }
       )

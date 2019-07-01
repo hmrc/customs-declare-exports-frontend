@@ -19,22 +19,22 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.TransactionType
-import forms.declaration.TransactionTypeSpec._
-import helpers.views.declaration.TransactionTypeMessages
+import forms.declaration.NatureOfTransaction
+import forms.declaration.NatureOfTransactionSpec._
+import helpers.views.declaration.NatureOfTransactionMessages
 import play.api.test.Helpers._
 
-class TransactionTypeControllerSpec extends CustomExportsBaseSpec with TransactionTypeMessages {
+class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with NatureOfTransactionMessages {
 
-  private val uri = uriWithContextPath("/declaration/transaction-type")
+  private val uri = uriWithContextPath("/declaration/nature-of-transaction")
 
   before {
     authorizedUser()
-    withCaching[TransactionType](None)
+    withCaching[NatureOfTransaction](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  "Transaction Type Controller on GET" should {
+  "Nature Of Transaction Controller on GET" should {
 
     "return 200 code" in {
 
@@ -45,42 +45,40 @@ class TransactionTypeControllerSpec extends CustomExportsBaseSpec with Transacti
 
     "read item from cache and display it" in {
 
-      val cachedData = TransactionType("AAA9", Some("FancyShoes"))
-      withCaching[TransactionType](Some(cachedData), "TransactionType")
+      val cachedData = NatureOfTransaction("1")
+      withCaching[NatureOfTransaction](Some(cachedData), NatureOfTransaction.formId)
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)
-      page must include("AAA9")
-      page must include("FancyShoes")
+      page must include("Purchase")
     }
   }
 
-  "Transaction Type Controller on POST" should {
+  "Nature Of Transaction Controller on POST" should {
 
     "validate request and redirect - empty value" in {
 
-      val result = route(app, postRequest(uri, emptyTransactionTypeJSON)).get
+      val result = route(app, postRequest(uri, emptyNatureOfTransactionJSON)).get
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(documentTypeCodeEmpty))
+      contentAsString(result) must include(messages(natureOfTransactionEmpty))
     }
 
     "validate request and redirect - incorrect values" in {
 
-      val result = route(app, postRequest(uri, incorrectTransactionTypeJSON)).get
+      val result = route(app, postRequest(uri, incorrectNatureOfTransactionJSON)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
 
-      stringResult must include(messages(documentTypeCodeError))
-      stringResult must include(messages(identifierError))
+      stringResult must include(messages(natureOfTransactionError))
     }
 
     "validate request and redirect - correct values" in {
 
-      val result = route(app, postRequest(uri, correctTransactionTypeJSON)).get
+      val result = route(app, postRequest(uri, correctNatureOfTransactionJSON)).get
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)

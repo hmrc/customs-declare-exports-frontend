@@ -112,7 +112,7 @@ class SubmissionService @Inject()(
       RepresentativeDetails.formId -> Json.toJson(
         cacheMap.getEntry[RepresentativeDetails](RepresentativeDetails.formId)
       ),
-      TransactionType.formId -> Json.toJson(cacheMap.getEntry[TransactionType](TransactionType.formId)),
+      NatureOfTransaction.formId -> Json.toJson(cacheMap.getEntry[NatureOfTransaction](NatureOfTransaction.formId)),
       CarrierDetails.id -> Json.toJson(cacheMap.getEntry[CarrierDetails](CarrierDetails.id)),
       ConsigneeDetails.id -> Json.toJson(cacheMap.getEntry[ConsigneeDetails](ConsigneeDetails.id)),
       GoodsLocation.formId -> Json.toJson(cacheMap.getEntry[GoodsLocation](GoodsLocation.formId)),

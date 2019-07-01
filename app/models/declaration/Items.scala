@@ -19,12 +19,12 @@ package models.declaration
 import forms.declaration._
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-case class Items(totalNumberOfItems: Option[TotalNumberOfItems] = None, transactionType: Option[TransactionType] = None)
-    extends SummaryContainer {
+case class Items(
+  totalNumberOfItems: Option[TotalNumberOfItems] = None,
+  natureOfTransaction: Option[NatureOfTransaction] = None
+) extends SummaryContainer {
 
-  override def isEmpty: Boolean =
-    totalNumberOfItems.isEmpty &&
-      transactionType.isEmpty
+  override def isEmpty: Boolean = totalNumberOfItems.isEmpty && natureOfTransaction.isEmpty
 }
 
 object Items {
@@ -33,6 +33,6 @@ object Items {
   def apply(cacheMap: CacheMap): Items =
     Items(
       totalNumberOfItems = cacheMap.getEntry[TotalNumberOfItems](TotalNumberOfItems.formId),
-      transactionType = cacheMap.getEntry[TransactionType](TransactionType.formId)
+      natureOfTransaction = cacheMap.getEntry[NatureOfTransaction](NatureOfTransaction.formId)
     )
 }
