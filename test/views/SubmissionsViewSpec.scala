@@ -77,15 +77,13 @@ class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonM
         lrn = "lrn",
         mrn = Some("mrn"),
         ducr = Some("ducr"),
-        actions = Seq(
-          actionSubmission, actionCancellation
-        )
+        actions = Seq(actionSubmission, actionCancellation)
       )
 
       val notification = Notification(
         conversationId = "conv-id",
         mrn = "mrn",
-        dateTimeIssued = LocalDateTime.of(2020,1,1,0,0,0),
+        dateTimeIssued = LocalDateTime.of(2020, 1, 1, 0, 0, 0),
         functionCode = "01",
         nameCode = None,
         errors = Seq.empty,
@@ -162,8 +160,9 @@ class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonM
     }
   }
 
-  private def tableCell(view: Html)(row: Int, column: Int): Element = getElementsByCss(view, ".table-row")
-    .get(row)
-    .getElementsByClass("table-cell")
-    .get(column)
+  private def tableCell(view: Html)(row: Int, column: Int): Element =
+    getElementsByCss(view, ".table-row")
+      .get(row)
+      .getElementsByClass("table-cell")
+      .get(column)
 }
