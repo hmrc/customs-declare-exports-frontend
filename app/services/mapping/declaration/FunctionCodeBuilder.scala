@@ -15,6 +15,7 @@
  */
 
 package services.mapping.declaration
+
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationFunctionCodeType
 

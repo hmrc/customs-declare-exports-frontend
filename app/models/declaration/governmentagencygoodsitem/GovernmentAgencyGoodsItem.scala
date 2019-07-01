@@ -19,7 +19,7 @@ package models.declaration.governmentagencygoodsitem
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZoneId, ZonedDateTime}
 
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, AdditionalInformation}
+import forms.declaration.{AdditionalFiscalReference, AdditionalInformation}
 import play.api.libs.json.Json
 
 object Formats {

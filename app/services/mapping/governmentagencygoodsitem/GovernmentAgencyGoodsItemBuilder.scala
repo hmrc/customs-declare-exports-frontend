@@ -37,6 +37,7 @@ object GovernmentAgencyGoodsItemBuilder {
       .toList
       .asJava
 
+  //scalastyle:off method.length
   def createWCOGovernmentAgencyGoodsItem(
     governmentAgencyGoodsItem: GovernmentAgencyGoodsItem
   )(implicit cacheMap: CacheMap): WCOGovernmentAgencyGoodsItem = {
@@ -89,5 +90,5 @@ object GovernmentAgencyGoodsItemBuilder {
     wcoGovernmentAgencyGoodsItem.setCommodity(CommodityBuilder.build(governmentAgencyGoodsItem.commodity))
     wcoGovernmentAgencyGoodsItem
   }
-
+  //scalastyle:on method.length
 }
