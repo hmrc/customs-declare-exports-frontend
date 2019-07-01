@@ -77,7 +77,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       commodity = Some(updatedCommodity),
       additionalInformations = additionalInfo(cachedData).getOrElse(Seq.empty),
       additionalDocuments = documents(cachedData).getOrElse(Seq.empty),
-      fiscalReferences = fiscalReferences(cachedData).getOrElse(Seq.empty)
+      fiscalReferences = if(hasFiscalReferences(cachedData)) fiscalReferences(cachedData) else Seq.empty
     )
   }
 
@@ -127,10 +127,17 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       .getEntry[DocumentsProducedData](DocumentsProducedData.formId)
       .map(_.documents.map(createGoodsItemAdditionalDocument))
 
-  def fiscalReferences(cachedData: CacheMap): Option[Seq[AdditionalFiscalReference]] =
+  def hasFiscalReferences(cachedData: CacheMap): Boolean =
+    cachedData
+      .getEntry[FiscalInformation](FiscalInformation.formId)
+      .map(_.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes)
+      .getOrElse(false)
+
+  def fiscalReferences(cachedData: CacheMap): Seq[AdditionalFiscalReference] =
     cachedData
       .getEntry[AdditionalFiscalReferencesData](AdditionalFiscalReferencesData.formId)
       .map(_.references)
+      .getOrElse(Seq.empty)
 
   private def createGoodsItemAdditionalDocument(doc: DocumentsProduced) =
     GovernmentAgencyGoodsItemAdditionalDocument(

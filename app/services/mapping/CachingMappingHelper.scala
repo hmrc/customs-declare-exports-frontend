@@ -15,6 +15,7 @@
  */
 
 package services.mapping
+
 import forms.declaration.{CommodityMeasure, ItemType}
 import forms.declaration.ItemType.IdentificationTypeCodes.{
   CUSCode,
