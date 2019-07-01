@@ -27,7 +27,8 @@ import services.Countries
 import services.model.AutoCompleteItem
 import utils.RadioOption
 import views.declaration.spec.ViewSpec
-import views.html.components.{autocomplete_field, input_radio, input_text}
+import views.html.components.{input_radio, input_text}
+import views.html.components.fields.field_autocomplete
 import views.html.declaration.transport_details
 import views.tags.ViewTest
 
@@ -82,7 +83,7 @@ class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessage
 trait TransportDetailsFields extends ViewSpec {
   val form: Form[TransportDetails] = TransportDetails.form()
 
-  val meansOfTransportCrossingTheBorderNationality = autocomplete_field(
+  val meansOfTransportCrossingTheBorderNationality = field_autocomplete(
     form("meansOfTransportCrossingTheBorderNationality"),
     "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header",
     None,

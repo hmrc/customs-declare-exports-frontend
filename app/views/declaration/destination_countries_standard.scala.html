@@ -36,7 +36,7 @@
         @components.page_title(Some("declaration.destinationCountries.title"))
 
         <div id="country-of-dispatch-field" class="inline-block form-group">
-            @components.autocomplete_field(
+            @components.fields.field_autocomplete(
                 form("countryOfDispatch"),
                 "declaration.destinationCountries.countryOfDispatch",
                 Some(messages("declaration.destinationCountries.countryOfDispatch.hint")),
@@ -52,7 +52,7 @@
         @components.multiple_items_list(routingCountries)
 
         <div id="country-of-routing-field" class="inline-block form-group">
-            @components.autocomplete_field(
+            @components.fields.field_autocomplete(
                 form("countriesOfRouting[]"),
                 "declaration.destinationCountries.countriesOfRouting",
                 None,
@@ -70,7 +70,7 @@
         <br/>
 
         <div id="country-of-destination-field" class="inline-block form-group">
-            @components.autocomplete_field(
+            @components.fields.field_autocomplete(
                 form("countryOfDestination"),
                 "declaration.destinationCountries.countryOfDestination",
                 Some(messages("declaration.destinationCountries.countryOfDestination.hint")),
