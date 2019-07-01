@@ -63,7 +63,6 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
     }
 
     "have proper labels for error messages" in {
-
       assertMessage(cncErrorEmpty, "Combined Nomenclature Commodity Code cannot be empty")
       assertMessage(cncErrorLength, "Combined Nomenclature Commodity Code cannot be longer than 8 characters")
       assertMessage(cncErrorSpecialCharacters, "Combined Nomenclature Commodity Code cannot contain special characters")
@@ -71,8 +70,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       assertMessage(taricErrorSpecialCharacters, "TARIC additional code cannot contain specialCharacters")
       assertMessage(taricErrorMaxAmount, "You cannot add more codes")
       assertMessage(taricErrorDuplicate, "TARIC additional codes cannot contain duplicates")
-      assertMessage(nacErrorLength, "National Additional Code cannot be longer than 4 characters")
-      assertMessage(nacErrorSpecialCharacters, "National Additional Code cannot contain special Characters")
+      assertMessage(nacErrorInvalid, "National Additional Code must be valid")
       assertMessage(nacErrorMaxAmount, "You cannot add more codes")
       assertMessage(nacErrorDuplicate, "National Additional Codes cannot contain duplicates")
       assertMessage(descriptionErrorEmpty, "Description cannot be empty")
@@ -136,7 +134,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         getElementById(view, "nationalAdditionalCode_-label").text() must be(messages(nacHeader))
         getElementById(view, "nationalAdditionalCode_-hint").text() must be(messages(nacHeaderHint))
-        getElementById(view, "nationalAdditionalCode_").attr("value") must be("")
+        getElementById(view, "nationalAdditionalCode").attr("value") must be("")
       }
 
       "display empty input with label for Statistical Value" in {
@@ -228,7 +226,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
         getElementById(view, "nationalAdditionalCode_-label").text() must be(messages(nacHeader))
         getElementById(view, "nationalAdditionalCode_-hint").text() must be(messages(nacHeaderHint))
-        getElementById(view, "nationalAdditionalCode_").attr("value") must be("")
+        getElementById(view, "nationalAdditionalCode").attr("value") must be("")
       }
 
       "display empty input with label for Description" in {

@@ -1,0 +1,65 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.util.{Add, Remove}
+
+@import views.html.components.add_button
+@(
+    field: Field,
+    label: String,
+    hint: Option[String] = None,
+    elements: Seq[String] = Seq.empty,
+    labelClass: Option[String] = None,
+    input: Html
+)(implicit messages: Messages)
+
+<div class="form-field @if(field.hasErrors){form-field--error}">
+    <label class="form-label" for="@{field.id}">
+        <span id="@{field.id}-label" class="@if(labelClass.nonEmpty){@labelClass}">@label</span>
+        @if(hint.nonEmpty){
+            <span id="@{field.id}-hint" class="form-hint">@hint</span>
+        }
+        @field.errors.map { error =>
+            <span class="error-notification"
+                id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
+        }
+    </label>
+
+    @if(elements.nonEmpty) {
+        <div class="field-group">
+            <table >
+            @elements.zipWithIndex.map { case (elem, index) =>
+                <tr>
+                    <th>@elem</th>
+                    <th>
+                        <button
+                            class="button--secondary"
+                            name="@Remove.toString"
+                            value="@{field.id}@{index}">@messages("site.remove")</button>
+                    </th>
+                </tr>
+            }
+            </table>
+            <br/><br/>
+        </div>
+    }
+
+    <div class="form-control-wrapper">
+        @input
+    </div>
+
+    @add_button()
+</div>

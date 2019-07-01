@@ -18,6 +18,7 @@
 
 @import services.model.AutoCompleteItem
 
+@import views.html.components.inputs.input_autocomplete
 @(field: Field, label: String, hintText: Option[String], emptySelectValue: String, items: List[AutoCompleteItem], args: (Symbol, Any)*)(implicit messages: Messages)
 @*
 Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
@@ -27,11 +28,6 @@ To avoid problems, we need to remove [] from field.
 @fieldNameWithoutBrackets = @{
     field.name.replace("[]", "")
 }
-
-@fieldNameForJQuery = @{
-    fieldNameWithoutBrackets.replaceAll("\\.", """\\\\.""")
-}
-
 
 @elements = @{
     FieldElements(field.id, field, null, args.toMap, messages)
@@ -44,22 +40,6 @@ To avoid problems, we need to remove [] from field.
     }
 }
 
-@selectedValue = @{
-    field.value getOrElse ""
-}
-
-<script type="text/javascript">
-    document.addEventListener("DOMContentLoaded", function (event) {
-        $(function () {
-            $("#@(fieldNameForJQuery)").combobox();
-            $("#toggle").on("click", function () {
-                $("#@(fieldNameForJQuery)").toggle();
-            });
-        });
-
-    });
-</script>
-
 <div id="@fieldNameWithoutBrackets-autocomplete-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
     <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="form-label-bold">
         @messages(label)
@@ -71,10 +51,9 @@ To avoid problems, we need to remove [] from field.
         <span class="form-hint" id="@(fieldNameWithoutBrackets)-hint">@ht</span>
     }
 
-    <select class="form-control" id="@(fieldNameWithoutBrackets)" name="@field.name" value="@field.value">
-        <option value="">@emptySelectValue</option>
-        @items.map { i =>
-            <option value="@i.value" @if(selectedValue == i.value) {selected="selected"}>@i.label</option>
-        }
-    </select>
+    @input_autocomplete(
+        field = field,
+        emptySelectValue = emptySelectValue,
+        items = items
+    )
 </div>
