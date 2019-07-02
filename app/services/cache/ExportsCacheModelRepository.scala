@@ -19,7 +19,7 @@ package services.cache
 import java.time.LocalDateTime
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import forms.declaration.{ConsignmentReferences, DispatchLocation, WarehouseIdentification}
+import forms.declaration.{BorderTransport, ConsignmentReferences, DispatchLocation, WarehouseIdentification}
 import javax.inject.Inject
 import models.declaration.Parties
 import play.api.libs.json.{JsObject, Json}
@@ -79,6 +79,7 @@ case class ExportsCacheModel(
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
   warehouseIdentification: Option[WarehouseIdentification] = None,
+  borderTransport: Option[BorderTransport] = None,
   parties: Option[Parties] = None,
   items: List[ExportItem] = Nil
 )
