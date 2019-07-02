@@ -22,7 +22,7 @@ case class NationalAdditionalCode(value: String)
 
 object NationalAdditionalCode {
   lazy val all: List[NationalAdditionalCode] = FileUtil
-    .read("national-additional-codes.csv")
+    .read("code-lists/national-additional-codes.csv")
     .tail
     .map(NationalAdditionalCode(_))
     .sortBy(_.value)

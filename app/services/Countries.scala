@@ -22,7 +22,7 @@ import services.model.Country
 object Countries {
 
   private val countries: List[Country] = {
-    val jsonFile = getClass.getResourceAsStream("/location-autocomplete-canonical-list.json")
+    val jsonFile = getClass.getResourceAsStream("/code-lists/location-autocomplete-canonical-list.json")
 
     def fromJsonFile: List[Country] =
       Json.parse(jsonFile) match {
