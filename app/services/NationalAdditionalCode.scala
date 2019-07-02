@@ -27,5 +27,3 @@ object NationalAdditionalCode {
     .map(NationalAdditionalCode(_))
     .sortBy(_.value)
 }
-
-
