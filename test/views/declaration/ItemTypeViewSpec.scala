@@ -45,7 +45,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
       assertMessage(taricHeader, "6/16 Do you need to enter any TARIC additional codes?")
       assertMessage(taricHeaderHint, "Up to 4 digits. If no additional code is required, leave blank")
       assertMessage(nacHeader, "6/17 Enter the National Additional Code")
-      assertMessage(nacHeaderHint, "Up to 4 digits. If no additional code is required, leave blank")
+      assertMessage(nacHeaderHint, "This is a 4 character code. If no additional code is required, leave blank")
       assertMessage(descriptionHeader, "6/8 Enter the trade description of the goods")
       assertMessage(
         descriptionHeaderHint,
