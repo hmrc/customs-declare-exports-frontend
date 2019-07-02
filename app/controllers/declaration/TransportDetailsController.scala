@@ -30,6 +30,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.transport_details
 
@@ -40,9 +41,12 @@ class TransportDetailsController @Inject()(
   journeyAction: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
     customsCacheService
@@ -56,9 +60,10 @@ class TransportDetailsController @Inject()(
       .fold(
         (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transport_details(formWithErrors))),
         transportDetails =>
-          customsCacheService
-            .cache[TransportDetails](cacheId, TransportDetails.formId, transportDetails)
-            .map(_ => redirect(transportDetails))
+          for {
+            _ <- updateCache(journeySessionId, transportDetails)
+            _ <- customsCacheService.cache[TransportDetails](cacheId, TransportDetails.formId, transportDetails)
+          } yield redirect(transportDetails)
       )
   }
 
@@ -66,4 +71,9 @@ class TransportDetailsController @Inject()(
     if (transportDetails.container) Redirect(TransportContainerController.displayPage())
     else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(SealController.displayForm())
     else Redirect(SummaryPageController.displayPage())
+
+  private def updateCache(sessionId: String, formData: TransportDetails): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(sessionId, model => {
+      exportsCacheService.update(sessionId, model.copy(transportDetails = Some(formData)))
+    })
 }
