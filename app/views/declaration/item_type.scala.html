@@ -58,7 +58,7 @@
             labelClass = Some("bold-small")
         )
 
-        @components.input_text_multiple_values(
+        @components.fields.field_text_multiple_values(
             field = form(taricAdditionalCodesKey + "[]"),
             label = messages("declaration.itemType.taricAdditionalCodes.header"),
             hint = Some(messages("declaration.itemType.taricAdditionalCodes.header.hint")),
@@ -86,7 +86,7 @@
             labelClass = Some("bold-small")
         )
 
-        @components.input_textarea(
+        @components.fields.field_textarea(
             field = form("descriptionOfGoods"),
             label = messages("declaration.itemType.description.header"),
             hint = Some(messages("declaration.itemType.description.header.hint")),
