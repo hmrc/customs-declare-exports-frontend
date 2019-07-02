@@ -24,19 +24,19 @@
         label = messages("What is the commodity code for this item?")
     )
 
-    @components.input_radio(
+    @components.fields.field_radio(
         field = form("goodsPackage.isDescriptionOfYourGoodsCorrect"),
         legend = "Is this description of your goods correct?",
         inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
     )
 
-    @components.input_radio(
+    @components.fields.field_radio(
         field = form("goodsPackage.isItemOnUNDGList"),
         legend = "Is this item on the United Nations Dangerous Goods list?",
         inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
     )
 
-    @components.input_radio(
+    @components.fields.field_radio(
         field = form("goodsPackage.addLicenceForItem"),
         legend = "Do you want to add a licence for this item?",
         inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
@@ -52,13 +52,13 @@
         label = messages("Choose the package type")
     )
 
-    @components.input_radio(
+    @components.fields.field_radio(
         field = form("goodsPackage.goodsInContainer"),
         legend = "Will the goods end up in a container?",
         inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
     )
 
-    @components.input_radio(
+    @components.fields.field_radio(
         field = form("goodsPackage.addAnotherPackage"),
         legend = "Add another package for this item?",
         inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))

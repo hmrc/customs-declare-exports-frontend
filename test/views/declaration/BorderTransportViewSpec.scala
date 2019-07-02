@@ -23,7 +23,8 @@ import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
 import views.html.declaration.border_transport
 import views.tags.ViewTest
-import views.html.components.{input_radio, input_text}
+import views.html.components.input_text
+import views.html.components.fields.field_radio
 import utils.RadioOption
 import forms.declaration.TransportCodes._
 
@@ -90,7 +91,7 @@ class BorderTransportViewSpec extends BorderTransportFields with CommonMessages 
 trait BorderTransportFields extends ViewSpec {
   val form: Form[BorderTransport] = BorderTransport.form()
 
-  val expBorderModeOfTransportCode = input_radio(
+  val expBorderModeOfTransportCode = field_radio(
     field = form("borderModeOfTransportCode"),
     legend = messages("supplementary.transportInfo.borderTransportMode.header"),
     hint = Some(messages("supplementary.transportInfo.borderTransportMode.header.hint")),
@@ -118,7 +119,7 @@ trait BorderTransportFields extends ViewSpec {
     )
   )
 
-  val expMeansOfTransportOnDepartureType = input_radio(
+  val expMeansOfTransportOnDepartureType = field_radio(
     field = form("meansOfTransportOnDepartureType"),
     legend = messages("supplementary.transportInfo.meansOfTransport.departure.header"),
     hint = Some(messages("supplementary.transportInfo.meansOfTransport.departure.header.hint")),

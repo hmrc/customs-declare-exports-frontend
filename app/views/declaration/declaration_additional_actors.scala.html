@@ -70,7 +70,7 @@
     <span class="heading-24">@messages("supplementary.additionalActors.partyType")</span>
 
     @helpers.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
-        @components.input_radio(
+        @components.fields.field_radio(
             field = form("partyType"),
             legend = "",
             inputs = Seq(

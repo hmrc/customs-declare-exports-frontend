@@ -57,7 +57,7 @@
             'otherErrorFields -> Seq("countryCode")
         )
 
-        @components.input_radio(
+        @components.fields.field_radio(
             field = form("meansOfTransportCrossingTheBorderType"),
             legend = messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header"),
             hint = Some(messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint")),
@@ -76,13 +76,13 @@
             field = form("meansOfTransportCrossingTheBorderIDNumber"),
             label = messages("supplementary.transportInfo.meansOfTransport.reference.header")
         )
-        @components.input_radio(
+        @components.fields.field_radio(
             field = form("container"),
             legend = messages("supplementary.transportInfo.container"),
             inputs = Seq(RadioOption("Yes", "true", messages("site.yes")), RadioOption("No", "false", messages("site.no")))
         )
         @if(request.choice.value == AllowedChoiceValues.StandardDec) {
-            @components.input_radio(
+            @components.fields.field_radio(
                 field = form("paymentMethod"),
                 legend = messages("standard.transportDetails.paymentMethod"),
                 inputs = paymentMethods.toSeq.map { case (a, b) => RadioOption(messages(b), a, messages(b)) }

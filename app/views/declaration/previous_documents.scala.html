@@ -71,7 +71,7 @@
     @helpers.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
         @components.page_title(Some("supplementary.previousDocuments.title"), Some("supplementary.previousDocuments.hint"))
 
-        @components.input_radio(
+        @components.fields.field_radio(
             field = form("documentCategory"),
             legend = messages(""),
             inputs = Seq(
