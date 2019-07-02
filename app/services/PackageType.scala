@@ -27,7 +27,7 @@ object PackageType {
   private val regex: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
 
   lazy val all: List[PackageType] = FileUtil
-    .read("package-types.csv")
+    .read("code-lists/package-types.csv")
     .tail
     .map {
       case regex(code: String, description: String) =>

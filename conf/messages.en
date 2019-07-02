@@ -289,9 +289,9 @@ submissions.noOfNotifications = Number of notifications
 
 supplementary.declarationHolder.title = 3/39 Enter holder of ID status number
 supplementary.declarationHolder.eori = Enter the EORI number of the authorised party
-supplementary.declarationHolder.authorisationCode = Enter the authorisation code
-supplementary.declarationHolder.authorisationCode.hint = A 4 digit code
-supplementary.declarationHolder.authorisationCode.error = Authorisation code is incorrect
+supplementary.declarationHolder.authorisationCode = Authorisation code
+supplementary.declarationHolder.authorisationCode.hint = A code up to 4 characters for the type of authorisation.
+supplementary.declarationHolder.authorisationCode.invalid = Authorisation code is invalid
 supplementary.declarationHolder.authorisationCode.empty = Authorisation code cannot be empty
 supplementary.declarationHolders.maximumAmount.error = You cannot have more than 99 holders
 supplementary.declarationHolders.duplicated = You cannot add the same holder

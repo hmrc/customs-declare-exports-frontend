@@ -16,15 +16,14 @@
 
 package services
 
-import utils.JsonFile
+import utils.FileUtil
 
-case class DocumentType(description: String, code: String)
+case class HolderOfAuthorisationCode(value: String)
 
-object DocumentType {
-
-  private val deserialiser: (String, String) => DocumentType = (a: String, b: String) => DocumentType(a, b)
-
-  val allDocuments: List[DocumentType] = JsonFile
-    .readFromJsonFile("/code-lists/document-type-autocomplete-list.json", deserialiser)
-    .sortBy(_.description.toLowerCase)
+object HolderOfAuthorisationCode {
+  lazy val all: List[HolderOfAuthorisationCode] = FileUtil
+    .read("code-lists/holder-of-authorisation-codes.csv")
+    .tail
+    .map(HolderOfAuthorisationCode(_))
+    .sortBy(_.value)
 }
