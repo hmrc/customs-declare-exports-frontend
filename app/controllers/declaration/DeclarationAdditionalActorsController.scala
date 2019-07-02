@@ -32,6 +32,7 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.declaration_additional_actors
@@ -44,9 +45,12 @@ class DeclarationAdditionalActorsController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   private val exceedMaximumNumberError = "supplementary.additionalActors.maximumAmount.error"
   private val duplicateActorError = "supplementary.additionalActors.duplicated.error"
@@ -95,65 +99,16 @@ class DeclarationAdditionalActorsController @Inject()(
       case (actor, actors) =>
         if (actor.isDefined) {
           val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
-          customsCacheService
-            .cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache)
-            .map(_ => Redirect(DeclarationAdditionalActorsController.displayForm()))
+          for {
+            _ <- updateCache(journeySessionId, updatedCache)
+            _ <- customsCacheService.cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache)
+          } yield Redirect(DeclarationAdditionalActorsController.displayForm())
         } else
           handleErrorPage(
             Seq(("eori", "supplementary.additionalActors.eori.isNotDefined")),
             userInput,
             cachedData.actors
           )
-    }
-
-  private def retrieveItem(value: String): Option[DeclarationAdditionalActors] =
-    DeclarationAdditionalActors.fromJsonString(value)
-
-  private def saveAndContinue(
-    userInput: DeclarationAdditionalActors,
-    cacheData: DeclarationAdditionalActorsData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    (userInput, cacheData.actors) match {
-      case (actor, Seq())  => saveAndRedirect(actor, Seq())
-      case (actor, actors) => handleSaveAndContinueCache(actor, actors)
-    }
-
-  private def saveAndRedirect(
-    actor: DeclarationAdditionalActors,
-    actors: Seq[DeclarationAdditionalActors]
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    if (actor.isDefined)
-      customsCacheService
-        .cache[DeclarationAdditionalActorsData](cacheId, formId, DeclarationAdditionalActorsData(actors :+ actor))
-        .map { _ =>
-          Redirect(DeclarationHolderController.displayForm())
-        } else Future.successful(Redirect(DeclarationHolderController.displayForm()))
-
-  private def handleSaveAndContinueCache(actor: DeclarationAdditionalActors, actors: Seq[DeclarationAdditionalActors])(
-    implicit request: JourneyRequest[_]
-  ) =
-    if (actors.length >= maxNumberOfItems) {
-      handleErrorPage(Seq(("", exceedMaximumNumberError)), actor, actors)
-    } else if (actors.contains(actor)) {
-      handleErrorPage(Seq(("", duplicateActorError)), actor, actors)
-    } else {
-      saveAndRedirect(actor, actors)
-    }
-
-  private def removeItem(
-    actorToRemove: Option[DeclarationAdditionalActors],
-    cachedData: DeclarationAdditionalActorsData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    actorToRemove match {
-      case Some(actorToRemove) =>
-        if (cachedData.containsItem(actorToRemove)) {
-          val updatedCache = cachedData.copy(actors = cachedData.actors.filterNot(_ == actorToRemove))
-
-          customsCacheService.cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache).map { _ =>
-            Redirect(DeclarationAdditionalActorsController.displayForm())
-          }
-        } else errorHandler.displayErrorPage()
-      case _ => errorHandler.displayErrorPage()
     }
 
   private def handleErrorPage(
@@ -167,4 +122,64 @@ class DeclarationAdditionalActorsController @Inject()(
 
     Future.successful(BadRequest(declaration_additional_actors(appConfig, formWithError, actors)))
   }
+
+  private def updateCache(
+    sessionId: String,
+    formData: DeclarationAdditionalActorsData
+  ): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(sessionId, model => {
+      val updatedParties = model.parties.map(_.copy(declarationAdditionalActorsData = Some(formData)))
+      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
+    })
+
+  private def retrieveItem(value: String): Option[DeclarationAdditionalActors] =
+    DeclarationAdditionalActors.fromJsonString(value)
+
+  private def saveAndContinue(
+    userInput: DeclarationAdditionalActors,
+    cacheData: DeclarationAdditionalActorsData
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+    (userInput, cacheData.actors) match {
+      case (actor, Seq())  => saveAndRedirect(actor, Seq())
+      case (actor, actors) => handleSaveAndContinueCache(actor, actors)
+    }
+
+  private def handleSaveAndContinueCache(actor: DeclarationAdditionalActors, actors: Seq[DeclarationAdditionalActors])(
+    implicit request: JourneyRequest[_]
+  ) =
+    if (actors.length >= maxNumberOfItems) {
+      handleErrorPage(Seq(("", exceedMaximumNumberError)), actor, actors)
+    } else if (actors.contains(actor)) {
+      handleErrorPage(Seq(("", duplicateActorError)), actor, actors)
+    } else {
+      saveAndRedirect(actor, actors)
+    }
+
+  private def saveAndRedirect(
+    actor: DeclarationAdditionalActors,
+    actors: Seq[DeclarationAdditionalActors]
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+    if (actor.isDefined) {
+      val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
+      for {
+        _ <- updateCache(journeySessionId, updatedCache)
+        _ <- customsCacheService.cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache)
+      } yield Redirect(DeclarationHolderController.displayForm())
+    } else Future.successful(Redirect(DeclarationHolderController.displayForm()))
+
+  private def removeItem(
+    actorToRemove: Option[DeclarationAdditionalActors],
+    cachedData: DeclarationAdditionalActorsData
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+    actorToRemove match {
+      case Some(actorToRemove) =>
+        if (cachedData.containsItem(actorToRemove)) {
+          val updatedCache = cachedData.copy(actors = cachedData.actors.filterNot(_ == actorToRemove))
+          for {
+            _ <- updateCache(journeySessionId, updatedCache)
+            _ <- customsCacheService.cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache)
+          } yield Redirect(DeclarationAdditionalActorsController.displayForm())
+        } else errorHandler.displayErrorPage()
+      case _ => errorHandler.displayErrorPage()
+    }
 }

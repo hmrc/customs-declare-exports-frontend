@@ -30,6 +30,7 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.declaration_holder
@@ -42,9 +43,12 @@ class DeclarationHolderController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   import forms.declaration.DeclarationHolder.form
 
@@ -98,10 +102,10 @@ class DeclarationHolderController @Inject()(
 
       case (holder, holders) if holder.authorisationTypeCode.isDefined && holder.eori.isDefined =>
         val updatedCache = DeclarationHoldersData(holders :+ holder)
-
-        customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache).map { _ =>
-          Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm())
-        }
+        for {
+          _ <- updateCache(journeySessionId, updatedCache)
+          _ <- customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache)
+        } yield Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm())
 
       case (DeclarationHolder(authCode, eori), _) =>
         val authCodeError = authCode.fold(
@@ -121,10 +125,10 @@ class DeclarationHolderController @Inject()(
         holder match {
           case DeclarationHolder(Some(typeCode), Some(eori)) =>
             val updatedCache = DeclarationHoldersData(Seq(DeclarationHolder(Some(typeCode), Some(eori))))
-
-            customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache).map { _ =>
-              Redirect(controllers.declaration.routes.DestinationCountriesController.displayForm())
-            }
+            for {
+              _ <- updateCache(journeySessionId, updatedCache)
+              _ <- customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache)
+            } yield Redirect(controllers.declaration.routes.DestinationCountriesController.displayForm())
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
             val typeCodeError = maybeTypeCode.fold(
@@ -147,10 +151,10 @@ class DeclarationHolderController @Inject()(
           case _ if holder.authorisationTypeCode.isDefined == holder.eori.isDefined =>
             val updatedHolders = if (holder.authorisationTypeCode.isDefined) holders :+ holder else holders
             val updatedCache = DeclarationHoldersData(updatedHolders)
-
-            customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache).map { _ =>
-              Redirect(controllers.declaration.routes.DestinationCountriesController.displayForm())
-            }
+            for {
+              _ <- updateCache(journeySessionId, updatedCache)
+              _ <- customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache)
+            } yield Redirect(controllers.declaration.routes.DestinationCountriesController.displayForm())
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
             val typeCodeError = maybeTypeCode.fold(
@@ -162,18 +166,6 @@ class DeclarationHolderController @Inject()(
             handleErrorPage(typeCodeError ++ eoriError, userInput, holders)
         }
     }
-
-  private def removeHolder(
-    holderToRemove: DeclarationHolder,
-    cachedData: DeclarationHoldersData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    if (cachedData.containsHolder(holderToRemove)) {
-      val updatedCache = cachedData.copy(holders = cachedData.holders.filterNot(_ == holderToRemove))
-
-      customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache).map { _ =>
-        Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm())
-      }
-    } else errorHandler.displayErrorPage()
 
   private def handleErrorPage(
     fieldWithError: Seq[(String, String)],
@@ -187,6 +179,27 @@ class DeclarationHolderController @Inject()(
     Future.successful(BadRequest(declaration_holder(appConfig, formWithError, holders)))
   }
 
+  private def removeHolder(
+    holderToRemove: DeclarationHolder,
+    cachedData: DeclarationHoldersData
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+    if (cachedData.containsHolder(holderToRemove)) {
+      val updatedCache = cachedData.copy(holders = cachedData.holders.filterNot(_ == holderToRemove))
+      for {
+        _ <- updateCache(journeySessionId, updatedCache)
+        _ <- customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache)
+      } yield Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm())
+    } else errorHandler.displayErrorPage()
+
   private def retrieveHolder(values: Seq[String]): DeclarationHolder =
     DeclarationHolder.buildFromString(values.headOption.getOrElse(""))
+
+  private def updateCache(
+    sessionId: String,
+    formData: DeclarationHoldersData
+  ): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(sessionId, model => {
+      val updatedParties = model.parties.map(_.copy(declarationHoldersData = Some(formData)))
+      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
+    })
 }

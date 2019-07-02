@@ -30,6 +30,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
   before {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[ConsigneeDetails](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
