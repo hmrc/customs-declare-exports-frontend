@@ -81,10 +81,6 @@
             }
         </a><p></p>
 
-        @helpers.form(ItemsSummaryController.addItem(), 'autoComplete -> "off") {
-            @components.submit_button()
-        }
-
         @if(items.nonEmpty) {
             <a href="@WarehouseIdentificationController.displayForm().url" class="button" id="next">@messages("site.save_and_continue")</a>
         }
