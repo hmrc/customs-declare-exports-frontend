@@ -199,7 +199,7 @@ class DeclarationHolderController @Inject()(
     formData: DeclarationHoldersData
   ): Future[Either[String, ExportsCacheModel]] =
     updateHeaderLevelCache(sessionId, model => {
-      val updatedParties = model.parties.map(_.copy(declarationHoldersData = Some(formData)))
+      val updatedParties = model.parties.copy(declarationHoldersData = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
     })
 }

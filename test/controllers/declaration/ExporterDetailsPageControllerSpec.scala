@@ -29,7 +29,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
 
   private val uri = uriWithContextPath("/declaration/exporter-details")
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withNewCaching(createModel())
     withCaching[ExporterDetails](None)
