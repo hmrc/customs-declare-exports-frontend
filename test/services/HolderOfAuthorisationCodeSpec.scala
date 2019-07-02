@@ -20,7 +20,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 
 class HolderOfAuthorisationCodeSpec extends UnitSpec {
 
-  "Holder of Authentication Code" should {
+  "Holder of Authorisation Code" should {
     "read from file" in {
       val codes = HolderOfAuthorisationCode.all
       codes should contain(HolderOfAuthorisationCode("ACE")) // First in file
