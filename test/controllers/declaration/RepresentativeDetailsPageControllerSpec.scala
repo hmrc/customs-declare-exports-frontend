@@ -38,12 +38,14 @@ class RepresentativeDetailsPageControllerSpec
 
   before {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[Choice](Some(Choice(SupplementaryDec)), choiceId)
     withCaching[RepresentativeDetails](None, RepresentativeDetails.formId)
   }
 
   after {
     reset(mockCustomsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Representative Address Controller on GET" should {
@@ -194,6 +196,8 @@ class RepresentativeDetailsPageControllerSpec
     "save data to the cache" in {
 
       route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get.futureValue
+
+      verify(mockExportsCacheService).update(any(), any())
 
       verify(mockCustomsCacheService)
         .cache[RepresentativeDetails](any(), ArgumentMatchers.eq(RepresentativeDetails.formId), any())(

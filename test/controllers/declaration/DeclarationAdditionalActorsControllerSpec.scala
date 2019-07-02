@@ -40,12 +40,14 @@ class DeclarationAdditionalActorsControllerSpec
 
   before {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[DeclarationAdditionalActorsData](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   after {
     reset(mockCustomsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Declaration Additional Actors Controller on GET" should {

@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.declarant_details
 
@@ -35,9 +36,12 @@ class DeclarantDetailsPageController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+  extends {
+    val cacheService = exportsCacheService
+  } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[DeclarantDetails](cacheId, DeclarantDetails.id).map {
@@ -53,11 +57,16 @@ class DeclarantDetailsPageController @Inject()(
         (formWithErrors: Form[DeclarantDetails]) =>
           Future.successful(BadRequest(declarant_details(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[DeclarantDetails](cacheId, DeclarantDetails.id, form).map { _ =>
-            Redirect(
-              controllers.declaration.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
-            )
-        }
+          for {
+            _ <- updateCache(journeySessionId, form)
+            _ <- customsCacheService.cache[DeclarantDetails](cacheId, DeclarantDetails.id, form)
+          } yield Redirect(controllers.declaration.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage())
       )
   }
+
+  private def updateCache(sessionId: String, formData: DeclarantDetails): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(sessionId, model => {
+      val updatedParties = model.parties.map(_.copy(declarantDetails = Some(formData)))
+      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
+    })
 }

@@ -38,6 +38,7 @@ class DeclarationHolderControllerSpec
 
   before {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[DeclarationHoldersData](None, formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }

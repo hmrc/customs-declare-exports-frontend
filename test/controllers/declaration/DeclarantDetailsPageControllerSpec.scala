@@ -30,6 +30,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
   before {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[DeclarantDetails](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
