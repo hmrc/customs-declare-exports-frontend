@@ -19,6 +19,7 @@ package forms.declaration
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
+import services.HolderOfAuthenticationCode
 import utils.validators.forms.FieldValidator._
 
 case class DeclarationHolder(authorisationTypeCode: Option[String], eori: Option[String]) {
@@ -31,7 +32,10 @@ object DeclarationHolder {
   val mapping = Forms.mapping(
     "authorisationTypeCode" -> optional(
       text()
-        .verifying("supplementary.declarationHolder.authorisationCode.error", lengthInRange(1)(4) and isAlphanumeric)
+        .verifying(
+          "supplementary.declarationHolder.authorisationCode.invalid",
+          isContainedIn(HolderOfAuthenticationCode.all.map(_.value))
+        )
     ),
     "eori" -> optional(text().verifying("supplementary.eori.error", lengthInRange(1)(17) and isAlphanumeric))
   )(DeclarationHolder.apply)(DeclarationHolder.unapply)

@@ -26,7 +26,7 @@ trait DeclarationHolderMessages {
   val authorisationCode: String = declarationHolder + ".authorisationCode"
   val authorisationCodeHint: String = declarationHolder + ".authorisationCode.hint"
   val authorisationCodeEmpty: String = declarationHolder + ".authorisationCode.empty"
-  val authorisationCodeError: String = declarationHolder + ".authorisationCode.error"
+  val authorisationCodeError: String = declarationHolder + ".authorisationCode.invalid"
   val maximumAmountReached: String = declarationHolders + ".maximumAmount.error"
   val duplicatedItem: String = declarationHolders + ".duplicated"
 }

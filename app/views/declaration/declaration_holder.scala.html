@@ -19,6 +19,8 @@
 @import forms.declaration.DeclarationHolder
 @import uk.gov.hmrc.play.views.html._
 
+@import services.HolderOfAuthenticationCode
+@import services.model.AutoCompleteItem
 @(appConfig: AppConfig, form: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -41,18 +43,19 @@
     }
 
     @helpers.form(DeclarationHolderController.submitHoldersOfAuthorisation(), 'autoComplete -> "off") {
-        @components.input_text(
+        @components.fields.field_autocomplete(
             field = form("authorisationTypeCode"),
             label = messages("supplementary.declarationHolder.authorisationCode"),
-            hint = Some(messages("supplementary.declarationHolder.authorisationCode.hint")),
-            labelClass = Some("heading-24")
+            hintText = Some(messages("supplementary.declarationHolder.authorisationCode.hint")),
+            emptySelectValue = messages("supplementary.declarationHolder.authorisationCode.empty"),
+            items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthenticationCode.all)
         )
 
         @components.input_text(
             field = form("eori"),
             label = messages("supplementary.declarationHolder.eori"),
             hint = Some(messages("supplementary.eori.hint")),
-            labelClass = Some("heading-24")
+            labelClass = Some("form-label-bold")
         )
 
         @components.add_save_button()

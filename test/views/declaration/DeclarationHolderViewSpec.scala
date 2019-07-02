@@ -37,14 +37,14 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
     "have proper messages for labels" in {
 
       assertMessage(title, "3/39 Enter holder of ID status number")
-      assertMessage(authorisationCode, "Enter the authorisation code")
-      assertMessage(authorisationCodeHint, "A 4 digit code")
+      assertMessage(authorisationCode, "Authorisation code")
+      assertMessage(authorisationCodeHint, "A code up to 4 characters for the type of authorisation.")
     }
 
     "have proper messages for error labels" in {
 
       assertMessage(authorisationCodeEmpty, "Authorisation code cannot be empty")
-      assertMessage(authorisationCodeError, "Authorisation code is incorrect")
+      assertMessage(authorisationCodeError, "Authorisation code is invalid")
       assertMessage(maximumAmountReached, "You cannot have more than 99 holders")
       assertMessage(duplicatedItem, "You cannot add the same holder")
     }
@@ -127,7 +127,7 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
       val view = createView(
         DeclarationHolder
           .form()
-          .fillAndValidate(DeclarationHolder(Some("1234"), Some(TestHelper.createRandomAlphanumericString(18))))
+          .fillAndValidate(DeclarationHolder(Some("ACE"), Some(TestHelper.createRandomAlphanumericString(18))))
       )
 
       checkErrorsSummary(view)
