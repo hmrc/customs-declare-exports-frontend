@@ -28,6 +28,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.border_transport
 
@@ -38,9 +39,12 @@ class BorderTransportController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
@@ -54,10 +58,15 @@ class BorderTransportController @Inject()(
       .fold(
         (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(border_transport(formWithErrors))),
         borderTransport =>
-          customsCacheService
-            .cache[BorderTransport](cacheId, BorderTransport.formId, borderTransport)
-            .map(_ => Redirect(TransportDetailsController.displayForm()))
+          for {
+            _ <- updateCache(journeySessionId, borderTransport)
+            _ <- customsCacheService.cache[BorderTransport](cacheId, BorderTransport.formId, borderTransport)
+          } yield Redirect(TransportDetailsController.displayForm())
       )
   }
 
+  private def updateCache(sessionId: String, formData: BorderTransport): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(sessionId, model => {
+      exportsCacheService.update(sessionId, model.copy(borderTransport = Some(formData)))
+    })
 }

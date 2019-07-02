@@ -46,6 +46,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
   before {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[BorderTransport](None, BorderTransport.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
