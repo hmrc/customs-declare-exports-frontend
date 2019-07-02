@@ -91,14 +91,14 @@
             )
         </div>
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("documentReference"),
             label = messages("supplementary.previousDocuments.documentReference"),
             hint = Some(messages("supplementary.previousDocuments.documentReference.hint")),
             labelClass = Some("bold-small")
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("goodsItemIdentifier"),
             label = messages("supplementary.previousDocuments.goodsItemIdentifier"),
             hint = Some(messages("supplementary.previousDocuments.goodsItemIdentifier.hint")),

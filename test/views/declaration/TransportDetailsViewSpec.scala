@@ -27,7 +27,7 @@ import services.Countries
 import services.model.AutoCompleteItem
 import utils.RadioOption
 import views.declaration.spec.ViewSpec
-import views.html.components.input_text
+import views.html.components.fields.field_text
 import views.html.components.fields.{field_autocomplete, field_radio}
 import views.html.declaration.transport_details
 import views.tags.ViewTest
@@ -148,7 +148,7 @@ trait TransportDetailsFields extends ViewSpec {
   ).body
 
   val meansOfTransportCrossingTheBorderIDNumber =
-    input_text(field = form("meansOfTransportCrossingTheBorderIDNumber"), label = "Reference").body
+    field_text(field = form("meansOfTransportCrossingTheBorderIDNumber"), label = "Reference").body
 
   val container = field_radio(
     field = form("container"),

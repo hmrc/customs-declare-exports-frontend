@@ -36,7 +36,7 @@
 
             @components.page_title(Some("supplementary.procedureCodes.title"))
 
-            @components.input_text(
+            @components.fields.field_text(
                 field = form("procedureCode"),
                 label = messages("supplementary.procedureCodes.procedureCode.header"),
                 hint = Some(messages("supplementary.procedureCodes.procedureCode.header.hint")),
@@ -45,7 +45,7 @@
 
             @components.single_value_elements_table(codes)
 
-            @components.input_text(
+            @components.fields.field_text(
                 field = form("additionalProcedureCode"),
                 label = messages("supplementary.procedureCodes.additionalProcedureCode.header"),
                 hint = Some(messages("supplementary.procedureCodes.additionalProcedureCode.header.hint")),

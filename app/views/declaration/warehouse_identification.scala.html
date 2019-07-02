@@ -38,14 +38,14 @@
 
         @components.page_title(Some("supplementary.warehouse.title"))
 
-            @components.input_text(
+            @components.fields.field_text(
                 field = form("supervisingCustomsOffice"),
                 label = messages("supplementary.warehouse.supervisingCustomsOffice"),
                 hint = Some(messages("supplementary.warehouse.supervisingCustomsOffice.hint")),
                 labelClass = Some("bold-small")
             )
 
-            @components.input_text(
+            @components.fields.field_text(
                 field = form("identificationNumber"),
                 label = messages("supplementary.warehouse.identificationNumber"),
                 hint = Some(messages("supplementary.warehouse.identificationNumber.hint")),

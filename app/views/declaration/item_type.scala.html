@@ -51,7 +51,7 @@
 
         @components.page_title(Some("declaration.itemType.title"))
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form(combinedNomenclatureCodeKey),
             label = messages("declaration.itemType.combinedNomenclatureCode.header"),
             hint = Some(messages("declaration.itemType.combinedNomenclatureCode.header.hint")),
@@ -79,7 +79,7 @@
             )
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("statisticalValue"),
             label = messages("declaration.itemType.statisticalValue.header"),
             hint = Some(messages("declaration.itemType.statisticalValue.header.hint")),
@@ -93,7 +93,7 @@
             labelClass = Some("bold-small")
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form(cusCodeKey),
             label = messages("declaration.itemType.cusCode.header"),
             hint = Some(messages("declaration.itemType.cusCode.header.hint")),
@@ -101,7 +101,7 @@
         )
 
         @if(request.choice.value == AllowedChoiceValues.StandardDec) @{
-            components.input_text(
+            components.fields.field_text(
                 field = form(unDangerousGoodsCodeKey),
                 label = messages("declaration.itemType.unDangerousGoodsCode.header"),
                 hint = Some(messages("declaration.itemType.unDangerousGoodsCode.header.hint")),

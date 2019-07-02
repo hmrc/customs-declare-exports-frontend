@@ -38,14 +38,14 @@
 
       @components.page_title(Some("declaration.officeOfExit.title"))
 
-      @components.input_text(
+      @components.fields.field_text(
           field = form("officeId"),
           label = messages("declaration.officeOfExit"),
           hint = Some(messages("declaration.officeOfExit.hint")),
           labelClass = Some("bold-small")
       )
 
-      @components.input_text(
+      @components.fields.field_text(
           field = form("presentationOfficeId"),
           label = messages("standard.officeOfExit.presentationOffice"),
           hint = Some(messages("standard.officeOfExit.presentationOffice.hint")),

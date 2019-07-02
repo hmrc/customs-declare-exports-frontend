@@ -36,13 +36,13 @@
 
         @components.page_title(Some("cancellation.title"))
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("functionalReferenceId"),
             label = messages("cancellation.functionalReferenceId"),
             labelClass = Some("bold-small")
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("declarationId"),
             label = messages("cancellation.declarationId"),
             labelClass = Some("bold-small")

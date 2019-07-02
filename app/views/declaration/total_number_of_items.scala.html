@@ -34,19 +34,19 @@
 
         @components.page_title(Some("supplementary.valueOfItems"))
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("totalAmountInvoiced"),
             label = messages("supplementary.totalAmountInvoiced"),
             hint = Some(messages("supplementary.totalAmountInvoiced.hint"))
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("exchangeRate"),
             label = messages("supplementary.exchangeRate"),
             hint = Some(messages("supplementary.exchangeRate.hint"))
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("totalPackage"),
             label = messages("supplementary.totalPackageQuantity"),
             hint = Some(messages("supplementary.totalPackageQuantity.hint"))

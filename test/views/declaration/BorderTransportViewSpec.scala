@@ -23,7 +23,7 @@ import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
 import views.html.declaration.border_transport
 import views.tags.ViewTest
-import views.html.components.input_text
+import views.html.components.fields.field_text
 import views.html.components.fields.field_radio
 import utils.RadioOption
 import forms.declaration.TransportCodes._
@@ -167,7 +167,7 @@ trait BorderTransportFields extends ViewSpec {
     )
   )
 
-  val expMeansOfTransportOnDepartureIDNumber = input_text(
+  val expMeansOfTransportOnDepartureIDNumber = field_text(
     field = form("meansOfTransportOnDepartureIDNumber"),
     label = messages("supplementary.transportInfo.meansOfTransport.reference.header")
   )

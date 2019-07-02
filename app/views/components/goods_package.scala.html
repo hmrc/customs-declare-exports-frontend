@@ -19,7 +19,7 @@
 @(form: Form[_])(implicit messages: Messages)
 
 <div>
-    @components.input_text(
+    @components.fields.field_text(
         field = form("goodsPackage.commodityCode"),
         label = messages("What is the commodity code for this item?")
     )
@@ -42,12 +42,12 @@
         inputs = Seq(RadioOption("site", "yes"), RadioOption("site", "no"))
     )
 
-    @components.input_text(
+    @components.fields.field_text(
         field = form("goodsPackage.noOfPackages"),
         label = messages("Total number of packages for this item")
     )
 
-    @components.input_text(
+    @components.fields.field_text(
         field = form("goodsPackage.packageType"),
         label = messages("Choose the package type")
     )

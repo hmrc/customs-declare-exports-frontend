@@ -84,13 +84,13 @@
             'otherErrorFields -> Seq("typesOfPackages")
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("numberOfPackages"),
             label = messages("supplementary.packageInformation.numberOfPackages"),
             labelClass = Some("bold-small")
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("shippingMarks"),
             label = messages("supplementary.packageInformation.shippingMarks"),
             hint = Some(messages("supplementary.packageInformation.shippingMarks.hint")),

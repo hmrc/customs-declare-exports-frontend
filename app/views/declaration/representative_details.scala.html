@@ -43,7 +43,7 @@
 
             <p>@messages("supplementary.eori.info")</p>
 
-            @components.input_text(
+            @components.fields.field_text(
                 field = form("details.eori"),
                 label = messages("supplementary.representative.eori.info"),
                 hint = Some(messages("supplementary.eori.hint")),
