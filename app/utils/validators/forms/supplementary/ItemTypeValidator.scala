@@ -72,9 +72,9 @@ object ItemTypeValidator extends Validator[ItemType] {
         isContainedIn(NationalAdditionalCode.all.map(_.value))
       )
   ).verifying(
-    "declaration.itemType.nationalAdditionalCode.error.maxAmount",
-    codes => codes.size <= nationalAdditionalCodesMaxAmount
-  )
+      "declaration.itemType.nationalAdditionalCode.error.maxAmount",
+      codes => codes.size <= nationalAdditionalCodesMaxAmount
+    )
     .verifying("declaration.itemType.nationalAdditionalCode.error.duplicate", areAllElementsUnique)
 
   private val mappingDescriptionOfGoods = text()
