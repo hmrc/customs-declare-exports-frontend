@@ -16,7 +16,7 @@
 
 package services.model
 
-import services.{DocumentType, HolderOfAuthenticationCode, NationalAdditionalCode, PackageType}
+import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode, PackageType}
 
 case class AutoCompleteItem(label: String, value: String)
 
@@ -33,6 +33,6 @@ object AutoCompleteItem {
   def fromNationalAdditionalCode(codes: List[NationalAdditionalCode]): List[AutoCompleteItem] =
     codes map (c => AutoCompleteItem(c.value, c.value))
 
-  def fromHolderOfAuthorisationCode(codes: List[HolderOfAuthenticationCode]): List[AutoCompleteItem] =
+  def fromHolderOfAuthorisationCode(codes: List[HolderOfAuthorisationCode]): List[AutoCompleteItem] =
     codes map (c => AutoCompleteItem(c.value, c.value))
 }

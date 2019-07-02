@@ -18,12 +18,12 @@ package services
 
 import utils.FileUtil
 
-case class HolderOfAuthenticationCode(value: String)
+case class HolderOfAuthorisationCode(value: String)
 
-object HolderOfAuthenticationCode {
-  lazy val all: List[HolderOfAuthenticationCode] = FileUtil
+object HolderOfAuthorisationCode {
+  lazy val all: List[HolderOfAuthorisationCode] = FileUtil
     .read("code-lists/holder-of-authorisation-codes.csv")
     .tail
-    .map(HolderOfAuthenticationCode(_))
+    .map(HolderOfAuthorisationCode(_))
     .sortBy(_.value)
 }

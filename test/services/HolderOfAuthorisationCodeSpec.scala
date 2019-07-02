@@ -18,28 +18,28 @@ package services
 
 import uk.gov.hmrc.play.test.UnitSpec
 
-class HolderOfAuthenticationCodeSpec extends UnitSpec {
+class HolderOfAuthorisationCodeSpec extends UnitSpec {
 
   "Holder of Authentication Code" should {
     "read from file" in {
-      val codes = HolderOfAuthenticationCode.all
-      codes should contain(HolderOfAuthenticationCode("ACE")) // First in file
-      codes should contain(HolderOfAuthenticationCode("UKCS")) // Last in file
+      val codes = HolderOfAuthorisationCode.all
+      codes should contain(HolderOfAuthorisationCode("ACE")) // First in file
+      codes should contain(HolderOfAuthorisationCode("UKCS")) // Last in file
     }
 
     "exclude header" in {
-      val codes = HolderOfAuthenticationCode.all
-      codes shouldNot contain(HolderOfAuthenticationCode("Code"))
+      val codes = HolderOfAuthorisationCode.all
+      codes shouldNot contain(HolderOfAuthorisationCode("Code"))
     }
 
     "exclude empty lines" in {
-      val codes = HolderOfAuthenticationCode.all
+      val codes = HolderOfAuthorisationCode.all
       codes.map(_.value.trim).filter(_.isEmpty) shouldBe empty
     }
 
     "sort by value" in {
-      val codes = HolderOfAuthenticationCode.all.filter(code => Set("ACE", "UKCS").contains(code.value))
-      codes shouldBe List(HolderOfAuthenticationCode("ACE"), HolderOfAuthenticationCode("UKCS"))
+      val codes = HolderOfAuthorisationCode.all.filter(code => Set("ACE", "UKCS").contains(code.value))
+      codes shouldBe List(HolderOfAuthorisationCode("ACE"), HolderOfAuthorisationCode("UKCS"))
     }
   }
 

@@ -19,7 +19,7 @@
 @import forms.declaration.DeclarationHolder
 @import uk.gov.hmrc.play.views.html._
 
-@import services.HolderOfAuthenticationCode
+@import services.HolderOfAuthorisationCode
 @import services.model.AutoCompleteItem
 @(appConfig: AppConfig, form: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(implicit request: Request[_], messages: Messages)
 
@@ -48,7 +48,7 @@
             label = messages("supplementary.declarationHolder.authorisationCode"),
             hintText = Some(messages("supplementary.declarationHolder.authorisationCode.hint")),
             emptySelectValue = messages("supplementary.declarationHolder.authorisationCode.empty"),
-            items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthenticationCode.all)
+            items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)
         )
 
         @components.input_text(
