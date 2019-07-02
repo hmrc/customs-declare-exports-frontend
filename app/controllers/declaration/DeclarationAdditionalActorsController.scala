@@ -127,7 +127,7 @@ class DeclarationAdditionalActorsController @Inject()(
     sessionId: String,
     formData: DeclarationAdditionalActorsData
   ): Future[Either[String, ExportsCacheModel]] =
-    updateHeaderLevelCache(sessionId, model => {
+    getAndUpdateExportCacheModel(sessionId, model => {
       val updatedParties = model.parties.copy(declarationAdditionalActorsData = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
     })

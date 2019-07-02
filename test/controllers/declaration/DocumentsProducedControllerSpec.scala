@@ -30,9 +30,10 @@ import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.formId
 import models.declaration.DocumentsProducedDataSpec._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, times, verify, verifyZeroInteractions, when}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 import scala.concurrent.Future
 
@@ -41,16 +42,25 @@ class DocumentsProducedControllerSpec
 
   import DocumentsProducedControllerSpec._
 
-  private val uri = uriWithContextPath("/declaration/add-document")
+  val cachedModel: ExportsCacheModel = createModel()
+
+  private val uri = uriWithContextPath(s"/declaration/items/${cachedModel.items.head.id}/add-document")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
+    withNewCaching(cachedModel)
     withCaching[DocumentsProducedData](None, formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  override def afterEach() {
+    super.afterEach()
+    reset(mockAuthConnector, mockExportsCacheService, mockCustomsCacheService)
   }
 
   "Documents Produced Controller on GET" should {
@@ -127,6 +137,8 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequest(uri, incorrectDocumentIdentifier)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentIdentifierError))
+
+        verifyZeroInteractions(mockExportsCacheService)
       }
 
       "provided with incorrect document part" in {
@@ -142,6 +154,8 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequest(uri, incorrectDocumentPart)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentPartError))
+
+        verifyZeroInteractions(mockExportsCacheService)
       }
 
       "provided with incorrect document status" in {
@@ -150,6 +164,8 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequest(uri, incorrectDocumentStatus)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentStatusError))
+
+        verifyZeroInteractions(mockExportsCacheService)
       }
 
       "provided with incorrect document status reason" in {
@@ -159,6 +175,8 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentStatusReasonError))
+
+        verifyZeroInteractions(mockExportsCacheService)
       }
 
       "provided with incorrect documents quantity" in {
@@ -168,6 +186,9 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequest(uri, incorrectDocumentQuantity)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentQuantityPrecisionError))
+
+        verifyZeroInteractions(mockExportsCacheService)
+
       }
 
       "try to remove a non existent document" in {
@@ -182,6 +203,8 @@ class DocumentsProducedControllerSpec
         stringResult must include(messages(globalErrorTitle))
         stringResult must include(messages(globalErrorHeading))
         stringResult must include(messages(globalErrorMessage))
+
+        verifyZeroInteractions(mockExportsCacheService)
       }
 
       "try to add duplicated document" in {
@@ -197,6 +220,8 @@ class DocumentsProducedControllerSpec
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, duplicatedItemError, "#")
+
+        verifyZeroInteractions(mockExportsCacheService)
       }
 
       "try to add an empty document" in {
@@ -213,6 +238,7 @@ class DocumentsProducedControllerSpec
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, notDefinedError, "#")
+        verifyZeroInteractions(mockExportsCacheService)
       }
 
       "try to add more then 99 documents" in {
@@ -227,6 +253,8 @@ class DocumentsProducedControllerSpec
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, maximumAmountReachedError, "#")
+
+        verifyZeroInteractions(mockExportsCacheService)
       }
     }
 
@@ -238,6 +266,9 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
+
+        verify(mockExportsCacheService, times(1)).get(any[String])
+        verify(mockExportsCacheService, times(1)).update(any[String], any[ExportsCacheModel])
       }
 
       "that does not exist in cache" in {
@@ -249,6 +280,9 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
+
+        verify(mockExportsCacheService, times(1)).get(any[String])
+        verify(mockExportsCacheService, times(1)).update(any[String], any[ExportsCacheModel])
       }
     }
 
@@ -263,6 +297,9 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
         status(result) must be(SEE_OTHER)
+
+        verify(mockExportsCacheService, times(1)).get(any[String])
+        verify(mockExportsCacheService, times(1)).update(any[String], any[ExportsCacheModel])
       }
     }
 
@@ -289,6 +326,8 @@ class DocumentsProducedControllerSpec
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+
+        verifyZeroInteractions(mockExportsCacheService)
       }
 
       "provided with a valid document and with empty cache" in {
@@ -299,6 +338,9 @@ class DocumentsProducedControllerSpec
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+
+        verify(mockExportsCacheService, times(1)).get(any[String])
+        verify(mockExportsCacheService, times(1)).update(any[String], any[ExportsCacheModel])
       }
 
       "provided with a valid document and with existing cache" in {
@@ -312,6 +354,9 @@ class DocumentsProducedControllerSpec
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+
+        verify(mockExportsCacheService, times(1)).get(any[String])
+        verify(mockExportsCacheService, times(1)).update(any[String], any[ExportsCacheModel])
       }
     }
   }

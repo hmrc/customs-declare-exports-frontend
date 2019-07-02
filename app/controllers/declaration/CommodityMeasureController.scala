@@ -23,10 +23,12 @@ import forms.declaration.CommodityMeasure.{commodityFormId, form, _}
 import forms.declaration.PackageInformation.formId
 import forms.declaration.{CommodityMeasure, PackageInformation}
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.goods_measure
 
@@ -35,33 +37,61 @@ import scala.concurrent.{ExecutionContext, Future}
 class CommodityMeasureController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  cacheService: CustomsCacheService,
+  legacyCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    legacyCacheService
       .fetchAndGetEntry[Seq[PackageInformation]](goodsItemCacheId, formId)
       .flatMap {
         case Some(_) =>
-          cacheService.fetchAndGetEntry[CommodityMeasure](goodsItemCacheId, commodityFormId).map {
-            case Some(data) => Ok(goods_measure(form.fill(data)))
-            case _          => Ok(goods_measure(form))
+          legacyCacheService.fetchAndGetEntry[CommodityMeasure](goodsItemCacheId, commodityFormId).map {
+            case Some(data) => Ok(goods_measure(itemId, form.fill(data)))
+            case _          => Ok(goods_measure(itemId, form))
           }
-        case _ => Future.successful(BadRequest(goods_measure(form.withGlobalError(ADD_ONE))))
+        case _ => Future.successful(BadRequest(goods_measure(itemId, form.withGlobalError(ADD_ONE))))
       }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[CommodityMeasure]) => Future.successful(BadRequest(goods_measure(formWithErrors))),
+        (formWithErrors: Form[CommodityMeasure]) =>
+          Future.successful(BadRequest(goods_measure(itemId, formWithErrors))),
         validForm =>
-          cacheService.cache[CommodityMeasure](goodsItemCacheId, commodityFormId, validForm).map { _ =>
-            Redirect(controllers.declaration.routes.AdditionalInformationController.displayForm())
+          updateCacheModels(itemId, validForm).map { _ =>
+            Redirect(controllers.declaration.routes.AdditionalInformationController.displayPage(itemId))
         }
       )
   }
+
+  private def updateCacheModels(itemId: String, updatedCache: CommodityMeasure)(
+    implicit journeyRequest: JourneyRequest[_]
+  ) =
+    for {
+      _ <- updateExportsCache(itemId, journeySessionId, updatedCache)
+      _ <- legacyCacheService.cache[CommodityMeasure](goodsItemCacheId, commodityFormId, updatedCache)
+    } yield ()
+
+  private def updateExportsCache(
+    itemId: String,
+    sessionId: String,
+    updatedItem: CommodityMeasure
+  ): Future[Either[String, ExportsCacheModel]] =
+    getAndUpdateExportCacheModel(
+      sessionId,
+      model => {
+        val item: Option[ExportItem] = model.items
+          .find(item => item.id.equals(itemId))
+          .map(_.copy(commodityMeasure = Some(updatedItem)))
+        val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+        exportsCacheService.update(sessionId, model.copy(items = itemList))
+      }
+    )
 }

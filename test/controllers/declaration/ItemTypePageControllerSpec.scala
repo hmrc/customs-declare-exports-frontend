@@ -33,18 +33,23 @@ import play.api.test.Helpers._
 class ItemTypePageControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages {
   import ItemTypePageControllerSpec._
-
-  private val uri = uriWithContextPath("/declaration/item-type")
+  private val cacheModel = createModel()
+  private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/item-type")
 
   override def beforeEach() {
+    super.beforeEach()
+
     authorizedUser()
+    withNewCaching(cacheModel)
     withCaching[ItemType](None, ItemType.id)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
     withCaching[FiscalInformation](None, FiscalInformation.formId)
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
+    super.afterEach()
+
+    reset(mockCustomsCacheService, mockAuthConnector, mockExportsCacheService)
   }
 
   "Item Type Page Controller on GET" should {
@@ -445,7 +450,9 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
           val header = result.futureValue.header
 
-          header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/package-information"))
+          header.headers.get("Location") must be(
+            Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
+          )
         }
 
         "provided with all data" in {
@@ -453,7 +460,9 @@ class ItemTypePageControllerSpec
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
           val header = result.futureValue.header
 
-          header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/package-information"))
+          header.headers.get("Location") must be(
+            Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
+          )
         }
       }
     }

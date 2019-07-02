@@ -29,7 +29,7 @@ class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with C
 
   private val form: Form[ProcedureCodes] = ProcedureCodes.form()
   private def createView(form: Form[ProcedureCodes] = form): Html =
-    procedure_codes(appConfig, form, Seq())(fakeRequest, messages)
+    procedure_codes(appConfig, "1234", form, Seq())(fakeRequest, messages)
 
   /*
    * Tests for errors are in the ProcedureCodesPageControllerSpec

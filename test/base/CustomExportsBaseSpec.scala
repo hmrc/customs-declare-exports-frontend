@@ -49,7 +49,7 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services._
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.logging.Authorization
@@ -151,10 +151,7 @@ trait CustomExportsBaseSpec
       .withCSRFToken
   }
 
-  protected def postRequestFormUrlEncoded(
-    uri: String,
-    body: (String, String)*
-  ): FakeRequest[AnyContentAsFormUrlEncoded] = {
+  protected def postRequestFormUrlEncoded(uri: String, body: (String, String)*): Request[AnyContentAsFormUrlEncoded] = {
     val session: Map[String, String] = Map(
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
@@ -164,6 +161,7 @@ trait CustomExportsBaseSpec
       .withHeaders(Map(cfg.headerName -> token).toSeq: _*)
       .withSession(session.toSeq: _*)
       .withFormUrlEncodedBody(body: _*)
+      .withCSRFToken
   }
 
   def withCaching[T](form: Option[Form[T]]): OngoingStubbing[Future[CacheMap]] = {
@@ -201,14 +199,14 @@ trait CustomExportsBaseSpec
     when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
 
-  def createModel(existingSessionId: String): ExportsCacheModel =
+  def createModel(existingSessionId: String, exportModel: ExportItem = ExportItem()): ExportsCacheModel =
     ExportsCacheModel(
       sessionId = existingSessionId,
       draftId = "",
       createdDateTime = LocalDateTime.now(),
       updatedDateTime = LocalDateTime.now(),
       choice = "SMP",
-      items = List.empty,
+      items = Set(exportModel),
       parties = Parties()
     )
 

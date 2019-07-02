@@ -215,7 +215,7 @@ class DestinationCountriesController @Inject()(
     sessionId: String,
     formData: DestinationCountries
   ): Future[Either[String, ExportsCacheModel]] =
-    updateHeaderLevelCache(
+    getAndUpdateExportCacheModel(
       sessionId,
       model =>
         cacheService

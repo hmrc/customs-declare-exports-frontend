@@ -34,7 +34,7 @@ class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalR
     form: Form[AdditionalFiscalReference] = form,
     references: Seq[AdditionalFiscalReference] = Seq.empty
   ): Html =
-    additional_fiscal_references(form, references)(fakeRequest.withCSRFToken, appConfig, messages)
+    additional_fiscal_references(itemId, form, references)(fakeRequest.withCSRFToken, appConfig, messages)
 
   "Additional Fiscal References View" should {
 
@@ -86,7 +86,7 @@ class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalR
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/fiscal-information")
+      backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/fiscal-information")
 
     }
 

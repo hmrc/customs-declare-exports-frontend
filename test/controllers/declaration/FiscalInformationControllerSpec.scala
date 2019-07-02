@@ -26,8 +26,8 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers.{OK, route, status, _}
 
 class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalInformationMessages {
-
-  private val uri: String = uriWithContextPath("/declaration/fiscal-information")
+  val cacheModel = createModel()
+  private val uri: String = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/fiscal-information")
   private val emptyFiscalInformationJson: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("")))
   private val incorrectFiscalInformation: JsValue = JsObject(
     Map("onwardSupplyRelief" -> JsString("NeitherRadioOption"))
@@ -41,6 +41,7 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
   }
 
   trait SupplementarySetUp extends SetUp {
+    withNewCaching(cacheModel)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
@@ -100,7 +101,9 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-fiscal-references"))
+      header.headers.get("Location") must be(
+        Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/additional-fiscal-references")
+      )
     }
 
     "redirect to 'ItemsSummary' page when choice is no" in new SupplementarySetUp {
@@ -109,7 +112,9 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/item-type"))
+      header.headers.get("Location") must be(
+        Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/item-type")
+      )
     }
   }
 
@@ -161,7 +166,9 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-fiscal-references"))
+      header.headers.get("Location") must be(
+        Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/additional-fiscal-references")
+      )
     }
 
     "redirect to 'ItemsSummary' page when choice is no" in new StandardSetUp {
@@ -170,7 +177,9 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/item-type"))
+      header.headers.get("Location") must be(
+        Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/item-type")
+      )
     }
   }
 }

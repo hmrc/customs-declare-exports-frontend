@@ -25,12 +25,18 @@ import scala.concurrent.{ExecutionContext, Future}
 trait ModelCacheable {
   val cacheService: ExportsCacheService
 
-  protected def updateHeaderLevelCache(
+  /*
+  Compilation warning
+    match may not be exhaustive.
+    [warn] It would fail on the following input: Left(_)
+   */
+  protected def getAndUpdateExportCacheModel(
     sessionId: String,
     update: ExportsCacheModel => Future[Either[String, ExportsCacheModel]]
   )(implicit ec: ExecutionContext): Future[Either[String, ExportsCacheModel]] =
     cacheService.get(sessionId).flatMap {
       case Right(model) => update(model)
+      case Left(_)      => Future.successful(Left("Unable to retrieve model from cache"))
     }
 
 }

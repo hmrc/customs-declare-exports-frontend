@@ -51,12 +51,6 @@ class AdditionalDeclarationTypePageController @Inject()(
     }
   }
 
-  private def extractFormType(journeyRequest: JourneyRequest[_]): AdditionalDeclarationTypeTrait =
-    journeyRequest.choice.value match {
-      case SupplementaryDec => AdditionalDeclarationTypeSupplementaryDec
-      case StandardDec      => AdditionalDeclarationTypeStandardDec
-    }
-
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val decType = extractFormType(request)
     decType
@@ -73,12 +67,18 @@ class AdditionalDeclarationTypePageController @Inject()(
       )
   }
 
+  private def extractFormType(journeyRequest: JourneyRequest[_]): AdditionalDeclarationTypeTrait =
+    journeyRequest.choice.value match {
+      case SupplementaryDec => AdditionalDeclarationTypeSupplementaryDec
+      case StandardDec      => AdditionalDeclarationTypeStandardDec
+    }
+
   private def updateCache(
     sessionId: String,
     formData: AdditionalDeclarationType
   ): Future[Either[String, ExportsCacheModel]] =
-    updateHeaderLevelCache(
-      sessionId,
-      model => exportsCacheService.update(sessionId, model.copy(additionalDeclarationType = Some(formData)))
-    )
+    getAndUpdateExportCacheModel(sessionId, model => {
+      exportsCacheService.update(sessionId, model.copy(additionalDeclarationType = Some(formData)))
+    })
+
 }

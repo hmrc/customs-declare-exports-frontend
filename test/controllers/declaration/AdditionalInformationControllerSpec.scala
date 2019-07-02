@@ -26,21 +26,33 @@ import forms.declaration.AdditionalInformation
 import helpers.views.declaration.{AdditionalInformationMessages, CommonMessages}
 import models.declaration.AdditionalInformationData
 import models.declaration.AdditionalInformationData.formId
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify}
 import play.api.test.Helpers._
 
 class AdditionalInformationControllerSpec
     extends CustomExportsBaseSpec with AdditionalInformationMessages with CommonMessages with ViewValidator {
 
-  private val uri = uriWithContextPath("/declaration/additional-information")
+  val cacheModel = createModel()
+  private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/additional-information")
 
   private val addActionURLEncoded = (Add.toString, "")
   private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
   private def removeActionURLEncoded(value: String) = (Remove.toString, value)
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
     authorizedUser()
+    withNewCaching(cacheModel)
     withCaching[AdditionalInformationData](None, formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  override def afterEach(): Unit = {
+    super.afterEach()
+
+    reset(mockAuthConnector, mockExportsCacheService, mockCustomsCacheService)
   }
 
   "Additional Information Controller on GET" should {
@@ -91,6 +103,8 @@ class AdditionalInformationControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
+
+        verify(mockExportsCacheService, times(1)).update(any(), any())
       }
     }
 
@@ -107,6 +121,8 @@ class AdditionalInformationControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
         status(result) must be(SEE_OTHER)
+
+        verify(mockExportsCacheService, times(1)).update(any(), any())
       }
     }
 
@@ -416,10 +432,13 @@ class AdditionalInformationControllerSpec
         val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionURLEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/add-document"))
+        redirectLocation(result) must be(
+          Some(routes.DocumentsProducedController.displayPage(cacheModel.items.head.id).url)
+        )
+
+        verify(mockExportsCacheService, times(1)).update(any(), any())
       }
 
       "user doesn't fill form but some items already exist in the cache" in {
@@ -428,10 +447,11 @@ class AdditionalInformationControllerSpec
         withCaching[AdditionalInformationData](Some(cachedData), formId)
 
         val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionURLEncoded)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/add-document"))
+        redirectLocation(result) must be(
+          Some(routes.DocumentsProducedController.displayPage(cacheModel.items.head.id).url)
+        )
       }
 
       "user provide holder with some different holder in cache" in {
@@ -442,10 +462,13 @@ class AdditionalInformationControllerSpec
         val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionURLEncoded)
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/add-document"))
+        redirectLocation(result) must be(
+          Some(routes.DocumentsProducedController.displayPage(cacheModel.items.head.id).url)
+        )
+
+        verify(mockExportsCacheService, times(1)).update(any(), any())
       }
     }
   }

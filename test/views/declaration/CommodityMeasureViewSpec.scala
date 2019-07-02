@@ -29,7 +29,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
 
   private val form: Form[CommodityMeasure] = CommodityMeasure.form()
   private def createView(form: Form[CommodityMeasure] = form): Html =
-    goods_measure(form)(fakeRequest, messages, appConfig)
+    goods_measure(itemId, form)(fakeRequest, messages, appConfig)
 
   "Commodity Measure View" should {
 
@@ -111,7 +111,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/package-information")
+      backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/package-information")
     }
 
     "display 'Save and continue' button on page" in {

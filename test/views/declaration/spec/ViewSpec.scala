@@ -34,6 +34,7 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator {
 
   lazy val basePrefix = "supplementary."
   lazy val addressPrefix = "supplementary.address."
+  val itemId = "a7sc78"
 
   lazy val injector: Injector = app.injector
   implicit lazy val appConfig: AppConfig = injector.instanceOf[AppConfig]

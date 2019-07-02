@@ -72,11 +72,6 @@ GET         /location-of-goods                   controllers.declaration.Locatio
 
 POST        /location-of-goods                   controllers.declaration.LocationController.saveLocation()
 
-# Procedure codes
-
-GET         /procedure-codes                     controllers.declaration.ProcedureCodesPageController.displayPage()
-
-POST        /procedure-codes                     controllers.declaration.ProcedureCodesPageController.submitProcedureCodes()
 
 # Identification of a Warehouse
 
@@ -102,17 +97,6 @@ GET         /total-numbers-of-items              controllers.declaration.TotalNu
 
 POST        /total-numbers-of-items              controllers.declaration.TotalNumberOfItemsController.saveNoOfItems()
 
-# Add Documents
-
-GET         /add-document                        controllers.declaration.DocumentsProducedController.displayForm()
-
-POST        /add-document                        controllers.declaration.DocumentsProducedController.saveForm()
-
-# Item Type
-
-GET         /item-type                           controllers.declaration.ItemTypePageController.displayPage()
-
-POST        /item-type                           controllers.declaration.ItemTypePageController.submitItemType()
 
 # Previous documents
 
@@ -120,46 +104,72 @@ GET         /previous-documents                  controllers.declaration.Previou
 
 POST        /previous-documents                  controllers.declaration.PreviousDocumentsController.savePreviousDocuments()
 
-# Additional information
-
-GET         /additional-information              controllers.declaration.AdditionalInformationController.displayForm()
-
-POST        /additional-information              controllers.declaration.AdditionalInformationController.saveAdditionalInfo()
-
 # Transaction type
 
 GET         /nature-of-transaction               controllers.declaration.NatureOfTransactionController.displayForm()
 
 POST        /nature-of-transaction               controllers.declaration.NatureOfTransactionController.saveTransactionType()
 
-# Package Information
 
-GET         /package-information                 controllers.declaration.PackageInformationController.displayForm()
-
-POST        /package-information                 controllers.declaration.PackageInformationController.submitForm()
-
-# Commodity Measure Information
-
-GET         /commodity-measure                   controllers.declaration.CommodityMeasureController.displayForm()
-
-POST        /commodity-measure                   controllers.declaration.CommodityMeasureController.submitForm()
-
-# Fiscal Information
-
-GET         /fiscal-information                  controllers.declaration.FiscalInformationController.displayPage()
-
-POST        /fiscal-information                  controllers.declaration.FiscalInformationController.saveFiscalInformation()
-
-# Additional Fiscal References
-
-GET         /additional-fiscal-references        controllers.declaration.AdditionalFiscalReferencesController.displayPage()
-
-POST        /additional-fiscal-references        controllers.declaration.AdditionalFiscalReferencesController.saveReferences()
+# **** ITEMS PAGES *****
 
 # Items Summary
 
-GET         /export-items                        controllers.declaration.ItemsSummaryController.displayForm()
+GET         /export-items                        controllers.declaration.ItemsSummaryController.displayPage()
+
 POST        /export-items                        controllers.declaration.ItemsSummaryController.addItem()
+
+# Procedure codes
+
+GET         /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesPageController.displayPage(itemId)
+
+POST        /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesPageController.submitProcedureCodes(itemId)
+
+# Fiscal Information
+
+GET          /items/:itemId/fiscal-information    controllers.declaration.FiscalInformationController.displayPage(itemId)
+
+POST         /items/:itemId/fiscal-information   controllers.declaration.FiscalInformationController.saveFiscalInformation(itemId)
+
+
+# Additional Fiscal References
+
+GET         /items/:itemId/additional-fiscal-references        controllers.declaration.AdditionalFiscalReferencesController.displayPage(itemId)
+
+POST        /items/:itemId/additional-fiscal-references        controllers.declaration.AdditionalFiscalReferencesController.saveReferences(itemId)
+
+# Item Type
+
+GET         /items/:itemId/item-type                           controllers.declaration.ItemTypePageController.displayPage(itemId)
+
+POST        /items/:itemId/item-type                           controllers.declaration.ItemTypePageController.submitItemType(itemId)
+
+# Package Information
+
+GET         /items/:itemId/package-information                 controllers.declaration.PackageInformationController.displayPage(itemId)
+
+POST        /items/:itemId/package-information                 controllers.declaration.PackageInformationController.submitForm(itemId)
+
+
+# Commodity Measure Information
+
+GET          /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.displayPage(itemId)
+
+POST         /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.submitForm(itemId)
+
+# Additional information
+
+GET         /items/:itemId/additional-information              controllers.declaration.AdditionalInformationController.displayPage(itemId)
+
+POST        /items/:itemId/additional-information              controllers.declaration.AdditionalInformationController.saveAdditionalInfo(itemId)
+
+# Add Documents
+
+GET          /items/:itemId/add-document                        controllers.declaration.DocumentsProducedController.displayPage(itemId)
+
+POST         /items/:itemId/add-document                        controllers.declaration.DocumentsProducedController.saveForm(itemId)
+
+# **** END OF ITEM PAGES ****
 
 # Border Transport
 

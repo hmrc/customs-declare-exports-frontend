@@ -21,13 +21,15 @@ import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
 class ProcedureCodesDataSpec extends WordSpec with MustMatchers {
 
-  "Procedure code limit" should {
-    "contain correct value" in {
+  "Procedure code" should {
+
+    "contain correct limit" in {
+
       val expectedProceduresCodesDataMaxAmount = 99
+
       ProcedureCodesData.limitOfCodes must be(expectedProceduresCodesDataMaxAmount)
     }
   }
-
 }
 
 object ProcedureCodesDataSpec {
@@ -38,6 +40,7 @@ object ProcedureCodesDataSpec {
     procedureCode = Some(procedureCode_1 + procedureCode_2),
     additionalProcedureCodes = Seq("111", "222", "333")
   )
+
   val emptyProcedureCodes = ProcedureCodesData(procedureCode = None, additionalProcedureCodes = Seq.empty)
 
   val correctProcedureCodesJSON: JsValue = JsObject(
@@ -46,8 +49,8 @@ object ProcedureCodesDataSpec {
       "additionalProcedureCodes" -> JsArray(Seq(JsString("111"), JsString("222"), JsString("333")))
     )
   )
+
   val emptyProcedureCodesJSON: JsValue = JsObject(
     Map("procedureCode" -> JsString(""), "additionalProcedureCodes" -> JsArray())
   )
-
 }

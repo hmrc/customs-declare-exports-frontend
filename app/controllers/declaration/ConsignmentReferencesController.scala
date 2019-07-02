@@ -73,8 +73,8 @@ class ConsignmentReferencesController @Inject()(
     sessionId: String,
     formData: ConsignmentReferences
   ): Future[Either[String, ExportsCacheModel]] =
-    updateHeaderLevelCache(
-      sessionId,
-      model => exportsCacheService.update(sessionId, model.copy(consignmentReferences = Some(formData)))
-    )
+    getAndUpdateExportCacheModel(sessionId, model => {
+      exportsCacheService.update(sessionId, model.copy(consignmentReferences = Some(formData)))
+    })
+
 }

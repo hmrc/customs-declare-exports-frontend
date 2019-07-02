@@ -40,10 +40,7 @@ object WarehouseIdentification {
         .verifying("supplementary.warehouse.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
     ),
     "identificationType" -> optional(
-      text().verifying(
-        "supplementary.warehouse.identificationType.error",
-        isContainedIn(IdentifierType.all)
-      )
+      text().verifying("supplementary.warehouse.identificationType.error", isContainedIn(IdentifierType.all))
     ),
     "identificationNumber" -> optional(
       text().verifying(
@@ -70,8 +67,7 @@ object WarehouseIdentification {
     val NON_CUSTOMS = "Y"
     val FREE_ZONE = "Z"
 
-    lazy val all: Seq[String] = Seq(
-      PUBLIC_CUSTOMS_1, PUBLIC_CUSTOMS_2, PUBLIC_CUSTOMS_3, PRIVATE_CUSTOMS,  NON_CUSTOMS, FREE_ZONE
-    )
+    lazy val all: Seq[String] =
+      Seq(PUBLIC_CUSTOMS_1, PUBLIC_CUSTOMS_2, PUBLIC_CUSTOMS_3, PRIVATE_CUSTOMS, NON_CUSTOMS, FREE_ZONE)
   }
 }

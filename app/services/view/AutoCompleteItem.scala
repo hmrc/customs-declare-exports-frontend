@@ -22,7 +22,7 @@ import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode
 case class AutoCompleteItem(label: String, value: String)
 
 object AutoCompleteItem {
-  
+
   def fromCountry(countries: List[Country], value: Country => String = _.countryName): List[AutoCompleteItem] = {
     countries map (c => AutoCompleteItem(s"${c.countryName} - ${c.countryCode}", value(c)))
   }

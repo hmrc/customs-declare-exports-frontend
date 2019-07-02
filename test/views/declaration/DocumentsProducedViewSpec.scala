@@ -40,7 +40,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
 
   private def createView(form: Form[DocumentsProduced] = form, cachedDocuments: Seq[DocumentsProduced] = Seq()): Html =
-    documents_produced(appConfig, form, cachedDocuments)(fakeRequest, messages)
+    documents_produced(itemId, appConfig, form, cachedDocuments)(fakeRequest, messages)
 
   "Documents Produced View" should {
 
@@ -185,7 +185,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/additional-information")
+      backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/additional-information")
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {

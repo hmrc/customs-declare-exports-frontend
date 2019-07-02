@@ -29,7 +29,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
   private val form: Form[AdditionalInformation] = AdditionalInformation.form()
   private def createView(form: Form[AdditionalInformation] = form): Html =
-    additional_information(appConfig, form, Seq())(fakeRequest, messages)
+    additional_information(itemId, appConfig, form, Seq())(fakeRequest, messages)
 
   /*
    * Moved all errors tests to AdditionalInformationControllerSpec,
@@ -88,7 +88,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/commodity-measure")
+      backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/commodity-measure")
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {
@@ -132,7 +132,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
     "display one row with data in table" in {
 
-      val view = additional_information(appConfig, form, Seq(AdditionalInformation("12345", "12345")))
+      val view = additional_information(itemId, appConfig, form, Seq(AdditionalInformation("12345", "12345")))
 
       getElementByCss(view, "table>tbody>tr>th:nth-child(1)").text() must be("12345-12345")
 

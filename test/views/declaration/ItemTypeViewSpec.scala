@@ -30,7 +30,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
 
   private val form: Form[ItemType] = ItemType.form()
   private def createView(form: Form[ItemType] = form, journeyType: String): Html =
-    item_type(form, false)(appConfig, fakeJourneyRequest(journeyType), messages)
+    item_type(itemId, form, false)(appConfig, fakeJourneyRequest(journeyType), messages)
 
   /*
    * Validation for the errors is done in ItemTypePageController
@@ -183,7 +183,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
         val backButton = getElementById(createView(journeyType = AllowedChoiceValues.StandardDec), "link-back")
 
         backButton.text() must be(messages(backCaption))
-        backButton.attr("href") must be("/customs-declare-exports/declaration/fiscal-information")
+        backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/fiscal-information")
       }
 
       "display 'Save and continue' button" in {
@@ -266,7 +266,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
         val backButton = getElementById(createView(journeyType = AllowedChoiceValues.SupplementaryDec), "link-back")
 
         backButton.text() must be(messages(backCaption))
-        backButton.attr("href") must be("/customs-declare-exports/declaration/fiscal-information")
+        backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/fiscal-information")
       }
 
       "display 'Save and continue' button" in {

@@ -153,7 +153,9 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
         getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(2)>a")
           .text() mustBe messages(presentationOfficeSpecialCharacters)
-        getElementByCss(view, "#error-message-presentationOfficeId-input").text() mustBe messages(presentationOfficeSpecialCharacters)
+        getElementByCss(view, "#error-message-presentationOfficeId-input").text() mustBe messages(
+          presentationOfficeSpecialCharacters
+        )
       }
     }
   }

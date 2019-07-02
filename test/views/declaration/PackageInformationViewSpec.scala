@@ -29,7 +29,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
   private val form: Form[PackageInformation] = PackageInformation.form()
   private def createView(form: Form[PackageInformation] = form): Html =
-    package_information(form, Seq())(fakeRequest, messages, appConfig)
+    package_information(itemId, form, Seq())(fakeRequest, messages, appConfig)
 
   "Package Information View" should {
 
@@ -104,7 +104,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/item-type")
+      backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/item-type")
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {
@@ -160,7 +160,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
     "display one row with data in table" in {
 
       val packages = Seq(PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")))
-      val view = package_information(form, packages)(fakeRequest, messages, appConfig)
+      val view = package_information("12345", form, packages)(fakeRequest, messages, appConfig)
 
       // check table header
       getElementByCss(view, "table>caption").text() must be(messages(tableHeading))
@@ -181,7 +181,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
         PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")),
         PackageInformation(Some("PB"), Some(101), Some("Shipping Mark"))
       )
-      val view = package_information(form, packages)(fakeRequest, messages, appConfig)
+      val view = package_information("12345", form, packages)(fakeRequest, messages, appConfig)
 
       // check table header
       getElementByCss(view, "table>caption").text() must be("2 Packages added")

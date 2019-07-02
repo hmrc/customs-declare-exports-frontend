@@ -73,13 +73,14 @@
     }
 
     <div class="section">
-        <a id="link-add" class="link-add" href="@ProcedureCodesPageController.displayPage().url">
+        @helpers.form(ItemsSummaryController.addItem(), 'autoComplete -> "off") {
             @if(items.isEmpty) {
-                @messages("site.add.item")
+                @components.submit_button(messages("site.add.item"))
             } else {
-                @messages("site.add.anotherItem")
+                @components.submit_button(messages("site.add.anotherItem"))
             }
-        </a><p></p>
+        }
+
 
         @if(items.nonEmpty) {
             <a href="@WarehouseIdentificationController.displayForm().url" class="button" id="next">@messages("site.save_and_continue")</a>

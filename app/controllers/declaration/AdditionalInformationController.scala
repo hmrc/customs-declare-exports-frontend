@@ -19,16 +19,19 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.goodsItemCacheId
-import controllers.util.MultipleItemsHelper._
 import controllers.util._
+import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.AdditionalInformationData
 import models.declaration.AdditionalInformationData.formId
+import models.requests.JourneyRequest
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import services.CustomsCacheService
+import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.additional_information
 
@@ -39,64 +42,117 @@ class AdditionalInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
+  legacyCustomsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[AdditionalInformationData](goodsItemCacheId, formId).map {
-      case Some(data) => Ok(additional_information(appConfig, form, data.items))
-      case _          => Ok(additional_information(appConfig, form, Seq()))
+  val elementLimit = 99
+
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    legacyCustomsCacheService.fetchAndGetEntry[AdditionalInformationData](goodsItemCacheId, formId).map {
+      case Some(data) => Ok(additional_information(itemId, appConfig, form, data.items))
+      case _          => Ok(additional_information(itemId, appConfig, form, Seq()))
     }
   }
 
-  def saveAdditionalInfo(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form.bindFromRequest()
+  def saveAdditionalInfo(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      val boundForm = form.bindFromRequest()
 
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+      val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
-    val cachedData = customsCacheService
-      .fetchAndGetEntry[AdditionalInformationData](goodsItemCacheId, formId)
-      .map(_.getOrElse(AdditionalInformationData(Seq())))
+      val cachedData = legacyCustomsCacheService
+        .fetchAndGetEntry[AdditionalInformationData](goodsItemCacheId, formId)
+        .map(_.getOrElse(AdditionalInformationData(Seq())))
 
-    val elementLimit = 99
-
-    cachedData.flatMap { cache =>
-      actionTypeOpt match {
-        case Some(Add) =>
-          add(boundForm, cache.items, elementLimit).fold(
-            formWithErrors =>
-              Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
-            updatedCache =>
-              customsCacheService
-                .cache[AdditionalInformationData](goodsItemCacheId, formId, AdditionalInformationData(updatedCache))
-                .map(_ => Redirect(controllers.declaration.routes.AdditionalInformationController.displayForm()))
-          )
-
-        case Some(Remove(ids)) => {
-          val updatedCache = remove(ids.headOption, cache.items)
-
-          customsCacheService
-            .cache[AdditionalInformationData](goodsItemCacheId, formId, AdditionalInformationData(updatedCache))
-            .map(_ => Redirect(controllers.declaration.routes.AdditionalInformationController.displayForm()))
+      cachedData.flatMap { cache =>
+        actionTypeOpt match {
+          case Some(Add)             => handleAdd(itemId, boundForm, cache.items)
+          case Some(Remove(ids))     => handleRemove(itemId, ids, boundForm, cache.items)
+          case Some(SaveAndContinue) => handleSaveAndContinue(itemId, boundForm, cache.items)
+          case _                     => errorHandler.displayErrorPage()
         }
-
-        case Some(SaveAndContinue) =>
-          saveAndContinue(boundForm, cache.items, true, elementLimit).fold(
-            formWithErrors =>
-              Future.successful(BadRequest(additional_information(appConfig, formWithErrors, cache.items))),
-            updatedCache =>
-              if (updatedCache != cache.items)
-                customsCacheService
-                  .cache[AdditionalInformationData](goodsItemCacheId, formId, AdditionalInformationData(updatedCache))
-                  .map(_ => Redirect(controllers.declaration.routes.DocumentsProducedController.displayForm()))
-              else
-                Future.successful(Redirect(controllers.declaration.routes.DocumentsProducedController.displayForm()))
-          )
-
-        case _ => errorHandler.displayErrorPage()
       }
-    }
   }
+
+  private def handleAdd(itemId: String, boundForm: Form[AdditionalInformation], cachedData: Seq[AdditionalInformation])(
+    implicit request: JourneyRequest[_]
+  ): Future[Result] =
+    MultipleItemsHelper
+      .add(boundForm, cachedData, elementLimit)
+      .fold(
+        formWithErrors =>
+          Future.successful(BadRequest(additional_information(itemId, appConfig, formWithErrors, cachedData))),
+        updatedCache =>
+          updateCacheModelAndRedirect(
+            itemId,
+            updatedCache,
+            controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)
+        )
+      )
+
+  private def handleSaveAndContinue(
+    itemId: String,
+    boundForm: Form[AdditionalInformation],
+    cachedData: Seq[AdditionalInformation]
+  )(implicit request: JourneyRequest[_]): Future[Result] =
+    MultipleItemsHelper
+      .saveAndContinue(boundForm, cachedData, true, elementLimit)
+      .fold(
+        formWithErrors =>
+          Future.successful(BadRequest(additional_information(itemId, appConfig, formWithErrors, cachedData))),
+        updatedCache =>
+          if (updatedCache != cachedData)
+            updateCacheModelAndRedirect(
+              itemId,
+              updatedCache,
+              controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)
+            )
+          else
+            Future.successful(Redirect(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)))
+      )
+
+  private def handleRemove(
+    itemId: String,
+    ids: Seq[String],
+    boundForm: Form[AdditionalInformation],
+    items: Seq[AdditionalInformation]
+  )(implicit request: JourneyRequest[_]): Future[Result] = {
+    val updatedCache = MultipleItemsHelper.remove(ids.headOption, items)
+    updateCacheModelAndRedirect(
+      itemId,
+      updatedCache,
+      controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)
+    )
+  }
+
+  private def updateCacheModelAndRedirect(itemId: String, updatedCache: Seq[AdditionalInformation], redirectCall: Call)(
+    implicit request: JourneyRequest[_]
+  ): Future[Result] =
+    for {
+      _ <- updateCache(itemId, journeySessionId, AdditionalInformationData(updatedCache))
+      _ <- legacyCustomsCacheService
+        .cache[AdditionalInformationData](goodsItemCacheId, formId, AdditionalInformationData(updatedCache))
+    } yield Redirect(redirectCall)
+
+  private def updateCache(
+    itemId: String,
+    sessionId: String,
+    updatedAdditionalInformation: AdditionalInformationData
+  ): Future[Either[String, ExportsCacheModel]] =
+    getAndUpdateExportCacheModel(
+      sessionId,
+      model => {
+        val item: Option[ExportItem] = model.items
+          .filter(item => item.id.equals(itemId))
+          .headOption
+          .map(_.copy(additionalInformation = Some(updatedAdditionalInformation)))
+        val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+        exportsCacheService.update(sessionId, model.copy(items = itemList))
+      }
+    )
 }

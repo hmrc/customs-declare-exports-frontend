@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes._
+@import controllers.declaration.routes
 @import controllers.util.SaveAndContinue
 @import forms.Choice.AllowedChoiceValues
 @import forms.declaration.ItemType
@@ -24,7 +24,9 @@
 @import uk.gov.hmrc.play.views.html._
 @import services.NationalAdditionalCode
 @import services.view.AutoCompleteItem
-@(
+@import forms.declaration.AdditionalFiscalReference
+
+@(  itemId: String,
     form: Form[ItemType],
     hasAdditionalFiscalReferences: Boolean,
     taricAdditionalCodes: Seq[String] = Seq.empty,
@@ -36,11 +38,11 @@
     appConfig = appConfig
 ) {
 
-    @helpers.form(ItemTypePageController.submitItemType(), 'autocomplete -> "off") {
+    @helpers.form(routes.ItemTypePageController.submitItemType(itemId), 'autocomplete -> "off") {
 
         @{
-          if(hasAdditionalFiscalReferences) components.back_link("/customs-declare-exports/declaration/additional-fiscal-references")
-          else components.back_link("/customs-declare-exports/declaration/fiscal-information")
+          if(hasAdditionalFiscalReferences) components.back_link(routes.AdditionalFiscalReferencesController.displayPage(itemId).url)
+          else components.back_link(routes.FiscalInformationController.displayPage(itemId).url)
         }
 
 

@@ -25,11 +25,11 @@ import generators.Generators
 import helpers.views.declaration.{CommonMessages, PackageInformationMessages}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.{reset, times, verify}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
-import org.scalatest.OptionValues
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatest.prop.PropertyChecks
 import play.api.data.Form
 import play.api.test.Helpers._
@@ -37,17 +37,19 @@ import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import views.html.declaration.package_information
 import base.TestHelper._
+import services.cache.ExportsCacheModel
 
 class PackageInformationControllerSpec
     extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues with ViewValidator
-    with PackageInformationMessages with CommonMessages {
+    with PackageInformationMessages with CommonMessages with BeforeAndAfterEach {
 
-  private val uri = uriWithContextPath("/declaration/package-information")
+  val cacheModel = createModel()
+  private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/package-information")
   private val form = PackageInformation.form()
   private val formId = "PackageInformation"
 
   def view(form: Form[PackageInformation] = form, charges: Seq[PackageInformation] = Seq.empty): Html =
-    package_information(form, charges)(fakeRequest, messages, appConfig)
+    package_information(cacheModel.items.head.id, form, charges)(fakeRequest, messages, appConfig)
 
   val generatePackage: Arbitrary[PackageInformation] = Arbitrary {
     for {
@@ -338,7 +340,9 @@ class PackageInformationControllerSpec
         "with valid data and user press 'Add'" in {
 
           forAll(arbitrary[PackageInformation]) { packaging =>
+            reset(mockExportsCacheService)
             authorizedUser()
+            withNewCaching(cacheModel)
             withCaching[List[PackageInformation]](None, formId)
 
             val payload = toMap(packaging).toSeq :+ addActionUrlEncoded
@@ -346,9 +350,11 @@ class PackageInformationControllerSpec
             status(result) must be(SEE_OTHER)
 
             result.futureValue.header.headers.get("Location") must be(
-              Some("/customs-declare-exports/declaration/package-information")
+              Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
             )
 
+            verify(mockExportsCacheService, times(1)).get(any[String])
+            verify(mockExportsCacheService, times(1)).update(any[String], any[ExportsCacheModel])
             verify(mockCustomsCacheService)
               .cache[Seq[PackageInformation]](any(), ArgumentMatchers.eq(formId), ArgumentMatchers.eq(Seq(packaging)))(
                 any(),
@@ -413,7 +419,7 @@ class PackageInformationControllerSpec
               val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
               status(result) must be(SEE_OTHER)
               result.futureValue.header.headers.get("Location") must be(
-                Some("/customs-declare-exports/declaration/package-information")
+                Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
               )
               verify(mockCustomsCacheService)
                 .cache[Seq[PackageInformation]](
@@ -437,7 +443,7 @@ class PackageInformationControllerSpec
             val result = route(app, postRequestFormUrlEncoded(uri, Seq(saveAndContinueActionUrlEncoded): _*)).value
             status(result) must be(SEE_OTHER)
             result.futureValue.header.headers.get("Location") must be(
-              Some("/customs-declare-exports/declaration/commodity-measure")
+              Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/commodity-measure")
             )
           }
         }
