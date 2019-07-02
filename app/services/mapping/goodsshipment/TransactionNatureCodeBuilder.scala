@@ -16,29 +16,25 @@
 
 package services.mapping.goodsshipment
 
-import forms.declaration.TransactionType
+import forms.declaration.NatureOfTransaction
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.declaration_ds.dms._2.GoodsShipmentTransactionNatureCodeType
 
-object GoodsShipmentTransactionTypeBuilder {
+object GoodsShipmentNatureOfTransactionBuilder {
 
   def build(implicit cacheMap: CacheMap): GoodsShipmentTransactionNatureCodeType =
     cacheMap
-      .getEntry[TransactionType](TransactionType.formId)
-      .filter(transactionType => isDefined(transactionType))
-      .map(createTransactionNatureCode)
+      .getEntry[NatureOfTransaction](NatureOfTransaction.formId)
+      .filter(natureOfTransaction => natureOfTransaction.natureType.nonEmpty)
+      .map(createNatureOfTransaction)
       .orNull
 
-  private def isDefined(transactionType: TransactionType): Boolean =
-    transactionType.documentTypeCode.nonEmpty &&
-      transactionType.identifier.getOrElse("").nonEmpty
+  private def createNatureOfTransaction(data: NatureOfTransaction): GoodsShipmentTransactionNatureCodeType = {
+    val natureOfTransaction = new GoodsShipmentTransactionNatureCodeType()
 
-  private def createTransactionNatureCode(data: TransactionType): GoodsShipmentTransactionNatureCodeType = {
+    natureOfTransaction.setValue(data.natureType)
 
-    val transactionType = new GoodsShipmentTransactionNatureCodeType()
-    transactionType.setValue(data.documentTypeCode + data.identifier.getOrElse(""))
-
-    transactionType
+    natureOfTransaction
   }
 
 }

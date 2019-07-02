@@ -77,7 +77,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       commodity = Some(updatedCommodity),
       additionalInformations = additionalInfo(cachedData).getOrElse(Seq.empty),
       additionalDocuments = documents(cachedData).getOrElse(Seq.empty),
-      fiscalReferences = if(hasFiscalReferences(cachedData)) fiscalReferences(cachedData) else Seq.empty
+      fiscalReferences = if (hasFiscalReferences(cachedData)) fiscalReferences(cachedData) else Seq.empty
     )
   }
 

@@ -30,7 +30,7 @@
     appConfig = appConfig
 ) {
 
-    @components.back_link("/customs-declare-exports/declaration/transaction-type")
+    @components.back_link(controllers.declaration.routes.NatureOfTransactionController.displayForm().url)
 
     @components.error_summary(form.errors)
 

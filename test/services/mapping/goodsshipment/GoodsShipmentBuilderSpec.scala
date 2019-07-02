@@ -26,7 +26,7 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers {
     "correctly map to the WCO-DEC GoodsShipment instance" in {
       val goodsShipment =
         GoodsShipmentBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
-      goodsShipment.getTransactionNatureCode.getValue should be("11")
+      goodsShipment.getTransactionNatureCode.getValue should be("1")
 
       goodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")
       goodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")

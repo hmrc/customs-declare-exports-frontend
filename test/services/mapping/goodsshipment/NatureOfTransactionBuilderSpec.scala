@@ -16,24 +16,24 @@
 
 package services.mapping.goodsshipment
 
-import forms.declaration.{TransactionType, TransactionTypeSpec}
+import forms.declaration.{NatureOfTransaction, NatureOfTransactionSpec}
 import org.scalatest.{Matchers, WordSpec}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-class TransactionTypeBuilderSpec extends WordSpec with Matchers {
+class NatureOfTransactionBuilderSpec extends WordSpec with Matchers {
 
   "TransactionTypeBuilder" should {
     "correctly map to the WCO-DEC GoodsShipment.TransactionNatureCodeType instance" when {
       "'identifier' has been supplied" in {
         implicit val cacheMap =
-          CacheMap("CacheID", Map(TransactionType.formId -> TransactionTypeSpec.correctTransactionTypeJSON))
-        val transactionNatureCodeType = GoodsShipmentTransactionTypeBuilder.build(cacheMap)
-        transactionNatureCodeType.getValue should be("11")
+          CacheMap("CacheID", Map(NatureOfTransaction.formId -> NatureOfTransactionSpec.correctNatureOfTransactionJSON))
+        val transactionNatureCodeType = GoodsShipmentNatureOfTransactionBuilder.build(cacheMap)
+        transactionNatureCodeType.getValue should be("1")
       }
       "'identifier' has not been supplied" in {
         implicit val cacheMap =
-          CacheMap("CacheID", Map(TransactionType.formId -> TransactionTypeSpec.emptyTransactionTypeJSON))
-        GoodsShipmentTransactionTypeBuilder.build(cacheMap) should be(null)
+          CacheMap("CacheID", Map(NatureOfTransaction.formId -> NatureOfTransactionSpec.emptyNatureOfTransactionJSON))
+        GoodsShipmentNatureOfTransactionBuilder.build(cacheMap) should be(null)
       }
     }
   }

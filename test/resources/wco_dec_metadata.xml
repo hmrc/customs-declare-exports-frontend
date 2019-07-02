@@ -50,7 +50,7 @@
             </ns3:Address>
         </ns3:Exporter>
         <ns3:GoodsShipment>
-            <ns3:TransactionNatureCode>11</ns3:TransactionNatureCode>
+            <ns3:TransactionNatureCode>1</ns3:TransactionNatureCode>
             <ns3:AEOMutualRecognitionParty>
                 <ns3:ID>eori1</ns3:ID>
                 <ns3:RoleCode>CS</ns3:RoleCode>

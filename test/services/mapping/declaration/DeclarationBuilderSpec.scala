@@ -78,7 +78,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
   }
 
   private def assertGoodsShipment(declaration: Declaration) = {
-    declaration.getGoodsShipment.getTransactionNatureCode.getValue should be("11")
+    declaration.getGoodsShipment.getTransactionNatureCode.getValue should be("1")
 
     declaration.getGoodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")
     declaration.getGoodsShipment.getConsignee.getName.getValue should be("Full Name")

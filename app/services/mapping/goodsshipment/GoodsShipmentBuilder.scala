@@ -26,7 +26,7 @@ object GoodsShipmentBuilder {
   def build(implicit cacheMap: CacheMap, choice: Choice): GoodsShipment = {
     val goodsShipment = new GoodsShipment()
 
-    goodsShipment.setTransactionNatureCode(GoodsShipmentTransactionTypeBuilder.build)
+    goodsShipment.setTransactionNatureCode(GoodsShipmentNatureOfTransactionBuilder.build)
     goodsShipment.setConsignee(ConsigneeBuilder.build)
     goodsShipment.setConsignment(ConsignmentBuilder.build)
     goodsShipment.setDestination(DestinationBuilder.build)
