@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.warehouse_identification
 
@@ -35,9 +36,12 @@ class WarehouseIdentificationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   import forms.declaration.WarehouseIdentification._
 
@@ -55,9 +59,18 @@ class WarehouseIdentificationController @Inject()(
         (formWithErrors: Form[WarehouseIdentification]) =>
           Future.successful(BadRequest(warehouse_identification(appConfig, formWithErrors))),
         form =>
-          customsCacheService.cache[WarehouseIdentification](cacheId, formId, form).map { _ =>
-            Redirect(controllers.declaration.routes.BorderTransportController.displayForm())
-        }
+          for {
+            _ <- updateCache(journeySessionId, form)
+            _ <- customsCacheService.cache[WarehouseIdentification](cacheId, formId, form)
+          } yield Redirect(controllers.declaration.routes.BorderTransportController.displayForm())
       )
   }
+
+  private def updateCache(
+    sessionId: String,
+    formData: WarehouseIdentification
+  ): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(sessionId, model => {
+      exportsCacheService.update(sessionId, model.copy(warehouseIdentification = Some(formData)))
+    })
 }
