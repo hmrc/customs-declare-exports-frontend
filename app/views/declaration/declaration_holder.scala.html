@@ -51,7 +51,7 @@
             items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("eori"),
             label = messages("supplementary.declarationHolder.eori"),
             hint = Some(messages("supplementary.eori.hint")),

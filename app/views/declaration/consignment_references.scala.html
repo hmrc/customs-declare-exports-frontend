@@ -36,14 +36,14 @@
 
     @components.page_title(Some("supplementary.consignmentReferences.header"))
 
-    @components.input_text(
+    @components.fields.field_text(
       field = form("ducr.ducr"),
       label = messages("supplementary.consignmentReferences.ucr.info"),
       hint = Some(messages("supplementary.consignmentReferences.ucr.hint")),
       labelClass = Some("heading-24")
     )
 
-      @components.input_text(
+      @components.fields.field_text(
       field = form("lrn"),
       label = messages("supplementary.consignmentReferences.lrn.info"),
       hint = Some(messages("supplementary.consignmentReferences.lrn.hint")),

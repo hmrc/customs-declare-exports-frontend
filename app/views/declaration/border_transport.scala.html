@@ -37,7 +37,7 @@
         @components.page_title(Some("supplementary.transportInfo.title"), None)
 
 
-        @components.input_radio(
+        @components.fields.field_radio(
             field = form("borderModeOfTransportCode"),
             legend = messages("supplementary.transportInfo.borderTransportMode.header"),
             hint = Some(messages("supplementary.transportInfo.borderTransportMode.header.hint")),
@@ -53,7 +53,7 @@
             )
         )
 
-        @components.input_radio(
+        @components.fields.field_radio(
             field = form("meansOfTransportOnDepartureType"),
             legend = messages("supplementary.transportInfo.meansOfTransport.departure.header"),
             hint = Some(messages("supplementary.transportInfo.meansOfTransport.departure.header.hint")),
@@ -68,7 +68,7 @@
                 RadioOption("Departure_NameOfInlandWaterwayVessel", NameOfInlandWaterwayVessel, messages("supplementary.transportInfo.meansOfTransport.nameOfInlandWaterwayVessel"))
             )
         )
-        @components.input_text(
+        @components.fields.field_text(
             field = form("meansOfTransportOnDepartureIDNumber"),
             label = messages("supplementary.transportInfo.meansOfTransport.reference.header")
         )

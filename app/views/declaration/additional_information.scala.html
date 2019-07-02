@@ -54,13 +54,13 @@
     }
 
     @helpers.form(AdditionalInformationController.saveAdditionalInfo(), 'autoComplete -> "off") {
-        @components.input_text(
+        @components.fields.field_text(
             field = form("code"),
             label = messages("supplementary.additionalInformation.code"),
             labelClass = Some("bold-small")
         )
 
-        @components.input_textarea(
+        @components.fields.field_textarea(
             field = form("description"),
             label = messages("supplementary.additionalInformation.description"),
             labelClass = Some("bold-small")
