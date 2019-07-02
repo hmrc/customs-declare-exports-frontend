@@ -74,25 +74,11 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
         testFailedValidationOnAddition(itemType, expectedValidationResult)
       }
 
-      "any National additional code is longer than 4 characters" in {
-        val itemType = buildItemType(nationalAdditionalCode = Seq("1111", "2222", "33333", "4444"))
+      "any National additional code not in list" in {
+        val itemType = buildItemType(nationalAdditionalCode = Seq("VATE", "ABC"))
         val expectedValidationResult = Invalid(
           errors = Seq(
-            FormError(s"$nationalAdditionalCodesKey[2]", "declaration.itemType.nationalAdditionalCode.error.length")
-          )
-        )
-
-        testFailedValidationOnAddition(itemType, expectedValidationResult)
-      }
-
-      "any National additional code contains special characters" in {
-        val itemType = buildItemType(nationalAdditionalCode = Seq("1111", "2222", "333%", "4444"))
-        val expectedValidationResult = Invalid(
-          errors = Seq(
-            FormError(
-              s"$nationalAdditionalCodesKey[2]",
-              "declaration.itemType.nationalAdditionalCode.error.specialCharacters"
-            )
+            FormError(s"$nationalAdditionalCodesKey[1]", "declaration.itemType.nationalAdditionalCode.error.invalid")
           )
         )
 
@@ -111,7 +97,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
       }
 
       "there is duplicated National additional code" in {
-        val itemType = buildItemType(nationalAdditionalCode = Seq("1111", "1111"))
+        val itemType = buildItemType(nationalAdditionalCode = Seq("VATE", "VATE"))
         val expectedValidationResult = Invalid(
           errors =
             Seq(FormError(nationalAdditionalCodesKey, "declaration.itemType.nationalAdditionalCode.error.duplicate"))
@@ -125,21 +111,21 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
     "return Valid result" when {
 
       "provided with correct data with single value for multi-value fields" in {
-        val itemType = buildItemType(taricAdditionalCode = Seq("AB12"), nationalAdditionalCode = Seq("CD34"))
+        val itemType = buildItemType(taricAdditionalCode = Seq("AB12"), nationalAdditionalCode = Seq("VATE"))
 
         ItemTypeValidator.validateOnAddition(itemType) must be(Valid)
       }
 
       "provided with correct data with multiple values for multi-value fields" in {
         val itemType =
-          buildItemType(taricAdditionalCode = Seq("AB12", "Q123"), nationalAdditionalCode = Seq("CD34", "TRY", "T45T"))
+          buildItemType(taricAdditionalCode = Seq("AB12", "Q123"), nationalAdditionalCode = Seq("VATE", "VATR"))
 
         ItemTypeValidator.validateOnAddition(itemType) must be(Valid)
       }
 
       "provided with empty mandatory fields and correct values for multi-value fields" in {
         val itemType =
-          buildItemType(taricAdditionalCode = Seq("AB12", "Q123"), nationalAdditionalCode = Seq("CD34", "TRY", "T45T"))
+          buildItemType(taricAdditionalCode = Seq("AB12", "Q123"), nationalAdditionalCode = Seq("VATE", "VATR"))
 
         ItemTypeValidator.validateOnAddition(itemType) must be(Valid)
       }
@@ -234,25 +220,11 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
         testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
       }
 
-      "any National additional code is longer than 4 characters" in {
-        val itemType = buildItemType(nationalAdditionalCode = Seq("1111", "2222", "33333", "4444"))
+      "any National additional code is not in list" in {
+        val itemType = buildItemType(nationalAdditionalCode = Seq("VATE", "ABC"))
         val expectedValidationResult = Invalid(
           errors = Seq(
-            FormError(s"$nationalAdditionalCodesKey[2]", "declaration.itemType.nationalAdditionalCode.error.length")
-          )
-        )
-
-        testFailedValidationOnSaveAndContinue(itemType, expectedValidationResult)
-      }
-
-      "any National additional code contains special characters" in {
-        val itemType = buildItemType(nationalAdditionalCode = Seq("1111", "2222", "333%", "4444"))
-        val expectedValidationResult = Invalid(
-          errors = Seq(
-            FormError(
-              s"$nationalAdditionalCodesKey[2]",
-              "declaration.itemType.nationalAdditionalCode.error.specialCharacters"
-            )
+            FormError(s"$nationalAdditionalCodesKey[1]", "declaration.itemType.nationalAdditionalCode.error.invalid")
           )
         )
 
@@ -377,7 +349,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
         val itemType = ItemType(
           combinedNomenclatureCode = "12345678",
           taricAdditionalCodes = Seq("11AA"),
-          nationalAdditionalCodes = Seq("12AB"),
+          nationalAdditionalCodes = Seq("VATE"),
           descriptionOfGoods = "Test description",
           cusCode = Some("12345678"),
           unDangerousGoodsCode = Some("1234"),
@@ -391,7 +363,7 @@ class ItemTypeValidatorSpec extends WordSpec with MustMatchers {
         val itemType = ItemType(
           combinedNomenclatureCode = "12345678",
           taricAdditionalCodes = Seq("11AA", "22BB", "33CC"),
-          nationalAdditionalCodes = Seq("12AB", "CD34"),
+          nationalAdditionalCodes = Seq("VATE", "VATR"),
           descriptionOfGoods = "Test description",
           cusCode = Some("12345678"),
           unDangerousGoodsCode = Some("1234"),

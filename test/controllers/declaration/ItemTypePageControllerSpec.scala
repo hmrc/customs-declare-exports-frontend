@@ -20,9 +20,9 @@ import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.{FiscalInformation, ItemType}
 import forms.declaration.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
 import forms.declaration.ItemTypeSpec._
+import forms.declaration.{FiscalInformation, ItemType}
 import helpers.views.declaration.{CommonMessages, ItemTypeMessages}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -203,7 +203,7 @@ class ItemTypePageControllerSpec
           )
         }
 
-        "National additional code is longer than 4 characters" in {
+        "National additional code is invalid" in {
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
@@ -218,31 +218,9 @@ class ItemTypePageControllerSpec
           status(result) must be(BAD_REQUEST)
 
           checkErrorsSummary(page)
-          checkErrorLink(page, 1, nacErrorLength, "#nationalAdditionalCode_")
+          checkErrorLink(page, 1, nacErrorInvalid, "#nationalAdditionalCode_")
 
-          getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorLength))
-        }
-
-        "National additional code contains special characters" in {
-
-          val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
-            combinedNomenclatureCode = "12345",
-            taricAdditionalCodes = Seq("1234"),
-            nationalAdditionalCodes = Seq("1$%^"),
-            statisticalValue = "100",
-            descriptionOfGoods = "Description"
-          )
-          val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, nacErrorSpecialCharacters, "#nationalAdditionalCode_")
-
-          getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(
-            messages(nacErrorSpecialCharacters)
-          )
+          getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorInvalid))
         }
 
         "Description of goods is empty" in {
@@ -250,7 +228,7 @@ class ItemTypePageControllerSpec
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
             taricAdditionalCodes = Seq("1234"),
-            nationalAdditionalCodes = Seq("1234"),
+            nationalAdditionalCodes = Seq("VATE"),
             statisticalValue = "100"
           )
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
@@ -271,7 +249,7 @@ class ItemTypePageControllerSpec
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
             taricAdditionalCodes = Seq("1234"),
-            nationalAdditionalCodes = Seq("1234"),
+            nationalAdditionalCodes = Seq("VATE"),
             statisticalValue = "100",
             descriptionOfGoods = TestHelper.createRandomAlphanumericString(281)
           )
@@ -293,7 +271,7 @@ class ItemTypePageControllerSpec
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
             taricAdditionalCodes = Seq("1234"),
-            nationalAdditionalCodes = Seq("1234"),
+            nationalAdditionalCodes = Seq("VATE"),
             cusCode = "12345",
             statisticalValue = "100",
             descriptionOfGoods = "Description"
@@ -314,7 +292,7 @@ class ItemTypePageControllerSpec
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
             taricAdditionalCodes = Seq("1234"),
-            nationalAdditionalCodes = Seq("1234"),
+            nationalAdditionalCodes = Seq("VATE"),
             cusCode = "1234@#$%",
             statisticalValue = "100",
             descriptionOfGoods = "Description"
@@ -423,7 +401,7 @@ class ItemTypePageControllerSpec
           checkErrorsSummary(page)
           checkErrorLink(page, 1, cncErrorLength, "#combinedNomenclatureCode")
           checkErrorLink(page, 2, taricErrorLength, "#taricAdditionalCode_")
-          checkErrorLink(page, 3, nacErrorLength, "#nationalAdditionalCode_")
+          checkErrorLink(page, 3, nacErrorInvalid, "#nationalAdditionalCode_")
           checkErrorLink(page, 4, descriptionErrorEmpty, "#descriptionOfGoods")
           checkErrorLink(page, 5, cusCodeErrorSpecialCharacters, "#cusCode")
           checkErrorLink(page, 6, statisticalErrorEmpty, "#statisticalValue")
@@ -432,7 +410,7 @@ class ItemTypePageControllerSpec
             messages(cncErrorLength)
           )
           getElementByCss(page, "#error-message-taricAdditionalCode_-input").text() must be(messages(taricErrorLength))
-          getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorLength))
+          getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorInvalid))
           getElementByCss(page, "#error-message-descriptionOfGoods-input").text() must be(
             messages(descriptionErrorEmpty)
           )
@@ -526,12 +504,12 @@ class ItemTypePageControllerSpec
         "user tries to add duplicated NAC" in {
 
           withCaching[ItemType](
-            Some(ItemType("100", Seq(), fourDigitsSequence(98), "Description", None, None, "100")),
+            Some(ItemType("100", Seq(), Seq("VATE"), "Description", None, None, "100")),
             ItemType.id
           )
 
           val form =
-            buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", nationalAdditionalCodes = Seq("1010"))
+            buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", nationalAdditionalCodes = Seq("VATE"))
           val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
           val page = contentAsString(result)
 
@@ -544,35 +522,13 @@ class ItemTypePageControllerSpec
             messages(nacErrorDuplicate)
           )
         }
-
-        "user tries to add more then 99 NAC" in {
-
-          withCaching[ItemType](
-            Some(ItemType("100", Seq(), fourDigitsSequence(99), "Description", None, None, "100")),
-            ItemType.id
-          )
-
-          val form =
-            buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", nationalAdditionalCodes = Seq("2345"))
-          val result = route(app, postRequestFormUrlEncoded(uri, form.toSeq: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, nacErrorMaxAmount, "#nationalAdditionalCode_")
-
-          getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(
-            messages(nacErrorMaxAmount)
-          )
-        }
       }
 
       "save updated data to the cache" when {
 
         "provided with TARIC" in {
           val cachedItemType =
-            ItemType("100", fourDigitsSequence(10), fourDigitsSequence(10), "Description", None, None, "100")
+            ItemType("100", fourDigitsSequence(10), Seq("VATE",  "VATR"), "Description", None, None, "100")
           val taricToAdd = "1234"
           val userInput = buildItemTypeUrlEncodedInput(Add)(taricAdditionalCodes = Seq(taricToAdd))
           withCaching[ItemType](Some(cachedItemType), ItemType.id)
@@ -591,8 +547,8 @@ class ItemTypePageControllerSpec
 
         "provided with NAC" in {
           val cachedItemType =
-            ItemType("100", fourDigitsSequence(10), fourDigitsSequence(10), "Description", None, None, "100")
-          val nacToAdd = "1234"
+            ItemType("100", fourDigitsSequence(10), Seq("VATE",  "VATR"), "Description", None, None, "100")
+          val nacToAdd = "X442"
           val userInput = buildItemTypeUrlEncodedInput(Add)(nationalAdditionalCodes = Seq(nacToAdd))
           withCaching[ItemType](Some(cachedItemType), ItemType.id)
 
@@ -610,9 +566,9 @@ class ItemTypePageControllerSpec
 
         "provided with both TARIC and NAC" in {
           val cachedItemType =
-            ItemType("100", fourDigitsSequence(10), fourDigitsSequence(10), "Description", None, None, "100")
+            ItemType("100", fourDigitsSequence(1), Seq("VATE",  "VATR"), "Description", None, None, "100")
           val taricToAdd = "1234"
-          val nacToAdd = "4321"
+          val nacToAdd = "X442"
           val userInput = buildItemTypeUrlEncodedInput(Add)(
             taricAdditionalCodes = Seq(taricToAdd),
             nationalAdditionalCodes = Seq(nacToAdd)

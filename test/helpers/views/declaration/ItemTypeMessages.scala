@@ -36,8 +36,7 @@ trait ItemTypeMessages {
 
   val nacHeader: String = itemType + ".nationalAdditionalCode.header"
   val nacHeaderHint: String = itemType + ".nationalAdditionalCode.header.hint"
-  val nacErrorLength: String = itemType + ".nationalAdditionalCode.error.length"
-  val nacErrorSpecialCharacters: String = itemType + ".nationalAdditionalCode.error.specialCharacters"
+  val nacErrorInvalid: String = itemType + ".nationalAdditionalCode.error.invalid"
   val nacErrorMaxAmount: String = itemType + ".nationalAdditionalCode.error.maxAmount"
   val nacErrorDuplicate: String = itemType + ".nationalAdditionalCode.error.duplicate"
 

@@ -20,6 +20,7 @@ import forms.declaration.ItemType
 import forms.declaration.ItemType._
 import play.api.data.Forms.{optional, seq, text}
 import play.api.data.{Form, Forms}
+import services.NationalAdditionalCode
 import utils.validators.forms.FieldValidator._
 import utils.validators.forms.{Invalid, Valid, ValidationResult, Validator}
 
@@ -67,14 +68,13 @@ object ItemTypeValidator extends Validator[ItemType] {
   private val mappingNationalAdditionalCode = seq(
     text()
       .verifying(
-        "declaration.itemType.nationalAdditionalCode.error.length",
-        noLongerThan(nationalAdditionalCodeMaxLength)
+        "declaration.itemType.nationalAdditionalCode.error.invalid",
+        isContainedIn(NationalAdditionalCode.all.map(_.value))
       )
-      .verifying("declaration.itemType.nationalAdditionalCode.error.specialCharacters", isAlphanumeric)
   ).verifying(
-      "declaration.itemType.nationalAdditionalCode.error.maxAmount",
-      codes => codes.size <= nationalAdditionalCodesMaxAmount
-    )
+    "declaration.itemType.nationalAdditionalCode.error.maxAmount",
+    codes => codes.size <= nationalAdditionalCodesMaxAmount
+  )
     .verifying("declaration.itemType.nationalAdditionalCode.error.duplicate", areAllElementsUnique)
 
   private val mappingDescriptionOfGoods = text()

@@ -82,7 +82,7 @@
         )
 
         <div id="document-type-field" class="inline-block form-group">
-            @components.autocomplete_field(
+            @components.fields.field_autocomplete(
                 form("documentType"),
                 "supplementary.previousDocuments.documentType",
                 Some(messages("supplementary.previousDocuments.documentType.hint")),

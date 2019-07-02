@@ -21,7 +21,7 @@ import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 object ItemTypeSpec {
   private val combinedNomenclatureCode = "ABCD1234"
   private val taricAdditionalCode = "AB12"
-  private val nationalAdditionalCode = "CD34"
+  private val nationalAdditionalCode = "VATE"
   private val descriptionOfGoods = "Description of goods."
   private val cusCode = "QWER0987"
   private val unDangerousGoodsCode = "12CD"

@@ -23,6 +23,8 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
 
+@import services.model.AutoCompleteItem
+@import services.NationalAdditionalCode
 @(
     form: Form[ItemType],
     hasAdditionalFiscalReferences: Boolean,
@@ -64,12 +66,17 @@
             labelClass = Some("bold-small")
         )
 
-        @components.input_text_multiple_values(
+        @components.fields.field_multiple_values(
             field = form(nationalAdditionalCodesKey + "[]"),
             label = messages("declaration.itemType.nationalAdditionalCode.header"),
             hint = Some(messages("declaration.itemType.nationalAdditionalCode.header.hint")),
             elements = nationalAdditionalCodes,
-            labelClass = Some("bold-small")
+            labelClass = Some("bold-small"),
+            input = components.inputs.input_autocomplete(
+                field = form(nationalAdditionalCodesKey + "[]"),
+                emptySelectValue = messages("declaration.itemType.nationalAdditionalCode.error.empty"),
+                items = AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
+            )
         )
 
         @components.input_text(
