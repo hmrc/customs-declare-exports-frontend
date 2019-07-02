@@ -28,7 +28,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
   private val uri = uriWithContextPath("/declaration/declarant-details")
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withNewCaching(createModel())
     withCaching[DeclarantDetails](None)

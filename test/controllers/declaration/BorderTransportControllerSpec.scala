@@ -24,7 +24,7 @@ import forms.declaration.BorderTransport
 import generators.Generators
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary._
 import org.scalatest.prop.PropertyChecks
 import play.api.data.Form
@@ -32,14 +32,16 @@ import play.api.mvc.Request
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import views.html.declaration.border_transport
 
+import scala.concurrent.Future
+
 class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks {
 
-  private val uri = uriWithContextPath("/declaration/border-transport")
-
   val form: Form[BorderTransport] = Form(BorderTransport.formMapping)
+  private val uri = uriWithContextPath("/declaration/border-transport")
 
   def view(form: Form[BorderTransport], request: Request[_]): Html =
     border_transport(form)(request, messages, appConfig)
@@ -53,6 +55,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
   after {
     reset(mockCustomsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "GET" should {
@@ -117,6 +120,14 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
             ("meansOfTransportOnDepartureIDNumber", borderTransport.meansOfTransportOnDepartureIDNumber.getOrElse(""))
           )
 
+          val model = createModel("12345")
+          when(mockExportsCacheService.get(any())).thenReturn(Future.successful(Right(model)))
+
+          val updatedModel = model.copy(borderTransport = Some(borderTransport))
+
+          when(mockExportsCacheService.update(any(), any[ExportsCacheModel]))
+            .thenReturn(Future.successful(Right(updatedModel)))
+
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
           status(result) must be(SEE_OTHER)
@@ -124,12 +135,16 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
             Some("/customs-declare-exports/declaration/transport-details")
           )
 
+          captureModelUpdate.borderTransport.get must be(borderTransport)
+
           verify(mockCustomsCacheService)
             .cache[BorderTransport](
               any(),
               ArgumentMatchers.eq(BorderTransport.formId),
               ArgumentMatchers.eq(borderTransport)
             )(any(), any(), any())
+
+          reset(mockExportsCacheService)
         }
       }
     }

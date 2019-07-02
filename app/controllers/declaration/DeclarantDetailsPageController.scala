@@ -39,9 +39,9 @@ class DeclarantDetailsPageController @Inject()(
   exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-  extends {
-    val cacheService = exportsCacheService
-  } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[DeclarantDetails](cacheId, DeclarantDetails.id).map {
@@ -60,13 +60,16 @@ class DeclarantDetailsPageController @Inject()(
           for {
             _ <- updateCache(journeySessionId, form)
             _ <- customsCacheService.cache[DeclarantDetails](cacheId, DeclarantDetails.id, form)
-          } yield Redirect(controllers.declaration.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage())
+          } yield
+            Redirect(
+              controllers.declaration.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
+          )
       )
   }
 
   private def updateCache(sessionId: String, formData: DeclarantDetails): Future[Either[String, ExportsCacheModel]] =
     updateHeaderLevelCache(sessionId, model => {
-      val updatedParties = model.parties.map(_.copy(declarantDetails = Some(formData)))
+      val updatedParties = model.parties.copy(declarantDetails = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
     })
 }

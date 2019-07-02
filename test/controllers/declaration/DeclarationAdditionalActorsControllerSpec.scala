@@ -38,14 +38,14 @@ class DeclarationAdditionalActorsControllerSpec
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withNewCaching(createModel())
     withCaching[DeclarationAdditionalActorsData](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  after {
+  override def afterEach() {
     reset(mockCustomsCacheService)
     reset(mockExportsCacheService)
   }

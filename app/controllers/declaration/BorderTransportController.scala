@@ -66,7 +66,8 @@ class BorderTransportController @Inject()(
   }
 
   private def updateCache(sessionId: String, formData: BorderTransport): Future[Either[String, ExportsCacheModel]] =
-    updateHeaderLevelCache(sessionId, model => {
-      exportsCacheService.update(sessionId, model.copy(borderTransport = Some(formData)))
-    })
+    updateHeaderLevelCache(
+      sessionId,
+      model => exportsCacheService.update(sessionId, model.copy(borderTransport = Some(formData)))
+    )
 }

@@ -73,7 +73,8 @@ class TransportDetailsController @Inject()(
     else Redirect(SummaryPageController.displayPage())
 
   private def updateCache(sessionId: String, formData: TransportDetails): Future[Either[String, ExportsCacheModel]] =
-    updateHeaderLevelCache(sessionId, model => {
-      exportsCacheService.update(sessionId, model.copy(transportDetails = Some(formData)))
-    })
+    updateHeaderLevelCache(
+      sessionId,
+      model => exportsCacheService.update(sessionId, model.copy(transportDetails = Some(formData)))
+    )
 }

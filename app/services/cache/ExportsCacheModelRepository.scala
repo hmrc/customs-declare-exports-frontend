@@ -18,10 +18,10 @@ package services.cache
 
 import java.time.LocalDateTime
 
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration._
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import javax.inject.Inject
-import models.declaration.Parties
+import models.declaration.{Parties, TransportInformationContainerData}
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.bson.BSONObjectID
@@ -81,7 +81,8 @@ case class ExportsCacheModel(
   warehouseIdentification: Option[WarehouseIdentification] = None,
   borderTransport: Option[BorderTransport] = None,
   transportDetails: Option[TransportDetails] = None,
-  parties: Option[Parties] = None,
+  containerData: Option[TransportInformationContainerData] = None,
+  parties: Parties = Parties(),
   items: List[ExportItem] = Nil
 )
 
