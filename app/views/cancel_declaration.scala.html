@@ -19,7 +19,7 @@
 @import forms.CancelDeclaration
 @import uk.gov.hmrc.play.views.html._
 
-@import utils.RadioOption
+@import views.components.inputs.RadioOption
 @import forms.cancellation.CancellationChangeReason
 @import forms.cancellation.CancellationChangeReason.{NoLongerRequired, Duplication, OtherReason}
 @(appConfig: AppConfig, form: Form[CancelDeclaration])(implicit request: Request[_], messages: Messages)

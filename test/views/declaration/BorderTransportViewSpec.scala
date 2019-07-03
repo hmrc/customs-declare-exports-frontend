@@ -25,8 +25,8 @@ import views.html.declaration.border_transport
 import views.tags.ViewTest
 import views.html.components.fields.field_text
 import views.html.components.fields.field_radio
-import utils.RadioOption
 import forms.declaration.TransportCodes._
+import views.components.inputs.RadioOption
 
 @ViewTest
 class BorderTransportViewSpec extends BorderTransportFields with CommonMessages {

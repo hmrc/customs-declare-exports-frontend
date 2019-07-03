@@ -33,7 +33,7 @@ class WarehouseBuilderSpec extends WordSpec with Matchers with MockitoSugar {
             "CacheID",
             Map(
               WarehouseIdentification.formId -> Json
-                .toJson(WarehouseIdentification(Some("12345678"), Some("R1234567GB"), Some("2")))
+                .toJson(WarehouseIdentification(Some("12345678"), Some("R"), Some("1234567GB"), Some("2")))
             )
           )
         val warehouse = WarehouseBuilder.build(cacheMap)
@@ -41,12 +41,23 @@ class WarehouseBuilderSpec extends WordSpec with Matchers with MockitoSugar {
         warehouse.getTypeCode.getValue should be("R")
       }
 
+      "identificationType is not supplied" in {
+        implicit val cacheMap =
+          CacheMap(
+            "CacheID",
+            Map(
+              WarehouseIdentification.formId -> Json.toJson(WarehouseIdentification(Some("something"), None, Some("1234567GB"), Some("2")))
+            )
+          )
+        WarehouseBuilder.build(cacheMap) should be(null)
+      }
+
       "identificationNumber is not supplied" in {
         implicit val cacheMap =
           CacheMap(
             "CacheID",
             Map(
-              WarehouseIdentification.formId -> Json.toJson(WarehouseIdentification(Some("something"), None, Some("2")))
+              WarehouseIdentification.formId -> Json.toJson(WarehouseIdentification(Some("something"), Some("R"), None, Some("2")))
             )
           )
         WarehouseBuilder.build(cacheMap) should be(null)

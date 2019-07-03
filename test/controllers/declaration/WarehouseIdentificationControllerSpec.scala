@@ -52,6 +52,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       page must include(messages(title))
       page must include(messages(titleHint))
+      page must include(messages(identificationType))
       page must include(messages(identificationNumber))
       page must include(messages(supervisingCustomsOffice))
       page must include(messages(inlandTransportMode))
@@ -68,7 +69,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
     "read item from cache and display it" in {
 
-      val cachedData = WarehouseIdentification(Some("Office"), Some("SecretStash"), Some(Maritime))
+      val cachedData = WarehouseIdentification(Some("Office"), Some("R"), Some("SecretStash"), Some(Maritime))
       withCaching[WarehouseIdentification](Some(cachedData), "IdentificationOfWarehouse")
 
       val result = route(app, getRequest(uri)).get
@@ -76,6 +77,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       status(result) must be(OK)
       page must include("Office")
+      page must include(messages("supplementary.warehouse.identificationType.r"))
       page must include("SecretStash")
       page must include("Sea transport")
     }
@@ -89,6 +91,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
         JsObject(
           Map(
             "supervisingCustomsOffice" -> JsString(TestHelper.createRandomAlphanumericString(5)),
+            "identificationType" -> JsString(TestHelper.createRandomAlphanumericString(2)),
             "identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(37)),
             "inlandModeOfTransportCode" -> JsString("Incorrect mode of transport")
           )
@@ -99,35 +102,25 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       status(result) must be(BAD_REQUEST)
 
       page must include(messages(supervisingCustomsOfficeError))
+      page must include(messages(identificationTypeError))
       page must include(messages(identificationNumberError))
     }
 
-    "validate identification number - less than two characters" in {
+    "validate identification type" in {
 
       val incorrectWarehouseIdentification: JsValue =
-        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(1))))
+        JsObject(Map("identificationType" -> JsString(TestHelper.createRandomAlphanumericString(2))))
 
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(identificationNumberError))
+      contentAsString(result) must include(messages(identificationTypeError))
     }
 
-    "validate identification number - more than 36 characters" in {
+    "validate identification number - more than 35 characters" in {
 
       val incorrectWarehouseIdentification: JsValue =
-        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(37))))
-
-      val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
-
-      status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(identificationNumberError))
-    }
-
-    "validate identification number - first letter is not capital" in {
-
-      val incorrectWarehouseIdentification: JsValue =
-        JsObject(Map("identificationNumber" -> JsString("r1234567GB")))
+        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(36))))
 
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
 

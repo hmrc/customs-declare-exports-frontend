@@ -22,7 +22,9 @@ trait WarehouseIdentificationMessages {
 
   val title: String = warehouse + ".title"
   val titleHint: String = warehouse + ".title.hint"
+  val identificationType: String = warehouse + ".identificationType"
   val identificationNumber: String = warehouse + ".identificationNumber"
+  val identificationTypeError: String = warehouse + ".identificationType.error"
   val identificationNumberError: String = warehouse + ".identificationNumber.error"
   val identificationNumberHint: String = warehouse + ".identificationNumber.hint"
   val supervisingCustomsOffice: String = warehouse + ".supervisingCustomsOffice"

@@ -26,13 +26,14 @@ object WarehouseIdentificationSpec {
   private val inlandModeOfTransportCode = Maritime
 
   val correctWarehouseIdentification =
-    WarehouseIdentification(Some(office), Some(warehouseTypeCode + warehouseId), Some(inlandModeOfTransportCode))
-  val emptyWarehouseIdentification = WarehouseIdentification(None, None, None)
+    WarehouseIdentification(Some(office), Some(warehouseTypeCode), Some(warehouseId), Some(inlandModeOfTransportCode))
+  val emptyWarehouseIdentification = WarehouseIdentification(None, None, None, None)
   val correctWarehouseIdentificationJSON: JsValue =
     JsObject(
       Map(
         "supervisingCustomsOffice" -> JsString("12345678"),
-        "identificationNumber" -> JsString(warehouseTypeCode + warehouseId),
+        "identificationType" -> JsString(warehouseTypeCode),
+        "identificationNumber" -> JsString(warehouseId),
         "inlandModeOfTransportCode" -> JsString(Rail)
       )
     )
@@ -40,6 +41,7 @@ object WarehouseIdentificationSpec {
     JsObject(
       Map(
         "supervisingCustomsOffice" -> JsString(""),
+        "identificationType" -> JsString(""),
         "identificationNumber" -> JsString(""),
         "inlandModeOfTransportCode" -> JsString("")
       )

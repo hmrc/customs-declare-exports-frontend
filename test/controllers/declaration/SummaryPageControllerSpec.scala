@@ -124,6 +124,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.locations.goodsExaminationLocationType"))
         resultAsString must include(messages("supplementary.summary.locations.qualifierCode"))
         resultAsString must include(messages("supplementary.summary.locations.additionalQualifier"))
+        resultAsString must include(messages("supplementary.summary.locations.warehouseType"))
         resultAsString must include(messages("supplementary.summary.locations.warehouseId"))
         resultAsString must include(messages("supplementary.summary.locations.supervisingCustomsOffice"))
         resultAsString must include(messages("supplementary.summary.locations.officeOfExit"))
