@@ -43,7 +43,7 @@
         @components.multiple_items_list(additionalReferences.map(elem => elem.country + elem.reference))
 
         <div id="country-of-dispatch-field" class="inline-block form-group">
-            @components.autocomplete_field(
+            @components.fields.field_autocomplete(
                 form("country"),
                 messages("declaration.additionalFiscalReferences.country"),
                 None,
@@ -52,7 +52,7 @@
             )
         </div>
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("reference"),
             label = messages("declaration.additionalFiscalReferences.reference"),
             hint = None,

@@ -23,7 +23,7 @@ import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
 import views.html.declaration.seal
 import views.tags.ViewTest
-import views.html.components.{input_text}
+import views.html.components.fields.field_text
 
 @ViewTest
 class SealViewSpec extends SealFields with CommonMessages {
@@ -76,6 +76,6 @@ class SealViewSpec extends SealFields with CommonMessages {
 trait SealFields extends ViewSpec {
   val form: Form[Seal] = Seal.form()
 
-  val id = input_text(field = form("id"), label = "7/18 Seal identification number").body
+  val id = field_text(field = form("id"), label = "7/18 Seal identification number").body
 
 }

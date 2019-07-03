@@ -16,18 +16,24 @@
 
 package controllers
 
+import java.time.LocalDateTime
+import java.util.UUID
+
 import config.AppConfig
 import controllers.actions.AuthAction
+import controllers.declaration.{ModelCacheable, SessionIdAware}
 import controllers.util.CacheIdGenerator.eoriCacheId
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.choice_page
 
@@ -36,10 +42,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class ChoiceController @Inject()(
   authenticate: AuthAction,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+
+  val logger = Logger.apply(this.getClass)
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, choiceId).map {
@@ -53,19 +64,35 @@ class ChoiceController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choice_page(formWithErrors))),
-        validChoice =>
-          customsCacheService.cache[Choice](eoriCacheId, choiceId, validChoice).map { _ =>
-            validChoice.value match {
-              case SupplementaryDec | StandardDec =>
-                Redirect(controllers.declaration.routes.DispatchLocationPageController.displayPage())
-              case CancelDec =>
-                Redirect(controllers.routes.CancelDeclarationController.displayForm())
-              case Submissions =>
-                Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
-              case _ =>
-                Redirect(controllers.routes.ChoiceController.displayChoiceForm())
-            }
+        validChoice => {
+
+          (for {
+            _ <- customsCacheService.cache[Choice](eoriCacheId, choiceId, validChoice)
+            _ <- exportsCacheService.update(
+              authenticatedSessionId,
+              ExportsCacheModel(
+                authenticatedSessionId,
+                UUID.randomUUID().toString,
+                createdDateTime = LocalDateTime.now,
+                updatedDateTime = LocalDateTime.now,
+                validChoice.value
+              )
+            )
+          } yield ()).map {
+            _ =>
+              validChoice.value match {
+                case SupplementaryDec | StandardDec =>
+                  Redirect(controllers.declaration.routes.DispatchLocationPageController.displayPage())
+                case CancelDec =>
+                  Redirect(controllers.routes.CancelDeclarationController.displayForm())
+                case Submissions =>
+                  Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
+                case _ =>
+                  Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+              }
+          }
         }
       )
   }
+
 }

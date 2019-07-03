@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.consignment_references
 
@@ -37,9 +38,12 @@ class ConsignmentReferencesController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
@@ -56,12 +60,21 @@ class ConsignmentReferencesController @Inject()(
       .fold(
         (formWithErrors: Form[ConsignmentReferences]) =>
           Future.successful(BadRequest(consignment_references(appConfig, formWithErrors))),
-        validConsignmentReferences => {
-          customsCacheService
-            .cache[ConsignmentReferences](cacheId, ConsignmentReferences.id, validConsignmentReferences)
-            .map(_ => Redirect(controllers.declaration.routes.ExporterDetailsPageController.displayForm()))
-        }
+        validConsignmentReferences =>
+          for {
+            _ <- updateCache(journeySessionId, validConsignmentReferences)
+            _ <- customsCacheService
+              .cache[ConsignmentReferences](cacheId, ConsignmentReferences.id, validConsignmentReferences)
+          } yield Redirect(controllers.declaration.routes.ExporterDetailsPageController.displayForm())
       )
   }
+
+  private def updateCache(
+    sessionId: String,
+    formData: ConsignmentReferences
+  ): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(sessionId, model => {
+      exportsCacheService.update(sessionId, model.copy(consignmentReferences = Some(formData)))
+    })
 
 }

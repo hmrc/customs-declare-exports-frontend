@@ -25,6 +25,6 @@ object DocumentType {
   private val deserialiser: (String, String) => DocumentType = (a: String, b: String) => DocumentType(a, b)
 
   val allDocuments: List[DocumentType] = JsonFile
-    .readFromJsonFile("/document-type-autocomplete-list.json", deserialiser)
-    .sortBy(_.description)
+    .readFromJsonFile("/code-lists/document-type-autocomplete-list.json", deserialiser)
+    .sortBy(_.description.toLowerCase)
 }

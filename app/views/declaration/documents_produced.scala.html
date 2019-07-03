@@ -76,7 +76,7 @@
     @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
 
     @helpers.form(DocumentsProducedController.saveForm(), 'autoComplete -> "off") {
-        @components.input_text(
+        @components.fields.field_text(
             field = form(documentTypeCodeKey),
             label = messages("supplementary.addDocument.documentTypeCode"),
             labelClass = Some("bold-small")
@@ -84,38 +84,38 @@
 
         @components.form_fields_wrapper(field = form(documentIdentifierAndPartKey)) {
 
-            @components.input_text(
+            @components.fields.field_text(
                 field = form(s"$documentIdentifierAndPartKey.$documentIdentifierKey"),
                 label = messages("supplementary.addDocument.documentIdentifier"),
                 labelClass = Some("bold-small")
             )
 
-            @components.input_text(
+            @components.fields.field_text(
                 field = form(s"$documentIdentifierAndPartKey.$documentPartKey"),
                 label = messages("supplementary.addDocument.documentPart"),
                 labelClass = Some("bold-small")
             )
         }
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form(documentStatusKey),
             label = messages("supplementary.addDocument.documentStatus"),
             labelClass = Some("bold-small")
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form(documentStatusReasonKey),
             label = messages("supplementary.addDocument.documentStatusReason"),
             labelClass = Some("bold-small")
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form(issuingAuthorityNameKey),
             label = messages("supplementary.addDocument.issuingAuthorityName"),
             labelClass = Some("bold-small")
         )
 
-        @components.input_date(
+        @components.fields.field_date(
             field = form(dateOfValidityKey),
             label = messages("supplementary.addDocument.dateOfValidity"),
             form = form
@@ -123,13 +123,13 @@
 
         @components.form_fields_wrapper(field = form(documentWriteOffKey)) {
 
-            @components.input_text(
+            @components.fields.field_text(
                 field = form(s"$documentWriteOffKey.$measurementUnitKey"),
                 label = messages("supplementary.addDocument.measurementUnit"),
                 labelClass = Some("bold-small")
             )
 
-            @components.input_text(
+            @components.fields.field_text(
                 field = form(s"$documentWriteOffKey.$documentQuantityKey"),
                 label = messages("supplementary.addDocument.documentQuantity"),
                 labelClass = Some("bold-small")

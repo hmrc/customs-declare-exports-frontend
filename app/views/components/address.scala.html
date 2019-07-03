@@ -24,27 +24,27 @@
     <span id="address-header" class="heading-24">@addressHeader</span>
 }
 <div class="form-field">
-    @components.input_text(
+    @components.fields.field_text(
         field = form(s"$addressPrefix.fullName"),
         label = messages("supplementary.address.fullName")
     )
 
-    @components.input_text(
+    @components.fields.field_text(
         field = form(s"$addressPrefix.addressLine"),
         label = messages("supplementary.address.addressLine")
     )
 
-    @components.input_text(
+    @components.fields.field_text(
         field = form(s"$addressPrefix.townOrCity"),
         label = messages("supplementary.address.townOrCity")
     )
 
-    @components.input_text(
+    @components.fields.field_text(
         field = form(s"$addressPrefix.postCode"),
         label = messages("supplementary.address.postCode")
     )
 
-    @components.autocomplete_field(
+    @components.fields.field_autocomplete(
         form(s"$addressPrefix.country"),
         "supplementary.address.country",
         None,

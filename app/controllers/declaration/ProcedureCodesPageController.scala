@@ -31,6 +31,7 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.CustomsCacheService
+import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.procedure_codes
@@ -43,9 +44,11 @@ class ProcedureCodesPageController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends { val cacheService = exportsCacheService } with FrontendController(mcc) with I18nSupport with ModelCacheable
+with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ProcedureCodesData](goodsItemCacheId, formId).map {
@@ -58,7 +61,7 @@ class ProcedureCodesPageController @Inject()(
   def submitProcedureCodes(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest()
 
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
     val cachedData = customsCacheService
       .fetchAndGetEntry[ProcedureCodesData](goodsItemCacheId, formId)
@@ -80,6 +83,18 @@ class ProcedureCodesPageController @Inject()(
         )
     }
   }
+
+  private def updateCache(
+    sessionId: String,
+    procedureCodes: ProcedureCodes
+  ): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(sessionId, model => {
+      val item: Option[ExportItem] = model.items.headOption.map(_.copy(procedureCodes = Some(procedureCodes)))
+      val itemList = item.fold(List.empty[ExportItem]) { item =>
+        List(item)
+      }
+      exportsCacheService.update(sessionId, model.copy(items = itemList))
+    })
 
   private def addAnotherCodeHandler(
     userInput: ProcedureCodes,
@@ -136,13 +151,18 @@ class ProcedureCodesPageController @Inject()(
     (userInput, cachedData.additionalProcedureCodes) match {
       case (procedureCode, Seq()) =>
         procedureCode match {
-          case ProcedureCodes(Some(procedureCode), Some(additionalCode)) =>
-            val procedureCodes = ProcedureCodesData(Some(procedureCode), Seq(additionalCode))
-
-            customsCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, procedureCodes).map { _ =>
+          case ProcedureCodes(Some(procedureCode), Some(additionalCode)) => {
+            (for {
+              _ <- updateCache(journeySessionId, userInput)
+              _ <- customsCacheService.cache[ProcedureCodesData](
+                goodsItemCacheId,
+                formId,
+                ProcedureCodesData(Some(procedureCode), Seq(additionalCode))
+              )
+            } yield ()).map { _ =>
               Redirect(routes.FiscalInformationController.displayPage())
             }
-
+          }
           case ProcedureCodes(procedureCode, additionalCode) =>
             val procedureCodeError = procedureCode.fold(
               Seq(("procedureCode", "supplementary.procedureCodes.procedureCode.error.empty"))
@@ -189,6 +209,7 @@ class ProcedureCodesPageController @Inject()(
             }
         }
     }
+
   //scalastyle:on method.length
 
   private def retrieveProcedureCode(values: Seq[String]): String = values.headOption.getOrElse("")

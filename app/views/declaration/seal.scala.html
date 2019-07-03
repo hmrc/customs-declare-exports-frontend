@@ -61,7 +61,7 @@
     }
 
     @helpers.form(SealController.submitForm(), 'autoComplete -> "off") {
-        @components.input_text(
+        @components.fields.field_text(
             field = form("id"),
             label = messages("standard.seal.id")
         )

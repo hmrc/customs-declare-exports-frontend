@@ -75,7 +75,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/transaction-type"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/nature-of-transaction"))
     }
 
     "validate request and redirect - correct values for all fields (decimals)" in {
@@ -93,7 +93,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/transaction-type"))
+      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/nature-of-transaction"))
     }
 
     "validate request and redirect - all inputs alphabetic" in {

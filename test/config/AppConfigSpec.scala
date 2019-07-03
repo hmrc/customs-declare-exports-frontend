@@ -37,8 +37,8 @@ class AppConfigSpec extends CustomExportsBaseSpec {
         |microservice.services.auth.host=localhostauth
         |google-analytics.token=N/A
         |google-analytics.host=localhostGoogle
-        |countryCodesCsvFilename=mdg-country-codes.csv
-        |countryCodesJsonFilename=location-autocomplete-canonical-list.json
+        |countryCodesCsvFilename=code-lists/mdg-country-codes.csv
+        |countryCodesJsonFilename=code-lists/location-autocomplete-canonical-list.json
         |list-of-available-journeys="SMP,STD,CAN,SUB"
         |microservice.services.nrs.host=localhostnrs
         |microservice.services.nrs.port=7654
@@ -150,11 +150,11 @@ class AppConfigSpec extends CustomExportsBaseSpec {
     }
 
     "have countryCodesJsonFilename" in {
-      validConfigService.countryCodesJsonFilename must be("location-autocomplete-canonical-list.json")
+      validConfigService.countryCodesJsonFilename must be("code-lists/location-autocomplete-canonical-list.json")
     }
 
     "have countriesCsvFilename" in {
-      validConfigService.countriesCsvFilename must be("mdg-country-codes.csv")
+      validConfigService.countriesCsvFilename must be("code-lists/mdg-country-codes.csv")
     }
 
     "have nrsServiceUrl" in {

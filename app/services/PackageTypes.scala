@@ -17,12 +17,17 @@
 package services
 
 import services.model.PackageType
+import utils.FileReader
+
 import scala.util.matching.Regex
 
-object PackageTypes extends CSVReader {
-  val regexPattern: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
+object PackageTypes {
 
-  lazy val all: List[PackageType] = readIgnoringHeaderRow("package-types.csv") { (code, description) =>
-    PackageType(code, description)
-  }.sortBy(_.description)
+  private val regex: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
+
+  lazy val all: List[PackageType] =
+    FileReader("code-lists/package-types.csv").tail.map {
+      case regex(code: String, description: String) =>
+        PackageType(code, description)
+    }.sortBy(_.description)
 }

@@ -20,18 +20,13 @@ import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
-import forms.declaration.additionaldeclarationtype.{
-  AdditionalDeclarationType,
-  AdditionalDeclarationTypeStandardDec,
-  AdditionalDeclarationTypeSupplementaryDec,
-  AdditionalDeclarationTypeTrait
-}
+import forms.declaration.additionaldeclarationtype._
 import javax.inject.Inject
 import models.requests.JourneyRequest
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.additionaldeclarationtype.declaration_type
 
@@ -41,9 +36,12 @@ class AdditionalDeclarationTypePageController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val decType = extractFormType(request)
@@ -59,12 +57,13 @@ class AdditionalDeclarationTypePageController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[AdditionalDeclarationType]) =>
-          Future.successful(BadRequest(declaration_type(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(declaration_type(formWithErrors))),
         validAdditionalDeclarationType =>
-          customsCacheService
-            .cache[AdditionalDeclarationType](cacheId, decType.formId, validAdditionalDeclarationType)
-            .map(_ => Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage()))
+          for {
+            _ <- updateCache(journeySessionId, validAdditionalDeclarationType)
+            - <- customsCacheService
+              .cache[AdditionalDeclarationType](cacheId, decType.formId, validAdditionalDeclarationType)
+          } yield Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
       )
   }
 
@@ -73,4 +72,13 @@ class AdditionalDeclarationTypePageController @Inject()(
       case SupplementaryDec => AdditionalDeclarationTypeSupplementaryDec
       case StandardDec      => AdditionalDeclarationTypeStandardDec
     }
+
+  private def updateCache(
+    sessionId: String,
+    formData: AdditionalDeclarationType
+  ): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(sessionId, model => {
+      exportsCacheService.update(sessionId, model.copy(additionalDeclarationType = Some(formData)))
+    })
+
 }

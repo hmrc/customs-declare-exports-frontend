@@ -131,7 +131,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/transaction-type")
+      backButton.attr("href") must be("/customs-declare-exports/declaration/nature-of-transaction")
     }
 
     "display both 'Add' and 'Save and continue' button on page" in {

@@ -15,6 +15,7 @@
  */
 
 package services.mapping
+
 import forms.declaration.DispatchLocation
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationTypeCodeType

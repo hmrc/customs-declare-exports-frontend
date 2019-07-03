@@ -27,7 +27,8 @@ import services.Countries
 import services.model.AutoCompleteItem
 import utils.RadioOption
 import views.declaration.spec.ViewSpec
-import views.html.components.{autocomplete_field, input_radio, input_text}
+import views.html.components.fields.field_text
+import views.html.components.fields.{field_autocomplete, field_radio}
 import views.html.declaration.transport_details
 import views.tags.ViewTest
 
@@ -82,7 +83,7 @@ class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessage
 trait TransportDetailsFields extends ViewSpec {
   val form: Form[TransportDetails] = TransportDetails.form()
 
-  val meansOfTransportCrossingTheBorderNationality = autocomplete_field(
+  val meansOfTransportCrossingTheBorderNationality = field_autocomplete(
     form("meansOfTransportCrossingTheBorderNationality"),
     "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header",
     None,
@@ -98,7 +99,7 @@ trait TransportDetailsFields extends ViewSpec {
     'otherErrorFields -> Seq("countryCode")
   ).body
 
-  val meansOfTransportCrossingTheBorderType = input_radio(
+  val meansOfTransportCrossingTheBorderType = field_radio(
     field = form("meansOfTransportCrossingTheBorderType"),
     legend = "7/14 What was the active means of transport",
     hint = Some(messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint")),
@@ -147,15 +148,15 @@ trait TransportDetailsFields extends ViewSpec {
   ).body
 
   val meansOfTransportCrossingTheBorderIDNumber =
-    input_text(field = form("meansOfTransportCrossingTheBorderIDNumber"), label = "Reference").body
+    field_text(field = form("meansOfTransportCrossingTheBorderIDNumber"), label = "Reference").body
 
-  val container = input_radio(
+  val container = field_radio(
     field = form("container"),
     legend = "7/2 Were the goods in a container?",
     inputs = Seq(RadioOption("Yes", "true", messages("site.yes")), RadioOption("No", "false", messages("site.no")))
   ).body
 
-  val paymentMethod = input_radio(
+  val paymentMethod = field_radio(
     field = form("paymentMethod"),
     legend = "4/2 Enter transport charges method of payment",
     inputs = paymentMethods.toSeq.map { case (a, b) => RadioOption(messages(b), a, messages(b)) }

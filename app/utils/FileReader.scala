@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package services
+package utils
 
 import scala.io.Source
-import scala.util.matching.Regex
 
-trait CSVReader {
+object FileReader {
 
-  val regexPattern: Regex
-
-  def readIgnoringHeaderRow[T](filename: String)(convert: (String, String) => T): List[T] =
-    read(filename).tail.map {
-      case regexPattern(col1: String, col2: String) => convert(col1, col2)
-    }
-
-  private def read(path: String): List[String] = {
+  def apply(path: String): List[String] = {
     val source = Source.fromURL(getClass.getClassLoader.getResource(path), "UTF-8")
     try {
       source.getLines().toList

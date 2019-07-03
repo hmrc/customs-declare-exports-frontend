@@ -17,14 +17,17 @@
 package services
 
 import services.model.OfficeOfExit
+import utils.FileReader
 
 import scala.util.matching.Regex
 
-object OfficeOfExits extends CSVReader {
-  
-  val regexPattern: Regex = """^"?([^",]+)"?,(\w+)$""".r
+object OfficeOfExits {
 
-  lazy val all: List[OfficeOfExit] = readIgnoringHeaderRow("office-of-exits.csv") { (description, code) =>
-    OfficeOfExit(code, description)
-  }.sortBy(_.description)
+  private val regex: Regex = """^"?([^",]+)"?,(\w+)$""".r
+
+  lazy val all: List[OfficeOfExit] =
+    FileReader("code-lists/office-of-exits.csv").tail.map {
+      case regex(description: String, code: String) =>
+        OfficeOfExit(code, description)
+    }.sortBy(_.description)
 }

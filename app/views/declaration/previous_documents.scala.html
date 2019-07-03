@@ -30,7 +30,7 @@
     appConfig = appConfig
 ) {
 
-    @components.back_link("/customs-declare-exports/declaration/transaction-type")
+    @components.back_link(controllers.declaration.routes.NatureOfTransactionController.displayForm().url)
 
     @components.error_summary(form.errors)
 
@@ -71,7 +71,7 @@
     @helpers.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
         @components.page_title(Some("supplementary.previousDocuments.title"), Some("supplementary.previousDocuments.hint"))
 
-        @components.input_radio(
+        @components.fields.field_radio(
             field = form("documentCategory"),
             legend = messages(""),
             inputs = Seq(
@@ -82,23 +82,23 @@
         )
 
         <div id="document-type-field" class="inline-block form-group">
-            @components.autocomplete_field(
+            @components.fields.field_autocomplete(
                 form("documentType"),
                 "supplementary.previousDocuments.documentType",
                 Some(messages("supplementary.previousDocuments.documentType.hint")),
                 messages("supplementary.previousDocuments.documentType.empty"),
-                AutoCompleteItem.fromDocumentType(DocumentType.allDocuments)
+                AutoCompleteItem.from(DocumentType.allDocuments)
             )
         </div>
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("documentReference"),
             label = messages("supplementary.previousDocuments.documentReference"),
             hint = Some(messages("supplementary.previousDocuments.documentReference.hint")),
             labelClass = Some("bold-small")
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("goodsItemIdentifier"),
             label = messages("supplementary.previousDocuments.goodsItemIdentifier"),
             hint = Some(messages("supplementary.previousDocuments.goodsItemIdentifier.hint")),

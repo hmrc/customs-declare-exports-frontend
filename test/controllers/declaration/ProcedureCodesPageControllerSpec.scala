@@ -36,6 +36,7 @@ class ProcedureCodesPageControllerSpec
 
   before {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[ProcedureCodesData](None, formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }

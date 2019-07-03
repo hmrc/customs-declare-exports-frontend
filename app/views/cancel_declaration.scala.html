@@ -36,25 +36,25 @@
 
         @components.page_title(Some("cancellation.title"))
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("functionalReferenceId"),
             label = messages("cancellation.functionalReferenceId"),
             labelClass = Some("bold-small")
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("declarationId"),
             label = messages("cancellation.declarationId"),
             labelClass = Some("bold-small")
         )
 
-        @components.input_textarea(
+        @components.fields.field_textarea(
             field = form("statementDescription"),
             label = messages("cancellation.statementDescription"),
             labelClass = Some("bold-small")
         )
 
-        @components.input_radio_with_hint(
+        @components.fields.field_radio_with_hint(
             field = form("changeReason"),
             legend = messages("cancellation.changeReason"),
             inputs = Seq(

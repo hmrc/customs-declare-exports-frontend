@@ -1,0 +1,63 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import forms.declaration.NatureOfTransaction
+@import forms.declaration.NatureOfTransaction._
+@import uk.gov.hmrc.play.views.html._
+@import utils.RadioOption
+
+@(form: Form[NatureOfTransaction])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+
+@displayOption(messageKey: String) = {
+  @Html(messages(messageKey, """<span class="font-bold">""", "</span>"))
+}
+
+
+@main_template(
+    title = messages("declaration.natureOfTransaction.pageTitle"),
+    appConfig = appConfig
+) {
+    @helper.form(controllers.declaration.routes.NatureOfTransactionController.saveTransactionType(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @components.back_link(controllers.declaration.routes.TotalNumberOfItemsController.displayForm().url)
+
+        @components.error_summary(form.errors)
+
+        @components.section_header(messages("declaration.natureOfTransaction.header"))
+
+        @components.page_title(Some("declaration.natureOfTransaction.title"))
+
+        @components.fields.field_radio(
+            field = form("natureType"),
+            legend = "",
+            inputs = Seq(
+              RadioOption("Purchase", Purchase, displayOption("declaration.natureOfTransaction.purchase").toString),
+              RadioOption("Return", Return, displayOption("declaration.natureOfTransaction.return").toString),
+              RadioOption("Donation", Donation, displayOption("declaration.natureOfTransaction.donation").toString),
+              RadioOption("Processing", Processing, displayOption("declaration.natureOfTransaction.processing").toString),
+              RadioOption("Processed", Processed, displayOption("declaration.natureOfTransaction.processed").toString),
+              RadioOption("NationalPurposes", NationalPurposes, displayOption("declaration.natureOfTransaction.nationalPurposes").toString),
+              RadioOption("Military", Military, displayOption("declaration.natureOfTransaction.military").toString),
+              RadioOption("Construction", Construction, displayOption("declaration.natureOfTransaction.construction").toString),
+              RadioOption("Other", Other, displayOption("declaration.natureOfTransaction.other").toString)
+            )
+        )
+
+        @components.submit_button()
+    }
+}

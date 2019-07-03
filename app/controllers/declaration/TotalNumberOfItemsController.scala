@@ -55,7 +55,7 @@ class TotalNumberOfItemsController @Inject()(
           Future.successful(BadRequest(total_number_of_items(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[TotalNumberOfItems](cacheId, formId, form).map { _ =>
-            Redirect(controllers.declaration.routes.TransactionTypeController.displayForm())
+            Redirect(routes.NatureOfTransactionController.displayForm())
         }
       )
   }

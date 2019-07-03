@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.dispatch_location
 
@@ -35,9 +36,12 @@ class DispatchLocationPageController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
@@ -54,12 +58,12 @@ class DispatchLocationPageController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatch_location(formWithErrors))),
-        validDispatchLocation =>
-          customsCacheService
-            .cache[DispatchLocation](cacheId, DispatchLocation.formId, validDispatchLocation)
-            .map { _ =>
-              Redirect(specifyNextPage(validDispatchLocation))
-          }
+        validDispatchLocation => {
+          for {
+            _ <- updateCache(journeySessionId, validDispatchLocation)
+            _ <- customsCacheService.cache[DispatchLocation](cacheId, DispatchLocation.formId, validDispatchLocation)
+          } yield Redirect(specifyNextPage(validDispatchLocation))
+        }
       )
   }
 
@@ -70,5 +74,10 @@ class DispatchLocationPageController @Inject()(
       case AllowedDispatchLocations.SpecialFiscalTerritory =>
         controllers.declaration.routes.NotEligibleController.displayPage()
     }
+
+  private def updateCache(sessionId: String, formData: DispatchLocation): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(sessionId, model => {
+      exportsCacheService.update(sessionId, model.copy(dispatchLocation = Some(formData)))
+    })
 
 }

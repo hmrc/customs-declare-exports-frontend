@@ -40,7 +40,7 @@
 
       @components.page_title(Some("declaration.officeOfExit.title"))
 
-      @components.autocomplete_field(
+      @components.fields.field_autocomplete(
           field = form("officeId"),
           label = messages("declaration.officeOfExit"),
           hintText = Some(messages("declaration.officeOfExit.hint")),
@@ -48,7 +48,7 @@
           AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
       )
 
-      @components.autocomplete_field(
+      @components.fields.field_autocomplete(
           form("presentationOfficeId"),
           messages("standard.officeOfExit.presentationOffice"),
           Some(messages("standard.officeOfExit.presentationOffice.hint")),
@@ -56,7 +56,7 @@
           AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
       )
 
-      @components.input_radio(
+      @components.fields.field_radio(
           field = form("circumstancesCode"),
           legend = messages("standard.officeOfExit.circumstancesCode"),
           inputs = Seq(

@@ -75,22 +75,22 @@
     }
 
     @helpers.form(PackageInformationController.submitForm(), 'autoComplete -> "off") {
-        @components.autocomplete_field(
+        @components.fields.field_autocomplete(
             field = form("typesOfPackages"),
             label = "supplementary.packageInformation.typesOfPackages",
             None,
             emptySelectValue = messages("supplementary.packageInformation.typesOfPackages.empty"),
-            items = AutoCompleteItem.from(PackageTypes.all),
+            items = AutoCompleteItem.fromPackageType(PackageTypes.all),
             'otherErrorFields -> Seq("typesOfPackages")
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("numberOfPackages"),
             label = messages("supplementary.packageInformation.numberOfPackages"),
             labelClass = Some("bold-small")
         )
 
-        @components.input_text(
+        @components.fields.field_text(
             field = form("shippingMarks"),
             label = messages("supplementary.packageInformation.shippingMarks"),
             hint = Some(messages("supplementary.packageInformation.shippingMarks.hint")),

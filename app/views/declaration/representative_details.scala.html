@@ -43,7 +43,7 @@
 
             <p>@messages("supplementary.eori.info")</p>
 
-            @components.input_text(
+            @components.fields.field_text(
                 field = form("details.eori"),
                 label = messages("supplementary.representative.eori.info"),
                 hint = Some(messages("supplementary.eori.hint")),
@@ -57,7 +57,7 @@
 
         @components.page_title(title = Some("supplementary.representative.representationType.header"))
 
-        @components.input_radio_with_hint(
+        @components.fields.field_radio_with_hint(
             field = form("statusCode"),
             legend = "",
             inputs = Seq(

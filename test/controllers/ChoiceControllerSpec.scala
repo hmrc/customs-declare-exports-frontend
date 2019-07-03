@@ -25,18 +25,22 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
   private val choiceUri = uriWithContextPath("/choice")
+  private val sessionId = "12345"
 
   before {
     authorizedUser()
+    withNewCaching(createModel(sessionId))
     withCaching[Choice](None, Choice.choiceId)
   }
 
   after {
     reset(mockCustomsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Choice Controller on GET" should {
@@ -90,6 +94,8 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
       verify(mockCustomsCacheService)
         .cache[Choice](any(), ArgumentMatchers.eq(Choice.choiceId), any())(any(), any(), any())
+
+      verify(mockExportsCacheService).update(any(), any[ExportsCacheModel])
     }
 
     "redirect to dispatch location page when 'Supplementary declaration' is selected" in {

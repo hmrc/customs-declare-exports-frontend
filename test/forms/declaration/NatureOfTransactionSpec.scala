@@ -15,18 +15,15 @@
  */
 
 package forms.declaration
+
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-object TransactionTypeSpec {
-  val correctTransactionType = TransactionType(documentTypeCode = "1", identifier = Some("1"))
+object NatureOfTransactionSpec {
+  val correctNatureOfTransaction = NatureOfTransaction("1")
 
-  val correctTransactionTypeJSON: JsValue = JsObject(
-    Map("documentTypeCode" -> JsString("1"), "identifier" -> JsString("1"))
-  )
-  val emptyTransactionTypeJSON: JsValue = JsObject(
-    Map("documentTypeCode" -> JsString(""), "identifier" -> JsString(""))
-  )
-  val incorrectTransactionTypeJSON: JsValue = JsObject(
-    Map("documentTypeCode" -> JsString("123"), "identifier" -> JsString("123"))
-  )
+  val correctNatureOfTransactionJSON: JsValue = JsObject(Map("natureType" -> JsString("1")))
+
+  val emptyNatureOfTransactionJSON: JsValue = JsObject(Map("natureType" -> JsString("")))
+
+  val incorrectNatureOfTransactionJSON: JsValue = JsObject(Map("natureType" -> JsString("123")))
 }

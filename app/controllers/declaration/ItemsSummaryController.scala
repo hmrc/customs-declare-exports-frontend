@@ -31,6 +31,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import services.ExportsItemsCacheIds.itemsId
 import uk.gov.hmrc.http.HeaderCarrier
+import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.items_summary
 
@@ -41,9 +42,10 @@ class ItemsSummaryController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   cacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService
@@ -60,4 +62,15 @@ class ItemsSummaryController @Inject()(
       case Some(data) => data.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes
       case None       => false
     }
+
+  def addItem(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    updateCache(journeySessionId, ExportItem())
+      .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesPageController.displayPage()))
+  }
+
+  private def updateCache(sessionId: String, exportItem: ExportItem): Future[Either[String, ExportsCacheModel]] =
+    exportsCacheService.get(sessionId).flatMap {
+      case Right(model) => exportsCacheService.update(sessionId, model.copy(items = List(exportItem)))
+    }
+
 }
