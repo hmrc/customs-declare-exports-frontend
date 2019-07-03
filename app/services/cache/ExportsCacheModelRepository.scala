@@ -21,6 +21,7 @@ import java.time.LocalDateTime
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.{ConsignmentReferences, DispatchLocation, ExporterDetails}
 import javax.inject.Inject
+import models.declaration.Locations
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.bson.BSONObjectID
@@ -78,6 +79,7 @@ case class ExportsCacheModel(
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
   exporterDetails: Option[ExporterDetails] = None,
+  locations: Locations = Locations(),
   items: List[ExportItem] = Nil
 )
 
