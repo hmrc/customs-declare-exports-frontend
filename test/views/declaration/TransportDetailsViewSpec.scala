@@ -25,7 +25,7 @@ import play.api.data.Form
 import play.twirl.api.Html
 import services.Countries
 import services.model.AutoCompleteItem
-import utils.RadioOption
+import views.components.inputs.RadioOption
 import views.declaration.spec.ViewSpec
 import views.html.components.fields.field_text
 import views.html.components.fields.{field_autocomplete, field_radio}

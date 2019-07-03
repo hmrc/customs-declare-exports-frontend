@@ -19,9 +19,8 @@
 @import forms.declaration.officeOfExit.OfficeOfExitStandard
 @import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers._
 @import uk.gov.hmrc.play.views.html._
-@import utils.RadioOption
-@import forms.declaration.officeOfExit.OfficeOfExitForms
-
+@import views.components.inputs.RadioOption
+@import forms.declaration.officeOfExit.OfficeOfExit
 @import services.model.AutoCompleteItem
 @import services.OfficeOfExits
 @(form: Form[OfficeOfExitStandard])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)

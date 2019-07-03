@@ -21,8 +21,10 @@ import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
+
 case class WarehouseIdentification(
   supervisingCustomsOffice: Option[String],
+  identificationType: Option[String],
   identificationNumber: Option[String],
   inlandModeOfTransportCode: Option[String]
 )
@@ -37,10 +39,16 @@ object WarehouseIdentification {
       text()
         .verifying("supplementary.warehouse.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
     ),
+    "identificationType" -> optional(
+      text().verifying(
+        "supplementary.warehouse.identificationType.error",
+        isContainedIn(IdentifierType.all)
+      )
+    ),
     "identificationNumber" -> optional(
       text().verifying(
         "supplementary.warehouse.identificationNumber.error",
-        startsWithCapitalLetter and noShorterThan(2) and noLongerThan(36) and isAlphanumeric
+        noShorterThan(1) and noLongerThan(35) and isAlphanumeric
       )
     ),
     "inlandModeOfTransportCode" -> optional(
@@ -53,4 +61,17 @@ object WarehouseIdentification {
   )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
 
   def form(): Form[WarehouseIdentification] = Form(mapping)
+
+  object IdentifierType {
+    val PUBLIC_CUSTOMS_1 = "R"
+    val PUBLIC_CUSTOMS_2 = "S"
+    val PUBLIC_CUSTOMS_3 = "T"
+    val PRIVATE_CUSTOMS = "U"
+    val NON_CUSTOMS = "Y"
+    val FREE_ZONE = "Z"
+
+    lazy val all: Seq[String] = Seq(
+      PUBLIC_CUSTOMS_1, PUBLIC_CUSTOMS_2, PUBLIC_CUSTOMS_3, PRIVATE_CUSTOMS,  NON_CUSTOMS, FREE_ZONE
+    )
+  }
 }

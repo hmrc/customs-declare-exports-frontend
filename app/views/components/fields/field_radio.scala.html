@@ -14,8 +14,7 @@
  * limitations under the License.
  *@
 
-@import utils.RadioOption
-
+@import views.components.inputs.RadioOption
 @(
     field: Field,
     legend: String,
@@ -39,7 +38,7 @@
         @for(input <- inputs) {
         <div class="multiple-choice">
             <input id="@{input.id}" type="radio" name="@{field.id}" value="@{input.value}" @if(field.value==Some(input.value)){checked="checked" }
-                @if(trackGa){data-journey-click="customs-decex-frontend:click:@{input.id}" }/>
+                @if(trackGa){data-journey-click="customs-decex-frontend:click:@{input.id}"}/>
 
             <label id="@{input.id}-label" class="block-label selection-button-radio" for="@{input.id}">
                 @Html(messages(input.messageKey))

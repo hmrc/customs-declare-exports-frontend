@@ -37,8 +37,9 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
 
       assertMessage(title, "Enter more detail about the warehouse")
       assertMessage(titleHint, "Locations")
+      assertMessage(identificationType, "2/7 Warehouse type")
       assertMessage(identificationNumber, "2/7 Enter the warehouse identification number")
-      assertMessage(identificationNumberHint, "For example, R1234567GB")
+      assertMessage(identificationNumberHint, "For example, 1234567GB")
       assertMessage(supervisingCustomsOffice, "5/27 Where is the supervising customs office?")
       assertMessage(supervisingCustomsOfficeHint, "This is an 8 digit code")
       assertMessage(inlandTransportMode, "7/5 What was the inland mode of transport?")

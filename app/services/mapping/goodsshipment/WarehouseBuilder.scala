@@ -30,17 +30,17 @@ object WarehouseBuilder {
       .orNull
 
   private def isDefined(warehouse: WarehouseIdentification): Boolean =
-    warehouse.identificationNumber.isDefined
+    warehouse.identificationNumber.isDefined && warehouse.identificationType.isDefined
 
   private def createWarehouse(data: WarehouseIdentification): Warehouse = {
     val warehouse = new Warehouse()
 
     val id = new WarehouseIdentificationIDType()
-    id.setValue(data.identificationNumber.map(_.drop(1).toString).getOrElse(""))
+    id.setValue(data.identificationNumber.getOrElse(""))
     warehouse.setID(id)
 
     val typeCode = new WarehouseTypeCodeType()
-    typeCode.setValue(data.identificationNumber.flatMap(_.headOption).fold("")(_.toString))
+    typeCode.setValue(data.identificationType.getOrElse(""))
     warehouse.setTypeCode(typeCode)
 
     warehouse
