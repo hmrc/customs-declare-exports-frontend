@@ -22,7 +22,7 @@ case class AutoCompleteItem(label: String, value: String)
 
 object AutoCompleteItem {
 
-  def from(countries: List[Country], value: Country => String = _.countryName): List[AutoCompleteItem] = {
+  def fromCountry(countries: List[Country], value: Country => String = _.countryName): List[AutoCompleteItem] = {
     countries map (c => AutoCompleteItem(s"${c.countryName} - ${c.countryCode}", value(c)))
   }
 
@@ -30,7 +30,7 @@ object AutoCompleteItem {
     packageTypes map (c => AutoCompleteItem(s"${c.description} - ${c.code}", c.code))
   }
 
-  def from(documents: List[DocumentType]): List[AutoCompleteItem] = {
+  def fromDocumentType(documents: List[DocumentType]): List[AutoCompleteItem] = {
     documents map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
   }
 

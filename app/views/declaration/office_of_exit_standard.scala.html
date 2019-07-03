@@ -48,12 +48,11 @@
           AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
       )
 
-      @components.fields.field_autocomplete(
-          form("presentationOfficeId"),
-          messages("standard.officeOfExit.presentationOffice"),
-          Some(messages("standard.officeOfExit.presentationOffice.hint")),
-          messages("standard.officeOfExit.presentationOffice.empty"),
-          AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
+      @components.fields.field_text(
+          field = form("presentationOfficeId"),
+          label = messages("standard.officeOfExit.presentationOffice"),
+          hint = Some(messages("standard.officeOfExit.presentationOffice.hint")),
+          labelClass = Some("bold-small")
       )
 
       @components.fields.field_radio(
