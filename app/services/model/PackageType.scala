@@ -14,25 +14,7 @@
  * limitations under the License.
  */
 
-package services
-
-import utils.FileUtil
-
-import scala.util.matching.Regex
+package services.model
 
 case class PackageType(code: String, description: String)
 
-object PackageType {
-
-  private val regex: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
-
-  lazy val all: List[PackageType] = FileUtil
-    .read("code-lists/package-types.csv")
-    .tail
-    .map {
-      case regex(code: String, description: String) =>
-        PackageType(code, description)
-    }
-    .sortBy(_.description)
-
-}

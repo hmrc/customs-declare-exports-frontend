@@ -20,7 +20,7 @@ import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.OfficeOfExitSupplementarySpec._
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
+import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import helpers.views.declaration.OfficeOfExitMessages
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
@@ -54,7 +54,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
     "read item from cache and display it" in new SupplementarySetUp {
 
       val cachedData = OfficeOfExitSupplementary("999AAA45")
-      withCaching[OfficeOfExitSupplementary](Some(cachedData), OfficeOfExit.formId)
+      withCaching[OfficeOfExitSupplementary](Some(cachedData), OfficeOfExitForms.formId)
 
       val result = route(app, getRequest(uri)).get
 
@@ -77,7 +77,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val presentationOfficeId = "87654321"
       val circumstancesCode = "Yes"
       val cachedData = OfficeOfExitStandard(officeId, presentationOfficeId, circumstancesCode)
-      withCaching[OfficeOfExitStandard](Some(cachedData), OfficeOfExit.formId)
+      withCaching[OfficeOfExitStandard](Some(cachedData), OfficeOfExitForms.formId)
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)

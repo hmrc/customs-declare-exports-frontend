@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package forms.declaration.officeOfExit
-import play.api.data.Form
+package utils
 
-object OfficeOfExit {
-  val formId = "OfficeOfExit"
+import scala.io.Source
 
-  def supplementaryForm(): Form[OfficeOfExitSupplementary] = Form(OfficeOfExitSupplementary.mapping)
+object FileReader {
 
-  def standardForm(): Form[OfficeOfExitStandard] = Form(OfficeOfExitStandard.mapping)
+  def apply(path: String): List[String] = {
+    val source = Source.fromURL(getClass.getClassLoader.getResource(path), "UTF-8")
+    try {
+      source.getLines().toList
+    } finally {
+      source.close()
+    }
+  }
 }

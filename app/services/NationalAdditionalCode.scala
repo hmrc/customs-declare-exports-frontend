@@ -16,14 +16,12 @@
 
 package services
 
-import utils.FileUtil
+import utils.FileReader
 
 case class NationalAdditionalCode(value: String)
 
 object NationalAdditionalCode {
-  lazy val all: List[NationalAdditionalCode] = FileUtil
-    .read("code-lists/national-additional-codes.csv")
-    .tail
+  lazy val all: List[NationalAdditionalCode] = FileReader("code-lists/national-additional-codes.csv").tail
     .map(NationalAdditionalCode(_))
     .sortBy(_.value)
 }

@@ -16,26 +16,33 @@
 
 package services.model
 
-import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode, PackageType}
+import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode}
 import uk.gov.hmrc.play.test.UnitSpec
 
 class AutoCompleteItemSpec extends UnitSpec {
 
-  "AutoCompleteItemTest" should {
-    "Map from Country" when {
-      "Value is default" in {
-        AutoCompleteItem.from(List(Country("name", "code"))) shouldBe List(AutoCompleteItem("name - code", "name"))
+  "AutoCompleteItem" should {
+
+    "map from Country" when {
+      "value is default" in {
+        AutoCompleteItem.fromCountry(List(Country("name", "code"))) shouldBe List(AutoCompleteItem("name - code", "name"))
       }
 
-      "Value is specified" in {
-        AutoCompleteItem.from(List(Country("name", "code")), _.countryCode) shouldBe List(
+      "value is specified" in {
+        AutoCompleteItem.fromCountry(List(Country("name", "code")), _.countryCode) shouldBe List(
           AutoCompleteItem("name - code", "code")
         )
       }
     }
 
-    "Map from PackageType" in {
-      AutoCompleteItem.from(List(PackageType("code", "description"))) shouldBe List(
+    "map from Package Type" in {
+      AutoCompleteItem.fromPackageType(List(PackageType("code", "description"))) shouldBe List(
+        AutoCompleteItem("description - code", "code")
+      )
+    }
+
+    "map from Office Of Exit" in {
+      AutoCompleteItem.fromOfficeOfExit(List(OfficeOfExit("code", "description"))) shouldBe List(
         AutoCompleteItem("description - code", "code")
       )
     }
@@ -58,5 +65,4 @@ class AutoCompleteItemSpec extends UnitSpec {
       )
     }
   }
-
 }

@@ -28,7 +28,7 @@ import forms.declaration.destinationCountries.{
   DestinationCountriesStandard,
   DestinationCountriesSupplementary
 }
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
+import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import forms.declaration.{DeclarantDetails, _}
 import javax.inject.Singleton
 import metrics.ExportsMetrics
@@ -121,7 +121,7 @@ class SubmissionService @Inject()(
       TransportDetails.formId -> Json.toJson(cacheMap.getEntry[TransportDetails](TransportDetails.formId)),
       DestinationCountries.formId -> getDestinationCountries(cacheMap),
       DispatchLocation.formId -> Json.toJson(cacheMap.getEntry[DispatchLocation](DispatchLocation.formId)),
-      OfficeOfExit.formId -> getOfficeOfExit(cacheMap),
+      OfficeOfExitForms.formId -> getOfficeOfExit(cacheMap),
       DeclarationAdditionalActorsData.formId -> Json.toJson(
         cacheMap
           .getEntry[DeclarationAdditionalActorsData](DeclarationAdditionalActorsData.formId)
@@ -158,8 +158,8 @@ class SubmissionService @Inject()(
 
   private def getOfficeOfExit(cacheMap: CacheMap)(implicit request: JourneyRequest[_]) =
     if (request.choice.value == AllowedChoiceValues.SupplementaryDec)
-      Json.toJson(cacheMap.getEntry[OfficeOfExitSupplementary](OfficeOfExit.formId))
-    else Json.toJson(cacheMap.getEntry[OfficeOfExitStandard](OfficeOfExit.formId))
+      Json.toJson(cacheMap.getEntry[OfficeOfExitSupplementary](OfficeOfExitForms.formId))
+    else Json.toJson(cacheMap.getEntry[OfficeOfExitStandard](OfficeOfExitForms.formId))
 
   protected case class FormattedData(lrn: Option[String], ducr: Option[String], payload: String)
 }

@@ -16,11 +16,18 @@
 
 package services
 
+import services.model.OfficeOfExit
 import utils.FileReader
 
-case class HolderOfAuthorisationCode(value: String)
+import scala.util.matching.Regex
 
-object HolderOfAuthorisationCode {
-  lazy val all: List[HolderOfAuthorisationCode] =
-    FileReader("code-lists/holder-of-authorisation-codes.csv").tail.map(HolderOfAuthorisationCode(_)).sortBy(_.value)
+object OfficeOfExits {
+
+  private val regex: Regex = """^"?([^",]+)"?,(\w+)$""".r
+
+  lazy val all: List[OfficeOfExit] =
+    FileReader("code-lists/office-of-exits.csv").tail.map {
+      case regex(description: String, code: String) =>
+        OfficeOfExit(code, description)
+    }.sortBy(_.description)
 }

@@ -16,7 +16,7 @@
 
 package services.mapping.declaration
 import forms.ChoiceSpec
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard}
+import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard}
 import forms.declaration.{OfficeOfExitStandardSpec, OfficeOfExitSupplementarySpec}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
@@ -27,7 +27,7 @@ class SpecificCircumstancesCodeBuilderSpec extends WordSpec with Matchers {
   "SpecificCircumstancesCodeBuilder" should {
     "correctly map to the WCO-DEC CircumstancesCode to null for a supplementary journey" in {
       implicit val cacheMap: CacheMap =
-        CacheMap("CacheID", Map(OfficeOfExit.formId -> OfficeOfExitSupplementarySpec.correctOfficeOfExitJSON))
+        CacheMap("CacheID", Map(OfficeOfExitForms.formId -> OfficeOfExitSupplementarySpec.correctOfficeOfExitJSON))
       val circumstancesCode = SpecificCircumstancesCodeBuilder.build(cacheMap, ChoiceSpec.supplementaryChoice)
       circumstancesCode should be(null)
     }
@@ -35,14 +35,14 @@ class SpecificCircumstancesCodeBuilderSpec extends WordSpec with Matchers {
     "correctly map to the WCO-DEC CircumstancesCode instance for a standard journey" when {
       "circumstancesCode is 'Yes'" in {
         implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(OfficeOfExit.formId -> OfficeOfExitStandardSpec.correctOfficeOfExitJSON))
+          CacheMap("CacheID", Map(OfficeOfExitForms.formId -> OfficeOfExitStandardSpec.correctOfficeOfExitJSON))
         val circumstancesCode = SpecificCircumstancesCodeBuilder.build(cacheMap, ChoiceSpec.standardChoice)
         circumstancesCode.getValue should be("A20")
       }
 
       "circumstancesCode is 'No'" in {
         implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(OfficeOfExit.formId -> Json.toJson(OfficeOfExitStandard("123qwe12", "123", "No"))))
+          CacheMap("CacheID", Map(OfficeOfExitForms.formId -> Json.toJson(OfficeOfExitStandard("123qwe12", "123", "No"))))
         val circumstancesCode = SpecificCircumstancesCodeBuilder.build(cacheMap, ChoiceSpec.standardChoice)
         circumstancesCode should be(null)
       }

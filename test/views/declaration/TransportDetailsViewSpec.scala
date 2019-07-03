@@ -88,7 +88,7 @@ trait TransportDetailsFields extends ViewSpec {
     "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header",
     None,
     messages("declaration.destinationCountries.countriesOfRouting.empty"),
-    AutoCompleteItem.from(Countries.allCountries),
+    AutoCompleteItem.fromCountry(Countries.allCountries),
     'autocomplete -> "off",
     '_inputClass -> "form-control form-control--block",
     'spellcheck -> "false",

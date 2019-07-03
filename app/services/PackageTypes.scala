@@ -16,11 +16,18 @@
 
 package services
 
+import services.model.PackageType
 import utils.FileReader
 
-case class HolderOfAuthorisationCode(value: String)
+import scala.util.matching.Regex
 
-object HolderOfAuthorisationCode {
-  lazy val all: List[HolderOfAuthorisationCode] =
-    FileReader("code-lists/holder-of-authorisation-codes.csv").tail.map(HolderOfAuthorisationCode(_)).sortBy(_.value)
+object PackageTypes {
+
+  private val regex: Regex = """^(\w{2}),"?([^"\n]+)"?$""".r
+
+  lazy val all: List[PackageType] =
+    FileReader("code-lists/package-types.csv").tail.map {
+      case regex(code: String, description: String) =>
+        PackageType(code, description)
+    }.sortBy(_.description)
 }

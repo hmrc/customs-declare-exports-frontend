@@ -15,20 +15,20 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes._
+@import controllers.declaration.routes
 @import forms.declaration.officeOfExit.OfficeOfExitStandard
-@import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers._
+@import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers
+@import services.OfficeOfExits
+@import services.model.AutoCompleteItem
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
-@import forms.declaration.officeOfExit.OfficeOfExit
-
 @(form: Form[OfficeOfExitStandard])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
   title = messages("declaration.officeOfExit.title"),
     appConfig = appConfig
 ) {
-  @helpers.form(OfficeOfExitController.saveOffice(), 'autoComplete -> "off") {
+  @helpers.form(routes.OfficeOfExitController.saveOffice(), 'autoComplete -> "off") {
 
       @components.back_link("/customs-declare-exports/declaration/location-of-goods")
 
@@ -38,11 +38,12 @@
 
       @components.page_title(Some("declaration.officeOfExit.title"))
 
-      @components.fields.field_text(
+      @components.fields.field_autocomplete(
           field = form("officeId"),
           label = messages("declaration.officeOfExit"),
-          hint = Some(messages("declaration.officeOfExit.hint")),
-          labelClass = Some("bold-small")
+          hintText = Some(messages("declaration.officeOfExit.hint")),
+          messages("standard.officeOfExit.empty"),
+          AutoCompleteItem.fromOfficeOfExit(OfficeOfExits.all)
       )
 
       @components.fields.field_text(
@@ -56,8 +57,8 @@
           field = form("circumstancesCode"),
           legend = messages("standard.officeOfExit.circumstancesCode"),
           inputs = Seq(
-              RadioOption("Yes", yes, messages("site.yes")),
-              RadioOption("No", no, messages("site.no"))
+              RadioOption("Yes", AllowedCircumstancesCodeAnswers.yes, messages("site.yes")),
+              RadioOption("No", AllowedCircumstancesCodeAnswers.no, messages("site.no"))
           )
       )
 

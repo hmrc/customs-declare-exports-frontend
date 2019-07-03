@@ -16,23 +16,33 @@
 
 package services.model
 
-import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode, PackageType}
+import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode}
 
 case class AutoCompleteItem(label: String, value: String)
 
 object AutoCompleteItem {
-  def from(countries: List[Country], value: Country => String = _.countryName): List[AutoCompleteItem] =
+
+  def fromCountry(countries: List[Country], value: Country => String = _.countryName): List[AutoCompleteItem] = {
     countries map (c => AutoCompleteItem(s"${c.countryName} - ${c.countryCode}", value(c)))
+  }
 
-  def from(packageTypes: List[PackageType]): List[AutoCompleteItem] =
+  def fromPackageType(packageTypes: List[PackageType]): List[AutoCompleteItem] = {
     packageTypes map (c => AutoCompleteItem(s"${c.description} - ${c.code}", c.code))
+  }
 
-  def fromDocumentType(documents: List[DocumentType]): List[AutoCompleteItem] =
+  def fromDocumentType(documents: List[DocumentType]): List[AutoCompleteItem] = {
     documents map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
+  }
 
-  def fromNationalAdditionalCode(codes: List[NationalAdditionalCode]): List[AutoCompleteItem] =
+  def fromNationalAdditionalCode(codes: List[NationalAdditionalCode]): List[AutoCompleteItem] = {
     codes map (c => AutoCompleteItem(c.value, c.value))
+  }
 
-  def fromHolderOfAuthorisationCode(codes: List[HolderOfAuthorisationCode]): List[AutoCompleteItem] =
+  def fromHolderOfAuthorisationCode(codes: List[HolderOfAuthorisationCode]): List[AutoCompleteItem] = {
     codes map (c => AutoCompleteItem(c.value, c.value))
+  }
+
+  def fromOfficeOfExit(offices: List[OfficeOfExit]): List[AutoCompleteItem] = {
+    offices map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
+  }
 }

@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-package services
+package services.model
 
-import utils.FileReader
-
-case class HolderOfAuthorisationCode(value: String)
-
-object HolderOfAuthorisationCode {
-  lazy val all: List[HolderOfAuthorisationCode] =
-    FileReader("code-lists/holder-of-authorisation-codes.csv").tail.map(HolderOfAuthorisationCode(_)).sortBy(_.value)
-}
+case class OfficeOfExit(code: String, description: String) 

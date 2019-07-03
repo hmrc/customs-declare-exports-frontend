@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package services
+package forms.declaration.officeOfExit
+import play.api.data.Form
 
-import utils.FileReader
+object OfficeOfExitForms {
+  val formId = "OfficeOfExit"
 
-case class HolderOfAuthorisationCode(value: String)
+  def supplementaryForm(): Form[OfficeOfExitSupplementary] = Form(OfficeOfExitSupplementary.mapping)
 
-object HolderOfAuthorisationCode {
-  lazy val all: List[HolderOfAuthorisationCode] =
-    FileReader("code-lists/holder-of-authorisation-codes.csv").tail.map(HolderOfAuthorisationCode(_)).sortBy(_.value)
+  def standardForm(): Form[OfficeOfExitStandard] = Form(OfficeOfExitStandard.mapping)
 }

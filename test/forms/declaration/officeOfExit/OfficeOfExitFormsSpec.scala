@@ -20,18 +20,18 @@ import helpers.views.declaration.OfficeOfExitMessages
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.FormError
 
-class OfficeOfExitSpec extends WordSpec with MustMatchers with OfficeOfExitMessages {
+class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExitMessages {
 
   trait SetUp {
     val officeFieldId = "officeId"
   }
 
   trait SupplementarySetUp extends SetUp {
-    val supplementaryForm = OfficeOfExit.supplementaryForm
+    val supplementaryForm = OfficeOfExitForms.supplementaryForm
   }
 
   trait StandardSetUp extends SetUp {
-    val standardForm = OfficeOfExit.standardForm
+    val standardForm = OfficeOfExitForms.standardForm
 
     val presentationOfficeFieldId = "presentationOfficeId"
     val circumstancesCodeFieldId = "circumstancesCode"

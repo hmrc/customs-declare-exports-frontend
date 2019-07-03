@@ -15,7 +15,7 @@
  */
 
 package views.declaration
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard}
+import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard}
 import helpers.views.declaration.{CommonMessages, OfficeOfExitMessages}
 import play.api.data.Form
 import play.twirl.api.Html
@@ -26,7 +26,7 @@ import views.tags.ViewTest
 @ViewTest
 class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages with CommonMessages {
 
-  private val form: Form[OfficeOfExitStandard] = OfficeOfExit.standardForm()
+  private val form: Form[OfficeOfExitStandard] = OfficeOfExitForms.standardForm()
   private def createView(form: Form[OfficeOfExitStandard] = form): Html =
     office_of_exit_standard(form)(fakeRequest, appConfig, messages)
 
@@ -54,53 +54,46 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
       "display page title" in {
 
-        getElementByCss(createView(), "title").text() must be(messages(title))
+        getElementByCss(createView(), "title").text() mustBe messages(title)
       }
 
       "display section header" in {
 
-        getElementById(createView(), "section-header").text() must be("Locations")
+        getElementById(createView(), "section-header").text() mustBe "Locations"
       }
 
       "display office of exit question" in {
         val view = createView()
 
-        getElementByCss(view, "form>div:nth-child(4)>label>span.bold-small")
-          .text() must be(messages(officeOfExit))
-        getElementByCss(view, "form>div:nth-child(4)>label>span.form-hint")
-          .text() must be(messages(hint))
-        getElementById(view, "officeId").attr("value") must be("")
+        getElementById(view, "officeId-label").text() mustBe messages(officeOfExit)
+        getElementById(view, "officeId-hint").text() mustBe messages(hint)
+        getElementById(view, "officeId").attr("value") mustBe ""
       }
 
       "display presentation office question" in {
         val view = createView()
-
-        getElementByCss(view, "form>div:nth-child(5)>label>span.bold-small")
-          .text() must be(messages(presentationOffice))
-        getElementByCss(view, "form>div:nth-child(5)>label>span.form-hint")
-          .text() must be(messages(presentationOfficeHint))
-        getElementById(view, "presentationOfficeId").attr("value") must be("")
+        getElementById(view, "presentationOfficeId-label").text() mustBe messages(presentationOffice)
+        getElementById(view, "presentationOfficeId-hint").text() mustBe messages(presentationOfficeHint)
+        getElementById(view, "presentationOfficeId").attr("value") mustBe ""
       }
 
       "display circumstances code question" in {
         val view = createView()
-
-        getElementByCss(view, "#circumstancesCode>legend>span")
-          .text() must be(messages(circumstancesCode))
+        getElementByCss(view, "#circumstancesCode>legend>span").text() must be(messages(circumstancesCode))
       }
 
       "display 'Back' button that links to 'Location of Goods' page" in {
 
         val backButton = getElementById(createView(), "link-back")
 
-        backButton.text() must be(messages(backCaption))
-        backButton.attr("href") must be("/customs-declare-exports/declaration/location-of-goods")
+        backButton.text() mustBe messages(backCaption)
+        backButton.attr("href") mustBe "/customs-declare-exports/declaration/location-of-goods"
       }
 
       "display 'Save and continue' button" in {
 
         val saveButton = getElementByCss(createView(), "#submit")
-        saveButton.text() must be(messages(saveAndContinueCaption))
+        saveButton.text() mustBe messages(saveAndContinueCaption)
       }
     }
 
@@ -108,60 +101,59 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
       "display errors when all inputs are empty" in {
         val data = OfficeOfExitStandard("", "", "")
-        val form = OfficeOfExit.standardForm.fillAndValidate(data)
+        val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form)
 
         checkErrorsSummary(view)
 
         getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(1)>a")
-          .text() must be(messages(officeOfExitEmpty))
-        getElementByCss(view, "#error-message-officeId-input").text() must be(messages(officeOfExitEmpty))
+          .text() mustBe messages(officeOfExitEmpty)
+        getElementByCss(view, "#error-message-officeId-input").text() mustBe messages(officeOfExitEmpty)
 
         getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(2)>a")
-          .text() must be(messages(presentationOfficeEmpty))
-        getElementByCss(view, "#error-message-presentationOfficeId-input").text() must be(
+          .text() mustBe messages(presentationOfficeEmpty)
+
+        getElementByCss(view, "#error-message-presentationOfficeId-input").text() mustBe
           messages(presentationOfficeEmpty)
-        )
 
         getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(3)>a")
           .text() must be(messages(circumstancesCodeEmpty))
-        getElementByCss(view, "#error-message-circumstancesCode-input").text() must be(messages(circumstancesCodeEmpty))
+
+        getElementByCss(view, "#error-message-circumstancesCode-input").text() mustBe messages(circumstancesCodeEmpty)
       }
 
       "display errors when all inputs are incorrect" in {
         val data = OfficeOfExitStandard("123456", "654321", "Yes")
-        val form = OfficeOfExit.standardForm.fillAndValidate(data)
+        val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form)
 
         checkErrorsSummary(view)
 
         getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(1)>a")
-          .text() must be(messages(officeOfExitLength))
-        getElementByCss(view, "#error-message-officeId-input").text() must be(messages(officeOfExitLength))
+          .text() mustBe messages(officeOfExitLength)
+        getElementByCss(view, "#error-message-officeId-input").text() mustBe messages(officeOfExitLength)
 
         getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(2)>a")
-          .text() must be(messages(presentationOfficeLength))
-        getElementByCss(view, "#error-message-presentationOfficeId-input").text() must be(
+          .text() mustBe messages(presentationOfficeLength)
+        getElementByCss(view, "#error-message-presentationOfficeId-input").text() mustBe
           messages(presentationOfficeLength)
-        )
+
       }
 
       "display errors when office of exit and presentation office contains special characters" in {
         val data = OfficeOfExitStandard("12#$%^78", "87^%$#21", "Yes")
-        val form = OfficeOfExit.standardForm.fillAndValidate(data)
+        val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form)
 
         checkErrorsSummary(view)
 
         getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(1)>a")
-          .text() must be(messages(officeOfExitSpecialCharacters))
-        getElementByCss(view, "#error-message-officeId-input").text() must be(messages(officeOfExitSpecialCharacters))
+          .text() mustBe messages(officeOfExitSpecialCharacters)
+        getElementByCss(view, "#error-message-officeId-input").text() mustBe messages(officeOfExitSpecialCharacters)
 
         getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(2)>a")
-          .text() must be(messages(presentationOfficeSpecialCharacters))
-        getElementByCss(view, "#error-message-presentationOfficeId-input").text() must be(
-          messages(presentationOfficeSpecialCharacters)
-        )
+          .text() mustBe messages(presentationOfficeSpecialCharacters)
+        getElementByCss(view, "#error-message-presentationOfficeId-input").text() mustBe messages(presentationOfficeSpecialCharacters)
       }
     }
   }

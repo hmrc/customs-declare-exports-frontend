@@ -40,7 +40,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupp
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
 import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.officeOfExit.OfficeOfExit
+import forms.declaration.officeOfExit.OfficeOfExitForms
 import forms.{Choice, ChoiceSpec}
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
@@ -246,7 +246,7 @@ object SupplementaryDeclarationDataSpec {
       DestinationCountries.formId -> correctDestinationCountriesSupplementaryJSON,
       GoodsLocation.formId -> correctGoodsLocationJSON,
       WarehouseIdentification.formId -> correctWarehouseIdentificationJSON,
-      OfficeOfExit.formId -> correctOfficeOfExitJSON,
+      OfficeOfExitForms.formId -> correctOfficeOfExitJSON,
       TransportInformationContainerData.id -> correctTransportInformationContainerDataJSON,
       TransportDetails.formId -> Json.toJson(
         TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))
