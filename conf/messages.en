@@ -363,7 +363,7 @@ standard.officeOfExit.circumstancesCode = 1/7 Does the declaration relate to an 
 standard.officeOfExit.circumstancesCode.empty = Please provide an answer on this question
 standard.officeOfExit.circumstancesCode.error = Circumstance code is incorrect
 
-supplementary.warehouse.title =  Enter more detail about the warehouse
+supplementary.warehouse.title =  Enter more details about the warehouse
 supplementary.warehouse.title.hint = Locations
 supplementary.warehouse.identificationType = 2/7 Warehouse type
 supplementary.warehouse.identificationType.error = Please choose a valid warehouse type
