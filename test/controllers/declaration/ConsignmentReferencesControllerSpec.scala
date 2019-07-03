@@ -35,14 +35,16 @@ class ConsignmentReferencesControllerSpec
 
   import ConsignmentReferencesControllerSpec._
 
-  before {
+  override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModel())
     withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  after {
+  override def afterEach() {
+    super.afterEach()
     reset(mockCustomsCacheService)
     reset(mockExportsCacheService)
   }
