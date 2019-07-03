@@ -21,7 +21,7 @@ import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode
 case class AutoCompleteItem(label: String, value: String)
 
 object AutoCompleteItem {
-
+  
   def fromCountry(countries: List[Country], value: Country => String = _.countryName): List[AutoCompleteItem] = {
     countries map (c => AutoCompleteItem(s"${c.countryName} - ${c.countryCode}", value(c)))
   }
@@ -44,5 +44,13 @@ object AutoCompleteItem {
 
   def fromOfficeOfExit(offices: List[OfficeOfExit]): List[AutoCompleteItem] = {
     offices map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
+  }
+
+  def fromSupervisingCustomsOfficeForWarehouse(offices: List[SupervisingCustomsOffice]): List[AutoCompleteItem] = {
+    offices map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
+  }
+
+  def fromSupervisingCustomsOfficeForOfficeOfExit(offices: List[SupervisingCustomsOffice]): List[AutoCompleteItem] = {
+    offices map (d => AutoCompleteItem(s"${d.description} (${d.code})", d.code))
   }
 }
