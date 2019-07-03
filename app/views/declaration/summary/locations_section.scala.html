@@ -61,6 +61,11 @@
     ))
 
     @components.table_row_no_change_link(HtmlTableRow(
+        label = messages("supplementary.summary.locations.warehouseType"),
+        value = locations.flatMap(_.warehouseIdentification).flatMap(_.identificationType).map(t => messages(s"supplementary.warehouse.identificationType.${t.toLowerCase}"))
+    ))
+
+    @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.warehouseId"),
         value = locations.flatMap(_.warehouseIdentification).flatMap(_.identificationNumber)
     ))
