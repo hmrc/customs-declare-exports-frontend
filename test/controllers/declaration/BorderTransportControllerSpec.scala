@@ -46,14 +46,14 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
   def view(form: Form[BorderTransport], request: Request[_]): Html =
     border_transport(form)(request, messages, appConfig)
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withNewCaching(createModel())
     withCaching[BorderTransport](None, BorderTransport.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  after {
+  override def afterEach() {
     reset(mockCustomsCacheService)
     reset(mockExportsCacheService)
   }

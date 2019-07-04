@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuditServiceSpec extends AuditTestSupport with OptionValues {
 
-  before {
+  override def beforeEach() {
     mockSendEvent()
     mockSendCompletePayload()
   }

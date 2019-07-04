@@ -31,7 +31,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withCaching[AdditionalFiscalReferencesData](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)

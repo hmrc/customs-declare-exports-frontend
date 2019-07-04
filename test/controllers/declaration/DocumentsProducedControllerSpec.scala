@@ -47,7 +47,7 @@ class DocumentsProducedControllerSpec
 
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withCaching[DocumentsProducedData](None, formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)

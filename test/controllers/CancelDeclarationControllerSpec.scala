@@ -24,11 +24,11 @@ import org.scalatest.BeforeAndAfter
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class CancelDeclarationControllerSpec extends CustomExportsBaseSpec with BeforeAndAfter {
+class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
 
   val uri = uriWithContextPath("/cancel-declaration")
 
-  before {
+  override def beforeEach() {
     authorizedUser()
   }
 

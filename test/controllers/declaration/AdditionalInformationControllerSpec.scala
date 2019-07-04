@@ -37,7 +37,7 @@ class AdditionalInformationControllerSpec
   private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
   private def removeActionURLEncoded(value: String) = (Remove.toString, value)
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withCaching[AdditionalInformationData](None, formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)

@@ -27,7 +27,7 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
   private val uri = uriWithContextPath("/declaration/carrier-details")
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withCaching[CarrierDetails](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)

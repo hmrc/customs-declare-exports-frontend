@@ -32,13 +32,13 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
   private val choiceUri = uriWithContextPath("/choice")
   private val sessionId = "12345"
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withNewCaching(createModel(sessionId))
     withCaching[Choice](None, Choice.choiceId)
   }
 
-  after {
+  override def afterEach() {
     reset(mockCustomsCacheService)
     reset(mockExportsCacheService)
   }

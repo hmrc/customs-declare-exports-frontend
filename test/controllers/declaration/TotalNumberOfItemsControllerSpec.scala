@@ -28,7 +28,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
   private val uri = uriWithContextPath("/declaration/total-numbers-of-items")
 
-  before {
+  override def beforeEach() {
 
     authorizedUser()
     withCaching[TotalNumberOfItems](None)
