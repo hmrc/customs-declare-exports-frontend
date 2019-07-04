@@ -27,11 +27,11 @@ import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
 import org.joda.time.DateTime
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import org.mockito.ArgumentMatchers.{any, anyString}
+import org.mockito.Mockito.{verify, when}
 import org.mockito.stubbing.OngoingStubbing
-import org.scalatest.BeforeAndAfter
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Seconds, Span}
@@ -60,7 +60,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait CustomExportsBaseSpec
     extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction
-    with MockConnectors with BeforeAndAfter {
+    with MockConnectors with BeforeAndAfter with BeforeAndAfterEach {
 
   protected val contextPath: String = "/customs-declare-exports"
 
@@ -211,6 +211,12 @@ trait CustomExportsBaseSpec
     )
 
   def createModel(): ExportsCacheModel = createModel("")
+
+  protected def theCacheModelUpdated: ExportsCacheModel = {
+    val captor = ArgumentCaptor.forClass(classOf[ExportsCacheModel])
+    verify(mockExportsCacheService).update(anyString, captor.capture())
+    captor.getValue
+  }
 }
 
 object CSRFUtil {
