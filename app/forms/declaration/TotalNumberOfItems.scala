@@ -43,5 +43,5 @@ object TotalNumberOfItems {
       .verifying("supplementary.totalPackageQuantity.error", isEmpty or (isNumeric and noLongerThan(8)))
   )(TotalNumberOfItems.apply)(TotalNumberOfItems.unapply)
 
-  def form(): Form[TotalNumberOfItems] = Form(mapping)
+  def form: Form[TotalNumberOfItems] = Form(mapping)
 }
