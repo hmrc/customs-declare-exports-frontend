@@ -29,7 +29,7 @@ import models.NrsSubmissionResponse
 import models.declaration.Parties
 import org.joda.time.DateTime
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{verify, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach}
@@ -214,9 +214,9 @@ trait CustomExportsBaseSpec
 
   def createModel(): ExportsCacheModel = createModel("")
 
-  def captureModelUpdate: ExportsCacheModel = {
+  protected def theCacheModelUpdated: ExportsCacheModel = {
     val captor = ArgumentCaptor.forClass(classOf[ExportsCacheModel])
-    verify(mockExportsCacheService).update(any(), captor.capture())
+    verify(mockExportsCacheService).update(anyString, captor.capture())
     captor.getValue
   }
 }

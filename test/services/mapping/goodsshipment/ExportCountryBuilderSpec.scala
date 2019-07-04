@@ -16,7 +16,7 @@
 
 package services.mapping.goodsshipment
 
-import forms.declaration.DestinationCountriesSupplementarySpec
+import forms.declaration.DestinationCountriesSpec
 import forms.declaration.destinationCountries.DestinationCountries
 import org.scalatest.{Matchers, WordSpec}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -30,7 +30,7 @@ class ExportCountryBuilderSpec extends WordSpec with Matchers {
           CacheMap(
             "CacheID",
             Map(
-              DestinationCountries.formId -> DestinationCountriesSupplementarySpec.correctDestinationCountriesSupplementaryJSON
+              DestinationCountries.formId -> DestinationCountriesSpec.correctDestinationCountriesJSON
             )
           )
         val obj = ExportCountryBuilder.build(cacheMap)
@@ -41,7 +41,7 @@ class ExportCountryBuilderSpec extends WordSpec with Matchers {
           CacheMap(
             "CacheID",
             Map(
-              DestinationCountries.formId -> DestinationCountriesSupplementarySpec.emptyDestinationCountriesSupplementaryJSON
+              DestinationCountries.formId -> DestinationCountriesSpec.emptyDestinationCountriesJSON
             )
           )
         ExportCountryBuilder.build(cacheMap) should be(null)

@@ -16,21 +16,21 @@
 
 package utils.validators.forms.supplementary
 
-import forms.declaration.destinationCountries.DestinationCountriesStandard
+import forms.declaration.destinationCountries.DestinationCountries
 import play.api.data.Forms.{seq, text}
 import play.api.data.{Form, Forms}
 import services.Countries.allCountries
 import utils.validators.forms.FieldValidator.areAllElementsUnique
 import utils.validators.forms.{Invalid, Valid, ValidationResult, Validator}
 
-object DestinationCountriesValidator extends Validator[DestinationCountriesStandard] {
+object DestinationCountriesValidator extends Validator[DestinationCountries] {
 
-  override def validateOnAddition(element: DestinationCountriesStandard): ValidationResult =
+  override def validateOnAddition(element: DestinationCountries): ValidationResult =
     Form(mappingWithValidationForAddition)
       .fillAndValidate(element)
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
 
-  override def validateOnSaveAndContinue(element: DestinationCountriesStandard): ValidationResult =
+  override def validateOnSaveAndContinue(element: DestinationCountries): ValidationResult =
     Form(mappingWithValidation)
       .fillAndValidate(element)
       .fold[ValidationResult](formWithErrors => Invalid(formWithErrors.errors), _ => Valid)
@@ -45,9 +45,9 @@ object DestinationCountriesValidator extends Validator[DestinationCountriesStand
           input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
         )
     ).verifying("supplementary.duplication", areAllElementsUnique)
-      .verifying("supplementary.limit", countries => countries.size <= DestinationCountriesStandard.limit),
+      .verifying("supplementary.limit", countries => countries.size <= DestinationCountries.limit),
     "countryOfDestination" -> text()
-  )(DestinationCountriesStandard.apply)(DestinationCountriesStandard.unapply)
+  )(DestinationCountries.apply)(DestinationCountries.unapply)
 
   val mappingWithValidation = Forms.mapping(
     "countryOfDispatch" -> text()
@@ -64,7 +64,7 @@ object DestinationCountriesValidator extends Validator[DestinationCountriesStand
           input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
         )
     ).verifying("supplementary.duplication", areAllElementsUnique)
-      .verifying("supplementary.limit", countries => countries.size <= DestinationCountriesStandard.limit)
+      .verifying("supplementary.limit", countries => countries.size <= DestinationCountries.limit)
       .verifying("declaration.destinationCountries.countriesOfRouting.empty", _.nonEmpty),
     "countryOfDestination" -> text()
       .verifying("declaration.destinationCountries.countryOfDestination.empty", _.trim.nonEmpty)
@@ -72,6 +72,6 @@ object DestinationCountriesValidator extends Validator[DestinationCountriesStand
         "declaration.destinationCountries.countryOfDestination.error",
         input => input.isEmpty || allCountries.exists(country => country.countryCode == input)
       )
-  )(DestinationCountriesStandard.apply)(DestinationCountriesStandard.unapply)
+  )(DestinationCountries.apply)(DestinationCountries.unapply)
 
 }

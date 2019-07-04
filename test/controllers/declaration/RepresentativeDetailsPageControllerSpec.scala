@@ -211,7 +211,7 @@ class RepresentativeDetailsPageControllerSpec
 
       route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get.futureValue
 
-      captureModelUpdate.parties.representativeDetails.get must be(correctRepresentativeDetails)
+      theCacheModelUpdated.parties.representativeDetails.get must be(correctRepresentativeDetails)
 
       verify(mockCustomsCacheService)
         .cache[RepresentativeDetails](any(), ArgumentMatchers.eq(RepresentativeDetails.formId), any())(

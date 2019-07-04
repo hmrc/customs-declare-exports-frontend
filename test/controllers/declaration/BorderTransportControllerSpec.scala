@@ -135,7 +135,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
             Some("/customs-declare-exports/declaration/transport-details")
           )
 
-          captureModelUpdate.borderTransport.get must be(borderTransport)
+          theCacheModelUpdated.borderTransport.get must be(borderTransport)
 
           verify(mockCustomsCacheService)
             .cache[BorderTransport](

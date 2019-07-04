@@ -23,11 +23,7 @@ import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import forms.declaration.destinationCountries.{
-  DestinationCountries,
-  DestinationCountriesStandard,
-  DestinationCountriesSupplementary
-}
+import forms.declaration.destinationCountries.{DestinationCountries}
 import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import forms.declaration.{DeclarantDetails, _}
 import javax.inject.Singleton
@@ -119,7 +115,7 @@ class SubmissionService @Inject()(
       ConsignmentReferences.id -> Json.toJson(cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.id)),
       BorderTransport.formId -> Json.toJson(cacheMap.getEntry[BorderTransport](BorderTransport.formId)),
       TransportDetails.formId -> Json.toJson(cacheMap.getEntry[TransportDetails](TransportDetails.formId)),
-      DestinationCountries.formId -> getDestinationCountries(cacheMap),
+      DestinationCountries.formId -> Json.toJson(cacheMap.getEntry[DestinationCountries](DestinationCountries.formId)),
       DispatchLocation.formId -> Json.toJson(cacheMap.getEntry[DispatchLocation](DispatchLocation.formId)),
       OfficeOfExitForms.formId -> getOfficeOfExit(cacheMap),
       DeclarationAdditionalActorsData.formId -> Json.toJson(
@@ -149,12 +145,6 @@ class SubmissionService @Inject()(
     )
     Json.toJson(userInput).as[JsObject]
   }
-
-  private def getDestinationCountries(cacheMap: CacheMap)(implicit request: JourneyRequest[_]) =
-    if (request.choice.value == AllowedChoiceValues.SupplementaryDec)
-      Json.toJson(cacheMap.getEntry[DestinationCountriesSupplementary](DestinationCountries.formId))
-    else
-      Json.toJson(cacheMap.getEntry[DestinationCountriesStandard](DestinationCountries.formId))
 
   private def getOfficeOfExit(cacheMap: CacheMap)(implicit request: JourneyRequest[_]) =
     if (request.choice.value == AllowedChoiceValues.SupplementaryDec)

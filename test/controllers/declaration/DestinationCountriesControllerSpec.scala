@@ -20,15 +20,13 @@ import base.CustomExportsBaseSpec
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.DestinationCountriesSupplementarySpec._
-import forms.declaration.destinationCountries.{
-  DestinationCountries,
-  DestinationCountriesStandard,
-  DestinationCountriesSupplementary
-}
+import forms.declaration.DestinationCountriesSpec._
+import forms.declaration.destinationCountries.DestinationCountries
 import helpers.views.declaration.DestinationCountriesMessages
-import org.mockito.Mockito.reset
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with DestinationCountriesMessages {
 
@@ -37,18 +35,22 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
-  before {
-    reset(mockCustomsCacheService)
+  override def afterEach() {
+    super.afterEach()
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
+
   trait SupplementarySetUp {
     authorizedUser()
-    withCaching[DestinationCountriesSupplementary](None)
+    withNewCaching(createModel())
+    withCaching[DestinationCountries](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   trait StandardSetUp {
     authorizedUser()
-    withCaching[DestinationCountriesStandard](None)
+    withNewCaching(createModel())
+    withCaching[DestinationCountries](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
   }
 
@@ -75,8 +77,8 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       "user is during supplementary declaration" in new SupplementarySetUp {
 
-        val cachedData = DestinationCountriesSupplementary("Netherlands", "Belgium")
-        withCaching[DestinationCountriesSupplementary](Some(cachedData), DestinationCountries.formId)
+        val cachedData = DestinationCountries("Netherlands", "Belgium")
+        withCaching[DestinationCountries](Some(cachedData), DestinationCountries.formId)
 
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
@@ -88,8 +90,8 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       "user is during standard declaration" in new StandardSetUp {
 
-        val cachedData = DestinationCountriesStandard("Poland", Seq("Slovakia", "Italy"), "United Kingdom")
-        withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
+        val cachedData = DestinationCountries("Poland", Seq("Slovakia", "Italy"), "United Kingdom")
+        withCaching[DestinationCountries](Some(cachedData), DestinationCountries.formId)
 
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
@@ -107,12 +109,13 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
     "show page with errors for incorrect destination countries for supplementary declaration" in new SupplementarySetUp {
 
-      val result = route(app, postRequest(uri, incorrectDestinationCountriesSupplementaryJSON)).get
+      val result = route(app, postRequest(uri, incorrectDestinationCountriesJSON)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
       stringResult must include(messages(countryOfDestinationError))
       stringResult must include(messages(countryOfDispatchError))
+      verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
     }
 
     "show page with errors for incorrect country of routing for standard declaration" in new StandardSetUp {
@@ -128,16 +131,18 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(countriesOfRoutingError))
+      verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
     }
 
     "show page with errors for missing country of dispatch" when {
 
       "user is during supplementary declaration" in new SupplementarySetUp {
 
-        val result = route(app, postRequest(uri, emptyDestinationCountriesSupplementaryJSON)).get
+        val result = route(app, postRequest(uri, emptyDestinationCountriesJSON)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryOfDispatchEmpty))
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
       }
 
       "user is during standard declaration" in new StandardSetUp {
@@ -153,6 +158,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryOfDispatchEmpty))
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
       }
     }
 
@@ -171,6 +177,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countriesOfRoutingEmpty))
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
       }
     }
 
@@ -182,6 +189,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryOfDestinationEmpty))
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
       }
 
       "user is during standard declaration" in new StandardSetUp {
@@ -197,6 +205,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryOfDestinationEmpty))
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
       }
     }
 
@@ -212,14 +221,17 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
       status(result) must be(OK)
+      theCacheModelUpdated.locations.destinationCountries mustBe Some(DestinationCountries(
+        countryOfDispatch = "", countriesOfRouting = Seq("PL"), countryOfDestination = ""
+      ))
     }
 
     "show error message for standard declaration" when {
       "user try to add more than 99 countries" in new StandardSetUp {
 
         val fullCache = Seq.fill(99)("Slovakia")
-        val cachedData = DestinationCountriesStandard("Poland", fullCache, "England")
-        withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
+        val cachedData = DestinationCountries("Poland", fullCache, "England")
+        withCaching[DestinationCountries](Some(cachedData), DestinationCountries.formId)
 
         val body = Seq(
           ("countryOfDispatch", ""),
@@ -231,11 +243,12 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages("supplementary.limit"))
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
       }
 
       "user try to add duplicated value" in new StandardSetUp {
-        val cachedData = DestinationCountriesStandard("Poland", Seq("Poland"), "England")
-        withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
+        val cachedData = DestinationCountries("Poland", Seq("Poland"), "England")
+        withCaching[DestinationCountries](Some(cachedData), DestinationCountries.formId)
 
         val body = Seq(
           ("countryOfDispatch", ""),
@@ -247,14 +260,15 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages("supplementary.duplication"))
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
       }
     }
 
     "remove country from the cache" when {
       "country exist and user is during standard declaration" in new StandardSetUp {
 
-        val cachedData = DestinationCountriesStandard("Poland", Seq("Slovakia", "Italy"), "England")
-        withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
+        val cachedData = DestinationCountries("Poland", Seq("Slovakia", "Italy"), "England")
+        withCaching[DestinationCountries](Some(cachedData), DestinationCountries.formId)
 
         val action = Remove(Seq("0"))
         val body = (action.label, action.keys.head)
@@ -262,6 +276,9 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
         status(result) must be(OK)
+        theCacheModelUpdated.locations.destinationCountries mustBe Some(DestinationCountries(
+          countryOfDispatch = "Poland", countriesOfRouting = List("Italy"), countryOfDestination = "England"
+        ))
       }
     }
 
@@ -276,17 +293,20 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       "user is during supplementary declaration and provide correct values" in new SupplementarySetUp {
 
-        val result = route(app, postRequest(uri, correctDestinationCountriesSupplementaryJSON)).get
+        val result = route(app, postRequest(uri, correctDestinationCountriesJSON)).get
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/location-of-goods"))
+        theCacheModelUpdated.locations.destinationCountries mustBe Some(DestinationCountries(
+          countryOfDispatch = "PL", countriesOfRouting = Seq(), countryOfDestination = "PL"
+        ))
       }
 
       "user is during standard declaration and provide correct values" in new StandardSetUp {
 
-        val cachedData = DestinationCountriesStandard("", Seq("SK", "IT"), "")
-        withCaching[DestinationCountriesStandard](Some(cachedData), DestinationCountries.formId)
+        val cachedData = DestinationCountries("", Seq("SK", "IT"), "")
+        withCaching[DestinationCountries](Some(cachedData), DestinationCountries.formId)
 
         val body = Seq(
           ("countryOfDispatch", "PL"),
@@ -298,6 +318,9 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
+        theCacheModelUpdated.locations.destinationCountries mustBe Some(DestinationCountries(
+          countryOfDispatch = "PL", countriesOfRouting = Seq("SK", "IT"), countryOfDestination = "PL"
+        ))
       }
     }
   }
