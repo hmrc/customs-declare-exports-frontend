@@ -17,8 +17,8 @@
 package services.mapping.goodsshipment
 
 import forms.ChoiceSpec
-import forms.declaration.DestinationCountriesSupplementarySpec
-import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard}
+import forms.declaration.DestinationCountriesSpec
+import forms.declaration.destinationCountries.DestinationCountries
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -34,7 +34,7 @@ class DestinationBuilderSpec extends WordSpec with Matchers {
             CacheMap(
               "CacheID",
               Map(
-                DestinationCountries.formId -> DestinationCountriesSupplementarySpec.correctDestinationCountriesSupplementaryJSON
+                DestinationCountries.formId -> DestinationCountriesSpec.correctDestinationCountriesJSON
               )
             )
           val destination = DestinationBuilder.build(cacheMap, ChoiceSpec.supplementaryChoice)
@@ -45,7 +45,7 @@ class DestinationBuilderSpec extends WordSpec with Matchers {
             CacheMap(
               "CacheID",
               Map(
-                DestinationCountries.formId -> DestinationCountriesSupplementarySpec.emptyDestinationCountriesSupplementaryJSON
+                DestinationCountries.formId -> DestinationCountriesSpec.emptyDestinationCountriesJSON
               )
             )
           DestinationBuilder.build(cacheMap, ChoiceSpec.supplementaryChoice) should be(null)
@@ -57,7 +57,7 @@ class DestinationBuilderSpec extends WordSpec with Matchers {
           implicit val cacheMap: CacheMap =
             CacheMap(
               "CacheID",
-              Map(DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("GB", Seq("PT"), "PL")))
+              Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("GB", Seq("PT"), "PL")))
             )
           val destination = DestinationBuilder.build(cacheMap, ChoiceSpec.standardChoice)
           destination.getCountryCode.getValue should be("PL")
@@ -66,7 +66,7 @@ class DestinationBuilderSpec extends WordSpec with Matchers {
           implicit val cacheMap: CacheMap =
             CacheMap(
               "CacheID",
-              Map(DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("", Seq(""), "")))
+              Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("", Seq(""), "")))
             )
           DestinationBuilder.build(cacheMap, ChoiceSpec.standardChoice) should be(null)
         }

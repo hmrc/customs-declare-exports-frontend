@@ -656,6 +656,7 @@ supplementary.summary.parties.additionalParties.id = Additional parties ID
 supplementary.summary.parties.additionalParties.type = Additional parties type
 declaration.summary.locations.header = Locations
 supplementary.summary.locations.dispatchCountry = Dispatch country
+supplementary.summary.locations.routingCountries = Routing countries
 supplementary.summary.locations.destinationCountry = Destination country
 supplementary.summary.locations.goodsExaminationAddress = Address where the goods will be examined
 supplementary.summary.locations.goodsExaminationLocationType = Location type where the goods will be examined

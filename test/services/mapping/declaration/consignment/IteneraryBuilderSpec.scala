@@ -17,7 +17,7 @@
 package services.mapping.declaration.consignment
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
-import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard}
+import forms.declaration.destinationCountries.DestinationCountries
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -30,7 +30,7 @@ class IteneraryBuilderSpec extends WordSpec with Matchers {
         implicit val cacheMap: CacheMap =
           CacheMap(
             "CacheID",
-            Map(DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("GB", Seq("FR"), "DE")))
+            Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("GB", Seq("FR"), "DE")))
           )
         val itineraries = IteneraryBuilder.build(cacheMap, Choice(AllowedChoiceValues.StandardDec))
         itineraries.size() should be(1)
@@ -42,7 +42,7 @@ class IteneraryBuilderSpec extends WordSpec with Matchers {
         implicit val cacheMap: CacheMap =
           CacheMap(
             "CacheID",
-            Map(DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("GB", Seq("FR", "DE"), "PL")))
+            Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("GB", Seq("FR", "DE"), "PL")))
           )
         val itineraries = IteneraryBuilder.build(cacheMap, Choice(AllowedChoiceValues.StandardDec))
         itineraries.size() should be(2)
@@ -58,7 +58,7 @@ class IteneraryBuilderSpec extends WordSpec with Matchers {
         implicit val cacheMap: CacheMap =
           CacheMap(
             "CacheID",
-            Map(DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("GB", Seq(), "FR")))
+            Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("GB", Seq(), "FR")))
           )
         val itineraries = IteneraryBuilder.build(cacheMap, Choice(AllowedChoiceValues.StandardDec))
         itineraries.size() should be(0)

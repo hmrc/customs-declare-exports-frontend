@@ -16,12 +16,12 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes._
-@import forms.declaration.destinationCountries.DestinationCountriesSupplementary
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
 @import services.model.{AutoCompleteItem, Country}
 @import services.Countries
-@(form: Form[DestinationCountriesSupplementary])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@import forms.declaration.destinationCountries.DestinationCountries
+@(form: Form[DestinationCountries])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("declaration.destinationCountries.title"),
