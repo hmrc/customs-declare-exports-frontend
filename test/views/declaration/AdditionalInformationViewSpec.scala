@@ -108,7 +108,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
     "display data in both inputs" in {
 
-      val view = createView(AdditionalInformation.form().fill(AdditionalInformation("12345", "12345")))
+      val view = createView(AdditionalInformation.form.fill(AdditionalInformation("12345", "12345")))
 
       getElementById(view, "code").attr("value") must be("12345")
       getElementById(view, "description").text() must be("12345")
@@ -117,7 +117,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
     "display data in code input" in {
 
-      val view = createView(AdditionalInformation.form().fill(AdditionalInformation("12345", "")))
+      val view = createView(AdditionalInformation.form.fill(AdditionalInformation("12345", "")))
 
       getElementById(view, "code").attr("value") must be("12345")
       getElementById(view, "description").text() must be("")
@@ -125,7 +125,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
     "display data in description input" in {
 
-      val view = createView(AdditionalInformation.form().fill(AdditionalInformation("", "12345")))
+      val view = createView(AdditionalInformation.form.fill(AdditionalInformation("", "12345")))
 
       getElementById(view, "code").attr("value") must be("")
       getElementById(view, "description").text() must be("12345")

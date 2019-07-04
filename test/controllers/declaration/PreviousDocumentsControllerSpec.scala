@@ -23,6 +23,7 @@ import forms.Choice.choiceId
 import forms.declaration.Document._
 import forms.declaration.{Document, PreviousDocumentsData}
 import helpers.views.declaration.{CommonMessages, PreviousDocumentsMessages}
+import org.mockito.Mockito.reset
 import play.api.test.Helpers._
 
 class PreviousDocumentsControllerSpec
@@ -35,9 +36,16 @@ class PreviousDocumentsControllerSpec
   private val removeActionURLEncoded: String => (String, String) = (value: String) => (Remove.toString, value)
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[PreviousDocumentsData](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  override def afterEach() {
+    super.afterEach()
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "Previous Documents Controller on GET" should {
@@ -78,6 +86,9 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
+        theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
+          documents = List(Document("X","MCR","A",Some("1")))
+        )
       }
 
       "item is not duplicated" in {
@@ -96,6 +107,12 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
+        theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
+          documents = List(
+            Document("X","MCR","A",Some("1")),
+            Document("Y","DCR","B",Some("2"))
+          )
+        )
       }
     }
 
@@ -110,6 +127,9 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
         status(result) must be(SEE_OTHER)
+        theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
+          documents = Seq()
+        )
       }
     }
 
@@ -132,6 +152,7 @@ class PreviousDocumentsControllerSpec
         getElementById(page, "error-message-documentCategory-input").text() must be(messages(documentCategoryEmpty))
         getElementById(page, "error-message-documentType-input").text() must be(messages(documentTypeEmpty))
         getElementById(page, "error-message-documentReference-input").text() must be(messages(documentReferenceEmpty))
+        verifyTheCacheIsUnchanged()
       }
 
       "item doesn't contain document category" in {
@@ -147,6 +168,7 @@ class PreviousDocumentsControllerSpec
         checkErrorLink(page, "documentCategory-error", documentCategoryEmpty, "#documentCategory")
 
         getElementById(page, "error-message-documentCategory-input").text() must be(messages(documentCategoryEmpty))
+        verifyTheCacheIsUnchanged()
       }
 
       "item doesn't contain document type" in {
@@ -162,6 +184,7 @@ class PreviousDocumentsControllerSpec
         checkErrorLink(page, "documentType-error", documentTypeEmpty, "#documentType")
 
         getElementById(page, "error-message-documentType-input").text() must be(messages(documentTypeEmpty))
+        verifyTheCacheIsUnchanged()
       }
 
       "item doesn't contain document reference" in {
@@ -177,6 +200,7 @@ class PreviousDocumentsControllerSpec
         checkErrorLink(page, "documentReference-error", documentReferenceEmpty, "#documentReference")
 
         getElementById(page, "error-message-documentReference-input").text() must be(messages(documentReferenceEmpty))
+        verifyTheCacheIsUnchanged()
       }
 
       "item contains incorrect document category" in {
@@ -192,6 +216,7 @@ class PreviousDocumentsControllerSpec
         checkErrorLink(page, "documentCategory-error", documentCategoryError, "#documentCategory")
 
         getElementById(page, "error-message-documentCategory-input").text() must be(messages(documentCategoryError))
+        verifyTheCacheIsUnchanged()
       }
 
       "item contains incorrect document type" in {
@@ -207,6 +232,7 @@ class PreviousDocumentsControllerSpec
         checkErrorLink(page, "documentType-error", documentTypeError, "#documentType")
 
         getElementById(page, "error-message-documentType-input").text() must be(messages(documentTypeError))
+        verifyTheCacheIsUnchanged()
       }
 
       "item contains incorrect document reference" in {
@@ -222,6 +248,7 @@ class PreviousDocumentsControllerSpec
         checkErrorLink(page, "documentReference-error", documentReferenceError, "#documentReference")
 
         getElementById(page, "error-message-documentReference-input").text() must be(messages(documentReferenceError))
+        verifyTheCacheIsUnchanged()
       }
 
       "item contains incorrect goods item identifier" in {
@@ -239,6 +266,7 @@ class PreviousDocumentsControllerSpec
         getElementById(page, "error-message-goodsItemIdentifier-input").text() must be(
           messages(documentGoodsIdentifierError)
         )
+        verifyTheCacheIsUnchanged()
       }
 
       "item duplication in cache" in {
@@ -253,6 +281,7 @@ class PreviousDocumentsControllerSpec
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, duplication, "#")
+        verifyTheCacheIsUnchanged()
       }
 
       "limit of items reached" in {
@@ -272,6 +301,7 @@ class PreviousDocumentsControllerSpec
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, limit, "#")
+        verifyTheCacheIsUnchanged()
       }
     }
 
@@ -288,6 +318,7 @@ class PreviousDocumentsControllerSpec
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, continueMandatory, "#")
+        verifyTheCacheIsUnchanged()
       }
 
       "item doesn't contain document category" in {
@@ -303,6 +334,7 @@ class PreviousDocumentsControllerSpec
         checkErrorLink(page, "documentCategory-error", documentCategoryEmpty, "#documentCategory")
 
         getElementById(page, "error-message-documentCategory-input").text() must be(messages(documentCategoryEmpty))
+        verifyTheCacheIsUnchanged()
       }
 
       "item doesn't contain document type" in {
@@ -318,6 +350,7 @@ class PreviousDocumentsControllerSpec
         checkErrorLink(page, "documentType-error", documentTypeEmpty, "#documentType")
 
         getElementById(page, "error-message-documentType-input").text() must be(messages(documentTypeEmpty))
+        verifyTheCacheIsUnchanged()
       }
 
       "item doesn't contain document reference" in {
@@ -333,6 +366,7 @@ class PreviousDocumentsControllerSpec
         checkErrorLink(page, "documentReference-error", documentReferenceEmpty, "#documentReference")
 
         getElementById(page, "error-message-documentReference-input").text() must be(messages(documentReferenceEmpty))
+        verifyTheCacheIsUnchanged()
       }
 
       "item contains incorrect document category" in {
@@ -348,6 +382,7 @@ class PreviousDocumentsControllerSpec
         checkErrorLink(page, "documentCategory-error", documentCategoryError, "#documentCategory")
 
         getElementById(page, "error-message-documentCategory-input").text() must be(messages(documentCategoryError))
+        verifyTheCacheIsUnchanged()
       }
 
       "item contains incorrect document type" in {
@@ -363,6 +398,7 @@ class PreviousDocumentsControllerSpec
         checkErrorLink(page, "documentType-error", documentTypeError, "#documentType")
 
         getElementById(page, "error-message-documentType-input").text() must be(messages(documentTypeError))
+        verifyTheCacheIsUnchanged()
       }
 
       "item contains incorrect document reference" in {
@@ -378,6 +414,7 @@ class PreviousDocumentsControllerSpec
         checkErrorLink(page, "documentReference-error", documentReferenceError, "#documentReference")
 
         getElementById(page, "error-message-documentReference-input").text() must be(messages(documentReferenceError))
+        verifyTheCacheIsUnchanged()
       }
 
       "item contains incorrect goods item identifier" in {
@@ -395,6 +432,7 @@ class PreviousDocumentsControllerSpec
         getElementById(page, "error-message-goodsItemIdentifier-input").text() must be(
           messages(documentGoodsIdentifierError)
         )
+        verifyTheCacheIsUnchanged()
       }
 
       "item duplication in cache" in {
@@ -410,6 +448,7 @@ class PreviousDocumentsControllerSpec
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, duplication, "#")
+        verifyTheCacheIsUnchanged()
       }
 
       "limit of items reached" in {
@@ -428,6 +467,7 @@ class PreviousDocumentsControllerSpec
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, limit, "#")
+        verifyTheCacheIsUnchanged()
       }
     }
 
@@ -441,6 +481,9 @@ class PreviousDocumentsControllerSpec
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+        theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
+          documents = List(Document("X","MCR","A",Some("1")))
+        )
       }
 
       "user has empty form but cache contains some item" in {
@@ -453,6 +496,7 @@ class PreviousDocumentsControllerSpec
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+        verifyTheCacheIsUnchanged()
       }
 
       "user provide correct item with different item in cache" in {
@@ -472,6 +516,9 @@ class PreviousDocumentsControllerSpec
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+        theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
+          documents = List(Document("X","MCR","A",Some("1")), Document("Y","MCR","B",Some("2")))
+        )
       }
     }
   }

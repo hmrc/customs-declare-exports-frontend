@@ -62,7 +62,7 @@ object Document {
     )
   )(Document.apply)(Document.unapply)
 
-  def form(): Form[Document] = Form(mapping)
+  def form: Form[Document] = Form(mapping)
 
   object AllowedValues {
     val TemporaryStorage = "X"
