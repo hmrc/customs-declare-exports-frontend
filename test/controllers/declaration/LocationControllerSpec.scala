@@ -75,6 +75,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       stringResult must include(messages(locationAddressError))
       stringResult must include(messages(logPostCodeError))
       stringResult must include(messages(cityError))
+      verifyTheCacheIsUnchanged()
     }
 
     "validate request and redirect - empty form" in {
@@ -85,6 +86,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       status(result) must be(BAD_REQUEST)
       stringResult must include(messages(typeOfLocationEmpty))
       stringResult must include(messages(qualifierOfIdentEmpty))
+      verifyTheCacheIsUnchanged()
     }
 
     "validate request and redirect - correct value for mandatory field" in {
@@ -104,6 +106,17 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/office-of-exit"))
+
+      theCacheModelUpdated.locations.goodsLocation mustBe GoodsLocation(
+        country = "Poland",
+        typeOfLocation = "t",
+        qualifierOfIdentification = "t",
+        identificationOfLocation = Some("TST"),
+        additionalIdentifier = Some("TST"),
+        addressLine = None,
+        postCode = None,
+        city = None
+      )
     }
 
     "validate request and redirect - correct values" in {
@@ -113,6 +126,16 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/office-of-exit"))
+      theCacheModelUpdated.locations.goodsLocation mustBe GoodsLocation(
+        country = "Poland",
+        typeOfLocation = "t",
+        qualifierOfIdentification = "Q",
+        identificationOfLocation = Some("TST"),
+        additionalIdentifier = Some("TST"),
+        addressLine = None,
+        postCode = None,
+        city = None
+      )
     }
   }
 }
