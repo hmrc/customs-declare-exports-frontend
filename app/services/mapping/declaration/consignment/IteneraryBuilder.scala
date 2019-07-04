@@ -16,7 +16,7 @@
 
 package services.mapping.declaration.consignment
 import forms.Choice
-import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard}
+import forms.declaration.destinationCountries.DestinationCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Consignment.Itinerary
@@ -28,7 +28,7 @@ object IteneraryBuilder {
 
   def build(implicit cacheMap: CacheMap, choice: Choice): java.util.List[Declaration.Consignment.Itinerary] =
     cacheMap
-      .getEntry[DestinationCountriesStandard](DestinationCountries.formId)
+      .getEntry[DestinationCountries](DestinationCountries.formId)
       .map(
         data =>
           data.countriesOfRouting.zipWithIndex

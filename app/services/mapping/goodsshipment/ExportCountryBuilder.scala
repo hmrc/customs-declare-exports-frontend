@@ -15,7 +15,7 @@
  */
 
 package services.mapping.goodsshipment
-import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesSupplementary}
+import forms.declaration.destinationCountries.DestinationCountries
 import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
@@ -26,14 +26,14 @@ object ExportCountryBuilder {
 
   def build(implicit cacheMap: CacheMap): GoodsShipment.ExportCountry =
     cacheMap
-      .getEntry[DestinationCountriesSupplementary](DestinationCountries.formId)
+      .getEntry[DestinationCountries](DestinationCountries.formId)
       .filter(isDefined)
       .map(createExportCountry)
       .orNull
 
-  private def isDefined(country: DestinationCountriesSupplementary): Boolean = country.countryOfDispatch.nonEmpty
+  private def isDefined(country: DestinationCountries): Boolean = country.countryOfDispatch.nonEmpty
 
-  private def createExportCountry(data: DestinationCountriesSupplementary): GoodsShipment.ExportCountry = {
+  private def createExportCountry(data: DestinationCountries): GoodsShipment.ExportCountry = {
 
     val id = new ExportCountryCountryCodeType()
     id.setValue(

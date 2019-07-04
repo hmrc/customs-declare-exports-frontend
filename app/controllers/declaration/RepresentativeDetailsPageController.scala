@@ -28,6 +28,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.representative_details
 
@@ -39,9 +40,12 @@ class RepresentativeDetailsPageController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
@@ -62,9 +66,11 @@ class RepresentativeDetailsPageController @Inject()(
             BadRequest(representative_details(appConfig, RepresentativeDetails.adjustErrors(formWithErrors)))
         ),
         validRepresentativeDetails =>
-          customsCacheService
-            .cache[RepresentativeDetails](cacheId, RepresentativeDetails.formId, validRepresentativeDetails)
-            .map(_ => Redirect(nextPage(request)))
+          for {
+            _ <- updateCache(journeySessionId, validRepresentativeDetails)
+            _ <- customsCacheService
+              .cache[RepresentativeDetails](cacheId, RepresentativeDetails.formId, validRepresentativeDetails)
+          } yield Redirect(nextPage(request))
       )
   }
 
@@ -75,4 +81,13 @@ class RepresentativeDetailsPageController @Inject()(
       case StandardDec =>
         controllers.declaration.routes.CarrierDetailsPageController.displayForm()
     }
+
+  private def updateCache(
+    sessionId: String,
+    formData: RepresentativeDetails
+  ): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(sessionId, model => {
+      val updatedParties = model.parties.copy(representativeDetails = Some(formData))
+      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
+    })
 }

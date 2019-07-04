@@ -20,19 +20,16 @@ import forms.common.Date
 import forms.declaration.ConsigneeDetailsSpec._
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
-import forms.declaration.DestinationCountriesSupplementarySpec._
+import forms.declaration.DestinationCountriesSpec._
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import forms.declaration.DispatchLocationSpec._
 import forms.declaration.ExporterDetailsSpec._
 import forms.declaration.GoodsLocationSpec._
+import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
-import forms.declaration.NatureOfTransactionSpec._
-import forms.declaration.TransportInformationContainerSpec.{
-  correctTransportInformationContainerData,
-  correctTransportInformationContainerDataJSON
-}
+import forms.declaration.TransportInformationContainerSpec.{correctTransportInformationContainerData, correctTransportInformationContainerDataJSON}
 import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec
@@ -243,7 +240,7 @@ object SupplementaryDeclarationDataSpec {
       ConsigneeDetails.id -> correctConsigneeDetailsJSON,
       DeclarationAdditionalActorsData.formId -> correctAdditionalActorsDataJSON,
       DeclarationHoldersData.formId -> correctDeclarationHoldersDataJSON,
-      DestinationCountries.formId -> correctDestinationCountriesSupplementaryJSON,
+      DestinationCountries.formId -> correctDestinationCountriesJSON,
       GoodsLocation.formId -> correctGoodsLocationJSON,
       WarehouseIdentification.formId -> correctWarehouseIdentificationJSON,
       OfficeOfExitForms.formId -> correctOfficeOfExitJSON,
@@ -318,7 +315,7 @@ object SupplementaryDeclarationDataSpec {
     ),
     locations = Some(
       Locations(
-        destinationCountries = Some(correctDestinationCountriesSupplementary),
+        destinationCountries = Some(correctDestinationCountries),
         goodsLocation = Some(correctGoodsLocation),
         warehouseIdentification = Some(correctWarehouseIdentification),
         officeOfExit = Some(correctOfficeOfExit)

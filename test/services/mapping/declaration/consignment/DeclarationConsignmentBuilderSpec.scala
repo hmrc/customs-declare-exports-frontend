@@ -17,7 +17,7 @@
 package services.mapping.declaration.consignment
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
-import forms.declaration.destinationCountries.{DestinationCountries, DestinationCountriesStandard}
+import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.{CarrierDetails, CarrierDetailsSpec, TransportDetails}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
@@ -34,7 +34,7 @@ class DeclarationConsignmentBuilderSpec extends WordSpec with Matchers {
             "CacheID",
             Map(
               TransportDetails.formId -> Json.toJson(TransportDetails(None, false, "A", None, Some("A"))),
-              DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("GB", Seq("FR", "DE"), "PL")),
+              DestinationCountries.formId -> Json.toJson(DestinationCountries("GB", Seq("FR", "DE"), "PL")),
               CarrierDetails.id -> CarrierDetailsSpec.correctCarrierDetailsJSON
             )
           )
@@ -60,7 +60,7 @@ class DeclarationConsignmentBuilderSpec extends WordSpec with Matchers {
               "CacheID",
               Map(
                 TransportDetails.formId -> Json.toJson(TransportDetails(None, false, "A", None, None)),
-                DestinationCountries.formId -> Json.toJson(DestinationCountriesStandard("GB", Seq(), "FR")),
+                DestinationCountries.formId -> Json.toJson(DestinationCountries("GB", Seq(), "FR")),
                 CarrierDetails.id -> CarrierDetailsSpec.correctCarrierDetailsEORIOnlyJSON
               )
             )

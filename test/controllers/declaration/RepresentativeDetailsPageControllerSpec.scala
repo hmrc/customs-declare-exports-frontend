@@ -24,11 +24,15 @@ import forms.Choice.choiceId
 import forms.declaration.RepresentativeDetails
 import forms.declaration.RepresentativeDetailsSpec._
 import helpers.views.declaration.{CommonMessages, RepresentativeDetailsMessages}
-import org.mockito.ArgumentMatchers
+import models.declaration.Parties
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify}
+import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
+
+import scala.concurrent.Future
 
 class RepresentativeDetailsPageControllerSpec
     extends CustomExportsBaseSpec with RepresentativeDetailsMessages with CommonMessages {
@@ -36,14 +40,16 @@ class RepresentativeDetailsPageControllerSpec
   import RepresentativeDetailsPageControllerSpec._
   private val uri = uriWithContextPath("/declaration/representative-details")
 
-  before {
+  override def beforeEach() {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[Choice](Some(Choice(SupplementaryDec)), choiceId)
     withCaching[RepresentativeDetails](None, RepresentativeDetails.formId)
   }
 
-  after {
+  override def afterEach() {
     reset(mockCustomsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Representative Address Controller on GET" should {
@@ -193,7 +199,19 @@ class RepresentativeDetailsPageControllerSpec
 
     "save data to the cache" in {
 
+      val model = createModel("12345")
+      when(mockExportsCacheService.get(any())).thenReturn(Future.successful(Right(model)))
+
+      val representativeDetails = Parties(representativeDetails = Some(correctRepresentativeDetails))
+
+      val updatedModel = model.copy(parties = representativeDetails)
+
+      when(mockExportsCacheService.update(any(), any[ExportsCacheModel]))
+        .thenReturn(Future.successful(Right(updatedModel)))
+
       route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get.futureValue
+
+      theCacheModelUpdated.parties.representativeDetails.get must be(correctRepresentativeDetails)
 
       verify(mockCustomsCacheService)
         .cache[RepresentativeDetails](any(), ArgumentMatchers.eq(RepresentativeDetails.formId), any())(

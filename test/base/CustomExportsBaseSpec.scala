@@ -26,10 +26,11 @@ import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
+import models.declaration.Parties
 import org.joda.time.DateTime
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
+import org.mockito.ArgumentMatchers.{any, anyString}
+import org.mockito.Mockito.{verify, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach}
 import org.scalatest.concurrent.ScalaFutures
@@ -58,10 +59,9 @@ import utils.FakeRequestCSRFSupport._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-//TODO goal is to have all specs use BeforeAndAfterEach and then we remove with BeforeAndAfter
 trait CustomExportsBaseSpec
     extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction
-    with MockConnectors with BeforeAndAfter with BeforeAndAfterEach { 
+    with MockConnectors with BeforeAndAfter with BeforeAndAfterEach {
 
   protected val contextPath: String = "/customs-declare-exports"
 
@@ -208,10 +208,17 @@ trait CustomExportsBaseSpec
       createdDateTime = LocalDateTime.now(),
       updatedDateTime = LocalDateTime.now(),
       choice = "SMP",
-      items = List.empty
+      items = List.empty,
+      parties = Parties()
     )
 
   def createModel(): ExportsCacheModel = createModel("")
+
+  protected def theCacheModelUpdated: ExportsCacheModel = {
+    val captor = ArgumentCaptor.forClass(classOf[ExportsCacheModel])
+    verify(mockExportsCacheService).update(anyString, captor.capture())
+    captor.getValue
+  }
 }
 
 object CSRFUtil {
