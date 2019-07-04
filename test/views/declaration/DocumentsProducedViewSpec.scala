@@ -210,7 +210,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView(
         DocumentsProduced
-          .form()
+          .form
           .fillAndValidate(
             correctDocumentsProduced.copy(documentTypeCode = Some(TestHelper.createRandomAlphanumericString(5)))
           )
@@ -233,7 +233,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         )
       )
       val view =
-        createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifier)))
+        createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifier)))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentIdentifierError, s"#${documentIdentifierAndPartKey}_$documentIdentifierKey")
@@ -250,7 +250,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
             .copy(documentPart = Some(incorrectDocumentIdentifierAndPart.documentPart.get))
         )
       )
-      val view = createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentPart)))
+      val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentPart)))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentPartError, s"#${documentIdentifierAndPartKey}_$documentPartKey")
@@ -271,7 +271,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
           )
         )
         val view = createView(
-          DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart))
+          DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart))
         )
 
         checkErrorsSummary(view)
@@ -291,7 +291,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
           )
         )
         val view = createView(
-          DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart))
+          DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart))
         )
 
         checkErrorsSummary(view)
@@ -307,7 +307,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView(
         DocumentsProduced
-          .form()
+          .form
           .fillAndValidate(correctDocumentsProduced.copy(documentStatus = Some("ABC")))
       )
 
@@ -321,7 +321,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView(
         DocumentsProduced
-          .form()
+          .form
           .fillAndValidate(
             correctDocumentsProduced.copy(documentStatusReason = Some(TestHelper.createRandomAlphanumericString(36)))
           )
@@ -339,7 +339,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
       val view = createView(
         DocumentsProduced
-          .form()
+          .form
           .fillAndValidate(
             correctDocumentsProduced.copy(issuingAuthorityName = Some(TestHelper.createRandomAlphanumericString(71)))
           )
@@ -359,7 +359,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
         val view = createView(
           DocumentsProduced
-            .form()
+            .form
             .bind(
               correctDocumentsProducedMap ++ Map(
                 s"$dateOfValidityKey.$yearKey" -> "1999",
@@ -379,7 +379,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
         val view = createView(
           DocumentsProduced
-            .form()
+            .form
             .bind(
               correctDocumentsProducedMap ++ Map(
                 s"$dateOfValidityKey.$monthKey" -> "13",
@@ -401,7 +401,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         documentWriteOff =
           Some(correctDocumentWriteOff.copy(measurementUnit = incorrectDocumentWriteOff.measurementUnit))
       )
-      val view = createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectMeasurementUnit)))
+      val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectMeasurementUnit)))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, measurementUnitLengthError, s"#${documentWriteOffKey}_$measurementUnitKey")
@@ -417,7 +417,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
         documentWriteOff =
           Some(correctDocumentWriteOff.copy(documentQuantity = incorrectDocumentWriteOff.documentQuantity))
       )
-      val view = createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentQuantity)))
+      val view = createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentQuantity)))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, documentQuantityPrecisionError, s"#${documentWriteOffKey}_$documentQuantityKey")
@@ -435,7 +435,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
           documentWriteOff = Some(emptyDocumentWriteOff.copy(measurementUnit = correctDocumentWriteOff.measurementUnit))
         )
         val view =
-          createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentWriteOff)))
+          createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentWriteOff)))
 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, measurementUnitAndQuantityError, s"#$documentWriteOffKey")
@@ -452,7 +452,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
             Some(emptyDocumentWriteOff.copy(documentQuantity = correctDocumentWriteOff.documentQuantity))
         )
         val view =
-          createView(DocumentsProduced.form().bind(Json.toJson(documentsProducedWithIncorrectDocumentWriteOff)))
+          createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentWriteOff)))
 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, measurementUnitAndQuantityError, s"#$documentWriteOffKey")
@@ -465,7 +465,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
 
     "display errors for all fields" in {
 
-      val form = DocumentsProduced.form().bind(incorrectDocumentsProducedMap)
+      val form = DocumentsProduced.form.bind(incorrectDocumentsProducedMap)
 
       val view = createView(form)
 
@@ -510,7 +510,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
     "display data in all inputs" in {
 
       val data = correctDocumentsProduced
-      val form = DocumentsProduced.form().fill(data)
+      val form = DocumentsProduced.form.fill(data)
       val view = createView(form)
 
       getElementById(view, documentTypeCodeKey).attr("value") must equal(data.documentTypeCode.value)

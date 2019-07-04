@@ -21,10 +21,12 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.TotalNumberOfItems
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.total_number_of_items
 
@@ -37,8 +39,9 @@ class TotalNumberOfItemsController @Inject()(
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   totalNumberOfItemsPage: total_number_of_items
+  override val cacheService: ExportsCacheService,
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.TotalNumberOfItems._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -54,10 +57,21 @@ class TotalNumberOfItemsController @Inject()(
       .fold(
         (formWithErrors: Form[TotalNumberOfItems]) =>
           Future.successful(BadRequest(totalNumberOfItemsPage(appConfig, formWithErrors))),
-        form =>
-          customsCacheService.cache[TotalNumberOfItems](cacheId, formId, form).map { _ =>
+        formData =>
+          updateCache(journeySessionId, formData).map { _ =>
             Redirect(routes.NatureOfTransactionController.displayForm())
         }
       )
   }
+
+  private def updateCache(sessionId: String, formData: TotalNumberOfItems)(implicit req: JourneyRequest[_]): Future[Unit] =
+    for {
+      _ <- updateHeaderLevelCache(
+        sessionId,
+        model =>
+          cacheService
+            .update(sessionId, model.copy(totalNumberOfItems = Some(formData)))
+      )
+      _ <- customsCacheService.cache[TotalNumberOfItems](cacheId, formId, formData)
+    } yield Unit
 }

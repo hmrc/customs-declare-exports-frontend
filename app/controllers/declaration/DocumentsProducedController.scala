@@ -52,7 +52,6 @@ class DocumentsProducedController @Inject()(
     extends {
   val cacheService = exportsCacheService
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
-
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     legacyCustomsCacheService
       .fetchAndGetEntry[DocumentsProducedData](goodsItemCacheId, formId)

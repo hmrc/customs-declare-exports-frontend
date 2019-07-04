@@ -20,10 +20,12 @@ import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
+import forms.common.Date
 import forms.declaration.DocumentsProducedSpec
 import forms.declaration.DocumentsProducedSpec.{correctDocumentsProducedMap, _}
 import forms.declaration.additionaldocuments.DocumentIdentifierAndPart.{documentIdentifierKey, documentPartKey}
 import forms.declaration.additionaldocuments.DocumentWriteOff.documentQuantityKey
+import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
 import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
 import models.declaration.DocumentsProducedData
@@ -122,6 +124,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequest(uri, incorrectDocumentTypeCode)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentTypeCodeError))
+        verifyTheCacheIsUnchanged()
       }
 
       "provided with incorrect document identifier" in {
@@ -314,6 +317,7 @@ class DocumentsProducedControllerSpec
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+        verifyTheCacheIsUnchanged()
       }
 
       "provided with empty form and with existing cache" in {
@@ -344,7 +348,6 @@ class DocumentsProducedControllerSpec
       }
 
       "provided with a valid document and with existing cache" in {
-
         withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
         val newDocument = correctDocumentsProducedMap + (s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> "DOCID123")

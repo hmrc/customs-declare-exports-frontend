@@ -21,6 +21,7 @@ import java.time.LocalDateTime
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import javax.inject.Inject
+import models.declaration.{DocumentsProducedData, Locations, Parties, TransportInformationContainerData}
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.bson.BSONObjectID
@@ -86,6 +87,7 @@ case class ExportsCacheModel(
   parties: Parties = Parties(),
   locations: Locations = Locations(),
   items: Set[ExportItem] = Set.empty
+  totalNumberOfItems: Option[TotalNumberOfItems] = None,
 )
 
 object ExportsCacheModel {
