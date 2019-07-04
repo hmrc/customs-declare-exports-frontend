@@ -22,6 +22,7 @@ import forms.Choice.choiceId
 import forms.declaration.GoodsLocation
 import forms.declaration.GoodsLocationSpec._
 import helpers.views.declaration.LocationOfGoodsMessages
+import org.mockito.Mockito.reset
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
@@ -29,10 +30,17 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
   private val uri = uriWithContextPath("/declaration/location-of-goods")
 
-  before {
+  override def beforeEach {
+    super.beforeEach()
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[GoodsLocation](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  override def afterEach() {
+    super.afterEach()
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "Location Controller on GET" should {
@@ -107,7 +115,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/office-of-exit"))
 
-      theCacheModelUpdated.locations.goodsLocation mustBe GoodsLocation(
+      theCacheModelUpdated.locations.goodsLocation.get mustBe GoodsLocation(
         country = "Poland",
         typeOfLocation = "t",
         qualifierOfIdentification = "t",
@@ -126,15 +134,15 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/office-of-exit"))
-      theCacheModelUpdated.locations.goodsLocation mustBe GoodsLocation(
+      theCacheModelUpdated.locations.goodsLocation.get mustBe GoodsLocation(
         country = "Poland",
-        typeOfLocation = "t",
+        typeOfLocation = "T",
         qualifierOfIdentification = "Q",
-        identificationOfLocation = Some("TST"),
-        additionalIdentifier = Some("TST"),
-        addressLine = None,
-        postCode = None,
-        city = None
+        identificationOfLocation = Some("LOC"),
+        additionalIdentifier = Some("9GB1234567ABCDEF"),
+        addressLine = Some("Address Line"),
+        postCode = Some("AB12 CD3"),
+        city = Some("Town or City")
       )
     }
   }
