@@ -21,10 +21,12 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.GoodsLocation
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.goods_location
 
@@ -37,8 +39,9 @@ class LocationController @Inject()(
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   goodsLocationPage: goods_location
+  override val cacheService: ExportsCacheService,
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.GoodsLocation._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -54,10 +57,21 @@ class LocationController @Inject()(
       .fold(
         (formWithErrors: Form[GoodsLocation]) =>
           Future.successful(BadRequest(goodsLocationPage(appConfig, formWithErrors))),
-        form =>
-          customsCacheService.cache[GoodsLocation](cacheId, formId, form).map { _ =>
+        formData =>
+          updateCache(journeySessionId, formData).map { _ =>
             Redirect(controllers.declaration.routes.OfficeOfExitController.displayForm())
         }
       )
   }
+
+  private def updateCache(sessionId: String, formData: GoodsLocation)(implicit req: JourneyRequest[_]): Future[Unit] =
+    for {
+      _ <- updateHeaderLevelCache(
+        sessionId,
+        model =>
+          cacheService
+            .update(sessionId, model.copy(locations = model.locations.copy(goodsLocation = Some(formData))))
+      )
+      _ <- customsCacheService.cache[GoodsLocation](cacheId, formId, formData)
+    } yield Unit
 }

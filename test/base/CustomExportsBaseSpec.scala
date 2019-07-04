@@ -29,7 +29,7 @@ import models.NrsSubmissionResponse
 import models.declaration.Parties
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{never, verify, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
@@ -217,6 +217,10 @@ trait CustomExportsBaseSpec
     verify(mockExportsCacheService).update(anyString, captor.capture())
     captor.getValue
   }
+
+  protected def verifyTheCacheIsUnchanged(): Unit =
+    verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
+
 }
 
 object CSRFUtil {
