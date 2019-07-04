@@ -15,12 +15,14 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes._
+@import controllers.declaration.routes.WarehouseIdentificationController
 @import forms.declaration.TransportCodes._
 @import forms.declaration.WarehouseIdentification
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
+@import services.model.AutoCompleteItem
 
+@import services.SupervisingCustomsOffices
 @(appConfig: AppConfig, form: Form[WarehouseIdentification])(implicit request: Request[_], messages: Messages)
 
     @main_template(
@@ -38,12 +40,12 @@
 
             @components.page_title(Some("supplementary.warehouse.title"))
 
-            @components.fields.field_text(
+            @components.fields.field_autocomplete(
                 field = form("supervisingCustomsOffice"),
                 label = messages("supplementary.warehouse.supervisingCustomsOffice"),
-                hint = Some(messages("supplementary.warehouse.supervisingCustomsOffice.hint")),
-                labelClass = Some("bold-small")
-            )
+                hintText = Some(messages("supplementary.warehouse.supervisingCustomsOffice.hint")),
+                emptySelectValue = messages("supplementary.packageInformation.typesOfPackages.empty"),
+                items = AutoCompleteItem.fromSupervisingCustomsOfficeForWarehouse(SupervisingCustomsOffices.all))
 
             @components.fields.field_radio(
                 field = form("identificationType"),
