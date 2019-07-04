@@ -16,6 +16,7 @@
 
 package services.model
 
+import services.view.AutoCompleteItem
 import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode}
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -47,21 +48,33 @@ class AutoCompleteItemSpec extends UnitSpec {
       )
     }
 
-    "Map from document type" in {
+    "map from document type" in {
       AutoCompleteItem.fromDocumentType(List(DocumentType("description", "code"))) shouldBe List(
         AutoCompleteItem("description - code", "code")
       )
     }
 
-    "Map from national additional code" in {
+    "map from national additional code" in {
       AutoCompleteItem.fromNationalAdditionalCode(List(NationalAdditionalCode("code"))) shouldBe List(
         AutoCompleteItem("code", "code")
       )
     }
 
-    "Map from holder of authorisation code" in {
+    "map from holder of authorisation code" in {
       AutoCompleteItem.fromHolderOfAuthorisationCode(List(HolderOfAuthorisationCode("code"))) shouldBe List(
         AutoCompleteItem("code", "code")
+      )
+    }
+
+    "map from supervising customs office for Warehouse using Description - CODE" in {
+      AutoCompleteItem.fromSupervisingCustomsOffice(List(CustomsOffice("code", "description"))) shouldBe List(
+        AutoCompleteItem("description - code", "code")
+      )
+    }
+
+    "map from supervising customs office for Office Of Exit using Description (CODE)" in {
+      AutoCompleteItem.fromOfficeOfPresentation(List(CustomsOffice("code", "description"))) shouldBe List(
+        AutoCompleteItem("description (code)", "code")
       )
     }
   }

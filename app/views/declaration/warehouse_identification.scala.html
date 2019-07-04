@@ -15,9 +15,11 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes._
+@import controllers.declaration.routes
 @import forms.declaration.TransportCodes._
 @import forms.declaration.WarehouseIdentification
+@import services.CustomsOffices
+@import services.view.AutoCompleteItem
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
 
@@ -28,7 +30,7 @@
         appConfig = appConfig
     ) {
 
-        @helpers.form(WarehouseIdentificationController.saveWarehouse(), 'autoComplete -> "off") {
+        @helpers.form(routes.WarehouseIdentificationController.saveWarehouse(), 'autoComplete -> "off") {
 
             @components.back_link("/customs-declare-exports/declaration/export-items")
 
@@ -38,12 +40,12 @@
 
             @components.page_title(Some("supplementary.warehouse.title"))
 
-            @components.fields.field_text(
+            @components.fields.field_autocomplete(
                 field = form("supervisingCustomsOffice"),
                 label = messages("supplementary.warehouse.supervisingCustomsOffice"),
-                hint = Some(messages("supplementary.warehouse.supervisingCustomsOffice.hint")),
-                labelClass = Some("bold-small")
-            )
+                hintText = Some(messages("supplementary.warehouse.supervisingCustomsOffice.hint")),
+                emptySelectValue = messages("supplementary.packageInformation.typesOfPackages.empty"),
+                items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all))
 
             @components.fields.field_radio(
                 field = form("identificationType"),

@@ -35,7 +35,7 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
 
     "have proper labels for messages" in {
 
-      assertMessage(title, "Enter more detail about the warehouse")
+      assertMessage(title, "Enter more details about the warehouse")
       assertMessage(titleHint, "Locations")
       assertMessage(identificationType, "2/7 Warehouse type")
       assertMessage(identificationNumber, "2/7 Enter the warehouse identification number")

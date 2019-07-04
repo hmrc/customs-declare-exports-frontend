@@ -14,10 +14,8 @@
  * limitations under the License.
  *@
 
+@import services.view.AutoCompleteItem
 @import views.html.helper._
-
-@import services.model.AutoCompleteItem
-
 @import views.html.components.inputs.input_autocomplete
 @(field: Field, label: String, hintText: Option[String], emptySelectValue: String, items: List[AutoCompleteItem], args: (Symbol, Any)*)(implicit messages: Messages)
 @*

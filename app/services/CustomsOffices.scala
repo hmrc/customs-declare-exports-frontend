@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package helpers.views.declaration
+package services
 
-trait SupervisingCustomsOfficeMessages {
+import services.model.CustomsOffice
+import utils.FileReader
 
-  val supervisingCustomOffice: String = "supplementary.supervisingCustomsOffice"
+import scala.util.matching.Regex
 
-  val title: String = supervisingCustomOffice + ".title"
-  val hint: String = supervisingCustomOffice + ".hint"
-  val scoError: String = supervisingCustomOffice + ".error"
-  val scoEmpty: String = supervisingCustomOffice + ".empty"
+object CustomsOffices {
+  
+  private val regex: Regex = """^(\w+),"?([^"\n]+)"?$""".r
+  
+  def all: List[CustomsOffice] = FileReader("code-lists/customs-offices.csv").tail.map {
+        case regex(code: String, description: String) =>
+          CustomsOffice(code, description)
+      }.sortBy(_.description)
 }

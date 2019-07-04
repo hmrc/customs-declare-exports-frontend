@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package services.model
+package services.view
 
+import services.model.{Country, CustomsOffice, OfficeOfExit, PackageType}
 import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode}
 
 case class AutoCompleteItem(label: String, value: String)
 
 object AutoCompleteItem {
-
+  
   def fromCountry(countries: List[Country], value: Country => String = _.countryName): List[AutoCompleteItem] = {
     countries map (c => AutoCompleteItem(s"${c.countryName} - ${c.countryCode}", value(c)))
   }
@@ -44,5 +45,13 @@ object AutoCompleteItem {
 
   def fromOfficeOfExit(offices: List[OfficeOfExit]): List[AutoCompleteItem] = {
     offices map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
+  }
+
+  def fromSupervisingCustomsOffice(offices: List[CustomsOffice]): List[AutoCompleteItem] = {
+    offices map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
+  }
+
+  def fromOfficeOfPresentation(offices: List[CustomsOffice]): List[AutoCompleteItem] = {
+    offices map (d => AutoCompleteItem(s"${d.description} (${d.code})", d.code))
   }
 }

@@ -15,9 +15,8 @@
  *@
 
 @import services.model.Country
-
-@import services.model.AutoCompleteItem
 @import services.Countries
+@import services.view.AutoCompleteItem
 @(form: Form[_], addressPrefix: String = "", addressHeader: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
 @if(addressHeader.nonEmpty) {

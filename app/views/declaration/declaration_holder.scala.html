@@ -18,9 +18,8 @@
 @import controllers.declaration.routes._
 @import forms.declaration.DeclarationHolder
 @import uk.gov.hmrc.play.views.html._
-
 @import services.HolderOfAuthorisationCode
-@import services.model.AutoCompleteItem
+@import services.view.AutoCompleteItem
 @(appConfig: AppConfig, form: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(implicit request: Request[_], messages: Messages)
 
 @main_template(

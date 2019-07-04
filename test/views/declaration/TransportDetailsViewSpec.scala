@@ -24,7 +24,7 @@ import helpers.views.declaration.CommonMessages
 import play.api.data.Form
 import play.twirl.api.Html
 import services.Countries
-import services.model.AutoCompleteItem
+import services.view.AutoCompleteItem
 import views.components.inputs.RadioOption
 import views.declaration.spec.ViewSpec
 import views.html.components.fields.field_text
