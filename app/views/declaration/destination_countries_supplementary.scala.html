@@ -15,19 +15,20 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes._
+@import controllers.declaration.routes
 @import forms.declaration.destinationCountries.DestinationCountriesSupplementary
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
-@import services.model.{AutoCompleteItem, Country}
+@import services.model.Country
 @import services.Countries
+@import services.view.AutoCompleteItem
 @(form: Form[DestinationCountriesSupplementary])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("declaration.destinationCountries.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(DestinationCountriesController.saveCountries(), 'autoComplete -> "off") {
+    @helpers.form(routes.DestinationCountriesController.saveCountries(), 'autoComplete -> "off") {
 
         @components.back_link("/customs-declare-exports/declaration/holder-of-authorisation")
 

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package services.model
+package services.view
 
+import services.model.{Country, CustomsOffice, OfficeOfExit, PackageType}
 import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode}
 
 case class AutoCompleteItem(label: String, value: String)

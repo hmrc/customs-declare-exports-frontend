@@ -16,6 +16,7 @@
 
 package services.model
 
+import services.view.AutoCompleteItem
 import services.{DocumentType, HolderOfAuthorisationCode, NationalAdditionalCode}
 import uk.gov.hmrc.play.test.UnitSpec
 

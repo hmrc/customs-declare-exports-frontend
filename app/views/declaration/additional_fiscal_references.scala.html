@@ -15,11 +15,13 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes._
+@import controllers.declaration.routes
 @import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 @import uk.gov.hmrc.play.views.html._
-@import services.model.{AutoCompleteItem, Country}
+@import services.model.Country
 @import services.Countries
+
+@import services.view.AutoCompleteItem
 @(form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
@@ -27,7 +29,7 @@
     appConfig = appConfig
 ) {
 
-    @helper.form(AdditionalFiscalReferencesController.saveReferences(), 'autoComplete -> "off") {
+    @helper.form(routes.AdditionalFiscalReferencesController.saveReferences(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.back_link("/customs-declare-exports/declaration/fiscal-information")

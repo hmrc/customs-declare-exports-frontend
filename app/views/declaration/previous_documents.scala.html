@@ -20,8 +20,8 @@
 @import forms.declaration.Document.AllowedValues._
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
-@import services.model.AutoCompleteItem
 @import services.DocumentType
+@import services.view.AutoCompleteItem
 
 @(form: Form[Document], documents: Seq[Document])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 

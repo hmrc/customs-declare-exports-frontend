@@ -18,7 +18,7 @@ package utils
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import org.scalatest.{MustMatchers, WordSpec}
-import services.model.AutoCompleteItem
+import services.view.AutoCompleteItem
 
 class JsonFileSpec extends WordSpec with MustMatchers {
   val file = "/testJsonData.json"
