@@ -17,7 +17,6 @@
 package forms.declaration
 
 import base.TestHelper
-import forms.declaration.DocumentsProducedSpec.correctDocumentsProducedJSON
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 
@@ -35,7 +34,7 @@ class DocumentSpec extends WordSpec with MustMatchers {
             "goodsItemIdentifier" -> JsString("123")
           )
         )
-        val form = Document.form().bind(documentInputData)
+        val form = Document.form.bind(documentInputData)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -51,7 +50,7 @@ class DocumentSpec extends WordSpec with MustMatchers {
             "goodsItemIdentifier" -> JsString("123")
           )
         )
-        val form = Document.form().bind(documentInputData)
+        val form = Document.form.bind(documentInputData)
 
         form.hasErrors must be(true)
         form.errors.length must equal(1)
@@ -61,7 +60,7 @@ class DocumentSpec extends WordSpec with MustMatchers {
 
     "return form without errors" when {
       "provided with valid input" in {
-        val form = Document.form().bind(correctPreviousDocumentsJSON)
+        val form = Document.form.bind(correctPreviousDocumentsJSON)
 
         form.hasErrors must be(false)
       }
