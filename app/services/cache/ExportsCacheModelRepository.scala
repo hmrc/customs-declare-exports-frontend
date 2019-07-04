@@ -84,6 +84,7 @@ case class ExportsCacheModel(
   containerData: Option[TransportInformationContainerData] = None,
   parties: Parties = Parties(),
   locations: Locations = Locations(),
+  totalNumberOfItems: Option[TotalNumberOfItems] = None,
   items: List[ExportItem] = Nil
 )
 

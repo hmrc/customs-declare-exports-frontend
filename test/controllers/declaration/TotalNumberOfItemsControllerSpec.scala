@@ -21,6 +21,7 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.TotalNumberOfItems
 import helpers.views.declaration.TotalNumberOfItemsMessages
+import org.mockito.Mockito.reset
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
@@ -28,11 +29,17 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
   private val uri = uriWithContextPath("/declaration/total-numbers-of-items")
 
-  before {
-
+  override def beforeEach {
+    super.beforeEach()
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[TotalNumberOfItems](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  override def afterEach() {
+    super.afterEach()
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "Total Number Of Items Controller on GET" should {
@@ -76,6 +83,11 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/nature-of-transaction"))
+      theCacheModelUpdated.totalNumberOfItems.get mustBe TotalNumberOfItems(
+        totalAmountInvoiced = "456",
+        exchangeRate = "789",
+        totalPackage = "123"
+      )
     }
 
     "validate request and redirect - correct values for all fields (decimals)" in {
@@ -94,6 +106,11 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       status(result) must be(SEE_OTHER)
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/nature-of-transaction"))
+      theCacheModelUpdated.totalNumberOfItems.get mustBe TotalNumberOfItems(
+        totalAmountInvoiced = "456.78",
+        exchangeRate = "789.789",
+        totalPackage = "123"
+      )
     }
 
     "validate request and redirect - all inputs alphabetic" in {
@@ -114,6 +131,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       contentAsString(result) must include(messages(taiError))
       contentAsString(result) must include(messages(erError))
       contentAsString(result) must include(messages(tpqError))
+      verifyTheCacheIsUnchanged()
     }
 
     "validate request and redirect - all inputs too long" in {
@@ -133,6 +151,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       contentAsString(result) must include(messages(taiError))
       contentAsString(result) must include(messages(erError))
       contentAsString(result) must include(messages(tpqError))
+      verifyTheCacheIsUnchanged()
     }
 
     "validate request and redirect - Total Amount Invoiced / Exchange Rate too long decimal format" in {
@@ -150,6 +169,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
       contentAsString(result) must include(messages(taiError))
       contentAsString(result) must include(messages(erError))
+      verifyTheCacheIsUnchanged()
     }
 
     "validate request and redirect - Total Amount Invoiced / Exchange Rate too long base integer" in {
@@ -167,6 +187,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
       contentAsString(result) must include(messages(taiError))
       contentAsString(result) must include(messages(erError))
+      verifyTheCacheIsUnchanged()
     }
   }
 }
