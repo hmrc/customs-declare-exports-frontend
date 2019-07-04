@@ -16,4 +16,4 @@
 
 package services.model
 
-case class SupervisingCustomsOffice(code: String, description: String)
+case class CustomsOffice(code: String, description: String)

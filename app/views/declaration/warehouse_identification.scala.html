@@ -22,7 +22,7 @@
 @import views.components.inputs.RadioOption
 @import services.model.AutoCompleteItem
 
-@import services.SupervisingCustomsOffices
+@import services.CustomsOffices
 @(appConfig: AppConfig, form: Form[WarehouseIdentification])(implicit request: Request[_], messages: Messages)
 
     @main_template(
@@ -45,7 +45,7 @@
                 label = messages("supplementary.warehouse.supervisingCustomsOffice"),
                 hintText = Some(messages("supplementary.warehouse.supervisingCustomsOffice.hint")),
                 emptySelectValue = messages("supplementary.packageInformation.typesOfPackages.empty"),
-                items = AutoCompleteItem.fromSupervisingCustomsOfficeForWarehouse(SupervisingCustomsOffices.all))
+                items = AutoCompleteItem.fromSupervisingCustomsOffice(CustomsOffices.all))
 
             @components.fields.field_radio(
                 field = form("identificationType"),

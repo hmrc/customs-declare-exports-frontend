@@ -66,13 +66,13 @@ class AutoCompleteItemSpec extends UnitSpec {
     }
 
     "map from supervising customs office for Warehouse using Description - CODE" in {
-      AutoCompleteItem.fromSupervisingCustomsOfficeForWarehouse(List(SupervisingCustomsOffice("code", "description"))) shouldBe List(
+      AutoCompleteItem.fromSupervisingCustomsOffice(List(CustomsOffice("code", "description"))) shouldBe List(
         AutoCompleteItem("description - code", "code")
       )
     }
 
     "map from supervising customs office for Office Of Exit using Description (CODE)" in {
-      AutoCompleteItem.fromSupervisingCustomsOfficeForOfficeOfExit(List(SupervisingCustomsOffice("code", "description"))) shouldBe List(
+      AutoCompleteItem.fromOfficeOfPresentation(List(CustomsOffice("code", "description"))) shouldBe List(
         AutoCompleteItem("description (code)", "code")
       )
     }

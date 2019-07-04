@@ -46,11 +46,11 @@ object AutoCompleteItem {
     offices map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
   }
 
-  def fromSupervisingCustomsOfficeForWarehouse(offices: List[SupervisingCustomsOffice]): List[AutoCompleteItem] = {
+  def fromSupervisingCustomsOffice(offices: List[CustomsOffice]): List[AutoCompleteItem] = {
     offices map (d => AutoCompleteItem(s"${d.description} - ${d.code}", d.code))
   }
 
-  def fromSupervisingCustomsOfficeForOfficeOfExit(offices: List[SupervisingCustomsOffice]): List[AutoCompleteItem] = {
+  def fromOfficeOfPresentation(offices: List[CustomsOffice]): List[AutoCompleteItem] = {
     offices map (d => AutoCompleteItem(s"${d.description} (${d.code})", d.code))
   }
 }

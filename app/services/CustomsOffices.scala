@@ -16,17 +16,17 @@
 
 package services
 
-import services.model.SupervisingCustomsOffice
+import services.model.CustomsOffice
 import utils.FileReader
 
 import scala.util.matching.Regex
 
-object SupervisingCustomsOffices {
+object CustomsOffices {
   
   private val regex: Regex = """^(\w+),"?([^"\n]+)"?$""".r
   
-  def all: List[SupervisingCustomsOffice] = FileReader("code-lists/supervising-customs-office.csv").tail.map {
+  def all: List[CustomsOffice] = FileReader("code-lists/customs-offices.csv").tail.map {
         case regex(code: String, description: String) =>
-          SupervisingCustomsOffice(code, description)
+          CustomsOffice(code, description)
       }.sortBy(_.description)
 }

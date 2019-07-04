@@ -17,21 +17,21 @@
 package services
 
 import org.scalatest.{Matchers, WordSpec}
-import services.model.{OfficeOfExit, SupervisingCustomsOffice}
+import services.model.CustomsOffice
 
-class SupervisingCustomsOfficesSpec extends WordSpec with Matchers {
+class CustomsOfficesSpec extends WordSpec with Matchers {
 
   "SupervisingCustomsOffice" should {
 
     "have 143 entries" in {
-      SupervisingCustomsOffices.all.length shouldBe 143
+      CustomsOffices.all.length shouldBe 143
     }
 
     "read values from CSV and order by description, alphabetically ascending" in {
-      SupervisingCustomsOffices.all should contain inOrder(
-        SupervisingCustomsOffice("GBABD001", "Aberdeen, Ruby House"),
-        SupervisingCustomsOffice("GBLBA001", "Leeds, Peter Bennett House (Customs Authorisations & Reviews Team)"),
-        SupervisingCustomsOffice("GBYRK001", "York, Swinson House")
+      CustomsOffices.all should contain inOrder(
+        CustomsOffice("GBABD001", "Aberdeen, Ruby House"),
+        CustomsOffice("GBLBA001", "Leeds, Peter Bennett House (Customs Authorisations & Reviews Team)"),
+        CustomsOffice("GBYRK001", "York, Swinson House")
       )
     }
   }
