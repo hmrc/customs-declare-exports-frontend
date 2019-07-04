@@ -16,7 +16,6 @@
 
 package services.mapping.goodsshipment
 import forms.Choice
-import forms.Choice.AllowedChoiceValues
 import forms.declaration.destinationCountries.DestinationCountries
 import services.Countries.allCountries
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -27,19 +26,6 @@ import wco.datamodel.wco.declaration_ds.dms._2.DestinationCountryCodeType
 object DestinationBuilder {
 
   def build(implicit cacheMap: CacheMap, choice: Choice): GoodsShipment.Destination =
-    choice match {
-      case Choice(AllowedChoiceValues.SupplementaryDec) => buildSupplementary(cacheMap)
-      case Choice(AllowedChoiceValues.StandardDec)      => buildStandard(cacheMap)
-    }
-
-  def buildSupplementary(implicit cacheMap: CacheMap): GoodsShipment.Destination =
-    cacheMap
-      .getEntry[DestinationCountries](DestinationCountries.formId)
-      .filter(data => isDefined(data.countryOfDestination))
-      .map(data => createExportCountry(data.countryOfDestination))
-      .orNull
-
-  def buildStandard(implicit cacheMap: CacheMap): GoodsShipment.Destination =
     cacheMap
       .getEntry[DestinationCountries](DestinationCountries.formId)
       .filter(data => isDefined(data.countryOfDestination))
