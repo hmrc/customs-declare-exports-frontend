@@ -26,6 +26,7 @@ import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
+import models.declaration.Parties
 import org.joda.time.DateTime
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.{any, anyString}
@@ -207,7 +208,8 @@ trait CustomExportsBaseSpec
       createdDateTime = LocalDateTime.now(),
       updatedDateTime = LocalDateTime.now(),
       choice = "SMP",
-      items = List.empty
+      items = List.empty,
+      parties = Parties()
     )
 
   def createModel(): ExportsCacheModel = createModel("")

@@ -17,6 +17,7 @@
 package models.declaration
 
 import forms.declaration._
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 case class Parties(
@@ -39,6 +40,8 @@ case class Parties(
 
 object Parties {
   val id = "Parties"
+
+  implicit val format = Json.format[Parties]
 
   def apply(cacheMap: CacheMap): Parties = Parties(
     exporterDetails = cacheMap.getEntry[ExporterDetails](ExporterDetails.id),

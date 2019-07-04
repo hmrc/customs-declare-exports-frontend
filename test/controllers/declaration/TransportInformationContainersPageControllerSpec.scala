@@ -38,6 +38,7 @@ class TransportInformationContainersPageControllerSpec
 
   before {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[TransportInformationContainerData](None, id)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }

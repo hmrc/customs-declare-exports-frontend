@@ -34,6 +34,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.add_transport_containers
 
@@ -44,9 +45,12 @@ class TransportContainerController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
@@ -68,13 +72,10 @@ class TransportContainerController @Inject()(
 
     cachedData.flatMap { cache =>
       actionTypeOpt match {
-        case Some(Add) => addContainer(boundForm, maxNumberOfItems, cache)
-
-        case Some(Remove(ids)) => removeContainer(cache, ids)
-
+        case Some(Add)             => addContainer(boundForm, maxNumberOfItems, cache)
+        case Some(Remove(ids))     => removeContainer(cache, ids)
         case Some(SaveAndContinue) => saveContainer(boundForm, maxNumberOfItems, cache)
-
-        case _ => errorHandler.displayErrorPage()
+        case _                     => errorHandler.displayErrorPage()
       }
     }
   }
@@ -88,9 +89,11 @@ class TransportContainerController @Inject()(
       formWithErrors => Future.successful(BadRequest(add_transport_containers(formWithErrors, cache.containers))),
       updatedCache =>
         if (updatedCache != cache.containers)
-          customsCacheService
-            .cache[TransportInformationContainerData](cacheId, id, TransportInformationContainerData(updatedCache))
-            .map(_ => redirect())
+          for {
+            _ <- updateCache(journeySessionId, TransportInformationContainerData(updatedCache))
+            _ <- customsCacheService
+              .cache[TransportInformationContainerData](cacheId, id, TransportInformationContainerData(updatedCache))
+          } yield redirect()
         else Future.successful(redirect())
     )
 
@@ -112,8 +115,20 @@ class TransportContainerController @Inject()(
       formWithErrors => Future.successful(BadRequest(add_transport_containers(formWithErrors, cache.containers))),
       updatedCache => cacheAndRedirect(updatedCache)
     )
+
   private def cacheAndRedirect(containers: Seq[TransportInformationContainer])(implicit request: JourneyRequest[_]) =
-    customsCacheService
-      .cache[TransportInformationContainerData](cacheId, id, TransportInformationContainerData(containers))
-      .map(_ => Redirect(TransportContainerController.displayPage()))
+    for {
+      _ <- updateCache(journeySessionId, TransportInformationContainerData(containers))
+      _ <- customsCacheService
+        .cache[TransportInformationContainerData](cacheId, id, TransportInformationContainerData(containers))
+    } yield Redirect(TransportContainerController.displayPage())
+
+  private def updateCache(
+    sessionId: String,
+    formData: TransportInformationContainerData
+  ): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(
+      sessionId,
+      model => exportsCacheService.update(sessionId, model.copy(containerData = Some(formData)))
+    )
 }

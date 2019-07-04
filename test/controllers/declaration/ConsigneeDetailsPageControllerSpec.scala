@@ -28,8 +28,9 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
   private val uri = uriWithContextPath("/declaration/consignee-details")
 
-  before {
+  override def beforeEach() {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[ConsigneeDetails](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }

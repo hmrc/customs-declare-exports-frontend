@@ -220,7 +220,9 @@ class ItemTypePageControllerSpec
           checkErrorsSummary(page)
           checkErrorLink(page, 1, nacErrorInvalid, "#nationalAdditionalCode_")
 
-          getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorInvalid))
+          getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(
+            messages(nacErrorInvalid)
+          )
         }
 
         "Description of goods is empty" in {
@@ -410,7 +412,9 @@ class ItemTypePageControllerSpec
             messages(cncErrorLength)
           )
           getElementByCss(page, "#error-message-taricAdditionalCode_-input").text() must be(messages(taricErrorLength))
-          getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(messages(nacErrorInvalid))
+          getElementByCss(page, "#error-message-nationalAdditionalCode_-input").text() must be(
+            messages(nacErrorInvalid)
+          )
           getElementByCss(page, "#error-message-descriptionOfGoods-input").text() must be(
             messages(descriptionErrorEmpty)
           )
@@ -528,7 +532,7 @@ class ItemTypePageControllerSpec
 
         "provided with TARIC" in {
           val cachedItemType =
-            ItemType("100", fourDigitsSequence(10), Seq("VATE",  "VATR"), "Description", None, None, "100")
+            ItemType("100", fourDigitsSequence(10), Seq("VATE", "VATR"), "Description", None, None, "100")
           val taricToAdd = "1234"
           val userInput = buildItemTypeUrlEncodedInput(Add)(taricAdditionalCodes = Seq(taricToAdd))
           withCaching[ItemType](Some(cachedItemType), ItemType.id)
@@ -547,7 +551,7 @@ class ItemTypePageControllerSpec
 
         "provided with NAC" in {
           val cachedItemType =
-            ItemType("100", fourDigitsSequence(10), Seq("VATE",  "VATR"), "Description", None, None, "100")
+            ItemType("100", fourDigitsSequence(10), Seq("VATE", "VATR"), "Description", None, None, "100")
           val nacToAdd = "X442"
           val userInput = buildItemTypeUrlEncodedInput(Add)(nationalAdditionalCodes = Seq(nacToAdd))
           withCaching[ItemType](Some(cachedItemType), ItemType.id)
@@ -566,7 +570,7 @@ class ItemTypePageControllerSpec
 
         "provided with both TARIC and NAC" in {
           val cachedItemType =
-            ItemType("100", fourDigitsSequence(1), Seq("VATE",  "VATR"), "Description", None, None, "100")
+            ItemType("100", fourDigitsSequence(1), Seq("VATE", "VATR"), "Description", None, None, "100")
           val taricToAdd = "1234"
           val nacToAdd = "X442"
           val userInput = buildItemTypeUrlEncodedInput(Add)(
