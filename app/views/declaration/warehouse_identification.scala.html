@@ -15,14 +15,14 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes.WarehouseIdentificationController
+@import controllers.declaration.routes
 @import forms.declaration.TransportCodes._
 @import forms.declaration.WarehouseIdentification
+@import services.CustomsOffices
+@import services.model.AutoCompleteItem
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
-@import services.model.AutoCompleteItem
 
-@import services.CustomsOffices
 @(appConfig: AppConfig, form: Form[WarehouseIdentification])(implicit request: Request[_], messages: Messages)
 
     @main_template(
@@ -30,7 +30,7 @@
         appConfig = appConfig
     ) {
 
-        @helpers.form(WarehouseIdentificationController.saveWarehouse(), 'autoComplete -> "off") {
+        @helpers.form(routes.WarehouseIdentificationController.saveWarehouse(), 'autoComplete -> "off") {
 
             @components.back_link("/customs-declare-exports/declaration/export-items")
 

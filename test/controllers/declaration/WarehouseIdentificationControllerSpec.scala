@@ -45,34 +45,12 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       status(result) must be(OK)
     }
 
-    "display correct hints and questions" in {
-
-      val result = route(app, getRequest(uri)).get
-      val page = contentAsString(result)
-
-      page must include(messages(title))
-      page must include(messages(titleHint))
-      page must include(messages(identificationType))
-      page must include(messages(identificationNumber))
-      page must include(messages(supervisingCustomsOffice))
-      page must include(messages(inlandTransportMode))
-      page must include(messages(inlandTransportModeHint))
-      page must include(messages(sea))
-      page must include(messages(rail))
-      page must include(messages(road))
-      page must include(messages(air))
-      page must include(messages(postalOrMail))
-      page must include(messages(fixedTransportInstallations))
-      page must include(messages(inlandWaterway))
-      page must include(messages(unknown))
-    }
-
     "read item from cache and display it" in {
 
       val cachedData = WarehouseIdentification(Some("Office"), Some("R"), Some("SecretStash"), Some(Maritime))
       withCaching[WarehouseIdentification](Some(cachedData), "IdentificationOfWarehouse")
 
-      val result = route(app, getRequest(uri)).get
+      val Some(result) = route(app, getRequest(uri))
       val page = contentAsString(result)
 
       status(result) must be(OK)
@@ -84,27 +62,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
   }
 
   "Warehouse Identification Controller on POST" should {
-
-    "validate request - incorrect values" in {
-
-      val incorrectWarehouseIdentification: JsValue =
-        JsObject(
-          Map(
-            "supervisingCustomsOffice" -> JsString(TestHelper.createRandomAlphanumericString(5)),
-            "identificationType" -> JsString(TestHelper.createRandomAlphanumericString(2)),
-            "identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(37)),
-            "inlandModeOfTransportCode" -> JsString("Incorrect mode of transport")
-          )
-        )
-      val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
-      val page = contentAsString(result)
-
-      status(result) must be(BAD_REQUEST)
-
-      page must include(messages(supervisingCustomsOfficeError))
-      page must include(messages(identificationTypeError))
-      page must include(messages(identificationNumberError))
-    }
 
     "validate identification type" in {
 
@@ -128,36 +85,14 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       contentAsString(result) must include(messages(identificationNumberError))
     }
 
-    "validate supervising customs office - less than 8 characters" in {
+    "validate supervising customs office - invalid" in {
 
       val incorrectWarehouseOffice: JsValue =
-        JsObject(Map("supervisingCustomsOffice" -> JsString(TestHelper.createRandomAlphanumericString(7))))
+        JsObject(Map("supervisingCustomsOffice" -> JsString("SOMEWRONGCODE")))
 
-      val result = route(app, postRequest(uri, incorrectWarehouseOffice)).get
+      val Some(result) = route(app, postRequest(uri, incorrectWarehouseOffice))
 
-      status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(supervisingCustomsOfficeError))
-    }
-
-    "validate supervising customs office - more than 8 characters" in {
-
-      val incorrectWarehouseOffice: JsValue =
-        JsObject(Map("supervisingCustomsOffice" -> JsString(TestHelper.createRandomAlphanumericString(9))))
-
-      val result = route(app, postRequest(uri, incorrectWarehouseOffice)).get
-
-      status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(supervisingCustomsOfficeError))
-    }
-
-    "validate supervising customs office - 8 characters with special characters" in {
-
-      val incorrectWarehouseOffice: JsValue =
-        JsObject(Map("supervisingCustomsOffice" -> JsString("123 ,.78")))
-
-      val result = route(app, postRequest(uri, incorrectWarehouseOffice)).get
-
-      status(result) must be(BAD_REQUEST)
+      status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(supervisingCustomsOfficeError))
     }
 
