@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 
 class NotEligibleControllerSpec extends CustomExportsBaseSpec {
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }

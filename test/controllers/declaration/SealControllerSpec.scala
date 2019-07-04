@@ -46,13 +46,13 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
   def view(form: Form[Seal], seals: Seq[Seal], container: Boolean = false)(implicit request: Request[_]): Html =
     seal(form, seals, container)(appConfig, request, messages)
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withCaching[Seq[Seal]](None, Seal.formId)
     withCaching[TransportDetails](None, TransportDetails.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
   }
-  after {
+  override def afterEach() {
     reset(mockCustomsCacheService)
   }
 

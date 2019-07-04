@@ -43,14 +43,14 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
   def view(form: Form[TransportDetails], request: JourneyRequest[_]): Html =
     transport_details(form)(request, appConfig, messages)
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withNewCaching(createModel())
     withCaching[TransportDetails](None, TransportDetails.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  after {
+  override def afterEach() {
     reset(mockCustomsCacheService)
     reset(mockExportsCacheService)
   }

@@ -36,14 +36,14 @@ class ItemTypePageControllerSpec
 
   private val uri = uriWithContextPath("/declaration/item-type")
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withCaching[ItemType](None, ItemType.id)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
     withCaching[FiscalInformation](None, FiscalInformation.formId)
   }
 
-  after {
+  override def afterEach() {
     reset(mockCustomsCacheService)
   }
 

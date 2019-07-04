@@ -30,7 +30,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
   private val uri = uriWithContextPath("/declaration/warehouse")
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withNewCaching(createModel())
     withCaching[WarehouseIdentification](None)

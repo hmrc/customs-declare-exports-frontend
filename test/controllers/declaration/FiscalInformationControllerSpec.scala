@@ -48,7 +48,7 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
   }
 
-  after {
+  override def afterEach() {
     reset(mockCustomsCacheService)
   }
 

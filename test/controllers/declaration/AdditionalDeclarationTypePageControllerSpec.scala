@@ -84,11 +84,11 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
     ).thenReturn(Future.successful(CacheMap(cacheId, Map.empty)))
   }
 
-  before {
+  override def beforeEach() {
     authorizedUser()
   }
 
-  after {
+  override def afterEach() {
     reset(mockCustomsCacheService)
     reset(mockExportsCacheService)
   }

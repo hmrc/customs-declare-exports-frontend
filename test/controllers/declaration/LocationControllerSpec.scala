@@ -29,7 +29,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
   private val uri = uriWithContextPath("/declaration/location-of-goods")
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withCaching[GoodsLocation](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)

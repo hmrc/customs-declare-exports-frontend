@@ -33,14 +33,14 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
   import DispatchLocationPageControllerSpec._
   private val dispatchLocationUri = uriWithContextPath("/declaration/dispatch-location")
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withNewCaching(createModel())
     withCaching[DispatchLocation](None, DispatchLocation.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  after {
+  override def afterEach() {
     reset(mockCustomsCacheService)
     reset(mockExportsCacheService)
   }

@@ -28,7 +28,7 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
 
   private val uri = uriWithContextPath("/declaration/nature-of-transaction")
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withCaching[NatureOfTransaction](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)

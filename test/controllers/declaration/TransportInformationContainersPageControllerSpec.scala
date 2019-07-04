@@ -36,7 +36,7 @@ class TransportInformationContainersPageControllerSpec
   private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
   private def removeActionURLEncoded(value: String) = (Remove.toString, value)
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withNewCaching(createModel())
     withCaching[TransportInformationContainerData](None, id)

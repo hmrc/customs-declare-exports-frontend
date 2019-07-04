@@ -24,7 +24,7 @@ import play.api.test.Helpers._
 
 class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with ConfirmationMessages {
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }

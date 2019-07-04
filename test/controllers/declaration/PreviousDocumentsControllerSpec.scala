@@ -34,7 +34,7 @@ class PreviousDocumentsControllerSpec
   private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
   private val removeActionURLEncoded: String => (String, String) = (value: String) => (Remove.toString, value)
 
-  before {
+  override def beforeEach() {
     authorizedUser()
     withCaching[PreviousDocumentsData](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
