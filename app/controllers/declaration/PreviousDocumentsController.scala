@@ -25,9 +25,11 @@ import forms.declaration.PreviousDocumentsData
 import forms.declaration.PreviousDocumentsData._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.previous_documents
 
@@ -40,8 +42,9 @@ class PreviousDocumentsController @Inject()(
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   previousDocumentsPage: previous_documents
+  override val cacheService: ExportsCacheService,
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[PreviousDocumentsData](cacheId, formId).map {
@@ -55,7 +58,7 @@ class PreviousDocumentsController @Inject()(
 
     val boundForm = form.bindFromRequest()
 
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
     val cachedData = customsCacheService
       .fetchAndGetEntry[PreviousDocumentsData](cacheId, formId)
@@ -67,16 +70,13 @@ class PreviousDocumentsController @Inject()(
           add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
             formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
             updatedCache =>
-              customsCacheService
-                .cache[PreviousDocumentsData](cacheId, formId, PreviousDocumentsData(updatedCache))
+              updateCache(PreviousDocumentsData(updatedCache))
                 .map(_ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
           )
 
         case Some(Remove(ids)) => {
           val updatedCache = remove(ids.headOption, cache.documents)
-
-          customsCacheService
-            .cache[PreviousDocumentsData](cacheId, formId, PreviousDocumentsData(updatedCache))
+          updateCache(PreviousDocumentsData(updatedCache))
             .map(_ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
         }
 
@@ -97,4 +97,15 @@ class PreviousDocumentsController @Inject()(
       }
     }
   }
+
+  private def updateCache(formData: PreviousDocumentsData)(implicit req: JourneyRequest[_]): Future[Unit] =
+    for {
+      _ <- getAndUpdateExportCacheModel(
+        journeySessionId,
+        model =>
+          cacheService
+            .update(journeySessionId, model.copy(previousDocuments = Some(formData)))
+      )
+      _ <- customsCacheService.cache[PreviousDocumentsData](cacheId, formId, formData)
+    } yield Unit
 }

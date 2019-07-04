@@ -85,7 +85,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
     "display three radio buttons with description (not selected)" in {
 
-      val view = createView(Document.form().fill(Document("", "", "", Some(""))))
+      val view = createView(Document.form.fill(Document("", "", "", Some(""))))
 
       val optionOne = getElementById(view, "Temporary storage")
       optionOne.attr("checked") must be("")
@@ -151,7 +151,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
     "display selected first radio button - Temporary Storage (X)" in {
 
-      val view = createView(Document.form().fill(Document("X", "", "", Some(""))))
+      val view = createView(Document.form.fill(Document("X", "", "", Some(""))))
 
       val optionOne = getElementById(view, "Temporary storage")
       optionOne.attr("checked") must be("checked")
@@ -165,7 +165,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
     "display selected second radio button - Simplified Declaration (Y)" in {
 
-      val view = createView(Document.form().fill(Document("Y", "", "", Some(""))))
+      val view = createView(Document.form.fill(Document("Y", "", "", Some(""))))
 
       val optionOne = getElementById(view, "Temporary storage")
       optionOne.attr("checked") must be("")
@@ -179,7 +179,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
     "display selected third radio button - Previous Documents (Z)" in {
 
-      val view = createView(Document.form().fill(Document("Z", "", "", Some(""))))
+      val view = createView(Document.form.fill(Document("Z", "", "", Some(""))))
 
       val optionOne = getElementById(view, "Temporary storage")
       optionOne.attr("checked") must be("")
@@ -193,7 +193,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
     "display data in Document type input" in {
 
-      val view = createView(Document.form().fill(Document("", "Test", "", Some(""))))
+      val view = createView(Document.form.fill(Document("", "Test", "", Some(""))))
 
       getElementById(view, "documentType").attr("value") must be("Test")
       getElementById(view, "documentReference").attr("value") must be("")
@@ -202,7 +202,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
     "display data in Previous DUCR or MUCR input" in {
 
-      val view = createView(Document.form().fill(Document("", "", "Test", Some(""))))
+      val view = createView(Document.form.fill(Document("", "", "Test", Some(""))))
 
       getElementById(view, "documentType").attr("value") must be("")
       getElementById(view, "documentReference").attr("value") must be("Test")
@@ -211,7 +211,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
     "display data in Previous Goods Identifier input" in {
 
-      val view = createView(Document.form().fill(Document("", "", "", Some("Test"))))
+      val view = createView(Document.form.fill(Document("", "", "", Some("Test"))))
 
       getElementById(view, "documentType").attr("value") must be("")
       getElementById(view, "documentReference").attr("value") must be("")
@@ -220,7 +220,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
 
     "display all data entered" in {
 
-      val view = createView(Document.form().fill(Document("X", "Test", "Test", Some("Test"))))
+      val view = createView(Document.form.fill(Document("X", "Test", "Test", Some("Test"))))
 
       val optionOne = getElementById(view, "Temporary storage")
       optionOne.attr("checked") must be("checked")
