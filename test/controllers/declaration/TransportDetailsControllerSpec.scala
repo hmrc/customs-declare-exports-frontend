@@ -37,21 +37,22 @@ import views.html.declaration.transport_details
 
 class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks {
 
-  private val uri = uriWithContextPath("/declaration/transport-details")
-
   val form: Form[TransportDetails] = Form(TransportDetails.formMapping)
+  private val uri = uriWithContextPath("/declaration/transport-details")
 
   def view(form: Form[TransportDetails], request: JourneyRequest[_]): Html =
     transport_details(form)(request, appConfig, messages)
 
   before {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[TransportDetails](None, TransportDetails.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   after {
     reset(mockCustomsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "GET" should {
@@ -119,7 +120,9 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
       "with valid data and on click of add" in {
 
         forAll(arbitrary[TransportDetails]) { transportDetails =>
+          reset(mockExportsCacheService)
           authorizedUser()
+          withNewCaching(createModel())
           withCaching[TransportDetails](None, TransportDetails.formId)
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
           val body = Seq(
@@ -139,6 +142,8 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
           status(result) must be(SEE_OTHER)
+
+          verify(mockExportsCacheService).update(any(), any())
 
           verify(mockCustomsCacheService)
             .cache[TransportDetails](

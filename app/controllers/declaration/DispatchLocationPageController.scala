@@ -76,8 +76,8 @@ class DispatchLocationPageController @Inject()(
     }
 
   private def updateCache(sessionId: String, formData: DispatchLocation): Future[Either[String, ExportsCacheModel]] =
-    updateHeaderLevelCache(sessionId, model => {
-      exportsCacheService.update(sessionId, model.copy(dispatchLocation = Some(formData)))
-    })
-
+    updateHeaderLevelCache(
+      sessionId,
+      model => exportsCacheService.update(sessionId, model.copy(dispatchLocation = Some(formData)))
+    )
 }

@@ -66,6 +66,7 @@ class ExporterDetailsPageController @Inject()(
 
   private def updateCache(sessionId: String, formData: ExporterDetails): Future[Either[String, ExportsCacheModel]] =
     updateHeaderLevelCache(sessionId, model => {
-      exportsCacheService.update(sessionId, model.copy(exporterDetails = Some(formData)))
+      val updatedParties = model.parties.copy(exporterDetails = Some(formData))
+      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
     })
 }
