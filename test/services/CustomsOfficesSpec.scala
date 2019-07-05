@@ -28,7 +28,7 @@ class CustomsOfficesSpec extends WordSpec with Matchers {
     }
 
     "read values from CSV and order by description, alphabetically ascending" in {
-      CustomsOffices.all should contain inOrder(
+      CustomsOffices.all should contain inOrder (
         CustomsOffice("GBABD001", "Aberdeen, Ruby House"),
         CustomsOffice("GBLBA001", "Leeds, Peter Bennett House (Customs Authorisations & Reviews Team)"),
         CustomsOffice("GBYRK001", "York, Swinson House")

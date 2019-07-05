@@ -56,10 +56,7 @@ class IteneraryBuilderSpec extends WordSpec with Matchers {
     "not map to the WCO-DEC Itenerary instance" when {
       "none routing country has been submitted" in {
         implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("GB", Seq(), "FR")))
-          )
+          CacheMap("CacheID", Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("GB", Seq(), "FR"))))
         val itineraries = IteneraryBuilder.build(cacheMap, Choice(AllowedChoiceValues.StandardDec))
         itineraries.size() should be(0)
       }

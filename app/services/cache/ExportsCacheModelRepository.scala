@@ -30,7 +30,7 @@ import uk.gov.hmrc.mongo.ReactiveRepository
 import uk.gov.hmrc.mongo.json.ReactiveMongoFormats.objectIdFormats
 
 import scala.concurrent.{ExecutionContext, Future}
-import models.declaration.{Parties, TransportInformationContainerData, Locations}
+import models.declaration.{Locations, Parties, TransportInformationContainerData}
 
 class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent)(implicit ec: ExecutionContext)
     extends ReactiveRepository[ExportsCacheModel, BSONObjectID](

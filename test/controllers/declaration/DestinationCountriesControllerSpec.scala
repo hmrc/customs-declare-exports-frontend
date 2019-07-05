@@ -221,9 +221,9 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
       status(result) must be(OK)
-      theCacheModelUpdated.locations.destinationCountries mustBe Some(DestinationCountries(
-        countryOfDispatch = "", countriesOfRouting = Seq("PL"), countryOfDestination = ""
-      ))
+      theCacheModelUpdated.locations.destinationCountries mustBe Some(
+        DestinationCountries(countryOfDispatch = "", countriesOfRouting = Seq("PL"), countryOfDestination = "")
+      )
     }
 
     "show error message for standard declaration" when {
@@ -276,9 +276,13 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
         status(result) must be(OK)
-        theCacheModelUpdated.locations.destinationCountries mustBe Some(DestinationCountries(
-          countryOfDispatch = "Poland", countriesOfRouting = List("Italy"), countryOfDestination = "England"
-        ))
+        theCacheModelUpdated.locations.destinationCountries mustBe Some(
+          DestinationCountries(
+            countryOfDispatch = "Poland",
+            countriesOfRouting = List("Italy"),
+            countryOfDestination = "England"
+          )
+        )
       }
     }
 
@@ -298,9 +302,9 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/location-of-goods"))
-        theCacheModelUpdated.locations.destinationCountries mustBe Some(DestinationCountries(
-          countryOfDispatch = "PL", countriesOfRouting = Seq(), countryOfDestination = "PL"
-        ))
+        theCacheModelUpdated.locations.destinationCountries mustBe Some(
+          DestinationCountries(countryOfDispatch = "PL", countriesOfRouting = Seq(), countryOfDestination = "PL")
+        )
       }
 
       "user is during standard declaration and provide correct values" in new StandardSetUp {
@@ -318,9 +322,13 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        theCacheModelUpdated.locations.destinationCountries mustBe Some(DestinationCountries(
-          countryOfDispatch = "PL", countriesOfRouting = Seq("SK", "IT"), countryOfDestination = "PL"
-        ))
+        theCacheModelUpdated.locations.destinationCountries mustBe Some(
+          DestinationCountries(
+            countryOfDispatch = "PL",
+            countriesOfRouting = Seq("SK", "IT"),
+            countryOfDestination = "PL"
+          )
+        )
       }
     }
   }

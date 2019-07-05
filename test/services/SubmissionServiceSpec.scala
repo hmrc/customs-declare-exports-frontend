@@ -37,7 +37,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
 
   val mockAuditService = mock[AuditService]
   val mapper = mock[WcoMetadataMapper]
-  
+
   override def beforeEach() {
     reset(mockCustomsCacheService)
     reset(mockCustomsDeclareExportsConnector)

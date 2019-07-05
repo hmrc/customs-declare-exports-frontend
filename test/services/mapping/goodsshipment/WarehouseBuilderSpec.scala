@@ -46,7 +46,8 @@ class WarehouseBuilderSpec extends WordSpec with Matchers with MockitoSugar {
           CacheMap(
             "CacheID",
             Map(
-              WarehouseIdentification.formId -> Json.toJson(WarehouseIdentification(Some("GBWKG001"), None, Some("1234567GB"), Some("2")))
+              WarehouseIdentification.formId -> Json
+                .toJson(WarehouseIdentification(Some("GBWKG001"), None, Some("1234567GB"), Some("2")))
             )
           )
         WarehouseBuilder.build(cacheMap) should be(null)
@@ -57,7 +58,8 @@ class WarehouseBuilderSpec extends WordSpec with Matchers with MockitoSugar {
           CacheMap(
             "CacheID",
             Map(
-              WarehouseIdentification.formId -> Json.toJson(WarehouseIdentification(Some("GBWKG001"), Some("R"), None, Some("2")))
+              WarehouseIdentification.formId -> Json
+                .toJson(WarehouseIdentification(Some("GBWKG001"), Some("R"), None, Some("2")))
             )
           )
         WarehouseBuilder.build(cacheMap) should be(null)

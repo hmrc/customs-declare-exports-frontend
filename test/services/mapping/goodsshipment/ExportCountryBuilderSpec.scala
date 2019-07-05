@@ -29,9 +29,7 @@ class ExportCountryBuilderSpec extends WordSpec with Matchers {
         implicit val cacheMap: CacheMap =
           CacheMap(
             "CacheID",
-            Map(
-              DestinationCountries.formId -> DestinationCountriesSpec.correctDestinationCountriesJSON
-            )
+            Map(DestinationCountries.formId -> DestinationCountriesSpec.correctDestinationCountriesJSON)
           )
         val obj = ExportCountryBuilder.build(cacheMap)
         obj.getID.getValue should be("PL")
@@ -40,9 +38,7 @@ class ExportCountryBuilderSpec extends WordSpec with Matchers {
         implicit val cacheMap: CacheMap =
           CacheMap(
             "CacheID",
-            Map(
-              DestinationCountries.formId -> DestinationCountriesSpec.emptyDestinationCountriesJSON
-            )
+            Map(DestinationCountries.formId -> DestinationCountriesSpec.emptyDestinationCountriesJSON)
           )
         ExportCountryBuilder.build(cacheMap) should be(null)
       }

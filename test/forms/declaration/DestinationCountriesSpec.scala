@@ -23,17 +23,29 @@ object DestinationCountriesSpec {
   val correctDestinationCountries = DestinationCountries("PL", "PL")
 
   val correctDestinationCountriesJSON: JsValue = JsObject(
-    Map("countryOfDestination" -> JsString("PL"), "countriesOfRouting" -> JsArray(), "countryOfDispatch" -> JsString("PL"))
+    Map(
+      "countryOfDestination" -> JsString("PL"),
+      "countriesOfRouting" -> JsArray(),
+      "countryOfDispatch" -> JsString("PL")
+    )
   )
   val emptyDestinationCountriesJSON: JsValue = JsObject(
     Map("countryOfDestination" -> JsString(""), "countriesOfRouting" -> JsArray(), "countryOfDispatch" -> JsString(""))
   )
 
   val emptyDestinationCountrySupplementaryJSON: JsValue = JsObject(
-    Map("countryOfDestination" -> JsString(""), "countriesOfRouting" -> JsArray(), "countryOfDispatch" -> JsString("MW"))
+    Map(
+      "countryOfDestination" -> JsString(""),
+      "countriesOfRouting" -> JsArray(),
+      "countryOfDispatch" -> JsString("MW")
+    )
   )
 
   val incorrectDestinationCountriesJSON: JsValue = JsObject(
-    Map("countryOfDestination" -> JsString("Country"), "countriesOfRouting" -> Json.arr(JsString("Country")), "countryOfDispatch" -> JsString("Country"))
+    Map(
+      "countryOfDestination" -> JsString("Country"),
+      "countriesOfRouting" -> Json.arr(JsString("Country")),
+      "countryOfDispatch" -> JsString("Country")
+    )
   )
 }

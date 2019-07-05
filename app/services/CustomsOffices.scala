@@ -22,11 +22,12 @@ import utils.FileReader
 import scala.util.matching.Regex
 
 object CustomsOffices {
-  
+
   private val regex: Regex = """^(\w+),"?([^"\n]+)"?$""".r
-  
-  def all: List[CustomsOffice] = FileReader("code-lists/customs-offices.csv").tail.map {
-        case regex(code: String, description: String) =>
-          CustomsOffice(code, description)
-      }.sortBy(_.description)
+
+  def all: List[CustomsOffice] =
+    FileReader("code-lists/customs-offices.csv").tail.map {
+      case regex(code: String, description: String) =>
+        CustomsOffice(code, description)
+    }.sortBy(_.description)
 }
