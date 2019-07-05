@@ -22,6 +22,7 @@ import forms.Choice.choiceId
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransactionSpec._
 import helpers.views.declaration.NatureOfTransactionMessages
+import org.mockito.Mockito.reset
 import play.api.test.Helpers._
 
 class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with NatureOfTransactionMessages {
@@ -30,8 +31,13 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
 
   override def beforeEach() {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[NatureOfTransaction](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  override def afterEach() {
+    reset(mockExportsCacheService)
   }
 
   "Nature Of Transaction Controller on GET" should {
@@ -64,6 +70,7 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(natureOfTransactionEmpty))
+      verifyTheCacheIsUnchanged()
     }
 
     "validate request and redirect - incorrect values" in {
@@ -74,6 +81,7 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
       status(result) must be(BAD_REQUEST)
 
       stringResult must include(messages(natureOfTransactionError))
+      verifyTheCacheIsUnchanged()
     }
 
     "validate request and redirect - correct values" in {
@@ -82,6 +90,8 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
       val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
+
+      theCacheModelUpdated.natureOfTransaction.get mustBe NatureOfTransaction("1")
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/previous-documents"))
     }
