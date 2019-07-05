@@ -93,5 +93,5 @@ object GoodsLocation {
     )
   )(GoodsLocation.apply)(GoodsLocation.unapply)
 
-  def form: Form[GoodsLocation] = Form(mapping)
+  def form(): Form[GoodsLocation] = Form(mapping)
 }

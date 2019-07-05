@@ -104,10 +104,10 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
         JsObject(
           Map(
             "country" -> JsString("Poland"),
-            "typeOfLocation" -> JsString("t"),
-            "qualifierOfIdentification" -> JsString("t"),
+            "typeOfLocation" -> JsString("T"),
+            "qualifierOfIdentification" -> JsString("Y"),
             "identificationOfLocation" -> JsString("TST"),
-            "additionalQualifier" -> JsString("TST")
+            "additionalQualifier" -> JsString("9GB1234567ABCDEF")
           )
         )
       val result = route(app, postRequest(uri, correctGoodsLocation)).get
@@ -118,10 +118,10 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
       theCacheModelUpdated.locations.goodsLocation.get mustBe GoodsLocation(
         country = "Poland",
-        typeOfLocation = "t",
-        qualifierOfIdentification = "t",
+        typeOfLocation = "T",
+        qualifierOfIdentification = "Y",
         identificationOfLocation = Some("TST"),
-        additionalIdentifier = Some("TST"),
+        additionalQualifier = Some("9GB1234567ABCDEF"),
         addressLine = None,
         postCode = None,
         city = None
@@ -138,9 +138,9 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       theCacheModelUpdated.locations.goodsLocation.get mustBe GoodsLocation(
         country = "Poland",
         typeOfLocation = "T",
-        qualifierOfIdentification = "Q",
+        qualifierOfIdentification = "Y",
         identificationOfLocation = Some("LOC"),
-        additionalIdentifier = Some("9GB1234567ABCDEF"),
+        additionalQualifier = Some("9GB1234567ABCDEF"),
         addressLine = Some("Address Line"),
         postCode = Some("AB12 CD3"),
         city = Some("Town or City")

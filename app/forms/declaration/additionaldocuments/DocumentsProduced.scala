@@ -82,5 +82,5 @@ object DocumentsProduced {
       documentWriteOffKey -> optional(DocumentWriteOff.mapping)
     )(DocumentsProduced.apply)(DocumentsProduced.unapply)
 
-  def form: Form[DocumentsProduced] = Form(mapping)
+  def form(): Form[DocumentsProduced] = Form(mapping)
 }

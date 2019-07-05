@@ -187,8 +187,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for empty Type of Location" in {
 
       val form =
-        GoodsLocation
-          .form
+        GoodsLocation.form
           .fillAndValidate(GoodsLocation("Poland", "", "t", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
@@ -201,8 +200,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for incorrect Type of Location" in {
 
       val form =
-        GoodsLocation
-          .form
+        GoodsLocation.form
           .fillAndValidate(GoodsLocation("Poland", "TST", "t", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
@@ -215,8 +213,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for empty Qualifier of Identification" in {
 
       val form =
-        GoodsLocation
-          .form
+        GoodsLocation.form
           .fillAndValidate(GoodsLocation("Poland", "t", "", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
@@ -231,8 +228,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
     "display error for incorrect Qualifier of Identification" in {
 
       val form =
-        GoodsLocation
-          .form
+        GoodsLocation.form
           .fillAndValidate(GoodsLocation("Poland", "t", "@@!", Some("TST"), Some("TST"), None, None, None))
       val view = createView(form)
 
@@ -246,8 +242,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display error for incorrect Identification of Location" in {
 
-      val form = GoodsLocation
-        .form
+      val form = GoodsLocation.form
         .fillAndValidate(GoodsLocation("Poland", "t", "t", Some("@@!"), Some("TST"), None, None, None))
       val view = createView(form)
 
@@ -261,8 +256,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display error for incorrect Additional Identifier" in {
 
-      val form = GoodsLocation
-        .form
+      val form = GoodsLocation.form
         .fillAndValidate(
           GoodsLocation(
             "Poland",
@@ -287,8 +281,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display error for incorrect Street and Number" in {
 
-      val form = GoodsLocation
-        .form
+      val form = GoodsLocation.form
         .fillAndValidate(
           GoodsLocation(
             "Poland",
@@ -311,8 +304,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display error for incorrect Postcode" in {
 
-      val form = GoodsLocation
-        .form
+      val form = GoodsLocation.form
         .fillAndValidate(
           GoodsLocation(
             "Poland",
@@ -335,8 +327,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display error for incorrect City" in {
 
-      val form = GoodsLocation
-        .form
+      val form = GoodsLocation.form
         .fillAndValidate(
           GoodsLocation(
             "Poland",
@@ -359,8 +350,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display errors for everything incorrect" in {
 
-      val form = GoodsLocation
-        .form
+      val form = GoodsLocation.form
         .fillAndValidate(
           GoodsLocation(
             "Country",
@@ -402,8 +392,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
     "display errors for everything incorrect (except IoL which is empty)" in {
 
-      val form = GoodsLocation
-        .form
+      val form = GoodsLocation.form
         .fillAndValidate(
           GoodsLocation(
             "Country",
@@ -449,8 +438,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       val lpostCode: String = TestHelper.createRandomAlphanumericString(9)
       val lcity: String = TestHelper.createRandomAlphanumericString(35)
 
-      val form = GoodsLocation
-        .form
+      val form = GoodsLocation.form
         .fillAndValidate(
           GoodsLocation(
             "Poland",

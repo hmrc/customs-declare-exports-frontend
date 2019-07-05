@@ -31,6 +31,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
   trait SetUp {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[OfficeOfExitSupplementary](None)
   }
 

@@ -38,8 +38,8 @@ class TotalNumberOfItemsController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
-  totalNumberOfItemsPage: total_number_of_items
-  override val cacheService: ExportsCacheService,
+  totalNumberOfItemsPage: total_number_of_items,
+  override val cacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.TotalNumberOfItems._
@@ -64,9 +64,11 @@ class TotalNumberOfItemsController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: TotalNumberOfItems)(implicit req: JourneyRequest[_]): Future[Unit] =
+  private def updateCache(sessionId: String, formData: TotalNumberOfItems)(
+    implicit req: JourneyRequest[_]
+  ): Future[Unit] =
     for {
-      _ <- updateHeaderLevelCache(
+      _ <- getAndUpdateExportCacheModel(
         sessionId,
         model =>
           cacheService

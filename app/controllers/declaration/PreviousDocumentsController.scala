@@ -41,8 +41,8 @@ class PreviousDocumentsController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
-  previousDocumentsPage: previous_documents
-  override val cacheService: ExportsCacheService,
+  previousDocumentsPage: previous_documents,
+  override val cacheService: ExportsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
@@ -85,9 +85,11 @@ class PreviousDocumentsController @Inject()(
             formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
             updatedCache =>
               if (updatedCache != cache.documents)
-                customsCacheService
-                  .cache[PreviousDocumentsData](cacheId, formId, PreviousDocumentsData(updatedCache))
-                  .map(_ => Redirect(controllers.declaration.routes.ItemsSummaryController.displayPage()))
+                for {
+                  _ <- updateCache(PreviousDocumentsData(updatedCache))
+                  _ <- customsCacheService
+                    .cache[PreviousDocumentsData](cacheId, formId, PreviousDocumentsData(updatedCache))
+                } yield Redirect(controllers.declaration.routes.ItemsSummaryController.displayPage())
               else
                 Future.successful(Redirect(controllers.declaration.routes.ItemsSummaryController.displayPage()))
           )
