@@ -41,7 +41,8 @@ class PackageInformationController @Inject()(
   errorHandler: ErrorHandler,
   legacyCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  packageInformationPage: package_information
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends {
   val cacheService = exportsCacheService
@@ -52,7 +53,7 @@ class PackageInformationController @Inject()(
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     legacyCacheService
       .fetchAndGetEntry[Seq[PackageInformation]](goodsItemCacheId, formId)
-      .map(items => Ok(package_information(itemId, form, items.getOrElse(Seq.empty))))
+      .map(items => Ok(packageInformationPage(itemId, form, items.getOrElse(Seq.empty))))
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
@@ -107,7 +108,7 @@ class PackageInformationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[PackageInformation]) =>
-          Future.successful(BadRequest(package_information(itemId, formWithErrors, packages))),
+          Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors, packages))),
         validForm => {
           isAdditionInvalid[PackageInformation](validForm, packages).fold(
             updateCacheModels(itemId, (packages :+ validForm), routes.PackageInformationController.displayPage(itemId))
@@ -123,7 +124,7 @@ class PackageInformationController @Inject()(
   private def badRequest(itemId: String, packages: Seq[PackageInformation], form: Form[_], error: String)(
     implicit authenticatedRequest: JourneyRequest[AnyContent]
   ) =
-    Future.successful(BadRequest(package_information(itemId, form.withGlobalError(error), packages)))
+    Future.successful(BadRequest(packageInformationPage(itemId, form.withGlobalError(error), packages)))
 
   private def updateCacheModels(itemId: String, updatedCache: Seq[PackageInformation], redirect: Call)(
     implicit journeyRequest: JourneyRequest[_]

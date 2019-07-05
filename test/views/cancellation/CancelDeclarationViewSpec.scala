@@ -30,8 +30,9 @@ import views.tags.ViewTest
 class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
 
   private val form: Form[CancelDeclaration] = CancelDeclaration.form
+  private val cancelDeclarationPage = app.injector.instanceOf[cancel_declaration]
   private def createView(form: Form[CancelDeclaration] = form): Html =
-    cancel_declaration(appConfig, form)(fakeRequest, messages)
+    cancelDeclarationPage(appConfig, form)(fakeRequest, messages)
 
   "Cancel Declaration View" should {
 

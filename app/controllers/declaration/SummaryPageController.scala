@@ -42,7 +42,9 @@ class SummaryPageController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   submissionService: SubmissionService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  summaryPage: summary_page,
+  summaryPageNoData: summary_page_no_data
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -51,8 +53,8 @@ class SummaryPageController @Inject()(
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetch(cacheId).map {
-      case Some(cacheMap) if containsMandatoryData(cacheMap) => Ok(summary_page(SupplementaryDeclarationData(cacheMap)))
-      case _                                                 => Ok(summary_page_no_data())
+      case Some(cacheMap) if containsMandatoryData(cacheMap) => Ok(summaryPage(SupplementaryDeclarationData(cacheMap)))
+      case _                                                 => Ok(summaryPageNoData())
     }
   }
 

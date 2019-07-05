@@ -28,8 +28,9 @@ import views.tags.ViewTest
 class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages with CommonMessages {
 
   private val form: Form[CommodityMeasure] = CommodityMeasure.form()
+  private val goodsMeasurePage = app.injector.instanceOf[goods_measure]
   private def createView(form: Form[CommodityMeasure] = form): Html =
-    goods_measure(itemId, form)(fakeRequest, messages, appConfig)
+    goodsMeasurePage(itemId, form)(fakeRequest, messages, appConfig)
 
   "Commodity Measure View" should {
 

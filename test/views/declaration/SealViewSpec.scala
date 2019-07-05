@@ -28,8 +28,9 @@ import views.html.components.fields.field_text
 @ViewTest
 class SealViewSpec extends SealFields with CommonMessages {
 
+  private val sealPage = app.injector.instanceOf[seal]
   def createView(form: Form[Seal] = form, container: Boolean = false): Html =
-    seal(form, Seq.empty, container)(appConfig, fakeRequest, messages)
+    sealPage(form, Seq.empty, container)(appConfig, fakeRequest, messages)
 
   "Seal View" should {
 

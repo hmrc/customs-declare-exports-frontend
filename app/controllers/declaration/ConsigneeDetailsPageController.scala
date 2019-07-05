@@ -40,7 +40,8 @@ class ConsigneeDetailsPageController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  consigneeDetailsPage: consignee_details
 )(implicit ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -48,8 +49,8 @@ class ConsigneeDetailsPageController @Inject()(
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ConsigneeDetails](cacheId, ConsigneeDetails.id).map {
-      case Some(data) => Ok(consignee_details(appConfig, ConsigneeDetails.form.fill(data)))
-      case _          => Ok(consignee_details(appConfig, ConsigneeDetails.form))
+      case Some(data) => Ok(consigneeDetailsPage(appConfig, ConsigneeDetails.form.fill(data)))
+      case _          => Ok(consigneeDetailsPage(appConfig, ConsigneeDetails.form))
     }
   }
 
@@ -58,7 +59,7 @@ class ConsigneeDetailsPageController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsigneeDetails]) =>
-          Future.successful(BadRequest(consignee_details(appConfig, formWithErrors))),
+          Future.successful(BadRequest(consigneeDetailsPage(appConfig, formWithErrors))),
         form =>
           for {
             _ <- updateCache(journeySessionId, form)

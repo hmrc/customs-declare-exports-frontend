@@ -44,7 +44,8 @@ class ChoiceController @Inject()(
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
   errorHandler: ErrorHandler,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  choicePage: choice_page
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends {
   val cacheService = exportsCacheService
@@ -54,8 +55,8 @@ class ChoiceController @Inject()(
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
     customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, choiceId).map {
-      case Some(data) => Ok(choice_page(Choice.form().fill(data)))
-      case _          => Ok(choice_page(Choice.form()))
+      case Some(data) => Ok(choicePage(Choice.form().fill(data)))
+      case _          => Ok(choicePage(Choice.form()))
     }
   }
 
@@ -63,7 +64,7 @@ class ChoiceController @Inject()(
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choice_page(formWithErrors))),
+        (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choicePage(formWithErrors))),
         validChoice => {
 
           (for {

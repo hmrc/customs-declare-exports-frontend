@@ -20,13 +20,17 @@
 @import services.model.Country
 @import uk.gov.hmrc.play.views.html._
 
+@this(main_template: views.html.main_template)
+
 @(appConfig: AppConfig, form: Form[ExporterDetails])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.consignor.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(ExporterDetailsPageController.saveAddress(), 'autoComplete -> "off") {
+    @helper.form(ExporterDetailsPageController.saveAddress(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.back_link("/customs-declare-exports/declaration/consignment-references")
 
         @components.error_summary(form.errors)

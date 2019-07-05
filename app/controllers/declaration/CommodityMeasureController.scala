@@ -39,7 +39,8 @@ class CommodityMeasureController @Inject()(
   journeyType: JourneyAction,
   legacyCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  goodsMeasurePage: goods_measure
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends {
   val cacheService = exportsCacheService
@@ -51,10 +52,10 @@ class CommodityMeasureController @Inject()(
       .flatMap {
         case Some(_) =>
           legacyCacheService.fetchAndGetEntry[CommodityMeasure](goodsItemCacheId, commodityFormId).map {
-            case Some(data) => Ok(goods_measure(itemId, form.fill(data)))
-            case _          => Ok(goods_measure(itemId, form))
+            case Some(data) => Ok(goodsMeasurePage(itemId, form.fill(data)))
+            case _          => Ok(goodsMeasurePage(itemId, form))
           }
-        case _ => Future.successful(BadRequest(goods_measure(itemId, form.withGlobalError(ADD_ONE))))
+        case _ => Future.successful(BadRequest(goodsMeasurePage(itemId, form.withGlobalError(ADD_ONE))))
       }
   }
 
@@ -63,7 +64,7 @@ class CommodityMeasureController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[CommodityMeasure]) =>
-          Future.successful(BadRequest(goods_measure(itemId, formWithErrors))),
+          Future.successful(BadRequest(goodsMeasurePage(itemId, formWithErrors))),
         validForm =>
           updateCacheModels(itemId, validForm).map { _ =>
             Redirect(controllers.declaration.routes.AdditionalInformationController.displayPage(itemId))

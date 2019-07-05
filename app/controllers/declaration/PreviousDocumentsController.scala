@@ -38,14 +38,15 @@ class PreviousDocumentsController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  previousDocumentsPage: previous_documents
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[PreviousDocumentsData](cacheId, formId).map {
-      case Some(data) => Ok(previous_documents(form, data.documents))
-      case _          => Ok(previous_documents(form, Seq.empty))
+      case Some(data) => Ok(previousDocumentsPage(form, data.documents))
+      case _          => Ok(previousDocumentsPage(form, Seq.empty))
     }
   }
 
@@ -64,7 +65,7 @@ class PreviousDocumentsController @Inject()(
       actionTypeOpt match {
         case Some(Add) =>
           add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
-            formWithErrors => Future.successful(BadRequest(previous_documents(formWithErrors, cache.documents))),
+            formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
             updatedCache =>
               customsCacheService
                 .cache[PreviousDocumentsData](cacheId, formId, PreviousDocumentsData(updatedCache))
@@ -81,7 +82,7 @@ class PreviousDocumentsController @Inject()(
 
         case Some(SaveAndContinue) => {
           saveAndContinue(boundForm, cache.documents, isScreenMandatory, maxAmountOfItems).fold(
-            formWithErrors => Future.successful(BadRequest(previous_documents(formWithErrors, cache.documents))),
+            formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
             updatedCache =>
               if (updatedCache != cache.documents)
                 customsCacheService

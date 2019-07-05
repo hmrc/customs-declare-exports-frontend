@@ -29,8 +29,9 @@ class TransportInformationContainersViewSpec
     extends ViewSpec with TransportInformationContainerMessages with CommonMessages {
 
   private val form: Form[TransportInformationContainer] = TransportInformationContainer.form()
+  private val transportContainersPage = app.injector.instanceOf[add_transport_containers]
   private def createView(form: Form[TransportInformationContainer] = form): Html =
-    add_transport_containers(form, Seq())(appConfig, fakeRequest, messages)
+    transportContainersPage(form, Seq())(appConfig, fakeRequest, messages)
 
   "Transport Information Containers View" should {
 
@@ -103,7 +104,7 @@ class TransportInformationContainersViewSpec
     "display one row with data in table" in {
 
       val view =
-        add_transport_containers(form, Seq(TransportInformationContainer("Test")))(appConfig, fakeRequest, messages)
+        transportContainersPage(form, Seq(TransportInformationContainer("Test")))(appConfig, fakeRequest, messages)
 
       // table header
       getElementByCss(view, "form>div.field-group>table>thead>tr>th").text() must be(messages(ticTitle))

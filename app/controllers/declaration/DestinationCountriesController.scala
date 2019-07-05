@@ -47,7 +47,9 @@ class DestinationCountriesController @Inject()(
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
   override val cacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  destinationCountriesSupplementaryPage: destination_countries_supplementary,
+  desitnationCountriesStandardPage: destination_countries_standard
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
@@ -63,14 +65,14 @@ class DestinationCountriesController @Inject()(
     hc: HeaderCarrier
   ): Future[Result] =
     customsCacheService.fetchAndGetEntry[DestinationCountries](cacheId, formId).map {
-      case Some(data) => Ok(destination_countries_supplementary(Supplementary.form.fill(data)))
-      case _          => Ok(destination_countries_supplementary(Supplementary.form))
+      case Some(data) => Ok(destinationCountriesSupplementaryPage(Supplementary.form.fill(data)))
+      case _          => Ok(destinationCountriesSupplementaryPage(Supplementary.form))
     }
 
   private def displayFormStandard()(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
     customsCacheService.fetchAndGetEntry[DestinationCountries](cacheId, formId).map {
-      case Some(data) => Ok(destination_countries_standard(Standard.form.fill(data), data.countriesOfRouting))
-      case _          => Ok(destination_countries_standard(Standard.form, Seq.empty))
+      case Some(data) => Ok(desitnationCountriesStandardPage(Standard.form.fill(data), data.countriesOfRouting))
+      case _          => Ok(desitnationCountriesStandardPage(Standard.form, Seq.empty))
     }
 
   def saveCountries(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -88,7 +90,7 @@ class DestinationCountriesController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[DestinationCountries]) =>
-          Future.successful(BadRequest(destination_countries_supplementary(formWithErrors))),
+          Future.successful(BadRequest(destinationCountriesSupplementaryPage(formWithErrors))),
         formData =>
           for {
             _ <- updateCache(journeySessionId, formData)
@@ -131,7 +133,7 @@ class DestinationCountriesController @Inject()(
       case Invalid(errors) =>
         Future.successful(
           BadRequest(
-            destination_countries_standard(
+            desitnationCountriesStandardPage(
               adjustDataKeys(countriesStandardForm).copy(errors = errors.map(adjustErrorKey)),
               cachedData.countriesOfRouting
             )
@@ -158,7 +160,7 @@ class DestinationCountriesController @Inject()(
       case Invalid(errors) =>
         Future.successful(
           BadRequest(
-            destination_countries_standard(
+            desitnationCountriesStandardPage(
               adjustDataKeys(countriesStandardForm).copy(errors = errors.map(adjustErrorKey)),
               cachedData.countriesOfRouting
             )
@@ -206,9 +208,11 @@ class DestinationCountriesController @Inject()(
   )(implicit request: JourneyRequest[_]): Future[Result] =
     customsCacheService.fetchAndGetEntry[DestinationCountries](cacheId, formId).map {
       case Some(cachedData) =>
-        Ok(destination_countries_standard(Standard.form.fill(inputDestinationCountries), cachedData.countriesOfRouting))
+        Ok(
+          desitnationCountriesStandardPage(Standard.form.fill(inputDestinationCountries), cachedData.countriesOfRouting)
+        )
       case _ =>
-        Ok(destination_countries_standard(Standard.form))
+        Ok(desitnationCountriesStandardPage(Standard.form))
     }
 
   private def updateCache(

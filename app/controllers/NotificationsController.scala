@@ -23,26 +23,29 @@ import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.{notifications, submission_notifications}
 
 import scala.concurrent.ExecutionContext
 
 class NotificationsController @Inject()(
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  notificationsPage: notifications,
+  submissionsNotificationPage: submission_notifications
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
   def listOfNotifications(): Action[AnyContent] = authenticate.async { implicit request =>
     customsDeclareExportsConnector.fetchNotifications().map { results =>
-      Ok(views.html.notifications(request.user.eori, results.sorted.reverse))
+      Ok(notificationsPage(request.user.eori, results.sorted.reverse))
     }
   }
 
   def listOfNotificationsForSubmission(mrn: String): Action[AnyContent] =
     authenticate.async { implicit request =>
       customsDeclareExportsConnector.fetchNotificationsByMrn(mrn).map { results =>
-        Ok(views.html.submission_notifications(results.sorted.reverse))
+        Ok(submissionsNotificationPage(results.sorted.reverse))
       }
     }
 

@@ -45,7 +45,8 @@ class ProcedureCodesPageController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  procedureCodesPage: procedure_codes
 )(implicit ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -54,8 +55,8 @@ class ProcedureCodesPageController @Inject()(
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ProcedureCodesData](goodsItemCacheId, formId).map {
       case Some(data) =>
-        Ok(procedure_codes(appConfig, itemId, form.fill(data.toProcedureCode()), data.additionalProcedureCodes))
-      case _ => Ok(procedure_codes(appConfig, itemId, form, Seq()))
+        Ok(procedureCodesPage(appConfig, itemId, form.fill(data.toProcedureCode()), data.additionalProcedureCodes))
+      case _ => Ok(procedureCodesPage(appConfig, itemId, form, Seq()))
     }
   }
 
@@ -74,7 +75,7 @@ class ProcedureCodesPageController @Inject()(
           .fold(
             (formWithErrors: Form[ProcedureCodes]) =>
               Future.successful(
-                BadRequest(procedure_codes(appConfig, itemId, formWithErrors, cache.additionalProcedureCodes))
+                BadRequest(procedureCodesPage(appConfig, itemId, formWithErrors, cache.additionalProcedureCodes))
             ),
             validForm => {
               actionTypeOpt match {
@@ -249,6 +250,6 @@ class ProcedureCodesPageController @Inject()(
 
     val formWithError = form.fill(userInput).copy(errors = updatedErrors)
 
-    Future.successful(BadRequest(procedure_codes(appConfig, itemId, formWithError, additionalProcedureCodes)))
+    Future.successful(BadRequest(procedureCodesPage(appConfig, itemId, formWithError, additionalProcedureCodes)))
   }
 }

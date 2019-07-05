@@ -22,6 +22,8 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
 
+@this(main_template: views.html.main_template)
+
 @(appConfig: AppConfig, form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -31,7 +33,8 @@
 
     @components.back_link("/customs-declare-exports/declaration/declarant-details")
 
-    @helpers.form(RepresentativeDetailsPageController.submitRepresentativeDetails(), 'autoComplete -> "off") {
+    @helper.form(RepresentativeDetailsPageController.submitRepresentativeDetails(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
 
         @components.error_summary(form.errors)
 

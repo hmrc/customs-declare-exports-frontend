@@ -19,6 +19,9 @@
 @import controllers.util.Remove
 @import forms.declaration.TransportInformationContainer
 @import uk.gov.hmrc.play.views.html._
+
+@this(main_template: views.html.main_template)
+
 @(form: Form[TransportInformationContainer], containers: Seq[TransportInformationContainer])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
@@ -33,7 +36,8 @@
     @components.page_title(Some("supplementary.transportInfo.containers.title"), None)
 
     @if(containers.nonEmpty) {
-        @helpers.form(TransportContainerController.submitForm(), 'autoComplete -> "off") {
+        @helper.form(TransportContainerController.submitForm(), 'autoComplete -> "off") {
+            @helper.CSRF.formField
             <div class="field-group">
                 <table >
                     <thead>
@@ -56,7 +60,9 @@
         }
     }
 
-    @helpers.form(TransportContainerController.submitForm(), 'autoComplete -> "off") {
+    @helper.form(TransportContainerController.submitForm(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.fields.field_text(
             field = form("id"),
             label = messages("supplementary.transportInfo.containerId")

@@ -23,6 +23,8 @@
 @import forms.declaration.additionaldocuments.DocumentsProduced._
 @import uk.gov.hmrc.play.views.html._
 
+@this(main_template: views.html.main_template)
+
 @(itemId: String, appConfig: AppConfig, form: Form[DocumentsProduced], documents: Seq[DocumentsProduced])(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -33,7 +35,8 @@
     @components.back_link(AdditionalInformationController.displayPage(itemId).url)
 
     @if(documents.nonEmpty) {
-        @helpers.form(DocumentsProducedController.saveForm(itemId), 'autoComplete -> "off") {
+        @helper.form(DocumentsProducedController.saveForm(itemId), 'autoComplete -> "off") {
+            @helper.CSRF.formField
             <table class="form-group">
                 <thead>
                     <tr>
@@ -75,7 +78,9 @@
 
     @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
 
-    @helpers.form(DocumentsProducedController.saveForm(itemId), 'autoComplete -> "off") {
+    @helper.form(DocumentsProducedController.saveForm(itemId), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.fields.field_text(
             field = form(documentTypeCodeKey),
             label = messages("supplementary.addDocument.documentTypeCode"),

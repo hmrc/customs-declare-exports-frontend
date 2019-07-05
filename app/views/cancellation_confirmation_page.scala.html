@@ -16,6 +16,8 @@
 
 @import config.AppConfig
 
+@this(main_template: views.html.main_template)
+
 @(appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(

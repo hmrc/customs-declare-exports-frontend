@@ -31,8 +31,9 @@ import views.tags.ViewTest
 class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages with CommonMessages {
 
   private val form: Form[DeclarantDetails] = DeclarantDetails.form()
+  private val declarantDetailsPage = app.injector.instanceOf[declarant_details]
   private def createView(form: Form[DeclarantDetails] = form): Html =
-    declarant_details(appConfig, form)(fakeJourneyRequest(SupplementaryDec), messages)
+    declarantDetailsPage(appConfig, form)(fakeJourneyRequest(SupplementaryDec), messages)
 
   "Declarant Details View" should {
 
@@ -107,7 +108,7 @@ class DeclarantDetailsViewSpec extends ViewSpec with DeclarantDetailsMessages wi
 
     "display 'Back' button that links to 'Consignee Details' page" in {
 
-      val view = declarant_details(appConfig, form)(fakeJourneyRequest(StandardDec), messages)
+      val view = declarantDetailsPage(appConfig, form)(fakeJourneyRequest(StandardDec), messages)
       val backButton = getElementById(view, "link-back")
 
       backButton.text() must be(messages(backCaption))

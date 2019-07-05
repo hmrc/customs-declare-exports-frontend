@@ -37,8 +37,9 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
   private val incorrectDUCR = "7GB000000000000-1234512345123451234512345"
 
   private val form: Form[ConsignmentReferences] = ConsignmentReferences.form()
+  private val consignmentReferencesPage = app.injector.instanceOf[consignment_references]
   private def createView(form: Form[ConsignmentReferences] = form): Html =
-    consignment_references(appConfig, form)(fakeRequest, messages)
+    consignmentReferencesPage(appConfig, form)(fakeRequest, messages)
 
   "Consignment References View" should {
 

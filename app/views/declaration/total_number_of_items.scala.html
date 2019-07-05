@@ -19,13 +19,17 @@
 @import forms.declaration.TotalNumberOfItems
 @import uk.gov.hmrc.play.views.html._
 
+@this(main_template: views.html.main_template)
+
 @(appConfig: AppConfig, form: Form[TotalNumberOfItems])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.totalNumberOfItems.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(TotalNumberOfItemsController.saveNoOfItems(), 'autoComplete -> "off") {
+    @helper.form(TotalNumberOfItemsController.saveNoOfItems(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.back_link("/customs-declare-exports/declaration/office-of-exit")
 
         @components.error_summary(form.errors)

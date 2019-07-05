@@ -27,8 +27,9 @@ import views.tags.ViewTest
 class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessages with CommonMessages {
 
   private val form: Form[OfficeOfExitSupplementary] = OfficeOfExitForms.supplementaryForm()
+  private val officeOfExitSupplementary = app.injector.instanceOf[office_of_exit_supplementary]
   private def createView(form: Form[OfficeOfExitSupplementary] = form): Html =
-    office_of_exit_supplementary(form)(fakeRequest, appConfig, messages)
+    officeOfExitSupplementary(form)(fakeRequest, appConfig, messages)
 
   "Office of Exit View for supplementary" should {
 

@@ -20,6 +20,8 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.play.views.html._
 
+@this(main_template: views.html.main_template)
+
 @(form: Form[AdditionalDeclarationType])(implicit appConfig: AppConfig, request: JourneyRequest[_], messages: Messages)
 
 @main_template(
@@ -29,7 +31,8 @@
 
     @components.back_link("/customs-declare-exports/declaration/dispatch-location")
 
-    @helpers.form(controllers.declaration.routes.AdditionalDeclarationTypePageController.submitForm(), 'autoComplete -> "off") {
+    @helper.form(controllers.declaration.routes.AdditionalDeclarationTypePageController.submitForm(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
 
         @components.error_summary(form.errors)
 

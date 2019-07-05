@@ -30,8 +30,9 @@ import views.tags.ViewTest
 class ExporterDetailsViewSpec extends ViewSpec with ExporterDetailsMessages with CommonMessages {
 
   private val form: Form[ExporterDetails] = ExporterDetails.form()
+  private val exporterDetailsPage = app.injector.instanceOf[exporter_details]
   private def createView(form: Form[ExporterDetails] = form): Html =
-    exporter_details(appConfig, form)(fakeRequest, messages)
+    exporterDetailsPage(appConfig, form)(fakeRequest, messages)
 
   "Exporter Details View" should {
 

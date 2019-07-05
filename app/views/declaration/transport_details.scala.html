@@ -26,6 +26,8 @@
 @import services.Countries
 @import services.view.AutoCompleteItem
 
+@this(main_template: views.html.main_template)
+
 @(form: Form[TransportDetails])(implicit request: JourneyRequest[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
@@ -35,7 +37,8 @@
 
     @components.back_link("/customs-declare-exports/declaration/border-transport")
 
-    @helpers.form(TransportDetailsController.submitForm(), 'autoComplete -> "off") {
+    @helper.form(TransportDetailsController.submitForm(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
 
         @components.error_summary(form.errors)
 

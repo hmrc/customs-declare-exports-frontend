@@ -46,7 +46,8 @@ class DeclarationAdditionalActorsController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  declarationAdditionalActorsPage: declaration_additional_actors
 )(implicit ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -57,8 +58,8 @@ class DeclarationAdditionalActorsController @Inject()(
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[DeclarationAdditionalActorsData](cacheId, formId).map {
-      case Some(data) => Ok(declaration_additional_actors(appConfig, form(), data.actors))
-      case _          => Ok(declaration_additional_actors(appConfig, form(), Seq()))
+      case Some(data) => Ok(declarationAdditionalActorsPage(appConfig, form(), data.actors))
+      case _          => Ok(declarationAdditionalActorsPage(appConfig, form(), Seq()))
     }
   }
 
@@ -73,7 +74,7 @@ class DeclarationAdditionalActorsController @Inject()(
       boundForm
         .fold(
           (formWithErrors: Form[DeclarationAdditionalActors]) =>
-            Future.successful(BadRequest(declaration_additional_actors(appConfig, formWithErrors, cache.actors))),
+            Future.successful(BadRequest(declarationAdditionalActorsPage(appConfig, formWithErrors, cache.actors))),
           validForm =>
             actionTypeOpt match {
               case Some(Add)             => addItem(validForm, cache)
@@ -102,7 +103,7 @@ class DeclarationAdditionalActorsController @Inject()(
           for {
             _ <- updateCache(journeySessionId, updatedCache)
             _ <- customsCacheService.cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache)
-          } yield Redirect(DeclarationAdditionalActorsController.displayForm())
+          } yield Redirect(routes.DeclarationAdditionalActorsController.displayForm())
         } else
           handleErrorPage(
             Seq(("eori", "supplementary.additionalActors.eori.isNotDefined")),
@@ -120,7 +121,7 @@ class DeclarationAdditionalActorsController @Inject()(
 
     val formWithError = form().fill(userInput).copy(errors = updatedErrors)
 
-    Future.successful(BadRequest(declaration_additional_actors(appConfig, formWithError, actors)))
+    Future.successful(BadRequest(declarationAdditionalActorsPage(appConfig, formWithError, actors)))
   }
 
   private def updateCache(
@@ -164,8 +165,8 @@ class DeclarationAdditionalActorsController @Inject()(
       for {
         _ <- updateCache(journeySessionId, updatedCache)
         _ <- customsCacheService.cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache)
-      } yield Redirect(DeclarationHolderController.displayForm())
-    } else Future.successful(Redirect(DeclarationHolderController.displayForm()))
+      } yield Redirect(routes.DeclarationHolderController.displayForm())
+    } else Future.successful(Redirect(routes.DeclarationHolderController.displayForm()))
 
   private def removeItem(
     actorToRemove: Option[DeclarationAdditionalActors],
@@ -178,7 +179,7 @@ class DeclarationAdditionalActorsController @Inject()(
           for {
             _ <- updateCache(journeySessionId, updatedCache)
             _ <- customsCacheService.cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache)
-          } yield Redirect(DeclarationAdditionalActorsController.displayForm())
+          } yield Redirect(routes.DeclarationAdditionalActorsController.displayForm())
         } else errorHandler.displayErrorPage()
       case _ => errorHandler.displayErrorPage()
     }

@@ -24,6 +24,7 @@ import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import views.html.submissions
 
 import scala.concurrent.ExecutionContext
 
@@ -31,7 +32,8 @@ class SubmissionsController @Inject()(
   appConfig: AppConfig,
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  submissionsPage: submissions
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -42,7 +44,7 @@ class SubmissionsController @Inject()(
 
       result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
 
-    } yield Ok(views.html.submissions(appConfig, result.toSeq))
+    } yield Ok(submissionsPage(appConfig, result.toSeq))
   }
 
 }

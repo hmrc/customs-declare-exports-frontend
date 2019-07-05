@@ -20,6 +20,8 @@
 @import forms.declaration.ItemType.IdentificationTypeCodes._
 @import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 
+@this(main_template: views.html.main_template)
+
 @(items: Seq[GovernmentAgencyGoodsItem], hasFiscalInformation: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
@@ -73,7 +75,9 @@
     }
 
     <div class="section">
-        @helpers.form(ItemsSummaryController.addItem(), 'autoComplete -> "off") {
+        @helper.form(ItemsSummaryController.addItem(), 'autoComplete -> "off") {
+            @helper.CSRF.formField
+
             @if(items.isEmpty) {
                 @components.submit_button(messages("site.add.item"))
             } else {

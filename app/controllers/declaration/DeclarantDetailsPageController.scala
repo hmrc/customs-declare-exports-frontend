@@ -37,7 +37,8 @@ class DeclarantDetailsPageController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  declarantDetailsPage: declarant_details
 )(implicit ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -45,8 +46,8 @@ class DeclarantDetailsPageController @Inject()(
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[DeclarantDetails](cacheId, DeclarantDetails.id).map {
-      case Some(data) => Ok(declarant_details(appConfig, DeclarantDetails.form.fill(data)))
-      case _          => Ok(declarant_details(appConfig, DeclarantDetails.form))
+      case Some(data) => Ok(declarantDetailsPage(appConfig, DeclarantDetails.form.fill(data)))
+      case _          => Ok(declarantDetailsPage(appConfig, DeclarantDetails.form))
     }
   }
 
@@ -55,7 +56,7 @@ class DeclarantDetailsPageController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[DeclarantDetails]) =>
-          Future.successful(BadRequest(declarant_details(appConfig, formWithErrors))),
+          Future.successful(BadRequest(declarantDetailsPage(appConfig, formWithErrors))),
         form =>
           for {
             _ <- updateCache(journeySessionId, form)

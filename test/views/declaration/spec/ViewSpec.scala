@@ -25,10 +25,9 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
-import play.api.mvc.{AnyContentAsEmpty, Flash}
+import play.api.mvc.{AnyContentAsEmpty, Flash, Request}
 import play.api.test.FakeRequest
-import services.Countries
-import services.model.Country
+import utils.FakeRequestCSRFSupport._
 
 trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator {
 
@@ -40,7 +39,7 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator {
   implicit lazy val appConfig: AppConfig = injector.instanceOf[AppConfig]
 
   implicit lazy val messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
-  implicit lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
+  implicit lazy val fakeRequest: Request[AnyContentAsEmpty.type] = FakeRequest("", "").withCSRFToken
   implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
   implicit lazy val flash: Flash = new Flash()
 

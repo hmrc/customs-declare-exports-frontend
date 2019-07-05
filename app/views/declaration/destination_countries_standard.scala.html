@@ -22,13 +22,16 @@
 @import services.view.AutoCompleteItem
 @import uk.gov.hmrc.play.views.html._
 
+@this(main_template: views.html.main_template)
+
 @(form: Form[DestinationCountries], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("declaration.destinationCountries.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(routes.DestinationCountriesController.saveCountries(), 'autoComplete -> "off") {
+    @helper.form(routes.DestinationCountriesController.saveCountries(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
 
         @components.back_link("/customs-declare-exports/declaration/holder-of-authorisation")
 

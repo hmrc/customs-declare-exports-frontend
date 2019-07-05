@@ -37,8 +37,9 @@ class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with
 
   private val formStandard: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeStandardDec.form()
   private val formSupplementary: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSupplementaryDec.form()
+  private val declarationTypePage = app.injector.instanceOf[declaration_type]
   private def createView(form: Form[AdditionalDeclarationType], journeyType: String): Html =
-    declaration_type(form)(appConfig, fakeJourneyRequest(journeyType), messages)
+    declarationTypePage(form)(appConfig, fakeJourneyRequest(journeyType), messages)
 
   "Declaration Type View" should {
 

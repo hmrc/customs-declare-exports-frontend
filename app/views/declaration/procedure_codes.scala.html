@@ -19,6 +19,8 @@
 @import forms.declaration.ProcedureCodes
 @import uk.gov.hmrc.play.views.html._
 
+@this(main_template: views.html.main_template)
+
 @(appConfig: AppConfig, itemId: String, form: Form[ProcedureCodes], codes: Seq[String])(implicit request: Request[_], messages: Messages)
 
     @main_template(
@@ -27,7 +29,9 @@
     ) {
 
 
-        @helpers.form(ProcedureCodesPageController.submitProcedureCodes(itemId), 'autoComplete -> "off") {
+        @helper.form(ProcedureCodesPageController.submitProcedureCodes(itemId), 'autoComplete -> "off") {
+            @helper.CSRF.formField
+
             @components.back_link("/customs-declare-exports/declaration/export-items")
 
             @components.error_summary(form.errors)

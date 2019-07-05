@@ -23,14 +23,14 @@ import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
 import views.html.declaration.nature_of_transaction
 import views.tags.ViewTest
-import utils.FakeRequestCSRFSupport._
 
 @ViewTest
 class NatureOfTransactionViewSpec extends ViewSpec with NatureOfTransactionMessages with CommonMessages {
 
   private val form: Form[NatureOfTransaction] = NatureOfTransaction.form()
+  private val natureOfTransactionPage = app.injector.instanceOf[nature_of_transaction]
   private def createView(form: Form[NatureOfTransaction] = form): Html =
-    nature_of_transaction(form)(appConfig, fakeRequest.withCSRFToken, messages)
+    natureOfTransactionPage(form)(appConfig, fakeRequest, messages)
 
   "Nature Of Transaction View" should {
 

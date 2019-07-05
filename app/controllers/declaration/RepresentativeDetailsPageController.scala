@@ -41,7 +41,8 @@ class RepresentativeDetailsPageController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  representativeDetailsPage: representative_details
 )(implicit ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -52,8 +53,8 @@ class RepresentativeDetailsPageController @Inject()(
       customsCacheService
         .fetchAndGetEntry[RepresentativeDetails](cacheId, RepresentativeDetails.formId)
         .map {
-          case Some(data) => Ok(representative_details(appConfig, RepresentativeDetails.form.fill(data)))
-          case _          => Ok(representative_details(appConfig, RepresentativeDetails.form))
+          case Some(data) => Ok(representativeDetailsPage(appConfig, RepresentativeDetails.form.fill(data)))
+          case _          => Ok(representativeDetailsPage(appConfig, RepresentativeDetails.form))
         }
   }
 
@@ -63,7 +64,7 @@ class RepresentativeDetailsPageController @Inject()(
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>
           Future.successful(
-            BadRequest(representative_details(appConfig, RepresentativeDetails.adjustErrors(formWithErrors)))
+            BadRequest(representativeDetailsPage(appConfig, RepresentativeDetails.adjustErrors(formWithErrors)))
         ),
         validRepresentativeDetails =>
           for {

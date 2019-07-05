@@ -41,14 +41,16 @@ class CancelDeclarationController @Inject()(
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   errorHandler: ErrorHandler,
   exportsMetrics: ExportsMetrics,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  cancelDeclarationPage: cancel_declaration,
+  cancelConfirmationPage: cancellation_confirmation_page
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass())
 
   def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    Future.successful(Ok(cancel_declaration(appConfig, CancelDeclaration.form)))
+    Future.successful(Ok(cancelDeclarationPage(appConfig, CancelDeclaration.form)))
   }
 
   def onSubmit(): Action[AnyContent] = authenticate.async { implicit request =>
@@ -56,7 +58,7 @@ class CancelDeclarationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[CancelDeclaration]) =>
-          Future.successful(BadRequest(cancel_declaration(appConfig, formWithErrors))),
+          Future.successful(BadRequest(cancelDeclarationPage(appConfig, formWithErrors))),
         form => {
           val context = exportsMetrics.startTimer(cancelMetric)
 
@@ -70,7 +72,7 @@ class CancelDeclarationController @Inject()(
                 case CancellationRequested =>
                   exportsMetrics.incrementCounter(cancelMetric)
                   context.stop()
-                  Future.successful(Ok(cancellation_confirmation_page(appConfig)))
+                  Future.successful(Ok(cancelConfirmationPage(appConfig)))
                 case CancellationRequestExists =>
                   logger.error(s"Cancellation for declaration with mrn $mrn exists")
                   Future.successful(

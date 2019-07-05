@@ -30,7 +30,8 @@ import views.tags.ViewTest
 class CarrierDetailsViewSpec extends ViewSpec with CarrierDetailsMessages with CommonMessages {
 
   val form: Form[CarrierDetails] = CarrierDetails.form()
-  private def createView(form: Form[CarrierDetails] = form): Html = carrier_details(form)
+  private val carrierDetailsPage = app.injector.instanceOf[carrier_details]
+  private def createView(form: Form[CarrierDetails] = form): Html = carrierDetailsPage(form)
 
   "Carrier Details View" should {
 

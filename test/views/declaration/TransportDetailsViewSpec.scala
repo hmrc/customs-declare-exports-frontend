@@ -35,8 +35,9 @@ import views.tags.ViewTest
 @ViewTest
 class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessages {
 
+  private val transportDetailsPage = app.injector.instanceOf[transport_details]
   def createView(form: Form[TransportDetails] = form): Html =
-    transport_details(form)(journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec), appConfig, messages)
+    transportDetailsPage(form)(journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec), appConfig, messages)
 
   "TransportDetails View" should {
 

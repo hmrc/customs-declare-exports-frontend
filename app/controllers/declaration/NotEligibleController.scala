@@ -30,11 +30,12 @@ class NotEligibleController @Inject()(
   appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  notEligiblePage: not_eligible
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    Future.successful(Ok(not_eligible(appConfig)))
+    Future.successful(Ok(notEligiblePage(appConfig)))
   }
 }

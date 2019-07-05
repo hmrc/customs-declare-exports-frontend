@@ -26,6 +26,8 @@
 @import services.view.AutoCompleteItem
 @import forms.declaration.AdditionalFiscalReference
 
+@this(main_template: views.html.main_template)
+
 @(  itemId: String,
     form: Form[ItemType],
     hasAdditionalFiscalReferences: Boolean,
@@ -38,7 +40,8 @@
     appConfig = appConfig
 ) {
 
-    @helpers.form(routes.ItemTypePageController.submitItemType(itemId), 'autocomplete -> "off") {
+    @helper.form(routes.ItemTypePageController.submitItemType(itemId), 'autocomplete -> "off") {
+        @helper.CSRF.formField
 
         @{
           if(hasAdditionalFiscalReferences) components.back_link(routes.AdditionalFiscalReferencesController.displayPage(itemId).url)

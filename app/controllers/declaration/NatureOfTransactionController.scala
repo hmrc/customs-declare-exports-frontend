@@ -35,14 +35,15 @@ class NatureOfTransactionController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  natureOfTransactionPage: nature_of_transaction
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[NatureOfTransaction](cacheId, formId).map {
-      case Some(data) => Ok(nature_of_transaction(form.fill(data)))
-      case _          => Ok(nature_of_transaction(form))
+      case Some(data) => Ok(natureOfTransactionPage(form.fill(data)))
+      case _          => Ok(natureOfTransactionPage(form))
     }
   }
 
@@ -50,7 +51,7 @@ class NatureOfTransactionController @Inject()(
     form.bindFromRequest
       .fold(
         (formWithErrors: Form[NatureOfTransaction]) =>
-          Future.successful(BadRequest(nature_of_transaction(adjustErrors(formWithErrors)))),
+          Future.successful(BadRequest(natureOfTransactionPage(adjustErrors(formWithErrors)))),
         form =>
           customsCacheService.cache[NatureOfTransaction](cacheId, formId, form).map { _ =>
             Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm())

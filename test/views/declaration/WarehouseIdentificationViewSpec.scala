@@ -28,8 +28,9 @@ import views.tags.ViewTest
 class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificationMessages with CommonMessages {
 
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form()
+  private val warehouseIdentificationPage = app.injector.instanceOf[warehouse_identification]
   private def createView(form: Form[WarehouseIdentification] = form): Html =
-    warehouse_identification(appConfig, form)(fakeRequest, messages)
+    warehouseIdentificationPage(appConfig, form)(fakeRequest, messages)
 
   "Warehouse Identification View" should {
 

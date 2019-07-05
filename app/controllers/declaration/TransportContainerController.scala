@@ -46,7 +46,8 @@ class TransportContainerController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  transportContainersPage: add_transport_containers
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends {
   val cacheService = exportsCacheService
@@ -56,8 +57,8 @@ class TransportContainerController @Inject()(
     customsCacheService
       .fetchAndGetEntry[TransportInformationContainerData](cacheId, id)
       .map {
-        case Some(data) => Ok(add_transport_containers(form, data.containers))
-        case _          => Ok(add_transport_containers(form, Seq()))
+        case Some(data) => Ok(transportContainersPage(form, data.containers))
+        case _          => Ok(transportContainersPage(form, Seq()))
       }
   }
 
@@ -86,7 +87,7 @@ class TransportContainerController @Inject()(
     cache: TransportInformationContainerData
   )(implicit request: JourneyRequest[_], appConfig: AppConfig) =
     saveAndContinue(boundForm, cache.containers, true, elementLimit).fold(
-      formWithErrors => Future.successful(BadRequest(add_transport_containers(formWithErrors, cache.containers))),
+      formWithErrors => Future.successful(BadRequest(transportContainersPage(formWithErrors, cache.containers))),
       updatedCache =>
         if (updatedCache != cache.containers)
           for {
@@ -98,8 +99,8 @@ class TransportContainerController @Inject()(
     )
 
   private def redirect()(implicit request: JourneyRequest[_]) =
-    if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(SealController.displayForm())
-    else Redirect(SummaryPageController.displayPage())
+    if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
+    else Redirect(routes.SummaryPageController.displayPage())
 
   private def removeContainer(cache: TransportInformationContainerData, ids: Seq[String])(
     implicit request: JourneyRequest[_]
@@ -112,7 +113,7 @@ class TransportContainerController @Inject()(
     cache: TransportInformationContainerData
   )(implicit request: JourneyRequest[_], appConfig: AppConfig) =
     add(boundForm, cache.containers, elementLimit).fold(
-      formWithErrors => Future.successful(BadRequest(add_transport_containers(formWithErrors, cache.containers))),
+      formWithErrors => Future.successful(BadRequest(transportContainersPage(formWithErrors, cache.containers))),
       updatedCache => cacheAndRedirect(updatedCache)
     )
 
@@ -121,7 +122,7 @@ class TransportContainerController @Inject()(
       _ <- updateCache(journeySessionId, TransportInformationContainerData(containers))
       _ <- customsCacheService
         .cache[TransportInformationContainerData](cacheId, id, TransportInformationContainerData(containers))
-    } yield Redirect(TransportContainerController.displayPage())
+    } yield Redirect(routes.TransportContainerController.displayPage())
 
   private def updateCache(
     sessionId: String,

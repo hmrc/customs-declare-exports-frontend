@@ -40,7 +40,8 @@ class SealController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   cacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  sealPage: seal
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -50,7 +51,7 @@ class SealController @Inject()(
       .flatMap { seals =>
         cacheService
           .fetchAndGetEntry[TransportDetails](cacheId, TransportDetails.formId)
-          .map(data => Ok(seal(form, seals.getOrElse(Seq.empty), data.fold(false)(_.container))))
+          .map(data => Ok(sealPage(form, seals.getOrElse(Seq.empty), data.fold(false)(_.container))))
       }
   }
 
@@ -109,7 +110,7 @@ class SealController @Inject()(
   )(implicit request: JourneyRequest[_], appConfig: AppConfig) =
     cacheService
       .fetchAndGetEntry[TransportDetails](cacheId, TransportDetails.formId)
-      .map(data => BadRequest(seal(formWithErrors, cachedSeals, data.fold(false)(_.container))))
+      .map(data => BadRequest(sealPage(formWithErrors, cachedSeals, data.fold(false)(_.container))))
 
   private def cacheAndRedirect(seals: Seq[Seal])(implicit request: JourneyRequest[_]): Future[Result] =
     cacheService

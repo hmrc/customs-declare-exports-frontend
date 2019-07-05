@@ -19,13 +19,17 @@
 @import forms.declaration. CommodityMeasure
 @import uk.gov.hmrc.play.views.html._
 
+@this(main_template: views.html.main_template)
+
 @(itemId: String, form: Form[CommodityMeasure])(implicit request: Request[_], messages: Messages ,appConfig: AppConfig)
 
 @main_template(
 title = messages("supplementary.commodityMeasure.title"),
 appConfig = appConfig
 ) {
-    @helpers.form(CommodityMeasureController.submitForm(itemId), 'autoComplete -> "off") {
+    @helper.form(CommodityMeasureController.submitForm(itemId), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
     @components.back_link(PackageInformationController.displayPage(itemId).url)
 
     @components.error_summary(form.errors)

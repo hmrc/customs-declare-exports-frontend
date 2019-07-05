@@ -20,10 +20,12 @@ import base.CustomExportsBaseSpec
 import play.api.http.{HeaderNames, Status}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
+import views.html.error_template
 
 class ErrorHandlerSpec extends CustomExportsBaseSpec {
 
-  val errorHandler = new ErrorHandler(appConfig, messagesApi)
+  val errorPage = app.injector.instanceOf[error_template]
+  val errorHandler = new ErrorHandler(appConfig, messagesApi, errorPage)
   val req = FakeRequest("GET", "/foo")
 
   "ErrorHandlerSpec" should {

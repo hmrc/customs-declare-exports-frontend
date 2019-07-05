@@ -29,9 +29,9 @@ import views.tags.ViewTest
 class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMessages with CommonMessages {
 
   private val form: Form[DestinationCountries] = DestinationCountries.Supplementary.form
-
+  private val destiantionCountriesSupplementaryPage = app.injector.instanceOf[destination_countries_supplementary]
   private def createView(form: Form[DestinationCountries] = form): Html =
-    destination_countries_supplementary(form)(fakeJourneyRequest("SMP"), messages, appConfig)
+    destiantionCountriesSupplementaryPage(form)(fakeJourneyRequest("SMP"), messages, appConfig)
 
   "Destination Countries View" should {
 

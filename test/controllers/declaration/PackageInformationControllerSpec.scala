@@ -47,9 +47,10 @@ class PackageInformationControllerSpec
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/package-information")
   private val form = PackageInformation.form()
   private val formId = "PackageInformation"
+  private val packageInformationPage = app.injector.instanceOf[package_information]
 
   def view(form: Form[PackageInformation] = form, charges: Seq[PackageInformation] = Seq.empty): Html =
-    package_information(cacheModel.items.head.id, form, charges)(fakeRequest, messages, appConfig)
+    packageInformationPage(cacheModel.items.head.id, form, charges)(fakeRequest, messages, appConfig)
 
   val generatePackage: Arbitrary[PackageInformation] = Arbitrary {
     for {

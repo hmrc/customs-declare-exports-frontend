@@ -37,7 +37,8 @@ class AdditionalDeclarationTypePageController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  declarationTypePage: declaration_type
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -46,8 +47,8 @@ class AdditionalDeclarationTypePageController @Inject()(
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val decType = extractFormType(request)
     customsCacheService.fetchAndGetEntry[AdditionalDeclarationType](cacheId, decType.formId).map {
-      case Some(data) => Ok(declaration_type(decType.form.fill(data)))
-      case _          => Ok(declaration_type(decType.form))
+      case Some(data) => Ok(declarationTypePage(decType.form.fill(data)))
+      case _          => Ok(declarationTypePage(decType.form))
     }
   }
 
@@ -57,7 +58,7 @@ class AdditionalDeclarationTypePageController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(declaration_type(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(declarationTypePage(formWithErrors))),
         validAdditionalDeclarationType =>
           for {
             _ <- updateCache(journeySessionId, validAdditionalDeclarationType)

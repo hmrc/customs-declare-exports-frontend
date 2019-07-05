@@ -14,10 +14,20 @@
  * limitations under the License.
  *@
 
-@import layouts.{govuk_template => hmrcGovUkTemplate}
-@import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
-@import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
+@import uk.gov.hmrc.play.views.html.layouts.{Head, HeaderNav, Footer, FooterLinks, ServiceInfo, MainContentHeader, MainContent}
 @import play.twirl.api.HtmlFormat
+@import views.html.layouts.GovUkTemplate
+
+@this(
+        head_di: Head,
+        header_nav_di: HeaderNav,
+        footer_di: Footer,
+        service_info_di: ServiceInfo,
+        main_content_header_di: MainContentHeader,
+        main_content_di: MainContent,
+        footer_links_di: FooterLinks,
+        hmrc_gov_uk_template: GovUkTemplate
+)
 
 @(appConfig: config.AppConfig,
   title: String,
@@ -31,7 +41,7 @@
   scriptElem: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
 @head = {
-    @uiLayouts.head(
+    @head_di(
       linkElem = None,
       headScripts = None)
     <meta name="format-detection" content="telephone=no" />
@@ -46,7 +56,7 @@
 @headerNavLinks = {}
 
 @insideHeader = {
-    @uiLayouts.header_nav(
+    @header_nav_di(
       navTitle = Some(messages("site.service_name")),
       navTitleLink = None,
       showBetaLink = false,
@@ -56,7 +66,7 @@
 @afterHeader = {}
 
 @bodyEnd = {
-    @uiLayouts.footer(
+    @footer_di(
       analyticsToken = Some(appConfig.analyticsToken),
       analyticsHost = appConfig.analyticsHost,
       ssoUrl = None,
@@ -69,7 +79,7 @@
 @footerLinks = {}
 
 @serviceInfo = {
-    @uiLayouts.serviceInfo(
+    @service_info_di(
       betaBanner = HtmlFormat.empty,
       includeGridWrapper = false,
       serviceInfoContent = Some(serviceInfoContent))
@@ -78,7 +88,7 @@
 @mainContentHeader = {
 
     @if(contentHeader.isDefined) {
-        @uiLayouts.main_content_header(contentHeader = contentHeader.get)
+        @main_content_header_di(contentHeader = contentHeader.get)
     }
 }
 
@@ -89,7 +99,7 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    @uiLayouts.main_content(
+    @main_content_di(
       article = mainContent,
       mainClass = mainClass,
       mainDataAttributes = mainDataAttributes,
@@ -99,4 +109,4 @@
       sidebar = sidebar)
 }
 
-@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)
+@hmrc_gov_uk_template(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(footer_links_di()), true)(content)

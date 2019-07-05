@@ -25,11 +25,14 @@ import views.html.unauthorised
 
 import scala.concurrent.ExecutionContext
 
-class UnauthorisedController @Inject()(val appConfig: AppConfig, mcc: MessagesControllerComponents)(
-  implicit ec: ExecutionContext
-) extends FrontendController(mcc) with I18nSupport {
+class UnauthorisedController @Inject()(
+  val appConfig: AppConfig,
+  mcc: MessagesControllerComponents,
+  unauthorisedPage: unauthorised
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(unauthorised(appConfig))
+    Ok(unauthorisedPage(appConfig))
   }
 }

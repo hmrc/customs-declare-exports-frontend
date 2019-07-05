@@ -18,7 +18,6 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.TransportDetailsController
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport._
@@ -40,7 +39,8 @@ class BorderTransportController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  borderTransportPage: border_transport
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends {
   val cacheService = exportsCacheService
@@ -49,19 +49,19 @@ class BorderTransportController @Inject()(
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[BorderTransport](cacheId, BorderTransport.formId)
-      .map(data => Ok(border_transport(data.fold(form)(form.fill(_)))))
+      .map(data => Ok(borderTransportPage(data.fold(form)(form.fill(_)))))
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(border_transport(formWithErrors))),
+        (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransportPage(formWithErrors))),
         borderTransport =>
           for {
             _ <- updateCache(journeySessionId, borderTransport)
             _ <- customsCacheService.cache[BorderTransport](cacheId, BorderTransport.formId, borderTransport)
-          } yield Redirect(TransportDetailsController.displayForm())
+          } yield Redirect(routes.TransportDetailsController.displayForm())
       )
   }
 

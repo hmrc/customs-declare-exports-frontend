@@ -42,7 +42,8 @@ class TransportDetailsController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  transportDetailsPage: transport_details
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends {
   val cacheService = exportsCacheService
@@ -51,14 +52,14 @@ class TransportDetailsController @Inject()(
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[TransportDetails](cacheId, TransportDetails.formId)
-      .map(data => Ok(transport_details(data.fold(form)(form.fill(_)))))
+      .map(data => Ok(transportDetailsPage(data.fold(form)(form.fill(_)))))
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transport_details(formWithErrors))),
+        (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transportDetailsPage(formWithErrors))),
         transportDetails =>
           for {
             _ <- updateCache(journeySessionId, transportDetails)
@@ -68,9 +69,9 @@ class TransportDetailsController @Inject()(
   }
 
   private def redirect(transportDetails: TransportDetails)(implicit request: JourneyRequest[_]): Result =
-    if (transportDetails.container) Redirect(TransportContainerController.displayPage())
-    else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(SealController.displayForm())
-    else Redirect(SummaryPageController.displayPage())
+    if (transportDetails.container) Redirect(routes.TransportContainerController.displayPage())
+    else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
+    else Redirect(routes.SummaryPageController.displayPage())
 
   private def updateCache(sessionId: String, formData: TransportDetails): Future[Either[String, ExportsCacheModel]] =
     getAndUpdateExportCacheModel(

@@ -27,8 +27,9 @@ import views.tags.ViewTest
 class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages with CommonMessages {
 
   private val form: Form[Document] = Document.form()
+  private val previousDocumentsPage = app.injector.instanceOf[previous_documents]
   private def createView(form: Form[Document] = form): Html =
-    previous_documents(form, Seq())(fakeRequest, messages, appConfig)
+    previousDocumentsPage(form, Seq())(fakeRequest, messages, appConfig)
 
   "Previous Documents View" should {
 
@@ -238,7 +239,7 @@ class PreviousDocumentsViewSpec extends ViewSpec with PreviousDocumentsMessages 
     "display one row with data in table" in {
 
       val prevDocuments = Seq(Document("X", "1", "A", Some("1")))
-      val view = previous_documents(form, prevDocuments)(fakeRequest, messages, appConfig)
+      val view = previousDocumentsPage(form, prevDocuments)(fakeRequest, messages, appConfig)
 
       // table header
       getElementByCss(view, "form>table>caption").text() must be(messages(previousDocuments))

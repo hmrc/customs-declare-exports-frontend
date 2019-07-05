@@ -35,15 +35,16 @@ class LocationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  goodsLocationPage: goods_location
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
   import forms.declaration.GoodsLocation._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[GoodsLocation](cacheId, formId).map {
-      case Some(data) => Ok(goods_location(appConfig, form.fill(data)))
-      case _          => Ok(goods_location(appConfig, form))
+      case Some(data) => Ok(goodsLocationPage(appConfig, form.fill(data)))
+      case _          => Ok(goodsLocationPage(appConfig, form))
     }
   }
 
@@ -52,7 +53,7 @@ class LocationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[GoodsLocation]) =>
-          Future.successful(BadRequest(goods_location(appConfig, formWithErrors))),
+          Future.successful(BadRequest(goodsLocationPage(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[GoodsLocation](cacheId, formId, form).map { _ =>
             Redirect(controllers.declaration.routes.OfficeOfExitController.displayForm())

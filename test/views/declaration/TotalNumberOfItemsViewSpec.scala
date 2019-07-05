@@ -28,8 +28,9 @@ import views.tags.ViewTest
 class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessages with CommonMessages {
 
   private val form: Form[TotalNumberOfItems] = TotalNumberOfItems.form()
+  private val totalNumberOfItemsPage = app.injector.instanceOf[total_number_of_items]
   private def createView(form: Form[TotalNumberOfItems] = form): Html =
-    total_number_of_items(appConfig, form)(fakeRequest, messages)
+    totalNumberOfItemsPage(appConfig, form)(fakeRequest, messages)
 
   "Total Number Of Items View" should {
 
