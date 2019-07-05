@@ -30,6 +30,7 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
 
   override def beforeEach() {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[NatureOfTransaction](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
