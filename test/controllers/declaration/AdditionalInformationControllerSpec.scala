@@ -91,9 +91,6 @@ class AdditionalInformationControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        theCacheModelUpdated.additionalInformation.get mustBe AdditionalInformationData(
-          Seq(AdditionalInformation("J0ohn", "Coltrane"))
-        )
       }
 
       "it does not exist in cache" in {
@@ -127,7 +124,6 @@ class AdditionalInformationControllerSpec
 
         verify(mockExportsCacheService, times(1)).update(any(), any())
       }
-
     }
 
     "display the form page with an error" when {
@@ -146,7 +142,6 @@ class AdditionalInformationControllerSpec
           checkErrorLink(page, 1, codeEmpty, "#code")
 
           getElementByCss(page, "#error-message-code-input").text() must be(messages(codeEmpty))
-          verifyTheCacheIsUnchanged()
         }
 
         "an item without a description" in {
@@ -161,7 +156,6 @@ class AdditionalInformationControllerSpec
           checkErrorLink(page, 1, descriptionEmpty, "#description")
 
           getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionEmpty))
-          verifyTheCacheIsUnchanged()
         }
 
         "an item without any data" in {
@@ -181,7 +175,6 @@ class AdditionalInformationControllerSpec
 
           getElementByCss(page, "#error-message-code-input").text() must be(messages(codeEmpty))
           getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionEmpty))
-          verifyTheCacheIsUnchanged()
         }
 
         "an item with both fields incorrect" in {
@@ -201,7 +194,6 @@ class AdditionalInformationControllerSpec
 
           getElementByCss(page, "#error-message-code-input").text() must be(messages(codeError))
           getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionError))
-          verifyTheCacheIsUnchanged()
         }
 
         "an item with longer code" in {
@@ -216,7 +208,6 @@ class AdditionalInformationControllerSpec
           checkErrorLink(page, 1, codeError, "#code")
 
           getElementByCss(page, "#error-message-code-input").text() must be(messages(codeError))
-          verifyTheCacheIsUnchanged()
         }
 
         "an item with shorter code" in {
@@ -231,7 +222,6 @@ class AdditionalInformationControllerSpec
           checkErrorLink(page, 1, codeError, "#code")
 
           getElementByCss(page, "#error-message-code-input").text() must be(messages(codeError))
-          verifyTheCacheIsUnchanged()
         }
 
         "an item with longer description" in {
@@ -246,7 +236,6 @@ class AdditionalInformationControllerSpec
           checkErrorLink(page, 1, descriptionError, "#description")
 
           getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionError))
-          verifyTheCacheIsUnchanged()
         }
 
         "a duplicated item" in {
@@ -262,7 +251,6 @@ class AdditionalInformationControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, duplication, "#")
-          verifyTheCacheIsUnchanged()
         }
 
         "more than 99 items" in {
@@ -277,7 +265,6 @@ class AdditionalInformationControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, limit, "#")
-          verifyTheCacheIsUnchanged()
         }
       }
 
@@ -295,7 +282,6 @@ class AdditionalInformationControllerSpec
           checkErrorLink(page, 1, codeEmpty, "#code")
 
           getElementByCss(page, "#error-message-code-input").text() must be(messages(codeEmpty))
-          verifyTheCacheIsUnchanged()
         }
 
         "without a description" in {
@@ -310,7 +296,6 @@ class AdditionalInformationControllerSpec
           checkErrorLink(page, 1, descriptionEmpty, "#description")
 
           getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionEmpty))
-          verifyTheCacheIsUnchanged()
         }
 
         "both fields are incorrect" in {
@@ -330,7 +315,6 @@ class AdditionalInformationControllerSpec
 
           getElementByCss(page, "#error-message-code-input").text() must be(messages(codeError))
           getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionError))
-          verifyTheCacheIsUnchanged()
         }
 
         "without any items defined" in {
@@ -344,7 +328,6 @@ class AdditionalInformationControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, continueMandatory, "#")
-          verifyTheCacheIsUnchanged()
         }
 
         "an item has longer code" in {
@@ -360,7 +343,6 @@ class AdditionalInformationControllerSpec
           checkErrorLink(page, 1, codeError, "#code")
 
           getElementByCss(page, "#error-message-code-input").text() must be(messages(codeError))
-          verifyTheCacheIsUnchanged()
         }
 
         "an item has shorter code" in {
@@ -376,7 +358,6 @@ class AdditionalInformationControllerSpec
           checkErrorLink(page, 1, codeError, "#code")
 
           getElementByCss(page, "#error-message-code-input").text() must be(messages(codeError))
-          verifyTheCacheIsUnchanged()
         }
 
         "an item has longer description" in {
@@ -395,7 +376,6 @@ class AdditionalInformationControllerSpec
           checkErrorLink(page, 1, descriptionError, "#description")
 
           getElementByCss(page, "#error-message-description-input").text() must be(messages(descriptionError))
-          verifyTheCacheIsUnchanged()
         }
 
         "a duplicated item is entered" in {
@@ -411,7 +391,6 @@ class AdditionalInformationControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, duplication, "#")
-          verifyTheCacheIsUnchanged()
         }
 
         "with more than 99 items" in {
@@ -426,7 +405,6 @@ class AdditionalInformationControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, limit, "#")
-          verifyTheCacheIsUnchanged()
         }
       }
 
@@ -444,7 +422,6 @@ class AdditionalInformationControllerSpec
         stringResult must include(messages("global.error.title"))
         stringResult must include(messages("global.error.heading"))
         stringResult must include(messages("global.error.message"))
-        verifyTheCacheIsUnchanged()
       }
     }
 

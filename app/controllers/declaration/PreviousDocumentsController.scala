@@ -41,8 +41,8 @@ class PreviousDocumentsController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
-  previousDocumentsPage: previous_documents
-  override val cacheService: ExportsCacheService,
+  previousDocumentsPage: previous_documents,
+  override val cacheService: ExportsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 

@@ -18,7 +18,7 @@ package models.declaration
 
 import forms.declaration._
 import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitSupplementary}
+import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitForms}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -26,7 +26,7 @@ case class Locations(
   destinationCountries: Option[DestinationCountries] = None,
   goodsLocation: Option[GoodsLocation] = None,
   warehouseIdentification: Option[WarehouseIdentification] = None,
-  officeOfExit: Option[OfficeOfExitSupplementary] = None
+  officeOfExit: Option[OfficeOfExit] = None
 ) extends SummaryContainer {
 
   def isEmpty: Boolean =
@@ -45,6 +45,6 @@ object Locations {
     destinationCountries = cacheMap.getEntry[DestinationCountries](DestinationCountries.formId),
     goodsLocation = cacheMap.getEntry[GoodsLocation](GoodsLocation.formId),
     warehouseIdentification = cacheMap.getEntry[WarehouseIdentification](WarehouseIdentification.formId),
-    officeOfExit = cacheMap.getEntry[OfficeOfExitSupplementary](OfficeOfExitForms.formId)
+    officeOfExit = cacheMap.getEntry[OfficeOfExit](OfficeOfExitForms.formId)
   )
 }

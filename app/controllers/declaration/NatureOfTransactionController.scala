@@ -37,9 +37,8 @@ class NatureOfTransactionController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
-  natureOfTransactionPage: nature_of_transaction
-  override val cacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  natureOfTransactionPage: nature_of_transaction,
+  override val cacheService: ExportsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
@@ -64,7 +63,7 @@ class NatureOfTransactionController @Inject()(
   }
 
   private def updateCache(sessionId: String, formData: NatureOfTransaction): Future[Either[String, ExportsCacheModel]] =
-    updateHeaderLevelCache(
+    getAndUpdateExportCacheModel(
       sessionId,
       model => cacheService.update(sessionId, model.copy(natureOfTransaction = Some(formData)))
     )
