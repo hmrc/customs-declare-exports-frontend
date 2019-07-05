@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.nature_of_transaction
 
@@ -37,8 +38,10 @@ class NatureOfTransactionController @Inject()(
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   natureOfTransactionPage: nature_of_transaction
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+  override val cacheService: ExportsCacheService,
+  mcc: MessagesControllerComponents
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[NatureOfTransaction](cacheId, formId).map {
@@ -53,9 +56,16 @@ class NatureOfTransactionController @Inject()(
         (formWithErrors: Form[NatureOfTransaction]) =>
           Future.successful(BadRequest(natureOfTransactionPage(adjustErrors(formWithErrors)))),
         form =>
-          customsCacheService.cache[NatureOfTransaction](cacheId, formId, form).map { _ =>
-            Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm())
-        }
+          for {
+            _ <- updateCache(journeySessionId, form)
+            _ <- customsCacheService.cache[NatureOfTransaction](cacheId, formId, form)
+          } yield Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm())
       )
   }
+
+  private def updateCache(sessionId: String, formData: NatureOfTransaction): Future[Either[String, ExportsCacheModel]] =
+    updateHeaderLevelCache(
+      sessionId,
+      model => cacheService.update(sessionId, model.copy(natureOfTransaction = Some(formData)))
+    )
 }

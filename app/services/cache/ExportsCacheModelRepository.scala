@@ -18,7 +18,7 @@ package services.cache
 
 import java.time.LocalDateTime
 
-import forms.declaration._
+import forms.declaration.{NatureOfTransaction, _}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import javax.inject.Inject
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, Locations, Parties, TransportInformationContainerData}
@@ -88,7 +88,8 @@ case class ExportsCacheModel(
   locations: Locations = Locations(),
   items: Set[ExportItem] = Set.empty,
   totalNumberOfItems: Option[TotalNumberOfItems] = None,
-  previousDocuments: Option[PreviousDocumentsData] = None
+  previousDocuments: Option[PreviousDocumentsData] = None,
+  natureOfTransaction: Option[NatureOfTransaction] = None
 )
 
 object ExportsCacheModel {
