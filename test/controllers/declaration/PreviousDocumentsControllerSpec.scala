@@ -87,7 +87,7 @@ class PreviousDocumentsControllerSpec
 
         status(result) must be(SEE_OTHER)
         theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
-          documents = List(Document("X","MCR","A",Some("1")))
+          documents = List(Document("X", "MCR", "A", Some("1")))
         )
       }
 
@@ -108,10 +108,7 @@ class PreviousDocumentsControllerSpec
 
         status(result) must be(SEE_OTHER)
         theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
-          documents = List(
-            Document("X","MCR","A",Some("1")),
-            Document("Y","DCR","B",Some("2"))
-          )
+          documents = List(Document("X", "MCR", "A", Some("1")), Document("Y", "DCR", "B", Some("2")))
         )
       }
     }
@@ -127,9 +124,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
         status(result) must be(SEE_OTHER)
-        theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
-          documents = Seq()
-        )
+        theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(documents = Seq())
       }
     }
 
@@ -482,7 +477,7 @@ class PreviousDocumentsControllerSpec
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
         theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
-          documents = List(Document("X","MCR","A",Some("1")))
+          documents = List(Document("X", "MCR", "A", Some("1")))
         )
       }
 
@@ -517,7 +512,7 @@ class PreviousDocumentsControllerSpec
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
         theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
-          documents = List(Document("X","MCR","A",Some("1")), Document("Y","MCR","B",Some("2")))
+          documents = List(Document("X", "MCR", "A", Some("1")), Document("Y", "MCR", "B", Some("2")))
         )
       }
     }

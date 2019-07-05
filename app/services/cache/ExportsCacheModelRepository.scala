@@ -18,10 +18,10 @@ package services.cache
 
 import java.time.LocalDateTime
 
-import forms.declaration.{NatureOfTransaction, _}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import forms.declaration.{NatureOfTransaction, _}
 import javax.inject.Inject
-import models.declaration.{AdditionalInformationData, DocumentsProducedData, Locations, Parties, TransportInformationContainerData}
+import models.declaration.{Locations, Parties, TransportInformationContainerData}
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.bson.BSONObjectID
@@ -31,7 +31,6 @@ import uk.gov.hmrc.mongo.ReactiveRepository
 import uk.gov.hmrc.mongo.json.ReactiveMongoFormats.objectIdFormats
 
 import scala.concurrent.{ExecutionContext, Future}
-import models.declaration.{Locations, Parties, TransportInformationContainerData}
 
 class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent)(implicit ec: ExecutionContext)
     extends ReactiveRepository[ExportsCacheModel, BSONObjectID](

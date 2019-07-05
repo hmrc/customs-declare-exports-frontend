@@ -20,8 +20,9 @@ import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.OfficeOfExitSupplementarySpec._
-import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard, OfficeOfExitSupplementary}
+import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitForms, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import helpers.views.declaration.OfficeOfExitMessages
+import org.mockito.Mockito.reset
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
@@ -29,16 +30,22 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
   private val uri: String = uriWithContextPath("/declaration/office-of-exit")
 
-  trait SetUp {
+  override def beforeEach(): Unit = {
     authorizedUser()
-    withCaching[OfficeOfExitSupplementary](None)
+    withNewCaching(createModel())
   }
 
-  trait SupplementarySetUp extends SetUp {
+  override def afterEach() {
+    reset(mockExportsCacheService)
+  }
+
+  trait SupplementarySetUp {
+    withCaching[OfficeOfExitSupplementary](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  trait StandardSetUp extends SetUp {
+  trait StandardSetUp {
+    withCaching[OfficeOfExitStandard](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
   }
 
@@ -97,6 +104,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(officeOfExitLength))
+      verifyTheCacheIsUnchanged()
     }
 
     "return Bad Request for empty form" in new SupplementarySetUp {
@@ -105,6 +113,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(officeOfExitEmpty))
+      verifyTheCacheIsUnchanged()
     }
 
     "redirect to Total Numbers of Items page for correct values" in new SupplementarySetUp {
@@ -114,6 +123,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/total-numbers-of-items"))
+      theCacheModelUpdated.locations.officeOfExit.get mustBe OfficeOfExit("123qwe12", None, None)
     }
   }
 
@@ -130,6 +140,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val result = route(app, postRequest(uri, incorrectOfficeOfExit)).get
 
       status(result) must be(BAD_REQUEST)
+      verifyTheCacheIsUnchanged()
     }
 
     "return Bad Request for empty form" in {
@@ -140,6 +151,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val result = route(app, postRequest(uri, emptyOfficeOfExit)).get
 
       status(result) must be(BAD_REQUEST)
+      verifyTheCacheIsUnchanged()
     }
 
     "redirect to Total Numbers of Items page" in {
@@ -156,6 +168,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/total-numbers-of-items"))
+      theCacheModelUpdated.locations.officeOfExit.get mustBe OfficeOfExit("12345678", Some("12345678"), Some("Yes"))
     }
   }
 }

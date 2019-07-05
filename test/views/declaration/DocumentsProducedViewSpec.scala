@@ -209,8 +209,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
     "display error for Document type code" in {
 
       val view = createView(
-        DocumentsProduced
-          .form
+        DocumentsProduced.form
           .fillAndValidate(
             correctDocumentsProduced.copy(documentTypeCode = Some(TestHelper.createRandomAlphanumericString(5)))
           )
@@ -270,9 +269,8 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
               .copy(documentIdentifier = Some(correctDocumentIdentifierAndPart.documentIdentifier.get))
           )
         )
-        val view = createView(
-          DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart))
-        )
+        val view =
+          createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart)))
 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, documentIdentifierAndPartError, s"#$documentIdentifierAndPartKey")
@@ -290,9 +288,8 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
               .copy(documentPart = Some(correctDocumentIdentifierAndPart.documentPart.get))
           )
         )
-        val view = createView(
-          DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart))
-        )
+        val view =
+          createView(DocumentsProduced.form.bind(Json.toJson(documentsProducedWithIncorrectDocumentIdentifierAndPart)))
 
         checkErrorsSummary(view)
         checkErrorLink(view, 1, documentIdentifierAndPartError, s"#$documentIdentifierAndPartKey")
@@ -306,8 +303,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
     "display error for Document status" in {
 
       val view = createView(
-        DocumentsProduced
-          .form
+        DocumentsProduced.form
           .fillAndValidate(correctDocumentsProduced.copy(documentStatus = Some("ABC")))
       )
 
@@ -320,8 +316,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
     "display error for Document status reason" in {
 
       val view = createView(
-        DocumentsProduced
-          .form
+        DocumentsProduced.form
           .fillAndValidate(
             correctDocumentsProduced.copy(documentStatusReason = Some(TestHelper.createRandomAlphanumericString(36)))
           )
@@ -338,8 +333,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
     "display error for Issuing Authority Name" in {
 
       val view = createView(
-        DocumentsProduced
-          .form
+        DocumentsProduced.form
           .fillAndValidate(
             correctDocumentsProduced.copy(issuingAuthorityName = Some(TestHelper.createRandomAlphanumericString(71)))
           )
@@ -358,8 +352,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       "year is out of range (2000-2099)" in {
 
         val view = createView(
-          DocumentsProduced
-            .form
+          DocumentsProduced.form
             .bind(
               correctDocumentsProducedMap ++ Map(
                 s"$dateOfValidityKey.$yearKey" -> "1999",
@@ -378,8 +371,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       "provided with non-existing month and day" in {
 
         val view = createView(
-          DocumentsProduced
-            .form
+          DocumentsProduced.form
             .bind(
               correctDocumentsProducedMap ++ Map(
                 s"$dateOfValidityKey.$monthKey" -> "13",

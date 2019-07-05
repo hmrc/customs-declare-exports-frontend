@@ -19,7 +19,7 @@ import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
-import forms.declaration.officeOfExit.{OfficeOfExitStandard, OfficeOfExitSupplementary}
+import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -27,6 +27,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import play.twirl.api.Html
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.{office_of_exit_standard, office_of_exit_supplementary}
@@ -39,9 +40,10 @@ class OfficeOfExitController @Inject()(
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   officeOfExitSupplementaryPage: office_of_exit_supplementary,
-  officeOfExitStandardPage: office_of_exit_standard
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+  officeOfExitStandardPage: office_of_exit_standard,
+  override val cacheService: ExportsCacheService
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.officeOfExit.OfficeOfExitForms._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -77,9 +79,10 @@ class OfficeOfExitController @Inject()(
         (formWithErrors: Form[OfficeOfExitSupplementary]) =>
           Future.successful(BadRequest(officeOfExitSupplementaryPage(formWithErrors))),
         form =>
-          customsCacheService.cache[OfficeOfExitSupplementary](cacheId, formId, form).map { _ =>
-            Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm())
-        }
+          for {
+            _ <- updateCache(journeySessionId, form)
+            _ <- customsCacheService.cache[OfficeOfExitSupplementary](cacheId, formId, form)
+          } yield Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm())
       )
 
   private def saveStandardOffice()(implicit request: JourneyRequest[_]): Future[Result] =
@@ -92,8 +95,35 @@ class OfficeOfExitController @Inject()(
           Future.successful(BadRequest(officeOfExitStandardPage(formWithAdjustedErrors)))
         },
         form =>
-          customsCacheService.cache[OfficeOfExitStandard](cacheId, formId, form).map { _ =>
-            Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm())
-        }
+          for {
+            _ <- updateCache(journeySessionId, form)
+            _ <- customsCacheService.cache[OfficeOfExitStandard](cacheId, formId, form)
+          } yield Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm())
       )
+
+  private def updateCache(
+    sessionId: String,
+    formData: OfficeOfExitSupplementary
+  ): Future[Either[String, ExportsCacheModel]] =
+    getAndUpdateExportCacheModel(
+      sessionId,
+      model =>
+        cacheService.update(
+          sessionId,
+          model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
+      )
+    )
+
+  private def updateCache(
+    sessionId: String,
+    formData: OfficeOfExitStandard
+  ): Future[Either[String, ExportsCacheModel]] =
+    getAndUpdateExportCacheModel(
+      sessionId,
+      model =>
+        cacheService.update(
+          sessionId,
+          model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
+      )
+    )
 }

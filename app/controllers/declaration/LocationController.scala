@@ -38,8 +38,8 @@ class LocationController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
-  goodsLocationPage: goods_location
-  override val cacheService: ExportsCacheService,
+  goodsLocationPage: goods_location,
+  override val cacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.GoodsLocation._
@@ -66,7 +66,7 @@ class LocationController @Inject()(
 
   private def updateCache(sessionId: String, formData: GoodsLocation)(implicit req: JourneyRequest[_]): Future[Unit] =
     for {
-      _ <- updateHeaderLevelCache(
+      _ <- getAndUpdateExportCacheModel(
         sessionId,
         model =>
           cacheService
