@@ -47,6 +47,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
       val cachedData =
         GoodsLocation("Spain", "1", "1", Some("1"), Some("1"), Some("BAFTA Street"), Some("LS37BH"), Some("SecretCity"))
+      
       withCaching[GoodsLocation](Some(cachedData), "GoodsLocation")
 
       val result = route(app, getRequest(uri)).get
@@ -71,7 +72,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       stringResult must include(messages(typeOfLocationError))
       stringResult must include(messages(qualifierOfIdentError))
       stringResult must include(messages(identOfLocationError))
-      stringResult must include(messages(additionalIdentifierError))
+      stringResult must include(messages(additionalQualifierError))
       stringResult must include(messages(locationAddressError))
       stringResult must include(messages(logPostCodeError))
       stringResult must include(messages(cityError))
@@ -96,7 +97,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
             "typeOfLocation" -> JsString("t"),
             "qualifierOfIdentification" -> JsString("t"),
             "identificationOfLocation" -> JsString("TST"),
-            "additionalIdentifier" -> JsString("TST")
+            "additionalQualifier" -> JsString("TST")
           )
         )
       val result = route(app, postRequest(uri, correctGoodsLocation)).get
