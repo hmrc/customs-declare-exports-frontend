@@ -93,10 +93,15 @@ object GoodsLocationBuilder {
     if (goods.country.nonEmpty) {
       val countryCode = new AddressCountryCodeType
       countryCode.setValue(
-        allCountries.find(country => goods.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
+        allCountries.find(c => goods.country.contains(c.countryName)).map(_.countryCode).getOrElse("")
       )
       goodsAddress.setCountryCode(countryCode)
     }
+
+    val qualifier = goods.qualifierOfIdentification
+    val addressTypeCode = new AddressTypeCodeType()
+    addressTypeCode.setValue(qualifier)
+    goodsAddress.setTypeCode(addressTypeCode)
 
     goodsAddress
   }

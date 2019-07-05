@@ -26,6 +26,7 @@ import scala.io.Source
 class WcoMetadataMapperSpec extends WordSpec with Matchers with SchemaValidation {
 
   "WcoMetadataMapper" should {
+    
     "produce metadata" in {
       val mapper = new WcoMetadataMapper
       val metaData = mapper.produceMetaData(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)

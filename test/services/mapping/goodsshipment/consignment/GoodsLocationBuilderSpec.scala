@@ -37,11 +37,9 @@ class GoodsLocationBuilderSpec extends WordSpec with Matchers {
         goodsLocation.getAddress.getCityName.getValue shouldBe "Town or City"
         goodsLocation.getAddress.getPostcodeID.getValue shouldBe "AB12 CD3"
         goodsLocation.getAddress.getCountryCode.getValue shouldBe "PL"
-        goodsLocation
-          .getName
-          .getValue shouldBe "9GB1234567ABCDEF"
+        goodsLocation.getName.getValue shouldBe "9GB1234567ABCDEF"
         goodsLocation.getTypeCode.getValue shouldBe "T"
-        goodsLocation.getAddress.getTypeCode shouldBe "Y"
+        goodsLocation.getAddress.getTypeCode.getValue shouldBe "Y"
       }
     }
   }

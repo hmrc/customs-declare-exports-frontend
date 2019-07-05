@@ -23,6 +23,7 @@ import org.scalatest.{Matchers, WordSpec}
 class GoodsShipmentBuilderSpec extends WordSpec with Matchers {
 
   "GoodsShipmentBuilder" should {
+    
     "correctly map to the WCO-DEC GoodsShipment instance" in {
       val goodsShipment =
         GoodsShipmentBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
