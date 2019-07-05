@@ -16,6 +16,7 @@
 
 @import models.declaration.TransportInformationContainerData
 @import models.viewmodels.HtmlTableRow
+
 @(containersData: Option[TransportInformationContainerData])(implicit messages: Messages)
 
 @components.summary_list(Some(messages("supplementary.transportInfo.containers.title"))) {

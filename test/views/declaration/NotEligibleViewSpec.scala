@@ -25,7 +25,8 @@ import views.tags.ViewTest
 @ViewTest
 class NotEligibleViewSpec extends ViewSpec with NotEligibleMessages with CommonMessages {
 
-  private def createView(): Html = not_eligible(appConfig)(fakeRequest, messages)
+  private val notEligiblePage = app.injector.instanceOf[not_eligible]
+  private def createView(): Html = notEligiblePage(appConfig)(fakeRequest, messages)
 
   "Not Eligible View" should {
 

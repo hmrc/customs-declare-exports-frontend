@@ -46,7 +46,8 @@ class DocumentsProducedController @Inject()(
   legacyCustomsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
   itemsCache: ItemsCachingService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  documentProducedPage: documents_produced
 )(implicit ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -56,8 +57,8 @@ class DocumentsProducedController @Inject()(
     legacyCustomsCacheService
       .fetchAndGetEntry[DocumentsProducedData](goodsItemCacheId, formId)
       .map {
-        case Some(data) => Ok(documents_produced(itemId, appConfig, form, data.documents))
-        case _          => Ok(documents_produced(itemId, appConfig, form, Seq()))
+        case Some(data) => Ok(documentProducedPage(itemId, appConfig, form, data.documents))
+        case _          => Ok(documentProducedPage(itemId, appConfig, form, Seq()))
       }
   }
 
@@ -72,7 +73,7 @@ class DocumentsProducedController @Inject()(
       boundForm
         .fold(
           (formWithErrors: Form[DocumentsProduced]) =>
-            Future.successful(BadRequest(documents_produced(itemId, appConfig, formWithErrors, cache.documents))),
+            Future.successful(BadRequest(documentProducedPage(itemId, appConfig, formWithErrors, cache.documents))),
           validForm =>
             actionTypeOpt match {
               case Some(Add)             => addItem(itemId, validForm, cache)
@@ -199,7 +200,7 @@ class DocumentsProducedController @Inject()(
 
     val formWithError = form.fill(userInput).copy(errors = updatedErrors)
 
-    Future.successful(BadRequest(documents_produced(itemId, appConfig, formWithError, documents)))
+    Future.successful(BadRequest(documentProducedPage(itemId, appConfig, formWithError, documents)))
   }
 
   private def updateCache(

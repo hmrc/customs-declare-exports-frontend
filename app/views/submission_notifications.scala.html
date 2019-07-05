@@ -20,6 +20,8 @@
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.SubmissionStatus
 
+@this(main_template: views.html.main_template)
+
 @(notifications: Seq[Notification])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(

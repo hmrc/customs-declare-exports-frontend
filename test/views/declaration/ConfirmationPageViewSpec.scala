@@ -25,7 +25,8 @@ import views.tags.ViewTest
 @ViewTest
 class ConfirmationPageViewSpec extends ViewSpec with ConfirmationMessages {
 
-  private def createView(): Html = confirmation_page(appConfig)(fakeRequest, flash, messages)
+  private val confirmationPage = app.injector.instanceOf[confirmation_page]
+  private def createView(): Html = confirmationPage(appConfig)(fakeRequest, flash, messages)
 
   "Confirmation Page View" should {
 
@@ -94,7 +95,7 @@ class ConfirmationPageViewSpec extends ViewSpec with ConfirmationMessages {
 
     "display LRN and proper link to submissions" in {
 
-      val view = confirmation_page(appConfig)(fakeRequest, new Flash(Map("LRN" -> "12345")), messages)
+      val view = confirmationPage(appConfig)(fakeRequest, new Flash(Map("LRN" -> "12345")), messages)
 
       getElementByCss(view, "article>div.govuk-box-highlight>p").text() must be("12345")
 

@@ -39,9 +39,10 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
 
   val form: Form[TransportDetails] = Form(TransportDetails.formMapping)
   private val uri = uriWithContextPath("/declaration/transport-details")
+  private val transportDetailsPage = app.injector.instanceOf[transport_details]
 
   def view(form: Form[TransportDetails], request: JourneyRequest[_]): Html =
-    transport_details(form)(request, appConfig, messages)
+    transportDetailsPage(form)(request, appConfig, messages)
 
   override def beforeEach() {
     authorizedUser()

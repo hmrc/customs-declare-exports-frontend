@@ -21,6 +21,9 @@
 @import uk.gov.hmrc.play.views.html._
 
 @import forms.declaration.CommodityMeasure
+
+@this(main_template: views.html.main_template)
+
 @(itemId: String, appConfig: AppConfig, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -37,7 +40,8 @@
     @components.page_title(Some("supplementary.additionalInformation.title"))
 
     @if(items.nonEmpty) {
-        @helpers.form(AdditionalInformationController.saveAdditionalInfo(itemId), 'autoComplete -> "off") {
+        @helper.form(AdditionalInformationController.saveAdditionalInfo(itemId), 'autoComplete -> "off") {
+            @helper.CSRF.formField
             <div class="field-group">
                 <table >
                 @items.zipWithIndex.map { case (item, index) =>
@@ -54,7 +58,9 @@
         }
     }
 
-    @helpers.form(AdditionalInformationController.saveAdditionalInfo(itemId), 'autoComplete -> "off") {
+    @helper.form(AdditionalInformationController.saveAdditionalInfo(itemId), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.fields.field_text(
             field = form("code"),
             label = messages("supplementary.additionalInformation.code"),

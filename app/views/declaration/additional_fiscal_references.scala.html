@@ -22,6 +22,9 @@
 @import services.Countries
 
 @import services.view.AutoCompleteItem
+
+@this(main_template: views.html.main_template)
+
 @(itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(

@@ -42,9 +42,10 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
   val form: Form[BorderTransport] = Form(BorderTransport.formMapping)
   private val uri = uriWithContextPath("/declaration/border-transport")
+  private val borderTransportPage = app.injector.instanceOf[border_transport]
 
   def view(form: Form[BorderTransport], request: Request[_]): Html =
-    border_transport(form)(request, messages, appConfig)
+    borderTransportPage(form)(request, messages, appConfig)
 
   override def beforeEach() {
     authorizedUser()

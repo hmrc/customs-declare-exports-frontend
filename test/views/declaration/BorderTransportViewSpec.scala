@@ -31,8 +31,9 @@ import views.components.inputs.RadioOption
 @ViewTest
 class BorderTransportViewSpec extends BorderTransportFields with CommonMessages {
 
+  private val borderTransportPage = app.injector.instanceOf[border_transport]
   def createView(form: Form[BorderTransport] = form): Html =
-    border_transport(form)(fakeRequest, messages, appConfig)
+    borderTransportPage(form)(fakeRequest, messages, appConfig)
 
   "BorderTransport View" should {
 

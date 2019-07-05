@@ -21,6 +21,9 @@
 @import services.model.Country
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
+
+@this(main_template: views.html.main_template)
+
 @(form: Form[BorderTransport])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
@@ -30,7 +33,8 @@
 
 @components.back_link("/customs-declare-exports/declaration/warehouse")
 
-    @helpers.form(BorderTransportController.submitForm(), 'autoComplete -> "off") {
+    @helper.form(BorderTransportController.submitForm(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
 
         @components.error_summary(form.errors)
 

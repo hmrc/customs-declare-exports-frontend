@@ -37,14 +37,15 @@ class CarrierDetailsPageController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  carrierDetailsPage: carrier_details
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[CarrierDetails](cacheId, CarrierDetails.id).map {
-      case Some(data) => Ok(carrier_details(CarrierDetails.form.fill(data)))
-      case _          => Ok(carrier_details(CarrierDetails.form))
+      case Some(data) => Ok(carrierDetailsPage(CarrierDetails.form.fill(data)))
+      case _          => Ok(carrierDetailsPage(CarrierDetails.form))
     }
   }
 
@@ -52,7 +53,7 @@ class CarrierDetailsPageController @Inject()(
     CarrierDetails.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrier_details(formWithErrors))),
+        (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(formWithErrors))),
         form =>
           customsCacheService.cache[CarrierDetails](cacheId, CarrierDetails.id, form).map { _ =>
             Redirect(controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm())

@@ -28,8 +28,9 @@ import views.tags.ViewTest
 class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with CommonMessages {
 
   private val form: Form[ProcedureCodes] = ProcedureCodes.form()
+  private val procedureCodesPage = app.injector.instanceOf[procedure_codes]
   private def createView(form: Form[ProcedureCodes] = form): Html =
-    procedure_codes(appConfig, "1234", form, Seq())(fakeRequest, messages)
+    procedureCodesPage(appConfig, "1234", form, Seq())(fakeRequest, messages)
 
   /*
    * Tests for errors are in the ProcedureCodesPageControllerSpec

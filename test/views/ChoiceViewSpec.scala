@@ -36,7 +36,8 @@ import scala.collection.immutable
 class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
   private val form: Form[Choice] = Choice.form()
-  private def createView(form: Form[Choice] = form): Html = choice_page(form)
+  private val choicePage = app.injector.instanceOf[choice_page]
+  private def createView(form: Form[Choice] = form): Html = choicePage(form)
 
   "Choice View" should {
 
@@ -93,7 +94,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       val servicesConfig = new ServicesConfig(conf, runMode)
       val supplementaryAppConfig = new AppConfig(conf, Environment.simple(), servicesConfig, "AppName")
 
-      val view = choice_page(Choice.form().fill(Choice("SMP")))(
+      val view = choicePage(Choice.form().fill(Choice("SMP")))(
         appConfig = supplementaryAppConfig,
         messages = messages,
         request = fakeRequest

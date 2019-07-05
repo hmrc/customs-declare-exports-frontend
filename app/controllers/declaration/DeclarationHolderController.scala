@@ -44,7 +44,8 @@ class DeclarationHolderController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  declarationHolderPage: declaration_holder
 )(implicit ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -54,8 +55,8 @@ class DeclarationHolderController @Inject()(
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[DeclarationHoldersData](cacheId, formId).map {
-      case Some(data) => Ok(declaration_holder(appConfig, form, data.holders))
-      case _          => Ok(declaration_holder(appConfig, form, Seq()))
+      case Some(data) => Ok(declarationHolderPage(appConfig, form, data.holders))
+      case _          => Ok(declarationHolderPage(appConfig, form, Seq()))
     }
   }
 
@@ -73,7 +74,7 @@ class DeclarationHolderController @Inject()(
         boundForm
           .fold(
             (formWithErrors: Form[DeclarationHolder]) =>
-              Future.successful(BadRequest(declaration_holder(appConfig, formWithErrors, cache.holders))),
+              Future.successful(BadRequest(declarationHolderPage(appConfig, formWithErrors, cache.holders))),
             validForm =>
               actionTypeOpt match {
                 case Some(Add)             => addHolder(validForm, cache)
@@ -176,7 +177,7 @@ class DeclarationHolderController @Inject()(
 
     val formWithError = form.fill(userInput).copy(errors = updatedErrors)
 
-    Future.successful(BadRequest(declaration_holder(appConfig, formWithError, holders)))
+    Future.successful(BadRequest(declarationHolderPage(appConfig, formWithError, holders)))
   }
 
   private def removeHolder(

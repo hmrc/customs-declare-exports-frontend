@@ -37,7 +37,8 @@ class ExporterDetailsPageController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  exporterDetailsPage: exporter_details
 )(implicit ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -45,8 +46,8 @@ class ExporterDetailsPageController @Inject()(
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[ExporterDetails](cacheId, ExporterDetails.id).map {
-      case Some(data) => Ok(exporter_details(appConfig, ExporterDetails.form.fill(data)))
-      case _          => Ok(exporter_details(appConfig, ExporterDetails.form))
+      case Some(data) => Ok(exporterDetailsPage(appConfig, ExporterDetails.form.fill(data)))
+      case _          => Ok(exporterDetailsPage(appConfig, ExporterDetails.form))
     }
   }
 
@@ -55,7 +56,7 @@ class ExporterDetailsPageController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ExporterDetails]) =>
-          Future.successful(BadRequest(exporter_details(appConfig, formWithErrors))),
+          Future.successful(BadRequest(exporterDetailsPage(appConfig, formWithErrors))),
         form =>
           for {
             _ <- updateCache(journeySessionId, form)

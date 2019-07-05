@@ -39,7 +39,8 @@ class FiscalInformationController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  fiscalInformationPage: fiscal_information
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -47,8 +48,8 @@ class FiscalInformationController @Inject()(
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[FiscalInformation](goodsItemCacheId, formId).map {
-      case Some(data) => Ok(fiscal_information(itemId, form.fill(data)))
-      case _          => Ok(fiscal_information(itemId, form))
+      case Some(data) => Ok(fiscalInformationPage(itemId, form.fill(data)))
+      case _          => Ok(fiscalInformationPage(itemId, form))
     }
   }
 
@@ -58,7 +59,7 @@ class FiscalInformationController @Inject()(
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[FiscalInformation]) =>
-            Future.successful(BadRequest(fiscal_information(itemId, formWithErrors))),
+            Future.successful(BadRequest(fiscalInformationPage(itemId, formWithErrors))),
           validFiscalInformation => updateCacheModelsAndRedirect(itemId, validFiscalInformation)
         )
   }

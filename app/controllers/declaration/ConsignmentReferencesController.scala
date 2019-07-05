@@ -39,7 +39,8 @@ class ConsignmentReferencesController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  consignmentReferencesPage: consignment_references
 )(implicit ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -49,8 +50,8 @@ class ConsignmentReferencesController @Inject()(
     customsCacheService
       .fetchAndGetEntry[ConsignmentReferences](cacheId, ConsignmentReferences.id)
       .map {
-        case Some(data) => Ok(consignment_references(appConfig, ConsignmentReferences.form.fill(data)))
-        case _          => Ok(consignment_references(appConfig, ConsignmentReferences.form))
+        case Some(data) => Ok(consignmentReferencesPage(appConfig, ConsignmentReferences.form.fill(data)))
+        case _          => Ok(consignmentReferencesPage(appConfig, ConsignmentReferences.form))
       }
   }
 
@@ -59,7 +60,7 @@ class ConsignmentReferencesController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsignmentReferences]) =>
-          Future.successful(BadRequest(consignment_references(appConfig, formWithErrors))),
+          Future.successful(BadRequest(consignmentReferencesPage(appConfig, formWithErrors))),
         validConsignmentReferences =>
           for {
             _ <- updateCache(journeySessionId, validConsignmentReferences)

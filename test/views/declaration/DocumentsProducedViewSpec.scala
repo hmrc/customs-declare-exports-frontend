@@ -38,9 +38,9 @@ import views.tags.ViewTest
 class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages with DateMessages with CommonMessages {
 
   private val form: Form[DocumentsProduced] = DocumentsProduced.form()
-
+  private val documentsProducedPage = app.injector.instanceOf[documents_produced]
   private def createView(form: Form[DocumentsProduced] = form, cachedDocuments: Seq[DocumentsProduced] = Seq()): Html =
-    documents_produced(itemId, appConfig, form, cachedDocuments)(fakeRequest, messages)
+    documentsProducedPage(itemId, appConfig, form, cachedDocuments)(fakeRequest, messages)
 
   "Documents Produced View" should {
 

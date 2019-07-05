@@ -7,7 +7,7 @@ object AppDependencies {
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.1.0-play-26",
-    "uk.gov.hmrc" %% "simple-reactivemongo" % "7.19.0-play-26",
+    "uk.gov.hmrc" %% "simple-reactivemongo" % "7.20.0-play-26",
     "uk.gov.hmrc" %% "logback-json-logger" % "4.6.0",
     "uk.gov.hmrc" %% "govuk-template" % "5.35.0-play-26",
     "uk.gov.hmrc" %% "play-health" % "3.14.0-play-26",
@@ -22,6 +22,7 @@ object AppDependencies {
   )
 
   val test = Seq(
+    //TODO remove hmrctest dependency
     "uk.gov.hmrc" %% "hmrctest" % "3.8.0-play-26" % "test",
     "org.scalatest" %% "scalatest" % "3.0.5" % "test",
     "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test",

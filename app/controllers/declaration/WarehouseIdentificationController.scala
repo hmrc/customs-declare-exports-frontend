@@ -37,7 +37,8 @@ class WarehouseIdentificationController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  warehouseIdentificationPage: warehouse_identification
 )(implicit ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -47,8 +48,8 @@ class WarehouseIdentificationController @Inject()(
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[WarehouseIdentification](cacheId, formId).map {
-      case Some(data) => Ok(warehouse_identification(appConfig, form.fill(data)))
-      case _          => Ok(warehouse_identification(appConfig, form))
+      case Some(data) => Ok(warehouseIdentificationPage(appConfig, form.fill(data)))
+      case _          => Ok(warehouseIdentificationPage(appConfig, form))
     }
   }
 
@@ -57,7 +58,7 @@ class WarehouseIdentificationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[WarehouseIdentification]) =>
-          Future.successful(BadRequest(warehouse_identification(appConfig, formWithErrors))),
+          Future.successful(BadRequest(warehouseIdentificationPage(appConfig, formWithErrors))),
         form =>
           for {
             _ <- updateCache(journeySessionId, form)

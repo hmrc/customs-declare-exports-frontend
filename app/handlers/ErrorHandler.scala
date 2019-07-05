@@ -27,11 +27,12 @@ import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
+import views.html.error_template
 
 import scala.concurrent.Future
 
 @Singleton
-class ErrorHandler @Inject()(appConfig: AppConfig, override val messagesApi: MessagesApi)
+class ErrorHandler @Inject()(appConfig: AppConfig, override val messagesApi: MessagesApi, errorPage: error_template)
     extends FrontendErrorHandler with AuthRedirects {
   override def config: Configuration = appConfig.runModeConfiguration
 
@@ -40,7 +41,7 @@ class ErrorHandler @Inject()(appConfig: AppConfig, override val messagesApi: Mes
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(
     implicit request: Request[_]
   ): Html =
-    views.html.error_template(pageTitle, heading, message, appConfig)
+    errorPage(pageTitle, heading, message, appConfig)
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result = ex match {
     case _: NoActiveSession        => toGGLogin(rh.uri)
@@ -60,7 +61,7 @@ class ErrorHandler @Inject()(appConfig: AppConfig, override val messagesApi: Mes
     )
 
   def globalErrorTemplate()(implicit request: Request[_]): Html =
-    views.html.error_template(
+    errorPage(
       pageTitle = Messages("global.error.title"),
       heading = Messages("global.error.heading"),
       message = Messages("global.error.message"),

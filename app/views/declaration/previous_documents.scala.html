@@ -23,6 +23,8 @@
 @import services.DocumentType
 @import services.view.AutoCompleteItem
 
+@this(main_template: views.html.main_template)
+
 @(form: Form[Document], documents: Seq[Document])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
@@ -37,7 +39,8 @@
     @components.section_header(messages("supplementary.consignmentReferences.heading"))
 
     @if(documents.nonEmpty) {
-        @helpers.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
+        @helper.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
+            @helper.CSRF.formField
             <table class="form-group">
                 <caption>@messages("supplementary.previousDocuments")</caption>
                 <thead>
@@ -68,7 +71,9 @@
         }
     }
 
-    @helpers.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
+    @helper.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.page_title(Some("supplementary.previousDocuments.title"), Some("supplementary.previousDocuments.hint"))
 
         @components.fields.field_radio(

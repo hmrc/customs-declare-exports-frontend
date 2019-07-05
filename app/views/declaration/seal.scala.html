@@ -20,6 +20,8 @@
 @import uk.gov.hmrc.play.views.html._
 @import controllers.util.Remove
 
+@this(main_template: views.html.main_template)
+
 @(form: Form[Seal], seals: Seq[Seal], hasContainers:Boolean)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
@@ -37,7 +39,8 @@
     @components.page_title(Some("standard.seal.title"), None)
 
     @if(seals.nonEmpty) {
-        @helpers.form(SealController.submitForm(), 'autoComplete -> "off") {
+        @helper.form(SealController.submitForm(), 'autoComplete -> "off") {
+            @helper.CSRF.formField
             <div class="field-group">
                 <table >
                     <thead>
@@ -60,7 +63,9 @@
         }
     }
 
-    @helpers.form(SealController.submitForm(), 'autoComplete -> "off") {
+    @helper.form(SealController.submitForm(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.fields.field_text(
             field = form("id"),
             label = messages("standard.seal.id")

@@ -20,7 +20,6 @@ import forms.declaration.FiscalInformation
 import helpers.views.declaration.{CommonMessages, FiscalInformationMessages}
 import play.api.data.Form
 import play.twirl.api.Html
-import utils.FakeRequestCSRFSupport._
 import views.declaration.spec.ViewSpec
 import views.html.declaration.fiscal_information
 import views.tags.ViewTest
@@ -29,8 +28,9 @@ import views.tags.ViewTest
 class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages with CommonMessages {
 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
+  private val fiscalInformationPage = app.injector.instanceOf[fiscal_information]
   private def createView(form: Form[FiscalInformation] = form): Html =
-    fiscal_information(itemId, form)(fakeRequest.withCSRFToken, appConfig, messages)
+    fiscalInformationPage(itemId, form)(fakeRequest, appConfig, messages)
 
   "Fiscal Information View" should {
 

@@ -28,8 +28,9 @@ import views.tags.ViewTest
 class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationMessages with CommonMessages {
 
   private val form: Form[AdditionalInformation] = AdditionalInformation.form()
+  private val additionalInformationPage = app.injector.instanceOf[additional_information]
   private def createView(form: Form[AdditionalInformation] = form): Html =
-    additional_information(itemId, appConfig, form, Seq())(fakeRequest, messages)
+    additionalInformationPage(itemId, appConfig, form, Seq())(fakeRequest, messages)
 
   /*
    * Moved all errors tests to AdditionalInformationControllerSpec,
@@ -132,7 +133,7 @@ class AdditionalInformationViewSpec extends ViewSpec with AdditionalInformationM
 
     "display one row with data in table" in {
 
-      val view = additional_information(itemId, appConfig, form, Seq(AdditionalInformation("12345", "12345")))
+      val view = additionalInformationPage(itemId, appConfig, form, Seq(AdditionalInformation("12345", "12345")))
 
       getElementByCss(view, "table>tbody>tr>th:nth-child(1)").text() must be("12345-12345")
 

@@ -23,7 +23,7 @@
 @import views.html.declaration.summary._
 @import forms.Choice.AllowedChoiceValues._
 
-
+@this(main_template: views.html.main_template)
 
 @(suppDecData: SupplementaryDeclarationData)(implicit appConfig: AppConfig, request: JourneyRequest[_], messages: Messages)
 
@@ -75,7 +75,9 @@
 
     @items_section(suppDecData.items)
 
-    @helpers.form(action = SummaryPageController.submitSupplementaryDeclaration()) {
+    @helper.form(action = SummaryPageController.submitSupplementaryDeclaration()) {
+        @helper.CSRF.formField
+
         @components.submit_button(messages("site.acceptAndSubmitDeclaration"))
     }
 

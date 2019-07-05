@@ -16,6 +16,8 @@
 
 @import config.AppConfig
 
+@this(govuk_wrapper: views.html.govuk_wrapper)
+
 @(pageTitle: String, heading: String, message: String, appConfig: AppConfig)(implicit request: Request[_], messages: Messages)
 
 @contentHeader = {

@@ -24,6 +24,8 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
 
+@this(main_template: views.html.main_template)
+
 @(appConfig: AppConfig, form: Form[DeclarationAdditionalActors], actors: Seq[DeclarationAdditionalActors])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
@@ -44,7 +46,8 @@
     @components.page_title(Some("supplementary.additionalActors.title"), Some(""))
 
     @if(actors.nonEmpty) {
-        @helpers.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
+        @helper.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
+            @helper.CSRF.formField
             <table class="form-group">
                 <thead>
                     <tr>
@@ -69,7 +72,9 @@
 
     <span class="heading-24">@messages("supplementary.additionalActors.partyType")</span>
 
-    @helpers.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
+    @helper.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.fields.field_radio(
             field = form("partyType"),
             legend = "",

@@ -42,7 +42,8 @@ class AdditionalFiscalReferencesController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  additionalFiscalReferencesPage: additional_fiscal_references
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -50,8 +51,8 @@ class AdditionalFiscalReferencesController @Inject()(
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[AdditionalFiscalReferencesData](goodsItemCacheId, formId).map {
-      case Some(data) => Ok(additional_fiscal_references(itemId, form, data.references))
-      case _          => Ok(additional_fiscal_references(itemId, form))
+      case Some(data) => Ok(additionalFiscalReferencesPage(itemId, form, data.references))
+      case _          => Ok(additionalFiscalReferencesPage(itemId, form))
     }
   }
 
@@ -115,7 +116,7 @@ class AdditionalFiscalReferencesController @Inject()(
     formWithErrors: Form[AdditionalFiscalReference],
     references: Seq[AdditionalFiscalReference]
   )(implicit request: JourneyRequest[_]): Result =
-    BadRequest(additional_fiscal_references(itemId, formWithErrors, references))
+    BadRequest(additionalFiscalReferencesPage(itemId, formWithErrors, references))
 
   private def updateCacheModels(itemId: String, updatedCache: Seq[AdditionalFiscalReference], redirect: Call)(
     implicit journeyRequest: JourneyRequest[_]

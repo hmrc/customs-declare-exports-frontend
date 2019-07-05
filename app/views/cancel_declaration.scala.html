@@ -22,6 +22,9 @@
 @import views.components.inputs.RadioOption
 @import forms.cancellation.CancellationChangeReason
 @import forms.cancellation.CancellationChangeReason.{NoLongerRequired, Duplication, OtherReason}
+
+@this(main_template: views.html.main_template)
+
 @(appConfig: AppConfig, form: Form[CancelDeclaration])(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -29,7 +32,9 @@
     appConfig = appConfig
 ) {
 
-    @helpers.form(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
+    @helper.form(action = CancelDeclarationController.onSubmit(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.back_link("/customs-declare-exports/choice")
 
         @components.error_summary(form.errors)

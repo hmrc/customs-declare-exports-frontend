@@ -42,9 +42,10 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
   private val uri = uriWithContextPath("/declaration/add-seal")
 
   val form: Form[Seal] = Form(Seal.formMapping)
+  val sealPage = app.injector.instanceOf[seal]
 
   def view(form: Form[Seal], seals: Seq[Seal], container: Boolean = false)(implicit request: Request[_]): Html =
-    seal(form, seals, container)(appConfig, request, messages)
+    sealPage(form, seals, container)(appConfig, request, messages)
 
   override def beforeEach() {
     authorizedUser()

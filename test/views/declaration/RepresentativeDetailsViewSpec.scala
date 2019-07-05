@@ -29,8 +29,9 @@ import views.tags.ViewTest
 class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsMessages with CommonMessages {
 
   private val form: Form[RepresentativeDetails] = RepresentativeDetails.form()
+  private val representativeDetailsPage = app.injector.instanceOf[representative_details]
   private def createView(form: Form[RepresentativeDetails] = form): Html =
-    representative_details(appConfig, form)(fakeRequest, messages)
+    representativeDetailsPage(appConfig, form)(fakeRequest, messages)
 
   "Representative Details View" should {
 

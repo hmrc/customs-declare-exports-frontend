@@ -44,7 +44,8 @@ class AdditionalInformationController @Inject()(
   errorHandler: ErrorHandler,
   legacyCustomsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  additionalInformationPage: additional_information
 )(implicit ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -54,8 +55,8 @@ class AdditionalInformationController @Inject()(
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     legacyCustomsCacheService.fetchAndGetEntry[AdditionalInformationData](goodsItemCacheId, formId).map {
-      case Some(data) => Ok(additional_information(itemId, appConfig, form, data.items))
-      case _          => Ok(additional_information(itemId, appConfig, form, Seq()))
+      case Some(data) => Ok(additionalInformationPage(itemId, appConfig, form, data.items))
+      case _          => Ok(additionalInformationPage(itemId, appConfig, form, Seq()))
     }
   }
 
@@ -86,7 +87,7 @@ class AdditionalInformationController @Inject()(
       .add(boundForm, cachedData, elementLimit)
       .fold(
         formWithErrors =>
-          Future.successful(BadRequest(additional_information(itemId, appConfig, formWithErrors, cachedData))),
+          Future.successful(BadRequest(additionalInformationPage(itemId, appConfig, formWithErrors, cachedData))),
         updatedCache =>
           updateCacheModelAndRedirect(
             itemId,
@@ -104,7 +105,7 @@ class AdditionalInformationController @Inject()(
       .saveAndContinue(boundForm, cachedData, true, elementLimit)
       .fold(
         formWithErrors =>
-          Future.successful(BadRequest(additional_information(itemId, appConfig, formWithErrors, cachedData))),
+          Future.successful(BadRequest(additionalInformationPage(itemId, appConfig, formWithErrors, cachedData))),
         updatedCache =>
           if (updatedCache != cachedData)
             updateCacheModelAndRedirect(

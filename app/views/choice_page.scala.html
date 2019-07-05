@@ -20,6 +20,8 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.components.inputs.RadioOption
 
+@this(main_template: views.html.main_template)
+
 @(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
     @main_template(
@@ -27,7 +29,9 @@
         appConfig = appConfig
     ) {
 
-        @helpers.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
+        @helper.form(ChoiceController.submitChoice(), 'autoComplete -> "off") {
+            @helper.CSRF.formField
+
             @components.back_link("start")
 
             @components.heading("", "declaration.choice.description")

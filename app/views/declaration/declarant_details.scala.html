@@ -22,13 +22,16 @@
 @import models.requests.JourneyRequest
 @import services.model.Country
 
+@this(main_template: views.html.main_template)
+
 @(appConfig: AppConfig, form: Form[DeclarantDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.declarant.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(DeclarantDetailsPageController.saveAddress(), 'autoComplete -> "off") {
+    @helper.form(DeclarantDetailsPageController.saveAddress(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
 
         @components.back_link("/customs-declare-exports/declaration/consignee-details")
 

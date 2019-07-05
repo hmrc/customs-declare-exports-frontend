@@ -43,7 +43,8 @@ class ItemsSummaryController @Inject()(
   errorHandler: ErrorHandler,
   cacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  itemsSummaryPage: items_summary
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with SessionIdAware {
 
@@ -53,7 +54,7 @@ class ItemsSummaryController @Inject()(
       .zip(hasFiscalInformation())
       .map {
         case (items, hasFiscalInformation) =>
-          Ok(items_summary(items.getOrElse(Seq.empty), hasFiscalInformation))
+          Ok(itemsSummaryPage(items.getOrElse(Seq.empty), hasFiscalInformation))
       }
   }
 

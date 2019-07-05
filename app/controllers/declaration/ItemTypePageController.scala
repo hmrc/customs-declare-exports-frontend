@@ -45,7 +45,8 @@ class ItemTypePageController @Inject()(
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  itemTypePage: item_type
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -58,7 +59,7 @@ class ItemTypePageController @Inject()(
       .map {
         case (Some(itemType), hasFiscalReferences) =>
           Ok(
-            item_type(
+            itemTypePage(
               itemId,
               ItemType.form.fill(itemType),
               hasFiscalReferences,
@@ -67,7 +68,7 @@ class ItemTypePageController @Inject()(
             )
           )
         case (_, hasFiscalReferences) =>
-          Ok(item_type(itemId, ItemType.form, hasFiscalReferences))
+          Ok(itemTypePage(itemId, ItemType.form, hasFiscalReferences))
       }
   }
 
@@ -113,7 +114,7 @@ class ItemTypePageController @Inject()(
           errors.foldLeft(ItemType.form.fill(itemTypeInput))((form, error) => form.withError(adjustErrorKey(error)))
         Future.successful(
           BadRequest(
-            item_type(
+            itemTypePage(
               itemId,
               adjustDataKeys(formWithErrors),
               hasFiscalReferences,
@@ -148,7 +149,7 @@ class ItemTypePageController @Inject()(
           errors.foldLeft(ItemType.form.fill(itemTypeInput))((form, error) => form.withError(adjustErrorKey(error)))
         Future.successful(
           BadRequest(
-            item_type(
+            itemTypePage(
               itemId,
               adjustDataKeys(formWithErrors),
               hasFiscalReferences,
@@ -213,7 +214,7 @@ class ItemTypePageController @Inject()(
     customsCacheService.fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id).map {
       case Some(cachedData) =>
         Ok(
-          item_type(
+          itemTypePage(
             itemId,
             ItemType.form.fill(itemTypeInput),
             hasFiscalReferences,
@@ -222,7 +223,7 @@ class ItemTypePageController @Inject()(
           )
         )
       case _ =>
-        Ok(item_type(itemId, ItemType.form, hasFiscalReferences))
+        Ok(itemTypePage(itemId, ItemType.form, hasFiscalReferences))
     }
 
   private case class Label(name: String, index: Int)

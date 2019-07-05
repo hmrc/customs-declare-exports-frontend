@@ -29,8 +29,9 @@ import views.tags.ViewTest
 class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages with CommonMessages {
 
   private val form: Form[DeclarationHolder] = DeclarationHolder.form()
+  private val declarationHolderPage = app.injector.instanceOf[declaration_holder]
   private def createView(form: Form[DeclarationHolder] = form): Html =
-    declaration_holder(appConfig, form, Seq())(fakeRequest, messages)
+    declarationHolderPage(appConfig, form, Seq())(fakeRequest, messages)
 
   "Declaration Holder View" should {
 
@@ -189,7 +190,10 @@ class DeclarationHolderViewSpec extends ViewSpec with DeclarationHolderMessages 
     "display one row with data in table" in {
 
       val view =
-        declaration_holder(appConfig, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(fakeRequest, messages)
+        declarationHolderPage(appConfig, form, Seq(DeclarationHolder(Some("1234"), Some("1234"))))(
+          fakeRequest,
+          messages
+        )
 
       getElementByCss(view, "tbody>tr>th:nth-child(1)").text() must be("1234-1234")
 

@@ -25,7 +25,8 @@ import views.tags.ViewTest
 @ViewTest
 class StartViewSpec extends ViewSpec with StartMessages {
 
-  private def createView(): Html = start_page(appConfig)
+  private val startPage = app.injector.instanceOf[start_page]
+  private def createView(): Html = startPage(appConfig)
 
   "Start View" should {
 

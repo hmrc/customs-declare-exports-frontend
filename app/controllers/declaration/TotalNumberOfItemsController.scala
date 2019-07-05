@@ -35,15 +35,16 @@ class TotalNumberOfItemsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  totalNumberOfItemsPage: total_number_of_items
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
   import forms.declaration.TotalNumberOfItems._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[TotalNumberOfItems](cacheId, formId).map {
-      case Some(data) => Ok(total_number_of_items(appConfig, form.fill(data)))
-      case _          => Ok(total_number_of_items(appConfig, form))
+      case Some(data) => Ok(totalNumberOfItemsPage(appConfig, form.fill(data)))
+      case _          => Ok(totalNumberOfItemsPage(appConfig, form))
     }
   }
 
@@ -52,7 +53,7 @@ class TotalNumberOfItemsController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[TotalNumberOfItems]) =>
-          Future.successful(BadRequest(total_number_of_items(appConfig, formWithErrors))),
+          Future.successful(BadRequest(totalNumberOfItemsPage(appConfig, formWithErrors))),
         form =>
           customsCacheService.cache[TotalNumberOfItems](cacheId, formId, form).map { _ =>
             Redirect(routes.NatureOfTransactionController.displayForm())

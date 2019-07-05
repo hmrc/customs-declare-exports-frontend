@@ -20,13 +20,17 @@
 @import services.model.Country
 @import uk.gov.hmrc.play.views.html._
 
+@this(main_template: views.html.main_template)
+
 @(form: Form[CarrierDetails])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.carrier.title"),
     appConfig = appConfig
 ) {
-    @helpers.form(CarrierDetailsPageController.saveAddress(), 'autoComplete -> "off") {
+    @helper.form(CarrierDetailsPageController.saveAddress(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
         @components.back_link("/customs-declare-exports/declaration/representative-details")
 
         @components.error_summary(form.errors)

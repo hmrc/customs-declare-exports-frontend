@@ -37,7 +37,8 @@ class DispatchLocationPageController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
-  mcc: MessagesControllerComponents
+  mcc: MessagesControllerComponents,
+  dispatchLocationPage: dispatch_location
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
@@ -47,8 +48,8 @@ class DispatchLocationPageController @Inject()(
     customsCacheService
       .fetchAndGetEntry[DispatchLocation](cacheId, DispatchLocation.formId)
       .map {
-        case Some(data) => Ok(dispatch_location(DispatchLocation.form().fill(data)))
-        case _          => Ok(dispatch_location(DispatchLocation.form()))
+        case Some(data) => Ok(dispatchLocationPage(DispatchLocation.form().fill(data)))
+        case _          => Ok(dispatchLocationPage(DispatchLocation.form()))
       }
   }
 
@@ -57,7 +58,7 @@ class DispatchLocationPageController @Inject()(
       .form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatch_location(formWithErrors))),
+        (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(formWithErrors))),
         validDispatchLocation => {
           for {
             _ <- updateCache(journeySessionId, validDispatchLocation)

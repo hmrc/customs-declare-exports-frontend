@@ -30,7 +30,8 @@ import views.tags.ViewTest
 class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages with CommonMessages {
 
   val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
-  private def createView(form: Form[ConsigneeDetails] = form): Html = consignee_details(appConfig, form)
+  val consigneeDetailsPage = app.injector.instanceOf[consignee_details]
+  private def createView(form: Form[ConsigneeDetails] = form): Html = consigneeDetailsPage(appConfig, form)
 
   "Consignee Details View" should {
 
