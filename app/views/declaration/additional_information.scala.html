@@ -20,14 +20,15 @@
 @import forms.declaration.AdditionalInformation
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: AppConfig, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: Request[_], messages: Messages)
+@import forms.declaration.CommodityMeasure
+@(itemId: String, appConfig: AppConfig, form: Form[AdditionalInformation], items: Seq[AdditionalInformation])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("supplementary.additionalInformation"),
     appConfig = appConfig
 ) {
 
-    @components.back_link("/customs-declare-exports/declaration/commodity-measure")
+    @components.back_link(CommodityMeasureController.displayPage(itemId).url)
 
     @components.error_summary(form.errors)
 
@@ -36,7 +37,7 @@
     @components.page_title(Some("supplementary.additionalInformation.title"))
 
     @if(items.nonEmpty) {
-        @helpers.form(AdditionalInformationController.saveAdditionalInfo(), 'autoComplete -> "off") {
+        @helpers.form(AdditionalInformationController.saveAdditionalInfo(itemId), 'autoComplete -> "off") {
             <div class="field-group">
                 <table >
                 @items.zipWithIndex.map { case (item, index) =>
@@ -53,7 +54,7 @@
         }
     }
 
-    @helpers.form(AdditionalInformationController.saveAdditionalInfo(), 'autoComplete -> "off") {
+    @helpers.form(AdditionalInformationController.saveAdditionalInfo(itemId), 'autoComplete -> "off") {
         @components.fields.field_text(
             field = form("code"),
             label = messages("supplementary.additionalInformation.code"),

@@ -23,29 +23,41 @@ import forms.Choice.choiceId
 import helpers.views.declaration.{CommonMessages, ProcedureCodesMessages}
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.formId
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify}
 import play.api.test.Helpers._
 
 class ProcedureCodesPageControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ProcedureCodesMessages with CommonMessages {
-  import ProcedureCodesPageControllerSpec._
+  import ProcedureCodesPageControllerSpec.cacheWithMaximumAmountOfAdditionalCodes
 
-  private val uri = uriWithContextPath("/declaration/procedure-codes")
+  private val itemModel = createModel()
+  private val uri = uriWithContextPath(s"/declaration/items/${itemModel.items.head.id}/procedure-codes")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(itemModel)
     withCaching[ProcedureCodesData](None, formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  override def afterEach(): Unit = {
+    super.afterEach()
+
+    reset(mockExportsCacheService)
+    reset(mockCustomsCacheService)
   }
 
   "Procedure Codes Controller on GET" should {
 
     "return 200 status code" in {
 
-      val result = route(app, getRequest(uri)).get
+      val Some(result) = route(app, getRequest(uri))
 
       status(result) must be(OK)
     }
@@ -55,460 +67,119 @@ class ProcedureCodesPageControllerSpec
       val cachedData = ProcedureCodesData(Some("1234"), Seq("123", "234"))
       withCaching[ProcedureCodesData](Some(cachedData), formId)
 
-      val result = route(app, getRequest(uri)).get
-      val page = contentAsString(result)
+      val Some(result) = route(app, getRequest(uri))
 
       status(result) must be(OK)
-
-      getElementByCss(page, "table>tbody>tr>th:nth-child(1)").text() must be("123")
-      getElementByCss(page, "table>tbody>tr>th:nth-child(2)>button").text() must be(messages(removeCaption))
-
-      getElementByCss(page, "table>tbody>tr:nth-child(2)>th:nth-child(1)").text() must be("234")
-      getElementByCss(page, "table>tbody>tr:nth-child(2)>th:nth-child(2)>button").text() must be(
-        messages(removeCaption)
-      )
     }
   }
 
-  "Procedure Codes Controller on POST" can {
+  "Procedure Codes Controller on POST" should {
 
-    "display the form page with error" when {
+    "return 400 (Bad Request)" when {
 
-      "adding the data" should {
+      "form is incorrect during adding" in {
 
-        "without any code" in {
+        val body = Seq(("procedureCode", "incorrect"), addActionUrlEncoded)
 
-          val body = Seq(addActionUrlEncoded)
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
 
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorEmpty, "#additionalProcedureCode")
-
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
-            messages(addProcCodeErrorEmpty)
-          )
-        }
-
-        "with shorter procedure code" in {
-
-          val body = Seq(("procedureCode", "123"), addActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, procCodeErrorLength, "#procedureCode")
-
-          getElementByCss(page, "#error-message-procedureCode-input").text() must be(messages(procCodeErrorLength))
-        }
-
-        "with longer procedure code" in {
-
-          val body = Seq(("procedureCode", "12345"), addActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, procCodeErrorLength, "#procedureCode")
-
-          getElementByCss(page, "#error-message-procedureCode-input").text() must be(messages(procCodeErrorLength))
-        }
-
-        "with special characters in procedure code" in {
-
-          val body = Seq(("procedureCode", "1@£4"), addActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, procCodeErrorSpecialCharacters, "#procedureCode")
-
-          getElementByCss(page, "#error-message-procedureCode-input").text() must be(
-            messages(procCodeErrorSpecialCharacters)
-          )
-        }
-
-        "without additional procedure code" in {
-
-          val body = Seq(("procedureCode", "1234"), addActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorEmpty, "#additionalProcedureCode")
-
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
-            messages(addProcCodeErrorEmpty)
-          )
-        }
-
-        "with shorter additional procedure code" in {
-
-          val body = Seq(("additionalProcedureCode", "12"), addActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorLength, "#additionalProcedureCode")
-
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
-            messages(addProcCodeErrorLength)
-          )
-        }
-
-        "with too long additional procedure code" in {
-
-          val body = Seq(("additionalProcedureCode", "2002"), addActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorLength, "#additionalProcedureCode")
-
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
-            messages(addProcCodeErrorLength)
-          )
-        }
-
-        "with special characters in additional code" in {
-
-          val body = Seq(("additionalProcedureCode", "2@2"), addActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorSpecialCharacters, "#additionalProcedureCode")
-
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
-            messages(addProcCodeErrorSpecialCharacters)
-          )
-        }
-
-        "with duplicated additional procedure code" in {
-
-          val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-          withCaching[ProcedureCodesData](Some(cachedData), formId)
-
-          val body = Seq(("additionalProcedureCode", "123"), addActionUrlEncoded)
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorDuplication, "#additionalProcedureCode")
-
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
-            messages(addProcCodeErrorDuplication)
-          )
-        }
-
-        "when more than 99 additional codes already exists" in {
-
-          withCaching[ProcedureCodesData](Some(cacheWithMaximumAmountOfAdditionalCodes), formId)
-
-          val body = Seq(("additionalProcedureCode", "200"), addActionUrlEncoded)
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorMaxAmount, "#")
-        }
+        status(result) must be(BAD_REQUEST)
       }
 
-      "saving the data" should {
+      "form is incorrect during saving" in {
 
-        "without any code" in {
+        val body = Seq(("procedureCode", "incorrect"), saveAndContinueActionUrlEncoded)
 
-          val body = Seq(saveAndContinueActionUrlEncoded)
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
 
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, procCodeErrorEmpty, "#procedureCode")
-          checkErrorLink(page, 2, addProcCodeErrorMandatory, "#additionalProcedureCode")
-
-          getElementByCss(page, "#error-message-procedureCode-input").text() must be(messages(procCodeErrorEmpty))
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
-            messages(addProcCodeErrorMandatory)
-          )
-        }
-
-        "without procedure code" in {
-
-          val body = Seq(("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, procCodeErrorEmpty, "#procedureCode")
-
-          getElementByCss(page, "#error-message-procedureCode-input").text() must be(messages(procCodeErrorEmpty))
-        }
-
-        "with shorter procedure code" in {
-
-          val body = Seq(("procedureCode", "123"), saveAndContinueActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, procCodeErrorLength, "#procedureCode")
-
-          getElementByCss(page, "#error-message-procedureCode-input").text() must be(messages(procCodeErrorLength))
-        }
-
-        "with longer procedure code" in {
-
-          val body = Seq(("procedureCode", "12345"), saveAndContinueActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, procCodeErrorLength, "#procedureCode")
-
-          getElementByCss(page, "#error-message-procedureCode-input").text() must be(messages(procCodeErrorLength))
-        }
-
-        "with special characters in procedure code" in {
-
-          val body = Seq(("procedureCode", "1@£4"), saveAndContinueActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, procCodeErrorSpecialCharacters, "#procedureCode")
-
-          getElementByCss(page, "#error-message-procedureCode-input").text() must be(
-            messages(procCodeErrorSpecialCharacters)
-          )
-        }
-
-        "without additional procedure code" in {
-
-          val body = Seq(("procedureCode", "1234"), saveAndContinueActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorMandatory, "#additionalProcedureCode")
-
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
-            messages(addProcCodeErrorMandatory)
-          )
-        }
-
-        "with shorter additional procedure code" in {
-
-          val body = Seq(("additionalProcedureCode", "12"), saveAndContinueActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorLength, "#additionalProcedureCode")
-
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
-            messages(addProcCodeErrorLength)
-          )
-        }
-
-        "with too long additional procedure code" in {
-
-          val body = Seq(("additionalProcedureCode", "1234"), saveAndContinueActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorLength, "#additionalProcedureCode")
-
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
-            messages(addProcCodeErrorLength)
-          )
-        }
-
-        "with special characters in additional procedure code" in {
-
-          val body = Seq(("additionalProcedureCode", "1@4"), saveAndContinueActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorSpecialCharacters, "#additionalProcedureCode")
-
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
-            messages(addProcCodeErrorSpecialCharacters)
-          )
-        }
-
-        "with duplicated additional procedure code" in {
-
-          val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-          withCaching[ProcedureCodesData](Some(cachedData), formId)
-
-          val body = Seq(("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorDuplication, "#additionalProcedureCode")
-
-          getElementByCss(page, "#error-message-additionalProcedureCode-input").text() must be(
-            messages(addProcCodeErrorDuplication)
-          )
-        }
-
-        "when more than 99 additional procedure codes already exists" in {
-
-          withCaching[ProcedureCodesData](Some(cacheWithMaximumAmountOfAdditionalCodes), formId)
-          val body = Seq(("additionalProcedureCode", "200"), saveAndContinueActionUrlEncoded)
-
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, addProcCodeErrorMaxAmount, "#")
-        }
+        status(result) must be(BAD_REQUEST)
       }
 
-      "try to remove not added additional code" in {
+      "form and cache is empty during saving" in {
+
+        val body = Seq(("procedureCode", ""), ("additionalProcedureCode", ""), saveAndContinueActionUrlEncoded)
+
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "maximum amount of codes are reached" in {
+
+        withCaching[ProcedureCodesData](Some(cacheWithMaximumAmountOfAdditionalCodes), formId)
+
+        val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded)
+
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+
+        status(result) must be(BAD_REQUEST)
+      }
+
+      "code is duplicated" in {
+
+        withCaching[ProcedureCodesData](Some(ProcedureCodesData(Some("1234"), Seq("123"))), formId)
+
+        val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), addActionUrlEncoded)
+
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+
+        status(result) must be(BAD_REQUEST)
+      }
+    }
+
+    "return 303 (See Other) and redirect to the same page" when {
+
+      "form is correct during adding" in {
+
+        val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded)
+
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+
+        status(result) must be(SEE_OTHER)
+
+        verify(mockExportsCacheService, times(1)).update(any(), any())
+      }
+
+      "user remove existing code" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
         withCaching[ProcedureCodesData](Some(cachedData), formId)
 
-        val body = removeActionUrlEncoded("124")
-        val result = route(app, postRequestFormUrlEncoded(uri, body)).get
-        val stringResult = contentAsString(result)
-
-        status(result) must be(BAD_REQUEST)
-        stringResult must include(messages(globalErrorTitle))
-        stringResult must include(messages(globalErrorHeading))
-        stringResult must include(messages(globalErrorMessage))
-      }
-    }
-
-    "add code without errors" when {
-
-      "user provides additional code when no codes in cache" in {
-
-        val cachedData = ProcedureCodesData(Some("1234"), Seq())
-        withCaching[ProcedureCodesData](Some(cachedData), formId)
-
-        val body = Seq(("additionalProcedureCode", "123"), addActionUrlEncoded)
-
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-
-        status(result) must be(SEE_OTHER)
-      }
-
-      "user provides additional code that does not exist in cache " in {
-
-        val cachedData = ProcedureCodesData(Some("1234"), Seq("100"))
-        withCaching[ProcedureCodesData](Some(cachedData), formId)
-
-        val body = Seq(("additionalProcedureCode", "123"), addActionUrlEncoded)
-
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-
-        status(result) must be(SEE_OTHER)
-      }
-    }
-
-    "remove code" when {
-
-      "code exists in cache" in {
-
-        val cachedData = ProcedureCodesData(Some("1234"), Seq("123", "234", "235"))
-        withCaching[ProcedureCodesData](Some(cachedData), formId)
-
         val body = removeActionUrlEncoded("123")
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body))
 
         status(result) must be(SEE_OTHER)
+
+        verify(mockExportsCacheService, times(1)).update(any(), any())
       }
     }
 
-    "redirect to next page" when {
+    "return 303 (See Other) and redirect to the new page" when {
 
-      "user fill both inputs with empty cache" in {
+      "form is correct during saving with empty cache" in {
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val header = result.futureValue.header
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/fiscal-information"))
+
+        verify(mockExportsCacheService, times(1)).update(any(), any())
       }
 
-      "user fill only procedure code with some additional codes already added" in {
+      "form is empty but cache contains at least one item" in {
 
-        val cachedData = ProcedureCodesData(None, Seq("123"))
+        val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
         withCaching[ProcedureCodesData](Some(cachedData), formId)
+
         val body = Seq(("procedureCode", "1234"), saveAndContinueActionUrlEncoded)
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val header = result.futureValue.header
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/fiscal-information"))
+
+        verify(mockExportsCacheService, times(1)).update(any(), any())
       }
     }
   }

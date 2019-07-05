@@ -30,6 +30,7 @@ import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
 import services.{CustomsCacheService, ItemsCachingService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -42,25 +43,28 @@ class DocumentsProducedController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
+  legacyCustomsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   itemsCache: ItemsCachingService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    legacyCustomsCacheService
       .fetchAndGetEntry[DocumentsProducedData](goodsItemCacheId, formId)
       .map {
-        case Some(data) => Ok(documents_produced(appConfig, form, data.documents))
-        case _          => Ok(documents_produced(appConfig, form, Seq()))
+        case Some(data) => Ok(documents_produced(itemId, appConfig, form, data.documents))
+        case _          => Ok(documents_produced(itemId, appConfig, form, Seq()))
       }
   }
 
-  def saveForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def saveForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form.bindFromRequest()
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
-    val cachedData = customsCacheService
+    val cachedData = legacyCustomsCacheService
       .fetchAndGetEntry[DocumentsProducedData](goodsItemCacheId, formId)
       .map(_.getOrElse(DocumentsProducedData(Seq())))
 
@@ -68,93 +72,125 @@ class DocumentsProducedController @Inject()(
       boundForm
         .fold(
           (formWithErrors: Form[DocumentsProduced]) =>
-            Future.successful(BadRequest(documents_produced(appConfig, formWithErrors, cache.documents))),
+            Future.successful(BadRequest(documents_produced(itemId, appConfig, formWithErrors, cache.documents))),
           validForm =>
             actionTypeOpt match {
-              case Some(Add)             => addItem(validForm, cache)
-              case Some(SaveAndContinue) => saveAndContinue(validForm, cache)
-              case Some(Remove(keys))    => removeItem(keys, cache)
+              case Some(Add)             => addItem(itemId, validForm, cache)
+              case Some(SaveAndContinue) => saveAndContinue(itemId, validForm, cache)
+              case Some(Remove(keys))    => removeItem(itemId, keys, cache)
               case _                     => errorHandler.displayErrorPage()
           }
         )
     }
   }
 
-  private def saveAndContinue(
-    userInput: DocumentsProduced,
-    cachedData: DocumentsProducedData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+  private def saveAndContinue(itemId: String, userInput: DocumentsProduced, cachedData: DocumentsProducedData)(
+    implicit request: JourneyRequest[_],
+    hc: HeaderCarrier
+  ): Future[Result] =
     (userInput, cachedData.documents) match {
-      case (document, Seq())     => saveAndRedirect(document, Seq())
-      case (document, documents) => handleSaveAndContinueCache(document, documents)
+      case (document, Seq())     => saveAndRedirect(itemId, document, Seq())
+      case (document, documents) => handleSaveAndContinueCache(itemId, document, documents)
     }
 
-  private def handleSaveAndContinueCache(document: DocumentsProduced, documents: Seq[DocumentsProduced])(
-    implicit request: JourneyRequest[_]
-  ) =
-    document match {
-      case _ if documents.length >= maxNumberOfItems =>
-        handleErrorPage(Seq(("", "supplementary.addDocument.error.maximumAmount")), document, documents)
-
-      case _ if documents.contains(document) =>
-        handleErrorPage(Seq(("", "supplementary.addDocument.error.duplicated")), document, documents)
-
-      case _ => saveAndRedirect(document, documents)
-    }
-
-  private def saveAndRedirect(
+  private def handleSaveAndContinueCache(
+    itemId: String,
     document: DocumentsProduced,
     documents: Seq[DocumentsProduced]
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: JourneyRequest[_]) =
+    document match {
+      case _ if documents.length >= maxNumberOfItems =>
+        handleErrorPage(itemId, Seq(("", "supplementary.addDocument.error.maximumAmount")), document, documents)
+
+      case _ if documents.contains(document) =>
+        handleErrorPage(itemId, Seq(("", "supplementary.addDocument.error.duplicated")), document, documents)
+
+      case _ => saveAndRedirect(itemId, document, documents)
+    }
+
+  private def saveAndRedirect(itemId: String, document: DocumentsProduced, documents: Seq[DocumentsProduced])(
+    implicit request: JourneyRequest[_],
+    hc: HeaderCarrier
+  ): Future[Result] =
     if (document.isDefined) {
       val updateDocs = DocumentsProducedData(documents :+ document)
-      customsCacheService
-        .cache[DocumentsProducedData](goodsItemCacheId, formId, updateDocs)
-        .flatMap(_ => addGoodsItem(document, updateDocs.documents))
-    } else addGoodsItem(document)
+      updateModelInCache(itemId, document, updateDocs).flatMap(
+        _ => addGoodsItem(itemId, document, updateDocs.documents)
+      )
+    } else addGoodsItem(itemId, document)
 
-  private def addGoodsItem(
-    document: DocumentsProduced,
-    docs: Seq[DocumentsProduced] = Seq.empty
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier) =
+  private def updateModelInCache(itemId: String, document: DocumentsProduced, updatedDocs: DocumentsProducedData)(
+    implicit journeyRequest: JourneyRequest[_]
+  ) =
+    for {
+      _ <- updateCache(itemId, journeySessionId, updatedDocs)
+      _ <- legacyCustomsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, updatedDocs)
+    } yield ()
+
+  private def addGoodsItem(itemId: String, document: DocumentsProduced, docs: Seq[DocumentsProduced] = Seq.empty)(
+    implicit request: JourneyRequest[_],
+    hc: HeaderCarrier
+  ) =
     itemsCache.addItemToCache(goodsItemCacheId, cacheId).flatMap {
-      case true => Future.successful(Redirect(routes.ItemsSummaryController.displayForm()))
-      case false =>
-        handleErrorPage(Seq(("", "supplementary.addgoodsitems.addallpages.error")), document, docs)
+      case true  => Future.successful(Redirect(routes.ItemsSummaryController.displayPage()))
+      case false => handleErrorPage(itemId, Seq(("", "supplementary.addgoodsitems.addallpages.error")), document, docs)
     }
 
-  private def addItem(
-    userInput: DocumentsProduced,
-    cachedData: DocumentsProducedData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
+  private def addItem(itemId: String, userInput: DocumentsProduced, cachedData: DocumentsProducedData)(
+    implicit request: JourneyRequest[_],
+    hc: HeaderCarrier
+  ): Future[Result] =
     (userInput, cachedData.documents) match {
       case (_, documents) if documents.length >= maxNumberOfItems =>
-        handleErrorPage(Seq(("", "supplementary.addDocument.error.maximumAmount")), userInput, cachedData.documents)
+        handleErrorPage(
+          itemId,
+          Seq(("", "supplementary.addDocument.error.maximumAmount")),
+          userInput,
+          cachedData.documents
+        )
 
       case (document, documents) if documents.contains(document) =>
-        handleErrorPage(Seq(("", "supplementary.addDocument.error.duplicated")), userInput, cachedData.documents)
+        handleErrorPage(
+          itemId,
+          Seq(("", "supplementary.addDocument.error.duplicated")),
+          userInput,
+          cachedData.documents
+        )
 
-      case (document, documents) => {
+      case (document, documents) =>
         if (document.isDefined) {
-          val updatedCache = DocumentsProducedData(documents :+ document)
-          customsCacheService
-            .cache[DocumentsProducedData](goodsItemCacheId, formId, updatedCache)
-            .map(_ => Redirect(routes.DocumentsProducedController.displayForm()))
-        } else handleErrorPage(Seq(("", "supplementary.addDocument.error.notDefined")), userInput, cachedData.documents)
-      }
+          updateCacheAndRedirect(
+            itemId,
+            DocumentsProducedData(documents :+ document),
+            routes.DocumentsProducedController.displayPage(itemId)
+          )
+        } else
+          handleErrorPage(
+            itemId,
+            Seq(("", "supplementary.addDocument.error.notDefined")),
+            userInput,
+            cachedData.documents
+          )
     }
 
-  private def removeItem(keys: Seq[String], cachedData: DocumentsProducedData)(
+  private def removeItem(itemId: String, keys: Seq[String], cachedData: DocumentsProducedData)(
     implicit request: JourneyRequest[_],
     hc: HeaderCarrier
   ): Future[Result] = keys.headOption.fold(errorHandler.displayErrorPage()) { index =>
     val updatedCache = cachedData.copy(documents = cachedData.documents.patch(index.toInt, Nil, 1))
-    customsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, updatedCache).map { _ =>
-      Redirect(routes.DocumentsProducedController.displayForm())
-    }
+    updateCacheAndRedirect(itemId, updatedCache, routes.DocumentsProducedController.displayPage(itemId))
   }
 
+  private def updateCacheAndRedirect(itemId: String, documentsToUpdate: DocumentsProducedData, redirectCall: Call)(
+    implicit request: JourneyRequest[_]
+  ): Future[Result] =
+    for {
+      _ <- updateCache(itemId, journeySessionId, documentsToUpdate)
+      _ <- legacyCustomsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, documentsToUpdate)
+    } yield Redirect(redirectCall)
+
   private def handleErrorPage(
+    itemId: String,
     fieldWithError: Seq[(String, String)],
     userInput: DocumentsProduced,
     documents: Seq[DocumentsProduced]
@@ -163,7 +199,23 @@ class DocumentsProducedController @Inject()(
 
     val formWithError = form.fill(userInput).copy(errors = updatedErrors)
 
-    Future.successful(BadRequest(documents_produced(appConfig, formWithError, documents)))
+    Future.successful(BadRequest(documents_produced(itemId, appConfig, formWithError, documents)))
   }
 
+  private def updateCache(
+    itemId: String,
+    sessionId: String,
+    updatedData: DocumentsProducedData
+  ): Future[Either[String, ExportsCacheModel]] =
+    getAndUpdateExportCacheModel(
+      sessionId,
+      model => {
+        val item: Option[ExportItem] = model.items
+          .filter(item => item.id.equals(itemId))
+          .headOption
+          .map(_.copy(documentsProducedData = Some(updatedData)))
+        val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+        exportsCacheService.update(sessionId, model.copy(items = itemList))
+      }
+    )
 }

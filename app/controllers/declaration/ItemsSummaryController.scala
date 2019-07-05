@@ -47,7 +47,7 @@ class ItemsSummaryController @Inject()(
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     cacheService
       .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
       .zip(hasFiscalInformation())
@@ -64,13 +64,21 @@ class ItemsSummaryController @Inject()(
     }
 
   def addItem(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    updateCache(journeySessionId, ExportItem())
-      .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesPageController.displayPage()))
+    val newItem = ExportItem()
+    updateCache(journeySessionId, newItem)
+      .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesPageController.displayPage(newItem.id)))
   }
 
+  /*
+  Compilation warning
+    match may not be exhaustive.
+    [warn] It would fail on the following input: Left(_)
+   */
   private def updateCache(sessionId: String, exportItem: ExportItem): Future[Either[String, ExportsCacheModel]] =
     exportsCacheService.get(sessionId).flatMap {
-      case Right(model) => exportsCacheService.update(sessionId, model.copy(items = List(exportItem)))
+      case Right(model) => {
+        exportsCacheService.update(sessionId, model.copy(items = model.items + exportItem))
+      }
     }
 
 }

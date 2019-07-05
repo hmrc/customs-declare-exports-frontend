@@ -22,17 +22,17 @@
 @import services.Countries
 
 @import services.view.AutoCompleteItem
-@(form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@(itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
     title = messages("declaration.additionalFiscalReferences.title"),
     appConfig = appConfig
 ) {
 
-    @helper.form(routes.AdditionalFiscalReferencesController.saveReferences(), 'autoComplete -> "off") {
+    @helper.form(routes.AdditionalFiscalReferencesController.saveReferences(itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link("/customs-declare-exports/declaration/fiscal-information")
+        @components.back_link(routes.FiscalInformationController.displayPage(itemId).url)
 
         @components.error_summary(form.errors)
 

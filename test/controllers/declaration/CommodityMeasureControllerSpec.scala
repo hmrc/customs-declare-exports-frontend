@@ -25,17 +25,19 @@ import generators.Generators
 import helpers.views.declaration.CommodityMeasureMessages
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.{reset, times, verify}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.OptionValues
 import org.scalatest.prop.PropertyChecks
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
 class CommodityMeasureControllerSpec
     extends CustomExportsBaseSpec with CommodityMeasureMessages with Generators with PropertyChecks with OptionValues {
 
-  private val uri = uriWithContextPath("/declaration/commodity-measure")
+  val cacheModel = createModel()
+  private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/commodity-measure")
   private val form = CommodityMeasure.form()
 
   "Commodity Measure Controller" should {
@@ -128,7 +130,9 @@ class CommodityMeasureControllerSpec
         "with valid data and on click of add" in {
 
           forAll(arbitrary[CommodityMeasure]) { commodityMeasure =>
+            reset(mockExportsCacheService)
             authorizedUser()
+            withNewCaching(cacheModel)
             withCaching[CommodityMeasure](None, commodityFormId)
             withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
             val body = Seq(
@@ -141,9 +145,12 @@ class CommodityMeasureControllerSpec
 
             status(result) must be(SEE_OTHER)
             result.futureValue.header.headers.get("Location") must be(
-              Some("/customs-declare-exports/declaration/additional-information")
+              Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/additional-information")
             )
 
+            verify(mockExportsCacheService, times(1)).get(any[String])
+            verify(mockExportsCacheService, times(1))
+              .update(any[String], any[ExportsCacheModel])
             verify(mockCustomsCacheService)
               .cache[CommodityMeasure](
                 any(),
@@ -159,6 +166,7 @@ class CommodityMeasureControllerSpec
         "on click of continue when a record has already been added" in {
           forAll(arbitrary[CommodityMeasure]) { commodityMeasure =>
             authorizedUser()
+            withNewCaching(cacheModel)
             withCaching[CommodityMeasure](Some(commodityMeasure), commodityFormId)
             withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
             val payload = Seq(
@@ -169,7 +177,7 @@ class CommodityMeasureControllerSpec
             val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
             status(result) must be(SEE_OTHER)
             result.futureValue.header.headers.get("Location") must be(
-              Some("/customs-declare-exports/declaration/additional-information")
+              Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/additional-information")
             )
           }
         }

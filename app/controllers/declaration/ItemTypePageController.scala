@@ -29,6 +29,7 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.CustomsCacheService
+import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.collections.Removable.RemovableSeq
 import utils.validators.forms.supplementary.ItemTypeValidator
@@ -43,11 +44,14 @@ class ItemTypePageController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService
       .fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id)
       .zip(hasAdditionalFiscalReferences)
@@ -55,6 +59,7 @@ class ItemTypePageController @Inject()(
         case (Some(itemType), hasFiscalReferences) =>
           Ok(
             item_type(
+              itemId,
               ItemType.form.fill(itemType),
               hasFiscalReferences,
               itemType.taricAdditionalCodes,
@@ -62,41 +67,46 @@ class ItemTypePageController @Inject()(
             )
           )
         case (_, hasFiscalReferences) =>
-          Ok(item_type(ItemType.form, hasFiscalReferences))
+          Ok(item_type(itemId, ItemType.form, hasFiscalReferences))
       }
   }
 
-  def submitItemType(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val inputForm = ItemType.form.bindFromRequest()
-    val itemTypeInput: ItemType = inputForm.value.getOrElse(ItemType.empty)
+  def submitItemType(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      val inputForm = ItemType.form.bindFromRequest()
+      val itemTypeInput: ItemType = inputForm.value.getOrElse(ItemType.empty)
 
-    customsCacheService
-      .fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id)
-      .zip(hasAdditionalFiscalReferences)
-      .flatMap {
-        case (itemTypeCacheOpt, hasFiscalReferences) =>
-          val itemTypeCache = itemTypeCacheOpt.getOrElse(ItemType.empty)
+      customsCacheService
+        .fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id)
+        .zip(hasAdditionalFiscalReferences)
+        .flatMap {
+          case (itemTypeCacheOpt, hasFiscalReferences) =>
+            val itemTypeCache = itemTypeCacheOpt.getOrElse(ItemType.empty)
 
-          extractActionType() match {
-            case Some(Add)             => handleAddition(itemTypeInput, itemTypeCache, hasFiscalReferences)
-            case Some(SaveAndContinue) => handleSaveAndContinue(itemTypeInput, itemTypeCache, hasFiscalReferences)
-            case Some(Remove(keys))    => handleRemoval(keys, itemTypeCache, hasFiscalReferences)
-            case _                     => errorHandler.displayErrorPage()
-          }
-      }
+            extractActionType() match {
+              case Some(Add) => handleAddition(itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
+              case Some(SaveAndContinue) =>
+                handleSaveAndContinue(itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
+              case Some(Remove(keys)) => handleRemoval(itemId, keys, itemTypeCache, hasFiscalReferences)
+              case _                  => errorHandler.displayErrorPage()
+            }
+        }
   }
 
   private def extractActionType()(implicit request: Request[AnyContent]): Option[FormAction] =
     request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
-  private def handleAddition(itemTypeInput: ItemType, itemTypeCache: ItemType, hasFiscalReferences: Boolean)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = {
-    val itemTypeUpdated = updateCachedItemTypeAddition(itemTypeInput, itemTypeCache)
+  private def handleAddition(
+    itemId: String,
+    itemTypeInput: ItemType,
+    itemTypeCache: ItemType,
+    hasFiscalReferences: Boolean
+  )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
+    val itemTypeUpdated = updateCachedItemTypeAddition(itemId, itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnAddition(itemTypeUpdated) match {
       case Valid =>
-        customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, itemTypeUpdated).flatMap { _ =>
-          refreshPage(itemTypeInput, hasFiscalReferences)
+        updateCacheModels(itemId, itemTypeUpdated).flatMap { _ =>
+          refreshPage(itemId, itemTypeInput, hasFiscalReferences)
         }
       case Invalid(errors) =>
         val formWithErrors =
@@ -104,6 +114,7 @@ class ItemTypePageController @Inject()(
         Future.successful(
           BadRequest(
             item_type(
+              itemId,
               adjustDataKeys(formWithErrors),
               hasFiscalReferences,
               itemTypeCache.taricAdditionalCodes,
@@ -114,20 +125,23 @@ class ItemTypePageController @Inject()(
     }
   }
 
-  private def updateCachedItemTypeAddition(itemTypeInput: ItemType, itemTypeCache: ItemType): ItemType =
+  private def updateCachedItemTypeAddition(itemId: String, itemTypeInput: ItemType, itemTypeCache: ItemType): ItemType =
     itemTypeCache.copy(
       taricAdditionalCodes = itemTypeCache.taricAdditionalCodes ++ itemTypeInput.taricAdditionalCodes,
       nationalAdditionalCodes = itemTypeCache.nationalAdditionalCodes ++ itemTypeInput.nationalAdditionalCodes
     )
 
-  private def handleSaveAndContinue(itemTypeInput: ItemType, itemTypeCache: ItemType, hasFiscalReferences: Boolean)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = {
+  private def handleSaveAndContinue(
+    itemId: String,
+    itemTypeInput: ItemType,
+    itemTypeCache: ItemType,
+    hasFiscalReferences: Boolean
+  )(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val itemTypeUpdated = updateCachedItemTypeSaveAndContinue(itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnSaveAndContinue(itemTypeUpdated) match {
       case Valid =>
-        customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, itemTypeUpdated).map { _ =>
-          Redirect(controllers.declaration.routes.PackageInformationController.displayForm())
+        updateCacheModels(itemId, itemTypeUpdated).map { _ =>
+          Redirect(controllers.declaration.routes.PackageInformationController.displayPage(itemId))
         }
       case Invalid(errors) =>
         val formWithErrors =
@@ -135,6 +149,7 @@ class ItemTypePageController @Inject()(
         Future.successful(
           BadRequest(
             item_type(
+              itemId,
               adjustDataKeys(formWithErrors),
               hasFiscalReferences,
               itemTypeCache.taricAdditionalCodes,
@@ -169,7 +184,7 @@ class ItemTypePageController @Inject()(
       case (key, value)                                             => (key, value)
     })
 
-  private def handleRemoval(keys: Seq[String], itemTypeCached: ItemType, hasFiscalReferences: Boolean)(
+  private def handleRemoval(itemId: String, keys: Seq[String], itemTypeCached: ItemType, hasFiscalReferences: Boolean)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
     val key = keys.headOption.getOrElse("")
@@ -183,22 +198,23 @@ class ItemTypePageController @Inject()(
           nationalAdditionalCodes = removeElement(itemTypeCached.nationalAdditionalCodes, label.index)
         )
     }
-    customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, itemTypeUpdated).flatMap { _ =>
+    updateCacheModels(itemId, itemTypeUpdated).flatMap { _ =>
       val itemTypeInput: ItemType = ItemType.form.bindFromRequest().value.getOrElse(ItemType.empty)
-      refreshPage(itemTypeInput, hasFiscalReferences)
+      refreshPage(itemId, itemTypeInput, hasFiscalReferences)
     }
   }
 
   private def removeElement(collection: Seq[String], indexToRemove: Int): Seq[String] =
     collection.removeByIdx(indexToRemove)
 
-  private def refreshPage(itemTypeInput: ItemType, hasFiscalReferences: Boolean)(
+  private def refreshPage(itemId: String, itemTypeInput: ItemType, hasFiscalReferences: Boolean)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     customsCacheService.fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id).map {
       case Some(cachedData) =>
         Ok(
           item_type(
+            itemId,
             ItemType.form.fill(itemTypeInput),
             hasFiscalReferences,
             cachedData.taricAdditionalCodes,
@@ -206,7 +222,7 @@ class ItemTypePageController @Inject()(
           )
         )
       case _ =>
-        Ok(item_type(ItemType.form, hasFiscalReferences))
+        Ok(item_type(itemId, ItemType.form, hasFiscalReferences))
     }
 
   private case class Label(name: String, index: Int)
@@ -229,4 +245,26 @@ class ItemTypePageController @Inject()(
     customsCacheService
       .fetchAndGetEntry[FiscalInformation](goodsItemCacheId, FiscalInformation.formId)
       .map(_.fold(false)(_.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes))
+
+  private def updateCacheModels(itemId: String, updatedCache: ItemType)(implicit journeyRequest: JourneyRequest[_]) =
+    for {
+      _ <- updateExportsCache(itemId, journeySessionId, updatedCache)
+      _ <- customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, updatedCache)
+    } yield ()
+
+  private def updateExportsCache(
+    itemId: String,
+    sessionId: String,
+    updatedItem: ItemType
+  ): Future[Either[String, ExportsCacheModel]] =
+    getAndUpdateExportCacheModel(
+      sessionId,
+      model => {
+        val item: Option[ExportItem] = model.items
+          .find(item => item.id.equals(itemId))
+          .map(_.copy(itemType = Some(updatedItem)))
+        val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+        exportsCacheService.update(sessionId, model.copy(items = itemList))
+      }
+    )
 }

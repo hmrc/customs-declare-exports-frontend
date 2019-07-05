@@ -16,13 +16,34 @@
 
 package services.cache
 
-import java.util.UUID
-
-import forms.declaration.ProcedureCodes
+import forms.declaration.{
+  AdditionalFiscalReferencesData,
+  CommodityMeasure,
+  FiscalInformation,
+  ItemType,
+  PackageInformation
+}
+import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import org.apache.commons.lang3.RandomStringUtils
 import play.api.libs.json.Json
 
-case class ExportItem(id: UUID = UUID.randomUUID(), procedureCodes: Option[ProcedureCodes] = None)
+case class ExportItem(
+  id: String = ExportItem.generateId(),
+  procedureCodes: Option[ProcedureCodesData] = None,
+  fiscalInformation: Option[FiscalInformation] = None,
+  additionalFiscalReferencesData: Option[AdditionalFiscalReferencesData] = None,
+  itemType: Option[ItemType] = None,
+  packageInformation: List[PackageInformation] = Nil,
+  commodityMeasure: Option[CommodityMeasure] = None,
+  additionalInformation: Option[AdditionalInformationData] = None,
+  documentsProducedData: Option[DocumentsProducedData] = None
+)
 
 object ExportItem {
+  // http://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/RandomStringUtils.html
+  // no longer deprecated http://commons.apache.org/proper/commons-lang/javadocs/api-3.9/org/apache/commons/lang3/RandomStringUtils.html
+  // https://issues.apache.org/jira/browse/LANG-1346
+  def generateId(): String = RandomStringUtils.random(8, "0123456789abcdefg")
+
   implicit val format = Json.format[ExportItem]
 }

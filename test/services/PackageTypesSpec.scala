@@ -22,18 +22,18 @@ import uk.gov.hmrc.play.test.UnitSpec
 class PackageTypesSpec extends UnitSpec {
 
   "Package type list" should {
-    
+
     "return package types containing commas and quotes" in {
       val somePackageTypes = PackageTypes.all.filter(_.code == "43")
-      
+
       somePackageTypes shouldBe List(PackageType("43", "Bag, super bulk"))
     }
 
     "return package types' with codes in alphabetical order of name" in {
       val expectedCodes = Set("43", "AD", "ZZ")
-      
+
       val somePackageTypes = PackageTypes.all.filter(packageType => expectedCodes.contains(packageType.code))
-      
+
       somePackageTypes shouldBe List(
         PackageType("43", "Bag, super bulk"),
         PackageType("ZZ", "Defined mutually"),

@@ -22,10 +22,13 @@ import controllers.util.CacheIdGenerator.goodsItemCacheId
 import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation.{form, formId}
 import javax.inject.Inject
+import models.declaration.ProcedureCodesData
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.CustomsCacheService
+import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.fiscal_information
 
@@ -35,32 +38,54 @@ class FiscalInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
+  exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends {
+  val cacheService = exportsCacheService
+} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[FiscalInformation](goodsItemCacheId, formId).map {
-      case Some(data) => Ok(fiscal_information(form.fill(data)))
-      case _          => Ok(fiscal_information(form))
+      case Some(data) => Ok(fiscal_information(itemId, form.fill(data)))
+      case _          => Ok(fiscal_information(itemId, form))
     }
   }
 
-  def saveFiscalInformation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form()
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[FiscalInformation]) => Future.successful(BadRequest(fiscal_information(formWithErrors))),
-        validFiscalInformation =>
-          customsCacheService
-            .cache[FiscalInformation](goodsItemCacheId, formId, validFiscalInformation)
-            .map(_ => specifyNextPage(validFiscalInformation))
-      )
+  def saveFiscalInformation(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
+    implicit request =>
+      form()
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[FiscalInformation]) =>
+            Future.successful(BadRequest(fiscal_information(itemId, formWithErrors))),
+          validFiscalInformation => updateCacheModelsAndRedirect(itemId, validFiscalInformation)
+        )
   }
 
-  private def specifyNextPage(answer: FiscalInformation): Result =
+  private def updateCacheModelsAndRedirect(itemId: String, validFiscalInformation: FiscalInformation)(
+    implicit journeyRequest: JourneyRequest[_]
+  ) =
+    for {
+      _ <- customsCacheService.cache[FiscalInformation](goodsItemCacheId, formId, validFiscalInformation)
+      _ <- updateExportsCache(itemId, journeySessionId, validFiscalInformation)
+    } yield specifyNextPage(itemId, validFiscalInformation)
+
+  private def specifyNextPage(itemId: String, answer: FiscalInformation): Result =
     if (answer.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes)
-      Redirect(routes.AdditionalFiscalReferencesController.displayPage())
-    else Redirect(routes.ItemTypePageController.displayPage())
+      Redirect(routes.AdditionalFiscalReferencesController.displayPage(itemId))
+    else Redirect(routes.ItemTypePageController.displayPage(itemId))
+
+  private def updateExportsCache(
+    itemId: String,
+    sessionId: String,
+    updatedFiscalInformation: FiscalInformation
+  ): Future[Either[String, ExportsCacheModel]] =
+    getAndUpdateExportCacheModel(sessionId, model => {
+      val item: Option[ExportItem] =
+        model.items.find(item => item.id.equals(itemId)).map(_.copy(fiscalInformation = Some(updatedFiscalInformation)))
+      val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+      exportsCacheService.update(sessionId, model.copy(items = itemList))
+    })
 
 }

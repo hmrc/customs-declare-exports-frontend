@@ -193,7 +193,7 @@ class DestinationCountriesController @Inject()(
     for {
       _ <- updateCache(journeySessionId, updatedCache)
       _ <- customsCacheService.cache[DestinationCountries](cacheId, formId, updatedCache)
-    result <- refreshPage(Standard.form.bindFromRequest().value.getOrElse(DestinationCountries.empty()))
+      result <- refreshPage(Standard.form.bindFromRequest().value.getOrElse(DestinationCountries.empty()))
     } yield result
   }
 
@@ -215,7 +215,7 @@ class DestinationCountriesController @Inject()(
     sessionId: String,
     formData: DestinationCountries
   ): Future[Either[String, ExportsCacheModel]] =
-    updateHeaderLevelCache(
+    getAndUpdateExportCacheModel(
       sessionId,
       model =>
         cacheService

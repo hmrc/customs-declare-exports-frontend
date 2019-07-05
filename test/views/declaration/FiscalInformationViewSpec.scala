@@ -30,7 +30,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
   private def createView(form: Form[FiscalInformation] = form): Html =
-    fiscal_information(form)(fakeRequest.withCSRFToken, appConfig, messages)
+    fiscal_information(itemId, form)(fakeRequest.withCSRFToken, appConfig, messages)
 
   "Fiscal Information View" should {
 
@@ -78,7 +78,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be("/customs-declare-exports/declaration/procedure-codes")
+      backButton.attr("href") must be(s"/customs-declare-exports/declaration/items/$itemId/procedure-codes")
     }
 
     "display 'Save and continue' button" in {

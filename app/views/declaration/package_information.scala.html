@@ -22,7 +22,8 @@
 @import services.PackageTypes
 
 @import services.view.AutoCompleteItem
-@(form: Form[_], packages: Seq[PackageInformation])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@(itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @tableHeader = @{
     if(packages.size == 1) {
@@ -37,7 +38,7 @@
     appConfig = appConfig
 ) {
 
-    @components.back_link("/customs-declare-exports/declaration/item-type")
+    @components.back_link(routes.ItemTypePageController.displayPage(itemId).url)
 
     @components.error_summary(form.errors)
 
@@ -46,7 +47,7 @@
     @components.page_title(Some("supplementary.packageInformation.title"))
 
     @if(packages.nonEmpty) {
-        @helpers.form(routes.PackageInformationController.submitForm(), 'autoComplete -> "off") {
+        @helpers.form(routes.PackageInformationController.submitForm(itemId), 'autoComplete -> "off") {
             <table class="form-group">
                 <caption>@tableHeader</caption>
                 <thead>
@@ -75,7 +76,7 @@
         }
     }
 
-    @helpers.form(routes.PackageInformationController.submitForm(), 'autoComplete -> "off") {
+    @helpers.form(routes.PackageInformationController.submitForm(itemId), 'autoComplete -> "off") {
         @components.fields.field_autocomplete(
             field = form("typesOfPackages"),
             label = "supplementary.packageInformation.typesOfPackages",

@@ -86,9 +86,9 @@ class PreviousDocumentsController @Inject()(
               if (updatedCache != cache.documents)
                 customsCacheService
                   .cache[PreviousDocumentsData](cacheId, formId, PreviousDocumentsData(updatedCache))
-                  .map(_ => Redirect(controllers.declaration.routes.ItemsSummaryController.displayForm()))
+                  .map(_ => Redirect(controllers.declaration.routes.ItemsSummaryController.displayPage()))
               else
-                Future.successful(Redirect(controllers.declaration.routes.ItemsSummaryController.displayForm()))
+                Future.successful(Redirect(controllers.declaration.routes.ItemsSummaryController.displayPage()))
           )
         }
 

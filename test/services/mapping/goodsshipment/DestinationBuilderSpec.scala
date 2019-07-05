@@ -33,9 +33,7 @@ class DestinationBuilderSpec extends WordSpec with Matchers {
           implicit val cacheMap: CacheMap =
             CacheMap(
               "CacheID",
-              Map(
-                DestinationCountries.formId -> DestinationCountriesSpec.correctDestinationCountriesJSON
-              )
+              Map(DestinationCountries.formId -> DestinationCountriesSpec.correctDestinationCountriesJSON)
             )
           val destination = DestinationBuilder.build(cacheMap, ChoiceSpec.supplementaryChoice)
           destination.getCountryCode.getValue should be("PL")
@@ -44,9 +42,7 @@ class DestinationBuilderSpec extends WordSpec with Matchers {
           implicit val cacheMap: CacheMap =
             CacheMap(
               "CacheID",
-              Map(
-                DestinationCountries.formId -> DestinationCountriesSpec.emptyDestinationCountriesJSON
-              )
+              Map(DestinationCountries.formId -> DestinationCountriesSpec.emptyDestinationCountriesJSON)
             )
           DestinationBuilder.build(cacheMap, ChoiceSpec.supplementaryChoice) should be(null)
         }
@@ -64,10 +60,7 @@ class DestinationBuilderSpec extends WordSpec with Matchers {
         }
         "countryOfDestination has not been supplied" in {
           implicit val cacheMap: CacheMap =
-            CacheMap(
-              "CacheID",
-              Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("", Seq(""), "")))
-            )
+            CacheMap("CacheID", Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("", Seq(""), ""))))
           DestinationBuilder.build(cacheMap, ChoiceSpec.standardChoice) should be(null)
         }
       }

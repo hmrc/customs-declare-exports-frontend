@@ -17,24 +17,28 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
+import org.mockito.Mockito.reset
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import play.api.test.Helpers._
-import utils.FakeRequestCSRFSupport._
 
 class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
-
-  private val uri = uriWithContextPath("/declaration/additional-fiscal-references")
+  val cacheModel = createModel()
+  private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/additional-fiscal-references")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
-  private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   override def beforeEach() {
     authorizedUser()
+    withNewCaching(cacheModel)
     withCaching[AdditionalFiscalReferencesData](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  override def afterEach() {
+    reset(mockExportsCacheService, mockCustomsCacheService, mockAuthConnector)
   }
 
   "Additional Fiscal References Controller on GET" should {
@@ -75,7 +79,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       "form contains errors during adding item" in {
         val body = Seq(("country", "hello"), ("reference", "12345"), addActionUrlEncoded)
         val request =
-          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken
+          postRequestFormUrlEncoded(uri, body: _*)
 
         val Some(result) = route(app, request)
 
@@ -84,8 +88,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
 
       "form contains errors during saving" in {
         val body = Seq(("country", "hello"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
-        val request =
-          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken
+        val request = postRequestFormUrlEncoded(uri, body: _*)
 
         val Some(result) = route(app, request)
 
@@ -97,8 +100,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
 
       "user adds correct item" in {
         val body = Seq(("country", "FR"), ("reference", "12345"), addActionUrlEncoded)
-        val request =
-          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken
+        val request = postRequestFormUrlEncoded(uri, body: _*)
 
         val Some(result) = route(app, request)
 
@@ -111,8 +113,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
         withCaching[AdditionalFiscalReferencesData](Some(cachedData), AdditionalFiscalReferencesData.formId)
 
         val body = Seq(saveAndContinueActionUrlEncoded)
-        val request =
-          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken
+        val request = postRequestFormUrlEncoded(uri, body: _*)
 
         val Some(result) = route(app, request)
 
@@ -123,7 +124,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       "user clicks save with form filled" in {
         val body = Seq(("country", "FR"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
         val request =
-          postRequestFormUrlEncoded(uri, body: _*).withCSRFToken
+          postRequestFormUrlEncoded(uri, body: _*)
 
         val Some(result) = route(app, request)
 

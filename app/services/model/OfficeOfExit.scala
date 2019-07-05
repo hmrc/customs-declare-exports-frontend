@@ -16,4 +16,4 @@
 
 package services.model
 
-case class OfficeOfExit(code: String, description: String) 
+case class OfficeOfExit(code: String, description: String)
