@@ -33,7 +33,7 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
             "CacheID",
             Map(
               GoodsLocation.formId ->
-                GoodsLocationSpec.correctGoodsLocationJSON,
+                GoodsLocationTestData.correctGoodsLocationJSON,
               BorderTransport.formId ->
                 Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
               TransportDetails.formId -> Json
@@ -66,7 +66,7 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
             "CacheID",
             Map(
               GoodsLocation.formId ->
-                GoodsLocationSpec.correctGoodsLocationJSON,
+                GoodsLocationTestData.correctGoodsLocationJSON,
               BorderTransport.formId ->
                 Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
               TransportDetails.formId -> Json

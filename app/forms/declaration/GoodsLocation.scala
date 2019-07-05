@@ -27,7 +27,7 @@ case class GoodsLocation(
   typeOfLocation: String,
   qualifierOfIdentification: String,
   identificationOfLocation: Option[String],
-  additionalIdentifier: Option[String],
+  additionalQualifier: Option[String],
   addressLine: Option[String],
   postCode: Option[String],
   city: Option[String]
@@ -65,10 +65,10 @@ object GoodsLocation {
           isEmpty or (isAlphanumeric and hasSpecificLength(3))
         )
     ),
-    "additionalIdentifier" -> optional(
+    "additionalQualifier" -> optional(
       text()
         .verifying(
-          "supplementary.goodsLocation.additionalIdentifier.error",
+          "supplementary.goodsLocation.additionalQualifier.error",
           input => isAlphanumeric(input.replaceAll(" ", "")) and noLongerThan(32)(input)
         )
     ),

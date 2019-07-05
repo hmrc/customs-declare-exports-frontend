@@ -15,31 +15,33 @@
  */
 
 package services.mapping.goodsshipment.consignment
-import forms.declaration.{GoodsLocation, GoodsLocationSpec}
+import forms.declaration.GoodsLocation
+import forms.declaration.GoodsLocationTestData.correctGoodsLocationJSON
 import org.scalatest.{Matchers, WordSpec}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class GoodsLocationBuilderSpec extends WordSpec with Matchers {
 
   "GoodsLocationBuilder" should {
-    "correctly map GoodsLocation instance for supplementary journey " when {
+    
+    "correctly map GoodsLocation instance for supplementary journey" when {
+     
       "all data is supplied" in {
+        
         implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(
-              GoodsLocation.formId ->
-                GoodsLocationSpec.correctGoodsLocationJSON
-            )
-          )
+          CacheMap("CacheID", Map(GoodsLocation.formId -> correctGoodsLocationJSON))
+        
         val goodsLocation = GoodsLocationBuilder.build
-        goodsLocation.getID.getValue should be("9GB1234567ABCDEF")
-        goodsLocation.getAddress.getLine.getValue should be("Address Line")
-        goodsLocation.getAddress.getCityName.getValue should be("Town or City")
-        goodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
-        goodsLocation.getAddress.getCountryCode.getValue should be("PL")
-        goodsLocation.getName.getValue should be("LOC")
-        goodsLocation.getTypeCode.getValue should be("T")
+        goodsLocation.getID.getValue shouldBe "LOC"
+        goodsLocation.getAddress.getLine.getValue shouldBe "Address Line"
+        goodsLocation.getAddress.getCityName.getValue shouldBe "Town or City"
+        goodsLocation.getAddress.getPostcodeID.getValue shouldBe "AB12 CD3"
+        goodsLocation.getAddress.getCountryCode.getValue shouldBe "PL"
+        goodsLocation
+          .getName
+          .getValue shouldBe "9GB1234567ABCDEF"
+        goodsLocation.getTypeCode.getValue shouldBe "T"
+        goodsLocation.getAddress.getTypeCode shouldBe "Y"
       }
     }
   }

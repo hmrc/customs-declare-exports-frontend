@@ -19,13 +19,13 @@ package forms.declaration
 import base.TestHelper
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-object GoodsLocationSpec {
+object GoodsLocationTestData {
   val correctGoodsLocation = GoodsLocation(
     country = "United Kingdom",
     typeOfLocation = "T",
-    qualifierOfIdentification = "Q",
+    qualifierOfIdentification = "Y",
     identificationOfLocation = Some("LOC"),
-    additionalIdentifier = Some("Additional Identifier"),
+    additionalQualifier = Some("Additional Identifier"),
     addressLine = Some("Street and Number"),
     postCode = Some("Postcode"),
     city = Some("City")
@@ -35,7 +35,7 @@ object GoodsLocationSpec {
     typeOfLocation = "",
     qualifierOfIdentification = "",
     identificationOfLocation = None,
-    additionalIdentifier = None,
+    additionalQualifier = None,
     addressLine = None,
     postCode = None,
     city = None
@@ -43,14 +43,14 @@ object GoodsLocationSpec {
 
   val correctGoodsLocationJSON: JsValue = JsObject(
     Map(
-      "country" -> JsString("Poland"),
-      "typeOfLocation" -> JsString("T"),
-      "qualifierOfIdentification" -> JsString("Q"),
       "identificationOfLocation" -> JsString("LOC"),
-      "additionalIdentifier" -> JsString("9GB1234567ABCDEF"),
       "addressLine" -> JsString("Address Line"),
+      "city" -> JsString("Town or City"),
       "postCode" -> JsString("AB12 CD3"),
-      "city" -> JsString("Town or City")
+      "country" -> JsString("Poland"),
+      "additionalQualifier" -> JsString("9GB1234567ABCDEF"),
+      "typeOfLocation" -> JsString("T"),
+      "qualifierOfIdentification" -> JsString("Y")
     )
   )
   val emptyGoodsLocationJSON: JsValue = JsObject(
@@ -59,7 +59,7 @@ object GoodsLocationSpec {
       "typeOfLocation" -> JsString(""),
       "qualifierOfIdentification" -> JsString(""),
       "identificationOfLocation" -> JsString(""),
-      "additionalIdentifier" -> JsString(""),
+      "additionalQualifier" -> JsString(""),
       "addressLine" -> JsString(""),
       "postCode" -> JsString(""),
       "city" -> JsString("")
@@ -71,7 +71,7 @@ object GoodsLocationSpec {
       "typeOfLocation" -> JsString(TestHelper.createRandomAlphanumericString(2)),
       "qualifierOfIdentification" -> JsString(TestHelper.createRandomAlphanumericString(2)),
       "identificationOfLocation" -> JsString(TestHelper.createRandomAlphanumericString(4)),
-      "additionalIdentifier" -> JsString(TestHelper.createRandomAlphanumericString(33)),
+      "additionalQualifier" -> JsString(TestHelper.createRandomAlphanumericString(33)),
       "addressLine" -> JsString(TestHelper.createRandomAlphanumericString(71)),
       "postCode" -> JsString(TestHelper.createRandomAlphanumericString(10)),
       "city" -> JsString(TestHelper.createRandomAlphanumericString(36))

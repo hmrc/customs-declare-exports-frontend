@@ -47,7 +47,7 @@
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.additionalQualifier"),
-        value = locations.flatMap(_.goodsLocation).map(_.additionalIdentifier)
+        value = locations.flatMap(_.goodsLocation).map(_.additionalQualifier)
     ))
     @components.table_row_no_change_link(HtmlTableRow(
         label = messages("supplementary.summary.locations.goodsExaminationAddress"),

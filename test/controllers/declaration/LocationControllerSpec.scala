@@ -20,7 +20,7 @@ import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.GoodsLocation
-import forms.declaration.GoodsLocationSpec._
+import forms.declaration.GoodsLocationTestData._
 import helpers.views.declaration.LocationOfGoodsMessages
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
