@@ -17,7 +17,7 @@
 package services.audit
 
 import base.CustomExportsBaseSpec
-import models.declaration.SupplementaryDeclarationDataSpec.cacheMapAllRecords
+import models.declaration.SupplementaryDeclarationTestData.cacheMapAllRecords
 import org.mockito.ArgumentMatchers
 import org.scalatest.OptionValues
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}

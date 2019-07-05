@@ -24,7 +24,7 @@ import forms.declaration.DestinationCountriesSpec._
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import forms.declaration.DispatchLocationSpec._
 import forms.declaration.ExporterDetailsSpec._
-import forms.declaration.GoodsLocationTestData._
+import forms.declaration.   GoodsLocationTestData._
 import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
@@ -53,8 +53,8 @@ import services.ExportsItemsCacheIds
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilderSpec
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
-  import SupplementaryDeclarationDataSpec._
+class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
+  import SupplementaryDeclarationTestData._
 
   "Method apply(CacheMap)" should {
     "return SupplementaryDeclarationDataSpec" which {
@@ -227,7 +227,7 @@ class SupplementaryDeclarationDataSpec extends WordSpec with MustMatchers {
   }
 }
 
-object SupplementaryDeclarationDataSpec {
+object SupplementaryDeclarationTestData {
   lazy val cacheMapAllRecords = CacheMap(
     id = "CacheID",
     data = Map(

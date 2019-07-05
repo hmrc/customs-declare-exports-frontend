@@ -21,7 +21,7 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.ConsignmentReferencesSpec.correctConsignmentReferencesJSON
 import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
-import models.declaration.SupplementaryDeclarationDataSpec
+import models.declaration.SupplementaryDeclarationTestData
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.verification.VerificationMode
@@ -97,7 +97,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
       "display content for Parties module" in new Test {
         when(mockCustomsCacheService.fetch(anyString())(any(), any()))
-          .thenReturn(Future.successful(Some(SupplementaryDeclarationDataSpec.cacheMapAllRecords)))
+          .thenReturn(Future.successful(Some(SupplementaryDeclarationTestData.cacheMapAllRecords)))
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.parties.header"))
@@ -141,7 +141,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
       "display containers content with cache available" in new Test {
         when(mockCustomsCacheService.fetch(anyString())(any(), any()))
-          .thenReturn(Future.successful(Some(SupplementaryDeclarationDataSpec.cacheMapAllRecords)))
+          .thenReturn(Future.successful(Some(SupplementaryDeclarationTestData.cacheMapAllRecords)))
 
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
@@ -172,7 +172,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
       "display error page" in new Test {
         val cachedData = CacheMap(
           id = eoriForCache,
-          data = SupplementaryDeclarationDataSpec.cacheMapAllRecords.data - ConsignmentReferences.id
+          data = SupplementaryDeclarationTestData.cacheMapAllRecords.data - ConsignmentReferences.id
         )
         when(mockCustomsCacheService.fetch(anyString())(any(), any()))
           .thenReturn(Future.successful(Some(cachedData)))

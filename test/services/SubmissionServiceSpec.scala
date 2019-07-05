@@ -19,7 +19,7 @@ package services
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice.AllowedChoiceValues
 import metrics.MetricIdentifiers
-import models.declaration.SupplementaryDeclarationDataSpec._
+import models.declaration.SupplementaryDeclarationTestData._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}

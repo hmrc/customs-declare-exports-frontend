@@ -17,7 +17,7 @@
 package services.mapping.goodsshipment
 
 import forms.ChoiceSpec.supplementaryChoice
-import models.declaration.SupplementaryDeclarationDataSpec
+import models.declaration.SupplementaryDeclarationTestData._
 import org.scalatest.{Matchers, WordSpec}
 
 class GoodsShipmentBuilderSpec extends WordSpec with Matchers {
@@ -25,8 +25,7 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers {
   "GoodsShipmentBuilder" should {
     
     "correctly map to the WCO-DEC GoodsShipment instance" in {
-      val goodsShipment =
-        GoodsShipmentBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
+      val goodsShipment = GoodsShipmentBuilder.build(cacheMapAllRecords, supplementaryChoice)
       goodsShipment.getTransactionNatureCode.getValue should be("1")
 
       goodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")
@@ -37,7 +36,7 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers {
       goodsShipment.getConsignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
       goodsShipment.getConsignee.getAddress.getCountryCode.getValue should be("PL")
 
-      goodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
+      goodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("LOC")
 
       goodsShipment.getDestination.getCountryCode.getValue should be("PL")
 

@@ -16,7 +16,7 @@
 
 package services.mapping.declaration
 import forms.ChoiceSpec.supplementaryChoice
-import models.declaration.SupplementaryDeclarationDataSpec
+import models.declaration.SupplementaryDeclarationTestData
 import org.scalatest.{Matchers, WordSpec}
 import wco.datamodel.wco.dec_dms._2.Declaration
 
@@ -25,25 +25,25 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
   "DeclarationBuilder" should {
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance" in {
       val declaration =
-        DeclarationBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
+        DeclarationBuilder.build(SupplementaryDeclarationTestData.cacheMapAllRecords, supplementaryChoice)
 
       declaration.getAgent.getID.getValue should be("9GB1234567ABCDEF")
-      declaration.getAgent.getName should be(null)
-      declaration.getAgent.getAddress should be(null)
+      declaration.getAgent.getName shouldBe null
+      declaration.getAgent.getAddress shouldBe null
       declaration.getAgent.getFunctionCode.getValue should be("2")
 
       declaration.getBorderTransportMeans.getID.getValue should be("1234567878ui")
       declaration.getBorderTransportMeans.getIdentificationTypeCode.getValue should be("40")
       declaration.getBorderTransportMeans.getRegistrationNationalityCode.getValue should be("PT")
       declaration.getBorderTransportMeans.getModeCode.getValue should be("3")
-      declaration.getBorderTransportMeans.getName should be(null)
-      declaration.getBorderTransportMeans.getTypeCode should be(null)
+      declaration.getBorderTransportMeans.getName shouldBe null
+      declaration.getBorderTransportMeans.getTypeCode shouldBe null
 
       declaration.getCurrencyExchange.get(0).getRateNumeric.doubleValue() should be(1212121.12345)
 
       declaration.getDeclarant.getID.getValue should be("9GB1234567ABCDEF")
-      declaration.getDeclarant.getName should be(null)
-      declaration.getDeclarant.getAddress should be(null)
+      declaration.getDeclarant.getName shouldBe null
+      declaration.getDeclarant.getAddress shouldBe null
 
       declaration.getExitOffice.getID.getValue should be("123qwe12")
 
@@ -63,9 +63,9 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
       declaration.getInvoiceAmount.getValue.doubleValue() should be(1212312.12)
       declaration.getInvoiceAmount.getCurrencyID should be("GBP")
 
-      declaration.getPresentationOffice should be(null)
+      declaration.getPresentationOffice shouldBe null
 
-      declaration.getSpecificCircumstancesCodeCode should be(null)
+      declaration.getSpecificCircumstancesCodeCode shouldBe null
 
       declaration.getSupervisingOffice.getID.getValue should be("12345678")
 
@@ -87,21 +87,21 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
     declaration.getGoodsShipment.getConsignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
     declaration.getGoodsShipment.getConsignee.getAddress.getCountryCode.getValue should be("PL")
 
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getName.getValue should be("LOC")
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("LOC")
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getName.getValue should be("9GB1234567ABCDEF")
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getLine.getValue should be("Address Line")
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getCityName.getValue should be(
       "Town or City"
     )
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getCountryCode.getValue should be("PL")
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getTypeCode should be(null)
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getTypeCode.getValue shouldBe "Y"
 
     declaration.getGoodsShipment.getDestination.getCountryCode.getValue should be("PL")
 
     declaration.getGoodsShipment.getExportCountry.getID.getValue should be("PL")
 
-    declaration.getGoodsShipment.getUCR.getID should be(null)
+    declaration.getGoodsShipment.getUCR.getID shouldBe null
     declaration.getGoodsShipment.getUCR.getTraderAssignedReferenceID.getValue should be(
       "8GB123456789012-1234567890QWERTYUIO"
     )

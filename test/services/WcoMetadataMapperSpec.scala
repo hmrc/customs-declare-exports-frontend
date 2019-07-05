@@ -18,7 +18,7 @@ package services
 
 import forms.ChoiceSpec.supplementaryChoice
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
-import models.declaration.SupplementaryDeclarationDataSpec
+import models.declaration.SupplementaryDeclarationTestData
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.io.Source
@@ -29,7 +29,7 @@ class WcoMetadataMapperSpec extends WordSpec with Matchers with SchemaValidation
     
     "produce metadata" in {
       val mapper = new WcoMetadataMapper
-      val metaData = mapper.produceMetaData(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
+      val metaData = mapper.produceMetaData(SupplementaryDeclarationTestData.cacheMapAllRecords, supplementaryChoice)
 
       metaData.getWCOTypeName.getValue shouldBe SchemaMandatoryValues.wcoTypeName
       metaData.getWCODataModelVersionCode.getValue shouldBe SchemaMandatoryValues.wcoDataModelVersionCode
@@ -41,21 +41,21 @@ class WcoMetadataMapperSpec extends WordSpec with Matchers with SchemaValidation
 
     "retrieve a DUCR based on the produced metadata" in {
       val mapper = new WcoMetadataMapper
-      val metaData = mapper.produceMetaData(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
+      val metaData = mapper.produceMetaData(SupplementaryDeclarationTestData.cacheMapAllRecords, supplementaryChoice)
 
       mapper.declarationUcr(metaData) should be(Some("8GB123456789012-1234567890QWERTYUIO"))
     }
 
     "retrieve a LRN based on the produced metadata" in {
       val mapper = new WcoMetadataMapper
-      val metaData = mapper.produceMetaData(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
+      val metaData = mapper.produceMetaData(SupplementaryDeclarationTestData.cacheMapAllRecords, supplementaryChoice)
 
       mapper.declarationLrn(metaData) should be(Some("123LRN"))
     }
 
     "marshall the metadata correctly" in {
       val mapper = new WcoMetadataMapper
-      val metaData = mapper.produceMetaData(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
+      val metaData = mapper.produceMetaData(SupplementaryDeclarationTestData.cacheMapAllRecords, supplementaryChoice)
 
       mapper.toXml(metaData) should include(Source.fromURL(getClass.getResource("/wco_dec_metadata.xml")).mkString)
 
