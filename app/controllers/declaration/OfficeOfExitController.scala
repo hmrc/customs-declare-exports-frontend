@@ -107,7 +107,11 @@ class OfficeOfExitController @Inject()(
   ): Future[Either[String, ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
-      model => cacheService.update(sessionId, model.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
+      model =>
+        cacheService.update(
+          sessionId,
+          model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
+      )
     )
 
   private def updateCache(
@@ -116,6 +120,10 @@ class OfficeOfExitController @Inject()(
   ): Future[Either[String, ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
-      model => cacheService.update(sessionId, model.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
+      model =>
+        cacheService.update(
+          sessionId,
+          model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
+      )
     )
 }
