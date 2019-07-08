@@ -32,14 +32,14 @@ class GoodsLocationBuilderSpec extends WordSpec with Matchers {
           CacheMap("CacheID", Map(GoodsLocation.formId -> correctGoodsLocationJSON))
         
         val goodsLocation = GoodsLocationBuilder.build
-        goodsLocation.getID.getValue shouldBe "LOC"
-        goodsLocation.getAddress.getLine.getValue shouldBe "Address Line"
-        goodsLocation.getAddress.getCityName.getValue shouldBe "Town or City"
-        goodsLocation.getAddress.getPostcodeID.getValue shouldBe "AB12 CD3"
-        goodsLocation.getAddress.getCountryCode.getValue shouldBe "PL"
-        goodsLocation.getName.getValue shouldBe "9GB1234567ABCDEF"
-        goodsLocation.getTypeCode.getValue shouldBe "T"
-        goodsLocation.getAddress.getTypeCode.getValue shouldBe "Y"
+        goodsLocation.getID.getValue should be ("LOC")
+        goodsLocation.getAddress.getLine.getValue should be ("Address Line")
+        goodsLocation.getAddress.getCityName.getValue should be ("Town or City")
+        goodsLocation.getAddress.getPostcodeID.getValue should be ("AB12 CD3")
+        goodsLocation.getAddress.getCountryCode.getValue should be ("PL")
+        goodsLocation.getName.getValue should be ("9GB1234567ABCDEF")
+        goodsLocation.getTypeCode.getValue should be ("T")
+        goodsLocation.getAddress.getTypeCode.getValue should be ("Y")
       }
     }
   }
