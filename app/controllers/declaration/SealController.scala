@@ -21,8 +21,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
-import forms.declaration.{Seal, TransportDetails}
 import forms.declaration.Seal._
+import forms.declaration.{Seal, TransportDetails}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
@@ -30,6 +30,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.seal
 
@@ -39,17 +40,18 @@ class SealController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  cacheService: CustomsCacheService,
+  customsCacheService: CustomsCacheService,
+  override val cacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   sealPage: seal
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService
+    customsCacheService
       .fetchAndGetEntry[Seq[Seal]](cacheId, formId)
       .flatMap { seals =>
-        cacheService
+        customsCacheService
           .fetchAndGetEntry[TransportDetails](cacheId, TransportDetails.formId)
           .map(data => Ok(sealPage(form, seals.getOrElse(Seq.empty), data.fold(false)(_.container))))
       }
@@ -58,7 +60,7 @@ class SealController @Inject()(
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
-    cacheService
+    customsCacheService
       .fetchAndGetEntry[Seq[Seal]](cacheId, formId)
       .flatMap(cache => processRequest(cache.getOrElse(Seq.empty), actionTypeOpt))
   }
@@ -68,13 +70,10 @@ class SealController @Inject()(
   ): Future[Result] = {
     val boundForm = form.bindFromRequest()
     action match {
-      case Some(Add) => addSeal(boundForm, sealsAllowed, cachedSeals)
-
-      case Some(Remove(ids)) => removeSeal(cachedSeals, ids)
-
+      case Some(Add)             => addSeal(boundForm, sealsAllowed, cachedSeals)
+      case Some(Remove(ids))     => removeSeal(cachedSeals, ids)
       case Some(SaveAndContinue) => saveSeal(boundForm, sealsAllowed, cachedSeals)
-
-      case _ => errorHandler.displayErrorPage()
+      case _                     => errorHandler.displayErrorPage()
     }
   }
 
@@ -86,9 +85,10 @@ class SealController @Inject()(
       formWithErrors => badRequest(formWithErrors, cachedSeals),
       updatedCache =>
         if (updatedCache != cachedSeals)
-          cacheService
-            .cache[Seq[Seal]](cacheId, formId, updatedCache)
-            .map(_ => Redirect(routes.SummaryPageController.displayPage()))
+          for {
+            _ <- updateCache(journeySessionId, updatedCache)
+            _ <- customsCacheService.cache[Seq[Seal]](cacheId, formId, updatedCache)
+          } yield Redirect(routes.SummaryPageController.displayPage())
         else Future.successful(Redirect(routes.SummaryPageController.displayPage()))
     )
 
@@ -108,12 +108,16 @@ class SealController @Inject()(
     formWithErrors: Form[Seal],
     cachedSeals: Seq[Seal]
   )(implicit request: JourneyRequest[_], appConfig: AppConfig) =
-    cacheService
+    customsCacheService
       .fetchAndGetEntry[TransportDetails](cacheId, TransportDetails.formId)
       .map(data => BadRequest(sealPage(formWithErrors, cachedSeals, data.fold(false)(_.container))))
 
   private def cacheAndRedirect(seals: Seq[Seal])(implicit request: JourneyRequest[_]): Future[Result] =
-    cacheService
-      .cache[Seq[Seal]](cacheId, formId, seals)
-      .map(_ => Redirect(routes.SealController.displayForm()))
+    for {
+      _ <- updateCache(journeySessionId, seals)
+      _ <- customsCacheService.cache[Seq[Seal]](cacheId, formId, seals)
+    } yield Redirect(routes.SealController.displayForm())
+
+  private def updateCache(sessionId: String, formData: Seq[Seal]): Future[Either[String, ExportsCacheModel]] =
+    getAndUpdateExportCacheModel(sessionId, model => cacheService.update(sessionId, model.copy(seals = formData)))
 }
