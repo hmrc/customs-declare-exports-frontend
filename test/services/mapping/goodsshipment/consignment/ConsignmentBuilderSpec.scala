@@ -34,7 +34,9 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
             Map(
               GoodsLocation.formId -> GoodsLocationTestData.correctGoodsLocationJSON,
               BorderTransport.formId -> Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
-              TransportDetails.formId -> Json.toJson(TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))),
+              TransportDetails.formId -> Json.toJson(
+                TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))
+              ),
               WarehouseIdentification.formId -> WarehouseIdentificationSpec.correctWarehouseIdentificationJSON,
               Seal.formId -> Json.toJson(Seq(Seal("first"), Seal("second")))
             )
