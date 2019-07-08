@@ -16,7 +16,7 @@
 
 package services.mapping.declaration
 import forms.ChoiceSpec.supplementaryChoice
-import models.declaration.SupplementaryDeclarationDataSpec
+import models.declaration.SupplementaryDeclarationTestData
 import org.scalatest.{Matchers, WordSpec}
 import wco.datamodel.wco.dec_dms._2.Declaration
 
@@ -25,7 +25,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
   "DeclarationBuilder" should {
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance" in {
       val declaration =
-        DeclarationBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
+        DeclarationBuilder.build(SupplementaryDeclarationTestData.cacheMapAllRecords, supplementaryChoice)
 
       declaration.getAgent.getID.getValue should be("9GB1234567ABCDEF")
       declaration.getAgent.getName should be(null)
@@ -87,15 +87,15 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
     declaration.getGoodsShipment.getConsignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
     declaration.getGoodsShipment.getConsignee.getAddress.getCountryCode.getValue should be("PL")
 
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getName.getValue should be("LOC")
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("LOC")
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getName.getValue should be("9GB1234567ABCDEF")
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getLine.getValue should be("Address Line")
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getCityName.getValue should be(
       "Town or City"
     )
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getCountryCode.getValue should be("PL")
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getTypeCode should be(null)
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getTypeCode.getValue should be("Y")
 
     declaration.getGoodsShipment.getDestination.getCountryCode.getValue should be("PL")
 

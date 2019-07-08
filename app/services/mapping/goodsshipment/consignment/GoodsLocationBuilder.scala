@@ -31,7 +31,7 @@ object GoodsLocationBuilder {
       .orNull
 
   private def isDefined(goodsLocation: GoodsLocation) =
-    goodsLocation.additionalIdentifier.isDefined ||
+    goodsLocation.additionalQualifier.isDefined ||
       goodsLocation.postCode.isDefined ||
       goodsLocation.country.nonEmpty ||
       goodsLocation.city.nonEmpty ||
@@ -43,10 +43,11 @@ object GoodsLocationBuilder {
   private def buildEoriOrAddress(goods: GoodsLocation) = {
     val goodsLocation = new Consignment.GoodsLocation()
 
-    goods.additionalIdentifier.foreach { value =>
-      val id = new GoodsLocationIdentificationIDType()
-      id.setValue(value)
-      goodsLocation.setID(id)
+    goods.additionalQualifier.foreach { value =>
+      val name = new GoodsLocationNameTextType()
+      name.setValue(value)
+      goodsLocation.setName(name)
+
     }
 
     if (goods.typeOfLocation.nonEmpty) {
@@ -56,9 +57,9 @@ object GoodsLocationBuilder {
     }
 
     goods.identificationOfLocation.foreach { value =>
-      val name = new GoodsLocationNameTextType()
-      name.setValue(value)
-      goodsLocation.setName(name)
+      val id = new GoodsLocationIdentificationIDType()
+      id.setValue(value)
+      goodsLocation.setID(id)
     }
 
     if (goods.addressLine.isDefined || goods.city.isDefined || goods.postCode.isDefined || goods.country.nonEmpty) {
@@ -92,10 +93,16 @@ object GoodsLocationBuilder {
     if (goods.country.nonEmpty) {
       val countryCode = new AddressCountryCodeType
       countryCode.setValue(
-        allCountries.find(country => goods.country.contains(country.countryName)).map(_.countryCode).getOrElse("")
+        allCountries.find(c => goods.country.contains(c.countryName)).map(_.countryCode).getOrElse("")
       )
       goodsAddress.setCountryCode(countryCode)
     }
+
+    val qualifier = goods.qualifierOfIdentification
+    val addressTypeCode = new AddressTypeCodeType()
+    addressTypeCode.setValue(qualifier)
+    goodsAddress.setTypeCode(addressTypeCode)
+
     goodsAddress
   }
 }

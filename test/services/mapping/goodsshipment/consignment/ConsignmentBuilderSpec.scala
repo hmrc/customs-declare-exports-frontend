@@ -32,12 +32,9 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
           CacheMap(
             "CacheID",
             Map(
-              GoodsLocation.formId ->
-                GoodsLocationSpec.correctGoodsLocationJSON,
-              BorderTransport.formId ->
-                Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
-              TransportDetails.formId -> Json
-                .toJson(TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))),
+              GoodsLocation.formId -> GoodsLocationTestData.correctGoodsLocationJSON,
+              BorderTransport.formId -> Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
+              TransportDetails.formId -> Json.toJson(TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))),
               WarehouseIdentification.formId -> WarehouseIdentificationSpec.correctWarehouseIdentificationJSON,
               Seal.formId -> Json.toJson(Seq(Seal("first"), Seal("second")))
             )
@@ -46,8 +43,8 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
 
         consignment.getContainerCode.getValue should be("1")
 
-        consignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
-        consignment.getGoodsLocation.getName.getValue should be("LOC")
+        consignment.getGoodsLocation.getID.getValue should be("LOC")
+        consignment.getGoodsLocation.getName.getValue should be("9GB1234567ABCDEF")
         consignment.getGoodsLocation.getAddress.getLine.getValue should be("Address Line")
         consignment.getGoodsLocation.getAddress.getCityName.getValue should be("Town or City")
         consignment.getGoodsLocation.getAddress.getCountryCode.getValue should be("PL")
@@ -66,7 +63,7 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
             "CacheID",
             Map(
               GoodsLocation.formId ->
-                GoodsLocationSpec.correctGoodsLocationJSON,
+                GoodsLocationTestData.correctGoodsLocationJSON,
               BorderTransport.formId ->
                 Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
               TransportDetails.formId -> Json
@@ -79,8 +76,8 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
 
         consignment.getContainerCode.getValue should be("1")
 
-        consignment.getGoodsLocation.getID.getValue should be("9GB1234567ABCDEF")
-        consignment.getGoodsLocation.getName.getValue should be("LOC")
+        consignment.getGoodsLocation.getID.getValue should be("LOC")
+        consignment.getGoodsLocation.getName.getValue should be("9GB1234567ABCDEF")
         consignment.getGoodsLocation.getAddress.getLine.getValue should be("Address Line")
         consignment.getGoodsLocation.getAddress.getCityName.getValue should be("Town or City")
         consignment.getGoodsLocation.getAddress.getCountryCode.getValue should be("PL")

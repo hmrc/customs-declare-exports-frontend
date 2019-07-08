@@ -18,7 +18,7 @@ package services.mapping
 import forms.ChoiceSpec.supplementaryChoice
 import javax.xml.bind.JAXBElement
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
-import models.declaration.SupplementaryDeclarationDataSpec
+import models.declaration.SupplementaryDeclarationTestData
 import org.scalatest.{Matchers, WordSpec}
 import wco.datamodel.wco.dec_dms._2.Declaration
 
@@ -26,7 +26,7 @@ class MetaDataBuilderSpec extends WordSpec with Matchers {
 
   "MetaDataBuilder" should {
     "build wco MetaData with correct defaultValues" in {
-      val metaData = MetaDataBuilder.build(SupplementaryDeclarationDataSpec.cacheMapAllRecords, supplementaryChoice)
+      val metaData = MetaDataBuilder.build(SupplementaryDeclarationTestData.cacheMapAllRecords, supplementaryChoice)
       metaData.getWCOTypeName.getValue shouldBe SchemaMandatoryValues.wcoTypeName
       metaData.getWCODataModelVersionCode.getValue shouldBe SchemaMandatoryValues.wcoDataModelVersionCode
       metaData.getResponsibleAgencyName.getValue shouldBe SchemaMandatoryValues.responsibleAgencyName

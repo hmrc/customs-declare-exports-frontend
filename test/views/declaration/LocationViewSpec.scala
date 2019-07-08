@@ -42,7 +42,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       assertMessage(typeOfLocation, "Location Type")
       assertMessage(qualifierOfIdent, "Qualifier code")
       assertMessage(identOfLocation, "Identification of location")
-      assertMessage(additionalIdentifier, "Location code and Additional Qualifier")
+      assertMessage(additionalQualifier, "Location code and Additional Qualifier")
       assertMessage(locationAddress, "Address Line 1")
       assertMessage(logPostCode, "Postcode")
       assertMessage(city, "City")
@@ -55,7 +55,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       assertMessage(qualifierOfIdentEmpty, "Qualifier of location cannot be empty")
       assertMessage(qualifierOfIdentError, "Qualifier of the identification is incorrect")
       assertMessage(identOfLocationError, "Identification of location is incorrect")
-      assertMessage(additionalIdentifierError, "Additional identifier is incorrect")
+      assertMessage(additionalQualifierError, "Additional identifier is incorrect")
       assertMessage(locationAddressError, "Address Line 1 is incorrect")
       assertMessage(logPostCodeError, "Postcode is incorrect")
       assertMessage(cityError, "City is incorrect")
@@ -115,8 +115,8 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
 
       val view = createView()
 
-      getElementById(view, "additionalIdentifier-label").text() must be(messages(additionalIdentifier))
-      getElementById(view, "additionalIdentifier").attr("value") must be("")
+      getElementById(view, "additionalQualifier-label").text() must be(messages(additionalQualifier))
+      getElementById(view, "additionalQualifier").attr("value") must be("")
     }
 
     "display empty input with label for Street and Number" in {
@@ -278,10 +278,10 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       val view = createView(form)
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, additionalIdentifierError, "#additionalIdentifier")
+      checkErrorLink(view, 1, additionalQualifierError, "#additionalQualifier")
 
-      getElementByCss(view, "#error-message-additionalIdentifier-input").text() must be(
-        messages(additionalIdentifierError)
+      getElementByCss(view, "#error-message-additionalQualifier-input").text() must be(
+        messages(additionalQualifierError)
       )
     }
 
@@ -380,7 +380,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorLink(view, 2, typeOfLocationError, "#typeOfLocation")
       checkErrorLink(view, 3, qualifierOfIdentError, "#qualifierOfIdentification")
       checkErrorLink(view, 4, identOfLocationError, "#identificationOfLocation")
-      checkErrorLink(view, 5, additionalIdentifierError, "#additionalIdentifier")
+      checkErrorLink(view, 5, additionalQualifierError, "#additionalQualifier")
       checkErrorLink(view, 6, locationAddressError, "#addressLine")
       checkErrorLink(view, 7, logPostCodeError, "#postCode")
       checkErrorLink(view, 8, cityError, "#city")
@@ -393,8 +393,8 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       getElementByCss(view, "#error-message-identificationOfLocation-input").text() must be(
         messages(identOfLocationError)
       )
-      getElementByCss(view, "#error-message-additionalIdentifier-input").text() must be(
-        messages(additionalIdentifierError)
+      getElementByCss(view, "#error-message-additionalQualifier-input").text() must be(
+        messages(additionalQualifierError)
       )
       getElementByCss(view, "#error-message-postCode-input").text() must be(messages(logPostCodeError))
       getElementByCss(view, "#error-message-city-input").text() must be(messages(cityError))
@@ -422,7 +422,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       checkErrorLink(view, 1, countryError, "#country")
       checkErrorLink(view, 2, typeOfLocationError, "#typeOfLocation")
       checkErrorLink(view, 3, qualifierOfIdentError, "#qualifierOfIdentification")
-      checkErrorLink(view, 4, additionalIdentifierError, "#additionalIdentifier")
+      checkErrorLink(view, 4, additionalQualifierError, "#additionalQualifier")
       checkErrorLink(view, 5, locationAddressError, "#addressLine")
       checkErrorLink(view, 6, logPostCodeError, "#postCode")
       checkErrorLink(view, 7, cityError, "#city")
@@ -432,8 +432,8 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       getElementByCss(view, "#error-message-qualifierOfIdentification-input").text() must be(
         messages(qualifierOfIdentError)
       )
-      getElementByCss(view, "#error-message-additionalIdentifier-input").text() must be(
-        messages(additionalIdentifierError)
+      getElementByCss(view, "#error-message-additionalQualifier-input").text() must be(
+        messages(additionalQualifierError)
       )
       getElementByCss(view, "#error-message-postCode-input").text() must be(messages(logPostCodeError))
       getElementByCss(view, "#error-message-city-input").text() must be(messages(cityError))
@@ -468,7 +468,7 @@ class LocationViewSpec extends ViewSpec with LocationOfGoodsMessages with Common
       getElementById(view, "typeOfLocation").attr("value") must be("AB")
       getElementById(view, "qualifierOfIdentification").attr("value") must be("CD")
       getElementById(view, "identificationOfLocation").attr("value") must be("TST")
-      getElementById(view, "additionalIdentifier").attr("value") must be(ladditionalInformation)
+      getElementById(view, "additionalQualifier").attr("value") must be(ladditionalInformation)
       getElementById(view, "addressLine").attr("value") must be(lstreetAndNumber)
       getElementById(view, "postCode").attr("value") must be(lpostCode)
       getElementById(view, "city").attr("value") must be(lcity)
