@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.carrier_details
 
@@ -37,10 +38,11 @@ class CarrierDetailsPageController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
+  override val cacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   carrierDetailsPage: carrier_details
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     customsCacheService.fetchAndGetEntry[CarrierDetails](cacheId, CarrierDetails.id).map {
@@ -55,9 +57,16 @@ class CarrierDetailsPageController @Inject()(
       .fold(
         (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(formWithErrors))),
         form =>
-          customsCacheService.cache[CarrierDetails](cacheId, CarrierDetails.id, form).map { _ =>
-            Redirect(controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm())
-        }
+          for {
+            _ <- updateCache(journeySessionId, form)
+            _ <- customsCacheService.cache[CarrierDetails](cacheId, CarrierDetails.id, form)
+          } yield Redirect(controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm())
       )
   }
+
+  private def updateCache(sessionId: String, formData: CarrierDetails): Future[Either[String, ExportsCacheModel]] =
+    getAndUpdateExportCacheModel(sessionId, model => {
+      val updatedParties = model.parties.copy(carrierDetails = Some(formData))
+      cacheService.update(sessionId, model.copy(parties = updatedParties))
+    })
 }
