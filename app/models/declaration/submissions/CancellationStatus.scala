@@ -51,7 +51,7 @@ object CancellationStatus {
   }
 
   implicit object CancellationStatusWrites extends Writes[CancellationStatus] {
-    def writes(status: CancellationStatus): JsValue = JsObject(Seq("status" -> JsString(status.toString)))
+    def writes(status: CancellationStatus): JsValue = JsString(status.toString)
   }
 
 }
