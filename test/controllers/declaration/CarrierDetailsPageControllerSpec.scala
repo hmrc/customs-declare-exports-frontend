@@ -19,8 +19,10 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.CarrierDetails
+import forms.common.AddressSpec
 import forms.declaration.CarrierDetailsSpec._
+import forms.declaration.{CarrierDetails, EntityDetails}
+import org.mockito.Mockito
 import play.api.test.Helpers._
 
 class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
@@ -29,9 +31,13 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
   override def beforeEach() {
     authorizedUser()
+    withNewCaching(createModel())
     withCaching[CarrierDetails](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
+
+  override def afterEach() =
+    Mockito.reset(mockExportsCacheService)
 
   "Carrier Details Page Controller on GET" should {
 
@@ -50,6 +56,7 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val page = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
+      verifyTheCacheIsUnchanged()
     }
 
     "validate request and redirect - only EORI provided" in {
@@ -59,6 +66,9 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+      theCacheModelUpdated.parties.carrierDetails.get must be(
+        CarrierDetails(EntityDetails(eori = Some("9GB1234567ABCDEF"), address = None))
+      )
     }
 
     "validate request and redirect - only address provided" in {
@@ -68,6 +78,9 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+      theCacheModelUpdated.parties.carrierDetails.get must be(
+        CarrierDetails(EntityDetails(eori = None, address = Some(AddressSpec.correctAddress)))
+      )
     }
 
     "validate request and redirect - all values provided" in {
@@ -77,6 +90,9 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+      theCacheModelUpdated.parties.carrierDetails.get must be(
+        CarrierDetails(EntityDetails(Some("9GB1234567ABCDEF"), Some(AddressSpec.correctAddress)))
+      )
     }
   }
 }

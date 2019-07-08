@@ -26,7 +26,8 @@ case class Parties(
   declarantDetails: Option[DeclarantDetails] = None,
   representativeDetails: Option[RepresentativeDetails] = None,
   declarationAdditionalActorsData: Option[DeclarationAdditionalActorsData] = None,
-  declarationHoldersData: Option[DeclarationHoldersData] = None
+  declarationHoldersData: Option[DeclarationHoldersData] = None,
+  carrierDetails: Option[CarrierDetails] = None
 ) extends SummaryContainer {
 
   def isEmpty: Boolean =
@@ -35,7 +36,8 @@ case class Parties(
       declarantDetails.isEmpty &&
       representativeDetails.isEmpty &&
       declarationAdditionalActorsData.isEmpty &&
-      declarationHoldersData.isEmpty
+      declarationHoldersData.isEmpty &&
+      carrierDetails.isEmpty
 }
 
 object Parties {
@@ -50,6 +52,7 @@ object Parties {
     representativeDetails = cacheMap.getEntry[RepresentativeDetails](RepresentativeDetails.formId),
     declarationAdditionalActorsData =
       cacheMap.getEntry[DeclarationAdditionalActorsData](DeclarationAdditionalActorsData.formId),
-    declarationHoldersData = cacheMap.getEntry[DeclarationHoldersData](DeclarationHoldersData.formId)
+    declarationHoldersData = cacheMap.getEntry[DeclarationHoldersData](DeclarationHoldersData.formId),
+    carrierDetails = cacheMap.getEntry[CarrierDetails](CarrierDetails.id)
   )
 }
