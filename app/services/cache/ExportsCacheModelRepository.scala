@@ -88,7 +88,8 @@ case class ExportsCacheModel(
   items: Set[ExportItem] = Set.empty,
   totalNumberOfItems: Option[TotalNumberOfItems] = None,
   previousDocuments: Option[PreviousDocumentsData] = None,
-  natureOfTransaction: Option[NatureOfTransaction] = None
+  natureOfTransaction: Option[NatureOfTransaction] = None,
+  seals: Seq[Seal] = Seq.empty
 )
 
 object ExportsCacheModel {
