@@ -116,7 +116,7 @@ class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonM
         tableCell(view)(1, 4).text() mustBe "Accepted"
         tableCell(view)(1, 5).text() mustBe "1"
         val anchorSubmission = tableCell(view)(1, 5).getElementsByTag("a").first()
-        anchorSubmission.attr("href") mustBe ""
+        anchorSubmission.hasAttr("href") mustBe false
       }
 
       "submission status is unknown due to missing notification" in {

@@ -53,9 +53,13 @@
                     <td class="table-cell">@{submission.actions.find(_.requestType == SubmissionRequest).map(_.requestTimestamp).map(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault()).format(_))}</td>
                     <td class="table-cell">@{notifications.headOption.map(n => SubmissionStatus.retrieve(n.functionCode, n.nameCode)).getOrElse(UnknownStatus)}</td>
                     <td class="table-cell">
-                        <a @if(submission.mrn.isDefined) {href="@routes.NotificationsController.listOfNotificationsForSubmission(submission.mrn.get)"}>
+                      @if(submission.mrn.isDefined) {
+                          <a href="@routes.NotificationsController.listOfNotificationsForSubmission(submission.mrn.get)">
                             @{notifications.length}
-                        </a>
+                          </a>
+                      } else {
+                          <span>@{notifications.length}</span>
+                      }
                     </td>
                 </tr>
             }
