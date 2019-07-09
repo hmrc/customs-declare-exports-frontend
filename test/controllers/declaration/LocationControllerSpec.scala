@@ -55,7 +55,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
       val cachedData =
         GoodsLocation("Spain", "1", "1", Some("1"), Some("1"), Some("BAFTA Street"), Some("LS37BH"), Some("SecretCity"))
-      
+
       withCaching[GoodsLocation](Some(cachedData), "GoodsLocation")
 
       val result = route(app, getRequest(uri)).get
