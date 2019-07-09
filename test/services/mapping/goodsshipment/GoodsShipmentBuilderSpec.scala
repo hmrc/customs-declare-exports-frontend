@@ -23,7 +23,7 @@ import org.scalatest.{Matchers, WordSpec}
 class GoodsShipmentBuilderSpec extends WordSpec with Matchers {
 
   "GoodsShipmentBuilder" should {
-    
+
     "correctly map to the WCO-DEC GoodsShipment instance" in {
       val goodsShipment = GoodsShipmentBuilder.build(cacheMapAllRecords, supplementaryChoice)
       goodsShipment.getTransactionNatureCode.getValue should be("1")

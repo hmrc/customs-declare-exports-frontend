@@ -23,23 +23,23 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 class GoodsLocationBuilderSpec extends WordSpec with Matchers {
 
   "GoodsLocationBuilder" should {
-    
+
     "correctly map GoodsLocation instance for supplementary journey" when {
-     
+
       "all data is supplied" in {
-        
+
         implicit val cacheMap: CacheMap =
           CacheMap("CacheID", Map(GoodsLocation.formId -> correctGoodsLocationJSON))
-        
+
         val goodsLocation = GoodsLocationBuilder.build
-        goodsLocation.getID.getValue should be ("LOC")
-        goodsLocation.getAddress.getLine.getValue should be ("Address Line")
-        goodsLocation.getAddress.getCityName.getValue should be ("Town or City")
-        goodsLocation.getAddress.getPostcodeID.getValue should be ("AB12 CD3")
-        goodsLocation.getAddress.getCountryCode.getValue should be ("PL")
-        goodsLocation.getName.getValue should be ("9GB1234567ABCDEF")
-        goodsLocation.getTypeCode.getValue should be ("T")
-        goodsLocation.getAddress.getTypeCode.getValue should be ("Y")
+        goodsLocation.getID.getValue should be("LOC")
+        goodsLocation.getAddress.getLine.getValue should be("Address Line")
+        goodsLocation.getAddress.getCityName.getValue should be("Town or City")
+        goodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
+        goodsLocation.getAddress.getCountryCode.getValue should be("PL")
+        goodsLocation.getName.getValue should be("9GB1234567ABCDEF")
+        goodsLocation.getTypeCode.getValue should be("T")
+        goodsLocation.getAddress.getTypeCode.getValue should be("Y")
       }
     }
   }
