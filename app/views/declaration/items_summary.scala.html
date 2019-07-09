@@ -19,10 +19,12 @@
 @import uk.gov.hmrc.play.views.html._
 @import forms.declaration.ItemType.IdentificationTypeCodes._
 @import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
+@import services.cache.ExportItem
 
 @this(main_template: views.html.main_template)
 
-@(items: Seq[GovernmentAgencyGoodsItem], hasFiscalInformation: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@(items: Seq[GovernmentAgencyGoodsItem], exportItems: List[ExportItem], hasFiscalInformation: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("supplementary.items"),
@@ -44,6 +46,8 @@
 
     <span class="form-hint" style="margin-bottom: 50px">@messages("supplementary.itemsAdd.title.hint")</span>
 
+
+
     @if(items.nonEmpty) {
         <table class="form-group">
             <thead>
@@ -55,6 +59,20 @@
                 </tr>
             </thead>
             <tbody>
+
+                    @exportItems.map { ei =>
+                        <tr>
+                            <td scope="row">@ei.sequenceId</td>
+                            <td scope="row">@ei.procedureCodes.map(codes => codes.procedureCode.getOrElse("")) </td>
+                            <td scope="row">@ei.itemType.map(it => it.combinedNomenclatureCode) </td>
+                            <td scope="row">
+                                <ol type="1">@ei.packageInformation.map(a =>
+                                    <li>{a.numberOfPackages.getOrElse(0)}</li>
+                                )
+                                </ol>
+                            </td>
+                        </tr>
+                    }
 
                 @items.map { item =>
                     <tr>
