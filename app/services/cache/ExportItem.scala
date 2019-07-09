@@ -29,6 +29,7 @@ import play.api.libs.json.Json
 
 case class ExportItem(
   id: String = ExportItem.generateId(),
+  sequenceId: Int = 0,
   procedureCodes: Option[ProcedureCodesData] = None,
   fiscalInformation: Option[FiscalInformation] = None,
   additionalFiscalReferencesData: Option[AdditionalFiscalReferencesData] = None,
