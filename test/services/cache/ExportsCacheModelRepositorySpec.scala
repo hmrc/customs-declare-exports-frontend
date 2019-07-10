@@ -59,16 +59,16 @@ class ExportsCacheModelRepositorySpec
     }
 
     "on get" should {
-      "return Right with model when exists" in {
+      "return a model when exists" in {
         val model = createModel(sessionId)
         repo.upsert(sessionId, model).futureValue
         val result = repo.get(sessionId).futureValue
-        result must be(Right(model))
+        result must be(Some(model))
       }
 
-      "return left when cache entry does not exist" in {
+      "return no cache entry does not exist" in {
         val result = repo.get("UNKNOWNID").futureValue
-        result must be(Left("Unable to find model with sessionID: UNKNOWNID"))
+        result must be(None)
       }
     }
   }

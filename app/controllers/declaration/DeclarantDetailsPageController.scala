@@ -68,7 +68,7 @@ class DeclarantDetailsPageController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: DeclarantDetails): Future[Either[String, ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: DeclarantDetails): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       val updatedParties = model.parties.copy(declarantDetails = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))

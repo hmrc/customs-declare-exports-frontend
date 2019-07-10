@@ -16,11 +16,14 @@
 
 package controllers.declaration
 
+import java.time.LocalDateTime
+
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
+import models.declaration.{Locations, Parties}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
@@ -31,6 +34,7 @@ import services.cache.ExportsCacheModel
 class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
 
   import DispatchLocationPageControllerSpec._
+
   private val dispatchLocationUri = uriWithContextPath("/declaration/dispatch-location")
 
   override def beforeEach() {
@@ -55,6 +59,8 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
 
     "populate the form fields with data from cache" in {
       withCaching[DispatchLocation](Some(DispatchLocation(AllowedDispatchLocations.OutsideEU)), DispatchLocation.formId)
+      withNewCaching(ExportsCacheModel("sessionId", "uuid", LocalDateTime.now(), LocalDateTime.now(), "SMP",
+        dispatchLocation = Some(DispatchLocation(AllowedDispatchLocations.OutsideEU))))
 
       val result = route(app, getRequest(dispatchLocationUri)).get
       contentAsString(result) must include("checked=\"checked\"")

@@ -84,7 +84,7 @@ class CommodityMeasureController @Inject()(
     itemId: String,
     sessionId: String,
     updatedItem: CommodityMeasure
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

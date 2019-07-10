@@ -200,14 +200,14 @@ class RepresentativeDetailsPageControllerSpec
     "save data to the cache" in {
 
       val model = createModel("12345")
-      when(mockExportsCacheService.get(any())).thenReturn(Future.successful(Right(model)))
+      when(mockExportsCacheService.get(any())).thenReturn(Future.successful(Some(model)))
 
       val representativeDetails = Parties(representativeDetails = Some(correctRepresentativeDetails))
 
       val updatedModel = model.copy(parties = representativeDetails)
 
       when(mockExportsCacheService.update(any(), any[ExportsCacheModel]))
-        .thenReturn(Future.successful(Right(updatedModel)))
+        .thenReturn(Future.successful(Some(updatedModel)))
 
       route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get.futureValue
 

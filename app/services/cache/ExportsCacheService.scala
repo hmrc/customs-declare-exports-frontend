@@ -25,12 +25,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ExportsCacheService @Inject()(journeyCacheModelRepo: ExportsCacheModelRepository)(implicit ec: ExecutionContext) {
 
-  def get(sessionId: String): Future[Either[String, ExportsCacheModel]] = journeyCacheModelRepo.get(sessionId)
+  def get(sessionId: String): Future[Option[ExportsCacheModel]] = journeyCacheModelRepo.get(sessionId)
 
-  def update(sessionId: String, model: ExportsCacheModel): Future[Either[String, ExportsCacheModel]] =
-    journeyCacheModelRepo.upsert(sessionId, model.copy(updatedDateTime = now())).map {
-      case Some(retrievedModel) => Right(retrievedModel)
-      case None                 => Left(s"Unable to retrieve a model for session id $sessionId")
-    }
-
+  def update(sessionId: String, model: ExportsCacheModel): Future[Option[ExportsCacheModel]] =
+    journeyCacheModelRepo.upsert(sessionId, model.copy(updatedDateTime = now()))
 }

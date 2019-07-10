@@ -138,7 +138,7 @@ class PackageInformationController @Inject()(
     itemId: String,
     sessionId: String,
     updatedCache: Seq[PackageInformation]
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

@@ -77,7 +77,7 @@ class AdditionalDeclarationTypePageController @Inject()(
   private def updateCache(
     sessionId: String,
     formData: AdditionalDeclarationType
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       exportsCacheService.update(sessionId, model.copy(additionalDeclarationType = Some(formData)))
     })

@@ -68,7 +68,7 @@ class ConsigneeDetailsPageController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: ConsigneeDetails): Future[Either[String, ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: ConsigneeDetails): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       val updatedParties = model.parties.copy(consigneeDetails = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))

@@ -45,9 +45,9 @@ class DispatchLocationPageController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map {
-      case Right(data) => Ok(dispatchLocationPage(DispatchLocation.form().fill(data.dispatchLocation.get)))
-      case Left(error)  => Ok(dispatchLocationPage(DispatchLocation.form()))
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.dispatchLocation)).map {
+      case Some(data) => Ok(dispatchLocationPage(DispatchLocation.form().fill(data)))
+      case _  => Ok(dispatchLocationPage(DispatchLocation.form()))
     }
   }
 
@@ -74,7 +74,7 @@ class DispatchLocationPageController @Inject()(
         controllers.declaration.routes.NotEligibleController.displayPage()
     }
 
-  private def updateCache(sessionId: String, formData: DispatchLocation): Future[Either[String, ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: DispatchLocation): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       exportsCacheService.update(sessionId, model.copy(dispatchLocation = Some(formData)))
     })

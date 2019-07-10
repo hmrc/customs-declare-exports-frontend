@@ -131,7 +131,7 @@ class AdditionalFiscalReferencesController @Inject()(
     itemId: String,
     sessionId: String,
     updatedAdditionalFiscalReferencesData: AdditionalFiscalReferencesData
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

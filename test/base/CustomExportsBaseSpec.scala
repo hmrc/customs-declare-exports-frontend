@@ -186,12 +186,12 @@ trait CustomExportsBaseSpec
     when(
       mockExportsCacheService
         .update(any(), any[ExportsCacheModel])
-    ).thenReturn(Future.successful(Right(dataToReturn)))
+    ).thenReturn(Future.successful(Some(dataToReturn)))
 
     when(
       mockExportsCacheService
         .get(any())
-    ).thenReturn(Future.successful(Right(dataToReturn)))
+    ).thenReturn(Future.successful(Some(dataToReturn)))
 
   }
 

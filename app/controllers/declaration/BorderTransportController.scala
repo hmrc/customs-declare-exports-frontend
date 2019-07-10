@@ -65,7 +65,7 @@ class BorderTransportController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: BorderTransport): Future[Either[String, ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: BorderTransport): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(borderTransport = Some(formData)))

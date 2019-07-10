@@ -81,7 +81,7 @@ class FiscalInformationController @Inject()(
     itemId: String,
     sessionId: String,
     updatedFiscalInformation: FiscalInformation
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       val item: Option[ExportItem] =
         model.items.find(item => item.id.equals(itemId)).map(_.copy(fiscalInformation = Some(updatedFiscalInformation)))
