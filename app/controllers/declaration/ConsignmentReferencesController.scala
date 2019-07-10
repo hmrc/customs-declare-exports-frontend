@@ -47,12 +47,10 @@ class ConsignmentReferencesController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[ConsignmentReferences](cacheId, ConsignmentReferences.id)
-      .map {
-        case Some(data) => Ok(consignmentReferencesPage(appConfig, ConsignmentReferences.form.fill(data)))
-        case _          => Ok(consignmentReferencesPage(appConfig, ConsignmentReferences.form))
-      }
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.consignmentReferences)).map {
+      case Some(data) => Ok(consignmentReferencesPage(appConfig, ConsignmentReferences.form().fill(data)))
+      case _          => Ok(consignmentReferencesPage(appConfig, ConsignmentReferences.form()))
+    }
   }
 
   def submitConsignmentReferences(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

@@ -45,9 +45,9 @@ class DeclarantDetailsPageController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DeclarantDetails](cacheId, DeclarantDetails.id).map {
-      case Some(data) => Ok(declarantDetailsPage(appConfig, DeclarantDetails.form.fill(data)))
-      case _          => Ok(declarantDetailsPage(appConfig, DeclarantDetails.form))
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.declarantDetails)).map {
+      case Some(data) => Ok(declarantDetailsPage(appConfig, DeclarantDetails.form().fill(data)))
+      case _          => Ok(declarantDetailsPage(appConfig, DeclarantDetails.form()))
     }
   }
 

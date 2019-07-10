@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import java.time.LocalDateTime
+
 import base.CustomExportsBaseSpec
 import base.TestHelper._
 import forms.Choice
@@ -25,9 +27,9 @@ import forms.declaration.RepresentativeDetails
 import forms.declaration.RepresentativeDetailsSpec._
 import helpers.views.declaration.{CommonMessages, RepresentativeDetailsMessages}
 import models.declaration.Parties
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import services.cache.ExportsCacheModel
@@ -59,6 +61,7 @@ class RepresentativeDetailsPageControllerSpec
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
+      verifyTheCacheIsUnchanged()
     }
 
     "not populate the form fields if cache is empty" in {
@@ -66,11 +69,22 @@ class RepresentativeDetailsPageControllerSpec
       val result = route(app, getRequest(uri)).get
 
       contentAsString(result) mustNot include("checked=\"checked\"")
+      verifyTheCacheIsUnchanged()
     }
 
     "populate the form fields with data from cache" in {
 
-      withCaching[RepresentativeDetails](Some(correctRepresentativeDetails), RepresentativeDetails.formId)
+      withNewCaching(
+        ExportsCacheModel(
+          "SessionId",
+          "DraftId",
+          LocalDateTime.now(),
+          LocalDateTime.now(),
+          "SMP",
+          parties = Parties(representativeDetails = Some(correctRepresentativeDetails))
+        )
+      )
+
       val result = route(app, getRequest(uri)).get
 
       contentAsString(result) must include("checked=\"checked\"")
@@ -88,6 +102,7 @@ class RepresentativeDetailsPageControllerSpec
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(repTypeErrorEmpty))
+        verifyTheCacheIsUnchanged()
       }
 
       "status provided but both EORI and address are empty" in {
@@ -97,6 +112,7 @@ class RepresentativeDetailsPageControllerSpec
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(eoriOrAddressEmpty))
+        verifyTheCacheIsUnchanged()
       }
     }
 
@@ -109,6 +125,7 @@ class RepresentativeDetailsPageControllerSpec
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(eoriError))
+        verifyTheCacheIsUnchanged()
       }
 
       "wrong value provided for full name" in {
@@ -118,6 +135,7 @@ class RepresentativeDetailsPageControllerSpec
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(fullNameError))
+        verifyTheCacheIsUnchanged()
       }
 
       "wrong value provided for first address line" in {
@@ -127,6 +145,7 @@ class RepresentativeDetailsPageControllerSpec
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(addressLineError))
+        verifyTheCacheIsUnchanged()
       }
 
       "wrong value provided for city" in {
@@ -136,6 +155,7 @@ class RepresentativeDetailsPageControllerSpec
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(townOrCityError))
+        verifyTheCacheIsUnchanged()
       }
 
       "wrong value provided for postcode" in {
@@ -145,6 +165,7 @@ class RepresentativeDetailsPageControllerSpec
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(postCodeError))
+        verifyTheCacheIsUnchanged()
       }
 
       "wrong value provided for country" in {
@@ -154,6 +175,7 @@ class RepresentativeDetailsPageControllerSpec
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryError))
+        verifyTheCacheIsUnchanged()
       }
     }
 
@@ -166,6 +188,7 @@ class RepresentativeDetailsPageControllerSpec
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+      theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetailsEORIOnly))
     }
 
     "accept form with status and EORI if on standard journey" in {
@@ -176,6 +199,7 @@ class RepresentativeDetailsPageControllerSpec
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/carrier-details"))
+      theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetailsEORIOnly))
     }
 
     "accept form with status and address if on supplementary journey" in {
@@ -185,6 +209,7 @@ class RepresentativeDetailsPageControllerSpec
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+      theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetailsAddressOnly))
     }
 
     "accept form with status and address only if on standard journey" in {
@@ -195,6 +220,7 @@ class RepresentativeDetailsPageControllerSpec
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/carrier-details"))
+      theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetailsAddressOnly))
     }
 
     "save data to the cache" in {
@@ -220,6 +246,7 @@ class RepresentativeDetailsPageControllerSpec
           any(),
           any()
         )
+      theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetails))
     }
 
     "return 303 code" when {
@@ -227,12 +254,14 @@ class RepresentativeDetailsPageControllerSpec
         val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
 
         status(result) must be(SEE_OTHER)
+        theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetails))
       }
 
       "data is empty" in {
         val result = route(app, postRequest(uri, JsObject(Map[String, JsValue]().empty))).get
 
         status(result) must be(SEE_OTHER)
+        theCacheModelUpdated.parties.representativeDetails must be(Some(RepresentativeDetails(None,None)))
       }
     }
 
@@ -242,16 +271,17 @@ class RepresentativeDetailsPageControllerSpec
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+      theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetails))
     }
 
     "redirect to Consignee Details page if on standard journey" in {
-      withCaching[RepresentativeDetails](None)
       withCaching[Choice](Some(Choice(StandardDec)), choiceId)
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/carrier-details"))
+      theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetails))
     }
   }
 }

@@ -222,7 +222,7 @@ trait CustomExportsBaseSpec
       choice = "SMP",
       items = items,
       parties = Parties()
-    )
+  )
 
   def createModelWithNoItems(): ExportsCacheModel = createModelWithItems("", Set.empty)
 

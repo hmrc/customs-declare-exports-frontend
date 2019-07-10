@@ -16,13 +16,19 @@
 
 package controllers.declaration
 
+import java.time.LocalDateTime
+
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
 import forms.common.Address
 import forms.declaration.ConsigneeDetailsSpec._
+import forms.declaration.EntityDetailsSpec.correctEntityDetails
 import forms.declaration.{ConsigneeDetails, EntityDetails}
+import models.declaration.Parties
+import org.mockito.Mockito.reset
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
@@ -35,20 +41,35 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
+  override def afterEach() {
+    reset(mockExportsCacheService)
+  }
+
   "Consignee Details Controller on GET" should {
 
     "return 200 status code" in {
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
+      verifyTheCacheIsUnchanged()
     }
 
     "read item from cache and display it" in {
-
-      val cachedData = ConsigneeDetails(
-        EntityDetails(Some("12345"), Some(Address("Spiderman", "Test Street", "Leeds", "LS18BN", "Germany")))
+      val cachedData = ExportsCacheModel(
+        "SessionId",
+        "DraftId",
+        LocalDateTime.now(),
+        LocalDateTime.now(),
+        "SMP",
+        parties = Parties(
+          consigneeDetails = Some(
+            ConsigneeDetails(
+              EntityDetails(Some("12345"), Some(Address("Spiderman", "Test Street", "Leeds", "LS18BN", "Germany")))
+            )
+          )
+        )
       )
-      withCaching[ConsigneeDetails](Some(cachedData), "ConsigneeDetails")
+      withNewCaching(cachedData)
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -70,6 +91,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, emptyConsigneeDetailsJSON)).get
 
       status(result) must be(BAD_REQUEST)
+      verifyTheCacheIsUnchanged()
     }
 
     "validate request and redirect - only EORI provided" in {
@@ -79,6 +101,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/declarant-details"))
+      theCacheModelUpdated.parties.consigneeDetails must be(Some(correctConsigneeDetailsEORIOnly))
     }
 
     "validate request and redirect - only address provided" in {
@@ -88,6 +111,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/declarant-details"))
+      theCacheModelUpdated.parties.consigneeDetails must be(Some(correctConsigneeDetailsAddressOnly))
     }
 
     "validate request and redirect - all values provided" in {
@@ -97,6 +121,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/declarant-details"))
+      theCacheModelUpdated.parties.consigneeDetails must be(Some(ConsigneeDetails(correctEntityDetails)))
     }
   }
 }

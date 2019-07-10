@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import java.time.LocalDateTime
+
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice
 import forms.Choice.choiceId
@@ -23,8 +25,12 @@ import forms.declaration.TransportCodes._
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
 import helpers.views.declaration.WarehouseIdentificationMessages
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with WarehouseIdentificationMessages {
 
@@ -37,6 +43,10 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
+  override def afterEach()  {
+    Mockito.reset(mockExportsCacheService)
+  }
+
   "Warehouse Identification Controller on GET" should {
 
     "return 200 code" in {
@@ -44,6 +54,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
+      verify(mockExportsCacheService).get(any())
     }
 
     "read item from cache and display it" in {
@@ -59,6 +70,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       page must include(messages("supplementary.warehouse.identificationType.r"))
       page must include("SecretStash")
       page must include("Sea transport")
+      verify(mockExportsCacheService).get(any())
     }
   }
 
@@ -73,6 +85,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(identificationTypeError))
+      verifyTheCacheIsUnchanged()
     }
 
     "validate identification number - more than 35 characters" in {
@@ -84,6 +97,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(identificationNumberError))
+      verifyTheCacheIsUnchanged()
     }
 
     "validate supervising customs office - invalid" in {
@@ -95,6 +109,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) must include(messages(supervisingCustomsOfficeError))
+      verifyTheCacheIsUnchanged()
     }
 
     "validate inland mode transport code - wrong choice" in {
@@ -106,6 +121,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(inlandTransportModeError))
+      verifyTheCacheIsUnchanged()
     }
 
     "validate request and redirect - no answers" in {
@@ -116,6 +132,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       status(result) must be(SEE_OTHER)
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/border-transport"))
+      theCacheModelUpdated.warehouseIdentification must be(Some(emptyWarehouseIdentification))
     }
 
     "validate request and redirect - correct values" in {
@@ -126,6 +143,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       status(result) must be(SEE_OTHER)
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/border-transport"))
+      theCacheModelUpdated.warehouseIdentification.get.identificationNumber must be(Some("1234567GB"))
     }
   }
 }
