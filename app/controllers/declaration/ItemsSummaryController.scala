@@ -49,20 +49,11 @@ class ItemsSummaryController @Inject()(
     extends FrontendController(mcc) with I18nSupport with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val itemsF: Future[Set[ExportItem]] = exportsCacheService
+    exportsCacheService
       .get(journeySessionId)
       .map {
-        case Right(cacheModel) => cacheModel.items
-        case _                 => Set.empty
-      }
-
-    cacheService
-      .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
-      .zip(hasFiscalInformation())
-      .zip(itemsF)
-      .map {
-        case ((items, hasFiscalInformation), itemsF) =>
-          Ok(itemsSummaryPage(items.getOrElse(Seq.empty), itemsF.toList, hasFiscalInformation))
+        case Right(cacheModel) => Ok(itemsSummaryPage(cacheModel.items.toList))
+        case Left(_)           => Ok(itemsSummaryPage(List.empty))
       }
   }
 

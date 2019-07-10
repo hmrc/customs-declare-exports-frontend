@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes._
+@import controllers.declaration.routes
 @import uk.gov.hmrc.play.views.html._
 @import forms.declaration.ItemType.IdentificationTypeCodes._
 @import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
@@ -24,18 +24,18 @@
 @this(main_template: views.html.main_template)
 
 
-@(items: Seq[GovernmentAgencyGoodsItem], exportItems: List[ExportItem], hasFiscalInformation: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(items: List[ExportItem])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(
     title = messages("supplementary.items"),
     appConfig = appConfig
 ) {
-    @components.back_link("/customs-declare-exports/declaration/previous-documents")
+    @components.back_link(routes.PreviousDocumentsController.displayForm().url)
 
     <span id="section-header" class="pre-heading" style="margin-top: 50px">@messages("supplementary.items")</span>
 
     @if(items.isEmpty) {
-        <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.title", items.length)</h1>
+        <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.title")</h1>
     }
     @if(items.length == 1) {
         <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.titleWithItem")</h1>
@@ -60,52 +60,36 @@
             </thead>
             <tbody>
 
-                    @exportItems.map { ei =>
-                        <tr>
-                            <td scope="row">@ei.sequenceId</td>
-                            <td scope="row">@ei.procedureCodes.map(codes => codes.procedureCode.getOrElse("")) </td>
-                            <td scope="row">@ei.itemType.map(it => it.combinedNomenclatureCode) </td>
-                            <td scope="row">
-                                <ol type="1">@ei.packageInformation.map(a =>
-                                    <li>{a.numberOfPackages.getOrElse(0)}</li>
-                                )
-                                </ol>
-                            </td>
-                        </tr>
-                    }
-
-                @items.map { item =>
-                    <tr>
-                        <td scope="row">@item.sequenceNumeric</td>
-                        <td scope="row">@item.governmentProcedures.headOption.map(c => c.currentCode.getOrElse("") + c.previousCode.getOrElse(""))</td>
-                        <td scope="row">@item.commodity.map(_.classifications.headOption.map(c => c.id.getOrElse("")))</td>
-                        <td scope="row">
-                            <ol type="1">@item.packagings.map(a =>
-                                <li>{a.quantity.getOrElse("")}</li>
-                            )
-                            </ol>
-                        </td>
-                    </tr>
-                }
+         @items.map { item =>
+                <tr>
+                    <td scope="row">@item.sequenceId</td>
+                    <td scope="row">@item.procedureCodes.map(codes => codes.procedureCode.getOrElse("")) </td>
+                    <td scope="row">@item.itemType.map(it => it.combinedNomenclatureCode) </td>
+                    <td scope="row">
+                        <ol type="1">@item.packageInformation.map(a =>
+                            <li>{a.numberOfPackages.getOrElse(0)}</li>
+                        )
+                        </ol>
+                    </td>
+                </tr>
+            }
 
             </tbody>
         </table>
     }
 
     <div class="section">
-        @helper.form(ItemsSummaryController.addItem(), 'autoComplete -> "off") {
-            @helper.CSRF.formField
+        <a id="link-add" class="link-add" href="@routes.ItemsSummaryController.addItem().url">
+        @if(items.isEmpty) {
+            @messages("site.add.item")
+        } else {
+            @messages("site.add.anotherItem")
+        }
+        </a><p></p>
 
-            @if(items.isEmpty) {
-                @components.submit_button(messages("site.add.item"))
-            } else {
-                @components.submit_button(messages("site.add.anotherItem"))
-            }
+        @if(items.size > 0) {
+            <a href="@routes.WarehouseIdentificationController.displayForm().url" class="button" id="next">@messages("site.save_and_continue")</a>
         }
 
-
-        @if(items.nonEmpty) {
-            <a href="@WarehouseIdentificationController.displayForm().url" class="button" id="next">@messages("site.save_and_continue")</a>
-        }
     </div>
 }

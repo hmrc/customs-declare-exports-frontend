@@ -39,6 +39,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
         "user does not have EORI" in {
           userWithoutEori()
+          withNewCaching(createModel())
           withCaching[Seq[GovernmentAgencyGoodsItem]](None)
 
           val result = route(app, getRequest(uri)).value
@@ -51,6 +52,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
         "user is signed in" in {
           authorizedUser()
+          withNewCaching(createModel())
           withCaching[Seq[GovernmentAgencyGoodsItem]](None)
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 

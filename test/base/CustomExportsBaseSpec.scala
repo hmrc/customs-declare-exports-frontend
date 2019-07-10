@@ -199,18 +199,21 @@ trait CustomExportsBaseSpec
     when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
 
-  def createModel(existingSessionId: String, exportModel: ExportItem = ExportItem()): ExportsCacheModel =
+  def createModel(existingSessionId: String, exportModel: Option[ExportItem] = None): ExportsCacheModel = {
+    val cacheExportItems = exportModel.fold(Set.empty[ExportItem])(Set(_))
     ExportsCacheModel(
       sessionId = existingSessionId,
       draftId = "",
       createdDateTime = LocalDateTime.now(),
       updatedDateTime = LocalDateTime.now(),
       choice = "SMP",
-      items = Set(exportModel),
+      items = cacheExportItems,
       parties = Parties()
     )
+  }
 
   def createModel(): ExportsCacheModel = createModel("")
+  def createModelWithItem(item: ExportItem): ExportsCacheModel = createModel("", exportModel = Some(item))
 
   protected def theCacheModelUpdated: ExportsCacheModel = {
     val captor = ArgumentCaptor.forClass(classOf[ExportsCacheModel])
