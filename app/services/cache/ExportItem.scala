@@ -28,7 +28,7 @@ import org.apache.commons.lang3.RandomStringUtils
 import play.api.libs.json.Json
 
 case class ExportItem(
-  id: String = ExportItem.generateId(),
+  id: String,
   sequenceId: Int = 0,
   procedureCodes: Option[ProcedureCodesData] = None,
   fiscalInformation: Option[FiscalInformation] = None,
@@ -41,10 +41,6 @@ case class ExportItem(
 )
 
 object ExportItem {
-  // http://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/RandomStringUtils.html
-  // no longer deprecated http://commons.apache.org/proper/commons-lang/javadocs/api-3.9/org/apache/commons/lang3/RandomStringUtils.html
-  // https://issues.apache.org/jira/browse/LANG-1346
-  def generateId(): String = RandomStringUtils.random(8, "0123456789abcdefg")
 
   implicit val format = Json.format[ExportItem]
 }

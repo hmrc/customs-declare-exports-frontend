@@ -31,7 +31,7 @@ class ProcedureCodesPageControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ProcedureCodesMessages with CommonMessages {
   import ProcedureCodesPageControllerSpec.cacheWithMaximumAmountOfAdditionalCodes
 
-  private val itemModel = createModel()
+  private val itemModel = createModelWithItem("")
   private val uri = uriWithContextPath(s"/declaration/items/${itemModel.items.head.id}/procedure-codes")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")

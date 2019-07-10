@@ -32,7 +32,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
   override def beforeEach {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[TotalNumberOfItems](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }

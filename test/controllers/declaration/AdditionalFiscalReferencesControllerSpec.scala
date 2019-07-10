@@ -25,7 +25,7 @@ import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesD
 import play.api.test.Helpers._
 
 class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
-  val cacheModel = createModel()
+  val cacheModel = createModelWithItem("")
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/additional-fiscal-references")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")

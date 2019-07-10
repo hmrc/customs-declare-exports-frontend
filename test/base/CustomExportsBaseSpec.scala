@@ -49,7 +49,7 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services._
-import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
+import services.cache.{ExportItem, ExportItemIdGeneratorService, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.logging.Authorization
@@ -67,6 +67,7 @@ trait CustomExportsBaseSpec
 
   val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
   val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
+  val mockItemGeneratorService: ExportItemIdGeneratorService = mock[ExportItemIdGeneratorService]
   val mockNrsService: NRSService = mock[NRSService]
   val mockItemsCachingService: ItemsCachingService = mock[ItemsCachingService]
 
@@ -83,6 +84,7 @@ trait CustomExportsBaseSpec
       bind[AuthConnector].to(mockAuthConnector),
       bind[CustomsCacheService].to(mockCustomsCacheService),
       bind[ExportsCacheService].to(mockExportsCacheService),
+      bind[ExportItemIdGeneratorService].to(mockItemGeneratorService),
       bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
       bind[NrsConnector].to(mockNrsConnector),
       bind[NRSService].to(mockNrsService),
@@ -185,12 +187,12 @@ trait CustomExportsBaseSpec
   def withNewCaching(dataToReturn: ExportsCacheModel) {
     when(
       mockExportsCacheService
-        .update(any(), any[ExportsCacheModel])
+        .update(any[String], any[ExportsCacheModel])
     ).thenReturn(Future.successful(Some(dataToReturn)))
 
     when(
       mockExportsCacheService
-        .get(any())
+        .get(any[String])
     ).thenReturn(Future.successful(Some(dataToReturn)))
 
   }
@@ -199,21 +201,26 @@ trait CustomExportsBaseSpec
     when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
 
-  def createModel(existingSessionId: String, exportModel: Option[ExportItem] = None): ExportsCacheModel = {
-    val cacheExportItems = exportModel.fold(Set.empty[ExportItem])(Set(_))
+  def createModelWithItem(
+    existingSessionId: String,
+    item: Option[ExportItem] = Some(ExportItem(id = "1234"))
+  ): ExportsCacheModel = {
+    val cacheExportItems = item.fold(Set.empty[ExportItem])(Set(_))
+    createModelWithItems(existingSessionId, cacheExportItems)
+  }
+
+  def createModelWithItems(sessionId: String, items: Set[ExportItem]): ExportsCacheModel =
     ExportsCacheModel(
-      sessionId = existingSessionId,
+      sessionId = sessionId,
       draftId = "",
       createdDateTime = LocalDateTime.now(),
       updatedDateTime = LocalDateTime.now(),
       choice = "SMP",
-      items = cacheExportItems,
+      items = items,
       parties = Parties()
     )
-  }
 
-  def createModel(): ExportsCacheModel = createModel("")
-  def createModelWithItem(item: ExportItem): ExportsCacheModel = createModel("", exportModel = Some(item))
+  def createModelWithNoItems(): ExportsCacheModel = createModelWithItems("", Set.empty)
 
   protected def theCacheModelUpdated: ExportsCacheModel = {
     val captor = ArgumentCaptor.forClass(classOf[ExportsCacheModel])

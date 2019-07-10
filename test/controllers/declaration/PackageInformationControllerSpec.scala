@@ -43,7 +43,7 @@ class PackageInformationControllerSpec
     extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues with ViewValidator
     with PackageInformationMessages with CommonMessages with BeforeAndAfterEach {
 
-  val cacheModel = createModel()
+  val cacheModel = createModelWithItem("")
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/package-information")
   private val form = PackageInformation.form()
   private val formId = "PackageInformation"

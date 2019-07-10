@@ -67,10 +67,7 @@ class WarehouseIdentificationController @Inject()(
       )
   }
 
-  private def updateCache(
-    sessionId: String,
-    formData: WarehouseIdentification
-  ): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: WarehouseIdentification): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(warehouseIdentification = Some(formData)))

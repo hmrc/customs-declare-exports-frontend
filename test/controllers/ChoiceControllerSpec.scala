@@ -34,7 +34,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModel(sessionId))
+    withNewCaching(createModelWithNoItems())
     withCaching[Choice](None, Choice.choiceId)
   }
 

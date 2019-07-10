@@ -36,7 +36,7 @@ trait ModelCacheable {
   )(implicit ec: ExecutionContext): Future[Option[ExportsCacheModel]] =
     cacheService.get(sessionId).flatMap {
       case Some(model) => update(model)
-      case _      => Future.successful(None)
+      case _           => Future.successful(None)
     }
 
 }

@@ -195,10 +195,7 @@ class DeclarationHolderController @Inject()(
   private def retrieveHolder(values: Seq[String]): DeclarationHolder =
     DeclarationHolder.buildFromString(values.headOption.getOrElse(""))
 
-  private def updateCache(
-    sessionId: String,
-    formData: DeclarationHoldersData
-  ): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: DeclarationHoldersData): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       val updatedParties = model.parties.copy(declarationHoldersData = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
