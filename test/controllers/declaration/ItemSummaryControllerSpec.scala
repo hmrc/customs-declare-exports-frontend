@@ -19,17 +19,41 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
+import org.mockito.Mockito.{reset, verify, when}
 import generators.Generators
+import org.mockito.ArgumentMatchers
 import org.scalatest.OptionValues
 import org.scalatest.prop.PropertyChecks
 import play.api.test.Helpers._
+import services.cache.{ExportItem, ExportsCacheModel}
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import uk.gov.hmrc.wco.dec.{GovernmentAgencyGoodsItem, Packaging}
+import org.mockito.ArgumentMatchers.any
+
+import scala.concurrent.Future
 
 class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
 
-  private val uri = uriWithContextPath("/declaration/export-items")
+  private val viewItemsUri = uriWithContextPath("/declaration/export-items")
+  private val addItemUri = uriWithContextPath("/declaration/export-items/add")
   private val formId = "PackageInformation"
+  private val item1Id = "1234"
+  private val item2Id = "5678"
+  private lazy val testItem = ExportItem(id = item1Id)
+  private lazy val testItem2 = ExportItem(id = item2Id)
+  private lazy val cacheModelWith1Item = createModelWithItems("", items = Set(testItem))
+  private lazy val cacheModelWith2Items = createModelWithItems("", items = Set(testItem, testItem2))
+
+  override def beforeEach() {
+    authorizedUser()
+    withCaching[Seq[GovernmentAgencyGoodsItem]](None, formId)
+    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  override def afterEach() {
+    reset(mockCustomsCacheService)
+    reset(mockExportsCacheService)
+  }
 
   "Item Summary Controller" should {
 
@@ -39,10 +63,10 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
         "user does not have EORI" in {
           userWithoutEori()
-          withNewCaching(createModel())
+          withNewCaching(createModelWithNoItems())
           withCaching[Seq[GovernmentAgencyGoodsItem]](None)
 
-          val result = route(app, getRequest(uri)).value
+          val result = route(app, getRequest(viewItemsUri)).value
           intercept[InsufficientEnrolments](status(result))
 
         }
@@ -52,11 +76,11 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
         "user is signed in" in {
           authorizedUser()
-          withNewCaching(createModel())
+          withNewCaching(createModelWithNoItems())
           withCaching[Seq[GovernmentAgencyGoodsItem]](None)
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
-          val result = route(app, getRequest(uri)).value
+          val result = route(app, getRequest(viewItemsUri)).value
           val stringResult = contentAsString(result)
 
           status(result) must be(OK)
@@ -71,9 +95,11 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
           authorizedUser()
 
           val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
+
           withCaching[Seq[GovernmentAgencyGoodsItem]](Some(cachedData), formId)
 
-          val result = route(app, getRequest(uri)).value
+          withNewCaching(cacheModelWith1Item)
+          val result = route(app, getRequest(viewItemsUri)).value
           status(result) must be(OK)
 
           val stringResult = contentAsString(result)
@@ -85,17 +111,47 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
           authorizedUser()
 
           GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging()))
+
           val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
+          withNewCaching(cacheModelWith2Items)
+          when(mockExportsCacheService.get(any[String]))
+            .thenReturn(Future.successful(Some(cacheModelWith2Items)))
 
           withCaching[Seq[GovernmentAgencyGoodsItem]](Some(cachedData), formId)
 
-          val result = route(app, getRequest(uri)).value
+          val result = route(app, getRequest(viewItemsUri)).value
           status(result) must be(OK)
 
           val stringResult = contentAsString(result)
 
-          stringResult.contains(s"${cachedData.size} Export items added")
+          stringResult.contains("1 Export items added")
+
         }
+      }
+      "add item to cache and redirect" when {
+        "add item endpoint called " in {
+          authorizedUser()
+
+          GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging()))
+
+          val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
+          val cachedItem = createModelWithItem("", item = Some(testItem))
+          withNewCaching(cachedItem)
+          when(mockItemGeneratorService.generateItemId()).thenReturn(item1Id)
+          withCaching[Seq[GovernmentAgencyGoodsItem]](Some(cachedData), formId)
+
+          val result = route(app, getRequest(addItemUri)).value
+          status(result) must be(SEE_OTHER)
+
+          redirectLocation(result).getOrElse("") must be(routes.ProcedureCodesPageController.displayPage(item1Id).url)
+
+          val stringResult = contentAsString(result)
+
+          stringResult.contains("1 Export items added")
+
+          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+        }
+
       }
     }
   }

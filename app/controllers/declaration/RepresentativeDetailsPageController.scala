@@ -83,10 +83,7 @@ class RepresentativeDetailsPageController @Inject()(
         controllers.declaration.routes.CarrierDetailsPageController.displayForm()
     }
 
-  private def updateCache(
-    sessionId: String,
-    formData: RepresentativeDetails
-  ): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: RepresentativeDetails): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       val updatedParties = model.parties.copy(representativeDetails = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))

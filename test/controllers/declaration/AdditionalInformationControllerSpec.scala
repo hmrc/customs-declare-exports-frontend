@@ -33,7 +33,7 @@ import play.api.test.Helpers._
 class AdditionalInformationControllerSpec
     extends CustomExportsBaseSpec with AdditionalInformationMessages with CommonMessages with ViewValidator {
 
-  val cacheModel = createModel()
+  val cacheModel = createModelWithItem("")
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/additional-information")
 
   private val addActionURLEncoded = (Add.toString, "")

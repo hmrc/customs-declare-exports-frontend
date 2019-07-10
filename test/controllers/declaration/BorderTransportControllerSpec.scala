@@ -49,7 +49,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[BorderTransport](None, BorderTransport.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
@@ -121,7 +121,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
             ("meansOfTransportOnDepartureIDNumber", borderTransport.meansOfTransportOnDepartureIDNumber.getOrElse(""))
           )
 
-          val model = createModel("12345")
+          val model = createModelWithItem("")
           when(mockExportsCacheService.get(any())).thenReturn(Future.successful(Some(model)))
 
           val updatedModel = model.copy(borderTransport = Some(borderTransport))

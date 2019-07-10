@@ -70,10 +70,7 @@ class ConsignmentReferencesController @Inject()(
       )
   }
 
-  private def updateCache(
-    sessionId: String,
-    formData: ConsignmentReferences
-  ): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: ConsignmentReferences): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       exportsCacheService.update(sessionId, model.copy(consignmentReferences = Some(formData)))
     })

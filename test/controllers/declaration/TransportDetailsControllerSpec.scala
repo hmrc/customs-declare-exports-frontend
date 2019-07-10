@@ -46,7 +46,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[TransportDetails](None, TransportDetails.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
@@ -123,7 +123,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
         forAll(arbitrary[TransportDetails]) { transportDetails =>
           reset(mockExportsCacheService)
           authorizedUser()
-          withNewCaching(createModel())
+          withNewCaching(createModelWithNoItems())
           withCaching[TransportDetails](None, TransportDetails.formId)
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
           val body = Seq(

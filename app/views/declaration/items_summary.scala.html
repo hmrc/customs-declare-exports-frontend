@@ -63,8 +63,8 @@
          @items.map { item =>
                 <tr>
                     <td scope="row">@item.sequenceId</td>
-                    <td scope="row">@item.procedureCodes.map(codes => codes.procedureCode.getOrElse("")) </td>
-                    <td scope="row">@item.itemType.map(it => it.combinedNomenclatureCode) </td>
+                    <td scope="row">@item.procedureCodes.map(_.procedureCode).getOrElse("") </td>
+                    <td scope="row">@item.itemType.map(_.combinedNomenclatureCode) </td>
                     <td scope="row">
                         <ol type="1">@item.packageInformation.map(a =>
                             <li>{a.numberOfPackages.getOrElse(0)}</li>

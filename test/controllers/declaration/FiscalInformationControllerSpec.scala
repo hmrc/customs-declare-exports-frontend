@@ -26,7 +26,7 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers.{OK, route, status, _}
 
 class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalInformationMessages {
-  val cacheModel = createModel()
+  val cacheModel = createModelWithItem("")
   private val uri: String = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/fiscal-information")
   private val emptyFiscalInformationJson: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("")))
   private val incorrectFiscalInformation: JsValue = JsObject(

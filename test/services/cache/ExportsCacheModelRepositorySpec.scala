@@ -50,7 +50,7 @@ class ExportsCacheModelRepositorySpec
   "ExportsCacheModelRepository" when {
 
     "on update" should {
-      "return model " in {
+      "return Some with model " in {
         val model = createModel(sessionId)
         val result = repo.upsert(sessionId, model).futureValue
         result must be(Some(model))
@@ -59,14 +59,14 @@ class ExportsCacheModelRepositorySpec
     }
 
     "on get" should {
-      "return a model when exists" in {
+      "return Some with model when exists" in {
         val model = createModel(sessionId)
         repo.upsert(sessionId, model).futureValue
         val result = repo.get(sessionId).futureValue
         result must be(Some(model))
       }
 
-      "return no cache entry does not exist" in {
+      "return None when cache entry does not exist" in {
         val result = repo.get("UNKNOWNID").futureValue
         result must be(None)
       }

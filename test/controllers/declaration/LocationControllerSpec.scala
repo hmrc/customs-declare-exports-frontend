@@ -35,7 +35,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
   override def beforeEach {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[GoodsLocation](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }

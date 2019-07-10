@@ -36,7 +36,7 @@ import uk.gov.hmrc.auth.core.InsufficientEnrolments
 class CommodityMeasureControllerSpec
     extends CustomExportsBaseSpec with CommodityMeasureMessages with Generators with PropertyChecks with OptionValues {
 
-  val cacheModel = createModel()
+  val cacheModel = createModelWithItem("")
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/commodity-measure")
   private val form = CommodityMeasure.form()
 
