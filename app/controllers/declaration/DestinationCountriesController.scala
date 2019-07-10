@@ -218,7 +218,7 @@ class DestinationCountriesController @Inject()(
   private def updateCache(
     sessionId: String,
     formData: DestinationCountries
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model =>

@@ -206,7 +206,7 @@ class DocumentsProducedController @Inject()(
     itemId: String,
     sessionId: String,
     updatedData: DocumentsProducedData
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

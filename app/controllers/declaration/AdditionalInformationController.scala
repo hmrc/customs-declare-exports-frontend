@@ -144,7 +144,7 @@ class AdditionalInformationController @Inject()(
     itemId: String,
     sessionId: String,
     updatedAdditionalInformation: AdditionalInformationData
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

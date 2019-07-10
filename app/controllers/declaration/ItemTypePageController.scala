@@ -257,7 +257,7 @@ class ItemTypePageController @Inject()(
     itemId: String,
     sessionId: String,
     updatedItem: ItemType
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

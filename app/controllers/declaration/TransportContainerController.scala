@@ -127,7 +127,7 @@ class TransportContainerController @Inject()(
   private def updateCache(
     sessionId: String,
     formData: TransportInformationContainerData
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(containerData = Some(formData)))

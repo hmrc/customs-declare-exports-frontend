@@ -104,7 +104,7 @@ class OfficeOfExitController @Inject()(
   private def updateCache(
     sessionId: String,
     formData: OfficeOfExitSupplementary
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model =>
@@ -117,7 +117,7 @@ class OfficeOfExitController @Inject()(
   private def updateCache(
     sessionId: String,
     formData: OfficeOfExitStandard
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model =>

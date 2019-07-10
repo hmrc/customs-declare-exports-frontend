@@ -86,7 +86,7 @@ class RepresentativeDetailsPageController @Inject()(
   private def updateCache(
     sessionId: String,
     formData: RepresentativeDetails
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       val updatedParties = model.parties.copy(representativeDetails = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))

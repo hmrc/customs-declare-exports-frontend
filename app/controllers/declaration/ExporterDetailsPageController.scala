@@ -65,7 +65,7 @@ class ExporterDetailsPageController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: ExporterDetails): Future[Either[String, ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: ExporterDetails): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       exportsCacheService.update(sessionId, model.copy(exporterDetails = Some(formData)))
     })

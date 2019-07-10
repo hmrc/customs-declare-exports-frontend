@@ -70,7 +70,7 @@ class WarehouseIdentificationController @Inject()(
   private def updateCache(
     sessionId: String,
     formData: WarehouseIdentification
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(warehouseIdentification = Some(formData)))

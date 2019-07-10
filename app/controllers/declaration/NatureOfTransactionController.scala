@@ -62,7 +62,7 @@ class NatureOfTransactionController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: NatureOfTransaction): Future[Either[String, ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: NatureOfTransaction): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => cacheService.update(sessionId, model.copy(natureOfTransaction = Some(formData)))

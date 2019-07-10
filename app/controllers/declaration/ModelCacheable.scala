@@ -32,11 +32,11 @@ trait ModelCacheable {
    */
   protected def getAndUpdateExportCacheModel(
     sessionId: String,
-    update: ExportsCacheModel => Future[Either[String, ExportsCacheModel]]
-  )(implicit ec: ExecutionContext): Future[Either[String, ExportsCacheModel]] =
+    update: ExportsCacheModel => Future[Option[ExportsCacheModel]]
+  )(implicit ec: ExecutionContext): Future[Option[ExportsCacheModel]] =
     cacheService.get(sessionId).flatMap {
-      case Right(model) => update(model)
-      case Left(_)      => Future.successful(Left("Unable to retrieve model from cache"))
+      case Some(model) => update(model)
+      case _      => Future.successful(None)
     }
 
 }

@@ -75,9 +75,9 @@ class ItemsSummaryController @Inject()(
     match may not be exhaustive.
     [warn] It would fail on the following input: Left(_)
    */
-  private def updateCache(sessionId: String, exportItem: ExportItem): Future[Either[String, ExportsCacheModel]] =
+  private def updateCache(sessionId: String, exportItem: ExportItem): Future[Option[ExportsCacheModel]] =
     exportsCacheService.get(sessionId).flatMap {
-      case Right(model) => {
+      case Some(model) => {
         exportsCacheService.update(sessionId, model.copy(items = model.items + exportItem))
       }
     }

@@ -73,7 +73,7 @@ class TransportDetailsController @Inject()(
     else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
     else Redirect(routes.SummaryPageController.displayPage())
 
-  private def updateCache(sessionId: String, formData: TransportDetails): Future[Either[String, ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: TransportDetails): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(transportDetails = Some(formData)))

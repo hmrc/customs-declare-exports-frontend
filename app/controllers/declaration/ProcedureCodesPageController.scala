@@ -93,7 +93,7 @@ class ProcedureCodesPageController @Inject()(
     itemId: String,
     sessionId: String,
     updatedProcedureCodes: ProcedureCodesData
-  ): Future[Either[String, ExportsCacheModel]] =
+  ): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

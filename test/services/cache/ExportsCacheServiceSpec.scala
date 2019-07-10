@@ -36,23 +36,21 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
 
     "on get" should {
 
-      //TODO does this add value?
       "return a cached model when exist" in {
         val returnedModel = createModel(sessionId)
         when(mockRepo.get(sessionId))
-          .thenReturn(Future.successful(Right(returnedModel)))
+          .thenReturn(Future.successful(Some(returnedModel)))
 
         val result = service.get(sessionId).futureValue
-        result must be(Right(returnedModel))
+        result must be(Some(returnedModel))
       }
 
-      //TODO does this add value?
       "return a left error when doesn't exist" in {
         when(mockRepo.get(sessionId))
-          .thenReturn(Future.successful(Left("some error")))
+          .thenReturn(Future.successful(None))
 
         val result = service.get(sessionId).futureValue
-        result must be(Left("some error"))
+        result must be(None)
       }
     }
 
@@ -64,7 +62,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
           .thenReturn(Future.successful(Some(returnedModel)))
 
         val result = service.update(sessionId, returnedModel).futureValue
-        result must be(Right(returnedModel))
+        result must be(Some(returnedModel))
       }
     }
 
@@ -74,7 +72,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
         .thenReturn(Future.successful(None))
 
       val result = service.update(sessionId, returnedModel).futureValue
-      result must be(Left(s"Unable to retrieve a model for session id $sessionId"))
+      result must be(None)
     }
   }
 

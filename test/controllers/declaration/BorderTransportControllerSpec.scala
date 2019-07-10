@@ -122,12 +122,12 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
           )
 
           val model = createModel("12345")
-          when(mockExportsCacheService.get(any())).thenReturn(Future.successful(Right(model)))
+          when(mockExportsCacheService.get(any())).thenReturn(Future.successful(Some(model)))
 
           val updatedModel = model.copy(borderTransport = Some(borderTransport))
 
           when(mockExportsCacheService.update(any(), any[ExportsCacheModel]))
-            .thenReturn(Future.successful(Right(updatedModel)))
+            .thenReturn(Future.successful(Some(updatedModel)))
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
