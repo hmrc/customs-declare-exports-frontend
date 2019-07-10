@@ -50,12 +50,10 @@ class RepresentativeDetailsPageController @Inject()(
 
   def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
-      customsCacheService
-        .fetchAndGetEntry[RepresentativeDetails](cacheId, RepresentativeDetails.formId)
-        .map {
-          case Some(data) => Ok(representativeDetailsPage(appConfig, RepresentativeDetails.form.fill(data)))
-          case _          => Ok(representativeDetailsPage(appConfig, RepresentativeDetails.form))
-        }
+      exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.representativeDetails)).map {
+        case Some(data) => Ok(representativeDetailsPage(appConfig, RepresentativeDetails.form().fill(data)))
+        case _          => Ok(representativeDetailsPage(appConfig, RepresentativeDetails.form()))
+      }
   }
 
   def submitRepresentativeDetails(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

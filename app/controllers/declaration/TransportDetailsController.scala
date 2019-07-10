@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TransportDetailsController @Inject()(
   authenticate: AuthAction,
-  journeyAction: JourneyAction,
+  journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
@@ -49,13 +49,14 @@ class TransportDetailsController @Inject()(
   val cacheService = exportsCacheService
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[TransportDetails](cacheId, TransportDetails.formId)
-      .map(data => Ok(transportDetailsPage(data.fold(form)(form.fill(_)))))
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.transportDetails)).map {
+      case Some(data) => Ok(transportDetailsPage(form.fill(data)))
+      case _          => Ok(transportDetailsPage(form))
+    }
   }
 
-  def submitForm(): Action[AnyContent] = (authenticate andThen journeyAction).async { implicit request =>
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
       .fold(

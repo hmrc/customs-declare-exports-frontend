@@ -23,7 +23,6 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
-import models.declaration.{Locations, Parties}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
@@ -55,6 +54,7 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
 
       val result = route(app, getRequest(dispatchLocationUri)).get
       status(result) must be(OK)
+      verify(mockExportsCacheService).get(any())
     }
 
     "populate the form fields with data from cache" in {
@@ -72,6 +72,7 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
 
       val result = route(app, getRequest(dispatchLocationUri)).get
       contentAsString(result) must include("checked=\"checked\"")
+      verify(mockExportsCacheService).get(any())
     }
   }
 
@@ -95,6 +96,7 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(dispatchLocationUri, validForm)).get
 
       status(result) must be(SEE_OTHER)
+      theCacheModelUpdated.dispatchLocation must be(Some(DispatchLocation(AllowedDispatchLocations.OutsideEU)))
     }
 
     "redirect to 'Additional Declaration Type' page" when {
@@ -106,6 +108,7 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
         val header = result.futureValue.header
 
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/type"))
+        theCacheModelUpdated.dispatchLocation must be(Some(DispatchLocation(AllowedDispatchLocations.OutsideEU)))
       }
     }
 
@@ -118,6 +121,7 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
         val header = result.futureValue.header
 
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/not-eligible"))
+        theCacheModelUpdated.dispatchLocation must be(Some(DispatchLocation(AllowedDispatchLocations.SpecialFiscalTerritory)))
       }
     }
   }

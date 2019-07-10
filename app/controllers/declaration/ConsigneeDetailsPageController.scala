@@ -48,9 +48,9 @@ class ConsigneeDetailsPageController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ConsigneeDetails](cacheId, ConsigneeDetails.id).map {
-      case Some(data) => Ok(consigneeDetailsPage(appConfig, ConsigneeDetails.form.fill(data)))
-      case _          => Ok(consigneeDetailsPage(appConfig, ConsigneeDetails.form))
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.consigneeDetails)).map {
+      case Some(data) => Ok(consigneeDetailsPage(appConfig, ConsigneeDetails.form().fill(data)))
+      case _          => Ok(consigneeDetailsPage(appConfig, ConsigneeDetails.form()))
     }
   }
 

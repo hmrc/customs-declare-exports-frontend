@@ -45,9 +45,9 @@ class ExporterDetailsPageController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ExporterDetails](cacheId, ExporterDetails.id).map {
-      case Some(data) => Ok(exporterDetailsPage(appConfig, ExporterDetails.form.fill(data)))
-      case _          => Ok(exporterDetailsPage(appConfig, ExporterDetails.form))
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.exporterDetails)).map {
+      case Some(data) => Ok(exporterDetailsPage(appConfig, ExporterDetails.form().fill(data)))
+      case _          => Ok(exporterDetailsPage(appConfig, ExporterDetails.form()))
     }
   }
 
@@ -67,6 +67,7 @@ class ExporterDetailsPageController @Inject()(
 
   private def updateCache(sessionId: String, formData: ExporterDetails): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
-      exportsCacheService.update(sessionId, model.copy(exporterDetails = Some(formData)))
+      val updatedParties = model.parties.copy(exporterDetails = Some(formData))
+      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
     })
 }

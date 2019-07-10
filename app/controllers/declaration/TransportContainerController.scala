@@ -53,9 +53,9 @@ class TransportContainerController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService.get(journeySessionId).map(_.flatMap(_.containerData)).map {
-      case Some(data) => Ok(transportContainersPage(form(), data.containers))
-      case _          => Ok(transportContainersPage(form(), Seq()))
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.containerData)).map {
+      case Some(data) => Ok(transportContainersPage(form, data.containers))
+      case _          => Ok(transportContainersPage(form, Seq()))
     }
   }
 

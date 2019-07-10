@@ -54,9 +54,9 @@ class DeclarationHolderController @Inject()(
   import forms.declaration.DeclarationHolder.form
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DeclarationHoldersData](cacheId, formId).map {
-      case Some(data) => Ok(declarationHolderPage(appConfig, form, data.holders))
-      case _          => Ok(declarationHolderPage(appConfig, form, Seq()))
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.declarationHoldersData)).map {
+      case Some(data) => Ok(declarationHolderPage(appConfig, form(), data.holders))
+      case _          => Ok(declarationHolderPage(appConfig, form(), Seq()))
     }
   }
 
@@ -66,9 +66,9 @@ class DeclarationHolderController @Inject()(
 
       val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
-      val cachedData = customsCacheService
-        .fetchAndGetEntry[DeclarationHoldersData](cacheId, formId)
-        .map(_.getOrElse(DeclarationHoldersData(Seq())))
+      val cachedData = exportsCacheService
+        .get(journeySessionId)
+        .map(_.flatMap(_.parties.declarationHoldersData).getOrElse(DeclarationHoldersData(Seq())))
 
       cachedData.flatMap { cache =>
         boundForm
@@ -118,6 +118,24 @@ class DeclarationHolderController @Inject()(
     }
 
   //scalastyle:off method.length
+  private def handleErrorPage(
+    fieldWithError: Seq[(String, String)],
+    userInput: DeclarationHolder,
+    holders: Seq[DeclarationHolder]
+  )(implicit request: Request[_]): Future[Result] = {
+    val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
+
+    val formWithError = form.fill(userInput).copy(errors = updatedErrors)
+
+    Future.successful(BadRequest(declarationHolderPage(appConfig, formWithError, holders)))
+  }
+
+  private def updateCache(sessionId: String, formData: DeclarationHoldersData): Future[Option[ExportsCacheModel]] =
+    getAndUpdateExportCacheModel(sessionId, model => {
+      val updatedParties = model.parties.copy(declarationHoldersData = Some(formData))
+      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
+    })
+
   private def saveAndContinue(
     userInput: DeclarationHolder,
     cachedData: DeclarationHoldersData
@@ -173,18 +191,6 @@ class DeclarationHolderController @Inject()(
     }
   //scalastyle:on method.length
 
-  private def handleErrorPage(
-    fieldWithError: Seq[(String, String)],
-    userInput: DeclarationHolder,
-    holders: Seq[DeclarationHolder]
-  )(implicit request: Request[_]): Future[Result] = {
-    val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
-
-    val formWithError = form.fill(userInput).copy(errors = updatedErrors)
-
-    Future.successful(BadRequest(declarationHolderPage(appConfig, formWithError, holders)))
-  }
-
   private def removeHolder(
     holderToRemove: DeclarationHolder,
     cachedData: DeclarationHoldersData
@@ -199,10 +205,4 @@ class DeclarationHolderController @Inject()(
 
   private def retrieveHolder(values: Seq[String]): DeclarationHolder =
     DeclarationHolder.buildFromString(values.headOption.getOrElse(""))
-
-  private def updateCache(sessionId: String, formData: DeclarationHoldersData): Future[Option[ExportsCacheModel]] =
-    getAndUpdateExportCacheModel(sessionId, model => {
-      val updatedParties = model.parties.copy(declarationHoldersData = Some(formData))
-      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
-    })
 }

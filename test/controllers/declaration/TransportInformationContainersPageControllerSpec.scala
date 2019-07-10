@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import java.time.LocalDateTime
+
 import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.declaration.TransportInformationContainersPageControllerSpec.cacheWithMaximumAmountOfHolders
 import controllers.util.{Add, Remove, SaveAndContinue}
@@ -25,7 +27,11 @@ import forms.declaration.TransportInformationContainer
 import helpers.views.declaration.{CommonMessages, TransportInformationContainerMessages}
 import models.declaration.TransportInformationContainerData
 import models.declaration.TransportInformationContainerData.id
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 class TransportInformationContainersPageControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with TransportInformationContainerMessages with CommonMessages {
@@ -34,7 +40,6 @@ class TransportInformationContainersPageControllerSpec
 
   private val addActionURLEncoded = (Add.toString, "")
   private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
-  private def removeActionURLEncoded(value: String) = (Remove.toString, value)
 
   override def beforeEach() {
     authorizedUser()
@@ -43,6 +48,11 @@ class TransportInformationContainersPageControllerSpec
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
+  override def afterEach(): Unit =
+    Mockito.reset(mockExportsCacheService)
+
+  private def removeActionURLEncoded(value: String) = (Remove.toString, value)
+
   "Transport Information Containers Controller on GET" should {
 
     "return 200 code" in {
@@ -50,10 +60,11 @@ class TransportInformationContainersPageControllerSpec
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
+      verifyTheCacheIsUnchanged()
+      verify(mockExportsCacheService).get(anyString)
     }
 
     "read item from cache and display it" in {
-
       val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("DeliveredBestGoods")))
       withNewCaching(createModelWithNoItems().copy(containerData = Some(cachedData)))
 
@@ -95,10 +106,15 @@ class TransportInformationContainersPageControllerSpec
 
       "exists in cache based on id" in {
 
-        val cachedData = TransportInformationContainerData(
-          Seq(TransportInformationContainer("M1l3s"), TransportInformationContainer("J00hn"))
+        withNewCaching(
+          createModelWithNoItems().copy(
+            containerData = Some(
+              TransportInformationContainerData(
+                Seq(TransportInformationContainer("M1l3s"), TransportInformationContainer("J00hn"))
+              )
+            )
+          )
         )
-        withNewCaching(createModelWithNoItems().copy(containerData = Some(cachedData)))
 
         val body = removeActionURLEncoded("0")
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
@@ -124,6 +140,7 @@ class TransportInformationContainersPageControllerSpec
           checkErrorLink(page, 1, ticEmpty, "#id")
 
           getElementByCss(page, "#error-message-id-input").text() must be(messages(ticEmpty))
+          verifyTheCacheIsUnchanged()
         }
 
         "container with too long name" in {
@@ -139,6 +156,7 @@ class TransportInformationContainersPageControllerSpec
           checkErrorLink(page, 1, ticErrorLength, "#id")
 
           getElementByCss(page, "#error-message-id-input").text() must be(messages(ticErrorLength))
+          verifyTheCacheIsUnchanged()
         }
 
         "container with incorrect name" in {
@@ -154,10 +172,10 @@ class TransportInformationContainersPageControllerSpec
           checkErrorLink(page, 1, ticErrorAlphaNumeric, "#id")
 
           getElementByCss(page, "#error-message-id-input").text() must be(messages(ticErrorAlphaNumeric))
+          verifyTheCacheIsUnchanged()
         }
 
         "duplicated container" in {
-
           val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("M1l3s")))
           withNewCaching(createModelWithNoItems().copy(containerData = Some(cachedData)))
 
@@ -169,6 +187,7 @@ class TransportInformationContainersPageControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, duplication, "#")
+          verifyTheCacheIsUnchanged()
         }
 
         "more than 9999 containers" in {
@@ -182,6 +201,7 @@ class TransportInformationContainersPageControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, limit, "#")
+          verifyTheCacheIsUnchanged()
         }
       }
 
@@ -198,10 +218,10 @@ class TransportInformationContainersPageControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, continueMandatory, "#")
+          verifyTheCacheIsUnchanged()
         }
 
         "duplicated container" in {
-
           val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("M1l3s")))
           withNewCaching(createModelWithNoItems().copy(containerData = Some(cachedData)))
 
@@ -213,6 +233,7 @@ class TransportInformationContainersPageControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, duplication, "#")
+          verifyTheCacheIsUnchanged()
         }
 
         "more than 9999 containers" in {
@@ -226,13 +247,12 @@ class TransportInformationContainersPageControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, limit, "#")
+          verifyTheCacheIsUnchanged()
         }
       }
 
       "try to remove a non existent container" in {
-
-        val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("M1l3s")))
-        withCaching[TransportInformationContainerData](Some(cachedData), id)
+        withCache(TransportInformationContainerData(Seq(TransportInformationContainer("M1l3s"))))
 
         val body = ("action", "Remove:J0ohn-Coltrane")
 
@@ -244,6 +264,7 @@ class TransportInformationContainersPageControllerSpec
         stringResult must include(messages(globalErrorTitle))
         stringResult must include(messages(globalErrorHeading))
         stringResult must include(messages(globalErrorMessage))
+        verifyTheCacheIsUnchanged()
       }
     }
   }
@@ -273,8 +294,7 @@ class TransportInformationContainersPageControllerSpec
     }
 
     "user provide container with some different container in cache" in {
-      val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("x4rlz")))
-      withCaching[TransportInformationContainerData](Some(cachedData), id)
+      withCache(TransportInformationContainerData(Seq(TransportInformationContainer("x4rlz"))))
 
       val body = Seq(("id", "M1l3s"), saveAndContinueActionURLEncoded)
 
@@ -285,6 +305,18 @@ class TransportInformationContainersPageControllerSpec
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
     }
   }
+
+  private def withCache(data: TransportInformationContainerData) =
+    withNewCaching(
+      ExportsCacheModel(
+        "SessionId",
+        "DraftId",
+        LocalDateTime.now(),
+        LocalDateTime.now(),
+        "SMP",
+        containerData = Some(data)
+      )
+    )
 }
 
 object TransportInformationContainersPageControllerSpec {
