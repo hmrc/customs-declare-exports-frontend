@@ -45,12 +45,10 @@ class DispatchLocationPageController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[DispatchLocation](cacheId, DispatchLocation.formId)
-      .map {
-        case Some(data) => Ok(dispatchLocationPage(DispatchLocation.form().fill(data)))
-        case _          => Ok(dispatchLocationPage(DispatchLocation.form()))
-      }
+    exportsCacheService.get(journeySessionId).map {
+      case Right(data) => Ok(dispatchLocationPage(DispatchLocation.form().fill(data.dispatchLocation.get)))
+      case Left(error)  => Ok(dispatchLocationPage(DispatchLocation.form()))
+    }
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
