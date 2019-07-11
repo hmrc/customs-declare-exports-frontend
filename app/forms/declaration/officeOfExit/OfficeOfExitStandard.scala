@@ -40,6 +40,12 @@ object OfficeOfExitStandard {
       .verifying("standard.officeOfExit.circumstancesCode.error", isEmpty or isContainedIn(Seq(yes, no)))
   )(OfficeOfExitStandard.apply)(OfficeOfExitStandard.unapply)
 
+  def apply(officeOfExit: OfficeOfExit): OfficeOfExitStandard = OfficeOfExitStandard(
+    officeId = officeOfExit.officeId,
+    presentationOfficeId = officeOfExit.presentationOfficeId.getOrElse(""),
+    circumstancesCode = officeOfExit.circumstancesCode.getOrElse("")
+  )
+
   def adjustCircumstancesError(form: Form[OfficeOfExitStandard]): Form[OfficeOfExitStandard] = {
     val errors = form.errors.map { error =>
       if (error.key == "circumstancesCode" && error.message == "error.required")

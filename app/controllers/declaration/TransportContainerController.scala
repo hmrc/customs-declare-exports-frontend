@@ -18,7 +18,6 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes._
 import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
@@ -54,21 +53,20 @@ class TransportContainerController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[TransportInformationContainerData](cacheId, id)
-      .map {
-        case Some(data) => Ok(transportContainersPage(form, data.containers))
-        case _          => Ok(transportContainersPage(form, Seq()))
-      }
+    cacheService.get(journeySessionId).map(_.flatMap(_.containerData)).map {
+      case Some(data) => Ok(transportContainersPage(form(), data.containers))
+      case _          => Ok(transportContainersPage(form(), Seq()))
+    }
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form.bindFromRequest()
+    val boundForm = form().bindFromRequest()
 
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
-    val cachedData = customsCacheService
-      .fetchAndGetEntry[TransportInformationContainerData](cacheId, id)
+    val cachedData = cacheService
+      .get(journeySessionId)
+      .map(_.flatMap(_.containerData))
       .map(_.getOrElse(TransportInformationContainerData(Seq())))
 
     cachedData.flatMap { cache =>

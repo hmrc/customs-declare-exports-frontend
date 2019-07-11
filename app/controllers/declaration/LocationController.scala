@@ -45,7 +45,7 @@ class LocationController @Inject()(
   import forms.declaration.GoodsLocation._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[GoodsLocation](cacheId, formId).map {
+    cacheService.get(journeySessionId).map(_.flatMap(_.locations.goodsLocation)).map {
       case Some(data) => Ok(goodsLocationPage(appConfig, form.fill(data)))
       case _          => Ok(goodsLocationPage(appConfig, form))
     }

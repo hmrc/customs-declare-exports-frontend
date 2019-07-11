@@ -32,4 +32,6 @@ object OfficeOfExitSupplementary {
       .verifying("declaration.officeOfExit.length", isEmpty or hasSpecificLength(8))
       .verifying("declaration.officeOfExit.specialCharacters", isEmpty or isAlphanumeric)
   )(OfficeOfExitSupplementary.apply)(OfficeOfExitSupplementary.unapply)
+
+  def apply(officeOfExit: OfficeOfExit): OfficeOfExitSupplementary = OfficeOfExitSupplementary(officeOfExit.officeId)
 }
