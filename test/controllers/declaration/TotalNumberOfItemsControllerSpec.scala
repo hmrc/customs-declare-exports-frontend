@@ -54,7 +54,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
     "read item from cache and display it" in {
 
       val cachedData = TotalNumberOfItems("7987.1", "1.33", " 631.1")
-      withCaching[TotalNumberOfItems](Some(cachedData), "TotalNumberOfItems")
+      withNewCaching(createModel().copy(totalNumberOfItems = Some(cachedData)))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
