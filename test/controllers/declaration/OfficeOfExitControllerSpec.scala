@@ -22,6 +22,7 @@ import forms.Choice.choiceId
 import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitForms, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import helpers.views.declaration.OfficeOfExitMessages
+import models.declaration.Locations
 import org.mockito.Mockito.reset
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
@@ -61,7 +62,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
     "read item from cache and display it" in new SupplementarySetUp {
 
       val cachedData = OfficeOfExitSupplementary("999AAA45")
-      withCaching[OfficeOfExitSupplementary](Some(cachedData), OfficeOfExitForms.formId)
+      withNewCaching(createModel().copy(locations = Locations(officeOfExit = Some(OfficeOfExit.from(cachedData)))))
 
       val result = route(app, getRequest(uri)).get
 
@@ -84,7 +85,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val presentationOfficeId = "87654321"
       val circumstancesCode = "Yes"
       val cachedData = OfficeOfExitStandard(officeId, presentationOfficeId, circumstancesCode)
-      withCaching[OfficeOfExitStandard](Some(cachedData), OfficeOfExitForms.formId)
+      withNewCaching(createModel().copy(locations = Locations(officeOfExit = Some(OfficeOfExit.from(cachedData)))))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)

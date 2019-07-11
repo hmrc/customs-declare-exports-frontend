@@ -47,21 +47,22 @@ class PreviousDocumentsController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[PreviousDocumentsData](cacheId, formId).map {
-      case Some(data) => Ok(previousDocumentsPage(form, data.documents))
-      case _          => Ok(previousDocumentsPage(form, Seq.empty))
+    cacheService.get(journeySessionId).map(_.flatMap(_.previousDocuments)).map {
+      case Some(data) => Ok(previousDocumentsPage(form(), data.documents))
+      case _          => Ok(previousDocumentsPage(form(), Seq.empty))
     }
   }
 
   def savePreviousDocuments(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     import MultipleItemsHelper._
 
-    val boundForm = form.bindFromRequest()
+    val boundForm = form().bindFromRequest()
 
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
-    val cachedData = customsCacheService
-      .fetchAndGetEntry[PreviousDocumentsData](cacheId, formId)
+    val cachedData = cacheService
+      .get(journeySessionId)
+      .map(_.flatMap(_.previousDocuments))
       .map(_.getOrElse(PreviousDocumentsData(Seq.empty)))
 
     cachedData.flatMap { cache =>

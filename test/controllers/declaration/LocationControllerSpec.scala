@@ -22,6 +22,8 @@ import forms.Choice.choiceId
 import forms.declaration.GoodsLocation
 import forms.declaration.GoodsLocationTestData._
 import helpers.views.declaration.LocationOfGoodsMessages
+import models.declaration
+import models.declaration.Locations
 import org.mockito.Mockito.reset
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
@@ -56,7 +58,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val cachedData =
         GoodsLocation("Spain", "1", "1", Some("1"), Some("1"), Some("BAFTA Street"), Some("LS37BH"), Some("SecretCity"))
 
-      withCaching[GoodsLocation](Some(cachedData), "GoodsLocation")
+      withNewCaching(createModel().copy(locations = declaration.Locations(goodsLocation = Some(cachedData))))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)

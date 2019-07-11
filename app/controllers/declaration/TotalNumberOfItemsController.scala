@@ -45,7 +45,7 @@ class TotalNumberOfItemsController @Inject()(
   import forms.declaration.TotalNumberOfItems._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[TotalNumberOfItems](cacheId, formId).map {
+    cacheService.get(journeySessionId).map(_.flatMap(_.totalNumberOfItems)).map {
       case Some(data) => Ok(totalNumberOfItemsPage(appConfig, form.fill(data)))
       case _          => Ok(totalNumberOfItemsPage(appConfig, form))
     }

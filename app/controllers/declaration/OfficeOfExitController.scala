@@ -54,14 +54,14 @@ class OfficeOfExitController @Inject()(
   }
 
   private def supplementaryPage()(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Html] =
-    customsCacheService.fetchAndGetEntry[OfficeOfExitSupplementary](cacheId, formId).map {
-      case Some(data) => officeOfExitSupplementaryPage(supplementaryForm.fill(data))
+    cacheService.get(journeySessionId).map(_.flatMap(_.locations.officeOfExit)).map {
+      case Some(data) => officeOfExitSupplementaryPage(supplementaryForm.fill(OfficeOfExitSupplementary(data)))
       case _          => officeOfExitSupplementaryPage(supplementaryForm)
     }
 
   private def standardPage()(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Html] =
-    customsCacheService.fetchAndGetEntry[OfficeOfExitStandard](cacheId, formId).map {
-      case Some(data) => officeOfExitStandardPage(standardForm.fill(data))
+    cacheService.get(journeySessionId).map(_.flatMap(_.locations.officeOfExit)).map {
+      case Some(data) => officeOfExitStandardPage(standardForm.fill(OfficeOfExitStandard(data)))
       case _          => officeOfExitStandardPage(standardForm)
     }
 
