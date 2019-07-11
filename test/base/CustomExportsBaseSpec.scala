@@ -185,6 +185,10 @@ trait CustomExportsBaseSpec
   }
 
   def withNewCaching(dataToReturn: ExportsCacheModel) {
+
+    when(mockExportsCacheService.getItemByIdAndSession(any[String], any[String]))
+      .thenReturn((Future.successful(dataToReturn.items.headOption)))
+
     when(
       mockExportsCacheService
         .update(any[String], any[ExportsCacheModel])

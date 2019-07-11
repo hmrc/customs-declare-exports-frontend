@@ -29,4 +29,11 @@ class ExportsCacheService @Inject()(journeyCacheModelRepo: ExportsCacheModelRepo
 
   def update(sessionId: String, model: ExportsCacheModel): Future[Option[ExportsCacheModel]] =
     journeyCacheModelRepo.upsert(sessionId, model.copy(updatedDateTime = now()))
+
+  def getItemByIdAndSession(itemId: String, sessionId: String): Future[Option[ExportItem]] =
+    get(sessionId).map {
+      case Some(model) => model.items.find(_.id.equalsIgnoreCase(itemId))
+      case _           => None
+    }
+
 }
