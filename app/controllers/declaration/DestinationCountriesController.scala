@@ -101,8 +101,9 @@ class DestinationCountriesController @Inject()(
   private def handleSubmitStandard()(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
-    val cachedData = customsCacheService
-      .fetchAndGetEntry[DestinationCountries](cacheId, formId)
+    val cachedData = cacheService
+      .get(journeySessionId)
+      .map(_.flatMap(_.locations.destinationCountries))
       .map(_.getOrElse(DestinationCountries.empty()))
 
     cachedData.flatMap { cache =>
