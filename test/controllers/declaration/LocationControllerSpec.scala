@@ -58,7 +58,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val cachedData =
         GoodsLocation("Spain", "1", "1", Some("1"), Some("1"), Some("BAFTA Street"), Some("LS37BH"), Some("SecretCity"))
 
-      withNewCaching(createModel().copy(locations = declaration.Locations(goodsLocation = Some(cachedData))))
+      withNewCaching(createModelWithNoItems().copy(locations = declaration.Locations(goodsLocation = Some(cachedData))))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)

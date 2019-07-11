@@ -62,7 +62,9 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
     "read item from cache and display it" in new SupplementarySetUp {
 
       val cachedData = OfficeOfExitSupplementary("999AAA45")
-      withNewCaching(createModel().copy(locations = Locations(officeOfExit = Some(OfficeOfExit.from(cachedData)))))
+      withNewCaching(
+        createModelWithNoItems().copy(locations = Locations(officeOfExit = Some(OfficeOfExit.from(cachedData))))
+      )
 
       val result = route(app, getRequest(uri)).get
 
@@ -85,7 +87,9 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val presentationOfficeId = "87654321"
       val circumstancesCode = "Yes"
       val cachedData = OfficeOfExitStandard(officeId, presentationOfficeId, circumstancesCode)
-      withNewCaching(createModel().copy(locations = Locations(officeOfExit = Some(OfficeOfExit.from(cachedData)))))
+      withNewCaching(
+        createModelWithNoItems().copy(locations = Locations(officeOfExit = Some(OfficeOfExit.from(cachedData))))
+      )
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)

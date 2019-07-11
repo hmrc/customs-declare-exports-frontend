@@ -44,7 +44,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[Seq[Seal]](None, Seal.formId)
     withCaching[TransportDetails](None, TransportDetails.formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
@@ -141,7 +141,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
     "on click of continue" in {
       forAll(arbitrary[Seal]) { seal =>
-        withNewCaching(createModel())
+        withNewCaching(createModelWithNoItems())
         withCaching[Seq[Seal]](None, Seal.formId)
         val payload = Seq(("id", seal.id)) :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
