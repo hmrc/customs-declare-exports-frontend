@@ -51,7 +51,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
     val journeyRequest = JourneyRequest(authenticatedRequest, Choice(AllowedChoiceValues.StandardDec))
     val cacheId = CacheIdGenerator.cacheId()(journeyRequest)
 
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[Choice](Some(Choice(AllowedChoiceValues.StandardDec)), choiceId)
     mockCacheBehaviour(cacheId, AdditionalDeclarationTypeStandardDec.formId)(None)
   }
@@ -60,7 +60,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
     val journeyRequest = JourneyRequest(authenticatedRequest, Choice(AllowedChoiceValues.SupplementaryDec))
     val cacheId = CacheIdGenerator.cacheId()(journeyRequest)
 
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[Choice](Some(Choice(AllowedChoiceValues.SupplementaryDec)), choiceId)
     mockCacheBehaviour(cacheId, AdditionalDeclarationTypeStandardDec.formId)(None)
   }

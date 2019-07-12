@@ -53,16 +53,27 @@ class ProcedureCodesPageController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[ProcedureCodesData](goodsItemCacheId, formId).map {
-      case Some(data) =>
-        Ok(procedureCodesPage(appConfig, itemId, form.fill(data.toProcedureCode()), data.additionalProcedureCodes))
-      case _ => Ok(procedureCodesPage(appConfig, itemId, form, Seq()))
+    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map {
+      case Some(exportItem) =>
+        exportItem.procedureCodes.fold({ Ok(procedureCodesPage(appConfig, itemId, form(), Seq())) }) {
+          procedureCodesData =>
+            Ok(
+              procedureCodesPage(
+                appConfig,
+                itemId,
+                form().fill(procedureCodesData.toProcedureCode()),
+                procedureCodesData.additionalProcedureCodes
+              )
+            )
+
+        }
+      case None => Ok(procedureCodesPage(appConfig, itemId, form(), Seq()))
     }
   }
 
   def submitProcedureCodes(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
-      val boundForm = form.bindFromRequest()
+      val boundForm = form().bindFromRequest()
 
       val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
@@ -98,8 +109,7 @@ class ProcedureCodesPageController @Inject()(
       sessionId,
       model => {
         val item: Option[ExportItem] = model.items
-          .filter(item => item.id.equals(itemId))
-          .headOption
+          .find(item => item.id.equals(itemId))
           .map(_.copy(procedureCodes = Some(updatedProcedureCodes)))
         val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
         exportsCacheService.update(sessionId, model.copy(items = itemList))

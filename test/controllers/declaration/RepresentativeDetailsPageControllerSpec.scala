@@ -42,7 +42,7 @@ class RepresentativeDetailsPageControllerSpec
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[Choice](Some(Choice(SupplementaryDec)), choiceId)
     withCaching[RepresentativeDetails](None, RepresentativeDetails.formId)
   }
@@ -199,7 +199,8 @@ class RepresentativeDetailsPageControllerSpec
 
     "save data to the cache" in {
 
-      val model = createModel("12345")
+      val model = createModelWithItem("")
+
       when(mockExportsCacheService.get(any())).thenReturn(Future.successful(Some(model)))
 
       val representativeDetails = Parties(representativeDetails = Some(correctRepresentativeDetails))

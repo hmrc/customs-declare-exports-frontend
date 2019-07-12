@@ -44,7 +44,7 @@ class DocumentsProducedControllerSpec
 
   import DocumentsProducedControllerSpec._
 
-  val cachedModel: ExportsCacheModel = createModel()
+  val cachedModel: ExportsCacheModel = createModelWithItem("")
 
   private val uri = uriWithContextPath(s"/declaration/items/${cachedModel.items.head.id}/add-document")
   private val addActionUrlEncoded = (Add.toString, "")

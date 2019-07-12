@@ -33,7 +33,7 @@ import play.api.test.Helpers._
 class ItemTypePageControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages {
   import ItemTypePageControllerSpec._
-  private val cacheModel = createModel()
+  private val cacheModel = createModelWithItem("")
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/item-type")
 
   override def beforeEach() {

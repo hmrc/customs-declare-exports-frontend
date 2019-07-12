@@ -30,7 +30,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[DeclarantDetails](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }

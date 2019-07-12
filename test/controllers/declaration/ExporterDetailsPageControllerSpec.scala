@@ -31,7 +31,7 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[ExporterDetails](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }

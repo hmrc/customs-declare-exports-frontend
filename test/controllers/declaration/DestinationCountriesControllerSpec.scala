@@ -43,14 +43,14 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
   trait SupplementarySetUp {
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[DestinationCountries](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   trait StandardSetUp {
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[DestinationCountries](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
   }

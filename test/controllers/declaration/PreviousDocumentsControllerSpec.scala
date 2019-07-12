@@ -38,7 +38,7 @@ class PreviousDocumentsControllerSpec
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[PreviousDocumentsData](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
@@ -60,7 +60,7 @@ class PreviousDocumentsControllerSpec
     "read item from cache and display it" in {
 
       val cachedData = PreviousDocumentsData(Seq(Document("X", "MCR", "XH", Some("UX"))))
-      withNewCaching(createModel().copy(previousDocuments = Some(cachedData)))
+      withNewCaching(createModelWithNoItems().copy(previousDocuments = Some(cachedData)))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -91,7 +91,7 @@ class PreviousDocumentsControllerSpec
 
       "item is not duplicated" in {
 
-        withNewCaching(createModel().copy(previousDocuments = Some(cachedData)))
+        withNewCaching(createModelWithNoItems().copy(previousDocuments = Some(cachedData)))
 
         val document =
           Seq(
@@ -115,7 +115,7 @@ class PreviousDocumentsControllerSpec
 
       "exists in cache" in {
 
-        withNewCaching(createModel().copy(previousDocuments = Some(cachedData)))
+        withNewCaching(createModelWithNoItems().copy(previousDocuments = Some(cachedData)))
 
         val body = removeActionURLEncoded("0")
 
@@ -264,7 +264,7 @@ class PreviousDocumentsControllerSpec
 
       "item duplication in cache" in {
 
-        withNewCaching(createModel().copy(previousDocuments = Some(cachedData)))
+        withNewCaching(createModelWithNoItems().copy(previousDocuments = Some(cachedData)))
 
         val body = correctDocument :+ addActionURLEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -279,7 +279,7 @@ class PreviousDocumentsControllerSpec
 
       "limit of items reached" in {
 
-        withNewCaching(createModel().copy(previousDocuments = Some(fullCache)))
+        withNewCaching(createModelWithNoItems().copy(previousDocuments = Some(fullCache)))
 
         val body = Seq(
           ("documentCategory", "Y"),
@@ -430,7 +430,7 @@ class PreviousDocumentsControllerSpec
 
       "item duplication in cache" in {
 
-        withNewCaching(createModel().copy(previousDocuments = Some(cachedData)))
+        withNewCaching(createModelWithNoItems().copy(previousDocuments = Some(cachedData)))
 
         val body = correctDocument :+ saveAndContinueActionURLEncoded
 
@@ -446,7 +446,7 @@ class PreviousDocumentsControllerSpec
 
       "limit of items reached" in {
 
-        withNewCaching(createModel().copy(previousDocuments = Some(fullCache)))
+        withNewCaching(createModelWithNoItems().copy(previousDocuments = Some(fullCache)))
 
         val body = Seq(
           ("documentCategory", "Y"),
@@ -480,7 +480,7 @@ class PreviousDocumentsControllerSpec
       }
 
       "user has empty form but cache contains some item" in {
-        withNewCaching(createModel().copy(previousDocuments = Some(cachedData)))
+        withNewCaching(createModelWithNoItems().copy(previousDocuments = Some(cachedData)))
 
         val body = emptyDocument :+ saveAndContinueActionURLEncoded
 
@@ -493,7 +493,7 @@ class PreviousDocumentsControllerSpec
       }
 
       "user provide correct item with different item in cache" in {
-        withNewCaching(createModel().copy(previousDocuments = Some(cachedData)))
+        withNewCaching(createModelWithNoItems().copy(previousDocuments = Some(cachedData)))
 
         val document =
           Seq(

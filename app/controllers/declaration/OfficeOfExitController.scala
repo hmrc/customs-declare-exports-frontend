@@ -101,10 +101,7 @@ class OfficeOfExitController @Inject()(
           } yield Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm())
       )
 
-  private def updateCache(
-    sessionId: String,
-    formData: OfficeOfExitSupplementary
-  ): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: OfficeOfExitSupplementary): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model =>
@@ -114,10 +111,7 @@ class OfficeOfExitController @Inject()(
       )
     )
 
-  private def updateCache(
-    sessionId: String,
-    formData: OfficeOfExitStandard
-  ): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: OfficeOfExitStandard): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model =>

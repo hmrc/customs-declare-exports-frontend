@@ -117,7 +117,7 @@ POST        /nature-of-transaction               controllers.declaration.NatureO
 
 GET         /export-items                        controllers.declaration.ItemsSummaryController.displayPage()
 
-POST        /export-items                        controllers.declaration.ItemsSummaryController.addItem()
+GET         /export-items/add                                  controllers.declaration.ItemsSummaryController.addItem()
 
 # Procedure codes
 

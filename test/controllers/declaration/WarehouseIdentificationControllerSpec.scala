@@ -32,7 +32,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModel())
+    withNewCaching(createModelWithNoItems())
     withCaching[WarehouseIdentification](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
@@ -49,7 +49,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
     "read item from cache and display it" in {
 
       val cachedData = WarehouseIdentification(Some("Office"), Some("R"), Some("SecretStash"), Some(Maritime))
-      withNewCaching(createModel().copy(warehouseIdentification = Some(cachedData)))
+      withNewCaching(createModelWithNoItems().copy(warehouseIdentification = Some(cachedData)))
 
       val Some(result) = route(app, getRequest(uri))
       val page = contentAsString(result)

@@ -31,7 +31,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import services.ExportsItemsCacheIds.itemsId
 import uk.gov.hmrc.http.HeaderCarrier
-import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
+import services.cache.{ExportItem, ExportItemIdGeneratorService, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.items_summary
 
@@ -43,18 +43,18 @@ class ItemsSummaryController @Inject()(
   errorHandler: ErrorHandler,
   cacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
+  exportItemIdGeneratorService: ExportItemIdGeneratorService,
   mcc: MessagesControllerComponents,
   itemsSummaryPage: items_summary
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService
-      .fetchAndGetEntry[Seq[GovernmentAgencyGoodsItem]](cacheId, itemsId)
-      .zip(hasFiscalInformation())
+    exportsCacheService
+      .get(journeySessionId)
       .map {
-        case (items, hasFiscalInformation) =>
-          Ok(itemsSummaryPage(items.getOrElse(Seq.empty), hasFiscalInformation))
+        case Some(cacheModel) => Ok(itemsSummaryPage(cacheModel.items.toList))
+        case None             => Ok(itemsSummaryPage(List.empty))
       }
   }
 
@@ -65,7 +65,7 @@ class ItemsSummaryController @Inject()(
     }
 
   def addItem(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val newItem = ExportItem()
+    val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
     updateCache(journeySessionId, newItem)
       .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesPageController.displayPage(newItem.id)))
   }
@@ -78,8 +78,10 @@ class ItemsSummaryController @Inject()(
   private def updateCache(sessionId: String, exportItem: ExportItem): Future[Option[ExportsCacheModel]] =
     exportsCacheService.get(sessionId).flatMap {
       case Some(model) => {
-        exportsCacheService.update(sessionId, model.copy(items = model.items + exportItem))
+        exportsCacheService
+          .update(sessionId, model.copy(items = model.items + exportItem.copy(sequenceId = model.items.size + 1)))
       }
+      case None => Future.successful(None)
     }
 
 }

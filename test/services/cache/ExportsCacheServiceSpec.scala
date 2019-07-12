@@ -37,7 +37,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
     "on get" should {
 
       "return a cached model when exist" in {
-        val returnedModel = createModel(sessionId)
+        val returnedModel = createModelWithNoItems
         when(mockRepo.get(sessionId))
           .thenReturn(Future.successful(Some(returnedModel)))
 
@@ -57,22 +57,55 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
     "on upsert" should {
 
       "update returns a model when upsert is successful" in {
-        val returnedModel = createModel(sessionId)
+        val returnedModel = createModelWithNoItems()
         when(mockRepo.upsert(any(), any()))
           .thenReturn(Future.successful(Some(returnedModel)))
 
         val result = service.update(sessionId, returnedModel).futureValue
         result must be(Some(returnedModel))
       }
+
+      "update returns a String with an error message when upsert is unsuccessful" in {
+        val returnedModel = createModelWithNoItems()
+        when(mockRepo.upsert(any(), any()))
+          .thenReturn(Future.successful(None))
+
+        val result = service.update(sessionId, returnedModel).futureValue
+        result must be(None)
+      }
+
     }
 
-    "update returns a String with an error message when upsert is unsuccessful" in {
-      val returnedModel = createModel(sessionId)
-      when(mockRepo.upsert(any(), any()))
-        .thenReturn(Future.successful(None))
+    "on getItemByIdAndSession" should {
 
-      val result = service.update(sessionId, returnedModel).futureValue
-      result must be(None)
+      "return the correct item" in {
+        val returnedModel = createModelWithItem("")
+        when(mockRepo.get(sessionId))
+          .thenReturn(Future.successful(Some(returnedModel)))
+
+        val result = service.getItemByIdAndSession(returnedModel.items.head.id, sessionId).futureValue
+        result must be(Some(returnedModel.items.head))
+
+      }
+
+      "return None when item cannot be found" in {
+        val returnedModel = createModelWithItem("")
+        when(mockRepo.get(sessionId))
+          .thenReturn(Future.successful(Some(returnedModel)))
+
+        val result = service.getItemByIdAndSession("randomId", sessionId).futureValue
+        result must be(None)
+
+      }
+
+      "return None when cacheModel does not exist" in {
+        when(mockRepo.get(any[String]))
+          .thenReturn(Future.successful(None))
+
+        val result = service.getItemByIdAndSession("thisIdwillNotBeUsed", "unknownSessionid").futureValue
+        result must be(None)
+
+      }
     }
   }
 
