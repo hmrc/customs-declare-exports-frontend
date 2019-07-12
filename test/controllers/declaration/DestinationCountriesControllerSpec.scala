@@ -23,6 +23,7 @@ import forms.Choice.choiceId
 import forms.declaration.DestinationCountriesSpec._
 import forms.declaration.destinationCountries.DestinationCountries
 import helpers.views.declaration.DestinationCountriesMessages
+import models.declaration.Locations
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
@@ -78,7 +79,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "user is during supplementary declaration" in new SupplementarySetUp {
 
         val cachedData = DestinationCountries("Netherlands", "Belgium")
-        withCaching[DestinationCountries](Some(cachedData), DestinationCountries.formId)
+        withNewCaching(createModelWithNoItems().copy(locations = Locations(destinationCountries = Some(cachedData))))
 
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
@@ -91,7 +92,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "user is during standard declaration" in new StandardSetUp {
 
         val cachedData = DestinationCountries("Poland", Seq("Slovakia", "Italy"), "United Kingdom")
-        withCaching[DestinationCountries](Some(cachedData), DestinationCountries.formId)
+        withNewCaching(createModelWithNoItems().copy(locations = Locations(destinationCountries = Some(cachedData))))
 
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
@@ -231,7 +232,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val fullCache = Seq.fill(99)("Slovakia")
         val cachedData = DestinationCountries("Poland", fullCache, "England")
-        withCaching[DestinationCountries](Some(cachedData), DestinationCountries.formId)
+        withNewCaching(createModelWithNoItems().copy(locations = Locations(destinationCountries = Some(cachedData))))
 
         val body = Seq(
           ("countryOfDispatch", ""),
@@ -248,7 +249,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       "user try to add duplicated value" in new StandardSetUp {
         val cachedData = DestinationCountries("Poland", Seq("Poland"), "England")
-        withCaching[DestinationCountries](Some(cachedData), DestinationCountries.formId)
+        withNewCaching(createModelWithNoItems().copy(locations = Locations(destinationCountries = Some(cachedData))))
 
         val body = Seq(
           ("countryOfDispatch", ""),
@@ -268,7 +269,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "country exist and user is during standard declaration" in new StandardSetUp {
 
         val cachedData = DestinationCountries("Poland", Seq("Slovakia", "Italy"), "England")
-        withCaching[DestinationCountries](Some(cachedData), DestinationCountries.formId)
+        withNewCaching(createModelWithNoItems().copy(locations = Locations(destinationCountries = Some(cachedData))))
 
         val action = Remove(Seq("0"))
         val body = (action.label, action.keys.head)
@@ -310,7 +311,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "user is during standard declaration and provide correct values" in new StandardSetUp {
 
         val cachedData = DestinationCountries("", Seq("SK", "IT"), "")
-        withCaching[DestinationCountries](Some(cachedData), DestinationCountries.formId)
+        withNewCaching(createModelWithNoItems().copy(locations = Locations(destinationCountries = Some(cachedData))))
 
         val body = Seq(
           ("countryOfDispatch", "PL"),
