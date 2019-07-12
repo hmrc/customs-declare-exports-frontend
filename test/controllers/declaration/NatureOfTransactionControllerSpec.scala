@@ -52,7 +52,7 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
     "read item from cache and display it" in {
 
       val cachedData = NatureOfTransaction("1")
-      withCaching[NatureOfTransaction](Some(cachedData), NatureOfTransaction.formId)
+      withNewCaching(createModelWithNoItems().copy(natureOfTransaction = Some(cachedData)))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
