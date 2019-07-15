@@ -248,23 +248,6 @@ class DeclarationHolderControllerSpec
           contentAsString(result) must include(messages(authorisationCodeError))
         }
 
-        "has both input empty" in {
-
-          val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionUrlEncoded)).get
-          val page = contentAsString(result)
-
-          status(result) must be(BAD_REQUEST)
-
-          checkErrorsSummary(page)
-          checkErrorLink(page, 1, authorisationCodeEmpty, "#authorisationTypeCode")
-          checkErrorLink(page, 2, eoriEmpty, "#eori")
-
-          getElementByCss(page, "#error-message-authorisationTypeCode-input").text() must be(
-            messages(authorisationCodeEmpty)
-          )
-          getElementByCss(page, "#error-message-eori-input").text() must be(messages(eoriEmpty))
-        }
-
         "has duplicated holder" in {
 
           val cachedData = DeclarationHoldersData(Seq(DeclarationHolder(Some("ACE"), Some("eori"))))
@@ -349,6 +332,15 @@ class DeclarationHolderControllerSpec
     }
 
     "redirect to the next page" when {
+
+      "user doesn't provide anything" in {
+
+        val body = Seq(("authorisationTypeCode", ""), ("eori", ""), saveAndContinueActionUrlEncoded)
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+
+        status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/destination-countries"))
+      }
 
       "user provide holder with empty cache" in {
 
