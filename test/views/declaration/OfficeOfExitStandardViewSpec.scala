@@ -45,7 +45,6 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
     "have proper messages for error labels" in {
 
-      assertMessage(presentationOfficeEmpty, "Enter the office of presentation reference")
       assertMessage(presentationOfficeLength, "The code must be 8 characters")
       assertMessage(presentationOfficeSpecialCharacters, "Enter a reference in the correct format")
       assertMessage(circumstancesCodeEmpty, "Please provide an answer on this question")
@@ -101,7 +100,7 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
     "Office of Exit during standard declaration for invalid input" should {
 
       "display errors when all inputs are empty" in {
-        val data = OfficeOfExitStandard("", "", "")
+        val data = OfficeOfExitStandard("", None, "")
         val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form)
 
@@ -112,19 +111,13 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
         getElementByCss(view, "#error-message-officeId-input").text() mustBe messages(officeOfExitEmpty)
 
         getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(2)>a")
-          .text() mustBe messages(presentationOfficeEmpty)
-
-        getElementByCss(view, "#error-message-presentationOfficeId-input").text() mustBe
-          messages(presentationOfficeEmpty)
-
-        getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(3)>a")
           .text() must be(messages(circumstancesCodeEmpty))
 
         getElementByCss(view, "#error-message-circumstancesCode-input").text() mustBe messages(circumstancesCodeEmpty)
       }
 
       "display errors when all inputs are incorrect" in {
-        val data = OfficeOfExitStandard("123456", "654321", "Yes")
+        val data = OfficeOfExitStandard("123456", Some("654321"), "Yes")
         val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form)
 
@@ -142,7 +135,7 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
       }
 
       "display errors when office of exit and presentation office contains special characters" in {
-        val data = OfficeOfExitStandard("12#$%^78", "87^%$#21", "Yes")
+        val data = OfficeOfExitStandard("12#$%^78", Some("87^%$#21"), "Yes")
         val form = OfficeOfExitForms.standardForm.fillAndValidate(data)
         val view = createView(form)
 

@@ -86,7 +86,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val officeId = "12345678"
       val presentationOfficeId = "87654321"
       val circumstancesCode = "Yes"
-      val cachedData = OfficeOfExitStandard(officeId, presentationOfficeId, circumstancesCode)
+      val cachedData = OfficeOfExitStandard(officeId, Some(presentationOfficeId), circumstancesCode)
       withNewCaching(
         createModelWithNoItems().copy(locations = Locations(officeOfExit = Some(OfficeOfExit.from(cachedData))))
       )
