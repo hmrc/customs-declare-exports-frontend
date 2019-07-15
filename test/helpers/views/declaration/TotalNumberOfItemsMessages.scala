@@ -35,7 +35,6 @@ trait TotalNumberOfItemsMessages {
   val totalAmountInvoiced: String = "supplementary.totalAmountInvoiced"
 
   val taiHint: String = totalAmountInvoiced + ".hint"
-  val taiEmpty: String = totalAmountInvoiced + ".empty"
   val taiError: String = totalAmountInvoiced + ".error"
 
   val exchangeRate: String = "supplementary.exchangeRate"

@@ -53,7 +53,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
     "read item from cache and display it" in {
 
-      val cachedData = TotalNumberOfItems("7987.1", "1.33", " 631.1")
+      val cachedData = TotalNumberOfItems(Some("7987.1"), "1.33", " 631.1")
       withNewCaching(createModelWithNoItems().copy(totalNumberOfItems = Some(cachedData)))
 
       val result = route(app, getRequest(uri)).get
@@ -84,7 +84,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/nature-of-transaction"))
       theCacheModelUpdated.totalNumberOfItems.get mustBe TotalNumberOfItems(
-        totalAmountInvoiced = "456",
+        totalAmountInvoiced = Some("456"),
         exchangeRate = "789",
         totalPackage = "123"
       )
@@ -107,7 +107,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/nature-of-transaction"))
       theCacheModelUpdated.totalNumberOfItems.get mustBe TotalNumberOfItems(
-        totalAmountInvoiced = "456.78",
+        totalAmountInvoiced = Some("456.78"),
         exchangeRate = "789.789",
         totalPackage = "123"
       )

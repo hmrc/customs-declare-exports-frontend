@@ -16,12 +16,12 @@
 
 package forms.declaration
 
-import play.api.data.Forms.text
+import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class TotalNumberOfItems(totalAmountInvoiced: String, exchangeRate: String, totalPackage: String)
+case class TotalNumberOfItems(totalAmountInvoiced: Option[String], exchangeRate: String, totalPackage: String)
 
 object TotalNumberOfItems {
   implicit val format = Json.format[TotalNumberOfItems]
@@ -32,9 +32,8 @@ object TotalNumberOfItems {
   val exchangeRatePattern = "[0-9]{1,12}|[[0-9]{1,7}[.][0-9]{1,5}]{3,13}"
 
   val mapping = Forms.mapping(
-    "totalAmountInvoiced" -> text()
-      .verifying("supplementary.totalAmountInvoiced.empty", nonEmpty)
-      .verifying("supplementary.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern)),
+    "totalAmountInvoiced" -> optional(text()
+      .verifying("supplementary.totalAmountInvoiced.error", isEmpty or ofPattern(totalAmountInvoicedPattern))),
     "exchangeRate" -> text()
       .verifying("supplementary.exchangeRate.empty", nonEmpty)
       .verifying("supplementary.exchangeRate.error", isEmpty or ofPattern(exchangeRatePattern)),

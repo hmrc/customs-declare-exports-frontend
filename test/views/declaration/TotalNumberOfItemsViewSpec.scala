@@ -51,7 +51,6 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "have proper messages for error labels" in {
 
-      assertMessage(taiEmpty, "Total amount of invoiced items cannot be empty")
       assertMessage(taiError, "Total amount of invoiced items is incorrect")
 
       assertMessage(erEmpty, "Exchange rate cannot be empty")
@@ -127,14 +126,12 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display errors when nothing is entered" in {
 
-      val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("", "", "")))
+      val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(None, "", "")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, taiEmpty, "#totalAmountInvoiced")
-      checkErrorLink(view, 2, erEmpty, "#exchangeRate")
-      checkErrorLink(view, 3, tpqEmpty, "#totalPackage")
+      checkErrorLink(view, 1, erEmpty, "#exchangeRate")
+      checkErrorLink(view, 2, tpqEmpty, "#totalPackage")
 
-      getElementByCss(view, "#error-message-totalAmountInvoiced-input").text() must be(messages(taiEmpty))
       getElementByCss(view, "#error-message-exchangeRate-input").text() must be(messages(erEmpty))
       getElementByCss(view, "#error-message-totalPackage-input").text() must be(messages(tpqEmpty))
     }
@@ -142,7 +139,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
     "display error when all entered input is incorrect" in {
 
       val view =
-        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("abcd", "abcd", "abcd")))
+        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), "abcd", "abcd")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, taiError, "#totalAmountInvoiced")
@@ -154,20 +151,10 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
       getElementByCss(view, "#error-message-totalPackage-input").text() must be(messages(tpqError))
     }
 
-    "display error when Total Amount Invoiced is empty" in {
-
-      val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("", "123.12345", "1")))
-
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, taiEmpty, "#totalAmountInvoiced")
-
-      getElementByCss(view, "#error-message-totalAmountInvoiced-input").text() must be(messages(taiEmpty))
-    }
-
     "display error when Total Amount Invoiced is incorrect" in {
 
       val view =
-        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("abcd", "123.12345", "1")))
+        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), "123.12345", "1")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, taiError, "#totalAmountInvoiced")
@@ -177,7 +164,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display error when Exchange Rate is empty" in {
 
-      val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("123.12", "", "1")))
+      val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), "", "1")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, erEmpty, "#exchangeRate")
@@ -187,7 +174,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display error when Exchange Rate is incorrect" in {
 
-      val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("123.12", "abcd", "1")))
+      val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), "abcd", "1")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, erError, "#exchangeRate")
@@ -198,7 +185,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
     "display error when Total Package is empty" in {
 
       val view =
-        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("123.12", "123.12345", "")))
+        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), "123.12345", "")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, tpqEmpty, "#totalPackage")
@@ -209,7 +196,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
     "display error when Total Package is incorrect" in {
 
       val view =
-        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("123.12", "123.12345", "abcd")))
+        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), "123.12345", "abcd")))
 
       checkErrorsSummary(view)
       checkErrorLink(view, 1, tpqError, "#totalPackage")
@@ -222,7 +209,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display data in Total Amount Invoiced input" in {
 
-      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems("123.123", "", "")))
+      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.123"), "", "")))
 
       getElementById(view, "totalAmountInvoiced").attr("value") must be("123.123")
       getElementById(view, "exchangeRate").attr("value") must be("")
@@ -231,7 +218,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display data in Exchange Rate input" in {
 
-      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems("", "123.12345", "")))
+      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems(None, "123.12345", "")))
 
       getElementById(view, "totalAmountInvoiced").attr("value") must be("")
       getElementById(view, "exchangeRate").attr("value") must be("123.12345")
@@ -240,7 +227,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display data in Total Package input" in {
 
-      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems("", "", "1")))
+      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems(None, "", "1")))
 
       getElementById(view, "totalAmountInvoiced").attr("value") must be("")
       getElementById(view, "exchangeRate").attr("value") must be("")
@@ -249,7 +236,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display data in all inputs" in {
 
-      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems("123.123", "123.12345", "1")))
+      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.123"), "123.12345", "1")))
 
       getElementById(view, "totalAmountInvoiced").attr("value") must be("123.123")
       getElementById(view, "exchangeRate").attr("value") must be("123.12345")
