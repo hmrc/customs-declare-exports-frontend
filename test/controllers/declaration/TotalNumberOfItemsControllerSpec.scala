@@ -46,7 +46,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
     "return 200 code" in {
 
-      val result = route(app, getRequest(uri)).get
+      val Some(result) = route(app, getRequest(uri))
 
       status(result) must be(OK)
     }
@@ -56,7 +56,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
       val cachedData = TotalNumberOfItems(Some("7987.1"), "1.33", " 631.1")
       withNewCaching(createModelWithNoItems().copy(totalNumberOfItems = Some(cachedData)))
 
-      val result = route(app, getRequest(uri)).get
+      val Some(result) = route(app, getRequest(uri))
       val page = contentAsString(result)
 
       status(result) must be(OK)
@@ -78,11 +78,10 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
             "totalPackage" -> JsString("123")
           )
         )
-      val result = route(app, postRequest(uri, allFields)).get
-      val header = result.futureValue.header
+      val Some(result) = route(app, postRequest(uri, allFields))
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/nature-of-transaction"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/nature-of-transaction"))
       theCacheModelUpdated.totalNumberOfItems.get mustBe TotalNumberOfItems(
         totalAmountInvoiced = Some("456"),
         exchangeRate = "789",
@@ -100,12 +99,11 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
             "totalPackage" -> JsString("123")
           )
         )
-      val result = route(app, postRequest(uri, allFields)).get
-      val header = result.futureValue.header
+      val Some(result) = route(app, postRequest(uri, allFields))
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/nature-of-transaction"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/nature-of-transaction"))
       theCacheModelUpdated.totalNumberOfItems.get mustBe TotalNumberOfItems(
         totalAmountInvoiced = Some("456.78"),
         exchangeRate = "789.789",
@@ -124,13 +122,13 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
             "totalPackage" -> JsString("test")
           )
         )
-      val result = route(app, postRequest(uri, allFields)).get
+      val Some(result) = route(app, postRequest(uri, allFields))
 
       status(result) must be(BAD_REQUEST)
 
-      contentAsString(result) must include(messages(taiError))
-      contentAsString(result) must include(messages(erError))
-      contentAsString(result) must include(messages(tpqError))
+      contentAsString(result) must include(messages(totalAmountInvoicedError))
+      contentAsString(result) must include(messages(exchangeRateError))
+      contentAsString(result) must include(messages(totalPackageQuantityError))
       verifyTheCacheIsUnchanged()
     }
 
@@ -144,13 +142,13 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
             "totalPackage" -> JsString("123456789")
           )
         )
-      val result = route(app, postRequest(uri, allFields)).get
+      val Some(result) = route(app, postRequest(uri, allFields))
 
       status(result) must be(BAD_REQUEST)
 
-      contentAsString(result) must include(messages(taiError))
-      contentAsString(result) must include(messages(erError))
-      contentAsString(result) must include(messages(tpqError))
+      contentAsString(result) must include(messages(totalAmountInvoicedError))
+      contentAsString(result) must include(messages(exchangeRateError))
+      contentAsString(result) must include(messages(totalPackageQuantityError))
       verifyTheCacheIsUnchanged()
     }
 
@@ -164,11 +162,11 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
         )
       )
 
-      val result = route(app, postRequest(uri, allFields)).get
+      val Some(result) = route(app, postRequest(uri, allFields))
       status(result) must be(BAD_REQUEST)
 
-      contentAsString(result) must include(messages(taiError))
-      contentAsString(result) must include(messages(erError))
+      contentAsString(result) must include(messages(totalAmountInvoicedError))
+      contentAsString(result) must include(messages(exchangeRateError))
       verifyTheCacheIsUnchanged()
     }
 
@@ -182,11 +180,11 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
         )
       )
 
-      val result = route(app, postRequest(uri, allFields)).get
+      val Some(result) = route(app, postRequest(uri, allFields))
       status(result) must be(BAD_REQUEST)
 
-      contentAsString(result) must include(messages(taiError))
-      contentAsString(result) must include(messages(erError))
+      contentAsString(result) must include(messages(totalAmountInvoicedError))
+      contentAsString(result) must include(messages(exchangeRateError))
       verifyTheCacheIsUnchanged()
     }
   }

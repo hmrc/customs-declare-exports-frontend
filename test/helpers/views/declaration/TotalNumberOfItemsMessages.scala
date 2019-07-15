@@ -18,28 +18,27 @@ package helpers.views.declaration
 
 trait TotalNumberOfItemsMessages {
 
-  val totalNumberOfItems: String = "supplementary.totalNumberOfItems"
   val valueOfItems: String = "supplementary.valueOfItems"
 
-  val tnoiTitle: String = totalNumberOfItems + ".title"
-  val tnoiHint: String = totalNumberOfItems + ".hint"
-  val tnoiEmpty: String = totalNumberOfItems + ".empty"
-  val tnoiError: String = totalNumberOfItems + ".error"
+  val totalNoOfItemsTitle: String = "supplementary.totalNumberOfItems.title"
+  val totalNoOfItemsHint: String = "supplementary.totalNumberOfItems.hint"
+  val totalNoOfItemsEmpty: String = "supplementary.totalNumberOfItems.empty"
+  val totalNoOfItemsError: String = "supplementary.totalNumberOfItems.error"
 
   val totalPackageQuantity: String = "supplementary.totalPackageQuantity"
 
-  val tpqHint: String = totalPackageQuantity + ".hint"
-  val tpqEmpty: String = totalPackageQuantity + ".empty"
-  val tpqError: String = totalPackageQuantity + ".error"
+  val totalPackageQuantityHint: String = "supplementary.totalPackageQuantity.hint"
+  val totalPackageQuantityEmpty: String = "supplementary.totalPackageQuantity.empty"
+  val totalPackageQuantityError: String = "supplementary.totalPackageQuantity.error"
 
   val totalAmountInvoiced: String = "supplementary.totalAmountInvoiced"
 
-  val taiHint: String = totalAmountInvoiced + ".hint"
-  val taiError: String = totalAmountInvoiced + ".error"
+  val totalAmountInvoicedHint: String = "supplementary.totalAmountInvoiced.hint"
+  val totalAmountInvoicedError: String = "supplementary.totalAmountInvoiced.error"
 
   val exchangeRate: String = "supplementary.exchangeRate"
 
-  val erHint: String = exchangeRate + ".hint"
-  val erEmpty: String = exchangeRate + ".empty"
-  val erError: String = exchangeRate + ".error"
+  val exchangeRateHint: String = "supplementary.exchangeRate.hint"
+  val exchangeRateEmpty: String = "supplementary.exchangeRate.empty"
+  val exchangeRateError: String = "supplementary.exchangeRate.error"
 }
