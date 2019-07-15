@@ -15,6 +15,7 @@
  */
 
 package views.declaration
+
 import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard}
 import helpers.views.declaration.{CommonMessages, OfficeOfExitMessages}
 import play.api.data.Form
@@ -54,7 +55,7 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
       "display page title" in {
 
-        getElementByCss(createView(), "title").text() mustBe messages(title)
+        getElementById(createView(), "title").text() mustBe messages(title)
       }
 
       "display section header" in {
@@ -77,6 +78,7 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
         getElementById(view, "presentationOfficeId").attr("value") mustBe ""
       }
 
+      // TODO change below code to use getElementById, missing ID in radio input for legend
       "display circumstances code question" in {
         val view = createView()
         getElementByCss(view, "#circumstancesCode>legend>span").text() must be(messages(circumstancesCode))
@@ -106,14 +108,11 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
         checkErrorsSummary(view)
 
-        getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(1)>a")
-          .text() mustBe messages(officeOfExitEmpty)
-        getElementByCss(view, "#error-message-officeId-input").text() mustBe messages(officeOfExitEmpty)
+        getElementById(view, "officeId-error").text() mustBe messages(officeOfExitEmpty)
+        getElementById(view, "error-message-officeId-input").text() mustBe messages(officeOfExitEmpty)
 
-        getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(2)>a")
-          .text() must be(messages(circumstancesCodeEmpty))
-
-        getElementByCss(view, "#error-message-circumstancesCode-input").text() mustBe messages(circumstancesCodeEmpty)
+        getElementById(view, "circumstancesCode-error").text() must be(messages(circumstancesCodeEmpty))
+        getElementById(view, "error-message-circumstancesCode-input").text() mustBe messages(circumstancesCodeEmpty)
       }
 
       "display errors when all inputs are incorrect" in {
@@ -123,15 +122,13 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
         checkErrorsSummary(view)
 
-        getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(1)>a")
-          .text() mustBe messages(officeOfExitLength)
-        getElementByCss(view, "#error-message-officeId-input").text() mustBe messages(officeOfExitLength)
+        getElementById(view, "officeId-error").text() mustBe messages(officeOfExitLength)
+        getElementById(view, "error-message-officeId-input").text() mustBe messages(officeOfExitLength)
 
-        getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(2)>a")
-          .text() mustBe messages(presentationOfficeLength)
-        getElementByCss(view, "#error-message-presentationOfficeId-input").text() mustBe
-          messages(presentationOfficeLength)
-
+        getElementById(view, "presentationOfficeId-error").text() mustBe messages(presentationOfficeLength)
+        getElementById(view, "error-message-presentationOfficeId-input").text() mustBe messages(
+          presentationOfficeLength
+        )
       }
 
       "display errors when office of exit and presentation office contains special characters" in {
@@ -141,13 +138,11 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
 
         checkErrorsSummary(view)
 
-        getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(1)>a")
-          .text() mustBe messages(officeOfExitSpecialCharacters)
-        getElementByCss(view, "#error-message-officeId-input").text() mustBe messages(officeOfExitSpecialCharacters)
+        getElementById(view, "officeId-error").text() mustBe messages(officeOfExitSpecialCharacters)
+        getElementById(view, "error-message-officeId-input").text() mustBe messages(officeOfExitSpecialCharacters)
 
-        getElementByCss(view, "form>div.error-summary.error-summary--show>ul>li:nth-child(2)>a")
-          .text() mustBe messages(presentationOfficeSpecialCharacters)
-        getElementByCss(view, "#error-message-presentationOfficeId-input").text() mustBe messages(
+        getElementById(view, "presentationOfficeId-error").text() mustBe messages(presentationOfficeSpecialCharacters)
+        getElementById(view, "error-message-presentationOfficeId-input").text() mustBe messages(
           presentationOfficeSpecialCharacters
         )
       }

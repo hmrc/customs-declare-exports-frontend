@@ -15,6 +15,7 @@
  */
 
 package views.declaration
+
 import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitSupplementary}
 import helpers.views.declaration.{CommonMessages, OfficeOfExitMessages}
 import play.api.data.Form
@@ -89,9 +90,9 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
       val view = createView(OfficeOfExitForms.supplementaryForm.fillAndValidate(OfficeOfExitSupplementary("123456789")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, officeOfExitLength, "#officeId")
+      checkErrorLink(view, "officeId-error", officeOfExitLength, "#officeId")
 
-      getElementByCss(view, "#error-message-officeId-input").text() must be(messages(officeOfExitLength))
+      getElementById(view, "error-message-officeId-input").text() must be(messages(officeOfExitLength))
     }
 
     "display error when Office of Exit is empty" in {
@@ -99,9 +100,9 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
       val view = createView(OfficeOfExitForms.supplementaryForm.fillAndValidate(OfficeOfExitSupplementary("")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, officeOfExitEmpty, "#officeId")
+      checkErrorLink(view, "officeId-error", officeOfExitEmpty, "#officeId")
 
-      getElementByCss(view, "#error-message-officeId-input").text() must be(messages(officeOfExitEmpty))
+      getElementById(view, "error-message-officeId-input").text() must be(messages(officeOfExitEmpty))
     }
   }
 
