@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes._
+
 @import forms.declaration.ProcedureCodes
 @import uk.gov.hmrc.play.views.html._
 
@@ -26,13 +26,13 @@
     @main_template(
         title = messages("supplementary.procedureCodes.title"),
         appConfig = appConfig
-    ) {
+     ) {
 
 
-        @helper.form(ProcedureCodesPageController.submitProcedureCodes(itemId), 'autoComplete -> "off") {
+        @helper.form(controllers.declaration.routes.ProcedureCodesPageController.submitProcedureCodes(itemId), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
-            @components.back_link("/customs-declare-exports/declaration/export-items")
+            @components.back_link(controllers.declaration.routes.ItemsSummaryController.displayPage().url)
 
             @components.error_summary(form.errors)
 

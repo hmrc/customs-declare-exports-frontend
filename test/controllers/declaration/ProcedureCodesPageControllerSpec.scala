@@ -60,16 +60,15 @@ class ProcedureCodesPageControllerSpec
       val Some(result) = route(app, getRequest(uri))
 
       status(result) must be(OK)
+
+      verify(mockExportsCacheService).getItemByIdAndSession(any[String], any[String])
     }
 
     "read item from cache and display it" in {
-
-      val cachedData = ProcedureCodesData(Some("1234"), Seq("123", "234"))
-      withCaching[ProcedureCodesData](Some(cachedData), formId)
-
       val Some(result) = route(app, getRequest(uri))
 
       status(result) must be(OK)
+      verify(mockExportsCacheService).getItemByIdAndSession(any[String], any[String])
     }
   }
 
