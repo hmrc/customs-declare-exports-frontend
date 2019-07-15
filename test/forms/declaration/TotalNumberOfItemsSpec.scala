@@ -20,7 +20,7 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 
 object TotalNumberOfItemsSpec {
   val correctTotalNumberOfItemsDecimalValues =
-    TotalNumberOfItems(totalAmountInvoiced = Some("12312312312312.12"), exchangeRate = "1212121.12345", totalPackage = "123")
+    TotalNumberOfItems(Some("12312312312312.12"), Some("1212121.12345"), "123")
   val correctTotalNumberOfItemsDecimalValuesJSON: JsValue = JsObject(
     Map(
       "totalAmountInvoiced" -> JsString("1212312.12"),

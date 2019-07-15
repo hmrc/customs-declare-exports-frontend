@@ -39,6 +39,5 @@ trait TotalNumberOfItemsMessages {
   val exchangeRate: String = "supplementary.exchangeRate"
 
   val exchangeRateHint: String = "supplementary.exchangeRate.hint"
-  val exchangeRateEmpty: String = "supplementary.exchangeRate.empty"
   val exchangeRateError: String = "supplementary.exchangeRate.error"
 }
