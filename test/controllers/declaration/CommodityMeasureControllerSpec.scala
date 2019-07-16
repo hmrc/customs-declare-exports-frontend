@@ -27,18 +27,23 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.OptionValues
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatest.prop.PropertyChecks
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
+import services.cache.{ExportItem, ExportsCacheModel}
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
 class CommodityMeasureControllerSpec
-    extends CustomExportsBaseSpec with CommodityMeasureMessages with Generators with PropertyChecks with OptionValues {
+    extends CustomExportsBaseSpec with CommodityMeasureMessages with Generators with PropertyChecks with OptionValues with BeforeAndAfterEach {
 
   val cacheModel = createModelWithItem("")
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/commodity-measure")
   private val form = CommodityMeasure.form()
+
+  override def afterEach(): Unit = {
+    super.afterEach()
+    reset(mockCustomsCacheService, mockExportsCacheService)
+  }
 
   "Commodity Measure Controller" should {
 
@@ -48,8 +53,6 @@ class CommodityMeasureControllerSpec
 
         "user does not have EORI" in {
           userWithoutEori()
-          withCaching[CommodityMeasure](None)
-          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
           val result = route(app, getRequest(uri)).value
           intercept[InsufficientEnrolments](status(result))
@@ -61,10 +64,9 @@ class CommodityMeasureControllerSpec
 
         "user is signed in" in {
           authorizedUser()
-          withCaching[CommodityMeasure](None, commodityFormId)
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-          val packages = arbitraryPackagingSeq.sample.getOrElse(Seq.empty)
-          withCaching[Seq[PackageInformation]](Some(packages), "PackageInformation")
+          val packages: Seq[PackageInformation] = arbitraryPackagingSeq.sample.getOrElse(Seq.empty)
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = packages.toList, commodityMeasure = None))))
           val result = route(app, getRequest(uri)).value
           val stringResult = contentAsString(result)
           status(result) must be(OK)
@@ -80,8 +82,7 @@ class CommodityMeasureControllerSpec
 
         "when no packages added and user tries to navigate to the screen" in {
           authorizedUser()
-          withCaching[Seq[PackageInformation]](None, "PackageInformation")
-          withCaching[CommodityMeasure](None, commodityFormId)
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty, commodityMeasure = None))))
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
           val result = route(app, getRequest(uri)).value
           status(result) must be(BAD_REQUEST)

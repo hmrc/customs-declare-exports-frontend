@@ -47,20 +47,19 @@ class CommodityMeasureController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    legacyCacheService
-      .fetchAndGetEntry[Seq[PackageInformation]](goodsItemCacheId, formId)
+    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.map(_.packageInformation))
       .flatMap {
-        case Some(_) =>
-          legacyCacheService.fetchAndGetEntry[CommodityMeasure](goodsItemCacheId, commodityFormId).map {
-            case Some(data) => Ok(goodsMeasurePage(itemId, form.fill(data)))
-            case _          => Ok(goodsMeasurePage(itemId, form))
+        case Some(p) if p.nonEmpty =>
+          exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.flatMap(_.commodityMeasure)).map {
+            case Some(data) => Ok(goodsMeasurePage(itemId, form().fill(data)))
+            case _          => Ok(goodsMeasurePage(itemId, form()))
           }
-        case _ => Future.successful(BadRequest(goodsMeasurePage(itemId, form.withGlobalError(ADD_ONE))))
+        case _ => Future.successful(BadRequest(goodsMeasurePage(itemId, form().withGlobalError(ADD_ONE))))
       }
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[CommodityMeasure]) =>
