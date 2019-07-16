@@ -22,13 +22,13 @@ import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util.{MultipleItemsHelper, _}
 import forms.declaration.AdditionalFiscalReference.form
 import forms.declaration.AdditionalFiscalReferencesData._
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import services.CustomsCacheService
 import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -40,7 +40,7 @@ class AdditionalFiscalReferencesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
+  legacyCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   additionalFiscalReferencesPage: additional_fiscal_references
@@ -52,20 +52,21 @@ class AdditionalFiscalReferencesController @Inject()(
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map {
       case Some(model) => {
-        model.additionalFiscalReferencesData.fold(Ok(additionalFiscalReferencesPage(itemId, form))) { data =>
-          Ok(additionalFiscalReferencesPage(itemId, form, data.references))
+        model.additionalFiscalReferencesData.fold(Ok(additionalFiscalReferencesPage(itemId, form()))) { data =>
+          Ok(additionalFiscalReferencesPage(itemId, form(), data.references))
         }
       }
-      case _ => Ok(additionalFiscalReferencesPage(itemId, form))
+      case _ => Ok(additionalFiscalReferencesPage(itemId, form()))
     }
   }
 
   def saveReferences(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
-      val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+      val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
-      val cachedData = customsCacheService
-        .fetchAndGetEntry[AdditionalFiscalReferencesData](goodsItemCacheId, formId)
+      val cachedData = exportsCacheService
+        .getItemByIdAndSession(itemId, journeySessionId)
+        .map(_.flatMap(_.additionalFiscalReferencesData))
         .map(_.getOrElse(AdditionalFiscalReferencesData(Seq.empty)))
 
       val boundForm = form.bindFromRequest()
@@ -127,7 +128,7 @@ class AdditionalFiscalReferencesController @Inject()(
   ) =
     for {
       _ <- updateExportsCache(itemId, journeySessionId, AdditionalFiscalReferencesData(updatedCache))
-      _ <- customsCacheService
+      _ <- legacyCacheService
         .cache[AdditionalFiscalReferencesData](goodsItemCacheId, formId, AdditionalFiscalReferencesData(updatedCache))
     } yield Redirect(redirect)
 

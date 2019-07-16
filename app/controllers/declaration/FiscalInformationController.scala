@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class FiscalInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
+  legacyCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   fiscalInformationPage: fiscal_information
@@ -71,7 +71,7 @@ class FiscalInformationController @Inject()(
     implicit journeyRequest: JourneyRequest[_]
   ) =
     for {
-      _ <- customsCacheService.cache[FiscalInformation](goodsItemCacheId, formId, validFiscalInformation)
+      _ <- legacyCacheService.cache[FiscalInformation](goodsItemCacheId, formId, validFiscalInformation)
       _ <- updateExportsCache(itemId, journeySessionId, validFiscalInformation)
     } yield specifyNextPage(itemId, validFiscalInformation)
 
