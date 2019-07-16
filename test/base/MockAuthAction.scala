@@ -17,6 +17,7 @@
 package base
 
 import base.ExportsTestData._
+import controllers.actions.AuthActionImpl
 import models.SignedInUser
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -25,11 +26,14 @@ import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
+import unit.tools.Stubs
 
 import scala.concurrent.Future
 
-trait MockAuthAction extends MockitoSugar {
+trait MockAuthAction extends MockitoSugar with Stubs {
+
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  val mockAuthAction = new AuthActionImpl(mockAuthConnector, stubMessagesControllerComponents())
 
   def authorizedUser(user: SignedInUser = newUser("12345", "external1")): Unit =
     when(

@@ -36,7 +36,6 @@ import views.html.{cancel_declaration, cancellation_confirmation_page}
 import scala.concurrent.{ExecutionContext, Future}
 
 class CancelDeclarationController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   errorHandler: ErrorHandler,
@@ -44,13 +43,13 @@ class CancelDeclarationController @Inject()(
   mcc: MessagesControllerComponents,
   cancelDeclarationPage: cancel_declaration,
   cancelConfirmationPage: cancellation_confirmation_page
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass())
 
-  def displayForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    Future.successful(Ok(cancelDeclarationPage(appConfig, CancelDeclaration.form)))
+  def displayForm(): Action[AnyContent] = authenticate { implicit request =>
+    Ok(cancelDeclarationPage(CancelDeclaration.form))
   }
 
   def onSubmit(): Action[AnyContent] = authenticate.async { implicit request =>
@@ -58,7 +57,7 @@ class CancelDeclarationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[CancelDeclaration]) =>
-          Future.successful(BadRequest(cancelDeclarationPage(appConfig, formWithErrors))),
+          Future.successful(BadRequest(cancelDeclarationPage(formWithErrors))),
         form => {
           val context = exportsMetrics.startTimer(cancelMetric)
 
@@ -67,38 +66,34 @@ class CancelDeclarationController @Inject()(
           val mrn = form.declarationId
 
           customsDeclareExportsConnector.submitCancellation(mrn, metadata).flatMap {
-            case status: CancellationStatus =>
-              status match {
-                case CancellationRequested =>
-                  exportsMetrics.incrementCounter(cancelMetric)
-                  context.stop()
-                  Future.successful(Ok(cancelConfirmationPage(appConfig)))
-                case CancellationRequestExists =>
-                  logger.error(s"Cancellation for declaration with mrn $mrn exists")
-                  Future.successful(
-                    BadRequest(
-                      errorHandler.standardErrorTemplate(
-                        pageTitle = Messages("cancellation.error.title"),
-                        heading = Messages("cancellation.exists.error.heading"),
-                        message = Messages("cancellation.exists.error.message")
-                      )
-                    )
+            case CancellationRequested =>
+              exportsMetrics.incrementCounter(cancelMetric)
+              context.stop()
+              Future.successful(Ok(cancelConfirmationPage()))
+
+            case CancellationRequestExists =>
+              logger.error(s"Cancellation for declaration with mrn $mrn exists")
+              Future.successful(
+                BadRequest(
+                  errorHandler.standardErrorTemplate(
+                    pageTitle = Messages("cancellation.error.title"),
+                    heading = Messages("cancellation.exists.error.heading"),
+                    message = Messages("cancellation.exists.error.message")
                   )
-                case MissingDeclaration =>
-                  logger.error(s"Declaration with mrn $mrn doesn't exists")
-                  Future.successful(
-                    BadRequest(
-                      errorHandler.standardErrorTemplate(
-                        pageTitle = Messages("cancellation.error.title"),
-                        heading = Messages("cancellation.error.heading"),
-                        message = Messages("cancellation.error.message")
-                      )
-                    )
+                )
+              )
+
+            case MissingDeclaration =>
+              logger.error(s"Declaration with mrn $mrn doesn't exists")
+              Future.successful(
+                BadRequest(
+                  errorHandler.standardErrorTemplate(
+                    pageTitle = Messages("cancellation.error.title"),
+                    heading = Messages("cancellation.error.heading"),
+                    message = Messages("cancellation.error.message")
                   )
-              }
-            case _ =>
-              logger.error("Internal server error during cancellation")
-              errorHandler.displayErrorPage()
+                )
+              )
           }
         }
       )

@@ -33,7 +33,7 @@ import views.html.{govuk_wrapper, main_template}
 
 import scala.concurrent.ExecutionContext
 
-object Stubs {
+trait Stubs {
 
   def stubMessagesControllerComponents(
     bodyParser: BodyParser[AnyContent] = stubBodyParser(AnyContentAsEmpty),
@@ -53,24 +53,28 @@ object Stubs {
       executionContext
     )
 
-  private val assetsConfigTry = ConfigFactory.parseString(
-    """
+  private val minimalConfig = ConfigFactory.parseString("""
       |assets.url="localhost"
       |assets.version="version"
       |google-analytics.token=N/A
       |google-analytics.host=localhostGoogle
-    """.stripMargin
-  )
+      |metrics.name=""
+      |metrics.rateUnit="SECONDS"
+      |metrics.durationUnit="SECONDS"
+      |metrics.showSamples=false
+      |metrics.jvm=false
+      |metrics.logback=false
+    """.stripMargin)
 
-  private val config = Configuration(assetsConfigTry)
+  val minimalConfiguration = Configuration(minimalConfig)
 
   private val head: Head = new Head(
-    new OptimizelySnippet(new OptimizelyConfig(config)),
-    new AssetsConfig(config),
-    new GTMSnippet(new GTMConfig(config))
+    new OptimizelySnippet(new OptimizelyConfig(minimalConfiguration)),
+    new AssetsConfig(minimalConfiguration),
+    new GTMSnippet(new GTMConfig(minimalConfiguration))
   )
 
-  private val footer: Footer = new Footer(new AssetsConfig(config))
+  private val footer: Footer = new Footer(new AssetsConfig(minimalConfiguration))
 
   private val govukWrapper: govuk_wrapper = new govuk_wrapper(
     head,
@@ -91,5 +95,5 @@ object Stubs {
   private def servicesConfig(conf: Configuration) = new ServicesConfig(conf, runMode(conf))
   private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
 
-  val validAppConfig = appConfig(config)
+  val minimalAppConfig = appConfig(minimalConfiguration)
 }

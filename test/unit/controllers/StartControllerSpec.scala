@@ -17,28 +17,24 @@
 package unit.controllers
 
 import controllers.StartController
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import unit.base.UnitSpec
-import unit.tools.Stubs._
+import unit.base.ControllerSpec
 import views.html.start_page
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
-class StartControllerSpec extends UnitSpec {
+class StartControllerSpec extends ControllerSpec {
 
   val mcc = stubMessagesControllerComponents()
   val startPage = new start_page(mainTemplate)
 
-  val controller = new StartController(validAppConfig, mcc, startPage)
+  val controller = new StartController(mcc, startPage)(ec, minimalAppConfig)
 
   "Start Controller" should {
 
     "return 200" when {
-      
+
       "display page method is invoked" in {
 
-        val result = controller.displayStartPage()(FakeRequest("", ""))
+        val result = controller.displayStartPage()(getRequest())
 
         status(result) must be(OK)
       }
