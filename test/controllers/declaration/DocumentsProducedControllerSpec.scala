@@ -20,22 +20,20 @@ import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
-import forms.common.Date
 import forms.declaration.DocumentsProducedSpec
 import forms.declaration.DocumentsProducedSpec.{correctDocumentsProducedMap, _}
 import forms.declaration.additionaldocuments.DocumentIdentifierAndPart.{documentIdentifierKey, documentPartKey}
 import forms.declaration.additionaldocuments.DocumentWriteOff.documentQuantityKey
-import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
 import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
 import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.formId
 import models.declaration.DocumentsProducedDataSpec._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, verifyZeroInteractions, when}
+import org.mockito.Mockito._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
+import services.cache.{ExportItem, ExportsCacheModel}
 
 import scala.concurrent.Future
 
@@ -76,8 +74,8 @@ class DocumentsProducedControllerSpec
     "read item from cache and display it" in {
 
       val document = DocumentsProducedSpec.correctDocumentsProduced
-      val cachedData = DocumentsProducedData(Seq(document))
-      withCaching[DocumentsProducedData](Some(cachedData), DocumentsProducedData.formId)
+      val cachedData = ExportItem(id = "id", documentsProducedData = Some(DocumentsProducedData(Seq(document))))
+      withNewCaching(createModelWithItem("",  Some(cachedData)))
 
       val result = route(app, getRequest(uri)).get
       val view = contentAsString(result)
@@ -141,7 +139,7 @@ class DocumentsProducedControllerSpec
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentIdentifierError))
 
-        verifyZeroInteractions(mockExportsCacheService)
+        verifyTheCacheIsUnchanged()
       }
 
       "provided with incorrect document part" in {
@@ -158,7 +156,7 @@ class DocumentsProducedControllerSpec
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentPartError))
 
-        verifyZeroInteractions(mockExportsCacheService)
+        verifyTheCacheIsUnchanged()
       }
 
       "provided with incorrect document status" in {
@@ -168,7 +166,7 @@ class DocumentsProducedControllerSpec
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentStatusError))
 
-        verifyZeroInteractions(mockExportsCacheService)
+        verifyTheCacheIsUnchanged()
       }
 
       "provided with incorrect document status reason" in {
@@ -179,7 +177,7 @@ class DocumentsProducedControllerSpec
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentStatusReasonError))
 
-        verifyZeroInteractions(mockExportsCacheService)
+        verifyTheCacheIsUnchanged()
       }
 
       "provided with incorrect documents quantity" in {
@@ -190,7 +188,7 @@ class DocumentsProducedControllerSpec
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentQuantityPrecisionError))
 
-        verifyZeroInteractions(mockExportsCacheService)
+        verifyTheCacheIsUnchanged()
 
       }
 
@@ -207,11 +205,12 @@ class DocumentsProducedControllerSpec
         stringResult must include(messages(globalErrorHeading))
         stringResult must include(messages(globalErrorMessage))
 
-        verifyZeroInteractions(mockExportsCacheService)
+        verifyTheCacheIsUnchanged()
       }
 
       "try to add duplicated document" in {
-        withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
+        val cachedData = ExportItem(id = "id", documentsProducedData = Some(correctDocumentsProducedData))
+        withNewCaching(createModelWithItem("",  Some(cachedData)))
 
         val duplicatedDocument: Map[String, String] = correctDocumentsProducedMap
 
@@ -224,7 +223,7 @@ class DocumentsProducedControllerSpec
         checkErrorsSummary(page)
         checkErrorLink(page, 1, duplicatedItemError, "#")
 
-        verifyZeroInteractions(mockExportsCacheService)
+        verifyTheCacheIsUnchanged()
       }
 
       "try to add an empty document" in {
@@ -241,12 +240,12 @@ class DocumentsProducedControllerSpec
 
         checkErrorsSummary(page)
         checkErrorLink(page, 1, notDefinedError, "#")
-        verifyZeroInteractions(mockExportsCacheService)
+        verifyTheCacheIsUnchanged()
       }
 
       "try to add more then 99 documents" in {
-
-        withCaching[DocumentsProducedData](Some(cacheWithMaximumAmountOfHolders), formId)
+        val cachedData = ExportItem(id = "id", documentsProducedData = Some(cacheWithMaximumAmountOfHolders))
+        withNewCaching(createModelWithItem("",  Some(cachedData)))
 
         val body = (correctDocumentsProducedMap + ("documentIdentifier" -> "Davis")).toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -257,7 +256,7 @@ class DocumentsProducedControllerSpec
         checkErrorsSummary(page)
         checkErrorLink(page, 1, maximumAmountReachedError, "#")
 
-        verifyZeroInteractions(mockExportsCacheService)
+        verifyTheCacheIsUnchanged()
       }
     }
 
@@ -331,7 +330,7 @@ class DocumentsProducedControllerSpec
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
 
-        verifyZeroInteractions(mockExportsCacheService)
+        verifyTheCacheIsUnchanged()
       }
 
       "provided with a valid document and with empty cache" in {
