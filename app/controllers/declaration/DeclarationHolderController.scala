@@ -117,11 +117,15 @@ class DeclarationHolderController @Inject()(
         handleErrorPage(authCodeError ++ eoriError, userInput, cachedData.holders)
     }
 
+  //scalastyle:off method.length
   private def saveAndContinue(
     userInput: DeclarationHolder,
     cachedData: DeclarationHoldersData
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     (userInput, cachedData.holders) match {
+      case (DeclarationHolder(None, None), _) =>
+        Future.successful(Redirect(routes.DestinationCountriesController.displayForm()))
+
       case (holder, Seq()) =>
         holder match {
           case DeclarationHolder(Some(typeCode), Some(eori)) =>
@@ -167,6 +171,7 @@ class DeclarationHolderController @Inject()(
             handleErrorPage(typeCodeError ++ eoriError, userInput, holders)
         }
     }
+  //scalastyle:on method.length
 
   private def handleErrorPage(
     fieldWithError: Seq[(String, String)],
