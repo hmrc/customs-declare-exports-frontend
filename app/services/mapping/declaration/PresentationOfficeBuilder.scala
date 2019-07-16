@@ -35,6 +35,7 @@ object PresentationOfficeBuilder {
   private def buildPresentationOffice(choice: Choice)(implicit cacheMap: CacheMap): Declaration.PresentationOffice =
     cacheMap
       .getEntry[OfficeOfExitStandard](OfficeOfExitForms.formId)
+      .filter(_.presentationOfficeId.isDefined)
       .map(createPresentationOffice)
       .orNull
 

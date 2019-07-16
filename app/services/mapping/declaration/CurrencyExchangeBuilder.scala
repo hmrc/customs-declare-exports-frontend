@@ -29,6 +29,7 @@ object CurrencyExchangeBuilder {
   def build(implicit cacheMap: CacheMap): util.List[CurrencyExchange] =
     cacheMap
       .getEntry[TotalNumberOfItems](TotalNumberOfItems.formId)
+      .filter(_.exchangeRate.isDefined)
       .map(createCurrencyExchange)
       .orNull
 
