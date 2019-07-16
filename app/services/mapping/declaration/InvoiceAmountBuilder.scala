@@ -25,6 +25,7 @@ object InvoiceAmountBuilder {
   def build(implicit cacheMap: CacheMap): DeclarationInvoiceAmountType =
     cacheMap
       .getEntry[TotalNumberOfItems](TotalNumberOfItems.formId)
+      .filter(_.totalAmountInvoiced.isDefined)
       .map(createInvoiceAmount)
       .orNull
 
