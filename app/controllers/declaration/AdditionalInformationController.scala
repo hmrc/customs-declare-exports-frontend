@@ -54,21 +54,20 @@ class AdditionalInformationController @Inject()(
   val elementLimit = 99
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    legacyCustomsCacheService.fetchAndGetEntry[AdditionalInformationData](goodsItemCacheId, formId).map {
-      case Some(data) => Ok(additionalInformationPage(itemId, appConfig, form, data.items))
-      case _          => Ok(additionalInformationPage(itemId, appConfig, form, Seq()))
+    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.flatMap(_.additionalInformation)).map {
+      case Some(data) => Ok(additionalInformationPage(itemId, appConfig, form(), data.items))
+      case _          => Ok(additionalInformationPage(itemId, appConfig, form(), Seq()))
     }
   }
 
   def saveAdditionalInfo(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
-      val boundForm = form.bindFromRequest()
+      val boundForm = form().bindFromRequest()
 
-      val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+      val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
-      val cachedData = legacyCustomsCacheService
-        .fetchAndGetEntry[AdditionalInformationData](goodsItemCacheId, formId)
-        .map(_.getOrElse(AdditionalInformationData(Seq())))
+      val cachedData = exportsCacheService.getItemByIdAndSession(itemId, journeySessionId)
+        .map(_.flatMap(_.additionalInformation).getOrElse(AdditionalInformationData(Seq())))
 
       cachedData.flatMap { cache =>
         actionTypeOpt match {
@@ -148,9 +147,7 @@ class AdditionalInformationController @Inject()(
     getAndUpdateExportCacheModel(
       sessionId,
       model => {
-        val item: Option[ExportItem] = model.items
-          .filter(item => item.id.equals(itemId))
-          .headOption
+        val item: Option[ExportItem] = model.items.find(item => item.id.equals(itemId))
           .map(_.copy(additionalInformation = Some(updatedAdditionalInformation)))
         val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
         exportsCacheService.update(sessionId, model.copy(items = itemList))
