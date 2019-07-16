@@ -18,7 +18,7 @@ package models.declaration
 
 import forms.declaration._
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.CacheMap
+import services.cache.ExportsCacheModel
 
 case class Parties(
   exporterDetails: Option[ExporterDetails] = None,
@@ -45,14 +45,13 @@ object Parties {
 
   implicit val format = Json.format[Parties]
 
-  def apply(cacheMap: CacheMap): Parties = Parties(
-    exporterDetails = cacheMap.getEntry[ExporterDetails](ExporterDetails.id),
-    consigneeDetails = cacheMap.getEntry[ConsigneeDetails](ConsigneeDetails.id),
-    declarantDetails = cacheMap.getEntry[DeclarantDetails](DeclarantDetails.id),
-    representativeDetails = cacheMap.getEntry[RepresentativeDetails](RepresentativeDetails.formId),
-    declarationAdditionalActorsData =
-      cacheMap.getEntry[DeclarationAdditionalActorsData](DeclarationAdditionalActorsData.formId),
-    declarationHoldersData = cacheMap.getEntry[DeclarationHoldersData](DeclarationHoldersData.formId),
-    carrierDetails = cacheMap.getEntry[CarrierDetails](CarrierDetails.id)
+  def apply(cacheData: ExportsCacheModel): Parties = Parties(
+    exporterDetails = cacheData.parties.exporterDetails,
+    consigneeDetails = cacheData.parties.consigneeDetails,
+    declarantDetails = cacheData.parties.declarantDetails,
+    representativeDetails = cacheData.parties.representativeDetails,
+    declarationAdditionalActorsData = cacheData.parties.declarationAdditionalActorsData,
+    declarationHoldersData = cacheData.parties.declarationHoldersData,
+    carrierDetails = cacheData.parties.carrierDetails
   )
 }

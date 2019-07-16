@@ -39,8 +39,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "Choice Controller on GET" should {

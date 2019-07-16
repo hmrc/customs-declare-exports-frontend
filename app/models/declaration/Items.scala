@@ -17,7 +17,7 @@
 package models.declaration
 
 import forms.declaration._
-import uk.gov.hmrc.http.cache.client.CacheMap
+import services.cache.ExportsCacheModel
 
 case class Items(
   totalNumberOfItems: Option[TotalNumberOfItems] = None,
@@ -30,9 +30,6 @@ case class Items(
 object Items {
   val id = "Items"
 
-  def apply(cacheMap: CacheMap): Items =
-    Items(
-      totalNumberOfItems = cacheMap.getEntry[TotalNumberOfItems](TotalNumberOfItems.formId),
-      natureOfTransaction = cacheMap.getEntry[NatureOfTransaction](NatureOfTransaction.formId)
-    )
+  def apply(cacheData: ExportsCacheModel): Items =
+    Items(totalNumberOfItems = cacheData.totalNumberOfItems, natureOfTransaction = cacheData.natureOfTransaction)
 }

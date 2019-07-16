@@ -25,6 +25,7 @@ import forms.declaration.TransportCodes._
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
 import helpers.views.declaration.WarehouseIdentificationMessages
+import models.declaration.Locations
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
@@ -43,7 +44,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  override def afterEach()  {
+  override def afterEach() {
     Mockito.reset(mockExportsCacheService)
   }
 
@@ -58,9 +59,19 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
     }
 
     "read item from cache and display it" in {
+      val cachedData = ExportsCacheModel(
+        "SessionId",
+        "DraftId",
+        LocalDateTime.now(),
+        LocalDateTime.now(),
+        "SMP",
+        locations = Locations(
+          warehouseIdentification =
+            Some(WarehouseIdentification(Some("Office"), Some("R"), Some("SecretStash"), Some(Maritime)))
+        )
+      )
 
-      val cachedData = WarehouseIdentification(Some("Office"), Some("R"), Some("SecretStash"), Some(Maritime))
-      withNewCaching(createModelWithNoItems().copy(warehouseIdentification = Some(cachedData)))
+      withNewCaching(cachedData)
 
       val Some(result) = route(app, getRequest(uri))
       val page = contentAsString(result)
@@ -132,7 +143,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       status(result) must be(SEE_OTHER)
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/border-transport"))
-      theCacheModelUpdated.warehouseIdentification must be(Some(emptyWarehouseIdentification))
+      theCacheModelUpdated.locations.warehouseIdentification must be(Some(emptyWarehouseIdentification))
     }
 
     "validate request and redirect - correct values" in {
@@ -143,7 +154,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       status(result) must be(SEE_OTHER)
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/border-transport"))
-      theCacheModelUpdated.warehouseIdentification.get.identificationNumber must be(Some("1234567GB"))
+      theCacheModelUpdated.locations.warehouseIdentification.get.identificationNumber must be(Some("1234567GB"))
     }
   }
 }

@@ -47,7 +47,7 @@ class WarehouseIdentificationController @Inject()(
   import forms.declaration.WarehouseIdentification._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.warehouseIdentification)).map {
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.warehouseIdentification)).map {
       case Some(data) => Ok(warehouseIdentificationPage(appConfig, form.fill(data)))
       case _          => Ok(warehouseIdentificationPage(appConfig, form))
     }
@@ -68,8 +68,8 @@ class WarehouseIdentificationController @Inject()(
   }
 
   private def updateCache(sessionId: String, formData: WarehouseIdentification): Future[Option[ExportsCacheModel]] =
-    getAndUpdateExportCacheModel(
-      sessionId,
-      model => exportsCacheService.update(sessionId, model.copy(warehouseIdentification = Some(formData)))
-    )
+    getAndUpdateExportCacheModel(sessionId, model => {
+      val updatedLocations = model.locations.copy(warehouseIdentification = Some(formData))
+      cacheService.update(sessionId, model.copy(locations = updatedLocations))
+    })
 }

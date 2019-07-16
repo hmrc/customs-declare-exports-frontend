@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 import base.CSRFUtil._
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice
-import forms.Choice.{AllowedChoiceValues, choiceId}
+import forms.Choice.{choiceId, AllowedChoiceValues}
 import forms.declaration.TransportCodes.Maritime
 import forms.declaration.{TransportDetails, WarehouseIdentification}
 import generators.Generators
@@ -56,8 +56,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "GET" should {
@@ -75,14 +74,14 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
       val request = addCSRFToken(getRequest(uri))
 
       forAll(arbitrary[TransportDetails]) { transport =>
-
         val cachedData = ExportsCacheModel(
           "SessionId",
           "DraftId",
           LocalDateTime.now(),
           LocalDateTime.now(),
           "SMP",
-          transportDetails = Some(transport))
+          transportDetails = Some(transport)
+        )
 
         withNewCaching(cachedData)
         val result = route(app, request).value

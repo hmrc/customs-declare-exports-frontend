@@ -23,7 +23,7 @@ import forms.declaration.ConsignmentReferencesSpec.correctConsignmentReferencesJ
 import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
 import models.declaration.SupplementaryDeclarationTestData
 import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.Mockito._
 import org.mockito.verification.VerificationMode
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
@@ -35,67 +35,78 @@ import scala.concurrent.Future
 
 class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
-  private trait Test {
-    val summaryPageUri = uriWithContextPath("/declaration/summary")
-    val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
-    val emptyMetadata: MetaData = MetaData(response = Seq.empty)
-    val onlyOnce: VerificationMode = times(1)
-    val minimumValidCacheData =
-      CacheMap(eoriForCache, Map(ConsignmentReferences.id -> correctConsignmentReferencesJSON))
+  val summaryPageUri = uriWithContextPath("/declaration/summary")
+  val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
+  val emptyMetadata: MetaData = MetaData(response = Seq.empty)
+  val onlyOnce: VerificationMode = times(1)
+  val minimumValidCacheData =
+    CacheMap(eoriForCache, Map(ConsignmentReferences.id -> correctConsignmentReferencesJSON))
 
-    reset(mockCustomsCacheService)
-    reset(mockNrsService)
-    reset(mockCustomsDeclareExportsConnector)
-
+  override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
-    withCaching(None, eoriForCache)
+    successfulCustomsDeclareExportsResponse()
+    withNewCaching(SupplementaryDeclarationTestData.allRecords)
+
+    //TODO: Below, these three mocks will have to be deleted as part of the mapping story
     when(mockCustomsCacheService.fetch(anyString())(any(), any()))
       .thenReturn(Future.successful(Some(minimumValidCacheData)))
     when(mockCustomsCacheService.remove(anyString())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK)))
-    successfulCustomsDeclareExportsResponse()
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  override def afterEach() {
+    super.afterEach()
+    reset(mockCustomsCacheService, mockExportsCacheService, mockNrsService, mockCustomsDeclareExportsConnector)
   }
 
   "Summary Page Controller on display" when {
 
     "there is data in cache for supplementary declaration" should {
-      "return 200 code" in new Test {
+      "return 200 code" in {
         val result = route(app, getRequest(summaryPageUri)).get
         status(result) must be(OK)
+        verify(mockExportsCacheService).get(anyString)
       }
 
-      "display 'Back' button that links to 'Export-items' page" in new Test {
+      "display 'Back' button that links to 'Export-items' page" in {
+
+        withNewCaching(SupplementaryDeclarationTestData.allRecords.copy(containerData = None))
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("site.back"))
         resultAsString must include("/declaration/transport-details")
+        verify(mockExportsCacheService).get(anyString)
       }
 
-      "display 'Accept and submit declaration' button" in new Test {
+      "display 'Accept and submit declaration' button" in {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("site.acceptAndSubmitDeclaration"))
         resultAsString must include("button id=\"submit\" class=\"button\"")
+        verify(mockExportsCacheService).get(anyString)
       }
 
-      "display content for Declaration Type module" in new Test {
+      "display content for Declaration Type module" in {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.declarationType.header"))
         resultAsString must include(messages("supplementary.summary.declarationType.dispatchLocation"))
         resultAsString must include(messages("supplementary.summary.declarationType.supplementaryDeclarationType"))
+        verify(mockExportsCacheService).get(anyString)
       }
 
-      "display content for Your References module" in new Test {
+      "display content for Your References module" in {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.yourReferences.header"))
         resultAsString must include(messages("supplementary.summary.yourReferences.ducr"))
         resultAsString must include(messages("supplementary.summary.yourReferences.lrn"))
+        verify(mockExportsCacheService).get(anyString)
       }
 
-      "display content for Parties module" in new Test {
+      "display content for Parties module" in {
         when(mockCustomsCacheService.fetch(anyString())(any(), any()))
           .thenReturn(Future.successful(Some(SupplementaryDeclarationTestData.cacheMapAllRecords)))
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
@@ -112,9 +123,10 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.parties.additionalParties.type"))
         resultAsString must include(messages("supplementary.summary.parties.idStatusNumberAuthorisationCode"))
         resultAsString must include(messages("supplementary.summary.parties.authorizedPartyEori"))
+        verify(mockExportsCacheService).get(anyString)
       }
 
-      "display content for Locations module" in new Test {
+      "display content for Locations module" in {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("declaration.summary.locations.header"))
@@ -128,59 +140,55 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.locations.warehouseId"))
         resultAsString must include(messages("supplementary.summary.locations.supervisingCustomsOffice"))
         resultAsString must include(messages("supplementary.summary.locations.officeOfExit"))
+        verify(mockExportsCacheService).get(anyString)
       }
 
-      "display content for Item module" in new Test {
+      "display content for Item module" in {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.items.header"))
         resultAsString must include(messages("supplementary.summary.items.amountInvoiced"))
         resultAsString must include(messages("supplementary.summary.items.exchangeRate"))
         resultAsString must include(messages("supplementary.summary.items.transactionType"))
+        verify(mockExportsCacheService).get(anyString)
       }
 
-      "display containers content with cache available" in new Test {
-        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
-          .thenReturn(Future.successful(Some(SupplementaryDeclarationTestData.cacheMapAllRecords)))
-
+      "display containers content with cache available" in {
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.transportInfo.containers.title"))
         resultAsString must include(messages("supplementary.transportInfo.containerId.title"))
         resultAsString must include(messages("M1l3s"))
+        verify(mockExportsCacheService).get(anyString)
       }
 
-      "get the whole supplementary declaration data from cache" in new Test {
+      "get the whole supplementary declaration data from cache" in {
         route(app, getRequest(summaryPageUri)).get.futureValue
-        verify(mockCustomsCacheService, onlyOnce).fetch(any())(any(), any())
+        verify(mockCustomsCacheService, never()).fetch(any())(any(), any())
+        verify(mockExportsCacheService).get(anyString)
       }
     }
 
     "there is no data in cache for supplementary declaration" should {
-      "display error page" in new Test {
-        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
-          .thenReturn(Future.successful(None))
-
+      "display error page" in {
+        withNewCaching(createModelWithNoItems())
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.noData.header"))
         resultAsString must include(messages("supplementary.summary.noData.header.secondary"))
+        verify(mockExportsCacheService).get(anyString)
       }
     }
 
     "there is data in cache, but without LRN" should {
-      "display error page" in new Test {
-        val cachedData = CacheMap(
-          id = eoriForCache,
-          data = SupplementaryDeclarationTestData.cacheMapAllRecords.data - ConsignmentReferences.id
-        )
-        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
-          .thenReturn(Future.successful(Some(cachedData)))
+      "display error page" in {
+        withNewCaching(SupplementaryDeclarationTestData.allRecords.copy(consignmentReferences = None))
 
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.noData.header"))
         resultAsString must include(messages("supplementary.summary.noData.header.secondary"))
+        verify(mockExportsCacheService).get(anyString)
       }
     }
 
@@ -189,29 +197,29 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
   "Summary Page Controller on submit" when {
 
     "everything is correct" should {
-      "get the whole supplementary declaration data from cache" in new Test {
+      "get the whole supplementary declaration data from cache" in {
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         verify(mockCustomsCacheService, onlyOnce).fetch(any())(any(), any())
       }
 
-      "remove supplementary declaration data from cache" in new Test {
+      "remove supplementary declaration data from cache" in {
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         verify(mockCustomsCacheService, onlyOnce).remove(any())(any(), any())
       }
 
-      "return 303 code" in new Test {
+      "return 303 code" in {
         val result = route(app, postRequest(summaryPageUri, emptyForm)).get
         status(result) must be(SEE_OTHER)
       }
 
-      "redirect to confirmation page" in new Test {
+      "redirect to confirmation page" in {
         val result = route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         val header = result.header
 
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/confirmation"))
       }
 
-      "add flash scope with lrn " in new Test {
+      "add flash scope with lrn " in {
         val cacheData = Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.correctConsignmentReferencesJSON)
         when(mockCustomsCacheService.fetch(anyString())(any(), any()))
           .thenReturn(Future.successful(Some(CacheMap(eoriForCache, cacheData))))
@@ -225,7 +233,7 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
     }
 
     "got error from Customs Declarations" should {
-      "display error page" in new Test {
+      "display error page" in {
         when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
@@ -237,13 +245,13 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("global.error.message"))
       }
 
-      "not remove data from cache" in new Test {
+      "not remove data from cache" in {
         when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
 
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
 
-        verify(mockCustomsCacheService, times(0)).remove(eoriForCache)
+        verify(mockCustomsCacheService, never()).remove(eoriForCache)
       }
     }
   }

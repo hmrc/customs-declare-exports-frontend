@@ -43,6 +43,7 @@ class RepresentativeDetailsPageControllerSpec
   private val uri = uriWithContextPath("/declaration/representative-details")
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[Choice](Some(Choice(SupplementaryDec)), choiceId)
@@ -50,8 +51,8 @@ class RepresentativeDetailsPageControllerSpec
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    super.afterEach()
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "Representative Address Controller on GET" should {
@@ -261,7 +262,7 @@ class RepresentativeDetailsPageControllerSpec
         val result = route(app, postRequest(uri, JsObject(Map[String, JsValue]().empty))).get
 
         status(result) must be(SEE_OTHER)
-        theCacheModelUpdated.parties.representativeDetails must be(Some(RepresentativeDetails(None,None)))
+        theCacheModelUpdated.parties.representativeDetails must be(Some(RepresentativeDetails(None, None)))
       }
     }
 

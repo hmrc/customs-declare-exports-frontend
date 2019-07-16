@@ -18,9 +18,9 @@ package models.declaration
 
 import forms.declaration._
 import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitForms}
+import forms.declaration.officeOfExit.OfficeOfExit
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.CacheMap
+import services.cache.ExportsCacheModel
 
 case class Locations(
   destinationCountries: Option[DestinationCountries] = None,
@@ -41,10 +41,10 @@ object Locations {
 
   implicit val format = Json.format[Locations]
 
-  def apply(cacheMap: CacheMap): Locations = Locations(
-    destinationCountries = cacheMap.getEntry[DestinationCountries](DestinationCountries.formId),
-    goodsLocation = cacheMap.getEntry[GoodsLocation](GoodsLocation.formId),
-    warehouseIdentification = cacheMap.getEntry[WarehouseIdentification](WarehouseIdentification.formId),
-    officeOfExit = cacheMap.getEntry[OfficeOfExit](OfficeOfExitForms.formId)
+  def apply(cacheData: ExportsCacheModel): Locations = Locations(
+    destinationCountries = cacheData.locations.destinationCountries,
+    goodsLocation = cacheData.locations.goodsLocation,
+    warehouseIdentification = cacheData.locations.warehouseIdentification,
+    officeOfExit = cacheData.locations.officeOfExit
   )
 }

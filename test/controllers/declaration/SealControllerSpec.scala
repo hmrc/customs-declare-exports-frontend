@@ -46,6 +46,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
   private val uri = uriWithContextPath("/declaration/add-seal")
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[Seq[Seal]](None, Seal.formId)
@@ -54,6 +55,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
   }
 
   override def afterEach() {
+    super.afterEach()
     reset(mockCustomsCacheService, mockExportsCacheService)
   }
 

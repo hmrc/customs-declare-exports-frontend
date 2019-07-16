@@ -34,6 +34,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
   private val uri = uriWithContextPath("/declaration/declarant-details")
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[DeclarantDetails](None)
@@ -41,6 +42,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
   }
 
   override def afterEach() {
+    super.afterEach()
     reset(mockExportsCacheService)
   }
 

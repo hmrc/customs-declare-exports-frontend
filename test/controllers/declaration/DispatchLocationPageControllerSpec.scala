@@ -44,8 +44,7 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "Declaration Type Controller on GET" should {
@@ -58,7 +57,6 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
     }
 
     "populate the form fields with data from cache" in {
-      withCaching[DispatchLocation](Some(DispatchLocation(AllowedDispatchLocations.OutsideEU)), DispatchLocation.formId)
       withNewCaching(
         ExportsCacheModel(
           "sessionId",
@@ -121,7 +119,9 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
         val header = result.futureValue.header
 
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/not-eligible"))
-        theCacheModelUpdated.dispatchLocation must be(Some(DispatchLocation(AllowedDispatchLocations.SpecialFiscalTerritory)))
+        theCacheModelUpdated.dispatchLocation must be(
+          Some(DispatchLocation(AllowedDispatchLocations.SpecialFiscalTerritory))
+        )
       }
     }
   }
