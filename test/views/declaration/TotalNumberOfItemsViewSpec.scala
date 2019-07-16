@@ -37,28 +37,26 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
     "have proper messages for labels" in {
 
       assertMessage(totalAmountInvoiced, "4/11 What was the total amount invoiced?")
-      assertMessage(taiHint, "The total price of all the goods in the declaration e.g. 1234567.12")
+      assertMessage(totalAmountInvoicedHint, "The total price of all the goods in the declaration e.g. 1234567.12")
 
       assertMessage(exchangeRate, "4/15 What was the exchange rate used?")
       assertMessage(
-        erHint,
+        exchangeRateHint,
         "The rate of exchange fixed in advance by a contract between the parties e.g. 1234567.12345"
       )
 
       assertMessage(totalPackageQuantity, "6/18 Total number of packages")
-      assertMessage(tpqHint, "Include all items in this shipment")
+      assertMessage(totalPackageQuantityHint, "Include all items in this shipment")
     }
 
     "have proper messages for error labels" in {
 
-      assertMessage(taiEmpty, "Total amount of invoiced items cannot be empty")
-      assertMessage(taiError, "Total amount of invoiced items is incorrect")
+      assertMessage(totalAmountInvoicedError, "Total amount of invoiced items is incorrect")
 
-      assertMessage(erEmpty, "Exchange rate cannot be empty")
-      assertMessage(erError, "Exchange rate is incorrect")
+      assertMessage(exchangeRateError, "Exchange rate is incorrect")
 
-      assertMessage(tpqEmpty, "Total number of packages cannot be empty")
-      assertMessage(tpqError, "Total number of packages is incorrect")
+      assertMessage(totalPackageQuantityEmpty, "Total number of packages cannot be empty")
+      assertMessage(totalPackageQuantityError, "Total number of packages is incorrect")
     }
   }
 
@@ -66,7 +64,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display page title" in {
 
-      getElementByCss(createView(), "title").text() must be(messages(tnoiTitle))
+      getElementByCss(createView(), "title").text() must be(messages(totalNoOfItemsTitle))
     }
 
     "display section header" in {
@@ -76,7 +74,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display header" in {
 
-      getElementByCss(createView(), "legend>h1").text() must be(messages(valueOfItems))
+      getElementById(createView(), "title").text() must be(messages(valueOfItems))
     }
 
     "display empty input with label for Total Amount Invoiced" in {
@@ -84,7 +82,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
       val view = createView()
 
       getElementById(view, "totalAmountInvoiced-label").text() must be(messages(totalAmountInvoiced))
-      getElementById(view, "totalAmountInvoiced-hint").text() must be(messages(taiHint))
+      getElementById(view, "totalAmountInvoiced-hint").text() must be(messages(totalAmountInvoicedHint))
       getElementById(view, "totalAmountInvoiced").attr("value") must be("")
     }
 
@@ -93,7 +91,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
       val view = createView()
 
       getElementById(view, "exchangeRate-label").text() must be(messages(exchangeRate))
-      getElementById(view, "exchangeRate-hint").text() must be(messages(erHint))
+      getElementById(view, "exchangeRate-hint").text() must be(messages(exchangeRateHint))
       getElementById(view, "exchangeRate").attr("value") must be("")
     }
 
@@ -102,7 +100,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
       val view = createView()
 
       getElementById(view, "totalPackage-label").text() must be(messages(totalPackageQuantity))
-      getElementById(view, "totalPackage-hint").text() must be(messages(tpqHint))
+      getElementById(view, "totalPackage-hint").text() must be(messages(totalPackageQuantityHint))
       getElementById(view, "totalPackage").attr("value") must be("")
     }
 
@@ -127,94 +125,73 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display errors when nothing is entered" in {
 
-      val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("", "", "")))
+      val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(None, None, "")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, taiEmpty, "#totalAmountInvoiced")
-      checkErrorLink(view, 2, erEmpty, "#exchangeRate")
-      checkErrorLink(view, 3, tpqEmpty, "#totalPackage")
+      checkErrorLink(view, "totalPackage-error", totalPackageQuantityEmpty, "#totalPackage")
 
-      getElementByCss(view, "#error-message-totalAmountInvoiced-input").text() must be(messages(taiEmpty))
-      getElementByCss(view, "#error-message-exchangeRate-input").text() must be(messages(erEmpty))
-      getElementByCss(view, "#error-message-totalPackage-input").text() must be(messages(tpqEmpty))
+      getElementById(view, "error-message-totalPackage-input").text() must be(messages(totalPackageQuantityEmpty))
     }
 
     "display error when all entered input is incorrect" in {
 
       val view =
-        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("abcd", "abcd", "abcd")))
+        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("abcd"), "abcd")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, taiError, "#totalAmountInvoiced")
-      checkErrorLink(view, 2, erError, "#exchangeRate")
-      checkErrorLink(view, 3, tpqError, "#totalPackage")
+      checkErrorLink(view, "totalAmountInvoiced-error", totalAmountInvoicedError, "#totalAmountInvoiced")
+      checkErrorLink(view, "exchangeRate-error", exchangeRateError, "#exchangeRate")
+      checkErrorLink(view, "totalPackage-error", totalPackageQuantityError, "#totalPackage")
 
-      getElementByCss(view, "#error-message-totalAmountInvoiced-input").text() must be(messages(taiError))
-      getElementByCss(view, "#error-message-exchangeRate-input").text() must be(messages(erError))
-      getElementByCss(view, "#error-message-totalPackage-input").text() must be(messages(tpqError))
-    }
-
-    "display error when Total Amount Invoiced is empty" in {
-
-      val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("", "123.12345", "1")))
-
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, taiEmpty, "#totalAmountInvoiced")
-
-      getElementByCss(view, "#error-message-totalAmountInvoiced-input").text() must be(messages(taiEmpty))
+      getElementById(view, "error-message-totalAmountInvoiced-input").text() must be(messages(totalAmountInvoicedError))
+      getElementById(view, "error-message-exchangeRate-input").text() must be(messages(exchangeRateError))
+      getElementById(view, "error-message-totalPackage-input").text() must be(messages(totalPackageQuantityError))
     }
 
     "display error when Total Amount Invoiced is incorrect" in {
 
       val view =
-        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("abcd", "123.12345", "1")))
+        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("abcd"), Some("123.12345"), "1")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, taiError, "#totalAmountInvoiced")
+      checkErrorLink(view, "totalAmountInvoiced-error", totalAmountInvoicedError, "#totalAmountInvoiced")
 
-      getElementByCss(view, "#error-message-totalAmountInvoiced-input").text() must be(messages(taiError))
-    }
-
-    "display error when Exchange Rate is empty" in {
-
-      val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("123.12", "", "1")))
-
-      checkErrorsSummary(view)
-      checkErrorLink(view, 1, erEmpty, "#exchangeRate")
-
-      getElementByCss(view, "#error-message-exchangeRate-input").text() must be(messages(erEmpty))
+      getElementById(view, "error-message-totalAmountInvoiced-input").text() must be(messages(totalAmountInvoicedError))
     }
 
     "display error when Exchange Rate is incorrect" in {
 
-      val view = createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("123.12", "abcd", "1")))
+      val view =
+        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("abcd"), "1")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, erError, "#exchangeRate")
+      checkErrorLink(view, "exchangeRate-error", exchangeRateError, "#exchangeRate")
 
-      getElementByCss(view, "#error-message-exchangeRate-input").text() must be(messages(erError))
+      getElementById(view, "error-message-exchangeRate-input").text() must be(messages(exchangeRateError))
     }
 
     "display error when Total Package is empty" in {
 
       val view =
-        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("123.12", "123.12345", "")))
+        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("123.12345"), "")))
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, tpqEmpty, "#totalPackage")
+      checkErrorLink(view, "totalPackage-error", totalPackageQuantityEmpty, "#totalPackage")
 
-      getElementByCss(view, "#error-message-totalPackage-input").text() must be(messages(tpqEmpty))
+      getElementById(view, "error-message-totalPackage-input").text() must be(messages(totalPackageQuantityEmpty))
     }
 
     "display error when Total Package is incorrect" in {
 
       val view =
-        createView(TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems("123.12", "123.12345", "abcd")))
+        createView(
+          TotalNumberOfItems.form.fillAndValidate(TotalNumberOfItems(Some("123.12"), Some("123.12345"), "abcd"))
+        )
 
       checkErrorsSummary(view)
-      checkErrorLink(view, 1, tpqError, "#totalPackage")
+      checkErrorLink(view, "totalPackage-error", totalPackageQuantityError, "#totalPackage")
 
-      getElementByCss(view, "#error-message-totalPackage-input").text() must be(messages(tpqError))
+      getElementById(view, "error-message-totalPackage-input").text() must be(messages(totalPackageQuantityError))
     }
   }
 
@@ -222,7 +199,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display data in Total Amount Invoiced input" in {
 
-      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems("123.123", "", "")))
+      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.123"), None, "")))
 
       getElementById(view, "totalAmountInvoiced").attr("value") must be("123.123")
       getElementById(view, "exchangeRate").attr("value") must be("")
@@ -231,7 +208,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display data in Exchange Rate input" in {
 
-      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems("", "123.12345", "")))
+      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems(None, Some("123.12345"), "")))
 
       getElementById(view, "totalAmountInvoiced").attr("value") must be("")
       getElementById(view, "exchangeRate").attr("value") must be("123.12345")
@@ -240,7 +217,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display data in Total Package input" in {
 
-      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems("", "", "1")))
+      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems(None, None, "1")))
 
       getElementById(view, "totalAmountInvoiced").attr("value") must be("")
       getElementById(view, "exchangeRate").attr("value") must be("")
@@ -249,7 +226,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
 
     "display data in all inputs" in {
 
-      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems("123.123", "123.12345", "1")))
+      val view = createView(TotalNumberOfItems.form.fill(TotalNumberOfItems(Some("123.123"), Some("123.12345"), "1")))
 
       getElementById(view, "totalAmountInvoiced").attr("value") must be("123.123")
       getElementById(view, "exchangeRate").attr("value") must be("123.12345")

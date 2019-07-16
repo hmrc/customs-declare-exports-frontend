@@ -47,7 +47,7 @@ class DispatchLocationPageController @Inject()(
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.get(journeySessionId).map(_.flatMap(_.dispatchLocation)).map {
       case Some(data) => Ok(dispatchLocationPage(DispatchLocation.form().fill(data)))
-      case _  => Ok(dispatchLocationPage(DispatchLocation.form()))
+      case _          => Ok(dispatchLocationPage(DispatchLocation.form()))
     }
   }
 

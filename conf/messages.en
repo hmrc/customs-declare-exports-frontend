@@ -496,11 +496,9 @@ standard.transportDetails.paymentMethod.notPrePaid = Not pre-paid
 standard.transportDetails.paymentMethod.error= Input is not valid
 
 supplementary.totalAmountInvoiced.error = Total amount of invoiced items is incorrect
-supplementary.totalAmountInvoiced.empty = Total amount of invoiced items cannot be empty
 supplementary.totalAmountInvoiced = 4/11 What was the total amount invoiced?
 supplementary.totalAmountInvoiced.hint = The total price of all the goods in the declaration e.g. 1234567.12
 supplementary.exchangeRate.error = Exchange rate is incorrect
-supplementary.exchangeRate.empty = Exchange rate cannot be empty
 supplementary.exchangeRate = 4/15 What was the exchange rate used?
 supplementary.exchangeRate.hint = The rate of exchange fixed in advance by a contract between the parties e.g. 1234567.12345
 
