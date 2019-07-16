@@ -35,13 +35,15 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
   private val uri = uriWithContextPath("/declaration/exporter-details")
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[ExporterDetails](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  override def afterEach()= {
+  override def afterEach() = {
+    super.afterEach()
     Mockito.reset(mockExportsCacheService)
   }
 

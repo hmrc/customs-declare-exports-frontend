@@ -19,7 +19,6 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
-import forms.declaration.ConsignmentReferences
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.SupplementaryDeclarationData
@@ -28,6 +27,7 @@ import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc._
 import services._
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -41,25 +41,26 @@ class SummaryPageController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
+  override val cacheService: ExportsCacheService,
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
   summaryPage: summary_page,
   summaryPageNoData: summary_page_no_data
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   implicit val appConfigImpl: AppConfig = appConfig
   private val logger = Logger(this.getClass())
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetch(cacheId).map {
-      case Some(cacheMap) if containsMandatoryData(cacheMap) => Ok(summaryPage(SupplementaryDeclarationData(cacheMap)))
-      case _                                                 => Ok(summaryPageNoData())
+    cacheService.get(journeySessionId).map {
+      case Some(data) if containsMandatoryData(data) => Ok(summaryPage(SupplementaryDeclarationData(data)))
+      case _                                         => Ok(summaryPageNoData())
     }
   }
 
-  private def containsMandatoryData(cacheMap: CacheMap): Boolean =
-    cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.id).exists(_.lrn.nonEmpty)
+  private def containsMandatoryData(data: ExportsCacheModel): Boolean =
+    data.consignmentReferences.exists(references => references.lrn.nonEmpty)
 
   def submitSupplementaryDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>

@@ -75,8 +75,6 @@ case class ExportsCacheModel(
   dispatchLocation: Option[DispatchLocation] = None,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,
-  exporterDetails: Option[ExporterDetails] = None,
-  warehouseIdentification: Option[WarehouseIdentification] = None,
   borderTransport: Option[BorderTransport] = None,
   transportDetails: Option[TransportDetails] = None,
   containerData: Option[TransportInformationContainerData] = None,

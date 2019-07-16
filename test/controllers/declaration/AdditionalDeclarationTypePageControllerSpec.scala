@@ -21,10 +21,14 @@ import java.time.LocalDateTime
 import base.{CustomExportsBaseSpec, ExportsTestData}
 import controllers.util.CacheIdGenerator
 import forms.Choice
-import forms.Choice.{AllowedChoiceValues, choiceId}
+import forms.Choice.{choiceId, AllowedChoiceValues}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeStandardDec.AllowedAdditionalDeclarationTypes._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes._
-import forms.declaration.additionaldeclarationtype.{AdditionalDeclarationType, AdditionalDeclarationTypeStandardDec, AdditionalDeclarationTypeSupplementaryDec}
+import forms.declaration.additionaldeclarationtype.{
+  AdditionalDeclarationType,
+  AdditionalDeclarationTypeStandardDec,
+  AdditionalDeclarationTypeSupplementaryDec
+}
 import models.SignedInUser
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import org.mockito.ArgumentMatchers
@@ -83,12 +87,13 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
   }
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    super.afterEach()
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "Additional Declaration Type Controller on GET" should {
@@ -120,7 +125,8 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
           LocalDateTime.now(),
           LocalDateTime.now(),
           "SMP",
-           additionalDeclarationType = Some(AdditionalDeclarationType(PreLodged)))
+          additionalDeclarationType = Some(AdditionalDeclarationType(PreLodged))
+        )
         withNewCaching(cachedData)
 
         val result = route(app, getRequest(additionalDeclarationTypeUri)).get
@@ -135,7 +141,8 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
           LocalDateTime.now(),
           LocalDateTime.now(),
           "SMP",
-          additionalDeclarationType = Some(AdditionalDeclarationType(Simplified)))
+          additionalDeclarationType = Some(AdditionalDeclarationType(Simplified))
+        )
         withNewCaching(cachedData)
 
         val result = route(app, getRequest(additionalDeclarationTypeUri)).get

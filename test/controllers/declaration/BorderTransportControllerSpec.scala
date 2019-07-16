@@ -57,8 +57,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "GET" should {
@@ -79,7 +78,8 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
           LocalDateTime.now(),
           LocalDateTime.now(),
           "SMP",
-          borderTransport = Some(transport))
+          borderTransport = Some(transport)
+        )
         withNewCaching(cachedData)
 
         val result = route(app, request).value

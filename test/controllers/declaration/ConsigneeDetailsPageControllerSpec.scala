@@ -35,6 +35,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
   private val uri = uriWithContextPath("/declaration/consignee-details")
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[ConsigneeDetails](None)
@@ -42,6 +43,7 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
   }
 
   override def afterEach() {
+    super.afterEach()
     reset(mockExportsCacheService)
   }
 

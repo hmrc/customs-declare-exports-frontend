@@ -16,6 +16,8 @@
 
 package models.declaration
 
+import java.time.LocalDateTime
+
 import forms.common.Date
 import forms.declaration.ConsigneeDetailsSpec._
 import forms.declaration.ConsignmentReferencesSpec._
@@ -50,6 +52,7 @@ import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoo
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
 import services.ExportsItemsCacheIds
+import services.cache.ExportsCacheModel
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilderSpec
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -61,20 +64,8 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
 
       "has all fields equal to None" when {
         "CacheMap is empty" in {
-          val emptyCacheMap = CacheMap("CacheID", Map.empty)
-          val supplementaryDeclarationData = SupplementaryDeclarationData(emptyCacheMap)
+          val supplementaryDeclarationData = SupplementaryDeclarationData(declaration)
 
-          assertAllNone(supplementaryDeclarationData)
-        }
-
-        "CacheMap contains only foreign keys" in {
-          val cacheMap = CacheMap("CacheID", Map("ForeignKey1234567" -> JsObject(Map("key" -> JsString("value")))))
-          val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
-
-          assertAllNone(supplementaryDeclarationData)
-        }
-
-        def assertAllNone(supplementaryDeclarationData: SupplementaryDeclarationData): Unit = {
           supplementaryDeclarationData.declarationType mustNot be(defined)
           supplementaryDeclarationData.consignmentReferences mustNot be(defined)
           supplementaryDeclarationData.parties mustNot be(defined)
@@ -85,8 +76,8 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
 
       "has properly formatted DeclarationType field" when {
         "CacheMap contains record for DispatchLocation only" in {
-          val cacheMap = CacheMap("CacheID", Map(DispatchLocation.formId -> correctDispatchLocationJSON))
-          val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
+          val supplementaryDeclarationData =
+            SupplementaryDeclarationData(declaration.copy(dispatchLocation = Some(correctDispatchLocation)))
 
           supplementaryDeclarationData.declarationType must be(defined)
           supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(
@@ -96,14 +87,9 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
         }
 
         "CacheMap contains record for AdditionalDeclarationType only" in {
-          val cacheMap =
-            CacheMap(
-              "CacheID",
-              Map(
-                AdditionalDeclarationTypeSupplementaryDec.formId -> correctAdditionalDeclarationTypeSupplementaryDecJSON
-              )
-            )
-          val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
+          val supplementaryDeclarationData = SupplementaryDeclarationData(
+            declaration.copy(additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec))
+          )
 
           supplementaryDeclarationData.declarationType must be(defined)
           supplementaryDeclarationData.declarationType.get.dispatchLocation mustNot be(defined)
@@ -113,15 +99,12 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
         }
 
         "CacheMap contains records for both DispatchLocation and AdditionalDeclarationType" in {
-          val cacheMap = CacheMap(
-            "CacheID",
-            Map(
-              DispatchLocation.formId -> correctDispatchLocationJSON,
-              AdditionalDeclarationTypeSupplementaryDec.formId -> correctAdditionalDeclarationTypeSupplementaryDecJSON
+          val supplementaryDeclarationData = SupplementaryDeclarationData(
+            declaration.copy(
+              additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
+              dispatchLocation = Some(correctDispatchLocation)
             )
           )
-
-          val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
           supplementaryDeclarationData.declarationType must be(defined)
           supplementaryDeclarationData.declarationType.get.dispatchLocation.get.dispatchLocation must equal(
@@ -133,8 +116,7 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
         }
 
         "CacheMap contains records for neither DispatchLocation nor AdditionalDeclarationType" in {
-          val emptyCacheMap = CacheMap("CacheID", Map.empty)
-          val supplementaryDeclarationData = SupplementaryDeclarationData(emptyCacheMap)
+          val supplementaryDeclarationData = SupplementaryDeclarationData(declaration)
 
           supplementaryDeclarationData.declarationType mustNot be(defined)
         }
@@ -143,9 +125,9 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
       "has properly mapped fields" when {
         "CacheMap contains single record" in {
           val consignmentReferences = Json.fromJson[ConsignmentReferences](correctConsignmentReferencesJSON).get
-          val cacheMap = CacheMap("CacheID", Map(ConsignmentReferences.id -> correctConsignmentReferencesJSON))
 
-          val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
+          val supplementaryDeclarationData =
+            SupplementaryDeclarationData(declaration.copy(consignmentReferences = Some(correctConsignmentReferences)))
 
           supplementaryDeclarationData.consignmentReferences must be(defined)
           supplementaryDeclarationData.consignmentReferences.get.lrn must equal(consignmentReferences.lrn)
@@ -157,41 +139,12 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
           val consignmentReferences = Json.fromJson[ConsignmentReferences](correctConsignmentReferencesJSON).get
           val exporterDetails = Json.fromJson[ExporterDetails](correctExporterDetailsJSON).get
 
-          val cacheMap = CacheMap(
-            "CacheID",
-            Map(
-              ConsignmentReferences.id -> correctConsignmentReferencesJSON,
-              ExporterDetails.id -> correctExporterDetailsJSON
+          val supplementaryDeclarationData = SupplementaryDeclarationData(
+            declaration.copy(
+              consignmentReferences = Some(correctConsignmentReferences),
+              parties = Parties(exporterDetails = Some(correctExporterDetails))
             )
           )
-
-          val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
-
-          supplementaryDeclarationData.consignmentReferences must be(defined)
-          supplementaryDeclarationData.consignmentReferences.get.lrn must equal(consignmentReferences.lrn)
-          supplementaryDeclarationData.consignmentReferences.get.ducr must be(defined)
-          supplementaryDeclarationData.consignmentReferences.get.ducr.get must equal(consignmentReferences.ducr.get)
-          supplementaryDeclarationData.parties must be(defined)
-          supplementaryDeclarationData.parties.get.exporterDetails must be(defined)
-          supplementaryDeclarationData.parties.get.exporterDetails.get must equal(exporterDetails)
-        }
-
-        "CacheMap contains 2 records and 3 foreign keys" in {
-          val consignmentReferences = Json.fromJson[ConsignmentReferences](correctConsignmentReferencesJSON).get
-          val exporterDetails = Json.fromJson[ExporterDetails](correctExporterDetailsJSON).get
-
-          val cacheMap = CacheMap(
-            "CacheID",
-            Map(
-              ConsignmentReferences.id -> correctConsignmentReferencesJSON,
-              ExporterDetails.id -> correctExporterDetailsJSON,
-              "ForeignKey_1" -> JsObject(Map("key_1" -> JsString("value_1"))),
-              "ForeignKey_2" -> JsObject(Map("key_2" -> JsString("value_2"))),
-              "ForeignKey_3" -> JsObject(Map("key_3" -> JsString("value_3")))
-            )
-          )
-
-          val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMap)
 
           supplementaryDeclarationData.consignmentReferences must be(defined)
           supplementaryDeclarationData.consignmentReferences.get.lrn must equal(consignmentReferences.lrn)
@@ -203,7 +156,7 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
         }
 
         "CacheMap contains all records" in {
-          val supplementaryDeclarationData = SupplementaryDeclarationData(cacheMapAllRecords)
+          val supplementaryDeclarationData = SupplementaryDeclarationData(allRecords)
 
           supplementaryDeclarationData.declarationType must be(defined)
           supplementaryDeclarationData.consignmentReferences must be(defined)
@@ -228,6 +181,33 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
 }
 
 object SupplementaryDeclarationTestData {
+  lazy val allRecords = declaration.copy(
+    dispatchLocation = Some(correctDispatchLocation),
+    additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
+    consignmentReferences = Some(correctConsignmentReferences),
+    transportDetails = Some(TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))),
+    containerData = Some(correctTransportInformationContainerData),
+    natureOfTransaction = Some(correctNatureOfTransaction),
+    totalNumberOfItems = Some(correctTotalNumberOfItemsDecimalValues),
+    borderTransport = Some(BorderTransport("3", "10", Some("123112yu78"))),
+    seals = Seq(Seal("123"), Seal("4321")),
+    parties = Parties(
+      exporterDetails = Some(correctExporterDetails),
+      declarantDetails = Some(correctDeclarantDetailsEORIOnly),
+      consigneeDetails = Some(ConsigneeDetails(EntityDetailsSpec.correctEntityDetails)),
+      representativeDetails = Some(correctRepresentativeDetails),
+      declarationAdditionalActorsData = Some(correctAdditionalActorsData),
+      declarationHoldersData = Some(correctDeclarationHoldersData),
+      carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
+    ),
+    locations = Locations(
+      destinationCountries = Some(DestinationCountriesSpec.correctDestinationCountries),
+      goodsLocation = Some(correctGoodsLocation),
+      warehouseIdentification = Some(correctWarehouseIdentification),
+      officeOfExit = Some(correctOfficeOfExit)
+    )
+  )
+
   lazy val cacheMapAllRecords = CacheMap(
     id = "CacheID",
     data = Map(
@@ -336,6 +316,7 @@ object SupplementaryDeclarationTestData {
   val correctPackingJSON: JsValue = JsObject(
     Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
   )
+  val declaration = ExportsCacheModel("sessionId", "draftId", LocalDateTime.now(), LocalDateTime.now(), "SMP")
 
   def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
     GovernmentAgencyGoodsItem(

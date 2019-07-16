@@ -30,6 +30,7 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
   private val uri = uriWithContextPath("/declaration/nature-of-transaction")
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[NatureOfTransaction](None)
@@ -37,6 +38,7 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
   }
 
   override def afterEach() {
+    super.afterEach()
     reset(mockExportsCacheService)
   }
 

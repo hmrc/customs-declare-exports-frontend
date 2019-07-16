@@ -32,14 +32,17 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
   private val uri = uriWithContextPath("/declaration/carrier-details")
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[CarrierDetails](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  override def afterEach() =
+  override def afterEach() = {
+    super.afterEach()
     Mockito.reset(mockExportsCacheService)
+  }
 
   "Carrier Details Page Controller on GET" should {
 

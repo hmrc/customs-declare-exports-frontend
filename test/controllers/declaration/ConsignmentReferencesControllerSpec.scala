@@ -39,6 +39,7 @@ class ConsignmentReferencesControllerSpec
   import ConsignmentReferencesControllerSpec._
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
@@ -46,8 +47,8 @@ class ConsignmentReferencesControllerSpec
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    super.afterEach()
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "Consignment References Controller on GET" should {

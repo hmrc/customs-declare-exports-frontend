@@ -48,8 +48,7 @@ class DeclarationHolderControllerSpec
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)

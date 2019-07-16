@@ -41,6 +41,7 @@ class DeclarationAdditionalActorsControllerSpec
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[DeclarationAdditionalActorsData](None)
@@ -48,8 +49,8 @@ class DeclarationAdditionalActorsControllerSpec
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    super.afterEach()
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
