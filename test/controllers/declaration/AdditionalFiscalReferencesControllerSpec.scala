@@ -17,12 +17,14 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
-import org.mockito.Mockito.reset
+import org.mockito.Mockito.{reset, verify}
+import org.mockito.ArgumentMatchers.any
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import play.api.test.Helpers._
+import services.cache.ExportItem
 
 class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
   val cacheModel = createModelWithItem("")
@@ -47,11 +49,15 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       val Some(result) = route(app, getRequest(uri))
 
       status(result) must be(OK)
+      verify(mockExportsCacheService).getItemByIdAndSession(any[String], any[String])
     }
 
     "read item from cache and display it" in {
 
       val cachedData = AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("France", "7232")))
+      val cachedItem = ExportItem(id = "1244", additionalFiscalReferencesData = Some(cachedData))
+
+      withNewCaching(createModelWithItem("").copy(items = Set(cachedItem)))
       withCaching[AdditionalFiscalReferencesData](Some(cachedData), AdditionalFiscalReferencesData.formId)
 
       val Some(result) = route(app, getRequest(uri))
@@ -60,6 +66,8 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       status(result) must be(OK)
       page must include("France")
       page must include("7232")
+
+      verify(mockExportsCacheService).getItemByIdAndSession(any[String], any[String])
     }
   }
 

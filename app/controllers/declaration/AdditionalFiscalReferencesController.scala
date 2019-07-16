@@ -50,9 +50,13 @@ class AdditionalFiscalReferencesController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[AdditionalFiscalReferencesData](goodsItemCacheId, formId).map {
-      case Some(data) => Ok(additionalFiscalReferencesPage(itemId, form, data.references))
-      case _          => Ok(additionalFiscalReferencesPage(itemId, form))
+    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map {
+      case Some(model) => {
+        model.additionalFiscalReferencesData.fold(Ok(additionalFiscalReferencesPage(itemId, form))) { data =>
+          Ok(additionalFiscalReferencesPage(itemId, form, data.references))
+        }
+      }
+      case _ => Ok(additionalFiscalReferencesPage(itemId, form))
     }
   }
 
