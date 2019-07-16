@@ -110,7 +110,7 @@ class CommodityMeasureControllerSpec
 
         "invalid data is submitted" in {
           authorizedUser()
-          withCaching[CommodityMeasure](None, commodityFormId)
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty, commodityMeasure = None))))
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
           val body = Seq(("supplementaryUnits", "abcd"), ("netMass", ""), ("grossMass", ""))
@@ -134,7 +134,6 @@ class CommodityMeasureControllerSpec
             reset(mockExportsCacheService)
             authorizedUser()
             withNewCaching(cacheModel)
-            withCaching[CommodityMeasure](None, commodityFormId)
             withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
             val body = Seq(
               ("supplementaryUnits", commodityMeasure.supplementaryUnits.getOrElse("")),
@@ -167,8 +166,7 @@ class CommodityMeasureControllerSpec
         "on click of continue when a record has already been added" in {
           forAll(arbitrary[CommodityMeasure]) { commodityMeasure =>
             authorizedUser()
-            withNewCaching(cacheModel)
-            withCaching[CommodityMeasure](Some(commodityMeasure), commodityFormId)
+            withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List(), commodityMeasure = Some(commodityMeasure)))))
             withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
             val payload = Seq(
               ("supplementaryUnits", commodityMeasure.supplementaryUnits.getOrElse("")),
