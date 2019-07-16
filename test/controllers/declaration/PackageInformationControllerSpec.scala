@@ -37,7 +37,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import views.html.declaration.package_information
 import base.TestHelper._
-import services.cache.ExportsCacheModel
+import services.cache.{ExportItem, ExportsCacheModel}
 
 class PackageInformationControllerSpec
     extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues with ViewValidator
@@ -65,7 +65,7 @@ class PackageInformationControllerSpec
     "return 200 with a success" in {
 
       authorizedUser()
-      withCaching[List[PackageInformation]](None)
+      withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
       withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
       val result = route(app, getRequest(uri)).get
@@ -76,10 +76,7 @@ class PackageInformationControllerSpec
     "read data from cache" in {
 
       authorizedUser()
-      withCaching[List[PackageInformation]](
-        Some(List(PackageInformation(Some("XX"), Some(101), Some("Secret Mark")))),
-        formId
-      )
+      withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List(PackageInformation(Some("XX"), Some(101), Some("Secret Mark")))))))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -92,15 +89,10 @@ class PackageInformationControllerSpec
     "read two items from cache and display it" in {
 
       authorizedUser()
-      withCaching[List[PackageInformation]](
-        Some(
-          List(
-            PackageInformation(Some("XX"), Some(101), Some("Secret Mark")),
-            PackageInformation(Some("YX"), Some(102), Some("Even More Secret Mark"))
-          )
-        ),
-        formId
-      )
+      withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List(
+        PackageInformation(Some("XX"), Some(101), Some("Secret Mark")),
+        PackageInformation(Some("YX"), Some(102), Some("Even More Secret Mark"))
+      )))))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -122,7 +114,7 @@ class PackageInformationControllerSpec
       "display error when item has incorrect type of packages" in {
 
         authorizedUser()
-        withCaching[List[PackageInformation]](None, formId)
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
 
         val payload = Map("typesOfPackages" -> "123").toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -137,7 +129,7 @@ class PackageInformationControllerSpec
       "display error when item has incorrect number of packages" in {
 
         authorizedUser()
-        withCaching[List[PackageInformation]](None, formId)
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
 
         val payload = Map("numberOfPackages" -> "-1").toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -152,7 +144,7 @@ class PackageInformationControllerSpec
       "display error when item with incorrect shipping marks" in {
 
         authorizedUser()
-        withCaching[List[PackageInformation]](None, formId)
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
 
         val payload = Map("shippingMarks" -> TestHelper.createRandomAlphanumericString(50)).toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -167,10 +159,7 @@ class PackageInformationControllerSpec
       "display error when item already exist" in {
 
         authorizedUser()
-        withCaching[List[PackageInformation]](
-          Some(List(PackageInformation(Some("AB"), Some(100), Some("Test")))),
-          formId
-        )
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List(PackageInformation(Some("AB"), Some(100), Some("Test")))))))
 
         val payload = Map("typesOfPackages" -> "AB", "numberOfPackages" -> "100", "shippingMarks" -> "Test").toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -186,7 +175,7 @@ class PackageInformationControllerSpec
 
         authorizedUser()
         val cached = listOfN[PackageInformation](99, generatePackage.arbitrary).sample
-        withCaching[List[PackageInformation]](cached, formId)
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = cached.get))))
 
         val payload = Map("typesOfPackages" -> "AB", "numberOfPackages" -> "100", "shippingMarks" -> "Test").toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -204,7 +193,7 @@ class PackageInformationControllerSpec
       "display errors when item has incorrect type of packages" in {
 
         authorizedUser()
-        withCaching[List[PackageInformation]](None, formId)
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
 
         val payload = Map("typesOfPackages" -> "123").toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -220,7 +209,7 @@ class PackageInformationControllerSpec
       "display errors when item has incorrect number of packages" in {
 
         authorizedUser()
-        withCaching[List[PackageInformation]](None, formId)
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
 
         val payload = Map("numberOfPackages" -> "-1").toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -236,7 +225,7 @@ class PackageInformationControllerSpec
       "display errors when item has incorrect shipping marks" in {
 
         authorizedUser()
-        withCaching[List[PackageInformation]](None, formId)
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
 
         val payload = Map("shippingMarks" -> TestHelper.createRandomAlphanumericString(50)).toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -272,7 +261,7 @@ class PackageInformationControllerSpec
         "user is signed in" in {
 
           authorizedUser()
-          withCaching[List[PackageInformation]](None, formId)
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
 
           val result = route(app, getRequest(uri)).value
           val stringResult = contentAsString(result)
@@ -292,8 +281,7 @@ class PackageInformationControllerSpec
           authorizedUser()
 
           val cachedData = arbitraryPackagingSeq.sample
-          withCaching[List[PackageInformation]](cachedData, formId)
-
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = cachedData.getOrElse(List.empty)))))
           val result = route(app, getRequest(uri)).value
           status(result) must be(OK)
 
@@ -325,7 +313,7 @@ class PackageInformationControllerSpec
         "invalid data is submitted" in {
 
           authorizedUser()
-          withCaching[List[PackageInformation]](None, formId)
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
 
           val body = Seq(("typesOfPackages", "1234"), addActionUrlEncoded)
 
@@ -414,7 +402,7 @@ class PackageInformationControllerSpec
             authorizedUser()
 
             whenever(packagingSeq.nonEmpty) {
-              withCaching[List[PackageInformation]](Some(packagingSeq), formId)
+              withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = packagingSeq))))
               val packaging = packagingSeq.head
               val payload = toMap(packaging).toSeq :+ removeActionUrlEncoded("0")
               val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -439,7 +427,7 @@ class PackageInformationControllerSpec
 
           forAll(arbitrary[PackageInformation]) { packaging =>
             authorizedUser()
-            withCaching[Seq[PackageInformation]](Some(Seq(packaging)), formId)
+            withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List(packaging)))))
 
             val result = route(app, postRequestFormUrlEncoded(uri, Seq(saveAndContinueActionUrlEncoded): _*)).value
             status(result) must be(SEE_OTHER)
