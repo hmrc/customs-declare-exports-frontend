@@ -43,7 +43,7 @@ class ProcedureCodesPageController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
+  legacyCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   procedureCodesPage: procedure_codes
@@ -77,8 +77,9 @@ class ProcedureCodesPageController @Inject()(
 
       val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
-      val cachedData = customsCacheService
-        .fetchAndGetEntry[ProcedureCodesData](goodsItemCacheId, formId)
+      val cachedData = exportsCacheService
+        .getItemByIdAndSession(itemId, journeySessionId)
+        .map(_.flatMap(_.procedureCodes))
         .map(_.getOrElse(ProcedureCodesData(None, Seq())))
 
       cachedData.flatMap { cache =>
@@ -148,7 +149,7 @@ class ProcedureCodesPageController @Inject()(
       case (Some(code), seq) =>
         for {
           _ <- updateCache(itemId, journeySessionId, ProcedureCodesData(userInput.procedureCode, seq :+ code))
-          _ <- customsCacheService.cache[ProcedureCodesData](
+          _ <- legacyCacheService.cache[ProcedureCodesData](
             goodsItemCacheId,
             formId,
             ProcedureCodesData(userInput.procedureCode, seq :+ code)
@@ -166,7 +167,7 @@ class ProcedureCodesPageController @Inject()(
         cachedData.copy(additionalProcedureCodes = cachedData.additionalProcedureCodes.filterNot(_ == code))
       for {
         _ <- updateCache(itemId, journeySessionId, updatedCache)
-        _ <- customsCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, updatedCache)
+        _ <- legacyCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, updatedCache)
       } yield Redirect(routes.ProcedureCodesPageController.displayPage(itemId))
     } else errorHandler.displayErrorPage()
 
@@ -181,7 +182,7 @@ class ProcedureCodesPageController @Inject()(
           case ProcedureCodes(Some(procedureCode), Some(additionalCode)) => {
             for {
               _ <- updateCache(itemId, journeySessionId, ProcedureCodesData(Some(procedureCode), Seq(additionalCode)))
-              _ <- customsCacheService.cache[ProcedureCodesData](
+              _ <- legacyCacheService.cache[ProcedureCodesData](
                 goodsItemCacheId,
                 formId,
                 ProcedureCodesData(Some(procedureCode), Seq(additionalCode))
@@ -240,7 +241,7 @@ class ProcedureCodesPageController @Inject()(
 
             for {
               _ <- updateCache(itemId, journeySessionId, updatedCache)
-              _ <- customsCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, updatedCache)
+              _ <- legacyCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, updatedCache)
             } yield Redirect(routes.FiscalInformationController.displayPage(itemId))
           }
         }

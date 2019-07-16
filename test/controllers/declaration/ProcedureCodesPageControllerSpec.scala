@@ -26,6 +26,7 @@ import models.declaration.ProcedureCodesData.formId
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify}
 import play.api.test.Helpers._
+import services.cache.ExportItem
 
 class ProcedureCodesPageControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ProcedureCodesMessages with CommonMessages {
@@ -104,7 +105,7 @@ class ProcedureCodesPageControllerSpec
 
       "maximum amount of codes are reached" in {
 
-        withCaching[ProcedureCodesData](Some(cacheWithMaximumAmountOfAdditionalCodes), formId)
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", procedureCodes = Some(cacheWithMaximumAmountOfAdditionalCodes)))))
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded)
 
@@ -115,7 +116,8 @@ class ProcedureCodesPageControllerSpec
 
       "code is duplicated" in {
 
-        withCaching[ProcedureCodesData](Some(ProcedureCodesData(Some("1234"), Seq("123"))), formId)
+        val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", procedureCodes = Some(cachedData)))))
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), addActionUrlEncoded)
 
@@ -141,7 +143,7 @@ class ProcedureCodesPageControllerSpec
       "user remove existing code" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-        withCaching[ProcedureCodesData](Some(cachedData), formId)
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", procedureCodes = Some(cachedData)))))
 
         val body = removeActionUrlEncoded("123")
 
@@ -169,7 +171,7 @@ class ProcedureCodesPageControllerSpec
       "form is empty but cache contains at least one item" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-        withCaching[ProcedureCodesData](Some(cachedData), formId)
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", procedureCodes = Some(cachedData)))))
 
         val body = Seq(("procedureCode", "1234"), saveAndContinueActionUrlEncoded)
 
