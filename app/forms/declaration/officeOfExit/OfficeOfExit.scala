@@ -28,7 +28,7 @@ object OfficeOfExit {
   def from(officeOfExitStandard: OfficeOfExitStandard): OfficeOfExit =
     OfficeOfExit(
       officeOfExitStandard.officeId,
-      Some(officeOfExitStandard.presentationOfficeId),
+      officeOfExitStandard.presentationOfficeId,
       Some(officeOfExitStandard.circumstancesCode)
     )
 }

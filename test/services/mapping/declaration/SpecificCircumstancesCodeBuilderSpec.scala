@@ -44,7 +44,7 @@ class SpecificCircumstancesCodeBuilderSpec extends WordSpec with Matchers {
         implicit val cacheMap: CacheMap =
           CacheMap(
             "CacheID",
-            Map(OfficeOfExitForms.formId -> Json.toJson(OfficeOfExitStandard("123qwe12", "123", "No")))
+            Map(OfficeOfExitForms.formId -> Json.toJson(OfficeOfExitStandard("123qwe12", Some("123"), "No")))
           )
         val circumstancesCode = SpecificCircumstancesCodeBuilder.build(cacheMap, ChoiceSpec.standardChoice)
         circumstancesCode should be(null)

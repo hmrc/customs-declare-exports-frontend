@@ -17,12 +17,12 @@
 package forms.declaration.officeOfExit
 
 import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers.{no, yes}
-import play.api.data.Forms.text
+import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
 import utils.validators.forms.FieldValidator._
 
-case class OfficeOfExitStandard(officeId: String, presentationOfficeId: String, circumstancesCode: String)
+case class OfficeOfExitStandard(officeId: String, presentationOfficeId: Option[String], circumstancesCode: String)
 
 object OfficeOfExitStandard {
   implicit val format = Json.format[OfficeOfExitStandard]
@@ -31,10 +31,11 @@ object OfficeOfExitStandard {
       .verifying("declaration.officeOfExit.empty", nonEmpty)
       .verifying("declaration.officeOfExit.length", isEmpty or hasSpecificLength(8))
       .verifying("declaration.officeOfExit.specialCharacters", isEmpty or isAlphanumeric),
-    "presentationOfficeId" -> text()
-      .verifying("standard.officeOfExit.presentationOffice.empty", nonEmpty)
-      .verifying("standard.officeOfExit.presentationOffice.length", isEmpty or hasSpecificLength(8))
-      .verifying("standard.officeOfExit.presentationOffice.specialCharacters", isEmpty or isAlphanumeric),
+    "presentationOfficeId" -> optional(
+      text()
+        .verifying("standard.officeOfExit.presentationOffice.length", isEmpty or hasSpecificLength(8))
+        .verifying("standard.officeOfExit.presentationOffice.specialCharacters", isEmpty or isAlphanumeric)
+    ),
     "circumstancesCode" -> text()
       .verifying("standard.officeOfExit.circumstancesCode.empty", nonEmpty)
       .verifying("standard.officeOfExit.circumstancesCode.error", isEmpty or isContainedIn(Seq(yes, no)))
@@ -42,7 +43,7 @@ object OfficeOfExitStandard {
 
   def apply(officeOfExit: OfficeOfExit): OfficeOfExitStandard = OfficeOfExitStandard(
     officeId = officeOfExit.officeId,
-    presentationOfficeId = officeOfExit.presentationOfficeId.getOrElse(""),
+    presentationOfficeId = officeOfExit.presentationOfficeId,
     circumstancesCode = officeOfExit.circumstancesCode.getOrElse("")
   )
 
