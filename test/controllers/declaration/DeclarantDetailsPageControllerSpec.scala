@@ -16,23 +16,34 @@
 
 package controllers.declaration
 
+import java.time.LocalDateTime
+
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
 import forms.common.Address
 import forms.declaration.DeclarantDetailsSpec._
 import forms.declaration.{DeclarantDetails, EntityDetails}
+import models.declaration.Parties
+import org.mockito.Mockito.reset
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
   private val uri = uriWithContextPath("/declaration/declarant-details")
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[DeclarantDetails](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+  }
+
+  override def afterEach() {
+    super.afterEach()
+    reset(mockExportsCacheService)
   }
 
   "Declarant Details Controller on GET" should {
@@ -41,14 +52,27 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
+      verifyTheCacheIsUnchanged()
     }
 
     "read item from cache and display it" in {
 
-      val cachedData = DeclarantDetails(
-        EntityDetails(Some("67890"), Some(Address("WonderWoman", "Test Street", "Leeds", "LS18BN", "Germany")))
+      val cachedData = ExportsCacheModel(
+        "SessionId",
+        "DraftId",
+        LocalDateTime.now(),
+        LocalDateTime.now(),
+        "SMP",
+        parties = Parties(
+          declarantDetails = Some(
+            DeclarantDetails(
+              EntityDetails(Some("67890"), Some(Address("WonderWoman", "Test Street", "Leeds", "LS18BN", "Germany")))
+            )
+          )
+        )
       )
-      withCaching[DeclarantDetails](Some(cachedData), "DeclarantDetails")
+
+      withNewCaching(cachedData)
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -70,6 +94,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, postRequest(uri, emptyDeclarantDetailsJSON)).get
 
       status(result) must be(BAD_REQUEST)
+      verifyTheCacheIsUnchanged()
     }
 
     "validate request and redirect - only EORI provided" in {
@@ -79,6 +104,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/representative-details"))
+      theCacheModelUpdated.parties.declarantDetails must be(Some(correctDeclarantDetailsEORIOnly))
     }
 
     "validate request and redirect - only address provided" in {
@@ -88,6 +114,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/representative-details"))
+      theCacheModelUpdated.parties.declarantDetails must be(Some(correctDeclarantDetailsAddressOnly))
     }
 
     "validate request and redirect - all values provided" in {
@@ -97,6 +124,7 @@ class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/representative-details"))
+      theCacheModelUpdated.parties.declarantDetails must be(Some(correctDeclarantDetails))
     }
   }
 }

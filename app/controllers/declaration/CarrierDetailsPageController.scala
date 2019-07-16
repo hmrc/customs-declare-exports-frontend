@@ -19,7 +19,7 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
-import forms.declaration.CarrierDetails
+import forms.declaration.{CarrierDetails, ConsigneeDetails}
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -46,9 +46,9 @@ class CarrierDetailsPageController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[CarrierDetails](cacheId, CarrierDetails.id).map {
-      case Some(data) => Ok(carrierDetailsPage(CarrierDetails.form.fill(data)))
-      case _          => Ok(carrierDetailsPage(CarrierDetails.form))
+    cacheService.get(journeySessionId).map(_.flatMap(_.parties.carrierDetails)).map {
+      case Some(data) => Ok(carrierDetailsPage(CarrierDetails.form().fill(data)))
+      case _          => Ok(carrierDetailsPage(CarrierDetails.form()))
     }
   }
 

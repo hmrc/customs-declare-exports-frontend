@@ -16,17 +16,20 @@
 
 package controllers.declaration
 
+import java.time.LocalDateTime
+
 import base.CustomExportsBaseSpec
-import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.ConsignmentReferences
 import forms.declaration.ConsignmentReferencesSpec._
+import forms.{Choice, Ducr}
 import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 class ConsignmentReferencesControllerSpec
     extends CustomExportsBaseSpec with ConsignmentReferencesMessages with CommonMessages {
@@ -45,8 +48,7 @@ class ConsignmentReferencesControllerSpec
 
   override def afterEach() {
     super.afterEach()
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "Consignment References Controller on GET" should {
@@ -55,6 +57,7 @@ class ConsignmentReferencesControllerSpec
 
       val result = route(app, getRequest(uri)).get
       status(result) must be(OK)
+      verifyTheCacheIsUnchanged()
     }
 
     "not populate the form fields if cache is empty" in {
@@ -64,11 +67,20 @@ class ConsignmentReferencesControllerSpec
 
       resultAsString.replaceAll(" ", "") must include("name=\"ducr.ducr\"\nvalue=\"\"")
       resultAsString.replaceAll(" ", "") must include("name=\"lrn\"\nvalue=\"\"")
+      verifyTheCacheIsUnchanged()
     }
 
     "populate the form fields with data from cache" in {
 
-      withCaching[ConsignmentReferences](Some(correctConsignmentReferences), ConsignmentReferences.id)
+      val cachedData = ExportsCacheModel(
+        "SessionId",
+        "DraftId",
+        LocalDateTime.now(),
+        LocalDateTime.now(),
+        "SMP",
+        consignmentReferences = Some((correctConsignmentReferences))
+      )
+      withNewCaching(cachedData)
 
       val result = route(app, getRequest(uri)).get
       val resultAsString = contentAsString(result)
@@ -117,6 +129,7 @@ class ConsignmentReferencesControllerSpec
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/exporter-details"))
+      theCacheModelUpdated.consignmentReferences.get.ducr must be(Some(Ducr("8GB123456789012-1234567890QWERTYUIO")))
     }
   }
 }

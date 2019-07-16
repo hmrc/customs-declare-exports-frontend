@@ -21,8 +21,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
+import forms.declaration.Seal
 import forms.declaration.Seal._
-import forms.declaration.{Seal, TransportDetails}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
@@ -48,21 +48,23 @@ class SealController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[Seq[Seal]](cacheId, formId)
-      .flatMap { seals =>
-        customsCacheService
-          .fetchAndGetEntry[TransportDetails](cacheId, TransportDetails.formId)
-          .map(data => Ok(sealPage(form, seals.getOrElse(Seq.empty), data.fold(false)(_.container))))
+    val declaration = cacheService.get(journeySessionId)
+    declaration.map(_.flatMap(_.transportDetails)).flatMap { data =>
+      declaration.map(_.map(_.seals)).map { seals =>
+        Ok(sealPage(form, seals.getOrElse(Seq.empty), data.fold(false)(_.container)))
       }
+    }
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
-    customsCacheService
-      .fetchAndGetEntry[Seq[Seal]](cacheId, formId)
-      .flatMap(cache => processRequest(cache.getOrElse(Seq.empty), actionTypeOpt))
+    cacheService
+      .get(journeySessionId)
+      .map(_.map(_.seals))
+      .flatMap { data =>
+        processRequest(data.getOrElse(Seq.empty), actionTypeOpt)
+      }
   }
 
   private def processRequest(cachedSeals: Seq[Seal], action: Option[FormAction])(
@@ -94,10 +96,14 @@ class SealController @Inject()(
   private def badRequest(
     formWithErrors: Form[Seal],
     cachedSeals: Seq[Seal]
-  )(implicit request: JourneyRequest[_], appConfig: AppConfig) =
-    customsCacheService
-      .fetchAndGetEntry[TransportDetails](cacheId, TransportDetails.formId)
-      .map(data => BadRequest(sealPage(formWithErrors, cachedSeals, data.fold(false)(_.container))))
+  )(implicit request: JourneyRequest[_], appConfig: AppConfig) = {
+    val declaration = cacheService.get(journeySessionId)
+    declaration.map(_.flatMap(_.transportDetails)).flatMap { data =>
+      declaration.map(_.map(_.seals)).map { seals =>
+        BadRequest(sealPage(formWithErrors, seals.getOrElse(Seq.empty), data.fold(false)(_.container)))
+      }
+    }
+  }
 
   private def removeSeal(cachedSeals: Seq[Seal], ids: Seq[String])(
     implicit request: JourneyRequest[_]

@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import java.time.LocalDateTime
+
 import base.CSRFUtil._
 import base.CustomExportsBaseSpec
 import forms.Choice
@@ -55,8 +57,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "GET" should {
@@ -64,17 +65,28 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
     "return 200 code" in {
       val result = route(app, getRequest(uri)).value
       status(result) must be(OK)
+      verify(mockExportsCacheService).get(any())
     }
 
     "populate the form fields with data from cache" in {
       val request = addCSRFToken(getRequest(uri))
 
       forAll(arbitrary[BorderTransport]) { transport =>
-        withCaching[BorderTransport](Some(transport), BorderTransport.formId)
+        val cachedData = ExportsCacheModel(
+          "SessionId",
+          "DraftId",
+          LocalDateTime.now(),
+          LocalDateTime.now(),
+          "SMP",
+          borderTransport = Some(transport)
+        )
+        withNewCaching(cachedData)
+
         val result = route(app, request).value
 
         contentAsString(result).replaceCSRF mustBe
           view(form.fill(transport), request).body.replaceCSRF()
+        reset(mockExportsCacheService)
       }
     }
   }
@@ -89,6 +101,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
         intercept[InsufficientEnrolments](status(result))
+        verifyTheCacheIsUnchanged()
       }
     }
 
@@ -106,6 +119,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result).replaceCSRF mustBe view(form.bindFromRequest()(request), request).body.replaceCSRF
+        verifyTheCacheIsUnchanged()
       }
 
     }
@@ -154,6 +168,7 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
 
       "on click of continue when a record has already been added" in {
         forAll(arbitrary[BorderTransport]) { borderTransport =>
+          withNewCaching(createModelWithNoItems())
           withCaching[BorderTransport](Some(borderTransport), BorderTransport.formId)
           val payload = Seq(
             ("borderModeOfTransportCode", borderTransport.borderModeOfTransportCode),
@@ -165,6 +180,8 @@ class BorderTransportControllerSpec extends CustomExportsBaseSpec with Generator
           result.futureValue.header.headers.get("Location") must be(
             Some("/customs-declare-exports/declaration/transport-details")
           )
+          theCacheModelUpdated.borderTransport.get must be(borderTransport)
+          reset(mockExportsCacheService)
         }
       }
     }

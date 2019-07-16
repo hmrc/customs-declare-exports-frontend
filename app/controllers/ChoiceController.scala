@@ -54,8 +54,8 @@ class ChoiceController @Inject()(
   val logger = Logger.apply(this.getClass)
 
   def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
-    customsCacheService.fetchAndGetEntry[Choice](eoriCacheId, choiceId).map {
-      case Some(data) => Ok(choicePage(Choice.form().fill(data)))
+    exportsCacheService.get(eoriCacheId).map(_.map(_.choice)).map {
+      case Some(data) => Ok(choicePage(Choice.form().fill(Choice(data))))
       case _          => Ok(choicePage(Choice.form()))
     }
   }

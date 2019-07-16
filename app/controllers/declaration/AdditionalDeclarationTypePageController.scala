@@ -46,9 +46,9 @@ class AdditionalDeclarationTypePageController @Inject()(
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val decType = extractFormType(request)
-    customsCacheService.fetchAndGetEntry[AdditionalDeclarationType](cacheId, decType.formId).map {
-      case Some(data) => Ok(declarationTypePage(decType.form.fill(data)))
-      case _          => Ok(declarationTypePage(decType.form))
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.additionalDeclarationType)).map {
+      case Some(data) => Ok(declarationTypePage(decType.form().fill(data)))
+      case _          => Ok(declarationTypePage(decType.form()))
     }
   }
 

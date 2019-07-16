@@ -18,7 +18,6 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{DeclarationAdditionalActorsController, DeclarationHolderController}
 import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.DeclarationAdditionalActors
@@ -57,7 +56,7 @@ class DeclarationAdditionalActorsController @Inject()(
   private val duplicateActorError = "supplementary.additionalActors.duplicated.error"
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[DeclarationAdditionalActorsData](cacheId, formId).map {
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.declarationAdditionalActorsData)).map {
       case Some(data) => Ok(declarationAdditionalActorsPage(appConfig, form(), data.actors))
       case _          => Ok(declarationAdditionalActorsPage(appConfig, form(), Seq()))
     }
@@ -66,9 +65,13 @@ class DeclarationAdditionalActorsController @Inject()(
   def saveForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
-    val cachedData = customsCacheService
-      .fetchAndGetEntry[DeclarationAdditionalActorsData](cacheId, formId)
-      .map(_.getOrElse(DeclarationAdditionalActorsData(Seq())))
+
+    val cachedData = exportsCacheService
+      .get(journeySessionId)
+      .map(
+        _.flatMap(_.parties.declarationAdditionalActorsData)
+          .getOrElse(DeclarationAdditionalActorsData(Seq()))
+      )
 
     cachedData.flatMap { cache =>
       boundForm

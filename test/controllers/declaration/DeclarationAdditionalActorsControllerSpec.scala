@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import java.time.LocalDateTime
+
 import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.declaration.DeclarationAdditionalActorsControllerSpec.cacheWithMaximumAmountOfActors
 import controllers.util.{Add, Remove, SaveAndContinue}
@@ -24,11 +26,12 @@ import forms.Choice.choiceId
 import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActorsSpec._
 import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMessages}
-import models.declaration.DeclarationAdditionalActorsData
 import models.declaration.DeclarationAdditionalActorsData.formId
 import models.declaration.DeclarationAdditionalActorsDataSpec._
+import models.declaration.{DeclarationAdditionalActorsData, Parties}
 import org.mockito.Mockito.reset
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 class DeclarationAdditionalActorsControllerSpec
     extends CustomExportsBaseSpec with DeclarationAdditionalActorsMessages with CommonMessages with ViewValidator {
@@ -36,9 +39,9 @@ class DeclarationAdditionalActorsControllerSpec
   private val uri: String = uriWithContextPath("/declaration/additional-actors")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
-  private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[DeclarationAdditionalActorsData](None)
@@ -46,9 +49,11 @@ class DeclarationAdditionalActorsControllerSpec
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    super.afterEach()
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
+
+  private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   "Declaration Additional Actors Controller on GET" should {
 
@@ -56,12 +61,11 @@ class DeclarationAdditionalActorsControllerSpec
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
+      verifyTheCacheIsUnchanged()
     }
 
     "read item from cache and display it" in {
-
-      val cachedData = DeclarationAdditionalActorsData(Seq(DeclarationAdditionalActors(Some("112233"), Some("CS"))))
-      withCaching[DeclarationAdditionalActorsData](Some(cachedData), "DeclarationAdditionalActorsData")
+      withCache(DeclarationAdditionalActorsData(Seq(DeclarationAdditionalActors(Some("112233"), Some("CS")))))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -117,6 +121,7 @@ class DeclarationAdditionalActorsControllerSpec
           status(result) must be(BAD_REQUEST)
           page must include(messages(eoriError))
           page must include(messages(partyTypeEmpty))
+          verifyTheCacheIsUnchanged()
         }
 
         "when adding actor with correct EORI and party not selected" in {
@@ -127,6 +132,7 @@ class DeclarationAdditionalActorsControllerSpec
 
           status(result) must be(BAD_REQUEST)
           page must include(messages(partyTypeEmpty))
+          verifyTheCacheIsUnchanged()
         }
 
         "when adding actor with correct EORI and incorrect party" in {
@@ -137,10 +143,11 @@ class DeclarationAdditionalActorsControllerSpec
 
           status(result) must be(BAD_REQUEST)
           page must include(messages(partyTypeError))
+          verifyTheCacheIsUnchanged()
         }
 
         "when adding more than 99 items" in {
-          withCaching[DeclarationAdditionalActorsData](Some(cacheWithMaximumAmountOfActors), formId)
+          withCache(cacheWithMaximumAmountOfActors)
 
           val body = Map("eori" -> "eori1", "partyType" -> "CS").toSeq :+ saveAndContinueActionUrlEncoded
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -150,10 +157,11 @@ class DeclarationAdditionalActorsControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, maximumActorsError, "#")
+          verifyTheCacheIsUnchanged()
         }
 
         "when adding duplicate item" in {
-          withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
+          withCache(correctAdditionalActorsData)
 
           val body = correctAdditionalActorsMap.toSeq :+ saveAndContinueActionUrlEncoded
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -163,6 +171,7 @@ class DeclarationAdditionalActorsControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, duplicatedActorsError, "#")
+          verifyTheCacheIsUnchanged()
         }
       }
     }
@@ -172,7 +181,7 @@ class DeclarationAdditionalActorsControllerSpec
       "remove an actor successfully " when {
 
         "exists in the cache" in {
-          withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
+          withCache(correctAdditionalActorsData)
 
           val body = removeActionUrlEncoded(correctAdditionalActorsData.actors.head.toJson.toString())
 
@@ -185,12 +194,12 @@ class DeclarationAdditionalActorsControllerSpec
       "return an error" when {
 
         "does not exists in the cache" in {
-
           val body = removeActionUrlEncoded(correctAdditionalActorsData.actors.head.toJson.toString())
 
           val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
           status(result) must be(BAD_REQUEST)
+          verifyTheCacheIsUnchanged()
         }
       }
     }
@@ -198,7 +207,6 @@ class DeclarationAdditionalActorsControllerSpec
     "handle add action" should {
 
       "when validate request - optional data allowed" in {
-
         val undefinedDocument: Map[String, String] = Map("eori" -> "", "partyType" -> "")
         testErrorScenario(
           addActionUrlEncoded,
@@ -208,7 +216,6 @@ class DeclarationAdditionalActorsControllerSpec
       }
 
       "when validate request - correct values" in {
-
         testHappyPathsScenarios(
           expectedPath = "/customs-declare-exports/declaration/additional-actors",
           actorsMap = correctAdditionalActorsMap,
@@ -228,6 +235,7 @@ class DeclarationAdditionalActorsControllerSpec
           status(result) must be(BAD_REQUEST)
           page must include(messages(eoriError))
           page must include(messages(partyTypeEmpty))
+          verifyTheCacheIsUnchanged()
         }
 
         "when adding actor with correct EORI and party not selected" in {
@@ -238,6 +246,7 @@ class DeclarationAdditionalActorsControllerSpec
 
           status(result) must be(BAD_REQUEST)
           page must include(messages(partyTypeEmpty))
+          verifyTheCacheIsUnchanged()
         }
 
         "when adding actor with correct EORI and incorrect party" in {
@@ -248,10 +257,11 @@ class DeclarationAdditionalActorsControllerSpec
 
           status(result) must be(BAD_REQUEST)
           page must include(messages(partyTypeError))
+          verifyTheCacheIsUnchanged()
         }
 
         "when adding more than 99 items" in {
-          withCaching[DeclarationAdditionalActorsData](Some(cacheWithMaximumAmountOfActors), formId)
+          withCache(cacheWithMaximumAmountOfActors)
 
           val body = Map("eori" -> "eori1", "partyType" -> "CS").toSeq :+ addActionUrlEncoded
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -261,10 +271,11 @@ class DeclarationAdditionalActorsControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, maximumActorsError, "#")
+          verifyTheCacheIsUnchanged()
         }
 
         "when adding duplicate item" in {
-          withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
+          withCache(correctAdditionalActorsData)
 
           val body = correctAdditionalActorsMap.toSeq :+ addActionUrlEncoded
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -274,14 +285,13 @@ class DeclarationAdditionalActorsControllerSpec
 
           checkErrorsSummary(page)
           checkErrorLink(page, 1, duplicatedActorsError, "#")
+          verifyTheCacheIsUnchanged()
         }
       }
 
       "add an item successfully and return SEE_OTHER" when {
 
         "with an empty cache" in {
-          withCaching[DeclarationAdditionalActorsData](None, formId)
-
           testHappyPathsScenarios(
             expectedPath = "/customs-declare-exports/declaration/additional-actors",
             actorsMap = correctAdditionalActorsMap,
@@ -290,8 +300,6 @@ class DeclarationAdditionalActorsControllerSpec
         }
 
         "that does not exist in cache" in {
-          withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
-
           testHappyPathsScenarios(
             expectedPath = "/customs-declare-exports/declaration/additional-actors",
             actorsMap = Map("eori" -> "eori2", "partyType" -> "CS"),
@@ -301,6 +309,18 @@ class DeclarationAdditionalActorsControllerSpec
       }
     }
   }
+
+  private def withCache(data: DeclarationAdditionalActorsData) =
+    withNewCaching(
+      ExportsCacheModel(
+        "SessionId",
+        "DraftId",
+        LocalDateTime.now(),
+        LocalDateTime.now(),
+        "SMP",
+        parties = Parties(declarationAdditionalActorsData = Some(data))
+      )
+    )
 
   private def testHappyPathsScenarios(
     expectedPath: String,
@@ -331,6 +351,7 @@ class DeclarationAdditionalActorsControllerSpec
       val stringResult = contentAsString(result)
       stringResult must include(messages(expectedErrorMessagePath))
     }
+    verifyTheCacheIsUnchanged()
   }
 }
 

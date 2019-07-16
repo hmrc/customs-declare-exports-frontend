@@ -17,12 +17,9 @@
 package models.declaration.dectype
 
 import forms.declaration.DispatchLocation
-import forms.declaration.additionaldeclarationtype.{
-  AdditionalDeclarationType,
-  AdditionalDeclarationTypeSupplementaryDec
-}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import models.declaration.SummaryContainer
-import uk.gov.hmrc.http.cache.client.CacheMap
+import services.cache.ExportsCacheModel
 
 case class DeclarationTypeSupplementary(
   dispatchLocation: Option[DispatchLocation],
@@ -35,9 +32,8 @@ case class DeclarationTypeSupplementary(
 object DeclarationTypeSupplementary {
   val id = "DeclarationType"
 
-  def apply(cacheMap: CacheMap): DeclarationTypeSupplementary = DeclarationTypeSupplementary(
-    dispatchLocation = cacheMap.getEntry[DispatchLocation](DispatchLocation.formId),
-    additionalDeclarationType =
-      cacheMap.getEntry[AdditionalDeclarationType](AdditionalDeclarationTypeSupplementaryDec.formId)
+  def apply(cacheData: ExportsCacheModel): DeclarationTypeSupplementary = DeclarationTypeSupplementary(
+    dispatchLocation = cacheData.dispatchLocation,
+    additionalDeclarationType = cacheData.additionalDeclarationType
   )
 }

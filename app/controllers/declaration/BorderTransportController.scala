@@ -47,9 +47,10 @@ class BorderTransportController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[BorderTransport](cacheId, BorderTransport.formId)
-      .map(data => Ok(borderTransportPage(data.fold(form)(form.fill(_)))))
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.borderTransport)).map {
+      case Some(data) => Ok(borderTransportPage(form.fill(data)))
+      case _          => Ok(borderTransportPage(form))
+    }
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

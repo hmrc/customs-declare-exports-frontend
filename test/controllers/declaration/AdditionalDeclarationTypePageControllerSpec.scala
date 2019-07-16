@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import java.time.LocalDateTime
+
 import base.{CustomExportsBaseSpec, ExportsTestData}
 import controllers.util.CacheIdGenerator
 import forms.Choice
@@ -85,12 +87,13 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
   }
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    super.afterEach()
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "Additional Declaration Type Controller on GET" should {
@@ -101,12 +104,14 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
 
         val result = route(app, getRequest(additionalDeclarationTypeUri)).get
         status(result) must be(OK)
+        verify(mockExportsCacheService).get(any())
       }
 
       "used for Supplementary Declaration" in new TestSupplementaryJourney {
 
         val result = route(app, getRequest(additionalDeclarationTypeUri)).get
         status(result) must be(OK)
+        verify(mockExportsCacheService).get(any())
       }
     }
 
@@ -114,9 +119,15 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
 
       "used for Standard Declaration" in new TestStandardJourney {
 
-        mockCacheBehaviour(cacheId, AdditionalDeclarationTypeStandardDec.formId)(
-          Some(AdditionalDeclarationType(PreLodged))
+        val cachedData = ExportsCacheModel(
+          "SessionId",
+          "DraftId",
+          LocalDateTime.now(),
+          LocalDateTime.now(),
+          "SMP",
+          additionalDeclarationType = Some(AdditionalDeclarationType(PreLodged))
         )
+        withNewCaching(cachedData)
 
         val result = route(app, getRequest(additionalDeclarationTypeUri)).get
         contentAsString(result) must include("checked=\"checked\"")
@@ -124,9 +135,15 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
 
       "used for Supplementary Declaration" in new TestSupplementaryJourney {
 
-        mockCacheBehaviour(cacheId, AdditionalDeclarationTypeStandardDec.formId)(
-          Some(AdditionalDeclarationType(Simplified))
+        val cachedData = ExportsCacheModel(
+          "SessionId",
+          "DraftId",
+          LocalDateTime.now(),
+          LocalDateTime.now(),
+          "SMP",
+          additionalDeclarationType = Some(AdditionalDeclarationType(Simplified))
         )
+        withNewCaching(cachedData)
 
         val result = route(app, getRequest(additionalDeclarationTypeUri)).get
         contentAsString(result) must include("checked=\"checked\"")
@@ -150,8 +167,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
           any()
         )(any(), any(), any())
 
-        verify(mockExportsCacheService).update(any(), any[ExportsCacheModel])
-        verify(mockExportsCacheService).get(any())
+        theCacheModelUpdated.additionalDeclarationType must be(Some(AdditionalDeclarationType(PreLodged)))
       }
 
       "used for Supplementary Declaration" in new TestSupplementaryJourney {
@@ -165,8 +181,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
           any()
         )(any(), any(), any())
 
-        verify(mockExportsCacheService).update(any(), any[ExportsCacheModel])
-        verify(mockExportsCacheService).get(any())
+        theCacheModelUpdated.additionalDeclarationType must be(Some(AdditionalDeclarationType(Simplified)))
       }
     }
 
@@ -178,6 +193,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
         val result = route(app, postRequest(additionalDeclarationTypeUri, validForm)).get
 
         status(result) must be(SEE_OTHER)
+        theCacheModelUpdated.additionalDeclarationType must be(Some(AdditionalDeclarationType(PreLodged)))
       }
 
       "used for Supplementary Declaration" in new TestSupplementaryJourney {
@@ -186,6 +202,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
         val result = route(app, postRequest(additionalDeclarationTypeUri, validForm)).get
 
         status(result) must be(SEE_OTHER)
+        theCacheModelUpdated.additionalDeclarationType must be(Some(AdditionalDeclarationType(Simplified)))
       }
     }
 
@@ -197,6 +214,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
         val header = route(app, postRequest(additionalDeclarationTypeUri, validForm)).get.futureValue.header
 
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignment-references"))
+        theCacheModelUpdated.additionalDeclarationType must be(Some(AdditionalDeclarationType(PreLodged)))
       }
 
       "used for Supplementary Declaration" in new TestSupplementaryJourney {
@@ -205,6 +223,7 @@ class AdditionalDeclarationTypePageControllerSpec extends CustomExportsBaseSpec 
         val header = route(app, postRequest(additionalDeclarationTypeUri, validForm)).get.futureValue.header
 
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignment-references"))
+        theCacheModelUpdated.additionalDeclarationType must be(Some(AdditionalDeclarationType(Simplified)))
       }
     }
   }

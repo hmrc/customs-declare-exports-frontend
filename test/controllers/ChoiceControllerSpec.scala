@@ -39,8 +39,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "Choice Controller on GET" should {
@@ -49,6 +48,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
       val result = route(app, getRequest(choiceUri)).get
 
       status(result) must be(OK)
+      verify(mockExportsCacheService).get(any())
     }
 
     "read item from cache and display it" in {
@@ -61,6 +61,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
       status(result) must be(OK)
       stringResult must include("value=\"SMP\" checked=\"checked\"")
+      verify(mockExportsCacheService).get(any())
     }
   }
 
@@ -75,6 +76,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(choiceEmpty))
+        verifyTheCacheIsUnchanged()
       }
 
       "wrong value provided for choice" in {
@@ -84,6 +86,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(choiceError))
+        verifyTheCacheIsUnchanged()
       }
     }
 
@@ -106,6 +109,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/dispatch-location"))
+      theCacheModelUpdated.choice must be("SMP")
     }
 
     "redirect to dispatch location page when 'Standard declaration' is selected" in {
@@ -116,6 +120,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/dispatch-location"))
+      theCacheModelUpdated.choice must be("STD")
     }
 
     "redirect to cancel declaration page when 'Cancel declaration' is selected" in {
@@ -126,6 +131,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/cancel-declaration"))
+      theCacheModelUpdated.choice must be("CAN")
     }
 
     "redirect to submissions page when 'View recent declarations' is selected" in {
@@ -136,6 +142,7 @@ class ChoiceControllerSpec extends CustomExportsBaseSpec with ChoiceMessages {
 
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/submissions"))
+      theCacheModelUpdated.choice must be("SUB")
     }
   }
 }

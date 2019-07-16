@@ -49,8 +49,7 @@ class ProcedureCodesPageControllerSpec
   override def afterEach(): Unit = {
     super.afterEach()
 
-    reset(mockExportsCacheService)
-    reset(mockCustomsCacheService)
+    reset(mockExportsCacheService, mockCustomsCacheService)
   }
 
   "Procedure Codes Controller on GET" should {

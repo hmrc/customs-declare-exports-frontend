@@ -356,7 +356,6 @@ declaration.officeOfExit.length = The code must be 8 characters
 declaration.officeOfExit.specialCharacters = Enter a reference in the correct format
 standard.officeOfExit.presentationOffice = 5/26 Where is the office of presentation?
 standard.officeOfExit.presentationOffice.hint = Enter the 8 digit reference
-standard.officeOfExit.presentationOffice.empty = Enter the office of presentation reference
 standard.officeOfExit.presentationOffice.length = The code must be 8 characters
 standard.officeOfExit.presentationOffice.specialCharacters = Enter a reference in the correct format
 standard.officeOfExit.circumstancesCode = 1/7 Does the declaration relate to an express consignment?
@@ -496,11 +495,9 @@ standard.transportDetails.paymentMethod.notPrePaid = Not pre-paid
 standard.transportDetails.paymentMethod.error= Input is not valid
 
 supplementary.totalAmountInvoiced.error = Total amount of invoiced items is incorrect
-supplementary.totalAmountInvoiced.empty = Total amount of invoiced items cannot be empty
 supplementary.totalAmountInvoiced = 4/11 What was the total amount invoiced?
 supplementary.totalAmountInvoiced.hint = The total price of all the goods in the declaration e.g. 1234567.12
 supplementary.exchangeRate.error = Exchange rate is incorrect
-supplementary.exchangeRate.empty = Exchange rate cannot be empty
 supplementary.exchangeRate = 4/15 What was the exchange rate used?
 supplementary.exchangeRate.hint = The rate of exchange fixed in advance by a contract between the parties e.g. 1234567.12345
 

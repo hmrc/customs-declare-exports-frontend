@@ -96,18 +96,17 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
 
       "all inputs are empty" in new StandardSetUp {
 
-        val data = OfficeOfExitStandard("", "", "")
+        val data = OfficeOfExitStandard("", None, "")
         val errors = standardForm.fillAndValidate(data).errors
 
-        errors.length must be(3)
+        errors.length must be(2)
         errors(0) must be(FormError(officeFieldId, officeOfExitEmpty))
-        errors(1) must be(FormError(presentationOfficeFieldId, presentationOfficeEmpty))
-        errors(2) must be(FormError(circumstancesCodeFieldId, circumstancesCodeEmpty))
+        errors(1) must be(FormError(circumstancesCodeFieldId, circumstancesCodeEmpty))
       }
 
       "office of exit and presentation office are too short" in new StandardSetUp {
 
-        val data = OfficeOfExitStandard("123456", "654321", "Yes")
+        val data = OfficeOfExitStandard("123456", Some("654321"), "Yes")
         val errors = standardForm.fillAndValidate(data).errors
 
         errors.length must be(2)
@@ -117,7 +116,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
 
       "office of exit and presentation office are too long" in new StandardSetUp {
 
-        val data = OfficeOfExitStandard("123456789", "987654321", "Yes")
+        val data = OfficeOfExitStandard("123456789", Some("987654321"), "Yes")
         val errors = standardForm.fillAndValidate(data).errors
 
         errors.length must be(2)
@@ -126,7 +125,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
       }
 
       "office of exit and presentation office contains special characters" in new StandardSetUp {
-        val data = OfficeOfExitStandard("12!@#$78", "87!@#$21", "Yes")
+        val data = OfficeOfExitStandard("12!@#$78", Some("87!@#$21"), "Yes")
         val errors = standardForm.fillAndValidate(data).errors
 
         errors.length must be(2)
@@ -136,7 +135,7 @@ class OfficeOfExitFormsSpec extends WordSpec with MustMatchers with OfficeOfExit
 
       "circumstances code is incorrect" in new StandardSetUp {
 
-        val data = OfficeOfExitStandard("12345678", "87654321", "Incorrect")
+        val data = OfficeOfExitStandard("12345678", Some("87654321"), "Incorrect")
         val errors = standardForm.fillAndValidate(data).errors
 
         errors.length must be(1)

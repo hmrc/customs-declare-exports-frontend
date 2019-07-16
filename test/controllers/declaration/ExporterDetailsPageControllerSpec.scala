@@ -16,6 +16,8 @@
 
 package controllers.declaration
 
+import java.time.LocalDateTime
+
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
@@ -23,34 +25,57 @@ import forms.common.Address
 import forms.declaration.ExporterDetailsSpec._
 import forms.declaration.{EntityDetails, ExporterDetails}
 import helpers.views.declaration.CommonMessages
+import models.declaration.Parties
+import org.mockito.Mockito
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with CommonMessages {
 
   private val uri = uriWithContextPath("/declaration/exporter-details")
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[ExporterDetails](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
+  override def afterEach() = {
+    super.afterEach()
+    Mockito.reset(mockExportsCacheService)
+  }
+
   "Exporter Details Controller on GET" should {
 
     "return 200 with a success" in {
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
+      verifyTheCacheIsUnchanged()
     }
 
     "read item from cache and display it" in {
 
-      val cachedData = ExporterDetails(
-        EntityDetails(Some("99980"), Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal")))
+      val cachedData = ExportsCacheModel(
+        "SessionId",
+        "DraftId",
+        LocalDateTime.now(),
+        LocalDateTime.now(),
+        "SMP",
+        parties = Parties(
+          exporterDetails = Some(
+            ExporterDetails(
+              EntityDetails(
+                Some("99980"),
+                Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal"))
+              )
+            )
+          )
+        )
       )
-      withCaching[ExporterDetails](Some(cachedData), "ExporterDetails")
+      withNewCaching(cachedData)
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -93,66 +118,61 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
     "on the supplementary journey " should {
 
       "validate request and redirect to consignee-details page with only EORI provided" in {
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
         val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+        theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetailsEORIOnly))
       }
 
       "validate request and redirect to consignee-details page with only address provided" in {
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
         val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+        theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetailsAddressOnly))
       }
 
       "validate request and redirect to consignee-details page with correct values" in {
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
         val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+        theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetails))
+
       }
     }
 
     "on the standard journey " should {
 
       "validate request and redirect to consignee-details page with only EORI provided" in {
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
-
         val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+        theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetailsEORIOnly))
       }
 
       "validate request and redirect to consignee-details page with only address provided" in {
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
-
         val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+        theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetailsAddressOnly))
       }
 
       "validate request and redirect to consignee-details page with correct values" in {
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
-
         val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
         val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
         header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+        theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetails))
       }
     }
   }

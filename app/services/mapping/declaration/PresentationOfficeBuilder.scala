@@ -40,7 +40,8 @@ object PresentationOfficeBuilder {
 
   private def createPresentationOffice(data: OfficeOfExitStandard): Declaration.PresentationOffice = {
     val presentationOfficeId = new PresentationOfficeIdentificationIDType()
-    presentationOfficeId.setValue(data.presentationOfficeId)
+
+    data.presentationOfficeId.foreach(presentationOfficeId.setValue(_))
 
     val presentationOffice = new PresentationOffice()
     presentationOffice.setID(presentationOfficeId)

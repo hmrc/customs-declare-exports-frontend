@@ -34,7 +34,9 @@ object CurrencyExchangeBuilder {
 
   private def createCurrencyExchange(data: TotalNumberOfItems): util.List[CurrencyExchange] = {
     val currencyExchange = new CurrencyExchange()
-    currencyExchange.setRateNumeric(new java.math.BigDecimal(data.exchangeRate))
+
+    data.exchangeRate.foreach(rate => currencyExchange.setRateNumeric(new java.math.BigDecimal(rate)))
+
     Seq(currencyExchange).toList.asJava
   }
 }

@@ -21,8 +21,10 @@ import forms.Choice
 import forms.Choice.choiceId
 import forms.common.AddressSpec
 import forms.declaration.CarrierDetailsSpec._
-import forms.declaration.{CarrierDetails, EntityDetails}
+import forms.declaration.{CarrierDetails, EntityDetails, EntityDetailsSpec}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import play.api.test.Helpers._
 
 class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
@@ -30,14 +32,17 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
   private val uri = uriWithContextPath("/declaration/carrier-details")
 
   override def beforeEach() {
+    super.beforeEach()
     authorizedUser()
     withNewCaching(createModelWithNoItems())
     withCaching[CarrierDetails](None)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
-  override def afterEach() =
+  override def afterEach() = {
+    super.afterEach()
     Mockito.reset(mockExportsCacheService)
+  }
 
   "Carrier Details Page Controller on GET" should {
 
@@ -45,6 +50,7 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
+      verify(mockExportsCacheService).get(any())
     }
   }
 
@@ -69,6 +75,9 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
       theCacheModelUpdated.parties.carrierDetails.get must be(
         CarrierDetails(EntityDetails(eori = Some("9GB1234567ABCDEF"), address = None))
       )
+      theCacheModelUpdated.parties.carrierDetails must be(
+        Some(CarrierDetails(EntityDetails(Some("9GB1234567ABCDEF"), None)))
+      )
     }
 
     "validate request and redirect - only address provided" in {
@@ -81,6 +90,9 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
       theCacheModelUpdated.parties.carrierDetails.get must be(
         CarrierDetails(EntityDetails(eori = None, address = Some(AddressSpec.correctAddress)))
       )
+      theCacheModelUpdated.parties.carrierDetails must be(
+        Some(CarrierDetails(EntityDetailsSpec.correctEntityDetailsAddressOnly))
+      )
     }
 
     "validate request and redirect - all values provided" in {
@@ -92,6 +104,9 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
       theCacheModelUpdated.parties.carrierDetails.get must be(
         CarrierDetails(EntityDetails(Some("9GB1234567ABCDEF"), Some(AddressSpec.correctAddress)))
+      )
+      theCacheModelUpdated.parties.carrierDetails must be(
+        Some(CarrierDetails(EntityDetails(Some("9GB1234567ABCDEF"), Some(AddressSpec.correctAddress))))
       )
     }
   }

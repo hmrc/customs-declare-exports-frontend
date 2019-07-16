@@ -31,8 +31,11 @@ object InvoiceAmountBuilder {
   private def createInvoiceAmount(data: TotalNumberOfItems): DeclarationInvoiceAmountType = {
     val invoiceAmountType = new DeclarationInvoiceAmountType()
 
-    invoiceAmountType.setValue(new java.math.BigDecimal(data.totalAmountInvoiced))
-    invoiceAmountType.setCurrencyID("GBP")
+    data.totalAmountInvoiced.foreach { amount =>
+      invoiceAmountType.setValue(new java.math.BigDecimal(amount))
+      invoiceAmountType.setCurrencyID("GBP")
+    }
+
     invoiceAmountType
   }
 }

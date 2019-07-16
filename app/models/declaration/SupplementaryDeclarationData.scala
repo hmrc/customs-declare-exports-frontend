@@ -18,7 +18,7 @@ package models.declaration
 
 import forms.declaration._
 import models.declaration.dectype.DeclarationTypeSupplementary
-import uk.gov.hmrc.http.cache.client.CacheMap
+import services.cache.ExportsCacheModel
 
 case class SupplementaryDeclarationData(
   declarationType: Option[DeclarationTypeSupplementary] = None,
@@ -28,27 +28,6 @@ case class SupplementaryDeclarationData(
   transportInformationContainerData: Option[TransportInformationContainerData] = None,
   items: Option[Items] = None
 ) extends SummaryContainer {
-
-  import SupplementaryDeclarationData.SchemaMandatoryValues._
-
-  private val schemaMandatoryFields: Map[String, String] = Map(
-    "declaration.functionCode" -> functionCode,
-    "wcoDataModelVersionCode" -> wcoDataModelVersionCode,
-    "wcoTypeName" -> wcoTypeName,
-    "responsibleCountryCode" -> responsibleCountryCode,
-    "responsibleAgencyName" -> responsibleAgencyName,
-    "agencyAssignedCustomizationVersionCode" -> agencyAssignedCustomizationVersionCode
-  )
-
-  def toMap: Map[String, Product with Serializable] =
-    Map(
-      DeclarationTypeSupplementary.id -> declarationType,
-      ConsignmentReferences.id -> consignmentReferences,
-      Parties.id -> parties,
-      Locations.id -> locations,
-      TransportInformationContainerData.id -> transportInformationContainerData,
-      Items.id -> items
-    ).collect { case (key, Some(data)) => (key, data) }
 
   override def isEmpty: Boolean =
     declarationType.isEmpty &&
@@ -61,15 +40,14 @@ case class SupplementaryDeclarationData(
 
 object SupplementaryDeclarationData {
 
-  def apply(cacheMap: CacheMap): SupplementaryDeclarationData =
+  def apply(cacheData: ExportsCacheModel): SupplementaryDeclarationData =
     SupplementaryDeclarationData(
-      declarationType = flattenIfEmpty(DeclarationTypeSupplementary(cacheMap)),
-      consignmentReferences = cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.id),
-      parties = flattenIfEmpty(Parties(cacheMap)),
-      locations = flattenIfEmpty(Locations(cacheMap)),
-      transportInformationContainerData =
-        cacheMap.getEntry[TransportInformationContainerData](TransportInformationContainerData.id),
-      items = flattenIfEmpty(Items(cacheMap))
+      declarationType = flattenIfEmpty(DeclarationTypeSupplementary(cacheData)),
+      consignmentReferences = cacheData.consignmentReferences,
+      parties = flattenIfEmpty(Parties(cacheData)),
+      locations = flattenIfEmpty(Locations(cacheData)),
+      transportInformationContainerData = cacheData.containerData,
+      items = flattenIfEmpty(Items(cacheData))
     )
 
   private def flattenIfEmpty[A <: SummaryContainer](container: A): Option[A] =

@@ -15,20 +15,32 @@
  */
 
 package services.mapping.declaration
-import models.declaration.dectype.DeclarationTypeSupplementary
+import forms.declaration.DispatchLocation
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationTypeCodeType
 
 object TypeCodeBuilder {
 
-  def build(implicit cacheMap: CacheMap): DeclarationTypeCodeType =
-    createTypeCode(DeclarationTypeSupplementary.apply(cacheMap))
+  def build(implicit cacheMap: CacheMap): DeclarationTypeCodeType = {
+    val dispatchLocation = cacheMap
+      .getEntry[DispatchLocation](DispatchLocation.formId)
 
-  private def createTypeCode(data: DeclarationTypeSupplementary): DeclarationTypeCodeType = {
-    val typeCodeTypeValue = data.dispatchLocation.map(_.dispatchLocation).getOrElse("") +
-      data.additionalDeclarationType.map(_.additionalDeclarationType).getOrElse("")
+    cacheMap
+      .getEntry[AdditionalDeclarationType]("AdditionalDeclarationType")
+      .filter(decType => !decType.additionalDeclarationType.isEmpty || dispatchLocation.isDefined)
+      .map(createTypeCode(_, dispatchLocation))
+      .orNull
+  }
+
+  private def createTypeCode(
+    decType: AdditionalDeclarationType,
+    dispatchLocation: Option[DispatchLocation]
+  ): DeclarationTypeCodeType = {
     val typeCodeType = new DeclarationTypeCodeType()
-    typeCodeType.setValue(typeCodeTypeValue)
+    dispatchLocation.foreach { data =>
+      typeCodeType.setValue(data.dispatchLocation + decType.additionalDeclarationType)
+    }
     typeCodeType
   }
 }
