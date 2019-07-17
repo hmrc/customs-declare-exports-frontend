@@ -103,9 +103,7 @@ class ChoiceControllerSpec extends ControllerSpec {
         val result = controller.submitChoice()(postRequest(cancelChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.routes.CancelDeclarationController.displayForm().url)
-        )
+        redirectLocation(result) must be(Some(controllers.routes.CancelDeclarationController.displayForm().url))
       }
     }
 
@@ -116,9 +114,7 @@ class ChoiceControllerSpec extends ControllerSpec {
         val result = controller.submitChoice()(postRequest(submissionsChoice))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url)
-        )
+        redirectLocation(result) must be(Some(controllers.routes.SubmissionsController.displayListOfSubmissions().url))
       }
     }
   }
