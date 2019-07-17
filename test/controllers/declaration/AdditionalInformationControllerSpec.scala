@@ -29,6 +29,7 @@ import models.declaration.AdditionalInformationData.formId
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify}
 import play.api.test.Helpers._
+import services.cache.ExportItem
 
 class AdditionalInformationControllerSpec
     extends CustomExportsBaseSpec with AdditionalInformationMessages with CommonMessages with ViewValidator {
@@ -68,7 +69,7 @@ class AdditionalInformationControllerSpec
       val cachedData = AdditionalInformationData(
         Seq(AdditionalInformation("M1l3s", "Davis"), AdditionalInformation("X4rlz", "Mingus"))
       )
-      withCaching[AdditionalInformationData](Some(cachedData), formId)
+      withNewCaching(createModelWithItem("",Some(ExportItem("id", additionalInformation = Some(cachedData)))))
 
       val result = route(app, getRequest(uri)).get
       val stringResult = contentAsString(result)
@@ -115,7 +116,7 @@ class AdditionalInformationControllerSpec
         val cachedData = AdditionalInformationData(
           Seq(AdditionalInformation("M1l3s", "Davis"), AdditionalInformation("J00hn", "Coltrane"))
         )
-        withCaching[AdditionalInformationData](Some(cachedData), formId)
+        withNewCaching(createModelWithItem("",Some(ExportItem("id", additionalInformation = Some(cachedData)))))
 
         val body = removeActionURLEncoded("0")
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
@@ -241,7 +242,7 @@ class AdditionalInformationControllerSpec
         "a duplicated item" in {
 
           val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis")))
-          withCaching[AdditionalInformationData](Some(cachedData), formId)
+          withNewCaching(createModelWithItem("",Some(ExportItem("id", additionalInformation = Some(cachedData)))))
 
           val body = Seq(("code", "M1l3s"), ("description", "Davis"), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -255,7 +256,7 @@ class AdditionalInformationControllerSpec
 
         "more than 99 items" in {
 
-          withCaching[AdditionalInformationData](Some(cacheWithMaximumAmountOfHolders), formId)
+          withNewCaching(createModelWithItem("",Some(ExportItem("id", additionalInformation = Some(cacheWithMaximumAmountOfHolders)))))
 
           val body = Seq(("code", "M1l3s"), ("description", "Davis"), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -381,7 +382,7 @@ class AdditionalInformationControllerSpec
         "a duplicated item is entered" in {
 
           val cachedData = AdditionalInformationData(Seq(AdditionalInformation("M1l3s", "Davis")))
-          withCaching[AdditionalInformationData](Some(cachedData), formId)
+          withNewCaching(createModelWithItem("",Some(ExportItem("id", additionalInformation = Some(cachedData)))))
 
           val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -395,7 +396,7 @@ class AdditionalInformationControllerSpec
 
         "with more than 99 items" in {
 
-          withCaching[AdditionalInformationData](Some(cacheWithMaximumAmountOfHolders), formId)
+          withNewCaching(createModelWithItem("",Some(ExportItem("id", additionalInformation = Some(cacheWithMaximumAmountOfHolders)))))
 
           val body = Seq(("code", "M1l3s"), ("description", "Davis"), saveAndContinueActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -444,7 +445,7 @@ class AdditionalInformationControllerSpec
       "user doesn't fill form but some items already exist in the cache" in {
 
         val cachedData = AdditionalInformationData(Seq(AdditionalInformation("Jo0hn", "Coltrane")))
-        withCaching[AdditionalInformationData](Some(cachedData), formId)
+        withNewCaching(createModelWithItem("",Some(ExportItem("id", additionalInformation = Some(cachedData)))))
 
         val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionURLEncoded)).get
 

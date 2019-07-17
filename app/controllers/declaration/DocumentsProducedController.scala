@@ -52,23 +52,21 @@ class DocumentsProducedController @Inject()(
     extends {
   val cacheService = exportsCacheService
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    legacyCustomsCacheService
-      .fetchAndGetEntry[DocumentsProducedData](goodsItemCacheId, formId)
-      .map {
-        case Some(data) => Ok(documentProducedPage(itemId, appConfig, form, data.documents))
-        case _          => Ok(documentProducedPage(itemId, appConfig, form, Seq()))
-      }
+    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId) map(_.flatMap(_.documentsProducedData).map(_.documents)) map {
+      case Some(data) => Ok(documentProducedPage(itemId, appConfig, form(), data))
+      case _          => Ok(documentProducedPage(itemId, appConfig, form(), Seq()))
+    }
   }
 
   def saveForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form.bindFromRequest()
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
-    val cachedData = legacyCustomsCacheService
-      .fetchAndGetEntry[DocumentsProducedData](goodsItemCacheId, formId)
-      .map(_.getOrElse(DocumentsProducedData(Seq())))
+    val boundForm = form().bindFromRequest()
+    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+    val cachedData: Future[DocumentsProducedData] = exportsCacheService.getItemByIdAndSession(itemId, journeySessionId)
+      .map(_.flatMap(_.documentsProducedData).getOrElse(DocumentsProducedData(Seq())))
 
-    cachedData.flatMap { cache =>
+    cachedData.flatMap { cache: DocumentsProducedData =>
       boundForm
         .fold(
           (formWithErrors: Form[DocumentsProduced]) =>
@@ -197,7 +195,7 @@ class DocumentsProducedController @Inject()(
   )(implicit request: Request[_]): Future[Result] = {
     val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
 
-    val formWithError = form.fill(userInput).copy(errors = updatedErrors)
+    val formWithError = form().fill(userInput).copy(errors = updatedErrors)
 
     Future.successful(BadRequest(documentProducedPage(itemId, appConfig, formWithError, documents)))
   }
@@ -210,9 +208,7 @@ class DocumentsProducedController @Inject()(
     getAndUpdateExportCacheModel(
       sessionId,
       model => {
-        val item: Option[ExportItem] = model.items
-          .filter(item => item.id.equals(itemId))
-          .headOption
+        val item: Option[ExportItem] = model.items.find(item => item.id.equals(itemId))
           .map(_.copy(documentsProducedData = Some(updatedData)))
         val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
         exportsCacheService.update(sessionId, model.copy(items = itemList))

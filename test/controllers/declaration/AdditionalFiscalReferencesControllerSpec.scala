@@ -17,12 +17,14 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
-import org.mockito.Mockito.reset
+import org.mockito.Mockito.{reset, verify}
+import org.mockito.ArgumentMatchers.any
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
 import forms.Choice.choiceId
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import play.api.test.Helpers._
+import services.cache.ExportItem
 
 class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
   val cacheModel = createModelWithItem("")
@@ -52,6 +54,9 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
     "read item from cache and display it" in {
 
       val cachedData = AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("France", "7232")))
+      val cachedItem = ExportItem(id = "1244", additionalFiscalReferencesData = Some(cachedData))
+
+      withNewCaching(createModelWithItem("").copy(items = Set(cachedItem)))
       withCaching[AdditionalFiscalReferencesData](Some(cachedData), AdditionalFiscalReferencesData.formId)
 
       val Some(result) = route(app, getRequest(uri))
@@ -67,7 +72,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
 
     "remove item from the cache" in {
       val cachedData = AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("FR", "7232")))
-      withCaching[AdditionalFiscalReferencesData](Some(cachedData), AdditionalFiscalReferencesData.formId)
+      withNewCaching(createModelWithItem("", Some(ExportItem("id", additionalFiscalReferencesData = Some(cachedData)))))
 
       val body = (Remove.toString, "0")
       val Some(result) = route(app, postRequestFormUrlEncoded(uri, body))
@@ -110,7 +115,7 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
 
       "user clicks save with empty form and item in the cache" in {
         val cachedData = AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("FR", "7232")))
-        withCaching[AdditionalFiscalReferencesData](Some(cachedData), AdditionalFiscalReferencesData.formId)
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", additionalFiscalReferencesData = Some(cachedData)))))
 
         val body = Seq(saveAndContinueActionUrlEncoded)
         val request = postRequestFormUrlEncoded(uri, body: _*)

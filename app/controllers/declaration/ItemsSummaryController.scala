@@ -41,7 +41,6 @@ class ItemsSummaryController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  cacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
   exportItemIdGeneratorService: ExportItemIdGeneratorService,
   mcc: MessagesControllerComponents,
@@ -57,12 +56,6 @@ class ItemsSummaryController @Inject()(
         case None             => Ok(itemsSummaryPage(List.empty))
       }
   }
-
-  def hasFiscalInformation()(implicit journeyRequest: JourneyRequest[_], hc: HeaderCarrier): Future[Boolean] =
-    cacheService.fetchAndGetEntry[FiscalInformation](cacheId, formId).map {
-      case Some(data) => data.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes
-      case None       => false
-    }
 
   def addItem(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())

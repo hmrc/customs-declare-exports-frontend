@@ -18,7 +18,7 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.{goodsItemCacheId, _}
+import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation.{formId, _}
@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import services.CustomsCacheService
 import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -51,16 +51,14 @@ class PackageInformationController @Inject()(
   val packagesMaxElements = 99
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    legacyCacheService
-      .fetchAndGetEntry[Seq[PackageInformation]](goodsItemCacheId, formId)
-      .map(items => Ok(packageInformationPage(itemId, form, items.getOrElse(Seq.empty))))
+    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.map(_.packageInformation))
+      .map(items => Ok(packageInformationPage(itemId, form(), items.getOrElse(Seq.empty))))
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit authRequest =>
-      val actionTypeOpt = authRequest.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
-      legacyCacheService
-        .fetchAndGetEntry[Seq[PackageInformation]](goodsItemCacheId, formId)
+      val actionTypeOpt = authRequest.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+      exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.map(_.packageInformation))
         .flatMap { data =>
           val packagings = data.getOrElse(Seq.empty)
 
@@ -77,26 +75,25 @@ class PackageInformationController @Inject()(
     implicit authRequest: JourneyRequest[AnyContent]
   ): Future[Result] =
     id match {
-      case Some(id) => {
+      case Some(identifier) =>
         val updatedPackages =
-          packages.zipWithIndex.filterNot(_._2.toString == id).map(_._1)
+          packages.zipWithIndex.filterNot(_._2.toString == identifier).map(_._1)
         updateCacheModels(itemId, updatedPackages, routes.PackageInformationController.displayPage(itemId))
-      }
       case _ => errorHandler.displayErrorPage()
     }
 
   def continue(itemId: String, packages: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] = {
-    val payload = form.bindFromRequest()
+    val payload = form().bindFromRequest()
     if (!isFormEmpty(payload)) badRequest(itemId, packages, payload, USE_ADD)
-    else if (packages.size == 0) badRequest(itemId, packages, payload, ADD_ONE)
+    else if (packages.isEmpty) badRequest(itemId, packages, payload, ADD_ONE)
     else
       updateCacheModels(itemId, packages, controllers.declaration.routes.CommodityMeasureController.displayPage(itemId))
   }
 
   private def isFormEmpty[A](form: Form[A]): Boolean =
-    retrieveData(form).filter { case (_, value) => value.nonEmpty }.isEmpty
+    !retrieveData(form).exists { case (_, value) => value.nonEmpty }
 
   private def retrieveData[A](form: Form[A]): Map[String, String] =
     form.data.filter { case (name, _) => name != "csrfToken" }
@@ -104,15 +101,15 @@ class PackageInformationController @Inject()(
   def addItem(itemId: String, packages: Seq[PackageInformation])(
     implicit authenticatedRequest: JourneyRequest[AnyContent]
   ): Future[Result] =
-    form
+    form()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[PackageInformation]) =>
           Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors, packages))),
         validForm => {
           isAdditionInvalid[PackageInformation](validForm, packages).fold(
-            updateCacheModels(itemId, (packages :+ validForm), routes.PackageInformationController.displayPage(itemId))
-          )(badRequest(itemId, packages, form.fill(validForm), _))
+            updateCacheModels(itemId, packages :+ validForm, routes.PackageInformationController.displayPage(itemId))
+          )(badRequest(itemId, packages, form().fill(validForm), _))
         }
       )
 

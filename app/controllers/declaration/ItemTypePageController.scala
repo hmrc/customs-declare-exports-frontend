@@ -43,7 +43,7 @@ class ItemTypePageController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
+  legacyCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   itemTypePage: item_type
@@ -53,33 +53,33 @@ class ItemTypePageController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService
-      .fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id)
-      .zip(hasAdditionalFiscalReferences)
+    exportsCacheService
+      .getItemByIdAndSession(itemId, journeySessionId)
+      .map(_.flatMap(_.itemType))
+      .zip(hasAdditionalFiscalReferencesFor(itemId))
       .map {
         case (Some(itemType), hasFiscalReferences) =>
           Ok(
             itemTypePage(
               itemId,
-              ItemType.form.fill(itemType),
+              ItemType.form().fill(itemType),
               hasFiscalReferences,
               itemType.taricAdditionalCodes,
               itemType.nationalAdditionalCodes
             )
           )
         case (_, hasFiscalReferences) =>
-          Ok(itemTypePage(itemId, ItemType.form, hasFiscalReferences))
+          Ok(itemTypePage(itemId, ItemType.form(), hasFiscalReferences))
       }
   }
 
   def submitItemType(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
-      val inputForm = ItemType.form.bindFromRequest()
+      val inputForm = ItemType.form().bindFromRequest()
       val itemTypeInput: ItemType = inputForm.value.getOrElse(ItemType.empty)
 
-      customsCacheService
-        .fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id)
-        .zip(hasAdditionalFiscalReferences)
+      exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.flatMap(_.itemType))
+        .zip(hasAdditionalFiscalReferencesFor(itemId))
         .flatMap {
           case (itemTypeCacheOpt, hasFiscalReferences) =>
             val itemTypeCache = itemTypeCacheOpt.getOrElse(ItemType.empty)
@@ -95,7 +95,7 @@ class ItemTypePageController @Inject()(
   }
 
   private def extractActionType()(implicit request: Request[AnyContent]): Option[FormAction] =
-    request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+    request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
   private def handleAddition(
     itemId: String,
@@ -111,7 +111,7 @@ class ItemTypePageController @Inject()(
         }
       case Invalid(errors) =>
         val formWithErrors =
-          errors.foldLeft(ItemType.form.fill(itemTypeInput))((form, error) => form.withError(adjustErrorKey(error)))
+          errors.foldLeft(ItemType.form().fill(itemTypeInput))((form, error) => form.withError(adjustErrorKey(error)))
         Future.successful(
           BadRequest(
             itemTypePage(
@@ -146,7 +146,7 @@ class ItemTypePageController @Inject()(
         }
       case Invalid(errors) =>
         val formWithErrors =
-          errors.foldLeft(ItemType.form.fill(itemTypeInput))((form, error) => form.withError(adjustErrorKey(error)))
+          errors.foldLeft(ItemType.form().fill(itemTypeInput))((form, error) => form.withError(adjustErrorKey(error)))
         Future.successful(
           BadRequest(
             itemTypePage(
@@ -200,7 +200,7 @@ class ItemTypePageController @Inject()(
         )
     }
     updateCacheModels(itemId, itemTypeUpdated).flatMap { _ =>
-      val itemTypeInput: ItemType = ItemType.form.bindFromRequest().value.getOrElse(ItemType.empty)
+      val itemTypeInput: ItemType = ItemType.form().bindFromRequest().value.getOrElse(ItemType.empty)
       refreshPage(itemId, itemTypeInput, hasFiscalReferences)
     }
   }
@@ -211,19 +211,19 @@ class ItemTypePageController @Inject()(
   private def refreshPage(itemId: String, itemTypeInput: ItemType, hasFiscalReferences: Boolean)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
-    customsCacheService.fetchAndGetEntry[ItemType](goodsItemCacheId, ItemType.id).map {
+    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.flatMap(_.itemType)).map {
       case Some(cachedData) =>
         Ok(
           itemTypePage(
             itemId,
-            ItemType.form.fill(itemTypeInput),
+            ItemType.form().fill(itemTypeInput),
             hasFiscalReferences,
             cachedData.taricAdditionalCodes,
             cachedData.nationalAdditionalCodes
           )
         )
       case _ =>
-        Ok(itemTypePage(itemId, ItemType.form, hasFiscalReferences))
+        Ok(itemTypePage(itemId, ItemType.form(), hasFiscalReferences))
     }
 
   private case class Label(name: String, index: Int)
@@ -242,15 +242,14 @@ class ItemTypePageController @Inject()(
     }
   }
 
-  private def hasAdditionalFiscalReferences()(implicit request: JourneyRequest[_]): Future[Boolean] =
-    customsCacheService
-      .fetchAndGetEntry[FiscalInformation](goodsItemCacheId, FiscalInformation.formId)
+  private def hasAdditionalFiscalReferencesFor(itemId: String)(implicit request: JourneyRequest[_]): Future[Boolean] =
+    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.flatMap(_.fiscalInformation))
       .map(_.fold(false)(_.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes))
 
   private def updateCacheModels(itemId: String, updatedCache: ItemType)(implicit journeyRequest: JourneyRequest[_]) =
     for {
       _ <- updateExportsCache(itemId, journeySessionId, updatedCache)
-      _ <- customsCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, updatedCache)
+      _ <- legacyCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, updatedCache)
     } yield ()
 
   private def updateExportsCache(

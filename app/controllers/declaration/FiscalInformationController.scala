@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class FiscalInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
+  legacyCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   fiscalInformationPage: fiscal_information
@@ -47,9 +47,12 @@ class FiscalInformationController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    customsCacheService.fetchAndGetEntry[FiscalInformation](goodsItemCacheId, formId).map {
-      case Some(data) => Ok(fiscalInformationPage(itemId, form.fill(data)))
-      case _          => Ok(fiscalInformationPage(itemId, form))
+    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map {
+      case Some(data) =>
+        data.fiscalInformation.fold(Ok(fiscalInformationPage(itemId, form()))) { fiscalInformation =>
+          Ok(fiscalInformationPage(itemId, form().fill(fiscalInformation)))
+        }
+      case _ => Ok(fiscalInformationPage(itemId, form()))
     }
   }
 
@@ -68,7 +71,7 @@ class FiscalInformationController @Inject()(
     implicit journeyRequest: JourneyRequest[_]
   ) =
     for {
-      _ <- customsCacheService.cache[FiscalInformation](goodsItemCacheId, formId, validFiscalInformation)
+      _ <- legacyCacheService.cache[FiscalInformation](goodsItemCacheId, formId, validFiscalInformation)
       _ <- updateExportsCache(itemId, journeySessionId, validFiscalInformation)
     } yield specifyNextPage(itemId, validFiscalInformation)
 
