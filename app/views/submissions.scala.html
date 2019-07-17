@@ -27,10 +27,9 @@
 
 @main_template(
     title = messages("submissions.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    appConfig = appConfig) {
 
-    @components.back_link(routes.ChoiceController.displayChoiceForm().url)
+    @components.back_link(routes.ChoiceController.displayPage().url)
 
     <h1>@messages("submissions.title")</h1>
 
@@ -66,5 +65,5 @@
         </table>
     </div>
 
-    @components.button_link("supplementary.startNewDec", routes.ChoiceController.displayChoiceForm().url)
+    @components.button_link("supplementary.startNewDec", routes.ChoiceController.displayPage().url)
 }

@@ -29,12 +29,11 @@ import views.html.submissions
 import scala.concurrent.ExecutionContext
 
 class SubmissionsController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
   submissionsPage: submissions
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayListOfSubmissions(): Action[AnyContent] = authenticate.async { implicit request =>

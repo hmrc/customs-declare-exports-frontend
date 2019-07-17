@@ -28,6 +28,6 @@ GET        /start                                       controllers.StartControl
 
 # Declaration Choice Page
 
-GET        /choice                                      controllers.ChoiceController.displayChoiceForm()
+GET        /choice                                      controllers.ChoiceController.displayPage()
 
 POST       /choice                                      controllers.ChoiceController.submitChoice()

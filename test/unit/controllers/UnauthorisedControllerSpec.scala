@@ -14,28 +14,32 @@
  * limitations under the License.
  */
 
-package controllers
+package unit.controllers
 
-import base.CustomExportsBaseSpec
+import controllers.UnauthorisedController
 import play.api.test.Helpers._
+import unit.base.ControllerSpec
 import views.html.unauthorised
 
-class UnauthorisedControllerSpec extends CustomExportsBaseSpec {
+class UnauthorisedControllerSpec extends ControllerSpec {
 
-  private val unauthorisedPage = app.injector.instanceOf[unauthorised]
+  trait SetUp {
+    val unauthorisedPage = new unauthorised(mainTemplate)
 
-  "Unauthorised Controller" must {
+    val controller =
+      new UnauthorisedController(stubMessagesControllerComponents(), unauthorisedPage)(ec, minimalAppConfig)
+  }
 
-    "return 200 for a GET" in {
-      val result = new UnauthorisedController(appConfig, mcc, unauthorisedPage).onPageLoad()(fakeRequest)
+  "Unauthorised controller" should {
 
-      status(result) mustBe OK
-    }
+    "return 200 (OK)" when {
 
-    "return the correct view for a GET" in {
-      val result = new UnauthorisedController(appConfig, mcc, unauthorisedPage).onPageLoad()(fakeRequest)
+      "display page method is invoked" in new SetUp {
 
-      contentAsString(result) mustBe unauthorisedPage(appConfig)(fakeRequest, messages).toString
+        val result = controller.onPageLoad()(getRequest())
+
+        status(result) must be(OK)
+      }
     }
   }
 }

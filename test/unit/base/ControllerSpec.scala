@@ -16,8 +16,8 @@
 
 package unit.base
 
-import base.{MockAuthAction, MockConnectors, MockCustomsCacheService}
-import com.kenshoo.play.metrics.{Metrics, MetricsImpl}
+import base.{MockAuthAction, MockConnectors, MockCustomsCacheService, MockExportsCacheService}
+import com.kenshoo.play.metrics.MetricsImpl
 import handlers.ErrorHandler
 import metrics.ExportsMetrics
 import org.mockito.ArgumentMatchers.{any, anyString}
@@ -32,7 +32,9 @@ import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.ExecutionContext
 
-trait ControllerSpec extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockCustomsCacheService {
+trait ControllerSpec
+    extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockCustomsCacheService
+    with MockExportsCacheService {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 
@@ -48,5 +50,5 @@ trait ControllerSpec extends UnitSpec with Stubs with MockAuthAction with MockCo
   def getRequest(): Request[AnyContentAsEmpty.type] = fakeRequest
 
   def postRequest(body: JsValue): Request[AnyContentAsJson] =
-    FakeRequest("", "").withJsonBody(body).withCSRFToken
+    FakeRequest("", "").withSession(("sessionId", "sessionId")).withJsonBody(body).withCSRFToken
 }
