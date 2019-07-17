@@ -148,7 +148,7 @@ class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonM
       val backButton = getElementById(createView(), "link-back")
 
       backButton.text() must be(messages(backCaption))
-      backButton.attr("href") must be(routes.ChoiceController.displayChoiceForm().url)
+      backButton.attr("href") must be(routes.ChoiceController.displayPage().url)
     }
 
     "display 'Start a new declaration' link on page" in {
@@ -156,7 +156,7 @@ class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonM
 
       val startButton = getElementByCss(view, ".button")
       startButton.text() must be(messages(startNewDeclaration))
-      startButton.attr("href") must be(routes.ChoiceController.displayChoiceForm().url)
+      startButton.attr("href") must be(routes.ChoiceController.displayPage().url)
     }
   }
 

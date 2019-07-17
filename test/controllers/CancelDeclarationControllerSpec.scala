@@ -20,7 +20,6 @@ import base.CustomExportsBaseSpec
 import forms.CancelDeclarationSpec
 import metrics.MetricIdentifiers
 import models.requests.CancellationRequested
-import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
 class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
@@ -48,18 +47,3 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
   }
 }
 
-object CancelDeclarationControllerSpec {
-  def buildCancelDeclarationJsonInput(
-    functionalReferenceId: String = "",
-    declarationId: String = "",
-    statementDescription: String = "",
-    changeReason: String = ""
-  ): JsValue = JsObject(
-    Map(
-      "functionalReferenceId" -> JsString(functionalReferenceId),
-      "declarationId" -> JsString(declarationId),
-      "statementDescription" -> JsString(statementDescription),
-      "changeReason" -> JsString(changeReason)
-    )
-  )
-}

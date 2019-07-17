@@ -53,7 +53,7 @@ class ChoiceController @Inject()(
 
   val logger = Logger.apply(this.getClass)
 
-  def displayChoiceForm(): Action[AnyContent] = authenticate.async { implicit request =>
+  def displayPage(): Action[AnyContent] = authenticate.async { implicit request =>
     exportsCacheService.get(eoriCacheId).map(_.map(_.choice)).map {
       case Some(data) => Ok(choicePage(Choice.form().fill(Choice(data))))
       case _          => Ok(choicePage(Choice.form()))
@@ -89,7 +89,7 @@ class ChoiceController @Inject()(
                 case Submissions =>
                   Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
                 case _ =>
-                  Redirect(controllers.routes.ChoiceController.displayChoiceForm())
+                  Redirect(controllers.routes.ChoiceController.displayPage())
               }
           }
         }
