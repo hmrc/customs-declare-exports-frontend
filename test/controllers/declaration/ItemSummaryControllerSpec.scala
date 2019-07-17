@@ -36,6 +36,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
   private val viewItemsUri = uriWithContextPath("/declaration/export-items")
   private val addItemUri = uriWithContextPath("/declaration/export-items/add")
+  private def removeItemUri(id: String) = uriWithContextPath(s"/declaration/export-items/$id/remove")
   private val formId = "PackageInformation"
   private val item1Id = "1234"
   private val item2Id = "5678"
@@ -46,13 +47,11 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
   override def beforeEach() {
     authorizedUser()
-    withCaching[Seq[GovernmentAgencyGoodsItem]](None, formId)
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
-    reset(mockExportsCacheService)
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
   "Item Summary Controller" should {
@@ -128,31 +127,65 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
         }
       }
-      "add item to cache and redirect" when {
-        "add item endpoint called " in {
-          authorizedUser()
+    }
 
-          GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging()))
+    "add item" should {
+      "add item and redirect" in {
 
-          val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
-          val cachedItem = createModelWithItem("", item = Some(testItem))
-          withNewCaching(cachedItem)
-          when(mockItemGeneratorService.generateItemId()).thenReturn(item1Id)
-          withCaching[Seq[GovernmentAgencyGoodsItem]](Some(cachedData), formId)
+        GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging()))
 
-          val result = route(app, getRequest(addItemUri)).value
+        val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
+        val cachedItem = createModelWithItem("", item = Some(testItem))
+        withNewCaching(cachedItem)
+        when(mockItemGeneratorService.generateItemId()).thenReturn(item1Id)
+        withCaching[Seq[GovernmentAgencyGoodsItem]](Some(cachedData), formId)
+
+        val result = route(app, getRequest(addItemUri)).value
+        status(result) must be(SEE_OTHER)
+
+        redirectLocation(result).getOrElse("") must be(routes.ProcedureCodesPageController.displayPage(item1Id).url)
+
+        val stringResult = contentAsString(result)
+
+        stringResult.contains("1 Export items added")
+
+        verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+      }
+
+    }
+
+    "remove item" should {
+      "do nothing and redirect back to items" when {
+        "cache is empty" in {
+          withNewCaching()
+
+          val result = route(app, getRequest(removeItemUri("id"))).value
           status(result) must be(SEE_OTHER)
-
-          redirectLocation(result).getOrElse("") must be(routes.ProcedureCodesPageController.displayPage(item1Id).url)
-
-          val stringResult = contentAsString(result)
-
-          stringResult.contains("1 Export items added")
-
-          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+          redirectLocation(result) must be(Some(routes.ItemsSummaryController.displayPage().url))
+          verifyTheCacheIsUnchanged()
         }
 
+        "item does not exist" in {
+          withNewCaching(createModelWithNoItems())
+
+          val result = route(app, getRequest(removeItemUri("id"))).value
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) must be(Some(routes.ItemsSummaryController.displayPage().url))
+          verifyTheCacheIsUnchanged()
+        }
+      }
+
+      "update cache and redirect" when {
+        "item exists" in {
+          withNewCaching(createModelWithItems("", Set(ExportItem("id1"), ExportItem("id2"))))
+
+          val result = route(app, getRequest(removeItemUri("id1"))).value
+          status(result) must be(SEE_OTHER)
+          redirectLocation(result) must be(Some(routes.ItemsSummaryController.displayPage().url))
+          theCacheModelUpdated.items must be(Set(ExportItem("id2")))
+        }
       }
     }
+
   }
 }

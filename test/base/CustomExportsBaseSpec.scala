@@ -185,9 +185,8 @@ trait CustomExportsBaseSpec
   }
 
   def withNewCaching(dataToReturn: ExportsCacheModel) {
-
     when(mockExportsCacheService.getItemByIdAndSession(any[String], any[String]))
-      .thenReturn((Future.successful(dataToReturn.items.headOption)))
+      .thenReturn(Future.successful(dataToReturn.items.headOption))
 
     when(
       mockExportsCacheService
@@ -198,7 +197,21 @@ trait CustomExportsBaseSpec
       mockExportsCacheService
         .get(any[String])
     ).thenReturn(Future.successful(Some(dataToReturn)))
+  }
 
+  def withNewCaching() {
+    when(mockExportsCacheService.getItemByIdAndSession(any[String], any[String]))
+      .thenReturn(Future.successful(None))
+
+    when(
+      mockExportsCacheService
+        .update(any[String], any[ExportsCacheModel])
+    ).thenReturn(Future.successful(None))
+
+    when(
+      mockExportsCacheService
+        .get(any[String])
+    ).thenReturn(Future.successful(None))
   }
 
   def withNrsSubmission(): OngoingStubbing[Future[NrsSubmissionResponse]] =
