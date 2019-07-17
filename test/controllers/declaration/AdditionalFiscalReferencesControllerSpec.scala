@@ -49,7 +49,6 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       val Some(result) = route(app, getRequest(uri))
 
       status(result) must be(OK)
-      verify(mockExportsCacheService).getItemByIdAndSession(any[String], any[String])
     }
 
     "read item from cache and display it" in {
@@ -66,8 +65,6 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
       status(result) must be(OK)
       page must include("France")
       page must include("7232")
-
-      verify(mockExportsCacheService).getItemByIdAndSession(any[String], any[String])
     }
   }
 
