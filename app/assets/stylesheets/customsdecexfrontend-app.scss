@@ -9,3 +9,14 @@
 
 @import 'partials/_shame';
 @import 'partials/_autocomplete';
+
+a.button--gray, button.button--gray, .button--gray:visited {
+  background-color: $gray;
+  color: $black !important;
+  box-shadow: 0 2px 0 $gray--dark;
+
+  &:hover, &:focus {
+    background-color: $gray--dark;
+    color: $black;
+  }
+}

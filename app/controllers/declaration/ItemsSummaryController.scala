@@ -63,11 +63,22 @@ class ItemsSummaryController @Inject()(
       .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesPageController.displayPage(newItem.id)))
   }
 
-  /*
-  Compilation warning
-    match may not be exhaustive.
-    [warn] It would fail on the following input: Left(_)
-   */
+  def removeItem(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    exportsCacheService.get(journeySessionId) flatMap {
+      case Some(model) =>
+        model.items.find(_.id == itemId) match {
+          case Some(item) =>
+            exportsCacheService.update(journeySessionId, model.copy(items = model.items - item)).map { _ =>
+              Redirect(routes.ItemsSummaryController.displayPage())
+            }
+          case _ =>
+            Future.successful(Redirect(routes.ItemsSummaryController.displayPage()))
+        }
+      case _ =>
+        Future.successful(Redirect(routes.ItemsSummaryController.displayPage()))
+    }
+  }
+
   private def updateCache(sessionId: String, exportItem: ExportItem): Future[Option[ExportsCacheModel]] =
     exportsCacheService.get(sessionId).flatMap {
       case Some(model) => {
