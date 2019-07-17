@@ -15,6 +15,7 @@
  */
 
 package base
+
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements

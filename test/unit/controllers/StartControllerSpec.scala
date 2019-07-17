@@ -14,21 +14,30 @@
  * limitations under the License.
  */
 
-package controllers
+package unit.controllers
 
-import base.CustomExportsBaseSpec
+import controllers.StartController
 import play.api.test.Helpers._
+import unit.base.ControllerSpec
+import views.html.start_page
 
-class StartControllerSpec extends CustomExportsBaseSpec {
+class StartControllerSpec extends ControllerSpec {
 
-  private val uri = uriWithContextPath("/start")
+  val mcc = stubMessagesControllerComponents()
+  val startPage = new start_page(mainTemplate)
 
-  "Start Controller on GET" should {
+  val controller = new StartController(mcc, startPage)(ec, minimalAppConfig)
 
-    "return 200 status code" in {
-      val result = route(app, getRequest(uri)).get
+  "Start Controller" should {
 
-      status(result) must be(OK)
+    "return 200" when {
+
+      "display page method is invoked" in {
+
+        val result = controller.displayStartPage()(getRequest())
+
+        status(result) must be(OK)
+      }
     }
   }
 }

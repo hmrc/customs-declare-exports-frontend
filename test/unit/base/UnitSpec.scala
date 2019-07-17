@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
+package unit.base
 
-@this(main_template: views.html.main_template)
+import org.scalatest.mockito.MockitoSugar
+import org.scalatest.{MustMatchers, WordSpec}
 
-@()(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
-
-@main_template(
-  title = messages("cancellation.confirmationPage.title"),
-    appConfig = appConfig
-) {
-  <div>
-      <div class="govuk-box-highlight">
-          <h1 class="heading-xlarge">
-              @messages("cancellation.confirmationPage.message")
-          </h1>
-      </div>
-      @components.button_link("site.backToChoice", "/customs-declare-exports/choice")
-  </div>
-}
+trait UnitSpec extends WordSpec with MustMatchers with MockitoSugar
