@@ -21,18 +21,23 @@ import java.util.UUID
 
 import base.TestHelper._
 import base.{CustomExportsBaseSpec, MockHttpClient, TestHelper}
+import forms.Choice
+import models.declaration.SupplementaryDeclarationTestData
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Action, Submission, SubmissionRequest}
 import models.requests.CancellationRequested
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
 import play.api.test.Helpers.ACCEPTED
+import services.WcoMetadataMapper
+import services.mapping.MetaDataBuilder
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.wco.dec.MetaData
 
 class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
   import CustomsDeclareExportsConnectorSpec._
+
+  private val wcoMetadataMapper = new WcoMetadataMapper
 
   "Customs Declare Exports Connector" should {
 
@@ -40,14 +45,14 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
       val http = new MockHttpClient(
         mockWSClient,
         expectedExportsUrl(appConfig.submitDeclaration),
-        metadata.toXml,
+        wcoMetadataMapper.toXml(metadata),
         submissionHeaders,
         falseServerError,
         HttpResponse(ACCEPTED)
       )
 
-      val client = new CustomsDeclareExportsConnector(appConfig, http)
-      val response = client.submitExportDeclaration(Some(""), None, metadata.toXml)(hc, ec)
+      val client = new CustomsDeclareExportsConnector(appConfig, http, wcoMetadataMapper)
+      val response = client.submitExportDeclaration(Some(""), None, wcoMetadataMapper.toXml(metadata))(hc, ec)
 
       response.futureValue.status must be(ACCEPTED)
     }
@@ -55,7 +60,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
     "GET to Customs Declare Exports endpoint to fetch notifications" in {
       val http =
         new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
-      val client = new CustomsDeclareExportsConnector(appConfig, http)
+      val client = new CustomsDeclareExportsConnector(appConfig, http, wcoMetadataMapper)
       val response = client.fetchNotifications()(hc, ec)
 
       response.futureValue must be(notifications)
@@ -64,7 +69,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
     "GET to Customs Declare Exports endpoint to fetch notifications by conversationId" in {
       val http =
         new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchNotifications), None, result = notifications)
-      val client = new CustomsDeclareExportsConnector(appConfig, http)
+      val client = new CustomsDeclareExportsConnector(appConfig, http, wcoMetadataMapper)
       val response = client.fetchNotificationsByMrn(conversationId)(hc, ec)
 
       response.futureValue must be(notifications)
@@ -73,7 +78,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
     "GET to Customs Declare Exports endpoint to fetch submissions" in {
       val http =
         new MockHttpClient(mockWSClient, expectedExportsUrl(appConfig.fetchSubmissions), None, result = submissions)
-      val client = new CustomsDeclareExportsConnector(appConfig, http)
+      val client = new CustomsDeclareExportsConnector(appConfig, http, wcoMetadataMapper)
       val response = client.fetchSubmissions()(hc, ec)
 
       response.futureValue must be(submissions)
@@ -83,12 +88,12 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
       val http = new MockHttpClient(
         mockWSClient,
         expectedExportsUrl(appConfig.cancelDeclaration),
-        metadata.toXml,
+        wcoMetadataMapper.toXml(metadata),
         cancellationHeaders,
         falseServerError,
         CancellationRequested
       )
-      val client = new CustomsDeclareExportsConnector(appConfig, http)
+      val client = new CustomsDeclareExportsConnector(appConfig, http, wcoMetadataMapper)
       val response = client.submitCancellation(mrn, metadata)(hc, ec)
 
       response.futureValue must be(CancellationRequested)
@@ -102,7 +107,7 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
 object CustomsDeclareExportsConnectorSpec {
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomAlphanumericString(255))))
   val mrn = TestHelper.createRandomAlphanumericString(10)
-  val metadata = MetaData()
+  val metadata = MetaDataBuilder.build(SupplementaryDeclarationTestData.cacheMapAllRecords, Choice("SMP"))
 
   val conversationId = TestHelper.createRandomAlphanumericString(10)
   val eori = TestHelper.createRandomAlphanumericString(15)

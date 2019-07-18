@@ -19,7 +19,7 @@ import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
 import org.scalatest.{Matchers, WordSpec}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-class FunctionalReferenceIdBuilderSpec extends WordSpec with Matchers {
+class FunctionalReferenceIdentificationBuilderSpec extends WordSpec with Matchers {
 
   "FunctionalReferenceIdBuilder" should {
     "correctly map to the WCO-DEC FunctionalReferenceId instance" in {
@@ -27,6 +27,11 @@ class FunctionalReferenceIdBuilderSpec extends WordSpec with Matchers {
         CacheMap("CacheID", Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.correctConsignmentReferencesJSON))
       val referenceIDType = FunctionalReferenceIdBuilder.build(cacheMap)
       referenceIDType.getValue should be("123LRN")
+    }
+
+    "correctly map to the WCO-DEC FunctionalReferenceId instance for a CancellationRequest" in {
+      val referenceIDType = FunctionalReferenceIdBuilder.build("functionReferenceId")
+      referenceIDType.getValue should be("functionReferenceId")
     }
 
     "not map to the WCO-DEC FunctionalReferenceId instance if lrn is empty" in {

@@ -33,4 +33,9 @@ object FunctionalReferenceIdBuilder {
     referenceId
   }
 
+  def build(functionalReferenceId: String): DeclarationFunctionalReferenceIDType = {
+    val referenceId = new DeclarationFunctionalReferenceIDType()
+    referenceId.setValue(functionalReferenceId)
+    referenceId
+  }
 }

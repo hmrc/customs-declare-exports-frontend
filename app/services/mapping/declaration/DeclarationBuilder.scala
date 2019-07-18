@@ -27,7 +27,7 @@ object DeclarationBuilder {
   def build(implicit cacheMap: CacheMap, choice: Choice): Declaration = {
     val declaration = new Declaration()
 
-    declaration.setFunctionCode(FunctionCodeBuilder.build)
+    declaration.setFunctionCode(FunctionCodeBuilder.build("9"))
     declaration.setFunctionalReferenceID(FunctionalReferenceIdBuilder.build)
     declaration.setTypeCode(TypeCodeBuilder.build)
     declaration.setGoodsItemQuantity(GoodsItemQuantityBuilder.build)
@@ -54,6 +54,26 @@ object DeclarationBuilder {
     if (currencyExchangeList != null && !currencyExchangeList.isEmpty) {
       declaration.getCurrencyExchange.addAll(currencyExchangeList)
     }
+
+    declaration
+  }
+
+  def buildCancelationRequest(
+    functionalReferenceId: String,
+    declarationId: String,
+    statementDescription: String,
+    changeReason: String,
+    eori: String
+  ): Declaration = {
+    val declaration = new Declaration()
+
+    declaration.setFunctionCode(FunctionCodeBuilder.build("13"))
+    declaration.setTypeCode(TypeCodeBuilder.build("INV"))
+    declaration.setFunctionalReferenceID(FunctionalReferenceIdBuilder.build(functionalReferenceId))
+    declaration.setID(IdentificationBuilder.build(declarationId))
+    declaration.setSubmitter(SubmitterBuilder.build(eori))
+    declaration.getAmendment.add(AmendmentBuilder.build(changeReason))
+    declaration.getAdditionalInformation.add(AdditionalInformationBuilder.build(statementDescription))
 
     declaration
   }

@@ -18,26 +18,27 @@ package connectors
 
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
 import models.requests.CancellationStatus
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
+import services.WcoMetadataMapper
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.wco.dec.MetaData
+import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient: HttpClient) {
+class CustomsDeclareExportsConnector @Inject()(
+  appConfig: AppConfig,
+  httpClient: HttpClient,
+  wcoMetadataMapper: WcoMetadataMapper
+) {
 
   private val logger = Logger(this.getClass())
-
-  private[connectors] def get(url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    httpClient.GET(url, Seq())
 
   def submitExportDeclaration(ducr: Option[String], lrn: Option[String], payload: String)(
     implicit hc: HeaderCarrier,
@@ -83,7 +84,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
     httpClient
       .POSTString[CancellationStatus](
         s"${appConfig.customsDeclareExports}${appConfig.cancelDeclaration}",
-        metadata.toXml,
+        wcoMetadataMapper.toXml(metadata),
         Seq(
           (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
           (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
@@ -94,4 +95,7 @@ class CustomsDeclareExportsConnector @Inject()(appConfig: AppConfig, httpClient:
         logger.debug(s"CUSTOMS_DECLARE_EXPORTS cancel declaration response is --> ${response.toString}")
         response
       }
+
+  private[connectors] def get(url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    httpClient.GET(url, Seq())
 }

@@ -17,12 +17,15 @@
 package services.mapping.declaration
 import org.scalatest.{Matchers, WordSpec}
 
-class FunctionCodeBuilderSpec extends WordSpec with Matchers {
+class AdditionalInformationBuilderSpec extends WordSpec with Matchers {
 
-  "FunctionCodeBuilder" should {
-    "correctly map to the WCO-DEC Declaration Function Code instance" in {
-      val functionCodeType = FunctionCodeBuilder.build("9")
-      functionCodeType.getValue should be("9")
+  "AdditionalInformationBuilder" should {
+    "correctly map to the WCO-DEC AdditionalInformation instance" in {
+      val additionalInformation = AdditionalInformationBuilder.build("functionReferenceId")
+      additionalInformation.getStatementTypeCode.getValue should be("AES")
+      additionalInformation.getPointer.get(0).getSequenceNumeric.intValue() should be(1)
+      additionalInformation.getPointer.get(0).getDocumentSectionCode.getValue should be("42A")
+      additionalInformation.getPointer.get(1).getDocumentSectionCode.getValue should be("06A")
     }
   }
 }

@@ -29,7 +29,6 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.wco.dec.MetaData
 
 import scala.concurrent.Future
 
@@ -37,7 +36,6 @@ class SummaryPageControllerSpec extends CustomExportsBaseSpec {
 
   val summaryPageUri = uriWithContextPath("/declaration/summary")
   val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
-  val emptyMetadata: MetaData = MetaData(response = Seq.empty)
   val onlyOnce: VerificationMode = times(1)
   val minimumValidCacheData =
     CacheMap(eoriForCache, Map(ConsignmentReferences.id -> correctConsignmentReferencesJSON))

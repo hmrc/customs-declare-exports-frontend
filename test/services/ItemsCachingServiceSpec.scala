@@ -19,6 +19,7 @@ package services
 import base.CustomExportsBaseSpec
 import base.TestHelper._
 import forms.declaration.{CommodityMeasure, ItemType, PackageInformation}
+import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
@@ -26,7 +27,6 @@ import org.mockito.Mockito.{verify, when}
 import org.scalatest.OptionValues
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.wco.dec.GovernmentAgencyGoodsItem
 
 import scala.concurrent.Future
 

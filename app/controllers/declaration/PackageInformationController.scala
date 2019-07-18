@@ -51,15 +51,17 @@ class PackageInformationController @Inject()(
   val packagesMaxElements = 99
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.map(_.packageInformation))
+    exportsCacheService
+      .getItemByIdAndSession(itemId, journeySessionId)
+      .map(_.map(_.packageInformation))
       .map(items => Ok(packageInformationPage(itemId, form(), items.getOrElse(Seq.empty))))
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit authRequest =>
       val actionTypeOpt = authRequest.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
-      exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.map(_.packageInformation))
-        .flatMap { data =>
+      exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.map(_.packageInformation)).flatMap {
+        data =>
           val packagings = data.getOrElse(Seq.empty)
 
           actionTypeOpt match {
@@ -68,7 +70,7 @@ class PackageInformationController @Inject()(
             case Some(SaveAndContinue) => continue(itemId, packagings)
             case _                     => errorHandler.displayErrorPage()
           }
-        }
+      }
   }
 
   def remove(itemId: String, packages: Seq[PackageInformation], id: Option[String])(

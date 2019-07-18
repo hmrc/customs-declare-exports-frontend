@@ -17,7 +17,6 @@
 package models.declaration.submissions
 
 import play.api.libs.json._
-import uk.gov.hmrc.wco.dec.Response
 
 sealed trait SubmissionStatus {
   val fullCode: String
@@ -33,20 +32,6 @@ object SubmissionStatus {
 
     def writes(status: SubmissionStatus): JsValue = JsString(status.fullCode)
   }
-
-  def retrieveFromResponse(response: Response): SubmissionStatus = {
-    val searchKey = response.functionCode + response.status.headOption.flatMap(_.nameCode).getOrElse("")
-    getStatusOrUnknown(searchKey)
-  }
-
-  def retrieve(functionCode: String, nameCode: Option[String]): SubmissionStatus =
-    getStatusOrUnknown(functionCode + nameCode.getOrElse(""))
-
-  private def getStatusOrUnknown(searchKey: String): SubmissionStatus =
-    codesMap.get(searchKey) match {
-      case Some(status) => status
-      case None         => UnknownStatus
-    }
 
   private val codesMap: Map[String, SubmissionStatus] = Map(
     Pending.fullCode -> Pending,
@@ -67,6 +52,15 @@ object SubmissionStatus {
     AwaitingExitResults.fullCode -> AwaitingExitResults,
     UnknownStatus.fullCode -> UnknownStatus
   )
+
+  def retrieve(functionCode: String, nameCode: Option[String]): SubmissionStatus =
+    getStatusOrUnknown(functionCode + nameCode.getOrElse(""))
+
+  private def getStatusOrUnknown(searchKey: String): SubmissionStatus =
+    codesMap.get(searchKey) match {
+      case Some(status) => status
+      case None         => UnknownStatus
+    }
 }
 
 case object Pending extends SubmissionStatus {

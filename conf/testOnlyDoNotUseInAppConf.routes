@@ -13,5 +13,3 @@
 ->         /                          prod.Routes
 
 GET        /customs-declare-exports/test-only/feature/:feature/:status  test.controllers.FeatureSwitchController.set(feature: features.Feature.Feature, status: features.FeatureStatus.FeatureStatus)
-
-POST       /customs-declare-exports/test-only/declaration/submit        test.controllers.TestingUtilitiesController.submitDeclarationXml

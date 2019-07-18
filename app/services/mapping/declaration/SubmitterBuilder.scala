@@ -15,14 +15,17 @@
  */
 
 package services.mapping.declaration
-import org.scalatest.{Matchers, WordSpec}
 
-class FunctionCodeBuilderSpec extends WordSpec with Matchers {
+import wco.datamodel.wco.dec_dms._2.Declaration
+import wco.datamodel.wco.declaration_ds.dms._2.SubmitterIdentificationIDType
 
-  "FunctionCodeBuilder" should {
-    "correctly map to the WCO-DEC Declaration Function Code instance" in {
-      val functionCodeType = FunctionCodeBuilder.build("9")
-      functionCodeType.getValue should be("9")
-    }
+object SubmitterBuilder {
+
+  def build(eori: String): Declaration.Submitter = {
+    val submitter = new Declaration.Submitter()
+    val submitterIdentificationIDType = new SubmitterIdentificationIDType()
+    submitterIdentificationIDType.setValue(eori)
+    submitter.setID(submitterIdentificationIDType)
+    submitter
   }
 }

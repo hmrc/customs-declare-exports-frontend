@@ -75,7 +75,7 @@ class DocumentsProducedControllerSpec
 
       val document = DocumentsProducedSpec.correctDocumentsProduced
       val cachedData = ExportItem(id = "id", documentsProducedData = Some(DocumentsProducedData(Seq(document))))
-      withNewCaching(createModelWithItem("",  Some(cachedData)))
+      withNewCaching(createModelWithItem("", Some(cachedData)))
 
       val result = route(app, getRequest(uri)).get
       val view = contentAsString(result)
@@ -210,7 +210,7 @@ class DocumentsProducedControllerSpec
 
       "try to add duplicated document" in {
         val cachedData = ExportItem(id = "id", documentsProducedData = Some(correctDocumentsProducedData))
-        withNewCaching(createModelWithItem("",  Some(cachedData)))
+        withNewCaching(createModelWithItem("", Some(cachedData)))
 
         val duplicatedDocument: Map[String, String] = correctDocumentsProducedMap
 
@@ -245,7 +245,7 @@ class DocumentsProducedControllerSpec
 
       "try to add more then 99 documents" in {
         val cachedData = ExportItem(id = "id", documentsProducedData = Some(cacheWithMaximumAmountOfHolders))
-        withNewCaching(createModelWithItem("",  Some(cachedData)))
+        withNewCaching(createModelWithItem("", Some(cachedData)))
 
         val body = (correctDocumentsProducedMap + ("documentIdentifier" -> "Davis")).toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
