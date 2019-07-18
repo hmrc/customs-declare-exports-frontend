@@ -16,6 +16,7 @@
 
 package base
 
+import forms.Choice
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -48,4 +49,8 @@ trait MockCustomsCacheService extends MockitoSugar {
     when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(CacheMap(id, Map.empty)))
   }
+
+  def withJourneyType(choice: Choice): OngoingStubbing[Future[Option[Choice]]] =
+    when(mockCustomsCacheService.fetchAndGetEntry[Choice](any(), any())(any(), any(), any()))
+      .thenReturn(Future.successful(Some(choice)))
 }

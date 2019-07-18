@@ -45,9 +45,8 @@ trait ControllerSpec
 
   val mockExportsMetrics = new ExportsMetrics(new MetricsImpl(new DefaultApplicationLifecycle(), minimalConfiguration))
 
-  val fakeRequest = FakeRequest("", "").withCSRFToken
-
-  def getRequest(): Request[AnyContentAsEmpty.type] = fakeRequest
+  def getRequest(): Request[AnyContentAsEmpty.type] =
+    FakeRequest("", "").withSession(("sessionId", "sessionId")).withCSRFToken
 
   def postRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("", "").withSession(("sessionId", "sessionId")).withJsonBody(body).withCSRFToken
