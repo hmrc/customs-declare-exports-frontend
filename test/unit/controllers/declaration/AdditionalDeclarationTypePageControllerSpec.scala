@@ -16,7 +16,6 @@
 
 package unit.controllers.declaration
 
-import controllers.actions.JourneyAction
 import controllers.declaration.AdditionalDeclarationTypePageController
 import forms.Choice
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
@@ -32,7 +31,7 @@ class AdditionalDeclarationTypePageControllerSpec extends ControllerSpec {
 
     val controller = new AdditionalDeclarationTypePageController(
       mockAuthAction,
-      new JourneyAction(mockCustomsCacheService, stubMessagesControllerComponents()),
+      mockJourneyAction,
       mockCustomsCacheService,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
