@@ -56,6 +56,7 @@
                     <th scope="col">@messages("supplementary.itemsSummary.procedureCode")</th>
                     <th scope="col">@messages("supplementary.itemsSummary.commodityCode")</th>
                     <th scope="col">@messages("supplementary.itemsSummary.noOfPackages")</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -70,6 +71,9 @@
                             <li>{a.numberOfPackages.getOrElse(0)}</li>
                         )
                         </ol>
+                    </td>
+                    <td scope="row">
+                        <a class="button button--gray" href="@routes.ItemsSummaryController.removeItem(item.id)">@messages("site.remove")</a>
                     </td>
                 </tr>
             }
