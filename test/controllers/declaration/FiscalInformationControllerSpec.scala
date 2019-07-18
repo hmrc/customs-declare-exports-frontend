@@ -19,14 +19,17 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
-import forms.declaration.FiscalInformation
+import forms.declaration.{AdditionalFiscalReferencesData, FiscalInformation}
 import helpers.views.declaration.FiscalInformationMessages
 import org.mockito.Mockito.reset
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers.{OK, route, status, _}
+import services.cache.ExportItem
 
 class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalInformationMessages {
-  val cacheModel = createModelWithItem("")
+
+  private val existingItem = ExportItem("id")
+  private val cacheModel = createModelWithItem("", Some(existingItem))
   private val uri: String = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/fiscal-information")
   private val emptyFiscalInformationJson: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("")))
   private val incorrectFiscalInformation: JsValue = JsObject(
@@ -35,151 +38,78 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
   private val fiscalInformationWithYes: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("Yes")))
   private val fiscalInformationWithNo: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("No")))
 
-  trait SetUp {
+  override def beforeEach {
     authorizedUser()
-    withCaching[FiscalInformation](None, FiscalInformation.formId)
-  }
-
-  trait SupplementarySetUp extends SetUp {
     withNewCaching(cacheModel)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-  }
-
-  trait StandardSetUp extends SetUp {
     withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService)
+    reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
-  "Fiscal information Controller on the supplementary journey" when {
-    "on GET request" should {
+  "GET" should {
 
-      "return 200 on GET request with a success" in new SupplementarySetUp {
+    "return 200 on GET request with a success" in {
 
-        val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri)).get
 
-        status(result) must be(OK)
-      }
-
-      "read item from cache and display it" in new SupplementarySetUp {
-
-        val cachedData = FiscalInformation("Yes")
-        withCaching[FiscalInformation](Some(cachedData), FiscalInformation.formId)
-
-        val result = route(app, getRequest(uri)).get
-
-        status(result) must be(OK)
-        contentAsString(result) must include("Yes")
-      }
+      status(result) must be(OK)
     }
 
-    "on POST request" should {
+    "read item from cache and display it" in {
+      withNewCaching(createModelWithItem("", Some(ExportItem("id", fiscalInformation = Some(FiscalInformation("Yes"))))))
 
-      "return bad request for empty form" in new SupplementarySetUp {
+      val result = route(app, getRequest(uri)).get
 
-        val result = route(app, postRequest(uri, emptyFiscalInformationJson)).get
+      status(result) must be(OK)
+      contentAsString(result) must include("Yes")
+    }
+  }
 
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages(errorMessageEmpty))
-      }
+  "POST" should {
+
+    "return bad request for empty form" in {
+
+      val result = route(app, postRequest(uri, emptyFiscalInformationJson)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(errorMessageEmpty))
+      verifyTheCacheIsUnchanged()
     }
 
-    "return bad request for incorrect values" in new SupplementarySetUp {
+    "return bad request for incorrect values" in {
 
       val result = route(app, postRequest(uri, incorrectFiscalInformation)).get
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(errorMessageIncorrect))
-
+      verifyTheCacheIsUnchanged()
     }
 
-    "redirect to 'AdditionalFiscalReferences' page when choice is yes" in new SupplementarySetUp {
+    "redirect to 'AdditionalFiscalReferences' page when choice is yes" in {
 
       val result = route(app, postRequest(uri, fiscalInformationWithYes)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/additional-fiscal-references")
+      redirectLocation(result) must be(
+        Some(routes.AdditionalFiscalReferencesController.displayPage(cacheModel.items.head.id).url)
       )
+      theCacheModelUpdated.items.head must be(ExportItem("id", fiscalInformation = Some(FiscalInformation("Yes"))))
     }
 
-    "redirect to 'ItemsSummary' page when choice is no" in new SupplementarySetUp {
+    "redirect to 'ItemsSummary' page and clear fiscal references when choice is no" in {
+      withNewCaching(createModelWithItem("", Some(ExportItem("id", additionalFiscalReferencesData = Some(mock[AdditionalFiscalReferencesData])))))
 
       val result = route(app, postRequest(uri, fiscalInformationWithNo)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/item-type")
+      redirectLocation(result) must be(
+        Some(routes.ItemTypePageController.displayPage(cacheModel.items.head.id).url)
       )
-    }
-  }
-
-  "Fiscal information Controller on the standard journey" when {
-    "on GET request" should {
-
-      "return 200 on GET request with a success" in new StandardSetUp {
-
-        val result = route(app, getRequest(uri)).get
-
-        status(result) must be(OK)
-      }
-
-      "read item from cache and display it" in new StandardSetUp {
-
-        val cachedData = FiscalInformation("Yes")
-        withCaching[FiscalInformation](Some(cachedData), FiscalInformation.formId)
-
-        val result = route(app, getRequest(uri)).get
-
-        status(result) must be(OK)
-        contentAsString(result) must include("Yes")
-      }
+      theCacheModelUpdated.items.head must be(ExportItem("id", fiscalInformation = Some(FiscalInformation("No")), additionalFiscalReferencesData = None))
     }
 
-    "on POST request" should {
 
-      "return bad request for empty form" in new StandardSetUp {
-
-        val result = route(app, postRequest(uri, emptyFiscalInformationJson)).get
-
-        status(result) must be(BAD_REQUEST)
-        contentAsString(result) must include(messages(errorMessageEmpty))
-      }
-    }
-
-    "return bad request for incorrect values" in new StandardSetUp {
-
-      val result = route(app, postRequest(uri, incorrectFiscalInformation)).get
-
-      status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(errorMessageIncorrect))
-
-    }
-
-    "redirect to 'AdditionalFiscalReferences' page when choice is yes" in new StandardSetUp {
-
-      val result = route(app, postRequest(uri, fiscalInformationWithYes)).get
-      val header = result.futureValue.header
-
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/additional-fiscal-references")
-      )
-    }
-
-    "redirect to 'ItemsSummary' page when choice is no" in new StandardSetUp {
-
-      val result = route(app, postRequest(uri, fiscalInformationWithNo)).get
-      val header = result.futureValue.header
-
-      status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(
-        Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/item-type")
-      )
-    }
   }
 }

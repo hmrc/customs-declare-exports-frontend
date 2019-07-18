@@ -63,33 +63,54 @@ class FiscalInformationController @Inject()(
         .fold(
           (formWithErrors: Form[FiscalInformation]) =>
             Future.successful(BadRequest(fiscalInformationPage(itemId, formWithErrors))),
-          validFiscalInformation => updateCacheModelsAndRedirect(itemId, validFiscalInformation)
+          formData =>
+            formData.onwardSupplyRelief match {
+              case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
+                updateCacheForYES(itemId, journeySessionId, formData) map { _ =>
+                  Redirect(routes.AdditionalFiscalReferencesController.displayPage(itemId))
+                }
+              case FiscalInformation.AllowedFiscalInformationAnswers.no =>
+                updateCacheForNo(itemId, journeySessionId, formData) map { _ =>
+                  Redirect(routes.ItemTypePageController.displayPage(itemId))
+                }
+          }
         )
   }
 
-  private def updateCacheModelsAndRedirect(itemId: String, validFiscalInformation: FiscalInformation)(
-    implicit journeyRequest: JourneyRequest[_]
-  ) =
+  private def updateCacheForYES(itemId: String, sessionId: String, updatedFiscalInformation: FiscalInformation)(
+    implicit req: JourneyRequest[_]
+  ): Future[Unit] =
     for {
-      _ <- legacyCacheService.cache[FiscalInformation](goodsItemCacheId, formId, validFiscalInformation)
-      _ <- updateExportsCache(itemId, journeySessionId, validFiscalInformation)
-    } yield specifyNextPage(itemId, validFiscalInformation)
+      _ <- legacyCacheService.cache[FiscalInformation](goodsItemCacheId, formId, updatedFiscalInformation)
+      _ <- getAndUpdateExportCacheModel(
+        sessionId,
+        model => {
+          val item: Option[ExportItem] =
+            model.items
+              .find(item => item.id.equals(itemId))
+              .map(_.copy(fiscalInformation = Some(updatedFiscalInformation)))
+          val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+          exportsCacheService.update(sessionId, model.copy(items = itemList))
+        }
+      )
+    } yield Unit
 
-  private def specifyNextPage(itemId: String, answer: FiscalInformation): Result =
-    if (answer.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes)
-      Redirect(routes.AdditionalFiscalReferencesController.displayPage(itemId))
-    else Redirect(routes.ItemTypePageController.displayPage(itemId))
-
-  private def updateExportsCache(
-    itemId: String,
-    sessionId: String,
-    updatedFiscalInformation: FiscalInformation
-  ): Future[Option[ExportsCacheModel]] =
-    getAndUpdateExportCacheModel(sessionId, model => {
-      val item: Option[ExportItem] =
-        model.items.find(item => item.id.equals(itemId)).map(_.copy(fiscalInformation = Some(updatedFiscalInformation)))
-      val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-      exportsCacheService.update(sessionId, model.copy(items = itemList))
-    })
+  private def updateCacheForNo(itemId: String, sessionId: String, updatedFiscalInformation: FiscalInformation)(
+    implicit req: JourneyRequest[_]
+  ): Future[Unit] =
+    for {
+      _ <- legacyCacheService.cache[FiscalInformation](goodsItemCacheId, formId, updatedFiscalInformation)
+      _ <- getAndUpdateExportCacheModel(
+        sessionId,
+        model => {
+          val item: Option[ExportItem] =
+            model.items
+              .find(item => item.id.equals(itemId))
+              .map(_.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
+          val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+          exportsCacheService.update(sessionId, model.copy(items = itemList))
+        }
+      )
+    } yield Unit
 
 }
