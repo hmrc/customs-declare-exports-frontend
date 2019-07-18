@@ -24,10 +24,12 @@ import play.api.Mode.Test
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
+import scala.concurrent.duration.FiniteDuration
+
 class AppConfigSpec extends CustomExportsBaseSpec {
 
-  val config = app.injector.instanceOf[AppConfig]
-  val environment = Environment.simple()
+  private val config = app.injector.instanceOf[AppConfig]
+  private val environment = Environment.simple()
 
   private val validAppConfig: Config =
     ConfigFactory.parseString(
@@ -54,6 +56,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
         |microservice.services.customs-declare-exports-movements.host=localhostm
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
+        |mongodb.timeToLive=24h
 
       """.stripMargin
     )
@@ -163,6 +166,10 @@ class AppConfigSpec extends CustomExportsBaseSpec {
 
     "have nrsApiKey" in {
       validConfigService.nrsApiKey must be("cds-exports")
+    }
+
+    "have ttl lifetime" in {
+      validConfigService.cacheTimeToLive must be(FiniteDuration(24, "h"))
     }
 
   }

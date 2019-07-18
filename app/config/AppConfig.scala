@@ -27,8 +27,9 @@ import javax.inject.Named
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment, Logger}
-
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import scala.concurrent.duration.FiniteDuration
 
 @Singleton
 class AppConfig @Inject()(
@@ -99,6 +100,8 @@ class AppConfig @Inject()(
     servicesConfig.getConfString("nrs.apikey", throw new IllegalStateException("Missing configuration for nrs apikey"))
 
   def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
+
+  lazy val cacheTimeToLive: FiniteDuration = servicesConfig.getDuration("mongodb.timeToLive").asInstanceOf[FiniteDuration]
 
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))
