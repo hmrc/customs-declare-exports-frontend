@@ -56,7 +56,7 @@
                     <th scope="col">@messages("supplementary.itemsSummary.procedureCode")</th>
                     <th scope="col">@messages("supplementary.itemsSummary.commodityCode")</th>
                     <th scope="col">@messages("supplementary.itemsSummary.noOfPackages")</th>
-                    <th scope="col"></th>
+                    <th scope="col" colspan="2"></th>
                 </tr>
             </thead>
             <tbody>
@@ -71,6 +71,9 @@
                             <li>{a.numberOfPackages.getOrElse(0)}</li>
                         )
                         </ol>
+                    </td>
+                    <td scope="row">
+                        <a href="@routes.ProcedureCodesPageController.displayPage(item.id)">@messages("site.change")</a>
                     </td>
                     <td scope="row">
                         <a class="button button--gray" href="@routes.ItemsSummaryController.removeItem(item.id)">@messages("site.remove")</a>
@@ -91,7 +94,7 @@
         }
         </a><p></p>
 
-        @if(items.size > 0) {
+        @if(items.nonEmpty) {
             <a href="@routes.WarehouseIdentificationController.displayForm().url" class="button" id="next">@messages("site.save_and_continue")</a>
         }
 

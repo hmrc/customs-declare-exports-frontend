@@ -53,6 +53,7 @@ site.submit = Submit
 site.backToChoice = Back to choice page
 site.add = Add
 site.remove = Remove
+site.change = Change
 site.add.item = Add item
 site.add.anotherItem = Add another item
 
