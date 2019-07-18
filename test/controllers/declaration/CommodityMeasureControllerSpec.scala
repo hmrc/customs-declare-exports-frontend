@@ -65,7 +65,7 @@ class CommodityMeasureControllerSpec
         "user is signed in" in {
           authorizedUser()
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-          val packages: Seq[PackageInformation] = arbitraryPackagingSeq.sample.getOrElse(Seq.empty)
+          val packages: Seq[PackageInformation] = Seq(PackageInformation(Some("type"), Some(1), Some("mark")))
           withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = packages.toList, commodityMeasure = None))))
           val result = route(app, getRequest(uri)).value
           val stringResult = contentAsString(result)
