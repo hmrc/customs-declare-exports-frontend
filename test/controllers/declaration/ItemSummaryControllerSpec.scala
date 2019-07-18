@@ -19,31 +19,30 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.Choice.choiceId
-import org.mockito.Mockito.{reset, verify, when}
 import generators.Generators
-import org.mockito.ArgumentMatchers
+import models.declaration.governmentagencygoodsitem.{GovernmentAgencyGoodsItem, Packaging}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import org.scalatest.prop.PropertyChecks
 import play.api.test.Helpers._
 import services.cache.{ExportItem, ExportsCacheModel}
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
-import uk.gov.hmrc.wco.dec.{GovernmentAgencyGoodsItem, Packaging}
-import org.mockito.ArgumentMatchers.any
 
 import scala.concurrent.Future
 
 class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
 
+  private lazy val testItem = ExportItem(id = item1Id)
+  private lazy val testItem2 = ExportItem(id = item2Id)
+  private lazy val cacheModelWith1Item = createModelWithItems("", items = Set(testItem))
+  private lazy val cacheModelWith2Items = createModelWithItems("", items = Set(testItem, testItem2))
   private val viewItemsUri = uriWithContextPath("/declaration/export-items")
   private val addItemUri = uriWithContextPath("/declaration/export-items/add")
   private def removeItemUri(id: String) = uriWithContextPath(s"/declaration/export-items/$id/remove")
   private val formId = "PackageInformation"
   private val item1Id = "1234"
   private val item2Id = "5678"
-  private lazy val testItem = ExportItem(id = item1Id)
-  private lazy val testItem2 = ExportItem(id = item2Id)
-  private lazy val cacheModelWith1Item = createModelWithItems("", items = Set(testItem))
-  private lazy val cacheModelWith2Items = createModelWithItems("", items = Set(testItem, testItem2))
 
   override def beforeEach() {
     authorizedUser()

@@ -23,30 +23,25 @@ import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.{Schema, SchemaFactory}
 import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.wco.dec.MetaData
+import services.WcoMetadataMapper
+import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
 import scala.xml.{Elem, SAXException, XML}
 
 object XmlBehaviours extends PlaySpec {
+
+  val mapper = new WcoMetadataMapper
 
   val importDeclarationSchemaResources = Seq(
     "/wco-declaration-schemas/declaration/DocumentMetaData_2_DMS.xsd",
     "/wco-declaration-schemas/declaration/WCO_DEC_2_DMS.xsd"
   )
 
-  def validXmlScenario(schemas: Seq[String] = Seq.empty)(test: => Elem): Unit =
-    validateAgainstSchemaResources(test.mkString, schemas)
-
   def validDeclarationXmlScenario()(test: => Elem): Unit =
     validXmlScenario(importDeclarationSchemaResources)(test)
 
-  def isValidImportDeclarationXml(xml: String): Boolean =
-    try {
-      validateAgainstSchemaResources(xml, importDeclarationSchemaResources)
-      true
-    } catch {
-      case _: SAXException => false
-    }
+  def validXmlScenario(schemas: Seq[String] = Seq.empty)(test: => Elem): Unit =
+    validateAgainstSchemaResources(test.mkString, schemas)
 
   private def validateAgainstSchemaResources(xml: String, schemas: Seq[String]): Unit = {
     val schema: Schema = {
@@ -60,13 +55,17 @@ object XmlBehaviours extends PlaySpec {
     validator.validate(new StreamSource(new StringReader(xml)))
   }
 
+  def isValidImportDeclarationXml(xml: String): Boolean =
+    try {
+      validateAgainstSchemaResources(xml, importDeclarationSchemaResources)
+      true
+    } catch {
+      case _: SAXException => false
+    }
+
   def hasExpectedOutput[T](meta: MetaData, expected: T)(extractor: Elem => T): Elem = {
-    val xml = XML.loadString(meta.toXml)
+    val xml = XML.loadString(mapper.toXml(meta))
     extractor(xml) must be(expected)
     xml
   }
-
-  def hasExpectedInput[T](meta: MetaData, expected: T)(extractor: MetaData => T): Unit =
-    extractor(MetaData.fromXml(meta.toXml)) must be(expected)
-
 }

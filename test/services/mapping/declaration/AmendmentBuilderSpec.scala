@@ -17,12 +17,12 @@
 package services.mapping.declaration
 import org.scalatest.{Matchers, WordSpec}
 
-class FunctionCodeBuilderSpec extends WordSpec with Matchers {
+class AmendmentBuilderSpec extends WordSpec with Matchers {
 
-  "FunctionCodeBuilder" should {
-    "correctly map to the WCO-DEC Declaration Function Code instance" in {
-      val functionCodeType = FunctionCodeBuilder.build("9")
-      functionCodeType.getValue should be("9")
+  "AmendmentBuilder" should {
+    "correctly map to the WCO-DEC Declaration Amendment instance" in {
+      val amendment = AmendmentBuilder.build("someChangeReason")
+      amendment.getChangeReasonCode.getValue should be("someChangeReason")
     }
   }
 }

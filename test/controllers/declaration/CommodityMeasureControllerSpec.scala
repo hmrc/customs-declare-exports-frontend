@@ -34,7 +34,8 @@ import services.cache.{ExportItem, ExportsCacheModel}
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
 class CommodityMeasureControllerSpec
-    extends CustomExportsBaseSpec with CommodityMeasureMessages with Generators with PropertyChecks with OptionValues with BeforeAndAfterEach {
+    extends CustomExportsBaseSpec with CommodityMeasureMessages with Generators with PropertyChecks with OptionValues
+    with BeforeAndAfterEach {
 
   val cacheModel = createModelWithItem("")
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/commodity-measure")
@@ -82,7 +83,9 @@ class CommodityMeasureControllerSpec
 
         "when no packages added and user tries to navigate to the screen" in {
           authorizedUser()
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty, commodityMeasure = None))))
+          withNewCaching(
+            createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty, commodityMeasure = None)))
+          )
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
           val result = route(app, getRequest(uri)).value
           status(result) must be(BAD_REQUEST)
@@ -110,7 +113,9 @@ class CommodityMeasureControllerSpec
 
         "invalid data is submitted" in {
           authorizedUser()
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty, commodityMeasure = None))))
+          withNewCaching(
+            createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty, commodityMeasure = None)))
+          )
           withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
           val body = Seq(("supplementaryUnits", "abcd"), ("netMass", ""), ("grossMass", ""))
@@ -166,7 +171,12 @@ class CommodityMeasureControllerSpec
         "on click of continue when a record has already been added" in {
           forAll(arbitrary[CommodityMeasure]) { commodityMeasure =>
             authorizedUser()
-            withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List(), commodityMeasure = Some(commodityMeasure)))))
+            withNewCaching(
+              createModelWithItem(
+                "",
+                Some(ExportItem("id", packageInformation = List(), commodityMeasure = Some(commodityMeasure)))
+              )
+            )
             withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
             val payload = Seq(
               ("supplementaryUnits", commodityMeasure.supplementaryUnits.getOrElse("")),

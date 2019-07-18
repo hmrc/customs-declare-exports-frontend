@@ -115,7 +115,9 @@ class AdditionalFiscalReferencesControllerSpec extends CustomExportsBaseSpec {
 
       "user clicks save with empty form and item in the cache" in {
         val cachedData = AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("FR", "7232")))
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", additionalFiscalReferencesData = Some(cachedData)))))
+        withNewCaching(
+          createModelWithItem("", Some(ExportItem("id", additionalFiscalReferencesData = Some(cachedData))))
+        )
 
         val body = Seq(saveAndContinueActionUrlEncoded)
         val request = postRequestFormUrlEncoded(uri, body: _*)

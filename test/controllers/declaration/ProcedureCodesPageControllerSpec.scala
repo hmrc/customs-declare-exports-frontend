@@ -105,7 +105,12 @@ class ProcedureCodesPageControllerSpec
 
       "maximum amount of codes are reached" in {
 
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", procedureCodes = Some(cacheWithMaximumAmountOfAdditionalCodes)))))
+        withNewCaching(
+          createModelWithItem(
+            "",
+            Some(ExportItem("id", procedureCodes = Some(cacheWithMaximumAmountOfAdditionalCodes)))
+          )
+        )
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded)
 

@@ -22,6 +22,12 @@ import wco.datamodel.wco.declaration_ds.dms._2.DeclarationTypeCodeType
 
 object TypeCodeBuilder {
 
+  def build(codeType: String) = {
+    val typeCodeType = new DeclarationTypeCodeType()
+    typeCodeType.setValue(codeType)
+    typeCodeType
+  }
+
   def build(implicit cacheMap: CacheMap): DeclarationTypeCodeType = {
     val dispatchLocation = cacheMap
       .getEntry[DispatchLocation](DispatchLocation.formId)

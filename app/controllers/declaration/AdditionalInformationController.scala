@@ -66,7 +66,8 @@ class AdditionalInformationController @Inject()(
 
       val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
-      val cachedData = exportsCacheService.getItemByIdAndSession(itemId, journeySessionId)
+      val cachedData = exportsCacheService
+        .getItemByIdAndSession(itemId, journeySessionId)
         .map(_.flatMap(_.additionalInformation).getOrElse(AdditionalInformationData(Seq())))
 
       cachedData.flatMap { cache =>
@@ -147,7 +148,8 @@ class AdditionalInformationController @Inject()(
     getAndUpdateExportCacheModel(
       sessionId,
       model => {
-        val item: Option[ExportItem] = model.items.find(item => item.id.equals(itemId))
+        val item: Option[ExportItem] = model.items
+          .find(item => item.id.equals(itemId))
           .map(_.copy(additionalInformation = Some(updatedAdditionalInformation)))
         val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
         exportsCacheService.update(sessionId, model.copy(items = itemList))

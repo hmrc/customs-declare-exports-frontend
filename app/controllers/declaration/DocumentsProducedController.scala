@@ -54,7 +54,8 @@ class DocumentsProducedController @Inject()(
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId) map(_.flatMap(_.documentsProducedData).map(_.documents)) map {
+    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId) map (_.flatMap(_.documentsProducedData)
+      .map(_.documents)) map {
       case Some(data) => Ok(documentProducedPage(itemId, appConfig, form(), data))
       case _          => Ok(documentProducedPage(itemId, appConfig, form(), Seq()))
     }
@@ -63,7 +64,8 @@ class DocumentsProducedController @Inject()(
   def saveForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
-    val cachedData: Future[DocumentsProducedData] = exportsCacheService.getItemByIdAndSession(itemId, journeySessionId)
+    val cachedData: Future[DocumentsProducedData] = exportsCacheService
+      .getItemByIdAndSession(itemId, journeySessionId)
       .map(_.flatMap(_.documentsProducedData).getOrElse(DocumentsProducedData(Seq())))
 
     cachedData.flatMap { cache: DocumentsProducedData =>
@@ -208,7 +210,8 @@ class DocumentsProducedController @Inject()(
     getAndUpdateExportCacheModel(
       sessionId,
       model => {
-        val item: Option[ExportItem] = model.items.find(item => item.id.equals(itemId))
+        val item: Option[ExportItem] = model.items
+          .find(item => item.id.equals(itemId))
           .map(_.copy(documentsProducedData = Some(updatedData)))
         val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
         exportsCacheService.update(sessionId, model.copy(items = itemList))

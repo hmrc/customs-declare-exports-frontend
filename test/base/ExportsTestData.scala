@@ -17,7 +17,7 @@
 package base
 
 import forms.Choice._
-import forms.{Choice, Ducr}
+import forms.Choice
 import models.{IdentityData, SignedInUser}
 import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, LocalDate}
@@ -26,9 +26,6 @@ import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments, User}
-import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.wco.dec.inventorylinking.common.{AgentDetails, TransportDetails, UcrBlock}
-import uk.gov.hmrc.wco.dec.inventorylinking.movement.request.InventoryLinkingMovementRequest
 
 object ExportsTestData {
 
@@ -207,28 +204,6 @@ object ExportsTestData {
       "transportNationality" -> JsString("PL")
     )
   )
-
-  def validMovementRequest(movementType: String) =
-    InventoryLinkingMovementRequest(
-      messageCode = movementType,
-      agentDetails =
-        Some(AgentDetails(eori = Some("QWERTY123"), agentLocation = Some("Location"), agentRole = Some("ABC"))),
-      ucrBlock = UcrBlock(ucr = "GB/NLA-0YH06GF0V3CUPJC9393", ucrType = "D"),
-      goodsLocation = "Location",
-      goodsArrivalDateTime = Some("2018-11-21T17:47:02"),
-      goodsDepartureDateTime = Some("2018-11-21T17:47:02"),
-      shedOPID = Some("ABC"),
-      masterUCR = Some("GB/NLA-0YH06GF0V3CUPJC9393"),
-      masterOpt = Some("A"),
-      movementReference = Some("Movement Reference"),
-      transportDetails = Some(
-        TransportDetails(
-          transportID = Some("Transport ID"),
-          transportMode = Some("M"),
-          transportNationality = Some("UK")
-        )
-      )
-    )
 
   val choiceForm = Json.toJson(Choice("EAL"))
 }

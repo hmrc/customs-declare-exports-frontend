@@ -20,8 +20,10 @@ import forms.cancellation.CancellationChangeReason.{Duplication, NoLongerRequire
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.Json
-import uk.gov.hmrc.wco.dec._
+import services.mapping.MetaDataBuilder
+import services.mapping.declaration.DeclarationBuilder
 import utils.validators.forms.FieldValidator._
+import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
 case class CancelDeclaration(
   functionalReferenceId: String,
@@ -38,30 +40,9 @@ case class CancelDeclaration(
   private val PointerDocumentSectionCode2 = "06A"
 
   def createCancellationMetadata(eori: String): MetaData =
-    MetaData(
-      declaration = Some(
-        Declaration(
-          functionCode = Some(FunctionCode),
-          functionalReferenceId = Some(functionalReferenceId),
-          id = Some(declarationId),
-          typeCode = Some(TypeCode),
-          submitter = Some(NamedEntityWithAddress(id = Some(eori))),
-          additionalInformations = Seq(
-            AdditionalInformation(
-              statementDescription = Some(statementDescription),
-              statementTypeCode = Some(StatementTypeCode),
-              pointers = Seq(
-                Pointer(
-                  sequenceNumeric = Some(PointerSequenceNumeric),
-                  documentSectionCode = Some(PointerDocumentSectionCode1)
-                ),
-                Pointer(documentSectionCode = Some(PointerDocumentSectionCode2))
-              )
-            )
-          ),
-          amendments = Seq(Amendment(changeReasonCode = Some(changeReason)))
-        )
-      )
+    MetaDataBuilder.buildCancellationRequest(
+      DeclarationBuilder
+        .buildCancelationRequest(functionalReferenceId, declarationId, statementDescription, changeReason, eori)
     )
 }
 

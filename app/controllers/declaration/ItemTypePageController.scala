@@ -78,7 +78,9 @@ class ItemTypePageController @Inject()(
       val inputForm = ItemType.form().bindFromRequest()
       val itemTypeInput: ItemType = inputForm.value.getOrElse(ItemType.empty)
 
-      exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.flatMap(_.itemType))
+      exportsCacheService
+        .getItemByIdAndSession(itemId, journeySessionId)
+        .map(_.flatMap(_.itemType))
         .zip(hasAdditionalFiscalReferencesFor(itemId))
         .flatMap {
           case (itemTypeCacheOpt, hasFiscalReferences) =>
@@ -243,7 +245,9 @@ class ItemTypePageController @Inject()(
   }
 
   private def hasAdditionalFiscalReferencesFor(itemId: String)(implicit request: JourneyRequest[_]): Future[Boolean] =
-    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.flatMap(_.fiscalInformation))
+    exportsCacheService
+      .getItemByIdAndSession(itemId, journeySessionId)
+      .map(_.flatMap(_.fiscalInformation))
       .map(_.fold(false)(_.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes))
 
   private def updateCacheModels(itemId: String, updatedCache: ItemType)(implicit journeyRequest: JourneyRequest[_]) =

@@ -16,14 +16,13 @@
 
 package services.mapping.declaration
 
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationFunctionCodeType
 
 object FunctionCodeBuilder {
 
-  def build(implicit cacheMap: CacheMap): DeclarationFunctionCodeType = {
+  def build(value: String): DeclarationFunctionCodeType = {
     val functionCode = new DeclarationFunctionCodeType()
-    functionCode.setValue("9")
+    functionCode.setValue(value)
     functionCode
   }
 }
