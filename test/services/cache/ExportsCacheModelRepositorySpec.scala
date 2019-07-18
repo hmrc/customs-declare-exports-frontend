@@ -16,14 +16,16 @@
 
 package services.cache
 
-import java.time.LocalDateTime
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterEach, MustMatchers, OptionValues, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsValue, Json}
 import reactivemongo.bson.{BSONDocument, BSONLong}
+import reactivemongo.play.json.ImplicitBSONHandlers.BSONDocumentWrites
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.global
@@ -33,6 +35,7 @@ class ExportsCacheModelRepositorySpec
     with OptionValues {
 
   private implicit val ec: ExecutionContext = global
+  private val instant = Instant.EPOCH
   private val sessionId = "12345"
   override lazy val app: Application = GuiceApplicationBuilder()
     .build()
@@ -50,16 +53,30 @@ class ExportsCacheModelRepositorySpec
 
   "ExportsCacheModelRepository" when {
 
-    "on update" should {
+    "upserting" should {
       "return Some with model " in {
         val model = createModel(sessionId)
         val result = repo.upsert(sessionId, model).futureValue
         result must be(Some(model))
       }
 
+      "store dates as Mongo Date Types" in {
+        val model = createModel(sessionId)
+        repo.upsert(sessionId, model).futureValue
+
+        val result: Option[Map[String, JsValue]] = repo.collection
+          .find(BSONDocument("sessionId" -> sessionId))
+          .one[Map[String, JsValue]]
+          .futureValue
+
+        result must be(defined)
+        result.get("createdDateTime") mustBe Json.obj("$date" -> instant.toEpochMilli)
+        result.get("updatedDateTime") mustBe Json.obj("$date" -> instant.toEpochMilli)
+      }
+
     }
 
-    "on get" should {
+    "retrieving" should {
       "return Some with model when exists" in {
         val model = createModel(sessionId)
         repo.upsert(sessionId, model).futureValue
@@ -90,8 +107,8 @@ class ExportsCacheModelRepositorySpec
     ExportsCacheModel(
       sessionId = existingSessionId,
       draftId = "",
-      createdDateTime = LocalDateTime.now(),
-      updatedDateTime = LocalDateTime.now(),
+      createdDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC),
+      updatedDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC),
       choice = "SMP"
     )
 }

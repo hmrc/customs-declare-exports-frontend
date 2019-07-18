@@ -16,14 +16,14 @@
 
 package services.cache
 
-import java.time.LocalDateTime
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 
 import config.AppConfig
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.{NatureOfTransaction, _}
 import javax.inject.Inject
 import models.declaration.{Locations, Parties, TransportInformationContainerData}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsError, JsNumber, JsObject, JsResult, JsSuccess, JsValue, Json, OFormat}
 import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
@@ -98,5 +98,21 @@ case class ExportsCacheModel(
 )
 
 object ExportsCacheModel {
-  implicit val format = Json.format[ExportsCacheModel]
+  implicit val formatInstant: OFormat[LocalDateTime] = new OFormat[LocalDateTime] {
+    override def writes(datetime: LocalDateTime): JsObject = {
+      Json.obj("$date" -> datetime.toInstant(ZoneOffset.UTC).toEpochMilli)
+    }
+
+    override def reads(json: JsValue): JsResult[LocalDateTime] = {
+      json match {
+        case JsObject(map) if map.contains("$date") =>
+          map("$date") match {
+            case JsNumber(v) => JsSuccess(Instant.ofEpochMilli(v.toLong).atOffset(ZoneOffset.UTC).toLocalDateTime)
+            case _ => JsError("Unexpected Date Format. Expected a Number (Epoch Milliseconds)")
+          }
+        case _ => JsError("Unexpected Date Format. Expected an object containing a $date field.")
+      }
+    }
+  }
+  implicit val format: OFormat[ExportsCacheModel] = Json.format[ExportsCacheModel]
 }
