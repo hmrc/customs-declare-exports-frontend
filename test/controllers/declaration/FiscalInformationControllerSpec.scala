@@ -51,7 +51,6 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
   "GET" should {
 
     "return 200 on GET request with a success" in {
-
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
@@ -70,7 +69,6 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
   "POST" should {
 
     "return bad request for empty form" in {
-
       val result = route(app, postRequest(uri, emptyFiscalInformationJson)).get
 
       status(result) must be(BAD_REQUEST)
@@ -79,7 +77,6 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
     }
 
     "return bad request for incorrect values" in {
-
       val result = route(app, postRequest(uri, incorrectFiscalInformation)).get
 
       status(result) must be(BAD_REQUEST)
@@ -88,7 +85,6 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
     }
 
     "redirect to 'AdditionalFiscalReferences' page when choice is yes" in {
-
       val result = route(app, postRequest(uri, fiscalInformationWithYes)).get
 
       status(result) must be(SEE_OTHER)
