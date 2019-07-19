@@ -49,9 +49,9 @@
 
 
     @if(items.nonEmpty) {
-        <table class="form-group">
+        <table id="item_table" class="form-group">
             <thead>
-                <tr>
+                <tr id="item_table--headers">
                     <th scope="col">@messages("supplementary.itemsSummary.itemNumber")</th>
                     <th scope="col">@messages("supplementary.itemsSummary.procedureCode")</th>
                     <th scope="col">@messages("supplementary.itemsSummary.commodityCode")</th>
@@ -61,12 +61,12 @@
             </thead>
             <tbody>
 
-         @items.zipWithIndex.map { case (item, index) =>
-                <tr>
-                    <td scope="row">@item.sequenceId</td>
-                    <td scope="row">@item.procedureCodes.map(_.procedureCode).getOrElse("") </td>
-                    <td scope="row">@item.itemType.map(_.combinedNomenclatureCode) </td>
-                    <td scope="row">
+         @items.sortBy(_.sequenceId).zipWithIndex.map { case (item, index) =>
+                <tr id="item_@index">
+                    <td id="item_@index--sequence_id" scope="row">@item.sequenceId</td>
+                    <td id="item_@index--procedure_code" scope="row">@item.procedureCodes.map(_.procedureCode).getOrElse("") </td>
+                    <td id="item_@index--item_type" scope="row">@item.itemType.map(_.combinedNomenclatureCode) </td>
+                    <td id="item_@index--package_count" scope="row">
                         <ol type="1">@item.packageInformation.map(a =>
                             <li>{a.numberOfPackages.getOrElse(0)}</li>
                         )
