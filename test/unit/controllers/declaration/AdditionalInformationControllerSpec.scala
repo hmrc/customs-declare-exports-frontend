@@ -195,6 +195,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
         val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/items/itemId/add-document"))
       }
 
       "user save correct data without new item" in new SetUp {
@@ -211,6 +212,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
         val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(correctForm))
 
         status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/items/itemId/add-document"))
       }
 
       "user remove existing item" in new SetUp {

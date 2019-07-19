@@ -211,6 +211,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
         val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/items/itemId/item-type"))
       }
 
       "user save correct data without new item" in new SetUp {
@@ -227,6 +228,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
         val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(correctForm))
 
         status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/items/itemId/item-type"))
       }
 
       "user remove existing item" in new SetUp {

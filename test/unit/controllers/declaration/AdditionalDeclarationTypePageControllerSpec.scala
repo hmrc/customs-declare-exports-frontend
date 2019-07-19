@@ -94,6 +94,7 @@ class AdditionalDeclarationTypePageControllerSpec extends ControllerSpec {
         val result = controller.submitForm()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignment-references"))
       }
     }
   }
@@ -141,6 +142,7 @@ class AdditionalDeclarationTypePageControllerSpec extends ControllerSpec {
         val result = controller.submitForm()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignment-references"))
       }
     }
   }
