@@ -18,10 +18,14 @@ package unit.controllers
 
 import controllers.ChoiceController
 import forms.Choice
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.choice_page
+
+import scala.concurrent.Future
 
 class ChoiceControllerSpec extends ControllerSpec {
   import ChoiceControllerSpec._
@@ -48,6 +52,7 @@ class ChoiceControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked with empty cache" in new SetUp {
+        when(mockExportsCacheService.get(any())).thenReturn(Future.successful(None))
 
         val result = controller.displayPage()(getRequest())
 

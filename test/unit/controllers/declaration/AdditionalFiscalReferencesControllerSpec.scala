@@ -20,10 +20,14 @@ import controllers.declaration.AdditionalFiscalReferencesController
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import services.cache.ExportItem
 import unit.base.ControllerSpec
 import views.html.declaration.additional_fiscal_references
+
+import scala.concurrent.Future
 
 class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
 
@@ -52,6 +56,17 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked with empty cache" in new SetUp {
+        when(mockExportsCacheService.get(any())).thenReturn(Future.successful(None))
+
+        val result = controller.displayPage("itemId")(getRequest())
+
+        status(result) must be(OK)
+      }
+
+      "display page method is invoked with empty additional fiscal references" in new SetUp {
+        val itemCacheData = ExportItem("itemId", additionalFiscalReferencesData = None)
+        val cachedData = createModelWithNoItems.copy(items = Set(itemCacheData))
+        withNewCaching(cachedData)
 
         val result = controller.displayPage("itemId")(getRequest())
 
@@ -71,6 +86,18 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
         val result = controller.displayPage("itemId")(getRequest())
 
         status(result) must be(OK)
+      }
+    }
+
+    "return 400 (BAD_REQUEST)" when {
+
+      "user provide wrong action" in new SetUp {
+
+        val wrongAction = Seq(("country", "PL"), ("reference", "12345"), ("WrongAction", ""))
+
+        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(wrongAction: _*))
+
+        status(result) must be(BAD_REQUEST)
       }
     }
 
@@ -182,6 +209,22 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
         val correctForm = Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
 
         val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
+
+        status(result) must be(SEE_OTHER)
+      }
+
+      "user save correct data without new item" in new SetUp {
+        val itemCacheData = ExportItem(
+          "itemId",
+          additionalFiscalReferencesData =
+            Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
+        )
+        val cachedData = createModelWithNoItems.copy(items = Set(itemCacheData))
+        withNewCaching(cachedData)
+
+        val correctForm = saveAndContinueActionUrlEncoded
+
+        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(correctForm))
 
         status(result) must be(SEE_OTHER)
       }
