@@ -38,7 +38,7 @@ sbt:scalafmt::test  # check .sbt sources
 This project has a 
 [TamperMonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) (Google Chrome)
 or 
-[GreaseMonkey](https://addons.mozilla.org/en-GB/firefox/addon/greasemonkey/)
+[GreaseMonkey](https://addons.mozilla.org/en-GB/firefox/addon/greasemonkey/) (Firefox)
 Auto Complete Script to help speed through the form journey.
 
 These scripts can be found in the docs directory.
