@@ -45,9 +45,8 @@ class RepresentativeDetailsPageControllerSpec
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
-    withCaching[Choice](Some(Choice(SupplementaryDec)), choiceId)
     withCaching[RepresentativeDetails](None, RepresentativeDetails.formId)
+    withNewCaching(createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec))
   }
 
   override def afterEach() {
@@ -81,7 +80,7 @@ class RepresentativeDetailsPageControllerSpec
           "DraftId",
           LocalDateTime.now(),
           LocalDateTime.now(),
-          "SMP",
+          Choice.AllowedChoiceValues.SupplementaryDec,
           parties = Parties(representativeDetails = Some(correctRepresentativeDetails))
         )
       )
@@ -181,9 +180,6 @@ class RepresentativeDetailsPageControllerSpec
     }
 
     "accept form with status and EORI if on supplementary journey" in {
-      withCaching[RepresentativeDetails](None)
-      withCaching[Choice](Some(Choice(SupplementaryDec)), choiceId)
-
       val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
 
@@ -193,8 +189,7 @@ class RepresentativeDetailsPageControllerSpec
     }
 
     "accept form with status and EORI if on standard journey" in {
-      withCaching[Choice](Some(Choice(StandardDec)), choiceId)
-
+      withNewCaching(createModelWithNoItems(StandardDec))
       val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
       val header = result.futureValue.header
 
@@ -204,7 +199,6 @@ class RepresentativeDetailsPageControllerSpec
     }
 
     "accept form with status and address if on supplementary journey" in {
-
       val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
 
@@ -214,8 +208,7 @@ class RepresentativeDetailsPageControllerSpec
     }
 
     "accept form with status and address only if on standard journey" in {
-      withCaching[Choice](Some(Choice(StandardDec)), choiceId)
-
+      withNewCaching(createModelWithNoItems(StandardDec))
       val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
       val header = result.futureValue.header
 
@@ -226,7 +219,7 @@ class RepresentativeDetailsPageControllerSpec
 
     "save data to the cache" in {
 
-      val model = createModelWithItem("")
+      val model = createModelWithItem("", journeyType = Choice.AllowedChoiceValues.SupplementaryDec)
 
       when(mockExportsCacheService.get(any())).thenReturn(Future.successful(Some(model)))
 
@@ -276,8 +269,7 @@ class RepresentativeDetailsPageControllerSpec
     }
 
     "redirect to Consignee Details page if on standard journey" in {
-      withCaching[Choice](Some(Choice(StandardDec)), choiceId)
-
+      withNewCaching(createModelWithNoItems(StandardDec))
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
       val header = result.futureValue.header
 

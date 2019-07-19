@@ -17,8 +17,7 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransactionSpec._
 import helpers.views.declaration.NatureOfTransactionMessages
@@ -32,9 +31,8 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
     withCaching[NatureOfTransaction](None)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   override def afterEach() {
@@ -54,7 +52,7 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
     "read item from cache and display it" in {
 
       val cachedData = NatureOfTransaction("1")
-      withNewCaching(createModelWithNoItems().copy(natureOfTransaction = Some(cachedData)))
+      withNewCaching(createModelWithNoItems(SupplementaryDec).copy(natureOfTransaction = Some(cachedData)))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)

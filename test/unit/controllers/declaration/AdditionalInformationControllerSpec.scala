@@ -47,7 +47,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
 
     authorizedUser()
     withCaching(None)
-    withNewCaching(createModelWithNoItems)
+    withNewCaching(createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec))
     withJourneyType(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
   }
 
@@ -68,7 +68,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
           "itemId",
           additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description"))))
         )
-        val cachedData = createModelWithNoItems.copy(items = Set(itemCacheData))
+        val cachedData =
+          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
         withNewCaching(cachedData)
 
         val result = controller.displayPage("itemId")(getRequest())
@@ -106,7 +107,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
           "itemId",
           additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description"))))
         )
-        val cachedData = createModelWithNoItems.copy(items = Set(itemCacheData))
+        val cachedData =
+          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
         withNewCaching(cachedData)
 
         val duplicatedForm = Seq(("code", "12345"), ("description", "description"), addActionUrlEncoded)
@@ -120,9 +122,11 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
 
         val itemCacheData = ExportItem(
           "itemId",
-          additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description"))))
+          additionalInformation =
+            Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description"))))
         )
-        val cachedData = createModelWithNoItems.copy(items = Set(itemCacheData))
+        val cachedData =
+          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
         withNewCaching(cachedData)
 
         val form = Seq(("code", "12345"), ("description", "text"), addActionUrlEncoded)
@@ -150,7 +154,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
           "itemId",
           additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description"))))
         )
-        val cachedData = createModelWithNoItems.copy(items = Set(itemCacheData))
+        val cachedData =
+          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
         withNewCaching(cachedData)
 
         val duplicatedForm = Seq(("code", "12345"), ("description", "description"), saveAndContinueActionUrlEncoded)
@@ -164,9 +169,11 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
 
         val itemCacheData = ExportItem(
           "itemId",
-          additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description"))))
+          additionalInformation =
+            Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description"))))
         )
-        val cachedData = createModelWithNoItems.copy(items = Set(itemCacheData))
+        val cachedData =
+          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
         withNewCaching(cachedData)
 
         val form = Seq(("code", "12345"), ("description", "text"), saveAndContinueActionUrlEncoded)
@@ -202,9 +209,11 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
 
         val itemCacheData = ExportItem(
           "itemId",
-          additionalInformation = Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description"))))
+          additionalInformation =
+            Some(AdditionalInformationData(Seq.fill(99)(AdditionalInformation("12345", "description"))))
         )
-        val cachedData = createModelWithNoItems.copy(items = Set(itemCacheData))
+        val cachedData =
+          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
         withNewCaching(cachedData)
 
         val correctForm = saveAndContinueActionUrlEncoded
@@ -221,7 +230,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
           "itemId",
           additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("12345", "description"))))
         )
-        val cachedData = createModelWithNoItems.copy(items = Set(itemCacheData))
+        val cachedData =
+          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
         withNewCaching(cachedData)
 
         val removeForm = (Remove.toString, "0")

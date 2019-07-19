@@ -101,7 +101,8 @@ class AppConfig @Inject()(
 
   def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 
-  lazy val cacheTimeToLive: FiniteDuration = servicesConfig.getDuration("mongodb.timeToLive").asInstanceOf[FiniteDuration]
+  lazy val cacheTimeToLive: FiniteDuration =
+    servicesConfig.getDuration("mongodb.timeToLive").asInstanceOf[FiniteDuration]
 
   lazy val defaultFeatureStatus: features.FeatureStatus.Value =
     FeatureStatus.withName(loadConfig(feature2Key(Feature.default)))

@@ -18,9 +18,8 @@ package controllers.declaration
 
 import base.CustomExportsBaseSpec
 import forms.Choice
-import forms.Choice.choiceId
 import forms.declaration.OfficeOfExitSupplementarySpec._
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitForms, OfficeOfExitStandard, OfficeOfExitSupplementary}
+import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import helpers.views.declaration.OfficeOfExitMessages
 import models.declaration.Locations
 import org.mockito.Mockito.reset
@@ -31,10 +30,8 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
   private val uri: String = uriWithContextPath("/declaration/office-of-exit")
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
-  }
 
   override def afterEach() {
     reset(mockExportsCacheService)
@@ -42,12 +39,12 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
   trait SupplementarySetUp {
     withCaching[OfficeOfExitSupplementary](None)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    withNewCaching(createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec))
   }
 
   trait StandardSetUp {
     withCaching[OfficeOfExitStandard](None)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
+    withNewCaching(createModelWithNoItems(Choice.AllowedChoiceValues.StandardDec))
   }
 
   "Office Of Exit Controller during supplementary declaration on GET" should {
@@ -63,7 +60,8 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
       val cachedData = OfficeOfExitSupplementary("999AAA45")
       withNewCaching(
-        createModelWithNoItems().copy(locations = Locations(officeOfExit = Some(OfficeOfExit.from(cachedData))))
+        createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec)
+          .copy(locations = Locations(officeOfExit = Some(OfficeOfExit.from(cachedData))))
       )
 
       val Some(result) = route(app, getRequest(uri))
@@ -88,7 +86,8 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val circumstancesCode = "Yes"
       val cachedData = OfficeOfExitStandard(officeId, Some(presentationOfficeId), circumstancesCode)
       withNewCaching(
-        createModelWithNoItems().copy(locations = Locations(officeOfExit = Some(OfficeOfExit.from(cachedData))))
+        createModelWithNoItems(Choice.AllowedChoiceValues.StandardDec)
+          .copy(locations = Locations(officeOfExit = Some(OfficeOfExit.from(cachedData))))
       )
 
       val Some(result) = route(app, getRequest(uri))
@@ -147,7 +146,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       verifyTheCacheIsUnchanged()
     }
 
-    "return Bad Request for empty form" in {
+    "return Bad Request for empty form" in new StandardSetUp {
       val emptyOfficeOfExit: JsValue = JsObject(
         Map("officeId" -> JsString(""), "presentationOfficeId" -> JsString(""), "circumstancesCode" -> JsString(""))
       )
@@ -158,7 +157,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       verifyTheCacheIsUnchanged()
     }
 
-    "redirect to Total Numbers of Items page" in {
+    "redirect to Total Numbers of Items page" in new StandardSetUp {
       val correctOfficeOfExit: JsValue = JsObject(
         Map(
           "officeId" -> JsString("12345678"),

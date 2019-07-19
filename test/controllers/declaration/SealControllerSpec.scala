@@ -21,13 +21,12 @@ import java.time.LocalDateTime
 import base.CSRFUtil._
 import base.CustomExportsBaseSpec
 import base.TestHelper._
-import forms.Choice
-import forms.Choice.choiceId
-import forms.declaration.{Seal, TransportDetails}
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import forms.declaration.Seal
 import generators.Generators
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.{reset, verify}
+import org.mockito.Mockito.{reset, times, verify}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen.listOf
 import org.scalatest.prop.PropertyChecks
@@ -48,10 +47,8 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
     withCaching[Seq[Seal]](None, Seal.formId)
-    withCaching[TransportDetails](None, TransportDetails.formId)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
   }
 
   override def afterEach() {
@@ -69,7 +66,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
       val result = route(app, getRequest(uri)).value
       status(result) must be(OK)
-      verify(mockExportsCacheService).get(anyString)
+      verify(mockExportsCacheService, times(2)).get(anyString)
     }
 
     "populate the form fields with data from cache" in {
@@ -147,7 +144,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
     "on click of continue" in {
       forAll(arbitrary[Seal]) { seal =>
-        withNewCaching(createModelWithNoItems())
+        withNewCaching(createModelWithNoItems(SupplementaryDec))
         val payload = Seq(("id", seal.id)) :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         status(result) must be(SEE_OTHER)
@@ -160,6 +157,13 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
   private def withCache(data: Seq[Seal]) =
     withNewCaching(
-      ExportsCacheModel("SessionId", "DraftId", LocalDateTime.now(), LocalDateTime.now(), "SMP", seals = data)
+      ExportsCacheModel(
+        "SessionId",
+        "DraftId",
+        LocalDateTime.now(),
+        LocalDateTime.now(),
+        SupplementaryDec,
+        seals = data
+      )
     )
 }

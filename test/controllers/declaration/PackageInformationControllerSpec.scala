@@ -16,10 +16,9 @@
 
 package controllers.declaration
 
+import base.TestHelper._
 import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
-import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
-import forms.Choice.choiceId
 import forms.declaration.PackageInformation
 import generators.Generators
 import helpers.views.declaration.{CommonMessages, PackageInformationMessages}
@@ -29,21 +28,28 @@ import org.mockito.Mockito.{reset, times, verify}
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatest.prop.PropertyChecks
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.data.Form
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import services.cache.{ExportItem, ExportsCacheModel}
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import views.html.declaration.package_information
-import base.TestHelper._
-import services.cache.{ExportItem, ExportsCacheModel}
 
 class PackageInformationControllerSpec
     extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues with ViewValidator
     with PackageInformationMessages with CommonMessages with BeforeAndAfterEach {
 
-  val cacheModel = createModelWithItem("")
+  val cacheModel =
+    createModelWithItem(existingSessionId = "", journeyType = Choice.AllowedChoiceValues.SupplementaryDec)
+  val generatePackage: Arbitrary[PackageInformation] = Arbitrary {
+    for {
+      noOfPackages <- choose[Int](1, 99999)
+      typeOfPackages <- alphaNumStr.map(_.take(2))
+      marksNumbersId <- alphaNumStr.map(_.take(40))
+    } yield PackageInformation(Some(typeOfPackages), Some(noOfPackages), Some(marksNumbersId))
+  }
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/package-information")
   private val form = PackageInformation.form()
   private val formId = "PackageInformation"
@@ -52,21 +58,18 @@ class PackageInformationControllerSpec
   def view(form: Form[PackageInformation] = form, charges: Seq[PackageInformation] = Seq.empty): Html =
     packageInformationPage(cacheModel.items.head.id, form, charges)(fakeRequest, messages, appConfig)
 
-  val generatePackage: Arbitrary[PackageInformation] = Arbitrary {
-    for {
-      noOfPackages <- choose[Int](1, 99999)
-      typeOfPackages <- alphaNumStr.map(_.take(2))
-      marksNumbersId <- alphaNumStr.map(_.take(40))
-    } yield PackageInformation(Some(typeOfPackages), Some(noOfPackages), Some(marksNumbersId))
-  }
-
   "Package Information Controller on GET" should {
 
     "return 200 with a success" in {
 
       authorizedUser()
-      withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+      withNewCaching(
+        createModelWithItem(
+          "",
+          Some(ExportItem("id", packageInformation = List.empty)),
+          Choice.AllowedChoiceValues.SupplementaryDec
+        )
+      )
 
       val result = route(app, getRequest(uri)).get
 
@@ -81,7 +84,8 @@ class PackageInformationControllerSpec
           "",
           Some(
             ExportItem("id", packageInformation = List(PackageInformation(Some("XX"), Some(101), Some("Secret Mark"))))
-          )
+          ),
+          Choice.AllowedChoiceValues.SupplementaryDec
         )
       )
 
@@ -107,7 +111,8 @@ class PackageInformationControllerSpec
                 PackageInformation(Some("YX"), Some(102), Some("Even More Secret Mark"))
               )
             )
-          )
+          ),
+          Choice.AllowedChoiceValues.SupplementaryDec
         )
       )
 
@@ -131,7 +136,13 @@ class PackageInformationControllerSpec
       "display error when item has incorrect type of packages" in {
 
         authorizedUser()
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
+        withNewCaching(
+          createModelWithItem(
+            "",
+            Some(ExportItem("id", packageInformation = List.empty)),
+            Choice.AllowedChoiceValues.SupplementaryDec
+          )
+        )
 
         val payload = Map("typesOfPackages" -> "123").toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -146,7 +157,13 @@ class PackageInformationControllerSpec
       "display error when item has incorrect number of packages" in {
 
         authorizedUser()
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
+        withNewCaching(
+          createModelWithItem(
+            "",
+            Some(ExportItem("id", packageInformation = List.empty)),
+            Choice.AllowedChoiceValues.SupplementaryDec
+          )
+        )
 
         val payload = Map("numberOfPackages" -> "-1").toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -161,7 +178,13 @@ class PackageInformationControllerSpec
       "display error when item with incorrect shipping marks" in {
 
         authorizedUser()
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
+        withNewCaching(
+          createModelWithItem(
+            "",
+            Some(ExportItem("id", packageInformation = List.empty)),
+            Choice.AllowedChoiceValues.SupplementaryDec
+          )
+        )
 
         val payload = Map("shippingMarks" -> TestHelper.createRandomAlphanumericString(50)).toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -179,7 +202,8 @@ class PackageInformationControllerSpec
         withNewCaching(
           createModelWithItem(
             "",
-            Some(ExportItem("id", packageInformation = List(PackageInformation(Some("AB"), Some(100), Some("Test")))))
+            Some(ExportItem("id", packageInformation = List(PackageInformation(Some("AB"), Some(100), Some("Test"))))),
+            Choice.AllowedChoiceValues.SupplementaryDec
           )
         )
 
@@ -197,7 +221,13 @@ class PackageInformationControllerSpec
 
         authorizedUser()
         val cached = listOfN[PackageInformation](99, generatePackage.arbitrary).sample
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = cached.get))))
+        withNewCaching(
+          createModelWithItem(
+            "",
+            Some(ExportItem("id", packageInformation = cached.get)),
+            Choice.AllowedChoiceValues.SupplementaryDec
+          )
+        )
 
         val payload = Map("typesOfPackages" -> "AB", "numberOfPackages" -> "100", "shippingMarks" -> "Test").toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -215,7 +245,13 @@ class PackageInformationControllerSpec
       "display errors when item has incorrect type of packages" in {
 
         authorizedUser()
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
+        withNewCaching(
+          createModelWithItem(
+            "",
+            Some(ExportItem("id", packageInformation = List.empty)),
+            Choice.AllowedChoiceValues.SupplementaryDec
+          )
+        )
 
         val payload = Map("typesOfPackages" -> "123").toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -231,7 +267,13 @@ class PackageInformationControllerSpec
       "display errors when item has incorrect number of packages" in {
 
         authorizedUser()
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
+        withNewCaching(
+          createModelWithItem(
+            "",
+            Some(ExportItem("id", packageInformation = List.empty)),
+            Choice.AllowedChoiceValues.SupplementaryDec
+          )
+        )
 
         val payload = Map("numberOfPackages" -> "-1").toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -247,7 +289,13 @@ class PackageInformationControllerSpec
       "display errors when item has incorrect shipping marks" in {
 
         authorizedUser()
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
+        withNewCaching(
+          createModelWithItem(
+            "",
+            Some(ExportItem("id", packageInformation = List.empty)),
+            Choice.AllowedChoiceValues.SupplementaryDec
+          )
+        )
 
         val payload = Map("shippingMarks" -> TestHelper.createRandomAlphanumericString(50)).toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -283,7 +331,13 @@ class PackageInformationControllerSpec
         "user is signed in" in {
 
           authorizedUser()
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
+          withNewCaching(
+            createModelWithItem(
+              "",
+              Some(ExportItem("id", packageInformation = List.empty)),
+              Choice.AllowedChoiceValues.SupplementaryDec
+            )
+          )
 
           val result = route(app, getRequest(uri)).value
           val stringResult = contentAsString(result)
@@ -304,7 +358,11 @@ class PackageInformationControllerSpec
 
           val cachedData = arbitraryPackagingSeq.sample
           withNewCaching(
-            createModelWithItem("", Some(ExportItem("id", packageInformation = cachedData.getOrElse(List.empty))))
+            createModelWithItem(
+              "",
+              Some(ExportItem("id", packageInformation = cachedData.getOrElse(List.empty))),
+              Choice.AllowedChoiceValues.SupplementaryDec
+            )
           )
           val result = route(app, getRequest(uri)).value
           status(result) must be(OK)
@@ -337,7 +395,13 @@ class PackageInformationControllerSpec
         "invalid data is submitted" in {
 
           authorizedUser()
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty))))
+          withNewCaching(
+            createModelWithItem(
+              "",
+              Some(ExportItem("id", packageInformation = List.empty)),
+              Choice.AllowedChoiceValues.SupplementaryDec
+            )
+          )
 
           val body = Seq(("typesOfPackages", "1234"), addActionUrlEncoded)
 
@@ -366,8 +430,8 @@ class PackageInformationControllerSpec
               Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
             )
 
-            verify(mockExportsCacheService, times(1)).get(any[String])
-            verify(mockExportsCacheService, times(1)).update(any[String], any[ExportsCacheModel])
+            verify(mockExportsCacheService, times(2)).get(any[String])
+            verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
             verify(mockCustomsCacheService)
               .cache[Seq[PackageInformation]](any(), ArgumentMatchers.eq(formId), ArgumentMatchers.eq(Seq(packaging)))(
                 any(),
@@ -426,7 +490,13 @@ class PackageInformationControllerSpec
             authorizedUser()
 
             whenever(packagingSeq.nonEmpty) {
-              withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = packagingSeq))))
+              withNewCaching(
+                createModelWithItem(
+                  "",
+                  Some(ExportItem("id", packageInformation = packagingSeq)),
+                  Choice.AllowedChoiceValues.SupplementaryDec
+                )
+              )
               val packaging = packagingSeq.head
               val payload = toMap(packaging).toSeq :+ removeActionUrlEncoded("0")
               val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
@@ -451,7 +521,13 @@ class PackageInformationControllerSpec
 
           forAll(arbitrary[PackageInformation]) { packaging =>
             authorizedUser()
-            withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = List(packaging)))))
+            withNewCaching(
+              createModelWithItem(
+                "",
+                Some(ExportItem("id", packageInformation = List(packaging))),
+                Choice.AllowedChoiceValues.SupplementaryDec
+              )
+            )
 
             val result = route(app, postRequestFormUrlEncoded(uri, Seq(saveAndContinueActionUrlEncoded): _*)).value
             status(result) must be(SEE_OTHER)

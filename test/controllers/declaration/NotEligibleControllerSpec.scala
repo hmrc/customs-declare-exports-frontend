@@ -17,15 +17,14 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import play.api.test.Helpers._
 
 class NotEligibleControllerSpec extends CustomExportsBaseSpec {
 
   override def beforeEach() {
     authorizedUser()
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
   }
 
   "Not Eligible Controller on GET" should {

@@ -29,7 +29,7 @@ import services.cache.ExportItem
 class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalInformationMessages {
 
   private val existingItem = ExportItem("id")
-  private val cacheModel = createModelWithItem("", Some(existingItem))
+  private val cacheModel = createModelWithItem("", Some(existingItem), Choice.AllowedChoiceValues.StandardDec)
   private val uri: String = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/fiscal-information")
   private val emptyFiscalInformationJson: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("")))
   private val incorrectFiscalInformation: JsValue = JsObject(
@@ -57,7 +57,13 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
     }
 
     "read item from cache and display it" in {
-      withNewCaching(createModelWithItem("", Some(ExportItem("id", fiscalInformation = Some(FiscalInformation("Yes"))))))
+      withNewCaching(
+        createModelWithItem(
+          "",
+          Some(ExportItem("id", fiscalInformation = Some(FiscalInformation("Yes")))),
+          Choice.AllowedChoiceValues.StandardDec
+        )
+      )
 
       val result = route(app, getRequest(uri)).get
 
@@ -95,17 +101,21 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
     }
 
     "redirect to 'ItemsSummary' page and clear fiscal references when choice is no" in {
-      withNewCaching(createModelWithItem("", Some(ExportItem("id", additionalFiscalReferencesData = Some(mock[AdditionalFiscalReferencesData])))))
+      withNewCaching(
+        createModelWithItem(
+          "",
+          Some(ExportItem("id", additionalFiscalReferencesData = Some(mock[AdditionalFiscalReferencesData]))),
+          Choice.AllowedChoiceValues.StandardDec
+        )
+      )
 
       val result = route(app, postRequest(uri, fiscalInformationWithNo)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(
-        Some(routes.ItemTypePageController.displayPage(cacheModel.items.head.id).url)
+      redirectLocation(result) must be(Some(routes.ItemTypePageController.displayPage(cacheModel.items.head.id).url))
+      theCacheModelUpdated.items.head must be(
+        ExportItem("id", fiscalInformation = Some(FiscalInformation("No")), additionalFiscalReferencesData = None)
       )
-      theCacheModelUpdated.items.head must be(ExportItem("id", fiscalInformation = Some(FiscalInformation("No")), additionalFiscalReferencesData = None))
     }
-
-
   }
 }

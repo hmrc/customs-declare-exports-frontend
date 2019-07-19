@@ -17,27 +17,20 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.CommodityMeasure.commodityFormId
 import forms.declaration.{CommodityMeasure, PackageInformation}
-import generators.Generators
 import helpers.views.declaration.CommodityMeasureMessages
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify}
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
-import org.scalatest.prop.PropertyChecks
 import play.api.test.Helpers._
 import services.cache.{ExportItem, ExportsCacheModel}
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
-class CommodityMeasureControllerSpec
-    extends CustomExportsBaseSpec with CommodityMeasureMessages with Generators with PropertyChecks with OptionValues
-    with BeforeAndAfterEach {
+class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with CommodityMeasureMessages {
 
-  val cacheModel = createModelWithItem("")
+  private val cacheModel = createModelWithItem("", journeyType = SupplementaryDec)
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/commodity-measure")
   private val form = CommodityMeasure.form()
 
@@ -65,9 +58,14 @@ class CommodityMeasureControllerSpec
 
         "user is signed in" in {
           authorizedUser()
-          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
           val packages: Seq[PackageInformation] = Seq(PackageInformation(Some("type"), Some(1), Some("mark")))
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", packageInformation = packages.toList, commodityMeasure = None))))
+          withNewCaching(
+            createModelWithItem(
+              "",
+              Some(ExportItem("id", packageInformation = packages.toList, commodityMeasure = None)),
+              SupplementaryDec
+            )
+          )
           val result = route(app, getRequest(uri)).value
           val stringResult = contentAsString(result)
           status(result) must be(OK)
@@ -84,9 +82,12 @@ class CommodityMeasureControllerSpec
         "when no packages added and user tries to navigate to the screen" in {
           authorizedUser()
           withNewCaching(
-            createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty, commodityMeasure = None)))
+            createModelWithItem(
+              "",
+              Some(ExportItem("id", packageInformation = List.empty, commodityMeasure = None)),
+              "SMP"
+            )
           )
-          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
           val result = route(app, getRequest(uri)).value
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include("You must add package information to proceed")
@@ -101,7 +102,6 @@ class CommodityMeasureControllerSpec
 
         "user does not have an EORI" in {
           userWithoutEori()
-          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
           val body = Seq(("typesOfPackages", "A1"))
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
@@ -114,10 +114,12 @@ class CommodityMeasureControllerSpec
         "invalid data is submitted" in {
           authorizedUser()
           withNewCaching(
-            createModelWithItem("", Some(ExportItem("id", packageInformation = List.empty, commodityMeasure = None)))
+            createModelWithItem(
+              "",
+              Some(ExportItem("id", packageInformation = List.empty, commodityMeasure = None)),
+              SupplementaryDec
+            )
           )
-          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
           val body = Seq(("supplementaryUnits", "abcd"), ("netMass", ""), ("grossMass", ""))
 
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
@@ -135,60 +137,57 @@ class CommodityMeasureControllerSpec
 
         "with valid data and on click of add" in {
 
-          forAll(arbitrary[CommodityMeasure]) { commodityMeasure =>
-            reset(mockExportsCacheService)
-            authorizedUser()
-            withNewCaching(cacheModel)
-            withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-            val body = Seq(
-              ("supplementaryUnits", commodityMeasure.supplementaryUnits.getOrElse("")),
-              ("netMass", commodityMeasure.netMass),
-              ("grossMass", commodityMeasure.grossMass)
-            )
+          authorizedUser()
+          val commodityMeasure = CommodityMeasure(None, "100", "200")
+          withNewCaching(cacheModel)
+          withCaching[CommodityMeasure](None)
+          val body = Seq(
+            ("supplementaryUnits", commodityMeasure.supplementaryUnits.getOrElse("")),
+            ("netMass", commodityMeasure.netMass),
+            ("grossMass", commodityMeasure.grossMass)
+          )
 
-            val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
+          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
-            status(result) must be(SEE_OTHER)
-            result.futureValue.header.headers.get("Location") must be(
-              Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/additional-information")
-            )
+          status(result) must be(SEE_OTHER)
+          result.futureValue.header.headers.get("Location") must be(
+            Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/additional-information")
+          )
 
-            verify(mockExportsCacheService, times(1)).get(any[String])
-            verify(mockExportsCacheService, times(1))
-              .update(any[String], any[ExportsCacheModel])
-            verify(mockCustomsCacheService)
-              .cache[CommodityMeasure](
-                any(),
-                ArgumentMatchers.eq(commodityFormId),
-                ArgumentMatchers.eq(commodityMeasure)
-              )(any(), any(), any())
-          }
+          verify(mockExportsCacheService, times(2)).get(any[String])
+          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+          verify(mockCustomsCacheService)
+            .cache[CommodityMeasure](
+              any(),
+              ArgumentMatchers.eq(commodityFormId),
+              ArgumentMatchers.eq(commodityMeasure)
+            )(any(), any(), any())
         }
       }
 
       "navigate to 'Additional Information' page" when {
 
         "on click of continue when a record has already been added" in {
-          forAll(arbitrary[CommodityMeasure]) { commodityMeasure =>
-            authorizedUser()
-            withNewCaching(
-              createModelWithItem(
-                "",
-                Some(ExportItem("id", packageInformation = List(), commodityMeasure = Some(commodityMeasure)))
-              )
+          authorizedUser()
+          val commodityMeasure = CommodityMeasure(None, "100", "200")
+          withCaching[CommodityMeasure](None)
+          withNewCaching(
+            createModelWithItem(
+              "",
+              Some(ExportItem("id", packageInformation = List(), commodityMeasure = Some(commodityMeasure))),
+              SupplementaryDec
             )
-            withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-            val payload = Seq(
-              ("supplementaryUnits", commodityMeasure.supplementaryUnits.getOrElse("")),
-              ("netMass", commodityMeasure.netMass),
-              ("grossMass", commodityMeasure.grossMass)
-            )
-            val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
-            status(result) must be(SEE_OTHER)
-            result.futureValue.header.headers.get("Location") must be(
-              Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/additional-information")
-            )
-          }
+          )
+          val payload = Seq(
+            ("supplementaryUnits", commodityMeasure.supplementaryUnits.getOrElse("")),
+            ("netMass", commodityMeasure.netMass),
+            ("grossMass", commodityMeasure.grossMass)
+          )
+          val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
+          status(result) must be(SEE_OTHER)
+          result.futureValue.header.headers.get("Location") must be(
+            Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/additional-information")
+          )
         }
       }
     }

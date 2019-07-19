@@ -185,7 +185,7 @@ trait ViewMatchers {
   class ElementContainsFieldError(fieldName: String, content: String = "") extends Matcher[Element] {
     override def apply(left: Element): MatchResult = {
       val element = left.getElementById(s"error-message-$fieldName-input")
-      val fieldErrorElement = if(element == null) left else element
+      val fieldErrorElement = if (element == null) left else element
       MatchResult(
         fieldErrorElement.text().contains(content),
         s"Element did not contain {$content}\n${actualContentWas(fieldErrorElement)}",

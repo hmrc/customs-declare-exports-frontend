@@ -17,14 +17,12 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.StandardDec
 import forms.common.AddressSpec
 import forms.declaration.CarrierDetailsSpec._
 import forms.declaration.{CarrierDetails, EntityDetails, EntityDetailsSpec}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
-import org.mockito.Mockito.verify
+import org.mockito.Mockito._
 import play.api.test.Helpers._
 
 class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
@@ -34,14 +32,13 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
+    withNewCaching(createModelWithNoItems(StandardDec))
     withCaching[CarrierDetails](None)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   override def afterEach() = {
     super.afterEach()
-    Mockito.reset(mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Carrier Details Page Controller on GET" should {
@@ -50,7 +47,7 @@ class CarrierDetailsPageControllerSpec extends CustomExportsBaseSpec {
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
-      verify(mockExportsCacheService).get(any())
+      verify(mockExportsCacheService, times(2)).get(any())
     }
   }
 

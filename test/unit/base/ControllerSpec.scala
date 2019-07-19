@@ -50,7 +50,9 @@ trait ControllerSpec
 
   val mockExportsMetrics = new ExportsMetrics(new MetricsImpl(new DefaultApplicationLifecycle(), minimalConfiguration))
 
-  val mockJourneyAction = new JourneyAction(mockCustomsCacheService, stubMessagesControllerComponents())
+  val mockJourneyAction = new JourneyAction(mockExportsCacheService, stubMessagesControllerComponents())
+  val addActionUrlEncoded = (Add.toString, "")
+  val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
   def getRequest(): Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "").withSession(("sessionId", "sessionId")).withCSRFToken
@@ -60,7 +62,4 @@ trait ControllerSpec
 
   def postRequestAsFormUrlEncoded(body: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
     FakeRequest("POST", "").withSession(("sessionId", "sessionId")).withFormUrlEncodedBody(body: _*).withCSRFToken
-
-  val addActionUrlEncoded = (Add.toString, "")
-  val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 }
