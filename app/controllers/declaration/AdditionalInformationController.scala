@@ -38,7 +38,6 @@ import views.html.declaration.additional_information
 import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
@@ -46,7 +45,7 @@ class AdditionalInformationController @Inject()(
   exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   additionalInformationPage: additional_information
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends {
   val cacheService = exportsCacheService
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {

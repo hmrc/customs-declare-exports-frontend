@@ -112,9 +112,9 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
         val cachedData = createModelWithNoItems.copy(items = Set(itemCacheData))
         withNewCaching(cachedData)
 
-        val duplicatedForm = Seq(("country", "PL"), ("reference", "54321"), addActionUrlEncoded)
+        val form = Seq(("country", "PL"), ("reference", "54321"), addActionUrlEncoded)
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(form: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -158,9 +158,9 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
         val cachedData = createModelWithNoItems.copy(items = Set(itemCacheData))
         withNewCaching(cachedData)
 
-        val duplicatedForm = Seq(("country", "PL"), ("reference", "54321"), saveAndContinueActionUrlEncoded)
+        val form = Seq(("country", "PL"), ("reference", "54321"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(form: _*))
 
         status(result) must be(BAD_REQUEST)
       }
