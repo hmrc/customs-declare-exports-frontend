@@ -66,7 +66,7 @@ class FiscalInformationController @Inject()(
           formData =>
             formData.onwardSupplyRelief match {
               case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
-                updateCacheForYES(itemId, journeySessionId, formData) map { _ =>
+                updateCacheForYes(itemId, journeySessionId, formData) map { _ =>
                   Redirect(routes.AdditionalFiscalReferencesController.displayPage(itemId))
                 }
               case FiscalInformation.AllowedFiscalInformationAnswers.no =>
@@ -77,7 +77,7 @@ class FiscalInformationController @Inject()(
         )
   }
 
-  private def updateCacheForYES(itemId: String, sessionId: String, updatedFiscalInformation: FiscalInformation)(
+  private def updateCacheForYes(itemId: String, sessionId: String, updatedFiscalInformation: FiscalInformation)(
     implicit req: JourneyRequest[_]
   ): Future[Unit] =
     for {
