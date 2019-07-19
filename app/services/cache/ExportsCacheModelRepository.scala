@@ -16,15 +16,17 @@
 
 package services.cache
 
-import java.time.LocalDateTime
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 
+import config.AppConfig
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.{NatureOfTransaction, _}
 import javax.inject.Inject
 import models.declaration.{Locations, Parties, TransportInformationContainerData}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsError, JsNumber, JsObject, JsResult, JsSuccess, JsValue, Json, OFormat}
 import play.modules.reactivemongo.ReactiveMongoComponent
-import reactivemongo.bson.BSONObjectID
+import reactivemongo.api.indexes.{Index, IndexType}
+import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import reactivemongo.play.json.ImplicitBSONHandlers._
 import reactivemongo.play.json.commands.JSONFindAndModifyCommand.FindAndModifyResult
 import uk.gov.hmrc.mongo.ReactiveRepository
@@ -32,7 +34,7 @@ import uk.gov.hmrc.mongo.json.ReactiveMongoFormats.objectIdFormats
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent)(implicit ec: ExecutionContext)
+class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent, appConfig: AppConfig)(implicit ec: ExecutionContext)
     extends ReactiveRepository[ExportsCacheModel, BSONObjectID](
       "exportsJourneyCache",
       mc.mongoConnector.db,
@@ -41,6 +43,14 @@ class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent)(implicit
     ) {
 
   implicit val journeyFormats = ExportsCacheModel.format
+
+  override def indexes: Seq[Index] = super.indexes ++ Seq(
+    Index(
+      key = Seq("updatedDateTime" -> IndexType.Ascending),
+      name = Some("ttl"),
+      options = BSONDocument("expireAfterSeconds" -> appConfig.cacheTimeToLive.toSeconds)
+    )
+  )
 
   def get(sessionId: String): Future[Option[ExportsCacheModel]] =
     find("sessionId" -> sessionId).map(_.headOption)
@@ -88,5 +98,21 @@ case class ExportsCacheModel(
 )
 
 object ExportsCacheModel {
-  implicit val format = Json.format[ExportsCacheModel]
+  implicit val formatInstant: OFormat[LocalDateTime] = new OFormat[LocalDateTime] {
+    override def writes(datetime: LocalDateTime): JsObject = {
+      Json.obj("$date" -> datetime.toInstant(ZoneOffset.UTC).toEpochMilli)
+    }
+
+    override def reads(json: JsValue): JsResult[LocalDateTime] = {
+      json match {
+        case JsObject(map) if map.contains("$date") =>
+          map("$date") match {
+            case JsNumber(v) => JsSuccess(Instant.ofEpochMilli(v.toLong).atOffset(ZoneOffset.UTC).toLocalDateTime)
+            case _ => JsError("Unexpected Date Format. Expected a Number (Epoch Milliseconds)")
+          }
+        case _ => JsError("Unexpected Date Format. Expected an object containing a $date field.")
+      }
+    }
+  }
+  implicit val format: OFormat[ExportsCacheModel] = Json.format[ExportsCacheModel]
 }
