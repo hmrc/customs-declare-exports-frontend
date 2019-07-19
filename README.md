@@ -32,3 +32,13 @@ scalafmt::test      # check compile sources
 test:scalafmt::test # check test sources
 sbt:scalafmt::test  # check .sbt sources
 ```
+
+### Auto Complete
+
+This project has a 
+[TamperMonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) (Google Chrome)
+or 
+[GreaseMonkey](https://addons.mozilla.org/en-GB/firefox/addon/greasemonkey/) (Firefox)
+Auto Complete Script to help speed through the form journey.
+
+These scripts can be found in the docs directory.
