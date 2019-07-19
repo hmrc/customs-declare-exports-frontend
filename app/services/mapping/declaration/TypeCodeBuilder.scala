@@ -39,7 +39,7 @@ object TypeCodeBuilder {
       .orNull
   }
 
-  private def createTypeCode(
+  def createTypeCode(
     decType: AdditionalDeclarationType,
     dispatchLocation: Option[DispatchLocation]
   ): DeclarationTypeCodeType = {
