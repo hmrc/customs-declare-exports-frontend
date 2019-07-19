@@ -85,6 +85,13 @@ class CancelDeclarationControllerSpec extends ControllerSpec {
 
         status(result) must be(BAD_REQUEST)
       }
+
+      "form is incorrect" in new SetUp {
+
+        val result = controller.onSubmit()(postRequest(incorrectCancelDeclarationJSON))
+
+        status(result) must be(BAD_REQUEST)
+      }
     }
   }
 }
@@ -99,4 +106,8 @@ object CancelDeclarationControllerSpec {
     )
 
   val correctCancelDeclarationJSON: JsValue = Json.toJson(correctCancelDeclaration)
+
+  val incorrectCancelDeclaration = CancelDeclaration("functionalRefernceId", "decId", "description", "wrong reason")
+
+  val incorrectCancelDeclarationJSON: JsValue = Json.toJson(incorrectCancelDeclaration)
 }

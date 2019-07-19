@@ -18,19 +18,22 @@ package unit.base
 
 import base.{MockAuthAction, MockConnectors, MockCustomsCacheService, MockExportsCacheService}
 import com.kenshoo.play.metrics.MetricsImpl
+import controllers.actions.JourneyAction
+import controllers.util.{Add, SaveAndContinue}
 import handlers.ErrorHandler
 import metrics.ExportsMetrics
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.when
 import play.api.inject.DefaultApplicationLifecycle
 import play.api.libs.json.JsValue
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson, Request}
+import play.api.mvc.Results.BadRequest
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import unit.tools.Stubs
 import utils.FakeRequestCSRFSupport._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 trait ControllerSpec
     extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockCustomsCacheService
@@ -43,12 +46,21 @@ trait ControllerSpec
   when(mockErrorHandler.standardErrorTemplate(anyString, anyString, anyString)(any()))
     .thenReturn(Html.apply(""))
 
+  when(mockErrorHandler.displayErrorPage()(any())).thenReturn(Future.successful(BadRequest(Html.apply(""))))
+
   val mockExportsMetrics = new ExportsMetrics(new MetricsImpl(new DefaultApplicationLifecycle(), minimalConfiguration))
 
-  val fakeRequest = FakeRequest("", "").withCSRFToken
+  val mockJourneyAction = new JourneyAction(mockCustomsCacheService, stubMessagesControllerComponents())
 
-  def getRequest(): Request[AnyContentAsEmpty.type] = fakeRequest
+  def getRequest(): Request[AnyContentAsEmpty.type] =
+    FakeRequest("GET", "").withSession(("sessionId", "sessionId")).withCSRFToken
 
   def postRequest(body: JsValue): Request[AnyContentAsJson] =
-    FakeRequest("", "").withSession(("sessionId", "sessionId")).withJsonBody(body).withCSRFToken
+    FakeRequest("POST", "").withSession(("sessionId", "sessionId")).withJsonBody(body).withCSRFToken
+
+  def postRequestAsFormUrlEncoded(body: (String, String)*): Request[AnyContentAsFormUrlEncoded] =
+    FakeRequest("POST", "").withSession(("sessionId", "sessionId")).withFormUrlEncodedBody(body: _*).withCSRFToken
+
+  val addActionUrlEncoded = (Add.toString, "")
+  val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 }

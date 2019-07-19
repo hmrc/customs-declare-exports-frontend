@@ -88,8 +88,6 @@ class ChoiceController @Inject()(
                   Redirect(controllers.routes.CancelDeclarationController.displayForm())
                 case Submissions =>
                   Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
-                case _ =>
-                  Redirect(controllers.routes.ChoiceController.displayPage())
               }
           }
         }

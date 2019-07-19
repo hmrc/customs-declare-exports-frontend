@@ -19,6 +19,7 @@ package services.cache
 import java.time.{Instant, LocalDateTime, ZoneOffset}
 
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterEach, MustMatchers, OptionValues, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
@@ -40,6 +41,9 @@ class ExportsCacheModelRepositorySpec
   override lazy val app: Application = GuiceApplicationBuilder()
     .build()
   private val repo = app.injector.instanceOf[ExportsCacheModelRepository]
+
+  implicit val defaultPatience: PatienceConfig =
+    PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
