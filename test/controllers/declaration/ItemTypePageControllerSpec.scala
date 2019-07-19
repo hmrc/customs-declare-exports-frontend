@@ -34,7 +34,7 @@ import services.cache.ExportItem
 class ItemTypePageControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages {
   import ItemTypePageControllerSpec._
-  private val cacheModel = createModelWithItem("")
+  private val cacheModel = createModelWithItem("", journeyType = "SMP")
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/item-type")
 
   override def beforeEach() {
@@ -43,8 +43,6 @@ class ItemTypePageControllerSpec
     authorizedUser()
     withNewCaching(cacheModel)
     withCaching[ItemType](None, ItemType.id)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-    withCaching[FiscalInformation](None, FiscalInformation.formId)
   }
 
   override def afterEach() {
@@ -64,7 +62,7 @@ class ItemTypePageControllerSpec
     "read item from cache and display it" in {
 
       val cachedData = ItemType("5555", Seq("6666"), Seq("7777"), "FaultyGoods", Some("CusCus"), Some("12CD"), "900")
-      withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedData)))))
+      withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedData))), "SMP"))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -87,7 +85,7 @@ class ItemTypePageControllerSpec
       "user added one TARIC" in {
 
         val cachedData = ItemType("100", Seq("1234"), Seq(), "Description", None, None, "100")
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedData)))))
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedData))), "SMP"))
 
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
@@ -99,7 +97,7 @@ class ItemTypePageControllerSpec
       "user added one NAC" in {
 
         val cachedData = ItemType("100", Seq(), Seq("1234"), "Description", None, None, "100")
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedData)))))
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedData))), "SMP"))
 
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
@@ -476,7 +474,7 @@ class ItemTypePageControllerSpec
 
         "user tries to add duplicated TARIC" in {
           val cachedData = ItemType("100", fourDigitsSequence(98), Seq(), "Description", None, None, "100")
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedData)))))
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedData))), "SMP"))
 
           val form =
             buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", taricAdditionalCodes = Seq("1010"))
@@ -496,7 +494,7 @@ class ItemTypePageControllerSpec
         "user tries to add more than 99 TARIC" in {
 
           val cachedData = ItemType("100", fourDigitsSequence(99), Seq(), "Description", None, None, "100")
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedData)))))
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedData))), "SMP"))
 
           val form =
             buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", taricAdditionalCodes = Seq("2345"))
@@ -516,7 +514,7 @@ class ItemTypePageControllerSpec
         "user tries to add duplicated NAC" in {
 
           val cachedData = ItemType("100", Seq(), Seq("VATE"), "Description", None, None, "100")
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedData)))))
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedData))), "SMP"))
 
           val form =
             buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", nationalAdditionalCodes = Seq("VATE"))
@@ -541,7 +539,7 @@ class ItemTypePageControllerSpec
             ItemType("100", fourDigitsSequence(10), Seq("VATE", "VATR"), "Description", None, None, "100")
           val taricToAdd = "1234"
           val userInput = buildItemTypeUrlEncodedInput(Add)(taricAdditionalCodes = Seq(taricToAdd))
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType)))))
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType))), "SMP"))
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
@@ -560,7 +558,7 @@ class ItemTypePageControllerSpec
             ItemType("100", fourDigitsSequence(10), Seq("VATE", "VATR"), "Description", None, None, "100")
           val nacToAdd = "X442"
           val userInput = buildItemTypeUrlEncodedInput(Add)(nationalAdditionalCodes = Seq(nacToAdd))
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType)))))
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType))), "SMP"))
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
@@ -583,7 +581,7 @@ class ItemTypePageControllerSpec
             taricAdditionalCodes = Seq(taricToAdd),
             nationalAdditionalCodes = Seq(nacToAdd)
           )
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType)))))
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType))), "SMP"))
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
@@ -657,7 +655,7 @@ class ItemTypePageControllerSpec
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_0")), Map.empty)
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType)))))
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType))), "SMP"))
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
@@ -675,7 +673,7 @@ class ItemTypePageControllerSpec
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_9")), Map.empty)
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType)))))
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType))), "SMP"))
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
@@ -694,7 +692,7 @@ class ItemTypePageControllerSpec
           val cachedItemType =
             ItemType("100", taricAddCodes, Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_2")), Map.empty)
-          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType)))))
+          withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType))), "SMP"))
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
@@ -713,7 +711,7 @@ class ItemTypePageControllerSpec
         val cachedItemType =
           ItemType("100", fourDigitsSequence(10), fourDigitsSequence(10), "Description", None, None, "100")
         val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_0")), Map.empty)
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType)))))
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType))), "SMP"))
 
         val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
 
@@ -724,7 +722,7 @@ class ItemTypePageControllerSpec
         val cachedItemType =
           ItemType("100", fourDigitsSequence(10), fourDigitsSequence(10), "Description", None, None, "100")
         val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_0")), Map.empty)
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType)))))
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", itemType = Some(cachedItemType))), "SMP"))
 
         val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
 

@@ -18,6 +18,7 @@ package base
 
 import java.time.LocalDateTime
 
+import forms.Choice
 import models.declaration.Parties
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
@@ -34,7 +35,7 @@ trait MockExportsCacheService extends MockitoSugar {
   def withNewCaching(dataToReturn: ExportsCacheModel): Unit = {
 
     when(mockExportsCacheService.getItemByIdAndSession(anyString, anyString))
-      .thenReturn((Future.successful(dataToReturn.items.headOption)))
+      .thenReturn(Future.successful(dataToReturn.items.headOption))
 
     when(
       mockExportsCacheService
@@ -49,24 +50,26 @@ trait MockExportsCacheService extends MockitoSugar {
 
   def createModelWithItem(
     existingSessionId: String,
-    item: Option[ExportItem] = Some(ExportItem(id = "1234"))
+    item: Option[ExportItem] = Some(ExportItem(id = "1234")),
+    journeyType: String
   ): ExportsCacheModel = {
     val cacheExportItems = item.fold(Set.empty[ExportItem])(Set(_))
-    createModelWithItems(existingSessionId, cacheExportItems)
+    createModelWithItems(existingSessionId, cacheExportItems, journeyType)
   }
 
-  def createModelWithItems(sessionId: String, items: Set[ExportItem]): ExportsCacheModel =
+  def createModelWithItems(sessionId: String, items: Set[ExportItem], journeyType: String): ExportsCacheModel =
     ExportsCacheModel(
       sessionId = sessionId,
       draftId = "",
       createdDateTime = LocalDateTime.now(),
       updatedDateTime = LocalDateTime.now(),
-      choice = "SMP",
+      choice = journeyType,
       items = items,
       parties = Parties()
     )
 
-  def createModelWithNoItems(): ExportsCacheModel = createModelWithItems("", Set.empty)
+  def createModelWithNoItems(journeyType: String): ExportsCacheModel =
+    createModelWithItems("", Set.empty, journeyType)
 
   protected def theCacheModelUpdated: ExportsCacheModel = {
     val captor = ArgumentCaptor.forClass(classOf[ExportsCacheModel])

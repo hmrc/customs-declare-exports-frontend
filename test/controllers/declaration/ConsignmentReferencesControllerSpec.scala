@@ -19,10 +19,10 @@ package controllers.declaration
 import java.time.LocalDateTime
 
 import base.CustomExportsBaseSpec
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import forms.Ducr
 import forms.declaration.ConsignmentReferences
 import forms.declaration.ConsignmentReferencesSpec._
-import forms.{Choice, Ducr}
 import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -41,9 +41,8 @@ class ConsignmentReferencesControllerSpec
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
     withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   override def afterEach() {

@@ -42,7 +42,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
     authorizedUser()
     withCaching(None)
-    withNewCaching(createModelWithNoItems)
+    withNewCaching(createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec))
     withJourneyType(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
   }
 
@@ -59,7 +59,8 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache contains data" in new SetUp {
         val cachedData =
-          createModelWithNoItems.copy(borderTransport = Some(BorderTransport(Maritime, WagonNumber, None)))
+          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec)
+            .copy(borderTransport = Some(BorderTransport(Maritime, WagonNumber, None)))
         withNewCaching(cachedData)
 
         val result = controller.displayForm()(getRequest())

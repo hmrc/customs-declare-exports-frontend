@@ -17,21 +17,21 @@
 package controllers.actions
 
 import com.google.inject.Inject
+import controllers.declaration.SessionIdAware
 import controllers.util.CacheIdGenerator.eoriCacheId
 import forms.Choice
-import forms.Choice.choiceId
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.Logger
 import play.api.mvc.Results.Conflict
 import play.api.mvc.{ActionRefiner, MessagesControllerComponents, Result}
-import services.CustomsCacheService
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class JourneyAction @Inject()(customsCacheService: CustomsCacheService, mcc: MessagesControllerComponents)
-    extends ActionRefiner[AuthenticatedRequest, JourneyRequest] {
+case class JourneyAction @Inject()(cacheService: ExportsCacheService, mcc: MessagesControllerComponents)
+    extends ActionRefiner[AuthenticatedRequest, JourneyRequest] with SessionIdAware {
 
   implicit override val executionContext: ExecutionContext = mcc.executionContext
 
@@ -41,8 +41,8 @@ case class JourneyAction @Inject()(customsCacheService: CustomsCacheService, mcc
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    customsCacheService.fetchAndGetEntry[Choice](eoriCacheId()(request), choiceId).map {
-      case Some(choice) => Right(JourneyRequest(request, choice))
+    cacheService.get(request.session.data("sessionId")).map(_.map(_.choice)).map {
+      case Some(journeyType) => Right(JourneyRequest(request, Choice(journeyType)))
       case _ =>
         logger.error(s"Could not obtain journey type for ${eoriCacheId()(request)}")
         Left(Conflict("Could not obtain information about journey type"))

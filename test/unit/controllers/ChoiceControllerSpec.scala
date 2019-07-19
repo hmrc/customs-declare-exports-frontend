@@ -44,7 +44,7 @@ class ChoiceControllerSpec extends ControllerSpec {
 
     authorizedUser()
     withCaching(None)
-    withNewCaching(createModelWithNoItems)
+    withNewCaching(createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec))
   }
 
   "Choice controller" should {
@@ -60,7 +60,7 @@ class ChoiceControllerSpec extends ControllerSpec {
       }
 
       "display page method is invoked with data in cache" in new SetUp {
-        withNewCaching(createModelWithItems("sessionId", Set.empty))
+        withNewCaching(createModelWithItems("sessionId", Set.empty, Choice.AllowedChoiceValues.SupplementaryDec))
 
         val result = controller.displayPage()(getRequest())
 

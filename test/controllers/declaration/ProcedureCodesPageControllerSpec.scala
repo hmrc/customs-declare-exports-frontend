@@ -18,8 +18,6 @@ package controllers.declaration
 
 import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
-import forms.Choice
-import forms.Choice.choiceId
 import helpers.views.declaration.{CommonMessages, ProcedureCodesMessages}
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData.formId
@@ -32,11 +30,10 @@ class ProcedureCodesPageControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ProcedureCodesMessages with CommonMessages {
   import ProcedureCodesPageControllerSpec.cacheWithMaximumAmountOfAdditionalCodes
 
-  private val itemModel = createModelWithItem("")
+  private val itemModel = createModelWithItem("", journeyType = "SMP")
   private val uri = uriWithContextPath(s"/declaration/items/${itemModel.items.head.id}/procedure-codes")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
-  private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -44,7 +41,6 @@ class ProcedureCodesPageControllerSpec
     authorizedUser()
     withNewCaching(itemModel)
     withCaching[ProcedureCodesData](None, formId)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   override def afterEach(): Unit = {
@@ -52,6 +48,8 @@ class ProcedureCodesPageControllerSpec
 
     reset(mockExportsCacheService, mockCustomsCacheService)
   }
+
+  private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   "Procedure Codes Controller on GET" should {
 
@@ -108,7 +106,8 @@ class ProcedureCodesPageControllerSpec
         withNewCaching(
           createModelWithItem(
             "",
-            Some(ExportItem("id", procedureCodes = Some(cacheWithMaximumAmountOfAdditionalCodes)))
+            Some(ExportItem("id", procedureCodes = Some(cacheWithMaximumAmountOfAdditionalCodes))),
+            "SMP"
           )
         )
 
@@ -122,7 +121,7 @@ class ProcedureCodesPageControllerSpec
       "code is duplicated" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", procedureCodes = Some(cachedData)))))
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", procedureCodes = Some(cachedData))), "SMP"))
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), addActionUrlEncoded)
 
@@ -148,7 +147,7 @@ class ProcedureCodesPageControllerSpec
       "user remove existing code" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", procedureCodes = Some(cachedData)))))
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", procedureCodes = Some(cachedData))), "SMP"))
 
         val body = removeActionUrlEncoded("123")
 
@@ -176,7 +175,7 @@ class ProcedureCodesPageControllerSpec
       "form is empty but cache contains at least one item" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-        withNewCaching(createModelWithItem("", Some(ExportItem("id", procedureCodes = Some(cachedData)))))
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", procedureCodes = Some(cachedData))), "SMP"))
 
         val body = Seq(("procedureCode", "1234"), saveAndContinueActionUrlEncoded)
 

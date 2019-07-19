@@ -19,8 +19,7 @@ package controllers.declaration
 import java.time.LocalDateTime
 
 import base.{CustomExportsBaseSpec, TestHelper}
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportCodes._
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
@@ -28,7 +27,7 @@ import helpers.views.declaration.WarehouseIdentificationMessages
 import models.declaration.Locations
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.{times, verify}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import services.cache.ExportsCacheModel
@@ -39,9 +38,8 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
     withCaching[WarehouseIdentification](None)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   override def afterEach() {
@@ -55,7 +53,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
-      verify(mockExportsCacheService).get(any())
+      verify(mockExportsCacheService, times(2)).get(any())
     }
 
     "read item from cache and display it" in {
@@ -64,7 +62,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
         "DraftId",
         LocalDateTime.now(),
         LocalDateTime.now(),
-        "SMP",
+        SupplementaryDec,
         locations = Locations(
           warehouseIdentification =
             Some(WarehouseIdentification(Some("Office"), Some("R"), Some("SecretStash"), Some(Maritime)))
@@ -81,7 +79,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       page must include(messages("supplementary.warehouse.identificationType.r"))
       page must include("SecretStash")
       page must include("Sea transport")
-      verify(mockExportsCacheService).get(any())
+      verify(mockExportsCacheService, times(2)).get(any())
     }
   }
 

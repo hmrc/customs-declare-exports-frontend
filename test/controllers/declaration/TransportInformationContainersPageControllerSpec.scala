@@ -21,15 +21,14 @@ import java.time.LocalDateTime
 import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.declaration.TransportInformationContainersPageControllerSpec.cacheWithMaximumAmountOfHolders
 import controllers.util.{Add, Remove, SaveAndContinue}
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportInformationContainer
 import helpers.views.declaration.{CommonMessages, TransportInformationContainerMessages}
 import models.declaration.TransportInformationContainerData
 import models.declaration.TransportInformationContainerData.id
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.{times, verify}
 import play.api.test.Helpers._
 import services.cache.ExportsCacheModel
 
@@ -43,9 +42,8 @@ class TransportInformationContainersPageControllerSpec
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
     withCaching[TransportInformationContainerData](None, id)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   override def afterEach(): Unit =
@@ -61,12 +59,12 @@ class TransportInformationContainersPageControllerSpec
 
       status(result) must be(OK)
       verifyTheCacheIsUnchanged()
-      verify(mockExportsCacheService).get(anyString)
+      verify(mockExportsCacheService, times(2)).get(anyString)
     }
 
     "read item from cache and display it" in {
       val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("DeliveredBestGoods")))
-      withNewCaching(createModelWithNoItems().copy(containerData = Some(cachedData)))
+      withNewCaching(createModelWithNoItems(SupplementaryDec).copy(containerData = Some(cachedData)))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -107,7 +105,7 @@ class TransportInformationContainersPageControllerSpec
       "exists in cache based on id" in {
 
         withNewCaching(
-          createModelWithNoItems().copy(
+          createModelWithNoItems(SupplementaryDec).copy(
             containerData = Some(
               TransportInformationContainerData(
                 Seq(TransportInformationContainer("M1l3s"), TransportInformationContainer("J00hn"))
@@ -177,7 +175,7 @@ class TransportInformationContainersPageControllerSpec
 
         "duplicated container" in {
           val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("M1l3s")))
-          withNewCaching(createModelWithNoItems().copy(containerData = Some(cachedData)))
+          withNewCaching(createModelWithNoItems(SupplementaryDec).copy(containerData = Some(cachedData)))
 
           val body = Seq(("id", "M1l3s"), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -191,7 +189,9 @@ class TransportInformationContainersPageControllerSpec
         }
 
         "more than 9999 containers" in {
-          withNewCaching(createModelWithNoItems().copy(containerData = Some(cacheWithMaximumAmountOfHolders)))
+          withNewCaching(
+            createModelWithNoItems(SupplementaryDec).copy(containerData = Some(cacheWithMaximumAmountOfHolders))
+          )
 
           val body = Seq(("id", "M1l3s"), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -223,7 +223,7 @@ class TransportInformationContainersPageControllerSpec
 
         "duplicated container" in {
           val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("M1l3s")))
-          withNewCaching(createModelWithNoItems().copy(containerData = Some(cachedData)))
+          withNewCaching(createModelWithNoItems(SupplementaryDec).copy(containerData = Some(cachedData)))
 
           val body = Seq(("id", "M1l3s"), saveAndContinueActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -237,7 +237,10 @@ class TransportInformationContainersPageControllerSpec
         }
 
         "more than 9999 containers" in {
-          withNewCaching(createModelWithNoItems().copy(containerData = Some(cacheWithMaximumAmountOfHolders)))
+          withNewCaching(
+            createModelWithNoItems(SupplementaryDec)
+              .copy(containerData = Some(cacheWithMaximumAmountOfHolders))
+          )
 
           val body = Seq(("id", "M1l3s"), saveAndContinueActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -284,7 +287,7 @@ class TransportInformationContainersPageControllerSpec
 
     "user doesn't fill form but some containers already exist in the cache" in {
       val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("Jo0hn")))
-      withNewCaching(createModelWithNoItems().copy(containerData = Some(cachedData)))
+      withNewCaching(createModelWithNoItems(SupplementaryDec).copy(containerData = Some(cachedData)))
 
       val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionURLEncoded)).get
       val header = result.futureValue.header
@@ -313,7 +316,7 @@ class TransportInformationContainersPageControllerSpec
         "DraftId",
         LocalDateTime.now(),
         LocalDateTime.now(),
-        "SMP",
+        SupplementaryDec,
         containerData = Some(data)
       )
     )

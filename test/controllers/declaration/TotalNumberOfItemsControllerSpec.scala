@@ -17,8 +17,7 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TotalNumberOfItems
 import helpers.views.declaration.TotalNumberOfItemsMessages
 import org.mockito.Mockito.reset
@@ -32,9 +31,8 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
   override def beforeEach {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
     withCaching[TotalNumberOfItems](None)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
   }
 
   override def afterEach() {
@@ -54,7 +52,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
     "read item from cache and display it" in {
 
       val cachedData = TotalNumberOfItems(Some("7987.1"), Some("1.33"), " 631.1")
-      withNewCaching(createModelWithNoItems().copy(totalNumberOfItems = Some(cachedData)))
+      withNewCaching(createModelWithNoItems(SupplementaryDec).copy(totalNumberOfItems = Some(cachedData)))
 
       val Some(result) = route(app, getRequest(uri))
       val page = contentAsString(result)

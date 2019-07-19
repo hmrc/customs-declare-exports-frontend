@@ -17,8 +17,7 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import generators.Generators
 import models.declaration.governmentagencygoodsitem.{GovernmentAgencyGoodsItem, Packaging}
 import org.mockito.ArgumentMatchers.any
@@ -29,29 +28,29 @@ import play.api.test.Helpers._
 import services.cache.{ExportItem, ExportsCacheModel}
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
-import scala.concurrent.Future
-
 class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
 
   private lazy val testItem = ExportItem(id = item1Id)
   private lazy val testItem2 = ExportItem(id = item2Id)
-  private lazy val cacheModelWith1Item = createModelWithItems("", items = Set(testItem))
-  private lazy val cacheModelWith2Items = createModelWithItems("", items = Set(testItem, testItem2))
+  private lazy val cacheModelWith1Item =
+    createModelWithItems("", items = Set(testItem), SupplementaryDec)
+  private lazy val cacheModelWith2Items =
+    createModelWithItems("", items = Set(testItem, testItem2), SupplementaryDec)
   private val viewItemsUri = uriWithContextPath("/declaration/export-items")
   private val addItemUri = uriWithContextPath("/declaration/export-items/add")
-  private def removeItemUri(id: String) = uriWithContextPath(s"/declaration/export-items/$id/remove")
   private val formId = "PackageInformation"
   private val item1Id = "1234"
   private val item2Id = "5678"
 
   override def beforeEach() {
     authorizedUser()
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   override def afterEach() {
     reset(mockCustomsCacheService, mockExportsCacheService)
   }
+
+  private def removeItemUri(id: String) = uriWithContextPath(s"/declaration/export-items/$id/remove")
 
   "Item Summary Controller" should {
 
@@ -61,7 +60,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
         "user does not have EORI" in {
           userWithoutEori()
-          withNewCaching(createModelWithNoItems())
+          withNewCaching(createModelWithNoItems(SupplementaryDec))
           withCaching[Seq[GovernmentAgencyGoodsItem]](None)
 
           val result = route(app, getRequest(viewItemsUri)).value
@@ -74,9 +73,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
         "user is signed in" in {
           authorizedUser()
-          withNewCaching(createModelWithNoItems())
-          withCaching[Seq[GovernmentAgencyGoodsItem]](None)
-          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+          withNewCaching(createModelWithNoItems(SupplementaryDec))
 
           val result = route(app, getRequest(viewItemsUri)).value
           val stringResult = contentAsString(result)
@@ -93,10 +90,8 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
           authorizedUser()
 
           val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
-
-          withCaching[Seq[GovernmentAgencyGoodsItem]](Some(cachedData), formId)
-
           withNewCaching(cacheModelWith1Item)
+
           val result = route(app, getRequest(viewItemsUri)).value
           status(result) must be(OK)
 
@@ -112,10 +107,6 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
           val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
           withNewCaching(cacheModelWith2Items)
-          when(mockExportsCacheService.get(any[String]))
-            .thenReturn(Future.successful(Some(cacheModelWith2Items)))
-
-          withCaching[Seq[GovernmentAgencyGoodsItem]](Some(cachedData), formId)
 
           val result = route(app, getRequest(viewItemsUri)).value
           status(result) must be(OK)
@@ -134,10 +125,9 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
         GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging()))
 
         val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
-        val cachedItem = createModelWithItem("", item = Some(testItem))
+        val cachedItem = createModelWithItem("", item = Some(testItem), SupplementaryDec)
         withNewCaching(cachedItem)
         when(mockItemGeneratorService.generateItemId()).thenReturn(item1Id)
-        withCaching[Seq[GovernmentAgencyGoodsItem]](Some(cachedData), formId)
 
         val result = route(app, getRequest(addItemUri)).value
         status(result) must be(SEE_OTHER)
@@ -150,13 +140,12 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
         verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
       }
-
     }
 
     "remove item" should {
       "do nothing and redirect back to items" when {
         "cache is empty" in {
-          withNewCaching()
+          withNewCaching(createModelWithNoItems(SupplementaryDec))
 
           val result = route(app, getRequest(removeItemUri("id"))).value
           status(result) must be(SEE_OTHER)
@@ -165,7 +154,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
         }
 
         "item does not exist" in {
-          withNewCaching(createModelWithNoItems())
+          withNewCaching(createModelWithNoItems(SupplementaryDec))
 
           val result = route(app, getRequest(removeItemUri("id"))).value
           status(result) must be(SEE_OTHER)
@@ -176,7 +165,7 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
       "update cache and redirect" when {
         "item exists" in {
-          withNewCaching(createModelWithItems("", Set(ExportItem("id1"), ExportItem("id2"))))
+          withNewCaching(createModelWithItems("", Set(ExportItem("id1"), ExportItem("id2")), SupplementaryDec))
 
           val result = route(app, getRequest(removeItemUri("id1"))).value
           status(result) must be(SEE_OTHER)

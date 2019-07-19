@@ -21,8 +21,7 @@ import java.time.LocalDateTime
 import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.declaration.DeclarationAdditionalActorsControllerSpec.cacheWithMaximumAmountOfActors
 import controllers.util.{Add, Remove, SaveAndContinue}
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActorsSpec._
 import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMessages}
@@ -43,9 +42,8 @@ class DeclarationAdditionalActorsControllerSpec
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
     withCaching[DeclarationAdditionalActorsData](None)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   override def afterEach() {

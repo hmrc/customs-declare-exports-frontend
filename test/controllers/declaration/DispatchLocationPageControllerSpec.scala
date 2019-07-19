@@ -19,13 +19,12 @@ package controllers.declaration
 import java.time.LocalDateTime
 
 import base.CustomExportsBaseSpec
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify}
+import org.mockito.Mockito.{reset, times, verify}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import services.cache.ExportsCacheModel
@@ -38,9 +37,8 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
     withCaching[DispatchLocation](None, DispatchLocation.formId)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   override def afterEach() {
@@ -53,7 +51,7 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
 
       val result = route(app, getRequest(dispatchLocationUri)).get
       status(result) must be(OK)
-      verify(mockExportsCacheService).get(any())
+      verify(mockExportsCacheService, times(2)).get(any())
     }
 
     "populate the form fields with data from cache" in {
@@ -70,7 +68,7 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
 
       val result = route(app, getRequest(dispatchLocationUri)).get
       contentAsString(result) must include("checked=\"checked\"")
-      verify(mockExportsCacheService).get(any())
+      verify(mockExportsCacheService, times(2)).get(any())
     }
   }
 
@@ -85,7 +83,7 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
         .cache[DispatchLocation](any(), ArgumentMatchers.eq(DispatchLocation.formId), any())(any(), any(), any())
 
       verify(mockExportsCacheService).update(any(), any[ExportsCacheModel])
-      verify(mockExportsCacheService).get(any())
+      verify(mockExportsCacheService, times(2)).get(any())
     }
 
     "return 303 code" in {

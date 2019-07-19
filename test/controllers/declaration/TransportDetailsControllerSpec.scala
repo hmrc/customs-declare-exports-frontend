@@ -20,15 +20,13 @@ import java.time.LocalDateTime
 
 import base.CSRFUtil._
 import base.{CustomExportsBaseSpec, TestHelper}
-import forms.Choice
-import forms.Choice.{choiceId, AllowedChoiceValues}
-import forms.declaration.TransportCodes.Maritime
-import forms.declaration.{TransportDetails, WarehouseIdentification}
+import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
+import forms.declaration.TransportDetails
 import generators.Generators
 import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify}
+import org.mockito.Mockito.{reset, times, verify}
 import org.scalacheck.Arbitrary._
 import org.scalatest.prop.PropertyChecks
 import play.api.data.Form
@@ -50,9 +48,8 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
     withCaching[TransportDetails](None, TransportDetails.formId)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
   }
 
   override def afterEach() {
@@ -65,7 +62,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
 
       val result = route(app, getRequest(uri)).value
       status(result) must be(OK)
-      verify(mockExportsCacheService).get(any())
+      verify(mockExportsCacheService, times(2)).get(any())
     }
 
     "populate the form fields with data from cache" in {
@@ -79,7 +76,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
           "DraftId",
           LocalDateTime.now(),
           LocalDateTime.now(),
-          "SMP",
+          SupplementaryDec,
           transportDetails = Some(transport)
         )
 
@@ -87,7 +84,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
         val result = route(app, request).value
 
         contentAsString(result).replaceCSRF mustBe
-          view(form.fill(transport), TestHelper.journeyRequest(request, AllowedChoiceValues.SupplementaryDec)).body
+          view(form.fill(transport), TestHelper.journeyRequest(request, SupplementaryDec)).body
             .replaceCSRF()
         reset(mockExportsCacheService)
       }
@@ -99,9 +96,8 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
     "return UNAUTHORIZED" when {
 
       "user does not have an EORI" in {
-
         userWithoutEori()
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+
         val body = Seq(("typesOfPackages", "A1"))
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).value
 
@@ -113,10 +109,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
     "return BAD_REQUEST" when {
 
       "invalid data is submitted" in {
-
         authorizedUser()
-        withCaching[TransportDetails](None, TransportDetails.formId)
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
 
         val body = Seq(("container", ""), ("meansOfTransportCrossingTheBorderNationality", ""))
         val request = postRequestFormUrlEncoded(uri, body: _*)
@@ -126,7 +119,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
         status(result) must be(BAD_REQUEST)
         contentAsString(result).replaceCSRF mustBe view(
           form.bindFromRequest()(request),
-          TestHelper.journeyRequest(request, AllowedChoiceValues.SupplementaryDec)
+          TestHelper.journeyRequest(request, SupplementaryDec)
         ).body.replaceCSRF
         verifyTheCacheIsUnchanged()
       }
@@ -135,13 +128,10 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
     "add input to the cache" when {
 
       "with valid data and on click of add" in {
-
         forAll(arbitrary[TransportDetails]) { transportDetails =>
           reset(mockExportsCacheService)
           authorizedUser()
-          withNewCaching(createModelWithNoItems())
-          withCaching[TransportDetails](None, TransportDetails.formId)
-          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+          withNewCaching(createModelWithNoItems(SupplementaryDec))
           val body = Seq(
             ("container", transportDetails.container.toString),
             (
@@ -178,9 +168,6 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
 
         forAll(arbitrary[TransportDetails]) { transportDetails =>
           authorizedUser()
-          withCaching[TransportDetails](Some(transportDetails), TransportDetails.formId)
-          withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
           val payload = Seq(
             ("container", transportDetails.container.toString),
             (
@@ -207,11 +194,10 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
       }
 
       "navigate to add-seal page if full dec and user selected no for containers" in {
+        withNewCaching(createModelWithNoItems(StandardDec))
 
         val transportDetails = TransportDetails(Some("Poland"), false, "10", Some("test"))
         authorizedUser()
-        withCaching[TransportDetails](None, TransportDetails.formId)
-        withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
         val payload = Seq(
           ("container", transportDetails.container.toString),
           (

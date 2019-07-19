@@ -37,7 +37,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
     "on get" should {
 
       "return a cached model when exist" in {
-        val returnedModel = createModelWithNoItems
+        val returnedModel = createModelWithNoItems("SMP")
         when(mockRepo.get(sessionId))
           .thenReturn(Future.successful(Some(returnedModel)))
 
@@ -57,7 +57,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
     "on upsert" should {
 
       "update returns a model when upsert is successful" in {
-        val returnedModel = createModelWithNoItems()
+        val returnedModel = createModelWithNoItems("SMP")
         when(mockRepo.upsert(any(), any()))
           .thenReturn(Future.successful(Some(returnedModel)))
 
@@ -66,7 +66,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
       }
 
       "update returns a String with an error message when upsert is unsuccessful" in {
-        val returnedModel = createModelWithNoItems()
+        val returnedModel = createModelWithNoItems("SMP")
         when(mockRepo.upsert(any(), any()))
           .thenReturn(Future.successful(None))
 
@@ -79,7 +79,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
     "on getItemByIdAndSession" should {
 
       "return the correct item" in {
-        val returnedModel = createModelWithItem("")
+        val returnedModel = createModelWithItem("", journeyType = "SMP")
         when(mockRepo.get(sessionId))
           .thenReturn(Future.successful(Some(returnedModel)))
 
@@ -89,7 +89,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
       }
 
       "return None when item cannot be found" in {
-        val returnedModel = createModelWithItem("")
+        val returnedModel = createModelWithItem("", journeyType = "SMP")
         when(mockRepo.get(sessionId))
           .thenReturn(Future.successful(Some(returnedModel)))
 

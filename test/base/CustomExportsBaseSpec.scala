@@ -24,6 +24,7 @@ import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
 import models.declaration.Parties
@@ -220,24 +221,25 @@ trait CustomExportsBaseSpec
 
   def createModelWithItem(
     existingSessionId: String,
-    item: Option[ExportItem] = Some(ExportItem(id = "1234"))
+    item: Option[ExportItem] = Some(ExportItem(id = "1234")),
+    journeyType: String
   ): ExportsCacheModel = {
     val cacheExportItems = item.fold(Set.empty[ExportItem])(Set(_))
-    createModelWithItems(existingSessionId, cacheExportItems)
+    createModelWithItems(existingSessionId, cacheExportItems, journeyType)
   }
 
-  def createModelWithItems(sessionId: String, items: Set[ExportItem]): ExportsCacheModel =
+  def createModelWithItems(sessionId: String, items: Set[ExportItem], jorneyType: String): ExportsCacheModel =
     ExportsCacheModel(
       sessionId = sessionId,
       draftId = "",
       createdDateTime = LocalDateTime.now(),
       updatedDateTime = LocalDateTime.now(),
-      choice = "SMP",
+      choice = jorneyType,
       items = items,
       parties = Parties()
     )
 
-  def createModelWithNoItems(): ExportsCacheModel = createModelWithItems("", Set.empty)
+  def createModelWithNoItems(journeyType: String): ExportsCacheModel = createModelWithItems("", Set.empty, journeyType)
 
   protected def theCacheModelUpdated: ExportsCacheModel = {
     val captor = ArgumentCaptor.forClass(classOf[ExportsCacheModel])

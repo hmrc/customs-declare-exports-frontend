@@ -21,14 +21,12 @@ import java.time.LocalDateTime
 import base.TestHelper.createRandomAlphanumericString
 import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.{CommonMessages, DeclarationHolderMessages}
-import models.declaration.DeclarationHoldersData.formId
 import models.declaration.{DeclarationHoldersData, Parties}
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito.{reset, verify}
+import org.mockito.Mockito.{reset, times, verify}
 import play.api.test.Helpers._
 import services.cache.ExportsCacheModel
 
@@ -42,9 +40,8 @@ class DeclarationHolderControllerSpec
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
-    withCaching[DeclarationHoldersData](None, formId)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withCaching[DeclarationHoldersData](None, DeclarationHoldersData.formId)
   }
 
   override def afterEach() {
@@ -428,7 +425,7 @@ class DeclarationHolderControllerSpec
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/destination-countries"))
-        verify(mockExportsCacheService).get(anyString())
+        verify(mockExportsCacheService, times(2)).get(anyString())
       }
 
       "user provide holder with some different holder in cache" in {

@@ -19,8 +19,7 @@ package controllers.declaration
 import java.time.LocalDateTime
 
 import base.CustomExportsBaseSpec
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.common.Address
 import forms.declaration.ConsigneeDetailsSpec._
 import forms.declaration.EntityDetailsSpec.correctEntityDetails
@@ -37,9 +36,8 @@ class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
     withCaching[ConsigneeDetails](None)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   override def afterEach() {

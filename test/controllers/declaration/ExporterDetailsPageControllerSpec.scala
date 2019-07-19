@@ -19,8 +19,7 @@ package controllers.declaration
 import java.time.LocalDateTime
 
 import base.CustomExportsBaseSpec
-import forms.Choice
-import forms.Choice.choiceId
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.common.Address
 import forms.declaration.ExporterDetailsSpec._
 import forms.declaration.{EntityDetails, ExporterDetails}
@@ -37,9 +36,8 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems())
+    withNewCaching(createModelWithNoItems(SupplementaryDec))
     withCaching[ExporterDetails](None)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
   }
 
   override def afterEach() = {
@@ -93,17 +91,12 @@ class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with Commo
   "Exporter Details Controller on POST" should {
 
     "validate request - empty values" in {
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
       val result = route(app, postRequest(uri, emptyExporterDetailsJSON)).get
       val stringResult = contentAsString(result)
-
       stringResult must include(messages(eoriOrAddressEmpty))
     }
 
     "validate request - incorrect values" in {
-      withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.SupplementaryDec)), choiceId)
-
       val result = route(app, postRequest(uri, incorrectExporterDetailsJSON)).get
       val stringResult = contentAsString(result)
 
