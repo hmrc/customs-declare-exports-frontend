@@ -28,14 +28,11 @@ object AgentBuilder {
   def build(implicit cacheMap: CacheMap): Declaration.Agent =
     cacheMap
       .getEntry[RepresentativeDetails](RepresentativeDetails.formId)
-      .filter(isDefined)
+      .filter(RepresentativeDetails.isDefined)
       .map(data => createAgent(data))
       .orNull
 
-  private def isDefined(representativeDetails: RepresentativeDetails): Boolean =
-    representativeDetails.details.isDefined && (representativeDetails.details.get.eori.isDefined || representativeDetails.details.get.address.isDefined)
-
-  private def createAgent(data: RepresentativeDetails): Declaration.Agent = {
+  def createAgent(data: RepresentativeDetails): Declaration.Agent = {
     val agent = new Declaration.Agent()
 
     agent.setFunctionCode(setStatusCode(data))

@@ -70,4 +70,8 @@ object RepresentativeDetails {
     val DirectRepresentative = "2"
     val IndirectRepresentative = "3"
   }
+
+  def isDefined(representativeDetails: RepresentativeDetails): Boolean =
+    representativeDetails.details.isDefined && (representativeDetails.details.get.eori.isDefined || representativeDetails.details.get.address.isDefined)
+
 }

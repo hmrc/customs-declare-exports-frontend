@@ -33,7 +33,7 @@ object GoodsItemQuantityBuilder {
       .map(goodsItems => createGoodsItemQuantity(goodsItems))
       .orNull
 
-  private def createGoodsItemQuantity(items: Seq[GovernmentAgencyGoodsItem]): DeclarationGoodsItemQuantityType = {
+  def createGoodsItemQuantity[A](items: Seq[A]): DeclarationGoodsItemQuantityType = {
     val goodsQuantity = new DeclarationGoodsItemQuantityType()
 
     goodsQuantity.setValue(new java.math.BigDecimal(items.size))
