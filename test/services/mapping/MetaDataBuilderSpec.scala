@@ -20,6 +20,7 @@ import javax.xml.bind.JAXBElement
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
 import models.declaration.SupplementaryDeclarationTestData
 import org.scalatest.{Matchers, WordSpec}
+import services.mapping.declaration.DeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class MetaDataBuilderSpec extends WordSpec with Matchers {
@@ -33,6 +34,28 @@ class MetaDataBuilderSpec extends WordSpec with Matchers {
       metaData.getResponsibleCountryCode.getValue shouldBe SchemaMandatoryValues.responsibleCountryCode
       metaData.getAgencyAssignedCustomizationCode.getValue shouldBe SchemaMandatoryValues.agencyAssignedCustomizationVersionCode
       metaData.getAny.asInstanceOf[JAXBElement[Declaration]].getValue should not be (null)
+    }
+
+    "build wco MetaData Declaration Cancellation with correct defaultValues" in {
+      val metaData = MetaDataBuilder.buildCancellationRequest(
+        DeclarationBuilder
+          .buildCancelationRequest(
+            "someFunctionalReference",
+            "declarationId",
+            "statementDescription",
+            "changeReason",
+            "eori"
+          )
+      )
+      metaData.getWCOTypeName should be(null)
+      metaData.getWCODataModelVersionCode should be(null)
+      metaData.getResponsibleAgencyName should be(null)
+      metaData.getResponsibleCountryCode should be(null)
+      metaData.getAgencyAssignedCustomizationCode should be(null)
+
+      val declaration = metaData.getAny.asInstanceOf[JAXBElement[Declaration]].getValue
+      declaration.getTypeCode.getValue should be("INV")
+      declaration.getFunctionCode.getValue should be("13")
     }
   }
 }
