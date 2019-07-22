@@ -19,7 +19,7 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
-import forms.declaration.{CarrierDetails, ConsigneeDetails}
+import forms.declaration.CarrierDetails
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -59,7 +59,7 @@ class CarrierDetailsPageController @Inject()(
         (formWithErrors: Form[CarrierDetails]) => Future.successful(BadRequest(carrierDetailsPage(formWithErrors))),
         form =>
           updateCache(journeySessionId, form).map { _ =>
-            Redirect(controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm())
+            Redirect(routes.DeclarationAdditionalActorsController.displayForm())
         }
       )
   }
