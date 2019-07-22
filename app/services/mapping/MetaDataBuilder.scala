@@ -65,23 +65,6 @@ object MetaDataBuilder {
   def buildCancellationRequest(declaration: Declaration): MetaData = {
     val metaData = new MetaData
 
-    val agencyAssignedCustomizationCodeType = new MetaDataAgencyAssignedCustomizationCodeType
-    agencyAssignedCustomizationCodeType.setValue(SchemaMandatoryValues.agencyAssignedCustomizationVersionCode)
-
-    val metaDataResponsibleAgencyNameTextType = new MetaDataResponsibleAgencyNameTextType
-    metaDataResponsibleAgencyNameTextType.setValue(SchemaMandatoryValues.responsibleAgencyName)
-
-    val metaDataResponsibleCountryCodeType = new MetaDataResponsibleCountryCodeType
-    metaDataResponsibleCountryCodeType.setValue(SchemaMandatoryValues.responsibleCountryCode)
-
-    val metaDataWCODataModelVersionCodeType = new MetaDataWCODataModelVersionCodeType
-    metaDataWCODataModelVersionCodeType.setValue(SchemaMandatoryValues.wcoDataModelVersionCode)
-
-    metaData.setAgencyAssignedCustomizationCode(agencyAssignedCustomizationCodeType)
-    metaData.setResponsibleAgencyName(metaDataResponsibleAgencyNameTextType)
-    metaData.setResponsibleCountryCode(metaDataResponsibleCountryCodeType)
-    metaData.setWCODataModelVersionCode(metaDataWCODataModelVersionCodeType)
-
     val element: JAXBElement[Declaration] = new JAXBElement[Declaration](
       new QName("urn:wco:datamodel:WCO:DEC-DMS:2", "Declaration"),
       classOf[Declaration],
