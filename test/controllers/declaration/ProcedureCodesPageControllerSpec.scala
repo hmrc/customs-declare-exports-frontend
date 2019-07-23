@@ -101,6 +101,18 @@ class ProcedureCodesPageControllerSpec
         status(result) must be(BAD_REQUEST)
       }
 
+      "procedureCode is empty but has additional procedure codes in cache, it should return a bad request" in {
+
+        val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
+        withNewCaching(createModelWithItem("", Some(ExportItem("id", procedureCodes = Some(cachedData))), "SMP"))
+
+        val body = Seq(("procedureCode", ""), ("additionalProcedureCode", ""), saveAndContinueActionUrlEncoded)
+
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+
+        status(result) must be(BAD_REQUEST)
+      }
+
       "maximum amount of codes are reached" in {
 
         withNewCaching(

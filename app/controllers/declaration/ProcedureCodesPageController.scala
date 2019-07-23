@@ -209,7 +209,7 @@ class ProcedureCodesPageController @Inject()(
 
       case (procedureCode, seq) =>
         procedureCode match {
-          case ProcedureCodes(None, _) if cachedData.procedureCode.isEmpty =>
+          case ProcedureCodes(None, _) =>
             handleErrorPage(
               itemId,
               Seq(("procedureCode", "supplementary.procedureCodes.procedureCode.error.empty")),
