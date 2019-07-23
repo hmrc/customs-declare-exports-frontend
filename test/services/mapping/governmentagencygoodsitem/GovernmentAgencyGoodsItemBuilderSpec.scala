@@ -16,17 +16,20 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, PackageInformation}
 import models.declaration.governmentagencygoodsitem.{Commodity => _, GovernmentProcedure => _, Packaging => _}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
 import services.ExportsItemsCacheIds
+import services.cache.CacheTestData
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
   GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
 }
 
-class GovernmentAgencyGoodsItemBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemData {
+class GovernmentAgencyGoodsItemBuilderSpec
+    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with CacheTestData {
 
   "GovernmentAgencyGoodsItemBuilder" should {
     "map to WCO model correctly " in {
@@ -53,6 +56,34 @@ class GovernmentAgencyGoodsItemBuilderSpec extends WordSpec with Matchers with G
       val mappedGoodsItemList: java.util.List[WCOGovernmentAgencyGoodsItem] = GovernmentAgencyGoodsItemBuilder.build
       mappedGoodsItemList.isEmpty shouldBe true
     }
+
+    "map ExportItem Correctly" in {
+      val sequenceId = 99
+      val exportItem = createExportItem().copy(
+        itemType = itemType,
+        sequenceId = sequenceId,
+        packageInformation = List(
+          PackageInformation(typesOfPackages = Some("AA"), numberOfPackages = Some(2), shippingMarks = Some("mark1"))
+        )
+      )
+
+      val goodsShipment = new GoodsShipment
+      GovernmentAgencyGoodsItemBuilder.buildThenAdd(exportItem, goodsShipment)
+      val item = goodsShipment.getGovernmentAgencyGoodsItem.get(0)
+      validateStatisticalValueAmount(
+        item.getStatisticalValueAmount.getValue,
+        item.getStatisticalValueAmount.getCurrencyID
+      )
+      item.getSequenceNumeric.compareTo(BigDecimal(sequenceId).bigDecimal)
+
+      validatePackaging(item.getPackaging.get(0))
+
+    }
+  }
+
+  private def validateStatisticalValueAmount(value: java.math.BigDecimal, currencyId: String) = {
+    currencyId should be(StatisticalValueAmountBuilder.defaultCurrencyCode)
+    value.compareTo(BigDecimal(itemType.head.statisticalValue).bigDecimal) should be(0)
   }
 
   private def validateGovernmentProcedure(mappedProcedure: WCOGovernmentAgencyGoodsItem.GovernmentProcedure) = {

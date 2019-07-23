@@ -26,6 +26,7 @@ import models.declaration.{AdditionalInformationData, DocumentsProducedData, Pro
 import play.api.http.Status.NO_CONTENT
 import services.ExportsItemsCacheIds._
 import services.mapping.CachingMappingHelper
+import services.mapping.governmentagencygoodsitem.PackagingBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -86,31 +87,22 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       .getEntry[Seq[PackageInformation]](PackageInformation.formId)
       .map(_.zipWithIndex.map {
         case (packageInfo, index) =>
-          createPackaging(packageInfo, index)
+          PackagingBuilder.createPackaging(packageInfo, index)
       })
-
-  private def createPackaging(packageInfo: PackageInformation, index: Int) =
-    models.declaration.governmentagencygoodsitem.Packaging(
-      sequenceNumeric = Some(index),
-      typeCode = packageInfo.typesOfPackages,
-      quantity = packageInfo.numberOfPackages,
-      marksNumbersId = packageInfo.shippingMarks
-    )
 
   def procedureCodes(
     cachedData: CacheMap
   ): Option[Seq[models.declaration.governmentagencygoodsitem.GovernmentProcedure]] =
     cachedData
       .getEntry[ProcedureCodesData](ProcedureCodesData.formId)
-      .map(
-        form =>
-          Seq(
-            models.declaration.governmentagencygoodsitem
-              .GovernmentProcedure(form.procedureCode.map(_.substring(0, 2)), form.procedureCode.map(_.substring(2, 4)))
-          )
-            ++ form.additionalProcedureCodes
-              .map(code => models.declaration.governmentagencygoodsitem.GovernmentProcedure(Some(code)))
-      )
+      .map(form => {
+        val extractedCode = ProcedureCodes.extractProcedureCode(form.toProcedureCode())
+        Seq(
+          models.declaration.governmentagencygoodsitem
+            .GovernmentProcedure(extractedCode._1, extractedCode._2)
+        ) ++ form.additionalProcedureCodes
+          .map(code => models.declaration.governmentagencygoodsitem.GovernmentProcedure(Some(code)))
+      })
 
   def commodityFromGoodsMeasure(cachedData: CacheMap): Option[models.declaration.governmentagencygoodsitem.Commodity] =
     cachedData

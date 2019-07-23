@@ -32,6 +32,9 @@ object ProcedureCodes {
   private val procedureCodeLength = 4
   private val additionalProcedureCodeLength = 3
 
+  def extractProcedureCode(form: ProcedureCodes): (Option[String], Option[String]) =
+    (form.procedureCode.map(_.substring(0, 2)), form.procedureCode.map(_.substring(2, 4)))
+
   val mapping = Forms.mapping(
     "procedureCode" -> optional(
       text()

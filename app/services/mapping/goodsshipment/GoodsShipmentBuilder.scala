@@ -53,7 +53,11 @@ object GoodsShipmentBuilder {
     UCRBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
     WarehouseBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
     PreviousDocumentsBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
-    //    goodsShipment.getGovernmentAgencyGoodsItem.addAll(GovernmentAgencyGoodsItemBuilder.build)
+
+    exportsCacheModel.items.foreach { item =>
+      GovernmentAgencyGoodsItemBuilder.buildThenAdd(item, goodsShipment)
+    }
+
     AEOMutualRecognitionPartiesBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
 
     goodsShipment
