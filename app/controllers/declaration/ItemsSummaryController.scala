@@ -18,19 +18,10 @@ package controllers.declaration
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
-import forms.declaration.FiscalInformation
-import forms.declaration.FiscalInformation.formId
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.declaration.governmentagencygoodsitem.Formats._
-import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
-import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
-import services.ExportsItemsCacheIds.itemsId
-import uk.gov.hmrc.http.HeaderCarrier
 import services.cache.{ExportItem, ExportItemIdGeneratorService, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.items_summary
@@ -67,8 +58,11 @@ class ItemsSummaryController @Inject()(
     exportsCacheService.get(journeySessionId) flatMap {
       case Some(model) =>
         model.items.find(_.id == itemId) match {
-          case Some(item) =>
-            exportsCacheService.update(journeySessionId, model.copy(items = model.items - item)).map { _ =>
+          case Some(itemToDelete) =>
+            val updatedItems = model.copy(items = model.items - itemToDelete).items.zipWithIndex.map {
+              case (item, index) => item.copy(sequenceId = index + 1)
+            }
+            exportsCacheService.update(journeySessionId, model.copy(items = updatedItems)).map { _ =>
               Redirect(routes.ItemsSummaryController.displayPage())
             }
           case _ =>
@@ -87,5 +81,4 @@ class ItemsSummaryController @Inject()(
       }
       case None => Future.successful(None)
     }
-
 }

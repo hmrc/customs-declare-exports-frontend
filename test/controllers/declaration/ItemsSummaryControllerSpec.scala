@@ -28,7 +28,7 @@ import play.api.test.Helpers._
 import services.cache.{ExportItem, ExportsCacheModel}
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
-class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
+class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
 
   private lazy val testItem = ExportItem(id = item1Id)
   private lazy val testItem2 = ExportItem(id = item2Id)
@@ -165,12 +165,18 @@ class ItemSummaryControllerSpec extends CustomExportsBaseSpec with Generators wi
 
       "update cache and redirect" when {
         "item exists" in {
-          withNewCaching(createModelWithItems("", Set(ExportItem("id1"), ExportItem("id2")), SupplementaryDec))
+          withNewCaching(
+            createModelWithItems(
+              "",
+              Set(ExportItem("id1", sequenceId = 1), ExportItem("id2", sequenceId = 2)),
+              SupplementaryDec
+            )
+          )
 
           val result = route(app, getRequest(removeItemUri("id1"))).value
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(routes.ItemsSummaryController.displayPage().url))
-          theCacheModelUpdated.items must be(Set(ExportItem("id2")))
+          theCacheModelUpdated.items must be(Set(ExportItem("id2", sequenceId = 1)))
         }
       }
     }
