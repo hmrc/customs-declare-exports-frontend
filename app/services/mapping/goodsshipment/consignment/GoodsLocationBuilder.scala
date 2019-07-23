@@ -40,7 +40,7 @@ object GoodsLocationBuilder {
       goodsLocation.qualifierOfIdentification.nonEmpty ||
       goodsLocation.typeOfLocation.nonEmpty
 
-  private def buildEoriOrAddress(goods: GoodsLocation) = {
+  def buildEoriOrAddress(goods: GoodsLocation) = {
     val goodsLocation = new Consignment.GoodsLocation()
 
     goods.additionalQualifier.foreach { value =>

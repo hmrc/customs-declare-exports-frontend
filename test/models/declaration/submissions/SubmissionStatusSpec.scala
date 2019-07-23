@@ -58,5 +58,16 @@ class SubmissionStatusSpec extends WordSpec with MustMatchers {
       Json.toJson(AwaitingExitResults) must be(JsString("18"))
       Json.toJson(UnknownStatus) must be(JsString("UnknownStatus"))
     }
+
+    "correctly convert status to specified string" in {
+      AdditionalDocumentsRequired.toString() must be("Additional Documents Required")
+      AwaitingExitResults.toString() must be("Awaiting Exit Results")
+      CustomsPositionGranted.toString() must be("Customs Position Granted")
+      CustomsPositionDenied.toString() must be("Customs Position Denied")
+      DeclarationHandledExternally.toString() must be("Declaration Handled Externally")
+      GoodsHaveExitedTheCommunity.toString() must be("Goods Have Exited The Community")
+      RequestedCancellation.toString must be("Cancellation Requested")
+      UndergoingPhysicalCheck.toString() must be("Undergoing Physical Check")
+    }
   }
 }

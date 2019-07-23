@@ -30,6 +30,11 @@ object ConsigneeBuilder {
       .map(consigneeDetails => createConsignee(consigneeDetails.details))
       .orNull
 
+  def buildThenAdd(maybeConsigneeDetails: Option[ConsigneeDetails], goodsShipment: GoodsShipment) =
+    maybeConsigneeDetails.foreach(consigneeDetails => {
+      goodsShipment.setConsignee(createConsignee(consigneeDetails.details))
+    })
+
   private def isDefined(consigneeDetails: ConsigneeDetails): Boolean =
     consigneeDetails.details.eori.getOrElse("").nonEmpty ||
       (consigneeDetails.details.address.isDefined && consigneeDetails.details.address.get.isDefined())

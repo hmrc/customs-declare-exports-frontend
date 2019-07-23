@@ -16,7 +16,9 @@
 
 package services.mapping.declaration
 import forms.declaration.ConsignmentReferences
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationFunctionalReferenceIDType
 
 object FunctionalReferenceIdBuilder {
@@ -27,10 +29,14 @@ object FunctionalReferenceIdBuilder {
       .map(createFunctionalReferenceId)
       .orNull
 
-  private def createFunctionalReferenceId(data: ConsignmentReferences): DeclarationFunctionalReferenceIDType = {
-    val referenceId = new DeclarationFunctionalReferenceIDType()
-    referenceId.setValue(data.lrn)
-    referenceId
+  def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration) {
+    exportsCacheModel.consignmentReferences.foreach(references => {
+      if (references.lrn.nonEmpty) {
+        val declarationFunctionalReferenceIdType = new DeclarationFunctionalReferenceIDType()
+        declarationFunctionalReferenceIdType.setValue(references.lrn)
+        declaration.setFunctionalReferenceID(declarationFunctionalReferenceIdType)
+      }
+    })
   }
 
   def build(functionalReferenceId: String): DeclarationFunctionalReferenceIDType = {
@@ -38,4 +44,10 @@ object FunctionalReferenceIdBuilder {
     referenceId.setValue(functionalReferenceId)
     referenceId
   }
+  private def createFunctionalReferenceId(data: ConsignmentReferences): DeclarationFunctionalReferenceIDType = {
+    val referenceId = new DeclarationFunctionalReferenceIDType()
+    referenceId.setValue(data.lrn)
+    referenceId
+  }
+
 }

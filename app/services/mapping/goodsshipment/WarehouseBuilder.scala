@@ -16,7 +16,9 @@
 
 package services.mapping.goodsshipment
 import forms.declaration.WarehouseIdentification
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Warehouse
 import wco.datamodel.wco.declaration_ds.dms._2.{WarehouseIdentificationIDType, WarehouseTypeCodeType}
 
@@ -28,6 +30,11 @@ object WarehouseBuilder {
       .filter(isDefined)
       .map(createWarehouse)
       .orNull
+
+  def buildThenAdd(exportsCacheModel: ExportsCacheModel, goodsShipment: Declaration.GoodsShipment): Unit =
+    exportsCacheModel.locations.warehouseIdentification.foreach { warehouseIdentification =>
+      goodsShipment.setWarehouse(createWarehouse(warehouseIdentification))
+    }
 
   private def isDefined(warehouse: WarehouseIdentification): Boolean =
     warehouse.identificationNumber.isDefined && warehouse.identificationType.isDefined

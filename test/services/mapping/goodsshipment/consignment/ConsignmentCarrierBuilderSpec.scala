@@ -25,6 +25,20 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers {
 
   "ConsignmentCarrierBuilderSpec" should {
     "correctly map Declaration.Consignment.Carrier instance for supplementary journey " when {
+
+      "no data is supplied" in {
+        implicit val cacheMap: CacheMap =
+          CacheMap(
+            "CacheID",
+            Map(
+              CarrierDetails.id ->
+                CarrierDetailsSpec.emptyCarrierDetailsJSON
+            )
+          )
+        val carrier = ConsignmentCarrierBuilder.build()(cacheMap, Choice(AllowedChoiceValues.SupplementaryDec))
+        carrier should be(null)
+      }
+
       "all data is supplied" in {
         implicit val cacheMap: CacheMap =
           CacheMap(

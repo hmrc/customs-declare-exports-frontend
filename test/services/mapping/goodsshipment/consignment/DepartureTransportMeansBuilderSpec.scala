@@ -38,5 +38,18 @@ class DepartureTransportMeansBuilderSpec extends WordSpec with Matchers {
       departureTransportMeans.getTypeCode should be(null)
       departureTransportMeans.getModeCode should be(null)
     }
+
+    "return null when  meansOfTransportOnDepartureIDNumber & meansOfTransportOnDepartureType are not set" in {
+      implicit val cacheMap: CacheMap =
+        CacheMap(
+          "CacheID",
+          Map(
+            BorderTransport.formId ->
+              Json.toJson(BorderTransport("3", "", None))
+          )
+        )
+      val departureTransportMeans = DepartureTransportMeansBuilder.build
+      departureTransportMeans should be(null)
+    }
   }
 }

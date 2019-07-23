@@ -25,7 +25,6 @@ import forms.declaration.additionaldeclarationtype.{
   AdditionalDeclarationTypeSupplementaryDec
 }
 import helpers.views.declaration.{CommonMessages, DeclarationTypeMessages}
-import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
 import play.twirl.api.Html
 import views.declaration.spec.ViewSpec
@@ -33,7 +32,7 @@ import views.html.declaration.additionaldeclarationtype.declaration_type
 import views.tags.ViewTest
 
 @ViewTest
-class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with CommonMessages with MockitoSugar {
+class DeclarationTypeViewSpec extends ViewSpec with DeclarationTypeMessages with CommonMessages {
 
   private val formStandard: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeStandardDec.form()
   private val formSupplementary: Form[AdditionalDeclarationType] = AdditionalDeclarationTypeSupplementaryDec.form()

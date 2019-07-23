@@ -16,6 +16,7 @@
 
 package services.mapping.goodsshipment.consignment
 import forms.Choice
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
@@ -35,5 +36,24 @@ object ConsignmentBuilder {
     }
 
     consignment
+  }
+
+  def buildThenAdd(exportsCacheModel: ExportsCacheModel, goodsShipment: GoodsShipment): Unit = {
+    val consignment = new GoodsShipment.Consignment()
+
+    exportsCacheModel.locations.goodsLocation.foreach(goodsLocation => {
+      consignment.setGoodsLocation(GoodsLocationBuilder.buildEoriOrAddress(goodsLocation))
+    })
+
+//    consignment.setContainerCode(ContainerCodeBuilder.build)
+//    consignment.setArrivalTransportMeans(ArrivalTransportMeansBuilder.build)
+//    consignment.setDepartureTransportMeans(DepartureTransportMeansBuilder.build)
+//
+//    val transportEquipments = TransportEquipmentBuilder.build
+//    if (!transportEquipments.isEmpty) {
+//      consignment.getTransportEquipment.addAll(transportEquipments)
+//    }
+
+    goodsShipment.setConsignment(consignment)
   }
 }

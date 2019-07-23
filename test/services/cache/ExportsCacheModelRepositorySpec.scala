@@ -62,6 +62,7 @@ class ExportsCacheModelRepositorySpec
         val model = createModel(sessionId)
         val result = repo.upsert(sessionId, model).futureValue
         result must be(Some(model))
+
       }
 
       "store dates as Mongo Date Types" in {

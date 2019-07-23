@@ -18,6 +18,7 @@ package services.mapping.declaration
 
 import forms.declaration.RepresentativeDetails
 import services.Countries.allCountries
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Agent
@@ -32,7 +33,14 @@ object AgentBuilder {
       .map(data => createAgent(data))
       .orNull
 
-  def createAgent(data: RepresentativeDetails): Declaration.Agent = {
+  def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
+    exportsCacheModel.parties.representativeDetails.foreach { representativeDetails =>
+      if (RepresentativeDetails.isDefined(representativeDetails)) {
+        declaration.setAgent(createAgent(representativeDetails))
+      }
+    }
+
+  private def createAgent(data: RepresentativeDetails): Declaration.Agent = {
     val agent = new Declaration.Agent()
 
     agent.setFunctionCode(setStatusCode(data))
