@@ -22,6 +22,7 @@ import forms.ChoiceSpec.supplementaryChoice
 import forms.Ducr
 import forms.declaration.{ConsignmentReferences, DispatchLocation}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import models.declaration.Parties
 
 trait CacheTestData {
 
@@ -48,4 +49,7 @@ trait CacheTestData {
 
   def createExportItem(): ExportItem =
     ExportItem(id = itemIdService.generateItemId())
+
+  def createEmptyParties(): Parties =
+    Parties()
 }

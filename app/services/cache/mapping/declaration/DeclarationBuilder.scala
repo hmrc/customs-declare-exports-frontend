@@ -16,11 +16,10 @@
 
 package services.cache.mapping.declaration
 
-import forms.declaration.RepresentativeDetails
 import services.cache.ExportsCacheModel
 import services.mapping.declaration._
+import services.mapping.goodsshipment.GoodsShipmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
-import wco.datamodel.wco.declaration_ds.dms._2.{DeclarationFunctionalReferenceIDType, DeclarationTypeCodeType}
 
 object DeclarationBuilder {
 
@@ -30,21 +29,15 @@ object DeclarationBuilder {
     val declaration = new Declaration()
 
     declaration.setFunctionCode(FunctionCodeBuilder.build(defaultFunctionCode))
-    declaration.setFunctionalReferenceID(createDeclarationFunctionalReferenceIDType(exportsCacheModel))
 
-    val typeCode: Option[DeclarationTypeCodeType] = exportsCacheModel.additionalDeclarationType.map(
-      additionalDeclarationType =>
-        TypeCodeBuilder.createTypeCode(additionalDeclarationType, exportsCacheModel.dispatchLocation)
-    )
+    FunctionalReferenceIdBuilder.buildThenAdd(exportsCacheModel, declaration)
+    TypeCodeBuilder.buildThenAdd(exportsCacheModel, declaration)
 
-    declaration.setTypeCode(typeCode.getOrElse(new DeclarationTypeCodeType()))
-    declaration.setGoodsItemQuantity(GoodsItemQuantityBuilder.createGoodsItemQuantity(exportsCacheModel.items.toSeq))
+    GoodsItemQuantityBuilder.buildThenAdd(exportsCacheModel, declaration)
 
-    generateAgent(exportsCacheModel).foreach { data =>
-      declaration.setAgent(data)
-    }
+    AgentBuilder.buildThenAdd(exportsCacheModel, declaration)
 
-    //    declaration.setGoodsShipment(GoodsShipmentBuilder.build)
+    declaration.setGoodsShipment(GoodsShipmentBuilder.build(exportsCacheModel))
     //    declaration.setExitOffice(ExitOfficeBuilder.build)
     //    declaration.setBorderTransportMeans(BorderTransportMeansBuilder.build)
     //    declaration.setExporter(ExporterBuilder.build)
@@ -70,22 +63,4 @@ object DeclarationBuilder {
     declaration
   }
 
-  private def createDeclarationFunctionalReferenceIDType(
-    exportsCacheModel: ExportsCacheModel
-  ): DeclarationFunctionalReferenceIDType = {
-    val returnVal = new DeclarationFunctionalReferenceIDType()
-    exportsCacheModel.consignmentReferences.map(
-      consignmentReferences => if (consignmentReferences.lrn.nonEmpty) returnVal.setValue(consignmentReferences.lrn)
-    )
-    returnVal
-  }
-
-  private def generateAgent(exportsCacheModel: ExportsCacheModel): Option[Declaration.Agent] =
-    exportsCacheModel.parties.representativeDetails.map { representativeDetails =>
-      if (RepresentativeDetails.isDefined(representativeDetails)) {
-        AgentBuilder.createAgent(representativeDetails)
-      } else {
-        new Declaration.Agent()
-      }
-    }
 }

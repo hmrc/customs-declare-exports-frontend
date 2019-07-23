@@ -18,6 +18,7 @@ package services.mapping.goodsshipment
 import java.util
 
 import forms.declaration.{Document, PreviousDocumentsData}
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2.{
@@ -29,6 +30,13 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
 import scala.collection.JavaConverters._
 
 object PreviousDocumentsBuilder {
+
+  def buildThenAdd(exportsCacheModel: ExportsCacheModel, goodsShipment: GoodsShipment): Unit =
+    exportsCacheModel.previousDocuments.foreach { previousDocumentData =>
+      previousDocumentData.documents.foreach { data =>
+        goodsShipment.getPreviousDocument.add(createPreviousDocuments(data))
+      }
+    }
 
   def build(implicit cacheMap: CacheMap): util.List[GoodsShipment.PreviousDocument] =
     cacheMap

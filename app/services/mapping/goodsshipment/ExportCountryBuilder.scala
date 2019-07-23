@@ -17,6 +17,7 @@
 package services.mapping.goodsshipment
 import forms.declaration.destinationCountries.DestinationCountries
 import services.Countries.allCountries
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.ExportCountry
@@ -30,6 +31,12 @@ object ExportCountryBuilder {
       .filter(isDefined)
       .map(createExportCountry)
       .orNull
+
+  def buildThenAdd(exportsCacheModel: ExportsCacheModel, goodsShipment: GoodsShipment) {
+    exportsCacheModel.locations.destinationCountries.foreach { destinationCountry =>
+      goodsShipment.setExportCountry(createExportCountry(destinationCountry))
+    }
+  }
 
   private def isDefined(country: DestinationCountries): Boolean = country.countryOfDispatch.nonEmpty
 

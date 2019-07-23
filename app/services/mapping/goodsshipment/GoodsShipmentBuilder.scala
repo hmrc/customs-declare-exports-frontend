@@ -16,8 +16,9 @@
 
 package services.mapping.goodsshipment
 import forms.Choice
+import services.cache.ExportsCacheModel
 import services.mapping.goodsshipment.consignment.ConsignmentBuilder
-import services.mapping.governmentagencygoodsitem.{DomesticDutyTaxPartyBuilder, GovernmentAgencyGoodsItemBuilder}
+import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
@@ -37,6 +38,23 @@ object GoodsShipmentBuilder {
       .addAll(PreviousDocumentsBuilder.build)
     goodsShipment.getGovernmentAgencyGoodsItem.addAll(GovernmentAgencyGoodsItemBuilder.build)
     goodsShipment.getAEOMutualRecognitionParty.addAll(AEOMutualRecognitionPartiesBuilder.build)
+
+    goodsShipment
+  }
+
+  def build(exportsCacheModel: ExportsCacheModel): GoodsShipment = {
+    val goodsShipment = new GoodsShipment()
+
+    GoodsShipmentNatureOfTransactionBuilder.buildThenAdd(exportsCacheModel.natureOfTransaction, goodsShipment)
+    ConsigneeBuilder.buildThenAdd(exportsCacheModel.parties.consigneeDetails, goodsShipment)
+    ConsignmentBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
+    DestinationBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
+    ExportCountryBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
+    UCRBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
+    WarehouseBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
+    PreviousDocumentsBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
+    //    goodsShipment.getGovernmentAgencyGoodsItem.addAll(GovernmentAgencyGoodsItemBuilder.build)
+    AEOMutualRecognitionPartiesBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
 
     goodsShipment
   }

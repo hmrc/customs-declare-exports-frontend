@@ -20,6 +20,7 @@ import java.util
 
 import forms.declaration.DeclarationAdditionalActors
 import models.declaration.DeclarationAdditionalActorsData
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2._
@@ -27,6 +28,13 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 import scala.collection.JavaConverters._
 
 object AEOMutualRecognitionPartiesBuilder {
+  def buildThenAdd(exportsCacheModel: ExportsCacheModel, goodsShipment: GoodsShipment): Unit =
+    exportsCacheModel.parties.declarationAdditionalActorsData.foreach(
+      declarationAdditionalActorsData =>
+        declarationAdditionalActorsData.actors.foreach { declarationAdditionalActors =>
+          goodsShipment.getAEOMutualRecognitionParty.add(createAdditionalActors(declarationAdditionalActors))
+      }
+    )
 
   def build(implicit cacheMap: CacheMap): util.List[GoodsShipment.AEOMutualRecognitionParty] =
     cacheMap
