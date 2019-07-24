@@ -478,6 +478,7 @@ supplementary.transportInfo.meansOfTransport.idNumber.error.length = Reference s
 supplementary.meansOfTransportCrossingTheBorderIDNumber.error.length = Reference should be less than 35 alpha numeric characters
 supplementary.transportInfo.meansOfTransport.idNumber.error.specialCharacters = Reference cannot contain special characters
 supplementary.transportInfo.container = 7/2 Were the goods in a container?
+supplementary.transportInfo.container.error.empty = Please select an option
 supplementary.transportInfo.containers.title = 7/10 Transport Information Containers
 supplementary.transportInfo.containerId = 7/10 Enter the container ID
 supplementary.transportInfo.containerId.title = Container ID
