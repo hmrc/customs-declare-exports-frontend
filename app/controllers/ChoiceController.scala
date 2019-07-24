@@ -82,7 +82,7 @@ class ChoiceController @Inject()(
           } yield ()).map { _ =>
             validChoice.value match {
               case SupplementaryDec | StandardDec =>
-                Redirect(controllers.declaration.routes.DispatchLocationPageController.displayPage())
+                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
               case CancelDec =>
                 Redirect(controllers.routes.CancelDeclarationController.displayForm())
               case Submissions =>

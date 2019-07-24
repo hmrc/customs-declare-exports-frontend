@@ -64,7 +64,7 @@ class ConsignmentReferencesController @Inject()(
             _ <- updateCache(journeySessionId, validConsignmentReferences)
             _ <- customsCacheService
               .cache[ConsignmentReferences](cacheId, ConsignmentReferences.id, validConsignmentReferences)
-          } yield Redirect(controllers.declaration.routes.ExporterDetailsPageController.displayForm())
+          } yield Redirect(controllers.declaration.routes.ExporterDetailsController.displayForm())
       )
   }
 

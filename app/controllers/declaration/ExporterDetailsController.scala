@@ -19,7 +19,7 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
-import forms.declaration.ConsigneeDetails
+import forms.declaration.ExporterDetails
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -27,50 +27,47 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CustomsCacheService
 import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.consignee_details
+import views.html.declaration.exporter_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * This controller is not used in supp dec journey
-  */
-class ConsigneeDetailsPageController @Inject()(
+class ExporterDetailsController @Inject()(
   appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  consigneeDetailsPage: consignee_details
+  exporterDetailsPage: exporter_details
 )(implicit ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.consigneeDetails)).map {
-      case Some(data) => Ok(consigneeDetailsPage(appConfig, ConsigneeDetails.form().fill(data)))
-      case _          => Ok(consigneeDetailsPage(appConfig, ConsigneeDetails.form()))
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.exporterDetails)).map {
+      case Some(data) => Ok(exporterDetailsPage(appConfig, ExporterDetails.form().fill(data)))
+      case _          => Ok(exporterDetailsPage(appConfig, ExporterDetails.form()))
     }
   }
 
   def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ConsigneeDetails.form
+    ExporterDetails.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsigneeDetails]) =>
-          Future.successful(BadRequest(consigneeDetailsPage(appConfig, formWithErrors))),
+        (formWithErrors: Form[ExporterDetails]) =>
+          Future.successful(BadRequest(exporterDetailsPage(appConfig, formWithErrors))),
         form =>
           for {
             _ <- updateCache(journeySessionId, form)
-            _ <- customsCacheService.cache[ConsigneeDetails](cacheId, ConsigneeDetails.id, form)
-          } yield Redirect(controllers.declaration.routes.DeclarantDetailsPageController.displayForm())
+            _ <- customsCacheService.cache[ExporterDetails](cacheId, ExporterDetails.id, form)
+          } yield Redirect(controllers.declaration.routes.ConsigneeDetailsController.displayForm())
       )
   }
 
-  private def updateCache(sessionId: String, formData: ConsigneeDetails): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: ExporterDetails): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
-      val updatedParties = model.parties.copy(consigneeDetails = Some(formData))
+      val updatedParties = model.parties.copy(exporterDetails = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
     })
 }

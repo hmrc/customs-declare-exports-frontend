@@ -26,7 +26,7 @@ import views.html.declaration.confirmation_page
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmationPageController @Inject()(
+class ConfirmationController @Inject()(
   appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,

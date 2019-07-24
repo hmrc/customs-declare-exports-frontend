@@ -33,7 +33,7 @@
     @helper.form(FiscalInformationController.saveFiscalInformation(itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link(ProcedureCodesPageController.displayPage(itemId).url)
+        @components.back_link(ProcedureCodesController.displayPage(itemId).url)
 
         @components.error_summary(form.errors)
 

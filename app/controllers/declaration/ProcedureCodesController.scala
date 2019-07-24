@@ -38,7 +38,7 @@ import views.html.declaration.procedure_codes
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ProcedureCodesPageController @Inject()(
+class ProcedureCodesController @Inject()(
   appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -154,7 +154,7 @@ class ProcedureCodesPageController @Inject()(
             formId,
             ProcedureCodesData(userInput.procedureCode, seq :+ code)
           )
-        } yield Redirect(routes.ProcedureCodesPageController.displayPage(itemId))
+        } yield Redirect(routes.ProcedureCodesController.displayPage(itemId))
 
     }
 
@@ -168,7 +168,7 @@ class ProcedureCodesPageController @Inject()(
       for {
         _ <- updateCache(itemId, journeySessionId, updatedCache)
         _ <- legacyCacheService.cache[ProcedureCodesData](goodsItemCacheId, formId, updatedCache)
-      } yield Redirect(routes.ProcedureCodesPageController.displayPage(itemId))
+      } yield Redirect(routes.ProcedureCodesController.displayPage(itemId))
     } else errorHandler.displayErrorPage()
 
   //scalastyle:off method.length

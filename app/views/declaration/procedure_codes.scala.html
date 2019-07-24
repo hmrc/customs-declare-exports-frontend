@@ -29,7 +29,7 @@
      ) {
 
 
-        @helper.form(controllers.declaration.routes.ProcedureCodesPageController.submitProcedureCodes(itemId), 'autoComplete -> "off") {
+        @helper.form(controllers.declaration.routes.ProcedureCodesController.submitProcedureCodes(itemId), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
             @components.back_link(controllers.declaration.routes.ItemsSummaryController.displayPage().url)

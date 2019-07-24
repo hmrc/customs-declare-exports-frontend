@@ -31,7 +31,7 @@ import views.html.declaration.declarant_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarantDetailsPageController @Inject()(
+class DeclarantDetailsController @Inject()(
   appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -63,7 +63,7 @@ class DeclarantDetailsPageController @Inject()(
             _ <- customsCacheService.cache[DeclarantDetails](cacheId, DeclarantDetails.id, form)
           } yield
             Redirect(
-              controllers.declaration.routes.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
+              controllers.declaration.routes.RepresentativeDetailsController.displayRepresentativeDetailsPage()
           )
       )
   }

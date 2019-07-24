@@ -132,7 +132,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with Generators w
         val result = route(app, getRequest(addItemUri)).value
         status(result) must be(SEE_OTHER)
 
-        redirectLocation(result).getOrElse("") must be(routes.ProcedureCodesPageController.displayPage(item1Id).url)
+        redirectLocation(result).getOrElse("") must be(routes.ProcedureCodesController.displayPage(item1Id).url)
 
         val stringResult = contentAsString(result)
 

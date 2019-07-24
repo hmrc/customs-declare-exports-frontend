@@ -40,7 +40,7 @@
     appConfig = appConfig
 ) {
 
-    @helper.form(routes.ItemTypePageController.submitItemType(itemId), 'autocomplete -> "off") {
+    @helper.form(routes.ItemTypeController.submitItemType(itemId), 'autocomplete -> "off") {
         @helper.CSRF.formField
 
         @{

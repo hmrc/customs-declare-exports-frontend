@@ -1,12 +1,12 @@
 # Declaration type
 
-GET         /dispatch-location                   controllers.declaration.DispatchLocationPageController.displayPage()
+GET         /dispatch-location                   controllers.declaration.DispatchLocationController.displayPage()
 
-POST        /dispatch-location                   controllers.declaration.DispatchLocationPageController.submitForm()
+POST        /dispatch-location                   controllers.declaration.DispatchLocationController.submitForm()
 
-GET         /type                                controllers.declaration.AdditionalDeclarationTypePageController.displayPage()
+GET         /type                                controllers.declaration.AdditionalDeclarationTypeController.displayPage()
 
-POST        /type                                controllers.declaration.AdditionalDeclarationTypePageController.submitForm()
+POST        /type                                controllers.declaration.AdditionalDeclarationTypeController.submitForm()
 
 # Not Eligible
 
@@ -20,33 +20,33 @@ POST        /consignment-references              controllers.declaration.Consign
 
 # Exporter address
 
-GET         /exporter-details                    controllers.declaration.ExporterDetailsPageController.displayForm()
+GET         /exporter-details                    controllers.declaration.ExporterDetailsController.displayForm()
 
-POST        /exporter-details                    controllers.declaration.ExporterDetailsPageController.saveAddress()
+POST        /exporter-details                    controllers.declaration.ExporterDetailsController.saveAddress()
 
 # Declarant address
 
-GET         /declarant-details                   controllers.declaration.DeclarantDetailsPageController.displayForm()
+GET         /declarant-details                   controllers.declaration.DeclarantDetailsController.displayForm()
 
-POST        /declarant-details                   controllers.declaration.DeclarantDetailsPageController.saveAddress()
+POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.saveAddress()
 
 # Representative details
 
-GET         /representative-details              controllers.declaration.RepresentativeDetailsPageController.displayRepresentativeDetailsPage()
+GET         /representative-details              controllers.declaration.RepresentativeDetailsController.displayRepresentativeDetailsPage()
 
-POST        /representative-details              controllers.declaration.RepresentativeDetailsPageController.submitRepresentativeDetails()
+POST        /representative-details              controllers.declaration.RepresentativeDetailsController.submitRepresentativeDetails()
 
 # Consignee details
 
-GET         /consignee-details                   controllers.declaration.ConsigneeDetailsPageController.displayForm()
+GET         /consignee-details                   controllers.declaration.ConsigneeDetailsController.displayForm()
 
-POST        /consignee-details                   controllers.declaration.ConsigneeDetailsPageController.saveAddress()
+POST        /consignee-details                   controllers.declaration.ConsigneeDetailsController.saveAddress()
 
 # Carrier details
 
-GET         /carrier-details                     controllers.declaration.CarrierDetailsPageController.displayForm()
+GET         /carrier-details                     controllers.declaration.CarrierDetailsController.displayForm()
 
-POST        /carrier-details                     controllers.declaration.CarrierDetailsPageController.saveAddress()
+POST        /carrier-details                     controllers.declaration.CarrierDetailsController.saveAddress()
 
 # Declaration additional address
 
@@ -123,9 +123,9 @@ GET         /export-items/:itemId/remove         controllers.declaration.ItemsSu
 
 # Procedure codes
 
-GET         /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesPageController.displayPage(itemId)
+GET         /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesController.displayPage(itemId)
 
-POST        /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesPageController.submitProcedureCodes(itemId)
+POST        /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesController.submitProcedureCodes(itemId)
 
 # Fiscal Information
 
@@ -142,9 +142,9 @@ POST        /items/:itemId/additional-fiscal-references        controllers.decla
 
 # Item Type
 
-GET         /items/:itemId/item-type                           controllers.declaration.ItemTypePageController.displayPage(itemId)
+GET         /items/:itemId/item-type                           controllers.declaration.ItemTypeController.displayPage(itemId)
 
-POST        /items/:itemId/item-type                           controllers.declaration.ItemTypePageController.submitItemType(itemId)
+POST        /items/:itemId/item-type                           controllers.declaration.ItemTypeController.submitItemType(itemId)
 
 # Package Information
 
@@ -193,10 +193,10 @@ POST        /add-seal                            controllers.declaration.SealCon
 
 # Summary
 
-GET         /summary                             controllers.declaration.SummaryPageController.displayPage()
+GET         /summary                             controllers.declaration.SummaryController.displayPage()
 
-POST        /summary                             controllers.declaration.SummaryPageController.submitSupplementaryDeclaration()
+POST        /summary                             controllers.declaration.SummaryController.submitSupplementaryDeclaration()
 
 # Confirmation
 
-GET         /confirmation                        controllers.declaration.ConfirmationPageController.displayPage()
+GET         /confirmation                        controllers.declaration.ConfirmationController.displayPage()

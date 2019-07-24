@@ -21,7 +21,7 @@ import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import helpers.views.declaration.ConfirmationMessages
 import play.api.test.Helpers._
 
-class ConfirmationPageControllerSpec extends CustomExportsBaseSpec with ConfirmationMessages {
+class ConfirmationControllerSpec extends CustomExportsBaseSpec with ConfirmationMessages {
 
   override def beforeEach() {
     authorizedUser()

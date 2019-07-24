@@ -26,9 +26,9 @@ import org.mockito.Mockito.{reset, times, verify}
 import play.api.test.Helpers._
 import services.cache.ExportItem
 
-class ProcedureCodesPageControllerSpec
+class ProcedureCodesControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ProcedureCodesMessages with CommonMessages {
-  import ProcedureCodesPageControllerSpec.cacheWithMaximumAmountOfAdditionalCodes
+  import ProcedureCodesControllerSpec.cacheWithMaximumAmountOfAdditionalCodes
 
   private val itemModel = createModelWithItem("", journeyType = "SMP")
   private val uri = uriWithContextPath(s"/declaration/items/${itemModel.items.head.id}/procedure-codes")
@@ -201,7 +201,7 @@ class ProcedureCodesPageControllerSpec
   }
 }
 
-object ProcedureCodesPageControllerSpec {
+object ProcedureCodesControllerSpec {
   val cacheWithMaximumAmountOfAdditionalCodes =
     ProcedureCodesData(Some("1234"), Seq.range[Int](100, 200, 1).map(_.toString))
 }

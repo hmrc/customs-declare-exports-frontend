@@ -112,7 +112,7 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
       val result = route(app, postRequest(uri, fiscalInformationWithNo)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some(routes.ItemTypePageController.displayPage(cacheModel.items.head.id).url))
+      redirectLocation(result) must be(Some(routes.ItemTypeController.displayPage(cacheModel.items.head.id).url))
       theCacheModelUpdated.items.head must be(
         ExportItem("id", fiscalInformation = Some(FiscalInformation("No")), additionalFiscalReferencesData = None)
       )

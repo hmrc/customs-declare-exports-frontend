@@ -19,7 +19,7 @@ package controllers.declaration
 import java.time.LocalDateTime
 
 import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
-import controllers.declaration.TransportInformationContainersPageControllerSpec.cacheWithMaximumAmountOfHolders
+import controllers.declaration.TransportInformationContainersControllerSpec.cacheWithMaximumAmountOfHolders
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportInformationContainer
@@ -32,7 +32,7 @@ import org.mockito.Mockito.{times, verify}
 import play.api.test.Helpers._
 import services.cache.ExportsCacheModel
 
-class TransportInformationContainersPageControllerSpec
+class TransportInformationContainersControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with TransportInformationContainerMessages with CommonMessages {
 
   private val uri = uriWithContextPath("/declaration/add-transport-containers")
@@ -322,7 +322,7 @@ class TransportInformationContainersPageControllerSpec
     )
 }
 
-object TransportInformationContainersPageControllerSpec {
+object TransportInformationContainersControllerSpec {
   val cacheWithMaximumAmountOfHolders = TransportInformationContainerData(
     Seq
       .range[Int](1, 10000, 1)

@@ -31,7 +31,7 @@
 
   @components.back_link("/customs-declare-exports/choice")
 
-  @helper.form(controllers.declaration.routes.DispatchLocationPageController.submitForm(), 'autoComplete -> "off") {
+  @helper.form(controllers.declaration.routes.DispatchLocationController.submitForm(), 'autoComplete -> "off") {
       @helper.CSRF.formField
 
     @components.error_summary(form.errors)

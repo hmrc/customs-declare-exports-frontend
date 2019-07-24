@@ -29,9 +29,9 @@ import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import services.cache.ExportsCacheModel
 
-class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
+class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 
-  import DispatchLocationPageControllerSpec._
+  import DispatchLocationControllerSpec._
 
   private val dispatchLocationUri = uriWithContextPath("/declaration/dispatch-location")
 
@@ -126,7 +126,7 @@ class DispatchLocationPageControllerSpec extends CustomExportsBaseSpec {
 
 }
 
-object DispatchLocationPageControllerSpec {
+object DispatchLocationControllerSpec {
 
   def buildDispatchLocationTestData(value: String = ""): JsValue = JsObject(Map("dispatchLocation" -> JsString(value)))
 }

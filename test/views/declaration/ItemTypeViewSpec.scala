@@ -34,7 +34,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
     itemTypePage(itemId, form, false)(appConfig, fakeJourneyRequest(journeyType), messages)
 
   /*
-   * Validation for the errors is done in ItemTypePageController
+   * Validation for the errors is done in ItemTypeController
    */
   "Item Type View" should {
 

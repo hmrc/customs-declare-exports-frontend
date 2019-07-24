@@ -28,7 +28,7 @@ import org.mockito.Mockito.reset
 import play.api.test.Helpers._
 import services.cache.ExportsCacheModel
 
-class DeclarantDetailsPageControllerSpec extends CustomExportsBaseSpec {
+class DeclarantDetailsControllerSpec extends CustomExportsBaseSpec {
 
   private val uri = uriWithContextPath("/declaration/declarant-details")
 

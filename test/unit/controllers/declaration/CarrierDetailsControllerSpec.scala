@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.CarrierDetailsPageController
+import controllers.declaration.CarrierDetailsController
 import forms.Choice
 import forms.declaration.{CarrierDetails, EntityDetails}
 import play.api.libs.json.Json
@@ -24,12 +24,12 @@ import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.declaration.carrier_details
 
-class CarrierDetailsPageControllerSpec extends ControllerSpec {
+class CarrierDetailsControllerSpec extends ControllerSpec {
 
   trait SetUp {
     val carrierDetailsPage = new carrier_details(mainTemplate)
 
-    val controller = new CarrierDetailsPageController(
+    val controller = new CarrierDetailsController(
       mockAuthAction,
       mockJourneyAction,
       mockCustomsCacheService,

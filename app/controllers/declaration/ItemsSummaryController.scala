@@ -51,7 +51,7 @@ class ItemsSummaryController @Inject()(
   def addItem(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val newItem = ExportItem(id = exportItemIdGeneratorService.generateItemId())
     updateCache(journeySessionId, newItem)
-      .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesPageController.displayPage(newItem.id)))
+      .map(_ => Redirect(controllers.declaration.routes.ProcedureCodesController.displayPage(newItem.id)))
   }
 
   def removeItem(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

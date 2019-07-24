@@ -105,8 +105,8 @@ class AdditionalFiscalReferencesController @Inject()(
         formWithErrors => Future.successful(badRequest(itemId, formWithErrors, cachedData.references)),
         updatedCache =>
           if (updatedCache != cachedData.references)
-            updateCacheModels(itemId, updatedCache, routes.ItemTypePageController.displayPage(itemId))
-          else Future.successful(Redirect(routes.ItemTypePageController.displayPage(itemId)))
+            updateCacheModels(itemId, updatedCache, routes.ItemTypeController.displayPage(itemId))
+          else Future.successful(Redirect(routes.ItemTypeController.displayPage(itemId)))
       )
 
   private def removeReference(itemId: String, values: Seq[String], cachedData: AdditionalFiscalReferencesData)(
