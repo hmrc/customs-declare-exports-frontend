@@ -101,7 +101,7 @@ class TransportDetailsSpec
       "has containers not supplied" in {
         Form(TransportDetails.formMapping)
           .bind(Map[String, String]("container" -> ""))
-          .fold(_ must haveErrorMessage("Please give an answer"), _ => fail("should not succeed"))
+          .fold(_ must haveErrorMessage("Please select an option"), _ => fail("should not succeed"))
       }
 
       "invalid paymentMethod is supplied" in {

@@ -21,7 +21,7 @@ import play.api.libs.json.Json
 import services.Countries.allCountries
 import utils.validators.forms.FieldValidator.{isAlphanumeric, isContainedIn, isEmpty, noLongerThan}
 import forms.declaration.TransportCodes._
-import play.api.data.Form
+import play.api.data.{Form, Mapping}
 import utils.validators.forms.FieldValidator._
 
 case class TransportDetails(
@@ -38,7 +38,7 @@ object TransportDetails {
 
   implicit val formats = Json.format[TransportDetails]
 
-  val formMapping = mapping(
+  val formMapping: Mapping[TransportDetails] = mapping(
     "meansOfTransportCrossingTheBorderNationality" -> optional(
       text()
         .verifying(
@@ -46,7 +46,9 @@ object TransportDetails {
           isContainedIn(allCountries.map(_.countryName))
         )
     ),
-    "container" -> boolean,
+    "container" -> optional(boolean)
+      .verifying("supplementary.transportInfo.container.error.empty", _.isDefined)
+      .transform(_.get, (b: Boolean) => Some(b)),
     "meansOfTransportCrossingTheBorderType" -> optional(
       text()
         .verifying(
