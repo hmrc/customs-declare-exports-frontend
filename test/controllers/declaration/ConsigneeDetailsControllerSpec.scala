@@ -29,7 +29,7 @@ import org.mockito.Mockito.reset
 import play.api.test.Helpers._
 import services.cache.ExportsCacheModel
 
-class ConsigneeDetailsPageControllerSpec extends CustomExportsBaseSpec {
+class ConsigneeDetailsControllerSpec extends CustomExportsBaseSpec {
 
   private val uri = uriWithContextPath("/declaration/consignee-details")
 

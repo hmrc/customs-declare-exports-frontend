@@ -36,10 +36,10 @@ import services.cache.ExportsCacheModel
 
 import scala.concurrent.Future
 
-class RepresentativeDetailsPageControllerSpec
+class RepresentativeDetailsControllerSpec
     extends CustomExportsBaseSpec with RepresentativeDetailsMessages with CommonMessages {
 
-  import RepresentativeDetailsPageControllerSpec._
+  import RepresentativeDetailsControllerSpec._
   private val uri = uriWithContextPath("/declaration/representative-details")
 
   override def beforeEach() {
@@ -279,7 +279,7 @@ class RepresentativeDetailsPageControllerSpec
   }
 }
 
-object RepresentativeDetailsPageControllerSpec {
+object RepresentativeDetailsControllerSpec {
 
   val incorrectRepresentativeDetails: JsValue = buildRepresentativeDetailsJsonInput(
     eori = createRandomAlphanumericString(18),

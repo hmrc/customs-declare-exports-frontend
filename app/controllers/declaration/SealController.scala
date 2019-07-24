@@ -88,9 +88,9 @@ class SealController @Inject()(
       updatedCache =>
         if (updatedCache != cachedSeals) {
           updateCache(journeySessionId, updatedCache).map { _ =>
-            Redirect(routes.SummaryPageController.displayPage())
+            Redirect(routes.SummaryController.displayPage())
           }
-        } else Future.successful(Redirect(routes.SummaryPageController.displayPage()))
+        } else Future.successful(Redirect(routes.SummaryController.displayPage()))
     )
 
   private def badRequest(

@@ -34,7 +34,7 @@ import views.html.declaration.representative_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RepresentativeDetailsPageController @Inject()(
+class RepresentativeDetailsController @Inject()(
   appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -78,7 +78,7 @@ class RepresentativeDetailsPageController @Inject()(
       case SupplementaryDec =>
         controllers.declaration.routes.DeclarationAdditionalActorsController.displayForm()
       case StandardDec =>
-        controllers.declaration.routes.CarrierDetailsPageController.displayForm()
+        controllers.declaration.routes.CarrierDetailsController.displayForm()
     }
 
   private def updateCache(sessionId: String, formData: RepresentativeDetails): Future[Option[ExportsCacheModel]] =

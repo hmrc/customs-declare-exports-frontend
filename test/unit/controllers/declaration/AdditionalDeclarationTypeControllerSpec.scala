@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.AdditionalDeclarationTypePageController
+import controllers.declaration.AdditionalDeclarationTypeController
 import forms.Choice
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import play.api.libs.json.Json
@@ -24,12 +24,12 @@ import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.declaration.additionaldeclarationtype.declaration_type
 
-class AdditionalDeclarationTypePageControllerSpec extends ControllerSpec {
+class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
   trait SetUp {
     val additionalDeclarationTypePage = new declaration_type(mainTemplate)
 
-    val controller = new AdditionalDeclarationTypePageController(
+    val controller = new AdditionalDeclarationTypeController(
       mockAuthAction,
       mockJourneyAction,
       mockCustomsCacheService,

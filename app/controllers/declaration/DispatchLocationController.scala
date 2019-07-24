@@ -19,64 +19,64 @@ package controllers.declaration
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
-import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
-import forms.declaration.additionaldeclarationtype._
+import forms.declaration.DispatchLocation
+import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import javax.inject.Inject
-import models.requests.JourneyRequest
+import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.CustomsCacheService
 import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.declaration.additionaldeclarationtype.declaration_type
+import views.html.declaration.dispatch_location
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalDeclarationTypePageController @Inject()(
+class DispatchLocationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
-  declarationTypePage: declaration_type
+  dispatchLocationPage: dispatch_location
 )(implicit appConfig: AppConfig, ec: ExecutionContext)
     extends {
   val cacheService = exportsCacheService
 } with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val decType = extractFormType(request)
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.additionalDeclarationType)).map {
-      case Some(data) => Ok(declarationTypePage(decType.form().fill(data)))
-      case _          => Ok(declarationTypePage(decType.form()))
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.dispatchLocation)).map {
+      case Some(data) => Ok(dispatchLocationPage(DispatchLocation.form().fill(data)))
+      case _          => Ok(dispatchLocationPage(DispatchLocation.form()))
     }
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val decType = extractFormType(request)
-    decType
+    DispatchLocation
       .form()
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(declarationTypePage(formWithErrors))),
-        validAdditionalDeclarationType =>
+        (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(formWithErrors))),
+        validDispatchLocation => {
           for {
-            _ <- updateCache(journeySessionId, validAdditionalDeclarationType)
-            _ <- customsCacheService
-              .cache[AdditionalDeclarationType](cacheId, decType.formId, validAdditionalDeclarationType)
-          } yield Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
+            _ <- updateCache(journeySessionId, validDispatchLocation)
+            _ <- customsCacheService.cache[DispatchLocation](cacheId, DispatchLocation.formId, validDispatchLocation)
+          } yield Redirect(specifyNextPage(validDispatchLocation))
+        }
       )
   }
 
-  private def extractFormType(journeyRequest: JourneyRequest[_]): AdditionalDeclarationTypeTrait =
-    journeyRequest.choice.value match {
-      case SupplementaryDec => AdditionalDeclarationTypeSupplementaryDec
-      case StandardDec      => AdditionalDeclarationTypeStandardDec
+  private def specifyNextPage(providedDispatchLocation: DispatchLocation): Call =
+    providedDispatchLocation.dispatchLocation match {
+      case AllowedDispatchLocations.OutsideEU =>
+        controllers.declaration.routes.AdditionalDeclarationTypeController.displayPage()
+      case AllowedDispatchLocations.SpecialFiscalTerritory =>
+        controllers.declaration.routes.NotEligibleController.displayPage()
     }
 
-  private def updateCache(sessionId: String, formData: AdditionalDeclarationType): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: DispatchLocation): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
-      exportsCacheService.update(sessionId, model.copy(additionalDeclarationType = Some(formData)))
+      exportsCacheService.update(sessionId, model.copy(dispatchLocation = Some(formData)))
     })
 
 }

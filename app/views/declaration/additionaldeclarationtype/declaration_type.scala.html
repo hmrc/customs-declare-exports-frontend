@@ -31,7 +31,7 @@
 
     @components.back_link("/customs-declare-exports/declaration/dispatch-location")
 
-    @helper.form(controllers.declaration.routes.AdditionalDeclarationTypePageController.submitForm(), 'autoComplete -> "off") {
+    @helper.form(controllers.declaration.routes.AdditionalDeclarationTypeController.submitForm(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
         @components.error_summary(form.errors)

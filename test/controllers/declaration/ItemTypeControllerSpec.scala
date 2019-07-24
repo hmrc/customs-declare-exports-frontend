@@ -31,9 +31,9 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
 import services.cache.ExportItem
 
-class ItemTypePageControllerSpec
+class ItemTypeControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages {
-  import ItemTypePageControllerSpec._
+  import ItemTypeControllerSpec._
   private val cacheModel = createModelWithItem("", journeyType = "SMP")
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/item-type")
 
@@ -734,7 +734,7 @@ class ItemTypePageControllerSpec
 
 }
 
-object ItemTypePageControllerSpec {
+object ItemTypeControllerSpec {
 
   def fourDigitsSequence(number: Int): Seq[String] = Seq.tabulate(number)(n => (1000 + n).toString)
 

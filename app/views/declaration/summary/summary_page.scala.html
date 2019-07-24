@@ -75,7 +75,7 @@
 
     @items_section(suppDecData.items)
 
-    @helper.form(action = SummaryPageController.submitSupplementaryDeclaration()) {
+    @helper.form(action = SummaryController.submitSupplementaryDeclaration()) {
         @helper.CSRF.formField
 
         @components.submit_button(messages("site.acceptAndSubmitDeclaration"))

@@ -39,7 +39,7 @@ import views.html.declaration.item_type
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class ItemTypePageController @Inject()(
+class ItemTypeController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,

@@ -35,7 +35,7 @@ import views.html.declaration.summary.{summary_page, summary_page_no_data}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SummaryPageController @Inject()(
+class SummaryController @Inject()(
   appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
@@ -75,7 +75,7 @@ class SummaryPageController @Inject()(
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     submissionService.submit(cacheMap).map {
       case Some(lrn) =>
-        Redirect(controllers.declaration.routes.ConfirmationPageController.displayPage())
+        Redirect(controllers.declaration.routes.ConfirmationController.displayPage())
           .flashing(Flash(Map("LRN" -> lrn)))
       case _ => handleError(s"Error from Customs Declarations API")
     }

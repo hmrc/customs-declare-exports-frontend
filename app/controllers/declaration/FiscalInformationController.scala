@@ -71,7 +71,7 @@ class FiscalInformationController @Inject()(
                 }
               case FiscalInformation.AllowedFiscalInformationAnswers.no =>
                 updateCacheForNo(itemId, journeySessionId, formData) map { _ =>
-                  Redirect(routes.ItemTypePageController.displayPage(itemId))
+                  Redirect(routes.ItemTypeController.displayPage(itemId))
                 }
           }
         )

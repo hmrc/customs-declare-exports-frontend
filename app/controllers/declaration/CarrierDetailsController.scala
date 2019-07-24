@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 /**
   * This controller is not used in supp dec journey
   */
-class CarrierDetailsPageController @Inject()(
+class CarrierDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,

@@ -29,7 +29,7 @@ import org.mockito.Mockito
 import play.api.test.Helpers._
 import services.cache.ExportsCacheModel
 
-class ExporterDetailsPageControllerSpec extends CustomExportsBaseSpec with CommonMessages {
+class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMessages {
 
   private val uri = uriWithContextPath("/declaration/exporter-details")
 

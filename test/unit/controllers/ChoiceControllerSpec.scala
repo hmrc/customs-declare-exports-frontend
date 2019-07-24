@@ -86,7 +86,7 @@ class ChoiceControllerSpec extends ControllerSpec {
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(
-          Some(controllers.declaration.routes.DispatchLocationPageController.displayPage().url)
+          Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
         )
       }
 
@@ -96,7 +96,7 @@ class ChoiceControllerSpec extends ControllerSpec {
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(
-          Some(controllers.declaration.routes.DispatchLocationPageController.displayPage().url)
+          Some(controllers.declaration.routes.DispatchLocationController.displayPage().url)
         )
       }
     }

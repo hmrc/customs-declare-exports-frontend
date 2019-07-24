@@ -32,7 +32,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
 
-class SummaryPageControllerSpec extends CustomExportsBaseSpec {
+class SummaryControllerSpec extends CustomExportsBaseSpec {
 
   val summaryPageUri = uriWithContextPath("/declaration/summary")
   val emptyForm: JsValue = JsObject(Map("" -> JsString("")))

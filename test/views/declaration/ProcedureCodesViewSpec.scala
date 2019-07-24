@@ -33,7 +33,7 @@ class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with C
     procedureCodesPage(appConfig, "1234", form, Seq())(fakeRequest, messages)
 
   /*
-   * Tests for errors are in the ProcedureCodesPageControllerSpec
+   * Tests for errors are in the ProcedureCodesControllerSpec
    */
   "Procedure Codes View" should {
 
