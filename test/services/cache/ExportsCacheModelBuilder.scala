@@ -33,6 +33,8 @@ trait ExportsCacheModelBuilder {
 
   // ************************************************* Builders ********************************************************
 
+  def withChoice(choice: String): CacheModifier = _.copy(choice = choice)
+
   def withoutTotalNumberOfItems(): CacheModifier = _.copy(totalNumberOfItems = None)
 
   def withTotalNumberOfItems(
