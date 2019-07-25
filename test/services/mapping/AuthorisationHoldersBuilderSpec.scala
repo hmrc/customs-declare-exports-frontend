@@ -21,9 +21,11 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with MockitoSugar {
+class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
 
   "AuthorisationHolders" should {
     "correctly mapped to wco AuthorisationHolder" in {
@@ -47,6 +49,51 @@ class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with Mockit
 
       mappedAuthHolder.get(1).getCategoryCode.getValue should be("decHolder2TypeCode")
       mappedAuthHolder.get(1).getID.getValue should be("decHolder2Eori")
+    }
+
+    "build and add to declaration" when {
+      "multiple holders" in {
+        // Given
+        val model = aCacheModel(
+          withDeclarationHolder(Some("auth code1"), Some("eori1")),
+          withDeclarationHolder(Some("auth code2"), Some("eori2"))
+        )
+        val declaration = new Declaration()
+
+        // When
+        AuthorisationHoldersBuilder.buildThenAdd(model, declaration)
+
+        // Then
+        declaration.getAuthorisationHolder should have(size(2))
+        declaration.getAuthorisationHolder.get(0).getID.getValue shouldBe "eori1"
+        declaration.getAuthorisationHolder.get(1).getID.getValue shouldBe "eori2"
+        declaration.getAuthorisationHolder.get(0).getCategoryCode.getValue shouldBe "auth code1"
+        declaration.getAuthorisationHolder.get(1).getCategoryCode.getValue shouldBe "auth code2"
+      }
+
+      "auth code is empty" in {
+        // Given
+        val model = aCacheModel(withDeclarationHolder(None, Some("eori")))
+        val declaration = new Declaration()
+
+        // When
+        AuthorisationHoldersBuilder.buildThenAdd(model, declaration)
+
+        // Then
+        declaration.getAuthorisationHolder shouldBe empty
+      }
+
+      "eori is empty" in {
+        // Given
+        val model = aCacheModel(withDeclarationHolder(Some("auth code"), None))
+        val declaration = new Declaration()
+
+        // When
+        AuthorisationHoldersBuilder.buildThenAdd(model, declaration)
+
+        // Then
+        declaration.getAuthorisationHolder shouldBe empty
+      }
     }
   }
 

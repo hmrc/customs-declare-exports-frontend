@@ -18,41 +18,42 @@ package services.cache.mapping.declaration
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.CacheTestData
+import services.cache.ExportsCacheModelBuilder
 
-class DeclarationBuilderSpec extends WordSpec with Matchers with CacheTestData {
+class DeclarationBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "DeclarationBuilder" should {
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance" in {
-      val exportsCacheModel =
-        createEmptyExportsModel.copy(
-          consignmentReferences = Some(createConsignmentReferencesData(Some(ducr), LRN)),
-          additionalDeclarationType = Some(createAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard)),
-          dispatchLocation = Some(createDispatchLocation(dispatchLocation)),
-          items = Set(createExportItem, createExportItem, createExportItem)
-        )
+      val model = aCacheModel(
+        withConsignmentReference(Some(DUCR), LRN),
+        withAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard),
+        withDispatchLocation("GB"),
+        withTotalNumberOfItems(exchangeRate = Some("123")),
+        withDeclarationHolder(Some("auth code"), Some("eori")),
+        withItems(3)
+      )
 
-      val declaration = DeclarationBuilder.build(exportsCacheModel)
+      val declaration = DeclarationBuilder.build(model)
 
       declaration.getFunctionCode.getValue should be(DeclarationBuilder.defaultFunctionCode)
       declaration.getFunctionalReferenceID.getValue should be(LRN)
-      declaration.getTypeCode.getValue should be(dispatchLocation + AllowedAdditionalDeclarationTypes.Standard)
+      declaration.getTypeCode.getValue should be("GB" + AllowedAdditionalDeclarationTypes.Standard)
       declaration.getGoodsItemQuantity.getValue.intValue() should be(3)
+      declaration.getCurrencyExchange should have(size(1))
+      declaration.getCurrencyExchange.get(0).getRateNumeric.intValue() shouldBe 123
+      declaration.getAuthorisationHolder should have(size(1))
+      declaration.getAuthorisationHolder.get(0).getID.getValue shouldBe "eori"
+      declaration.getAuthorisationHolder.get(0).getCategoryCode.getValue shouldBe "auth code"
     }
 
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance when dispatchLocation is not present" in {
-      val exportsCacheModel =
-        createEmptyExportsModel.copy(
-          consignmentReferences = Some(createConsignmentReferencesData(Some(ducr), LRN)),
-          additionalDeclarationType = Some(createAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard))
-        )
+      val exportsCacheModel = aCacheModel(
+        withAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard)
+      )
 
       val declaration = DeclarationBuilder.build(exportsCacheModel)
 
-      declaration.getFunctionCode.getValue should be(DeclarationBuilder.defaultFunctionCode)
-      declaration.getFunctionalReferenceID.getValue should be(LRN)
       declaration.getTypeCode.getValue should be(null)
-
     }
   }
 
