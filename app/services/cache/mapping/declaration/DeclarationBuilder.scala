@@ -17,6 +17,7 @@
 package services.cache.mapping.declaration
 
 import services.cache.ExportsCacheModel
+import services.mapping.AuthorisationHoldersBuilder
 import services.mapping.declaration._
 import services.mapping.goodsshipment.GoodsShipmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
@@ -50,11 +51,7 @@ object DeclarationBuilder {
     //    declaration.setConsignment(DeclarationConsignmentBuilder.build)
     //    declaration.setTypeCode(TypeCodeBuilder.build)
     //
-    //    val authorisationHolders = AuthorisationHoldersBuilder.build
-    //    if (authorisationHolders != null && !authorisationHolders.isEmpty) {
-    //      declaration.getAuthorisationHolder.addAll(authorisationHolders)
-    //    }
-    //
+    AuthorisationHoldersBuilder.buildThenAdd(exportsCacheModel, declaration)
     CurrencyExchangeBuilder.buildThenAdd(exportsCacheModel, declaration)
     declaration
   }

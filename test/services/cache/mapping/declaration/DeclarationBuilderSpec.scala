@@ -29,6 +29,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
         withAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard),
         withDispatchLocation("GB"),
         withTotalNumberOfItems(exchangeRate = Some("123")),
+        withDeclarationHolder(Some("auth code"), Some("eori")),
         withItems(3)
       )
 
@@ -40,20 +41,19 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
       declaration.getGoodsItemQuantity.getValue.intValue() should be(3)
       declaration.getCurrencyExchange should have(size(1))
       declaration.getCurrencyExchange.get(0).getRateNumeric.intValue() shouldBe 123
+      declaration.getAuthorisationHolder should have(size(1))
+      declaration.getAuthorisationHolder.get(0).getID.getValue shouldBe "eori"
+      declaration.getAuthorisationHolder.get(0).getCategoryCode.getValue shouldBe "auth code"
     }
 
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance when dispatchLocation is not present" in {
       val exportsCacheModel = aCacheModel(
-        withConsignmentReference(Some(DUCR), LRN),
         withAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard)
       )
 
       val declaration = DeclarationBuilder.build(exportsCacheModel)
 
-      declaration.getFunctionCode.getValue should be(DeclarationBuilder.defaultFunctionCode)
-      declaration.getFunctionalReferenceID.getValue should be(LRN)
       declaration.getTypeCode.getValue should be(null)
-
     }
   }
 

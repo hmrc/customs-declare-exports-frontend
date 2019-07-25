@@ -5,8 +5,9 @@ import java.util.UUID
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
-import forms.declaration.{ConsignmentReferences, DispatchLocation, TotalNumberOfItems}
+import forms.declaration.{ConsignmentReferences, DeclarationHolder, DispatchLocation, TotalNumberOfItems}
 import forms.{Choice, Ducr}
+import models.declaration.DeclarationHoldersData
 
 trait ExportsCacheModelBuilder {
 
@@ -54,4 +55,16 @@ trait ExportsCacheModelBuilder {
 
   def withItems(count: Int): ExportsCacheModel => ExportsCacheModel =
     m => m.copy(items = m.items ++ (1 to count).map(_ => ExportItem(id = uuid)).toSet)
+
+  def withDeclarationHolder(
+    authorisationTypeCode: Option[String] = None,
+    eori: Option[String] = None
+  ): ExportsCacheModel => ExportsCacheModel = { m =>
+    val existing: Seq[DeclarationHolder] = m.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+    val holdersData = DeclarationHoldersData(existing :+ DeclarationHolder(authorisationTypeCode, eori))
+    m.copy(parties = m.parties.copy(declarationHoldersData = Some(holdersData)))
+  }
+
+  def withDeclarationHolders(holders: DeclarationHolder*): ExportsCacheModel => ExportsCacheModel =
+    m => m.copy(parties = m.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders))))
 }
