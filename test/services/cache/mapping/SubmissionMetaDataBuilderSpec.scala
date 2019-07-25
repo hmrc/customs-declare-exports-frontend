@@ -18,21 +18,32 @@ package services.cache.mapping
 
 import javax.xml.bind.JAXBElement
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
-import org.scalatest.{Matchers, WordSpec}
-import services.cache.{CacheTestData}
+import org.mockito.ArgumentMatchers._
+import org.mockito.BDDMockito._
+import org.mockito.{ArgumentMatchers, BDDMockito}
+import org.scalatest.mockito.MockitoSugar
+import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
+import services.cache.mapping.declaration.DeclarationBuilder
+import services.cache.{CacheTestData, ExportsCacheModel, ExportsCacheModelBuilder}
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class SubmissionMetaDataBuilderSpec extends WordSpec with Matchers with CacheTestData {
+class SubmissionMetaDataBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
+
+  private val declarationBuilder = mock[DeclarationBuilder]
+  private val declaration = mock[Declaration]
 
   "SubmissionMetaDataBuilder" should {
     "build wco MetaData with correct defaultValues when empty/ default model is passed in" in {
-      val metaData = SubmissionMetaDataBuilder.build(createEmptyExportsModel)
+      given(declarationBuilder.build(any[ExportsCacheModel])) willReturn(declaration)
+
+      val metaData = new SubmissionMetaDataBuilder(declarationBuilder).build(aCacheModel())
+
       metaData.getWCOTypeName.getValue shouldBe SchemaMandatoryValues.wcoTypeName
       metaData.getWCODataModelVersionCode.getValue shouldBe SchemaMandatoryValues.wcoDataModelVersionCode
       metaData.getResponsibleAgencyName.getValue shouldBe SchemaMandatoryValues.responsibleAgencyName
       metaData.getResponsibleCountryCode.getValue shouldBe SchemaMandatoryValues.responsibleCountryCode
       metaData.getAgencyAssignedCustomizationCode.getValue shouldBe SchemaMandatoryValues.agencyAssignedCustomizationVersionCode
-      metaData.getAny.asInstanceOf[JAXBElement[Declaration]] shouldNot be(null)
+      metaData.getAny.asInstanceOf[JAXBElement[Declaration]].getValue shouldBe declaration
     }
   }
 }

@@ -33,9 +33,9 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
         withItems(3)
       )
 
-      val declaration = DeclarationBuilder.build(model)
+      val declaration = new DeclarationBuilder().build(model)
 
-      declaration.getFunctionCode.getValue should be(DeclarationBuilder.defaultFunctionCode)
+      declaration.getFunctionCode.getValue should be("9")
       declaration.getFunctionalReferenceID.getValue should be(LRN)
       declaration.getTypeCode.getValue should be("GB" + AllowedAdditionalDeclarationTypes.Standard)
       declaration.getGoodsItemQuantity.getValue.intValue() should be(3)
@@ -51,7 +51,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
         withAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard)
       )
 
-      val declaration = DeclarationBuilder.build(exportsCacheModel)
+      val declaration = new DeclarationBuilder().build(exportsCacheModel)
 
       declaration.getTypeCode.getValue should be(null)
     }
