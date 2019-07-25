@@ -20,9 +20,11 @@ import forms.Choice.AllowedChoiceValues
 import forms.declaration.destinationCountries.DestinationCountries
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class IteneraryBuilderSpec extends WordSpec with Matchers {
+class IteneraryBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "IteneraryBuilder" should {
     "correctly map to the WCO-DEC Itenerary instance" when {
@@ -59,6 +61,36 @@ class IteneraryBuilderSpec extends WordSpec with Matchers {
           CacheMap("CacheID", Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("GB", Seq(), "FR"))))
         val itineraries = IteneraryBuilder.build(cacheMap, Choice(AllowedChoiceValues.StandardDec))
         itineraries.size() should be(0)
+      }
+    }
+
+    "build then add" when {
+      "no destination countries" in {
+        // Given
+        val model = aCacheModel(withoutDestinationCountries())
+        val consignment = new Declaration.Consignment()
+
+        // When
+        IteneraryBuilder.buildThenAdd(model, consignment)
+
+        // Then
+        consignment.getItinerary shouldBe empty
+      }
+
+      "multiple routing countries" in {
+        // Given
+        val model = aCacheModel(withDestinationCountries(countriesOfRouting = Seq("routing1", "routing2")))
+        val consignment = new Declaration.Consignment()
+
+        // When
+        IteneraryBuilder.buildThenAdd(model, consignment)
+
+        // Then
+        consignment.getItinerary should have(size(2))
+        consignment.getItinerary.get(0).getSequenceNumeric.intValue shouldBe 0
+        consignment.getItinerary.get(1).getSequenceNumeric.intValue shouldBe 1
+        consignment.getItinerary.get(0).getRoutingCountryCode.getValue shouldBe "routing1"
+        consignment.getItinerary.get(1).getRoutingCountryCode.getValue shouldBe "routing2"
       }
     }
   }

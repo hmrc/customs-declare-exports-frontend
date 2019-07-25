@@ -5,6 +5,7 @@ import java.util.UUID
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
+import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.{
   ConsignmentReferences,
   DeclarationHolder,
@@ -94,5 +95,20 @@ trait ExportsCacheModelBuilder {
           paymentMethod = paymentMethod
         )
       )
+    )
+
+  def withoutDestinationCountries(): CacheModifier =
+    m => m.copy(locations = m.locations.copy(destinationCountries = None))
+
+  def withDestinationCountries(
+    countryOfDispatch: String = "GB",
+    countriesOfRouting: Seq[String] = Seq.empty,
+    countryOfDestination: String = "US"
+  ): CacheModifier =
+    m =>
+      m.copy(
+        locations = m.locations.copy(
+          destinationCountries = Some(DestinationCountries(countryOfDispatch, countriesOfRouting, countryOfDestination))
+        )
     )
 }
