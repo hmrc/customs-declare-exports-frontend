@@ -19,6 +19,7 @@ package services.cache.mapping.declaration
 import services.cache.ExportsCacheModel
 import services.mapping.AuthorisationHoldersBuilder
 import services.mapping.declaration._
+import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 import services.mapping.goodsshipment.GoodsShipmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
@@ -48,9 +49,7 @@ object DeclarationBuilder {
     //    declaration.setSpecificCircumstancesCodeCode(SpecificCircumstancesCodeBuilder.build)
     //    declaration.setSupervisingOffice(SupervisingOfficeBuilder.build)
     //    declaration.setTotalPackageQuantity(TotalPackageQuantityBuilder.build)
-    //    declaration.setConsignment(DeclarationConsignmentBuilder.build)
-    //    declaration.setTypeCode(TypeCodeBuilder.build)
-    //
+    DeclarationConsignmentBuilder.buildThenAdd(exportsCacheModel, declaration)
     AuthorisationHoldersBuilder.buildThenAdd(exportsCacheModel, declaration)
     CurrencyExchangeBuilder.buildThenAdd(exportsCacheModel, declaration)
     declaration

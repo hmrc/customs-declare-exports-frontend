@@ -14,16 +14,26 @@
  * limitations under the License.
  */
 
-package services.mapping.declaration
+package services.mapping.declaration.consignment
 
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
+import services.cache.ExportsCacheModel
 import services.mapping.declaration.consignment.{FreightBuilder, IteneraryBuilder}
 import services.mapping.goodsshipment.consignment.ConsignmentCarrierBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 object DeclarationConsignmentBuilder {
+  def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
+    if(model.choice.equals(AllowedChoiceValues.StandardDec)) {
+      val consignment = new Declaration.Consignment()
+      FreightBuilder.buildThenAdd(model, consignment)
+      //IteneraryBuilder.buildThenAdd(model, consignment)
+      //ConsignmentCarrierBuilder.buildThenAdd(model, consignment)
+      declaration.setConsignment(consignment)
+    }
+  }
 
   def build(implicit cacheMap: CacheMap, choice: Choice): Declaration.Consignment =
     choice match {

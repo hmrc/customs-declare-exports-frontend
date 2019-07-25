@@ -21,7 +21,7 @@ import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.{CarrierDetails, CarrierDetailsSpec, TransportDetails}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
-import services.mapping.declaration.DeclarationConsignmentBuilder
+import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class DeclarationConsignmentBuilderSpec extends WordSpec with Matchers {
