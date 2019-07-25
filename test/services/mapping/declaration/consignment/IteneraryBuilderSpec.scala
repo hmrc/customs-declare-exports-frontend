@@ -71,7 +71,7 @@ class IteneraryBuilderSpec extends WordSpec with Matchers with ExportsCacheModel
         val consignment = new Declaration.Consignment()
 
         // When
-        IteneraryBuilder.buildThenAdd(model, consignment)
+        new IteneraryBuilder().buildThenAdd(model, consignment)
 
         // Then
         consignment.getItinerary shouldBe empty
@@ -83,7 +83,7 @@ class IteneraryBuilderSpec extends WordSpec with Matchers with ExportsCacheModel
         val consignment = new Declaration.Consignment()
 
         // When
-        IteneraryBuilder.buildThenAdd(model, consignment)
+        new IteneraryBuilder().buildThenAdd(model, consignment)
 
         // Then
         consignment.getItinerary should have(size(2))

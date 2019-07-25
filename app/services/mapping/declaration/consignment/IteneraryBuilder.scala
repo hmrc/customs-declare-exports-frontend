@@ -17,7 +17,9 @@
 package services.mapping.declaration.consignment
 import forms.Choice
 import forms.declaration.destinationCountries.DestinationCountries
+import javax.inject.Inject
 import services.cache.ExportsCacheModel
+import services.mapping.declaration.consignment.IteneraryBuilder.createItenerary
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Consignment.Itinerary
@@ -25,7 +27,7 @@ import wco.datamodel.wco.declaration_ds.dms._2.ItineraryRoutingCountryCodeType
 
 import scala.collection.JavaConverters._
 
-object IteneraryBuilder {
+class IteneraryBuilder @Inject()() {
 
   def buildThenAdd(model: ExportsCacheModel, consignment: Declaration.Consignment): Unit = {
     val itineraries = model.locations.destinationCountries.map {
@@ -36,6 +38,9 @@ object IteneraryBuilder {
     consignment.getItinerary.addAll(itineraries.toList.asJava)
   }
 
+}
+
+object IteneraryBuilder {
 
   def build(implicit cacheMap: CacheMap, choice: Choice): java.util.List[Declaration.Consignment.Itinerary] =
     cacheMap

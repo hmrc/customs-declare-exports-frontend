@@ -19,20 +19,18 @@ package services.mapping
 import java.util
 
 import forms.declaration.DeclarationHolder
+import javax.inject.Inject
 import models.declaration.DeclarationHoldersData
 import services.cache.ExportsCacheModel
+import services.mapping.AuthorisationHoldersBuilder.{isDefined, mapToAuthorisationHolder}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.AuthorisationHolder
-import wco.datamodel.wco.declaration_ds.dms._2.{
-  AuthorisationHolderCategoryCodeType,
-  AuthorisationHolderIdentificationIDType
-}
+import wco.datamodel.wco.declaration_ds.dms._2.{AuthorisationHolderCategoryCodeType, AuthorisationHolderIdentificationIDType}
 
 import scala.collection.JavaConverters._
 
-object AuthorisationHoldersBuilder {
-
+class AuthorisationHoldersBuilder @Inject()() {
   def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
     val holders = model.parties.declarationHoldersData.map {
       _.holders
@@ -41,6 +39,9 @@ object AuthorisationHoldersBuilder {
     }.getOrElse(Seq.empty)
     declaration.getAuthorisationHolder.addAll(holders.toList.asJava)
   }
+}
+
+object AuthorisationHoldersBuilder {
 
   def build(implicit cacheMap: CacheMap): util.List[AuthorisationHolder] =
     cacheMap

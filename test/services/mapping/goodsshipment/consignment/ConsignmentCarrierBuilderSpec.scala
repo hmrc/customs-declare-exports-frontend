@@ -112,7 +112,7 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
         val consignment = new Declaration.Consignment()
 
         // When
-        ConsignmentCarrierBuilder.buildThenAdd(model, consignment)
+        new ConsignmentCarrierBuilder().buildThenAdd(model, consignment)
 
         // Then
         consignment.getCarrier shouldBe null
@@ -124,7 +124,7 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
         val consignment = new Declaration.Consignment()
 
         // When
-        ConsignmentCarrierBuilder.buildThenAdd(model, consignment)
+        new ConsignmentCarrierBuilder().buildThenAdd(model, consignment)
 
         // Then
         consignment.getCarrier.getAddress shouldBe null
@@ -138,7 +138,7 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
         val consignment = new Declaration.Consignment()
 
         // When
-        ConsignmentCarrierBuilder.buildThenAdd(model, consignment)
+        new ConsignmentCarrierBuilder().buildThenAdd(model, consignment)
 
         // Then
         consignment.getCarrier.getID shouldBe null
@@ -152,7 +152,7 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
         val consignment = new Declaration.Consignment()
 
         // When
-        ConsignmentCarrierBuilder.buildThenAdd(model, consignment)
+        new ConsignmentCarrierBuilder().buildThenAdd(model, consignment)
 
         // Then
         consignment.getCarrier.getID.getValue shouldBe "eori"
@@ -171,7 +171,7 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
         val consignment = new Declaration.Consignment()
 
         // When
-        ConsignmentCarrierBuilder.buildThenAdd(model, consignment)
+        new ConsignmentCarrierBuilder().buildThenAdd(model, consignment)
 
         // Then
         consignment.getCarrier.getName shouldBe null
@@ -186,7 +186,7 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
         val consignment = new Declaration.Consignment()
 
         // When
-        ConsignmentCarrierBuilder.buildThenAdd(model, consignment)
+        new ConsignmentCarrierBuilder().buildThenAdd(model, consignment)
 
         // Then
         consignment.getCarrier.getAddress.getCountryCode.getValue shouldBe ""

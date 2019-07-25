@@ -17,10 +17,20 @@
 package services.cache.mapping.declaration
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
+import services.mapping.AuthorisationHoldersBuilder
+import services.mapping.declaration.CurrencyExchangeBuilder
+import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 
-class DeclarationBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
+
+  private val declarationConsignmentBuilder = mock[DeclarationConsignmentBuilder]
+  private val authorisationHoldersBuilder = mock[AuthorisationHoldersBuilder]
+  private val currencyExchangeBuilder = mock[CurrencyExchangeBuilder]
+
+  private def builder = new DeclarationBuilder(declarationConsignmentBuilder, authorisationHoldersBuilder, currencyExchangeBuilder)
 
   "DeclarationBuilder" should {
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance" in {
@@ -33,7 +43,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
         withItems(3)
       )
 
-      val declaration = new DeclarationBuilder().build(model)
+      val declaration = builder.build(model)
 
       declaration.getFunctionCode.getValue should be("9")
       declaration.getFunctionalReferenceID.getValue should be(LRN)
@@ -51,7 +61,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
         withAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard)
       )
 
-      val declaration = new DeclarationBuilder().build(exportsCacheModel)
+      val declaration = builder.build(exportsCacheModel)
 
       declaration.getTypeCode.getValue should be(null)
     }

@@ -24,7 +24,11 @@ import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 import services.mapping.goodsshipment.GoodsShipmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class DeclarationBuilder @Inject()(){
+class DeclarationBuilder @Inject()(
+  declarationConsignmentBuilder: DeclarationConsignmentBuilder,
+  authorisationHoldersBuilder: AuthorisationHoldersBuilder,
+  currencyExchangeBuilder: CurrencyExchangeBuilder
+) {
   private val defaultFunctionCode = "9"
 
   def build(model: ExportsCacheModel): Declaration = {
@@ -49,9 +53,9 @@ class DeclarationBuilder @Inject()(){
     //    declaration.setSpecificCircumstancesCodeCode(SpecificCircumstancesCodeBuilder.build)
     //    declaration.setSupervisingOffice(SupervisingOfficeBuilder.build)
     //    declaration.setTotalPackageQuantity(TotalPackageQuantityBuilder.build)
-    DeclarationConsignmentBuilder.buildThenAdd(model, declaration)
-    AuthorisationHoldersBuilder.buildThenAdd(model, declaration)
-    CurrencyExchangeBuilder.buildThenAdd(model, declaration)
+    declarationConsignmentBuilder.buildThenAdd(model, declaration)
+    authorisationHoldersBuilder.buildThenAdd(model, declaration)
+    currencyExchangeBuilder.buildThenAdd(model, declaration)
     declaration
   }
 }
