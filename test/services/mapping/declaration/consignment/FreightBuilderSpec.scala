@@ -20,9 +20,11 @@ import forms.Choice.AllowedChoiceValues
 import forms.declaration.TransportDetails
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class FreightBuilderSpec extends WordSpec with Matchers {
+class FreightBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "FreightBuilder" should {
     "correctly map to the WCO-DEC Consignment.Freight instance" when {
@@ -46,6 +48,44 @@ class FreightBuilderSpec extends WordSpec with Matchers {
           val freight = FreightBuilder.build(cacheMap, Choice(AllowedChoiceValues.StandardDec))
           freight should be(null)
         }
+      }
+    }
+
+    "build then add" when {
+      "no transport details" in {
+        // Given
+        val model = aCacheModel(withoutTransportDetails())
+        val consignment = new Declaration.Consignment()
+
+        // When
+        FreightBuilder.buildThenAdd(model, consignment)
+
+        // Then
+        consignment.getFreight shouldBe null
+      }
+
+      "payment method is empty" in {
+        // Given
+        val model = aCacheModel(withTransportDetails(paymentMethod = None))
+        val consignment = new Declaration.Consignment()
+
+        // When
+        FreightBuilder.buildThenAdd(model, consignment)
+
+        // Then
+        consignment.getFreight shouldBe null
+      }
+
+      "payment method is populated" in {
+        // Given
+        val model = aCacheModel(withTransportDetails(paymentMethod = Some("method")))
+        val consignment = new Declaration.Consignment()
+
+        // When
+        FreightBuilder.buildThenAdd(model, consignment)
+
+        // Then
+        consignment.getFreight.getPaymentMethodCode.getValue shouldBe "method"
       }
     }
   }

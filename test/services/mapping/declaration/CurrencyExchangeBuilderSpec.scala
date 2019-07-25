@@ -34,18 +34,44 @@ class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCac
       currencyExchangeType.get(0).getRateNumeric.doubleValue() should be(1212121.12345)
     }
 
-    "correctly append Currency Exchanges to declaration" in {
-      // Given
-      val model = aCacheModel(
-        withTotalNumberOfItems(exchangeRate = Some("123"))
-      )
-      val declaration = new Declaration()
-      // When
-      CurrencyExchangeBuilder.buildThenAdd(model, declaration)
-      // Then
-      declaration.getCurrencyExchange should have(size(1))
-      declaration.getCurrencyExchange.get(0).getCurrencyTypeCode shouldBe null
-      declaration.getCurrencyExchange.get(0).getRateNumeric.intValue() shouldBe 123
+    "build then add" when {
+      "no Total Number Of Items" in {
+        // Given
+        val model = aCacheModel(
+          withoutTotalNumberOfItems()
+        )
+        val declaration = new Declaration()
+        // When
+        CurrencyExchangeBuilder.buildThenAdd(model, declaration)
+        // Then
+        declaration.getCurrencyExchange shouldBe empty
+      }
+
+      "exchange rate is empty" in {
+        // Given
+        val model = aCacheModel(
+          withTotalNumberOfItems(exchangeRate = None)
+        )
+        val declaration = new Declaration()
+        // When
+        CurrencyExchangeBuilder.buildThenAdd(model, declaration)
+        // Then
+        declaration.getCurrencyExchange shouldBe empty
+      }
+
+      "exchange rate is populated" in {
+        // Given
+        val model = aCacheModel(
+          withTotalNumberOfItems(exchangeRate = Some("123"))
+        )
+        val declaration = new Declaration()
+        // When
+        CurrencyExchangeBuilder.buildThenAdd(model, declaration)
+        // Then
+        declaration.getCurrencyExchange should have(size(1))
+        declaration.getCurrencyExchange.get(0).getCurrencyTypeCode shouldBe null
+        declaration.getCurrencyExchange.get(0).getRateNumeric.intValue() shouldBe 123
+      }
     }
   }
 }

@@ -52,6 +52,18 @@ class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with Mockit
     }
 
     "build and add to declaration" when {
+      "no holders" in {
+        // Given
+        val model = aCacheModel(withoutDeclarationHolders())
+        val declaration = new Declaration()
+
+        // When
+        AuthorisationHoldersBuilder.buildThenAdd(model, declaration)
+
+        // Then
+        declaration.getAuthorisationHolder shouldBe empty
+      }
+
       "multiple holders" in {
         // Given
         val model = aCacheModel(

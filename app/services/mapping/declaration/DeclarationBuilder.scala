@@ -18,6 +18,7 @@ package services.mapping.declaration
 
 import forms.Choice
 import services.mapping.AuthorisationHoldersBuilder
+import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 import services.mapping.goodsshipment.GoodsShipmentBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration

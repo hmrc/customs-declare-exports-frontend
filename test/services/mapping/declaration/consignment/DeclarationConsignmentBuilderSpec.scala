@@ -17,14 +17,17 @@
 package services.mapping.declaration.consignment
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
+import forms.common.Address
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.{CarrierDetails, CarrierDetailsSpec, TransportDetails}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
-import services.mapping.declaration.DeclarationConsignmentBuilder
+import services.cache.ExportsCacheModelBuilder
+import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class DeclarationConsignmentBuilderSpec extends WordSpec with Matchers {
+class DeclarationConsignmentBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "DeclarationConsignmentBuilder" should {
     "correctly map to the WCO-DEC Consignment instance" when {
@@ -69,6 +72,45 @@ class DeclarationConsignmentBuilderSpec extends WordSpec with Matchers {
           consignment.getItinerary.size() should be(0)
           consignment.getCarrier.getID.getValue should be("9GB1234567ABCDEF")
         }
+      }
+    }
+
+    "build then add" when {
+
+      "standard journey" in {
+        // Given
+        val model = aCacheModel(
+          withChoice(AllowedChoiceValues.StandardDec),
+          withTransportDetails(paymentMethod = Some("method")),
+          withDestinationCountries(countriesOfRouting = Seq("routing")),
+          withCarrierDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "United Kingdom")))
+        )
+        val declaration = new Declaration()
+
+        // When
+        DeclarationConsignmentBuilder.buildThenAdd(model, declaration)
+
+        // Then
+        declaration.getConsignment should not be null
+        declaration.getConsignment.getCarrier should not be null
+        declaration.getConsignment.getFreight should not be null
+        declaration.getConsignment.getItinerary should not be null
+      }
+
+      "other journey" in {
+        // Given
+        val model = aCacheModel(
+          withChoice("other"),
+          withTransportDetails(paymentMethod = Some("method")),
+          withDestinationCountries(countriesOfRouting = Seq("routing")),
+          withCarrierDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))))
+        val declaration = new Declaration()
+
+        // When
+        DeclarationConsignmentBuilder.buildThenAdd(model, declaration)
+
+        // Then
+        declaration.getConsignment shouldBe null
       }
     }
   }

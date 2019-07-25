@@ -36,7 +36,6 @@ object CurrencyExchangeBuilder {
     declaration.getCurrencyExchange.addAll(currencyExchanges.toList.asJava)
   }
 
-
   def build(implicit cacheMap: CacheMap): util.List[CurrencyExchange] =
     cacheMap
       .getEntry[TotalNumberOfItems](TotalNumberOfItems.formId)
