@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-package services.mapping
+package services.mapping.governmentagencygoodsitem
 
-trait ModifyingBuilder[X, Y] {
-
-  def buildThenAdd(model: X, y: Y): Unit
-
-}
+class StatisticalValueAmountBuilderSpec {}

@@ -26,7 +26,7 @@ import wco.datamodel.wco.dec_dms._2.Declaration.Declarant
 import wco.datamodel.wco.declaration_ds.dms._2.{DeclarantIdentificationIDType, _}
 import DeclarantBuilder.{isDefined, mapToWCODeclarant}
 
-class DeclarantBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+class DeclarantBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
   override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
     model.parties.declarantDetails

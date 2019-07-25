@@ -26,7 +26,7 @@ import wco.datamodel.wco.dec_dms._2.Declaration.Exporter
 import wco.datamodel.wco.declaration_ds.dms._2._
 import ExporterBuilder.{createExporter, isDefined}
 
-class ExporterBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+class ExporterBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
   override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
     model.parties.exporterDetails
       .filter(isDefined)

@@ -34,9 +34,11 @@ object GovernmentAgencyGoodsItemBuilder {
 
     StatisticalValueAmountBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     wcoGovernmentAgencyGoodsItem.setSequenceNumeric(BigDecimal(exportItem.sequenceId).bigDecimal)
-    PackagingBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
 
+    PackagingBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     GovernmentProcedureBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    AdditionalInformationBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    AdditionalDocumentsBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
 
     goodsShipment.getGovernmentAgencyGoodsItem.add(wcoGovernmentAgencyGoodsItem)
 

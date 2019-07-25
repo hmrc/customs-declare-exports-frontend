@@ -17,7 +17,6 @@
 package services
 import com.google.inject.Inject
 import config.AppConfig
-import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration._
 import javax.inject.Singleton
 import models.declaration.governmentagencygoodsitem.Formats._
@@ -26,7 +25,7 @@ import models.declaration.{AdditionalInformationData, DocumentsProducedData, Pro
 import play.api.http.Status.NO_CONTENT
 import services.ExportsItemsCacheIds._
 import services.mapping.CachingMappingHelper
-import services.mapping.governmentagencygoodsitem.PackagingBuilder
+import services.mapping.governmentagencygoodsitem.{AdditionalDocumentsBuilder, PackagingBuilder}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -96,7 +95,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
     cachedData
       .getEntry[ProcedureCodesData](ProcedureCodesData.formId)
       .map(form => {
-        val extractedCode = ProcedureCodes.extractProcedureCode(form.toProcedureCode())
+        val extractedCode = form.toProcedureCode().extractProcedureCode()
         Seq(
           models.declaration.governmentagencygoodsitem
             .GovernmentProcedure(extractedCode._1, extractedCode._2)
@@ -117,7 +116,7 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
   def documents(cachedData: CacheMap): Option[Seq[GovernmentAgencyGoodsItemAdditionalDocument]] =
     cachedData
       .getEntry[DocumentsProducedData](DocumentsProducedData.formId)
-      .map(_.documents.map(createGoodsItemAdditionalDocument))
+      .map(_.documents.map(AdditionalDocumentsBuilder.createGoodsItemAdditionalDocument))
 
   def hasFiscalReferences(cachedData: CacheMap): Boolean =
     cachedData
@@ -130,34 +129,6 @@ class ItemsCachingService @Inject()(cacheService: CustomsCacheService)(appConfig
       .getEntry[AdditionalFiscalReferencesData](AdditionalFiscalReferencesData.formId)
       .map(_.references)
       .getOrElse(Seq.empty)
-
-  private def createGoodsItemAdditionalDocument(doc: DocumentsProduced) =
-    GovernmentAgencyGoodsItemAdditionalDocument(
-      categoryCode = doc.documentTypeCode.map(_.substring(0, 1)),
-      typeCode = doc.documentTypeCode.map(_.substring(1)),
-      id = createAdditionalDocumentId(doc),
-      lpcoExemptionCode = doc.documentStatus,
-      name = doc.documentStatusReason,
-      submitter =
-        doc.issuingAuthorityName.map(name => GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(name = Some(name))),
-      effectiveDateTime = doc.dateOfValidity
-        .map(date => DateTimeElement(DateTimeString(formatCode = dateTimeCode, value = date.to102Format))),
-      writeOff = createAdditionalDocumentWriteOff(doc)
-    )
-
-  private def createAdditionalDocumentId(doc: DocumentsProduced): Option[String] =
-    for {
-      documentIdentifierAndPart <- doc.documentIdentifierAndPart
-      documentIdentifier <- documentIdentifierAndPart.documentIdentifier
-      documentPart <- documentIdentifierAndPart.documentPart
-    } yield documentIdentifier + documentPart
-
-  private def createAdditionalDocumentWriteOff(doc: DocumentsProduced): Option[WriteOff] =
-    for {
-      documentWriteOff <- doc.documentWriteOff
-      measurementUnit <- documentWriteOff.measurementUnit
-      quantity <- documentWriteOff.documentQuantity
-    } yield WriteOff(quantity = Some(Measure(unitCode = Some(measurementUnit), value = Some(quantity))))
 
   def goodsItemFromItemTypes(
     cachedData: CacheMap

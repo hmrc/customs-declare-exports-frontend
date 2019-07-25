@@ -27,7 +27,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-class GoodsItemQuantityBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+class GoodsItemQuantityBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
   def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
     declaration.setGoodsItemQuantity(createGoodsItemQuantity(exportsCacheModel.items.toSeq))

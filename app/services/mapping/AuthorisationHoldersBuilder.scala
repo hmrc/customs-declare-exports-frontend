@@ -33,8 +33,9 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
 
 import scala.collection.JavaConverters._
 
-class AuthorisationHoldersBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+class AuthorisationHoldersBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
   override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
+
     val holders = model.parties.declarationHoldersData.map {
       _.holders
         .filter(holder => isDefined(holder))

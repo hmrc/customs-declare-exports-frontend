@@ -29,10 +29,20 @@ import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors
 import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors2
 import models.declaration.{DeclarationAdditionalActorsData, Locations}
 import models.declaration.SupplementaryDeclarationTestData._
+import org.scalatest.mockito.MockitoSugar
+import org.mockito.Mockito.verify
+import org.mockito.ArgumentMatchers.{any, refEq}
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.CacheTestData
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class GoodsShipmentBuilderSpec extends WordSpec with Matchers with CacheTestData {
+class GoodsShipmentBuilderSpec extends WordSpec with Matchers with CacheTestData with MockitoSugar {
+
+  private val mockGoodsShipmentNatureOfTransactionBuilder = mock[GoodsShipmentNatureOfTransactionBuilder]
+  private val mockConsigneeBuilder = mock[ConsigneeBuilder]
+
+  private def builder: GoodsShipmentBuilder =
+    new GoodsShipmentBuilder(mockGoodsShipmentNatureOfTransactionBuilder, mockConsigneeBuilder)
 
   "GoodsShipmentBuilder" should {
 
@@ -73,33 +83,33 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers with CacheTestData
 
     "correctly map to the WCO-DEC GoodsShipment instance, using ExportCacheModel" in {
 
-      val goodsShipment =
-        GoodsShipmentBuilder.build(
-          createEmptyExportsModel.copy(
-            natureOfTransaction = Some(correctNatureOfTransaction),
-            parties = createEmptyParties().copy(
-              consigneeDetails = Some(correctConsigneeDetailsFull),
-              declarationAdditionalActorsData =
-                Some(DeclarationAdditionalActorsData(Seq(correctAdditionalActors1, correctAdditionalActors2)))
-            ),
-            locations = Locations().copy(
-              goodsLocation = Some(correctGoodsLocation),
-              destinationCountries = Some(correctDestinationCountries),
-              warehouseIdentification = Some(correctWarehouseIdentification)
-            ),
-            consignmentReferences = Some(correctConsignmentReferences),
-            previousDocuments = Some(PreviousDocumentsData(Seq(correctPreviousDocument)))
-          )
-        )
-      goodsShipment.getTransactionNatureCode.getValue should be("1")
+      val declaration = new Declaration()
+      builder.buildThenAdd(
+        createEmptyExportsModel.copy(
+          natureOfTransaction = Some(correctNatureOfTransaction),
+          parties = createEmptyParties().copy(
+            consigneeDetails = Some(correctConsigneeDetailsFull),
+            declarationAdditionalActorsData =
+              Some(DeclarationAdditionalActorsData(Seq(correctAdditionalActors1, correctAdditionalActors2)))
+          ),
+          locations = Locations().copy(
+            goodsLocation = Some(correctGoodsLocation),
+            destinationCountries = Some(correctDestinationCountries),
+            warehouseIdentification = Some(correctWarehouseIdentification)
+          ),
+          consignmentReferences = Some(correctConsignmentReferences),
+          previousDocuments = Some(PreviousDocumentsData(Seq(correctPreviousDocument)))
+        ),
+        declaration
+      )
 
-      goodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")
-      goodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")
-      goodsShipment.getConsignee.getName.getValue should be("Full Name")
-      goodsShipment.getConsignee.getAddress.getLine.getValue should be("Address Line")
-      goodsShipment.getConsignee.getAddress.getCityName.getValue should be("Town or City")
-      goodsShipment.getConsignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
-      goodsShipment.getConsignee.getAddress.getCountryCode.getValue should be("PL")
+      verify(mockGoodsShipmentNatureOfTransactionBuilder)
+        .buildThenAdd(refEq(correctNatureOfTransaction), any[Declaration.GoodsShipment])
+
+      val goodsShipment = declaration.getGoodsShipment
+
+      verify(mockConsigneeBuilder)
+        .buildThenAdd(refEq(correctConsigneeDetailsFull), any[Declaration.GoodsShipment])
 
       goodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("LOC")
 

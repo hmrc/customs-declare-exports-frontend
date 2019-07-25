@@ -16,8 +16,15 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, PackageInformation}
+import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
+import forms.declaration.{AdditionalFiscalReference, AdditionalInformation, DocumentsProducedSpec, PackageInformation}
 import models.declaration.governmentagencygoodsitem.{Commodity => _, GovernmentProcedure => _, Packaging => _}
+import models.declaration.{
+  AdditionalInformationData,
+  DocumentsProducedData,
+  DocumentsProducedDataSpec,
+  ProcedureCodesData
+}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
 import services.ExportsItemsCacheIds
@@ -64,7 +71,11 @@ class GovernmentAgencyGoodsItemBuilderSpec
         sequenceId = sequenceId,
         packageInformation = List(
           PackageInformation(typesOfPackages = Some("AA"), numberOfPackages = Some(2), shippingMarks = Some("mark1"))
-        )
+        ),
+        procedureCodes = Some(ProcedureCodesData(Some("CUPR"), Seq("XZYT"))),
+        additionalInformation =
+          Some(AdditionalInformationData(Seq(AdditionalInformation(statementCode, descriptionValue)))),
+        documentsProducedData = Some(DocumentsProducedDataSpec.correctDocumentsProducedData)
       )
 
       val goodsShipment = new GoodsShipment
@@ -77,6 +88,12 @@ class GovernmentAgencyGoodsItemBuilderSpec
       item.getSequenceNumeric.compareTo(BigDecimal(sequenceId).bigDecimal)
 
       validatePackaging(item.getPackaging.get(0))
+      validateGovernmentProcedure(item.getGovernmentProcedure.get(0))
+      validateAdditionalInformation(item.getAdditionalInformation.get(0))
+      validateAdditionalDocumentNew(
+        item.getAdditionalDocument.get(0),
+        DocumentsProducedDataSpec.correctDocumentsProducedData
+      )
 
     }
   }
@@ -89,6 +106,7 @@ class GovernmentAgencyGoodsItemBuilderSpec
   private def validateGovernmentProcedure(mappedProcedure: WCOGovernmentAgencyGoodsItem.GovernmentProcedure) = {
     mappedProcedure.getCurrentCode.getValue shouldBe cachedCode.substring(0, 2)
     mappedProcedure.getPreviousCode.getValue shouldBe cachedCode.substring(2, 4)
+    mappedProcedure
   }
 
   private def validatePackaging(packaging: WCOGovernmentAgencyGoodsItem.Packaging) = {
@@ -119,20 +137,63 @@ class GovernmentAgencyGoodsItemBuilderSpec
     additionalInfomation.getStatementDescription.getValue shouldBe descriptionValue
   }
 
-  private def validateAdditionalDocuments(firstMappedDocument: WCOGovernmentAgencyGoodsItem.AdditionalDocument) = {
-    firstMappedDocument.getCategoryCode.getValue shouldBe documentAndAdditionalDocumentTypeCode.substring(0, 1)
-    firstMappedDocument.getTypeCode.getValue shouldBe documentAndAdditionalDocumentTypeCode.substring(1)
-    firstMappedDocument.getID.getValue shouldBe documentIdentifier + documentPart
-    firstMappedDocument.getLPCOExemptionCode.getValue shouldBe "PND"
-    firstMappedDocument.getName.getValue shouldBe documentStatus + documentStatusReason
-    firstMappedDocument.getSubmitter.getName.getValue shouldBe issusingAuthorityName
+  private def validateAdditionalDocuments(firstMappedDocument: WCOGovernmentAgencyGoodsItem.AdditionalDocument) =
+    validateAdditionalDocument(
+      firstMappedDocument = firstMappedDocument,
+      unmappedTypeCode = documentAndAdditionalDocumentTypeCode,
+      identifier = documentIdentifier + documentPart,
+      lcpoExemptionCode = "PND",
+      name = documentStatusReason,
+      submitter = issusingAuthorityName,
+      unitCode = "KGM",
+      documentQuantity = documentQuantity.bigDecimal
+    )
+
+  def validateAdditionalDocumentNew(
+    mappedDocument: WCOGovernmentAgencyGoodsItem.AdditionalDocument,
+    correctDocumentsProducedData: DocumentsProducedData
+  ) {
+    val document = correctDocumentsProducedData.documents.head
+    val documentIdentifierAndPart = document.documentIdentifierAndPart.get
+    val identifier = documentIdentifierAndPart.documentIdentifier.getOrElse("") + documentIdentifierAndPart.documentPart
+      .getOrElse("")
+
+    validateAdditionalDocument(
+      firstMappedDocument = mappedDocument,
+      unmappedTypeCode = document.documentTypeCode.getOrElse(""),
+      identifier = identifier,
+      lcpoExemptionCode = document.documentStatus.getOrElse(""),
+      name = document.documentStatusReason.getOrElse(""),
+      submitter = document.issuingAuthorityName.getOrElse(""),
+      unitCode = document.documentWriteOff.get.measurementUnit.getOrElse(""),
+      documentQuantity = document.documentWriteOff.get.documentQuantity.get.bigDecimal
+    )
+  }
+
+  private def validateAdditionalDocument(
+    firstMappedDocument: WCOGovernmentAgencyGoodsItem.AdditionalDocument,
+    unmappedTypeCode: String,
+    identifier: String,
+    lcpoExemptionCode: String,
+    name: String,
+    submitter: String,
+    unitCode: String,
+    documentQuantity: java.math.BigDecimal
+  ) = {
+    firstMappedDocument.getCategoryCode.getValue shouldBe unmappedTypeCode.substring(0, 1)
+    firstMappedDocument.getTypeCode.getValue shouldBe unmappedTypeCode.substring(1)
+    firstMappedDocument.getID.getValue shouldBe identifier
+    firstMappedDocument.getLPCOExemptionCode.getValue shouldBe lcpoExemptionCode
+    firstMappedDocument.getName.getValue shouldBe name
+    firstMappedDocument.getSubmitter.getName.getValue shouldBe submitter
 
     val writeoff = firstMappedDocument.getWriteOff
     writeoff.getAmountAmount shouldBe null
     val writeOffQuantity = writeoff.getQuantityQuantity
-    writeOffQuantity.getUnitCode shouldBe "KGM"
-    writeOffQuantity.getValue shouldBe documentQuantity.bigDecimal
+    writeOffQuantity.getUnitCode shouldBe unitCode
+    writeOffQuantity.getValue shouldBe documentQuantity
   }
+
 }
 
 object GovernmentAgencyGoodsItemBuilderSpec {
@@ -211,7 +272,7 @@ object GovernmentAgencyGoodsItemBuilderSpec {
       "categoryCode" -> JsString("C"),
       "effectiveDateTime" -> dateTimeElement,
       "id" -> JsString("SYSUYSU12324554"),
-      "name" -> JsString("PENDINGReason"),
+      "name" -> JsString("Reason"),
       "typeCode" -> JsString("501"),
       "lpcoExemptionCode" -> JsString("PND"),
       "submitter" -> documentSubmitter,

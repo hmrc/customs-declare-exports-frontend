@@ -36,7 +36,7 @@ trait GovernmentAgencyGoodsItemData {
   val documentStatusReason = "Reason"
   val issusingAuthorityName = "issuingAuthorityName"
 
-  val measurementUnit = "kg"
+  val measurementUnit = "KGM"
 
   val documentsProduced: Seq[DocumentsProduced] = Seq(
     DocumentsProduced(

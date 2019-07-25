@@ -31,7 +31,7 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
 }
 import BorderTransportMeansBuilder.{appendBorderTransport, appendTransportDetails, isDefined}
 
-class BorderTransportMeansBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+class BorderTransportMeansBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
   override def buildThenAdd(model: ExportsCacheModel, t: Declaration): Unit = {
     val transportMeans = new Declaration.BorderTransportMeans()
     val maybeTransport = model.borderTransport.filter(isDefined)

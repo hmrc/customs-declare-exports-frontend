@@ -24,13 +24,14 @@ import wco.datamodel.wco.declaration_ds.dms._2.{GovernmentProcedureCurrentCodeTy
 import scala.collection.JavaConverters._
 
 object GovernmentProcedureBuilder {
+
   def buildThenAdd(
     exportItem: ExportItem,
     wcoGovernmentAgencyGoodsItem: GoodsShipment.GovernmentAgencyGoodsItem
   ): Unit =
     exportItem.procedureCodes.foreach { procedureCode =>
       {
-        val code = ProcedureCodes.extractProcedureCode(procedureCode.toProcedureCode())
+        val code = procedureCode.toProcedureCode().extractProcedureCode()
         wcoGovernmentAgencyGoodsItem.getGovernmentProcedure.add(createGovernmentProcedure(code._1, code._2))
         procedureCode.additionalProcedureCodes.foreach { additionalProcedureCode =>
           wcoGovernmentAgencyGoodsItem.getGovernmentProcedure.add(

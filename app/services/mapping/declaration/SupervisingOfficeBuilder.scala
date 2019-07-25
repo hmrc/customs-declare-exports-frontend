@@ -26,7 +26,7 @@ import wco.datamodel.wco.dec_dms._2.Declaration.SupervisingOffice
 import wco.datamodel.wco.declaration_ds.dms._2._
 import SupervisingOfficeBuilder.createSupervisingOffice
 
-class SupervisingOfficeBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+class SupervisingOfficeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
   override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
     model.locations.warehouseIdentification

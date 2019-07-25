@@ -24,16 +24,16 @@ import utils.validators.forms.FieldValidator._
 case class ProcedureCodes(
   procedureCode: Option[String], // max 4 alphanumeric characters
   additionalProcedureCode: Option[String] // max 99 codes, each is max 3 alphanumeric characters
-)
+) {
+  def extractProcedureCode(): (Option[String], Option[String]) =
+    (procedureCode.map(_.substring(0, 2)), procedureCode.map(_.substring(2, 4)))
+}
 
 object ProcedureCodes {
   implicit val format = Json.format[ProcedureCodes]
 
   private val procedureCodeLength = 4
   private val additionalProcedureCodeLength = 3
-
-  def extractProcedureCode(form: ProcedureCodes): (Option[String], Option[String]) =
-    (form.procedureCode.map(_.substring(0, 2)), form.procedureCode.map(_.substring(2, 4)))
 
   val mapping = Forms.mapping(
     "procedureCode" -> optional(

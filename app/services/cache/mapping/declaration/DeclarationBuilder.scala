@@ -41,7 +41,8 @@ class DeclarationBuilder @Inject()(
   totalPackageQuantityBuilder: TotalPackageQuantityBuilder,
   declarationConsignmentBuilder: DeclarationConsignmentBuilder,
   authorisationHoldersBuilder: AuthorisationHoldersBuilder,
-  currencyExchangeBuilder: CurrencyExchangeBuilder
+  currencyExchangeBuilder: CurrencyExchangeBuilder,
+  goodsShipmentBuilder: GoodsShipmentBuilder
 ) {
 
   def build(model: ExportsCacheModel): Declaration = {
@@ -52,7 +53,7 @@ class DeclarationBuilder @Inject()(
     goodsItemQuantityBuilder.buildThenAdd(model, declaration)
     agentBuilder.buildThenAdd(model, declaration)
 
-    declaration.setGoodsShipment(GoodsShipmentBuilder.build(model))
+    goodsShipmentBuilder.buildThenAdd(model, declaration)
 
     exitOfficeBuilder.buildThenAdd(model, declaration)
     borderTransportMeansBuilder.buildThenAdd(model, declaration)

@@ -40,15 +40,10 @@ object PackagingBuilder {
     exportItem: ExportItem,
     wcoGovernmentAgencyGoodsItem: GoodsShipment.GovernmentAgencyGoodsItem
   ): Unit =
-    exportItem.packageInformation.zipWithIndex.foreach { packingWithIndex =>
-      {
+    exportItem.packageInformation.zipWithIndex.foreach {
+      case (packing, index) => {
         wcoGovernmentAgencyGoodsItem.getPackaging.add(
-          createWcoPackaging(
-            Some(packingWithIndex._2),
-            packingWithIndex._1.typesOfPackages,
-            packingWithIndex._1.numberOfPackages,
-            packingWithIndex._1.shippingMarks
-          )
+          createWcoPackaging(Some(index), packing.typesOfPackages, packing.numberOfPackages, packing.shippingMarks)
         )
       }
     }
