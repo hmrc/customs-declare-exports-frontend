@@ -16,13 +16,15 @@
 
 package services.mapping.declaration
 import forms.declaration.{TotalNumberOfItems, TotalNumberOfItemsSpec}
-import org.scalatest.{FunSuite, Matchers, WordSpec}
+import org.scalatest.{Matchers, WordSpec}
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class CurrencyExchangeBuilderSpec extends WordSpec with Matchers {
+class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "CurrencyExchangeBuilder" should {
-    "correctly map to the WCO-DEC CurrencyExchange instance" in {
+    "correctly map from CacheModel to the WCO-DEC CurrencyExchange instance" in {
       implicit val cacheMap: CacheMap =
         CacheMap(
           "CacheID",
@@ -30,6 +32,20 @@ class CurrencyExchangeBuilderSpec extends WordSpec with Matchers {
         )
       val currencyExchangeType = CurrencyExchangeBuilder.build(cacheMap)
       currencyExchangeType.get(0).getRateNumeric.doubleValue() should be(1212121.12345)
+    }
+
+    "correctly append Currency Exchanges to declaration" in {
+      // Given
+      val model = aCacheModel(
+        withTotalNumberOfItems(exchangeRate = Some("123"))
+      )
+      val declaration = new Declaration()
+      // When
+      CurrencyExchangeBuilder.buildThenAdd(model, declaration)
+      // Then
+      declaration.getCurrencyExchange should have(size(1))
+      declaration.getCurrencyExchange.get(0).getCurrencyTypeCode shouldBe null
+      declaration.getCurrencyExchange.get(0).getRateNumeric.intValue() shouldBe 123
     }
   }
 }

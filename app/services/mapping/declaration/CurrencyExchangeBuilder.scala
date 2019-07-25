@@ -19,25 +19,37 @@ package services.mapping.declaration
 import java.util
 
 import forms.declaration.TotalNumberOfItems
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.CurrencyExchange
 
 import scala.collection.JavaConverters._
 
 object CurrencyExchangeBuilder {
 
+  def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
+    val currencyExchanges: Seq[CurrencyExchange] = model.totalNumberOfItems
+      .filter(_.exchangeRate.isDefined)
+      .map(createCurrencyExchange)
+      .getOrElse(Seq.empty)
+    declaration.getCurrencyExchange.addAll(currencyExchanges.toList.asJava)
+  }
+
+
   def build(implicit cacheMap: CacheMap): util.List[CurrencyExchange] =
     cacheMap
       .getEntry[TotalNumberOfItems](TotalNumberOfItems.formId)
       .filter(_.exchangeRate.isDefined)
       .map(createCurrencyExchange)
+      .map(_.toList.asJava)
       .orNull
 
-  private def createCurrencyExchange(data: TotalNumberOfItems): util.List[CurrencyExchange] = {
+  private def createCurrencyExchange(data: TotalNumberOfItems): Seq[CurrencyExchange] = {
     val currencyExchange = new CurrencyExchange()
 
     data.exchangeRate.foreach(rate => currencyExchange.setRateNumeric(new java.math.BigDecimal(rate)))
 
-    Seq(currencyExchange).toList.asJava
+    Seq(currencyExchange)
   }
 }

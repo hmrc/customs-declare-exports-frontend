@@ -55,11 +55,7 @@ object DeclarationBuilder {
     //      declaration.getAuthorisationHolder.addAll(authorisationHolders)
     //    }
     //
-    //    val currencyExchangeList = CurrencyExchangeBuilder.build
-    //    if (currencyExchangeList != null && !currencyExchangeList.isEmpty) {
-    //      declaration.getCurrencyExchange.addAll(currencyExchangeList)
-    //    }
-
+    CurrencyExchangeBuilder.buildThenAdd(exportsCacheModel, declaration)
     declaration
   }
 
