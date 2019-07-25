@@ -17,6 +17,9 @@
 package services.cache.mapping.declaration
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
+import org.mockito.ArgumentMatchers._
+import org.mockito.{ArgumentMatchers, Mockito}
+import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
@@ -49,11 +52,10 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
       declaration.getFunctionalReferenceID.getValue should be(LRN)
       declaration.getTypeCode.getValue should be("GB" + AllowedAdditionalDeclarationTypes.Standard)
       declaration.getGoodsItemQuantity.getValue.intValue() should be(3)
-      declaration.getCurrencyExchange should have(size(1))
-      declaration.getCurrencyExchange.get(0).getRateNumeric.intValue() shouldBe 123
-      declaration.getAuthorisationHolder should have(size(1))
-      declaration.getAuthorisationHolder.get(0).getID.getValue shouldBe "eori"
-      declaration.getAuthorisationHolder.get(0).getCategoryCode.getValue shouldBe "auth code"
+
+      verify(currencyExchangeBuilder).buildThenAdd(refEq(model), refEq(declaration))
+      verify(authorisationHoldersBuilder).buildThenAdd(refEq(model), refEq(declaration))
+      verify(currencyExchangeBuilder).buildThenAdd(refEq(model), refEq(declaration))
     }
 
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance when dispatchLocation is not present" in {
