@@ -3,16 +3,11 @@ package services.cache
 import java.time.LocalDateTime
 import java.util.UUID
 
+import forms.common.Address
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.{
-  ConsignmentReferences,
-  DeclarationHolder,
-  DispatchLocation,
-  TotalNumberOfItems,
-  TransportDetails
-}
+import forms.declaration._
 import forms.{Choice, Ducr}
 import models.declaration.DeclarationHoldersData
 
@@ -111,4 +106,10 @@ trait ExportsCacheModelBuilder {
           destinationCountries = Some(DestinationCountries(countryOfDispatch, countriesOfRouting, countryOfDestination))
         )
     )
+
+  def withoutCarrierDetails(): CacheModifier = m => m.copy(parties = m.parties.copy(carrierDetails = None))
+
+  def withCarrierDetails(eori: Option[String] = None,
+                         address: Option[Address] =  None): CacheModifier =
+    m => m.copy(parties = m.parties.copy(carrierDetails = Some(CarrierDetails(EntityDetails(eori, address)))))
 }

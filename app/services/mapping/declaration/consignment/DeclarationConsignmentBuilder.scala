@@ -30,7 +30,7 @@ object DeclarationConsignmentBuilder {
       val consignment = new Declaration.Consignment()
       FreightBuilder.buildThenAdd(model, consignment)
       IteneraryBuilder.buildThenAdd(model, consignment)
-      //ConsignmentCarrierBuilder.buildThenAdd(model, consignment)
+      ConsignmentCarrierBuilder.buildThenAdd(model, consignment)
       declaration.setConsignment(consignment)
     }
   }

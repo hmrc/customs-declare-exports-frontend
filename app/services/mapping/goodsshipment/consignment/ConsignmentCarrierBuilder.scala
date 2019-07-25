@@ -21,12 +21,23 @@ import forms.Choice.AllowedChoiceValues
 import forms.common.Address
 import forms.declaration.{CarrierDetails, EntityDetails}
 import services.Countries.allCountries
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Consignment.Carrier
 import wco.datamodel.wco.declaration_ds.dms._2._
 
 object ConsignmentCarrierBuilder {
+
+  def buildThenAdd(model: ExportsCacheModel, consignment: Declaration.Consignment): Unit = {
+    if(model.choice.equals(AllowedChoiceValues.StandardDec)) {
+      model.parties.carrierDetails
+        .filter(isDefined)
+        .map(_.details)
+        .map(buildEoriOrAddress)
+        .foreach(consignment.setCarrier)
+    }
+  }
 
   def build()(implicit cacheMap: CacheMap, choice: Choice): Declaration.Consignment.Carrier =
     choice match {
@@ -79,34 +90,26 @@ object ConsignmentCarrierBuilder {
 
     val carrierAddress = new Carrier.Address()
 
-    if (address.addressLine.nonEmpty) {
-      val line = new AddressLineTextType()
-      line.setValue(address.addressLine)
-      carrierAddress.setLine(line)
-    }
+    val line = new AddressLineTextType()
+    line.setValue(address.addressLine)
+    carrierAddress.setLine(line)
 
-    if (address.townOrCity.nonEmpty) {
-      val city = new AddressCityNameTextType
-      city.setValue(address.townOrCity)
-      carrierAddress.setCityName(city)
-    }
+    val city = new AddressCityNameTextType
+    city.setValue(address.townOrCity)
+    carrierAddress.setCityName(city)
 
-    if (address.postCode.nonEmpty) {
-      val postcode = new AddressPostcodeIDType()
-      postcode.setValue(address.postCode)
-      carrierAddress.setPostcodeID(postcode)
-    }
+    val postcode = new AddressPostcodeIDType()
+    postcode.setValue(address.postCode)
+    carrierAddress.setPostcodeID(postcode)
 
-    if (address.country.nonEmpty) {
-      val countryCode = new AddressCountryCodeType
-      countryCode.setValue(
-        allCountries
-          .find(country => address.country.contains(country.countryName))
-          .map(_.countryCode)
-          .getOrElse("")
-      )
-      carrierAddress.setCountryCode(countryCode)
-    }
+    val countryCode = new AddressCountryCodeType
+    countryCode.setValue(
+      allCountries
+        .find(country => address.country.contains(country.countryName))
+        .map(_.countryCode)
+        .getOrElse("")
+    )
+    carrierAddress.setCountryCode(countryCode)
     carrierAddress
   }
 }
