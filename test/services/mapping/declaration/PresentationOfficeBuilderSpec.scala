@@ -15,6 +15,7 @@
  */
 
 package services.mapping.declaration
+import forms.Choice.AllowedChoiceValues
 import forms.ChoiceSpec
 import forms.declaration.officeOfExit.OfficeOfExitForms
 import forms.declaration.{OfficeOfExitStandardSpec, OfficeOfExitSupplementarySpec}
@@ -42,7 +43,7 @@ class PresentationOfficeBuilderSpec extends WordSpec with Matchers with ExportsC
 
     "build then add" when {
       "no office of exit" in {
-        val model = aCacheModel(withoutOfficeOfExit())
+        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withoutOfficeOfExit())
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -51,7 +52,16 @@ class PresentationOfficeBuilderSpec extends WordSpec with Matchers with ExportsC
       }
 
       "empty presentation office id" in {
-        val model = aCacheModel(withOfficeOfExit(presentationOfficeId = None))
+        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(presentationOfficeId = None))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getPresentationOffice should be(null)
+      }
+
+      "choice is not standard" in {
+        val model = aCacheModel(withChoice("other"), withOfficeOfExit(presentationOfficeId = Some("id")))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -60,7 +70,7 @@ class PresentationOfficeBuilderSpec extends WordSpec with Matchers with ExportsC
       }
 
       "populated" in {
-        val model = aCacheModel(withOfficeOfExit(presentationOfficeId = Some("id")))
+        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(presentationOfficeId = Some("id")))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
