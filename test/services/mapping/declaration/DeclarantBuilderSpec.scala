@@ -112,7 +112,5 @@ class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar with
     }
   }
 
-  private def builder = {
-    new DeclarantBuilder()
-  }
+  private def builder = new DeclarantBuilder
 }
