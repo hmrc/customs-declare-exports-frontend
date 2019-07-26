@@ -105,6 +105,19 @@ trait ExportsCacheModelBuilder {
   def withDeclarationHolders(holders: DeclarationHolder*): CacheModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders))))
 
+  def withoutBorderTransport(): CacheModifier = _.copy(borderTransport = None)
+
+  def withBorderTransport(
+    borderModeOfTransportCode: String = "",
+    meansOfTransportOnDepartureType: String = "",
+    meansOfTransportOnDepartureIDNumber: Option[String] = None
+  ): CacheModifier =
+    _.copy(
+      borderTransport = Some(
+        BorderTransport(borderModeOfTransportCode, meansOfTransportOnDepartureType, meansOfTransportOnDepartureIDNumber)
+      )
+    )
+
   def withoutTransportDetails(): CacheModifier = _.copy(transportDetails = None)
 
   def withTransportDetails(
