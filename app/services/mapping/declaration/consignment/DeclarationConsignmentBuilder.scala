@@ -25,18 +25,19 @@ import services.mapping.goodsshipment.consignment.ConsignmentCarrierBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class DeclarationConsignmentBuilder @Inject()(freightBuilder: FreightBuilder,
-                                              iteneraryBuilder: IteneraryBuilder,
-                                              consignmentCarrierBuilder: ConsignmentCarrierBuilder) extends ModifyingBuilder[Declaration] {
-  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
-    if(model.choice.equals(AllowedChoiceValues.StandardDec)) {
+class DeclarationConsignmentBuilder @Inject()(
+  freightBuilder: FreightBuilder,
+  iteneraryBuilder: IteneraryBuilder,
+  consignmentCarrierBuilder: ConsignmentCarrierBuilder
+) extends ModifyingBuilder[Declaration] {
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
+    if (model.choice.equals(AllowedChoiceValues.StandardDec)) {
       val consignment = new Declaration.Consignment()
       freightBuilder.buildThenAdd(model, consignment)
       iteneraryBuilder.buildThenAdd(model, consignment)
       consignmentCarrierBuilder.buildThenAdd(model, consignment)
       declaration.setConsignment(consignment)
     }
-  }
 }
 
 object DeclarationConsignmentBuilder {

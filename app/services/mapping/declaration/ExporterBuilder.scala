@@ -27,14 +27,12 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 import ExporterBuilder.{createExporter, isDefined}
 
 class ExporterBuilder @Inject()() extends ModifyingBuilder[Declaration] {
-  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
-    model.parties
-      .exporterDetails
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
+    model.parties.exporterDetails
       .filter(isDefined)
       .map(_.details)
       .map(createExporter)
       .foreach(declaration.setExporter)
-  }
 }
 
 object ExporterBuilder {

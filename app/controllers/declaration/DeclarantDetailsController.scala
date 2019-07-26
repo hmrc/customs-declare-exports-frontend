@@ -62,9 +62,7 @@ class DeclarantDetailsController @Inject()(
             _ <- updateCache(journeySessionId, form)
             _ <- customsCacheService.cache[DeclarantDetails](cacheId, DeclarantDetails.id, form)
           } yield
-            Redirect(
-              controllers.declaration.routes.RepresentativeDetailsController.displayRepresentativeDetailsPage()
-          )
+            Redirect(controllers.declaration.routes.RepresentativeDetailsController.displayRepresentativeDetailsPage())
       )
   }
 

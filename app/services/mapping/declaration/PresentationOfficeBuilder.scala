@@ -29,15 +29,13 @@ import wco.datamodel.wco.dec_dms._2.Declaration.PresentationOffice
 import wco.datamodel.wco.declaration_ds.dms._2._
 
 class PresentationOfficeBuilder @Inject()() extends ModifyingBuilder[Declaration] {
-  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
-    if(model.choice.equals(AllowedChoiceValues.StandardDec)){
-      model.locations
-        .officeOfExit
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
+    if (model.choice.equals(AllowedChoiceValues.StandardDec)) {
+      model.locations.officeOfExit
         .flatMap(_.presentationOfficeId)
         .map(createPresentationOffice)
         .foreach(declaration.setPresentationOffice)
     }
-  }
 }
 
 object PresentationOfficeBuilder {

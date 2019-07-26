@@ -28,13 +28,11 @@ import SupervisingOfficeBuilder.createSupervisingOffice
 
 class SupervisingOfficeBuilder @Inject()() extends ModifyingBuilder[Declaration] {
 
-  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
-    model.locations
-      .warehouseIdentification
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
+    model.locations.warehouseIdentification
       .flatMap(_.supervisingCustomsOffice)
       .map(createSupervisingOffice)
       .foreach(declaration.setSupervisingOffice)
-  }
 
 }
 

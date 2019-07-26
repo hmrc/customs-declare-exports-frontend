@@ -26,7 +26,10 @@ import services.mapping.AuthorisationHoldersBuilder.{isDefined, mapToAuthorisati
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.AuthorisationHolder
-import wco.datamodel.wco.declaration_ds.dms._2.{AuthorisationHolderCategoryCodeType, AuthorisationHolderIdentificationIDType}
+import wco.datamodel.wco.declaration_ds.dms._2.{
+  AuthorisationHolderCategoryCodeType,
+  AuthorisationHolderIdentificationIDType
+}
 
 import scala.collection.JavaConverters._
 
@@ -56,7 +59,8 @@ object AuthorisationHoldersBuilder {
       )
       .orNull
 
-  private def isDefined(holder: DeclarationHolder): Boolean = holder.authorisationTypeCode.isDefined && holder.eori.nonEmpty
+  private def isDefined(holder: DeclarationHolder): Boolean =
+    holder.authorisationTypeCode.isDefined && holder.eori.nonEmpty
 
   private def mapToAuthorisationHolder(holder: DeclarationHolder): AuthorisationHolder = {
     val authorisationHolder = new AuthorisationHolder()

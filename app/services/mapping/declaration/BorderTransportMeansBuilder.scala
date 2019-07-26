@@ -23,8 +23,13 @@ import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
-import wco.datamodel.wco.declaration_ds.dms._2.{BorderTransportMeansIdentificationIDType, BorderTransportMeansIdentificationTypeCodeType, BorderTransportMeansModeCodeType, BorderTransportMeansRegistrationNationalityCodeType}
-import BorderTransportMeansBuilder.{isDefined, appendTransportDetails, appendBorderTransport}
+import wco.datamodel.wco.declaration_ds.dms._2.{
+  BorderTransportMeansIdentificationIDType,
+  BorderTransportMeansIdentificationTypeCodeType,
+  BorderTransportMeansModeCodeType,
+  BorderTransportMeansRegistrationNationalityCodeType
+}
+import BorderTransportMeansBuilder.{appendBorderTransport, appendTransportDetails, isDefined}
 
 class BorderTransportMeansBuilder @Inject()() extends ModifyingBuilder[Declaration] {
   override def buildThenAdd(model: ExportsCacheModel, t: Declaration): Unit = {
@@ -33,7 +38,7 @@ class BorderTransportMeansBuilder @Inject()() extends ModifyingBuilder[Declarati
     val maybeDetails = model.transportDetails.filter(isDefined)
     maybeTransport.foreach(appendBorderTransport(_, transportMeans))
     maybeDetails.foreach(appendTransportDetails(_, transportMeans))
-    if(maybeDetails.isDefined || maybeTransport.isDefined){
+    if (maybeDetails.isDefined || maybeTransport.isDefined) {
       t.setBorderTransportMeans(transportMeans)
     }
   }
@@ -48,7 +53,7 @@ object BorderTransportMeansBuilder {
       .filter(isDefined)
 
     maybeTransport
-        .foreach(appendBorderTransport(_, transportMeans))
+      .foreach(appendBorderTransport(_, transportMeans))
 
     val maybeDetails = cacheMap
       .getEntry[TransportDetails](TransportDetails.formId)
@@ -56,7 +61,7 @@ object BorderTransportMeansBuilder {
 
     maybeDetails
       .foreach(appendTransportDetails(_, transportMeans))
-    if(maybeDetails.isDefined || maybeTransport.isDefined) transportMeans else null
+    if (maybeDetails.isDefined || maybeTransport.isDefined) transportMeans else null
   }
 
   private def isDefined(transportDetails: TransportDetails): Boolean =
