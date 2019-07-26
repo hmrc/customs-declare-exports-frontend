@@ -31,6 +31,7 @@ class InvoiceAmountBuilder @Inject()() extends ModifyingBuilder[Declaration] {
     model.totalNumberOfItems
       .flatMap(_.totalAmountInvoiced)
       .map(createInvoiceAmount)
+      .foreach(declaration.setInvoiceAmount)
 
 }
 
