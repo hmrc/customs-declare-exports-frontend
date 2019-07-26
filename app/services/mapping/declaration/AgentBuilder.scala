@@ -17,12 +17,26 @@
 package services.mapping.declaration
 
 import forms.declaration.RepresentativeDetails
+import javax.inject.Inject
 import services.Countries.allCountries
 import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
+import services.mapping.declaration.AgentBuilder.createAgent
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Agent
 import wco.datamodel.wco.declaration_ds.dms._2._
+
+class AgentBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+
+  override def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
+    exportsCacheModel.parties.representativeDetails.foreach { representativeDetails =>
+      if (RepresentativeDetails.isDefined(representativeDetails)) {
+        declaration.setAgent(createAgent(representativeDetails))
+      }
+    }
+
+}
 
 object AgentBuilder {
 
@@ -32,13 +46,6 @@ object AgentBuilder {
       .filter(RepresentativeDetails.isDefined)
       .map(data => createAgent(data))
       .orNull
-
-  def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
-    exportsCacheModel.parties.representativeDetails.foreach { representativeDetails =>
-      if (RepresentativeDetails.isDefined(representativeDetails)) {
-        declaration.setAgent(createAgent(representativeDetails))
-      }
-    }
 
   private def createAgent(data: RepresentativeDetails): Declaration.Agent = {
     val agent = new Declaration.Agent()

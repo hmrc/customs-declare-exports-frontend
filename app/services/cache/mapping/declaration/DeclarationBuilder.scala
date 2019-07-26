@@ -25,6 +25,11 @@ import services.mapping.goodsshipment.GoodsShipmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class DeclarationBuilder @Inject()(
+  functionCodeBuilder: FunctionCodeBuilder,
+  functionalReferenceIdBuilder: FunctionalReferenceIdBuilder,
+  typeCodeBuilder: TypeCodeBuilder,
+  goodsItemQuantityBuilder: GoodsItemQuantityBuilder,
+  agentBuilder: AgentBuilder,
   presentationOfficeBuilder: PresentationOfficeBuilder,
   specificCircumstancesCodeBuilder: SpecificCircumstancesCodeBuilder,
   supervisingOfficeBuilder: SupervisingOfficeBuilder,
@@ -33,19 +38,14 @@ class DeclarationBuilder @Inject()(
   authorisationHoldersBuilder: AuthorisationHoldersBuilder,
   currencyExchangeBuilder: CurrencyExchangeBuilder
 ) {
-  private val defaultFunctionCode = "9"
 
   def build(model: ExportsCacheModel): Declaration = {
     val declaration = new Declaration()
-
-    declaration.setFunctionCode(FunctionCodeBuilder.build(defaultFunctionCode))
-
-    FunctionalReferenceIdBuilder.buildThenAdd(model, declaration)
-    TypeCodeBuilder.buildThenAdd(model, declaration)
-
-    GoodsItemQuantityBuilder.buildThenAdd(model, declaration)
-
-    AgentBuilder.buildThenAdd(model, declaration)
+    functionCodeBuilder.buildThenAdd(model, declaration)
+    functionalReferenceIdBuilder.buildThenAdd(model, declaration)
+    typeCodeBuilder.buildThenAdd(model, declaration)
+    goodsItemQuantityBuilder.buildThenAdd(model, declaration)
+    agentBuilder.buildThenAdd(model, declaration)
 
     declaration.setGoodsShipment(GoodsShipmentBuilder.build(model))
     //    declaration.setExitOffice(ExitOfficeBuilder.build)

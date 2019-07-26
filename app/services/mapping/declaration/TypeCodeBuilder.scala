@@ -17,10 +17,22 @@
 package services.mapping.declaration
 import forms.declaration.DispatchLocation
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import javax.inject.Inject
 import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
+import services.mapping.declaration.TypeCodeBuilder.createTypeCode
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationTypeCodeType
+
+class TypeCodeBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+
+  override def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
+    exportsCacheModel.additionalDeclarationType.foreach(additionalDeclarationType => {
+      declaration.setTypeCode(createTypeCode(additionalDeclarationType, exportsCacheModel.dispatchLocation))
+    })
+
+}
 
 object TypeCodeBuilder {
 
@@ -40,11 +52,6 @@ object TypeCodeBuilder {
       .map(createTypeCode(_, dispatchLocation))
       .orNull
   }
-
-  def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration) =
-    exportsCacheModel.additionalDeclarationType.foreach(additionalDeclarationType => {
-      declaration.setTypeCode(createTypeCode(additionalDeclarationType, exportsCacheModel.dispatchLocation))
-    })
 
   private def createTypeCode(
     decType: AdditionalDeclarationType,

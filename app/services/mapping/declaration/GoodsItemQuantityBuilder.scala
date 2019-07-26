@@ -16,13 +16,23 @@
 
 package services.mapping.declaration
 
+import javax.inject.Inject
 import models.declaration.governmentagencygoodsitem.{Formats, GovernmentAgencyGoodsItem}
 import play.api.libs.json.Reads
 import services.ExportsItemsCacheIds
 import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
+import services.mapping.declaration.GoodsItemQuantityBuilder.createGoodsItemQuantity
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2._
+
+class GoodsItemQuantityBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+
+  def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
+    declaration.setGoodsItemQuantity(createGoodsItemQuantity(exportsCacheModel.items.toSeq))
+
+}
 
 object GoodsItemQuantityBuilder {
 
@@ -34,9 +44,6 @@ object GoodsItemQuantityBuilder {
       .getEntry[Seq[GovernmentAgencyGoodsItem]](ExportsItemsCacheIds.itemsId)
       .map(goodsItems => createGoodsItemQuantity(goodsItems))
       .orNull
-
-  def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
-    declaration.setGoodsItemQuantity(createGoodsItemQuantity(exportsCacheModel.items.toSeq))
 
   private def createGoodsItemQuantity[A](items: Seq[A]): DeclarationGoodsItemQuantityType = {
     val goodsQuantity = new DeclarationGoodsItemQuantityType()
