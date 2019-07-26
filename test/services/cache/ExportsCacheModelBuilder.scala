@@ -71,24 +71,24 @@ trait ExportsCacheModelBuilder {
     _.copy(dispatchLocation = Some(DispatchLocation(location)))
 
   def withItem(id: String = uuid): CacheModifier =
-    m => m.copy(items = m.items + ExportItem(id = id))
+    cache => cache.copy(items = cache.items + ExportItem(id = id))
 
   def withItems(count: Int): CacheModifier =
-    m => m.copy(items = m.items ++ (1 to count).map(_ => ExportItem(id = uuid)).toSet)
+    cache => cache.copy(items = cache.items ++ (1 to count).map(_ => ExportItem(id = uuid)).toSet)
 
-  def withoutDeclarationHolders(): CacheModifier = m => m.copy(parties = m.parties.copy(declarationHoldersData = None))
+  def withoutDeclarationHolders(): CacheModifier = cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = None))
 
   def withDeclarationHolder(
     authorisationTypeCode: Option[String] = None,
     eori: Option[String] = None
-  ): CacheModifier = { m =>
-    val existing: Seq[DeclarationHolder] = m.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
+  ): CacheModifier = { cache =>
+    val existing: Seq[DeclarationHolder] = cache.parties.declarationHoldersData.map(_.holders).getOrElse(Seq.empty)
     val holdersData = DeclarationHoldersData(existing :+ DeclarationHolder(authorisationTypeCode, eori))
-    m.copy(parties = m.parties.copy(declarationHoldersData = Some(holdersData)))
+    cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(holdersData)))
   }
 
   def withDeclarationHolders(holders: DeclarationHolder*): CacheModifier =
-    m => m.copy(parties = m.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders))))
+    cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders))))
 
   def withoutTransportDetails(): CacheModifier = _.copy(transportDetails = None)
 
@@ -112,27 +112,27 @@ trait ExportsCacheModelBuilder {
     )
 
   def withoutDestinationCountries(): CacheModifier =
-    m => m.copy(locations = m.locations.copy(destinationCountries = None))
+    cache => cache.copy(locations = cache.locations.copy(destinationCountries = None))
 
   def withDestinationCountries(
     countryOfDispatch: String = "GB",
     countriesOfRouting: Seq[String] = Seq.empty,
     countryOfDestination: String = "US"
   ): CacheModifier =
-    m =>
-      m.copy(
-        locations = m.locations.copy(
+    cache =>
+      cache.copy(
+        locations = cache.locations.copy(
           destinationCountries = Some(DestinationCountries(countryOfDispatch, countriesOfRouting, countryOfDestination))
         )
     )
 
-  def withoutCarrierDetails(): CacheModifier = m => m.copy(parties = m.parties.copy(carrierDetails = None))
+  def withoutCarrierDetails(): CacheModifier = cache => cache.copy(parties = cache.parties.copy(carrierDetails = None))
 
   def withCarrierDetails(eori: Option[String] = None, address: Option[Address] = None): CacheModifier =
-    m => m.copy(parties = m.parties.copy(carrierDetails = Some(CarrierDetails(EntityDetails(eori, address)))))
+    cache => cache.copy(parties = cache.parties.copy(carrierDetails = Some(CarrierDetails(EntityDetails(eori, address)))))
 
   def withoutWarehouseIdentification(): CacheModifier =
-    m => m.copy(locations = m.locations.copy(warehouseIdentification = None))
+    cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = None))
 
   def withWarehouseIdentification(
     supervisingCustomsOffice: Option[String] = None,
@@ -140,9 +140,9 @@ trait ExportsCacheModelBuilder {
     identificationNumber: Option[String] = None,
     inlandModeOfTransportCode: Option[String] = None
   ): CacheModifier =
-    m =>
-      m.copy(
-        locations = m.locations.copy(
+    cache =>
+      cache.copy(
+        locations = cache.locations.copy(
           warehouseIdentification = Some(
             WarehouseIdentification(
               supervisingCustomsOffice,
@@ -154,15 +154,15 @@ trait ExportsCacheModelBuilder {
         )
     )
 
-  def withoutOfficeOfExit(): CacheModifier = m => m.copy(locations = m.locations.copy(officeOfExit = None))
+  def withoutOfficeOfExit(): CacheModifier = cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))
 
   def withOfficeOfExit(
     code: String = "",
     presentationOfficeId: Option[String] = None,
     circumstancesCode: Option[String] = None
   ): CacheModifier =
-    m =>
-      m.copy(
-        locations = m.locations.copy(officeOfExit = Some(OfficeOfExit(code, presentationOfficeId, circumstancesCode)))
+    cache =>
+      cache.copy(
+        locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(code, presentationOfficeId, circumstancesCode)))
     )
 }
