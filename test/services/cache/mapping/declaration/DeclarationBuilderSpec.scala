@@ -34,6 +34,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
   private val agentBuilder = mock[AgentBuilder]
   private val presentationOfficeBuilder = mock[PresentationOfficeBuilder]
   private val specificCircumstancesCodeBuilder = mock[SpecificCircumstancesCodeBuilder]
+  private val exitOfficeBuilder = mock[ExitOfficeBuilder]
   private val borderTransportMeansBuilder = mock[BorderTransportMeansBuilder]
   private val exporterBuilder = mock[ExporterBuilder]
   private val declarantBuilder = mock[DeclarantBuilder]
@@ -53,6 +54,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
       agentBuilder,
       presentationOfficeBuilder,
       specificCircumstancesCodeBuilder,
+      exitOfficeBuilder,
       borderTransportMeansBuilder,
       exporterBuilder,
       declarantBuilder,
@@ -77,6 +79,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
       verify(agentBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(presentationOfficeBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(specificCircumstancesCodeBuilder).buildThenAdd(refEq(model), refEq(declaration))
+      verify(exitOfficeBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(borderTransportMeansBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(exporterBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(declarantBuilder).buildThenAdd(refEq(model), refEq(declaration))

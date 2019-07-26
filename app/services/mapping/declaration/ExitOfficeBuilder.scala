@@ -19,10 +19,33 @@ package services.mapping.declaration
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard, OfficeOfExitSupplementary}
+import javax.inject.Inject
+import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
+import services.mapping.declaration.ExitOfficeBuilder.{
+  createExitOfficeFromStandardJourney,
+  createExitOfficeFromSupplementaryJourney
+}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.ExitOffice
 import wco.datamodel.wco.declaration_ds.dms._2._
+
+class ExitOfficeBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = model.choice match {
+    case AllowedChoiceValues.StandardDec =>
+      model.locations.officeOfExit
+        .map(OfficeOfExitStandard(_))
+        .map(createExitOfficeFromStandardJourney)
+        .foreach(declaration.setExitOffice)
+
+    case AllowedChoiceValues.SupplementaryDec =>
+      model.locations.officeOfExit
+        .map(OfficeOfExitSupplementary(_))
+        .map(createExitOfficeFromSupplementaryJourney)
+        .foreach(declaration.setExitOffice)
+  }
+}
 
 object ExitOfficeBuilder {
 

@@ -186,13 +186,13 @@ trait ExportsCacheModelBuilder {
   def withoutOfficeOfExit(): CacheModifier = cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))
 
   def withOfficeOfExit(
-    code: String = "",
-    presentationOfficeId: Option[String] = None,
-    circumstancesCode: Option[String] = None
+                        officeId: String = "",
+                        presentationOfficeId: Option[String] = None,
+                        circumstancesCode: Option[String] = None
   ): CacheModifier =
     cache =>
       cache.copy(
         locations =
-          cache.locations.copy(officeOfExit = Some(OfficeOfExit(code, presentationOfficeId, circumstancesCode)))
+          cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, presentationOfficeId, circumstancesCode)))
     )
 }
