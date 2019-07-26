@@ -23,6 +23,8 @@ import wco.datamodel.wco.dec_dms._2.Declaration
 
 class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
+  private def builder = new CurrencyExchangeBuilder()
+
   "CurrencyExchangeBuilder" should {
     "correctly map from CacheModel to the WCO-DEC CurrencyExchange instance" in {
       implicit val cacheMap: CacheMap =
@@ -42,7 +44,7 @@ class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCac
         )
         val declaration = new Declaration()
         // When
-        CurrencyExchangeBuilder.buildThenAdd(model, declaration)
+        builder.buildThenAdd(model, declaration)
         // Then
         declaration.getCurrencyExchange shouldBe empty
       }
@@ -54,7 +56,7 @@ class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCac
         )
         val declaration = new Declaration()
         // When
-        CurrencyExchangeBuilder.buildThenAdd(model, declaration)
+        builder.buildThenAdd(model, declaration)
         // Then
         declaration.getCurrencyExchange shouldBe empty
       }
@@ -66,7 +68,7 @@ class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCac
         )
         val declaration = new Declaration()
         // When
-        CurrencyExchangeBuilder.buildThenAdd(model, declaration)
+        builder.buildThenAdd(model, declaration)
         // Then
         declaration.getCurrencyExchange should have(size(1))
         declaration.getCurrencyExchange.get(0).getCurrencyTypeCode shouldBe null

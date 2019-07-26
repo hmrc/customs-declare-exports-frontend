@@ -16,6 +16,7 @@
 
 package services.cache.mapping
 
+import javax.inject.Inject
 import javax.xml.bind.JAXBElement
 import javax.xml.namespace.QName
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
@@ -23,29 +24,23 @@ import services.cache.ExportsCacheModel
 import services.cache.mapping.declaration.DeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
-import wco.datamodel.wco.metadata_ds_dms._2.{
-  MetaDataAgencyAssignedCustomizationCodeType,
-  MetaDataResponsibleAgencyNameTextType,
-  MetaDataResponsibleCountryCodeType,
-  MetaDataWCODataModelVersionCodeType,
-  MetaDataWCOTypeNameTextType
-}
+import wco.datamodel.wco.metadata_ds_dms._2._
 
-object SubmissionMetaDataBuilder {
+class SubmissionMetaDataBuilder @Inject()(declarationBuilder: DeclarationBuilder){
 
-  def build(cacheModel: ExportsCacheModel): MetaData = {
+  def build(model: ExportsCacheModel): MetaData = {
     val metaData = createMetaDataWithConstants()
 
     val element: JAXBElement[Declaration] = new JAXBElement[Declaration](
       new QName("urn:wco:datamodel:WCO:DEC-DMS:2", "Declaration"),
       classOf[Declaration],
-      DeclarationBuilder.build(cacheModel)
+      declarationBuilder.build(model)
     )
     metaData.setAny(element)
     metaData
   }
 
-  def createMetaDataWithConstants(): MetaData = {
+  private def createMetaDataWithConstants(): MetaData = {
     val metaData = new MetaData
     val agencyAssignedCustomizationCodeType = new MetaDataAgencyAssignedCustomizationCodeType
     agencyAssignedCustomizationCodeType.setValue(SchemaMandatoryValues.agencyAssignedCustomizationVersionCode)

@@ -16,6 +16,7 @@
 
 package services.cache.mapping.declaration
 
+import javax.inject.Inject
 import services.cache.ExportsCacheModel
 import services.mapping.AuthorisationHoldersBuilder
 import services.mapping.declaration._
@@ -23,23 +24,26 @@ import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 import services.mapping.goodsshipment.GoodsShipmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-object DeclarationBuilder {
+class DeclarationBuilder @Inject()(
+  declarationConsignmentBuilder: DeclarationConsignmentBuilder,
+  authorisationHoldersBuilder: AuthorisationHoldersBuilder,
+  currencyExchangeBuilder: CurrencyExchangeBuilder
+) {
+  private val defaultFunctionCode = "9"
 
-  val defaultFunctionCode = "9"
-
-  def build(exportsCacheModel: ExportsCacheModel): Declaration = {
+  def build(model: ExportsCacheModel): Declaration = {
     val declaration = new Declaration()
 
     declaration.setFunctionCode(FunctionCodeBuilder.build(defaultFunctionCode))
 
-    FunctionalReferenceIdBuilder.buildThenAdd(exportsCacheModel, declaration)
-    TypeCodeBuilder.buildThenAdd(exportsCacheModel, declaration)
+    FunctionalReferenceIdBuilder.buildThenAdd(model, declaration)
+    TypeCodeBuilder.buildThenAdd(model, declaration)
 
-    GoodsItemQuantityBuilder.buildThenAdd(exportsCacheModel, declaration)
+    GoodsItemQuantityBuilder.buildThenAdd(model, declaration)
 
-    AgentBuilder.buildThenAdd(exportsCacheModel, declaration)
+    AgentBuilder.buildThenAdd(model, declaration)
 
-    declaration.setGoodsShipment(GoodsShipmentBuilder.build(exportsCacheModel))
+    declaration.setGoodsShipment(GoodsShipmentBuilder.build(model))
     //    declaration.setExitOffice(ExitOfficeBuilder.build)
     //    declaration.setBorderTransportMeans(BorderTransportMeansBuilder.build)
     //    declaration.setExporter(ExporterBuilder.build)
@@ -49,10 +53,9 @@ object DeclarationBuilder {
     //    declaration.setSpecificCircumstancesCodeCode(SpecificCircumstancesCodeBuilder.build)
     //    declaration.setSupervisingOffice(SupervisingOfficeBuilder.build)
     //    declaration.setTotalPackageQuantity(TotalPackageQuantityBuilder.build)
-    DeclarationConsignmentBuilder.buildThenAdd(exportsCacheModel, declaration)
-    AuthorisationHoldersBuilder.buildThenAdd(exportsCacheModel, declaration)
-    CurrencyExchangeBuilder.buildThenAdd(exportsCacheModel, declaration)
+    declarationConsignmentBuilder.buildThenAdd(model, declaration)
+    authorisationHoldersBuilder.buildThenAdd(model, declaration)
+    currencyExchangeBuilder.buildThenAdd(model, declaration)
     declaration
   }
-
 }

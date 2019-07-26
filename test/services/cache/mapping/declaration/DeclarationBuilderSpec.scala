@@ -17,10 +17,23 @@
 package services.cache.mapping.declaration
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
+import org.mockito.ArgumentMatchers._
+import org.mockito.{ArgumentMatchers, Mockito}
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
+import services.mapping.AuthorisationHoldersBuilder
+import services.mapping.declaration.CurrencyExchangeBuilder
+import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 
-class DeclarationBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
+
+  private val declarationConsignmentBuilder = mock[DeclarationConsignmentBuilder]
+  private val authorisationHoldersBuilder = mock[AuthorisationHoldersBuilder]
+  private val currencyExchangeBuilder = mock[CurrencyExchangeBuilder]
+
+  private def builder = new DeclarationBuilder(declarationConsignmentBuilder, authorisationHoldersBuilder, currencyExchangeBuilder)
 
   "DeclarationBuilder" should {
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance" in {
@@ -33,17 +46,16 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
         withItems(3)
       )
 
-      val declaration = DeclarationBuilder.build(model)
+      val declaration = builder.build(model)
 
-      declaration.getFunctionCode.getValue should be(DeclarationBuilder.defaultFunctionCode)
+      declaration.getFunctionCode.getValue should be("9")
       declaration.getFunctionalReferenceID.getValue should be(LRN)
       declaration.getTypeCode.getValue should be("GB" + AllowedAdditionalDeclarationTypes.Standard)
       declaration.getGoodsItemQuantity.getValue.intValue() should be(3)
-      declaration.getCurrencyExchange should have(size(1))
-      declaration.getCurrencyExchange.get(0).getRateNumeric.intValue() shouldBe 123
-      declaration.getAuthorisationHolder should have(size(1))
-      declaration.getAuthorisationHolder.get(0).getID.getValue shouldBe "eori"
-      declaration.getAuthorisationHolder.get(0).getCategoryCode.getValue shouldBe "auth code"
+
+      verify(currencyExchangeBuilder).buildThenAdd(refEq(model), refEq(declaration))
+      verify(authorisationHoldersBuilder).buildThenAdd(refEq(model), refEq(declaration))
+      verify(currencyExchangeBuilder).buildThenAdd(refEq(model), refEq(declaration))
     }
 
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance when dispatchLocation is not present" in {
@@ -51,7 +63,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
         withAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard)
       )
 
-      val declaration = DeclarationBuilder.build(exportsCacheModel)
+      val declaration = builder.build(exportsCacheModel)
 
       declaration.getTypeCode.getValue should be(null)
     }

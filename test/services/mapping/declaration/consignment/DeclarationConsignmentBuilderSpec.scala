@@ -20,14 +20,28 @@ import forms.Choice.AllowedChoiceValues
 import forms.common.Address
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.{CarrierDetails, CarrierDetailsSpec, TransportDetails}
-import org.scalatest.{Matchers, WordSpec}
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
+import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
 import play.api.libs.json.Json
-import services.cache.ExportsCacheModelBuilder
-import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
+import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder}
+import services.mapping.goodsshipment.consignment.ConsignmentCarrierBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class DeclarationConsignmentBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class DeclarationConsignmentBuilderSpec extends WordSpec with Matchers with MockitoSugar with BeforeAndAfterEach with ExportsCacheModelBuilder {
+
+  private val freightBuilder = mock[FreightBuilder]
+  private val iteneraryBuilder = mock[IteneraryBuilder]
+  private val consignmentCarrierBuilder = mock[ConsignmentCarrierBuilder]
+
+  private def builder = new DeclarationConsignmentBuilder(freightBuilder, iteneraryBuilder, consignmentCarrierBuilder)
+
+  override def afterEach(): Unit = {
+    reset(freightBuilder,  iteneraryBuilder, consignmentCarrierBuilder)
+  }
 
   "DeclarationConsignmentBuilder" should {
     "correctly map to the WCO-DEC Consignment instance" when {
@@ -79,39 +93,34 @@ class DeclarationConsignmentBuilderSpec extends WordSpec with Matchers with Expo
 
       "standard journey" in {
         // Given
-        val model = aCacheModel(
-          withChoice(AllowedChoiceValues.StandardDec),
-          withTransportDetails(paymentMethod = Some("method")),
-          withDestinationCountries(countriesOfRouting = Seq("routing")),
-          withCarrierDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "United Kingdom")))
-        )
+        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec))
         val declaration = new Declaration()
 
         // When
-        DeclarationConsignmentBuilder.buildThenAdd(model, declaration)
+        builder.buildThenAdd(model, declaration)
 
         // Then
-        declaration.getConsignment should not be null
-        declaration.getConsignment.getCarrier should not be null
-        declaration.getConsignment.getFreight should not be null
-        declaration.getConsignment.getItinerary should not be null
+        declaration.getConsignment should not be(null)
+        verify(freightBuilder).buildThenAdd(refEq(model), any[Declaration.Consignment])
+        verify(iteneraryBuilder).buildThenAdd(refEq(model), any[Declaration.Consignment])
+        verify(consignmentCarrierBuilder).buildThenAdd(refEq(model), any[Declaration.Consignment])
       }
 
       "other journey" in {
         // Given
-        val model = aCacheModel(
-          withChoice("other"),
-          withTransportDetails(paymentMethod = Some("method")),
-          withDestinationCountries(countriesOfRouting = Seq("routing")),
-          withCarrierDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))))
+        val model = aCacheModel(withChoice("other"))
         val declaration = new Declaration()
 
         // When
-        DeclarationConsignmentBuilder.buildThenAdd(model, declaration)
+        builder.buildThenAdd(model, declaration)
 
         // Then
         declaration.getConsignment shouldBe null
+        verify(freightBuilder, never()).buildThenAdd(refEq(model), any[Declaration.Consignment])
+        verify(iteneraryBuilder, never()).buildThenAdd(refEq(model), any[Declaration.Consignment])
+        verify(consignmentCarrierBuilder, never()).buildThenAdd(refEq(model), any[Declaration.Consignment])
       }
     }
   }
+
 }

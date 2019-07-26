@@ -58,7 +58,7 @@ class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with Mockit
         val declaration = new Declaration()
 
         // When
-        AuthorisationHoldersBuilder.buildThenAdd(model, declaration)
+        new AuthorisationHoldersBuilder().buildThenAdd(model, declaration)
 
         // Then
         declaration.getAuthorisationHolder shouldBe empty
@@ -73,7 +73,7 @@ class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with Mockit
         val declaration = new Declaration()
 
         // When
-        AuthorisationHoldersBuilder.buildThenAdd(model, declaration)
+        new AuthorisationHoldersBuilder().buildThenAdd(model, declaration)
 
         // Then
         declaration.getAuthorisationHolder should have(size(2))
@@ -89,7 +89,7 @@ class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with Mockit
         val declaration = new Declaration()
 
         // When
-        AuthorisationHoldersBuilder.buildThenAdd(model, declaration)
+        new AuthorisationHoldersBuilder().buildThenAdd(model, declaration)
 
         // Then
         declaration.getAuthorisationHolder shouldBe empty
@@ -101,7 +101,7 @@ class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with Mockit
         val declaration = new Declaration()
 
         // When
-        AuthorisationHoldersBuilder.buildThenAdd(model, declaration)
+        new AuthorisationHoldersBuilder().buildThenAdd(model, declaration)
 
         // Then
         declaration.getAuthorisationHolder shouldBe empty

@@ -58,7 +58,7 @@ class FreightBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBu
         val consignment = new Declaration.Consignment()
 
         // When
-        FreightBuilder.buildThenAdd(model, consignment)
+        new FreightBuilder().buildThenAdd(model, consignment)
 
         // Then
         consignment.getFreight shouldBe null
@@ -70,7 +70,7 @@ class FreightBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBu
         val consignment = new Declaration.Consignment()
 
         // When
-        FreightBuilder.buildThenAdd(model, consignment)
+        new FreightBuilder().buildThenAdd(model, consignment)
 
         // Then
         consignment.getFreight shouldBe null
@@ -82,7 +82,7 @@ class FreightBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBu
         val consignment = new Declaration.Consignment()
 
         // When
-        FreightBuilder.buildThenAdd(model, consignment)
+        new FreightBuilder().buildThenAdd(model, consignment)
 
         // Then
         consignment.getFreight.getPaymentMethodCode.getValue shouldBe "method"
