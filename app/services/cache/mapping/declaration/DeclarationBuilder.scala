@@ -25,23 +25,27 @@ import services.mapping.goodsshipment.GoodsShipmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class DeclarationBuilder @Inject()(
+  functionCodeBuilder: FunctionCodeBuilder,
+  functionalReferenceIdBuilder: FunctionalReferenceIdBuilder,
+  typeCodeBuilder: TypeCodeBuilder,
+  goodsItemQuantityBuilder: GoodsItemQuantityBuilder,
+  agentBuilder: AgentBuilder,
+  presentationOfficeBuilder: PresentationOfficeBuilder,
+  specificCircumstancesCodeBuilder: SpecificCircumstancesCodeBuilder,
+  supervisingOfficeBuilder: SupervisingOfficeBuilder,
+  totalPackageQuantityBuilder: TotalPackageQuantityBuilder,
   declarationConsignmentBuilder: DeclarationConsignmentBuilder,
   authorisationHoldersBuilder: AuthorisationHoldersBuilder,
   currencyExchangeBuilder: CurrencyExchangeBuilder
 ) {
-  private val defaultFunctionCode = "9"
 
   def build(model: ExportsCacheModel): Declaration = {
     val declaration = new Declaration()
-
-    declaration.setFunctionCode(FunctionCodeBuilder.build(defaultFunctionCode))
-
-    FunctionalReferenceIdBuilder.buildThenAdd(model, declaration)
-    TypeCodeBuilder.buildThenAdd(model, declaration)
-
-    GoodsItemQuantityBuilder.buildThenAdd(model, declaration)
-
-    AgentBuilder.buildThenAdd(model, declaration)
+    functionCodeBuilder.buildThenAdd(model, declaration)
+    functionalReferenceIdBuilder.buildThenAdd(model, declaration)
+    typeCodeBuilder.buildThenAdd(model, declaration)
+    goodsItemQuantityBuilder.buildThenAdd(model, declaration)
+    agentBuilder.buildThenAdd(model, declaration)
 
     declaration.setGoodsShipment(GoodsShipmentBuilder.build(model))
     //    declaration.setExitOffice(ExitOfficeBuilder.build)
@@ -49,10 +53,10 @@ class DeclarationBuilder @Inject()(
     //    declaration.setExporter(ExporterBuilder.build)
     //    declaration.setDeclarant(DeclarantBuilder.build)
     //    declaration.setInvoiceAmount(InvoiceAmountBuilder.build)
-    //    declaration.setPresentationOffice(PresentationOfficeBuilder.build)
-    //    declaration.setSpecificCircumstancesCodeCode(SpecificCircumstancesCodeBuilder.build)
-    //    declaration.setSupervisingOffice(SupervisingOfficeBuilder.build)
-    //    declaration.setTotalPackageQuantity(TotalPackageQuantityBuilder.build)
+    presentationOfficeBuilder.buildThenAdd(model, declaration)
+    specificCircumstancesCodeBuilder.buildThenAdd(model, declaration)
+    supervisingOfficeBuilder.buildThenAdd(model, declaration)
+    totalPackageQuantityBuilder.buildThenAdd(model, declaration)
     declarationConsignmentBuilder.buildThenAdd(model, declaration)
     authorisationHoldersBuilder.buildThenAdd(model, declaration)
     currencyExchangeBuilder.buildThenAdd(model, declaration)

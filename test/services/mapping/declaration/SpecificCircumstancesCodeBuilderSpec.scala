@@ -15,14 +15,17 @@
  */
 
 package services.mapping.declaration
+import forms.Choice.AllowedChoiceValues
 import forms.ChoiceSpec
 import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard}
 import forms.declaration.{OfficeOfExitStandardSpec, OfficeOfExitSupplementarySpec}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class SpecificCircumstancesCodeBuilderSpec extends WordSpec with Matchers {
+class SpecificCircumstancesCodeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "SpecificCircumstancesCodeBuilder" should {
     "correctly map to the WCO-DEC CircumstancesCode to null for a supplementary journey" in {
@@ -50,5 +53,49 @@ class SpecificCircumstancesCodeBuilderSpec extends WordSpec with Matchers {
         circumstancesCode should be(null)
       }
     }
+
+    "build then add" when {
+
+
+      "no office of exit" in {
+        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withoutOfficeOfExit())
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getSpecificCircumstancesCodeCode should be(null)
+      }
+
+      "invalid circumstance choice" in {
+        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(circumstancesCode = Some("")))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getSpecificCircumstancesCodeCode should be(null)
+      }
+
+      "choice is not standard" in {
+        val model = aCacheModel(withChoice("other"), withOfficeOfExit(circumstancesCode = Some("Yes")))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getSpecificCircumstancesCodeCode should be(null)
+      }
+
+      "valid circumstance choice" in {
+        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(circumstancesCode = Some("Yes")))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getSpecificCircumstancesCodeCode.getValue should be("A20")
+      }
+    }
+  }
+
+  private def builder = {
+    new SpecificCircumstancesCodeBuilder()
   }
 }

@@ -16,7 +16,22 @@
 
 package services.mapping.declaration
 
+import javax.inject.Inject
+import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
+import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationFunctionCodeType
+
+class FunctionCodeBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+
+  private val defaultFunctionCode = "9"
+
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
+    val functionCode = new DeclarationFunctionCodeType()
+    functionCode.setValue(defaultFunctionCode)
+    declaration.setFunctionCode(functionCode)
+  }
+}
 
 object FunctionCodeBuilder {
 

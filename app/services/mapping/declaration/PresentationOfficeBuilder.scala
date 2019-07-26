@@ -19,10 +19,26 @@ package services.mapping.declaration
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard}
+import javax.inject.Inject
+import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
+import services.mapping.declaration.PresentationOfficeBuilder.createPresentationOffice
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.PresentationOffice
 import wco.datamodel.wco.declaration_ds.dms._2._
+
+class PresentationOfficeBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
+    if(model.choice.equals(AllowedChoiceValues.StandardDec)){
+      model.locations
+        .officeOfExit
+        .flatMap(_.presentationOfficeId)
+        .map(createPresentationOffice)
+        .foreach(declaration.setPresentationOffice)
+    }
+  }
+}
 
 object PresentationOfficeBuilder {
 
@@ -35,14 +51,14 @@ object PresentationOfficeBuilder {
   private def buildPresentationOffice(choice: Choice)(implicit cacheMap: CacheMap): Declaration.PresentationOffice =
     cacheMap
       .getEntry[OfficeOfExitStandard](OfficeOfExitForms.formId)
-      .filter(_.presentationOfficeId.isDefined)
+      .flatMap(_.presentationOfficeId)
       .map(createPresentationOffice)
       .orNull
 
-  private def createPresentationOffice(data: OfficeOfExitStandard): Declaration.PresentationOffice = {
+  private def createPresentationOffice(value: String): Declaration.PresentationOffice = {
     val presentationOfficeId = new PresentationOfficeIdentificationIDType()
 
-    data.presentationOfficeId.foreach(presentationOfficeId.setValue(_))
+    presentationOfficeId.setValue(value)
 
     val presentationOffice = new PresentationOffice()
     presentationOffice.setID(presentationOfficeId)

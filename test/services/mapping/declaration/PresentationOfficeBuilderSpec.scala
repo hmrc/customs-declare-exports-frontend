@@ -15,13 +15,16 @@
  */
 
 package services.mapping.declaration
+import forms.Choice.AllowedChoiceValues
 import forms.ChoiceSpec
 import forms.declaration.officeOfExit.OfficeOfExitForms
 import forms.declaration.{OfficeOfExitStandardSpec, OfficeOfExitSupplementarySpec}
 import org.scalatest.{Matchers, WordSpec}
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class PresentationOfficeBuilderSpec extends WordSpec with Matchers {
+class PresentationOfficeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "PresentationOfficeBuilder" should {
     "correctly map to the WCO-DEC PresentationOffice to null for a supplementary journey" in {
@@ -37,5 +40,45 @@ class PresentationOfficeBuilderSpec extends WordSpec with Matchers {
       val presentationOffice = PresentationOfficeBuilder.build(cacheMap, ChoiceSpec.standardChoice)
       presentationOffice.getID.getValue should be("123")
     }
+
+    "build then add" when {
+      "no office of exit" in {
+        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withoutOfficeOfExit())
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getPresentationOffice should be(null)
+      }
+
+      "empty presentation office id" in {
+        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(presentationOfficeId = None))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getPresentationOffice should be(null)
+      }
+
+      "choice is not standard" in {
+        val model = aCacheModel(withChoice("other"), withOfficeOfExit(presentationOfficeId = Some("id")))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getPresentationOffice should be(null)
+      }
+
+      "populated" in {
+        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(presentationOfficeId = Some("id")))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getPresentationOffice.getID.getValue should be("id")
+      }
+    }
   }
+
+  private def builder = new PresentationOfficeBuilder()
 }

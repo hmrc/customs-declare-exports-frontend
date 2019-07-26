@@ -17,8 +17,23 @@
 package services.mapping.declaration
 
 import forms.declaration.TotalNumberOfItems
+import javax.inject.Inject
+import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
+import services.mapping.declaration.TotalPackageQuantityBuilder.createGoodsItemQuantity
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2._
+
+class TotalPackageQuantityBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+
+  def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
+    model.totalNumberOfItems
+      .map(createGoodsItemQuantity)
+      .foreach(declaration.setTotalPackageQuantity)
+  }
+
+}
 
 object TotalPackageQuantityBuilder {
 
