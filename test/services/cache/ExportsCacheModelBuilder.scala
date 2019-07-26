@@ -24,6 +24,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration._
+import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
 import models.declaration.DeclarationHoldersData
 
@@ -151,5 +152,17 @@ trait ExportsCacheModelBuilder {
             )
           )
         )
+    )
+
+  def withoutOfficeOfExit(): CacheModifier = m => m.copy(locations = m.locations.copy(officeOfExit = None))
+
+  def withOfficeOfExit(
+    code: String = "",
+    presentationOfficeId: Option[String] = None,
+    circumstancesCode: Option[String] = None
+  ): CacheModifier =
+    m =>
+      m.copy(
+        locations = m.locations.copy(officeOfExit = Some(OfficeOfExit(code, presentationOfficeId, circumstancesCode)))
     )
 }

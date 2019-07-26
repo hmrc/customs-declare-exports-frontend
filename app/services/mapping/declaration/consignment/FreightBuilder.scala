@@ -20,14 +20,14 @@ import forms.Choice
 import forms.declaration.TransportDetails
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
-import services.mapping.Builder
+import services.mapping.ModifyingBuilder
 import services.mapping.declaration.consignment.FreightBuilder.createFreight
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Consignment.Freight
 import wco.datamodel.wco.declaration_ds.dms._2.FreightPaymentMethodCodeType
 
-class FreightBuilder @Inject()() extends Builder[Declaration.Consignment] {
+class FreightBuilder @Inject()() extends ModifyingBuilder[Declaration.Consignment] {
 
   override def buildThenAdd(model: ExportsCacheModel, consignment: Declaration.Consignment): Unit = {
     model.transportDetails

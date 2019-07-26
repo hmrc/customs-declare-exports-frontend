@@ -23,14 +23,14 @@ import forms.declaration.{CarrierDetails, EntityDetails}
 import javax.inject.Inject
 import services.Countries.allCountries
 import services.cache.ExportsCacheModel
-import services.mapping.Builder
+import services.mapping.ModifyingBuilder
 import services.mapping.goodsshipment.consignment.ConsignmentCarrierBuilder.{buildEoriOrAddress, isDefined}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Consignment.Carrier
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-class ConsignmentCarrierBuilder @Inject()() extends Builder[Declaration.Consignment] {
+class ConsignmentCarrierBuilder @Inject()() extends ModifyingBuilder[Declaration.Consignment] {
 
   override def buildThenAdd(model: ExportsCacheModel, consignment: Declaration.Consignment): Unit = {
     if(model.choice.equals(AllowedChoiceValues.StandardDec)) {

@@ -19,14 +19,14 @@ package services.mapping.declaration
 import forms.declaration.WarehouseIdentification
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
-import services.mapping.Builder
+import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.SupervisingOffice
 import wco.datamodel.wco.declaration_ds.dms._2._
 import SupervisingOfficeBuilder.createSupervisingOffice
 
-class SupervisingOfficeBuilder @Inject()() extends Builder[Declaration] {
+class SupervisingOfficeBuilder @Inject()() extends ModifyingBuilder[Declaration] {
 
   override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
     model.locations

@@ -24,10 +24,12 @@ import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
 import services.mapping.AuthorisationHoldersBuilder
 import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
-import services.mapping.declaration.{CurrencyExchangeBuilder, SupervisingOfficeBuilder, TotalPackageQuantityBuilder}
+import services.mapping.declaration._
 
 class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
 
+  private val presentationOfficeBuilder = mock[PresentationOfficeBuilder]
+  private val specificCircumstancesCodeBuilder = mock[SpecificCircumstancesCodeBuilder]
   private val supervisingOfficeBuilder = mock[SupervisingOfficeBuilder]
   private val totalPackageQuantityBuilder = mock[TotalPackageQuantityBuilder]
   private val declarationConsignmentBuilder = mock[DeclarationConsignmentBuilder]
@@ -36,6 +38,8 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
 
   private def builder =
     new DeclarationBuilder(
+      presentationOfficeBuilder,
+      specificCircumstancesCodeBuilder,
       supervisingOfficeBuilder,
       totalPackageQuantityBuilder,
       declarationConsignmentBuilder,
@@ -61,6 +65,8 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
       declaration.getTypeCode.getValue should be("GB" + AllowedAdditionalDeclarationTypes.Standard)
       declaration.getGoodsItemQuantity.getValue.intValue() should be(3)
 
+      verify(presentationOfficeBuilder).buildThenAdd(refEq(model), refEq(declaration))
+      verify(specificCircumstancesCodeBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(supervisingOfficeBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(totalPackageQuantityBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(currencyExchangeBuilder).buildThenAdd(refEq(model), refEq(declaration))
