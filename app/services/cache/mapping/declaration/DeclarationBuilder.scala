@@ -25,6 +25,7 @@ import services.mapping.goodsshipment.GoodsShipmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class DeclarationBuilder @Inject()(
+  supervisingOfficeBuilder: SupervisingOfficeBuilder,
   totalPackageQuantityBuilder: TotalPackageQuantityBuilder,
   declarationConsignmentBuilder: DeclarationConsignmentBuilder,
   authorisationHoldersBuilder: AuthorisationHoldersBuilder,
@@ -52,8 +53,8 @@ class DeclarationBuilder @Inject()(
     //    declaration.setInvoiceAmount(InvoiceAmountBuilder.build)
     //    declaration.setPresentationOffice(PresentationOfficeBuilder.build)
     //    declaration.setSpecificCircumstancesCodeCode(SpecificCircumstancesCodeBuilder.build)
-    //    declaration.setSupervisingOffice(SupervisingOfficeBuilder.build)
 
+    supervisingOfficeBuilder.buildThenAdd(model, declaration)
     totalPackageQuantityBuilder.buildThenAdd(model, declaration)
     declarationConsignmentBuilder.buildThenAdd(model, declaration)
     authorisationHoldersBuilder.buildThenAdd(model, declaration)

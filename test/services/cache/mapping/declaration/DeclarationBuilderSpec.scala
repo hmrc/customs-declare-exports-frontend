@@ -18,23 +18,30 @@ package services.cache.mapping.declaration
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import org.mockito.ArgumentMatchers._
-import org.mockito.{ArgumentMatchers, Mockito}
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
 import services.mapping.AuthorisationHoldersBuilder
-import services.mapping.declaration.{CurrencyExchangeBuilder, TotalPackageQuantityBuilder}
 import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
+import services.mapping.declaration.{CurrencyExchangeBuilder, SupervisingOfficeBuilder, TotalPackageQuantityBuilder}
 
 class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
 
+  private val supervisingOfficeBuilder = mock[SupervisingOfficeBuilder]
   private val totalPackageQuantityBuilder = mock[TotalPackageQuantityBuilder]
   private val declarationConsignmentBuilder = mock[DeclarationConsignmentBuilder]
   private val authorisationHoldersBuilder = mock[AuthorisationHoldersBuilder]
   private val currencyExchangeBuilder = mock[CurrencyExchangeBuilder]
 
-  private def builder = new DeclarationBuilder(totalPackageQuantityBuilder, declarationConsignmentBuilder, authorisationHoldersBuilder, currencyExchangeBuilder)
+  private def builder =
+    new DeclarationBuilder(
+      supervisingOfficeBuilder,
+      totalPackageQuantityBuilder,
+      declarationConsignmentBuilder,
+      authorisationHoldersBuilder,
+      currencyExchangeBuilder
+    )
 
   "DeclarationBuilder" should {
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance" in {
@@ -54,6 +61,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
       declaration.getTypeCode.getValue should be("GB" + AllowedAdditionalDeclarationTypes.Standard)
       declaration.getGoodsItemQuantity.getValue.intValue() should be(3)
 
+      verify(supervisingOfficeBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(totalPackageQuantityBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(currencyExchangeBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(authorisationHoldersBuilder).buildThenAdd(refEq(model), refEq(declaration))
@@ -61,9 +69,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
     }
 
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance when dispatchLocation is not present" in {
-      val exportsCacheModel = aCacheModel(
-        withAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard)
-      )
+      val exportsCacheModel = aCacheModel(withAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard))
 
       val declaration = builder.build(exportsCacheModel)
 

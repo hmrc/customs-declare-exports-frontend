@@ -17,29 +17,42 @@
 package services.mapping.declaration
 
 import forms.declaration.WarehouseIdentification
+import javax.inject.Inject
+import services.cache.ExportsCacheModel
+import services.mapping.Builder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.SupervisingOffice
 import wco.datamodel.wco.declaration_ds.dms._2._
+import SupervisingOfficeBuilder.createSupervisingOffice
+
+class SupervisingOfficeBuilder @Inject()() extends Builder[Declaration] {
+
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
+    model.locations
+      .warehouseIdentification
+      .flatMap(_.supervisingCustomsOffice)
+      .map(createSupervisingOffice)
+      .foreach(declaration.setSupervisingOffice)
+  }
+
+}
 
 object SupervisingOfficeBuilder {
 
   def build(implicit cacheMap: CacheMap): SupervisingOffice =
     cacheMap
       .getEntry[WarehouseIdentification](WarehouseIdentification.formId)
-      .filter(isDefined)
+      .flatMap(_.supervisingCustomsOffice)
       .map(createSupervisingOffice)
       .orNull
 
-  private def isDefined(data: WarehouseIdentification): Boolean = data.supervisingCustomsOffice.isDefined
-
-  private def createSupervisingOffice(data: WarehouseIdentification): SupervisingOffice = {
+  private def createSupervisingOffice(data: String): SupervisingOffice = {
     val supervisingOffice = new SupervisingOffice()
 
-    data.supervisingCustomsOffice.foreach { value =>
-      val iDType = new SupervisingOfficeIdentificationIDType()
-      iDType.setValue(value)
-      supervisingOffice.setID(iDType)
-    }
+    val iDType = new SupervisingOfficeIdentificationIDType()
+    iDType.setValue(data)
+    supervisingOffice.setID(iDType)
 
     supervisingOffice
   }

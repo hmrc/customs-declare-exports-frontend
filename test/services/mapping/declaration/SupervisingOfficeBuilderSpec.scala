@@ -17,9 +17,11 @@
 package services.mapping.declaration
 import forms.declaration.{WarehouseIdentification, WarehouseIdentificationSpec}
 import org.scalatest.{Matchers, WordSpec}
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class SupervisingOfficeBuilderSpec extends WordSpec with Matchers {
+class SupervisingOfficeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "SupervisingOfficeBuilder" should {
     "correctly map to the WCO-DEC SupervisingOffice instance" in {
@@ -30,6 +32,35 @@ class SupervisingOfficeBuilderSpec extends WordSpec with Matchers {
         )
       val supervisingOffice = SupervisingOfficeBuilder.build(cacheMap)
       supervisingOffice.getID.getValue should be("12345678")
+    }
+
+    "build then add" when {
+      "no warehouse identification" in {
+        val model = aCacheModel(withoutWarehouseIdentification())
+        val declaration = new Declaration()
+
+        new SupervisingOfficeBuilder().buildThenAdd(model, declaration)
+
+        declaration.getSupervisingOffice should be(null)
+      }
+
+      "missing supervising customs office" in {
+        val model = aCacheModel(withWarehouseIdentification(supervisingCustomsOffice = None))
+        val declaration = new Declaration()
+
+        new SupervisingOfficeBuilder().buildThenAdd(model, declaration)
+
+        declaration.getSupervisingOffice should be(null)
+      }
+
+      "populated" in {
+        val model = aCacheModel(withWarehouseIdentification(supervisingCustomsOffice = Some("value")))
+        val declaration = new Declaration()
+
+        new SupervisingOfficeBuilder().buildThenAdd(model, declaration)
+
+        declaration.getSupervisingOffice.getID.getValue should be("value")
+      }
     }
   }
 }
