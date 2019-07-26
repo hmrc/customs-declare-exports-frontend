@@ -76,7 +76,15 @@ trait ExportsCacheModelBuilder {
   def withItems(count: Int): CacheModifier =
     cache => cache.copy(items = cache.items ++ (1 to count).map(_ => ExportItem(id = uuid)).toSet)
 
-  def withoutDeclarationHolders(): CacheModifier = cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = None))
+  def withoutDeclarantDetails(): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(declarantDetails = None))
+
+  def withDeclarantDetails(eori: Option[String] = None, address: Option[Address] = None): CacheModifier =
+    cache =>
+      cache.copy(parties = cache.parties.copy(declarantDetails = Some(DeclarantDetails(EntityDetails(eori, address)))))
+
+  def withoutDeclarationHolders(): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = None))
 
   def withDeclarationHolder(
     authorisationTypeCode: Option[String] = None,
@@ -129,7 +137,8 @@ trait ExportsCacheModelBuilder {
   def withoutCarrierDetails(): CacheModifier = cache => cache.copy(parties = cache.parties.copy(carrierDetails = None))
 
   def withCarrierDetails(eori: Option[String] = None, address: Option[Address] = None): CacheModifier =
-    cache => cache.copy(parties = cache.parties.copy(carrierDetails = Some(CarrierDetails(EntityDetails(eori, address)))))
+    cache =>
+      cache.copy(parties = cache.parties.copy(carrierDetails = Some(CarrierDetails(EntityDetails(eori, address)))))
 
   def withoutWarehouseIdentification(): CacheModifier =
     cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = None))
@@ -163,6 +172,7 @@ trait ExportsCacheModelBuilder {
   ): CacheModifier =
     cache =>
       cache.copy(
-        locations = cache.locations.copy(officeOfExit = Some(OfficeOfExit(code, presentationOfficeId, circumstancesCode)))
+        locations =
+          cache.locations.copy(officeOfExit = Some(OfficeOfExit(code, presentationOfficeId, circumstancesCode)))
     )
 }
