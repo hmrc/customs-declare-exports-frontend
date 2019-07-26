@@ -76,6 +76,13 @@ trait ExportsCacheModelBuilder {
   def withItems(count: Int): CacheModifier =
     cache => cache.copy(items = cache.items ++ (1 to count).map(_ => ExportItem(id = uuid)).toSet)
 
+  def withoutExporterDetails(): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(exporterDetails = None))
+
+  def withExporterDetails(eori: Option[String] = None, address: Option[Address] = None): CacheModifier =
+    cache =>
+      cache.copy(parties = cache.parties.copy(exporterDetails = Some(ExporterDetails(EntityDetails(eori, address)))))
+
   def withoutDeclarantDetails(): CacheModifier =
     cache => cache.copy(parties = cache.parties.copy(declarantDetails = None))
 

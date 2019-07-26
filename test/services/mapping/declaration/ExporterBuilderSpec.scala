@@ -16,12 +16,15 @@
 
 package services.mapping.declaration
 
+import forms.common.Address
 import forms.declaration.{ExporterDetails, ExporterDetailsSpec}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class ExporterBuilderSpec extends WordSpec with Matchers {
+class ExporterBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "ExporterBuilder" should {
     "correctly map to the WCO-DEC Exporter instance" when {
@@ -51,5 +54,59 @@ class ExporterBuilderSpec extends WordSpec with Matchers {
         exporter.getAddress.getPostcodeID.getValue should be("AB12 34CD")
       }
     }
+
+    "build then add" when {
+      "no exporter details" in {
+        val model = aCacheModel(withoutExporterDetails())
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getExporter should be(null)
+      }
+
+      "no eori" in {
+        val model = aCacheModel(withExporterDetails(eori = None, address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getExporter.getID should be(null)
+      }
+
+      "no address" in {
+        val model = aCacheModel(withExporterDetails(eori = Some("eori"), address = None))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getExporter.getAddress should be(null)
+      }
+
+      "unknown country" in {
+        val model = aCacheModel(withExporterDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "unknown"))))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getExporter.getAddress.getCountryCode.getValue should be("")
+      }
+
+      "populated" in {
+        val model = aCacheModel(withExporterDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getExporter.getAddress.getLine.getValue should be("line")
+        declaration.getExporter.getAddress.getCityName.getValue should be("city")
+        declaration.getExporter.getAddress.getPostcodeID.getValue should be("postcode")
+        declaration.getExporter.getAddress.getCountryCode.getValue should be("GB")
+        declaration.getExporter.getName.getValue should be("name")
+        declaration.getExporter.getID.getValue should be("eori")
+      }
+    }
   }
+
+  private def builder: ExporterBuilder = new ExporterBuilder
 }
