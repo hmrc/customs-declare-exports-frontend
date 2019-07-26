@@ -17,25 +17,37 @@
 package services.mapping.declaration
 
 import forms.declaration.TotalNumberOfItems
+import javax.inject.Inject
+import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2._
+import InvoiceAmountBuilder.createInvoiceAmount
+
+class InvoiceAmountBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
+    model.totalNumberOfItems
+      .flatMap(_.totalAmountInvoiced)
+      .map(createInvoiceAmount)
+
+}
 
 object InvoiceAmountBuilder {
 
   def build(implicit cacheMap: CacheMap): DeclarationInvoiceAmountType =
     cacheMap
       .getEntry[TotalNumberOfItems](TotalNumberOfItems.formId)
-      .filter(_.totalAmountInvoiced.isDefined)
+      .flatMap(_.totalAmountInvoiced)
       .map(createInvoiceAmount)
       .orNull
 
-  private def createInvoiceAmount(data: TotalNumberOfItems): DeclarationInvoiceAmountType = {
+  private def createInvoiceAmount(amount: String): DeclarationInvoiceAmountType = {
     val invoiceAmountType = new DeclarationInvoiceAmountType()
 
-    data.totalAmountInvoiced.foreach { amount =>
-      invoiceAmountType.setValue(new java.math.BigDecimal(amount))
-      invoiceAmountType.setCurrencyID("GBP")
-    }
+    invoiceAmountType.setValue(new java.math.BigDecimal(amount))
+    invoiceAmountType.setCurrencyID("GBP")
 
     invoiceAmountType
   }

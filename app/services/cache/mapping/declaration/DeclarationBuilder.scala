@@ -32,6 +32,7 @@ class DeclarationBuilder @Inject()(
   agentBuilder: AgentBuilder,
   presentationOfficeBuilder: PresentationOfficeBuilder,
   specificCircumstancesCodeBuilder: SpecificCircumstancesCodeBuilder,
+  invoiceAmountBuilder: InvoiceAmountBuilder,
   supervisingOfficeBuilder: SupervisingOfficeBuilder,
   totalPackageQuantityBuilder: TotalPackageQuantityBuilder,
   declarationConsignmentBuilder: DeclarationConsignmentBuilder,
@@ -52,7 +53,7 @@ class DeclarationBuilder @Inject()(
     //    declaration.setBorderTransportMeans(BorderTransportMeansBuilder.build)
     //    declaration.setExporter(ExporterBuilder.build)
     //    declaration.setDeclarant(DeclarantBuilder.build)
-    //    declaration.setInvoiceAmount(InvoiceAmountBuilder.build)
+    invoiceAmountBuilder.buildThenAdd(model, declaration)
     presentationOfficeBuilder.buildThenAdd(model, declaration)
     specificCircumstancesCodeBuilder.buildThenAdd(model, declaration)
     supervisingOfficeBuilder.buildThenAdd(model, declaration)
