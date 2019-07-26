@@ -21,6 +21,7 @@ import java.util
 import forms.declaration.TotalNumberOfItems
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
+import services.mapping.Builder
 import services.mapping.declaration.CurrencyExchangeBuilder.createCurrencyExchange
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
@@ -28,8 +29,8 @@ import wco.datamodel.wco.dec_dms._2.Declaration.CurrencyExchange
 
 import scala.collection.JavaConverters._
 
-class CurrencyExchangeBuilder @Inject()(){
-  def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
+class CurrencyExchangeBuilder @Inject()() extends Builder[Declaration] {
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
     val currencyExchanges: Seq[CurrencyExchange] = model.totalNumberOfItems
       .filter(_.exchangeRate.isDefined)
       .map(createCurrencyExchange)

@@ -24,16 +24,17 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
 import services.mapping.AuthorisationHoldersBuilder
-import services.mapping.declaration.CurrencyExchangeBuilder
+import services.mapping.declaration.{CurrencyExchangeBuilder, TotalPackageQuantityBuilder}
 import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 
 class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
 
+  private val totalPackageQuantityBuilder = mock[TotalPackageQuantityBuilder]
   private val declarationConsignmentBuilder = mock[DeclarationConsignmentBuilder]
   private val authorisationHoldersBuilder = mock[AuthorisationHoldersBuilder]
   private val currencyExchangeBuilder = mock[CurrencyExchangeBuilder]
 
-  private def builder = new DeclarationBuilder(declarationConsignmentBuilder, authorisationHoldersBuilder, currencyExchangeBuilder)
+  private def builder = new DeclarationBuilder(totalPackageQuantityBuilder, declarationConsignmentBuilder, authorisationHoldersBuilder, currencyExchangeBuilder)
 
   "DeclarationBuilder" should {
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance" in {
@@ -53,6 +54,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
       declaration.getTypeCode.getValue should be("GB" + AllowedAdditionalDeclarationTypes.Standard)
       declaration.getGoodsItemQuantity.getValue.intValue() should be(3)
 
+      verify(totalPackageQuantityBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(currencyExchangeBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(authorisationHoldersBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(currencyExchangeBuilder).buildThenAdd(refEq(model), refEq(declaration))

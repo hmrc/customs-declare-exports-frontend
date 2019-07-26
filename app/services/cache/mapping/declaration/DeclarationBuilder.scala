@@ -18,13 +18,14 @@ package services.cache.mapping.declaration
 
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
-import services.mapping.AuthorisationHoldersBuilder
+import services.mapping.{AuthorisationHoldersBuilder, Builder}
 import services.mapping.declaration._
 import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 import services.mapping.goodsshipment.GoodsShipmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class DeclarationBuilder @Inject()(
+  totalPackageQuantityBuilder: TotalPackageQuantityBuilder,
   declarationConsignmentBuilder: DeclarationConsignmentBuilder,
   authorisationHoldersBuilder: AuthorisationHoldersBuilder,
   currencyExchangeBuilder: CurrencyExchangeBuilder
@@ -52,7 +53,8 @@ class DeclarationBuilder @Inject()(
     //    declaration.setPresentationOffice(PresentationOfficeBuilder.build)
     //    declaration.setSpecificCircumstancesCodeCode(SpecificCircumstancesCodeBuilder.build)
     //    declaration.setSupervisingOffice(SupervisingOfficeBuilder.build)
-    //    declaration.setTotalPackageQuantity(TotalPackageQuantityBuilder.build)
+
+    totalPackageQuantityBuilder.buildThenAdd(model, declaration)
     declarationConsignmentBuilder.buildThenAdd(model, declaration)
     authorisationHoldersBuilder.buildThenAdd(model, declaration)
     currencyExchangeBuilder.buildThenAdd(model, declaration)

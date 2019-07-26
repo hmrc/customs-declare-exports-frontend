@@ -30,8 +30,8 @@ import wco.datamodel.wco.declaration_ds.dms._2.{AuthorisationHolderCategoryCodeT
 
 import scala.collection.JavaConverters._
 
-class AuthorisationHoldersBuilder @Inject()() {
-  def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
+class AuthorisationHoldersBuilder @Inject()() extends Builder[Declaration] {
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
     val holders = model.parties.declarationHoldersData.map {
       _.holders
         .filter(holder => isDefined(holder))
@@ -56,9 +56,9 @@ object AuthorisationHoldersBuilder {
       )
       .orNull
 
-  def isDefined(holder: DeclarationHolder): Boolean = holder.authorisationTypeCode.isDefined && holder.eori.nonEmpty
+  private def isDefined(holder: DeclarationHolder): Boolean = holder.authorisationTypeCode.isDefined && holder.eori.nonEmpty
 
-  def mapToAuthorisationHolder(holder: DeclarationHolder): AuthorisationHolder = {
+  private def mapToAuthorisationHolder(holder: DeclarationHolder): AuthorisationHolder = {
     val authorisationHolder = new AuthorisationHolder()
 
     val authorisationHolderIdentificationIDType = new AuthorisationHolderIdentificationIDType
