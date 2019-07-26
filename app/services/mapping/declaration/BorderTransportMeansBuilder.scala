@@ -17,7 +17,10 @@
 package services.mapping.declaration
 
 import forms.declaration.{BorderTransport, TransportDetails}
+import javax.inject.Inject
 import services.Countries.allCountries
+import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2.{
@@ -26,19 +29,39 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
   BorderTransportMeansModeCodeType,
   BorderTransportMeansRegistrationNationalityCodeType
 }
+import BorderTransportMeansBuilder.{appendBorderTransport, appendTransportDetails, isDefined}
+
+class BorderTransportMeansBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+  override def buildThenAdd(model: ExportsCacheModel, t: Declaration): Unit = {
+    val transportMeans = new Declaration.BorderTransportMeans()
+    val maybeTransport = model.borderTransport.filter(isDefined)
+    val maybeDetails = model.transportDetails.filter(isDefined)
+    maybeTransport.foreach(appendBorderTransport(_, transportMeans))
+    maybeDetails.foreach(appendTransportDetails(_, transportMeans))
+    if (maybeDetails.isDefined || maybeTransport.isDefined) {
+      t.setBorderTransportMeans(transportMeans)
+    }
+  }
+}
 
 object BorderTransportMeansBuilder {
 
   def build(implicit cacheMap: CacheMap): Declaration.BorderTransportMeans = {
-
-    val borderTransport = cacheMap
+    val transportMeans = new Declaration.BorderTransportMeans()
+    val maybeTransport = cacheMap
       .getEntry[BorderTransport](BorderTransport.formId)
+      .filter(isDefined)
 
-    cacheMap
+    maybeTransport
+      .foreach(appendBorderTransport(_, transportMeans))
+
+    val maybeDetails = cacheMap
       .getEntry[TransportDetails](TransportDetails.formId)
-      .filter(data => isDefined(data))
-      .map(data => createBorderTransportMeans(data, borderTransport))
-      .orNull
+      .filter(isDefined)
+
+    maybeDetails
+      .foreach(appendTransportDetails(_, transportMeans))
+    if (maybeDetails.isDefined || maybeTransport.isDefined) transportMeans else null
   }
 
   private def isDefined(transportDetails: TransportDetails): Boolean =
@@ -46,25 +69,14 @@ object BorderTransportMeansBuilder {
       transportDetails.meansOfTransportCrossingTheBorderType.nonEmpty ||
       transportDetails.meansOfTransportCrossingTheBorderNationality.nonEmpty
 
-  private def createBorderTransportMeans(
-    data: TransportDetails,
-    borderTransport: Option[BorderTransport]
-  ): Declaration.BorderTransportMeans = {
-    val transportMeans = new Declaration.BorderTransportMeans()
+  private def isDefined(borderTransport: BorderTransport): Boolean = borderTransport.borderModeOfTransportCode.nonEmpty
 
+  private def appendTransportDetails(data: TransportDetails, transportMeans: Declaration.BorderTransportMeans): Unit = {
     data.meansOfTransportCrossingTheBorderIDNumber.foreach { value =>
       val id = new BorderTransportMeansIdentificationIDType()
       id.setValue(value)
       transportMeans.setID(id)
     }
-
-    borderTransport
-      .filter(transport => transport.borderModeOfTransportCode.nonEmpty)
-      .map(transport => {
-        val modeCode = new BorderTransportMeansModeCodeType()
-        modeCode.setValue(transport.borderModeOfTransportCode)
-        transportMeans.setModeCode(modeCode)
-      })
 
     if (data.meansOfTransportCrossingTheBorderType.nonEmpty) {
       val identificationTypeCode = new BorderTransportMeansIdentificationTypeCodeType()
@@ -82,7 +94,11 @@ object BorderTransportMeansBuilder {
       )
       transportMeans.setRegistrationNationalityCode(registrationNationalityCode)
     }
+  }
 
-    transportMeans
+  private def appendBorderTransport(data: BorderTransport, transportMeans: Declaration.BorderTransportMeans): Unit = {
+    val modeCode = new BorderTransportMeansModeCodeType()
+    modeCode.setValue(data.borderModeOfTransportCode)
+    transportMeans.setModeCode(modeCode)
   }
 }

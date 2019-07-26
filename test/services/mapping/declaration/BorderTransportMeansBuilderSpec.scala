@@ -18,9 +18,11 @@ package services.mapping.declaration
 import forms.declaration.{BorderTransport, TransportDetails}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class BorderTransportMeansBuilderSpec extends WordSpec with Matchers {
+class BorderTransportMeansBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "BorderTransportMeansBuilder" should {
     "correctly map to the WCO-DEC BorderTransportMeans instance" in {
@@ -42,5 +44,79 @@ class BorderTransportMeansBuilderSpec extends WordSpec with Matchers {
       borderTransportMeanst.getName should be(null)
       borderTransportMeanst.getTypeCode should be(null)
     }
+
+    "build then add" when {
+      "no border transport or transport details" in {
+        val model = aCacheModel(withoutTransportDetails(), withoutBorderTransport())
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getBorderTransportMeans should be(null)
+      }
+
+      "transport details only" in {
+        val model = aCacheModel(
+          withTransportDetails(
+            meansOfTransportCrossingTheBorderNationality = Some("United Kingdom"),
+            meansOfTransportCrossingTheBorderType = "type",
+            meansOfTransportCrossingTheBorderIDNumber = Some("id")
+          ),
+          withoutBorderTransport()
+        )
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getBorderTransportMeans.getID.getValue should be("id")
+        declaration.getBorderTransportMeans.getIdentificationTypeCode.getValue should be("type")
+        declaration.getBorderTransportMeans.getRegistrationNationalityCode.getValue should be("GB")
+      }
+
+      "invalid nationality" in {
+        val model = aCacheModel(
+          withTransportDetails(
+            meansOfTransportCrossingTheBorderNationality = Some("other"),
+            meansOfTransportCrossingTheBorderType = "type",
+            meansOfTransportCrossingTheBorderIDNumber = Some("id")
+          )
+        )
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getBorderTransportMeans.getRegistrationNationalityCode.getValue should be("")
+      }
+
+      "border transport only" in {
+        val model = aCacheModel(withoutTransportDetails(), withBorderTransport(borderModeOfTransportCode = "code"))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getBorderTransportMeans.getModeCode.getValue should be("code")
+      }
+
+      "fully populated" in {
+        val model = aCacheModel(
+          withTransportDetails(
+            meansOfTransportCrossingTheBorderNationality = Some("United Kingdom"),
+            meansOfTransportCrossingTheBorderType = "type",
+            meansOfTransportCrossingTheBorderIDNumber = Some("id")
+          ),
+          withBorderTransport(borderModeOfTransportCode = "code")
+        )
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getBorderTransportMeans.getID.getValue should be("id")
+        declaration.getBorderTransportMeans.getIdentificationTypeCode.getValue should be("type")
+        declaration.getBorderTransportMeans.getRegistrationNationalityCode.getValue should be("GB")
+        declaration.getBorderTransportMeans.getModeCode.getValue should be("code")
+      }
+    }
   }
+
+  private def builder = new BorderTransportMeansBuilder()
 }

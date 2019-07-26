@@ -15,13 +15,16 @@
  */
 
 package services.mapping.declaration
+import forms.common.Address
 import forms.declaration.{DeclarantDetails, DeclarantDetailsSpec}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar {
+class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
 
   "DeclarantBuilder" should {
     "build wco declarant successfully " when {
@@ -55,5 +58,59 @@ class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar {
         declarant.getName should be(null)
       }
     }
+
+    "build then add" when {
+      "no declarant details" in {
+        val model = aCacheModel(withoutDeclarantDetails())
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getDeclarant should be(null)
+      }
+
+      "no eori" in {
+        val model = aCacheModel(withDeclarantDetails(eori = None, address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getDeclarant.getID should be(null)
+      }
+
+      "no address" in {
+        val model = aCacheModel(withDeclarantDetails(eori = Some("eori"), address = None))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getDeclarant.getAddress should be(null)
+      }
+
+      "unknown country" in {
+        val model = aCacheModel(withDeclarantDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "unknown"))))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getDeclarant.getAddress.getCountryCode.getValue should be("")
+      }
+
+      "populated" in {
+        val model = aCacheModel(withDeclarantDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))))
+        val declaration = new Declaration()
+
+        builder.buildThenAdd(model, declaration)
+
+        declaration.getDeclarant.getAddress.getLine.getValue should be("line")
+        declaration.getDeclarant.getAddress.getCityName.getValue should be("city")
+        declaration.getDeclarant.getAddress.getPostcodeID.getValue should be("postcode")
+        declaration.getDeclarant.getAddress.getCountryCode.getValue should be("GB")
+        declaration.getDeclarant.getName.getValue should be("name")
+        declaration.getDeclarant.getID.getValue should be("eori")
+      }
+    }
   }
+
+  private def builder = new DeclarantBuilder
 }

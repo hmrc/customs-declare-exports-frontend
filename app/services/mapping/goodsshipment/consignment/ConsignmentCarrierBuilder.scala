@@ -32,15 +32,14 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 
 class ConsignmentCarrierBuilder @Inject()() extends ModifyingBuilder[Declaration.Consignment] {
 
-  override def buildThenAdd(model: ExportsCacheModel, consignment: Declaration.Consignment): Unit = {
-    if(model.choice.equals(AllowedChoiceValues.StandardDec)) {
+  override def buildThenAdd(model: ExportsCacheModel, consignment: Declaration.Consignment): Unit =
+    if (model.choice.equals(AllowedChoiceValues.StandardDec)) {
       model.parties.carrierDetails
         .filter(isDefined)
         .map(_.details)
         .map(buildEoriOrAddress)
         .foreach(consignment.setCarrier)
     }
-  }
 
 }
 

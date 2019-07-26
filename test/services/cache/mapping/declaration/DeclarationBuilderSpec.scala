@@ -16,15 +16,14 @@
 
 package services.cache.mapping.declaration
 
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
 import services.mapping.AuthorisationHoldersBuilder
-import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 import services.mapping.declaration._
+import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 
 class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
 
@@ -35,6 +34,11 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
   private val agentBuilder = mock[AgentBuilder]
   private val presentationOfficeBuilder = mock[PresentationOfficeBuilder]
   private val specificCircumstancesCodeBuilder = mock[SpecificCircumstancesCodeBuilder]
+  private val exitOfficeBuilder = mock[ExitOfficeBuilder]
+  private val borderTransportMeansBuilder = mock[BorderTransportMeansBuilder]
+  private val exporterBuilder = mock[ExporterBuilder]
+  private val declarantBuilder = mock[DeclarantBuilder]
+  private val invoiceAmountBuilder = mock[InvoiceAmountBuilder]
   private val supervisingOfficeBuilder = mock[SupervisingOfficeBuilder]
   private val totalPackageQuantityBuilder = mock[TotalPackageQuantityBuilder]
   private val declarationConsignmentBuilder = mock[DeclarationConsignmentBuilder]
@@ -50,6 +54,11 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
       agentBuilder,
       presentationOfficeBuilder,
       specificCircumstancesCodeBuilder,
+      exitOfficeBuilder,
+      borderTransportMeansBuilder,
+      exporterBuilder,
+      declarantBuilder,
+      invoiceAmountBuilder,
       supervisingOfficeBuilder,
       totalPackageQuantityBuilder,
       declarationConsignmentBuilder,
@@ -70,6 +79,11 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
       verify(agentBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(presentationOfficeBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(specificCircumstancesCodeBuilder).buildThenAdd(refEq(model), refEq(declaration))
+      verify(exitOfficeBuilder).buildThenAdd(refEq(model), refEq(declaration))
+      verify(borderTransportMeansBuilder).buildThenAdd(refEq(model), refEq(declaration))
+      verify(exporterBuilder).buildThenAdd(refEq(model), refEq(declaration))
+      verify(declarantBuilder).buildThenAdd(refEq(model), refEq(declaration))
+      verify(invoiceAmountBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(supervisingOfficeBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(totalPackageQuantityBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(currencyExchangeBuilder).buildThenAdd(refEq(model), refEq(declaration))

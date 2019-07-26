@@ -17,10 +17,24 @@
 package services.mapping.declaration
 import forms.common.Address
 import forms.declaration.DeclarantDetails
+import javax.inject.Inject
+import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Declarant
 import wco.datamodel.wco.declaration_ds.dms._2.{DeclarantIdentificationIDType, _}
+import DeclarantBuilder.{isDefined, mapToWCODeclarant}
+
+class DeclarantBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
+    model.parties.declarantDetails
+      .filter(isDefined)
+      .map(details => mapToWCODeclarant(details))
+      .foreach(declaration.setDeclarant)
+
+}
 
 object DeclarantBuilder {
 
@@ -35,13 +49,13 @@ object DeclarantBuilder {
 
     val declarant = new Declarant
 
-    declarantDetails.details.eori.map(eori => {
+    declarantDetails.details.eori.foreach(eori => {
       val declarantIdentificationIDType = new DeclarantIdentificationIDType
       declarantIdentificationIDType.setValue(eori)
       declarant.setID(declarantIdentificationIDType)
     })
 
-    declarantDetails.details.address.map(address => {
+    declarantDetails.details.address.foreach(address => {
       val declarantNameTextType = new DeclarantNameTextType
       declarantNameTextType.setValue(address.fullName)
       declarant.setName(declarantNameTextType)

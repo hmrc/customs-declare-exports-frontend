@@ -17,9 +17,23 @@
 package services.mapping.declaration
 import forms.common.Address
 import forms.declaration.{EntityDetails, ExporterDetails}
+import javax.inject.Inject
+import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Exporter
 import wco.datamodel.wco.declaration_ds.dms._2._
+import ExporterBuilder.{createExporter, isDefined}
+
+class ExporterBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
+    model.parties.exporterDetails
+      .filter(isDefined)
+      .map(_.details)
+      .map(createExporter)
+      .foreach(declaration.setExporter)
+}
 
 object ExporterBuilder {
 
@@ -36,13 +50,13 @@ object ExporterBuilder {
   private def createExporter(details: EntityDetails): Exporter = {
     val exporter = new Exporter()
 
-    details.eori.map(eori => {
+    details.eori.foreach(eori => {
       val exporterIdentificationIDType = new ExporterIdentificationIDType
       exporterIdentificationIDType.setValue(eori)
       exporter.setID(exporterIdentificationIDType)
     })
 
-    details.address.map(address => {
+    details.address.foreach(address => {
       val exporterNameTextType = new ExporterNameTextType
       exporterNameTextType.setValue(address.fullName)
       exporter.setName(exporterNameTextType)

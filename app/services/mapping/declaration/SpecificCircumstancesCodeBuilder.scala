@@ -28,16 +28,14 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-class SpecificCircumstancesCodeBuilder @Inject()() extends ModifyingBuilder[Declaration]{
-  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
-    if(model.choice.equals(AllowedChoiceValues.StandardDec)){
-      model.locations
-        .officeOfExit
+class SpecificCircumstancesCodeBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
+    if (model.choice.equals(AllowedChoiceValues.StandardDec)) {
+      model.locations.officeOfExit
         .filter(_.circumstancesCode.contains(yes))
         .map(_ => createCircumstancesCode)
         .foreach(declaration.setSpecificCircumstancesCodeCode)
     }
-  }
 }
 
 object SpecificCircumstancesCodeBuilder {

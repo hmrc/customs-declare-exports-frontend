@@ -27,11 +27,10 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 
 class TotalPackageQuantityBuilder @Inject()() extends ModifyingBuilder[Declaration] {
 
-  def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
+  def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
     model.totalNumberOfItems
       .map(createGoodsItemQuantity)
       .foreach(declaration.setTotalPackageQuantity)
-  }
 
 }
 
