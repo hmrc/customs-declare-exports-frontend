@@ -115,9 +115,7 @@ class ItemSummaryViewSpec extends ViewSpec with ItemSummaryMessages {
         rows.get(1).getElementById("item_0--procedure_code") must containText("procedure-code1")
         rows.get(1).getElementById("item_0--item_type") must containText("item-type1")
         rows.get(1).getElementById("item_0--package_count") must containText("1")
-        rows.get(1).getElementById("item_0--change") must haveHref(
-          routes.ProcedureCodesController.displayPage("id1")
-        )
+        rows.get(1).getElementById("item_0--change") must haveHref(routes.ProcedureCodesController.displayPage("id1"))
         rows.get(1).getElementById("item_0--remove") must haveHref(routes.ItemsSummaryController.removeItem("id1"))
 
         rows.get(2) must haveId("item_1")
@@ -125,9 +123,7 @@ class ItemSummaryViewSpec extends ViewSpec with ItemSummaryMessages {
         rows.get(2).getElementById("item_1--procedure_code") must containText("procedure-code2")
         rows.get(2).getElementById("item_1--item_type") must containText("item-type2")
         rows.get(2).getElementById("item_1--package_count") must containText("2")
-        rows.get(2).getElementById("item_1--change") must haveHref(
-          routes.ProcedureCodesController.displayPage("id2")
-        )
+        rows.get(2).getElementById("item_1--change") must haveHref(routes.ProcedureCodesController.displayPage("id2"))
         rows.get(2).getElementById("item_1--remove") must haveHref(routes.ItemsSummaryController.removeItem("id2"))
       }
     }

@@ -147,7 +147,10 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
       "fully populated" in {
         // Given
         val model = aCacheModel(
-          withCarrierDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "United Kingdom")))
+          withCarrierDetails(
+            eori = Some("eori"),
+            address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))
+          )
         )
         val consignment = new Declaration.Consignment()
 
@@ -165,9 +168,7 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
 
       "empty address components" in {
         // Given
-        val model = aCacheModel(
-          withCarrierDetails(eori = Some("eori"), address = Some(Address("", "", "", "", "")))
-        )
+        val model = aCacheModel(withCarrierDetails(eori = Some("eori"), address = Some(Address("", "", "", "", ""))))
         val consignment = new Declaration.Consignment()
 
         // When

@@ -31,7 +31,8 @@ import services.mapping.goodsshipment.consignment.ConsignmentCarrierBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class DeclarationConsignmentBuilderSpec extends WordSpec with Matchers with MockitoSugar with BeforeAndAfterEach with ExportsCacheModelBuilder {
+class DeclarationConsignmentBuilderSpec
+    extends WordSpec with Matchers with MockitoSugar with BeforeAndAfterEach with ExportsCacheModelBuilder {
 
   private val freightBuilder = mock[FreightBuilder]
   private val iteneraryBuilder = mock[IteneraryBuilder]
@@ -39,9 +40,8 @@ class DeclarationConsignmentBuilderSpec extends WordSpec with Matchers with Mock
 
   private def builder = new DeclarationConsignmentBuilder(freightBuilder, iteneraryBuilder, consignmentCarrierBuilder)
 
-  override def afterEach(): Unit = {
-    reset(freightBuilder,  iteneraryBuilder, consignmentCarrierBuilder)
-  }
+  override def afterEach(): Unit =
+    reset(freightBuilder, iteneraryBuilder, consignmentCarrierBuilder)
 
   "DeclarationConsignmentBuilder" should {
     "correctly map to the WCO-DEC Consignment instance" when {
@@ -100,7 +100,7 @@ class DeclarationConsignmentBuilderSpec extends WordSpec with Matchers with Mock
         builder.buildThenAdd(model, declaration)
 
         // Then
-        declaration.getConsignment should not be(null)
+        declaration.getConsignment should not be (null)
         verify(freightBuilder).buildThenAdd(refEq(model), any[Declaration.Consignment])
         verify(iteneraryBuilder).buildThenAdd(refEq(model), any[Declaration.Consignment])
         verify(consignmentCarrierBuilder).buildThenAdd(refEq(model), any[Declaration.Consignment])

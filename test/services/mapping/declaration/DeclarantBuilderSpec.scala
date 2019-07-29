@@ -70,7 +70,12 @@ class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar with
       }
 
       "no eori" in {
-        val model = aCacheModel(withDeclarantDetails(eori = None, address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))))
+        val model = aCacheModel(
+          withDeclarantDetails(
+            eori = None,
+            address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))
+          )
+        )
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -88,7 +93,12 @@ class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar with
       }
 
       "unknown country" in {
-        val model = aCacheModel(withDeclarantDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "unknown"))))
+        val model = aCacheModel(
+          withDeclarantDetails(
+            eori = Some("eori"),
+            address = Some(Address("name", "line", "city", "postcode", "unknown"))
+          )
+        )
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -97,7 +107,12 @@ class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar with
       }
 
       "populated" in {
-        val model = aCacheModel(withDeclarantDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))))
+        val model = aCacheModel(
+          withDeclarantDetails(
+            eori = Some("eori"),
+            address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))
+          )
+        )
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)

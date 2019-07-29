@@ -56,7 +56,6 @@ class SpecificCircumstancesCodeBuilderSpec extends WordSpec with Matchers with E
 
     "build then add" when {
 
-
       "no office of exit" in {
         val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withoutOfficeOfExit())
         val declaration = new Declaration()
@@ -67,7 +66,8 @@ class SpecificCircumstancesCodeBuilderSpec extends WordSpec with Matchers with E
       }
 
       "invalid circumstance choice" in {
-        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(circumstancesCode = Some("")))
+        val model =
+          aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(circumstancesCode = Some("")))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -85,7 +85,8 @@ class SpecificCircumstancesCodeBuilderSpec extends WordSpec with Matchers with E
       }
 
       "valid circumstance choice" in {
-        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(circumstancesCode = Some("Yes")))
+        val model =
+          aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(circumstancesCode = Some("Yes")))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -95,7 +96,6 @@ class SpecificCircumstancesCodeBuilderSpec extends WordSpec with Matchers with E
     }
   }
 
-  private def builder = {
+  private def builder =
     new SpecificCircumstancesCodeBuilder()
-  }
 }
