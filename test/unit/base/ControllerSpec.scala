@@ -50,7 +50,7 @@ trait ControllerSpec
 
   val mockExportsMetrics = new ExportsMetrics(new MetricsImpl(new DefaultApplicationLifecycle(), minimalConfiguration))
 
-  val mockJourneyAction = new JourneyAction(mockExportsCacheService, stubMessagesControllerComponents())
+  val mockJourneyAction = JourneyAction(mockExportsCacheService, stubMessagesControllerComponents())
   val addActionUrlEncoded = (Add.toString, "")
   val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
