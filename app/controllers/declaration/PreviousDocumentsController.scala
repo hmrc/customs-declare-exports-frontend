@@ -42,12 +42,12 @@ class PreviousDocumentsController @Inject()(
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   previousDocumentsPage: previous_documents,
-  override val cacheService: ExportsCacheService
+  override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService.get(journeySessionId).map(_.flatMap(_.previousDocuments)).map {
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.previousDocuments)).map {
       case Some(data) => Ok(previousDocumentsPage(form(), data.documents))
       case _          => Ok(previousDocumentsPage(form(), Seq.empty))
     }
@@ -60,7 +60,7 @@ class PreviousDocumentsController @Inject()(
 
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
-    val cachedData = cacheService
+    val cachedData = exportsCacheService
       .get(journeySessionId)
       .map(_.flatMap(_.previousDocuments))
       .map(_.getOrElse(PreviousDocumentsData(Seq.empty)))
@@ -103,7 +103,7 @@ class PreviousDocumentsController @Inject()(
       _ <- getAndUpdateExportCacheModel(
         journeySessionId,
         model =>
-          cacheService
+          exportsCacheService
             .update(journeySessionId, model.copy(previousDocuments = Some(formData)))
       )
       _ <- customsCacheService.cache[PreviousDocumentsData](cacheId, formId, formData)

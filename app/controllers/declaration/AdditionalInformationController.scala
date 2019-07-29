@@ -42,13 +42,11 @@ class AdditionalInformationController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   legacyCustomsCacheService: CustomsCacheService,
-  exportsCacheService: ExportsCacheService,
+  override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   additionalInformationPage: additional_information
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends {
-  val cacheService = exportsCacheService
-} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   val elementLimit = 99
 

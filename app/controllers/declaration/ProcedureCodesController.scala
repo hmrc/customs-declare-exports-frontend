@@ -44,13 +44,11 @@ class ProcedureCodesController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   legacyCacheService: CustomsCacheService,
-  exportsCacheService: ExportsCacheService,
+  override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   procedureCodesPage: procedure_codes
 )(implicit ec: ExecutionContext)
-    extends {
-  val cacheService = exportsCacheService
-} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map {

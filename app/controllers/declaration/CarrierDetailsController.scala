@@ -39,14 +39,14 @@ class CarrierDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
-  override val cacheService: ExportsCacheService,
+  override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   carrierDetailsPage: carrier_details
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService.get(journeySessionId).map(_.flatMap(_.parties.carrierDetails)).map {
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.carrierDetails)).map {
       case Some(data) => Ok(carrierDetailsPage(CarrierDetails.form().fill(data)))
       case _          => Ok(carrierDetailsPage(CarrierDetails.form()))
     }
@@ -68,7 +68,7 @@ class CarrierDetailsController @Inject()(
     for {
       _ <- getAndUpdateExportCacheModel(sessionId, model => {
         val updatedParties = model.parties.copy(carrierDetails = Some(formData))
-        cacheService.update(sessionId, model.copy(parties = updatedParties))
+        exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
       })
       _ <- customsCacheService.cache[CarrierDetails](cacheId, CarrierDetails.id, formData)
     } yield Unit

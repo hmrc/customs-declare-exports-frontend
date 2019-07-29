@@ -44,14 +44,12 @@ class DocumentsProducedController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   legacyCustomsCacheService: CustomsCacheService,
-  exportsCacheService: ExportsCacheService,
+  override val exportsCacheService: ExportsCacheService,
   itemsCache: ItemsCachingService,
   mcc: MessagesControllerComponents,
   documentProducedPage: documents_produced
 )(implicit ec: ExecutionContext)
-    extends {
-  val cacheService = exportsCacheService
-} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.getItemByIdAndSession(itemId, journeySessionId) map (_.flatMap(_.documentsProducedData)

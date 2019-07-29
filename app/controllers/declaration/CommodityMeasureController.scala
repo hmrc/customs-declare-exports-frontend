@@ -38,13 +38,11 @@ class CommodityMeasureController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   legacyCacheService: CustomsCacheService,
-  exportsCacheService: ExportsCacheService,
+  override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   goodsMeasurePage: goods_measure
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends {
-  val cacheService = exportsCacheService
-} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map { item =>

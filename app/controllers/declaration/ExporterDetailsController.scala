@@ -36,13 +36,11 @@ class ExporterDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
-  exportsCacheService: ExportsCacheService,
+  override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   exporterDetailsPage: exporter_details
 )(implicit ec: ExecutionContext)
-    extends {
-  val cacheService = exportsCacheService
-} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.exporterDetails)).map {
