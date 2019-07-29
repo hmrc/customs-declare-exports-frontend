@@ -42,15 +42,13 @@ class GoodsShipmentBuilderIntegrationSpec
 
       val cacheModel = aCacheModel(
         withNatureOfTransaction(correctNatureOfTransaction.natureType),
-        withConsigneeDetails(Some(correctConsigneeDetailsFull)),
-        withDeclarationAdditionalActorsData(
-          Some(DeclarationAdditionalActorsData(Seq(correctAdditionalActors1, correctAdditionalActors2)))
-        ),
-        withDestinationCountries(Some(correctDestinationCountries)),
-        withGoodsLocation(Some(correctGoodsLocation)),
-        withWarehouseIdentification(Some(correctWarehouseIdentification)),
-        withConsignmentReferences(Some(correctConsignmentReferences)),
-        withPreviousDocumentsData(Some(PreviousDocumentsData(Seq(correctPreviousDocument))))
+        withConsigneeDetails(correctConsigneeDetailsFull),
+        withDeclarationAdditionalActorsData(DeclarationAdditionalActorsData(Seq(correctAdditionalActors1, correctAdditionalActors2))),
+        withDestinationCountries(correctDestinationCountries),
+        withGoodsLocation(correctGoodsLocation),
+        withWarehouseIdentification(correctWarehouseIdentification),
+        withConsignmentReferences(correctConsignmentReferences),
+        withPreviousDocumentsData(PreviousDocumentsData(Seq(correctPreviousDocument)))
       )
 
       val declaration = new Declaration()

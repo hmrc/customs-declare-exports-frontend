@@ -28,6 +28,7 @@ import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
 import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, Locations, Parties}
 
+//noinspection ScalaStyle
 trait ExportsCacheModelBuilder {
 
   protected val DUCR = "5GB123456789000-123ABC456DEFIIIII"
@@ -45,7 +46,7 @@ trait ExportsCacheModelBuilder {
 
   private type CacheModifier = ExportsCacheModel => ExportsCacheModel
 
-  def aCacheModel(modifiers: (CacheModifier)*): ExportsCacheModel =
+  def aCacheModel(modifiers: CacheModifier*): ExportsCacheModel =
     modifiers.foldLeft(modelWithDefaults)((current, modifier) => modifier(current))
 
   // ************************************************* Builders ********************************************************
@@ -61,27 +62,14 @@ trait ExportsCacheModelBuilder {
   ): CacheModifier =
     _.copy(totalNumberOfItems = Some(TotalNumberOfItems(totalAmountInvoiced, exchangeRate, totalPackage)))
 
-  def withConsignmentReference(ducr: Option[String] = Some(DUCR), lrn: String = LRN): CacheModifier =
-    _.copy(consignmentReferences = Some(ConsignmentReferences(ducr.map(Ducr(_)), lrn)))
-
   def withAdditionalDeclarationType(decType: String = AllowedAdditionalDeclarationTypes.Standard): CacheModifier =
     _.copy(additionalDeclarationType = Some(AdditionalDeclarationType(decType)))
 
   def withDispatchLocation(location: String = "GB"): CacheModifier =
     _.copy(dispatchLocation = Some(DispatchLocation(location)))
 
-  def withGoodsLocation(goodsLocation: Option[GoodsLocation]): CacheModifier = { m =>
-    {
-      val location: Locations = m.locations.copy(goodsLocation = goodsLocation)
-      m.copy(locations = location)
-    }
-  }
-
-  def withDestinationCountries(destinationCountries: Option[DestinationCountries]): CacheModifier = { m =>
-    {
-      val location: Locations = m.locations.copy(destinationCountries = destinationCountries)
-      m.copy(locations = location)
-    }
+  def withGoodsLocation(goodsLocation: GoodsLocation): CacheModifier = { m =>
+    m.copy(locations = m.locations.copy(goodsLocation = Some(goodsLocation)))
   }
 
   def withItem(item: ExportItem): CacheModifier =
@@ -107,7 +95,7 @@ trait ExportsCacheModelBuilder {
   def withoutDeclarationHolders(): CacheModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = None))
 
-  def withDeclarationHolder(
+  def withDeclarationHolders(
     authorisationTypeCode: Option[String] = None,
     eori: Option[String] = None
   ): CacheModifier = { cache =>
@@ -131,25 +119,29 @@ trait ExportsCacheModelBuilder {
         BorderTransport(borderModeOfTransportCode, meansOfTransportOnDepartureType, meansOfTransportOnDepartureIDNumber)
       )
     )
-  def withConsignmentReferences(consignmentReferences: Option[ConsignmentReferences]): CacheModifier =
-    _.copy(consignmentReferences = consignmentReferences)
 
-  def withLocations(locations: Locations): CacheModifier =
-    _.copy(locations = locations)
+  def withConsignmentReferences(ducr: Option[String] = Some(DUCR), lrn: String = LRN): CacheModifier =
+    withConsignmentReferences(ConsignmentReferences(ducr.map(Ducr(_)), lrn))
 
-  def withParties(parties: Parties): CacheModifier =
-    _.copy(parties = parties)
+  def withConsignmentReferences(consignmentReferences: ConsignmentReferences): CacheModifier =
+    _.copy(consignmentReferences = Some(consignmentReferences))
 
-  def withConsigneeDetails(consigneeDetails: Option[ConsigneeDetails]): CacheModifier =
-    cache => cache.copy(parties = cache.parties.copy(consigneeDetails = consigneeDetails))
+  def withoutConsignmentReference(): CacheModifier = _.copy(consignmentReferences = None)
+
+  def withConsigneeDetails(consigneeDetails: ConsigneeDetails): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(consigneeDetails = Some(consigneeDetails)))
+
+  def withoutConsigneeDetails(): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(consigneeDetails = None))
 
   def withDeclarationAdditionalActorsData(
-    declarationAdditionalActorsData: Option[DeclarationAdditionalActorsData]
+    declarationAdditionalActorsData: DeclarationAdditionalActorsData
   ): CacheModifier =
-    cache => cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = declarationAdditionalActorsData))
+    cache =>
+      cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = Some(declarationAdditionalActorsData)))
 
-  def withPreviousDocumentsData(previousDocumentsData: Option[PreviousDocumentsData]): CacheModifier =
-    _.copy(previousDocuments = previousDocumentsData)
+  def withPreviousDocumentsData(previousDocumentsData: PreviousDocumentsData): CacheModifier =
+    _.copy(previousDocuments = Some(previousDocumentsData))
 
   def withNatureOfTransaction(natureType: String): CacheModifier =
     _.copy(natureOfTransaction = Some(NatureOfTransaction(natureType)))
@@ -183,12 +175,11 @@ trait ExportsCacheModelBuilder {
     countriesOfRouting: Seq[String] = Seq.empty,
     countryOfDestination: String = "US"
   ): CacheModifier =
-    cache =>
-      cache.copy(
-        locations = cache.locations.copy(
-          destinationCountries = Some(DestinationCountries(countryOfDispatch, countriesOfRouting, countryOfDestination))
-        )
-    )
+    withDestinationCountries(DestinationCountries(countryOfDispatch, countriesOfRouting, countryOfDestination))
+
+  def withDestinationCountries(destinationCountries: DestinationCountries): CacheModifier = { m =>
+    m.copy(locations = m.locations.copy(destinationCountries = Some(destinationCountries)))
+  }
 
   def withoutCarrierDetails(): CacheModifier = cache => cache.copy(parties = cache.parties.copy(carrierDetails = None))
 
@@ -199,16 +190,8 @@ trait ExportsCacheModelBuilder {
   def withoutWarehouseIdentification(): CacheModifier =
     cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = None))
 
-  def withWarehouseIdentification(warehouseIdentification: Option[WarehouseIdentification]): CacheModifier =
-    warehouseIdentification
-      .fold(withWarehouseIdentification(None, None, None, None)) { warehouseIdentification =>
-        withWarehouseIdentification(
-          warehouseIdentification.supervisingCustomsOffice,
-          warehouseIdentification.identificationType,
-          warehouseIdentification.identificationNumber,
-          warehouseIdentification.inlandModeOfTransportCode
-        )
-      }
+  def withWarehouseIdentification(warehouseIdentification: WarehouseIdentification): CacheModifier =
+    cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = Some(warehouseIdentification)))
 
   def withWarehouseIdentification(
     supervisingCustomsOffice: Option[String] = None,
@@ -216,18 +199,13 @@ trait ExportsCacheModelBuilder {
     identificationNumber: Option[String] = None,
     inlandModeOfTransportCode: Option[String] = None
   ): CacheModifier =
-    cache =>
-      cache.copy(
-        locations = cache.locations.copy(
-          warehouseIdentification = Some(
-            WarehouseIdentification(
-              supervisingCustomsOffice,
-              identificationType,
-              identificationNumber,
-              inlandModeOfTransportCode
-            )
-          )
-        )
+    withWarehouseIdentification(
+      WarehouseIdentification(
+        supervisingCustomsOffice,
+        identificationType,
+        identificationNumber,
+        inlandModeOfTransportCode
+      )
     )
 
   def withoutOfficeOfExit(): CacheModifier = cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))
