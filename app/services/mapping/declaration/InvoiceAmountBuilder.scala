@@ -25,7 +25,7 @@ import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2._
 import InvoiceAmountBuilder.createInvoiceAmount
 
-class InvoiceAmountBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+class InvoiceAmountBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
   override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
     model.totalNumberOfItems

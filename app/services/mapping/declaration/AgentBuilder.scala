@@ -27,7 +27,7 @@ import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Agent
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-class AgentBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+class AgentBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
   override def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
     exportsCacheModel.parties.representativeDetails.foreach { representativeDetails =>

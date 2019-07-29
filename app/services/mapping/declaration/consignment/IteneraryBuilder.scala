@@ -28,7 +28,7 @@ import wco.datamodel.wco.declaration_ds.dms._2.ItineraryRoutingCountryCodeType
 
 import scala.collection.JavaConverters._
 
-class IteneraryBuilder @Inject()() extends ModifyingBuilder[Declaration.Consignment] {
+class IteneraryBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration.Consignment] {
 
   def buildThenAdd(model: ExportsCacheModel, consignment: Declaration.Consignment): Unit = {
     val itineraries = model.locations.destinationCountries.map {

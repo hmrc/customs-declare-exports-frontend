@@ -16,6 +16,8 @@
 
 package services.mapping.governmentagencygoodsitem
 import forms.declaration.AdditionalInformation
+import services.cache.ExportItem
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.{
   AdditionalInformation => WCOAdditionalInformation
 }
@@ -28,13 +30,25 @@ import scala.collection.JavaConverters._
 
 object AdditionalInformationBuilder {
 
+  def buildThenAdd(
+    exportItem: ExportItem,
+    wcoGovernmentAgencyGoodsItem: GoodsShipment.GovernmentAgencyGoodsItem
+  ): Unit =
+    exportItem.additionalInformation.foreach { additionalInformationData =>
+      {
+        additionalInformationData.items.foreach { additionalInformation =>
+          wcoGovernmentAgencyGoodsItem.getAdditionalInformation.add(buildAdditionalInformation(additionalInformation))
+        }
+      }
+    }
+
   def build(additionalInformations: Seq[AdditionalInformation]): java.util.List[WCOAdditionalInformation] =
     additionalInformations
       .map(buildAdditionalInformation)
       .toList
       .asJava
 
-  def buildAdditionalInformation(info: AdditionalInformation): WCOAdditionalInformation = {
+  private def buildAdditionalInformation(info: AdditionalInformation): WCOAdditionalInformation = {
     val wcoAdditionalInformation = new WCOAdditionalInformation
 
     val additionalInformationStatementCodeType = new AdditionalInformationStatementCodeType

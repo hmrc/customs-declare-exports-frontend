@@ -29,7 +29,7 @@ class DeclarationConsignmentBuilder @Inject()(
   freightBuilder: FreightBuilder,
   iteneraryBuilder: IteneraryBuilder,
   consignmentCarrierBuilder: ConsignmentCarrierBuilder
-) extends ModifyingBuilder[Declaration] {
+) extends ModifyingBuilder[ExportsCacheModel, Declaration] {
   override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
     if (model.choice.equals(AllowedChoiceValues.StandardDec)) {
       val consignment = new Declaration.Consignment()

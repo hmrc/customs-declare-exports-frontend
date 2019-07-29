@@ -16,10 +16,21 @@
 
 package services.mapping.goodsshipment
 import forms.declaration.{ConsigneeDetails, EntityDetails}
+import javax.inject.Inject
 import services.Countries.allCountries
+import services.cache.ExportItem
+import services.mapping.ModifyingBuilder
+import services.mapping.goodsshipment.ConsigneeBuilder.createConsignee
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2._
+
+class ConsigneeBuilder @Inject()() extends ModifyingBuilder[ConsigneeDetails, GoodsShipment] {
+
+  override def buildThenAdd(consigneeDetails: ConsigneeDetails, goodsShipment: GoodsShipment) =
+    goodsShipment.setConsignee(createConsignee(consigneeDetails.details))
+
+}
 
 object ConsigneeBuilder {
 
@@ -29,11 +40,6 @@ object ConsigneeBuilder {
       .filter(isDefined)
       .map(consigneeDetails => createConsignee(consigneeDetails.details))
       .orNull
-
-  def buildThenAdd(maybeConsigneeDetails: Option[ConsigneeDetails], goodsShipment: GoodsShipment) =
-    maybeConsigneeDetails.foreach(consigneeDetails => {
-      goodsShipment.setConsignee(createConsignee(consigneeDetails.details))
-    })
 
   private def isDefined(consigneeDetails: ConsigneeDetails): Boolean =
     consigneeDetails.details.eori.getOrElse("").nonEmpty ||

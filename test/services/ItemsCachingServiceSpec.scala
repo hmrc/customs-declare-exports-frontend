@@ -23,7 +23,7 @@ import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -33,6 +33,9 @@ import scala.concurrent.Future
 class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachingData with OptionValues {
 
   val itemsCachingService = new ItemsCachingService(mockCustomsCacheService)(appConfig)
+
+  override def afterEach(): Unit =
+    reset(mockCustomsCacheService)
 
   "ItemsCachingService" should {
 
@@ -105,7 +108,8 @@ class ItemsCachingServiceSpec extends CustomExportsBaseSpec with GoodsItemCachin
               expected.documentIdentifierAndPart.value.documentPart.value
           )
           actual.lpcoExemptionCode must equal(expected.documentStatus)
-          actual.name must equal(expected.documentStatusReason)
+          actual.name mustBe expected.documentStatusReason
+
           actual.submitter.value.name.value must equal(expected.issuingAuthorityName.value)
           actual.effectiveDateTime.value.dateTimeString.formatCode must equal("102")
           actual.effectiveDateTime.value.dateTimeString.value must equal(expected.dateOfValidity.value.to102Format)

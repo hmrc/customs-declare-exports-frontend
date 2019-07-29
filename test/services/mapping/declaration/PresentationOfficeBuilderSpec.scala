@@ -52,7 +52,8 @@ class PresentationOfficeBuilderSpec extends WordSpec with Matchers with ExportsC
       }
 
       "empty presentation office id" in {
-        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(presentationOfficeId = None))
+        val model =
+          aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(presentationOfficeId = None))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -70,7 +71,8 @@ class PresentationOfficeBuilderSpec extends WordSpec with Matchers with ExportsC
       }
 
       "populated" in {
-        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(presentationOfficeId = Some("id")))
+        val model =
+          aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(presentationOfficeId = Some("id")))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)

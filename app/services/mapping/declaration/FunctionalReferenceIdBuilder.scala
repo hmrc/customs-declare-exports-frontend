@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationFunctionalReferenceIDType
 
-class FunctionalReferenceIdBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+class FunctionalReferenceIdBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
   override def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration) {
     exportsCacheModel.consignmentReferences.foreach(references => {

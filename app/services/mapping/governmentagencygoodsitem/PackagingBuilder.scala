@@ -15,7 +15,10 @@
  */
 
 package services.mapping.governmentagencygoodsitem
+import forms.declaration.PackageInformation
 import models.declaration.governmentagencygoodsitem
+import services.cache.ExportItem
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.Packaging
 import wco.datamodel.wco.declaration_ds.dms._2.{
   PackagingMarksNumbersIDType,
@@ -25,23 +28,47 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
 
 import scala.collection.JavaConverters._
 object PackagingBuilder {
+  def createPackaging(packageInfo: PackageInformation, index: Int): governmentagencygoodsitem.Packaging =
+    governmentagencygoodsitem.Packaging(
+      sequenceNumeric = Some(index),
+      typeCode = packageInfo.typesOfPackages,
+      quantity = packageInfo.numberOfPackages,
+      marksNumbersId = packageInfo.shippingMarks
+    )
+
+  def buildThenAdd(
+    exportItem: ExportItem,
+    wcoGovernmentAgencyGoodsItem: GoodsShipment.GovernmentAgencyGoodsItem
+  ): Unit =
+    exportItem.packageInformation.zipWithIndex.foreach {
+      case (packing, index) => {
+        wcoGovernmentAgencyGoodsItem.getPackaging.add(
+          createWcoPackaging(Some(index), packing.typesOfPackages, packing.numberOfPackages, packing.shippingMarks)
+        )
+      }
+    }
 
   def build(packagings: Seq[models.declaration.governmentagencygoodsitem.Packaging]): java.util.List[Packaging] =
     packagings
-      .map(createWcoPackaging)
+      .map(p => createWcoPackaging(p.sequenceNumeric, p.typeCode, p.quantity, p.marksNumbersId))
       .toList
       .asJava
 
-  def createWcoPackaging(packaging: governmentagencygoodsitem.Packaging): Packaging = {
+  private def createWcoPackaging(
+    sequenceNumeric: Option[Int],
+    typeCode: Option[String],
+    quantity: Option[Int],
+    marksNumbersId: Option[String]
+  ): Packaging = {
     val wcoPackaging = new Packaging
 
-    packaging.typeCode.foreach { typeCode =>
+    typeCode.foreach { typeCode =>
       val packagingTypeCodeType = new PackagingTypeCodeType
       packagingTypeCodeType.setValue(typeCode)
       wcoPackaging.setTypeCode(packagingTypeCodeType)
     }
 
-    packaging.quantity.foreach { quantity =>
+    quantity.foreach { quantity =>
       val packagingQuantityQuantityType = new PackagingQuantityQuantityType
       //TODO noticed here that quantity type in old scala wco is not captured.. no cannot set :-
       // packagingQuantityQuantityType.setUnitCode(????)
@@ -49,16 +76,17 @@ object PackagingBuilder {
       wcoPackaging.setQuantityQuantity(packagingQuantityQuantityType)
     }
 
-    packaging.marksNumbersId.foreach { markNumber =>
+    marksNumbersId.foreach { markNumber =>
       val packagingMarksNumbersIDType = new PackagingMarksNumbersIDType
       packagingMarksNumbersIDType.setValue(markNumber)
       wcoPackaging.setMarksNumbersID(packagingMarksNumbersIDType)
     }
 
-    packaging.sequenceNumeric.foreach(
+    sequenceNumeric.foreach(
       numericSequence => wcoPackaging.setSequenceNumeric(new java.math.BigDecimal(numericSequence))
     )
 
     wcoPackaging
   }
+
 }

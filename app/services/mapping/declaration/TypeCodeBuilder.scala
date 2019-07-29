@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationTypeCodeType
 
-class TypeCodeBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+class TypeCodeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
   override def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
     exportsCacheModel.additionalDeclarationType.foreach(additionalDeclarationType => {

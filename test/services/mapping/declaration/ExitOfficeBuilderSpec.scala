@@ -70,7 +70,8 @@ class ExitOfficeBuilderSpec extends WordSpec with Matchers with ExportsCacheMode
       }
 
       "supplementary journey with populated data" in {
-        val model = aCacheModel(withChoice(AllowedChoiceValues.SupplementaryDec), withOfficeOfExit(officeId = "office-id"))
+        val model =
+          aCacheModel(withChoice(AllowedChoiceValues.SupplementaryDec), withOfficeOfExit(officeId = "office-id"))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)

@@ -24,20 +24,20 @@ class AdditionalDocumentsBuilderSpec extends WordSpec with Matchers with Governm
     "map correctly when values are present" in {
 
       val amount = Amount(Some("GBP"), Some(BigDecimal(100)))
-      val measure = Measure(Some("kg"), Some(BigDecimal(10)))
+      val measure = Measure(Some("KGM"), Some(BigDecimal(10)))
       val writeOff = WriteOff(Some(measure), Some(amount))
       val submitter = GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(Some("issuingAuthorityName"), Some("role"))
       val dateTimeString = DateTimeString("102", "20170304")
       val dateTimeElement = DateTimeElement(dateTimeString)
       val additionalDocument = GovernmentAgencyGoodsItemAdditionalDocument(
-        Some("C"),
-        Some(dateTimeElement),
-        Some("123"),
-        Some("PENDINGReason"),
-        Some("501"),
-        Some("PENDING"),
-        Some(submitter),
-        Some(writeOff)
+        categoryCode = Some("C"),
+        effectiveDateTime = Some(dateTimeElement),
+        id = Some("123"),
+        name = Some("Reason"),
+        typeCode = Some("501"),
+        lpcoExemptionCode = Some("PENDING"),
+        submitter = Some(submitter),
+        writeOff = Some(writeOff)
       )
 
       val mappedDocuments = AdditionalDocumentsBuilder.build(Seq(additionalDocument))
@@ -45,7 +45,7 @@ class AdditionalDocumentsBuilderSpec extends WordSpec with Matchers with Governm
       mappedDocuments.get(0).getTypeCode.getValue shouldBe documentAndAdditionalDocumentTypeCode.substring(1)
       mappedDocuments.get(0).getID.getValue should be("123")
       mappedDocuments.get(0).getLPCOExemptionCode.getValue shouldBe documentStatus
-      mappedDocuments.get(0).getName.getValue shouldBe documentStatus + documentStatusReason
+      mappedDocuments.get(0).getName.getValue shouldBe documentStatusReason
       mappedDocuments.get(0).getSubmitter.getName.getValue shouldBe issusingAuthorityName
 
       val writeoff = mappedDocuments.get(0).getWriteOff

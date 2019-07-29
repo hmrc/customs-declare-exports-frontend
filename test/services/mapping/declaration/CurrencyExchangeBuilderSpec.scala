@@ -39,9 +39,7 @@ class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCac
     "build then add" when {
       "no Total Number Of Items" in {
         // Given
-        val model = aCacheModel(
-          withoutTotalNumberOfItems()
-        )
+        val model = aCacheModel(withoutTotalNumberOfItems())
         val declaration = new Declaration()
         // When
         builder.buildThenAdd(model, declaration)
@@ -51,9 +49,7 @@ class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCac
 
       "exchange rate is empty" in {
         // Given
-        val model = aCacheModel(
-          withTotalNumberOfItems(exchangeRate = None)
-        )
+        val model = aCacheModel(withTotalNumberOfItems(exchangeRate = None))
         val declaration = new Declaration()
         // When
         builder.buildThenAdd(model, declaration)
@@ -63,9 +59,7 @@ class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCac
 
       "exchange rate is populated" in {
         // Given
-        val model = aCacheModel(
-          withTotalNumberOfItems(exchangeRate = Some("123"))
-        )
+        val model = aCacheModel(withTotalNumberOfItems(exchangeRate = Some("123")))
         val declaration = new Declaration()
         // When
         builder.buildThenAdd(model, declaration)

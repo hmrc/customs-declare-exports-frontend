@@ -19,15 +19,30 @@ package services.mapping.governmentagencygoodsitem
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import services.ExportsItemsCacheIds
+import services.cache.ExportItem
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
   GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
 }
-import wco.datamodel.wco.declaration_ds.dms._2.GovernmentAgencyGoodsItemStatisticalValueAmountType
 
 import scala.collection.JavaConverters._
 
 object GovernmentAgencyGoodsItemBuilder {
+  def buildThenAdd(exportItem: ExportItem, goodsShipment: Declaration.GoodsShipment): Unit = {
+    val wcoGovernmentAgencyGoodsItem = new WCOGovernmentAgencyGoodsItem
+
+    StatisticalValueAmountBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    wcoGovernmentAgencyGoodsItem.setSequenceNumeric(BigDecimal(exportItem.sequenceId).bigDecimal)
+
+    PackagingBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    GovernmentProcedureBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    AdditionalInformationBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    AdditionalDocumentsBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+
+    goodsShipment.getGovernmentAgencyGoodsItem.add(wcoGovernmentAgencyGoodsItem)
+
+  }
 
   def build(implicit cacheMap: CacheMap): java.util.List[WCOGovernmentAgencyGoodsItem] =
     cacheMap
@@ -44,18 +59,7 @@ object GovernmentAgencyGoodsItemBuilder {
 
     val wcoGovernmentAgencyGoodsItem = new WCOGovernmentAgencyGoodsItem
 
-    governmentAgencyGoodsItem.statisticalValueAmount.foreach { statisticalAmount =>
-      val statisticalValueAmountType = new GovernmentAgencyGoodsItemStatisticalValueAmountType
-      statisticalAmount.currencyId.foreach { value =>
-        statisticalValueAmountType.setCurrencyID(value)
-      }
-
-      statisticalAmount.value.foreach { value =>
-        statisticalValueAmountType.setValue(new java.math.BigDecimal(value.bigDecimal.doubleValue()))
-      }
-
-      wcoGovernmentAgencyGoodsItem.setStatisticalValueAmount(statisticalValueAmountType)
-    }
+    StatisticalValueAmountBuilder.buildThenAdd(governmentAgencyGoodsItem, wcoGovernmentAgencyGoodsItem)
 
     wcoGovernmentAgencyGoodsItem.setSequenceNumeric(BigDecimal(governmentAgencyGoodsItem.sequenceNumeric).bigDecimal)
 
@@ -90,5 +94,5 @@ object GovernmentAgencyGoodsItemBuilder {
     wcoGovernmentAgencyGoodsItem.setCommodity(CommodityBuilder.build(governmentAgencyGoodsItem.commodity))
     wcoGovernmentAgencyGoodsItem
   }
-  //scalastyle:on method.length
+
 }

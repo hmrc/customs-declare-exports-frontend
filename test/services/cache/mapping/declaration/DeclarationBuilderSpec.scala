@@ -24,6 +24,7 @@ import services.cache.ExportsCacheModelBuilder
 import services.mapping.AuthorisationHoldersBuilder
 import services.mapping.declaration._
 import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
+import services.mapping.goodsshipment.GoodsShipmentBuilder
 
 class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
 
@@ -44,6 +45,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
   private val declarationConsignmentBuilder = mock[DeclarationConsignmentBuilder]
   private val authorisationHoldersBuilder = mock[AuthorisationHoldersBuilder]
   private val currencyExchangeBuilder = mock[CurrencyExchangeBuilder]
+  private val goodsShipmentBuilder = mock[GoodsShipmentBuilder]
 
   private def builder =
     new DeclarationBuilder(
@@ -63,7 +65,8 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
       totalPackageQuantityBuilder,
       declarationConsignmentBuilder,
       authorisationHoldersBuilder,
-      currencyExchangeBuilder
+      currencyExchangeBuilder,
+      goodsShipmentBuilder
     )
 
   "DeclarationBuilder" should {
@@ -89,6 +92,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
       verify(currencyExchangeBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(authorisationHoldersBuilder).buildThenAdd(refEq(model), refEq(declaration))
       verify(currencyExchangeBuilder).buildThenAdd(refEq(model), refEq(declaration))
+      verify(goodsShipmentBuilder).buildThenAdd(refEq(model), refEq(declaration))
     }
   }
 

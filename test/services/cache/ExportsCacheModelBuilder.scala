@@ -26,7 +26,7 @@ import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration._
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
-import models.declaration.DeclarationHoldersData
+import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, Locations, Parties}
 
 trait ExportsCacheModelBuilder {
 
@@ -70,8 +70,22 @@ trait ExportsCacheModelBuilder {
   def withDispatchLocation(location: String = "GB"): CacheModifier =
     _.copy(dispatchLocation = Some(DispatchLocation(location)))
 
-  def withItem(id: String = uuid): CacheModifier =
-    cache => cache.copy(items = cache.items + ExportItem(id = id))
+  def withGoodsLocation(goodsLocation: Option[GoodsLocation]): CacheModifier = { m =>
+    {
+      val location: Locations = m.locations.copy(goodsLocation = goodsLocation)
+      m.copy(locations = location)
+    }
+  }
+
+  def withDestinationCountries(destinationCountries: Option[DestinationCountries]): CacheModifier = { m =>
+    {
+      val location: Locations = m.locations.copy(destinationCountries = destinationCountries)
+      m.copy(locations = location)
+    }
+  }
+
+  def withItem(item: ExportItem): CacheModifier =
+    m => m.copy(items = m.items + item)
 
   def withItems(count: Int): CacheModifier =
     cache => cache.copy(items = cache.items ++ (1 to count).map(_ => ExportItem(id = uuid)).toSet)
@@ -117,6 +131,28 @@ trait ExportsCacheModelBuilder {
         BorderTransport(borderModeOfTransportCode, meansOfTransportOnDepartureType, meansOfTransportOnDepartureIDNumber)
       )
     )
+  def withConsignmentReferences(consignmentReferences: Option[ConsignmentReferences]): CacheModifier =
+    _.copy(consignmentReferences = consignmentReferences)
+
+  def withLocations(locations: Locations): CacheModifier =
+    _.copy(locations = locations)
+
+  def withParties(parties: Parties): CacheModifier =
+    _.copy(parties = parties)
+
+  def withConsigneeDetails(consigneeDetails: Option[ConsigneeDetails]): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(consigneeDetails = consigneeDetails))
+
+  def withDeclarationAdditionalActorsData(
+    declarationAdditionalActorsData: Option[DeclarationAdditionalActorsData]
+  ): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = declarationAdditionalActorsData))
+
+  def withPreviousDocumentsData(previousDocumentsData: Option[PreviousDocumentsData]): CacheModifier =
+    _.copy(previousDocuments = previousDocumentsData)
+
+  def withNatureOfTransaction(natureType: String): CacheModifier =
+    _.copy(natureOfTransaction = Some(NatureOfTransaction(natureType)))
 
   def withoutTransportDetails(): CacheModifier = _.copy(transportDetails = None)
 
@@ -163,6 +199,17 @@ trait ExportsCacheModelBuilder {
   def withoutWarehouseIdentification(): CacheModifier =
     cache => cache.copy(locations = cache.locations.copy(warehouseIdentification = None))
 
+  def withWarehouseIdentification(warehouseIdentification: Option[WarehouseIdentification]): CacheModifier =
+    warehouseIdentification
+      .fold(withWarehouseIdentification(None, None, None, None)) { warehouseIdentification =>
+        withWarehouseIdentification(
+          warehouseIdentification.supervisingCustomsOffice,
+          warehouseIdentification.identificationType,
+          warehouseIdentification.identificationNumber,
+          warehouseIdentification.inlandModeOfTransportCode
+        )
+      }
+
   def withWarehouseIdentification(
     supervisingCustomsOffice: Option[String] = None,
     identificationType: Option[String] = None,
@@ -186,9 +233,9 @@ trait ExportsCacheModelBuilder {
   def withoutOfficeOfExit(): CacheModifier = cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))
 
   def withOfficeOfExit(
-                        officeId: String = "",
-                        presentationOfficeId: Option[String] = None,
-                        circumstancesCode: Option[String] = None
+    officeId: String = "",
+    presentationOfficeId: Option[String] = None,
+    circumstancesCode: Option[String] = None
   ): CacheModifier =
     cache =>
       cache.copy(

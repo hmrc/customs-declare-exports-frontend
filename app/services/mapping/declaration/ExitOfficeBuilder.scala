@@ -31,7 +31,7 @@ import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.ExitOffice
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-class ExitOfficeBuilder @Inject()() extends ModifyingBuilder[Declaration] {
+class ExitOfficeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
   override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = model.choice match {
     case AllowedChoiceValues.StandardDec =>
       model.locations.officeOfExit

@@ -27,7 +27,7 @@ import models.declaration.Parties
 trait CacheTestData {
 
   val ducr = "5GB123456789000-123ABC456DEFIIIII"
-  val LRN = "FG7676767889"
+  val cachedLRN = "FG7676767889"
   val dispatchLocation = "GB"
 
   val itemIdService = new ExportItemIdGeneratorService()

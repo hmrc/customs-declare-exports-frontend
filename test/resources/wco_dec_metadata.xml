@@ -102,7 +102,7 @@
                         <ns2:DateTimeString formatCode="102">20170101</ns2:DateTimeString>
                     </ns3:EffectiveDateTime>
                     <ns3:ID>SYSUYSU12324554</ns3:ID>
-                    <ns3:Name>PENDINGReason</ns3:Name>
+                    <ns3:Name>Reason</ns3:Name>
                     <ns3:TypeCode>501</ns3:TypeCode>
                     <ns3:LPCOExemptionCode>PND</ns3:LPCOExemptionCode>
                     <ns3:Submitter>

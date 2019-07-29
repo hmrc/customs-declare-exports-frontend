@@ -16,7 +16,18 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import models.declaration.governmentagencygoodsitem.{GovernmentAgencyGoodsItemAdditionalDocument, WriteOff}
+import forms.declaration.additionaldocuments.DocumentsProduced
+import models.declaration.governmentagencygoodsitem.{
+  DateTimeElement,
+  DateTimeString,
+  GovernmentAgencyGoodsItemAdditionalDocument,
+  GovernmentAgencyGoodsItemAdditionalDocumentSubmitter,
+  Measure,
+  WriteOff
+}
+import services.ExportsItemsCacheIds.dateTimeCode
+import services.cache.ExportItem
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument.{
   Submitter,
@@ -35,12 +46,37 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
 import scala.collection.JavaConverters._
 
 object AdditionalDocumentsBuilder {
+  def buildThenAdd(
+    exportItem: ExportItem,
+    wcoGovernmentAgencyGoodsItem: GoodsShipment.GovernmentAgencyGoodsItem
+  ): Unit =
+    exportItem.documentsProducedData.foreach { documentsProduced =>
+      documentsProduced.documents.map(createGoodsItemAdditionalDocument).foreach { goodsItemAdditionalDocument =>
+        wcoGovernmentAgencyGoodsItem.getAdditionalDocument.add(createAdditionalDocument(goodsItemAdditionalDocument))
+      }
+    }
 
   def build(procedureCodes: Seq[GovernmentAgencyGoodsItemAdditionalDocument]): java.util.List[AdditionalDocument] =
     procedureCodes
       .map(document => createAdditionalDocument(document))
       .toList
       .asJava
+
+  //TODO get rid of the interim model GovernmentAgencyGoodsItemAdditionalDocument and map to wco dec directly
+
+  def createGoodsItemAdditionalDocument(doc: DocumentsProduced) =
+    GovernmentAgencyGoodsItemAdditionalDocument(
+      categoryCode = doc.documentTypeCode.map(_.substring(0, 1)),
+      typeCode = doc.documentTypeCode.map(_.substring(1)),
+      id = createAdditionalDocumentId(doc),
+      lpcoExemptionCode = doc.documentStatus,
+      name = doc.documentStatusReason,
+      submitter =
+        doc.issuingAuthorityName.map(name => GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(name = Some(name))),
+      effectiveDateTime = doc.dateOfValidity
+        .map(date => DateTimeElement(DateTimeString(formatCode = dateTimeCode, value = date.to102Format))),
+      writeOff = createAdditionalDocumentWriteOff(doc)
+    )
 
   private def createAdditionalDocument(doc: GovernmentAgencyGoodsItemAdditionalDocument): AdditionalDocument = {
     val additionalDocument = new AdditionalDocument
@@ -127,4 +163,19 @@ object AdditionalDocumentsBuilder {
 
     submitter
   }
+
+  private def createAdditionalDocumentId(doc: DocumentsProduced): Option[String] =
+    for {
+      documentIdentifierAndPart <- doc.documentIdentifierAndPart
+      documentIdentifier <- documentIdentifierAndPart.documentIdentifier
+      documentPart <- documentIdentifierAndPart.documentPart
+    } yield documentIdentifier + documentPart
+
+  private def createAdditionalDocumentWriteOff(doc: DocumentsProduced): Option[WriteOff] =
+    for {
+      documentWriteOff <- doc.documentWriteOff
+      measurementUnit <- documentWriteOff.measurementUnit
+      quantity <- documentWriteOff.documentQuantity
+    } yield WriteOff(quantity = Some(Measure(unitCode = Some(measurementUnit), value = Some(quantity))))
+
 }

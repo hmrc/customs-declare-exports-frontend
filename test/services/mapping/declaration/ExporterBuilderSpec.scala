@@ -66,7 +66,12 @@ class ExporterBuilderSpec extends WordSpec with Matchers with ExportsCacheModelB
       }
 
       "no eori" in {
-        val model = aCacheModel(withExporterDetails(eori = None, address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))))
+        val model = aCacheModel(
+          withExporterDetails(
+            eori = None,
+            address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))
+          )
+        )
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -84,7 +89,12 @@ class ExporterBuilderSpec extends WordSpec with Matchers with ExportsCacheModelB
       }
 
       "unknown country" in {
-        val model = aCacheModel(withExporterDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "unknown"))))
+        val model = aCacheModel(
+          withExporterDetails(
+            eori = Some("eori"),
+            address = Some(Address("name", "line", "city", "postcode", "unknown"))
+          )
+        )
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -93,7 +103,12 @@ class ExporterBuilderSpec extends WordSpec with Matchers with ExportsCacheModelB
       }
 
       "populated" in {
-        val model = aCacheModel(withExporterDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))))
+        val model = aCacheModel(
+          withExporterDetails(
+            eori = Some("eori"),
+            address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))
+          )
+        )
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)

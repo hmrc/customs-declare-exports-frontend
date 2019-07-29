@@ -34,7 +34,7 @@ class SubmissionMetaDataBuilderSpec extends WordSpec with Matchers with MockitoS
 
   "SubmissionMetaDataBuilder" should {
     "build wco MetaData with correct defaultValues when empty/ default model is passed in" in {
-      given(declarationBuilder.build(any[ExportsCacheModel])) willReturn(declaration)
+      given(declarationBuilder.build(any[ExportsCacheModel])) willReturn (declaration)
 
       val metaData = new SubmissionMetaDataBuilder(declarationBuilder).build(aCacheModel())
 
