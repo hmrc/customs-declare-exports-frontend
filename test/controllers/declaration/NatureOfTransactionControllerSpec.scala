@@ -31,7 +31,7 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[NatureOfTransaction](None)
   }
 
@@ -50,9 +50,7 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
     }
 
     "read item from cache and display it" in {
-
-      val cachedData = NatureOfTransaction("1")
-      withNewCaching(createModelWithNoItems(SupplementaryDec).copy(natureOfTransaction = Some(cachedData)))
+      withNewCaching(aCacheModel(withChoice(SupplementaryDec), withNatureOfTransaction("1")))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)

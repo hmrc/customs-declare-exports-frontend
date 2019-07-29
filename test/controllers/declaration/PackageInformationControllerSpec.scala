@@ -42,7 +42,7 @@ class PackageInformationControllerSpec
     with PackageInformationMessages with CommonMessages with BeforeAndAfterEach {
 
   val cacheModel =
-    createModelWithItem(existingSessionId = "", journeyType = Choice.AllowedChoiceValues.SupplementaryDec)
+    aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem())
   val generatePackage: Arbitrary[PackageInformation] = Arbitrary {
     for {
       noOfPackages <- choose[Int](1, 99999)
@@ -64,10 +64,9 @@ class PackageInformationControllerSpec
 
       authorizedUser()
       withNewCaching(
-        createModelWithItem(
-          "",
-          Some(ExportItem("id", packageInformation = List.empty)),
-          Choice.AllowedChoiceValues.SupplementaryDec
+        aCacheModel(
+          withItem(ExportItem("id", packageInformation = List.empty)),
+          withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
         )
       )
 
@@ -80,12 +79,11 @@ class PackageInformationControllerSpec
 
       authorizedUser()
       withNewCaching(
-        createModelWithItem(
-          "",
-          Some(
+        aCacheModel(
+          withItem(
             ExportItem("id", packageInformation = List(PackageInformation(Some("XX"), Some(101), Some("Secret Mark"))))
           ),
-          Choice.AllowedChoiceValues.SupplementaryDec
+          withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
         )
       )
 
@@ -101,9 +99,8 @@ class PackageInformationControllerSpec
 
       authorizedUser()
       withNewCaching(
-        createModelWithItem(
-          "",
-          Some(
+        aCacheModel(
+          withItem(
             ExportItem(
               "id",
               packageInformation = List(
@@ -112,7 +109,7 @@ class PackageInformationControllerSpec
               )
             )
           ),
-          Choice.AllowedChoiceValues.SupplementaryDec
+          withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
         )
       )
 
@@ -137,10 +134,9 @@ class PackageInformationControllerSpec
 
         authorizedUser()
         withNewCaching(
-          createModelWithItem(
-            "",
-            Some(ExportItem("id", packageInformation = List.empty)),
-            Choice.AllowedChoiceValues.SupplementaryDec
+          aCacheModel(
+            withItem(ExportItem("id", packageInformation = List.empty)),
+            withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
           )
         )
 
@@ -158,10 +154,9 @@ class PackageInformationControllerSpec
 
         authorizedUser()
         withNewCaching(
-          createModelWithItem(
-            "",
-            Some(ExportItem("id", packageInformation = List.empty)),
-            Choice.AllowedChoiceValues.SupplementaryDec
+          aCacheModel(
+            withItem(ExportItem("id", packageInformation = List.empty)),
+            withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
           )
         )
 
@@ -179,10 +174,9 @@ class PackageInformationControllerSpec
 
         authorizedUser()
         withNewCaching(
-          createModelWithItem(
-            "",
-            Some(ExportItem("id", packageInformation = List.empty)),
-            Choice.AllowedChoiceValues.SupplementaryDec
+          aCacheModel(
+            withItem(ExportItem("id", packageInformation = List.empty)),
+            withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
           )
         )
 
@@ -200,10 +194,9 @@ class PackageInformationControllerSpec
 
         authorizedUser()
         withNewCaching(
-          createModelWithItem(
-            "",
-            Some(ExportItem("id", packageInformation = List(PackageInformation(Some("AB"), Some(100), Some("Test"))))),
-            Choice.AllowedChoiceValues.SupplementaryDec
+          aCacheModel(
+            withItem(ExportItem("id", packageInformation = List(PackageInformation(Some("AB"), Some(100), Some("Test"))))),
+            withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
           )
         )
 
@@ -222,10 +215,9 @@ class PackageInformationControllerSpec
         authorizedUser()
         val cached = listOfN[PackageInformation](99, generatePackage.arbitrary).sample
         withNewCaching(
-          createModelWithItem(
-            "",
-            Some(ExportItem("id", packageInformation = cached.get)),
-            Choice.AllowedChoiceValues.SupplementaryDec
+          aCacheModel(
+            withItem(ExportItem("id", packageInformation = cached.get)),
+            withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
           )
         )
 
@@ -246,10 +238,9 @@ class PackageInformationControllerSpec
 
         authorizedUser()
         withNewCaching(
-          createModelWithItem(
-            "",
-            Some(ExportItem("id", packageInformation = List.empty)),
-            Choice.AllowedChoiceValues.SupplementaryDec
+          aCacheModel(
+            withItem(ExportItem("id", packageInformation = List.empty)),
+            withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
           )
         )
 
@@ -268,10 +259,9 @@ class PackageInformationControllerSpec
 
         authorizedUser()
         withNewCaching(
-          createModelWithItem(
-            "",
-            Some(ExportItem("id", packageInformation = List.empty)),
-            Choice.AllowedChoiceValues.SupplementaryDec
+          aCacheModel(
+            withItem(ExportItem("id", packageInformation = List.empty)),
+            withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
           )
         )
 
@@ -290,10 +280,9 @@ class PackageInformationControllerSpec
 
         authorizedUser()
         withNewCaching(
-          createModelWithItem(
-            "",
-            Some(ExportItem("id", packageInformation = List.empty)),
-            Choice.AllowedChoiceValues.SupplementaryDec
+          aCacheModel(
+            withItem(ExportItem("id", packageInformation = List.empty)),
+            withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
           )
         )
 
@@ -332,10 +321,9 @@ class PackageInformationControllerSpec
 
           authorizedUser()
           withNewCaching(
-            createModelWithItem(
-              "",
-              Some(ExportItem("id", packageInformation = List.empty)),
-              Choice.AllowedChoiceValues.SupplementaryDec
+            aCacheModel(
+              withItem(ExportItem("id", packageInformation = List.empty)),
+              withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
             )
           )
 
@@ -358,10 +346,9 @@ class PackageInformationControllerSpec
 
           val cachedData = arbitraryPackagingSeq.sample
           withNewCaching(
-            createModelWithItem(
-              "",
-              Some(ExportItem("id", packageInformation = cachedData.getOrElse(List.empty))),
-              Choice.AllowedChoiceValues.SupplementaryDec
+            aCacheModel(
+              withItem(ExportItem("id", packageInformation = cachedData.getOrElse(List.empty))),
+              withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
             )
           )
           val result = route(app, getRequest(uri)).value
@@ -396,10 +383,9 @@ class PackageInformationControllerSpec
 
           authorizedUser()
           withNewCaching(
-            createModelWithItem(
-              "",
-              Some(ExportItem("id", packageInformation = List.empty)),
-              Choice.AllowedChoiceValues.SupplementaryDec
+            aCacheModel(
+              withItem(ExportItem("id", packageInformation = List.empty)),
+              withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
             )
           )
 
@@ -491,10 +477,9 @@ class PackageInformationControllerSpec
 
             whenever(packagingSeq.nonEmpty) {
               withNewCaching(
-                createModelWithItem(
-                  "",
-                  Some(ExportItem("id", packageInformation = packagingSeq)),
-                  Choice.AllowedChoiceValues.SupplementaryDec
+                aCacheModel(
+                  withItem(ExportItem("id", packageInformation = packagingSeq)),
+                  withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
                 )
               )
               val packaging = packagingSeq.head
@@ -522,10 +507,9 @@ class PackageInformationControllerSpec
           forAll(arbitrary[PackageInformation]) { packaging =>
             authorizedUser()
             withNewCaching(
-              createModelWithItem(
-                "",
-                Some(ExportItem("id", packageInformation = List(packaging))),
-                Choice.AllowedChoiceValues.SupplementaryDec
+              aCacheModel(
+                withItem(ExportItem("id", packageInformation = List(packaging))),
+                withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
               )
             )
 

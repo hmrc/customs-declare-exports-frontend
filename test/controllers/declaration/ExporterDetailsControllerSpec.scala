@@ -36,7 +36,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[ExporterDetails](None)
   }
 

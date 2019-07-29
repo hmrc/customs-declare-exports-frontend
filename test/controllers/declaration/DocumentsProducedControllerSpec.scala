@@ -42,7 +42,7 @@ class DocumentsProducedControllerSpec
 
   import DocumentsProducedControllerSpec._
 
-  val cachedModel: ExportsCacheModel = createModelWithItem("", journeyType = SupplementaryDec)
+  val cachedModel: ExportsCacheModel = aCacheModel(withChoice(SupplementaryDec), withItem())
 
   private val uri = uriWithContextPath(s"/declaration/items/${cachedModel.items.head.id}/add-document")
   private val addActionUrlEncoded = (Add.toString, "")
@@ -74,7 +74,7 @@ class DocumentsProducedControllerSpec
 
       val document = DocumentsProducedSpec.correctDocumentsProduced
       val cachedData = ExportItem(id = "id", documentsProducedData = Some(DocumentsProducedData(Seq(document))))
-      withNewCaching(createModelWithItem("", Some(cachedData), Choice.AllowedChoiceValues.SupplementaryDec))
+      withNewCaching(aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
 
       val result = route(app, getRequest(uri)).get
       val view = contentAsString(result)
@@ -209,7 +209,7 @@ class DocumentsProducedControllerSpec
 
       "try to add duplicated document" in {
         val cachedData = ExportItem(id = "id", documentsProducedData = Some(correctDocumentsProducedData))
-        withNewCaching(createModelWithItem("", Some(cachedData), Choice.AllowedChoiceValues.SupplementaryDec))
+        withNewCaching(aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
 
         val duplicatedDocument: Map[String, String] = correctDocumentsProducedMap
 
@@ -244,7 +244,7 @@ class DocumentsProducedControllerSpec
 
       "try to add more then 99 documents" in {
         val cachedData = ExportItem(id = "id", documentsProducedData = Some(cacheWithMaximumAmountOfHolders))
-        withNewCaching(createModelWithItem("", Some(cachedData), Choice.AllowedChoiceValues.SupplementaryDec))
+        withNewCaching(aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
 
         val body = (correctDocumentsProducedMap + ("documentIdentifier" -> "Davis")).toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get

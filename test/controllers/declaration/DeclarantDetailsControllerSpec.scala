@@ -35,7 +35,7 @@ class DeclarantDetailsControllerSpec extends CustomExportsBaseSpec {
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[DeclarantDetails](None)
   }
 

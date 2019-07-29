@@ -40,7 +40,7 @@ class DeclarationHolderControllerSpec
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[DeclarationHoldersData](None, DeclarationHoldersData.formId)
   }
 

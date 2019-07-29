@@ -50,7 +50,13 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services._
-import services.cache.{ExportItem, ExportItemIdGeneratorService, ExportsCacheModel, ExportsCacheService}
+import services.cache.{
+  ExportItem,
+  ExportItemIdGeneratorService,
+  ExportsCacheModel,
+  ExportsCacheModelBuilder,
+  ExportsCacheService
+}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.logging.Authorization
@@ -62,7 +68,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait CustomExportsBaseSpec
     extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction
-    with MockConnectors with BeforeAndAfterEach {
+    with MockConnectors with BeforeAndAfterEach with ExportsCacheModelBuilder {
 
   protected val contextPath: String = "/customs-declare-exports"
 
@@ -218,28 +224,6 @@ trait CustomExportsBaseSpec
   def withNrsSubmission(): OngoingStubbing[Future[NrsSubmissionResponse]] =
     when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
-
-  def createModelWithItem(
-    existingSessionId: String,
-    item: Option[ExportItem] = Some(ExportItem(id = "1234")),
-    journeyType: String
-  ): ExportsCacheModel = {
-    val cacheExportItems = item.fold(Set.empty[ExportItem])(Set(_))
-    createModelWithItems(existingSessionId, cacheExportItems, journeyType)
-  }
-
-  def createModelWithItems(sessionId: String, items: Set[ExportItem], jorneyType: String): ExportsCacheModel =
-    ExportsCacheModel(
-      sessionId = sessionId,
-      draftId = "",
-      createdDateTime = LocalDateTime.now(),
-      updatedDateTime = LocalDateTime.now(),
-      choice = jorneyType,
-      items = items,
-      parties = Parties()
-    )
-
-  def createModelWithNoItems(journeyType: String): ExportsCacheModel = createModelWithItems("", Set.empty, journeyType)
 
   protected def theCacheModelUpdated: ExportsCacheModel = {
     val captor = ArgumentCaptor.forClass(classOf[ExportsCacheModel])

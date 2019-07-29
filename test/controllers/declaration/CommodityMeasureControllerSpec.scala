@@ -30,7 +30,7 @@ import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
 class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with CommodityMeasureMessages {
 
-  private val cacheModel = createModelWithItem("", journeyType = SupplementaryDec)
+  private val cacheModel = aCacheModel(withChoice(SupplementaryDec), withItem())
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/commodity-measure")
   private val form = CommodityMeasure.form()
 
@@ -60,10 +60,9 @@ class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with Commodit
           authorizedUser()
           val packages: Seq[PackageInformation] = Seq(PackageInformation(Some("type"), Some(1), Some("mark")))
           withNewCaching(
-            createModelWithItem(
-              "",
-              Some(ExportItem("id", packageInformation = packages.toList, commodityMeasure = None)),
-              SupplementaryDec
+            aCacheModel(
+              withChoice(SupplementaryDec),
+              withItem(ExportItem("id", packageInformation = packages.toList, commodityMeasure = None))
             )
           )
           val result = route(app, getRequest(uri)).value
@@ -82,10 +81,9 @@ class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with Commodit
         "when no packages added and user tries to navigate to the screen" in {
           authorizedUser()
           withNewCaching(
-            createModelWithItem(
-              "",
-              Some(ExportItem("id", packageInformation = List.empty, commodityMeasure = None)),
-              "SMP"
+            aCacheModel(
+              withChoice("SMP"),
+              withItem(ExportItem("id", packageInformation = List.empty, commodityMeasure = None))
             )
           )
           val result = route(app, getRequest(uri)).value
@@ -114,10 +112,9 @@ class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with Commodit
         "invalid data is submitted" in {
           authorizedUser()
           withNewCaching(
-            createModelWithItem(
-              "",
-              Some(ExportItem("id", packageInformation = List.empty, commodityMeasure = None)),
-              SupplementaryDec
+            aCacheModel(
+              withChoice(SupplementaryDec),
+              withItem(ExportItem("id", packageInformation = List.empty, commodityMeasure = None))
             )
           )
           val body = Seq(("supplementaryUnits", "abcd"), ("netMass", ""), ("grossMass", ""))
@@ -172,10 +169,9 @@ class CommodityMeasureControllerSpec extends CustomExportsBaseSpec with Commodit
           val commodityMeasure = CommodityMeasure(None, "100", "200")
           withCaching[CommodityMeasure](None)
           withNewCaching(
-            createModelWithItem(
-              "",
-              Some(ExportItem("id", packageInformation = List(), commodityMeasure = Some(commodityMeasure))),
-              SupplementaryDec
+            aCacheModel(
+              withChoice(SupplementaryDec),
+              withItem(ExportItem("id", packageInformation = List(), commodityMeasure = Some(commodityMeasure)))
             )
           )
           val payload = Seq(

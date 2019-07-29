@@ -42,13 +42,13 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
   trait SupplementarySetUp {
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[DestinationCountries](None)
   }
 
   trait StandardSetUp {
     authorizedUser()
-    withNewCaching(createModelWithNoItems(StandardDec))
+    withNewCaching(aCacheModel(withChoice(StandardDec)))
     withCaching[DestinationCountries](None)
   }
 
@@ -77,7 +77,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val cachedData = DestinationCountries("Netherlands", "Belgium")
         withNewCaching(
-          createModelWithNoItems("SMP").copy(locations = Locations(destinationCountries = Some(cachedData)))
+          aCacheModel(withChoice("SMP"), withDestinationCountries(cachedData))
         )
 
         val result = route(app, getRequest(uri)).get
@@ -92,7 +92,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val cachedData = DestinationCountries("Poland", Seq("Slovakia", "Italy"), "United Kingdom")
         withNewCaching(
-          createModelWithNoItems("SMP").copy(locations = Locations(destinationCountries = Some(cachedData)))
+          aCacheModel(withChoice("SMP"), withDestinationCountries(cachedData))
         )
 
         val result = route(app, getRequest(uri)).get
@@ -234,7 +234,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val fullCache = Seq.fill(99)("Slovakia")
         val cachedData = DestinationCountries("Poland", fullCache, "England")
         withNewCaching(
-          createModelWithNoItems(StandardDec).copy(locations = Locations(destinationCountries = Some(cachedData)))
+          aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData))
         )
 
         val body = Seq(
@@ -253,7 +253,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "user try to add duplicated value" in new StandardSetUp {
         val cachedData = DestinationCountries("Poland", Seq("Poland"), "England")
         withNewCaching(
-          createModelWithNoItems(StandardDec).copy(locations = Locations(destinationCountries = Some(cachedData)))
+          aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData))
         )
 
         val body = Seq(
@@ -275,7 +275,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val cachedData = DestinationCountries("Poland", Seq("Slovakia", "Italy"), "England")
         withNewCaching(
-          createModelWithNoItems(StandardDec).copy(locations = Locations(destinationCountries = Some(cachedData)))
+          aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData))
         )
 
         val action = Remove(Seq("0"))
@@ -319,7 +319,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val cachedData = DestinationCountries("", Seq("SK", "IT"), "")
         withNewCaching(
-          createModelWithNoItems(StandardDec).copy(locations = Locations(destinationCountries = Some(cachedData)))
+          aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData))
         )
 
         val body = Seq(

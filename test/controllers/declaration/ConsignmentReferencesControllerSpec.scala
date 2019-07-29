@@ -41,7 +41,7 @@ class ConsignmentReferencesControllerSpec
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
   }
 

@@ -37,7 +37,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[DispatchLocation](None, DispatchLocation.formId)
   }
 
