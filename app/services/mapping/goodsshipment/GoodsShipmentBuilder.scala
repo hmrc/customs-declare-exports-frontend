@@ -28,6 +28,7 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 class GoodsShipmentBuilder @Inject()(
   goodsShipmentNatureOfTransactionBuilder: GoodsShipmentNatureOfTransactionBuilder,
   consigneeBuilder: ConsigneeBuilder,
+  consignmentBuilder: ConsignmentBuilder,
   governmentAgencyGoodsItemBuilder: GovernmentAgencyGoodsItemBuilder
 ) extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
@@ -39,7 +40,9 @@ class GoodsShipmentBuilder @Inject()(
     )
     exportsCacheModel.parties.consigneeDetails
       .foreach(consigneeDetails => consigneeBuilder.buildThenAdd(consigneeDetails, goodsShipment))
-    ConsignmentBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
+
+    consignmentBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
+
     DestinationBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
     ExportCountryBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
     UCRBuilder.buildThenAdd(exportsCacheModel, goodsShipment)

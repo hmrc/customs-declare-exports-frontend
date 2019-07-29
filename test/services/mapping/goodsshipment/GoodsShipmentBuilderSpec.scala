@@ -32,12 +32,15 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.{ExportItem, ExportsCacheModelBuilder}
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilder
+
+import services.mapping.goodsshipment.consignment.ConsignmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class GoodsShipmentBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder with MockitoSugar {
 
-  private val goodsShipmentNatureOfTransactionBuilder = mock[GoodsShipmentNatureOfTransactionBuilder]
-  private val consigneeBuilder = mock[ConsigneeBuilder]
+  private val mockGoodsShipmentNatureOfTransactionBuilder = mock[GoodsShipmentNatureOfTransactionBuilder]
+  private val mockConsigneeBuilder = mock[ConsigneeBuilder]
+  private val mockConsignmentBuilder = mock[ConsignmentBuilder]
   private val governmentAgencyItemBuilder = mock[GovernmentAgencyGoodsItemBuilder]
 
   private def builder: GoodsShipmentBuilder =
@@ -96,6 +99,16 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers with ExportsCacheM
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
+        verify(mockGoodsShipmentNatureOfTransactionBuilder)
+          .buildThenAdd(refEq(correctNatureOfTransaction), any[Declaration.GoodsShipment])
+
+        val goodsShipment = declaration.getGoodsShipment
+
+        verify(mockConsigneeBuilder)
+          .buildThenAdd(refEq(correctConsigneeDetailsFull), any[Declaration.GoodsShipment])
+
+        verify(mockConsignmentBuilder)
+          .buildThenAdd(refEq(model), any[Declaration.GoodsShipment])
 
         verify(goodsShipmentNatureOfTransactionBuilder)
           .buildThenAdd(refEq(correctNatureOfTransaction), any[Declaration.GoodsShipment])

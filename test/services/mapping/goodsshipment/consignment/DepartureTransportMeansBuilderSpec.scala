@@ -18,9 +18,11 @@ package services.mapping.goodsshipment.consignment
 import forms.declaration.BorderTransport
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
-class DepartureTransportMeansBuilderSpec extends WordSpec with Matchers {
+class DepartureTransportMeansBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
   "DepartureTransportMeansBuilder" should {
     "correctly map DepartureTransportMeans instance" in {
       implicit val cacheMap: CacheMap =
@@ -50,6 +52,31 @@ class DepartureTransportMeansBuilderSpec extends WordSpec with Matchers {
         )
       val departureTransportMeans = DepartureTransportMeansBuilder.build
       departureTransportMeans should be(null)
+    }
+
+    "correctly map DepartureTransportMeans instance using new model" in {
+      val borderModeOfTransportCode = "BCode"
+      val meansOfTransportOnDepartureType = "T"
+      val meansOfTransportOnDepartureIDNumber = "12345"
+
+      val builder = new DepartureTransportMeansBuilder
+
+      val consignment = new GoodsShipment.Consignment
+      builder.buildThenAdd(
+        BorderTransport(
+          borderModeOfTransportCode,
+          meansOfTransportOnDepartureType,
+          Some(meansOfTransportOnDepartureIDNumber)
+        ),
+        consignment
+      )
+
+      val departureTransportMeans = consignment.getDepartureTransportMeans
+      departureTransportMeans.getID.getValue should be(meansOfTransportOnDepartureIDNumber)
+      departureTransportMeans.getIdentificationTypeCode.getValue should be(meansOfTransportOnDepartureType)
+      departureTransportMeans.getName should be(null)
+      departureTransportMeans.getTypeCode should be(null)
+      departureTransportMeans.getModeCode should be(null)
     }
   }
 }

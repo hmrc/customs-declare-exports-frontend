@@ -36,7 +36,6 @@ class GoodsShipmentBuilderIntegrationSpec
     extends WordSpec with Matchers with ExportsCacheModelBuilder with GuiceOneAppPerSuite {
 
   private def builder = app.injector.instanceOf[GoodsShipmentBuilder]
-
   "GoodsShipmentBuilder" should {
 
     "correctly map to the WCO-DEC GoodsShipment instance" in {

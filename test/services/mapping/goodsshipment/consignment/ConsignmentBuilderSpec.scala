@@ -18,12 +18,16 @@ package services.mapping.goodsshipment.consignment
 
 import forms.Choice
 import forms.Choice.AllowedChoiceValues
+import forms.declaration.GoodsLocationTestData._
 import forms.declaration._
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
+import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder}
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
-class ConsignmentBuilderSpec extends WordSpec with Matchers {
+class ConsignmentBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "ConsignmentBuilder" should {
     "correctly map to the WCO-DEC GoodsShipment.Consignment instance" when {
@@ -32,7 +36,7 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
           CacheMap(
             "CacheID",
             Map(
-              GoodsLocation.formId -> GoodsLocationTestData.correctGoodsLocationJSON,
+              GoodsLocation.formId -> correctGoodsLocationJSON,
               BorderTransport.formId -> Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
               TransportDetails.formId -> Json.toJson(
                 TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))
@@ -47,10 +51,10 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
 
         consignment.getGoodsLocation.getID.getValue should be("LOC")
         consignment.getGoodsLocation.getName.getValue should be("9GB1234567ABCDEF")
-        consignment.getGoodsLocation.getAddress.getLine.getValue should be("Address Line")
-        consignment.getGoodsLocation.getAddress.getCityName.getValue should be("Town or City")
-        consignment.getGoodsLocation.getAddress.getCountryCode.getValue should be("PL")
-        consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
+        consignment.getGoodsLocation.getAddress.getLine.getValue should be(addressLine)
+        consignment.getGoodsLocation.getAddress.getCityName.getValue should be(city)
+        consignment.getGoodsLocation.getAddress.getCountryCode.getValue should be(countryCode)
+        consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be(postcode)
 
         consignment.getDepartureTransportMeans.getID.getValue should be("123112yu78")
         consignment.getDepartureTransportMeans.getIdentificationTypeCode.getValue should be("10")
@@ -65,7 +69,7 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
             "CacheID",
             Map(
               GoodsLocation.formId ->
-                GoodsLocationTestData.correctGoodsLocationJSON,
+                correctGoodsLocationJSON,
               BorderTransport.formId ->
                 Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
               TransportDetails.formId -> Json
@@ -80,10 +84,10 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
 
         consignment.getGoodsLocation.getID.getValue should be("LOC")
         consignment.getGoodsLocation.getName.getValue should be("9GB1234567ABCDEF")
-        consignment.getGoodsLocation.getAddress.getLine.getValue should be("Address Line")
-        consignment.getGoodsLocation.getAddress.getCityName.getValue should be("Town or City")
-        consignment.getGoodsLocation.getAddress.getCountryCode.getValue should be("PL")
-        consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
+        consignment.getGoodsLocation.getAddress.getLine.getValue should be(addressLine)
+        consignment.getGoodsLocation.getAddress.getCityName.getValue should be(city)
+        consignment.getGoodsLocation.getAddress.getCountryCode.getValue should be(countryCode)
+        consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be(postcode)
 
         consignment.getDepartureTransportMeans.getID.getValue should be("123112yu78")
         consignment.getDepartureTransportMeans.getIdentificationTypeCode.getValue should be("10")
@@ -98,6 +102,44 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers {
         consignment.getTransportEquipment.get(0).getSeal.get(0).getSequenceNumeric.intValue() should be(1)
         consignment.getTransportEquipment.get(0).getSeal.get(1).getID.getValue should be("second")
         consignment.getTransportEquipment.get(0).getSeal.get(1).getSequenceNumeric.intValue() should be(2)
+      }
+    }
+    "correctly map to the WCO-DEC GoodsShipment.Consignment instance" when {
+      "correct data is present" in {
+        val borderModeOfTransportCode = "BCode"
+        val meansOfTransportOnDepartureType = "T"
+        val meansOfTransportOnDepartureIDNumber = "12345"
+
+        val model: ExportsCacheModel =
+          aCacheModel(
+            withGoodsLocation(Some(GoodsLocationTestData.correctGoodsLocation)),
+            withBorderTransport(
+              borderModeOfTransportCode,
+              meansOfTransportOnDepartureType,
+              Some(meansOfTransportOnDepartureIDNumber)
+            )
+          )
+
+        val builder: ConsignmentBuilder =
+          new ConsignmentBuilder(new GoodsLocationBuilder, new DepartureTransportMeansBuilder)
+        val goodsShipment: Declaration.GoodsShipment = new Declaration.GoodsShipment
+
+        builder.buildThenAdd(model, goodsShipment)
+
+        val consignment: GoodsShipment.Consignment = goodsShipment.getConsignment
+
+        consignment.getGoodsLocation.getID.getValue should be("LOC")
+        consignment.getGoodsLocation.getName.getValue should be(additionalQualifier)
+        consignment.getGoodsLocation.getAddress.getLine.getValue should be(addressLine)
+        consignment.getGoodsLocation.getAddress.getCityName.getValue should be(city)
+        consignment.getGoodsLocation.getAddress.getCountryCode.getValue should be(countryCode)
+        consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be(postcode)
+
+        consignment.getDepartureTransportMeans.getID.getValue should be(meansOfTransportOnDepartureIDNumber)
+        consignment.getDepartureTransportMeans.getIdentificationTypeCode.getValue should be(
+          meansOfTransportOnDepartureType
+        )
+
       }
     }
   }
