@@ -22,12 +22,12 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ErrorHandlerMocks}
 import views.html.choice_page
 
 import scala.concurrent.Future
 
-class ChoiceControllerSpec extends ControllerSpec {
+class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
   import ChoiceControllerSpec._
 
   trait SetUp {
@@ -41,6 +41,7 @@ class ChoiceControllerSpec extends ControllerSpec {
       choicePage
     )(ec)
 
+    setupErrorHandler()
     authorizedUser()
     withCaching(None)
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))

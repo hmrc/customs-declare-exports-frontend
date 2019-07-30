@@ -23,10 +23,10 @@ import forms.declaration.AdditionalInformation
 import models.declaration.AdditionalInformationData
 import play.api.test.Helpers._
 import services.cache.ExportItem
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ErrorHandlerMocks}
 import views.html.declaration.additional_information
 
-class AdditionalInformationControllerSpec extends ControllerSpec {
+class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   trait SetUp {
 
@@ -41,6 +41,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
       additionalInformationPage
     )(ec)
 
+    setupErrorHandler()
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
     withJourneyType(Choice(Choice.AllowedChoiceValues.SupplementaryDec))

@@ -23,12 +23,12 @@ import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesD
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.cache.{ExportItem, ExportsCacheModel}
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ErrorHandlerMocks}
 import views.html.declaration.additional_fiscal_references
 
 import scala.concurrent.Future
 
-class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
+class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   trait SetUp {
 
@@ -43,6 +43,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
       additionalFiscalReferencesPage
     )(ec)
 
+    setupErrorHandler()
     authorizedUser()
     withCaching(None)
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
