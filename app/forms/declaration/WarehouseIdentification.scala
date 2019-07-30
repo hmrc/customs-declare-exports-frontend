@@ -56,6 +56,10 @@ object WarehouseIdentification {
         )
     )
   )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
+    .verifying("supplementary.warehouse.identificationNumber.error", _ match {
+      case WarehouseIdentification(_, Some(_), None, _) | WarehouseIdentification(_, Some(_), Some(""), _) => false
+      case _ => true
+    })
 
   def form(): Form[WarehouseIdentification] = Form(mapping)
 
