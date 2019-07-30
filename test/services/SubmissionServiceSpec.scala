@@ -17,6 +17,7 @@
 package services
 
 import base.{CustomExportsBaseSpec, TestHelper}
+import com.kenshoo.play.metrics.Metrics
 import forms.Choice.AllowedChoiceValues
 import metrics.MetricIdentifiers
 import models.declaration.SupplementaryDeclarationTestData._
@@ -101,14 +102,17 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
     }
 
     "record submission timing and increase the Success Counter when response is OK" in {
-      val timer = metrics.timers(MetricIdentifiers.submissionMetric).getCount
-      val counter = metrics.counters(MetricIdentifiers.submissionMetric).getCount
+      val registry = app.injector.instanceOf[Metrics].defaultRegistry
+
+      val metric = MetricIdentifiers.submissionMetric
+      val timerBefore = registry.getTimers.get(metrics.timerName(metric)).getCount
+      val counterBefore = registry.getCounters.get(metrics.counterName(metric)).getCount
 
       val result = submissionService.submit(cacheMapAllRecords).futureValue
       result.value mustBe "123LRN"
 
-      metrics.timers(MetricIdentifiers.submissionMetric).getCount mustBe timer + 1
-      metrics.counters(MetricIdentifiers.submissionMetric).getCount mustBe counter + 1
+      registry.getTimers.get(metrics.timerName(metric)).getCount mustBe > (timerBefore)
+      registry.getCounters.get(metrics.counterName(metric)).getCount mustBe > (counterBefore)
     }
   }
 }

@@ -16,6 +16,7 @@
 
 package metrics
 
+import com.codahale.metrics.{Counter, Timer}
 import com.codahale.metrics.Timer.Context
 import com.kenshoo.play.metrics.Metrics
 import javax.inject.{Inject, Singleton}
@@ -24,15 +25,17 @@ import metrics.MetricIdentifiers._
 @Singleton
 class ExportsMetrics @Inject()(metrics: Metrics) {
 
-  val timers = Map(
-    submissionMetric -> metrics.defaultRegistry.timer(s"$submissionMetric.timer"),
-    cancelMetric -> metrics.defaultRegistry.timer(s"$cancelMetric.timer")
-  )
+  def timerName(feature: String): String = s"$feature.timer"
 
-  val counters = Map(
-    submissionMetric -> metrics.defaultRegistry.counter(s"$submissionMetric.counter"),
-    cancelMetric -> metrics.defaultRegistry.counter(s"$cancelMetric.counter")
-  )
+  private val timers: Map[String, Timer] = List(submissionMetric, cancelMetric).map(feature =>
+    feature -> metrics.defaultRegistry.timer(timerName(feature))
+  ).toMap
+
+  def counterName(feature: String): String = s"$feature.counter"
+
+  private val counters: Map[String, Counter] = List(submissionMetric, cancelMetric).map(feature =>
+    feature -> metrics.defaultRegistry.counter(counterName(feature))
+  ).toMap
 
   def startTimer(feature: String): Context = timers(feature).time()
 
