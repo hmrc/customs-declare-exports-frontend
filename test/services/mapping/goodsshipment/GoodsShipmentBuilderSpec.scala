@@ -42,11 +42,18 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers with ExportsCacheM
   private val mockConsigneeBuilder = mock[ConsigneeBuilder]
   private val mockConsignmentBuilder = mock[ConsignmentBuilder]
   private val mockDestinationBuilder = mock[DestinationBuilder]
+  private val mockExportCountryBuilder = mock[ExportCountryBuilder]
+
   private val governmentAgencyItemBuilder = mock[GovernmentAgencyGoodsItemBuilder]
 
-  private def builder = new
-  private def builder: GoodsShipmentBuilder =
-    new GoodsShipmentBuilder(mockGoodsShipmentNatureOfTransactionBuilder, mockConsigneeBuilder, mockConsignmentBuilder,     mockDestinationBuilder, governmentAgencyItemBuilder)
+  private def builder = new GoodsShipmentBuilder(
+    mockGoodsShipmentNatureOfTransactionBuilder,
+    mockConsigneeBuilder,
+    mockConsignmentBuilder,
+    mockDestinationBuilder,
+    mockExportCountryBuilder,
+    governmentAgencyItemBuilder
+  )
 
   "GoodsShipmentBuilder" should {
 
@@ -112,10 +119,14 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers with ExportsCacheM
         verify(mockConsignmentBuilder)
           .buildThenAdd(refEq(model), any[Declaration.GoodsShipment])
 
-      verify(mockDestinationBuilder)
-        .buildThenAdd(refEq(correctDestinationCountries), any[Declaration.GoodsShipment])
+        verify(mockDestinationBuilder)
+          .buildThenAdd(refEq(correctDestinationCountries), any[Declaration.GoodsShipment])
+
         verify(goodsShipmentNatureOfTransactionBuilder)
           .buildThenAdd(refEq(correctNatureOfTransaction), any[Declaration.GoodsShipment])
+
+        verify(mockExportCountryBuilder)
+          .buildThenAdd(refEq(correctDestinationCountries), any[Declaration.GoodsShipment])
 
         val goodsShipment = declaration.getGoodsShipment
 
@@ -124,7 +135,7 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers with ExportsCacheM
 
         goodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("LOC")
 
-      val goodsShipment = declaration.getGoodsShipment
+        val goodsShipment = declaration.getGoodsShipment
         goodsShipment.getDestination.getCountryCode.getValue should be("PL")
 
         goodsShipment.getExportCountry.getID.getValue should be("PL")

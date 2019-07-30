@@ -20,6 +20,7 @@ import forms.declaration.DestinationCountriesSpec
 import forms.declaration.destinationCountries.DestinationCountries
 import org.scalatest.{Matchers, WordSpec}
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class ExportCountryBuilderSpec extends WordSpec with Matchers {
 
@@ -42,6 +43,19 @@ class ExportCountryBuilderSpec extends WordSpec with Matchers {
           )
         ExportCountryBuilder.build(cacheMap) should be(null)
       }
+    }
+
+    "correctly map new model to the WCO-DEC GoodsShipment.ExportCountries instance" when {
+      "countryOfDispatch has been supplied" in {
+        val builder = new ExportCountryBuilder
+        val goodsShipment = new GoodsShipment
+
+        builder.buildThenAdd(DestinationCountriesSpec.correctDestinationCountries, goodsShipment)
+
+        val exportCountry = goodsShipment.getExportCountry
+        exportCountry.getID.getValue should be("PL")
+      }
+
     }
   }
 }
