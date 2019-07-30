@@ -16,27 +16,19 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
-import forms.declaration.{AdditionalFiscalReference, AdditionalInformation, DocumentsProducedSpec, PackageInformation}
+import forms.declaration.AdditionalFiscalReference
 import models.declaration.governmentagencygoodsitem.{Commodity => _, GovernmentProcedure => _, Packaging => _}
-import models.declaration.{
-  AdditionalInformationData,
-  DocumentsProducedData,
-  DocumentsProducedDataSpec,
-  ProcedureCodesData
-}
+import models.declaration.{DocumentsProducedData, DocumentsProducedDataSpec}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
 import services.ExportsItemsCacheIds
-import services.cache.CacheTestData
+import services.cache.ExportsCacheItemBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
-  GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
-}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem}
 
 class GovernmentAgencyGoodsItemBuilderSpec
-    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with CacheTestData {
+    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with ExportsCacheItemBuilder {
 
   "GovernmentAgencyGoodsItemBuilder" should {
     "map to WCO model correctly " in {
@@ -66,20 +58,16 @@ class GovernmentAgencyGoodsItemBuilderSpec
 
     "map ExportItem Correctly" in {
       val sequenceId = 99
-      val exportItem = createExportItem().copy(
-        itemType = itemType,
-        sequenceId = sequenceId,
-        packageInformation = List(
-          PackageInformation(typesOfPackages = Some("AA"), numberOfPackages = Some(2), shippingMarks = Some("mark1"))
-        ),
-        procedureCodes = Some(ProcedureCodesData(Some("CUPR"), Seq("XZYT"))),
-        additionalInformation =
-          Some(AdditionalInformationData(Seq(AdditionalInformation(statementCode, descriptionValue)))),
-        documentsProducedData = Some(DocumentsProducedDataSpec.correctDocumentsProducedData)
+      val exportItem = aCachedItem(
+        withItemType(itemType),
+        withPackageInformation(typesOfPackages = Some("AA"), numberOfPackages = Some(2), shippingMarks = Some("mark1")),
+        withProcedureCodes(Some("CUPR"), Seq("XZYT")),
+        withAdditionalInformation(statementCode, descriptionValue),
+        withDocumentsProduced(DocumentsProducedDataSpec.correctDocumentsProducedData)
       )
 
       val goodsShipment = new GoodsShipment
-      GovernmentAgencyGoodsItemBuilder.buildThenAdd(exportItem, goodsShipment)
+      builder.buildThenAdd(exportItem, goodsShipment)
       val item = goodsShipment.getGovernmentAgencyGoodsItem.get(0)
       validateStatisticalValueAmount(
         item.getStatisticalValueAmount.getValue,
@@ -98,9 +86,11 @@ class GovernmentAgencyGoodsItemBuilderSpec
     }
   }
 
+  private def builder = new GovernmentAgencyGoodsItemBuilder()
+
   private def validateStatisticalValueAmount(value: java.math.BigDecimal, currencyId: String) = {
     currencyId should be(StatisticalValueAmountBuilder.defaultCurrencyCode)
-    value.compareTo(BigDecimal(itemType.head.statisticalValue).bigDecimal) should be(0)
+    value.compareTo(BigDecimal(itemType.statisticalValue).bigDecimal) should be(0)
   }
 
   private def validateGovernmentProcedure(mappedProcedure: WCOGovernmentAgencyGoodsItem.GovernmentProcedure) = {

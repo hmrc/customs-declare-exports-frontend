@@ -16,20 +16,21 @@
 
 package services.mapping.governmentagencygoodsitem
 
+import javax.inject.Inject
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import services.ExportsItemsCacheIds
 import services.cache.ExportItem
+import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
-  GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
-}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem}
 
 import scala.collection.JavaConverters._
 
-object GovernmentAgencyGoodsItemBuilder {
-  def buildThenAdd(exportItem: ExportItem, goodsShipment: Declaration.GoodsShipment): Unit = {
+class GovernmentAgencyGoodsItemBuilder @Inject()() extends ModifyingBuilder[ExportItem , Declaration.GoodsShipment]{
+
+  override def buildThenAdd(exportItem: ExportItem, goodsShipment: Declaration.GoodsShipment): Unit = {
     val wcoGovernmentAgencyGoodsItem = new WCOGovernmentAgencyGoodsItem
 
     StatisticalValueAmountBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
@@ -41,8 +42,10 @@ object GovernmentAgencyGoodsItemBuilder {
     AdditionalDocumentsBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
 
     goodsShipment.getGovernmentAgencyGoodsItem.add(wcoGovernmentAgencyGoodsItem)
-
   }
+}
+
+object GovernmentAgencyGoodsItemBuilder {
 
   def build(implicit cacheMap: CacheMap): java.util.List[WCOGovernmentAgencyGoodsItem] =
     cacheMap
