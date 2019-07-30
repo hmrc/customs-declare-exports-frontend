@@ -39,13 +39,13 @@ class TotalNumberOfItemsController @Inject()(
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   totalNumberOfItemsPage: total_number_of_items,
-  override val cacheService: ExportsCacheService
+  override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.TotalNumberOfItems._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService.get(journeySessionId).map(_.flatMap(_.totalNumberOfItems)).map {
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.totalNumberOfItems)).map {
       case Some(data) => Ok(totalNumberOfItemsPage(appConfig, form.fill(data)))
       case _          => Ok(totalNumberOfItemsPage(appConfig, form))
     }
@@ -71,7 +71,7 @@ class TotalNumberOfItemsController @Inject()(
       _ <- getAndUpdateExportCacheModel(
         sessionId,
         model =>
-          cacheService
+          exportsCacheService
             .update(sessionId, model.copy(totalNumberOfItems = Some(formData)))
       )
       _ <- customsCacheService.cache[TotalNumberOfItems](cacheId, formId, formData)

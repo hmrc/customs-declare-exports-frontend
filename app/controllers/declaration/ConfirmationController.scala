@@ -27,15 +27,14 @@ import views.html.declaration.confirmation_page
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmationController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
   confirmationPage: confirmation_page
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    Future.successful(Ok(confirmationPage(appConfig)))
+    Future.successful(Ok(confirmationPage()))
   }
 }

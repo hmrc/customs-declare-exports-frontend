@@ -40,13 +40,11 @@ class PackageInformationController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   legacyCacheService: CustomsCacheService,
-  exportsCacheService: ExportsCacheService,
+  override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   packageInformationPage: package_information
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends {
-  val cacheService = exportsCacheService
-} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   val packagesMaxElements = 99
 

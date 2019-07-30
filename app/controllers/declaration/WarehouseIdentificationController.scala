@@ -36,13 +36,11 @@ class WarehouseIdentificationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
-  exportsCacheService: ExportsCacheService,
+  override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   warehouseIdentificationPage: warehouse_identification
 )(implicit ec: ExecutionContext)
-    extends {
-  val cacheService = exportsCacheService
-} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   import forms.declaration.WarehouseIdentification._
 
@@ -70,6 +68,6 @@ class WarehouseIdentificationController @Inject()(
   private def updateCache(sessionId: String, formData: WarehouseIdentification): Future[Option[ExportsCacheModel]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       val updatedLocations = model.locations.copy(warehouseIdentification = Some(formData))
-      cacheService.update(sessionId, model.copy(locations = updatedLocations))
+      exportsCacheService.update(sessionId, model.copy(locations = updatedLocations))
     })
 }

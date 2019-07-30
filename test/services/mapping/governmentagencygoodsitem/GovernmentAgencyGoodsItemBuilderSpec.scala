@@ -28,7 +28,9 @@ import services.ExportsItemsCacheIds
 import services.cache.ExportsCacheItemBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
+  GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
+}
 
 class GovernmentAgencyGoodsItemBuilderSpec
     extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with MockitoSugar with ExportsCacheItemBuilder {

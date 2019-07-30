@@ -61,9 +61,7 @@ class DeclarationHolderControllerSpec
 
     "read item from cache and display it" in {
 
-      withNewCaching(
-        aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("8899"), Some("0099887766")))
-      )
+      withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("8899"), Some("0099887766"))))
 
       val Some(result) = route(app, getRequest(uri))
       val page = contentAsString(result)
@@ -262,9 +260,7 @@ class DeclarationHolderControllerSpec
         }
 
         "has duplicated holder" in {
-          withNewCaching(
-            aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori")))
-          )
+          withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori"))))
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori"), saveAndContinueActionUrlEncoded)
           val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
           val page = contentAsString(result)

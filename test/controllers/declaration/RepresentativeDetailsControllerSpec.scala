@@ -74,7 +74,10 @@ class RepresentativeDetailsControllerSpec
 
     "populate the form fields with data from cache" in {
       withNewCaching(
-        aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withRepresentativeDetails(correctRepresentativeDetails))
+        aCacheModel(
+          withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
+          withRepresentativeDetails(correctRepresentativeDetails)
+        )
       )
 
       val result = route(app, getRequest(uri)).get

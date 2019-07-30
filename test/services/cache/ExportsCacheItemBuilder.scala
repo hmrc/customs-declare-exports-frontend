@@ -99,6 +99,7 @@ trait ExportsCacheItemBuilder {
     cache.copy(documentsProducedData = Some(DocumentsProducedData(existing ++ Seq(first) ++ docs)))
   }
 
-  def withDocumentsProduced(docs: DocumentsProducedData): CachedItemModifier = cache => cache.copy(documentsProducedData = Some(docs))
+  def withDocumentsProduced(docs: DocumentsProducedData): CachedItemModifier =
+    cache => cache.copy(documentsProducedData = Some(docs))
 
 }

@@ -39,13 +39,13 @@ class LocationController @Inject()(
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   goodsLocationPage: goods_location,
-  override val cacheService: ExportsCacheService
+  override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.GoodsLocation._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService.get(journeySessionId).map(_.flatMap(_.locations.goodsLocation)).map {
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.goodsLocation)).map {
       case Some(data) => Ok(goodsLocationPage(appConfig, form.fill(data)))
       case _          => Ok(goodsLocationPage(appConfig, form))
     }
@@ -69,7 +69,7 @@ class LocationController @Inject()(
       _ <- getAndUpdateExportCacheModel(
         sessionId,
         model =>
-          cacheService
+          exportsCacheService
             .update(sessionId, model.copy(locations = model.locations.copy(goodsLocation = Some(formData))))
       )
       _ <- customsCacheService.cache[GoodsLocation](cacheId, formId, formData)

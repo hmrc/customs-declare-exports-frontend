@@ -41,7 +41,7 @@ class OfficeOfExitController @Inject()(
   mcc: MessagesControllerComponents,
   officeOfExitSupplementaryPage: office_of_exit_supplementary,
   officeOfExitStandardPage: office_of_exit_standard,
-  override val cacheService: ExportsCacheService
+  override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.officeOfExit.OfficeOfExitForms._
@@ -54,13 +54,13 @@ class OfficeOfExitController @Inject()(
   }
 
   private def supplementaryPage()(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Html] =
-    cacheService.get(journeySessionId).map(_.flatMap(_.locations.officeOfExit)).map {
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.officeOfExit)).map {
       case Some(data) => officeOfExitSupplementaryPage(supplementaryForm.fill(OfficeOfExitSupplementary(data)))
       case _          => officeOfExitSupplementaryPage(supplementaryForm)
     }
 
   private def standardPage()(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Html] =
-    cacheService.get(journeySessionId).map(_.flatMap(_.locations.officeOfExit)).map {
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.officeOfExit)).map {
       case Some(data) => officeOfExitStandardPage(standardForm.fill(OfficeOfExitStandard(data)))
       case _          => officeOfExitStandardPage(standardForm)
     }
@@ -105,7 +105,7 @@ class OfficeOfExitController @Inject()(
     getAndUpdateExportCacheModel(
       sessionId,
       model =>
-        cacheService.update(
+        exportsCacheService.update(
           sessionId,
           model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
       )
@@ -115,7 +115,7 @@ class OfficeOfExitController @Inject()(
     getAndUpdateExportCacheModel(
       sessionId,
       model =>
-        cacheService.update(
+        exportsCacheService.update(
           sessionId,
           model.copy(locations = model.locations.copy(officeOfExit = Some(OfficeOfExit.from(formData))))
       )

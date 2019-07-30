@@ -31,7 +31,7 @@ class ConsigneeDetailsViewSpec extends ViewSpec with ConsigneeDetailsMessages wi
 
   val form: Form[ConsigneeDetails] = ConsigneeDetails.form()
   val consigneeDetailsPage = app.injector.instanceOf[consignee_details]
-  private def createView(form: Form[ConsigneeDetails] = form): Html = consigneeDetailsPage(appConfig, form)
+  private def createView(form: Form[ConsigneeDetails] = form): Html = consigneeDetailsPage(form)
 
   "Consignee Details View" should {
 

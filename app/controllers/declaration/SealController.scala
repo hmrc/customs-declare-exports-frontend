@@ -41,14 +41,14 @@ class SealController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
-  override val cacheService: ExportsCacheService,
+  override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   sealPage: seal
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val declaration = cacheService.get(journeySessionId)
+    val declaration = exportsCacheService.get(journeySessionId)
     declaration.map(_.flatMap(_.transportDetails)).flatMap { data =>
       declaration.map(_.map(_.seals)).map { seals =>
         Ok(sealPage(form, seals.getOrElse(Seq.empty), data.fold(false)(_.container)))
@@ -59,7 +59,7 @@ class SealController @Inject()(
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
 
-    cacheService
+    exportsCacheService
       .get(journeySessionId)
       .map(_.map(_.seals))
       .flatMap { data =>
@@ -97,7 +97,7 @@ class SealController @Inject()(
     formWithErrors: Form[Seal],
     cachedSeals: Seq[Seal]
   )(implicit request: JourneyRequest[_], appConfig: AppConfig) = {
-    val declaration = cacheService.get(journeySessionId)
+    val declaration = exportsCacheService.get(journeySessionId)
     declaration.map(_.flatMap(_.transportDetails)).flatMap { data =>
       declaration.map(_.map(_.seals)).map { seals =>
         BadRequest(sealPage(formWithErrors, seals.getOrElse(Seq.empty), data.fold(false)(_.container)))
@@ -117,7 +117,7 @@ class SealController @Inject()(
       _ <- getAndUpdateExportCacheModel(
         sessionId,
         model =>
-          cacheService
+          exportsCacheService
             .update(sessionId, model.copy(seals = formData))
       )
       _ <- customsCacheService.cache[Seq[Seal]](cacheId, formId, formData)

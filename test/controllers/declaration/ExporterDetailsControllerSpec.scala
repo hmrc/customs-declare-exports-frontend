@@ -57,7 +57,10 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
     "read item from cache and display it" in {
       val cachedData = aCacheModel(
         withChoice("SMP"),
-        withExporterDetails(Some("99980"), Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal")))
+        withExporterDetails(
+          Some("99980"),
+          Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal"))
+        )
       )
       withNewCaching(cachedData)
 

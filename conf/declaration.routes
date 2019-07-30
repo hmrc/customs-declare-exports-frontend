@@ -38,7 +38,7 @@ POST        /representative-details              controllers.declaration.Represe
 
 # Consignee details
 
-GET         /consignee-details                   controllers.declaration.ConsigneeDetailsController.displayForm()
+GET         /consignee-details                   controllers.declaration.ConsigneeDetailsController.displayPage()
 
 POST        /consignee-details                   controllers.declaration.ConsigneeDetailsController.saveAddress()
 

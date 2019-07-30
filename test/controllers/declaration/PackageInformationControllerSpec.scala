@@ -195,7 +195,9 @@ class PackageInformationControllerSpec
         authorizedUser()
         withNewCaching(
           aCacheModel(
-            withItem(ExportItem("id", packageInformation = List(PackageInformation(Some("AB"), Some(100), Some("Test"))))),
+            withItem(
+              ExportItem("id", packageInformation = List(PackageInformation(Some("AB"), Some(100), Some("Test"))))
+            ),
             withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
           )
         )

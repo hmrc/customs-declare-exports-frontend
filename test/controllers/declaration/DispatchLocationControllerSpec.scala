@@ -55,9 +55,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
     }
 
     "populate the form fields with data from cache" in {
-      withNewCaching(
-        aCacheModel(withChoice("SMP"), withDispatchLocation(AllowedDispatchLocations.OutsideEU))
-      )
+      withNewCaching(aCacheModel(withChoice("SMP"), withDispatchLocation(AllowedDispatchLocations.OutsideEU)))
 
       val result = route(app, getRequest(dispatchLocationUri)).get
       contentAsString(result) must include("checked=\"checked\"")

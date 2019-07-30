@@ -68,14 +68,14 @@ trait GovernmentAgencyGoodsItemData {
   val descriptionOfGoods = "descriptionOfGoods"
   val unDangerousGoodsCode = "unDangerousGoodsCode"
   val itemType = ItemType(
-      "combinedNomenclatureCode",
-      Seq("taricAdditionalCodes"),
-      Seq("nationalAdditionalCodes"),
-      descriptionOfGoods,
-      Some("cusCode"),
-      Some(unDangerousGoodsCode),
-      "10"
-    )
+    "combinedNomenclatureCode",
+    Seq("taricAdditionalCodes"),
+    Seq("nationalAdditionalCodes"),
+    descriptionOfGoods,
+    Some("cusCode"),
+    Some(unDangerousGoodsCode),
+    "10"
+  )
 
   //commodity measure data
   val netMassString = "15.00"

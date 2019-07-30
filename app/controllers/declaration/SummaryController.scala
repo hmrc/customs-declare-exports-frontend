@@ -41,7 +41,7 @@ class SummaryController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
-  override val cacheService: ExportsCacheService,
+  override val exportsCacheService: ExportsCacheService,
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
   summaryPage: summary_page,
@@ -53,7 +53,7 @@ class SummaryController @Inject()(
   private val logger = Logger(this.getClass())
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    cacheService.get(journeySessionId).map {
+    exportsCacheService.get(journeySessionId).map {
       case Some(data) if containsMandatoryData(data) => Ok(summaryPage(SupplementaryDeclarationData(data)))
       case _                                         => Ok(summaryPageNoData())
     }

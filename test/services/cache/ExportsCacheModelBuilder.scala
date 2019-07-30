@@ -147,17 +147,19 @@ trait ExportsCacheModelBuilder {
     cache => cache.copy(parties = cache.parties.copy(consigneeDetails = Some(consigneeDetails)))
 
   def withConsigneeDetails(eori: Option[String], address: Option[Address]): CacheModifier =
-    cache => cache.copy(parties = cache.parties.copy(consigneeDetails = Some(ConsigneeDetails(EntityDetails(eori, address)))))
+    cache =>
+      cache.copy(parties = cache.parties.copy(consigneeDetails = Some(ConsigneeDetails(EntityDetails(eori, address)))))
 
   def withoutConsigneeDetails(): CacheModifier =
     cache => cache.copy(parties = cache.parties.copy(consigneeDetails = None))
 
   def withDeclarationAdditionalActors(data: DeclarationAdditionalActors*): CacheModifier =
-    cache => cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = Some(DeclarationAdditionalActorsData(data))))
+    cache =>
+      cache.copy(
+        parties = cache.parties.copy(declarationAdditionalActorsData = Some(DeclarationAdditionalActorsData(data)))
+    )
 
-  def withDeclarationAdditionalActors(
-    declarationAdditionalActorsData: DeclarationAdditionalActorsData
-  ): CacheModifier =
+  def withDeclarationAdditionalActors(declarationAdditionalActorsData: DeclarationAdditionalActorsData): CacheModifier =
     cache =>
       cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = Some(declarationAdditionalActorsData)))
 
@@ -252,7 +254,11 @@ trait ExportsCacheModelBuilder {
   def withContainerData(data: TransportInformationContainerData): CacheModifier = _.copy(containerData = Some(data))
 
   def withContainerData(data: TransportInformationContainer*): CacheModifier =
-    cache => cache.copy(containerData = Some(TransportInformationContainerData(cache.containerData.map(_.containers).getOrElse(Seq.empty) ++ data)))
+    cache =>
+      cache.copy(
+        containerData =
+          Some(TransportInformationContainerData(cache.containerData.map(_.containers).getOrElse(Seq.empty) ++ data))
+    )
 
   def withoutContainerData(): CacheModifier = _.copy(containerData = None)
 
