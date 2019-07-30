@@ -19,6 +19,9 @@ package services.mapping.governmentagencygoodsitem
 import forms.declaration.AdditionalFiscalReference
 import models.declaration.governmentagencygoodsitem.{Commodity => _, GovernmentProcedure => _, Packaging => _}
 import models.declaration.{DocumentsProducedData, DocumentsProducedDataSpec}
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
 import services.ExportsItemsCacheIds
@@ -28,7 +31,9 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem}
 
 class GovernmentAgencyGoodsItemBuilderSpec
-    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with ExportsCacheItemBuilder {
+    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with MockitoSugar with ExportsCacheItemBuilder {
+
+  private val statisticalValueAmountBuilder = mock[StatisticalValueAmountBuilder]
 
   "GovernmentAgencyGoodsItemBuilder" should {
     "map to WCO model correctly " in {
@@ -69,11 +74,9 @@ class GovernmentAgencyGoodsItemBuilderSpec
       val goodsShipment = new GoodsShipment
       builder.buildThenAdd(exportItem, goodsShipment)
       val item = goodsShipment.getGovernmentAgencyGoodsItem.get(0)
-      validateStatisticalValueAmount(
-        item.getStatisticalValueAmount.getValue,
-        item.getStatisticalValueAmount.getCurrencyID
-      )
       item.getSequenceNumeric.compareTo(BigDecimal(sequenceId).bigDecimal)
+
+      verify(statisticalValueAmountBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
 
       validatePackaging(item.getPackaging.get(0))
       validateGovernmentProcedure(item.getGovernmentProcedure.get(0))
@@ -86,7 +89,7 @@ class GovernmentAgencyGoodsItemBuilderSpec
     }
   }
 
-  private def builder = new GovernmentAgencyGoodsItemBuilder()
+  private def builder = new GovernmentAgencyGoodsItemBuilder(statisticalValueAmountBuilder)
 
   private def validateStatisticalValueAmount(value: java.math.BigDecimal, currencyId: String) = {
     currencyId should be(StatisticalValueAmountBuilder.defaultCurrencyCode)

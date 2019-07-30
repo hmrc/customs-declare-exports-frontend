@@ -50,14 +50,16 @@ trait ExportsCacheItemBuilder {
       cache.copy(additionalInformation = Some(AdditionalInformationData(existing ++ data)))
     }
 
+  def withoutItemType(): CachedItemModifier = _.copy(itemType = None)
+
   def withItemType(
-    combinedNomenclatureCode: String,
-    taricAdditionalCodes: Seq[String],
-    nationalAdditionalCodes: Seq[String],
-    descriptionOfGoods: String,
-    cusCode: Option[String],
-    unDangerousGoodsCode: Option[String],
-    statisticalValue: String
+    combinedNomenclatureCode: String = "",
+    taricAdditionalCodes: Seq[String] = Seq.empty,
+    nationalAdditionalCodes: Seq[String] = Seq.empty,
+    descriptionOfGoods: String = "",
+    cusCode: Option[String] = None,
+    unDangerousGoodsCode: Option[String] = None,
+    statisticalValue: String = ""
   ): CachedItemModifier =
     withItemType(
       ItemType(

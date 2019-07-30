@@ -16,16 +16,20 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
+import javax.inject.Inject
+import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import services.cache.ExportItem
-import wco.datamodel.wco.declaration_ds.dms._2.GovernmentAgencyGoodsItemStatisticalValueAmountType
+import services.mapping.ModifyingBuilder
+import services.mapping.governmentagencygoodsitem.StatisticalValueAmountBuilder.{
+  createWCODecStatisticalValueAmount,
+  defaultCurrencyCode
+}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
   GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
 }
+import wco.datamodel.wco.declaration_ds.dms._2.GovernmentAgencyGoodsItemStatisticalValueAmountType
 
-object StatisticalValueAmountBuilder {
-
-  val defaultCurrencyCode = "GBP"
+class StatisticalValueAmountBuilder @Inject()() extends ModifyingBuilder[ExportItem, WCOGovernmentAgencyGoodsItem] {
 
   def buildThenAdd(exportItem: ExportItem, wcoGovernmentAgencyGoodsItem: WCOGovernmentAgencyGoodsItem): Unit =
     exportItem.itemType.foreach { itemType =>
@@ -34,6 +38,13 @@ object StatisticalValueAmountBuilder {
       )
     }
 
+}
+
+object StatisticalValueAmountBuilder {
+
+  val defaultCurrencyCode = "GBP"
+
+  @Deprecated
   def buildThenAdd(
     governmentAgencyGoodsItem: GovernmentAgencyGoodsItem,
     wcoGovernmentAgencyGoodsItem: WCOGovernmentAgencyGoodsItem
