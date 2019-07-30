@@ -59,7 +59,7 @@ class ExporterDetailsController @Inject()(
           for {
             _ <- updateCache(journeySessionId, form)
             _ <- customsCacheService.cache[ExporterDetails](cacheId, ExporterDetails.id, form)
-          } yield Redirect(controllers.declaration.routes.ConsigneeDetailsController.displayForm())
+          } yield Redirect(controllers.declaration.routes.ConsigneeDetailsController.displayPage())
       )
   }
 
