@@ -19,9 +19,12 @@ package unit.controllers.declaration
 import controllers.declaration.WarehouseIdentificationController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.WarehouseIdentification
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{times, verify}
 import org.scalatest.BeforeAndAfterEach
 import unit.base.ControllerSpec
 import views.html.declaration.warehouse_identification
+import play.api.test.Helpers._
 
 class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
@@ -32,7 +35,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
     customsCacheService = mockCustomsCacheService,
     exportsCacheService = mockExportsCacheService,
     mcc = stubMessagesControllerComponents(),
-    warehouseIdentificationPage = mock[warehouse_identification]
+    warehouseIdentificationPage = new warehouse_identification(mainTemplate)
   )
 
 
@@ -40,7 +43,9 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
   "WerehouseIdentificationController" should {
     "return 200 OK" when {
       "request were made" in {
-        ???
+        val response = controller.displayForm().apply(getRequest())
+        status(response) must be(OK)
+        verify(mockExportsCacheService, times(2)).get(any())
       }
     }
   }
@@ -48,7 +53,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[WarehouseIdentification](None)
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec), withoutWarehouseIdentification()))
+//    withCaching[WarehouseIdentification](None)
   }
 }
