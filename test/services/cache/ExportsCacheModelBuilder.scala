@@ -79,7 +79,7 @@ trait ExportsCacheModelBuilder {
   def withItem(item: ExportItem = ExportItem(uuid)): CacheModifier =
     m => m.copy(items = m.items + item)
 
-  def withItems(items: ExportItem*): CacheModifier = _.copy(items = items.toSet)
+  def withItems(item1: ExportItem, others: ExportItem*): CacheModifier = _.copy(items = Set(item1) ++ others)
 
   def withItems(count: Int): CacheModifier =
     cache => cache.copy(items = cache.items ++ (1 to count).map(_ => ExportItem(id = uuid)).toSet)
@@ -262,7 +262,9 @@ trait ExportsCacheModelBuilder {
 
   def withoutContainerData(): CacheModifier = _.copy(containerData = None)
 
-  def withSeal(seals: Seal*): CacheModifier = cache => cache.copy(seals = cache.seals ++ seals)
+  def withOutSeal(): CacheModifier = _.copy(seals = Seq.empty)
+
+  def withSeal(seal1: Seal, others: Seal*): CacheModifier = cache => cache.copy(seals = cache.seals ++ Seq(seal1) ++ others)
 
   def withSeals(seals: Seq[Seal]): CacheModifier = _.copy(seals = seals)
 }
