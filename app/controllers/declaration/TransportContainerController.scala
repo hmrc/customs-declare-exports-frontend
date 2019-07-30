@@ -44,13 +44,11 @@ class TransportContainerController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
-  exportsCacheService: ExportsCacheService,
+  override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   transportContainersPage: add_transport_containers
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends {
-  val cacheService = exportsCacheService
-} with FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.get(journeySessionId).map(_.flatMap(_.containerData)).map {
@@ -64,7 +62,7 @@ class TransportContainerController @Inject()(
 
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
-    val cachedData = cacheService
+    val cachedData = exportsCacheService
       .get(journeySessionId)
       .map(_.flatMap(_.containerData))
       .map(_.getOrElse(TransportInformationContainerData(Seq())))

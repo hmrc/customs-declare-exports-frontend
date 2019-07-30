@@ -46,7 +46,7 @@ class DestinationCountriesController @Inject()(
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
-  override val cacheService: ExportsCacheService,
+  override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   destinationCountriesSupplementaryPage: destination_countries_supplementary,
   destinationCountriesStandardPage: destination_countries_standard
@@ -64,13 +64,13 @@ class DestinationCountriesController @Inject()(
     implicit request: JourneyRequest[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
-    cacheService.get(journeySessionId).map(_.flatMap(_.locations.destinationCountries)).map {
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.destinationCountries)).map {
       case Some(data) => Ok(destinationCountriesSupplementaryPage(Supplementary.form.fill(data)))
       case _          => Ok(destinationCountriesSupplementaryPage(Supplementary.form))
     }
 
   private def displayFormStandard()(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
-    cacheService.get(journeySessionId).map(_.flatMap(_.locations.destinationCountries)).map {
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.destinationCountries)).map {
       case Some(data) => Ok(destinationCountriesStandardPage(Standard.form.fill(data), data.countriesOfRouting))
       case _          => Ok(destinationCountriesStandardPage(Standard.form, Seq.empty))
     }
@@ -101,7 +101,7 @@ class DestinationCountriesController @Inject()(
   private def handleSubmitStandard()(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
-    val cachedData = cacheService
+    val cachedData = exportsCacheService
       .get(journeySessionId)
       .map(_.flatMap(_.locations.destinationCountries))
       .map(_.getOrElse(DestinationCountries.empty()))
@@ -207,7 +207,7 @@ class DestinationCountriesController @Inject()(
   private def refreshPage(
     inputDestinationCountries: DestinationCountries
   )(implicit request: JourneyRequest[_]): Future[Result] =
-    cacheService.get(journeySessionId).map(_.flatMap(_.locations.destinationCountries)).map {
+    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.destinationCountries)).map {
       case Some(cachedData) =>
         Ok(
           destinationCountriesStandardPage(Standard.form.fill(inputDestinationCountries), cachedData.countriesOfRouting)
@@ -220,7 +220,7 @@ class DestinationCountriesController @Inject()(
     getAndUpdateExportCacheModel(
       sessionId,
       model =>
-        cacheService
+        exportsCacheService
           .update(sessionId, model.copy(locations = model.locations.copy(destinationCountries = Some(formData))))
     )
 

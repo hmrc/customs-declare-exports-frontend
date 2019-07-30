@@ -23,13 +23,13 @@ import services.cache.{ExportsCacheModel, ExportsCacheService}
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ModelCacheable {
-  val cacheService: ExportsCacheService
+  def exportsCacheService: ExportsCacheService
 
   protected def getAndUpdateExportCacheModel(
     sessionId: String,
     update: ExportsCacheModel => Future[Option[ExportsCacheModel]]
   )(implicit ec: ExecutionContext): Future[Option[ExportsCacheModel]] =
-    cacheService.get(sessionId).flatMap {
+    exportsCacheService.get(sessionId).flatMap {
       case Some(model) => update(model)
       case _           => Future.successful(None)
     }
