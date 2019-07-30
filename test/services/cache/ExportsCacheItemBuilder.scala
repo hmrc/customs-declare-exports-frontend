@@ -43,13 +43,15 @@ trait ExportsCacheItemBuilder {
   ): CachedItemModifier =
     _.copy(procedureCodes = Some(ProcedureCodesData(procedureCode, additionalProcedureCodes)))
 
+  def withoutAdditionalInformation(): CachedItemModifier = _.copy(additionalInformation = None)
+
   def withAdditionalInformation(code: String, description: String): CachedItemModifier =
     withAdditionalInformation(AdditionalInformation(code, description))
 
-  def withAdditionalInformation(data: AdditionalInformation*): CachedItemModifier =
+  def withAdditionalInformation(info1: AdditionalInformation, other: AdditionalInformation*): CachedItemModifier =
     cache => {
       val existing: Seq[AdditionalInformation] = cache.additionalInformation.map(_.items).getOrElse(Seq.empty)
-      cache.copy(additionalInformation = Some(AdditionalInformationData(existing ++ data)))
+      cache.copy(additionalInformation = Some(AdditionalInformationData(existing ++ Seq(info1) ++ other)))
     }
 
   def withoutItemType(): CachedItemModifier = _.copy(itemType = None)

@@ -33,7 +33,8 @@ import scala.collection.JavaConverters._
 class GovernmentAgencyGoodsItemBuilder @Inject()(
   statisticalValueAmountBuilder: StatisticalValueAmountBuilder,
   packagingBuilder: PackagingBuilder,
-  governmentProcedureBuilder: GovernmentProcedureBuilder
+  governmentProcedureBuilder: GovernmentProcedureBuilder,
+  additionalInformationBuilder: AdditionalInformationBuilder
 ) extends ModifyingBuilder[ExportItem, Declaration.GoodsShipment] {
 
   override def buildThenAdd(exportItem: ExportItem, goodsShipment: Declaration.GoodsShipment): Unit = {
@@ -43,7 +44,7 @@ class GovernmentAgencyGoodsItemBuilder @Inject()(
     statisticalValueAmountBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     packagingBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     governmentProcedureBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
-    AdditionalInformationBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    additionalInformationBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     AdditionalDocumentsBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
 
     goodsShipment.getGovernmentAgencyGoodsItem.add(wcoGovernmentAgencyGoodsItem)
