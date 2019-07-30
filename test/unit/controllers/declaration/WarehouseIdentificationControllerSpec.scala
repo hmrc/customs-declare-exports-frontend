@@ -16,6 +16,7 @@
 
 package unit.controllers.declaration
 
+import base.TestHelper
 import controllers.declaration.WarehouseIdentificationController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportCodes.Maritime
@@ -23,6 +24,7 @@ import forms.declaration.WarehouseIdentification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify}
 import org.scalatest.BeforeAndAfterEach
+import play.api.libs.json.{JsObject, JsString, JsValue}
 import unit.base.ControllerSpec
 import views.html.declaration.warehouse_identification
 import play.api.test.Helpers._
@@ -74,11 +76,35 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
       verify(mockExportsCacheService, times(2)).get(any())
     }
   }
+  "Warehouse Identification Controller on POST" should {
+
+    "validate identification type" in {
+      val incorrectWarehouseIdentification: JsValue =
+        JsObject(Map("identificationType" -> JsString(TestHelper.createRandomAlphanumericString(2))))
+
+      val result = controller.saveWarehouse().apply(postRequest(incorrectWarehouseIdentification))
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include("supplementary.warehouse.identificationType.error")
+      verifyTheCacheIsUnchanged()
+    }
+
+    "validate identification number - more than 35 characters" in {
+      val incorrectWarehouseIdentification: JsValue =
+        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(36))))
+
+      val result = controller.saveWarehouse().apply(postRequest(incorrectWarehouseIdentification))
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include("supplementary.warehouse.identificationType.error")
+      verifyTheCacheIsUnchanged()
+    }
+
+  }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec), withoutWarehouseIdentification()))
-//    withCaching[WarehouseIdentification](None)
   }
 }

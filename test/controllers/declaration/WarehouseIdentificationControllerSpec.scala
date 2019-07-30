@@ -44,18 +44,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
   "Warehouse Identification Controller on POST" should {
 
-    "validate identification type" in {
-
-      val incorrectWarehouseIdentification: JsValue =
-        JsObject(Map("identificationType" -> JsString(TestHelper.createRandomAlphanumericString(2))))
-
-      val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
-
-      status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(identificationTypeError))
-      verifyTheCacheIsUnchanged()
-    }
-
     "validate identification type and number" in {
 
       val incorrectWarehouseIdentification: JsValue =
@@ -63,18 +51,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
           "identificationType" -> JsString(WarehouseIdentification.IdentifierType.PUBLIC_CUSTOMS_1),
           "identificationNumber" -> JsString("")
         ))
-
-      val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
-
-      status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(identificationNumberError))
-      verifyTheCacheIsUnchanged()
-    }
-
-    "validate identification number - more than 35 characters" in {
-
-      val incorrectWarehouseIdentification: JsValue =
-        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(36))))
 
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
 
