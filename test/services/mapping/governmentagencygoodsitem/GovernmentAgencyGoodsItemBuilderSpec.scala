@@ -34,6 +34,7 @@ class GovernmentAgencyGoodsItemBuilderSpec
     extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with MockitoSugar with ExportsCacheItemBuilder {
 
   private val statisticalValueAmountBuilder = mock[StatisticalValueAmountBuilder]
+  private val packagingBuilder = mock[PackagingBuilder]
 
   "GovernmentAgencyGoodsItemBuilder" should {
     "map to WCO model correctly " in {
@@ -78,7 +79,7 @@ class GovernmentAgencyGoodsItemBuilderSpec
 
       verify(statisticalValueAmountBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
 
-      validatePackaging(item.getPackaging.get(0))
+      verify(packagingBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
       validateGovernmentProcedure(item.getGovernmentProcedure.get(0))
       validateAdditionalInformation(item.getAdditionalInformation.get(0))
       validateAdditionalDocumentNew(
@@ -89,7 +90,7 @@ class GovernmentAgencyGoodsItemBuilderSpec
     }
   }
 
-  private def builder = new GovernmentAgencyGoodsItemBuilder(statisticalValueAmountBuilder)
+  private def builder = new GovernmentAgencyGoodsItemBuilder(statisticalValueAmountBuilder, packagingBuilder)
 
   private def validateStatisticalValueAmount(value: java.math.BigDecimal, currencyId: String) = {
     currencyId should be(StatisticalValueAmountBuilder.defaultCurrencyCode)

@@ -16,25 +16,18 @@
 
 package services.mapping.governmentagencygoodsitem
 import forms.declaration.PackageInformation
+import javax.inject.Inject
 import models.declaration.governmentagencygoodsitem
 import services.cache.ExportItem
+import services.mapping.ModifyingBuilder
+import services.mapping.governmentagencygoodsitem.PackagingBuilder.createWcoPackaging
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.Packaging
-import wco.datamodel.wco.declaration_ds.dms._2.{
-  PackagingMarksNumbersIDType,
-  PackagingQuantityQuantityType,
-  PackagingTypeCodeType
-}
+import wco.datamodel.wco.declaration_ds.dms._2.{PackagingMarksNumbersIDType, PackagingQuantityQuantityType, PackagingTypeCodeType}
 
 import scala.collection.JavaConverters._
-object PackagingBuilder {
-  def createPackaging(packageInfo: PackageInformation, index: Int): governmentagencygoodsitem.Packaging =
-    governmentagencygoodsitem.Packaging(
-      sequenceNumeric = Some(index),
-      typeCode = packageInfo.typesOfPackages,
-      quantity = packageInfo.numberOfPackages,
-      marksNumbersId = packageInfo.shippingMarks
-    )
+
+class PackagingBuilder @Inject()() extends ModifyingBuilder[ExportItem, GoodsShipment.GovernmentAgencyGoodsItem] {
 
   def buildThenAdd(
     exportItem: ExportItem,
@@ -47,6 +40,17 @@ object PackagingBuilder {
         )
       }
     }
+
+}
+
+object PackagingBuilder {
+  def createPackaging(packageInfo: PackageInformation, index: Int): governmentagencygoodsitem.Packaging =
+    governmentagencygoodsitem.Packaging(
+      sequenceNumeric = Some(index),
+      typeCode = packageInfo.typesOfPackages,
+      quantity = packageInfo.numberOfPackages,
+      marksNumbersId = packageInfo.shippingMarks
+    )
 
   def build(packagings: Seq[models.declaration.governmentagencygoodsitem.Packaging]): java.util.List[Packaging] =
     packagings

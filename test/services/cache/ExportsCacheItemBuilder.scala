@@ -75,20 +75,22 @@ trait ExportsCacheItemBuilder {
 
   def withItemType(data: ItemType): CachedItemModifier = _.copy(itemType = Some(data))
 
-  def withPackageInformation(info: PackageInformation*): CachedItemModifier = _.copy(packageInformation = info.toList)
+  def withoutPackageInformation(): CachedItemModifier = _.copy(packageInformation = List.empty)
 
-  def withPackageInformation(typesOfPackages: Option[String],
-                             numberOfPackages: Option[Int],
-                             shippingMarks: Option[String]
+  def withPackageInformation(first: PackageInformation, others: PackageInformation*): CachedItemModifier = _.copy(packageInformation = List(first) ++ others.toList)
+
+  def withPackageInformation(typesOfPackages: Option[String] = None,
+                             numberOfPackages: Option[Int] = None,
+                             shippingMarks: Option[String] = None
                             ): CachedItemModifier = cache => cache.copy(packageInformation = cache.packageInformation :+ PackageInformation(
     typesOfPackages,
     numberOfPackages,
     shippingMarks)
   )
 
-  def withDocumentsProduced(docs: DocumentsProduced*): CachedItemModifier = cache => {
+  def withDocumentsProduced(first: DocumentsProduced, docs: DocumentsProduced*): CachedItemModifier = cache => {
     val existing = cache.documentsProducedData.map(_.documents).getOrElse(Seq.empty)
-    cache.copy(documentsProducedData = Some(DocumentsProducedData(existing ++ docs)))
+    cache.copy(documentsProducedData = Some(DocumentsProducedData(existing ++ Seq(first) ++ docs)))
   }
 
   def withDocumentsProduced(docs: DocumentsProducedData): CachedItemModifier = cache => cache.copy(documentsProducedData = Some(docs))

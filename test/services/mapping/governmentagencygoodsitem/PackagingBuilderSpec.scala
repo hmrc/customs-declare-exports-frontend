@@ -19,8 +19,10 @@ package services.mapping.governmentagencygoodsitem
 import models.declaration.governmentagencygoodsitem.Packaging
 import org.scalatest.{Matchers, WordSpec}
 import services.GoodsItemCachingData
+import services.cache.ExportsCacheItemBuilder
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
-class PackagingBuilderSpec extends WordSpec with Matchers with GoodsItemCachingData {
+class PackagingBuilderSpec extends WordSpec with Matchers with GoodsItemCachingData with ExportsCacheItemBuilder {
 
   "PackageBuilder" should {
     "map correctly to wco Packaging" in {
@@ -34,6 +36,31 @@ class PackagingBuilderSpec extends WordSpec with Matchers with GoodsItemCachingD
       items.get(0).getMarksNumbersID.getValue shouldBe packagingInformation.marksNumbersId.get
       items.get(0).getTypeCode.getValue shouldBe packagingInformation.typeCode.get
     }
+
+    "build then add" when {
+      "empty list" in {
+        val model = aCachedItem(withoutPackageInformation())
+        val wcoItem = new GoodsShipment.GovernmentAgencyGoodsItem()
+
+        builder.buildThenAdd(model, wcoItem)
+
+        wcoItem.getPackaging shouldBe empty
+      }
+
+      "populated list" in {
+        val model = aCachedItem(withPackageInformation(Some("types"), Some(123), Some("marks")))
+        val wcoItem = new GoodsShipment.GovernmentAgencyGoodsItem()
+
+        builder.buildThenAdd(model, wcoItem)
+
+        wcoItem.getPackaging should have(size(1))
+        wcoItem.getPackaging.get(0).getSequenceNumeric.intValue shouldBe 0
+        wcoItem.getPackaging.get(0).getTypeCode.getValue shouldBe "types"
+        wcoItem.getPackaging.get(0).getQuantityQuantity.getValue.intValue shouldBe 123
+        wcoItem.getPackaging.get(0).getMarksNumbersID.getValue shouldBe "marks"
+      }
+    }
   }
 
+  private def builder = new PackagingBuilder()
 }
