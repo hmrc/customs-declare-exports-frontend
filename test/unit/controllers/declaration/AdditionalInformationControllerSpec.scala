@@ -26,10 +26,10 @@ import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import services.cache.ExportItem
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ErrorHandlerMocks}
 import views.html.declaration.additional_information
 
-class AdditionalInformationControllerSpec extends ControllerSpec {
+class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   trait SetUp {
 
@@ -45,6 +45,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
       additionalInformationPage
     )(ec, minimalAppConfig)
 
+    setupErrorHandler()
     authorizedUser()
     withCaching(None)
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))

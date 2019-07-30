@@ -22,10 +22,10 @@ import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.{Maritime, WagonNumber}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import unit.base.ControllerSpec
+import unit.base.{ControllerSpec, ErrorHandlerMocks}
 import views.html.declaration.border_transport
 
-class BorderTransportControllerSpec extends ControllerSpec {
+class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   trait SetUp {
     val borderTransportPage = new border_transport(mainTemplate)
@@ -40,6 +40,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       borderTransportPage
     )(ec, minimalAppConfig)
 
+    setupErrorHandler()
     authorizedUser()
     withCaching(None)
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
