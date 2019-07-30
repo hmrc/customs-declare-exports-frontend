@@ -43,15 +43,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
   }
 
   "Warehouse Identification Controller on GET" should {
-
-    "return 200 code" in {
-
-      val result = route(app, getRequest(uri)).get
-
-      status(result) must be(OK)
-      verify(mockExportsCacheService, times(2)).get(any())
-    }
-
     "read item from cache and display it" in {
       withNewCaching(
         aCacheModel(
