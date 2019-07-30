@@ -96,7 +96,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
       val result = controller.saveWarehouse().apply(postRequest(incorrectWarehouseIdentification))
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include("supplementary.warehouse.identificationType.error")
+      contentAsString(result) must include("supplementary.warehouse.identificationNumber.error")
       verifyTheCacheIsUnchanged()
     }
 
