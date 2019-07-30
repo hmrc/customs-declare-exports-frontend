@@ -70,15 +70,7 @@ class ConsignmentReferencesControllerSpec
     }
 
     "populate the form fields with data from cache" in {
-
-      val cachedData = ExportsCacheModel(
-        "SessionId",
-        "DraftId",
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        "SMP",
-        consignmentReferences = Some((correctConsignmentReferences))
-      )
+      val cachedData = aCacheModel(withChoice("SMP"), withConsignmentReferences(correctConsignmentReferences))
       withNewCaching(cachedData)
 
       val result = route(app, getRequest(uri)).get

@@ -309,16 +309,7 @@ class DeclarationAdditionalActorsControllerSpec
   }
 
   private def withCache(data: DeclarationAdditionalActorsData) =
-    withNewCaching(
-      ExportsCacheModel(
-        "SessionId",
-        "DraftId",
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        "SMP",
-        parties = Parties(declarationAdditionalActorsData = Some(data))
-      )
-    )
+    withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationAdditionalActorsData(data)))
 
   private def testHappyPathsScenarios(
     expectedPath: String,

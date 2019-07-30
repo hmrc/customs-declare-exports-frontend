@@ -302,16 +302,7 @@ class TransportInformationContainersControllerSpec
   }
 
   private def withCache(data: TransportInformationContainerData) =
-    withNewCaching(
-      ExportsCacheModel(
-        "SessionId",
-        "DraftId",
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        SupplementaryDec,
-        containerData = Some(data)
-      )
-    )
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec), withContainerData(data)))
 }
 
 object TransportInformationContainersControllerSpec {

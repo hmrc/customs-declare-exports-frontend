@@ -71,14 +71,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
       val request = addCSRFToken(getRequest(uri))
 
       forAll(arbitrary[TransportDetails]) { transport =>
-        val cachedData = ExportsCacheModel(
-          "SessionId",
-          "DraftId",
-          LocalDateTime.now(),
-          LocalDateTime.now(),
-          SupplementaryDec,
-          transportDetails = Some(transport)
-        )
+        val cachedData = aCacheModel(withChoice(SupplementaryDec), withTransportDetails(transport))
 
         withNewCaching(cachedData)
         val result = route(app, request).value

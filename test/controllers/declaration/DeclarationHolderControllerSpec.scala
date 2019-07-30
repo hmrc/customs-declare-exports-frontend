@@ -62,17 +62,7 @@ class DeclarationHolderControllerSpec
     "read item from cache and display it" in {
 
       withNewCaching(
-        ExportsCacheModel(
-          "SessionId",
-          "DraftId",
-          LocalDateTime.now(),
-          LocalDateTime.now(),
-          "SMP",
-          parties = Parties(
-            declarationHoldersData =
-              Some(DeclarationHoldersData(Seq(DeclarationHolder(Some("8899"), Some("0099887766")))))
-          )
-        )
+        aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("8899"), Some("0099887766")))
       )
 
       val Some(result) = route(app, getRequest(uri))
@@ -176,18 +166,7 @@ class DeclarationHolderControllerSpec
 
         "is duplicated" in {
 
-          withNewCaching(
-            ExportsCacheModel(
-              "SessionId",
-              "DraftId",
-              LocalDateTime.now(),
-              LocalDateTime.now(),
-              "SMP",
-              parties = Parties(
-                declarationHoldersData = Some(DeclarationHoldersData(Seq(DeclarationHolder(Some("ACE"), Some("eori")))))
-              )
-            )
-          )
+          withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori"))))
 
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori"), addActionUrlEncoded)
 
@@ -203,16 +182,7 @@ class DeclarationHolderControllerSpec
 
         "has more than 99 holders" in {
 
-          withNewCaching(
-            ExportsCacheModel(
-              "SessionId",
-              "DraftId",
-              LocalDateTime.now(),
-              LocalDateTime.now(),
-              "SMP",
-              parties = Parties(declarationHoldersData = Some(cacheWithMaximumAmountOfHolders))
-            )
-          )
+          withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationHolders(cacheWithMaximumAmountOfHolders)))
 
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori1"), addActionUrlEncoded)
 
@@ -293,16 +263,7 @@ class DeclarationHolderControllerSpec
 
         "has duplicated holder" in {
           withNewCaching(
-            ExportsCacheModel(
-              "SessionId",
-              "DraftId",
-              LocalDateTime.now(),
-              LocalDateTime.now(),
-              "SMP",
-              parties = Parties(
-                declarationHoldersData = Some(DeclarationHoldersData(Seq(DeclarationHolder(Some("ACE"), Some("eori")))))
-              )
-            )
+            aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori")))
           )
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori"), saveAndContinueActionUrlEncoded)
           val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
@@ -447,16 +408,7 @@ class DeclarationHolderControllerSpec
     }
   }
   private def withCache(holders: DeclarationHoldersData) =
-    withNewCaching(
-      ExportsCacheModel(
-        "SessionId",
-        "DraftId",
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        "SMP",
-        parties = Parties(declarationHoldersData = Some(holders))
-      )
-    )
+    withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationHolders(holders)))
 }
 
 object DeclarationHolderControllerSpec {

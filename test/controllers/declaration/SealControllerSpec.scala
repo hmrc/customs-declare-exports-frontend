@@ -156,14 +156,5 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
   }
 
   private def withCache(data: Seq[Seal]) =
-    withNewCaching(
-      ExportsCacheModel(
-        "SessionId",
-        "DraftId",
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        SupplementaryDec,
-        seals = data
-      )
-    )
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec), withSeals(data)))
 }
