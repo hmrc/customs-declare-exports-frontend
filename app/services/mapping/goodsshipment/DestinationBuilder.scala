@@ -17,28 +17,31 @@
 package services.mapping.goodsshipment
 import forms.Choice
 import forms.declaration.destinationCountries.DestinationCountries
+import javax.inject.Inject
 import services.Countries.allCountries
 import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
+import services.mapping.goodsshipment.DestinationBuilder.createExportCountry
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Destination
 import wco.datamodel.wco.declaration_ds.dms._2.DestinationCountryCodeType
+
+class DestinationBuilder @Inject()() extends ModifyingBuilder[DestinationCountries, GoodsShipment] {
+
+  override def buildThenAdd(countries: DestinationCountries, goodsShipment: GoodsShipment) =
+    goodsShipment.setDestination(createExportCountry(countries.countryOfDestination))
+
+}
 
 object DestinationBuilder {
 
   def build(implicit cacheMap: CacheMap, choice: Choice): GoodsShipment.Destination =
     cacheMap
       .getEntry[DestinationCountries](DestinationCountries.formId)
-      .filter(data => isDefined(data.countryOfDestination))
+      .filter(_.countryOfDestination.nonEmpty)
       .map(data => createExportCountry(data.countryOfDestination))
       .orNull
-
-  def buildThenAdd(exportsCacheModel: ExportsCacheModel, goodsShipment: GoodsShipment) =
-    exportsCacheModel.locations.destinationCountries.foreach { destinationCountries =>
-      goodsShipment.setDestination(createExportCountry(destinationCountries.countryOfDestination))
-    }
-
-  private def isDefined(countryOfDestination: String): Boolean = countryOfDestination.nonEmpty
 
   private def createExportCountry(countryOfDestination: String): GoodsShipment.Destination = {
 

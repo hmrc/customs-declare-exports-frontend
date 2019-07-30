@@ -21,13 +21,30 @@ import forms.Choice.AllowedChoiceValues
 import forms.declaration.GoodsLocationTestData._
 import forms.declaration._
 import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.mockito.MockitoSugar
+import org.mockito.Mockito.verify
+import org.mockito.ArgumentMatchers.{any, refEq}
 import play.api.libs.json.Json
 import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
-class ConsignmentBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class ConsignmentBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder with MockitoSugar {
+
+  private val mockContainerCodeBuilder = mock[ContainerCodeBuilder]
+  private val mockGoodsLocationBuilder = mock[GoodsLocationBuilder]
+  private val mockDepartureTransportMeansBuilder = mock[DepartureTransportMeansBuilder]
+  private val mockArrivalTransportMeansBuilder = mock[ArrivalTransportMeansBuilder]
+  private val mockTransportEquipmentBuilder = mock[TransportEquipmentBuilder]
+
+  private val builder = new ConsignmentBuilder(
+    mockGoodsLocationBuilder,
+    mockContainerCodeBuilder,
+    mockDepartureTransportMeansBuilder,
+    mockArrivalTransportMeansBuilder,
+    mockTransportEquipmentBuilder
+  )
 
   "ConsignmentBuilder" should {
     "correctly map to the WCO-DEC GoodsShipment.Consignment instance" when {
@@ -39,7 +56,7 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
               GoodsLocation.formId -> correctGoodsLocationJSON,
               BorderTransport.formId -> Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
               TransportDetails.formId -> Json.toJson(
-                TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))
+                TransportDetails(Some("Portugal"), container = true, "40", Some("1234567878ui"), Some("A"))
               ),
               WarehouseIdentification.formId -> WarehouseIdentificationSpec.correctWarehouseIdentificationJSON,
               Seal.formId -> Json.toJson(Seq(Seal("first"), Seal("second")))
@@ -73,7 +90,7 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
               BorderTransport.formId ->
                 Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
               TransportDetails.formId -> Json
-                .toJson(TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))),
+                .toJson(TransportDetails(Some("Portugal"), container = true, "40", Some("1234567878ui"), Some("A"))),
               WarehouseIdentification.formId -> WarehouseIdentificationSpec.correctWarehouseIdentificationJSON,
               Seal.formId -> Json.toJson(Seq(Seal("first"), Seal("second")))
             )
@@ -104,6 +121,7 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
         consignment.getTransportEquipment.get(0).getSeal.get(1).getSequenceNumeric.intValue() should be(2)
       }
     }
+
     "correctly map to the WCO-DEC GoodsShipment.Consignment instance" when {
       "correct data is present" in {
         val borderModeOfTransportCode = "BCode"
@@ -117,28 +135,53 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
               borderModeOfTransportCode,
               meansOfTransportOnDepartureType,
               Some(meansOfTransportOnDepartureIDNumber)
-            )
+            ),
+            withWarehouseIdentification(Some(WarehouseIdentificationSpec.correctWarehouseIdentification)),
+            withTransportDetails(Some("Portugal"), container = true, "40", Some("1234567878ui"), Some("A")),
+            withSeals(Seq(Seal("first"), Seal("second")))
           )
 
-        val builder: ConsignmentBuilder =
-          new ConsignmentBuilder(new GoodsLocationBuilder, new DepartureTransportMeansBuilder)
         val goodsShipment: Declaration.GoodsShipment = new Declaration.GoodsShipment
 
         builder.buildThenAdd(model, goodsShipment)
 
-        val consignment: GoodsShipment.Consignment = goodsShipment.getConsignment
+        verify(mockGoodsLocationBuilder)
+          .buildThenAdd(refEq(GoodsLocationTestData.correctGoodsLocation), any[GoodsShipment.Consignment])
 
-        consignment.getGoodsLocation.getID.getValue should be("LOC")
-        consignment.getGoodsLocation.getName.getValue should be(additionalQualifier)
-        consignment.getGoodsLocation.getAddress.getLine.getValue should be(addressLine)
-        consignment.getGoodsLocation.getAddress.getCityName.getValue should be(city)
-        consignment.getGoodsLocation.getAddress.getCountryCode.getValue should be(countryCode)
-        consignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be(postcode)
+        verify(mockContainerCodeBuilder)
+          .buildThenAdd(
+            refEq(
+              TransportDetails(
+                meansOfTransportCrossingTheBorderNationality = Some("Portugal"),
+                container = true,
+                meansOfTransportCrossingTheBorderType = "40",
+                meansOfTransportCrossingTheBorderIDNumber = Some("1234567878ui"),
+                paymentMethod = Some("A")
+              )
+            ),
+            any[GoodsShipment.Consignment]
+          )
 
-        consignment.getDepartureTransportMeans.getID.getValue should be(meansOfTransportOnDepartureIDNumber)
-        consignment.getDepartureTransportMeans.getIdentificationTypeCode.getValue should be(
-          meansOfTransportOnDepartureType
-        )
+        verify(mockDepartureTransportMeansBuilder)
+          .buildThenAdd(
+            refEq(
+              BorderTransport(
+                borderModeOfTransportCode,
+                meansOfTransportOnDepartureType,
+                Some(meansOfTransportOnDepartureIDNumber)
+              )
+            ),
+            any[GoodsShipment.Consignment]
+          )
+
+        verify(mockArrivalTransportMeansBuilder)
+          .buildThenAdd(
+            refEq(WarehouseIdentificationSpec.correctWarehouseIdentification),
+            any[GoodsShipment.Consignment]
+          )
+
+        verify(mockTransportEquipmentBuilder)
+          .buildThenAdd(refEq(Seq(Seal("first"), Seal("second"))), any[GoodsShipment.Consignment])
 
       }
     }

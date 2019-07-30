@@ -25,7 +25,7 @@ import forms.declaration.GoodsLocationTestData.correctGoodsLocation
 import forms.declaration.NatureOfTransactionSpec.correctNatureOfTransaction
 import forms.declaration.PreviousDocumentsData
 import forms.declaration.WarehouseIdentificationSpec.correctWarehouseIdentification
-import models.declaration.DeclarationAdditionalActorsData
+import models.declaration.{DeclarationAdditionalActorsData, Locations}
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import services.cache.ExportsCacheModelBuilder

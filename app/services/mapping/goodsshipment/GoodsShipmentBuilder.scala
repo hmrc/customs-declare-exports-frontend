@@ -29,6 +29,7 @@ class GoodsShipmentBuilder @Inject()(
   goodsShipmentNatureOfTransactionBuilder: GoodsShipmentNatureOfTransactionBuilder,
   consigneeBuilder: ConsigneeBuilder,
   consignmentBuilder: ConsignmentBuilder,
+  destinationBuilder: DestinationBuilder,
   governmentAgencyGoodsItemBuilder: GovernmentAgencyGoodsItemBuilder
 ) extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
@@ -38,12 +39,15 @@ class GoodsShipmentBuilder @Inject()(
     exportsCacheModel.natureOfTransaction.foreach(
       natureOfTransaction => goodsShipmentNatureOfTransactionBuilder.buildThenAdd(natureOfTransaction, goodsShipment)
     )
+
     exportsCacheModel.parties.consigneeDetails
       .foreach(consigneeDetails => consigneeBuilder.buildThenAdd(consigneeDetails, goodsShipment))
 
     consignmentBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
 
-    DestinationBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
+    exportsCacheModel.locations.destinationCountries
+      .foreach(destinationCountries => destinationBuilder.buildThenAdd(destinationCountries, goodsShipment))
+
     ExportCountryBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
     UCRBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
     WarehouseBuilder.buildThenAdd(exportsCacheModel, goodsShipment)

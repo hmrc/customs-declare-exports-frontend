@@ -18,53 +18,16 @@ package integration.services.cache.mapping.declaration
 
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
+import org.scalatest.{Matchers, WordSpec}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import services.cache.mapping.declaration.DeclarationBuilder
 import services.cache.{CacheTestData, ExportsCacheModelBuilder}
-import services.mapping.AuthorisationHoldersBuilder
-import services.mapping.declaration.consignment.{DeclarationConsignmentBuilder, FreightBuilder, IteneraryBuilder}
-import services.mapping.declaration._
-import services.mapping.goodsshipment.{ConsigneeBuilder, GoodsShipmentBuilder, GoodsShipmentNatureOfTransactionBuilder}
-import services.mapping.goodsshipment.consignment.{
-  ConsignmentBuilder,
-  ConsignmentCarrierBuilder,
-  DepartureTransportMeansBuilder,
-  GoodsLocationBuilder
-}
-import wco.datamodel.wco.dec_dms._2.Declaration
 
 class DeclarationBuilderIntegrationSpec
     extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder with CacheTestData
-    with BeforeAndAfterEach {
+    with GuiceOneAppPerSuite {
 
-  val declarationConsignmentBuilder =
-    new DeclarationConsignmentBuilder(new FreightBuilder, new IteneraryBuilder, new ConsignmentCarrierBuilder)
-
-  val consignmentBuilder = new ConsignmentBuilder(new GoodsLocationBuilder, new DepartureTransportMeansBuilder)
-
-  val goodsShipmentBuilder =
-    new GoodsShipmentBuilder(new GoodsShipmentNatureOfTransactionBuilder, new ConsigneeBuilder, consignmentBuilder)
-
-  val declarationBuilder = new DeclarationBuilder(
-    new FunctionCodeBuilder,
-    new FunctionalReferenceIdBuilder,
-    new TypeCodeBuilder,
-    new GoodsItemQuantityBuilder,
-    new AgentBuilder,
-    new PresentationOfficeBuilder,
-    new SpecificCircumstancesCodeBuilder,
-    new ExitOfficeBuilder,
-    new BorderTransportMeansBuilder,
-    new ExporterBuilder,
-    new DeclarantBuilder,
-    new InvoiceAmountBuilder,
-    new SupervisingOfficeBuilder,
-    new TotalPackageQuantityBuilder,
-    declarationConsignmentBuilder,
-    new AuthorisationHoldersBuilder,
-    new CurrencyExchangeBuilder,
-    goodsShipmentBuilder
-  )
+  val declarationBuilder = app.injector.instanceOf[DeclarationBuilder]
 
   "DeclarationBuilder" should {
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance" in {

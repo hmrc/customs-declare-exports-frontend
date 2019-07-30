@@ -212,6 +212,9 @@ trait ExportsCacheModelBuilder {
       )
     )
 
+  def withSeals(seals: Seq[Seal]): CacheModifier =
+    cache => cache.copy(seals = seals)
+
   def withoutDestinationCountries(): CacheModifier =
     cache => cache.copy(locations = cache.locations.copy(destinationCountries = None))
 

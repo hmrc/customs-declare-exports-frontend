@@ -16,10 +16,18 @@
 
 package services.mapping.goodsshipment.consignment
 import forms.declaration.WarehouseIdentification
+import javax.inject.Inject
+import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment.ArrivalTransportMeans
 import wco.datamodel.wco.declaration_ds.dms._2.ArrivalTransportMeansModeCodeType
+
+class ArrivalTransportMeansBuilder @Inject()() extends ModifyingBuilder[WarehouseIdentification, Consignment] {
+  override def buildThenAdd(model: WarehouseIdentification, consignment: Consignment): Unit =
+    consignment.setArrivalTransportMeans(ArrivalTransportMeansBuilder.createArrivalTransportMeans(model))
+}
 
 object ArrivalTransportMeansBuilder {
 
@@ -27,10 +35,10 @@ object ArrivalTransportMeansBuilder {
     cacheMap
       .getEntry[WarehouseIdentification](WarehouseIdentification.formId)
       .filter(_.inlandModeOfTransportCode.isDefined)
-      .map(createArrivalTrasportMeans)
+      .map(createArrivalTransportMeans)
       .orNull
 
-  private def createArrivalTrasportMeans(transportInformation: WarehouseIdentification) = {
+  private def createArrivalTransportMeans(transportInformation: WarehouseIdentification) = {
     val arrivalTransportMeans = new ArrivalTransportMeans()
 
     transportInformation.inlandModeOfTransportCode.foreach { value =>

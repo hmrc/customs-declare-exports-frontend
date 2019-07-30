@@ -19,6 +19,7 @@ import forms.declaration._
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class ContainerCodeBuilderSpec extends WordSpec with Matchers {
 
@@ -50,6 +51,32 @@ class ContainerCodeBuilderSpec extends WordSpec with Matchers {
         containerCodeType.getValue should be("0")
       }
 
+    }
+
+    "correctly map ContainerCode instance from new model" when {
+      "there are containers" in {
+        val builder = new ContainerCodeBuilder
+        val consignment = new GoodsShipment.Consignment
+
+        builder.buildThenAdd(
+          TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A")),
+          consignment
+        )
+
+        consignment.getContainerCode.getValue should be("1")
+      }
+
+      "there are no containers" in {
+        val builder = new ContainerCodeBuilder
+        val consignment = new GoodsShipment.Consignment
+
+        builder.buildThenAdd(
+          TransportDetails(Some("Portugal"), false, "40", Some("1234567878ui"), Some("A")),
+          consignment
+        )
+
+        consignment.getContainerCode.getValue should be("0")
+      }
     }
   }
 }
