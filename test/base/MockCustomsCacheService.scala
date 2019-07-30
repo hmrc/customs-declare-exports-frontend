@@ -17,10 +17,11 @@
 package base
 
 import forms.Choice
-import org.mockito.ArgumentMatchers
+import org.mockito.{ArgumentMatchers, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
+import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
 import services.CustomsCacheService
@@ -28,7 +29,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
 
-trait MockCustomsCacheService extends MockitoSugar {
+trait MockCustomsCacheService extends MockitoSugar with BeforeAndAfterEach { self: Suite =>
 
   val mockCustomsCacheService = mock[CustomsCacheService]
 
@@ -53,4 +54,9 @@ trait MockCustomsCacheService extends MockitoSugar {
   def withJourneyType(choice: Choice): OngoingStubbing[Future[Option[Choice]]] =
     when(mockCustomsCacheService.fetchAndGetEntry[Choice](any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(Some(choice)))
+
+  override protected def afterEach(): Unit = {
+    Mockito.reset(mockCustomsCacheService)
+    super.afterEach()
+  }
 }

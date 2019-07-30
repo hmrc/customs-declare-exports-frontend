@@ -20,14 +20,13 @@ import base.TestHelper
 import controllers.declaration.WarehouseIdentificationController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportCodes.Maritime
-import forms.declaration.WarehouseIdentification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify}
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.declaration.warehouse_identification
-import play.api.test.Helpers._
 
 class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
@@ -123,9 +122,6 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
       contentAsString(result) must include("supplementary.warehouse.inlandTransportMode.error.incorrect")
       verifyTheCacheIsUnchanged()
     }
-
-
-
   }
 
   override protected def beforeEach(): Unit = {
