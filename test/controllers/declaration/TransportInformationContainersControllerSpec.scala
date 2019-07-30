@@ -63,7 +63,12 @@ class TransportInformationContainersControllerSpec
     }
 
     "read item from cache and display it" in {
-      withNewCaching(aCacheModel(withChoice(SupplementaryDec), withContainerData(TransportInformationContainer("DeliveredBestGoods"))))
+      withNewCaching(
+        aCacheModel(
+          withChoice(SupplementaryDec),
+          withContainerData(TransportInformationContainer("DeliveredBestGoods"))
+        )
+      )
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -171,7 +176,9 @@ class TransportInformationContainersControllerSpec
         }
 
         "duplicated container" in {
-          withNewCaching(aCacheModel(withChoice(SupplementaryDec), withContainerData(TransportInformationContainer("M1l3s"))))
+          withNewCaching(
+            aCacheModel(withChoice(SupplementaryDec), withContainerData(TransportInformationContainer("M1l3s")))
+          )
 
           val body = Seq(("id", "M1l3s"), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -185,9 +192,7 @@ class TransportInformationContainersControllerSpec
         }
 
         "more than 9999 containers" in {
-          withNewCaching(
-            aCacheModel(withChoice(SupplementaryDec), withContainerData(cacheWithMaximumAmountOfHolders))
-          )
+          withNewCaching(aCacheModel(withChoice(SupplementaryDec), withContainerData(cacheWithMaximumAmountOfHolders)))
 
           val body = Seq(("id", "M1l3s"), addActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -218,7 +223,9 @@ class TransportInformationContainersControllerSpec
         }
 
         "duplicated container" in {
-          withNewCaching(aCacheModel(withChoice(SupplementaryDec), withContainerData(TransportInformationContainer("M1l3s"))))
+          withNewCaching(
+            aCacheModel(withChoice(SupplementaryDec), withContainerData(TransportInformationContainer("M1l3s")))
+          )
 
           val body = Seq(("id", "M1l3s"), saveAndContinueActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -232,8 +239,7 @@ class TransportInformationContainersControllerSpec
         }
 
         "more than 9999 containers" in {
-          withNewCaching(
-            aCacheModel(withChoice(SupplementaryDec), withContainerData(cacheWithMaximumAmountOfHolders))          )
+          withNewCaching(aCacheModel(withChoice(SupplementaryDec), withContainerData(cacheWithMaximumAmountOfHolders)))
 
           val body = Seq(("id", "M1l3s"), saveAndContinueActionURLEncoded)
           val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -279,7 +285,9 @@ class TransportInformationContainersControllerSpec
     }
 
     "user doesn't fill form but some containers already exist in the cache" in {
-      withNewCaching(aCacheModel(withChoice(SupplementaryDec), withContainerData(TransportInformationContainer("Jo0hn"))))
+      withNewCaching(
+        aCacheModel(withChoice(SupplementaryDec), withContainerData(TransportInformationContainer("Jo0hn")))
+      )
 
       val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionURLEncoded)).get
       val header = result.futureValue.header

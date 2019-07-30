@@ -57,7 +57,12 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
     }
 
     "read item from cache and display it" in {
-      withNewCaching(aCacheModel(withChoice(SupplementaryDec), withWarehouseIdentification(Some("Office"), Some("R"), Some("SecretStash"), Some(Maritime))))
+      withNewCaching(
+        aCacheModel(
+          withChoice(SupplementaryDec),
+          withWarehouseIdentification(Some("Office"), Some("R"), Some("SecretStash"), Some(Maritime))
+        )
+      )
 
       val Some(result) = route(app, getRequest(uri))
       val page = contentAsString(result)

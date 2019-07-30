@@ -55,8 +55,7 @@ class ConsigneeDetailsController @Inject()(
     ConsigneeDetails.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsigneeDetails]) =>
-          Future.successful(BadRequest(consigneeDetailsPage(formWithErrors))),
+        (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(formWithErrors))),
         form =>
           for {
             _ <- updateCache(journeySessionId, form)

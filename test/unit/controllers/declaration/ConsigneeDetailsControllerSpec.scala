@@ -38,9 +38,8 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
       consigneeDetailsPage
     )(ec, minimalAppConfig)
 
-    val cachedData = createModelWithNoItems(SupplementaryDec)
     authorizedUser()
-    withNewCaching(cachedData)
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching(None)
   }
 
@@ -56,9 +55,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache contrains data" in new SetUp {
 
-        val cachedParties =
-          cachedData.parties.copy(consigneeDetails = Some(ConsigneeDetails(EntityDetails(Some("123"), None))))
-        withNewCaching(cachedData.copy(parties = cachedParties))
+        withNewCaching(aCacheModel(withConsigneeDetails(Some("123"), None)))
 
         val result = controller.displayPage()(getRequest())
 

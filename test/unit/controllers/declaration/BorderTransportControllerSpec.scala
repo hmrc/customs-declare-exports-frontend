@@ -58,7 +58,12 @@ class BorderTransportControllerSpec extends ControllerSpec {
       }
 
       "display page method is invoked and cache contains data" in new SetUp {
-        withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withBorderTransport(Maritime, WagonNumber, None)))
+        withNewCaching(
+          aCacheModel(
+            withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
+            withBorderTransport(Maritime, WagonNumber, None)
+          )
+        )
 
         val result = controller.displayForm()(getRequest())
 
