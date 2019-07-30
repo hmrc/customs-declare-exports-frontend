@@ -35,7 +35,7 @@ class DeclarantDetailsControllerSpec extends CustomExportsBaseSpec {
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[DeclarantDetails](None)
   }
 
@@ -54,20 +54,9 @@ class DeclarantDetailsControllerSpec extends CustomExportsBaseSpec {
     }
 
     "read item from cache and display it" in {
-
-      val cachedData = ExportsCacheModel(
-        "SessionId",
-        "DraftId",
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        "SMP",
-        parties = Parties(
-          declarantDetails = Some(
-            DeclarantDetails(
-              EntityDetails(Some("67890"), Some(Address("WonderWoman", "Test Street", "Leeds", "LS18BN", "Germany")))
-            )
-          )
-        )
+      val cachedData = aCacheModel(
+        withChoice("SMP"),
+        withDeclarantDetails(Some("67890"), Some(Address("WonderWoman", "Test Street", "Leeds", "LS18BN", "Germany")))
       )
 
       withNewCaching(cachedData)

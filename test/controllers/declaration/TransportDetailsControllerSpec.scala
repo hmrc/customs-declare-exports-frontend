@@ -49,7 +49,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
   override def beforeEach() {
     authorizedUser()
     withCaching[TransportDetails](None, TransportDetails.formId)
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
   }
 
   override def afterEach() {
@@ -71,14 +71,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
       val request = addCSRFToken(getRequest(uri))
 
       forAll(arbitrary[TransportDetails]) { transport =>
-        val cachedData = ExportsCacheModel(
-          "SessionId",
-          "DraftId",
-          LocalDateTime.now(),
-          LocalDateTime.now(),
-          SupplementaryDec,
-          transportDetails = Some(transport)
-        )
+        val cachedData = aCacheModel(withChoice(SupplementaryDec), withTransportDetails(transport))
 
         withNewCaching(cachedData)
         val result = route(app, request).value
@@ -131,7 +124,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
         forAll(arbitrary[TransportDetails]) { transportDetails =>
           reset(mockExportsCacheService)
           authorizedUser()
-          withNewCaching(createModelWithNoItems(SupplementaryDec))
+          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
           val body = Seq(
             ("container", transportDetails.container.toString),
             (
@@ -194,7 +187,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
       }
 
       "navigate to add-seal page if full dec and user selected no for containers" in {
-        withNewCaching(createModelWithNoItems(StandardDec))
+        withNewCaching(aCacheModel(withChoice(StandardDec)))
 
         val transportDetails = TransportDetails(Some("Poland"), false, "10", Some("test"))
         authorizedUser()

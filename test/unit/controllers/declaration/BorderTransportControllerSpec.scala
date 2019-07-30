@@ -42,7 +42,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
     authorizedUser()
     withCaching(None)
-    withNewCaching(createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
     withJourneyType(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
   }
 
@@ -58,10 +58,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       }
 
       "display page method is invoked and cache contains data" in new SetUp {
-        val cachedData =
-          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec)
-            .copy(borderTransport = Some(BorderTransport(Maritime, WagonNumber, None)))
-        withNewCaching(cachedData)
+        withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withBorderTransport(Maritime, WagonNumber, None)))
 
         val result = controller.displayForm()(getRequest())
 

@@ -33,9 +33,9 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with Generators w
   private lazy val testItem = ExportItem(id = item1Id)
   private lazy val testItem2 = ExportItem(id = item2Id)
   private lazy val cacheModelWith1Item =
-    createModelWithItems("", items = Set(testItem), SupplementaryDec)
+    aCacheModel(withItem(testItem), withChoice(SupplementaryDec))
   private lazy val cacheModelWith2Items =
-    createModelWithItems("", items = Set(testItem, testItem2), SupplementaryDec)
+    aCacheModel(withItem(testItem), withItem(testItem2), withChoice(SupplementaryDec))
   private val viewItemsUri = uriWithContextPath("/declaration/export-items")
   private val addItemUri = uriWithContextPath("/declaration/export-items/add")
   private val formId = "PackageInformation"
@@ -60,7 +60,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with Generators w
 
         "user does not have EORI" in {
           userWithoutEori()
-          withNewCaching(createModelWithNoItems(SupplementaryDec))
+          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
           withCaching[Seq[GovernmentAgencyGoodsItem]](None)
 
           val result = route(app, getRequest(viewItemsUri)).value
@@ -73,7 +73,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with Generators w
 
         "user is signed in" in {
           authorizedUser()
-          withNewCaching(createModelWithNoItems(SupplementaryDec))
+          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
 
           val result = route(app, getRequest(viewItemsUri)).value
           val stringResult = contentAsString(result)
@@ -125,7 +125,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with Generators w
         GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging()))
 
         val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
-        val cachedItem = createModelWithItem("", item = Some(testItem), SupplementaryDec)
+        val cachedItem = aCacheModel(withItem(testItem), withChoice(SupplementaryDec))
         withNewCaching(cachedItem)
         when(mockItemGeneratorService.generateItemId()).thenReturn(item1Id)
 
@@ -145,7 +145,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with Generators w
     "remove item" should {
       "do nothing and redirect back to items" when {
         "cache is empty" in {
-          withNewCaching(createModelWithNoItems(SupplementaryDec))
+          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
 
           val result = route(app, getRequest(removeItemUri("id"))).value
           status(result) must be(SEE_OTHER)
@@ -154,7 +154,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with Generators w
         }
 
         "item does not exist" in {
-          withNewCaching(createModelWithNoItems(SupplementaryDec))
+          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
 
           val result = route(app, getRequest(removeItemUri("id"))).value
           status(result) must be(SEE_OTHER)
@@ -166,10 +166,10 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with Generators w
       "update cache and redirect" when {
         "item exists" in {
           withNewCaching(
-            createModelWithItems(
-              "",
-              Set(ExportItem("id1", sequenceId = 1), ExportItem("id2", sequenceId = 2)),
-              SupplementaryDec
+            aCacheModel(
+              withItem(ExportItem("id1", sequenceId = 1)),
+              withItem(ExportItem("id2", sequenceId = 2)),
+              withChoice(SupplementaryDec)
             )
           )
 

@@ -42,7 +42,7 @@ class DeclarationAdditionalActorsControllerSpec
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[DeclarationAdditionalActorsData](None)
   }
 
@@ -309,16 +309,7 @@ class DeclarationAdditionalActorsControllerSpec
   }
 
   private def withCache(data: DeclarationAdditionalActorsData) =
-    withNewCaching(
-      ExportsCacheModel(
-        "SessionId",
-        "DraftId",
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        "SMP",
-        parties = Parties(declarationAdditionalActorsData = Some(data))
-      )
-    )
+    withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationAdditionalActorsData(data)))
 
   private def testHappyPathsScenarios(
     expectedPath: String,

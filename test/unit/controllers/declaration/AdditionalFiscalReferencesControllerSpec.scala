@@ -47,7 +47,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
 
     authorizedUser()
     withCaching(None)
-    withNewCaching(createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
   }
 
   "Additional fiscal references controller" should {
@@ -63,7 +63,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
       "display page method is invoked with empty additional fiscal references" in new SetUp {
         val itemCacheData = ExportItem("itemId", additionalFiscalReferencesData = None)
         val cachedData: ExportsCacheModel =
-          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
+          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val result = controller.displayPage("itemId")(getRequest())
@@ -79,7 +79,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
             Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
         )
         val cachedData =
-          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
+          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val result = controller.displayPage("itemId")(getRequest())
@@ -119,7 +119,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
             Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
         )
         val cachedData =
-          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
+          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val duplicatedForm = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded)
@@ -137,7 +137,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
             Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
         val cachedData =
-          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
+          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val form = Seq(("country", "PL"), ("reference", "54321"), addActionUrlEncoded)
@@ -167,7 +167,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
             Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
         )
         val cachedData =
-          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
+          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val duplicatedForm = Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
@@ -185,7 +185,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
             Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
         val cachedData =
-          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
+          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val form = Seq(("country", "PL"), ("reference", "54321"), saveAndContinueActionUrlEncoded)
@@ -224,7 +224,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
             Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
         val cachedData =
-          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
+          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val correctForm = saveAndContinueActionUrlEncoded
@@ -243,7 +243,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
             Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
         )
         val cachedData =
-          createModelWithNoItems(Choice.AllowedChoiceValues.SupplementaryDec).copy(items = Set(itemCacheData))
+          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val removeForm = (Remove.toString, "0")

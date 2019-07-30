@@ -27,7 +27,7 @@ import org.scalatest.OptionValues
 import play.api.test.FakeRequest
 import play.api.test.Helpers.OK
 import services.audit.EventData._
-import services.audit.{AuditService, AuditTypes}
+import services.audit.{AuditService, AuditTypes, EventData}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
@@ -54,11 +54,11 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
   implicit val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
 
   val auditData = Map(
-    EORI.toString -> request.authenticatedRequest.user.eori,
-    LRN.toString -> "123LRN",
-    DUCR.toString -> "8GB123456789012-1234567890QWERTYUIO",
-    DecType.toString -> "SMP",
-    SubmissionResult.toString -> "Success"
+    EventData.EORI.toString -> request.authenticatedRequest.user.eori,
+    EventData.LRN.toString -> "123LRN",
+    EventData.DUCR.toString -> "8GB123456789012-1234567890QWERTYUIO",
+    EventData.DecType.toString -> "SMP",
+    EventData.SubmissionResult.toString -> "Success"
   )
   val submissionService = new SubmissionService(
     appConfig,

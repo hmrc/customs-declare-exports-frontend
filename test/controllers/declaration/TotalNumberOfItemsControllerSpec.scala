@@ -32,7 +32,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
     super.beforeEach()
     authorizedUser()
     withCaching[TotalNumberOfItems](None)
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
   }
 
   override def afterEach() {
@@ -50,9 +50,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
     }
 
     "read item from cache and display it" in {
-
-      val cachedData = TotalNumberOfItems(Some("7987.1"), Some("1.33"), " 631.1")
-      withNewCaching(createModelWithNoItems(SupplementaryDec).copy(totalNumberOfItems = Some(cachedData)))
+      withNewCaching(aCacheModel(withChoice(SupplementaryDec), withTotalNumberOfItems(Some("7987.1"), Some("1.33"), " 631.1")))
 
       val Some(result) = route(app, getRequest(uri))
       val page = contentAsString(result)

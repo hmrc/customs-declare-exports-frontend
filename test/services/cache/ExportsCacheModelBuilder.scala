@@ -20,13 +20,13 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 import forms.common.Address
+import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration._
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
-import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, Locations, Parties}
+import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, TransportInformationContainerData}
 
 //noinspection ScalaStyle
 trait ExportsCacheModelBuilder {
@@ -51,6 +51,8 @@ trait ExportsCacheModelBuilder {
 
   // ************************************************* Builders ********************************************************
 
+  def withSessionId(id: String = uuid): CacheModifier = _.copy(sessionId = id)
+
   def withChoice(choice: String): CacheModifier = _.copy(choice = choice)
 
   def withoutTotalNumberOfItems(): CacheModifier = _.copy(totalNumberOfItems = None)
@@ -72,8 +74,12 @@ trait ExportsCacheModelBuilder {
     m.copy(locations = m.locations.copy(goodsLocation = Some(goodsLocation)))
   }
 
-  def withItem(item: ExportItem): CacheModifier =
+  def withoutItems(): CacheModifier = _.copy(items = Set.empty)
+
+  def withItem(item: ExportItem = ExportItem(uuid)): CacheModifier =
     m => m.copy(items = m.items + item)
+
+  def withItems(items: ExportItem*): CacheModifier = _.copy(items = items.toSet)
 
   def withItems(count: Int): CacheModifier =
     cache => cache.copy(items = cache.items ++ (1 to count).map(_ => ExportItem(id = uuid)).toSet)
@@ -104,8 +110,17 @@ trait ExportsCacheModelBuilder {
     cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(holdersData)))
   }
 
+  def withDeclarationHolders(holders: DeclarationHoldersData): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(holders)))
+
   def withDeclarationHolders(holders: DeclarationHolder*): CacheModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders))))
+
+  def withoutRepresentativeDetails(): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(representativeDetails = None))
+
+  def withRepresentativeDetails(details: RepresentativeDetails): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(representativeDetails = Some(details)))
 
   def withoutBorderTransport(): CacheModifier = _.copy(borderTransport = None)
 
@@ -131,6 +146,9 @@ trait ExportsCacheModelBuilder {
   def withConsigneeDetails(consigneeDetails: ConsigneeDetails): CacheModifier =
     cache => cache.copy(parties = cache.parties.copy(consigneeDetails = Some(consigneeDetails)))
 
+  def withConsigneeDetails(eori: Option[String], address: Option[Address]): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(consigneeDetails = Some(ConsigneeDetails(EntityDetails(eori, address)))))
+
   def withoutConsigneeDetails(): CacheModifier =
     cache => cache.copy(parties = cache.parties.copy(consigneeDetails = None))
 
@@ -147,6 +165,8 @@ trait ExportsCacheModelBuilder {
     _.copy(natureOfTransaction = Some(NatureOfTransaction(natureType)))
 
   def withoutTransportDetails(): CacheModifier = _.copy(transportDetails = None)
+
+  def withTransportDetails(details: TransportDetails): CacheModifier = _.copy(transportDetails = Some(details))
 
   def withTransportDetails(
     meansOfTransportCrossingTheBorderNationality: Option[String] = None,
@@ -220,4 +240,15 @@ trait ExportsCacheModelBuilder {
         locations =
           cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, presentationOfficeId, circumstancesCode)))
     )
+
+  def withContainerData(data: TransportInformationContainerData): CacheModifier = _.copy(containerData = Some(data))
+
+  def withContainerData(data: TransportInformationContainer*): CacheModifier =
+    cache => cache.copy(containerData = Some(TransportInformationContainerData(cache.containerData.map(_.containers).getOrElse(Seq.empty) ++ data)))
+
+  def withoutContainerData(): CacheModifier = _.copy(containerData = None)
+
+  def withSeal(seals: Seal*): CacheModifier = cache => cache.copy(seals = cache.seals ++ seals)
+
+  def withSeals(seals: Seq[Seal]): CacheModifier = _.copy(seals = seals)
 }

@@ -16,18 +16,14 @@
 
 package controllers.declaration
 
-import java.time.LocalDateTime
-
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.common.Address
+import forms.declaration.ConsigneeDetails
 import forms.declaration.ConsigneeDetailsSpec._
 import forms.declaration.EntityDetailsSpec.correctEntityDetails
-import forms.declaration.{ConsigneeDetails, EntityDetails}
-import models.declaration.Parties
 import org.mockito.Mockito.reset
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class ConsigneeDetailsControllerSpec extends CustomExportsBaseSpec {
 
@@ -36,7 +32,7 @@ class ConsigneeDetailsControllerSpec extends CustomExportsBaseSpec {
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[ConsigneeDetails](None)
   }
 
@@ -55,19 +51,9 @@ class ConsigneeDetailsControllerSpec extends CustomExportsBaseSpec {
     }
 
     "read item from cache and display it" in {
-      val cachedData = ExportsCacheModel(
-        "SessionId",
-        "DraftId",
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        "SMP",
-        parties = Parties(
-          consigneeDetails = Some(
-            ConsigneeDetails(
-              EntityDetails(Some("12345"), Some(Address("Spiderman", "Test Street", "Leeds", "LS18BN", "Germany")))
-            )
-          )
-        )
+      val cachedData = aCacheModel(
+        withChoice("SMP"),
+        withConsigneeDetails(Some("12345"), Some(Address("Spiderman", "Test Street", "Leeds", "LS18BN", "Germany")))
       )
       withNewCaching(cachedData)
 

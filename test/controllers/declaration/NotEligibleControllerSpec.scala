@@ -24,7 +24,7 @@ class NotEligibleControllerSpec extends CustomExportsBaseSpec {
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
   }
 
   "Not Eligible Controller on GET" should {

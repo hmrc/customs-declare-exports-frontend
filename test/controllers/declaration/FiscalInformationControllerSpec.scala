@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.CustomExportsBaseSpec
 import forms.Choice
+import forms.Choice.AllowedChoiceValues.StandardDec
 import forms.Choice.choiceId
 import forms.declaration.{AdditionalFiscalReferencesData, FiscalInformation}
 import helpers.views.declaration.FiscalInformationMessages
@@ -29,7 +30,7 @@ import services.cache.ExportItem
 class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalInformationMessages {
 
   private val existingItem = ExportItem("id")
-  private val cacheModel = createModelWithItem("", Some(existingItem), Choice.AllowedChoiceValues.StandardDec)
+  private val cacheModel = aCacheModel(withItem(existingItem), withChoice(StandardDec))
   private val uri: String = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/fiscal-information")
   private val emptyFiscalInformationJson: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("")))
   private val incorrectFiscalInformation: JsValue = JsObject(
@@ -41,7 +42,7 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
   override def beforeEach {
     authorizedUser()
     withNewCaching(cacheModel)
-    withCaching[Choice](Some(Choice(Choice.AllowedChoiceValues.StandardDec)), choiceId)
+    withCaching[Choice](Some(Choice(StandardDec)), choiceId)
   }
 
   override def afterEach() {
@@ -58,10 +59,9 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
 
     "read item from cache and display it" in {
       withNewCaching(
-        createModelWithItem(
-          "",
-          Some(ExportItem("id", fiscalInformation = Some(FiscalInformation("Yes")))),
-          Choice.AllowedChoiceValues.StandardDec
+        aCacheModel(
+          withItem(ExportItem("id", fiscalInformation = Some(FiscalInformation("Yes")))),
+          withChoice(StandardDec)
         )
       )
 
@@ -102,10 +102,9 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
 
     "redirect to 'ItemsSummary' page and clear fiscal references when choice is no" in {
       withNewCaching(
-        createModelWithItem(
-          "",
-          Some(ExportItem("id", additionalFiscalReferencesData = Some(mock[AdditionalFiscalReferencesData]))),
-          Choice.AllowedChoiceValues.StandardDec
+        aCacheModel(
+          withItem(ExportItem("id", additionalFiscalReferencesData = Some(mock[AdditionalFiscalReferencesData]))),
+          withChoice(StandardDec)
         )
       )
 

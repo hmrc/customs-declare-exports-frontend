@@ -37,7 +37,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[DispatchLocation](None, DispatchLocation.formId)
   }
 
@@ -56,14 +56,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 
     "populate the form fields with data from cache" in {
       withNewCaching(
-        ExportsCacheModel(
-          "sessionId",
-          "uuid",
-          LocalDateTime.now(),
-          LocalDateTime.now(),
-          "SMP",
-          dispatchLocation = Some(DispatchLocation(AllowedDispatchLocations.OutsideEU))
-        )
+        aCacheModel(withChoice("SMP"), withDispatchLocation(AllowedDispatchLocations.OutsideEU))
       )
 
       val result = route(app, getRequest(dispatchLocationUri)).get

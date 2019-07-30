@@ -16,19 +16,15 @@
 
 package base
 
-import java.time.LocalDateTime
-
-import forms.Choice
-import models.declaration.Parties
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{never, verify, when}
 import org.scalatest.mockito.MockitoSugar
-import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
+import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder, ExportsCacheService}
 
 import scala.concurrent.Future
 
-trait MockExportsCacheService extends MockitoSugar {
+trait MockExportsCacheService extends MockitoSugar with ExportsCacheModelBuilder {
 
   val mockExportsCacheService = mock[ExportsCacheService]
 
@@ -47,29 +43,6 @@ trait MockExportsCacheService extends MockitoSugar {
         .get(anyString)
     ).thenReturn(Future.successful(Some(dataToReturn)))
   }
-
-  def createModelWithItem(
-    existingSessionId: String,
-    item: Option[ExportItem] = Some(ExportItem(id = "1234")),
-    journeyType: String
-  ): ExportsCacheModel = {
-    val cacheExportItems = item.fold(Set.empty[ExportItem])(Set(_))
-    createModelWithItems(existingSessionId, cacheExportItems, journeyType)
-  }
-
-  def createModelWithItems(sessionId: String, items: Set[ExportItem], journeyType: String): ExportsCacheModel =
-    ExportsCacheModel(
-      sessionId = sessionId,
-      draftId = "",
-      createdDateTime = LocalDateTime.now(),
-      updatedDateTime = LocalDateTime.now(),
-      choice = journeyType,
-      items = items,
-      parties = Parties()
-    )
-
-  def createModelWithNoItems(journeyType: String): ExportsCacheModel =
-    createModelWithItems("", Set.empty, journeyType)
 
   protected def theCacheModelUpdated: ExportsCacheModel = {
     val captor = ArgumentCaptor.forClass(classOf[ExportsCacheModel])

@@ -36,7 +36,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[ExporterDetails](None)
   }
 
@@ -55,23 +55,9 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
     }
 
     "read item from cache and display it" in {
-
-      val cachedData = ExportsCacheModel(
-        "SessionId",
-        "DraftId",
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        "SMP",
-        parties = Parties(
-          exporterDetails = Some(
-            ExporterDetails(
-              EntityDetails(
-                Some("99980"),
-                Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal"))
-              )
-            )
-          )
-        )
+      val cachedData = aCacheModel(
+        withChoice("SMP"),
+        withExporterDetails(Some("99980"), Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal")))
       )
       withNewCaching(cachedData)
 

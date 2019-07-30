@@ -41,7 +41,7 @@ class ConsignmentReferencesControllerSpec
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
   }
 
@@ -70,15 +70,7 @@ class ConsignmentReferencesControllerSpec
     }
 
     "populate the form fields with data from cache" in {
-
-      val cachedData = ExportsCacheModel(
-        "SessionId",
-        "DraftId",
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        "SMP",
-        consignmentReferences = Some((correctConsignmentReferences))
-      )
+      val cachedData = aCacheModel(withChoice("SMP"), withConsignmentReferences(correctConsignmentReferences))
       withNewCaching(cachedData)
 
       val result = route(app, getRequest(uri)).get

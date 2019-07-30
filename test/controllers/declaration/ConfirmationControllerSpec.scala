@@ -25,7 +25,7 @@ class ConfirmationControllerSpec extends CustomExportsBaseSpec with Confirmation
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(createModelWithNoItems(SupplementaryDec))
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
   }
 
   "Confirmation Controller on GET" should {

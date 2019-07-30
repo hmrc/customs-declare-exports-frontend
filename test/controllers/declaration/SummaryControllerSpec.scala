@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.CustomExportsBaseSpec
 import forms.Choice
+import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.Choice.choiceId
 import forms.declaration.ConsignmentReferencesSpec.correctConsignmentReferencesJSON
 import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
@@ -168,7 +169,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
     "there is no data in cache for supplementary declaration" should {
       "display error page" in {
-        withNewCaching(createModelWithNoItems("SMP"))
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.noData.header"))
