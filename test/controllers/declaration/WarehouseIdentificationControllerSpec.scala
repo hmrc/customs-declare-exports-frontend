@@ -42,40 +42,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
     Mockito.reset(mockExportsCacheService)
   }
 
-  "Warehouse Identification Controller on GET" should {
-    "read item from cache and display it" in {
-      withNewCaching(
-        aCacheModel(
-          withChoice(SupplementaryDec),
-          withWarehouseIdentification(Some("Office"), Some("R"), Some("SecretStash"), Some(Maritime))
-        )
-      )
-
-      val Some(result) = route(app, getRequest(uri))
-      val page = contentAsString(result)
-
-      status(result) must be(OK)
-      page must include("Office")
-      page must include(messages("supplementary.warehouse.identificationType.r"))
-      page must include("SecretStash")
-      page must include("Sea transport")
-      verify(mockExportsCacheService, times(2)).get(any())
-    }
-  }
-
   "Warehouse Identification Controller on POST" should {
-
-    "validate identification type" in {
-
-      val incorrectWarehouseIdentification: JsValue =
-        JsObject(Map("identificationType" -> JsString(TestHelper.createRandomAlphanumericString(2))))
-
-      val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
-
-      status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(identificationTypeError))
-      verifyTheCacheIsUnchanged()
-    }
 
     "validate identification type and number" in {
 
@@ -94,29 +61,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       verifyTheCacheIsUnchanged()
     }
 
-    "validate identification number - more than 35 characters" in {
-
-      val incorrectWarehouseIdentification: JsValue =
-        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(36))))
-
-      val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
-
-      status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(identificationNumberError))
-      verifyTheCacheIsUnchanged()
-    }
-
-    "validate supervising customs office - invalid" in {
-
-      val incorrectWarehouseOffice: JsValue =
-        JsObject(Map("supervisingCustomsOffice" -> JsString("SOMEWRONGCODE")))
-
-      val Some(result) = route(app, postRequest(uri, incorrectWarehouseOffice))
-
-      status(result) mustBe BAD_REQUEST
-      contentAsString(result) must include(messages(supervisingCustomsOfficeError))
-      verifyTheCacheIsUnchanged()
-    }
 
     "validate inland mode transport code - wrong choice" in {
 

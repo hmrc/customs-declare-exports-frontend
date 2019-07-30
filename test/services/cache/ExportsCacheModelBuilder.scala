@@ -252,6 +252,21 @@ trait ExportsCacheModelBuilder {
       )
     )
 
+  def withWarehouseIdentification(
+     supervisingCustomsOffice: String,
+     identificationType: String,
+     identificationNumber: String,
+     inlandModeOfTransportCode: String
+  ): CacheModifier =
+    withWarehouseIdentification(
+      WarehouseIdentification(
+        Some(supervisingCustomsOffice),
+        Some(identificationType),
+        Some(identificationNumber),
+        Some(inlandModeOfTransportCode)
+      )
+    )
+
   def withoutOfficeOfExit(): CacheModifier = cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))
 
   def withOfficeOfExit(
