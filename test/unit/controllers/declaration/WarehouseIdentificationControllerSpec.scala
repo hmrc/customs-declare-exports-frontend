@@ -18,6 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.WarehouseIdentificationController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import forms.declaration.TransportCodes.Maritime
 import forms.declaration.WarehouseIdentification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify}
@@ -38,15 +39,39 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
     warehouseIdentificationPage = new warehouse_identification(mainTemplate)
   )
 
+  "WerehouseIdentificationController on GET request" should {
+    "return 200 OK" in {
+      val response = controller.displayForm().apply(getRequest())
+      status(response) must be(OK)
+      verify(mockExportsCacheService, times(2)).get(any())
+    }
 
+    "read item from cache and display it" in {
+      val customsOfficeIdentifier = "Office"
+      val warehauseIdentificationType = "R"
+      val warehauseIdentificationNumber = "SecretStash"
+      val transportMode = Maritime
+      withNewCaching(
+        aCacheModel(
+          withChoice(SupplementaryDec),
+          withWarehouseIdentification(
+            customsOfficeIdentifier,
+            warehauseIdentificationType,
+            warehauseIdentificationNumber,
+            transportMode
+          )
+        )
+      )
 
-  "WerehouseIdentificationController" should {
-    "return 200 OK" when {
-      "request were made" in {
-        val response = controller.displayForm().apply(getRequest())
-        status(response) must be(OK)
-        verify(mockExportsCacheService, times(2)).get(any())
-      }
+      val result = controller.displayForm().apply(getRequest())
+      val page = contentAsString(result)
+
+      status(result) must be(OK)
+      page must include(customsOfficeIdentifier)
+      page must include("supplementary.warehouse.identificationType.r") // determinate by identification type
+      page must include(warehauseIdentificationNumber)
+      page must include("supplementary.transportInfo.transportMode.sea") // determinate by transportMode
+      verify(mockExportsCacheService, times(2)).get(any())
     }
   }
 

@@ -42,27 +42,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
     Mockito.reset(mockExportsCacheService)
   }
 
-  "Warehouse Identification Controller on GET" should {
-    "read item from cache and display it" in {
-      withNewCaching(
-        aCacheModel(
-          withChoice(SupplementaryDec),
-          withWarehouseIdentification(Some("Office"), Some("R"), Some("SecretStash"), Some(Maritime))
-        )
-      )
-
-      val Some(result) = route(app, getRequest(uri))
-      val page = contentAsString(result)
-
-      status(result) must be(OK)
-      page must include("Office")
-      page must include(messages("supplementary.warehouse.identificationType.r"))
-      page must include("SecretStash")
-      page must include("Sea transport")
-      verify(mockExportsCacheService, times(2)).get(any())
-    }
-  }
-
   "Warehouse Identification Controller on POST" should {
 
     "validate identification type" in {
