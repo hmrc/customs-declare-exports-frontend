@@ -112,6 +112,19 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
       verifyTheCacheIsUnchanged()
     }
 
+    "validate inland mode transport code - wrong choice" in {
+
+      val incorrectTransportCode: JsValue =
+        JsObject(Map("inlandModeOfTransportCode" -> JsString("Incorrect more")))
+
+      val result = controller.saveWarehouse().apply(postRequest(incorrectTransportCode))
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include("supplementary.warehouse.inlandTransportMode.error.incorrect")
+      verifyTheCacheIsUnchanged()
+    }
+
+
 
   }
 

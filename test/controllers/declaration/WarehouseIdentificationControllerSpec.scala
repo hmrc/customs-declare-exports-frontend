@@ -60,17 +60,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
     }
 
 
-    "validate inland mode transport code - wrong choice" in {
-
-      val incorrectTransportCode: JsValue =
-        JsObject(Map("inlandModeOfTransportCode" -> JsString("Incorrect more")))
-
-      val result = route(app, postRequest(uri, incorrectTransportCode)).get
-
-      status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(inlandTransportModeError))
-      verifyTheCacheIsUnchanged()
-    }
 
     "validate request and redirect - no answers" in {
 
