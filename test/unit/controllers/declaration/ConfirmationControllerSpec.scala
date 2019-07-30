@@ -14,25 +14,36 @@
  * limitations under the License.
  */
 
-package controllers.declaration
+package unit.controllers.declaration
 
-import base.CustomExportsBaseSpec
+import controllers.declaration.ConfirmationController
+import forms.Choice
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import helpers.views.declaration.ConfirmationMessages
 import play.api.test.Helpers._
+import unit.base.ControllerSpec
+import views.html.declaration.confirmation_page
 
-class ConfirmationControllerSpec extends CustomExportsBaseSpec with ConfirmationMessages {
+class ConfirmationControllerSpec extends ControllerSpec {
 
-  override def beforeEach() {
+  trait SetUp {
+    val confirmationPage = new confirmation_page(mainTemplate)
+
+    val controller = new ConfirmationController(
+      mockAuthAction,
+      mockJourneyAction,
+      stubMessagesControllerComponents(),
+      confirmationPage
+    )(ec, minimalAppConfig)
+
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
   }
 
   "Confirmation Controller on GET" should {
 
-    "return 200 status code" in {
+    "return 200 status code" in new SetUp {
 
-      val result = route(app, getRequest(uriWithContextPath("/declaration/confirmation"))).get
+      val result = controller.displayPage()(getRequest())
 
       status(result) must be(OK)
     }

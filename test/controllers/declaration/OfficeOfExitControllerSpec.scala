@@ -83,7 +83,10 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val presentationOfficeId = "87654321"
       val circumstancesCode = "Yes"
       withNewCaching(
-        aCacheModel(withChoice(Choice.AllowedChoiceValues.StandardDec), withOfficeOfExit(officeId, Some(presentationOfficeId), Some(circumstancesCode)))
+        aCacheModel(
+          withChoice(Choice.AllowedChoiceValues.StandardDec),
+          withOfficeOfExit(officeId, Some(presentationOfficeId), Some(circumstancesCode))
+        )
       )
 
       val Some(result) = route(app, getRequest(uri))

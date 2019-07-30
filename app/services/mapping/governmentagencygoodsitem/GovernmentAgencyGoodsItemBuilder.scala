@@ -24,11 +24,13 @@ import services.cache.ExportItem
 import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
+  GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
+}
 
 import scala.collection.JavaConverters._
 
-class GovernmentAgencyGoodsItemBuilder @Inject()() extends ModifyingBuilder[ExportItem , Declaration.GoodsShipment]{
+class GovernmentAgencyGoodsItemBuilder @Inject()() extends ModifyingBuilder[ExportItem, Declaration.GoodsShipment] {
 
   override def buildThenAdd(exportItem: ExportItem, goodsShipment: Declaration.GoodsShipment): Unit = {
     val wcoGovernmentAgencyGoodsItem = new WCOGovernmentAgencyGoodsItem

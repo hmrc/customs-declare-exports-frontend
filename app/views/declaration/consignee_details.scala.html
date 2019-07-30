@@ -22,7 +22,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(appConfig: AppConfig, form: Form[ConsigneeDetails])(implicit request: Request[_], messages: Messages)
+@(form: Form[ConsigneeDetails])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
 
 @main_template(
     title = messages("supplementary.consignee.title"),

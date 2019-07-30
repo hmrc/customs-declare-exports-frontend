@@ -262,9 +262,7 @@ class PreviousDocumentsControllerSpec
 
       "item duplication in cache" in {
 
-        withNewCaching(
-          aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
-        )
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
 
         val body = correctDocument :+ addActionURLEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -279,9 +277,7 @@ class PreviousDocumentsControllerSpec
 
       "limit of items reached" in {
 
-        withNewCaching(
-          aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(fullCache))
-        )
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(fullCache)))
 
         val body = Seq(
           ("documentCategory", "Y"),
@@ -432,9 +428,7 @@ class PreviousDocumentsControllerSpec
 
       "item duplication in cache" in {
 
-        withNewCaching(
-          aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
-        )
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
 
         val body = correctDocument :+ saveAndContinueActionURLEncoded
 
@@ -484,9 +478,7 @@ class PreviousDocumentsControllerSpec
       }
 
       "user has empty form but cache contains some item" in {
-        withNewCaching(
-          aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
-        )
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
 
         val body = emptyDocument :+ saveAndContinueActionURLEncoded
 
@@ -499,9 +491,7 @@ class PreviousDocumentsControllerSpec
       }
 
       "user provide correct item with different item in cache" in {
-        withNewCaching(
-          aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
-        )
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
 
         val document =
           Seq(

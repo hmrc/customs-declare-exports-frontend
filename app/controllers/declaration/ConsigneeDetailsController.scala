@@ -35,20 +35,19 @@ import scala.concurrent.{ExecutionContext, Future}
   * This controller is not used in supp dec journey
   */
 class ConsigneeDetailsController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   consigneeDetailsPage: consignee_details
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.consigneeDetails)).map {
-      case Some(data) => Ok(consigneeDetailsPage(appConfig, ConsigneeDetails.form().fill(data)))
-      case _          => Ok(consigneeDetailsPage(appConfig, ConsigneeDetails.form()))
+      case Some(data) => Ok(consigneeDetailsPage(ConsigneeDetails.form().fill(data)))
+      case _          => Ok(consigneeDetailsPage(ConsigneeDetails.form()))
     }
   }
 
@@ -56,8 +55,7 @@ class ConsigneeDetailsController @Inject()(
     ConsigneeDetails.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ConsigneeDetails]) =>
-          Future.successful(BadRequest(consigneeDetailsPage(appConfig, formWithErrors))),
+        (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(formWithErrors))),
         form =>
           for {
             _ <- updateCache(journeySessionId, form)
