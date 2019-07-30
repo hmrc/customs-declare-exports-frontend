@@ -34,7 +34,8 @@ class GovernmentAgencyGoodsItemBuilder @Inject()(
   statisticalValueAmountBuilder: StatisticalValueAmountBuilder,
   packagingBuilder: PackagingBuilder,
   governmentProcedureBuilder: GovernmentProcedureBuilder,
-  additionalInformationBuilder: AdditionalInformationBuilder
+  additionalInformationBuilder: AdditionalInformationBuilder,
+  additionalDocumentsBuilder: AdditionalDocumentsBuilder
 ) extends ModifyingBuilder[ExportItem, Declaration.GoodsShipment] {
 
   override def buildThenAdd(exportItem: ExportItem, goodsShipment: Declaration.GoodsShipment): Unit = {
@@ -45,7 +46,7 @@ class GovernmentAgencyGoodsItemBuilder @Inject()(
     packagingBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     governmentProcedureBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     additionalInformationBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
-    AdditionalDocumentsBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    additionalDocumentsBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
 
     goodsShipment.getGovernmentAgencyGoodsItem.add(wcoGovernmentAgencyGoodsItem)
   }
