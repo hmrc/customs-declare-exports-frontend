@@ -19,13 +19,12 @@ package services.mapping.governmentagencygoodsitem
 import java.util
 
 import forms.declaration.AdditionalInformation
-import models.declaration.AdditionalInformationData
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.CacheTestData
+import services.cache.ExportsCacheItemBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
 
-class AdditionalInformationBuilderSpec extends WordSpec with Matchers with MockitoSugar with CacheTestData {
+class AdditionalInformationBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheItemBuilder {
 
   val additionalInformation = AdditionalInformation("code", "description")
 
@@ -42,16 +41,14 @@ class AdditionalInformationBuilderSpec extends WordSpec with Matchers with Mocki
     }
 
     "map correctly when export item from cache is present" in {
-      val exportItem =
-        createExportItem().copy(additionalInformation = Some(AdditionalInformationData(Seq(additionalInformation))))
+      val exportItem = aCachedItem(withAdditionalInformation(additionalInformation))
       val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
       AdditionalInformationBuilder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
       validateAdditionalInformations(governmentAgencyGoodsItem.getAdditionalInformation)
     }
 
     "map correctly when export item from cache is not present" in {
-      val exportItem =
-        createExportItem().copy(additionalInformation = Some(AdditionalInformationData(Seq())))
+      val exportItem = aCachedItem(withAdditionalInformation())
       val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
       AdditionalInformationBuilder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
       governmentAgencyGoodsItem.getAdditionalInformation.isEmpty shouldBe true

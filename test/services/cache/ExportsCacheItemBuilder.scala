@@ -18,7 +18,9 @@ package services.cache
 
 import java.util.UUID
 
-import models.declaration.ProcedureCodesData
+import forms.declaration.additionaldocuments.DocumentsProduced
+import forms.declaration.{AdditionalInformation, ItemType, PackageInformation}
+import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 
 trait ExportsCacheItemBuilder {
 
@@ -33,6 +35,60 @@ trait ExportsCacheItemBuilder {
 
   // ************************************************* Builders ********************************************************
 
-  def withProcedureCodes(procedureCode: Option[String] = None, additionalProcedureCodes: Seq[String] = Seq.empty): CachedItemModifier =
+  def withProcedureCodes(
+    procedureCode: Option[String] = None,
+    additionalProcedureCodes: Seq[String] = Seq.empty
+  ): CachedItemModifier =
     _.copy(procedureCodes = Some(ProcedureCodesData(procedureCode, additionalProcedureCodes)))
+
+  def withAdditionalInformation(code: String, description: String): CachedItemModifier =
+    withAdditionalInformation(AdditionalInformation(code, description))
+
+  def withAdditionalInformation(data: AdditionalInformation*): CachedItemModifier =
+    cache => {
+      val existing: Seq[AdditionalInformation] = cache.additionalInformation.map(_.items).getOrElse(Seq.empty)
+      cache.copy(additionalInformation = Some(AdditionalInformationData(existing ++ data)))
+    }
+
+  def withItemType(
+    combinedNomenclatureCode: String,
+    taricAdditionalCodes: Seq[String],
+    nationalAdditionalCodes: Seq[String],
+    descriptionOfGoods: String,
+    cusCode: Option[String],
+    unDangerousGoodsCode: Option[String],
+    statisticalValue: String
+  ): CachedItemModifier =
+    withItemType(
+      ItemType(
+        combinedNomenclatureCode,
+        taricAdditionalCodes,
+        nationalAdditionalCodes,
+        descriptionOfGoods,
+        cusCode,
+        unDangerousGoodsCode,
+        statisticalValue
+      )
+    )
+
+  def withItemType(data: ItemType): CachedItemModifier = _.copy(itemType = Some(data))
+
+  def withPackageInformation(info: PackageInformation*): CachedItemModifier = _.copy(packageInformation = info.toList)
+
+  def withPackageInformation(typesOfPackages: Option[String],
+                             numberOfPackages: Option[Int],
+                             shippingMarks: Option[String]
+                            ): CachedItemModifier = cache => cache.copy(packageInformation = cache.packageInformation :+ PackageInformation(
+    typesOfPackages,
+    numberOfPackages,
+    shippingMarks)
+  )
+
+  def withDocumentsProduced(docs: DocumentsProduced*): CachedItemModifier = cache => {
+    val existing = cache.documentsProducedData.map(_.documents).getOrElse(Seq.empty)
+    cache.copy(documentsProducedData = Some(DocumentsProducedData(existing ++ docs)))
+  }
+
+  def withDocumentsProduced(docs: DocumentsProducedData): CachedItemModifier = cache => cache.copy(documentsProducedData = Some(docs))
+
 }

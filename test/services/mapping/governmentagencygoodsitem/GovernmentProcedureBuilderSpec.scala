@@ -16,14 +16,13 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import models.declaration.ProcedureCodesData
 import models.declaration.governmentagencygoodsitem.GovernmentProcedure
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.CacheTestData
+import services.cache.ExportsCacheItemBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
 
 class GovernmentProcedureBuilderSpec
-    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with CacheTestData {
+    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with ExportsCacheItemBuilder {
 
   val firstProcedureCode = "CUPR"
   val additionalProcedureCode = "ABC"
@@ -40,9 +39,8 @@ class GovernmentProcedureBuilderSpec
     }
 
     "build governmentProcedure correctly from ExportItem Cache model" in {
-      val exportItem = createExportItem().copy(
-        procedureCodes = Some(ProcedureCodesData(Some(firstProcedureCode), Seq(additionalProcedureCode)))
-      )
+      val exportItem = aCachedItem(withProcedureCodes(Some(firstProcedureCode), Seq(additionalProcedureCode)))
+
       val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
       GovernmentProcedureBuilder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
 

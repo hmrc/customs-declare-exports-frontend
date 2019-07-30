@@ -25,16 +25,17 @@ import forms.declaration.GoodsLocationTestData.correctGoodsLocation
 import forms.declaration.NatureOfTransactionSpec.correctNatureOfTransaction
 import forms.declaration.PreviousDocumentsData
 import forms.declaration.WarehouseIdentificationSpec.correctWarehouseIdentification
-import models.declaration.{DeclarationAdditionalActorsData, Locations}
+import models.declaration.DeclarationAdditionalActorsData
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.{CacheTestData, ExportsCacheModelBuilder}
-import services.mapping.goodsshipment.{ConsigneeBuilder, GoodsShipmentBuilder, GoodsShipmentNatureOfTransactionBuilder}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import services.cache.ExportsCacheModelBuilder
+import services.mapping.goodsshipment.GoodsShipmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class GoodsShipmentBuilderIntegrationSpec
-    extends WordSpec with Matchers with CacheTestData with ExportsCacheModelBuilder {
+    extends WordSpec with Matchers with ExportsCacheModelBuilder with GuiceOneAppPerSuite {
 
-  private def builder = new GoodsShipmentBuilder(new GoodsShipmentNatureOfTransactionBuilder(), new ConsigneeBuilder())
+  private def builder = app.injector.instanceOf[GoodsShipmentBuilder]
 
   "GoodsShipmentBuilder" should {
 
@@ -43,12 +44,12 @@ class GoodsShipmentBuilderIntegrationSpec
       val cacheModel = aCacheModel(
         withNatureOfTransaction(correctNatureOfTransaction.natureType),
         withConsigneeDetails(correctConsigneeDetailsFull),
-        withDeclarationAdditionalActorsData(DeclarationAdditionalActorsData(Seq(correctAdditionalActors1, correctAdditionalActors2))),
+        withDeclarationAdditionalActors(DeclarationAdditionalActorsData(Seq(correctAdditionalActors1, correctAdditionalActors2))),
         withDestinationCountries(correctDestinationCountries),
         withGoodsLocation(correctGoodsLocation),
         withWarehouseIdentification(correctWarehouseIdentification),
         withConsignmentReferences(correctConsignmentReferences),
-        withPreviousDocumentsData(PreviousDocumentsData(Seq(correctPreviousDocument)))
+        withPreviousDocuments(PreviousDocumentsData(Seq(correctPreviousDocument)))
       )
 
       val declaration = new Declaration()

@@ -27,7 +27,8 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class GoodsShipmentBuilder @Inject()(
   goodsShipmentNatureOfTransactionBuilder: GoodsShipmentNatureOfTransactionBuilder,
-  consigneeBuilder: ConsigneeBuilder
+  consigneeBuilder: ConsigneeBuilder,
+  governmentAgencyGoodsItemBuilder: GovernmentAgencyGoodsItemBuilder
 ) extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
   override def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit = {
@@ -46,7 +47,7 @@ class GoodsShipmentBuilder @Inject()(
     PreviousDocumentsBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
 
     exportsCacheModel.items.foreach { item =>
-      GovernmentAgencyGoodsItemBuilder.buildThenAdd(item, goodsShipment)
+      governmentAgencyGoodsItemBuilder.buildThenAdd(item, goodsShipment)
     }
 
     AEOMutualRecognitionPartiesBuilder.buildThenAdd(exportsCacheModel, goodsShipment)

@@ -152,14 +152,22 @@ trait ExportsCacheModelBuilder {
   def withoutConsigneeDetails(): CacheModifier =
     cache => cache.copy(parties = cache.parties.copy(consigneeDetails = None))
 
-  def withDeclarationAdditionalActorsData(
+  def withDeclarationAdditionalActors(data: DeclarationAdditionalActors*): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = Some(DeclarationAdditionalActorsData(data))))
+
+  def withDeclarationAdditionalActors(
     declarationAdditionalActorsData: DeclarationAdditionalActorsData
   ): CacheModifier =
     cache =>
       cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = Some(declarationAdditionalActorsData)))
 
-  def withPreviousDocumentsData(previousDocumentsData: PreviousDocumentsData): CacheModifier =
+  def withPreviousDocuments(previousDocuments: Document*): CacheModifier =
+    _.copy(previousDocuments = Some(PreviousDocumentsData(previousDocuments)))
+
+  def withPreviousDocuments(previousDocumentsData: PreviousDocumentsData): CacheModifier =
     _.copy(previousDocuments = Some(previousDocumentsData))
+
+  def withNatureOfTransaction(nature: NatureOfTransaction): CacheModifier = _.copy(natureOfTransaction = Some(nature))
 
   def withNatureOfTransaction(natureType: String): CacheModifier =
     _.copy(natureOfTransaction = Some(NatureOfTransaction(natureType)))

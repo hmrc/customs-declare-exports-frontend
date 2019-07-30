@@ -58,7 +58,7 @@ class PreviousDocumentsControllerSpec
     "read item from cache and display it" in {
 
       val cachedData = PreviousDocumentsData(Seq(Document("X", "MCR", "XH", Some("UX"))))
-      withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocumentsData(cachedData)))
+      withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -89,7 +89,7 @@ class PreviousDocumentsControllerSpec
 
       "item is not duplicated" in {
 
-        withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocumentsData(cachedData)))
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
 
         val document =
           Seq(
@@ -113,7 +113,7 @@ class PreviousDocumentsControllerSpec
 
       "exists in cache" in {
 
-        withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocumentsData(cachedData)))
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
 
         val body = removeActionURLEncoded("0")
 
@@ -263,7 +263,7 @@ class PreviousDocumentsControllerSpec
       "item duplication in cache" in {
 
         withNewCaching(
-          aCacheModel(withChoice(SupplementaryDec), withPreviousDocumentsData(cachedData))
+          aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
         )
 
         val body = correctDocument :+ addActionURLEncoded
@@ -280,7 +280,7 @@ class PreviousDocumentsControllerSpec
       "limit of items reached" in {
 
         withNewCaching(
-          aCacheModel(withChoice(SupplementaryDec), withPreviousDocumentsData(fullCache))
+          aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(fullCache))
         )
 
         val body = Seq(
@@ -433,7 +433,7 @@ class PreviousDocumentsControllerSpec
       "item duplication in cache" in {
 
         withNewCaching(
-          aCacheModel(withChoice(SupplementaryDec), withPreviousDocumentsData(cachedData))
+          aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
         )
 
         val body = correctDocument :+ saveAndContinueActionURLEncoded
@@ -450,7 +450,7 @@ class PreviousDocumentsControllerSpec
 
       "limit of items reached" in {
 
-        withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocumentsData(fullCache)))
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(fullCache)))
 
         val body = Seq(
           ("documentCategory", "Y"),
@@ -485,7 +485,7 @@ class PreviousDocumentsControllerSpec
 
       "user has empty form but cache contains some item" in {
         withNewCaching(
-          aCacheModel(withChoice(SupplementaryDec), withPreviousDocumentsData(cachedData))
+          aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
         )
 
         val body = emptyDocument :+ saveAndContinueActionURLEncoded
@@ -500,7 +500,7 @@ class PreviousDocumentsControllerSpec
 
       "user provide correct item with different item in cache" in {
         withNewCaching(
-          aCacheModel(withChoice(SupplementaryDec), withPreviousDocumentsData(cachedData))
+          aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
         )
 
         val document =

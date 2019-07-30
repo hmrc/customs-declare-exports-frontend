@@ -67,8 +67,7 @@ trait GovernmentAgencyGoodsItemData {
   //Item Type Data
   val descriptionOfGoods = "descriptionOfGoods"
   val unDangerousGoodsCode = "unDangerousGoodsCode"
-  val itemType = Some(
-    ItemType(
+  val itemType = ItemType(
       "combinedNomenclatureCode",
       Seq("taricAdditionalCodes"),
       Seq("nationalAdditionalCodes"),
@@ -77,7 +76,6 @@ trait GovernmentAgencyGoodsItemData {
       Some(unDangerousGoodsCode),
       "10"
     )
-  )
 
   //commodity measure data
   val netMassString = "15.00"

@@ -309,7 +309,7 @@ class DeclarationAdditionalActorsControllerSpec
   }
 
   private def withCache(data: DeclarationAdditionalActorsData) =
-    withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationAdditionalActorsData(data)))
+    withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationAdditionalActors(data)))
 
   private def testHappyPathsScenarios(
     expectedPath: String,

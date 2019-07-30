@@ -20,11 +20,10 @@ import javax.xml.bind.JAXBElement
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
-import org.mockito.{ArgumentMatchers, BDDMockito}
 import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
+import org.scalatest.{Matchers, WordSpec}
 import services.cache.mapping.declaration.DeclarationBuilder
-import services.cache.{CacheTestData, ExportsCacheModel, ExportsCacheModelBuilder}
+import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder}
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class SubmissionMetaDataBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
