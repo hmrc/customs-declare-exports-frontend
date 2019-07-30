@@ -100,6 +100,19 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
       verifyTheCacheIsUnchanged()
     }
 
+    "validate supervising customs office - invalid" in {
+
+      val incorrectWarehouseOffice: JsValue =
+        JsObject(Map("supervisingCustomsOffice" -> JsString("SOMEWRONGCODE")))
+
+      val result = controller.saveWarehouse().apply(postRequest(incorrectWarehouseOffice))
+
+      status(result) mustBe BAD_REQUEST
+      contentAsString(result) must include("supplementary.warehouse.supervisingCustomsOffice.error")
+      verifyTheCacheIsUnchanged()
+    }
+
+
   }
 
   override protected def beforeEach(): Unit = {

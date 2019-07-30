@@ -59,17 +59,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       verifyTheCacheIsUnchanged()
     }
 
-    "validate supervising customs office - invalid" in {
-
-      val incorrectWarehouseOffice: JsValue =
-        JsObject(Map("supervisingCustomsOffice" -> JsString("SOMEWRONGCODE")))
-
-      val Some(result) = route(app, postRequest(uri, incorrectWarehouseOffice))
-
-      status(result) mustBe BAD_REQUEST
-      contentAsString(result) must include(messages(supervisingCustomsOfficeError))
-      verifyTheCacheIsUnchanged()
-    }
 
     "validate inland mode transport code - wrong choice" in {
 
