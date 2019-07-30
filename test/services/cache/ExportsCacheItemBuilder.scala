@@ -35,6 +35,8 @@ trait ExportsCacheItemBuilder {
 
   // ************************************************* Builders ********************************************************
 
+  def withoutProcedureCodes(): CachedItemModifier = _.copy(procedureCodes = None)
+
   def withProcedureCodes(
     procedureCode: Option[String] = None,
     additionalProcedureCodes: Seq[String] = Seq.empty

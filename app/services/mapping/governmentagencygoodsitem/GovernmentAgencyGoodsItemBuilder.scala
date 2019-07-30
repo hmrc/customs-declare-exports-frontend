@@ -32,17 +32,17 @@ import scala.collection.JavaConverters._
 
 class GovernmentAgencyGoodsItemBuilder @Inject()(
   statisticalValueAmountBuilder: StatisticalValueAmountBuilder,
-  packagingBuilder: PackagingBuilder
+  packagingBuilder: PackagingBuilder,
+  governmentProcedureBuilder: GovernmentProcedureBuilder
 ) extends ModifyingBuilder[ExportItem, Declaration.GoodsShipment] {
 
   override def buildThenAdd(exportItem: ExportItem, goodsShipment: Declaration.GoodsShipment): Unit = {
     val wcoGovernmentAgencyGoodsItem = new WCOGovernmentAgencyGoodsItem
-
-    statisticalValueAmountBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     wcoGovernmentAgencyGoodsItem.setSequenceNumeric(BigDecimal(exportItem.sequenceId).bigDecimal)
 
+    statisticalValueAmountBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     packagingBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
-    GovernmentProcedureBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    governmentProcedureBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     AdditionalInformationBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     AdditionalDocumentsBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
 

@@ -35,6 +35,7 @@ class GovernmentAgencyGoodsItemBuilderSpec
 
   private val statisticalValueAmountBuilder = mock[StatisticalValueAmountBuilder]
   private val packagingBuilder = mock[PackagingBuilder]
+  private val governmentProcedureBuilder = mock[GovernmentProcedureBuilder]
 
   "GovernmentAgencyGoodsItemBuilder" should {
     "map to WCO model correctly " in {
@@ -78,9 +79,9 @@ class GovernmentAgencyGoodsItemBuilderSpec
       item.getSequenceNumeric.compareTo(BigDecimal(sequenceId).bigDecimal)
 
       verify(statisticalValueAmountBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
-
       verify(packagingBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
-      validateGovernmentProcedure(item.getGovernmentProcedure.get(0))
+      verify(governmentProcedureBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
+
       validateAdditionalInformation(item.getAdditionalInformation.get(0))
       validateAdditionalDocumentNew(
         item.getAdditionalDocument.get(0),
@@ -90,7 +91,7 @@ class GovernmentAgencyGoodsItemBuilderSpec
     }
   }
 
-  private def builder = new GovernmentAgencyGoodsItemBuilder(statisticalValueAmountBuilder, packagingBuilder)
+  private def builder = new GovernmentAgencyGoodsItemBuilder(statisticalValueAmountBuilder, packagingBuilder, governmentProcedureBuilder)
 
   private def validateStatisticalValueAmount(value: java.math.BigDecimal, currencyId: String) = {
     currencyId should be(StatisticalValueAmountBuilder.defaultCurrencyCode)

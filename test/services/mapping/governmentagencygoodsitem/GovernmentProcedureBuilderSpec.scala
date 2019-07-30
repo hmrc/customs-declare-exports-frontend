@@ -38,19 +38,32 @@ class GovernmentProcedureBuilderSpec
       procedures.get(0).getPreviousCode.getValue shouldBe governmentProcedure.previousCode.get
     }
 
-    "build governmentProcedure correctly from ExportItem Cache model" in {
-      val exportItem = aCachedItem(withProcedureCodes(Some(firstProcedureCode), Seq(additionalProcedureCode)))
+    "build then add" when {
+      "no procedure codes" in {
+        val exportItem = aCachedItem(withoutProcedureCodes())
+        val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
 
-      val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
-      GovernmentProcedureBuilder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
+        builder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
 
-      val mappedProcedure1 = governmentAgencyGoodsItem.getGovernmentProcedure.get(0)
-      mappedProcedure1.getCurrentCode.getValue shouldBe firstProcedureCode.substring(0, 2)
-      mappedProcedure1.getPreviousCode.getValue shouldBe firstProcedureCode.substring(2, 4)
+        governmentAgencyGoodsItem.getGovernmentProcedure shouldBe empty
+      }
 
-      val mappedProcedure2 = governmentAgencyGoodsItem.getGovernmentProcedure.get(1)
-      mappedProcedure2.getCurrentCode.getValue shouldBe additionalProcedureCode
-      mappedProcedure2.getPreviousCode shouldBe null
+      "populated procedure codes" in {
+        val exportItem = aCachedItem(withProcedureCodes(Some(firstProcedureCode), Seq(additionalProcedureCode)))
+        val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
+
+        builder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
+
+        val mappedProcedure1 = governmentAgencyGoodsItem.getGovernmentProcedure.get(0)
+        mappedProcedure1.getCurrentCode.getValue shouldBe firstProcedureCode.substring(0, 2)
+        mappedProcedure1.getPreviousCode.getValue shouldBe firstProcedureCode.substring(2, 4)
+
+        val mappedProcedure2 = governmentAgencyGoodsItem.getGovernmentProcedure.get(1)
+        mappedProcedure2.getCurrentCode.getValue shouldBe additionalProcedureCode
+        mappedProcedure2.getPreviousCode shouldBe null
+      }
     }
   }
+
+  private def builder = new GovernmentProcedureBuilder()
 }
