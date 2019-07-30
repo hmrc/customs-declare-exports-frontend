@@ -15,17 +15,20 @@
  */
 
 package services.mapping.governmentagencygoodsitem
-import forms.declaration.ProcedureCodes
+import javax.inject.Inject
 import services.cache.ExportItem
+import services.mapping.ModifyingBuilder
+import services.mapping.governmentagencygoodsitem.GovernmentProcedureBuilder.createGovernmentProcedure
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.GovernmentProcedure
 import wco.datamodel.wco.declaration_ds.dms._2.{GovernmentProcedureCurrentCodeType, GovernmentProcedurePreviousCodeType}
 
 import scala.collection.JavaConverters._
 
-object GovernmentProcedureBuilder {
+class GovernmentProcedureBuilder @Inject()()
+    extends ModifyingBuilder[ExportItem, GoodsShipment.GovernmentAgencyGoodsItem] {
 
-  def buildThenAdd(
+  override def buildThenAdd(
     exportItem: ExportItem,
     wcoGovernmentAgencyGoodsItem: GoodsShipment.GovernmentAgencyGoodsItem
   ): Unit =
@@ -40,6 +43,10 @@ object GovernmentProcedureBuilder {
         }
       }
     }
+
+}
+
+object GovernmentProcedureBuilder {
 
   def build(
     procedureCodes: Seq[models.declaration.governmentagencygoodsitem.GovernmentProcedure]

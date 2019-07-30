@@ -16,8 +16,6 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import java.util
-
 import forms.declaration.AdditionalInformation
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
@@ -31,8 +29,10 @@ class AdditionalInformationBuilderSpec extends WordSpec with Matchers with Mocki
   "AdditionalInformationBuilder" should {
     "map correctly when values are present" in {
       val mappedAdditionalInformation = AdditionalInformationBuilder.build(Seq(additionalInformation))
-      validateAdditionalInformations(mappedAdditionalInformation)
 
+      mappedAdditionalInformation shouldNot be(empty)
+      mappedAdditionalInformation.get(0).getStatementCode.getValue shouldBe additionalInformation.code
+      mappedAdditionalInformation.get(0).getStatementDescription.getValue shouldBe additionalInformation.description
     }
 
     "map correctly when values are not Present" in {
@@ -40,26 +40,29 @@ class AdditionalInformationBuilderSpec extends WordSpec with Matchers with Mocki
       mappedAdditionalInformation.isEmpty shouldBe true
     }
 
-    "map correctly when export item from cache is present" in {
-      val exportItem = aCachedItem(withAdditionalInformation(additionalInformation))
-      val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
-      AdditionalInformationBuilder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
-      validateAdditionalInformations(governmentAgencyGoodsItem.getAdditionalInformation)
-    }
+    "build then add" when {
+      "no additional information" in {
+        val exportItem = aCachedItem(withoutAdditionalInformation())
+        val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
 
-    "map correctly when export item from cache is not present" in {
-      val exportItem = aCachedItem(withAdditionalInformation())
-      val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
-      AdditionalInformationBuilder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
-      governmentAgencyGoodsItem.getAdditionalInformation.isEmpty shouldBe true
+        builder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
+
+        governmentAgencyGoodsItem.getAdditionalInformation shouldBe empty
+      }
+
+      "populated additional information" in {
+        val exportItem = aCachedItem(withAdditionalInformation(additionalInformation))
+        val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
+
+        builder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
+
+        governmentAgencyGoodsItem.getAdditionalInformation shouldNot be(empty)
+        governmentAgencyGoodsItem.getAdditionalInformation.get(0).getStatementCode.getValue shouldBe additionalInformation.code
+        governmentAgencyGoodsItem.getAdditionalInformation.get(0).getStatementDescription.getValue shouldBe additionalInformation.description
+      }
     }
   }
 
-  private def validateAdditionalInformations(
-    mappedAdditionalInformation: util.List[GovernmentAgencyGoodsItem.AdditionalInformation]
-  ) = {
-    mappedAdditionalInformation.isEmpty shouldBe false
-    mappedAdditionalInformation.get(0).getStatementCode.getValue shouldBe additionalInformation.code
-    mappedAdditionalInformation.get(0).getStatementDescription.getValue shouldBe additionalInformation.description
-  }
+  private def builder = new AdditionalInformationBuilder()
+
 }

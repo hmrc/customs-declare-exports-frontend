@@ -17,16 +17,15 @@
 package services.mapping.governmentagencygoodsitem
 
 import forms.declaration.additionaldocuments.DocumentsProduced
-import models.declaration.governmentagencygoodsitem.{
-  DateTimeElement,
-  DateTimeString,
-  GovernmentAgencyGoodsItemAdditionalDocument,
-  GovernmentAgencyGoodsItemAdditionalDocumentSubmitter,
-  Measure,
-  WriteOff
-}
+import javax.inject.Inject
+import models.declaration.governmentagencygoodsitem._
 import services.ExportsItemsCacheIds.dateTimeCode
 import services.cache.ExportItem
+import services.mapping.ModifyingBuilder
+import services.mapping.governmentagencygoodsitem.AdditionalDocumentsBuilder.{
+  createAdditionalDocument,
+  createGoodsItemAdditionalDocument
+}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument.{
@@ -45,7 +44,9 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
 
 import scala.collection.JavaConverters._
 
-object AdditionalDocumentsBuilder {
+class AdditionalDocumentsBuilder @Inject()()
+    extends ModifyingBuilder[ExportItem, GoodsShipment.GovernmentAgencyGoodsItem] {
+
   def buildThenAdd(
     exportItem: ExportItem,
     wcoGovernmentAgencyGoodsItem: GoodsShipment.GovernmentAgencyGoodsItem
@@ -55,6 +56,9 @@ object AdditionalDocumentsBuilder {
         wcoGovernmentAgencyGoodsItem.getAdditionalDocument.add(createAdditionalDocument(goodsItemAdditionalDocument))
       }
     }
+}
+
+object AdditionalDocumentsBuilder {
 
   def build(procedureCodes: Seq[GovernmentAgencyGoodsItemAdditionalDocument]): java.util.List[AdditionalDocument] =
     procedureCodes

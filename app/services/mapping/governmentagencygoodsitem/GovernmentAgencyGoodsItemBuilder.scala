@@ -30,21 +30,27 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
 
 import scala.collection.JavaConverters._
 
-class GovernmentAgencyGoodsItemBuilder @Inject()() extends ModifyingBuilder[ExportItem, Declaration.GoodsShipment] {
+class GovernmentAgencyGoodsItemBuilder @Inject()(
+  statisticalValueAmountBuilder: StatisticalValueAmountBuilder,
+  packagingBuilder: PackagingBuilder,
+  governmentProcedureBuilder: GovernmentProcedureBuilder,
+  additionalInformationBuilder: AdditionalInformationBuilder,
+  additionalDocumentsBuilder: AdditionalDocumentsBuilder
+) extends ModifyingBuilder[ExportItem, Declaration.GoodsShipment] {
 
   override def buildThenAdd(exportItem: ExportItem, goodsShipment: Declaration.GoodsShipment): Unit = {
     val wcoGovernmentAgencyGoodsItem = new WCOGovernmentAgencyGoodsItem
-
-    StatisticalValueAmountBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     wcoGovernmentAgencyGoodsItem.setSequenceNumeric(BigDecimal(exportItem.sequenceId).bigDecimal)
 
-    PackagingBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
-    GovernmentProcedureBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
-    AdditionalInformationBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
-    AdditionalDocumentsBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    statisticalValueAmountBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    packagingBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    governmentProcedureBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    additionalInformationBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
+    additionalDocumentsBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
 
     goodsShipment.getGovernmentAgencyGoodsItem.add(wcoGovernmentAgencyGoodsItem)
   }
+
 }
 
 object GovernmentAgencyGoodsItemBuilder {

@@ -19,6 +19,9 @@ package services.mapping.governmentagencygoodsitem
 import forms.declaration.AdditionalFiscalReference
 import models.declaration.governmentagencygoodsitem.{Commodity => _, GovernmentProcedure => _, Packaging => _}
 import models.declaration.{DocumentsProducedData, DocumentsProducedDataSpec}
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
 import services.ExportsItemsCacheIds
@@ -30,7 +33,13 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
 }
 
 class GovernmentAgencyGoodsItemBuilderSpec
-    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with ExportsCacheItemBuilder {
+    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with MockitoSugar with ExportsCacheItemBuilder {
+
+  private val statisticalValueAmountBuilder = mock[StatisticalValueAmountBuilder]
+  private val packagingBuilder = mock[PackagingBuilder]
+  private val governmentProcedureBuilder = mock[GovernmentProcedureBuilder]
+  private val additionalInformationBuilder = mock[AdditionalInformationBuilder]
+  private val additionalDocumentsBuilder = mock[AdditionalDocumentsBuilder]
 
   "GovernmentAgencyGoodsItemBuilder" should {
     "map to WCO model correctly " in {
@@ -59,36 +68,23 @@ class GovernmentAgencyGoodsItemBuilderSpec
     }
 
     "map ExportItem Correctly" in {
-      val sequenceId = 99
-      val exportItem = aCachedItem(
-        withItemType(itemType),
-        withPackageInformation(typesOfPackages = Some("AA"), numberOfPackages = Some(2), shippingMarks = Some("mark1")),
-        withProcedureCodes(Some("CUPR"), Seq("XZYT")),
-        withAdditionalInformation(statementCode, descriptionValue),
-        withDocumentsProduced(DocumentsProducedDataSpec.correctDocumentsProducedData)
-      )
+      val exportItem = aCachedItem(withSequenceId(99))
 
       val goodsShipment = new GoodsShipment
       builder.buildThenAdd(exportItem, goodsShipment)
-      val item = goodsShipment.getGovernmentAgencyGoodsItem.get(0)
-      validateStatisticalValueAmount(
-        item.getStatisticalValueAmount.getValue,
-        item.getStatisticalValueAmount.getCurrencyID
-      )
-      item.getSequenceNumeric.compareTo(BigDecimal(sequenceId).bigDecimal)
 
-      validatePackaging(item.getPackaging.get(0))
-      validateGovernmentProcedure(item.getGovernmentProcedure.get(0))
-      validateAdditionalInformation(item.getAdditionalInformation.get(0))
-      validateAdditionalDocumentNew(
-        item.getAdditionalDocument.get(0),
-        DocumentsProducedDataSpec.correctDocumentsProducedData
-      )
+      verify(statisticalValueAmountBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
+      verify(packagingBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
+      verify(governmentProcedureBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
+      verify(additionalInformationBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
+      verify(additionalDocumentsBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
 
+      goodsShipment.getGovernmentAgencyGoodsItem shouldNot be(empty)
+      goodsShipment.getGovernmentAgencyGoodsItem.get(0).getSequenceNumeric.intValue() shouldBe 99
     }
   }
 
-  private def builder = new GovernmentAgencyGoodsItemBuilder()
+  private def builder = new GovernmentAgencyGoodsItemBuilder(statisticalValueAmountBuilder, packagingBuilder, governmentProcedureBuilder, additionalInformationBuilder, additionalDocumentsBuilder)
 
   private def validateStatisticalValueAmount(value: java.math.BigDecimal, currencyId: String) = {
     currencyId should be(StatisticalValueAmountBuilder.defaultCurrencyCode)
