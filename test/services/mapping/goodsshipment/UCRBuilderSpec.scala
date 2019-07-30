@@ -22,6 +22,7 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class UCRBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
@@ -50,6 +51,21 @@ class UCRBuilderSpec extends WordSpec with Matchers with MockitoSugar {
         when(cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.id))
           .thenReturn(None)
         UCRBuilder.build(cacheMap) should be(null)
+      }
+
+    }
+
+    "correctly map new model to the WCO-DEC GoodsShipment.UCR instance" when {
+      "ducr supplied" in {
+
+        val builder = new UCRBuilder
+
+        val goodsShipment = new GoodsShipment
+        builder.buildThenAdd(ConsignmentReferencesSpec.correctConsignmentReferences, goodsShipment)
+
+        val ucrObject = goodsShipment.getUCR
+        ucrObject.getID should be(null)
+        ucrObject.getTraderAssignedReferenceID.getValue should be("8GB123456789012-1234567890QWERTYUIO")
       }
 
     }

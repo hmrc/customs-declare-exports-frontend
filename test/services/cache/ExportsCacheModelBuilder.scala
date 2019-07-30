@@ -26,7 +26,12 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupp
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
-import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, TransportInformationContainerData}
+import models.declaration.{
+  DeclarationAdditionalActorsData,
+  DeclarationHoldersData,
+  Locations,
+  TransportInformationContainerData
+}
 
 //noinspection ScalaStyle
 trait ExportsCacheModelBuilder {
@@ -122,12 +127,6 @@ trait ExportsCacheModelBuilder {
   def withDeclarationHolders(holders: DeclarationHolder*): CacheModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders))))
 
-  def withoutRepresentativeDetails(): CacheModifier =
-    cache => cache.copy(parties = cache.parties.copy(representativeDetails = None))
-
-  def withRepresentativeDetails(details: RepresentativeDetails): CacheModifier =
-    cache => cache.copy(parties = cache.parties.copy(representativeDetails = Some(details)))
-
   def withoutBorderTransport(): CacheModifier = _.copy(borderTransport = None)
 
   def withBorderTransport(
@@ -211,9 +210,6 @@ trait ExportsCacheModelBuilder {
         )
       )
     )
-
-  def withSeals(seals: Seq[Seal]): CacheModifier =
-    cache => cache.copy(seals = seals)
 
   def withoutDestinationCountries(): CacheModifier =
     cache => cache.copy(locations = cache.locations.copy(destinationCountries = None))

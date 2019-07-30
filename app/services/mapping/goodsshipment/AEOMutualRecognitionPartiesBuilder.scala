@@ -19,22 +19,24 @@ package services.mapping.goodsshipment
 import java.util
 
 import forms.declaration.DeclarationAdditionalActors
+import javax.inject.Inject
 import models.declaration.DeclarationAdditionalActorsData
-import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2._
 
 import scala.collection.JavaConverters._
 
+class AEOMutualRecognitionPartiesBuilder @Inject()()
+    extends ModifyingBuilder[DeclarationAdditionalActors, GoodsShipment] {
+
+  override def buildThenAdd(model: DeclarationAdditionalActors, goodsShipment: GoodsShipment): Unit =
+    goodsShipment.getAEOMutualRecognitionParty.add(AEOMutualRecognitionPartiesBuilder.createAdditionalActors(model))
+
+}
+
 object AEOMutualRecognitionPartiesBuilder {
-  def buildThenAdd(exportsCacheModel: ExportsCacheModel, goodsShipment: GoodsShipment): Unit =
-    exportsCacheModel.parties.declarationAdditionalActorsData.foreach(
-      declarationAdditionalActorsData =>
-        declarationAdditionalActorsData.actors.foreach { declarationAdditionalActors =>
-          goodsShipment.getAEOMutualRecognitionParty.add(createAdditionalActors(declarationAdditionalActors))
-      }
-    )
 
   def build(implicit cacheMap: CacheMap): util.List[GoodsShipment.AEOMutualRecognitionParty] =
     cacheMap

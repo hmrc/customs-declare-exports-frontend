@@ -130,13 +130,13 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
 
         val model: ExportsCacheModel =
           aCacheModel(
-            withGoodsLocation(Some(GoodsLocationTestData.correctGoodsLocation)),
+            withGoodsLocation(GoodsLocationTestData.correctGoodsLocation),
             withBorderTransport(
               borderModeOfTransportCode,
               meansOfTransportOnDepartureType,
               Some(meansOfTransportOnDepartureIDNumber)
             ),
-            withWarehouseIdentification(Some(WarehouseIdentificationSpec.correctWarehouseIdentification)),
+            withWarehouseIdentification(WarehouseIdentificationSpec.correctWarehouseIdentification),
             withTransportDetails(Some("Portugal"), container = true, "40", Some("1234567878ui"), Some("A")),
             withSeals(Seq(Seal("first"), Seal("second")))
           )
