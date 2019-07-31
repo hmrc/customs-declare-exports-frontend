@@ -16,19 +16,14 @@
 
 package controllers.declaration
 
-import base.{CustomExportsBaseSpec, TestHelper}
+import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.TransportCodes._
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
-import helpers.views.declaration.WarehouseIdentificationMessages
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
-import org.mockito.Mockito.{times, verify}
-import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 
-class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with WarehouseIdentificationMessages {
+class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
 
   private val uri = uriWithContextPath("/declaration/warehouse")
 
@@ -43,23 +38,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
   }
 
   "Warehouse Identification Controller on POST" should {
-
-    "validate identification type and number" in {
-
-      val incorrectWarehouseIdentification: JsValue =
-        JsObject(Map(
-          "identificationType" -> JsString(WarehouseIdentification.IdentifierType.PUBLIC_CUSTOMS_1),
-          "identificationNumber" -> JsString("")
-        ))
-
-      val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
-
-      status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(identificationNumberError))
-      verifyTheCacheIsUnchanged()
-    }
-
-
 
     "validate request and redirect - no answers" in {
 

@@ -20,6 +20,8 @@ import base.TestHelper
 import controllers.declaration.WarehouseIdentificationController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportCodes.Maritime
+import forms.declaration.WarehouseIdentification
+import helpers.views.declaration.WarehouseIdentificationMessages
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify}
 import org.scalatest.BeforeAndAfterEach
@@ -28,7 +30,8 @@ import play.api.test.Helpers._
 import unit.base.ControllerSpec
 import views.html.declaration.warehouse_identification
 
-class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAndAfterEach
+  with WarehouseIdentificationMessages {
 
   val controller = new WarehouseIdentificationController(
     appConfig = minimalAppConfig,
@@ -90,7 +93,22 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
       val result = controller.saveWarehouse().apply(postRequest(incorrectWarehouseIdentification))
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include("supplementary.warehouse.identificationType.error")
+      contentAsString(result) must include(identificationTypeError)
+      verifyTheCacheIsUnchanged()
+    }
+
+    "validate identification type and number" in {
+
+      val incorrectWarehouseIdentification: JsValue =
+        JsObject(Map(
+          "identificationType" -> JsString(WarehouseIdentification.IdentifierType.PUBLIC_CUSTOMS_1),
+          "identificationNumber" -> JsString("")
+        ))
+
+      val result = controller.saveWarehouse().apply(postRequest(incorrectWarehouseIdentification))
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(identificationNumberError)
       verifyTheCacheIsUnchanged()
     }
 
@@ -101,7 +119,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
       val result = controller.saveWarehouse().apply(postRequest(incorrectWarehouseIdentification))
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include("supplementary.warehouse.identificationNumber.error")
+      contentAsString(result) must include(identificationNumberError)
       verifyTheCacheIsUnchanged()
     }
 
@@ -113,7 +131,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
       val result = controller.saveWarehouse().apply(postRequest(incorrectWarehouseOffice))
 
       status(result) mustBe BAD_REQUEST
-      contentAsString(result) must include("supplementary.warehouse.supervisingCustomsOffice.error")
+      contentAsString(result) must include(supervisingCustomsOfficeError)
       verifyTheCacheIsUnchanged()
     }
 
@@ -125,7 +143,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
       val result = controller.saveWarehouse().apply(postRequest(incorrectTransportCode))
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include("supplementary.warehouse.inlandTransportMode.error.incorrect")
+      contentAsString(result) must include(inlandTransportModeError)
       verifyTheCacheIsUnchanged()
     }
   }
