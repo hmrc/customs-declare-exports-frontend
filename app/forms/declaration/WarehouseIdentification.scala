@@ -56,10 +56,13 @@ object WarehouseIdentification {
         )
     )
   )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
-    .verifying("supplementary.warehouse.identificationNumber.error", _ match {
-      case WarehouseIdentification(_, Some(_), None, _) | WarehouseIdentification(_, Some(_), Some(""), _) => false
-      case _ => true
-    })
+    .verifying("supplementary.warehouse.identificationNumber.error", idNumberIsPopulatedWhenIDTypeIsSelected)
+
+  private def idNumberIsPopulatedWhenIDTypeIsSelected: WarehouseIdentification => Boolean =
+    w => w.identificationType match {
+      case Some(_) => w.identificationNumber.exists(_.nonEmpty)
+      case None => true
+    }
 
   def form(): Form[WarehouseIdentification] = Form(mapping)
 
