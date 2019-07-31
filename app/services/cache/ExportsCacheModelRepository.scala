@@ -50,7 +50,7 @@ class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent, appConfi
     Index(
       key = Seq("updatedDateTime" -> IndexType.Ascending),
       name = Some("ttl"),
-      options = BSONDocument("expireAfterSeconds" -> 90)
+      options = BSONDocument("expireAfterSeconds" -> appConfig.cacheTimeToLive.toSeconds)
     )
   )
 
