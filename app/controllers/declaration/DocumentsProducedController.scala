@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.{cacheId, goodsItemCacheId}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
@@ -47,14 +46,14 @@ class DocumentsProducedController @Inject()(
   itemsCache: ItemsCachingService,
   mcc: MessagesControllerComponents,
   documentProducedPage: documents_produced
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.getItemByIdAndSession(itemId, journeySessionId) map (_.flatMap(_.documentsProducedData)
       .map(_.documents)) map {
-      case Some(data) => Ok(documentProducedPage(itemId, appConfig, form(), data))
-      case _          => Ok(documentProducedPage(itemId, appConfig, form(), Seq()))
+      case Some(data) => Ok(documentProducedPage(itemId, form(), data))
+      case _          => Ok(documentProducedPage(itemId, form(), Seq()))
     }
   }
 
@@ -69,7 +68,7 @@ class DocumentsProducedController @Inject()(
       boundForm
         .fold(
           (formWithErrors: Form[DocumentsProduced]) =>
-            Future.successful(BadRequest(documentProducedPage(itemId, appConfig, formWithErrors, cache.documents))),
+            Future.successful(BadRequest(documentProducedPage(itemId, formWithErrors, cache.documents))),
           validForm =>
             actionTypeOpt match {
               case Some(Add)             => addItem(itemId, validForm, cache)
@@ -196,7 +195,7 @@ class DocumentsProducedController @Inject()(
 
     val formWithError = form().fill(userInput).copy(errors = updatedErrors)
 
-    Future.successful(BadRequest(documentProducedPage(itemId, appConfig, formWithError, documents)))
+    Future.successful(BadRequest(documentProducedPage(itemId, formWithError, documents)))
   }
 
   private def updateCache(

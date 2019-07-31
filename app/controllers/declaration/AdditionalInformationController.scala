@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util._
@@ -45,15 +44,15 @@ class AdditionalInformationController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   additionalInformationPage: additional_information
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   val elementLimit = 99
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.flatMap(_.additionalInformation)).map {
-      case Some(data) => Ok(additionalInformationPage(itemId, appConfig, form(), data.items))
-      case _          => Ok(additionalInformationPage(itemId, appConfig, form(), Seq()))
+      case Some(data) => Ok(additionalInformationPage(itemId, form(), data.items))
+      case _          => Ok(additionalInformationPage(itemId, form(), Seq()))
     }
   }
 
@@ -84,7 +83,7 @@ class AdditionalInformationController @Inject()(
       .add(boundForm, cachedData, elementLimit)
       .fold(
         formWithErrors =>
-          Future.successful(BadRequest(additionalInformationPage(itemId, appConfig, formWithErrors, cachedData))),
+          Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateCacheModelAndRedirect(
             itemId,
@@ -102,7 +101,7 @@ class AdditionalInformationController @Inject()(
       .saveAndContinue(boundForm, cachedData, true, elementLimit)
       .fold(
         formWithErrors =>
-          Future.successful(BadRequest(additionalInformationPage(itemId, appConfig, formWithErrors, cachedData))),
+          Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors, cachedData))),
         updatedCache =>
           if (updatedCache != cachedData)
             updateCacheModelAndRedirect(

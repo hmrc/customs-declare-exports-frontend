@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.WarehouseIdentification
@@ -38,15 +37,15 @@ class WarehouseIdentificationController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   warehouseIdentificationPage: warehouse_identification
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   import forms.declaration.WarehouseIdentification._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.warehouseIdentification)).map {
-      case Some(data) => Ok(warehouseIdentificationPage(appConfig, form.fill(data)))
-      case _          => Ok(warehouseIdentificationPage(appConfig, form))
+      case Some(data) => Ok(warehouseIdentificationPage(form.fill(data)))
+      case _          => Ok(warehouseIdentificationPage(form))
     }
   }
 
@@ -55,7 +54,7 @@ class WarehouseIdentificationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[WarehouseIdentification]) =>
-          Future.successful(BadRequest(warehouseIdentificationPage(appConfig, formWithErrors))),
+          Future.successful(BadRequest(warehouseIdentificationPage(formWithErrors))),
         form =>
           for {
             _ <- updateCache(journeySessionId, form)

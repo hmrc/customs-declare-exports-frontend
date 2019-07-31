@@ -36,7 +36,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       additionalDeclarationTypePage
-    )(minimalAppConfig, ec)
+    )(ec)
 
     authorizedUser()
     withCaching(None)

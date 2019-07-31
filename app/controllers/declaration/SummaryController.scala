@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import handlers.ErrorHandler
@@ -45,7 +44,7 @@ class SummaryController @Inject()(
   mcc: MessagesControllerComponents,
   summaryPage: summary_page,
   summaryPageNoData: summary_page_no_data
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   private val logger = Logger(this.getClass())

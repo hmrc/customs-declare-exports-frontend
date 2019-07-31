@@ -14,16 +14,14 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.routes._
 
 @this(main_template: views.html.main_template)
 
-@()(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("startPage.title"),
-    appConfig = appConfig
+    title = messages("startPage.title")
 ) {
     <div class="grid-row">
         <div class="column-two-thirds, overflow: hidden;, white-space: nowrap;">

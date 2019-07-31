@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import uk.gov.hmrc.play.views.html.layouts.{Head, HeaderNav, Footer, FooterLinks, ServiceInfo, MainContentHeader, MainContent}
 @import play.twirl.api.HtmlFormat
 @import views.html.layouts.GovUkTemplate
@@ -26,11 +27,11 @@
         main_content_header_di: MainContentHeader,
         main_content_di: MainContent,
         footer_links_di: FooterLinks,
-        hmrc_gov_uk_template: GovUkTemplate
+        hmrc_gov_uk_template: GovUkTemplate,
+        appConfig: AppConfig
 )
 
-@(appConfig: config.AppConfig,
-  title: String,
+@(title: String,
   mainClass: Option[String] = None,
   mainDataAttributes: Option[Html] = None,
   bodyClasses: Option[String] = None,

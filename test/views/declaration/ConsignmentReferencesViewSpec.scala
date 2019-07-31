@@ -39,7 +39,7 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
   private val form: Form[ConsignmentReferences] = ConsignmentReferences.form()
   private val consignmentReferencesPage = app.injector.instanceOf[consignment_references]
   private def createView(form: Form[ConsignmentReferences] = form): Html =
-    consignmentReferencesPage(appConfig, form)(fakeRequest, messages)
+    consignmentReferencesPage(form)(fakeRequest, messages)
 
   "Consignment References View" should {
 

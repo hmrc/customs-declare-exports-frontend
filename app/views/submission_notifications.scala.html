@@ -16,18 +16,16 @@
 
 @import java.time.format.DateTimeFormatter
 
-@import config.AppConfig
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.SubmissionStatus
 
 @this(main_template: views.html.main_template)
 
-@(notifications: Seq[Notification])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@(notifications: Seq[Notification])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("notifications.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("notifications.title")
+) {
 
     @components.back_link("/customs-declare-exports/submissions")
 

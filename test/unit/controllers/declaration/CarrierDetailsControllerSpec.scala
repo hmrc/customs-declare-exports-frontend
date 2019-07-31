@@ -36,7 +36,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       carrierDetailsPage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
     withCaching(None)

@@ -31,7 +31,7 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
   private val form: Form[RepresentativeDetails] = RepresentativeDetails.form()
   private val representativeDetailsPage = app.injector.instanceOf[representative_details]
   private def createView(form: Form[RepresentativeDetails] = form): Html =
-    representativeDetailsPage(appConfig, form)(fakeRequest, messages)
+    representativeDetailsPage(form)(fakeRequest, messages)
 
   "Representative Details View" should {
 

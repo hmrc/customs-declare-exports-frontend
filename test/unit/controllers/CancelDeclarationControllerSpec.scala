@@ -40,7 +40,7 @@ class CancelDeclarationControllerSpec extends ControllerSpec {
       stubMessagesControllerComponents(),
       cancelDeclarationPage,
       cancelConfirmationPage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
   }

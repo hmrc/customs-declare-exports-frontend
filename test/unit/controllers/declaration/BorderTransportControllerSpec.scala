@@ -37,7 +37,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       borderTransportPage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
     withCaching(None)

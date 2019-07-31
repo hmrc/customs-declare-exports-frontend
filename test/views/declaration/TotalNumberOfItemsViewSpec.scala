@@ -30,7 +30,7 @@ class TotalNumberOfItemsViewSpec extends ViewSpec with TotalNumberOfItemsMessage
   private val form: Form[TotalNumberOfItems] = TotalNumberOfItems.form()
   private val totalNumberOfItemsPage = app.injector.instanceOf[total_number_of_items]
   private def createView(form: Form[TotalNumberOfItems] = form): Html =
-    totalNumberOfItemsPage(appConfig, form)(fakeRequest, messages)
+    totalNumberOfItemsPage(form)(fakeRequest, messages)
 
   "Total Number Of Items View" should {
 

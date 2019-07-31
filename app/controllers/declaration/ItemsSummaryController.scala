@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
@@ -34,7 +33,7 @@ class ItemsSummaryController @Inject()(
   exportItemIdGeneratorService: ExportItemIdGeneratorService,
   mcc: MessagesControllerComponents,
   itemsSummaryPage: items_summary
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

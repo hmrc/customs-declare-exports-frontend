@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.ExporterDetails
 @import services.model.Country
@@ -22,11 +21,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(appConfig: AppConfig, form: Form[ExporterDetails])(implicit request: Request[_], messages: Messages)
+@(form: Form[ExporterDetails])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.consignor.title"),
-    appConfig = appConfig
+    title = messages("supplementary.consignor.title")
 ) {
     @helper.form(ExporterDetailsController.saveAddress(), 'autoComplete -> "off") {
         @helper.CSRF.formField

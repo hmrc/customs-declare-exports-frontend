@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.ExporterDetails
@@ -38,13 +37,13 @@ class ExporterDetailsController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   exporterDetailsPage: exporter_details
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.exporterDetails)).map {
-      case Some(data) => Ok(exporterDetailsPage(appConfig, ExporterDetails.form().fill(data)))
-      case _          => Ok(exporterDetailsPage(appConfig, ExporterDetails.form()))
+      case Some(data) => Ok(exporterDetailsPage(ExporterDetails.form().fill(data)))
+      case _          => Ok(exporterDetailsPage(ExporterDetails.form()))
     }
   }
 
@@ -53,7 +52,7 @@ class ExporterDetailsController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ExporterDetails]) =>
-          Future.successful(BadRequest(exporterDetailsPage(appConfig, formWithErrors))),
+          Future.successful(BadRequest(exporterDetailsPage(formWithErrors))),
         form =>
           for {
             _ <- updateCache(journeySessionId, form)

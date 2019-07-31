@@ -16,18 +16,16 @@
 
 @import java.time.ZoneId
 @import java.time.format.DateTimeFormatter
-
-@import config.AppConfig
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.{Submission, SubmissionRequest, SubmissionStatus, UnknownStatus}
 
 @this(main_template: views.html.main_template)
 
-@(appConfig: AppConfig, submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
+@(submissions: Seq[(Submission, Seq[Notification])])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("submissions.title"),
-    appConfig = appConfig) {
+    title = messages("submissions.title")
+) {
 
     @components.back_link(routes.ChoiceController.displayPage().url)
 

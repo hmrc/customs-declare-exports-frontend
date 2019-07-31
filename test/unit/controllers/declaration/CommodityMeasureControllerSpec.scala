@@ -37,7 +37,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       goodsMeasurePage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
     withCaching(None)

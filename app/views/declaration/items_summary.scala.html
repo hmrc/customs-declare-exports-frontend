@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes
 @import uk.gov.hmrc.play.views.html._
 @import forms.declaration.ItemType.IdentificationTypeCodes._
@@ -24,11 +23,10 @@
 @this(main_template: views.html.main_template)
 
 
-@(items: List[ExportItem])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(items: List[ExportItem])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.items"),
-    appConfig = appConfig
+    title = messages("supplementary.items")
 ) {
     @components.back_link(routes.PreviousDocumentsController.displayForm().url)
 

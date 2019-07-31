@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.ConsignmentReferences
@@ -38,13 +37,13 @@ class ConsignmentReferencesController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.get(journeySessionId).map(_.flatMap(_.consignmentReferences)).map {
-      case Some(data) => Ok(consignmentReferencesPage(appConfig, ConsignmentReferences.form().fill(data)))
-      case _          => Ok(consignmentReferencesPage(appConfig, ConsignmentReferences.form()))
+      case Some(data) => Ok(consignmentReferencesPage(ConsignmentReferences.form().fill(data)))
+      case _          => Ok(consignmentReferencesPage(ConsignmentReferences.form()))
     }
   }
 
@@ -53,7 +52,7 @@ class ConsignmentReferencesController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[ConsignmentReferences]) =>
-          Future.successful(BadRequest(consignmentReferencesPage(appConfig, formWithErrors))),
+          Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
         validConsignmentReferences =>
           for {
             _ <- updateCache(journeySessionId, validConsignmentReferences)

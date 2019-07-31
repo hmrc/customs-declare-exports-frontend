@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import forms.CancelDeclaration
@@ -43,7 +42,7 @@ class CancelDeclarationController @Inject()(
   mcc: MessagesControllerComponents,
   cancelDeclarationPage: cancel_declaration,
   cancelConfirmationPage: cancellation_confirmation_page
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   private val logger = Logger(this.getClass())

@@ -27,7 +27,7 @@ import views.html.error_template
 class ErrorHandlerSpec extends CustomExportsBaseSpec {
 
   val errorPage = app.injector.instanceOf[error_template]
-  val errorHandler = new ErrorHandler(appConfig, messagesApi, errorPage)
+  val errorHandler = new ErrorHandler(messagesApi, errorPage)(appConfig)
   val req = FakeRequest("GET", "/foo")
 
   "ErrorHandlerSpec" should {

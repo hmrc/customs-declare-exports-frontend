@@ -34,7 +34,7 @@ class AdditionalFiscalReferencesViewSpec extends ViewSpec with AdditionalFiscalR
     form: Form[AdditionalFiscalReference] = form,
     references: Seq[AdditionalFiscalReference] = Seq.empty
   ): Html =
-    additionalFiscalReferencesPage(itemId, form, references)(fakeRequest, appConfig, messages)
+    additionalFiscalReferencesPage(itemId, form, references)(fakeRequest, messages)
 
   "Additional Fiscal References View" should {
 

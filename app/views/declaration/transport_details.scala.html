@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.TransportDetails
 @import uk.gov.hmrc.play.views.html._
@@ -28,11 +27,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[TransportDetails])(implicit request: JourneyRequest[_], appConfig: AppConfig, messages: Messages)
+@(form: Form[TransportDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.transportInfo.title"),
-    appConfig = appConfig
+    title = messages("supplementary.transportInfo.title")
 ) {
 
     @components.back_link("/customs-declare-exports/declaration/border-transport")

@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.BorderTransport
 @import forms.declaration.TransportCodes._
@@ -24,11 +23,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[BorderTransport])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[BorderTransport])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.transportInfo.title"),
-    appConfig = appConfig
+    title = messages("supplementary.transportInfo.title")
 ) {
 
 @components.back_link("/customs-declare-exports/declaration/warehouse")

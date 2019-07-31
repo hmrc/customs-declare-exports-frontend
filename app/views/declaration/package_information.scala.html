@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes
 @import forms.declaration.PackageInformation
 @import uk.gov.hmrc.play.views.html._
@@ -25,7 +24,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: Request[_], messages: Messages)
 
 @tableHeader = @{
     if(packages.size == 1) {
@@ -36,8 +35,7 @@
 }
 
 @main_template(
-    title = messages("supplementary.packageInformation.title"),
-    appConfig = appConfig
+    title = messages("supplementary.packageInformation.title")
 ) {
 
     @components.back_link(routes.ItemTypeController.displayPage(itemId).url)

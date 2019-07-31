@@ -43,7 +43,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       additionalFiscalReferencesPage
-    )(minimalAppConfig, ec)
+    )(ec)
 
     authorizedUser()
     withCaching(None)

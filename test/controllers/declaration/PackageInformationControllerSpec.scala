@@ -56,7 +56,7 @@ class PackageInformationControllerSpec
   private val packageInformationPage = app.injector.instanceOf[package_information]
 
   def view(form: Form[PackageInformation] = form, charges: Seq[PackageInformation] = Seq.empty): Html =
-    packageInformationPage(cacheModel.items.head.id, form, charges)(fakeRequest, messages, appConfig)
+    packageInformationPage(cacheModel.items.head.id, form, charges)(fakeRequest, messages)
 
   "Package Information Controller on GET" should {
 

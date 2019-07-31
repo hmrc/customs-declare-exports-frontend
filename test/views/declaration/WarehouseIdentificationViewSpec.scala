@@ -30,7 +30,7 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
   private val form: Form[WarehouseIdentification] = WarehouseIdentification.form()
   private val warehouseIdentificationPage = app.injector.instanceOf[warehouse_identification]
   private def createView(form: Form[WarehouseIdentification] = form): Html =
-    warehouseIdentificationPage(appConfig, form)(fakeRequest, messages)
+    warehouseIdentificationPage(form)(fakeRequest, messages)
 
   "Warehouse Identification View" should {
 
