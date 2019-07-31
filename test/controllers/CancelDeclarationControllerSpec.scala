@@ -17,6 +17,7 @@
 package controllers
 
 import base.CustomExportsBaseSpec
+import com.kenshoo.play.metrics.Metrics
 import forms.CancelDeclarationSpec
 import metrics.MetricIdentifiers
 import models.requests.CancellationRequested
@@ -31,18 +32,26 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
     "record cancellation timing and increase the Success Counter when response is OK" in {
       authorizedUser()
 
-      val timer = metrics.timers(MetricIdentifiers.cancelMetric).getCount
-      val counter = metrics.counters(MetricIdentifiers.cancelMetric).getCount
+      val registry = app.injector.instanceOf[Metrics].defaultRegistry
+      val cancelMetric = MetricIdentifiers.cancelMetric
+
+      val cancelTimer = registry.getTimers().get(metrics.timerName(cancelMetric))
+      val cancelCounter = registry.getCounters().get(metrics.counterName(cancelMetric))
+
+      val timerBefore = cancelTimer.getCount
+      val counterBefore = cancelCounter.getCount
+
       successfulCustomsDeclareExportsResponse()
       successfulCancelDeclarationResponse(CancellationRequested)
+
       val result = route(app, postRequest(uri, CancelDeclarationSpec.correctCancelDeclarationJSON)).get
 
       status(result) must be(OK)
 
       val stringResult = contentAsString(result)
       stringResult must include(messages("cancellation.confirmationPage.message"))
-      metrics.timers(MetricIdentifiers.cancelMetric).getCount mustBe timer + 1
-      metrics.counters(MetricIdentifiers.cancelMetric).getCount mustBe counter + 1
+      cancelTimer.getCount mustBe > (timerBefore)
+      cancelCounter.getCount mustBe > (counterBefore)
     }
   }
 }
