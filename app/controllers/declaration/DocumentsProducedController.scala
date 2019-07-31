@@ -39,7 +39,6 @@ import views.html.declaration.documents_produced
 import scala.concurrent.{ExecutionContext, Future}
 
 class DocumentsProducedController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
@@ -48,7 +47,7 @@ class DocumentsProducedController @Inject()(
   itemsCache: ItemsCachingService,
   mcc: MessagesControllerComponents,
   documentProducedPage: documents_produced
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

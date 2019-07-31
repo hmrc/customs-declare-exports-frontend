@@ -21,7 +21,6 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport._
-import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -36,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class BorderTransportController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,

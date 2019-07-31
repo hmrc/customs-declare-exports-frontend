@@ -32,14 +32,13 @@ import views.html.declaration.exporter_details
 import scala.concurrent.{ExecutionContext, Future}
 
 class ExporterDetailsController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   exporterDetailsPage: exporter_details
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

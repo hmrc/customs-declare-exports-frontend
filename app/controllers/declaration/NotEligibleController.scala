@@ -27,12 +27,11 @@ import views.html.declaration.not_eligible
 import scala.concurrent.{ExecutionContext, Future}
 
 class NotEligibleController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
   notEligiblePage: not_eligible
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

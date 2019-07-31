@@ -33,7 +33,6 @@ class BorderTransportControllerSpec extends ControllerSpec {
     val controller = new BorderTransportController(
       mockAuthAction,
       mockJourneyAction,
-      mockErrorHandler,
       mockCustomsCacheService,
       mockExportsCacheService,
       stubMessagesControllerComponents(),

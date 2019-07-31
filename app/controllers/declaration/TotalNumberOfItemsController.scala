@@ -33,14 +33,13 @@ import views.html.declaration.total_number_of_items
 import scala.concurrent.{ExecutionContext, Future}
 
 class TotalNumberOfItemsController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   totalNumberOfItemsPage: total_number_of_items,
   override val exportsCacheService: ExportsCacheService
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.TotalNumberOfItems._
 

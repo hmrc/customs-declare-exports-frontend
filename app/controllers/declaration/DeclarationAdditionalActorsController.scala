@@ -39,7 +39,6 @@ import views.html.declaration.declaration_additional_actors
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationAdditionalActorsController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
@@ -47,7 +46,7 @@ class DeclarationAdditionalActorsController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   declarationAdditionalActorsPage: declaration_additional_actors
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   private val exceedMaximumNumberError = "supplementary.additionalActors.maximumAmount.error"

@@ -37,7 +37,6 @@ class ChoiceControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockCustomsCacheService,
       mockExportsCacheService,
-      mockErrorHandler,
       stubMessagesControllerComponents(),
       choicePage
     )(ec, minimalAppConfig)

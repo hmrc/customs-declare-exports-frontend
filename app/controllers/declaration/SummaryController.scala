@@ -36,7 +36,6 @@ import views.html.declaration.summary.{summary_page, summary_page_no_data}
 import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
@@ -46,10 +45,9 @@ class SummaryController @Inject()(
   mcc: MessagesControllerComponents,
   summaryPage: summary_page,
   summaryPageNoData: summary_page_no_data
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  implicit val appConfigImpl: AppConfig = appConfig
   private val logger = Logger(this.getClass())
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

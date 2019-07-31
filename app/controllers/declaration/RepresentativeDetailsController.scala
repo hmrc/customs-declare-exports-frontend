@@ -21,7 +21,6 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice.AllowedChoiceValues._
 import forms.declaration.RepresentativeDetails
-import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -35,15 +34,13 @@ import views.html.declaration.representative_details
 import scala.concurrent.{ExecutionContext, Future}
 
 class RepresentativeDetailsController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  errorHandler: ErrorHandler,
   customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   representativeDetailsPage: representative_details
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType).async {
