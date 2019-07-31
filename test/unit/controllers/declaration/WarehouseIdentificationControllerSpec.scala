@@ -40,6 +40,12 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
     warehouseIdentificationPage = new warehouse_identification(mainTemplate)
   )
 
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+    authorizedUser()
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec), withoutWarehouseIdentification()))
+  }
+
   "WerehouseIdentificationController on GET request" should {
     "return 200 OK" in {
       val response = controller.displayForm().apply(getRequest())
@@ -122,11 +128,5 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
       contentAsString(result) must include("supplementary.warehouse.inlandTransportMode.error.incorrect")
       verifyTheCacheIsUnchanged()
     }
-  }
-
-  override protected def beforeEach(): Unit = {
-    super.beforeEach()
-    authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec), withoutWarehouseIdentification()))
   }
 }
