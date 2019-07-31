@@ -21,12 +21,10 @@ import controllers.util.Remove
 import forms.Choice
 import forms.declaration.AdditionalInformation
 import models.declaration.AdditionalInformationData
-import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.when
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.cache.ExportItem
-import unit.base.{ControllerSpec, ErrorHandlerMocks}
+import unit.base.ControllerSpec
+import unit.mock.ErrorHandlerMocks
 import views.html.declaration.additional_information
 
 class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks {

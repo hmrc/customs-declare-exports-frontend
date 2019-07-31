@@ -22,7 +22,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
-import unit.base.{ControllerSpec, ErrorHandlerMocks}
+import unit.base.ControllerSpec
+import unit.mock.ErrorHandlerMocks
 import views.html.choice_page
 
 import scala.concurrent.Future

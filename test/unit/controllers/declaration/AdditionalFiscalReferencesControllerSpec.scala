@@ -20,14 +20,11 @@ import controllers.declaration.AdditionalFiscalReferencesController
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import play.api.test.Helpers._
 import services.cache.{ExportItem, ExportsCacheModel}
-import unit.base.{ControllerSpec, ErrorHandlerMocks}
+import unit.base.ControllerSpec
+import unit.mock.ErrorHandlerMocks
 import views.html.declaration.additional_fiscal_references
-
-import scala.concurrent.Future
 
 class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 

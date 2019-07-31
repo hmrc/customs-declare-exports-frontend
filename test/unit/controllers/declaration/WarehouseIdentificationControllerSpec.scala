@@ -65,10 +65,10 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with BeforeAn
         aCacheModel(
           withChoice(SupplementaryDec),
           withWarehouseIdentification(
-            customsOfficeIdentifier,
-            warehauseIdentificationType,
-            warehauseIdentificationNumber,
-            transportMode
+            Some(customsOfficeIdentifier),
+            Some(warehauseIdentificationType),
+            Some(warehauseIdentificationNumber),
+            Some(transportMode)
           )
         )
       )
