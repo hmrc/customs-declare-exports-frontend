@@ -39,7 +39,6 @@ class SealController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   sealPage: seal
@@ -108,15 +107,9 @@ class SealController @Inject()(
     }
 
   private def updateCache(sessionId: String, formData: Seq[Seal])(implicit req: JourneyRequest[_]): Future[Unit] =
-    for {
-      _ <- getAndUpdateExportCacheModel(
-        sessionId,
-        model =>
-          exportsCacheService
-            .update(sessionId, model.copy(seals = formData))
-      )
-      _ <- customsCacheService.cache[Seq[Seal]](cacheId, formId, formData)
-    } yield Unit
+    getAndUpdateExportCacheModel(sessionId, model => {
+      exportsCacheService.update(sessionId, model.copy(seals = formData))
+    }).map(_ => ())
 
   private def addSeal(boundForm: Form[Seal], elementLimit: Int, seals: Seq[Seal])(
     implicit request: JourneyRequest[_]

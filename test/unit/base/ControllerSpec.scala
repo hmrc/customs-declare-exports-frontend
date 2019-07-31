@@ -21,7 +21,7 @@ import controllers.util.{Add, SaveAndContinue}
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, Request}
 import play.api.test.FakeRequest
-import services.cache.ExportsCacheModelBuilder
+import services.cache.{ExportsItemBuilder, ExportsCacheModelBuilder}
 import unit.mock.JourneyActionMocks
 import unit.tools.Stubs
 import utils.FakeRequestCSRFSupport._
@@ -30,7 +30,7 @@ import scala.concurrent.ExecutionContext
 
 trait ControllerSpec
   extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockCustomsCacheService
-    with MockExportsCacheService with ExportsCacheModelBuilder with ExportsCacheItemBuilder {
+    with MockExportsCacheService with ExportsCacheModelBuilder with ExportsItemBuilder with JourneyActionMocks {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 

@@ -25,7 +25,8 @@ import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder, ExportsCache
 
 import scala.concurrent.Future
 
-trait MockExportsCacheService extends MockitoSugar with ExportsCacheModelBuilder with BeforeAndAfterEach { self: Suite =>
+trait MockExportsCacheService extends MockitoSugar with ExportsCacheModelBuilder with BeforeAndAfterEach {
+  self: Suite =>
 
   val mockExportsCacheService = mock[ExportsCacheService]
 

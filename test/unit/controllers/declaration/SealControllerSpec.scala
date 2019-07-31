@@ -24,11 +24,12 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException
 import unit.base.ControllerSpec
+import unit.mock.ErrorHandlerMocks
 import views.html.declaration.seal
 
 import scala.concurrent.Await
 
-class SealControllerSpec extends ControllerSpec with ScalaFutures {
+class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHandlerMocks {
 
   trait SetUp {
     val sealPage = new seal(mainTemplate)
@@ -37,13 +38,13 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures {
       mockAuthAction,
       mockJourneyAction,
       mockErrorHandler,
-      mockCustomsCacheService,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       sealPage
     )
 
     authorizedUser()
+    setupErrorHandler()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
   }
 
@@ -148,9 +149,20 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures {
         status(result) must be(SEE_OTHER)
       }
 
+      "user clicked save and continue with data in form" in new SetUp {
+
+        val body = Seq("id" -> "value", (SaveAndContinue.toString, ""))
+
+        val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
+
+        status(result) must be(SEE_OTHER)
+      }
+
       "user clicked save and continue with item in a cache" in new SetUp {
 
-        val body = Seq(("id", "value"), (SaveAndContinue.toString, ""))
+        withNewCaching(aCacheModel(withSeal(Seal("value"))))
+
+        val body = Seq((SaveAndContinue.toString, ""))
 
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))
 

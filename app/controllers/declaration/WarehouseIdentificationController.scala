@@ -33,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class WarehouseIdentificationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   warehouseIdentificationPage: warehouse_identification
@@ -56,10 +55,8 @@ class WarehouseIdentificationController @Inject()(
         (formWithErrors: Form[WarehouseIdentification]) =>
           Future.successful(BadRequest(warehouseIdentificationPage(formWithErrors))),
         form =>
-          for {
-            _ <- updateCache(journeySessionId, form)
-            _ <- customsCacheService.cache[WarehouseIdentification](cacheId, formId, form)
-          } yield Redirect(controllers.declaration.routes.BorderTransportController.displayForm())
+          updateCache(journeySessionId, form)
+            .map(_ => Redirect(controllers.declaration.routes.BorderTransportController.displayForm()))
       )
   }
 
