@@ -23,7 +23,8 @@ import forms.declaration.AdditionalInformation
 import models.declaration.AdditionalInformationData
 import play.api.test.Helpers._
 import services.cache.ExportItem
-import unit.base.{ControllerSpec, ErrorHandlerMocks}
+import unit.base.ControllerSpec
+import unit.mock.ErrorHandlerMocks
 import views.html.declaration.additional_information
 
 class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks {

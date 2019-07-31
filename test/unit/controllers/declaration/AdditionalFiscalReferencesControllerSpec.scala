@@ -23,7 +23,8 @@ import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesD
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.cache.{ExportItem, ExportsCacheModel}
-import unit.base.{ControllerSpec, ErrorHandlerMocks}
+import unit.base.ControllerSpec
+import unit.mock.ErrorHandlerMocks
 import views.html.declaration.additional_fiscal_references
 
 import scala.concurrent.Future
