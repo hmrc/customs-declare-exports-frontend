@@ -262,7 +262,7 @@ trait ExportsCacheModelBuilder {
 
   def withoutContainerData(): CacheModifier = _.copy(containerData = None)
 
-  def withOutSeal(): CacheModifier = _.copy(seals = Seq.empty)
+  def withoutSeal(): CacheModifier = _.copy(seals = Seq.empty)
 
   def withSeal(seal1: Seal, others: Seal*): CacheModifier = cache => cache.copy(seals = cache.seals ++ Seq(seal1) ++ others)
 

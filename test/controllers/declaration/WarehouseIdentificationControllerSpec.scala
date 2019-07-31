@@ -16,21 +16,17 @@
 
 package controllers.declaration
 
-import java.time.LocalDateTime
-
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TransportCodes._
 import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
 import helpers.views.declaration.WarehouseIdentificationMessages
-import models.declaration.Locations
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with WarehouseIdentificationMessages {
 
@@ -87,6 +83,21 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(identificationTypeError))
+      verifyTheCacheIsUnchanged()
+    }
+
+    "validate identification type and number" in {
+
+      val incorrectWarehouseIdentification: JsValue =
+        JsObject(Map(
+          "identificationType" -> JsString(WarehouseIdentification.IdentifierType.PUBLIC_CUSTOMS_1),
+          "identificationNumber" -> JsString("")
+        ))
+
+      val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
+
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(messages(identificationNumberError))
       verifyTheCacheIsUnchanged()
     }
 
