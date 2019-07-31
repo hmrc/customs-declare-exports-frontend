@@ -23,7 +23,8 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.{NatureOfTransaction, _}
 import javax.inject.Inject
 import models.declaration.{Locations, Parties, TransportInformationContainerData}
-import play.api.libs.json.{JsError, JsNumber, JsObject, JsResult, JsSuccess, JsValue, Json, OFormat}
+import play.api.Logger
+import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
@@ -41,7 +42,7 @@ class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent, appConfi
       mc.mongoConnector.db,
       ExportsCacheModel.format,
       objectIdFormats
-    ) {
+    ) with IndexManager {
 
   implicit val journeyFormats = ExportsCacheModel.format
 
@@ -49,9 +50,12 @@ class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent, appConfi
     Index(
       key = Seq("updatedDateTime" -> IndexType.Ascending),
       name = Some("ttl"),
-      options = BSONDocument("expireAfterSeconds" -> appConfig.cacheTimeToLive.toSeconds)
+      options = BSONDocument("expireAfterSeconds" -> 90)
     )
   )
+
+  override def ensureIndexes(implicit ec: ExecutionContext): Future[Seq[Boolean]] = ensureIndexes()
+    .map(_ => (0 to indexes.size).map(_ => true))
 
   def get(sessionId: String): Future[Option[ExportsCacheModel]] =
     find("sessionId" -> sessionId).map(_.headOption)
