@@ -21,6 +21,7 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class AEOMutualRecognitionPartiesBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
@@ -77,6 +78,22 @@ class AEOMutualRecognitionPartiesBuilderSpec extends WordSpec with Matchers with
           )
         val actors = AEOMutualRecognitionPartiesBuilder.build(cacheMap)
         actors.isEmpty shouldBe true
+      }
+
+      "correctly map new model to a WCO-DEC GoodsShipment.AEOMutualRecognitionParties instance" when {
+        "all data has been supplied" in {
+          val builder = new AEOMutualRecognitionPartiesBuilder
+          val goodsShipment = new GoodsShipment
+          builder.buildThenAdd(
+            DeclarationAdditionalActorsDataSpec.correctAdditionalActorsData.actors.head,
+            goodsShipment
+          )
+
+          val actors = goodsShipment.getAEOMutualRecognitionParty
+          actors.size should be(1)
+          actors.get(0).getID.getValue should be("eori1")
+          actors.get(0).getRoleCode.getValue should be("CS")
+        }
       }
     }
   }

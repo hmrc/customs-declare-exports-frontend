@@ -16,12 +16,20 @@
 
 package services.mapping.goodsshipment.consignment
 import forms.declaration.BorderTransport
+import javax.inject.Inject
+import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment.DepartureTransportMeans
 import wco.datamodel.wco.declaration_ds.dms._2.{
   DepartureTransportMeansIdentificationIDType,
   DepartureTransportMeansIdentificationTypeCodeType
+}
+
+class DepartureTransportMeansBuilder @Inject()() extends ModifyingBuilder[BorderTransport, GoodsShipment.Consignment] {
+  override def buildThenAdd(model: BorderTransport, consignment: Consignment): Unit =
+    consignment.setDepartureTransportMeans(DepartureTransportMeansBuilder.createDepartureTransportMeans(model))
 }
 
 object DepartureTransportMeansBuilder {

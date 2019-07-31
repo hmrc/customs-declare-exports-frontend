@@ -24,6 +24,7 @@ import forms.declaration.DestinationCountriesSpec.correctDestinationCountries
 import forms.declaration.DocumentSpec.correctPreviousDocument
 import forms.declaration.GoodsLocationTestData.correctGoodsLocation
 import forms.declaration.NatureOfTransactionSpec.correctNatureOfTransaction
+import forms.declaration.PreviousDocumentsData
 import forms.declaration.WarehouseIdentificationSpec.correctWarehouseIdentification
 import models.declaration.SupplementaryDeclarationTestData._
 import org.mockito.ArgumentMatchers.{any, refEq}
@@ -31,17 +32,35 @@ import org.mockito.Mockito.verify
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.{ExportItem, ExportsCacheModelBuilder}
+import services.mapping.goodsshipment.consignment.ConsignmentBuilder
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class GoodsShipmentBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder with MockitoSugar {
 
-  private val goodsShipmentNatureOfTransactionBuilder = mock[GoodsShipmentNatureOfTransactionBuilder]
-  private val consigneeBuilder = mock[ConsigneeBuilder]
+  private val mockGoodsShipmentNatureOfTransactionBuilder = mock[GoodsShipmentNatureOfTransactionBuilder]
+  private val mockConsigneeBuilder = mock[ConsigneeBuilder]
+  private val mockConsignmentBuilder = mock[ConsignmentBuilder]
+  private val mockDestinationBuilder = mock[DestinationBuilder]
+  private val mockExportCountryBuilder = mock[ExportCountryBuilder]
+  private val mockUcrBuilder = mock[UCRBuilder]
+  private val mockWarehouseBuilder = mock[WarehouseBuilder]
+  private val mockPreviousDocumentBuilder = mock[PreviousDocumentsBuilder]
+  private val mockAEOMutualRecognitionPartiesBuilder = mock[AEOMutualRecognitionPartiesBuilder]
   private val governmentAgencyItemBuilder = mock[GovernmentAgencyGoodsItemBuilder]
 
-  private def builder: GoodsShipmentBuilder =
-    new GoodsShipmentBuilder(goodsShipmentNatureOfTransactionBuilder, consigneeBuilder, governmentAgencyItemBuilder)
+  private def builder = new GoodsShipmentBuilder(
+    mockGoodsShipmentNatureOfTransactionBuilder,
+    mockConsigneeBuilder,
+    mockConsignmentBuilder,
+    mockDestinationBuilder,
+    mockExportCountryBuilder,
+    governmentAgencyItemBuilder,
+    mockUcrBuilder,
+    mockWarehouseBuilder,
+    mockPreviousDocumentBuilder,
+    mockAEOMutualRecognitionPartiesBuilder
+  )
 
   "GoodsShipmentBuilder" should {
 
@@ -49,7 +68,6 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers with ExportsCacheM
       val goodsShipment = GoodsShipmentBuilder.build(cacheMapAllRecords, supplementaryChoice)
       goodsShipment.getTransactionNatureCode.getValue should be("1")
 
-      goodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")
       goodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")
       goodsShipment.getConsignee.getName.getValue should be("Full Name")
       goodsShipment.getConsignee.getAddress.getLine.getValue should be("Address Line")
@@ -96,41 +114,37 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers with ExportsCacheM
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
-
-        verify(goodsShipmentNatureOfTransactionBuilder)
+        verify(mockGoodsShipmentNatureOfTransactionBuilder)
           .buildThenAdd(refEq(correctNatureOfTransaction), any[Declaration.GoodsShipment])
 
-        val goodsShipment = declaration.getGoodsShipment
-
-        verify(consigneeBuilder)
+        verify(mockConsigneeBuilder)
           .buildThenAdd(refEq(correctConsigneeDetailsFull), any[Declaration.GoodsShipment])
 
-        goodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("LOC")
+        verify(mockConsignmentBuilder)
+          .buildThenAdd(refEq(model), any[Declaration.GoodsShipment])
 
-        goodsShipment.getDestination.getCountryCode.getValue should be("PL")
+        verify(mockDestinationBuilder)
+          .buildThenAdd(refEq(correctDestinationCountries), any[Declaration.GoodsShipment])
 
-        goodsShipment.getExportCountry.getID.getValue should be("PL")
+        verify(mockGoodsShipmentNatureOfTransactionBuilder)
+          .buildThenAdd(refEq(correctNatureOfTransaction), any[Declaration.GoodsShipment])
 
-        goodsShipment.getUCR.getID should be(null)
-        goodsShipment.getUCR.getTraderAssignedReferenceID.getValue should be("8GB123456789012-1234567890QWERTYUIO")
+        verify(mockExportCountryBuilder)
+          .buildThenAdd(refEq(correctDestinationCountries), any[Declaration.GoodsShipment])
 
-        goodsShipment.getWarehouse.getID.getValue should be("1234567GB")
-        goodsShipment.getWarehouse.getTypeCode.getValue should be("R")
+        verify(mockUcrBuilder)
+          .buildThenAdd(refEq(correctConsignmentReferences), any[Declaration.GoodsShipment])
 
-        goodsShipment.getPreviousDocument.size should be(1)
-        goodsShipment.getPreviousDocument.get(0).getID.getValue should be("DocumentReference")
-        goodsShipment.getPreviousDocument.get(0).getCategoryCode.getValue should be("X")
-        goodsShipment.getPreviousDocument.get(0).getLineNumeric.intValue() should be(123)
-        goodsShipment.getPreviousDocument.get(0).getTypeCode.getValue should be("ABC")
+        verify(mockWarehouseBuilder)
+          .buildThenAdd(refEq(correctWarehouseIdentification), any[Declaration.GoodsShipment])
+
+        verify(mockPreviousDocumentBuilder)
+          .buildThenAdd(refEq(PreviousDocumentsData(Seq(correctPreviousDocument))), any[Declaration.GoodsShipment])
 
         verify(governmentAgencyItemBuilder).buildThenAdd(any[ExportItem], any[Declaration.GoodsShipment])
 
-        goodsShipment.getAEOMutualRecognitionParty.size should be(2)
-        goodsShipment.getAEOMutualRecognitionParty.get(0).getID.getValue should be("eori1")
-        goodsShipment.getAEOMutualRecognitionParty.get(0).getRoleCode.getValue should be("CS")
-        goodsShipment.getAEOMutualRecognitionParty.get(1).getID.getValue should be("eori99")
-        goodsShipment.getAEOMutualRecognitionParty.get(1).getRoleCode.getValue should be("FW")
       }
     }
   }
+
 }

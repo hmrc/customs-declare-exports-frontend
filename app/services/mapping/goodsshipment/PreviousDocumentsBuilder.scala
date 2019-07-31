@@ -18,7 +18,10 @@ package services.mapping.goodsshipment
 import java.util
 
 import forms.declaration.{Document, PreviousDocumentsData}
+import javax.inject.Inject
 import services.cache.ExportsCacheModel
+import services.mapping.ModifyingBuilder
+import services.mapping.goodsshipment.PreviousDocumentsBuilder.createPreviousDocuments
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2.{
@@ -28,6 +31,13 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
 }
 
 import scala.collection.JavaConverters._
+
+class PreviousDocumentsBuilder @Inject()() extends ModifyingBuilder[PreviousDocumentsData, GoodsShipment] {
+  override def buildThenAdd(model: PreviousDocumentsData, goodsShipment: GoodsShipment): Unit =
+    model.documents.foreach { data =>
+      goodsShipment.getPreviousDocument.add(createPreviousDocuments(data))
+    }
+}
 
 object PreviousDocumentsBuilder {
 

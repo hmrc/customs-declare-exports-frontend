@@ -18,9 +18,11 @@ package services.mapping.declaration
 import forms.declaration.{RepresentativeDetails, RepresentativeDetailsSpec}
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class AgentBuilderSpec extends WordSpec with Matchers {
+class AgentBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "AgentBuilder" should {
     "correctly map to the WCO-DEC Agent instance" when {
@@ -56,5 +58,39 @@ class AgentBuilderSpec extends WordSpec with Matchers {
         agent.getFunctionCode.getValue should be("2")
       }
     }
+    "correctly map from ExportsCacheModel to the WCO-DEC Agent instance" when {
+      "only EORI is supplied" in {
+        val model =
+          aCacheModel(withRepresentativeDetails(RepresentativeDetailsSpec.correctRepresentativeDetailsEORIOnly))
+        val agentBuilder = new AgentBuilder
+        val emptyDeclaration = new Declaration
+
+        agentBuilder.buildThenAdd(model, emptyDeclaration)
+        val agent: Declaration.Agent = emptyDeclaration.getAgent
+
+        agent.getID.getValue should be("9GB1234567ABCDEF")
+        agent.getName should be(null)
+        agent.getAddress should be(null)
+        agent.getFunctionCode.getValue should be("2")
+      }
+      "only Address is supplied" in {
+        val model =
+          aCacheModel(withRepresentativeDetails(RepresentativeDetailsSpec.correctRepresentativeDetailsAddressOnly))
+        val agentBuilder = new AgentBuilder
+        val emptyDeclaration = new Declaration
+
+        agentBuilder.buildThenAdd(model, emptyDeclaration)
+        val agent: Declaration.Agent = emptyDeclaration.getAgent
+
+        agent.getID should be(null)
+        agent.getName.getValue should be("Full Name")
+        agent.getAddress.getLine.getValue should be("Address Line")
+        agent.getAddress.getCityName.getValue should be("Town or City")
+        agent.getAddress.getCountryCode.getValue should be("PL")
+        agent.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+        agent.getFunctionCode.getValue should be("2")
+      }
+    }
   }
+
 }

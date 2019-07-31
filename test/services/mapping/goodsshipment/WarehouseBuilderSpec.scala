@@ -22,6 +22,7 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class WarehouseBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
@@ -70,6 +71,45 @@ class WarehouseBuilderSpec extends WordSpec with Matchers with MockitoSugar {
         when(cacheMap.getEntry[WarehouseIdentification](WarehouseIdentification.formId))
           .thenReturn(None)
         WarehouseBuilder.build(cacheMap) should be(null)
+      }
+
+    }
+    "correctly map new model to the WCO-DEC Warehouse instance" when {
+      "identificationNumber is supplied" in {
+
+        val builder = new WarehouseBuilder
+        val goodsShipment = new GoodsShipment
+        builder.buildThenAdd(
+          WarehouseIdentification(Some("GBWKG001"), Some("R"), Some("1234567GB"), Some("2")),
+          goodsShipment
+        )
+        val warehouse = goodsShipment.getWarehouse
+        warehouse.getID.getValue should be("1234567GB")
+        warehouse.getTypeCode.getValue should be("R")
+      }
+
+      "identificationType is not supplied" in {
+        val builder = new WarehouseBuilder
+        val goodsShipment = new GoodsShipment
+        builder.buildThenAdd(
+          WarehouseIdentification(Some("GBWKG001"), None, Some("1234567GB"), Some("2")),
+          goodsShipment
+        )
+
+        val warehouse = goodsShipment.getWarehouse
+        warehouse.getID.getValue should be("1234567GB")
+        warehouse.getTypeCode.getValue should be("")
+      }
+
+      "identificationNumber is not supplied" in {
+        val builder = new WarehouseBuilder
+        val goodsShipment = new GoodsShipment
+        builder.buildThenAdd(WarehouseIdentification(Some("GBWKG001"), Some("R"), None, Some("2")), goodsShipment)
+
+        val warehouse = goodsShipment.getWarehouse
+        warehouse.getID.getValue should be("")
+        warehouse.getTypeCode.getValue should be("R")
+
       }
 
     }

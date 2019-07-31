@@ -28,7 +28,14 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 class GoodsShipmentBuilder @Inject()(
   goodsShipmentNatureOfTransactionBuilder: GoodsShipmentNatureOfTransactionBuilder,
   consigneeBuilder: ConsigneeBuilder,
-  governmentAgencyGoodsItemBuilder: GovernmentAgencyGoodsItemBuilder
+  consignmentBuilder: ConsignmentBuilder,
+  destinationBuilder: DestinationBuilder,
+  exportCountryBuilder: ExportCountryBuilder,
+  governmentAgencyGoodsItemBuilder: GovernmentAgencyGoodsItemBuilder,
+  ucrBuilder: UCRBuilder,
+  warehouseBuilder: WarehouseBuilder,
+  previousDocumentsBuilder: PreviousDocumentsBuilder,
+  aeoMutualRecognitionPartiesBuilder: AEOMutualRecognitionPartiesBuilder
 ) extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
   override def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit = {
@@ -37,20 +44,41 @@ class GoodsShipmentBuilder @Inject()(
     exportsCacheModel.natureOfTransaction.foreach(
       natureOfTransaction => goodsShipmentNatureOfTransactionBuilder.buildThenAdd(natureOfTransaction, goodsShipment)
     )
+
     exportsCacheModel.parties.consigneeDetails
       .foreach(consigneeDetails => consigneeBuilder.buildThenAdd(consigneeDetails, goodsShipment))
-    ConsignmentBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
-    DestinationBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
-    ExportCountryBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
-    UCRBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
-    WarehouseBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
-    PreviousDocumentsBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
+
+    consignmentBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
+
+    exportsCacheModel.locations.destinationCountries
+      .foreach(destinationCountries => {
+        destinationBuilder.buildThenAdd(destinationCountries, goodsShipment)
+        exportCountryBuilder.buildThenAdd(destinationCountries, goodsShipment)
+      })
+
+    exportsCacheModel.consignmentReferences.foreach(
+      consignmentReferences => ucrBuilder.buildThenAdd(consignmentReferences, goodsShipment)
+    )
+
+    exportsCacheModel.locations.warehouseIdentification
+      .foreach(warehouseIdentification => warehouseBuilder.buildThenAdd(warehouseIdentification, goodsShipment))
+
+    exportsCacheModel.previousDocuments.foreach(
+      previousDocuments => previousDocumentsBuilder.buildThenAdd(previousDocuments, goodsShipment)
+    )
+
+    exportsCacheModel.parties.declarationAdditionalActorsData.foreach { declarationAdditionalActorsData =>
+      {
+        declarationAdditionalActorsData.actors.foreach(
+          declarationAdditionalActor =>
+            aeoMutualRecognitionPartiesBuilder.buildThenAdd(declarationAdditionalActor, goodsShipment)
+        )
+      }
+    }
 
     exportsCacheModel.items.foreach { item =>
       governmentAgencyGoodsItemBuilder.buildThenAdd(item, goodsShipment)
     }
-
-    AEOMutualRecognitionPartiesBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
 
     declaration.setGoodsShipment(goodsShipment)
   }

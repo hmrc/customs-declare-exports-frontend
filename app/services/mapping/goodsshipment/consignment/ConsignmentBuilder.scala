@@ -16,10 +16,47 @@
 
 package services.mapping.goodsshipment.consignment
 import forms.Choice
+import forms.Choice.AllowedChoiceValues
+import javax.inject.Inject
 import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
+class ConsignmentBuilder @Inject()(
+  goodsLocationBuilder: GoodsLocationBuilder,
+  containerCodeBuilder: ContainerCodeBuilder,
+  departureTransportMeansBuilder: DepartureTransportMeansBuilder,
+  arrivalTransportMeansBuilder: ArrivalTransportMeansBuilder,
+  transportEquipmentBuilder: TransportEquipmentBuilder
+) {
+
+  def buildThenAdd(exportsCacheModel: ExportsCacheModel, goodsShipment: GoodsShipment): Unit = {
+    val consignment = new GoodsShipment.Consignment()
+
+    exportsCacheModel.locations.goodsLocation
+      .foreach(goodsLocation => goodsLocationBuilder.buildThenAdd(goodsLocation, consignment))
+
+    exportsCacheModel.transportDetails.foreach(
+      transportDetails => containerCodeBuilder.buildThenAdd(transportDetails, consignment)
+    )
+
+    exportsCacheModel.locations.warehouseIdentification.foreach(
+      warehouseIdentification => arrivalTransportMeansBuilder.buildThenAdd(warehouseIdentification, consignment)
+    )
+
+    exportsCacheModel.borderTransport.foreach(
+      borderTransport => departureTransportMeansBuilder.buildThenAdd(borderTransport, consignment)
+    )
+
+    exportsCacheModel.choice match {
+      case AllowedChoiceValues.SupplementaryDec => transportEquipmentBuilder.buildThenAdd(Seq.empty, consignment)
+      case AllowedChoiceValues.StandardDec =>
+        transportEquipmentBuilder.buildThenAdd(exportsCacheModel.seals, consignment)
+    }
+
+    goodsShipment.setConsignment(consignment)
+  }
+}
 object ConsignmentBuilder {
 
   def build(implicit cacheMap: CacheMap, choice: Choice): GoodsShipment.Consignment = {
@@ -38,22 +75,4 @@ object ConsignmentBuilder {
     consignment
   }
 
-  def buildThenAdd(exportsCacheModel: ExportsCacheModel, goodsShipment: GoodsShipment): Unit = {
-    val consignment = new GoodsShipment.Consignment()
-
-    exportsCacheModel.locations.goodsLocation.foreach(goodsLocation => {
-      consignment.setGoodsLocation(GoodsLocationBuilder.buildEoriOrAddress(goodsLocation))
-    })
-
-//    consignment.setContainerCode(ContainerCodeBuilder.build)
-//    consignment.setArrivalTransportMeans(ArrivalTransportMeansBuilder.build)
-//    consignment.setDepartureTransportMeans(DepartureTransportMeansBuilder.build)
-//
-//    val transportEquipments = TransportEquipmentBuilder.build
-//    if (!transportEquipments.isEmpty) {
-//      consignment.getTransportEquipment.addAll(transportEquipments)
-//    }
-
-    goodsShipment.setConsignment(consignment)
-  }
 }

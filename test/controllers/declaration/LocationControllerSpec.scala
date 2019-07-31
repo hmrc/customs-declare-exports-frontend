@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.GoodsLocation
+import forms.declaration.{GoodsLocation, GoodsLocationTestData}
 import forms.declaration.GoodsLocationTestData._
 import helpers.views.declaration.LocationOfGoodsMessages
 import models.declaration
@@ -135,14 +135,14 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       status(result) must be(SEE_OTHER)
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/office-of-exit"))
       theCacheModelUpdated.locations.goodsLocation.get mustBe GoodsLocation(
-        country = "Poland",
+        country = country,
         typeOfLocation = "T",
         qualifierOfIdentification = "Y",
         identificationOfLocation = Some("LOC"),
         additionalQualifier = Some("9GB1234567ABCDEF"),
-        addressLine = Some("Address Line"),
-        postCode = Some("AB12 CD3"),
-        city = Some("Town or City")
+        addressLine = Some(addressLine),
+        postCode = Some(postcode),
+        city = Some(GoodsLocationTestData.city)
       )
     }
   }

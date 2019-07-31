@@ -18,7 +18,6 @@ package services.mapping.goodsshipment
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import javax.inject.Inject
 import services.Countries.allCountries
-import services.cache.ExportItem
 import services.mapping.ModifyingBuilder
 import services.mapping.goodsshipment.ConsigneeBuilder.createConsignee
 import uk.gov.hmrc.http.cache.client.CacheMap

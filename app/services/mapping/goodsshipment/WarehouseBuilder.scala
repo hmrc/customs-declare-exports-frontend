@@ -16,11 +16,17 @@
 
 package services.mapping.goodsshipment
 import forms.declaration.WarehouseIdentification
-import services.cache.ExportsCacheModel
+import javax.inject.Inject
+import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
-import wco.datamodel.wco.dec_dms._2.Declaration
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Warehouse
 import wco.datamodel.wco.declaration_ds.dms._2.{WarehouseIdentificationIDType, WarehouseTypeCodeType}
+
+class WarehouseBuilder @Inject()() extends ModifyingBuilder[WarehouseIdentification, GoodsShipment] {
+  override def buildThenAdd(model: WarehouseIdentification, goodsShipment: GoodsShipment): Unit =
+    goodsShipment.setWarehouse(WarehouseBuilder.createWarehouse(model))
+}
 
 object WarehouseBuilder {
 
@@ -30,11 +36,6 @@ object WarehouseBuilder {
       .filter(isDefined)
       .map(createWarehouse)
       .orNull
-
-  def buildThenAdd(exportsCacheModel: ExportsCacheModel, goodsShipment: Declaration.GoodsShipment): Unit =
-    exportsCacheModel.locations.warehouseIdentification.foreach { warehouseIdentification =>
-      goodsShipment.setWarehouse(createWarehouse(warehouseIdentification))
-    }
 
   private def isDefined(warehouse: WarehouseIdentification): Boolean =
     warehouse.identificationNumber.isDefined && warehouse.identificationType.isDefined

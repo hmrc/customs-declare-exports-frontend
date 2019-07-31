@@ -15,12 +15,15 @@
  */
 
 package services.mapping.goodsshipment.consignment
-import forms.declaration.GoodsLocation
-import forms.declaration.GoodsLocationTestData.correctGoodsLocationJSON
-import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.http.cache.client.CacheMap
 
-class GoodsLocationBuilderSpec extends WordSpec with Matchers {
+import forms.declaration.GoodsLocation
+import forms.declaration.GoodsLocationTestData._
+import org.scalatest.{Matchers, WordSpec}
+import services.cache.ExportsCacheModelBuilder
+import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
+
+class GoodsLocationBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "GoodsLocationBuilder" should {
 
@@ -31,16 +34,29 @@ class GoodsLocationBuilderSpec extends WordSpec with Matchers {
         implicit val cacheMap: CacheMap =
           CacheMap("CacheID", Map(GoodsLocation.formId -> correctGoodsLocationJSON))
 
-        val goodsLocation = GoodsLocationBuilder.build
-        goodsLocation.getID.getValue should be("LOC")
-        goodsLocation.getAddress.getLine.getValue should be("Address Line")
-        goodsLocation.getAddress.getCityName.getValue should be("Town or City")
-        goodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
-        goodsLocation.getAddress.getCountryCode.getValue should be("PL")
-        goodsLocation.getName.getValue should be("9GB1234567ABCDEF")
-        goodsLocation.getTypeCode.getValue should be("T")
-        goodsLocation.getAddress.getTypeCode.getValue should be("Y")
+        validateGoodsLocation(GoodsLocationBuilder.build)
+      }
+
+      "all data is supplied from form model" in {
+        val builder = new GoodsLocationBuilder
+        val consignment = new GoodsShipment.Consignment
+
+        builder.buildThenAdd(correctGoodsLocation, consignment)
+
+        validateGoodsLocation(consignment.getGoodsLocation)
       }
     }
   }
+
+  private def validateGoodsLocation(goodsLocation: GoodsShipment.Consignment.GoodsLocation) = {
+    goodsLocation.getID.getValue should be(identificationOfLocation)
+    goodsLocation.getAddress.getLine.getValue should be(addressLine)
+    goodsLocation.getAddress.getCityName.getValue should be(city)
+    goodsLocation.getAddress.getPostcodeID.getValue should be(postcode)
+    goodsLocation.getAddress.getCountryCode.getValue should be(countryCode)
+    goodsLocation.getName.getValue should be(additionalQualifier)
+    goodsLocation.getTypeCode.getValue should be(typeOfLocation)
+    goodsLocation.getAddress.getTypeCode.getValue should be(qualifierOfIdentification)
+  }
+
 }

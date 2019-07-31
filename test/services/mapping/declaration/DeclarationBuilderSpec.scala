@@ -16,6 +16,8 @@
 
 package services.mapping.declaration
 import forms.ChoiceSpec.supplementaryChoice
+import forms.declaration.GoodsLocationTestData
+import forms.declaration.GoodsLocationTestData._
 import models.declaration.SupplementaryDeclarationTestData
 import org.scalatest.{Matchers, WordSpec}
 import wco.datamodel.wco.dec_dms._2.Declaration
@@ -89,12 +91,12 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
 
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("LOC")
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getName.getValue should be("9GB1234567ABCDEF")
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getLine.getValue should be("Address Line")
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getCityName.getValue should be(
-      "Town or City"
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getLine.getValue should be(addressLine)
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getCityName.getValue should be(city)
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be(postcode)
+    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getCountryCode.getValue should be(
+      countryCode
     )
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be("AB12 CD3")
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getCountryCode.getValue should be("PL")
     declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getTypeCode.getValue should be("Y")
 
     declaration.getGoodsShipment.getDestination.getCountryCode.getValue should be("PL")

@@ -20,15 +20,24 @@ import base.TestHelper
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 object GoodsLocationTestData {
+  val identificationOfLocation = "LOC"
+  val country = "United Kingdom"
+  val addressLine = "Street and Number"
+  val postcode = "Postcode"
+  val city = "City"
+  val typeOfLocation = "T"
+  val qualifierOfIdentification = "Y"
+  val additionalQualifier = "9GB1234567ABCDEF"
+
   val correctGoodsLocation = GoodsLocation(
-    country = "United Kingdom",
-    typeOfLocation = "T",
-    qualifierOfIdentification = "Y",
-    identificationOfLocation = Some("LOC"),
-    additionalQualifier = Some("Additional Identifier"),
-    addressLine = Some("Street and Number"),
-    postCode = Some("Postcode"),
-    city = Some("City")
+    country = country,
+    typeOfLocation = typeOfLocation,
+    qualifierOfIdentification = qualifierOfIdentification,
+    identificationOfLocation = Some(identificationOfLocation),
+    additionalQualifier = Some(additionalQualifier),
+    addressLine = Some(addressLine),
+    postCode = Some(postcode),
+    city = Some(city)
   )
   val emptyGoodsLocation = GoodsLocation(
     country = "",
@@ -41,16 +50,18 @@ object GoodsLocationTestData {
     city = None
   )
 
+  var countryCode: String = "GB"
+
   val correctGoodsLocationJSON: JsValue = JsObject(
     Map(
-      "identificationOfLocation" -> JsString("LOC"),
-      "addressLine" -> JsString("Address Line"),
-      "city" -> JsString("Town or City"),
-      "postCode" -> JsString("AB12 CD3"),
-      "country" -> JsString("Poland"),
-      "additionalQualifier" -> JsString("9GB1234567ABCDEF"),
-      "typeOfLocation" -> JsString("T"),
-      "qualifierOfIdentification" -> JsString("Y")
+      "identificationOfLocation" -> JsString(identificationOfLocation),
+      "addressLine" -> JsString(addressLine),
+      "city" -> JsString(city),
+      "postCode" -> JsString(postcode),
+      "country" -> JsString(country),
+      "additionalQualifier" -> JsString(additionalQualifier),
+      "typeOfLocation" -> JsString(typeOfLocation),
+      "qualifierOfIdentification" -> JsString(qualifierOfIdentification)
     )
   )
   val emptyGoodsLocationJSON: JsValue = JsObject(

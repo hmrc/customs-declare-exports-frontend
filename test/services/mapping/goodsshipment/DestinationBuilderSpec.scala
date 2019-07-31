@@ -21,9 +21,11 @@ import forms.declaration.DestinationCountriesSpec
 import forms.declaration.destinationCountries.DestinationCountries
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.Json
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class DestinationBuilderSpec extends WordSpec with Matchers {
+class DestinationBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "DestinationBuilder" should {
     "correctly map to the WCO-DEC GoodsShipment.Destination instance" when {
@@ -63,6 +65,17 @@ class DestinationBuilderSpec extends WordSpec with Matchers {
             CacheMap("CacheID", Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("", Seq(""), ""))))
           DestinationBuilder.build(cacheMap, ChoiceSpec.standardChoice) should be(null)
         }
+      }
+    }
+
+    "correctly map a destinationCountries to the WCO-DEC GoodsShipment.Destination instance" when {
+      "countryOfDestination has been supplied" in {
+        val builder = new DestinationBuilder
+        val goodsShipment = new Declaration.GoodsShipment
+        builder.buildThenAdd(DestinationCountriesSpec.correctDestinationCountries, goodsShipment)
+
+        goodsShipment.getDestination.getCountryCode.getValue should be("PL")
+
       }
     }
   }

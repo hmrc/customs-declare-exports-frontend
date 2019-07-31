@@ -26,7 +26,12 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupp
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
-import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, TransportInformationContainerData}
+import models.declaration.{
+  DeclarationAdditionalActorsData,
+  DeclarationHoldersData,
+  Locations,
+  TransportInformationContainerData
+}
 
 //noinspection ScalaStyle
 trait ExportsCacheModelBuilder {
@@ -74,6 +79,12 @@ trait ExportsCacheModelBuilder {
     m.copy(locations = m.locations.copy(goodsLocation = Some(goodsLocation)))
   }
 
+  def withDestinationCountries(destinationCountries: Option[DestinationCountries]): CacheModifier = { m =>
+    {
+      val location: Locations = m.locations.copy(destinationCountries = destinationCountries)
+      m.copy(locations = location)
+    }
+  }
   def withoutItems(): CacheModifier = _.copy(items = Set.empty)
 
   def withItem(item: ExportItem = ExportItem(uuid)): CacheModifier =
@@ -116,12 +127,6 @@ trait ExportsCacheModelBuilder {
   def withDeclarationHolders(holders: DeclarationHolder*): CacheModifier =
     cache => cache.copy(parties = cache.parties.copy(declarationHoldersData = Some(DeclarationHoldersData(holders))))
 
-  def withoutRepresentativeDetails(): CacheModifier =
-    cache => cache.copy(parties = cache.parties.copy(representativeDetails = None))
-
-  def withRepresentativeDetails(details: RepresentativeDetails): CacheModifier =
-    cache => cache.copy(parties = cache.parties.copy(representativeDetails = Some(details)))
-
   def withoutBorderTransport(): CacheModifier = _.copy(borderTransport = None)
 
   def withBorderTransport(
@@ -162,6 +167,15 @@ trait ExportsCacheModelBuilder {
   def withDeclarationAdditionalActors(declarationAdditionalActorsData: DeclarationAdditionalActorsData): CacheModifier =
     cache =>
       cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = Some(declarationAdditionalActorsData)))
+
+  def withRepresentativeDetails(representativeDetails: RepresentativeDetails): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(representativeDetails = Some(representativeDetails)))
+
+  def withoutRepresentativeDetails(): CacheModifier =
+    cache => cache.copy(parties = cache.parties.copy(representativeDetails = None))
+
+  def withPreviousDocumentsData(previousDocumentsData: Option[PreviousDocumentsData]): CacheModifier =
+    _.copy(previousDocuments = previousDocumentsData)
 
   def withPreviousDocuments(previousDocuments: Document*): CacheModifier =
     _.copy(previousDocuments = Some(PreviousDocumentsData(previousDocuments)))
@@ -264,7 +278,8 @@ trait ExportsCacheModelBuilder {
 
   def withoutSeal(): CacheModifier = _.copy(seals = Seq.empty)
 
-  def withSeal(seal1: Seal, others: Seal*): CacheModifier = cache => cache.copy(seals = cache.seals ++ Seq(seal1) ++ others)
+  def withSeal(seal1: Seal, others: Seal*): CacheModifier =
+    cache => cache.copy(seals = cache.seals ++ Seq(seal1) ++ others)
 
   def withSeals(seals: Seq[Seal]): CacheModifier = _.copy(seals = seals)
 }

@@ -21,9 +21,11 @@ import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
-class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSugar {
+class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
 
   "PreviousDocumentsBuilder " should {
     "correctly map to a WCO-DEC GoodsShipment.PreviousDocuments instance" in {
@@ -96,6 +98,23 @@ class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSu
         previousDoc.get(0).getCategoryCode should be(null)
         previousDoc.get(0).getTypeCode.getValue should be("ABC")
         previousDoc.get(0).getLineNumeric.doubleValue() should be(10.0)
+      }
+    }
+
+    "correctly map new model to a WCO-DEC GoodsShipment.PreviousDocuments instance" when {
+      "when document data is present" in {
+
+        val builder = new PreviousDocumentsBuilder
+        val goodsShipment = new GoodsShipment
+        builder.buildThenAdd(PreviousDocumentsData(Seq(DocumentSpec.correctPreviousDocument)), goodsShipment)
+
+        val previousDocs = goodsShipment.getPreviousDocument
+        previousDocs.size should be(1)
+        previousDocs.get(0).getID.getValue should be("DocumentReference")
+        previousDocs.get(0).getCategoryCode.getValue should be("X")
+        previousDocs.get(0).getTypeCode.getValue should be("ABC")
+        previousDocs.get(0).getLineNumeric should be(BigDecimal(123).bigDecimal)
+
       }
     }
   }

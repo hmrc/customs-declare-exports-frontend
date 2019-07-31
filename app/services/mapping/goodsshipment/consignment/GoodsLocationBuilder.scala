@@ -16,11 +16,18 @@
 
 package services.mapping.goodsshipment.consignment
 import forms.declaration.GoodsLocation
+import javax.inject.Inject
 import services.Countries.allCountries
+import services.mapping.ModifyingBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment
 import wco.datamodel.wco.declaration_ds.dms._2._
 
+class GoodsLocationBuilder @Inject()() extends ModifyingBuilder[GoodsLocation, GoodsShipment.Consignment] {
+  override def buildThenAdd(model: GoodsLocation, consignment: Consignment): Unit =
+    consignment.setGoodsLocation(GoodsLocationBuilder.buildEoriOrAddress(model))
+}
 object GoodsLocationBuilder {
 
   def build()(implicit cacheMap: CacheMap): Consignment.GoodsLocation =
