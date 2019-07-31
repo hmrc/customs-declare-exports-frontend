@@ -26,7 +26,6 @@ import controllers.util.CacheIdGenerator.eoriCacheId
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
-import handlers.ErrorHandler
 import javax.inject.Inject
 import play.api.Logger
 import play.api.data.Form
@@ -43,7 +42,6 @@ class ChoiceController @Inject()(
   authenticate: AuthAction,
   customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
-  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   choicePage: choice_page
 )(implicit ec: ExecutionContext, appConfig: AppConfig)

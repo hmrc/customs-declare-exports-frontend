@@ -33,14 +33,13 @@ import views.html.declaration.goods_location
 import scala.concurrent.{ExecutionContext, Future}
 
 class LocationController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   goodsLocationPage: goods_location,
   override val exportsCacheService: ExportsCacheService
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.GoodsLocation._
 

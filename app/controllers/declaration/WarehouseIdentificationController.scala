@@ -32,14 +32,13 @@ import views.html.declaration.warehouse_identification
 import scala.concurrent.{ExecutionContext, Future}
 
 class WarehouseIdentificationController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   warehouseIdentificationPage: warehouse_identification
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   import forms.declaration.WarehouseIdentification._

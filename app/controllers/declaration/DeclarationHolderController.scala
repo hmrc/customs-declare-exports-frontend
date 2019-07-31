@@ -38,7 +38,6 @@ import views.html.declaration.declaration_holder
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationHolderController @Inject()(
-  appConfig: AppConfig,
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
@@ -46,7 +45,7 @@ class DeclarationHolderController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   declarationHolderPage: declaration_holder
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   import forms.declaration.DeclarationHolder.form
