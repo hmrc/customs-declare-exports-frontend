@@ -16,6 +16,8 @@
 
 package handlers
 
+import java.net.URLEncoder
+
 import base.CustomExportsBaseSpec
 import play.api.http.{HeaderNames, Status}
 import play.api.test.FakeRequest
@@ -39,11 +41,13 @@ class ErrorHandlerSpec extends CustomExportsBaseSpec {
   }
   "resolve error" should {
 
+    def urlEncode(value: String): String = URLEncoder.encode(value, "UTF-8")
+
     "handle no active session authorisation exception" in {
       val res = errorHandler.resolveError(req, new NoActiveSession("A user is not logged in") {})
       res.header.status must be(Status.SEE_OTHER)
       res.header.headers.get(HeaderNames.LOCATION) must be(
-        Some("/gg/sign-in?continue=%2Ffoo&origin=customs-declare-exports-frontend")
+        Some(s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode("http://localhost:6791/customs-declare-exports/start")}")
       )
     }
 
