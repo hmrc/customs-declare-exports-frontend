@@ -16,6 +16,9 @@
 
 package utils.validators.forms
 
+import java.util.regex.Pattern
+
+import scala.util.matching.Regex
 import scala.util.{Success, Try}
 
 object FieldValidator {
@@ -41,8 +44,10 @@ object FieldValidator {
   }
 
   private val zerosOnlyRegexValue = "[0]+"
-  private val noMoreDecimalPlacesThanRegexValue: Int => String = (decimalPlaces: Int) =>
-    s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$"
+
+  private def noMoreDecimalPlacesThanRegexValue(decimalPlaces: Int): Pattern =
+    Pattern.compile(s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$")
+
   private val allowedSpecialChars = Set(',', '.', '-', '\'', '/', ' ')
 
   private val allowedHyphenChar = Set('-')
@@ -92,8 +97,11 @@ object FieldValidator {
       case _              => false
   }
 
-  val isDecimalWithNoMoreDecimalPlacesThan: Int => String => Boolean = (decimalPlaces: Int) =>
-    (input: String) => input.matches(noMoreDecimalPlacesThanRegexValue(decimalPlaces))
+  def isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces: Int): String => Boolean = {
+    val pattern = noMoreDecimalPlacesThanRegexValue(decimalPlaces)
+    input => pattern.matcher(input).matches()
+  }
+
 
   val validateDecimal: Int => Int => String => Boolean = (totalLength: Int) =>
     (decimalPlaces: Int) =>
