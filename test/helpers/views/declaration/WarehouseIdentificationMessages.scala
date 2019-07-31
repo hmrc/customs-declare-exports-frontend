@@ -26,6 +26,7 @@ trait WarehouseIdentificationMessages {
   val identificationNumber: String = warehouse + ".identificationNumber"
   val identificationTypeError: String = warehouse + ".identificationType.error"
   val identificationNumberError: String = warehouse + ".identificationNumber.error"
+  val identificationNumberEmpty: String = warehouse + ".identificationNumber.empty"
   val identificationNumberHint: String = warehouse + ".identificationNumber.hint"
   val supervisingCustomsOffice: String = warehouse + ".supervisingCustomsOffice"
   val supervisingCustomsOfficeHint: String = warehouse + ".supervisingCustomsOffice.hint"

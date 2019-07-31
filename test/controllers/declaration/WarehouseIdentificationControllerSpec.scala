@@ -97,7 +97,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
 
       status(result) must be(BAD_REQUEST)
-      contentAsString(result) must include(messages(identificationNumberError))
+      contentAsString(result) must include(messages(identificationNumberEmpty))
       verifyTheCacheIsUnchanged()
     }
 

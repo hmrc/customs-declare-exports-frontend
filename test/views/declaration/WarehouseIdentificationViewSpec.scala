@@ -61,6 +61,7 @@ class WarehouseIdentificationViewSpec extends ViewSpec with WarehouseIdentificat
     "have proper error labels for messages" in {
 
       assertMessage(identificationNumberError, "Incorrect Identification Number")
+      assertMessage(identificationNumberEmpty, "Enter the warehouse identification number")
       assertMessage(supervisingCustomsOfficeError, "Supervising customs office is incorrect")
       assertMessage(inlandTransportModeError, "Please, choose valid inland mode of transport")
     }
