@@ -375,6 +375,7 @@ supplementary.warehouse.identificationType.y = Non-customs warehouse
 supplementary.warehouse.identificationType.z = Free zone
 supplementary.warehouse.identificationNumber = 2/7 Enter the warehouse identification number
 supplementary.warehouse.identificationNumber.error = Incorrect Identification Number
+supplementary.warehouse.identificationNumber.empty = Enter the warehouse identification number
 supplementary.warehouse.identificationNumber.hint = For example, 1234567GB
 supplementary.warehouse.supervisingCustomsOffice = 5/27 Where is the supervising customs office?
 supplementary.warehouse.supervisingCustomsOffice.hint = This is an 8 digit code
