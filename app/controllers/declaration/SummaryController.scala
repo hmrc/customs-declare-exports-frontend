@@ -61,16 +61,17 @@ class SummaryController @Inject()(
 
   def submitSupplementaryDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
-      customsCacheService.fetch(cacheId).flatMap {
-        case Some(cacheMap) => handleDecSubmission(cacheMap)
-        case None           => Future.successful(handleError("Could not obtain data from DB"))
+      exportsCacheService.get(journeySessionId).flatMap {
+        case Some(model) => handleDecSubmission(model)
+        case None        => Future.successful(handleError("Could not obtain data from DB"))
       }
+
   }
 
   private def handleDecSubmission(
-    cacheMap: CacheMap
+    exportsCacheModel: ExportsCacheModel
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    submissionService.submit(cacheMap).map {
+    submissionService.submit(exportsCacheModel).map {
       case Some(lrn) =>
         Redirect(controllers.declaration.routes.ConfirmationController.displayPage())
           .flashing(Flash(Map("LRN" -> lrn)))
