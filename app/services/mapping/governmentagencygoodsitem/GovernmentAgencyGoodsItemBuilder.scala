@@ -16,12 +16,13 @@
 
 package services.mapping.governmentagencygoodsitem
 
+import forms.declaration.{CommodityMeasure, ItemType}
 import javax.inject.Inject
 import models.declaration.governmentagencygoodsitem.Formats._
-import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
+import models.declaration.governmentagencygoodsitem.{Commodity, GovernmentAgencyGoodsItem}
 import services.ExportsItemsCacheIds
 import services.cache.ExportItem
-import services.mapping.ModifyingBuilder
+import services.mapping.{CachingMappingHelper, ModifyingBuilder}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
@@ -35,7 +36,9 @@ class GovernmentAgencyGoodsItemBuilder @Inject()(
   packagingBuilder: PackagingBuilder,
   governmentProcedureBuilder: GovernmentProcedureBuilder,
   additionalInformationBuilder: AdditionalInformationBuilder,
-  additionalDocumentsBuilder: AdditionalDocumentsBuilder
+  additionalDocumentsBuilder: AdditionalDocumentsBuilder,
+  domesticDutyTaxPartyBuilder: DomesticDutyTaxPartyBuilder,
+  commodityBuilder: CommodityBuilder
 ) extends ModifyingBuilder[ExportItem, Declaration.GoodsShipment] {
 
   override def buildThenAdd(exportItem: ExportItem, goodsShipment: Declaration.GoodsShipment): Unit = {
@@ -48,8 +51,33 @@ class GovernmentAgencyGoodsItemBuilder @Inject()(
     additionalInformationBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     additionalDocumentsBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
 
+    val combinedCommodity = for {
+      commodityWithoutGoodsMeasure <- mapItemTypeToCommodity(exportItem.itemType)
+      commodityOnlyGoodsMeasure <- mapCommodityMeasureToCommodity(exportItem.commodityMeasure)
+    } yield combineCommodities(commodityWithoutGoodsMeasure, commodityOnlyGoodsMeasure)
+
+    combinedCommodity.foreach(commodityBuilder.buildThenAdd(_, wcoGovernmentAgencyGoodsItem))
+
+    exportItem.additionalFiscalReferencesData.foreach(
+      _.references.foreach(
+        additionalFiscalReference =>
+          domesticDutyTaxPartyBuilder.buildThenAdd(additionalFiscalReference, wcoGovernmentAgencyGoodsItem)
+      )
+    )
+
     goodsShipment.getGovernmentAgencyGoodsItem.add(wcoGovernmentAgencyGoodsItem)
   }
+
+  private def mapItemTypeToCommodity(itemType: Option[ItemType]): Option[Commodity] =
+    itemType.map({ item =>
+      CachingMappingHelper.commodityFromItemTypes(item)
+    })
+
+  private def mapCommodityMeasureToCommodity(commodityMeasure: Option[CommodityMeasure]): Option[Commodity] =
+    commodityMeasure.map(measure => CachingMappingHelper.mapGoodsMeasure(measure))
+
+  private def combineCommodities(commodityPart1: Commodity, commodityPart2: Commodity): Commodity =
+    commodityPart1.copy(goodsMeasure = commodityPart2.goodsMeasure)
 
 }
 

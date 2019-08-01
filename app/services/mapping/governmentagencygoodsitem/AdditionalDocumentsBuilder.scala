@@ -51,11 +51,14 @@ class AdditionalDocumentsBuilder @Inject()()
     exportItem: ExportItem,
     wcoGovernmentAgencyGoodsItem: GoodsShipment.GovernmentAgencyGoodsItem
   ): Unit =
-    exportItem.documentsProducedData.foreach { documentsProduced =>
-      documentsProduced.documents.map(createGoodsItemAdditionalDocument).foreach { goodsItemAdditionalDocument =>
-        wcoGovernmentAgencyGoodsItem.getAdditionalDocument.add(createAdditionalDocument(goodsItemAdditionalDocument))
+    exportItem.documentsProducedData.foreach {
+      _.documents.map(AdditionalDocumentsBuilder.createGoodsItemAdditionalDocument(_)).foreach {
+        goodsItemAdditionalDocument =>
+          wcoGovernmentAgencyGoodsItem.getAdditionalDocument
+            .add(AdditionalDocumentsBuilder.createAdditionalDocument(goodsItemAdditionalDocument))
       }
     }
+
 }
 
 object AdditionalDocumentsBuilder {
@@ -82,7 +85,7 @@ object AdditionalDocumentsBuilder {
       writeOff = createAdditionalDocumentWriteOff(doc)
     )
 
-  private def createAdditionalDocument(doc: GovernmentAgencyGoodsItemAdditionalDocument): AdditionalDocument = {
+  def createAdditionalDocument(doc: GovernmentAgencyGoodsItemAdditionalDocument): AdditionalDocument = {
     val additionalDocument = new AdditionalDocument
 
     doc.categoryCode.foreach { categoryCode =>

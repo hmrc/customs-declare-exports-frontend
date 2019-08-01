@@ -31,7 +31,6 @@ class DestinationBuilder @Inject()() extends ModifyingBuilder[DestinationCountri
   override def buildThenAdd(countries: DestinationCountries, goodsShipment: GoodsShipment) =
     if (countries.countryOfDestination.nonEmpty)
       goodsShipment.setDestination(createExportCountry(countries.countryOfDestination))
-
 }
 
 object DestinationBuilder {
