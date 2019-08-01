@@ -26,6 +26,7 @@ import models.declaration.SupplementaryDeclarationTestData
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Action, Submission, SubmissionRequest}
 import models.requests.CancellationRequested
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
 import play.api.test.Helpers.ACCEPTED
@@ -34,10 +35,10 @@ import services.mapping.MetaDataBuilder
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
-class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec {
+class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with GuiceOneAppPerSuite {
   import CustomsDeclareExportsConnectorSpec._
 
-  private val wcoMetadataMapper = new WcoMetadataMapper
+  private val wcoMetadataMapper = app.injector.instanceOf[WcoMetadataMapper]
 
   "Customs Declare Exports Connector" should {
 

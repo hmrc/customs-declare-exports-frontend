@@ -16,17 +16,17 @@
 
 package services
 
-import forms.Choice
+import javax.inject.Inject
 import javax.xml.bind.JAXBElement
-import services.mapping.MetaDataBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
+import services.cache.ExportsCacheModel
+import services.cache.mapping.SubmissionMetaDataBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
-class WcoMetadataMapper {
+class WcoMetadataMapper @Inject()(submissionMetadataBuilder: SubmissionMetaDataBuilder) {
 
-  def produceMetaData(cacheMap: CacheMap, choice: Choice): MetaData =
-    MetaDataBuilder.build(cacheMap, choice)
+  def produceMetaData(exportsCacheModel: ExportsCacheModel): MetaData =
+    submissionMetadataBuilder.build(exportsCacheModel)
 
   def declarationUcr(metaData: Any): Option[String] = {
     val ucr = Option(
