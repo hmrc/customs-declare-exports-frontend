@@ -18,10 +18,11 @@ package unit.base
 
 import base.{MockAuthAction, MockConnectors, MockExportsCacheService}
 import controllers.util.{Add, SaveAndContinue}
+import models.requests.JourneyRequest
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, Request}
 import play.api.test.FakeRequest
-import services.cache.{ExportsCacheModelBuilder, ExportsItemBuilder}
+import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder, ExportsItemBuilder}
 import unit.mock.JourneyActionMocks
 import unit.tools.Stubs
 import utils.FakeRequestCSRFSupport._
@@ -38,8 +39,8 @@ trait ControllerSpec
 
   val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
 
-  def getRequest(): Request[AnyContentAsEmpty.type] =
-    FakeRequest("GET", "").withSession(("sessionId", "sessionId")).withCSRFToken
+  def getRequest(cacheModel: ExportsCacheModel): JourneyRequest[AnyContentAsEmpty.type] =
+    JourneyRequest(getAuthenticatedRequest(sessionId = cacheModel.sessionId), cacheModel)
 
   def postRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("POST", "").withSession(("sessionId", "sessionId")).withJsonBody(body).withCSRFToken

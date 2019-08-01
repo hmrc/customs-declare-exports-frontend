@@ -60,7 +60,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
       "return 200 code" in {
         val result = route(app, getRequest(summaryPageUri)).get
         status(result) must be(OK)
-        verify(mockExportsCacheService, times(2)).get(anyString)
+        verify(mockExportsCacheService).get(anyString)
       }
 
       "display 'Back' button that links to 'Export-items' page" in {
@@ -70,7 +70,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
         resultAsString must include(messages("site.back"))
         resultAsString must include("/declaration/transport-details")
-        verify(mockExportsCacheService, onlyTwice).get(anyString)
+        verify(mockExportsCacheService).get(anyString)
       }
 
       "display 'Accept and submit declaration' button" in {
@@ -78,7 +78,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
         resultAsString must include(messages("site.acceptAndSubmitDeclaration"))
         resultAsString must include("button id=\"submit\" class=\"button\"")
-        verify(mockExportsCacheService, onlyTwice).get(anyString)
+        verify(mockExportsCacheService).get(anyString)
       }
 
       "display content for Declaration Type module" in {
@@ -87,7 +87,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.declarationType.header"))
         resultAsString must include(messages("supplementary.summary.declarationType.dispatchLocation"))
         resultAsString must include(messages("supplementary.summary.declarationType.supplementaryDeclarationType"))
-        verify(mockExportsCacheService, onlyTwice).get(anyString)
+        verify(mockExportsCacheService).get(anyString)
       }
 
       "display content for Your References module" in {
@@ -96,7 +96,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.yourReferences.header"))
         resultAsString must include(messages("supplementary.summary.yourReferences.ducr"))
         resultAsString must include(messages("supplementary.summary.yourReferences.lrn"))
-        verify(mockExportsCacheService, onlyTwice).get(anyString)
+        verify(mockExportsCacheService).get(anyString)
       }
 
       "display content for Parties module" in {
@@ -115,7 +115,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.parties.additionalParties.type"))
         resultAsString must include(messages("supplementary.summary.parties.idStatusNumberAuthorisationCode"))
         resultAsString must include(messages("supplementary.summary.parties.authorizedPartyEori"))
-        verify(mockExportsCacheService, onlyTwice).get(anyString)
+        verify(mockExportsCacheService).get(anyString)
       }
 
       "display content for Locations module" in {
@@ -132,7 +132,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.locations.warehouseId"))
         resultAsString must include(messages("supplementary.summary.locations.supervisingCustomsOffice"))
         resultAsString must include(messages("supplementary.summary.locations.officeOfExit"))
-        verify(mockExportsCacheService, onlyTwice).get(anyString)
+        verify(mockExportsCacheService).get(anyString)
       }
 
       "display content for Item module" in {
@@ -142,7 +142,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.summary.items.amountInvoiced"))
         resultAsString must include(messages("supplementary.summary.items.exchangeRate"))
         resultAsString must include(messages("supplementary.summary.items.transactionType"))
-        verify(mockExportsCacheService, onlyTwice).get(anyString)
+        verify(mockExportsCacheService).get(anyString)
       }
 
       "display containers content with cache available" in {
@@ -151,13 +151,12 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
         resultAsString must include(messages("supplementary.transportInfo.containers.title"))
         resultAsString must include(messages("supplementary.transportInfo.containerId.title"))
         resultAsString must include(messages("M1l3s"))
-        verify(mockExportsCacheService, onlyTwice).get(anyString)
+        verify(mockExportsCacheService).get(anyString)
       }
 
       "get the whole supplementary declaration data from cache" in {
         route(app, getRequest(summaryPageUri)).get.futureValue
-
-        verify(mockExportsCacheService, onlyTwice).get(anyString)
+        verify(mockExportsCacheService).get(anyString)
       }
     }
 
@@ -168,7 +167,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
         resultAsString must include(messages("supplementary.summary.noData.header"))
         resultAsString must include(messages("supplementary.summary.noData.header.secondary"))
-        verify(mockExportsCacheService, onlyTwice).get(anyString)
+        verify(mockExportsCacheService).get(anyString)
       }
     }
 
@@ -180,7 +179,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
         resultAsString must include(messages("supplementary.summary.noData.header"))
         resultAsString must include(messages("supplementary.summary.noData.header.secondary"))
-        verify(mockExportsCacheService, onlyTwice).get(anyString)
+        verify(mockExportsCacheService).get(anyString)
       }
     }
 
@@ -199,7 +198,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
         ).thenReturn(Future.successful(Some("123LRN")))
 
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-        verify(mockExportsCacheService, onlyTwice).get(any())
+        verify(mockExportsCacheService).get(any())
       }
 
       "remove supplementary declaration data from cache" in {

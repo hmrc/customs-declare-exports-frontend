@@ -58,9 +58,12 @@ class ItemTypeControllerSpec
     "read item from cache and display it" in {
 
       val cachedData = ItemType("5555", Seq("6666"), Seq("7777"), "FaultyGoods", Some("CusCus"), Some("12CD"), "900")
-      withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
 
-      val result = route(app, getRequest(uri)).get
+      val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP"))
+
+      withNewCaching(model)
+
+      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)

@@ -70,9 +70,11 @@ class DocumentsProducedControllerSpec
 
       val document = DocumentsProducedSpec.correctDocumentsProduced
       val cachedData = ExportItem(id = "id", documentsProducedData = Some(DocumentsProducedData(Seq(document))))
-      withNewCaching(aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+      val cacheModel = aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
 
-      val result = route(app, getRequest(uri)).get
+      withNewCaching(cacheModel)
+
+      val result = route(app, getRequest(uri, sessionId = cacheModel.sessionId)).get
       val view = contentAsString(result)
 
       status(result) must be(OK)

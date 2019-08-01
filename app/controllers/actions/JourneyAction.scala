@@ -18,7 +18,6 @@ package controllers.actions
 
 import com.google.inject.Inject
 import controllers.declaration.SessionIdAware
-import forms.Choice
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.Logger
 import play.api.mvc.Results.Conflict
@@ -39,11 +38,11 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    cacheService.get(request.session.data("sessionId")).map {
+    cacheService.get(request.sessionId).map {
       case Some(cacheModel) => Right(JourneyRequest(request, cacheModel))
       case _ =>
         // $COVERAGE-OFF$Trivial
-        logger.error(s"Could not obtain journey type for ${eoriCacheId()(request)}")
+        logger.error(s"Could not obtain journey type for ${request.sessionId}")
         // $COVERAGE-ON
         Left(Conflict("Could not obtain information about journey type"))
     }

@@ -19,6 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.ConsigneeDetails
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -58,9 +59,10 @@ class ConsigneeDetailsController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: ConsigneeDetails): Future[Option[ExportsCacheModel]] =
-    getAndUpdateExportCacheModel(sessionId, model => {
+  private def updateCache(sessionId: String, formData: ConsigneeDetails)
+                         (implicit request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] =
+    updateExportCacheModel { model =>
       val updatedParties = model.parties.copy(consigneeDetails = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
-    })
+    }
 }

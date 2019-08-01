@@ -65,8 +65,9 @@ class AdditionalDeclarationTypeController @Inject()(
       case StandardDec      => AdditionalDeclarationTypeStandardDec
     }
 
-  private def updateCache(sessionId: String, formData: AdditionalDeclarationType): Future[Option[ExportsCacheModel]] =
-    getAndUpdateExportCacheModel(sessionId, model => {
+  private def updateCache(sessionId: String, formData: AdditionalDeclarationType)
+                         (implicit request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] =
+    updateExportCacheModel(model => {
       exportsCacheService.update(sessionId, model.copy(additionalDeclarationType = Some(formData)))
     })
 
