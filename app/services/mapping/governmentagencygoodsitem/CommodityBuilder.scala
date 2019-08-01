@@ -15,8 +15,11 @@
  */
 
 package services.mapping.governmentagencygoodsitem
+import javax.inject.Inject
 import models.declaration.governmentagencygoodsitem.{Classification, Commodity, DangerousGoods, GoodsMeasure}
 import services.ExportsItemsCacheIds
+import services.mapping.ModifyingBuilder
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.Commodity.{
   Classification => WCOClassification,
   DangerousGoods => WCODangerousGoods,
@@ -26,6 +29,11 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGo
 import wco.datamodel.wco.declaration_ds.dms._2._
 
 import scala.collection.JavaConverters._
+
+class CommodityBuilder @Inject()() extends ModifyingBuilder[Commodity, GovernmentAgencyGoodsItem] {
+  override def buildThenAdd(model: Commodity, item: GovernmentAgencyGoodsItem): Unit =
+    item.setCommodity(CommodityBuilder.mapCommodity(model))
+}
 
 object CommodityBuilder {
 

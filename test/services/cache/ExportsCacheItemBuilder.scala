@@ -19,8 +19,15 @@ package services.cache
 import java.util.UUID
 
 import forms.declaration.additionaldocuments.DocumentsProduced
-import forms.declaration.{AdditionalInformation, ItemType, PackageInformation}
+import forms.declaration.{
+  AdditionalFiscalReferencesData,
+  AdditionalInformation,
+  CommodityMeasure,
+  ItemType,
+  PackageInformation
+}
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
+import uk.gov.hmrc.wco.dec.Commodity
 
 trait ExportsCacheItemBuilder {
 
@@ -46,6 +53,12 @@ trait ExportsCacheItemBuilder {
     _.copy(procedureCodes = Some(ProcedureCodesData(procedureCode, additionalProcedureCodes)))
 
   def withoutAdditionalInformation(): CachedItemModifier = _.copy(additionalInformation = None)
+
+  def withCommodityMeasure(commodityMeasure: CommodityMeasure): CachedItemModifier =
+    _.copy(commodityMeasure = Some(commodityMeasure))
+
+  def withAdditionalFiscalReferenceData(data: AdditionalFiscalReferencesData): CachedItemModifier =
+    _.copy(additionalFiscalReferencesData = Some(data))
 
   def withAdditionalInformation(code: String, description: String): CachedItemModifier =
     withAdditionalInformation(AdditionalInformation(code, description))

@@ -16,9 +16,9 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import forms.declaration.AdditionalFiscalReference
-import models.declaration.governmentagencygoodsitem.{Commodity => _, GovernmentProcedure => _, Packaging => _}
-import models.declaration.{DocumentsProducedData, DocumentsProducedDataSpec}
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure}
+import models.declaration.DocumentsProducedData
+import models.declaration.governmentagencygoodsitem.Commodity
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
@@ -40,6 +40,8 @@ class GovernmentAgencyGoodsItemBuilderSpec
   private val governmentProcedureBuilder = mock[GovernmentProcedureBuilder]
   private val additionalInformationBuilder = mock[AdditionalInformationBuilder]
   private val additionalDocumentsBuilder = mock[AdditionalDocumentsBuilder]
+  private val commodityBuilder = mock[CommodityBuilder]
+  private val dutyTaxPartyBuilder = mock[DomesticDutyTaxPartyBuilder]
 
   "GovernmentAgencyGoodsItemBuilder" should {
     "map to WCO model correctly " in {
@@ -68,23 +70,47 @@ class GovernmentAgencyGoodsItemBuilderSpec
     }
 
     "map ExportItem Correctly" in {
-      val exportItem = aCachedItem(withSequenceId(99))
+      val exportItem = aCachedItem(
+        withSequenceId(99),
+        withCommodityMeasure(CommodityMeasure(Some("2"), "90", "100")),
+        withAdditionalFiscalReferenceData(
+          AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "reference")))
+        ),
+        withItemType(
+          descriptionOfGoods = "commodityDescription",
+          statisticalValue = "123",
+          combinedNomenclatureCode = "classificationsId",
+          unDangerousGoodsCode = Some("dangerousGoodsCode")
+        )
+      )
 
       val goodsShipment = new GoodsShipment
       builder.buildThenAdd(exportItem, goodsShipment)
 
-      verify(statisticalValueAmountBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
+      verify(statisticalValueAmountBuilder)
+        .buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
       verify(packagingBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
       verify(governmentProcedureBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
       verify(additionalInformationBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
       verify(additionalDocumentsBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
-
+      verify(commodityBuilder).buildThenAdd(any[Commodity], any[GoodsShipment.GovernmentAgencyGoodsItem])
+      verify(dutyTaxPartyBuilder)
+        .buildThenAdd(any[AdditionalFiscalReference], any[GoodsShipment.GovernmentAgencyGoodsItem])
       goodsShipment.getGovernmentAgencyGoodsItem shouldNot be(empty)
       goodsShipment.getGovernmentAgencyGoodsItem.get(0).getSequenceNumeric.intValue() shouldBe 99
     }
   }
 
-  private def builder = new GovernmentAgencyGoodsItemBuilder(statisticalValueAmountBuilder, packagingBuilder, governmentProcedureBuilder, additionalInformationBuilder, additionalDocumentsBuilder)
+  private def builder =
+    new GovernmentAgencyGoodsItemBuilder(
+      statisticalValueAmountBuilder,
+      packagingBuilder,
+      governmentProcedureBuilder,
+      additionalInformationBuilder,
+      additionalDocumentsBuilder,
+      dutyTaxPartyBuilder,
+      commodityBuilder
+    )
 
   private def validateStatisticalValueAmount(value: java.math.BigDecimal, currencyId: String) = {
     currencyId should be(StatisticalValueAmountBuilder.defaultCurrencyCode)
