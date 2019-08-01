@@ -17,48 +17,67 @@
 package services
 
 import base.ExportsTestData
-import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
+import org.mockito.ArgumentMatchers.{any, refEq}
+import org.mockito.BDDMockito._
+import org.mockito.Mockito.verify
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import services.cache.ExportsCacheModel
+import services.cache.mapping.SubmissionMetaDataBuilder
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
+import wco.datamodel.wco.dec_dms._2.{Declaration, ObjectFactory}
+import wco.datamodel.wco.declaration_ds.dms._2.{DeclarationFunctionalReferenceIDType, UCRTraderAssignedReferenceIDType}
+import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
-import scala.io.Source
+class WcoMetadataMapperSpec extends WordSpec with Matchers with SchemaValidation with MockitoSugar {
 
-class WcoMetadataMapperSpec extends WordSpec with Matchers with SchemaValidation with GuiceOneAppPerSuite {
-
-  private val mapper: WcoMetadataMapper = app.injector.asInstanceOf[WcoMetadataMapper]
+  private val submissionMetaDataBuiler = mock[SubmissionMetaDataBuilder]
+  private val mapper: WcoMetadataMapper = new WcoMetadataMapper(submissionMetaDataBuiler)
 
   "WcoMetadataMapper" should {
 
     "produce metadata" in {
+      val metaData = new MetaData()
 
-      val metaData = mapper.produceMetaData(ExportsTestData.exportsCacheModelFull)
+      given(submissionMetaDataBuiler.build(any[ExportsCacheModel])) willReturn (metaData)
 
-      metaData.getWCOTypeName.getValue shouldBe SchemaMandatoryValues.wcoTypeName
-      metaData.getWCODataModelVersionCode.getValue shouldBe SchemaMandatoryValues.wcoDataModelVersionCode
-      metaData.getResponsibleAgencyName.getValue shouldBe SchemaMandatoryValues.responsibleAgencyName
-      metaData.getResponsibleCountryCode.getValue shouldBe SchemaMandatoryValues.responsibleCountryCode
-      metaData.getAgencyAssignedCustomizationCode.getValue shouldBe SchemaMandatoryValues.agencyAssignedCustomizationVersionCode
-      metaData.getAny should not be (null)
+      val result = mapper.produceMetaData(ExportsTestData.exportsCacheModelFull)
+
+      result shouldBe metaData
+      verify(submissionMetaDataBuiler).build(refEq(ExportsTestData.exportsCacheModelFull))
+
     }
 
     "retrieve a DUCR based on the produced metadata" in {
-      val metaData = mapper.produceMetaData(ExportsTestData.exportsCacheModelFull)
-
-      mapper.declarationUcr(metaData) should be(Some("8GB123456789012-1234567890QWERTYUIO"))
+      mapper.declarationUcr(createMetadata) should be(Some("8GB123456789012-1234567890QWERTYUIO"))
     }
 
     "retrieve a LRN based on the produced metadata" in {
-      val metaData = mapper.produceMetaData(ExportsTestData.exportsCacheModelFull)
-
-      mapper.declarationLrn(metaData) should be(Some("123LRN"))
+      mapper.declarationLrn(createMetadata) should be(Some("123LRN"))
     }
 
-    "marshall the metadata correctly" in {
-      val metaData = mapper.produceMetaData(ExportsTestData.exportsCacheModelFull)
+  }
 
-      mapper.toXml(metaData) should include(Source.fromURL(getClass.getResource("/wco_dec_metadata.xml")).mkString)
+  private def createMetadata = {
+    val metaData = new MetaData()
+    val declaration = new Declaration()
+    val goodsShipment = new GoodsShipment()
 
-      validateXmlAgainstSchema(mapper.toXml(metaData))
-    }
+    val ucr = new GoodsShipment.UCR
+    val traderReferenceIdType = new UCRTraderAssignedReferenceIDType
+    traderReferenceIdType.setValue("8GB123456789012-1234567890QWERTYUIO")
+    ucr.setTraderAssignedReferenceID(traderReferenceIdType)
+    goodsShipment.setUCR(ucr)
+
+    val idType = new DeclarationFunctionalReferenceIDType
+    idType.setValue("123LRN")
+
+    declaration.setFunctionalReferenceID(idType)
+    declaration.setGoodsShipment(goodsShipment)
+
+    val objectFactory = new ObjectFactory
+    val jaxbDeclaration = objectFactory.createDeclaration(declaration)
+    metaData.setAny(jaxbDeclaration)
+    metaData
   }
 }
