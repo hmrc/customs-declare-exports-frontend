@@ -29,7 +29,8 @@ import wco.datamodel.wco.declaration_ds.dms._2.DestinationCountryCodeType
 class DestinationBuilder @Inject()() extends ModifyingBuilder[DestinationCountries, GoodsShipment] {
 
   override def buildThenAdd(countries: DestinationCountries, goodsShipment: GoodsShipment) =
-    goodsShipment.setDestination(createExportCountry(countries.countryOfDestination))
+    if (countries.countryOfDestination.nonEmpty)
+      goodsShipment.setDestination(createExportCountry(countries.countryOfDestination))
 
 }
 

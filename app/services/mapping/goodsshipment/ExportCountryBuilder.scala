@@ -26,7 +26,8 @@ import wco.datamodel.wco.declaration_ds.dms._2.ExportCountryCountryCodeType
 
 class ExportCountryBuilder @Inject()() extends ModifyingBuilder[DestinationCountries, GoodsShipment] {
   override def buildThenAdd(model: DestinationCountries, goodsShipment: GoodsShipment): Unit =
-    goodsShipment.setExportCountry(ExportCountryBuilder.createExportCountry(model))
+    if (ExportCountryBuilder.isDefined(model))
+      goodsShipment.setExportCountry(ExportCountryBuilder.createExportCountry(model))
 
 }
 

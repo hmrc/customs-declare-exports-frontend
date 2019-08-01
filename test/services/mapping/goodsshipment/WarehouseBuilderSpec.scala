@@ -97,8 +97,7 @@ class WarehouseBuilderSpec extends WordSpec with Matchers with MockitoSugar {
         )
 
         val warehouse = goodsShipment.getWarehouse
-        warehouse.getID.getValue should be("1234567GB")
-        warehouse.getTypeCode.getValue should be("")
+        warehouse should be(null)
       }
 
       "identificationNumber is not supplied" in {
@@ -107,9 +106,7 @@ class WarehouseBuilderSpec extends WordSpec with Matchers with MockitoSugar {
         builder.buildThenAdd(WarehouseIdentification(Some("GBWKG001"), Some("R"), None, Some("2")), goodsShipment)
 
         val warehouse = goodsShipment.getWarehouse
-        warehouse.getID.getValue should be("")
-        warehouse.getTypeCode.getValue should be("R")
-
+        warehouse should be(null)
       }
 
     }
