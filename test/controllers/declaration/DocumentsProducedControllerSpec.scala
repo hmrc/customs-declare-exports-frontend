@@ -39,16 +39,16 @@ class DocumentsProducedControllerSpec
 
   import DocumentsProducedControllerSpec._
 
-  val cachedModel: ExportsCacheModel = aCacheModel(withChoice(SupplementaryDec), withItem())
+  val exampleModel: ExportsCacheModel = aCacheModel(withChoice(SupplementaryDec), withItem())
 
-  private val uri = uriWithContextPath(s"/declaration/items/${cachedModel.items.head.id}/add-document")
+  private val uri = uriWithContextPath(s"/declaration/items/${exampleModel.items.head.id}/add-document")
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(cachedModel)
+    withNewCaching(exampleModel)
   }
 
   override def afterEach() {
@@ -116,7 +116,7 @@ class DocumentsProducedControllerSpec
       "provided with incorrect document type code" in {
         val incorrectDocumentTypeCode: JsValue = JsObject(Map("documentTypeCode" -> JsString("abcdf")))
 
-        val result = route(app, postRequest(uri, incorrectDocumentTypeCode)).get
+        val result = route(app, postRequest(uri, incorrectDocumentTypeCode, sessionId = exampleModel.sessionId)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentTypeCodeError))
         verifyTheCacheIsUnchanged()
@@ -132,7 +132,7 @@ class DocumentsProducedControllerSpec
             )
           )
 
-        val result = route(app, postRequest(uri, incorrectDocumentIdentifier)).get
+        val result = route(app, postRequest(uri, incorrectDocumentIdentifier, sessionId = exampleModel.sessionId)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentIdentifierError))
 
@@ -149,7 +149,7 @@ class DocumentsProducedControllerSpec
             )
           )
 
-        val result = route(app, postRequest(uri, incorrectDocumentPart)).get
+        val result = route(app, postRequest(uri, incorrectDocumentPart, sessionId = exampleModel.sessionId)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentPartError))
 
@@ -159,7 +159,7 @@ class DocumentsProducedControllerSpec
       "provided with incorrect document status" in {
         val incorrectDocumentStatus: JsValue = JsObject(Map(documentStatusKey -> JsString("as")))
 
-        val result = route(app, postRequest(uri, incorrectDocumentStatus)).get
+        val result = route(app, postRequest(uri, incorrectDocumentStatus, sessionId = exampleModel.sessionId)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentStatusError))
 
@@ -170,7 +170,7 @@ class DocumentsProducedControllerSpec
         val incorrectDocumentStatusReason: JsValue =
           JsObject(Map(documentStatusReasonKey -> JsString(TestHelper.createRandomAlphanumericString(36))))
 
-        val result = route(app, postRequest(uri, incorrectDocumentStatusReason)).get
+        val result = route(app, postRequest(uri, incorrectDocumentStatusReason, sessionId = exampleModel.sessionId)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentStatusReasonError))
 
@@ -181,7 +181,7 @@ class DocumentsProducedControllerSpec
         val incorrectDocumentQuantity: JsValue =
           JsObject(Map(s"$documentWriteOffKey.$documentQuantityKey" -> JsString("123456789012123.1234567")))
 
-        val result = route(app, postRequest(uri, incorrectDocumentQuantity)).get
+        val result = route(app, postRequest(uri, incorrectDocumentQuantity, sessionId = exampleModel.sessionId)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentQuantityPrecisionError))
 

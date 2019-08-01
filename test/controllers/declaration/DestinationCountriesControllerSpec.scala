@@ -40,13 +40,19 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
   }
 
   trait SupplementarySetUp {
+
+    val exampleModel: ExportsCacheModel = aCacheModel(withChoice(SupplementaryDec))
+
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(exampleModel)
   }
 
   trait StandardSetUp {
+
+    val exampleModel: ExportsCacheModel = aCacheModel(withChoice(StandardDec))
+
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(StandardDec)))
+    withNewCaching(exampleModel)
   }
 
   "Destination Countries Controller on GET" should {
@@ -55,14 +61,14 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       "user is during supplementary declaration" in new SupplementarySetUp {
 
-        val result = route(app, getRequest(uri)).get
+        val result = route(app, getRequest(uri, sessionId = exampleModel.sessionId)).get
 
         status(result) must be(OK)
       }
 
       "user is during standard declaration" in new StandardSetUp {
 
-        val result = route(app, getRequest(uri)).get
+        val result = route(app, getRequest(uri, sessionId = exampleModel.sessionId)).get
 
         status(result) must be(OK)
       }
@@ -73,9 +79,11 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "user is during supplementary declaration" in new SupplementarySetUp {
 
         val cachedData = DestinationCountries("Netherlands", "Belgium")
-        withNewCaching(aCacheModel(withChoice("SMP"), withDestinationCountries(cachedData)))
+        val model: ExportsCacheModel = aCacheModel(withChoice("SMP"), withDestinationCountries(cachedData))
 
-        val result = route(app, getRequest(uri)).get
+        withNewCaching(model)
+
+        val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
         val page = contentAsString(result)
 
         status(result) must be(OK)
@@ -86,9 +94,10 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "user is during standard declaration" in new StandardSetUp {
 
         val cachedData = DestinationCountries("Poland", Seq("Slovakia", "Italy"), "United Kingdom")
-        withNewCaching(aCacheModel(withChoice("SMP"), withDestinationCountries(cachedData)))
+        private val model: ExportsCacheModel = aCacheModel(withChoice("SMP"), withDestinationCountries(cachedData))
+        withNewCaching(model)
 
-        val result = route(app, getRequest(uri)).get
+        val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
         val page = contentAsString(result)
 
         status(result) must be(OK)
@@ -104,7 +113,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
     "show page with errors for incorrect destination countries for supplementary declaration" in new SupplementarySetUp {
 
-      val result = route(app, postRequest(uri, incorrectDestinationCountriesJSON)).get
+      val result = route(app, postRequest(uri, incorrectDestinationCountriesJSON, sessionId = exampleModel.sessionId)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
@@ -122,7 +131,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         addActionUrlEncoded
       )
 
-      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+      val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(countriesOfRoutingError))
@@ -133,7 +142,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       "user is during supplementary declaration" in new SupplementarySetUp {
 
-        val result = route(app, postRequest(uri, emptyDestinationCountriesJSON)).get
+        val result = route(app, postRequest(uri, emptyDestinationCountriesJSON, sessionId = exampleModel.sessionId)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryOfDispatchEmpty))
@@ -149,7 +158,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
           saveAndContinueActionUrlEncoded
         )
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryOfDispatchEmpty))
@@ -168,7 +177,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
           saveAndContinueActionUrlEncoded
         )
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countriesOfRoutingEmpty))
@@ -180,7 +189,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       "user is during supplementary declaration" in new SupplementarySetUp {
 
-        val result = route(app, postRequest(uri, emptyDestinationCountrySupplementaryJSON)).get
+        val result = route(app, postRequest(uri, emptyDestinationCountrySupplementaryJSON, sessionId = exampleModel.sessionId)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryOfDestinationEmpty))
@@ -196,7 +205,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
           saveAndContinueActionUrlEncoded
         )
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryOfDestinationEmpty))
@@ -213,7 +222,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         addActionUrlEncoded
       )
 
-      val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+      val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
       status(result) must be(OK)
       theCacheModelUpdated.locations.destinationCountries mustBe Some(
@@ -226,7 +235,8 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val fullCache = Seq.fill(99)("Slovakia")
         val cachedData = DestinationCountries("Poland", fullCache, "England")
-        withNewCaching(aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData)))
+        private val model: ExportsCacheModel = aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData))
+        withNewCaching(model)
 
         val body = Seq(
           ("countryOfDispatch", ""),
@@ -234,7 +244,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
           ("countryOfDestination", ""),
           addActionUrlEncoded
         )
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages("supplementary.limit"))
@@ -243,7 +253,8 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       "user try to add duplicated value" in new StandardSetUp {
         val cachedData = DestinationCountries("Poland", Seq("Poland"), "England")
-        withNewCaching(aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData)))
+        private val model: ExportsCacheModel = aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData))
+        withNewCaching(model)
 
         val body = Seq(
           ("countryOfDispatch", ""),
@@ -251,7 +262,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
           ("countryOfDestination", ""),
           addActionUrlEncoded
         )
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*)).get
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages("supplementary.duplication"))
@@ -263,7 +274,8 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "country exist and user is during standard declaration" in new StandardSetUp {
 
         val cachedData = DestinationCountries("Poland", Seq("Slovakia", "Italy"), "England")
-        withNewCaching(aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData)))
+        private val model: ExportsCacheModel = aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData))
+        withNewCaching(model)
 
         val action = Remove(Seq("countriesOfRouting_0"))
         val body = Seq(
@@ -272,7 +284,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
           action.label -> action.keys.head
         )
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*)).get
 
         status(result) must be(OK)
         theCacheModelUpdated.locations.destinationCountries mustBe Some(
@@ -287,7 +299,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
     "show global error page when the action is incorrect" in new StandardSetUp {
 
-      val result = route(app, postRequestFormUrlEncoded(uri)).get
+      val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)()).get
 
       status(result) must be(BAD_REQUEST)
     }
@@ -296,7 +308,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       "user is during supplementary declaration and provide correct values" in new SupplementarySetUp {
 
-        val result = route(app, postRequest(uri, correctDestinationCountriesJSON)).get
+        val result = route(app, postRequest(uri, correctDestinationCountriesJSON, sessionId = exampleModel.sessionId)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/location-of-goods"))
@@ -308,7 +320,8 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "user is during standard declaration and provide correct values" in new StandardSetUp {
 
         val cachedData = DestinationCountries("", Seq("SK", "IT"), "")
-        withNewCaching(aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData)))
+        private val model: ExportsCacheModel = aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData))
+        withNewCaching(model)
 
         val body = Seq(
           ("countryOfDispatch", "PL"),
@@ -317,7 +330,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
           saveAndContinueActionUrlEncoded
         )
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         theCacheModelUpdated.locations.destinationCountries mustBe Some(

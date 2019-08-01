@@ -35,10 +35,12 @@ class DeclarationAdditionalActorsControllerSpec
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
+  val exampleModel = aCacheModel(withChoice(SupplementaryDec))
+
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(exampleModel)
   }
 
   override def afterEach() {
@@ -51,16 +53,16 @@ class DeclarationAdditionalActorsControllerSpec
   "Declaration Additional Actors Controller on GET" should {
 
     "return 200 status code" in {
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = exampleModel.sessionId)).get
 
       status(result) must be(OK)
       verifyTheCacheIsUnchanged()
     }
 
     "read item from cache and display it" in {
-      withCache(DeclarationAdditionalActorsData(Seq(DeclarationAdditionalActors(Some("112233"), Some("CS")))))
+      val sessionId = withCache(DeclarationAdditionalActorsData(Seq(DeclarationAdditionalActors(Some("112233"), Some("CS")))))
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = sessionId)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)
@@ -106,7 +108,7 @@ class DeclarationAdditionalActorsControllerSpec
         "when adding actor with incorrect EORI and party not selected" in {
 
           val body = Map("eori" -> "12345678901234567890", "partyType" -> "").toSeq :+ saveAndContinueActionUrlEncoded
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
           val page = contentAsString(result)
 
@@ -119,7 +121,7 @@ class DeclarationAdditionalActorsControllerSpec
         "when adding actor with correct EORI and party not selected" in {
 
           val body = Map("eori" -> "1234", "partyType" -> "").toSeq :+ saveAndContinueActionUrlEncoded
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -130,7 +132,7 @@ class DeclarationAdditionalActorsControllerSpec
         "when adding actor with correct EORI and incorrect party" in {
 
           val body = Map("eori" -> "1234", "partyType" -> "Incorrect").toSeq :+ saveAndContinueActionUrlEncoded
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -142,7 +144,7 @@ class DeclarationAdditionalActorsControllerSpec
           withCache(cacheWithMaximumAmountOfActors)
 
           val body = Map("eori" -> "eori1", "partyType" -> "CS").toSeq :+ saveAndContinueActionUrlEncoded
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -156,7 +158,7 @@ class DeclarationAdditionalActorsControllerSpec
           withCache(correctAdditionalActorsData)
 
           val body = correctAdditionalActorsMap.toSeq :+ saveAndContinueActionUrlEncoded
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -173,11 +175,11 @@ class DeclarationAdditionalActorsControllerSpec
       "remove an actor successfully " when {
 
         "exists in the cache" in {
-          withCache(correctAdditionalActorsData)
+          val sessionId = withCache(correctAdditionalActorsData)
 
           val body = removeActionUrlEncoded(correctAdditionalActorsData.actors.head.toJson.toString())
 
-          val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+          val result = route(app, postRequestFormUrlEncoded(uri, sessionId)(body)).get
 
           status(result) must be(OK)
         }
@@ -188,7 +190,7 @@ class DeclarationAdditionalActorsControllerSpec
         "does not exists in the cache" in {
           val body = removeActionUrlEncoded(correctAdditionalActorsData.actors.head.toJson.toString())
 
-          val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+          val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body)).get
 
           status(result) must be(BAD_REQUEST)
           verifyTheCacheIsUnchanged()
@@ -220,7 +222,7 @@ class DeclarationAdditionalActorsControllerSpec
         "when adding actor with incorrect EORI and party not selected" in {
 
           val body = Map("eori" -> "12345678901234567890", "partyType" -> "").toSeq :+ addActionUrlEncoded
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
           val page = contentAsString(result)
 
@@ -233,7 +235,7 @@ class DeclarationAdditionalActorsControllerSpec
         "when adding actor with correct EORI and party not selected" in {
 
           val body = Map("eori" -> "1234", "partyType" -> "").toSeq :+ addActionUrlEncoded
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -244,7 +246,7 @@ class DeclarationAdditionalActorsControllerSpec
         "when adding actor with correct EORI and incorrect party" in {
 
           val body = Map("eori" -> "1234", "partyType" -> "Incorrect").toSeq :+ addActionUrlEncoded
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -253,10 +255,10 @@ class DeclarationAdditionalActorsControllerSpec
         }
 
         "when adding more than 99 items" in {
-          withCache(cacheWithMaximumAmountOfActors)
+          val sessionId = withCache(cacheWithMaximumAmountOfActors)
 
           val body = Map("eori" -> "eori1", "partyType" -> "CS").toSeq :+ addActionUrlEncoded
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri, sessionId)(body: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -267,10 +269,10 @@ class DeclarationAdditionalActorsControllerSpec
         }
 
         "when adding duplicate item" in {
-          withCache(correctAdditionalActorsData)
+          val sessionId = withCache(correctAdditionalActorsData)
 
           val body = correctAdditionalActorsMap.toSeq :+ addActionUrlEncoded
-          val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri, sessionId)(body: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -302,8 +304,11 @@ class DeclarationAdditionalActorsControllerSpec
     }
   }
 
-  private def withCache(data: DeclarationAdditionalActorsData) =
-    withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationAdditionalActors(data)))
+  private def withCache(data: DeclarationAdditionalActorsData) = {
+    val model = aCacheModel(withChoice("SMP"), withDeclarationAdditionalActors(data))
+    withNewCaching(model)
+    model.sessionId
+  }
 
   private def testHappyPathsScenarios(
     expectedPath: String,
@@ -311,7 +316,7 @@ class DeclarationAdditionalActorsControllerSpec
     action: (String, String)
   ): Unit = {
     val body = actorsMap.toSeq :+ action
-    val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+    val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
     status(result) must be(SEE_OTHER)
     redirectLocation(result) must be(Some(expectedPath))
@@ -320,11 +325,12 @@ class DeclarationAdditionalActorsControllerSpec
   private def testErrorScenario(
     action: (String, String),
     data: Map[String, String],
-    maybeExpectedErrorMessagePath: Option[String]
+    maybeExpectedErrorMessagePath: Option[String],
+    sessionId: String = exampleModel.sessionId
   ): Unit = {
 
     val body = data.toSeq :+ action
-    val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+    val result = route(app, postRequestFormUrlEncoded(uri, sessionId)(body: _*)).get
 
     status(result) must be(BAD_REQUEST)
 

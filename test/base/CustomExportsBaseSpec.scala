@@ -161,9 +161,10 @@ trait CustomExportsBaseSpec
   }
 
   protected def postRequestFormUrlEncoded(uri: String,
-                                          body: (String, String)*): Request[AnyContentAsFormUrlEncoded] = {
+                                          sessionId: String = s"session-${UUID.randomUUID()}".toString)
+                                         (body: (String, String)*): Request[AnyContentAsFormUrlEncoded] = {
     val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
+      SessionKeys.sessionId -> sessionId,
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
