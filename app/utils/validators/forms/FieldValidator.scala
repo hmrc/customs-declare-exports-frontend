@@ -42,8 +42,6 @@ object FieldValidator {
     def or(second: Boolean): Boolean = first || second
   }
 
-  private val zerosOnlyRegexValue: Pattern = Pattern.compile("[0]+")
-
   private def noMoreDecimalPlacesThanRegexValue(decimalPlaces: Int): Pattern =
     Pattern.compile(s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$")
 
@@ -88,7 +86,7 @@ object FieldValidator {
   val isContainedIn: Iterable[String] => String => Boolean =
     (iterable: Iterable[String]) => (input: String) => iterable.exists(_ == input)
 
-  val containsNotOnlyZeros: String => Boolean = (input: String) => !zerosOnlyRegexValue.matcher(input).matches()
+  val containsNotOnlyZeros: String => Boolean = (input: String) => input.exists(char => char != '0')
 
   val isTailNumeric: String => Boolean = (input: String) =>
     Try(input.tail) match {
