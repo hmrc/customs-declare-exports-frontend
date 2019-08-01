@@ -214,9 +214,6 @@ trait CustomExportsBaseSpec
     when(mockExportsCacheService.getItemByIdAndSession(any[String], any[String]))
       .thenReturn(Future.successful(None))
 
-    when(mockExportsCacheService.get(any[String]))
-      .thenReturn(Future.successful(None))
-
     when(
       mockExportsCacheService
         .update(any[String], any[ExportsCacheModel])
