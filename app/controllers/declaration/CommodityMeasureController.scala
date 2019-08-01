@@ -38,10 +38,10 @@ class CommodityMeasureController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map { item =>
-      val packageInformation = item.map(_.packageInformation)
-      val commodityMeasure = item.flatMap(_.commodityMeasure)
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val item = request.cacheModel.itemBy(itemId)
+    val packageInformation = item.map(_.packageInformation)
+    val commodityMeasure = item.flatMap(_.commodityMeasure)
 
       (packageInformation, commodityMeasure) match {
         case (Some(p), Some(data)) if p.nonEmpty => Ok(goodsMeasurePage(itemId, form().fill(data)))
@@ -50,7 +50,6 @@ class CommodityMeasureController @Inject()(
           BadRequest(goodsMeasurePage(itemId, form().withGlobalError("supplementary.commodityMeasure.global.addOne")))
       }
     }
-  }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form()

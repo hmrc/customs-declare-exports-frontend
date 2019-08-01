@@ -45,8 +45,8 @@ class AdditionalInformationController @Inject()(
 
   val elementLimit = 99
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.flatMap(_.additionalInformation)).map {
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.itemBy(itemId).flatMap(_.additionalInformation) match {
       case Some(data) => Ok(additionalInformationPage(itemId, form(), data.items))
       case _          => Ok(additionalInformationPage(itemId, form(), Seq()))
     }

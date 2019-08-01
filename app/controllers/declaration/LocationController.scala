@@ -38,8 +38,8 @@ class LocationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.GoodsLocation._
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.goodsLocation)).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.locations.goodsLocation match  {
       case Some(data) => Ok(goodsLocationPage(form.fill(data)))
       case _          => Ok(goodsLocationPage(form))
     }

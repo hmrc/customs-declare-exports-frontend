@@ -39,9 +39,12 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    cacheService.get(request.session.data("sessionId")).map(_.map(_.choice)).map {
-      case Some(journeyType) => Right(JourneyRequest(request, Choice(journeyType)))
+    cacheService.get(request.session.data("sessionId")).map {
+      case Some(cacheModel) => Right(JourneyRequest(request, cacheModel))
       case _ =>
+        // $COVERAGE-OFF$Trivial
+        logger.error(s"Could not obtain journey type for ${eoriCacheId()(request)}")
+        // $COVERAGE-ON
         Left(Conflict("Could not obtain information about journey type"))
     }
   }

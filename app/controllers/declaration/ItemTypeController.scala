@@ -47,12 +47,9 @@ class ItemTypeController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService
-      .getItemByIdAndSession(itemId, journeySessionId)
-      .map(_.flatMap(_.itemType))
-      .zip(hasAdditionalFiscalReferencesFor(itemId))
-      .map {
-        case (Some(itemType), hasFiscalReferences) =>
+    hasAdditionalFiscalReferencesFor(itemId).map { hasFiscalReferences =>
+      request.cacheModel.itemBy(itemId).flatMap(_.itemType) match {
+        case Some(itemType) =>
           Ok(
             itemTypePage(
               itemId,
@@ -62,9 +59,10 @@ class ItemTypeController @Inject()(
               itemType.nationalAdditionalCodes
             )
           )
-        case (_, hasFiscalReferences) =>
+        case None =>
           Ok(itemTypePage(itemId, ItemType.form(), hasFiscalReferences))
       }
+    }
   }
 
   def submitItemType(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {

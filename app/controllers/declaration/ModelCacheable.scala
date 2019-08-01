@@ -33,12 +33,18 @@ trait ModelCacheable {
       case Some(model) => update(model)
       case _           => Future.successful(None)
     }
+
+  protected def updateExportCacheModel(
+    update: ExportsCacheModel => Future[Option[ExportsCacheModel]]
+  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] = {
+    update(request.cacheModel)
+  }
 }
 
 trait SessionIdAware {
   def journeySessionId(implicit request: JourneyRequest[_]) =
-    request.authenticatedRequest.session.data("sessionId")
+    request.journeySessionId
 
   def authenticatedSessionId(implicit request: AuthenticatedRequest[AnyContent]) =
-    request.session.data("sessionId")
+    request.sessionId
 }

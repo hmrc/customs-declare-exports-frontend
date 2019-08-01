@@ -43,21 +43,21 @@ class OfficeOfExitController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.officeOfExit.OfficeOfExitForms._
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.choice.value match {
-      case SupplementaryDec => supplementaryPage.map(Ok(_))
-      case StandardDec      => standardPage.map(Ok(_))
+      case SupplementaryDec => Ok(supplementaryPage())
+      case StandardDec      => Ok(standardPage())
     }
   }
 
-  private def supplementaryPage()(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Html] =
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.officeOfExit)).map {
+  private def supplementaryPage()(implicit request: JourneyRequest[_]): Html =
+    request.cacheModel.locations.officeOfExit match {
       case Some(data) => officeOfExitSupplementaryPage(supplementaryForm.fill(OfficeOfExitSupplementary(data)))
       case _          => officeOfExitSupplementaryPage(supplementaryForm)
     }
 
-  private def standardPage()(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Html] =
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.officeOfExit)).map {
+  private def standardPage()(implicit request: JourneyRequest[_], hc: HeaderCarrier): Html =
+    request.cacheModel.locations.officeOfExit match {
       case Some(data) => officeOfExitStandardPage(standardForm.fill(OfficeOfExitStandard(data)))
       case _          => officeOfExitStandardPage(standardForm)
     }

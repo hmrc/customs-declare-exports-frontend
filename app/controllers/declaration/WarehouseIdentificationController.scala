@@ -39,8 +39,8 @@ class WarehouseIdentificationController @Inject()(
 
   import forms.declaration.WarehouseIdentification._
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.warehouseIdentification)).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.locations.warehouseIdentification match {
       case Some(data) => Ok(warehouseIdentificationPage(form.fill(data)))
       case _          => Ok(warehouseIdentificationPage(form))
     }

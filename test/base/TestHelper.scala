@@ -16,11 +16,13 @@
 
 package base
 
+import java.time.LocalDateTime
+
 import controllers.util.{Add, Remove, SaveAndContinue}
-import forms.Choice
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.mvc.Request
 import play.api.test.FakeRequest
+import services.cache.ExportsCacheModel
 
 import scala.util.Random
 
@@ -39,15 +41,21 @@ object TestHelper {
   val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
   def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
-  def journeyRequest(fakeRequest: FakeRequest[_], choice: String): JourneyRequest[_] =
+  def journeyRequest(fakeRequest: FakeRequest[_], choice: String): JourneyRequest[_] ={
+    val cache = ExportsCacheModel.apply("sessionId","draftId",LocalDateTime.now(), LocalDateTime.now(), choice)
     JourneyRequest(
       AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
-      Choice(choice)
+      cache
     )
+  }
 
-  def journeyRequest(fakeRequest: Request[_], choice: String): JourneyRequest[_] =
+
+  def journeyRequest(fakeRequest: Request[_], choice: String): JourneyRequest[_] = {
+    val cache = ExportsCacheModel.apply("sessionId","draftId",LocalDateTime.now(), LocalDateTime.now(), choice)
     JourneyRequest(
       AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
-      Choice(choice)
+      cache
     )
+  }
+
 }

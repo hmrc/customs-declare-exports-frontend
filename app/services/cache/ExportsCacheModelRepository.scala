@@ -101,7 +101,9 @@ case class ExportsCacheModel(
   previousDocuments: Option[PreviousDocumentsData] = None,
   natureOfTransaction: Option[NatureOfTransaction] = None,
   seals: Seq[Seal] = Seq.empty
-)
+) {
+  def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
+}
 
 object ExportsCacheModel {
   implicit val formatInstant: OFormat[LocalDateTime] = new OFormat[LocalDateTime] {

@@ -38,8 +38,8 @@ class DispatchLocationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.dispatchLocation)).map {
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.dispatchLocation match {
       case Some(data) => Ok(dispatchLocationPage(DispatchLocation.form().fill(data)))
       case _          => Ok(dispatchLocationPage(DispatchLocation.form()))
     }

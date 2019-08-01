@@ -40,8 +40,8 @@ class ConsigneeDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.consigneeDetails)).map {
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.parties.consigneeDetails match {
       case Some(data) => Ok(consigneeDetailsPage(ConsigneeDetails.form().fill(data)))
       case _          => Ok(consigneeDetailsPage(ConsigneeDetails.form()))
     }

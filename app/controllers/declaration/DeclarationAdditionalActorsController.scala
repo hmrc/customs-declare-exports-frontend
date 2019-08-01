@@ -48,8 +48,8 @@ class DeclarationAdditionalActorsController @Inject()(
   private val exceedMaximumNumberError = "supplementary.additionalActors.maximumAmount.error"
   private val duplicateActorError = "supplementary.additionalActors.duplicated.error"
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.declarationAdditionalActorsData)).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.parties.declarationAdditionalActorsData match {
       case Some(data) => Ok(declarationAdditionalActorsPage(form(), data.actors))
       case _          => Ok(declarationAdditionalActorsPage(form(), Seq()))
     }

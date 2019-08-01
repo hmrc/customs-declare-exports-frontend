@@ -38,9 +38,9 @@ class AdditionalDeclarationTypeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val decType = extractFormType(request)
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.additionalDeclarationType)).map {
+    request.cacheModel.additionalDeclarationType match {
       case Some(data) => Ok(declarationTypePage(decType.form().fill(data)))
       case _          => Ok(declarationTypePage(decType.form()))
     }

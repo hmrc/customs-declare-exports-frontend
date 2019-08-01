@@ -49,24 +49,21 @@ class DestinationCountriesController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.choice.value match {
       case SupplementaryDec => displayFormSupplementary()
       case StandardDec      => displayFormStandard()
     }
   }
 
-  private def displayFormSupplementary()(
-    implicit request: JourneyRequest[AnyContent],
-    hc: HeaderCarrier
-  ): Future[Result] =
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.destinationCountries)).map {
+  private def displayFormSupplementary()(implicit request: JourneyRequest[AnyContent]): Result =
+    request.cacheModel.locations.destinationCountries match {
       case Some(data) => Ok(destinationCountriesSupplementaryPage(Supplementary.form.fill(data)))
       case _          => Ok(destinationCountriesSupplementaryPage(Supplementary.form))
     }
 
-  private def displayFormStandard()(implicit request: JourneyRequest[AnyContent], hc: HeaderCarrier): Future[Result] =
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.destinationCountries)).map {
+  private def displayFormStandard()(implicit request: JourneyRequest[AnyContent]): Result =
+    request.cacheModel.locations.destinationCountries match {
       case Some(data) => Ok(destinationCountriesStandardPage(Standard.form.fill(data), data.countriesOfRouting))
       case _          => Ok(destinationCountriesStandardPage(Standard.form, Seq.empty))
     }

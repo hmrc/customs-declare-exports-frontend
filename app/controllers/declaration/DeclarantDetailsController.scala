@@ -37,8 +37,8 @@ class DeclarantDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.declarantDetails)).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.parties.declarantDetails match {
       case Some(data) => Ok(declarantDetailsPage(DeclarantDetails.form().fill(data)))
       case _          => Ok(declarantDetailsPage(DeclarantDetails.form()))
     }
