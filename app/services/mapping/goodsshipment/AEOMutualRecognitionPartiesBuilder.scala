@@ -32,7 +32,8 @@ class AEOMutualRecognitionPartiesBuilder @Inject()()
     extends ModifyingBuilder[DeclarationAdditionalActors, GoodsShipment] {
 
   override def buildThenAdd(model: DeclarationAdditionalActors, goodsShipment: GoodsShipment): Unit =
-    goodsShipment.getAEOMutualRecognitionParty.add(AEOMutualRecognitionPartiesBuilder.createAdditionalActors(model))
+    if (AEOMutualRecognitionPartiesBuilder.isDefined(model))
+      goodsShipment.getAEOMutualRecognitionParty.add(AEOMutualRecognitionPartiesBuilder.createAdditionalActors(model))
 
 }
 

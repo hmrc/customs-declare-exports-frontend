@@ -27,7 +27,8 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 class ConsigneeBuilder @Inject()() extends ModifyingBuilder[ConsigneeDetails, GoodsShipment] {
 
   override def buildThenAdd(consigneeDetails: ConsigneeDetails, goodsShipment: GoodsShipment) =
-    goodsShipment.setConsignee(createConsignee(consigneeDetails.details))
+    if (ConsigneeBuilder.isDefined(consigneeDetails))
+      goodsShipment.setConsignee(createConsignee(consigneeDetails.details))
 
 }
 

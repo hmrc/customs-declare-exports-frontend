@@ -25,7 +25,7 @@ import wco.datamodel.wco.declaration_ds.dms._2.{WarehouseIdentificationIDType, W
 
 class WarehouseBuilder @Inject()() extends ModifyingBuilder[WarehouseIdentification, GoodsShipment] {
   override def buildThenAdd(model: WarehouseIdentification, goodsShipment: GoodsShipment): Unit =
-    goodsShipment.setWarehouse(WarehouseBuilder.createWarehouse(model))
+    if (WarehouseBuilder.isDefined(model)) goodsShipment.setWarehouse(WarehouseBuilder.createWarehouse(model))
 }
 
 object WarehouseBuilder {

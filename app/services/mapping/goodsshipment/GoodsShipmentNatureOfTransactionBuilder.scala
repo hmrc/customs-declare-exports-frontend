@@ -25,10 +25,11 @@ import wco.datamodel.wco.declaration_ds.dms._2.GoodsShipmentTransactionNatureCod
 
 class GoodsShipmentNatureOfTransactionBuilder @Inject()() extends ModifyingBuilder[NatureOfTransaction, GoodsShipment] {
   override def buildThenAdd(natureOfTransaction: NatureOfTransaction, goodsShipment: GoodsShipment) {
-
-    val natureOfTransactionWCO = new GoodsShipmentTransactionNatureCodeType()
-    natureOfTransactionWCO.setValue(natureOfTransaction.natureType)
-    goodsShipment.setTransactionNatureCode(natureOfTransactionWCO)
+    if (natureOfTransaction.natureType.nonEmpty) {
+      val natureOfTransactionWCO = new GoodsShipmentTransactionNatureCodeType()
+      natureOfTransactionWCO.setValue(natureOfTransaction.natureType)
+      goodsShipment.setTransactionNatureCode(natureOfTransactionWCO)
+    }
   }
 }
 
