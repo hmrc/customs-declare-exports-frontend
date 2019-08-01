@@ -86,7 +86,7 @@ object FieldValidator {
   val isContainedIn: Iterable[String] => String => Boolean =
     (iterable: Iterable[String]) => (input: String) => iterable.exists(_ == input)
 
-  val containsNotOnlyZeros: String => Boolean = (input: String) => input.exists(char => char != '0')
+  val containsNotOnlyZeros: String => Boolean = (input: String) => input.isEmpty || input.exists(char => char != '0')
 
   val isTailNumeric: String => Boolean = (input: String) =>
     Try(input.tail) match {
