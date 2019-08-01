@@ -47,13 +47,9 @@ class SealController @Inject()(
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val declaration = exportsCacheService.get(journeySessionId)
-    declaration.map(_.flatMap(_.transportDetails)).flatMap { data =>
-      declaration.map(_.map(_.seals)).map { seals =>
-        Ok(sealPage(form, seals.getOrElse(Seq.empty), data.fold(false)(_.container)))
-      }
-    }
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val declaration = request.cacheModel
+    Ok(sealPage(form, declaration.seals, declaration.transportDetails.exists(_.container)))
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

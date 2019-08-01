@@ -46,12 +46,11 @@ class RepresentativeDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType).async {
-    implicit request =>
-      exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.representativeDetails)).map {
-        case Some(data) => Ok(representativeDetailsPage(appConfig, RepresentativeDetails.form().fill(data)))
-        case _          => Ok(representativeDetailsPage(appConfig, RepresentativeDetails.form()))
-      }
+  def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.parties.representativeDetails match {
+      case Some(data) => Ok(representativeDetailsPage(appConfig, RepresentativeDetails.form().fill(data)))
+      case _          => Ok(representativeDetailsPage(appConfig, RepresentativeDetails.form()))
+    }
   }
 
   def submitRepresentativeDetails(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

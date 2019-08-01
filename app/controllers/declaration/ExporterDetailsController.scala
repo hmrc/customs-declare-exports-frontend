@@ -42,8 +42,8 @@ class ExporterDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.exporterDetails)).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.parties.exporterDetails match {
       case Some(data) => Ok(exporterDetailsPage(appConfig, ExporterDetails.form().fill(data)))
       case _          => Ok(exporterDetailsPage(appConfig, ExporterDetails.form()))
     }

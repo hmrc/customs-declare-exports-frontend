@@ -47,8 +47,8 @@ class TransportDetailsController @Inject()(
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.transportDetails)).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.transportDetails match {
       case Some(data) => Ok(transportDetailsPage(form.fill(data)))
       case _          => Ok(transportDetailsPage(form))
     }

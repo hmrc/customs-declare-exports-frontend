@@ -39,13 +39,8 @@ class ItemsSummaryController @Inject()(
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with SessionIdAware {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService
-      .get(journeySessionId)
-      .map {
-        case Some(cacheModel) => Ok(itemsSummaryPage(cacheModel.items.toList))
-        case None             => Ok(itemsSummaryPage(List.empty))
-      }
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(itemsSummaryPage(request.cacheModel.items.toList))
   }
 
   def addItem(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

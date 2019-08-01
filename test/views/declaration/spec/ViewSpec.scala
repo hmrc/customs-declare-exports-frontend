@@ -16,6 +16,8 @@
 
 package views.declaration.spec
 
+import java.time.LocalDateTime
+
 import base.{ExportsTestData, ViewValidator}
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
@@ -31,8 +33,8 @@ import play.api.mvc.{AnyContentAsEmpty, Flash, Request, Result}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import utils.FakeRequestCSRFSupport._
-
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 import scala.concurrent.Future
 
@@ -55,8 +57,10 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with
 
   def assertMessage(key: String, expected: String): Unit = messages(key) must be(expected)
 
-  def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] =
-    JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), new Choice(choice))
+  def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] = {
+    val cache = ExportsCacheModel.apply("sessionId","draftId",LocalDateTime.now(), LocalDateTime.now(), choice)
+    JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), cache)
+  }
 
   SharedMetricRegistries.clear()
 }

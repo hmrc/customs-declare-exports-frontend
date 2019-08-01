@@ -18,6 +18,11 @@ package models.requests
 
 import forms.Choice
 import play.api.mvc.WrappedRequest
+import services.cache.ExportsCacheModel
 
-case class JourneyRequest[A](authenticatedRequest: AuthenticatedRequest[A], choice: Choice)
-    extends WrappedRequest[A](authenticatedRequest)
+case class JourneyRequest[A](authenticatedRequest: AuthenticatedRequest[A], cacheModel: ExportsCacheModel)
+    extends WrappedRequest[A](authenticatedRequest) {
+  val choice: Choice = Choice(cacheModel.choice)
+
+  def journeySessionId: String= authenticatedRequest.sessionId
+}

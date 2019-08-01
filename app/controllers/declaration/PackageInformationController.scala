@@ -48,11 +48,9 @@ class PackageInformationController @Inject()(
 
   val packagesMaxElements = 99
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService
-      .getItemByIdAndSession(itemId, journeySessionId)
-      .map(_.map(_.packageInformation))
-      .map(items => Ok(packageInformationPage(itemId, form(), items.getOrElse(Seq.empty))))
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val items = request.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Nil)
+    Ok(packageInformationPage(itemId, form(), items))
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {

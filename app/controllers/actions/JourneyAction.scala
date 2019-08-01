@@ -41,8 +41,8 @@ case class JourneyAction @Inject()(cacheService: ExportsCacheService, mcc: Messa
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    cacheService.get(request.session.data("sessionId")).map(_.map(_.choice)).map {
-      case Some(journeyType) => Right(JourneyRequest(request, Choice(journeyType)))
+    cacheService.get(request.session.data("sessionId")).map {
+      case Some(cacheModel) => Right(JourneyRequest(request, cacheModel))
       case _ =>
         logger.error(s"Could not obtain journey type for ${eoriCacheId()(request)}")
         Left(Conflict("Could not obtain information about journey type"))

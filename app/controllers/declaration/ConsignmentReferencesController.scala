@@ -44,8 +44,8 @@ class ConsignmentReferencesController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.consignmentReferences)).map {
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.consignmentReferences match {
       case Some(data) => Ok(consignmentReferencesPage(appConfig, ConsignmentReferences.form().fill(data)))
       case _          => Ok(consignmentReferencesPage(appConfig, ConsignmentReferences.form()))
     }

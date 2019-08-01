@@ -51,9 +51,8 @@ class DocumentsProducedController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId) map (_.flatMap(_.documentsProducedData)
-      .map(_.documents)) map {
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents) match {
       case Some(data) => Ok(documentProducedPage(itemId, appConfig, form(), data))
       case _          => Ok(documentProducedPage(itemId, appConfig, form(), Seq()))
     }

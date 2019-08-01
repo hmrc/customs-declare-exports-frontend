@@ -34,7 +34,7 @@ class ConfirmationController @Inject()(
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    Future.successful(Ok(confirmationPage()))
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    Ok(confirmationPage())
   }
 }

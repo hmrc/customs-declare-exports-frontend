@@ -32,7 +32,7 @@ class ExportsCacheService @Inject()(journeyCacheModelRepo: ExportsCacheModelRepo
 
   def getItemByIdAndSession(itemId: String, sessionId: String): Future[Option[ExportItem]] =
     get(sessionId).map {
-      case Some(model) => model.items.find(_.id.equalsIgnoreCase(itemId))
+      case Some(model) => model.itemBy(itemId)
       case _           => None
     }
 

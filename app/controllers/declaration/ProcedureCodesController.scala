@@ -50,8 +50,8 @@ class ProcedureCodesController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map {
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.itemBy(itemId) match {
       case Some(exportItem) =>
         exportItem.procedureCodes.fold({ Ok(procedureCodesPage(appConfig, itemId, form(), Seq())) }) {
           procedureCodesData =>
