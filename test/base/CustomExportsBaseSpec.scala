@@ -131,9 +131,11 @@ trait CustomExportsBaseSpec
 
   protected def uriWithContextPath(path: String): String = s"$contextPath$path"
 
-  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty): Request[AnyContentAsEmpty.type] = {
+  protected def getRequest(uri: String,
+                           headers: Map[String, String] = Map.empty,
+                           sessionId: String = s"session-${UUID.randomUUID()}"): Request[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
+      SessionKeys.sessionId -> sessionId,
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
@@ -146,10 +148,11 @@ trait CustomExportsBaseSpec
   protected def postRequest(
     uri: String,
     body: JsValue,
+    sessionId: String = s"session-${UUID.randomUUID()}",
     headers: Map[String, String] = Map.empty
   ): Request[AnyContentAsJson] = {
     val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
+      SessionKeys.sessionId -> sessionId,
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
@@ -160,7 +163,8 @@ trait CustomExportsBaseSpec
       .withCSRFToken
   }
 
-  protected def postRequestFormUrlEncoded(uri: String, body: (String, String)*): Request[AnyContentAsFormUrlEncoded] = {
+  protected def postRequestFormUrlEncoded(uri: String,
+                                          body: (String, String)*): Request[AnyContentAsFormUrlEncoded] = {
     val session: Map[String, String] = Map(
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
@@ -192,22 +196,25 @@ trait CustomExportsBaseSpec
   }
 
   def withNewCaching(dataToReturn: ExportsCacheModel) {
-    when(mockExportsCacheService.getItemByIdAndSession(any[String], any[String]))
+    when(mockExportsCacheService.getItemByIdAndSession(any[String], ArgumentMatchers.eq(dataToReturn.sessionId)))
       .thenReturn(Future.successful(dataToReturn.items.headOption))
 
     when(
       mockExportsCacheService
-        .update(any[String], any[ExportsCacheModel])
+        .update(ArgumentMatchers.eq(dataToReturn.sessionId), any[ExportsCacheModel])
     ).thenReturn(Future.successful(Some(dataToReturn)))
 
     when(
       mockExportsCacheService
-        .get(any[String])
+        .get(ArgumentMatchers.eq(dataToReturn.sessionId))
     ).thenReturn(Future.successful(Some(dataToReturn)))
   }
 
   def withNewCaching() {
     when(mockExportsCacheService.getItemByIdAndSession(any[String], any[String]))
+      .thenReturn(Future.successful(None))
+
+    when(mockExportsCacheService.get(any[String]))
       .thenReturn(Future.successful(None))
 
     when(

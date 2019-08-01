@@ -19,10 +19,14 @@ package base
 import base.ExportsTestData._
 import controllers.actions.AuthActionImpl
 import models.SignedInUser
+import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.FakeRequest
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
@@ -33,9 +37,12 @@ import scala.concurrent.Future
 trait MockAuthAction extends MockitoSugar with Stubs {
 
   lazy val mockAuthConnector: AuthConnector = mock[AuthConnector]
-  val mockAuthAction = new AuthActionImpl(mockAuthConnector, stubMessagesControllerComponents())
 
-  def authorizedUser(user: SignedInUser = newUser("12345", "external1")): Unit =
+  lazy val mockAuthAction = new AuthActionImpl(mockAuthConnector, stubMessagesControllerComponents())
+
+  lazy val exampleUser = newUser("12345", "external1")
+
+  def authorizedUser(user: SignedInUser = exampleUser): Unit =
     when(
       mockAuthConnector.authorise(
         any(),
@@ -253,5 +260,15 @@ trait MockAuthAction extends MockitoSugar with Stubs {
         )
       )
     )
+
+  def getAuthenticatedRequest(sessionId: String = "sessionId"): AuthenticatedRequest[AnyContentAsEmpty.type] = {
+    import utils.FakeRequestCSRFSupport._
+    AuthenticatedRequest(FakeRequest("GET", "").withSession(("sessionId", sessionId)).withCSRFToken, exampleUser)
+  }
+
+  def getRequest(): Request[AnyContentAsEmpty.type] = {
+    import utils.FakeRequestCSRFSupport._
+    FakeRequest("GET", "").withSession(("sessionId", "sessionId")).withCSRFToken
+  }
 
 }

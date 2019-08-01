@@ -44,10 +44,12 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
   private val sealPage = app.injector.instanceOf[seal]
   private val uri = uriWithContextPath("/declaration/add-seal")
 
+  private val exampleModel: ExportsCacheModel = aCacheModel(withChoice(SupplementaryDec))
+
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(exampleModel)
     withCaching[Seq[Seal]](None, Seal.formId)
   }
 
@@ -66,7 +68,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
       val result = route(app, getRequest(uri)).value
       status(result) must be(OK)
-      verify(mockExportsCacheService, times(2)).get(anyString)
+      verify(mockExportsCacheService).get(anyString)
     }
 
     "populate the form fields with data from cache" in {
@@ -98,7 +100,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
       "invalid data is submitted" in {
         forAll(listOf[Seal](sealArbitrary.arbitrary)) { seals =>
-          withCache(seals)
+          val session = withCache(seals)
 
           val body = Seq(("id", "")) :+ addActionUrlEncoded
           val request = postRequestFormUrlEncoded(uri, body: _*)
@@ -144,7 +146,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
 
     "on click of continue" in {
       forAll(arbitrary[Seal]) { seal =>
-        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+        withNewCaching(exampleModel)
         val payload = Seq(("id", seal.id)) :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, payload: _*)).value
         status(result) must be(SEE_OTHER)
@@ -155,6 +157,9 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
     }
   }
 
-  private def withCache(data: Seq[Seal]) =
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec), withSeals(data)))
+  private def withCache(data: Seq[Seal]): String = {
+    val model = aCacheModel(withChoice(SupplementaryDec), withSeals(data))
+    withNewCaching(model)
+    model.sessionId
+  }
 }

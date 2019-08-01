@@ -78,16 +78,17 @@ class PackageInformationControllerSpec
     "read data from cache" in {
 
       authorizedUser()
+      val model = aCacheModel(
+        withItem(
+          ExportItem("id", packageInformation = List(PackageInformation(Some("XX"), Some(101), Some("Secret Mark"))))
+        ),
+        withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
+      )
       withNewCaching(
-        aCacheModel(
-          withItem(
-            ExportItem("id", packageInformation = List(PackageInformation(Some("XX"), Some(101), Some("Secret Mark"))))
-          ),
-          withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
-        )
+        model
       )
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
       val page = contentAsString(result)
 
       page must include("XX")
@@ -98,22 +99,23 @@ class PackageInformationControllerSpec
     "read two items from cache and display it" in {
 
       authorizedUser()
-      withNewCaching(
-        aCacheModel(
-          withItem(
-            ExportItem(
-              "id",
-              packageInformation = List(
-                PackageInformation(Some("XX"), Some(101), Some("Secret Mark")),
-                PackageInformation(Some("YX"), Some(102), Some("Even More Secret Mark"))
-              )
+      val model = aCacheModel(
+        withItem(
+          ExportItem(
+            "id",
+            packageInformation = List(
+              PackageInformation(Some("XX"), Some(101), Some("Secret Mark")),
+              PackageInformation(Some("YX"), Some(102), Some("Even More Secret Mark"))
             )
-          ),
-          withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
-        )
+          )
+        ),
+        withChoice(Choice.AllowedChoiceValues.SupplementaryDec)
+      )
+      withNewCaching(
+        model
       )
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
       val page = contentAsString(result)
 
       page must include("XX")

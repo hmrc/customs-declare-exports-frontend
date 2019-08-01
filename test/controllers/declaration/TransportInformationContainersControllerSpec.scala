@@ -59,18 +59,19 @@ class TransportInformationContainersControllerSpec
 
       status(result) must be(OK)
       verifyTheCacheIsUnchanged()
-      verify(mockExportsCacheService, times(2)).get(anyString)
+      verify(mockExportsCacheService).get(anyString)
     }
 
     "read item from cache and display it" in {
+      val model = aCacheModel(
+        withChoice(SupplementaryDec),
+        withContainerData(TransportInformationContainer("DeliveredBestGoods"))
+      )
       withNewCaching(
-        aCacheModel(
-          withChoice(SupplementaryDec),
-          withContainerData(TransportInformationContainer("DeliveredBestGoods"))
-        )
+        model
       )
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)

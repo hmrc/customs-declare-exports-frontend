@@ -36,12 +36,14 @@ class ConsignmentReferencesControllerSpec
 
   private val uri = uriWithContextPath("/declaration/consignment-references")
 
+  val model = aCacheModel(withChoice(SupplementaryDec))
+
   import ConsignmentReferencesControllerSpec._
 
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(model)
     withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
   }
 
@@ -54,14 +56,14 @@ class ConsignmentReferencesControllerSpec
 
     "return 200 code" in {
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
       status(result) must be(OK)
       verifyTheCacheIsUnchanged()
     }
 
     "not populate the form fields if cache is empty" in {
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
       val resultAsString = contentAsString(result)
 
       resultAsString.replaceAll(" ", "") must include("name=\"ducr.ducr\"\nvalue=\"\"")
@@ -73,7 +75,7 @@ class ConsignmentReferencesControllerSpec
       val cachedData = aCacheModel(withChoice("SMP"), withConsignmentReferences(correctConsignmentReferences))
       withNewCaching(cachedData)
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
       val resultAsString = contentAsString(result)
 
       resultAsString.replaceAll(" ", "") must include("name=\"ducr.ducr\"\nvalue=\"" + exemplaryDucr + "\"")
@@ -88,14 +90,14 @@ class ConsignmentReferencesControllerSpec
     "proceed when no UCR provided by user" in {
 
       val validForm = buildConsignmentReferencesTestData(lrn = "123ABC")
-      val result = route(app, postRequest(uri, validForm)).get
+      val result = route(app, postRequest(uri, validForm, sessionId = model.sessionId)).get
 
       contentAsString(result) mustNot include(messages("error.ducr"))
     }
 
     "save data to the cache" in {
 
-      route(app, postRequest(uri, correctConsignmentReferencesJSON)).get.map { _ =>
+      route(app, postRequest(uri, correctConsignmentReferencesJSON, sessionId = model.sessionId)).get.map { _ =>
         verify(mockCustomsCacheService)
           .cache[ConsignmentReferences](any(), ArgumentMatchers.eq(ConsignmentReferences.id), any())(
             any(),
@@ -109,14 +111,14 @@ class ConsignmentReferencesControllerSpec
 
     "return 303 code" in {
 
-      val result = route(app, postRequest(uri, correctConsignmentReferencesJSON)).get
+      val result = route(app, postRequest(uri, correctConsignmentReferencesJSON, sessionId = model.sessionId)).get
 
       status(result) must be(SEE_OTHER)
     }
 
     "redirect to 'Exporter Details' page" in {
 
-      val result = route(app, postRequest(uri, correctConsignmentReferencesJSON)).get
+      val result = route(app, postRequest(uri, correctConsignmentReferencesJSON, sessionId = model.sessionId)).get
       val header = result.futureValue.header
 
       header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/exporter-details"))

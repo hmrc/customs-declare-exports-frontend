@@ -59,14 +59,14 @@ class ProcedureCodesControllerSpec
 
       status(result) must be(OK)
 
-      verify(mockExportsCacheService).getItemByIdAndSession(any[String], any[String])
+      verify(mockExportsCacheService).get(any[String])
     }
 
     "read item from cache and display it" in {
       val Some(result) = route(app, getRequest(uri))
 
       status(result) must be(OK)
-      verify(mockExportsCacheService).getItemByIdAndSession(any[String], any[String])
+      verify(mockExportsCacheService).get(any[String])
     }
   }
 

@@ -62,7 +62,7 @@ class TransportDetailsControllerSpec extends CustomExportsBaseSpec with Generato
 
       val result = route(app, getRequest(uri)).value
       status(result) must be(OK)
-      verify(mockExportsCacheService, times(2)).get(any())
+      verify(mockExportsCacheService).get(any())
     }
 
     "populate the form fields with data from cache" in {

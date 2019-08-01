@@ -49,7 +49,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       val result = route(app, getRequest(uri)).get
 
       status(result) must be(OK)
-      verify(mockExportsCacheService, times(2)).get(any())
+      verify(mockExportsCacheService).get(any())
     }
 
     "read item from cache and display it" in {
@@ -68,7 +68,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
       page must include(messages("supplementary.warehouse.identificationType.r"))
       page must include("SecretStash")
       page must include("Sea transport")
-      verify(mockExportsCacheService, times(2)).get(any())
+      verify(mockExportsCacheService).get(any())
     }
   }
 

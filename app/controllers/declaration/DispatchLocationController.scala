@@ -22,6 +22,7 @@ import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -72,9 +73,10 @@ class DispatchLocationController @Inject()(
         controllers.declaration.routes.NotEligibleController.displayPage()
     }
 
-  private def updateCache(sessionId: String, formData: DispatchLocation): Future[Option[ExportsCacheModel]] =
-    getAndUpdateExportCacheModel(sessionId, model => {
+  private def updateCache(sessionId: String, formData: DispatchLocation)
+                         (implicit request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] =
+    updateExportCacheModel(model =>
       exportsCacheService.update(sessionId, model.copy(dispatchLocation = Some(formData)))
-    })
+    )
 
 }

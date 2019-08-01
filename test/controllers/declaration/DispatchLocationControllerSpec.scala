@@ -45,13 +45,13 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
     reset(mockCustomsCacheService, mockExportsCacheService)
   }
 
-  "Declaration Type Controller on GET" should {
+  "Dispatch Location Controller on GET" should {
 
     "return 200 code" in {
 
       val result = route(app, getRequest(dispatchLocationUri)).get
       status(result) must be(OK)
-      verify(mockExportsCacheService, times(2)).get(any())
+      verify(mockExportsCacheService).get(any())
     }
 
     "populate the form fields with data from cache" in {
@@ -59,11 +59,11 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 
       val result = route(app, getRequest(dispatchLocationUri)).get
       contentAsString(result) must include("checked=\"checked\"")
-      verify(mockExportsCacheService, times(2)).get(any())
+      verify(mockExportsCacheService).get(any())
     }
   }
 
-  "Declaration Type Controller on POST" should {
+  "Dispatch Location Controller on POST" should {
 
     "save the data to the cache" in {
 
@@ -74,7 +74,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
         .cache[DispatchLocation](any(), ArgumentMatchers.eq(DispatchLocation.formId), any())(any(), any(), any())
 
       verify(mockExportsCacheService).update(any(), any[ExportsCacheModel])
-      verify(mockExportsCacheService, times(2)).get(any())
+      verify(mockExportsCacheService).get(any())
     }
 
     "return 303 code" in {
