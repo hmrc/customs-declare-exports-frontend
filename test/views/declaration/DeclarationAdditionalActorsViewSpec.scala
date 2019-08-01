@@ -33,7 +33,7 @@ class DeclarationAdditionalActorsViewSpec
   private val form: Form[DeclarationAdditionalActors] = DeclarationAdditionalActors.form()
   private val declarationAdditionalActorsPage = app.injector.instanceOf[declaration_additional_actors]
   private def createView(form: Form[DeclarationAdditionalActors] = form): Html =
-    declarationAdditionalActorsPage(appConfig, form, Seq())(fakeJourneyRequest(SupplementaryDec), messages)
+    declarationAdditionalActorsPage(form, Seq())(fakeJourneyRequest(SupplementaryDec), messages)
 
   "Declaration Additional Actors View" should {
 
@@ -112,7 +112,7 @@ class DeclarationAdditionalActorsViewSpec
 
     "display 'Back' button that links to 'Carrier Details' page if on Standard Journey" in {
 
-      val view = declarationAdditionalActorsPage(appConfig, form, Seq())(fakeJourneyRequest(StandardDec), messages)
+      val view = declarationAdditionalActorsPage(form, Seq())(fakeJourneyRequest(StandardDec), messages)
       val backButton = getElementById(view, "link-back")
 
       backButton.text() must be(messages(backCaption))
@@ -217,7 +217,6 @@ class DeclarationAdditionalActorsViewSpec
     "display one row with data in table" in {
 
       val view = declarationAdditionalActorsPage(
-        appConfig,
         form,
         Seq(DeclarationAdditionalActors(Some("12345"), Some("CS")))
       )(fakeJourneyRequest(StandardDec), messages)

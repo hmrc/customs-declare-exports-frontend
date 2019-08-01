@@ -14,15 +14,12 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-
 @this(main_template: views.html.main_template)
 
-@()(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages("cancellation.confirmationPage.title"),
-    appConfig = appConfig
+  title = messages("cancellation.confirmationPage.title")
 ) {
   <div>
       <div class="govuk-box-highlight">

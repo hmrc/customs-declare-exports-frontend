@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util._
@@ -46,17 +45,16 @@ class ProcedureCodesController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   procedureCodesPage: procedure_codes
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map {
       case Some(exportItem) =>
-        exportItem.procedureCodes.fold({ Ok(procedureCodesPage(appConfig, itemId, form(), Seq())) }) {
+        exportItem.procedureCodes.fold({ Ok(procedureCodesPage(itemId, form(), Seq())) }) {
           procedureCodesData =>
             Ok(
               procedureCodesPage(
-                appConfig,
                 itemId,
                 form().fill(procedureCodesData.toProcedureCode()),
                 procedureCodesData.additionalProcedureCodes
@@ -64,7 +62,7 @@ class ProcedureCodesController @Inject()(
             )
 
         }
-      case None => Ok(procedureCodesPage(appConfig, itemId, form(), Seq()))
+      case None => Ok(procedureCodesPage(itemId, form(), Seq()))
     }
   }
 
@@ -84,7 +82,7 @@ class ProcedureCodesController @Inject()(
           .fold(
             (formWithErrors: Form[ProcedureCodes]) =>
               Future.successful(
-                BadRequest(procedureCodesPage(appConfig, itemId, formWithErrors, cache.additionalProcedureCodes))
+                BadRequest(procedureCodesPage(itemId, formWithErrors, cache.additionalProcedureCodes))
             ),
             validForm => {
               actionTypeOpt match {
@@ -258,6 +256,6 @@ class ProcedureCodesController @Inject()(
 
     val formWithError = form.fill(userInput).copy(errors = updatedErrors)
 
-    Future.successful(BadRequest(procedureCodesPage(appConfig, itemId, formWithError, additionalProcedureCodes)))
+    Future.successful(BadRequest(procedureCodesPage(itemId, formWithError, additionalProcedureCodes)))
   }
 }

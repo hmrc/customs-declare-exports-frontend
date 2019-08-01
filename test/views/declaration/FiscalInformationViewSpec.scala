@@ -30,7 +30,7 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
   private val form: Form[FiscalInformation] = FiscalInformation.form()
   private val fiscalInformationPage = app.injector.instanceOf[fiscal_information]
   private def createView(form: Form[FiscalInformation] = form): Html =
-    fiscalInformationPage(itemId, form)(fakeRequest, appConfig, messages)
+    fiscalInformationPage(itemId, form)(fakeRequest, messages)
 
   "Fiscal Information View" should {
 

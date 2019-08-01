@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes
 @import controllers.util.SaveAndContinue
 @import forms.Choice.AllowedChoiceValues
@@ -33,11 +32,10 @@
     hasAdditionalFiscalReferences: Boolean,
     taricAdditionalCodes: Seq[String] = Seq.empty,
     nationalAdditionalCodes: Seq[String] = Seq.empty
-)(implicit appConfig: AppConfig, request: JourneyRequest[_], messages: Messages)
+)(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.itemType.title"),
-    appConfig = appConfig
+    title = messages("declaration.itemType.title")
 ) {
 
     @helper.form(routes.ItemTypeController.submitItemType(itemId), 'autocomplete -> "off") {

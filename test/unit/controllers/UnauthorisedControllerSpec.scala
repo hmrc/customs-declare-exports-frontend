@@ -27,7 +27,7 @@ class UnauthorisedControllerSpec extends ControllerSpec {
     val unauthorisedPage = new unauthorised(mainTemplate)
 
     val controller =
-      new UnauthorisedController(stubMessagesControllerComponents(), unauthorisedPage)(ec, minimalAppConfig)
+      new UnauthorisedController(stubMessagesControllerComponents(), unauthorisedPage)(ec)
   }
 
   "Unauthorised controller" should {

@@ -68,6 +68,14 @@ trait Stubs {
 
   val minimalConfiguration = Configuration(minimalConfig)
 
+  private val environment = Environment.simple()
+
+  private def runMode(conf: Configuration): RunMode = new RunMode(conf, Test)
+  private def servicesConfig(conf: Configuration) = new ServicesConfig(conf, runMode(conf))
+  private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
+
+  val minimalAppConfig = appConfig(minimalConfiguration)
+
   private val head: Head = new Head(
     new OptimizelySnippet(new OptimizelyConfig(minimalConfiguration)),
     new AssetsConfig(minimalConfiguration),
@@ -84,16 +92,9 @@ trait Stubs {
     new MainContentHeader(),
     new MainContent(),
     new FooterLinks(),
-    new GovUkTemplate()
+    new GovUkTemplate(),
+    minimalAppConfig
   )
 
   val mainTemplate: main_template = new main_template(govukWrapper, new Sidebar(), new Article())
-
-  private val environment = Environment.simple()
-
-  private def runMode(conf: Configuration): RunMode = new RunMode(conf, Test)
-  private def servicesConfig(conf: Configuration) = new ServicesConfig(conf, runMode(conf))
-  private def appConfig(conf: Configuration) = new AppConfig(conf, environment, servicesConfig(conf), "AppName")
-
-  val minimalAppConfig = appConfig(minimalConfiguration)
 }

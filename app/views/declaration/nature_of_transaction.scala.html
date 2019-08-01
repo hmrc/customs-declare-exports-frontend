@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import forms.declaration.NatureOfTransaction
 @import forms.declaration.NatureOfTransaction._
 @import uk.gov.hmrc.play.views.html._
@@ -22,7 +21,7 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[NatureOfTransaction])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@(form: Form[NatureOfTransaction])(implicit request: Request[_], messages: Messages)
 
 @displayOption(messageKey: String) = {
   @Html(messages(messageKey, """<span class="font-bold">""", "</span>"))
@@ -30,8 +29,7 @@
 
 
 @main_template(
-    title = messages("declaration.natureOfTransaction.pageTitle"),
-    appConfig = appConfig
+    title = messages("declaration.natureOfTransaction.pageTitle")
 ) {
     @helper.form(controllers.declaration.routes.NatureOfTransactionController.saveTransactionType(), 'autoComplete -> "off") {
         @helper.CSRF.formField

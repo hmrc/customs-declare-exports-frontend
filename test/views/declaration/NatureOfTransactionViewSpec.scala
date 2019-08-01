@@ -30,7 +30,7 @@ class NatureOfTransactionViewSpec extends ViewSpec with NatureOfTransactionMessa
   private val form: Form[NatureOfTransaction] = NatureOfTransaction.form()
   private val natureOfTransactionPage = app.injector.instanceOf[nature_of_transaction]
   private def createView(form: Form[NatureOfTransaction] = form): Html =
-    natureOfTransactionPage(form)(appConfig, fakeRequest, messages)
+    natureOfTransactionPage(form)(fakeRequest, messages)
 
   "Nature Of Transaction View" should {
 

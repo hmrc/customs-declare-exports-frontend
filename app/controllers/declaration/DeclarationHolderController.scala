@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
@@ -45,15 +44,15 @@ class DeclarationHolderController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   declarationHolderPage: declaration_holder
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   import forms.declaration.DeclarationHolder.form
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.declarationHoldersData)).map {
-      case Some(data) => Ok(declarationHolderPage(appConfig, form(), data.holders))
-      case _          => Ok(declarationHolderPage(appConfig, form(), Seq()))
+      case Some(data) => Ok(declarationHolderPage(form(), data.holders))
+      case _          => Ok(declarationHolderPage(form(), Seq()))
     }
   }
 
@@ -71,7 +70,7 @@ class DeclarationHolderController @Inject()(
         boundForm
           .fold(
             (formWithErrors: Form[DeclarationHolder]) =>
-              Future.successful(BadRequest(declarationHolderPage(appConfig, formWithErrors, cache.holders))),
+              Future.successful(BadRequest(declarationHolderPage(formWithErrors, cache.holders))),
             validForm =>
               actionTypeOpt match {
                 case Some(Add)             => addHolder(validForm, cache)
@@ -124,7 +123,7 @@ class DeclarationHolderController @Inject()(
 
     val formWithError = form.fill(userInput).copy(errors = updatedErrors)
 
-    Future.successful(BadRequest(declarationHolderPage(appConfig, formWithError, holders)))
+    Future.successful(BadRequest(declarationHolderPage(formWithError, holders)))
   }
 
   private def updateCache(sessionId: String, formData: DeclarationHoldersData): Future[Option[ExportsCacheModel]] =

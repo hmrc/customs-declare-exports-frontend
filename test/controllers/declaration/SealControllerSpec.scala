@@ -57,7 +57,7 @@ class SealControllerSpec extends CustomExportsBaseSpec with Generators with Prop
   }
 
   private def view(form: Form[Seal], seals: Seq[Seal], container: Boolean = false)(implicit request: Request[_]) =
-    sealPage(form, seals, container)(appConfig, request, messages)
+    sealPage(form, seals, container)(request, messages)
 
   "GET" should {
 

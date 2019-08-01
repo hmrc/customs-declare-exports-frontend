@@ -19,7 +19,6 @@ package controllers
 import java.time.LocalDateTime
 import java.util.UUID
 
-import config.AppConfig
 import controllers.actions.AuthAction
 import controllers.declaration.{ModelCacheable, SessionIdAware}
 import controllers.util.CacheIdGenerator.eoriCacheId
@@ -44,7 +43,7 @@ class ChoiceController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   choicePage: choice_page
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   val logger = Logger.apply(this.getClass)

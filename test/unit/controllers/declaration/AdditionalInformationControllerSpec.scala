@@ -43,7 +43,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       additionalInformationPage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
     withCaching(None)

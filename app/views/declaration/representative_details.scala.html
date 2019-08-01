@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.RepresentativeDetails
 @import forms.declaration.RepresentativeDetails.StatusCodes._
@@ -24,11 +23,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(appConfig: AppConfig, form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages)
+@(form: Form[RepresentativeDetails])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.representative.title"),
-    appConfig = appConfig
+    title = messages("supplementary.representative.title")
 ) {
 
     @components.back_link("/customs-declare-exports/declaration/declarant-details")

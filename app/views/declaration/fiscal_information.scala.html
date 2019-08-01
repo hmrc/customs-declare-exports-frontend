@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.FiscalInformation
 @import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers._
@@ -23,11 +22,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(itemId: String, form: Form[FiscalInformation])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@(itemId: String, form: Form[FiscalInformation])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.fiscalInformation.header"),
-    appConfig = appConfig
+    title = messages("declaration.fiscalInformation.header")
 ) {
 
     @helper.form(FiscalInformationController.saveFiscalInformation(itemId), 'autoComplete -> "off") {

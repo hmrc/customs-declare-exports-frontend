@@ -30,7 +30,7 @@ class OfficeOfExitSupplementaryViewSpec extends ViewSpec with OfficeOfExitMessag
   private val form: Form[OfficeOfExitSupplementary] = OfficeOfExitForms.supplementaryForm()
   private val officeOfExitSupplementary = app.injector.instanceOf[office_of_exit_supplementary]
   private def createView(form: Form[OfficeOfExitSupplementary] = form): Html =
-    officeOfExitSupplementary(form)(fakeRequest, appConfig, messages)
+    officeOfExitSupplementary(form)(fakeRequest, messages)
 
   "Office of Exit View for supplementary" should {
 

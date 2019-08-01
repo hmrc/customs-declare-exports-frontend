@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
@@ -44,7 +43,7 @@ class SealController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   sealPage: seal
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -80,8 +79,7 @@ class SealController @Inject()(
   }
 
   private def saveSeal(boundForm: Form[Seal], elementLimit: Int, cachedSeals: Seq[Seal])(
-    implicit request: JourneyRequest[_],
-    appConfig: AppConfig
+    implicit request: JourneyRequest[_]
   ): Future[Result] =
     saveAndContinue(boundForm, cachedSeals, false, elementLimit).fold(
       formWithErrors => badRequest(formWithErrors, cachedSeals),
@@ -96,7 +94,7 @@ class SealController @Inject()(
   private def badRequest(
     formWithErrors: Form[Seal],
     cachedSeals: Seq[Seal]
-  )(implicit request: JourneyRequest[_], appConfig: AppConfig) = {
+  )(implicit request: JourneyRequest[_]) = {
     val declaration = exportsCacheService.get(journeySessionId)
     declaration.map(_.flatMap(_.transportDetails)).flatMap { data =>
       declaration.map(_.map(_.seals)).map { seals =>
@@ -124,8 +122,7 @@ class SealController @Inject()(
     } yield Unit
 
   private def addSeal(boundForm: Form[Seal], elementLimit: Int, seals: Seq[Seal])(
-    implicit request: JourneyRequest[_],
-    appConfig: AppConfig
+    implicit request: JourneyRequest[_]
   ): Future[Result] =
     add(boundForm, seals, elementLimit)
       .fold(

@@ -33,7 +33,7 @@ class ConfirmationControllerSpec extends ControllerSpec {
       mockJourneyAction,
       stubMessagesControllerComponents(),
       confirmationPage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))

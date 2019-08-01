@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import forms.declaration.DispatchLocation
 @import forms.declaration.DispatchLocation.AllowedDispatchLocations._
 @import uk.gov.hmrc.play.views.html._
@@ -22,11 +21,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[DispatchLocation])(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@(form: Form[DispatchLocation])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages("supplementary.dispatchLocation.title"),
-  appConfig = appConfig
+  title = messages("supplementary.dispatchLocation.title")
 ) {
 
   @components.back_link("/customs-declare-exports/choice")

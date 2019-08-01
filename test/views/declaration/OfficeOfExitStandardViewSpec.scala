@@ -30,7 +30,7 @@ class OfficeOfExitStandardViewSpec extends ViewSpec with OfficeOfExitMessages wi
   private val form: Form[OfficeOfExitStandard] = OfficeOfExitForms.standardForm()
   private val officeOfExitStandardPage = app.injector.instanceOf[office_of_exit_standard]
   private def createView(form: Form[OfficeOfExitStandard] = form): Html =
-    officeOfExitStandardPage(form)(fakeRequest, appConfig, messages)
+    officeOfExitStandardPage(form)(fakeRequest, messages)
 
   "Office of Exit View for standard" should {
 

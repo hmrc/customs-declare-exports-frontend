@@ -37,7 +37,7 @@ class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessage
 
   private val transportDetailsPage = app.injector.instanceOf[transport_details]
   def createView(form: Form[TransportDetails] = form): Html =
-    transportDetailsPage(form)(journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec), appConfig, messages)
+    transportDetailsPage(form)(journeyRequest(fakeRequest, AllowedChoiceValues.StandardDec), messages)
 
   "TransportDetails View" should {
 

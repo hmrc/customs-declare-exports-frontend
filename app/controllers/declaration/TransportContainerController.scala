@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
@@ -47,7 +46,7 @@ class TransportContainerController @Inject()(
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   transportContainersPage: add_transport_containers
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -81,7 +80,7 @@ class TransportContainerController @Inject()(
     boundForm: Form[TransportInformationContainer],
     elementLimit: Int,
     cache: TransportInformationContainerData
-  )(implicit request: JourneyRequest[_], appConfig: AppConfig) =
+  )(implicit request: JourneyRequest[_]) =
     saveAndContinue(boundForm, cache.containers, true, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(transportContainersPage(formWithErrors, cache.containers))),
       updatedCache =>
@@ -107,7 +106,7 @@ class TransportContainerController @Inject()(
     boundForm: Form[TransportInformationContainer],
     elementLimit: Int,
     cache: TransportInformationContainerData
-  )(implicit request: JourneyRequest[_], appConfig: AppConfig) =
+  )(implicit request: JourneyRequest[_]) =
     add(boundForm, cache.containers, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(transportContainersPage(formWithErrors, cache.containers))),
       updatedCache => cacheAndRedirect(updatedCache)

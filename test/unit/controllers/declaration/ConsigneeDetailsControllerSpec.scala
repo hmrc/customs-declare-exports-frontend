@@ -36,7 +36,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       consigneeDetailsPage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))

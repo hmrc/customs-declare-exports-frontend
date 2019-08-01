@@ -15,7 +15,7 @@
  */
 
 package controllers.declaration
-import config.AppConfig
+
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
@@ -42,7 +42,7 @@ class OfficeOfExitController @Inject()(
   officeOfExitSupplementaryPage: office_of_exit_supplementary,
   officeOfExitStandardPage: office_of_exit_standard,
   override val exportsCacheService: ExportsCacheService
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.officeOfExit.OfficeOfExitForms._
 

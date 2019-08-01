@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.TotalNumberOfItems
@@ -39,14 +38,14 @@ class TotalNumberOfItemsController @Inject()(
   mcc: MessagesControllerComponents,
   totalNumberOfItemsPage: total_number_of_items,
   override val exportsCacheService: ExportsCacheService
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.TotalNumberOfItems._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.get(journeySessionId).map(_.flatMap(_.totalNumberOfItems)).map {
-      case Some(data) => Ok(totalNumberOfItemsPage(appConfig, form.fill(data)))
-      case _          => Ok(totalNumberOfItemsPage(appConfig, form))
+      case Some(data) => Ok(totalNumberOfItemsPage(form.fill(data)))
+      case _          => Ok(totalNumberOfItemsPage(form))
     }
   }
 
@@ -55,7 +54,7 @@ class TotalNumberOfItemsController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[TotalNumberOfItems]) =>
-          Future.successful(BadRequest(totalNumberOfItemsPage(appConfig, formWithErrors))),
+          Future.successful(BadRequest(totalNumberOfItemsPage(formWithErrors))),
         formData =>
           updateCache(journeySessionId, formData).map { _ =>
             Redirect(routes.NatureOfTransactionController.displayForm())
