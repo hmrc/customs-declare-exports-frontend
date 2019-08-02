@@ -16,13 +16,11 @@
 
 package services.mapping.declaration.consignment
 
-import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
 import services.mapping.goodsshipment.consignment.ConsignmentCarrierBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class DeclarationConsignmentBuilder @Inject()(
@@ -38,29 +36,4 @@ class DeclarationConsignmentBuilder @Inject()(
       consignmentCarrierBuilder.buildThenAdd(model, consignment)
       declaration.setConsignment(consignment)
     }
-}
-
-object DeclarationConsignmentBuilder {
-
-  def build(implicit cacheMap: CacheMap, choice: Choice): Declaration.Consignment =
-    choice match {
-      case Choice(AllowedChoiceValues.StandardDec)      => buildCircumstancesCode
-      case Choice(AllowedChoiceValues.SupplementaryDec) => null
-    }
-
-  private def buildCircumstancesCode(implicit cacheMap: CacheMap, choice: Choice): Declaration.Consignment = {
-    val consignment = new Declaration.Consignment()
-
-    consignment.setFreight(FreightBuilder.build)
-
-    val iteneraries = IteneraryBuilder.build
-    if (!iteneraries.isEmpty) {
-      consignment.getItinerary.addAll(iteneraries)
-    }
-
-    consignment.setCarrier(ConsignmentCarrierBuilder.build)
-
-    consignment
-  }
-
 }
