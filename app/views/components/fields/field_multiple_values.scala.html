@@ -15,9 +15,7 @@
  *@
 
 @import controllers.util.{Add, Remove}
-
 @import views.html.components.add_button
-@import views.html.components.submit_button
 
 @(
     field: Field,
@@ -26,7 +24,7 @@
     elements: Seq[String] = Seq.empty,
     labelClass: Option[String] = None,
     input: Html,
-    submitButton: Boolean = false
+    includeAddButton: Boolean = true
 )(implicit messages: Messages)
 
 <div class="form-field @if(field.hasErrors){form-field--error}">
@@ -66,9 +64,7 @@
         @input
     </div>
 
-    @if(submitButton) {
-        submit_button()
-    } else {
-        add_button()
+    @if(includeAddButton) {
+        @add_button()
     }
 </div>

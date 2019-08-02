@@ -18,7 +18,6 @@
 
 @import forms.declaration.ProcedureCodes
 @import uk.gov.hmrc.play.views.html._
-@import components.inputs.input_text
 
 @this(main_template: views.html.main_template)
 
@@ -53,9 +52,10 @@
                 label = messages("supplementary.procedureCodes.additionalProcedureCode.header"),
                 hint = Some(messages("supplementary.procedureCodes.additionalProcedureCode.header.hint")),
                 elements = codes,
-                labelClass = Some("bold-small")
+                labelClass = Some("bold-small"),
+                includeAddButton = false
             )
 
-            @components.submit_button()
+            @components.add_save_button()
         }
     }
