@@ -19,8 +19,6 @@ import forms.declaration.destinationCountries.DestinationCountries
 import javax.inject.Inject
 import services.Countries.allCountries
 import services.mapping.ModifyingBuilder
-import services.mapping.goodsshipment.ExportCountryBuilder.{createExportCountry, isDefined}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.ExportCountry
 import wco.datamodel.wco.declaration_ds.dms._2.ExportCountryCountryCodeType
@@ -30,9 +28,6 @@ class ExportCountryBuilder @Inject()() extends ModifyingBuilder[DestinationCount
     if (isDefined(model)) {
       goodsShipment.setExportCountry(createExportCountry(model))
     }
-}
-
-object ExportCountryBuilder {
 
   private def isDefined(country: DestinationCountries): Boolean = country.countryOfDispatch.nonEmpty
 

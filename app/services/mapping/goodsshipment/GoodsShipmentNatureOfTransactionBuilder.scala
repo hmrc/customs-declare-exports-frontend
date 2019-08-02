@@ -19,7 +19,6 @@ package services.mapping.goodsshipment
 import forms.declaration.NatureOfTransaction
 import javax.inject.Inject
 import services.mapping.ModifyingBuilder
-import services.mapping.goodsshipment.GoodsShipmentNatureOfTransactionBuilder.isDefined
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2.GoodsShipmentTransactionNatureCodeType
 
@@ -31,9 +30,6 @@ class GoodsShipmentNatureOfTransactionBuilder @Inject()() extends ModifyingBuild
       goodsShipment.setTransactionNatureCode(natureOfTransactionWCO)
     }
   }
-}
-
-object GoodsShipmentNatureOfTransactionBuilder {
 
   private def isDefined(natureOfTransaction: NatureOfTransaction): Boolean = natureOfTransaction.natureType.nonEmpty
 

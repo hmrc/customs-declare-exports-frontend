@@ -19,7 +19,6 @@ import forms.declaration.destinationCountries.DestinationCountries
 import javax.inject.Inject
 import services.Countries.allCountries
 import services.mapping.ModifyingBuilder
-import services.mapping.goodsshipment.DestinationBuilder.{createExportCountry, isDefined}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Destination
 import wco.datamodel.wco.declaration_ds.dms._2.DestinationCountryCodeType
@@ -29,9 +28,6 @@ class DestinationBuilder @Inject()() extends ModifyingBuilder[DestinationCountri
   override def buildThenAdd(countries: DestinationCountries, goodsShipment: GoodsShipment) =
     if (isDefined(countries))
       goodsShipment.setDestination(createExportCountry(countries.countryOfDestination))
-}
-
-object DestinationBuilder {
 
   private def isDefined(country: DestinationCountries): Boolean = country.countryOfDestination.nonEmpty
 

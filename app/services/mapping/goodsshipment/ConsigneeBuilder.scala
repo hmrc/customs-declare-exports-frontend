@@ -19,7 +19,6 @@ import forms.declaration.{ConsigneeDetails, EntityDetails}
 import javax.inject.Inject
 import services.Countries.allCountries
 import services.mapping.ModifyingBuilder
-import services.mapping.goodsshipment.ConsigneeBuilder.{createConsignee, isDefined}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2._
 
@@ -29,10 +28,6 @@ class ConsigneeBuilder @Inject()() extends ModifyingBuilder[ConsigneeDetails, Go
     if (isDefined(consigneeDetails))
       goodsShipment.setConsignee(createConsignee(consigneeDetails.details))
 
-}
-
-object ConsigneeBuilder {
-
   private def isDefined(consigneeDetails: ConsigneeDetails): Boolean =
     consigneeDetails.details.eori.getOrElse("").nonEmpty ||
       (consigneeDetails.details.address.isDefined && consigneeDetails.details.address.get.isDefined())
@@ -40,9 +35,9 @@ object ConsigneeBuilder {
   private def createConsignee(details: EntityDetails): GoodsShipment.Consignee = {
     val consignee = new GoodsShipment.Consignee()
 
-    details.eori.foreach { value =>
+    details.eori.foreach { eori =>
       val id = new ConsigneeIdentificationIDType()
-      id.setValue(details.eori.orNull)
+      id.setValue(eori)
       consignee.setID(id)
     }
 

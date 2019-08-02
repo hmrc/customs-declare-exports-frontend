@@ -18,19 +18,15 @@ package services.mapping.goodsshipment
 import forms.declaration.WarehouseIdentification
 import javax.inject.Inject
 import services.mapping.ModifyingBuilder
-import services.mapping.goodsshipment.WarehouseBuilder.{createWarehouse, isDefined}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Warehouse
 import wco.datamodel.wco.declaration_ds.dms._2.{WarehouseIdentificationIDType, WarehouseTypeCodeType}
 
 class WarehouseBuilder @Inject()() extends ModifyingBuilder[WarehouseIdentification, GoodsShipment] {
   override def buildThenAdd(model: WarehouseIdentification, goodsShipment: GoodsShipment): Unit =
-    if (isDefined(model)){
+    if (isDefined(model)) {
       goodsShipment.setWarehouse(createWarehouse(model))
     }
-}
-
-object WarehouseBuilder {
 
   private def isDefined(warehouse: WarehouseIdentification): Boolean =
     warehouse.identificationNumber.isDefined && warehouse.identificationType.isDefined

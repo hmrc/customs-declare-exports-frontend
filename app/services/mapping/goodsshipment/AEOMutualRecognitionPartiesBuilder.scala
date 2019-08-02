@@ -19,7 +19,6 @@ package services.mapping.goodsshipment
 import forms.declaration.DeclarationAdditionalActors
 import javax.inject.Inject
 import services.mapping.ModifyingBuilder
-import services.mapping.goodsshipment.AEOMutualRecognitionPartiesBuilder.{createAdditionalActors, isDefined}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2._
 
@@ -29,10 +28,6 @@ class AEOMutualRecognitionPartiesBuilder @Inject()()
   override def buildThenAdd(model: DeclarationAdditionalActors, goodsShipment: GoodsShipment): Unit =
     if (isDefined(model))
       goodsShipment.getAEOMutualRecognitionParty.add(createAdditionalActors(model))
-
-}
-
-object AEOMutualRecognitionPartiesBuilder {
 
   private def isDefined(actor: DeclarationAdditionalActors): Boolean =
     actor.eori.getOrElse("").nonEmpty || actor.partyType.getOrElse("").nonEmpty

@@ -18,7 +18,6 @@ package services.mapping.goodsshipment
 import forms.declaration.{Document, PreviousDocumentsData}
 import javax.inject.Inject
 import services.mapping.ModifyingBuilder
-import services.mapping.goodsshipment.PreviousDocumentsBuilder.{createPreviousDocuments, isDefined}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2.{PreviousDocumentCategoryCodeType, PreviousDocumentIdentificationIDType, PreviousDocumentTypeCodeType}
 
@@ -29,9 +28,6 @@ class PreviousDocumentsBuilder @Inject()() extends ModifyingBuilder[PreviousDocu
         goodsShipment.getPreviousDocument.add(createPreviousDocuments(data))
       }
     }
-}
-
-object PreviousDocumentsBuilder {
 
   private def isDefined(previousDocumentsData: PreviousDocumentsData): Boolean =
     previousDocumentsData.documents.nonEmpty && previousDocumentsData.documents.forall(
