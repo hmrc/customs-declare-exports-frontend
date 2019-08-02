@@ -55,9 +55,7 @@ class RepresentativeDetailsController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>
-          Future.successful(
-            BadRequest(representativeDetailsPage(RepresentativeDetails.adjustErrors(formWithErrors)))
-        ),
+          Future.successful(BadRequest(representativeDetailsPage(RepresentativeDetails.adjustErrors(formWithErrors)))),
         validRepresentativeDetails =>
           for {
             _ <- updateCache(journeySessionId, validRepresentativeDetails)

@@ -51,15 +51,14 @@ class ProcedureCodesController @Inject()(
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map {
       case Some(exportItem) =>
-        exportItem.procedureCodes.fold({ Ok(procedureCodesPage(itemId, form(), Seq())) }) {
-          procedureCodesData =>
-            Ok(
-              procedureCodesPage(
-                itemId,
-                form().fill(procedureCodesData.toProcedureCode()),
-                procedureCodesData.additionalProcedureCodes
-              )
+        exportItem.procedureCodes.fold({ Ok(procedureCodesPage(itemId, form(), Seq())) }) { procedureCodesData =>
+          Ok(
+            procedureCodesPage(
+              itemId,
+              form().fill(procedureCodesData.toProcedureCode()),
+              procedureCodesData.additionalProcedureCodes
             )
+          )
 
         }
       case None => Ok(procedureCodesPage(itemId, form(), Seq()))
@@ -81,9 +80,7 @@ class ProcedureCodesController @Inject()(
         boundForm
           .fold(
             (formWithErrors: Form[ProcedureCodes]) =>
-              Future.successful(
-                BadRequest(procedureCodesPage(itemId, formWithErrors, cache.additionalProcedureCodes))
-            ),
+              Future.successful(BadRequest(procedureCodesPage(itemId, formWithErrors, cache.additionalProcedureCodes))),
             validForm => {
               actionTypeOpt match {
                 case Some(Add)             => addAnotherCodeHandler(itemId, validForm, cache)

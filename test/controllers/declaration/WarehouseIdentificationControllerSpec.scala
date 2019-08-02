@@ -89,10 +89,12 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec with W
     "validate identification type and number" in {
 
       val incorrectWarehouseIdentification: JsValue =
-        JsObject(Map(
-          "identificationType" -> JsString(WarehouseIdentification.IdentifierType.PUBLIC_CUSTOMS_1),
-          "identificationNumber" -> JsString("")
-        ))
+        JsObject(
+          Map(
+            "identificationType" -> JsString(WarehouseIdentification.IdentifierType.PUBLIC_CUSTOMS_1),
+            "identificationNumber" -> JsString("")
+          )
+        )
 
       val result = route(app, postRequest(uri, incorrectWarehouseIdentification)).get
 

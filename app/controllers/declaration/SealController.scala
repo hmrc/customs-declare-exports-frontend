@@ -91,10 +91,7 @@ class SealController @Inject()(
         } else Future.successful(Redirect(routes.SummaryController.displayPage()))
     )
 
-  private def badRequest(
-    formWithErrors: Form[Seal],
-    cachedSeals: Seq[Seal]
-  )(implicit request: JourneyRequest[_]) = {
+  private def badRequest(formWithErrors: Form[Seal], cachedSeals: Seq[Seal])(implicit request: JourneyRequest[_]) = {
     val declaration = exportsCacheService.get(journeySessionId)
     declaration.map(_.flatMap(_.transportDetails)).flatMap { data =>
       declaration.map(_.map(_.seals)).map { seals =>

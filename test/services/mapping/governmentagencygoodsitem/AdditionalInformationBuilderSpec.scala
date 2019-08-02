@@ -57,8 +57,14 @@ class AdditionalInformationBuilderSpec extends WordSpec with Matchers with Mocki
         builder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
 
         governmentAgencyGoodsItem.getAdditionalInformation shouldNot be(empty)
-        governmentAgencyGoodsItem.getAdditionalInformation.get(0).getStatementCode.getValue shouldBe additionalInformation.code
-        governmentAgencyGoodsItem.getAdditionalInformation.get(0).getStatementDescription.getValue shouldBe additionalInformation.description
+        governmentAgencyGoodsItem.getAdditionalInformation
+          .get(0)
+          .getStatementCode
+          .getValue shouldBe additionalInformation.code
+        governmentAgencyGoodsItem.getAdditionalInformation
+          .get(0)
+          .getStatementDescription
+          .getValue shouldBe additionalInformation.description
       }
     }
   }
