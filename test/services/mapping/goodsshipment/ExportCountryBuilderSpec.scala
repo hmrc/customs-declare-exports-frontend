@@ -25,25 +25,6 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 class ExportCountryBuilderSpec extends WordSpec with Matchers {
 
   "ExportCountryBuilder" should {
-    "correctly map to the WCO-DEC GoodsShipment.ExportCountries instance" when {
-      "countryOfDispatch has been supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(DestinationCountries.formId -> DestinationCountriesSpec.correctDestinationCountriesJSON)
-          )
-        val obj = ExportCountryBuilder.build(cacheMap)
-        obj.getID.getValue should be("PL")
-      }
-      "countryOfDispatch has not been supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(DestinationCountries.formId -> DestinationCountriesSpec.emptyDestinationCountriesJSON)
-          )
-        ExportCountryBuilder.build(cacheMap) should be(null)
-      }
-    }
 
     "correctly map new model to the WCO-DEC GoodsShipment.ExportCountries instance" when {
       "countryOfDispatch has been supplied" in {
@@ -54,6 +35,16 @@ class ExportCountryBuilderSpec extends WordSpec with Matchers {
 
         val exportCountry = goodsShipment.getExportCountry
         exportCountry.getID.getValue should be("PL")
+      }
+
+      "countryOfDispatch has not been supplied" in {
+        val builder = new ExportCountryBuilder
+        val goodsShipment = new GoodsShipment
+
+        builder.buildThenAdd(DestinationCountries.empty(), goodsShipment)
+
+        val exportCountry = goodsShipment.getExportCountry
+        exportCountry should be(null)
       }
 
     }

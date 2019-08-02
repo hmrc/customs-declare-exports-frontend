@@ -84,25 +84,3 @@ class GoodsShipmentBuilder @Inject()(
   }
 
 }
-
-object GoodsShipmentBuilder {
-
-  def build(implicit cacheMap: CacheMap, choice: Choice): GoodsShipment = {
-    val goodsShipment = new GoodsShipment()
-
-    goodsShipment.setTransactionNatureCode(GoodsShipmentNatureOfTransactionBuilder.build)
-    goodsShipment.setConsignee(ConsigneeBuilder.build)
-    goodsShipment.setConsignment(ConsignmentBuilder.build)
-    goodsShipment.setDestination(DestinationBuilder.build)
-    goodsShipment.setExportCountry(ExportCountryBuilder.build)
-    goodsShipment.setUCR(UCRBuilder.build)
-    goodsShipment.setWarehouse(WarehouseBuilder.build)
-    goodsShipment.getPreviousDocument
-      .addAll(PreviousDocumentsBuilder.build)
-    goodsShipment.getGovernmentAgencyGoodsItem.addAll(GovernmentAgencyGoodsItemBuilder.build)
-    goodsShipment.getAEOMutualRecognitionParty.addAll(AEOMutualRecognitionPartiesBuilder.build)
-
-    goodsShipment
-  }
-
-}

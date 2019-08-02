@@ -19,54 +19,67 @@ package services.mapping.goodsshipment
 import forms.common.AddressSpec
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class ConsigneeBuilderSpec extends WordSpec with Matchers {
+
 
   "ConsigneeBuilder" should {
     "correctly map to the WCO-DEC GoodsShipment.Consignee instance" when {
       "only eori is supplied " in {
+        val builder = new ConsigneeBuilder
+
+        val goodsShipment = new GoodsShipment
         val details = ConsigneeDetails(EntityDetails(Some("9GB1234567ABCDEF"), None))
-        implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(ConsigneeDetails.id -> Json.toJson(details)))
-        val consignee = ConsigneeBuilder.build(cacheMap)
-        consignee.getID.getValue should be("9GB1234567ABCDEF")
-        consignee.getName should be(null)
-        consignee.getAddress should be(null)
+
+        builder.buildThenAdd(details, goodsShipment)
+
+        goodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")
+        goodsShipment.getConsignee.getName should be(null)
+        goodsShipment.getConsignee.getAddress should be(null)
       }
 
       "only address is supplied " in {
+        val builder = new ConsigneeBuilder
+
+        val goodsShipment = new GoodsShipment
         val details = ConsigneeDetails(EntityDetails(None, Some(AddressSpec.correctAddress)))
-        implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(ConsigneeDetails.id -> Json.toJson(details)))
-        val consignee = ConsigneeBuilder.build(cacheMap)
-        consignee.getID should be(null)
-        consignee.getName.getValue should be("Full Name")
-        consignee.getAddress.getLine.getValue should be("Address Line")
-        consignee.getAddress.getCityName.getValue should be("Town or City")
-        consignee.getAddress.getCountryCode.getValue should be("PL")
-        consignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+
+        builder.buildThenAdd(details, goodsShipment)
+
+        goodsShipment.getConsignee.getID should be(null)
+        goodsShipment.getConsignee.getName.getValue should be("Full Name")
+        goodsShipment.getConsignee.getAddress.getLine.getValue should be("Address Line")
+        goodsShipment.getConsignee.getAddress.getCityName.getValue should be("Town or City")
+        goodsShipment.getConsignee.getAddress.getCountryCode.getValue should be("PL")
+        goodsShipment.getConsignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
       }
 
       "empty data is supplied " in {
+        val builder = new ConsigneeBuilder
+
+        val goodsShipment = new GoodsShipment
         val details = ConsigneeDetails(EntityDetails(None, None))
-        implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(ConsigneeDetails.id -> Json.toJson(details)))
-        ConsigneeBuilder.build(cacheMap) should be(null)
+
+        builder.buildThenAdd(details, goodsShipment)
+
+        goodsShipment.getConsignee should be(null)
       }
 
       "'address.fullname' is not supplied" in {
+        val builder = new ConsigneeBuilder
+
+        val goodsShipment = new GoodsShipment
         val details = ConsigneeDetails(EntityDetails(None, Some(AddressSpec.addressWithEmptyFullname)))
-        implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(ConsigneeDetails.id -> Json.toJson(details)))
-        val consignee = ConsigneeBuilder.build(cacheMap)
-        consignee.getID should be(null)
-        consignee.getName should be(null)
-        consignee.getAddress.getLine.getValue should be("Address Line")
-        consignee.getAddress.getCityName.getValue should be("Town or City")
-        consignee.getAddress.getCountryCode.getValue should be("PL")
-        consignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
+
+        builder.buildThenAdd(details, goodsShipment)
+
+        goodsShipment.getConsignee.getID should be(null)
+        goodsShipment.getConsignee.getName should be(null)
+        goodsShipment.getConsignee.getAddress.getLine.getValue should be("Address Line")
+        goodsShipment.getConsignee.getAddress.getCityName.getValue should be("Town or City")
+        goodsShipment.getConsignee.getAddress.getCountryCode.getValue should be("PL")
+        goodsShipment.getConsignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
       }
     }
   }
