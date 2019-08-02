@@ -17,17 +17,15 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.PackageInformation
-import forms.declaration.PackageInformation.{formId, _}
+import forms.declaration.PackageInformation._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.CustomsCacheService
 import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.package_information
@@ -38,7 +36,6 @@ class PackageInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  legacyCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   packageInformationPage: package_information
@@ -76,7 +73,8 @@ class PackageInformationController @Inject()(
       case Some(identifier) =>
         val updatedPackages =
           packages.zipWithIndex.filterNot(_._2.toString == identifier).map(_._1)
-        updateCacheModels(itemId, updatedPackages, routes.PackageInformationController.displayPage(itemId))
+        updateExportsCache(itemId, journeySessionId, updatedPackages)
+          .map(_ => Redirect(routes.PackageInformationController.displayPage(itemId)))
       case _ => errorHandler.displayErrorPage()
     }
 
@@ -87,7 +85,8 @@ class PackageInformationController @Inject()(
     if (!isFormEmpty(payload)) badRequest(itemId, packages, payload, USE_ADD)
     else if (packages.isEmpty) badRequest(itemId, packages, payload, ADD_ONE)
     else
-      updateCacheModels(itemId, packages, controllers.declaration.routes.CommodityMeasureController.displayPage(itemId))
+      updateExportsCache(itemId, journeySessionId, packages)
+        .map(_ => Redirect(controllers.declaration.routes.CommodityMeasureController.displayPage(itemId)))
   }
 
   private def isFormEmpty[A](form: Form[A]): Boolean =
@@ -106,7 +105,8 @@ class PackageInformationController @Inject()(
           Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors, packages))),
         validForm => {
           isAdditionInvalid[PackageInformation](validForm, packages).fold(
-            updateCacheModels(itemId, packages :+ validForm, routes.PackageInformationController.displayPage(itemId))
+            updateExportsCache(itemId, journeySessionId, packages :+ validForm)
+              .map(_ => Redirect(routes.PackageInformationController.displayPage(itemId)))
           )(badRequest(itemId, packages, form().fill(validForm), _))
         }
       )
@@ -120,14 +120,6 @@ class PackageInformationController @Inject()(
     implicit authenticatedRequest: JourneyRequest[AnyContent]
   ) =
     Future.successful(BadRequest(packageInformationPage(itemId, form.withGlobalError(error), packages)))
-
-  private def updateCacheModels(itemId: String, updatedCache: Seq[PackageInformation], redirect: Call)(
-    implicit journeyRequest: JourneyRequest[_]
-  ) =
-    for {
-      _ <- updateExportsCache(itemId, journeySessionId, updatedCache)
-      _ <- legacyCacheService.cache[Seq[PackageInformation]](goodsItemCacheId(), formId, updatedCache)
-    } yield Redirect(redirect)
 
   private def updateExportsCache(
     itemId: String,

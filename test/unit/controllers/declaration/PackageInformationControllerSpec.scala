@@ -33,7 +33,6 @@ class PackageInformationControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockJourneyAction,
       mockErrorHandler,
-      mockCustomsCacheService,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       packageInformationPage
