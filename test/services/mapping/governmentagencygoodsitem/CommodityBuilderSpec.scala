@@ -18,19 +18,26 @@ package services.mapping.governmentagencygoodsitem
 
 import models.declaration.governmentagencygoodsitem._
 import org.scalatest.{Matchers, WordSpec}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class CommodityBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemData {
 
   "CommodityBuilder" should {
 
     "map commodity item successfully when dangerous goods present" in {
+      val builder = new CommodityBuilder
+
+      var item: GoodsShipment.GovernmentAgencyGoodsItem = new GoodsShipment.GovernmentAgencyGoodsItem
       val commodity = Commodity(
         Some("commodityDescription"),
         Seq(CommodityBuilderSpec.classifications),
         Seq(CommodityBuilderSpec.dangerousGoods),
         Some(CommodityBuilderSpec.goodsMeasure)
       )
-      val mappedCommodity = CommodityBuilder.build(Some(commodity))
+
+      builder.buildThenAdd(commodity, item)
+
+      val mappedCommodity = item.getCommodity
       mappedCommodity.getDescription.getValue should be("commodityDescription")
 
       mappedCommodity.getClassification.get(0).getID.getValue should be("classificationsId")
@@ -49,13 +56,19 @@ class CommodityBuilderSpec extends WordSpec with Matchers with GovernmentAgencyG
     }
 
     "map commodity item successfully when dangerous goods not present" in {
+      val builder = new CommodityBuilder
+
+      var item: GoodsShipment.GovernmentAgencyGoodsItem = new GoodsShipment.GovernmentAgencyGoodsItem
       val commodity = Commodity(
         Some("commodityDescription"),
         Seq(CommodityBuilderSpec.classifications),
         Seq(CommodityBuilderSpec.dangerousGoods),
         None
       )
-      val mappedCommodity = CommodityBuilder.build(Some(commodity))
+
+      builder.buildThenAdd(commodity, item)
+
+      val mappedCommodity = item.getCommodity
       mappedCommodity.getDescription.getValue should be("commodityDescription")
 
       mappedCommodity.getClassification.get(0).getID.getValue should be("classificationsId")

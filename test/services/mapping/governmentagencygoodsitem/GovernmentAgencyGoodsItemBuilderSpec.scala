@@ -44,30 +44,6 @@ class GovernmentAgencyGoodsItemBuilderSpec
   private val dutyTaxPartyBuilder = mock[DomesticDutyTaxPartyBuilder]
 
   "GovernmentAgencyGoodsItemBuilder" should {
-    "map to WCO model correctly " in {
-      implicit val cacheMap: CacheMap =
-        CacheMap("CacheID", Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemBuilderSpec.itemsJsonList))
-
-      val agencyGoodsItems: java.util.List[WCOGovernmentAgencyGoodsItem] = GovernmentAgencyGoodsItemBuilder.build
-      agencyGoodsItems.isEmpty shouldBe false
-
-      validateAdditionalDocuments(agencyGoodsItems.get(0).getAdditionalDocument.get(0))
-      validateAdditionalInformation(agencyGoodsItems.get(0).getAdditionalInformation.get(0))
-      validateCommodity(agencyGoodsItems.get(0).getCommodity)
-      validatePackaging(agencyGoodsItems.get(0).getPackaging.get(0))
-      validateGovernmentProcedure(agencyGoodsItems.get(0).getGovernmentProcedure.get(0))
-    }
-
-    "map correctly if ItemType is None " in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemBuilderSpec.emptyItemsJsonList)
-        )
-
-      val mappedGoodsItemList: java.util.List[WCOGovernmentAgencyGoodsItem] = GovernmentAgencyGoodsItemBuilder.build
-      mappedGoodsItemList.isEmpty shouldBe true
-    }
 
     "map ExportItem Correctly" in {
       val exportItem = aCachedItem(
@@ -113,7 +89,7 @@ class GovernmentAgencyGoodsItemBuilderSpec
     )
 
   private def validateStatisticalValueAmount(value: java.math.BigDecimal, currencyId: String) = {
-    currencyId should be(StatisticalValueAmountBuilder.defaultCurrencyCode)
+    currencyId should be("GBP")
     value.compareTo(BigDecimal(itemType.statisticalValue).bigDecimal) should be(0)
   }
 
