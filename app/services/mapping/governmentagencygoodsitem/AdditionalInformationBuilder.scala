@@ -21,23 +21,29 @@ import services.cache.ExportItem
 import services.mapping.ModifyingBuilder
 import services.mapping.governmentagencygoodsitem.AdditionalInformationBuilder.buildAdditionalInformation
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.{AdditionalInformation => WCOAdditionalInformation}
-import wco.datamodel.wco.declaration_ds.dms._2.{AdditionalInformationStatementCodeType, AdditionalInformationStatementDescriptionTextType}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.{
+  AdditionalInformation => WCOAdditionalInformation
+}
+import wco.datamodel.wco.declaration_ds.dms._2.{
+  AdditionalInformationStatementCodeType,
+  AdditionalInformationStatementDescriptionTextType
+}
 
 import scala.collection.JavaConverters._
 
-class AdditionalInformationBuilder @Inject()() extends ModifyingBuilder[ExportItem, GoodsShipment.GovernmentAgencyGoodsItem] {
+class AdditionalInformationBuilder @Inject()()
+    extends ModifyingBuilder[ExportItem, GoodsShipment.GovernmentAgencyGoodsItem] {
 
   def buildThenAdd(
-                    exportItem: ExportItem,
-                    wcoGovernmentAgencyGoodsItem: GoodsShipment.GovernmentAgencyGoodsItem
-                  ): Unit =
+    exportItem: ExportItem,
+    wcoGovernmentAgencyGoodsItem: GoodsShipment.GovernmentAgencyGoodsItem
+  ): Unit =
     exportItem.additionalInformation.foreach { additionalInformationData =>
-    {
-      additionalInformationData.items.foreach { additionalInformation =>
-        wcoGovernmentAgencyGoodsItem.getAdditionalInformation.add(buildAdditionalInformation(additionalInformation))
+      {
+        additionalInformationData.items.foreach { additionalInformation =>
+          wcoGovernmentAgencyGoodsItem.getAdditionalInformation.add(buildAdditionalInformation(additionalInformation))
+        }
       }
-    }
     }
 
 }

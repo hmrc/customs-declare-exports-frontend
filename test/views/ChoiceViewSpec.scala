@@ -98,10 +98,7 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
 
       val page = new choice_page(mainTemplate, supplementaryAppConfig)
 
-      val view = page(Choice.form().fill(Choice("SMP")))(
-        messages = messages,
-        request = fakeRequest
-      )
+      val view = page(Choice.form().fill(Choice("SMP")))(messages = messages, request = fakeRequest)
       ensureSupplementaryLabelIsCorrect(view)
 
       ensureRadioIsChecked(view, "Supplementary declaration")

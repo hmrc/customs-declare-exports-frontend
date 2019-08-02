@@ -42,43 +42,34 @@ class GoodsShipmentBuilder @Inject()(
     val goodsShipment = new GoodsShipment()
 
     exportsCacheModel.natureOfTransaction.foreach(
-      natureOfTransaction => goodsShipmentNatureOfTransactionBuilder.buildThenAdd(natureOfTransaction, goodsShipment)
+      goodsShipmentNatureOfTransactionBuilder.buildThenAdd(_, goodsShipment)
     )
 
     exportsCacheModel.parties.consigneeDetails
-      .foreach(consigneeDetails => consigneeBuilder.buildThenAdd(consigneeDetails, goodsShipment))
+      .foreach(consigneeBuilder.buildThenAdd(_, goodsShipment))
 
     consignmentBuilder.buildThenAdd(exportsCacheModel, goodsShipment)
 
-    exportsCacheModel.locations.destinationCountries
-      .foreach(destinationCountries => {
-        destinationBuilder.buildThenAdd(destinationCountries, goodsShipment)
-        exportCountryBuilder.buildThenAdd(destinationCountries, goodsShipment)
-      })
+    exportsCacheModel.locations.destinationCountries.foreach { countries =>
+      destinationBuilder.buildThenAdd(countries, goodsShipment)
+      exportCountryBuilder.buildThenAdd(countries, goodsShipment)
+    }
 
-    exportsCacheModel.consignmentReferences.foreach(
-      consignmentReferences => ucrBuilder.buildThenAdd(consignmentReferences, goodsShipment)
-    )
+    exportsCacheModel.consignmentReferences.foreach(ucrBuilder.buildThenAdd(_, goodsShipment))
 
     exportsCacheModel.locations.warehouseIdentification
-      .foreach(warehouseIdentification => warehouseBuilder.buildThenAdd(warehouseIdentification, goodsShipment))
+      .foreach(warehouseBuilder.buildThenAdd(_, goodsShipment))
 
-    exportsCacheModel.previousDocuments.foreach(
-      previousDocuments => previousDocumentsBuilder.buildThenAdd(previousDocuments, goodsShipment)
-    )
+    exportsCacheModel.previousDocuments.foreach(previousDocumentsBuilder.buildThenAdd(_, goodsShipment))
 
-    exportsCacheModel.parties.declarationAdditionalActorsData.foreach { declarationAdditionalActorsData =>
-      {
-        declarationAdditionalActorsData.actors.foreach(
-          declarationAdditionalActor =>
-            aeoMutualRecognitionPartiesBuilder.buildThenAdd(declarationAdditionalActor, goodsShipment)
-        )
-      }
+    exportsCacheModel.parties.declarationAdditionalActorsData.foreach {
+      _.actors.foreach(
+        declarationAdditionalActor =>
+          aeoMutualRecognitionPartiesBuilder.buildThenAdd(declarationAdditionalActor, goodsShipment)
+      )
     }
 
-    exportsCacheModel.items.foreach { item =>
-      governmentAgencyGoodsItemBuilder.buildThenAdd(item, goodsShipment)
-    }
+    exportsCacheModel.items.foreach(governmentAgencyGoodsItemBuilder.buildThenAdd(_, goodsShipment))
 
     declaration.setGoodsShipment(goodsShipment)
   }

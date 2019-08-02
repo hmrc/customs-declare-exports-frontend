@@ -50,8 +50,8 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
 
       val stringResult = contentAsString(result)
       stringResult must include(messages("cancellation.confirmationPage.message"))
-      cancelTimer.getCount mustBe > (timerBefore)
-      cancelCounter.getCount mustBe > (counterBefore)
+      cancelTimer.getCount mustBe >(timerBefore)
+      cancelCounter.getCount mustBe >(counterBefore)
     }
   }
 }

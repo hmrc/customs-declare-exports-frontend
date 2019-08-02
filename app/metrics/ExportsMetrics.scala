@@ -27,15 +27,15 @@ class ExportsMetrics @Inject()(metrics: Metrics) {
 
   def timerName(feature: String): String = s"$feature.timer"
 
-  private val timers: Map[String, Timer] = List(submissionMetric, cancelMetric).map(feature =>
-    feature -> metrics.defaultRegistry.timer(timerName(feature))
-  ).toMap
+  private val timers: Map[String, Timer] = List(submissionMetric, cancelMetric)
+    .map(feature => feature -> metrics.defaultRegistry.timer(timerName(feature)))
+    .toMap
 
   def counterName(feature: String): String = s"$feature.counter"
 
-  private val counters: Map[String, Counter] = List(submissionMetric, cancelMetric).map(feature =>
-    feature -> metrics.defaultRegistry.counter(counterName(feature))
-  ).toMap
+  private val counters: Map[String, Counter] = List(submissionMetric, cancelMetric)
+    .map(feature => feature -> metrics.defaultRegistry.counter(counterName(feature)))
+    .toMap
 
   def startTimer(feature: String): Context = timers(feature).time()
 

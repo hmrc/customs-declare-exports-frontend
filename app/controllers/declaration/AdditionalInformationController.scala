@@ -82,8 +82,7 @@ class AdditionalInformationController @Inject()(
     MultipleItemsHelper
       .add(boundForm, cachedData, elementLimit)
       .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors, cachedData))),
+        formWithErrors => Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors, cachedData))),
         updatedCache =>
           updateCacheModelAndRedirect(
             itemId,
@@ -100,8 +99,7 @@ class AdditionalInformationController @Inject()(
     MultipleItemsHelper
       .saveAndContinue(boundForm, cachedData, true, elementLimit)
       .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors, cachedData))),
+        formWithErrors => Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors, cachedData))),
         updatedCache =>
           if (updatedCache != cachedData)
             updateCacheModelAndRedirect(

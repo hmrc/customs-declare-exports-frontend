@@ -53,8 +53,7 @@ class LocationController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[GoodsLocation]) =>
-          Future.successful(BadRequest(goodsLocationPage(formWithErrors))),
+        (formWithErrors: Form[GoodsLocation]) => Future.successful(BadRequest(goodsLocationPage(formWithErrors))),
         formData =>
           updateCache(journeySessionId, formData).map { _ =>
             Redirect(controllers.declaration.routes.OfficeOfExitController.displayForm())
