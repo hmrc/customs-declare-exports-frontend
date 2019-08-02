@@ -16,41 +16,18 @@
 
 package services.mapping.goodsshipment
 
-import java.util
-
 import forms.declaration.DeclarationAdditionalActors
 import javax.inject.Inject
-import models.declaration.DeclarationAdditionalActorsData
 import services.mapping.ModifyingBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2._
-
-import scala.collection.JavaConverters._
 
 class AEOMutualRecognitionPartiesBuilder @Inject()()
     extends ModifyingBuilder[DeclarationAdditionalActors, GoodsShipment] {
 
   override def buildThenAdd(model: DeclarationAdditionalActors, goodsShipment: GoodsShipment): Unit =
-    if (AEOMutualRecognitionPartiesBuilder.isDefined(model))
-      goodsShipment.getAEOMutualRecognitionParty.add(AEOMutualRecognitionPartiesBuilder.createAdditionalActors(model))
-
-}
-
-object AEOMutualRecognitionPartiesBuilder {
-
-  def build(implicit cacheMap: CacheMap): util.List[GoodsShipment.AEOMutualRecognitionParty] =
-    cacheMap
-      .getEntry[DeclarationAdditionalActorsData](DeclarationAdditionalActorsData.formId)
-      .filter(_.actors.nonEmpty)
-      .map(
-        _.actors
-          .filter(actor => isDefined(actor))
-          .map(createAdditionalActors)
-      )
-      .getOrElse(Seq.empty)
-      .toList
-      .asJava
+    if (isDefined(model))
+      goodsShipment.getAEOMutualRecognitionParty.add(createAdditionalActors(model))
 
   private def isDefined(actor: DeclarationAdditionalActors): Boolean =
     actor.eori.getOrElse("").nonEmpty || actor.partyType.getOrElse("").nonEmpty

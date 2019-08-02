@@ -15,13 +15,11 @@
  */
 
 package services.mapping.goodsshipment
-import forms.Choice
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
 import services.mapping.goodsshipment.consignment.ConsignmentBuilder
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
@@ -72,28 +70,6 @@ class GoodsShipmentBuilder @Inject()(
     exportsCacheModel.items.foreach(governmentAgencyGoodsItemBuilder.buildThenAdd(_, goodsShipment))
 
     declaration.setGoodsShipment(goodsShipment)
-  }
-
-}
-
-object GoodsShipmentBuilder {
-
-  def build(implicit cacheMap: CacheMap, choice: Choice): GoodsShipment = {
-    val goodsShipment = new GoodsShipment()
-
-    goodsShipment.setTransactionNatureCode(GoodsShipmentNatureOfTransactionBuilder.build)
-    goodsShipment.setConsignee(ConsigneeBuilder.build)
-    goodsShipment.setConsignment(ConsignmentBuilder.build)
-    goodsShipment.setDestination(DestinationBuilder.build)
-    goodsShipment.setExportCountry(ExportCountryBuilder.build)
-    goodsShipment.setUCR(UCRBuilder.build)
-    goodsShipment.setWarehouse(WarehouseBuilder.build)
-    goodsShipment.getPreviousDocument
-      .addAll(PreviousDocumentsBuilder.build)
-    goodsShipment.getGovernmentAgencyGoodsItem.addAll(GovernmentAgencyGoodsItemBuilder.build)
-    goodsShipment.getAEOMutualRecognitionParty.addAll(AEOMutualRecognitionPartiesBuilder.build)
-
-    goodsShipment
   }
 
 }

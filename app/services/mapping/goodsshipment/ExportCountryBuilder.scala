@@ -19,26 +19,15 @@ import forms.declaration.destinationCountries.DestinationCountries
 import javax.inject.Inject
 import services.Countries.allCountries
 import services.mapping.ModifyingBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.ExportCountry
 import wco.datamodel.wco.declaration_ds.dms._2.ExportCountryCountryCodeType
 
 class ExportCountryBuilder @Inject()() extends ModifyingBuilder[DestinationCountries, GoodsShipment] {
   override def buildThenAdd(model: DestinationCountries, goodsShipment: GoodsShipment): Unit =
-    if (ExportCountryBuilder.isDefined(model))
-      goodsShipment.setExportCountry(ExportCountryBuilder.createExportCountry(model))
-
-}
-
-object ExportCountryBuilder {
-
-  def build(implicit cacheMap: CacheMap): GoodsShipment.ExportCountry =
-    cacheMap
-      .getEntry[DestinationCountries](DestinationCountries.formId)
-      .filter(isDefined)
-      .map(createExportCountry)
-      .orNull
+    if (isDefined(model)) {
+      goodsShipment.setExportCountry(createExportCountry(model))
+    }
 
   private def isDefined(country: DestinationCountries): Boolean = country.countryOfDispatch.nonEmpty
 

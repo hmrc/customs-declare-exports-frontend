@@ -33,7 +33,7 @@ object DeclarationBuilder {
     declaration.setTypeCode(TypeCodeBuilder.build)
     declaration.setGoodsItemQuantity(GoodsItemQuantityBuilder.build)
     declaration.setAgent(AgentBuilder.build)
-    declaration.setGoodsShipment(GoodsShipmentBuilder.build)
+//    declaration.setGoodsShipment(GoodsShipmentBuilder.build)
     declaration.setExitOffice(ExitOfficeBuilder.build)
     declaration.setBorderTransportMeans(BorderTransportMeansBuilder.build)
     declaration.setExporter(ExporterBuilder.build)

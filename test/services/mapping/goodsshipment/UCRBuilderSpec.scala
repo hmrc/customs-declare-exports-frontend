@@ -16,44 +16,14 @@
 
 package services.mapping.goodsshipment
 
-import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
-import org.mockito.Mockito.when
+import forms.declaration.ConsignmentReferencesSpec
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class UCRBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
   "UCRBuilder" should {
-    "correctly map to the WCO-DEC GoodsShipment.UCR instance" when {
-      "ducr supplied" in {
-
-        implicit val cacheMap =
-          CacheMap(
-            "CacheID",
-            Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.correctConsignmentReferencesJSON)
-          )
-        val ucrObject = UCRBuilder.build(cacheMap)
-        ucrObject.getID should be(null)
-        ucrObject.getTraderAssignedReferenceID.getValue should be("8GB123456789012-1234567890QWERTYUIO")
-      }
-
-      "ducr not supplied" in {
-        implicit val cacheMap =
-          CacheMap("CacheID", Map(ConsignmentReferences.id -> Json.toJson(ConsignmentReferences(None, "123LRN"))))
-        UCRBuilder.build(cacheMap) should be(null)
-      }
-
-      "Nothing is supplied" in {
-        implicit val cacheMap: CacheMap = mock[CacheMap]
-        when(cacheMap.getEntry[ConsignmentReferences](ConsignmentReferences.id))
-          .thenReturn(None)
-        UCRBuilder.build(cacheMap) should be(null)
-      }
-
-    }
 
     "correctly map new model to the WCO-DEC GoodsShipment.UCR instance" when {
       "ducr supplied" in {
@@ -65,7 +35,17 @@ class UCRBuilderSpec extends WordSpec with Matchers with MockitoSugar {
 
         val ucrObject = goodsShipment.getUCR
         ucrObject.getID should be(null)
-        ucrObject.getTraderAssignedReferenceID.getValue should be("8GB123456789012-1234567890QWERTYUIO")
+        ucrObject.getTraderAssignedReferenceID.getValue should be(ConsignmentReferencesSpec.exemplaryDucr)
+      }
+
+      "ducr not supplied" in {
+
+        val builder = new UCRBuilder
+
+        val goodsShipment = new GoodsShipment
+        builder.buildThenAdd(ConsignmentReferencesSpec.correctConsignmentReferencesNoDucr, goodsShipment)
+
+        goodsShipment.getUCR should be(null)
       }
 
     }

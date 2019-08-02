@@ -16,57 +16,15 @@
 
 package services.mapping.goodsshipment
 
-import forms.ChoiceSpec
 import forms.declaration.DestinationCountriesSpec
 import forms.declaration.destinationCountries.DestinationCountries
 import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json.Json
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class DestinationBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "DestinationBuilder" should {
-    "correctly map to the WCO-DEC GoodsShipment.Destination instance" when {
-      "submitting a supplementary journey" when {
-
-        "countryOfDestination has been supplied" in {
-          implicit val cacheMap: CacheMap =
-            CacheMap(
-              "CacheID",
-              Map(DestinationCountries.formId -> DestinationCountriesSpec.correctDestinationCountriesJSON)
-            )
-          val destination = DestinationBuilder.build(cacheMap, ChoiceSpec.supplementaryChoice)
-          destination.getCountryCode.getValue should be("PL")
-        }
-        "countryOfDestination has not been supplied" in {
-          implicit val cacheMap: CacheMap =
-            CacheMap(
-              "CacheID",
-              Map(DestinationCountries.formId -> DestinationCountriesSpec.emptyDestinationCountriesJSON)
-            )
-          DestinationBuilder.build(cacheMap, ChoiceSpec.supplementaryChoice) should be(null)
-        }
-      }
-
-      "submitting a standard journey" when {
-        "countryOfDestination has been supplied" in {
-          implicit val cacheMap: CacheMap =
-            CacheMap(
-              "CacheID",
-              Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("GB", Seq("PT"), "PL")))
-            )
-          val destination = DestinationBuilder.build(cacheMap, ChoiceSpec.standardChoice)
-          destination.getCountryCode.getValue should be("PL")
-        }
-        "countryOfDestination has not been supplied" in {
-          implicit val cacheMap: CacheMap =
-            CacheMap("CacheID", Map(DestinationCountries.formId -> Json.toJson(DestinationCountries("", Seq(""), ""))))
-          DestinationBuilder.build(cacheMap, ChoiceSpec.standardChoice) should be(null)
-        }
-      }
-    }
 
     "correctly map a destinationCountries to the WCO-DEC GoodsShipment.Destination instance" when {
       "countryOfDestination has been supplied" in {
@@ -75,6 +33,15 @@ class DestinationBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
         builder.buildThenAdd(DestinationCountriesSpec.correctDestinationCountries, goodsShipment)
 
         goodsShipment.getDestination.getCountryCode.getValue should be("PL")
+
+      }
+
+      "countryOfDestination has not been supplied" in {
+        val builder = new DestinationBuilder
+        val goodsShipment = new Declaration.GoodsShipment
+        builder.buildThenAdd(DestinationCountries.empty(), goodsShipment)
+
+        goodsShipment.getDestination should be(null)
 
       }
     }

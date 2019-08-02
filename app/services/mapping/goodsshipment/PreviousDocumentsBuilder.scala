@@ -15,47 +15,19 @@
  */
 
 package services.mapping.goodsshipment
-import java.util
-
 import forms.declaration.{Document, PreviousDocumentsData}
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-import services.mapping.goodsshipment.PreviousDocumentsBuilder.createPreviousDocuments
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
-import wco.datamodel.wco.declaration_ds.dms._2.{
-  PreviousDocumentCategoryCodeType,
-  PreviousDocumentIdentificationIDType,
-  PreviousDocumentTypeCodeType
-}
-
-import scala.collection.JavaConverters._
+import wco.datamodel.wco.declaration_ds.dms._2.{PreviousDocumentCategoryCodeType, PreviousDocumentIdentificationIDType, PreviousDocumentTypeCodeType}
 
 class PreviousDocumentsBuilder @Inject()() extends ModifyingBuilder[PreviousDocumentsData, GoodsShipment] {
   override def buildThenAdd(model: PreviousDocumentsData, goodsShipment: GoodsShipment): Unit =
-    model.documents.foreach { data =>
-      goodsShipment.getPreviousDocument.add(createPreviousDocuments(data))
-    }
-}
-
-object PreviousDocumentsBuilder {
-
-  def buildThenAdd(exportsCacheModel: ExportsCacheModel, goodsShipment: GoodsShipment): Unit =
-    exportsCacheModel.previousDocuments.foreach { previousDocumentData =>
-      previousDocumentData.documents.foreach { data =>
+    if (isDefined(model)) {
+      model.documents.foreach { data =>
         goodsShipment.getPreviousDocument.add(createPreviousDocuments(data))
       }
     }
-
-  def build(implicit cacheMap: CacheMap): util.List[GoodsShipment.PreviousDocument] =
-    cacheMap
-      .getEntry[PreviousDocumentsData](Document.formId)
-      .filter(isDefined)
-      .map(_.documents.map(createPreviousDocuments))
-      .getOrElse(Seq.empty)
-      .toList
-      .asJava
 
   private def isDefined(previousDocumentsData: PreviousDocumentsData): Boolean =
     previousDocumentsData.documents.nonEmpty && previousDocumentsData.documents.forall(

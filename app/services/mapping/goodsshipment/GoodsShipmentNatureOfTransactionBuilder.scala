@@ -19,35 +19,18 @@ package services.mapping.goodsshipment
 import forms.declaration.NatureOfTransaction
 import javax.inject.Inject
 import services.mapping.ModifyingBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2.GoodsShipmentTransactionNatureCodeType
 
 class GoodsShipmentNatureOfTransactionBuilder @Inject()() extends ModifyingBuilder[NatureOfTransaction, GoodsShipment] {
   override def buildThenAdd(natureOfTransaction: NatureOfTransaction, goodsShipment: GoodsShipment) {
-    if (natureOfTransaction.natureType.nonEmpty) {
+    if (isDefined(natureOfTransaction)) {
       val natureOfTransactionWCO = new GoodsShipmentTransactionNatureCodeType()
       natureOfTransactionWCO.setValue(natureOfTransaction.natureType)
       goodsShipment.setTransactionNatureCode(natureOfTransactionWCO)
     }
   }
-}
 
-object GoodsShipmentNatureOfTransactionBuilder {
-
-  def build(implicit cacheMap: CacheMap): GoodsShipmentTransactionNatureCodeType =
-    cacheMap
-      .getEntry[NatureOfTransaction](NatureOfTransaction.formId)
-      .filter(natureOfTransaction => natureOfTransaction.natureType.nonEmpty)
-      .map(createNatureOfTransaction)
-      .orNull
-
-  private def createNatureOfTransaction(data: NatureOfTransaction): GoodsShipmentTransactionNatureCodeType = {
-    val natureOfTransaction = new GoodsShipmentTransactionNatureCodeType()
-
-    natureOfTransaction.setValue(data.natureType)
-
-    natureOfTransaction
-  }
+  private def isDefined(natureOfTransaction: NatureOfTransaction): Boolean = natureOfTransaction.natureType.nonEmpty
 
 }
