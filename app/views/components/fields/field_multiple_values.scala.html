@@ -46,7 +46,7 @@
                 <tr>
                     <th>@elem</th>
                     <th>
-                        @defining(if(field.id.endsWith("[]")) field.id + index else elem){ value =>
+                        @defining(if(field.name.endsWith("[]")) field.id + index else elem){ value =>
                             <button
                                 class="button--secondary"
                                 name="@Remove.toString"
