@@ -96,9 +96,9 @@ object FieldValidator {
 
   def isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces: Int): String => Boolean = {
     val pattern = noMoreDecimalPlacesThanRegexValue(decimalPlaces)
-    input => pattern.matcher(input).matches()
+    input =>
+      pattern.matcher(input).matches()
   }
-
 
   val validateDecimal: Int => Int => String => Boolean = (totalLength: Int) =>
     (decimalPlaces: Int) =>
@@ -115,7 +115,8 @@ object FieldValidator {
 
   val ofPattern: String => String => Boolean = (pattern: String) => {
     val compiledPattern = Pattern.compile(pattern)
-    input => compiledPattern.matcher(input).matches()
+    input =>
+      compiledPattern.matcher(input).matches()
   }
 
   private val namePattern = Pattern.compile("[\\p{IsLatin} ,.'-]+")

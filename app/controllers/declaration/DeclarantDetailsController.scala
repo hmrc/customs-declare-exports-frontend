@@ -51,8 +51,7 @@ class DeclarantDetailsController @Inject()(
     DeclarantDetails.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DeclarantDetails]) =>
-          Future.successful(BadRequest(declarantDetailsPage(formWithErrors))),
+        (formWithErrors: Form[DeclarantDetails]) => Future.successful(BadRequest(declarantDetailsPage(formWithErrors))),
         form =>
           for {
             _ <- updateCache(journeySessionId, form)

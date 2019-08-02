@@ -51,8 +51,7 @@ class ExporterDetailsController @Inject()(
     ExporterDetails.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ExporterDetails]) =>
-          Future.successful(BadRequest(exporterDetailsPage(formWithErrors))),
+        (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(formWithErrors))),
         form =>
           for {
             _ <- updateCache(journeySessionId, form)
