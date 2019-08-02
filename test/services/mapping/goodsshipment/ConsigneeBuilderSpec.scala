@@ -23,7 +23,6 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class ConsigneeBuilderSpec extends WordSpec with Matchers {
 
-
   "ConsigneeBuilder" should {
     "correctly map to the WCO-DEC GoodsShipment.Consignee instance" when {
       "only eori is supplied " in {

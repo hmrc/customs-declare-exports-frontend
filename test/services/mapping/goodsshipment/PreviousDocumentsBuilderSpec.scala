@@ -50,13 +50,16 @@ class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSu
         val goodsShipment = new GoodsShipment
         builder.buildThenAdd(PreviousDocumentsData(Seq.empty), goodsShipment)
 
-        goodsShipment.getPreviousDocument.isEmpty should be (true)
+        goodsShipment.getPreviousDocument.isEmpty should be(true)
       }
 
       "'document type' not supplied" in {
         val builder = new PreviousDocumentsBuilder
         val goodsShipment = new GoodsShipment
-        builder.buildThenAdd(PreviousDocumentsData(Seq(DocumentSpec.correctPreviousDocument.copy(documentType = ""))), goodsShipment)
+        builder.buildThenAdd(
+          PreviousDocumentsData(Seq(DocumentSpec.correctPreviousDocument.copy(documentType = ""))),
+          goodsShipment
+        )
 
         val previousDocs = goodsShipment.getPreviousDocument
         previousDocs.size should be(1)
@@ -69,7 +72,10 @@ class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSu
       "'document reference' not supplied" in {
         val builder = new PreviousDocumentsBuilder
         val goodsShipment = new GoodsShipment
-        builder.buildThenAdd(PreviousDocumentsData(Seq(DocumentSpec.correctPreviousDocument.copy(documentReference = ""))), goodsShipment)
+        builder.buildThenAdd(
+          PreviousDocumentsData(Seq(DocumentSpec.correctPreviousDocument.copy(documentReference = ""))),
+          goodsShipment
+        )
 
         val previousDocs = goodsShipment.getPreviousDocument
         previousDocs.size should be(1)
@@ -82,7 +88,10 @@ class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSu
       "'document catagory' not supplied" in {
         val builder = new PreviousDocumentsBuilder
         val goodsShipment = new GoodsShipment
-        builder.buildThenAdd(PreviousDocumentsData(Seq(DocumentSpec.correctPreviousDocument.copy(documentCategory = ""))), goodsShipment)
+        builder.buildThenAdd(
+          PreviousDocumentsData(Seq(DocumentSpec.correctPreviousDocument.copy(documentCategory = ""))),
+          goodsShipment
+        )
 
         val previousDocs = goodsShipment.getPreviousDocument
         previousDocs.size should be(1)
@@ -96,7 +105,10 @@ class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSu
       "'line number' not supplied" in {
         val builder = new PreviousDocumentsBuilder
         val goodsShipment = new GoodsShipment
-        builder.buildThenAdd(PreviousDocumentsData(Seq(DocumentSpec.correctPreviousDocument.copy(goodsItemIdentifier = None))), goodsShipment)
+        builder.buildThenAdd(
+          PreviousDocumentsData(Seq(DocumentSpec.correctPreviousDocument.copy(goodsItemIdentifier = None))),
+          goodsShipment
+        )
 
         val previousDocs = goodsShipment.getPreviousDocument
         previousDocs.size should be(1)
