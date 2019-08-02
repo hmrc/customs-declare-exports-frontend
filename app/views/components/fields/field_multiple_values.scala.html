@@ -17,13 +17,16 @@
 @import controllers.util.{Add, Remove}
 
 @import views.html.components.add_button
+@import views.html.components.submit_button
+
 @(
     field: Field,
     label: String,
     hint: Option[String] = None,
     elements: Seq[String] = Seq.empty,
     labelClass: Option[String] = None,
-    input: Html
+    input: Html,
+    submitButton: Boolean = false
 )(implicit messages: Messages)
 
 <div class="form-field @if(field.hasErrors){form-field--error}">
@@ -45,10 +48,12 @@
                 <tr>
                     <th>@elem</th>
                     <th>
-                        <button
-                            class="button--secondary"
-                            name="@{Remove.toString}"
-                            value="@{field.id}@{index}">@messages("site.remove")</button>
+                        @defining(if(field.id.endsWith("[]")) field.id + index else elem){ value =>
+                            <button
+                                class="button--secondary"
+                                name="@Remove.toString"
+                                value="@value">@messages("site.remove")</button>
+                        }
                     </th>
                 </tr>
             }
@@ -61,5 +66,9 @@
         @input
     </div>
 
-    @add_button()
+    @if(submitButton) {
+        submit_button()
+    } else {
+        add_button()
+    }
 </div>

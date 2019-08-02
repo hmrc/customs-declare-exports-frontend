@@ -164,7 +164,7 @@ class ProcedureCodesControllerSpec
 
         val Some(result) = route(app, postRequestFormUrlEncoded(uri, body))
 
-        status(result) must be(SEE_OTHER)
+        status(result) must be(OK)
 
         verify(mockExportsCacheService, times(1)).update(any(), any())
       }

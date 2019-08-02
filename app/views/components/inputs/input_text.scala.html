@@ -14,25 +14,17 @@
  * limitations under the License.
  *@
 
-@import controllers.util.{Add, Remove}
-@import components.inputs.input_text
-
 @(
     field: Field,
-    label: String,
-    hint: Option[String] = None,
-    elements: Seq[String] = Seq.empty,
-    inputClass: Option[String] = None,
-    labelClass: Option[String] = None,
-        submitButton: Boolean = false
+    inputClass: Option[String] = None
 )(implicit messages: Messages)
 
-@field_multiple_values(
-    field = field,
-    label = label,
-    hint = hint,
-    elements = elements,
-    labelClass = labelClass,
-    input = input_text(field, inputClass),
-    submitButton = submitButton
-)
+<input
+        class="form-control @inputClass"
+        type="text"
+        id="@{field.id}"
+        name="@{field.name}"
+        value="@{field.value}"
+        @if(field.hasErrors){aria-describedby="error-message-@{field.id}-input" }
+/>
+
