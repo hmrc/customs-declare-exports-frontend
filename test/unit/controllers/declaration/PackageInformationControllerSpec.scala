@@ -21,7 +21,6 @@ import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.PackageInformation
 import play.api.test.Helpers._
-import services.cache.ExportItem
 import unit.base.ControllerSpec
 import views.html.declaration.package_information
 
@@ -60,8 +59,7 @@ class PackageInformationControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache contain some data" in new SetUp {
 
-        val itemWithPackageInformation =
-          ExportItem(itemId, packageInformation = List(PackageInformation(Some("12"), Some(10), Some("123"))))
+        val itemWithPackageInformation = aCachedItem(withPackageInformation(Some("12"), Some(10), Some("123")))
         withNewCaching(aCacheModel(withItem(itemWithPackageInformation)))
 
         val result = controller.displayPage(itemId)(getRequest())
@@ -112,9 +110,9 @@ class PackageInformationControllerSpec extends ControllerSpec {
 
       "user reached limit of items" in new SetUp {
 
-        val fullCache = List.fill(PackageInformation.limit)(PackageInformation(None, None, None))
-        val exportItem = ExportItem(itemId, packageInformation = fullCache)
-        withNewCaching(aCacheModel(withItem(exportItem)))
+        val packageInformation = PackageInformation(None, None, None)
+        val maxItems = aCachedItem(withPackageInformation(packageInformation, Seq.fill(98)(packageInformation): _*))
+        withNewCaching(aCacheModel(withItem(maxItems)))
 
         val body =
           Seq(("typesOfPackages", "NT"), ("numberOfPackages", "123"), ("shippingMarks", "abc"), (Add.toString, ""))
@@ -126,7 +124,7 @@ class PackageInformationControllerSpec extends ControllerSpec {
 
       "user tried to add duplicated value" in new SetUp {
 
-        val item = ExportItem(itemId, packageInformation = List(PackageInformation(Some("NT"), Some(1), Some("value"))))
+        val item = aCachedItem(withPackageInformation(Some("NT"), Some(1), Some("value")))
         withNewCaching(aCacheModel(withItem(item)))
 
         val body =
@@ -152,7 +150,7 @@ class PackageInformationControllerSpec extends ControllerSpec {
 
       "user clicked continue with item in a cache" in new SetUp {
 
-        val item = ExportItem(itemId, packageInformation = List(PackageInformation(Some("NT"), Some(1), Some("value"))))
+        val item = aCachedItem(withPackageInformation(Some("NT"), Some(1), Some("value")))
         withNewCaching(aCacheModel(withItem(item)))
 
         val body = (SaveAndContinue.toString, "")
