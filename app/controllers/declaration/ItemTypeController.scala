@@ -17,18 +17,16 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
-import forms.declaration.{FiscalInformation, ItemType}
 import forms.declaration.ItemType._
+import forms.declaration.{FiscalInformation, ItemType}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.CustomsCacheService
-import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.collections.Removable.RemovableSeq
 import utils.validators.forms.supplementary.ItemTypeValidator
@@ -42,7 +40,6 @@ class ItemTypeController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  legacyCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   itemTypePage: item_type
@@ -105,7 +102,7 @@ class ItemTypeController @Inject()(
     val itemTypeUpdated = updateCachedItemTypeAddition(itemId, itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnAddition(itemTypeUpdated) match {
       case Valid =>
-        updateCacheModels(itemId, itemTypeUpdated).flatMap { _ =>
+        updateExportsCache(itemId, journeySessionId, itemTypeUpdated).flatMap { _ =>
           refreshPage(itemId, itemTypeInput, hasFiscalReferences)
         }
       case Invalid(errors) =>
@@ -140,7 +137,7 @@ class ItemTypeController @Inject()(
     val itemTypeUpdated = updateCachedItemTypeSaveAndContinue(itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnSaveAndContinue(itemTypeUpdated) match {
       case Valid =>
-        updateCacheModels(itemId, itemTypeUpdated).map { _ =>
+        updateExportsCache(itemId, journeySessionId, itemTypeUpdated).map { _ =>
           Redirect(controllers.declaration.routes.PackageInformationController.displayPage(itemId))
         }
       case Invalid(errors) =>
@@ -198,7 +195,7 @@ class ItemTypeController @Inject()(
           nationalAdditionalCodes = removeElement(itemTypeCached.nationalAdditionalCodes, label.index)
         )
     }
-    updateCacheModels(itemId, itemTypeUpdated).flatMap { _ =>
+    updateExportsCache(itemId, journeySessionId, itemTypeUpdated).flatMap { _ =>
       val itemTypeInput: ItemType = ItemType.form().bindFromRequest().value.getOrElse(ItemType.empty)
       refreshPage(itemId, itemTypeInput, hasFiscalReferences)
     }
@@ -247,12 +244,6 @@ class ItemTypeController @Inject()(
       .map(_.flatMap(_.fiscalInformation))
       .map(_.fold(false)(_.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes))
 
-  private def updateCacheModels(itemId: String, updatedCache: ItemType)(implicit journeyRequest: JourneyRequest[_]) =
-    for {
-      _ <- updateExportsCache(itemId, journeySessionId, updatedCache)
-      _ <- legacyCacheService.cache[ItemType](goodsItemCacheId, ItemType.id, updatedCache)
-    } yield ()
-
   private def updateExportsCache(
     itemId: String,
     sessionId: String,
@@ -261,10 +252,11 @@ class ItemTypeController @Inject()(
     getAndUpdateExportCacheModel(
       sessionId,
       model => {
-        val item: Option[ExportItem] = model.items
+        val itemList = model.items
           .find(item => item.id.equals(itemId))
           .map(_.copy(itemType = Some(updatedItem)))
-        val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+          .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+
         exportsCacheService.update(sessionId, model.copy(items = itemList))
       }
     )

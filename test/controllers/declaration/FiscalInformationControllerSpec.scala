@@ -17,9 +17,7 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
-import forms.Choice
 import forms.Choice.AllowedChoiceValues.StandardDec
-import forms.Choice.choiceId
 import forms.declaration.{AdditionalFiscalReferencesData, FiscalInformation}
 import helpers.views.declaration.FiscalInformationMessages
 import org.mockito.Mockito.reset
@@ -42,11 +40,10 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
   override def beforeEach {
     authorizedUser()
     withNewCaching(cacheModel)
-    withCaching[Choice](Some(Choice(StandardDec)), choiceId)
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "GET" should {

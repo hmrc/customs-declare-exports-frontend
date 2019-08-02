@@ -16,12 +16,11 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.AdditionalFiscalReferencesController
+import controllers.declaration.{routes, AdditionalFiscalReferencesController}
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.cache.{ExportItem, ExportsCacheModel}
 import unit.base.ControllerSpec
@@ -39,7 +38,6 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockJourneyAction,
       mockErrorHandler,
-      mockCustomsCacheService,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       additionalFiscalReferencesPage
@@ -55,7 +53,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked with empty cache" in new SetUp {
-        val result = controller.displayPage("itemId")(getRequest())
+        val result: Future[Result] = controller.displayPage("itemId")(getRequest())
 
         status(result) must be(OK)
       }
@@ -66,7 +64,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
           aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val result = controller.displayPage("itemId")(getRequest())
+        val result: Future[Result] = controller.displayPage("itemId")(getRequest())
 
         status(result) must be(OK)
       }
@@ -78,11 +76,11 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData =
+        val cachedData: ExportsCacheModel =
           aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val result = controller.displayPage("itemId")(getRequest())
+        val result: Future[Result] = controller.displayPage("itemId")(getRequest())
 
         status(result) must be(OK)
       }
@@ -92,9 +90,9 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
 
       "user provide wrong action" in new SetUp {
 
-        val wrongAction = Seq(("country", "PL"), ("reference", "12345"), ("WrongAction", ""))
+        val wrongAction: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), ("WrongAction", ""))
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -104,9 +102,9 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
 
       "user put incorrect data" in new SetUp {
 
-        val incorrectForm = Seq(("country", "PL"), ("reference", "!@#$"), addActionUrlEncoded)
+        val incorrectForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "!@#$"), addActionUrlEncoded)
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -118,13 +116,14 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData =
+        val cachedData: ExportsCacheModel =
           aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val duplicatedForm = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded)
+        val duplicatedForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded)
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result: Future[Result] =
+          controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -136,13 +135,13 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData =
+        val cachedData: ExportsCacheModel =
           aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val form = Seq(("country", "PL"), ("reference", "54321"), addActionUrlEncoded)
+        val form: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "54321"), addActionUrlEncoded)
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(form: _*))
+        val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(form: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -152,9 +151,10 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
 
       "user put incorrect data" in new SetUp {
 
-        val incorrectForm = Seq(("country", "PL"), ("reference", "!@#$"), saveAndContinueActionUrlEncoded)
+        val incorrectForm: Seq[(String, String)] =
+          Seq(("country", "PL"), ("reference", "!@#$"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -166,13 +166,15 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData =
+        val cachedData: ExportsCacheModel =
           aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val duplicatedForm = Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
+        val duplicatedForm: Seq[(String, String)] =
+          Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result: Future[Result] =
+          controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -184,13 +186,14 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData =
+        val cachedData: ExportsCacheModel =
           aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val form = Seq(("country", "PL"), ("reference", "54321"), saveAndContinueActionUrlEncoded)
+        val form: Seq[(String, String)] =
+          Seq(("country", "PL"), ("reference", "54321"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(form: _*))
+        val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(form: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -200,21 +203,22 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
 
       "user correctly add new item" in new SetUp {
 
-        val correctForm = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded)
+        val correctForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded)
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
       }
 
       "user save correct data" in new SetUp {
 
-        val correctForm = Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
+        val correctForm: Seq[(String, String)] =
+          Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/items/itemId/item-type"))
+        redirectLocation(result) must be(Some(routes.ItemTypeController.displayPage("itemId").url))
       }
 
       "user save correct data without new item" in new SetUp {
@@ -223,16 +227,16 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData =
+        val cachedData: ExportsCacheModel =
           aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val correctForm = saveAndContinueActionUrlEncoded
+        val correctForm: (String, String) = saveAndContinueActionUrlEncoded
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(correctForm))
+        val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/items/itemId/item-type"))
+        redirectLocation(result) must be(Some(routes.ItemTypeController.displayPage("itemId").url))
       }
 
       "user remove existing item" in new SetUp {
@@ -242,13 +246,13 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData =
+        val cachedData: ExportsCacheModel =
           aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
-        val removeForm = (Remove.toString, "0")
+        val removeForm: (String, String) = (Remove.toString, "0")
 
-        val result = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(removeForm))
+        val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(removeForm))
 
         status(result) must be(SEE_OTHER)
       }

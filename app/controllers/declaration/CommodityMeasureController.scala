@@ -17,17 +17,13 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.goodsItemCacheId
-import forms.declaration.CommodityMeasure.{commodityFormId, form, _}
-import forms.declaration.PackageInformation.formId
-import forms.declaration.{CommodityMeasure, PackageInformation}
+import forms.declaration.CommodityMeasure
+import forms.declaration.CommodityMeasure.{form, _}
 import javax.inject.Inject
-import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
-import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.goods_measure
 
@@ -36,7 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class CommodityMeasureController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  legacyCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   goodsMeasurePage: goods_measure
@@ -63,19 +58,11 @@ class CommodityMeasureController @Inject()(
         (formWithErrors: Form[CommodityMeasure]) =>
           Future.successful(BadRequest(goodsMeasurePage(itemId, formWithErrors))),
         validForm =>
-          updateCacheModels(itemId, validForm).map { _ =>
+          updateExportsCache(itemId, journeySessionId, validForm).map { _ =>
             Redirect(controllers.declaration.routes.AdditionalInformationController.displayPage(itemId))
         }
       )
   }
-
-  private def updateCacheModels(itemId: String, updatedCache: CommodityMeasure)(
-    implicit journeyRequest: JourneyRequest[_]
-  ) =
-    for {
-      _ <- updateExportsCache(itemId, journeySessionId, updatedCache)
-      _ <- legacyCacheService.cache[CommodityMeasure](goodsItemCacheId, commodityFormId, updatedCache)
-    } yield ()
 
   private def updateExportsCache(
     itemId: String,
@@ -85,10 +72,11 @@ class CommodityMeasureController @Inject()(
     getAndUpdateExportCacheModel(
       sessionId,
       model => {
-        val item: Option[ExportItem] = model.items
+        val itemList = model.items
           .find(item => item.id.equals(itemId))
           .map(_.copy(commodityMeasure = Some(updatedItem)))
-        val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+          .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+
         exportsCacheService.update(sessionId, model.copy(items = itemList))
       }
     )
