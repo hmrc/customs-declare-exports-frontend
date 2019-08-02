@@ -45,8 +45,7 @@ class PackageInformationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  val packagesMaxElements = 99
-
+  // TODO Future[Option[List[PackageInformation]]]...
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService
       .getItemByIdAndSession(itemId, journeySessionId)
@@ -63,7 +62,7 @@ class PackageInformationController @Inject()(
 
           actionTypeOpt match {
             case Some(Add)             => addItem(itemId, packagings)
-            case Some(Remove(ids))     => remove(itemId, packagings, ids.headOption)
+            case Some(Remove(ids))     => remove(itemId, packagings, ids.filter(_.nonEmpty).headOption)
             case Some(SaveAndContinue) => continue(itemId, packagings)
             case _                     => errorHandler.displayErrorPage()
           }
@@ -114,7 +113,7 @@ class PackageInformationController @Inject()(
 
   private def isAdditionInvalid[A](item: A, cachedItems: Seq[A]): Option[String] =
     if (cachedItems.contains(item)) Some(DUPLICATE_MSG_KEY)
-    else if (cachedItems.size >= packagesMaxElements) Some(LIMIT_MSG_KEY)
+    else if (cachedItems.size >= PackageInformation.limit) Some(LIMIT_MSG_KEY)
     else None
 
   private def badRequest(itemId: String, packages: Seq[PackageInformation], form: Form[_], error: String)(
