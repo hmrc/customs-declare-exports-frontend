@@ -15,95 +15,14 @@
  */
 
 package services.mapping.goodsshipment.consignment
-import forms.Choice
-import forms.Choice.AllowedChoiceValues
 import forms.common.Address
-import forms.declaration.{CarrierDetails, CarrierDetailsSpec}
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "ConsignmentCarrierBuilderSpec" should {
-    "correctly map Declaration.Consignment.Carrier instance for supplementary journey " when {
-
-      "no data is supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(
-              CarrierDetails.id ->
-                CarrierDetailsSpec.emptyCarrierDetailsJSON
-            )
-          )
-        val carrier = ConsignmentCarrierBuilder.build()(cacheMap, Choice(AllowedChoiceValues.SupplementaryDec))
-        carrier should be(null)
-      }
-
-      "all data is supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(
-              CarrierDetails.id ->
-                CarrierDetailsSpec.correctCarrierDetailsJSON
-            )
-          )
-        val carrier = ConsignmentCarrierBuilder.build()(cacheMap, Choice(AllowedChoiceValues.SupplementaryDec))
-        carrier should be(null)
-      }
-    }
-    "correctly map Declaration.Consignment.Carrier instance for standard journey " when {
-      "all data is supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(
-              CarrierDetails.id ->
-                CarrierDetailsSpec.correctCarrierDetailsJSON
-            )
-          )
-        val carrier = ConsignmentCarrierBuilder.build()(cacheMap, Choice(AllowedChoiceValues.StandardDec))
-        carrier.getID.getValue should be("9GB1234567ABCDEF")
-        carrier.getAddress.getLine.getValue should be("Address Line")
-        carrier.getAddress.getCityName.getValue should be("Town or City")
-        carrier.getAddress.getPostcodeID.getValue should be("AB12 34CD")
-        carrier.getAddress.getCountryCode.getValue should be("PL")
-        carrier.getName.getValue should be("Full Name")
-      }
-      "only EORI is supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(
-              CarrierDetails.id ->
-                CarrierDetailsSpec.correctCarrierDetailsEORIOnlyJSON
-            )
-          )
-        val carrier = ConsignmentCarrierBuilder.build()(cacheMap, Choice(AllowedChoiceValues.StandardDec))
-        carrier.getID.getValue should be("9GB1234567ABCDEF")
-        carrier.getAddress should be(null)
-      }
-      "only address is supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(
-              CarrierDetails.id ->
-                CarrierDetailsSpec.correctCarrierDetailsAddressOnlyJSON
-            )
-          )
-        val carrier = ConsignmentCarrierBuilder.build()(cacheMap, Choice(AllowedChoiceValues.StandardDec))
-        carrier.getID should be(null)
-        carrier.getAddress.getLine.getValue should be("Address Line")
-        carrier.getAddress.getCityName.getValue should be("Town or City")
-        carrier.getAddress.getPostcodeID.getValue should be("AB12 34CD")
-        carrier.getAddress.getCountryCode.getValue should be("PL")
-        carrier.getName.getValue should be("Full Name")
-      }
-    }
 
     "build then add" when {
       "no carrier details" in {

@@ -16,12 +16,9 @@
 
 package services.mapping.goodsshipment.consignment
 
-import forms.Choice
-import forms.Choice.AllowedChoiceValues
 import forms.declaration.Seal
 import javax.inject.Inject
 import services.mapping.ModifyingBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment
 import wco.datamodel.wco.declaration_ds.dms._2.SealIdentificationIDType
@@ -30,25 +27,7 @@ import scala.collection.JavaConverters._
 
 class TransportEquipmentBuilder @Inject()() extends ModifyingBuilder[Seq[Seal], GoodsShipment.Consignment] {
   override def buildThenAdd(seals: Seq[Seal], consignment: Consignment): Unit =
-    consignment.getTransportEquipment.addAll(TransportEquipmentBuilder.createTransportEquipment(seals).toList.asJava)
-}
-
-object TransportEquipmentBuilder {
-
-  def build()(
-    implicit cacheMap: CacheMap,
-    choice: Choice
-  ): java.util.List[GoodsShipment.Consignment.TransportEquipment] =
-    choice match {
-      case Choice(AllowedChoiceValues.SupplementaryDec) => Seq.empty.toList.asJava
-      case Choice(AllowedChoiceValues.StandardDec) =>
-        cacheMap
-          .getEntry[Seq[Seal]](Seal.formId)
-          .map(createTransportEquipment)
-          .getOrElse(Seq.empty)
-          .toList
-          .asJava
-    }
+    consignment.getTransportEquipment.addAll(createTransportEquipment(seals).toList.asJava)
 
   private def createTransportEquipment(seals: Seq[Seal]): Seq[GoodsShipment.Consignment.TransportEquipment] = {
     val transportEquipment = new GoodsShipment.Consignment.TransportEquipment()

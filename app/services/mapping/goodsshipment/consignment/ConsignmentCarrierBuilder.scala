@@ -16,7 +16,6 @@
 
 package services.mapping.goodsshipment.consignment
 
-import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import forms.common.Address
 import forms.declaration.{CarrierDetails, EntityDetails}
@@ -24,8 +23,6 @@ import javax.inject.Inject
 import services.Countries.allCountries
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-import services.mapping.goodsshipment.consignment.ConsignmentCarrierBuilder.{buildEoriOrAddress, isDefined}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Consignment.Carrier
 import wco.datamodel.wco.declaration_ds.dms._2._
@@ -40,23 +37,6 @@ class ConsignmentCarrierBuilder @Inject()() extends ModifyingBuilder[ExportsCach
         .map(buildEoriOrAddress)
         .foreach(consignment.setCarrier)
     }
-
-}
-
-object ConsignmentCarrierBuilder {
-
-  def build()(implicit cacheMap: CacheMap, choice: Choice): Declaration.Consignment.Carrier =
-    choice match {
-      case Choice(AllowedChoiceValues.StandardDec)      => buildCarrierDetails
-      case Choice(AllowedChoiceValues.SupplementaryDec) => null
-    }
-
-  def buildCarrierDetails()(implicit cacheMap: CacheMap): Declaration.Consignment.Carrier =
-    cacheMap
-      .getEntry[CarrierDetails](CarrierDetails.id)
-      .filter(isDefined)
-      .map(carrierDetails => buildEoriOrAddress(carrierDetails.details))
-      .orNull
 
   private def isDefined(carrierDetails: CarrierDetails) =
     carrierDetails.details.address.isDefined ||

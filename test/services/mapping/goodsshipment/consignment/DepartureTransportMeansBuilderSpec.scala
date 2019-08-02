@@ -17,42 +17,11 @@
 package services.mapping.goodsshipment.consignment
 import forms.declaration.BorderTransport
 import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json.Json
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class DepartureTransportMeansBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
   "DepartureTransportMeansBuilder" should {
-    "correctly map DepartureTransportMeans instance" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(
-            BorderTransport.formId ->
-              Json.toJson(BorderTransport("3", "10", Some("123112yu78")))
-          )
-        )
-      val departureTransportMeans = DepartureTransportMeansBuilder.build
-      departureTransportMeans.getID.getValue should be("123112yu78")
-      departureTransportMeans.getIdentificationTypeCode.getValue should be("10")
-      departureTransportMeans.getName should be(null)
-      departureTransportMeans.getTypeCode should be(null)
-      departureTransportMeans.getModeCode should be(null)
-    }
-
-    "return null when  meansOfTransportOnDepartureIDNumber & meansOfTransportOnDepartureType are not set" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(
-            BorderTransport.formId ->
-              Json.toJson(BorderTransport("3", "", None))
-          )
-        )
-      val departureTransportMeans = DepartureTransportMeansBuilder.build
-      departureTransportMeans should be(null)
-    }
 
     "correctly map DepartureTransportMeans instance using new model" in {
       val borderModeOfTransportCode = "BCode"

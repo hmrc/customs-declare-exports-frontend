@@ -18,30 +18,14 @@ package services.mapping.goodsshipment.consignment
 import forms.declaration.TransportDetails
 import javax.inject.Inject
 import services.mapping.ModifyingBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2.ConsignmentContainerCodeType
 
 class ContainerCodeBuilder @Inject()() extends ModifyingBuilder[TransportDetails, GoodsShipment.Consignment] {
   override def buildThenAdd(model: TransportDetails, consignment: GoodsShipment.Consignment): Unit = {
     val codeType = new ConsignmentContainerCodeType()
-    codeType.setValue(ContainerCodeBuilder.extractContainerCode(model))
+    codeType.setValue(extractContainerCode(model))
     consignment.setContainerCode(codeType)
-  }
-
-}
-
-object ContainerCodeBuilder {
-
-  def build()(implicit cacheMap: CacheMap): ConsignmentContainerCodeType = {
-    val codeType = new ConsignmentContainerCodeType()
-    codeType.setValue(
-      cacheMap
-        .getEntry[TransportDetails](TransportDetails.formId)
-        .map(extractContainerCode(_))
-        .getOrElse("0")
-    )
-    codeType
   }
 
   private def extractContainerCode(model: TransportDetails) =
