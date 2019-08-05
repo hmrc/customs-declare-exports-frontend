@@ -41,7 +41,6 @@ class DeclarationAdditionalActorsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   declarationAdditionalActorsPage: declaration_additional_actors
@@ -99,10 +98,8 @@ class DeclarationAdditionalActorsController @Inject()(
       case (actor, actors) =>
         if (actor.isDefined) {
           val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
-          for {
-            _ <- updateCache(journeySessionId, updatedCache)
-            _ <- customsCacheService.cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache)
-          } yield Redirect(routes.DeclarationAdditionalActorsController.displayForm())
+          updateCache(journeySessionId, updatedCache)
+            .map(_ => Redirect(routes.DeclarationAdditionalActorsController.displayForm()))
         } else
           handleErrorPage(
             Seq(("eori", "supplementary.additionalActors.eori.isNotDefined")),
@@ -161,10 +158,7 @@ class DeclarationAdditionalActorsController @Inject()(
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     if (actor.isDefined) {
       val updatedCache = DeclarationAdditionalActorsData(actors :+ actor)
-      for {
-        _ <- updateCache(journeySessionId, updatedCache)
-        _ <- customsCacheService.cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache)
-      } yield Redirect(routes.DeclarationHolderController.displayForm())
+      updateCache(journeySessionId, updatedCache).map(_ => Redirect(routes.DeclarationHolderController.displayForm()))
     } else Future.successful(Redirect(routes.DeclarationHolderController.displayForm()))
 
   private def removeItem(
@@ -175,10 +169,8 @@ class DeclarationAdditionalActorsController @Inject()(
       case Some(actorToRemove) =>
         if (cachedData.containsItem(actorToRemove)) {
           val updatedCache = cachedData.copy(actors = cachedData.actors.filterNot(_ == actorToRemove))
-          for {
-            _ <- updateCache(journeySessionId, updatedCache)
-            _ <- customsCacheService.cache[DeclarationAdditionalActorsData](cacheId, formId, updatedCache)
-          } yield Redirect(routes.DeclarationAdditionalActorsController.displayForm())
+          updateCache(journeySessionId, updatedCache)
+            .map(_ => Redirect(routes.DeclarationAdditionalActorsController.displayForm()))
         } else errorHandler.displayErrorPage()
       case _ => errorHandler.displayErrorPage()
     }

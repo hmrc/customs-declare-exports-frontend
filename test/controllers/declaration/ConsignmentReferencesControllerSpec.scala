@@ -16,20 +16,15 @@
 
 package controllers.declaration
 
-import java.time.LocalDateTime
-
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.Ducr
-import forms.declaration.ConsignmentReferences
 import forms.declaration.ConsignmentReferencesSpec._
 import helpers.views.declaration.{CommonMessages, ConsignmentReferencesMessages}
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class ConsignmentReferencesControllerSpec
     extends CustomExportsBaseSpec with ConsignmentReferencesMessages with CommonMessages {
@@ -42,12 +37,11 @@ class ConsignmentReferencesControllerSpec
     super.beforeEach()
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[ConsignmentReferences](None, ConsignmentReferences.id)
   }
 
   override def afterEach() {
     super.afterEach()
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Consignment References Controller on GET" should {
@@ -93,15 +87,17 @@ class ConsignmentReferencesControllerSpec
       contentAsString(result) mustNot include(messages("error.ducr"))
     }
 
+    "validate request and return bad request when data is invalid" in {
+
+      val result = route(app, postRequest(uri, emptyConsignmentReferencesJSON)).get
+
+      status(result) must be(BAD_REQUEST)
+      verifyTheCacheIsUnchanged()
+    }
+
     "save data to the cache" in {
 
       route(app, postRequest(uri, correctConsignmentReferencesJSON)).get.map { _ =>
-        verify(mockCustomsCacheService)
-          .cache[ConsignmentReferences](any(), ArgumentMatchers.eq(ConsignmentReferences.id), any())(
-            any(),
-            any(),
-            any()
-          )
         verify(mockExportsCacheService).update(any(), any())
         verify(mockExportsCacheService).get(any())
       }

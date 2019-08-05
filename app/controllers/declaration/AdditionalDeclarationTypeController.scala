@@ -34,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalDeclarationTypeController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   declarationTypePage: declaration_type
@@ -57,11 +56,8 @@ class AdditionalDeclarationTypeController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationTypePage(formWithErrors))),
         validAdditionalDeclarationType =>
-          for {
-            _ <- updateCache(journeySessionId, validAdditionalDeclarationType)
-            _ <- customsCacheService
-              .cache[AdditionalDeclarationType](cacheId, decType.formId, validAdditionalDeclarationType)
-          } yield Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
+          updateCache(journeySessionId, validAdditionalDeclarationType)
+            .map(_ => Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage()))
       )
   }
 

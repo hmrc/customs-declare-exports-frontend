@@ -32,14 +32,12 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
     val controller = new AdditionalDeclarationTypeController(
       mockAuthAction,
       mockJourneyAction,
-      mockCustomsCacheService,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       additionalDeclarationTypePage
     )(ec)
 
     authorizedUser()
-    withCaching(None)
   }
 
   trait SupplementarySetUp extends SetUp {
@@ -94,7 +92,9 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
         val result = controller.submitForm()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignment-references"))
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage().url)
+        )
       }
     }
   }
@@ -143,7 +143,9 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
         val result = controller.submitForm()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignment-references"))
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.ConsignmentReferencesController.displayPage().url)
+        )
       }
     }
   }

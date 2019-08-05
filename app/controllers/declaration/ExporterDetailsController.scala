@@ -33,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class ExporterDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   exporterDetailsPage: exporter_details
@@ -53,10 +52,8 @@ class ExporterDetailsController @Inject()(
       .fold(
         (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(formWithErrors))),
         form =>
-          for {
-            _ <- updateCache(journeySessionId, form)
-            _ <- customsCacheService.cache[ExporterDetails](cacheId, ExporterDetails.id, form)
-          } yield Redirect(controllers.declaration.routes.ConsigneeDetailsController.displayPage())
+          updateCache(journeySessionId, form)
+            .map(_ => Redirect(controllers.declaration.routes.ConsigneeDetailsController.displayPage()))
       )
   }
 
