@@ -25,17 +25,6 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 class PackagingBuilderSpec extends WordSpec with Matchers with GoodsItemCachingData with ExportsCacheItemBuilder {
 
   "PackageBuilder" should {
-    "map correctly to wco Packaging" in {
-
-      val packagingInformation = Packaging(Some(1), Some("123"), Some(12), Some("R"))
-
-      val items = PackagingBuilder.build(Seq(packagingInformation))
-
-      items.size() should be(1)
-      items.get(0).getQuantityQuantity.getValue shouldBe BigDecimal(packagingInformation.quantity.get).bigDecimal
-      items.get(0).getMarksNumbersID.getValue shouldBe packagingInformation.marksNumbersId.get
-      items.get(0).getTypeCode.getValue shouldBe packagingInformation.typeCode.get
-    }
 
     "build then add" when {
       "empty list" in {

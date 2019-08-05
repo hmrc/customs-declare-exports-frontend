@@ -17,9 +17,6 @@
 package services.mapping.declaration
 
 import forms.Choice
-import services.mapping.AuthorisationHoldersBuilder
-import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
-import services.mapping.goodsshipment.GoodsShipmentBuilder
 import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
@@ -32,7 +29,6 @@ object DeclarationBuilder {
     declaration.setFunctionalReferenceID(FunctionalReferenceIdBuilder.build)
     declaration.setTypeCode(TypeCodeBuilder.build)
     declaration.setGoodsItemQuantity(GoodsItemQuantityBuilder.build)
-//    declaration.setGoodsShipment(GoodsShipmentBuilder.build)
     declaration.setExitOffice(ExitOfficeBuilder.build)
     declaration.setBorderTransportMeans(BorderTransportMeansBuilder.build)
     declaration.setExporter(ExporterBuilder.build)
@@ -42,13 +38,7 @@ object DeclarationBuilder {
     declaration.setSpecificCircumstancesCodeCode(SpecificCircumstancesCodeBuilder.build)
     declaration.setSupervisingOffice(SupervisingOfficeBuilder.build)
     declaration.setTotalPackageQuantity(TotalPackageQuantityBuilder.build)
-//    declaration.setConsignment(DeclarationConsignmentBuilder.build)
     declaration.setTypeCode(TypeCodeBuilder.build)
-
-    val authorisationHolders = AuthorisationHoldersBuilder.build
-    if (authorisationHolders != null && !authorisationHolders.isEmpty) {
-      declaration.getAuthorisationHolder.addAll(authorisationHolders)
-    }
 
     val currencyExchangeList = CurrencyExchangeBuilder.build
     if (currencyExchangeList != null && !currencyExchangeList.isEmpty) {

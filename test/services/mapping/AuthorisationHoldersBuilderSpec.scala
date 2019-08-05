@@ -15,41 +15,14 @@
  */
 
 package services.mapping
-import forms.declaration.DeclarationHolder
-import models.declaration.DeclarationHoldersData
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
 
   "AuthorisationHolders" should {
-    "correctly mapped to wco AuthorisationHolder" in {
-
-      val decHolder1 =
-        new DeclarationHolder(authorisationTypeCode = Some("decHolder1TypeCode"), eori = Some("decHolder1Eori"))
-
-      val decHolder2 =
-        new DeclarationHolder(authorisationTypeCode = Some("decHolder2TypeCode"), eori = Some("decHolder2Eori"))
-
-      val declarationHoldersData = new DeclarationHoldersData(Seq(decHolder1, decHolder2))
-      implicit val cacheMap = mock[CacheMap]
-      when(cacheMap.getEntry[DeclarationHoldersData](eqTo(DeclarationHoldersData.formId))(any()))
-        .thenReturn(Some(declarationHoldersData))
-
-      val mappedAuthHolder = AuthorisationHoldersBuilder.build
-      mappedAuthHolder.isEmpty shouldBe false
-      mappedAuthHolder.size shouldBe declarationHoldersData.holders.size
-      mappedAuthHolder.get(0).getCategoryCode.getValue should be("decHolder1TypeCode")
-      mappedAuthHolder.get(0).getID.getValue should be("decHolder1Eori")
-
-      mappedAuthHolder.get(1).getCategoryCode.getValue should be("decHolder2TypeCode")
-      mappedAuthHolder.get(1).getID.getValue should be("decHolder2Eori")
-    }
 
     "build and add to declaration" when {
       "no holders" in {

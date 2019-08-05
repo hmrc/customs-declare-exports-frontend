@@ -31,16 +31,9 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 import scala.collection.JavaConverters._
 
 class CommodityBuilder @Inject()() extends ModifyingBuilder[Commodity, GovernmentAgencyGoodsItem] {
+
   override def buildThenAdd(model: Commodity, item: GovernmentAgencyGoodsItem): Unit =
-    item.setCommodity(CommodityBuilder.mapCommodity(model))
-}
-
-object CommodityBuilder {
-
-  def build(commodity: Option[Commodity]): WCOCommodity =
-    commodity
-      .map(item => mapCommodity(item))
-      .orNull
+    item.setCommodity(mapCommodity(model))
 
   private def mapCommodity(commodity: Commodity): WCOCommodity = {
     val wcoCommodity = new WCOCommodity

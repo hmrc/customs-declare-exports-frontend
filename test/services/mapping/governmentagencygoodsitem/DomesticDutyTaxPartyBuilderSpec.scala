@@ -18,38 +18,39 @@ package services.mapping.governmentagencygoodsitem
 
 import forms.declaration.AdditionalFiscalReference
 import org.scalatest.{Matchers, WordSpec}
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.DomesticDutyTaxParty
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class DomesticDutyTaxPartyBuilderSpec extends WordSpec with Matchers with GovernmentAgencyGoodsItemData {
 
   "DomesticDutyTaxPartyBuilder" should {
     "map correctly if cache contains Additional Fiscal References" in {
+      val builder = new DomesticDutyTaxPartyBuilder
 
-      val domesticDutyTaxParties: java.util.List[DomesticDutyTaxParty] =
-        DomesticDutyTaxPartyBuilder.build(Seq(AdditionalFiscalReference("PL", "12345")))
-      domesticDutyTaxParties.size() should be(1)
-      domesticDutyTaxParties.get(0).getID.getValue should be("PL12345")
-      domesticDutyTaxParties.get(0).getRoleCode.getValue should be("FR1")
+      var item: GoodsShipment.GovernmentAgencyGoodsItem = new GoodsShipment.GovernmentAgencyGoodsItem
+
+      builder.buildThenAdd(AdditionalFiscalReference("PL", "12345"), item)
+
+      item.getDomesticDutyTaxParty.size() should be(1)
+      item.getDomesticDutyTaxParty.get(0).getID.getValue should be("PL12345")
+      item.getDomesticDutyTaxParty.get(0).getRoleCode.getValue should be("FR1")
     }
 
     "map correctly if cache contains more than one Additional Fiscal References" in {
 
-      val domesticDutyTaxParties: java.util.List[DomesticDutyTaxParty] = DomesticDutyTaxPartyBuilder.build(
-        Seq(AdditionalFiscalReference("PL", "12345"), AdditionalFiscalReference("FR", "54321"))
-      )
+      val builder = new DomesticDutyTaxPartyBuilder
 
-      domesticDutyTaxParties.size() should be(2)
-      domesticDutyTaxParties.get(0).getID.getValue should be("PL12345")
-      domesticDutyTaxParties.get(0).getRoleCode.getValue should be("FR1")
-      domesticDutyTaxParties.get(1).getID.getValue should be("FR54321")
-      domesticDutyTaxParties.get(1).getRoleCode.getValue should be("FR1")
+      var item: GoodsShipment.GovernmentAgencyGoodsItem = new GoodsShipment.GovernmentAgencyGoodsItem
+
+      builder.buildThenAdd(AdditionalFiscalReference("PL", "12345"), item)
+
+      builder.buildThenAdd(AdditionalFiscalReference("FR", "54321"), item)
+
+      item.getDomesticDutyTaxParty.size() should be(2)
+      item.getDomesticDutyTaxParty.get(0).getID.getValue should be("PL12345")
+      item.getDomesticDutyTaxParty.get(0).getRoleCode.getValue should be("FR1")
+      item.getDomesticDutyTaxParty.get(1).getID.getValue should be("FR54321")
+      item.getDomesticDutyTaxParty.get(1).getRoleCode.getValue should be("FR1")
     }
 
-    "should not create list of DomesticDutyTaxParty if user doesn't add any Additional Fiscal References" in {
-
-      val domesticDutyTaxParties: java.util.List[DomesticDutyTaxParty] = DomesticDutyTaxPartyBuilder.build(Seq.empty)
-
-      domesticDutyTaxParties.isEmpty shouldBe true
-    }
   }
 }
