@@ -27,7 +27,7 @@ class TypeCodeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelB
 
       val builder = new TypeCodeBuilder
 
-      var declaration: Declaration = new Declaration
+      val declaration = new Declaration
       val model = aCacheModel(
         withDispatchLocation("EX"),
         withAdditionalDeclarationType("Y")

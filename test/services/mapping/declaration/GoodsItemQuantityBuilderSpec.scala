@@ -27,7 +27,7 @@ class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers with ExportsCa
 
       val builder = new GoodsItemQuantityBuilder
 
-      var declaration = new Declaration
+      val declaration = new Declaration
       val model = aCacheModel(withItems(6))
       builder.buildThenAdd(model, declaration)
 

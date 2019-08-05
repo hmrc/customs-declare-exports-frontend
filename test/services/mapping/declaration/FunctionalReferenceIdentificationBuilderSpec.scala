@@ -27,7 +27,7 @@ class FunctionalReferenceIdentificationBuilderSpec extends WordSpec with Matcher
 
       val builder = new FunctionalReferenceIdBuilder
 
-      var declaration = new Declaration
+      val declaration = new Declaration
       val references = ConsignmentReferencesSpec.correctConsignmentReferences
       val model = aCacheModel(withConsignmentReferences(references))
       builder.buildThenAdd(model, declaration)
@@ -43,7 +43,7 @@ class FunctionalReferenceIdentificationBuilderSpec extends WordSpec with Matcher
     "not map to the WCO-DEC FunctionalReferenceId instance if lrn is empty" in {
       val builder = new FunctionalReferenceIdBuilder
 
-      var declaration = new Declaration
+      val declaration = new Declaration
       val references = ConsignmentReferencesSpec.emptyConsignmentReferences
       val model = aCacheModel(
         withConsignmentReferences(references)
