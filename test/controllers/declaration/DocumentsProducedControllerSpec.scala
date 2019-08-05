@@ -61,7 +61,7 @@ class DocumentsProducedControllerSpec
   "Documents Produced Controller on GET" should {
 
     "return 200 with a success" in {
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = exampleModel.sessionId)).get
 
       status(result) must be(OK)
     }
@@ -191,12 +191,13 @@ class DocumentsProducedControllerSpec
 
       "try to add duplicated document" in {
         val cachedData = ExportItem(id = "id", documentsProducedData = Some(correctDocumentsProducedData))
-        withNewCaching(aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+        val model = aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+        withNewCaching(model)
 
         val duplicatedDocument: Map[String, String] = correctDocumentsProducedMap
 
         val body = duplicatedDocument.toSeq :+ addActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -212,7 +213,7 @@ class DocumentsProducedControllerSpec
         val undefinedDocument: Map[String, String] = emptyDocumentsProducedMap
 
         val body = undefinedDocument.toSeq :+ addActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -224,10 +225,11 @@ class DocumentsProducedControllerSpec
 
       "try to add more then 99 documents" in {
         val cachedData = ExportItem(id = "id", documentsProducedData = Some(cacheWithMaximumAmountOfHolders))
-        withNewCaching(aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+        val model = aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+        withNewCaching(model)
 
         val body = (correctDocumentsProducedMap + ("documentIdentifier" -> "Davis")).toSeq :+ addActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -244,7 +246,7 @@ class DocumentsProducedControllerSpec
       "cache is empty" in {
 
         val body = correctDocumentsProducedMap.toSeq :+ addActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
 
@@ -256,7 +258,7 @@ class DocumentsProducedControllerSpec
 
         val newDocument = correctDocumentsProducedMap + (s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> "DOCID123")
         val body = newDocument.toSeq :+ addActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
 
@@ -271,7 +273,7 @@ class DocumentsProducedControllerSpec
 
         val firstElementIndex = "0"
         val body = removeActionUrlEncoded(firstElementIndex)
-        val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body)).get
 
         status(result) must be(OK)
 
@@ -285,7 +287,7 @@ class DocumentsProducedControllerSpec
       "provided with empty form and with empty cache" in {
 
         val body = emptyDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
@@ -295,7 +297,7 @@ class DocumentsProducedControllerSpec
       "provided with empty form and with existing cache" in {
 
         val body = emptyDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
@@ -306,7 +308,7 @@ class DocumentsProducedControllerSpec
       "provided with a valid document and with empty cache" in {
 
         val body = correctDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
@@ -319,7 +321,7 @@ class DocumentsProducedControllerSpec
 
         val newDocument = correctDocumentsProducedMap + (s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> "DOCID123")
         val body = newDocument.toSeq :+ saveAndContinueActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))

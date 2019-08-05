@@ -53,7 +53,7 @@ class ProcedureCodesControllerSpec
 
     "return 200 status code" in {
 
-      val Some(result) = route(app, getRequest(uri))
+      val Some(result) = route(app, getRequest(uri, sessionId = itemModel.sessionId))
 
       status(result) must be(OK)
 
@@ -61,7 +61,7 @@ class ProcedureCodesControllerSpec
     }
 
     "read item from cache and display it" in {
-      val Some(result) = route(app, getRequest(uri))
+      val Some(result) = route(app, getRequest(uri, sessionId = itemModel.sessionId))
 
       status(result) must be(OK)
       verify(mockExportsCacheService).get(any[String])
@@ -76,7 +76,7 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", "incorrect"), addActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, itemModel.sessionId)(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -85,7 +85,7 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", "incorrect"), saveAndContinueActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, itemModel.sessionId)(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -94,7 +94,7 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", ""), ("additionalProcedureCode", ""), saveAndContinueActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, itemModel.sessionId)(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -102,27 +102,27 @@ class ProcedureCodesControllerSpec
       "procedureCode is empty but has additional procedure codes in cache, it should return a bad request" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-        withNewCaching(aCacheModel(withItem(ExportItem("id", procedureCodes = Some(cachedData))), withChoice("SMP")))
+        val model = aCacheModel(withItem(ExportItem("id", procedureCodes = Some(cachedData))), withChoice("SMP"))
+        withNewCaching(model)
 
         val body = Seq(("procedureCode", ""), ("additionalProcedureCode", ""), saveAndContinueActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
 
       "maximum amount of codes are reached" in {
 
-        withNewCaching(
-          aCacheModel(
-            withItem(ExportItem("id", procedureCodes = Some(cacheWithMaximumAmountOfAdditionalCodes))),
-            withChoice("SMP")
-          )
+        val model = aCacheModel(
+          withItem(ExportItem("id", procedureCodes = Some(cacheWithMaximumAmountOfAdditionalCodes))),
+          withChoice("SMP")
         )
+        withNewCaching(model)
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -130,11 +130,13 @@ class ProcedureCodesControllerSpec
       "code is duplicated" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-        withNewCaching(aCacheModel(withItem(ExportItem("id", procedureCodes = Some(cachedData))), withChoice("SMP")))
+        val model = aCacheModel(withItem(ExportItem("id", procedureCodes = Some(cachedData))), withChoice("SMP"))
+
+        withNewCaching(model)
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), addActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -146,7 +148,7 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "321"), addActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, itemModel.sessionId)(body: _*))
 
         status(result) must be(SEE_OTHER)
 
@@ -156,11 +158,12 @@ class ProcedureCodesControllerSpec
       "user remove existing code" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-        withNewCaching(aCacheModel(withItem(ExportItem("id", procedureCodes = Some(cachedData))), withChoice("SMP")))
+        val model = aCacheModel(withItem(ExportItem("id", procedureCodes = Some(cachedData))), withChoice("SMP"))
+        withNewCaching(model)
 
         val body = removeActionUrlEncoded("123")
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body))
 
         status(result) must be(OK)
 
@@ -174,7 +177,7 @@ class ProcedureCodesControllerSpec
 
         val body = Seq(("procedureCode", "1234"), ("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, itemModel.sessionId)(body: _*))
 
         status(result) must be(SEE_OTHER)
 
@@ -184,11 +187,12 @@ class ProcedureCodesControllerSpec
       "form is empty but cache contains at least one item" in {
 
         val cachedData = ProcedureCodesData(Some("1234"), Seq("123"))
-        withNewCaching(aCacheModel(withItem(ExportItem("id", procedureCodes = Some(cachedData))), withChoice("SMP")))
+        val model = aCacheModel(withItem(ExportItem("id", procedureCodes = Some(cachedData))), withChoice("SMP"))
+        withNewCaching(model)
 
         val body = Seq(("procedureCode", "1234"), saveAndContinueActionUrlEncoded)
 
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*))
 
         status(result) must be(SEE_OTHER)
 

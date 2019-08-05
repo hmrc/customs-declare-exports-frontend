@@ -17,21 +17,23 @@
 package controllers.declaration
 
 import base.CustomExportsBaseSpec
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.common.Address
 import forms.declaration.ExporterDetailsSpec._
 import helpers.views.declaration.CommonMessages
 import org.mockito.Mockito
 import play.api.test.Helpers._
+import services.cache.ExportsCacheModel
 
 class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMessages {
 
   private val uri = uriWithContextPath("/declaration/exporter-details")
 
+  val supplementaryModel: ExportsCacheModel = aCacheModel(withChoice(SupplementaryDec))
+
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
   }
 
   override def afterEach() = {
@@ -42,7 +44,8 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
   "Exporter Details Controller on GET" should {
 
     "return 200 with a success" in {
-      val result = route(app, getRequest(uri)).get
+      withNewCaching(supplementaryModel)
+      val result = route(app, getRequest(uri, sessionId = supplementaryModel.sessionId)).get
 
       status(result) must be(OK)
       verifyTheCacheIsUnchanged()
@@ -58,7 +61,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
       )
       withNewCaching(cachedData)
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = cachedData.sessionId)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)
@@ -74,13 +77,15 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
   "Exporter Details Controller on POST" should {
 
     "validate request - empty values" in {
-      val result = route(app, postRequest(uri, emptyExporterDetailsJSON)).get
+      withNewCaching(supplementaryModel)
+      val result = route(app, postRequest(uri, emptyExporterDetailsJSON, sessionId = supplementaryModel.sessionId)).get
       val stringResult = contentAsString(result)
       stringResult must include(messages(eoriOrAddressEmpty))
     }
 
     "validate request - incorrect values" in {
-      val result = route(app, postRequest(uri, incorrectExporterDetailsJSON)).get
+      withNewCaching(supplementaryModel)
+      val result = route(app, postRequest(uri, incorrectExporterDetailsJSON, sessionId = supplementaryModel.sessionId)).get
       val stringResult = contentAsString(result)
 
       stringResult must include(messages(eoriError))
@@ -94,7 +99,9 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
     "on the supplementary journey " should {
 
       "validate request and redirect to consignee-details page with only EORI provided" in {
-        val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
+        withNewCaching(supplementaryModel)
+
+        val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON, sessionId = supplementaryModel.sessionId)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignee-details"))
@@ -102,7 +109,9 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
       }
 
       "validate request and redirect to consignee-details page with only address provided" in {
-        val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
+        withNewCaching(supplementaryModel)
+
+        val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON, sessionId = supplementaryModel.sessionId)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignee-details"))
@@ -110,7 +119,9 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
       }
 
       "validate request and redirect to consignee-details page with correct values" in {
-        val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
+        withNewCaching(supplementaryModel)
+
+        val result = route(app, postRequest(uri, correctExporterDetailsJSON, sessionId = supplementaryModel.sessionId)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignee-details"))
@@ -121,8 +132,12 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
 
     "on the standard journey " should {
 
+      val standardModel = aCacheModel(withChoice(StandardDec))
+
       "validate request and redirect to consignee-details page with only EORI provided" in {
-        val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
+        withNewCaching(standardModel)
+
+        val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON, sessionId = standardModel.sessionId)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignee-details"))
@@ -130,7 +145,9 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
       }
 
       "validate request and redirect to consignee-details page with only address provided" in {
-        val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
+        withNewCaching(standardModel)
+
+        val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON, sessionId = standardModel.sessionId)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignee-details"))
@@ -138,7 +155,9 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
       }
 
       "validate request and redirect to consignee-details page with correct values" in {
-        val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
+        withNewCaching(standardModel)
+
+        val result = route(app, postRequest(uri, correctExporterDetailsJSON, sessionId = standardModel.sessionId)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignee-details"))

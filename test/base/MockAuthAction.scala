@@ -271,4 +271,9 @@ trait MockAuthAction extends MockitoSugar with Stubs {
     FakeRequest("GET", "").withSession(("sessionId", "sessionId")).withCSRFToken
   }
 
+  def getRequest(uri: String, sessionId: String): Request[AnyContentAsEmpty.type] = {
+    import utils.FakeRequestCSRFSupport._
+    FakeRequest("GET", uri).withSession(("sessionId", sessionId)).withCSRFToken
+  }
+
 }
