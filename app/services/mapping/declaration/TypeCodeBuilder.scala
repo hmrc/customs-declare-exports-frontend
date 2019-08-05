@@ -31,9 +31,9 @@ class TypeCodeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, De
     })
 
   private def createTypeCode(
-                              decType: AdditionalDeclarationType,
-                              dispatchLocation: Option[DispatchLocation]
-                            ): DeclarationTypeCodeType = {
+    decType: AdditionalDeclarationType,
+    dispatchLocation: Option[DispatchLocation]
+  ): DeclarationTypeCodeType = {
     val typeCodeType = new DeclarationTypeCodeType()
     dispatchLocation.foreach { data =>
       typeCodeType.setValue(data.dispatchLocation + decType.additionalDeclarationType)
@@ -44,7 +44,7 @@ class TypeCodeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, De
 
 object TypeCodeBuilder {
 
-  def build(codeType: String) = {
+  def build(codeType: String): DeclarationTypeCodeType = {
     val typeCodeType = new DeclarationTypeCodeType()
     typeCodeType.setValue(codeType)
     typeCodeType
