@@ -16,39 +16,11 @@
 
 package services.mapping.declaration
 
-import forms.Choice
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 object DeclarationBuilder {
 
-  def build(implicit cacheMap: CacheMap, choice: Choice): Declaration = {
-    val declaration = new Declaration()
-
-    declaration.setFunctionCode(FunctionCodeBuilder.build("9"))
-    declaration.setFunctionalReferenceID(FunctionalReferenceIdBuilder.build)
-    declaration.setTypeCode(TypeCodeBuilder.build)
-    declaration.setGoodsItemQuantity(GoodsItemQuantityBuilder.build)
-    declaration.setExitOffice(ExitOfficeBuilder.build)
-    declaration.setBorderTransportMeans(BorderTransportMeansBuilder.build)
-    declaration.setExporter(ExporterBuilder.build)
-    declaration.setDeclarant(DeclarantBuilder.build)
-    declaration.setInvoiceAmount(InvoiceAmountBuilder.build)
-    declaration.setPresentationOffice(PresentationOfficeBuilder.build)
-    declaration.setSpecificCircumstancesCodeCode(SpecificCircumstancesCodeBuilder.build)
-    declaration.setSupervisingOffice(SupervisingOfficeBuilder.build)
-    declaration.setTotalPackageQuantity(TotalPackageQuantityBuilder.build)
-    declaration.setTypeCode(TypeCodeBuilder.build)
-
-    val currencyExchangeList = CurrencyExchangeBuilder.build
-    if (currencyExchangeList != null && !currencyExchangeList.isEmpty) {
-      declaration.getCurrencyExchange.addAll(currencyExchangeList)
-    }
-
-    declaration
-  }
-
-  def buildCancelationRequest(
+  def buildCancellationRequest(
     functionalReferenceId: String,
     declarationId: String,
     statementDescription: String,

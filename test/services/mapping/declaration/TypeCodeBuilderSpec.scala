@@ -15,26 +15,26 @@
  */
 
 package services.mapping.declaration
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec.correctAdditionalDeclarationTypeSupplementaryDecJSON
-import forms.declaration.{DispatchLocation, DispatchLocationSpec}
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.http.cache.client.CacheMap
+import services.cache.ExportsCacheModelBuilder
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class TypeCodeBuilderSpec extends WordSpec with Matchers {
+class TypeCodeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder{
+
 
   "TypeCodeBuilder" should {
     "correctly map to the WCO-DEC Type Code Code instance" in {
-      implicit val cacheMap =
-        CacheMap(
-          "CacheID",
-          Map(
-            DispatchLocation.formId -> DispatchLocationSpec.correctDispatchLocationJSON,
-            AdditionalDeclarationTypeSupplementaryDec.formId -> correctAdditionalDeclarationTypeSupplementaryDecJSON
-          )
-        )
-      val codeType = TypeCodeBuilder.build(cacheMap)
-      codeType.getValue should be("EXY")
+
+      val builder = new TypeCodeBuilder
+
+      var declaration: Declaration = new Declaration
+      val model = aCacheModel(
+        withDispatchLocation("EX"),
+        withAdditionalDeclarationType("Y")
+      )
+      builder.buildThenAdd(model, declaration)
+
+      declaration.getTypeCode.getValue should be("EXY")
     }
   }
 }

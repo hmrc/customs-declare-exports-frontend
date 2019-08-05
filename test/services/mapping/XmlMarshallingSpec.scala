@@ -63,14 +63,5 @@ class XmlMarshallingSpec extends WordSpec with Matchers with MockitoSugar {
 //    }
 //  }
 
-  private def populateDeclaration(metaData: MetaData): Unit = {
-    val declaration = DeclarationBuilder.build(SupplementaryDeclarationTestData.cacheMapAllRecords, supplementaryChoice)
 
-    val element: JAXBElement[Declaration] = new JAXBElement[Declaration](
-      new QName("urn:wco:datamodel:WCO:DEC-DMS:2", "Declaration"),
-      classOf[Declaration],
-      declaration
-    )
-    metaData.setAny(element)
-  }
 }

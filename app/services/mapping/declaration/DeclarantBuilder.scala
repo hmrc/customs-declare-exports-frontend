@@ -20,11 +20,9 @@ import forms.declaration.DeclarantDetails
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Declarant
 import wco.datamodel.wco.declaration_ds.dms._2.{DeclarantIdentificationIDType, _}
-import DeclarantBuilder.{isDefined, mapToWCODeclarant}
 
 class DeclarantBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
@@ -33,17 +31,6 @@ class DeclarantBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, D
       .filter(isDefined)
       .map(details => mapToWCODeclarant(details))
       .foreach(declaration.setDeclarant)
-
-}
-
-object DeclarantBuilder {
-
-  def build(implicit cacheMap: CacheMap): Declaration.Declarant =
-    cacheMap
-      .getEntry[DeclarantDetails](DeclarantDetails.id)
-      .filter(isDefined)
-      .map(declarantDetails => mapToWCODeclarant(declarantDetails))
-      .orNull
 
   private def mapToWCODeclarant(declarantDetails: DeclarantDetails): Declarant = {
 

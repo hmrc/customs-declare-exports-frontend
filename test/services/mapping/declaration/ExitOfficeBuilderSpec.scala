@@ -16,30 +16,13 @@
 
 package services.mapping.declaration
 import forms.Choice.AllowedChoiceValues
-import forms.ChoiceSpec
-import forms.declaration.officeOfExit.OfficeOfExitForms
-import forms.declaration.{OfficeOfExitStandardSpec, OfficeOfExitSupplementarySpec}
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class ExitOfficeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "ExitOfficeBuilder" should {
-    "correctly map to the WCO-DEC ExitOffice instance for a supplementary journey" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap("CacheID", Map(OfficeOfExitForms.formId -> OfficeOfExitSupplementarySpec.correctOfficeOfExitJSON))
-      val exitOffice = ExitOfficeBuilder.build(cacheMap, ChoiceSpec.supplementaryChoice)
-      exitOffice.getID.getValue should be("123qwe12")
-    }
-
-    "correctly map to the WCO-DEC ExitOffice instance for a standard journey" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap("CacheID", Map(OfficeOfExitForms.formId -> OfficeOfExitStandardSpec.correctOfficeOfExitJSON))
-      val exitOffice = ExitOfficeBuilder.build(cacheMap, ChoiceSpec.standardChoice)
-      exitOffice.getID.getValue should be("123qwe12")
-    }
 
     "build then add" when {
       "standard journey with no data" in {

@@ -15,10 +15,7 @@
  */
 
 package services.mapping
-import forms.ChoiceSpec.supplementaryChoice
 import javax.xml.bind.JAXBElement
-import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
-import models.declaration.SupplementaryDeclarationTestData
 import org.scalatest.{Matchers, WordSpec}
 import services.mapping.declaration.DeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
@@ -26,20 +23,11 @@ import wco.datamodel.wco.dec_dms._2.Declaration
 class MetaDataBuilderSpec extends WordSpec with Matchers {
 
   "MetaDataBuilder" should {
-    "build wco MetaData with correct defaultValues" in {
-      val metaData = MetaDataBuilder.build(SupplementaryDeclarationTestData.cacheMapAllRecords, supplementaryChoice)
-      metaData.getWCOTypeName.getValue shouldBe SchemaMandatoryValues.wcoTypeName
-      metaData.getWCODataModelVersionCode.getValue shouldBe SchemaMandatoryValues.wcoDataModelVersionCode
-      metaData.getResponsibleAgencyName.getValue shouldBe SchemaMandatoryValues.responsibleAgencyName
-      metaData.getResponsibleCountryCode.getValue shouldBe SchemaMandatoryValues.responsibleCountryCode
-      metaData.getAgencyAssignedCustomizationCode.getValue shouldBe SchemaMandatoryValues.agencyAssignedCustomizationVersionCode
-      metaData.getAny.asInstanceOf[JAXBElement[Declaration]].getValue should not be (null)
-    }
 
     "build wco MetaData Declaration Cancellation with correct defaultValues" in {
-      val metaData = MetaDataBuilder.buildCancellationRequest(
+      val metaData = MetaDataBuilder.buildRequest(
         DeclarationBuilder
-          .buildCancelationRequest(
+          .buildCancellationRequest(
             "someFunctionalReference",
             "declarationId",
             "statementDescription",

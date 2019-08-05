@@ -15,24 +15,13 @@
  */
 
 package services.mapping.declaration
-import forms.declaration.{TotalNumberOfItems, TotalNumberOfItemsSpec}
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class TotalPackageQuantityBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "GoodsItemQuantityBuilder" should {
-    "correctly map to the WCO-DEC TotalPackageQuantity instance" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(TotalNumberOfItems.formId -> TotalNumberOfItemsSpec.correctTotalNumberOfItemsDecimalValuesJSON)
-        )
-      val packageQuantityType = TotalPackageQuantityBuilder.build(cacheMap)
-      packageQuantityType.getValue.intValue() should be(123)
-    }
 
     "build then add" when {
       "no Total number of Items" in {

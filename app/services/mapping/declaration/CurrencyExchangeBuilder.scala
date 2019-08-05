@@ -16,14 +16,10 @@
 
 package services.mapping.declaration
 
-import java.util
-
 import forms.declaration.TotalNumberOfItems
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-import services.mapping.declaration.CurrencyExchangeBuilder.createCurrencyExchange
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.CurrencyExchange
 
@@ -38,17 +34,6 @@ class CurrencyExchangeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheM
       .getOrElse(Seq.empty)
     declaration.getCurrencyExchange.addAll(currencyExchanges.toList.asJava)
   }
-}
-
-object CurrencyExchangeBuilder {
-
-  def build(implicit cacheMap: CacheMap): util.List[CurrencyExchange] =
-    cacheMap
-      .getEntry[TotalNumberOfItems](TotalNumberOfItems.formId)
-      .filter(_.exchangeRate.isDefined)
-      .map(createCurrencyExchange)
-      .map(_.toList.asJava)
-      .orNull
 
   private def createCurrencyExchange(data: TotalNumberOfItems): Seq[CurrencyExchange] = {
     val currencyExchange = new CurrencyExchange()

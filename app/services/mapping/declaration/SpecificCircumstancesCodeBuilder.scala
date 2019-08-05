@@ -16,15 +16,11 @@
 
 package services.mapping.declaration
 
-import forms.Choice
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers.yes
-import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard}
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-import services.mapping.declaration.SpecificCircumstancesCodeBuilder.createCircumstancesCode
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2._
 
@@ -36,24 +32,6 @@ class SpecificCircumstancesCodeBuilder @Inject()() extends ModifyingBuilder[Expo
         .map(_ => createCircumstancesCode)
         .foreach(declaration.setSpecificCircumstancesCodeCode)
     }
-}
-
-object SpecificCircumstancesCodeBuilder {
-
-  def build(implicit cacheMap: CacheMap, choice: Choice): DeclarationSpecificCircumstancesCodeCodeType =
-    choice match {
-      case Choice(AllowedChoiceValues.StandardDec)      => buildCircumstancesCode(choice)
-      case Choice(AllowedChoiceValues.SupplementaryDec) => null
-    }
-
-  private def buildCircumstancesCode(
-    choice: Choice
-  )(implicit cacheMap: CacheMap): DeclarationSpecificCircumstancesCodeCodeType =
-    cacheMap
-      .getEntry[OfficeOfExitStandard](OfficeOfExitForms.formId)
-      .filter(data => data.circumstancesCode == yes)
-      .map(_ => createCircumstancesCode)
-      .orNull
 
   private def createCircumstancesCode: DeclarationSpecificCircumstancesCodeCodeType = {
     val circumstancesCode = new DeclarationSpecificCircumstancesCodeCodeType()

@@ -17,62 +17,22 @@
 package services.mapping.declaration
 
 import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json._
-import services.ExportsItemsCacheIds
-import uk.gov.hmrc.http.cache.client.CacheMap
+import services.cache.ExportsCacheModelBuilder
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers {
+class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "GoodsItemQuantityBuilder" should {
-    "correctly map to the WCO-DEC an empty GovernmentGoodsItemQuantity instance" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.createGovernmentAgencyGoodsItemsListJson(0))
-        )
-      val goodsItemQuantityType = GoodsItemQuantityBuilder.build(cacheMap)
-      goodsItemQuantityType.getValue.intValue() should be(0)
-    }
+    "correctly map to the WCO-DEC Type Goods Item Quantity" in {
 
-    "correctly map to the WCO-DEC a single GovernmentGoodsItemQuantity instance" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.createGovernmentAgencyGoodsItemsListJson(1))
-        )
-      val goodsItemQuantityType = GoodsItemQuantityBuilder.build(cacheMap)
-      goodsItemQuantityType.getValue.intValue() should be(1)
-    }
+      val builder = new GoodsItemQuantityBuilder
 
-    "correctly map to the WCO-DEC multiple GovernmentGoodsItemQuantity instances" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.createGovernmentAgencyGoodsItemsListJson(3))
-        )
-      val goodsItemQuantityType = GoodsItemQuantityBuilder.build(cacheMap)
-      goodsItemQuantityType.getValue.intValue() should be(3)
+      var declaration = new Declaration
+      val model = aCacheModel(withItems(6))
+      builder.buildThenAdd(model, declaration)
+
+      declaration.getGoodsItemQuantity.getValue should be(new java.math.BigDecimal(6))
+
     }
   }
-}
-
-object GovernmentAgencyGoodsItemSpec {
-
-  def createGovernmentAgencyGoodsItemsListJson(length: Int): JsValue =
-    JsArray((1 to length).map { seqNumeric =>
-      JsObject(
-        Map(
-          "sequenceNumeric" -> JsNumber(seqNumeric),
-          "statisticalValueAmount" -> JsObject(
-            Map("currencyId" -> JsString((seqNumeric + 11).toString), "value" -> JsString((seqNumeric + 13).toString))
-          ),
-          "commodity" -> JsObject(Map("dangerousGoods" -> JsArray(), "classifications" -> JsArray())),
-          "additionalInformations" -> JsArray(),
-          "additionalDocuments" -> JsArray(),
-          "governmentProcedures" -> JsArray(),
-          "packagings" -> JsArray(),
-          "fiscalReferences" -> JsArray()
-        )
-      )
-    })
 }

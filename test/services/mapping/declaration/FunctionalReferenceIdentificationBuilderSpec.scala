@@ -15,18 +15,24 @@
  */
 
 package services.mapping.declaration
-import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
+import forms.declaration.ConsignmentReferencesSpec
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.http.cache.client.CacheMap
+import services.cache.ExportsCacheModelBuilder
+import wco.datamodel.wco.dec_dms._2.Declaration
 
-class FunctionalReferenceIdentificationBuilderSpec extends WordSpec with Matchers {
+class FunctionalReferenceIdentificationBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder{
 
   "FunctionalReferenceIdBuilder" should {
     "correctly map to the WCO-DEC FunctionalReferenceId instance" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap("CacheID", Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.correctConsignmentReferencesJSON))
-      val referenceIDType = FunctionalReferenceIdBuilder.build(cacheMap)
-      referenceIDType.getValue should be("123LRN")
+
+      val builder = new FunctionalReferenceIdBuilder
+
+      var declaration = new Declaration
+      val references = ConsignmentReferencesSpec.correctConsignmentReferences
+      val model = aCacheModel(withConsignmentReferences(references))
+      builder.buildThenAdd(model, declaration)
+
+      declaration.getFunctionalReferenceID.getValue should be(references.lrn)
     }
 
     "correctly map to the WCO-DEC FunctionalReferenceId instance for a CancellationRequest" in {
@@ -35,10 +41,16 @@ class FunctionalReferenceIdentificationBuilderSpec extends WordSpec with Matcher
     }
 
     "not map to the WCO-DEC FunctionalReferenceId instance if lrn is empty" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap("CacheID", Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.emptyConsignmentReferencesJSON))
-      val referenceIDType = FunctionalReferenceIdBuilder.build(cacheMap)
-      referenceIDType should be(null)
+      val builder = new FunctionalReferenceIdBuilder
+
+      var declaration = new Declaration
+      val references = ConsignmentReferencesSpec.emptyConsignmentReferences
+      val model = aCacheModel(
+        withConsignmentReferences(references)
+      )
+      builder.buildThenAdd(model, declaration)
+
+      declaration.getFunctionalReferenceID should be (null)
     }
   }
 }
