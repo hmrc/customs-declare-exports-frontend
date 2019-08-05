@@ -46,10 +46,10 @@ object DeclarationBuilder {
 //    declaration.setConsignment(DeclarationConsignmentBuilder.build)
     declaration.setTypeCode(TypeCodeBuilder.build)
 
-    val authorisationHolders = AuthorisationHoldersBuilder.build
-    if (authorisationHolders != null && !authorisationHolders.isEmpty) {
-      declaration.getAuthorisationHolder.addAll(authorisationHolders)
-    }
+//    val authorisationHolders = AuthorisationHoldersBuilder.build
+//    if (authorisationHolders != null && !authorisationHolders.isEmpty) {
+//      declaration.getAuthorisationHolder.addAll(authorisationHolders)
+//    }
 
     val currencyExchangeList = CurrencyExchangeBuilder.build
     if (currencyExchangeList != null && !currencyExchangeList.isEmpty) {

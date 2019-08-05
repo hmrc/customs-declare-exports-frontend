@@ -16,14 +16,9 @@
 
 package services.mapping
 
-import java.util
-
 import forms.declaration.DeclarationHolder
 import javax.inject.Inject
-import models.declaration.DeclarationHoldersData
 import services.cache.ExportsCacheModel
-import services.mapping.AuthorisationHoldersBuilder.{isDefined, mapToAuthorisationHolder}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.AuthorisationHolder
 import wco.datamodel.wco.declaration_ds.dms._2.{
@@ -43,22 +38,6 @@ class AuthorisationHoldersBuilder @Inject()() extends ModifyingBuilder[ExportsCa
     }.getOrElse(Seq.empty)
     declaration.getAuthorisationHolder.addAll(holders.toList.asJava)
   }
-}
-
-object AuthorisationHoldersBuilder {
-
-  def build(implicit cacheMap: CacheMap): util.List[AuthorisationHolder] =
-    cacheMap
-      .getEntry[DeclarationHoldersData](DeclarationHoldersData.formId)
-      .map(
-        holdersData =>
-          holdersData.holders
-            .filter(holder => isDefined(holder))
-            .map(holder => mapToAuthorisationHolder(holder))
-            .toList
-            .asJava
-      )
-      .orNull
 
   private def isDefined(holder: DeclarationHolder): Boolean =
     holder.authorisationTypeCode.isDefined && holder.eori.nonEmpty
