@@ -16,15 +16,12 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.AdditionalInformationController
+import controllers.declaration.{routes, AdditionalInformationController}
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.AdditionalInformation
 import models.declaration.AdditionalInformationData
-import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.when
 import play.api.test.Helpers._
-import play.twirl.api.Html
 import services.cache.ExportItem
 import unit.base.ControllerSpec
 import views.html.declaration.additional_information
@@ -39,14 +36,12 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
       mockAuthAction,
       mockJourneyAction,
       mockErrorHandler,
-      mockCustomsCacheService,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       additionalInformationPage
     )(ec)
 
     authorizedUser()
-    withCaching(None)
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
     withJourneyType(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
   }
@@ -202,7 +197,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
         val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/items/itemId/add-document"))
+        redirectLocation(result) must be(Some(routes.DocumentsProducedController.displayPage("itemId").url))
       }
 
       "user save correct data without new item" in new SetUp {
@@ -221,7 +216,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
         val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/items/itemId/add-document"))
+        redirectLocation(result) must be(Some(routes.DocumentsProducedController.displayPage("itemId").url))
       }
 
       "user remove existing item" in new SetUp {

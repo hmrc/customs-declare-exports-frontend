@@ -24,13 +24,13 @@ import forms.declaration.additionaldocuments.DocumentsProduced.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.DocumentsProducedData
-import models.declaration.DocumentsProducedData.{formId, maxNumberOfItems}
+import models.declaration.DocumentsProducedData.maxNumberOfItems
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.ItemsCachingService
 import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
-import services.{CustomsCacheService, ItemsCachingService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.documents_produced
@@ -41,7 +41,6 @@ class DocumentsProducedController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  legacyCustomsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   itemsCache: ItemsCachingService,
   mcc: MessagesControllerComponents,
@@ -117,11 +116,7 @@ class DocumentsProducedController @Inject()(
 
   private def updateModelInCache(itemId: String, document: DocumentsProduced, updatedDocs: DocumentsProducedData)(
     implicit journeyRequest: JourneyRequest[_]
-  ) =
-    for {
-      _ <- updateCache(itemId, journeySessionId, updatedDocs)
-      _ <- legacyCustomsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, updatedDocs)
-    } yield ()
+  ) = updateCache(itemId, journeySessionId, updatedDocs)
 
   private def addGoodsItem(itemId: String, document: DocumentsProduced, docs: Seq[DocumentsProduced] = Seq.empty)(
     implicit request: JourneyRequest[_],
@@ -155,11 +150,8 @@ class DocumentsProducedController @Inject()(
 
       case (document, documents) =>
         if (document.isDefined) {
-          updateCacheAndRedirect(
-            itemId,
-            DocumentsProducedData(documents :+ document),
-            routes.DocumentsProducedController.displayPage(itemId)
-          )
+          updateCache(itemId, journeySessionId, DocumentsProducedData(documents :+ document))
+            .map(_ => Redirect(routes.DocumentsProducedController.displayPage(itemId)))
         } else
           handleErrorPage(
             itemId,
@@ -174,16 +166,10 @@ class DocumentsProducedController @Inject()(
     hc: HeaderCarrier
   ): Future[Result] = keys.headOption.fold(errorHandler.displayErrorPage()) { index =>
     val updatedCache = cachedData.copy(documents = cachedData.documents.patch(index.toInt, Nil, 1))
-    updateCacheAndRedirect(itemId, updatedCache, routes.DocumentsProducedController.displayPage(itemId))
+    updateCache(itemId, journeySessionId, updatedCache).map(
+      _ => Redirect(routes.DocumentsProducedController.displayPage(itemId))
+    )
   }
-
-  private def updateCacheAndRedirect(itemId: String, documentsToUpdate: DocumentsProducedData, redirectCall: Call)(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] =
-    for {
-      _ <- updateCache(itemId, journeySessionId, documentsToUpdate)
-      _ <- legacyCustomsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, documentsToUpdate)
-    } yield Redirect(redirectCall)
 
   private def handleErrorPage(
     itemId: String,

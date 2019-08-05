@@ -29,7 +29,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
-import services.cache.ExportItem
+import services.cache.{ExportItem, ExportsCacheModel}
 
 class ItemTypeControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages {
@@ -42,13 +42,12 @@ class ItemTypeControllerSpec
 
     authorizedUser()
     withNewCaching(cacheModel)
-    withCaching[ItemType](None, ItemType.id)
   }
 
   override def afterEach() {
     super.afterEach()
 
-    reset(mockCustomsCacheService, mockAuthConnector, mockExportsCacheService)
+    reset(mockAuthConnector, mockExportsCacheService)
   }
 
   "Item Type Page Controller on GET" should {
@@ -434,8 +433,7 @@ class ItemTypeControllerSpec
         val userInput = addActionTypeToFormData(SaveAndContinue, correctItemTypeMap)
         route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
-        verify(mockCustomsCacheService)
-          .cache[ItemType](any(), ArgumentMatchers.eq(ItemType.id), any())(any(), any(), any())
+        verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
       }
 
       "return 303 code" in {
@@ -545,12 +543,7 @@ class ItemTypeControllerSpec
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes :+ taricToAdd)
-          verify(mockCustomsCacheService)
-            .cache[ItemType](any(), ArgumentMatchers.eq(ItemType.id), ArgumentMatchers.eq(expectedUpdatedItemType))(
-              any(),
-              any(),
-              any()
-            )
+          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
         }
 
         "provided with NAC" in {
@@ -564,12 +557,7 @@ class ItemTypeControllerSpec
 
           val expectedUpdatedItemType =
             cachedItemType.copy(nationalAdditionalCodes = cachedItemType.nationalAdditionalCodes :+ nacToAdd)
-          verify(mockCustomsCacheService)
-            .cache[ItemType](any(), ArgumentMatchers.eq(ItemType.id), ArgumentMatchers.eq(expectedUpdatedItemType))(
-              any(),
-              any(),
-              any()
-            )
+          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
         }
 
         "provided with both TARIC and NAC" in {
@@ -589,12 +577,7 @@ class ItemTypeControllerSpec
             taricAdditionalCodes = cachedItemType.taricAdditionalCodes :+ taricToAdd,
             nationalAdditionalCodes = cachedItemType.nationalAdditionalCodes :+ nacToAdd
           )
-          verify(mockCustomsCacheService)
-            .cache[ItemType](any(), ArgumentMatchers.eq(ItemType.id), ArgumentMatchers.eq(expectedUpdatedItemType))(
-              any(),
-              any(),
-              any()
-            )
+          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
         }
       }
 
@@ -661,12 +644,7 @@ class ItemTypeControllerSpec
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes.tail)
-          verify(mockCustomsCacheService)
-            .cache[ItemType](any(), ArgumentMatchers.eq(ItemType.id), ArgumentMatchers.eq(expectedUpdatedItemType))(
-              any(),
-              any(),
-              any()
-            )
+          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
         }
 
         "removing the last element" in {
@@ -679,12 +657,7 @@ class ItemTypeControllerSpec
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes.init)
-          verify(mockCustomsCacheService)
-            .cache[ItemType](any(), ArgumentMatchers.eq(ItemType.id), ArgumentMatchers.eq(expectedUpdatedItemType))(
-              any(),
-              any(),
-              any()
-            )
+          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
         }
 
         "removing an element in the middle" in {
@@ -698,12 +671,7 @@ class ItemTypeControllerSpec
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = Seq("1111", "2222", "4444", "5555"))
-          verify(mockCustomsCacheService)
-            .cache[ItemType](any(), ArgumentMatchers.eq(ItemType.id), ArgumentMatchers.eq(expectedUpdatedItemType))(
-              any(),
-              any(),
-              any()
-            )
+          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
         }
       }
 

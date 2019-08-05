@@ -36,6 +36,7 @@ object PackageInformation {
   implicit val format = Json.format[PackageInformation]
 
   val formId = "PackageInformation"
+  val limit = 99
 
   val mapping = Forms
     .mapping(
