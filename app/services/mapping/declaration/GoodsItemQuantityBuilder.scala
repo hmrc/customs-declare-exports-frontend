@@ -19,7 +19,6 @@ package services.mapping.declaration
 import javax.inject.Inject
 import models.declaration.governmentagencygoodsitem.{Formats, GovernmentAgencyGoodsItem}
 import play.api.libs.json.Reads
-import services.ExportsItemsCacheIds
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
 import services.mapping.declaration.GoodsItemQuantityBuilder.createGoodsItemQuantity
@@ -41,7 +40,7 @@ object GoodsItemQuantityBuilder {
 
   def build(implicit cacheMap: CacheMap): DeclarationGoodsItemQuantityType =
     cacheMap
-      .getEntry[Seq[GovernmentAgencyGoodsItem]](ExportsItemsCacheIds.itemsId)
+      .getEntry[Seq[GovernmentAgencyGoodsItem]]("exportItems")
       .map(goodsItems => createGoodsItemQuantity(goodsItems))
       .orNull
 

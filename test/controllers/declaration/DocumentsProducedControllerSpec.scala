@@ -52,12 +52,11 @@ class DocumentsProducedControllerSpec
     super.beforeEach()
     authorizedUser()
     withNewCaching(cachedModel)
-    withCaching[DocumentsProducedData](None, formId)
   }
 
   override def afterEach() {
     super.afterEach()
-    reset(mockAuthConnector, mockExportsCacheService, mockCustomsCacheService)
+    reset(mockAuthConnector, mockExportsCacheService)
   }
 
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
@@ -193,7 +192,6 @@ class DocumentsProducedControllerSpec
 
       "try to remove a non existent document" in {
 
-        withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
         val body = ("action", "Remove:123-123-123-123-123-123")
 
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
@@ -226,8 +224,6 @@ class DocumentsProducedControllerSpec
       }
 
       "try to add an empty document" in {
-
-        withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
         val undefinedDocument: Map[String, String] = emptyDocumentsProducedMap
 
@@ -274,8 +270,6 @@ class DocumentsProducedControllerSpec
 
       "that does not exist in cache" in {
 
-        withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
-
         val newDocument = correctDocumentsProducedMap + (s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> "DOCID123")
         val body = newDocument.toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -290,8 +284,6 @@ class DocumentsProducedControllerSpec
     "remove a document successfully" when {
 
       "exists in cache" in {
-
-        withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
         val firstElementIndex = "0"
         val body = removeActionUrlEncoded(firstElementIndex)
@@ -308,7 +300,6 @@ class DocumentsProducedControllerSpec
 
       "provided with empty form and with empty cache" in {
 
-        when(mockItemsCachingService.addItemToCache(any(), any())(any(), any())).thenReturn(Future.successful(true))
         val body = emptyDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
         val header = result.futureValue.header
@@ -319,8 +310,6 @@ class DocumentsProducedControllerSpec
       }
 
       "provided with empty form and with existing cache" in {
-
-        withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
         val body = emptyDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -346,7 +335,6 @@ class DocumentsProducedControllerSpec
       }
 
       "provided with a valid document and with existing cache" in {
-        withCaching[DocumentsProducedData](Some(correctDocumentsProducedData), formId)
 
         val newDocument = correctDocumentsProducedMap + (s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> "DOCID123")
         val body = newDocument.toSeq :+ saveAndContinueActionUrlEncoded

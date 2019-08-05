@@ -24,9 +24,9 @@ import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
-import services.ExportsItemsCacheIds
+
 import services.cache.ExportsCacheItemBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
+
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
   GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
@@ -34,6 +34,7 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
 
 class GovernmentAgencyGoodsItemBuilderSpec
     extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with MockitoSugar with ExportsCacheItemBuilder {
+  val defaultMeasureCode = "KGM"
 
   private val statisticalValueAmountBuilder = mock[StatisticalValueAmountBuilder]
   private val packagingBuilder = mock[PackagingBuilder]
@@ -112,13 +113,13 @@ class GovernmentAgencyGoodsItemBuilderSpec
     val goodsMeasure = mappedCommodity.getGoodsMeasure
 
     goodsMeasure.getNetNetWeightMeasure.getValue shouldBe BigDecimal(90).bigDecimal
-    goodsMeasure.getNetNetWeightMeasure.getUnitCode shouldBe ExportsItemsCacheIds.defaultMeasureCode
+    goodsMeasure.getNetNetWeightMeasure.getUnitCode shouldBe defaultMeasureCode
 
     goodsMeasure.getGrossMassMeasure.getValue shouldBe BigDecimal(100).bigDecimal
-    goodsMeasure.getGrossMassMeasure.getUnitCode shouldBe ExportsItemsCacheIds.defaultMeasureCode
+    goodsMeasure.getGrossMassMeasure.getUnitCode shouldBe defaultMeasureCode
 
     goodsMeasure.getTariffQuantity.getValue shouldBe BigDecimal(2).bigDecimal
-    goodsMeasure.getTariffQuantity.getUnitCode shouldBe ExportsItemsCacheIds.defaultMeasureCode
+    goodsMeasure.getTariffQuantity.getUnitCode shouldBe defaultMeasureCode
   }
   private def validateAdditionalInformation(
     additionalInfomation: WCOGovernmentAgencyGoodsItem.AdditionalInformation

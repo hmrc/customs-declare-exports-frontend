@@ -19,14 +19,23 @@ package services.mapping.governmentagencygoodsitem
 import forms.declaration.additionaldocuments.DocumentsProduced
 import javax.inject.Inject
 import models.declaration.governmentagencygoodsitem._
-import services.ExportsItemsCacheIds.dateTimeCode
 import services.cache.ExportItem
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument.{Submitter, WriteOff => WCOWriteOff}
-import wco.datamodel.wco.declaration_ds.dms._2.AdditionalDocumentEffectiveDateTimeType.{DateTimeString => WCODateTimeString}
-import wco.datamodel.wco.declaration_ds.dms._2.{AdditionalDocumentEffectiveDateTimeType, SubmitterNameTextType, WriteOffQuantityQuantityType, _}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument.{
+  Submitter,
+  WriteOff => WCOWriteOff
+}
+import wco.datamodel.wco.declaration_ds.dms._2.AdditionalDocumentEffectiveDateTimeType.{
+  DateTimeString => WCODateTimeString
+}
+import wco.datamodel.wco.declaration_ds.dms._2.{
+  AdditionalDocumentEffectiveDateTimeType,
+  SubmitterNameTextType,
+  WriteOffQuantityQuantityType,
+  _
+}
 
 import scala.collection.JavaConverters._
 
@@ -48,6 +57,7 @@ class AdditionalDocumentsBuilder @Inject()()
 }
 
 object AdditionalDocumentsBuilder {
+  val dateTimeCode = "102"
 
   def build(procedureCodes: Seq[GovernmentAgencyGoodsItemAdditionalDocument]): java.util.List[AdditionalDocument] =
     procedureCodes

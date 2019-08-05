@@ -24,9 +24,9 @@ import forms.declaration.ItemType.IdentificationTypeCodes.{
   TARICAdditionalCode
 }
 import models.declaration.governmentagencygoodsitem.{Classification, Commodity, DangerousGoods, GoodsMeasure, Measure}
-import services.ExportsItemsCacheIds.defaultMeasureCode
 
 object CachingMappingHelper {
+  val defaultMeasureCode = "KGM"
 
   def commodityFromItemTypes(itemType: ItemType): Commodity =
     Commodity(
