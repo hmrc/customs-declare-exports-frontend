@@ -17,14 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.CarrierDetails
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.carrier_details
@@ -37,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class CarrierDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   carrierDetailsPage: carrier_details
@@ -63,12 +60,10 @@ class CarrierDetailsController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: CarrierDetails)(implicit req: JourneyRequest[_]): Future[Unit] =
-    for {
-      _ <- getAndUpdateExportCacheModel(sessionId, model => {
-        val updatedParties = model.parties.copy(carrierDetails = Some(formData))
-        exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
-      })
-      _ <- customsCacheService.cache[CarrierDetails](cacheId, CarrierDetails.id, formData)
-    } yield Unit
+  private def updateCache(sessionId: String, formData: CarrierDetails)(implicit req: JourneyRequest[_]) =
+    getAndUpdateExportCacheModel(sessionId, model => {
+      val updatedParties = model.parties.copy(carrierDetails = Some(formData))
+      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
+    })
+
 }

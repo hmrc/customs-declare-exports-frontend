@@ -16,8 +16,6 @@
 
 package controllers.declaration
 
-import java.time.LocalDateTime
-
 import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.declaration.DeclarationAdditionalActorsControllerSpec.cacheWithMaximumAmountOfActors
 import controllers.util.{Add, Remove, SaveAndContinue}
@@ -25,12 +23,10 @@ import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActorsSpec._
 import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMessages}
-import models.declaration.DeclarationAdditionalActorsData.formId
+import models.declaration.DeclarationAdditionalActorsData
 import models.declaration.DeclarationAdditionalActorsDataSpec._
-import models.declaration.{DeclarationAdditionalActorsData, Parties}
 import org.mockito.Mockito.reset
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class DeclarationAdditionalActorsControllerSpec
     extends CustomExportsBaseSpec with DeclarationAdditionalActorsMessages with CommonMessages with ViewValidator {
@@ -43,12 +39,11 @@ class DeclarationAdditionalActorsControllerSpec
     super.beforeEach()
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[DeclarationAdditionalActorsData](None)
   }
 
   override def afterEach() {
     super.afterEach()
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
@@ -98,7 +93,6 @@ class DeclarationAdditionalActorsControllerSpec
       }
 
       "when validate request - correct values and items in cache" in {
-        withCaching[DeclarationAdditionalActorsData](Some(correctAdditionalActorsData), formId)
 
         testHappyPathsScenarios(
           expectedPath = "/customs-declare-exports/declaration/holder-of-authorisation",

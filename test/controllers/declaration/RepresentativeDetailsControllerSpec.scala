@@ -16,20 +16,16 @@
 
 package controllers.declaration
 
-import java.time.LocalDateTime
-
 import base.CustomExportsBaseSpec
 import base.TestHelper._
 import forms.Choice
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
-import forms.Choice.choiceId
 import forms.declaration.RepresentativeDetails
 import forms.declaration.RepresentativeDetailsSpec._
 import helpers.views.declaration.{CommonMessages, RepresentativeDetailsMessages}
 import models.declaration.Parties
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, when}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import services.cache.ExportsCacheModel
@@ -45,13 +41,12 @@ class RepresentativeDetailsControllerSpec
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withCaching[RepresentativeDetails](None, RepresentativeDetails.formId)
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
   }
 
   override def afterEach() {
     super.afterEach()
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Representative Address Controller on GET" should {
@@ -229,12 +224,6 @@ class RepresentativeDetailsControllerSpec
 
       theCacheModelUpdated.parties.representativeDetails.get must be(correctRepresentativeDetails)
 
-      verify(mockCustomsCacheService)
-        .cache[RepresentativeDetails](any(), ArgumentMatchers.eq(RepresentativeDetails.formId), any())(
-          any(),
-          any(),
-          any()
-        )
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetails))
     }
 

@@ -33,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConsignmentReferencesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   consignmentReferencesPage: consignment_references
@@ -54,11 +53,8 @@ class ConsignmentReferencesController @Inject()(
         (formWithErrors: Form[ConsignmentReferences]) =>
           Future.successful(BadRequest(consignmentReferencesPage(formWithErrors))),
         validConsignmentReferences =>
-          for {
-            _ <- updateCache(journeySessionId, validConsignmentReferences)
-            _ <- customsCacheService
-              .cache[ConsignmentReferences](cacheId, ConsignmentReferences.id, validConsignmentReferences)
-          } yield Redirect(controllers.declaration.routes.ExporterDetailsController.displayForm())
+          updateCache(journeySessionId, validConsignmentReferences)
+            .map(_ => Redirect(controllers.declaration.routes.ExporterDetailsController.displayForm()))
       )
   }
 

@@ -40,7 +40,6 @@ class DeclarationHolderController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   declarationHolderPage: declaration_holder
@@ -99,10 +98,8 @@ class DeclarationHolderController @Inject()(
 
       case (holder, holders) if holder.authorisationTypeCode.isDefined && holder.eori.isDefined =>
         val updatedCache = DeclarationHoldersData(holders :+ holder)
-        for {
-          _ <- updateCache(journeySessionId, updatedCache)
-          _ <- customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache)
-        } yield Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm())
+        updateCache(journeySessionId, updatedCache)
+          .map(_ => Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm()))
 
       case (DeclarationHolder(authCode, eori), _) =>
         val authCodeError = authCode.fold(
@@ -121,7 +118,7 @@ class DeclarationHolderController @Inject()(
   )(implicit request: Request[_]): Future[Result] = {
     val updatedErrors = fieldWithError.map((FormError.apply(_: String, _: String)).tupled)
 
-    val formWithError = form.fill(userInput).copy(errors = updatedErrors)
+    val formWithError = form().fill(userInput).copy(errors = updatedErrors)
 
     Future.successful(BadRequest(declarationHolderPage(formWithError, holders)))
   }
@@ -144,10 +141,8 @@ class DeclarationHolderController @Inject()(
         holder match {
           case DeclarationHolder(Some(typeCode), Some(eori)) =>
             val updatedCache = DeclarationHoldersData(Seq(DeclarationHolder(Some(typeCode), Some(eori))))
-            for {
-              _ <- updateCache(journeySessionId, updatedCache)
-              _ <- customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache)
-            } yield Redirect(controllers.declaration.routes.DestinationCountriesController.displayForm())
+            updateCache(journeySessionId, updatedCache)
+              .map(_ => Redirect(controllers.declaration.routes.DestinationCountriesController.displayForm()))
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
             val typeCodeError = maybeTypeCode.fold(
@@ -170,10 +165,8 @@ class DeclarationHolderController @Inject()(
           case _ if holder.authorisationTypeCode.isDefined == holder.eori.isDefined =>
             val updatedHolders = if (holder.authorisationTypeCode.isDefined) holders :+ holder else holders
             val updatedCache = DeclarationHoldersData(updatedHolders)
-            for {
-              _ <- updateCache(journeySessionId, updatedCache)
-              _ <- customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache)
-            } yield Redirect(controllers.declaration.routes.DestinationCountriesController.displayForm())
+            updateCache(journeySessionId, updatedCache)
+              .map(_ => Redirect(controllers.declaration.routes.DestinationCountriesController.displayForm()))
 
           case DeclarationHolder(maybeTypeCode, maybeEori) =>
             val typeCodeError = maybeTypeCode.fold(
@@ -193,10 +186,8 @@ class DeclarationHolderController @Inject()(
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     if (cachedData.containsHolder(holderToRemove)) {
       val updatedCache = cachedData.copy(holders = cachedData.holders.filterNot(_ == holderToRemove))
-      for {
-        _ <- updateCache(journeySessionId, updatedCache)
-        _ <- customsCacheService.cache[DeclarationHoldersData](cacheId, formId, updatedCache)
-      } yield Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm())
+      updateCache(journeySessionId, updatedCache)
+        .map(_ => Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm()))
     } else errorHandler.displayErrorPage()
 
   private def retrieveHolder(values: Seq[String]): DeclarationHolder =
