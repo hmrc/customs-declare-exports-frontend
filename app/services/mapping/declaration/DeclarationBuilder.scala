@@ -32,7 +32,6 @@ object DeclarationBuilder {
     declaration.setFunctionalReferenceID(FunctionalReferenceIdBuilder.build)
     declaration.setTypeCode(TypeCodeBuilder.build)
     declaration.setGoodsItemQuantity(GoodsItemQuantityBuilder.build)
-    declaration.setAgent(AgentBuilder.build)
 //    declaration.setGoodsShipment(GoodsShipmentBuilder.build)
     declaration.setExitOffice(ExitOfficeBuilder.build)
     declaration.setBorderTransportMeans(BorderTransportMeansBuilder.build)
