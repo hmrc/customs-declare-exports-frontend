@@ -18,7 +18,7 @@ package services.mapping.declaration
 
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
-import services.ExportsItemsCacheIds
+
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers {
@@ -28,7 +28,7 @@ class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers {
       implicit val cacheMap: CacheMap =
         CacheMap(
           "CacheID",
-          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.createGovernmentAgencyGoodsItemsListJson(0))
+          Map("exportItems" -> GovernmentAgencyGoodsItemSpec.createGovernmentAgencyGoodsItemsListJson(0))
         )
       val goodsItemQuantityType = GoodsItemQuantityBuilder.build(cacheMap)
       goodsItemQuantityType.getValue.intValue() should be(0)
@@ -38,7 +38,7 @@ class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers {
       implicit val cacheMap: CacheMap =
         CacheMap(
           "CacheID",
-          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.createGovernmentAgencyGoodsItemsListJson(1))
+          Map("exportItems" -> GovernmentAgencyGoodsItemSpec.createGovernmentAgencyGoodsItemsListJson(1))
         )
       val goodsItemQuantityType = GoodsItemQuantityBuilder.build(cacheMap)
       goodsItemQuantityType.getValue.intValue() should be(1)
@@ -48,7 +48,7 @@ class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers {
       implicit val cacheMap: CacheMap =
         CacheMap(
           "CacheID",
-          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemSpec.createGovernmentAgencyGoodsItemsListJson(3))
+          Map("exportItems" -> GovernmentAgencyGoodsItemSpec.createGovernmentAgencyGoodsItemsListJson(3))
         )
       val goodsItemQuantityType = GoodsItemQuantityBuilder.build(cacheMap)
       goodsItemQuantityType.getValue.intValue() should be(3)
