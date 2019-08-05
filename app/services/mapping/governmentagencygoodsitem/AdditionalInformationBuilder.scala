@@ -19,7 +19,6 @@ import forms.declaration.AdditionalInformation
 import javax.inject.Inject
 import services.cache.ExportItem
 import services.mapping.ModifyingBuilder
-import services.mapping.governmentagencygoodsitem.AdditionalInformationBuilder.buildAdditionalInformation
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.{
   AdditionalInformation => WCOAdditionalInformation
@@ -28,8 +27,6 @@ import wco.datamodel.wco.declaration_ds.dms._2.{
   AdditionalInformationStatementCodeType,
   AdditionalInformationStatementDescriptionTextType
 }
-
-import scala.collection.JavaConverters._
 
 class AdditionalInformationBuilder @Inject()()
     extends ModifyingBuilder[ExportItem, GoodsShipment.GovernmentAgencyGoodsItem] {
@@ -45,16 +42,6 @@ class AdditionalInformationBuilder @Inject()()
         }
       }
     }
-
-}
-
-object AdditionalInformationBuilder {
-
-  def build(additionalInformations: Seq[AdditionalInformation]): java.util.List[WCOAdditionalInformation] =
-    additionalInformations
-      .map(buildAdditionalInformation)
-      .toList
-      .asJava
 
   private def buildAdditionalInformation(info: AdditionalInformation): WCOAdditionalInformation = {
     val wcoAdditionalInformation = new WCOAdditionalInformation

@@ -22,25 +22,11 @@ import models.declaration.governmentagencygoodsitem._
 import services.ExportsItemsCacheIds.dateTimeCode
 import services.cache.ExportItem
 import services.mapping.ModifyingBuilder
-import services.mapping.governmentagencygoodsitem.AdditionalDocumentsBuilder.{
-  createAdditionalDocument,
-  createGoodsItemAdditionalDocument
-}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument.{
-  Submitter,
-  WriteOff => WCOWriteOff
-}
-import wco.datamodel.wco.declaration_ds.dms._2.AdditionalDocumentEffectiveDateTimeType.{
-  DateTimeString => WCODateTimeString
-}
-import wco.datamodel.wco.declaration_ds.dms._2.{
-  AdditionalDocumentEffectiveDateTimeType,
-  SubmitterNameTextType,
-  WriteOffQuantityQuantityType,
-  _
-}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument.{Submitter, WriteOff => WCOWriteOff}
+import wco.datamodel.wco.declaration_ds.dms._2.AdditionalDocumentEffectiveDateTimeType.{DateTimeString => WCODateTimeString}
+import wco.datamodel.wco.declaration_ds.dms._2.{AdditionalDocumentEffectiveDateTimeType, SubmitterNameTextType, WriteOffQuantityQuantityType, _}
 
 import scala.collection.JavaConverters._
 

@@ -18,12 +18,9 @@ package services.mapping.governmentagencygoodsitem
 import javax.inject.Inject
 import services.cache.ExportItem
 import services.mapping.ModifyingBuilder
-import services.mapping.governmentagencygoodsitem.GovernmentProcedureBuilder.createGovernmentProcedure
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.GovernmentProcedure
 import wco.datamodel.wco.declaration_ds.dms._2.{GovernmentProcedureCurrentCodeType, GovernmentProcedurePreviousCodeType}
-
-import scala.collection.JavaConverters._
 
 class GovernmentProcedureBuilder @Inject()()
     extends ModifyingBuilder[ExportItem, GoodsShipment.GovernmentAgencyGoodsItem] {
@@ -43,18 +40,6 @@ class GovernmentProcedureBuilder @Inject()()
         }
       }
     }
-
-}
-
-object GovernmentProcedureBuilder {
-
-  def build(
-    procedureCodes: Seq[models.declaration.governmentagencygoodsitem.GovernmentProcedure]
-  ): java.util.List[GovernmentProcedure] =
-    procedureCodes
-      .map(procedureCode => createGovernmentProcedure(procedureCode.currentCode, procedureCode.previousCode))
-      .toList
-      .asJava
 
   private def createGovernmentProcedure(
     currentCode: Option[String] = None,
