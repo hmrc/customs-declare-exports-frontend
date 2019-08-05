@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.{cacheId, goodsItemCacheId}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced.form
@@ -29,7 +28,6 @@ import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.ItemsCachingService
 import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -42,7 +40,6 @@ class DocumentsProducedController @Inject()(
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
-  itemsCache: ItemsCachingService,
   mcc: MessagesControllerComponents,
   documentProducedPage: documents_produced
 )(implicit ec: ExecutionContext)
@@ -109,23 +106,13 @@ class DocumentsProducedController @Inject()(
   ): Future[Result] =
     if (document.isDefined) {
       val updateDocs = DocumentsProducedData(documents :+ document)
-      updateModelInCache(itemId, document, updateDocs).flatMap(
-        _ => addGoodsItem(itemId, document, updateDocs.documents)
-      )
-    } else addGoodsItem(itemId, document)
+      updateModelInCache(itemId, document, updateDocs)
+        .map(_ => Redirect(routes.ItemsSummaryController.displayPage()))
+    } else Future.successful(Redirect(routes.ItemsSummaryController.displayPage()))
 
   private def updateModelInCache(itemId: String, document: DocumentsProduced, updatedDocs: DocumentsProducedData)(
     implicit journeyRequest: JourneyRequest[_]
   ) = updateCache(itemId, journeySessionId, updatedDocs)
-
-  private def addGoodsItem(itemId: String, document: DocumentsProduced, docs: Seq[DocumentsProduced] = Seq.empty)(
-    implicit request: JourneyRequest[_],
-    hc: HeaderCarrier
-  ) =
-    itemsCache.addItemToCache(goodsItemCacheId, cacheId).flatMap {
-      case true  => Future.successful(Redirect(routes.ItemsSummaryController.displayPage()))
-      case false => handleErrorPage(itemId, Seq(("", "supplementary.addgoodsitems.addallpages.error")), document, docs)
-    }
 
   private def addItem(itemId: String, userInput: DocumentsProduced, cachedData: DocumentsProducedData)(
     implicit request: JourneyRequest[_],

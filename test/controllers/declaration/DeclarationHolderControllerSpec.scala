@@ -16,19 +16,16 @@
 
 package controllers.declaration
 
-import java.time.LocalDateTime
-
 import base.TestHelper.createRandomAlphanumericString
 import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DeclarationHolder
 import helpers.views.declaration.{CommonMessages, DeclarationHolderMessages}
-import models.declaration.{DeclarationHoldersData, Parties}
+import models.declaration.DeclarationHoldersData
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.{reset, times, verify}
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class DeclarationHolderControllerSpec
     extends CustomExportsBaseSpec with DeclarationHolderMessages with CommonMessages with ViewValidator {
@@ -41,11 +38,11 @@ class DeclarationHolderControllerSpec
   override def beforeEach() {
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[DeclarationHoldersData](None, DeclarationHoldersData.formId)
+
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)

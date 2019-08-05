@@ -51,7 +51,6 @@ import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
-import services.ExportsItemsCacheIds
 import services.cache.ExportsCacheModel
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilderSpec
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -263,7 +262,7 @@ object SupplementaryDeclarationTestData {
           PackageInformation(typesOfPackages = Some("AB"), numberOfPackages = Some(4), shippingMarks = Some("mark2"))
         )
       ),
-      ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemBuilderSpec.itemsJsonList,
+      "exportItems" -> GovernmentAgencyGoodsItemBuilderSpec.itemsJsonList,
       CommodityMeasure.commodityFormId -> Json.toJson(
         CommodityMeasure(supplementaryUnits = Some("2"), netMass = "23", grossMass = "23")
       ),

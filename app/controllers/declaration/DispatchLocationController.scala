@@ -34,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class DispatchLocationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   dispatchLocationPage: dispatch_location
@@ -54,12 +53,9 @@ class DispatchLocationController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(formWithErrors))),
-        validDispatchLocation => {
-          for {
-            _ <- updateCache(journeySessionId, validDispatchLocation)
-            _ <- customsCacheService.cache[DispatchLocation](cacheId, DispatchLocation.formId, validDispatchLocation)
-          } yield Redirect(specifyNextPage(validDispatchLocation))
-        }
+        validDispatchLocation =>
+          updateCache(journeySessionId, validDispatchLocation)
+            .map(_ => Redirect(specifyNextPage(validDispatchLocation)))
       )
   }
 

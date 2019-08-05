@@ -16,17 +16,12 @@
 
 package controllers.declaration
 
-import java.time.LocalDateTime
-
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.common.Address
 import forms.declaration.DeclarantDetailsSpec._
-import forms.declaration.{DeclarantDetails, EntityDetails}
-import models.declaration.Parties
 import org.mockito.Mockito.reset
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class DeclarantDetailsControllerSpec extends CustomExportsBaseSpec {
 
@@ -36,7 +31,6 @@ class DeclarantDetailsControllerSpec extends CustomExportsBaseSpec {
     super.beforeEach()
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[DeclarantDetails](None)
   }
 
   override def afterEach() {
