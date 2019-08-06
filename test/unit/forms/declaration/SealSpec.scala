@@ -31,7 +31,7 @@ class SealSpec extends WordSpec with MustMatchers {
       Seal.formId must be("Seal")
     }
 
-    "has correct seals limit" in {
+    "has 9999 limit" in {
 
       Seal.sealsAllowed must be(9999)
     }
@@ -47,7 +47,7 @@ class SealSpec extends WordSpec with MustMatchers {
 
         val result = form.fill(correctForm)
 
-        result.hasErrors must be(false)
+        result.errors must be(Seq.empty)
       }
     }
 
@@ -60,6 +60,7 @@ class SealSpec extends WordSpec with MustMatchers {
         val result = form.bind(emptyForm)
         val error = result.errors.head
 
+        result.errors.length must be(1)
         error.key must be("id")
         error.message must be("standard.transport.sealId.empty.error")
       }

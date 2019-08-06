@@ -22,7 +22,7 @@ import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, Documen
 import models.declaration.DocumentsProducedData
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import services.cache.{ExportsItemBuilder, ExportsCacheModelBuilder}
+import services.cache.{ExportsCacheModelBuilder, ExportsItemBuilder}
 import services.mapping.governmentagencygoodsitem.{GovernmentAgencyGoodsItemBuilder, GovernmentAgencyGoodsItemData}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
