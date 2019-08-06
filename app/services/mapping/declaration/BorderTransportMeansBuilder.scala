@@ -22,7 +22,12 @@ import services.Countries.allCountries
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
-import wco.datamodel.wco.declaration_ds.dms._2.{BorderTransportMeansIdentificationIDType, BorderTransportMeansIdentificationTypeCodeType, BorderTransportMeansModeCodeType, BorderTransportMeansRegistrationNationalityCodeType}
+import wco.datamodel.wco.declaration_ds.dms._2.{
+  BorderTransportMeansIdentificationIDType,
+  BorderTransportMeansIdentificationTypeCodeType,
+  BorderTransportMeansModeCodeType,
+  BorderTransportMeansRegistrationNationalityCodeType
+}
 
 class BorderTransportMeansBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
   override def buildThenAdd(model: ExportsCacheModel, t: Declaration): Unit = {

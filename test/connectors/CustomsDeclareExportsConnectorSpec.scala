@@ -156,10 +156,5 @@ object CustomsDeclareExportsConnectorSpec {
     )
 
   val cancellationRequest =
-    CancelDeclaration(
-      functionalReferenceId = "",
-      declarationId = "",
-      statementDescription = "",
-      changeReason = ""
-    )
+    CancelDeclaration(functionalReferenceId = "", declarationId = "", statementDescription = "", changeReason = "")
 }

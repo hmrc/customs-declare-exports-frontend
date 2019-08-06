@@ -18,7 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.TransportDetailsController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.TransportCodes.{IMOShipIDNumber, cash}
+import forms.declaration.TransportCodes.{cash, IMOShipIDNumber}
 import forms.declaration.TransportDetails
 import play.api.libs.json.Json
 import play.api.test.Helpers._

@@ -24,19 +24,15 @@ class DeclarationBuilderSpec extends WordSpec with Matchers {
   "DeclarationBuilder" should {
     "correctly build a cancellation request" in {
 
-      val declaration = DeclarationBuilder.buildCancellationRequest(
-        "funcRefId",
-        "decId",
-        "statDesc",
-        "changeReason",
-        "eori"
-      )
+      val declaration =
+        DeclarationBuilder.buildCancellationRequest("funcRefId", "decId", "statDesc", "changeReason", "eori")
 
-      declaration.getFunctionalReferenceID.getValue should be ("funcRefId")
-      declaration.getID.getValue should be ("decId")
-      declaration.getAdditionalInformation.asScala.count(_.getStatementDescription.getValue.equals("statDesc")) should be(1)
+      declaration.getFunctionalReferenceID.getValue should be("funcRefId")
+      declaration.getID.getValue should be("decId")
+      declaration.getAdditionalInformation.asScala
+        .count(_.getStatementDescription.getValue.equals("statDesc")) should be(1)
       declaration.getAmendment.asScala.count(_.getChangeReasonCode.getValue.equals("changeReason")) should be(1)
-      declaration.getSubmitter.getID.getValue should be ("eori")
+      declaration.getSubmitter.getID.getValue should be("eori")
 
     }
   }
