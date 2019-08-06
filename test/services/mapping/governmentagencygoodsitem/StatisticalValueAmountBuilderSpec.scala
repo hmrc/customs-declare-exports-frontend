@@ -17,10 +17,10 @@
 package services.mapping.governmentagencygoodsitem
 
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheItemBuilder
+import services.cache.ExportsItemBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
-class StatisticalValueAmountBuilderSpec extends WordSpec with Matchers with ExportsCacheItemBuilder {
+class StatisticalValueAmountBuilderSpec extends WordSpec with Matchers with ExportsItemBuilder {
 
   "Statistical Value Amount Builder" should {
     "build then add" when {

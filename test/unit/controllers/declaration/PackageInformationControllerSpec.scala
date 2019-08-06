@@ -21,10 +21,12 @@ import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.PackageInformation
 import play.api.test.Helpers._
+import services.cache.ExportsItemBuilder
 import unit.base.ControllerSpec
+import unit.mock.ErrorHandlerMocks
 import views.html.declaration.package_information
 
-class PackageInformationControllerSpec extends ControllerSpec {
+class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks with ExportsItemBuilder {
 
   trait SetUp {
     val packageInformationPage = new package_information(mainTemplate)
@@ -38,11 +40,12 @@ class PackageInformationControllerSpec extends ControllerSpec {
       packageInformationPage
     )(ec)
 
-    val itemId = "itemId"
+    val exampleItem = aCachedItem()
+
+    val itemId = exampleItem.id
 
     authorizedUser()
-    withCaching(None)
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    setupErrorHandler()
   }
 
   "Package Information Controller" should {
@@ -51,6 +54,8 @@ class PackageInformationControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+
         val result = controller.displayPage(itemId)(getRequest())
 
         status(result) must be(OK)
@@ -58,7 +63,9 @@ class PackageInformationControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache contain some data" in new SetUp {
 
-        val itemWithPackageInformation = aCachedItem(withPackageInformation(Some("12"), Some(10), Some("123")))
+        val itemWithPackageInformation = aCachedItem(
+          withPackageInformation(typesOfPackages = Some("12"), numberOfPackages = Some(10), shippingMarks = Some("123"))
+        )
         withNewCaching(aCacheModel(withItem(itemWithPackageInformation)))
 
         val result = controller.displayPage(itemId)(getRequest())
@@ -71,6 +78,8 @@ class PackageInformationControllerSpec extends ControllerSpec {
 
       "action is incorrect" in new SetUp {
 
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+
         val body =
           Seq(("typesOfPackages", "NT"), ("numberOfPackages", "123"), ("shippingMarks", "abc"), ("wrongAction", ""))
 
@@ -81,6 +90,8 @@ class PackageInformationControllerSpec extends ControllerSpec {
 
       "user tried to remove item which doesn't exist" in new SetUp {
 
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+
         val body = (Remove.toString, "")
 
         val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(body))
@@ -90,6 +101,8 @@ class PackageInformationControllerSpec extends ControllerSpec {
 
       "user tried to continue without adding an item" in new SetUp {
 
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+
         val body = (SaveAndContinue.toString, "")
 
         val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(body))
@@ -98,6 +111,8 @@ class PackageInformationControllerSpec extends ControllerSpec {
       }
 
       "user tried to add incorrect item" in new SetUp {
+
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
 
         val body =
           Seq(("typesOfPackages", "wrongType"), ("numberOfPackages", ""), ("shippingMarks", ""), (Add.toString, ""))
@@ -110,7 +125,7 @@ class PackageInformationControllerSpec extends ControllerSpec {
       "user reached limit of items" in new SetUp {
 
         val packageInformation = PackageInformation(None, None, None)
-        val maxItems = aCachedItem(withPackageInformation(packageInformation, Seq.fill(98)(packageInformation): _*))
+        val maxItems = aCachedItem(withPackageInformation(List.fill(99)(packageInformation)))
         withNewCaching(aCacheModel(withItem(maxItems)))
 
         val body =
@@ -123,7 +138,13 @@ class PackageInformationControllerSpec extends ControllerSpec {
 
       "user tried to add duplicated value" in new SetUp {
 
-        val item = aCachedItem(withPackageInformation(Some("NT"), Some(1), Some("value")))
+        val item = aCachedItem(
+          withPackageInformation(
+            typesOfPackages = Some("NT"),
+            numberOfPackages = Some(1),
+            shippingMarks = Some("value")
+          )
+        )
         withNewCaching(aCacheModel(withItem(item)))
 
         val body =
@@ -139,6 +160,8 @@ class PackageInformationControllerSpec extends ControllerSpec {
 
       "user added correct item" in new SetUp {
 
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+
         val body =
           Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
 
@@ -149,7 +172,13 @@ class PackageInformationControllerSpec extends ControllerSpec {
 
       "user clicked continue with item in a cache" in new SetUp {
 
-        val item = aCachedItem(withPackageInformation(Some("NT"), Some(1), Some("value")))
+        val item = aCachedItem(
+          withPackageInformation(
+            typesOfPackages = Some("NT"),
+            numberOfPackages = Some(1),
+            shippingMarks = Some("value")
+          )
+        )
         withNewCaching(aCacheModel(withItem(item)))
 
         val body = (SaveAndContinue.toString, "")

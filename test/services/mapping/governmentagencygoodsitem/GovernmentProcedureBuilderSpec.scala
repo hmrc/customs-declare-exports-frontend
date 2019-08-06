@@ -18,11 +18,11 @@ package services.mapping.governmentagencygoodsitem
 
 import models.declaration.governmentagencygoodsitem.GovernmentProcedure
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheItemBuilder
+import services.cache.ExportsItemBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
 
 class GovernmentProcedureBuilderSpec
-    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with ExportsCacheItemBuilder {
+    extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with ExportsItemBuilder {
 
   val firstProcedureCode = "CUPR"
   val additionalProcedureCode = "ABC"

@@ -19,10 +19,10 @@ package services.mapping.governmentagencygoodsitem
 import models.declaration.governmentagencygoodsitem.Packaging
 import org.scalatest.{Matchers, WordSpec}
 import services.GoodsItemCachingData
-import services.cache.ExportsCacheItemBuilder
+import services.cache.ExportsItemBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
-class PackagingBuilderSpec extends WordSpec with Matchers with GoodsItemCachingData with ExportsCacheItemBuilder {
+class PackagingBuilderSpec extends WordSpec with Matchers with GoodsItemCachingData with ExportsItemBuilder {
 
   "PackageBuilder" should {
 

@@ -16,16 +16,20 @@
 
 package unit.controllers
 
+import com.codahale.metrics.Timer
 import controllers.CancelDeclarationController
 import forms.CancelDeclaration
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import models.requests.{CancellationRequestExists, CancellationRequested, MissingDeclaration}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
+import unit.mock.{ErrorHandlerMocks, ExportsMetricsMocks}
 import views.html.{cancel_declaration, cancellation_confirmation_page}
 
-class CancelDeclarationControllerSpec extends ControllerSpec {
+class CancelDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMocks with ExportsMetricsMocks {
   import CancelDeclarationControllerSpec._
 
   trait SetUp {
@@ -42,7 +46,10 @@ class CancelDeclarationControllerSpec extends ControllerSpec {
       cancelConfirmationPage
     )(ec)
 
+    setupErrorHandler()
     authorizedUser()
+
+    when(mockExportsMetrics.startTimer(any())).thenReturn(mock[Timer.Context])
   }
 
   "Cancel declaration controller" should {

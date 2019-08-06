@@ -16,8 +16,61 @@
 
 package forms.declaration
 
+import base.TestHelper
 import forms.declaration.TransportCodes._
+import helpers.views.declaration.WarehouseIdentificationMessages
 import play.api.libs.json.{JsObject, JsString, JsValue}
+import unit.base.UnitSpec
+
+class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationMessages {
+
+  import WarehouseIdentification._
+
+  "Warehouse Identification Form" should {
+    "validate identification type" in {
+      val incorrectWarehouseIdentification: JsValue =
+        JsObject(Map("identificationType" -> JsString(TestHelper.createRandomAlphanumericString(2))))
+
+      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationTypeError)
+    }
+
+    "validate identification type and number" in {
+
+      val incorrectWarehouseIdentification: JsValue =
+        JsObject(
+          Map(
+            "identificationType" -> JsString(WarehouseIdentification.IdentifierType.PUBLIC_CUSTOMS_1),
+            "identificationNumber" -> JsString("")
+          )
+        )
+
+      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationNumberEmpty)
+    }
+
+    "validate identification number - more than 35 characters" in {
+      val incorrectWarehouseIdentification: JsValue =
+        JsObject(Map("identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(36))))
+
+      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationNumberError)
+    }
+
+    "validate supervising customs office - invalid" in {
+
+      val incorrectWarehouseOffice: JsValue =
+        JsObject(Map("supervisingCustomsOffice" -> JsString("SOMEWRONGCODE")))
+
+      form().bind(incorrectWarehouseOffice).errors.map(_.message) must contain(supervisingCustomsOfficeError)
+    }
+
+    "validate inland mode transport code - wrong choice" in {
+
+      val incorrectTransportCode: JsValue =
+        JsObject(Map("inlandModeOfTransportCode" -> JsString("Incorrect more")))
+
+      form().bind(incorrectTransportCode).errors.map(_.message) must contain(inlandTransportModeError)
+    }
+  }
+}
 
 object WarehouseIdentificationSpec {
   private val warehouseTypeCode = "R"

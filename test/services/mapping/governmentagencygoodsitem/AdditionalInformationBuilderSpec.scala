@@ -19,10 +19,10 @@ package services.mapping.governmentagencygoodsitem
 import forms.declaration.AdditionalInformation
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheItemBuilder
+import services.cache.ExportsItemBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
 
-class AdditionalInformationBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheItemBuilder {
+class AdditionalInformationBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsItemBuilder {
 
   val additionalInformation = AdditionalInformation("code", "description")
 

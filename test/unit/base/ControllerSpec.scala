@@ -17,43 +17,26 @@
 package unit.base
 
 import base.{MockAuthAction, MockConnectors, MockCustomsCacheService, MockExportsCacheService}
-import com.kenshoo.play.metrics.MetricsImpl
-import controllers.actions.JourneyAction
 import controllers.util.{Add, SaveAndContinue}
-import handlers.ErrorHandler
-import metrics.ExportsMetrics
-import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.when
-import play.api.inject.DefaultApplicationLifecycle
 import play.api.libs.json.JsValue
-import play.api.mvc.Results.BadRequest
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, Request}
 import play.api.test.FakeRequest
-import play.twirl.api.Html
-import services.cache.{ExportsCacheItemBuilder, ExportsCacheModelBuilder}
+import services.cache.{ExportsItemBuilder, ExportsCacheModelBuilder}
+import unit.mock.JourneyActionMocks
 import unit.tools.Stubs
 import utils.FakeRequestCSRFSupport._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 trait ControllerSpec
-    extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockCustomsCacheService
-    with MockExportsCacheService with ExportsCacheModelBuilder with ExportsCacheItemBuilder {
+  extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockCustomsCacheService
+    with MockExportsCacheService with ExportsCacheModelBuilder with ExportsItemBuilder with JourneyActionMocks {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 
-  val mockErrorHandler = mock[ErrorHandler]
+  val addActionUrlEncoded: (String, String) = (Add.toString, "")
 
-  when(mockErrorHandler.standardErrorTemplate(anyString, anyString, anyString)(any()))
-    .thenReturn(Html.apply(""))
-
-  when(mockErrorHandler.displayErrorPage()(any())).thenReturn(Future.successful(BadRequest(Html.apply(""))))
-
-  val mockExportsMetrics = new ExportsMetrics(new MetricsImpl(new DefaultApplicationLifecycle(), minimalConfiguration))
-
-  val mockJourneyAction = JourneyAction(mockExportsCacheService, stubMessagesControllerComponents())
-  val addActionUrlEncoded = (Add.toString, "")
-  val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
+  val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
 
   def getRequest(): Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "").withSession(("sessionId", "sessionId")).withCSRFToken
