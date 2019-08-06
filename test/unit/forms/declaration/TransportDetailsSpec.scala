@@ -17,7 +17,6 @@
 package unit.forms.declaration
 
 import forms.declaration.{TransportCodes, TransportDetails}
-import forms.declaration.TransportCodes._
 import org.scalatest.{MustMatchers, WordSpec}
 
 class TransportDetailsSpec extends WordSpec with MustMatchers {
