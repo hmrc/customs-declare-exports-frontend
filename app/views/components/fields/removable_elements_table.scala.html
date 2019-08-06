@@ -17,21 +17,28 @@
 @import controllers.util.Remove
 
 @import views.components.fields.LabelledValue
-@(
-    elements: Seq[LabelledValue],
-    buttonMessagesKey: String = "site.remove"
-)(implicit messages: Messages)
+@import views.html.components.buttons.remove_button
+
+@(elements: Seq[LabelledValue], title: Option[String] = None, buttonMessagesKey: String = "site.remove")(implicit messages: Messages)
 
 <div class="field-group">
     <table>
-    @for(elem <- elements) {
-        <tr>
-            <th>@{elem.label}</th>
-            <th>
-                <button class="button--secondary" name="@Remove.toString" value="@{elem.value}">@messages(buttonMessagesKey)</button>
-            </th>
-        </tr>
-    }
+      @title.map { heading =>
+          <thead>
+              <tr>
+                <th colspan="2">@heading</th>
+              </tr>
+          </thead>
+      }
+      <tbody>
+        @for(elem <- elements) {
+            <tr>
+                <th>@{elem.label}</th>
+                <th>
+                    @remove_button(value = Some(elem.value))
+                </th>
+            </tr>
+        }
+      </tbody>
     </table>
-    <br><br>
 </div>

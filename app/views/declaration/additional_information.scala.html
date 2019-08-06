@@ -19,6 +19,7 @@
 @import controllers.util.Remove
 @import forms.declaration.AdditionalInformation
 @import uk.gov.hmrc.play.views.html._
+@import views.components.fields.LabelledValue
 
 @import forms.declaration.CommodityMeasure
 
@@ -39,27 +40,16 @@
 
     @components.page_title(Some("supplementary.additionalInformation.title"))
 
-    @if(items.nonEmpty) {
-        @helper.form(AdditionalInformationController.saveAdditionalInfo(itemId), 'autoComplete -> "off") {
-            @helper.CSRF.formField
-            <div class="field-group">
-                <table >
-                @items.zipWithIndex.map { case (item, index) =>
-                <tr>
-                    <th>@item</th>
-                    <th>
-                        <button class="button--secondary" name="@Remove.toString" value=@index>@messages("site.remove")</button>
-                </th>
-                </tr>
-                }
-                </table>
-                <br><br>
-            </div>
-        }
-    }
-
     @helper.form(AdditionalInformationController.saveAdditionalInfo(itemId), 'autoComplete -> "off") {
         @helper.CSRF.formField
+
+        @if(items.nonEmpty){
+          @components.fields.removable_elements_table(
+              items.zipWithIndex.map {
+                  case (item, index) => LabelledValue(item.toString, index.toString)
+              }
+            )
+        }
 
         @components.fields.field_text(
             field = form("code"),

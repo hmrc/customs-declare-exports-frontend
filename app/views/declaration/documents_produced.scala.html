@@ -64,7 +64,7 @@
                         <td>@item.dateOfValidity</td>
                         <td>@item.documentWriteOff.map(_.measurementUnit)</td>
                         <td>@item.documentWriteOff.map(_.documentQuantity)</td>
-                        <td><button class="button--secondary" name=@Remove.toString value=@index>@messages("site.remove")</button></td>
+                        <td>@components.buttons.remove_button(value = Some(index))</td>
                     </tr>
                 }
                 </tbody>

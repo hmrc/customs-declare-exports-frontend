@@ -61,7 +61,9 @@
                     <tr>
                         <td scope="row">@actor.eori</td>
                         <td>@actor.partyType</td>
-                        <td><button class="button--secondary" name="@Remove.toString" value="@actor.toJson">@messages("site.remove")</button></td>
+                        <td>
+                            @components.buttons.remove_button(value = Some(actor.toJson.toString))
+                        </td>
                     </tr>
                 }
                 </tbody>
