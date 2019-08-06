@@ -16,52 +16,46 @@
 
 package services.mapping
 
-import forms.ChoiceSpec.supplementaryChoice
-import javax.xml.bind.JAXBElement
-import javax.xml.namespace.QName
 import models.declaration.SupplementaryDeclarationTestData
-import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import services.mapping.declaration.DeclarationBuilder
-import wco.datamodel.wco.dec_dms._2.Declaration
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import services.WcoMetadataMapper
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
 import scala.io.Source
 
-class XmlMarshallingSpec extends WordSpec with Matchers with MockitoSugar {
+class XmlMarshallingSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
 
-  // TODO - this test needs re-writing to use the new builder(s)
+  private val wcoMetadataMapper = app.injector.instanceOf[WcoMetadataMapper]
 
-//  "XmlMarshalling" should {
-//    "generate correct xml payload for empty Metadata with defaults when marshalled" in {
-//
-//      val metaData = MetaDataBuilder.build(SupplementaryDeclarationTestData.cacheMapAllRecords, supplementaryChoice)
-//
-//      populateDeclaration(metaData)
-//      import java.io.StringWriter
-//
-//      import javax.xml.bind.{JAXBContext, JAXBException, Marshaller}
-//      try { //Create JAXB Context
-//        val jaxbContext = JAXBContext.newInstance(classOf[MetaData])
-//        //Create Marshaller
-//        val jaxbMarshaller = jaxbContext.createMarshaller
-//        //Required formatting??
-//
-//        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
-//
-//        //Print XML String to Console
-//        val sw = new StringWriter
-//        //Write XML to StringWriter
-//        jaxbMarshaller.marshal(metaData, sw)
-//        //Verify XML Content
-//        val xmlContent = sw.toString
-//        xmlContent should include(Source.fromURL(getClass.getResource("/wco_dec_metadata.xml")).mkString)
-//      } catch {
-//        case e: JAXBException =>
-//          e.printStackTrace()
-//      }
-//    }
-//  }
+  "XmlMarshalling" should {
+    "generate correct xml payload for empty Metadata with defaults when marshalled" in {
+
+      val metaData = wcoMetadataMapper.produceMetaData(SupplementaryDeclarationTestData.allRecordsXmlMarshallingTest)
+
+      import java.io.StringWriter
+      import javax.xml.bind.{JAXBContext, JAXBException, Marshaller}
+      try { //Create JAXB Context
+        val jaxbContext = JAXBContext.newInstance(classOf[MetaData])
+        //Create Marshaller
+        val jaxbMarshaller = jaxbContext.createMarshaller
+        //Required formatting??
+
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
+
+        //Print XML String to Console
+        val sw = new StringWriter
+        //Write XML to StringWriter
+        jaxbMarshaller.marshal(metaData, sw)
+        //Verify XML Content
+        val xmlContent = sw.toString
+        xmlContent should include(Source.fromURL(getClass.getResource("/wco_dec_metadata_new_model.xml")).mkString)
+      } catch {
+        case e: JAXBException =>
+          e.printStackTrace()
+      }
+    }
+  }
 
 
 }

@@ -47,9 +47,9 @@ class ConsignmentBuilder @Inject()(
     )
 
     exportsCacheModel.choice match {
-      case AllowedChoiceValues.SupplementaryDec => transportEquipmentBuilder.buildThenAdd(Seq.empty, consignment)
       case AllowedChoiceValues.StandardDec =>
         transportEquipmentBuilder.buildThenAdd(exportsCacheModel.seals, consignment)
+      case _ =>
     }
 
     goodsShipment.setConsignment(consignment)
