@@ -20,6 +20,7 @@ import base.CustomExportsBaseSpec
 import org.scalatest.matchers.{MatchResult, Matcher}
 import play.api.data.{Form, FormError}
 
+//TODO Remove CustomsExportsBaseSpec from this trait or stop using this
 trait FormMatchers extends CustomExportsBaseSpec {
 
   class ErrorHasMessage(right: String) extends Matcher[Option[FormError]] {

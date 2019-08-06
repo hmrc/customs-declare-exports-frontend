@@ -50,7 +50,7 @@ object PackageInformation {
       ),
       "numberOfPackages" ->
         optional(
-          number.verifying("supplementary.packageInformation.numberOfPackages.error", (q => q > 0 && q <= 999999))
+          number.verifying("supplementary.packageInformation.numberOfPackages.error", q => q > 0 && q <= 999999)
         ),
       "shippingMarks" -> optional(
         text()

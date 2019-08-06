@@ -21,7 +21,10 @@ import javax.inject.Inject
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.DomesticDutyTaxParty
-import wco.datamodel.wco.declaration_ds.dms._2.{DomesticDutyTaxPartyIdentificationIDType, DomesticDutyTaxPartyRoleCodeType}
+import wco.datamodel.wco.declaration_ds.dms._2.{
+  DomesticDutyTaxPartyIdentificationIDType,
+  DomesticDutyTaxPartyRoleCodeType
+}
 
 class DomesticDutyTaxPartyBuilder @Inject()()
     extends ModifyingBuilder[AdditionalFiscalReference, GovernmentAgencyGoodsItem] {

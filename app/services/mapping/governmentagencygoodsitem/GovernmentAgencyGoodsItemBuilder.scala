@@ -22,7 +22,9 @@ import models.declaration.governmentagencygoodsitem.Commodity
 import services.cache.ExportItem
 import services.mapping.{CachingMappingHelper, ModifyingBuilder}
 import wco.datamodel.wco.dec_dms._2.Declaration
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
+  GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
+}
 
 class GovernmentAgencyGoodsItemBuilder @Inject()(
   statisticalValueAmountBuilder: StatisticalValueAmountBuilder,

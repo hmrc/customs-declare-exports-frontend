@@ -21,7 +21,7 @@ import play.api.libs.json.Json
 import services.Countries.allCountries
 import utils.validators.forms.FieldValidator.{isAlphanumeric, isContainedIn, isEmpty, noLongerThan}
 import forms.declaration.TransportCodes._
-import play.api.data.{Form, Mapping}
+import play.api.data.{Form, FormError, Mapping}
 import utils.validators.forms.FieldValidator._
 
 case class TransportDetails(
@@ -38,6 +38,20 @@ object TransportDetails {
 
   implicit val formats = Json.format[TransportDetails]
 
+  /*
+  TODO Refactor this field to not use mandatory optional
+  "meansOfTransportCrossingTheBorderType" -> optional(
+      text()
+        .verifying(
+          "supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.incorrect",
+          isEmpty or isContainedIn(allowedMeansOfTransportTypeCodes)
+        )
+    ).verifying("supplementary.transportInfo.meansOfTransport.crossingTheBorder.error.empty", _.isDefined)
+      .transform[String](
+        value => value.getOrElse(""),
+        meansOfTransportCrossingTheBorderType => Some(meansOfTransportCrossingTheBorderType)
+      )
+   */
   val formMapping: Mapping[TransportDetails] = mapping(
     "meansOfTransportCrossingTheBorderNationality" -> optional(
       text()
@@ -72,5 +86,4 @@ object TransportDetails {
   )(TransportDetails.apply)(TransportDetails.unapply)
 
   def form(): Form[TransportDetails] = Form(TransportDetails.formMapping)
-
 }
