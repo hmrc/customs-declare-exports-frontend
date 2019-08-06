@@ -17,33 +17,33 @@
 package unit.forms.declaration
 
 import base.TestHelper
-import forms.declaration.Seal
+import forms.declaration.TransportInformationContainer
 import org.scalatest.{MustMatchers, WordSpec}
 
-class SealSpec extends WordSpec with MustMatchers {
+class TransportInformationContainerSpec extends WordSpec with MustMatchers {
 
-  val form = Seal.form
+  val form = TransportInformationContainer.form
 
-  "Seal object" should {
+  "Transport Information Container" should {
 
     "has correct form id" in {
 
-      Seal.formId must be("Seal")
+      TransportInformationContainer.formId must be("TransportInformationContainer")
     }
 
-    "has 9999 limit" in {
+    "has max container Id length equal to 17" in {
 
-      Seal.sealsAllowed must be(9999)
+      TransportInformationContainer.maxContainerIdLength must be(17)
     }
   }
 
-  "Seal form" should {
+  "Transport Information Container form" should {
 
     "has no errors" when {
 
       "id field contains correct value" in {
 
-        val correctForm = Seal("12345")
+        val correctForm = TransportInformationContainer("12345")
 
         val result = form.fill(correctForm)
 
@@ -62,7 +62,7 @@ class SealSpec extends WordSpec with MustMatchers {
 
         result.errors.length must be(1)
         error.key must be("id")
-        error.message must be("standard.transport.sealId.empty.error")
+        error.message must be("supplementary.transportInfo.containerId.empty")
       }
 
       "id field is not alphanumeric" in {
@@ -73,18 +73,19 @@ class SealSpec extends WordSpec with MustMatchers {
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("standard.transport.sealId.alphaNumeric.error")
+        error.message must be("supplementary.transportInfo.containerId.error.alphanumeric")
       }
 
-      "id field is longer than 20 characters" in {
+      "id field is longer than allowed" in {
 
-        val emptyForm = Map("id" -> TestHelper.createRandomAlphanumericString(21))
+        val limit = TransportInformationContainer.maxContainerIdLength
+        val emptyForm = Map("id" -> TestHelper.createRandomAlphanumericString(limit + 1))
 
         val result = form.bind(emptyForm)
         val error = result.errors.head
 
         error.key must be("id")
-        error.message must be("standard.transport.sealId.longer.error")
+        error.message must be("supplementary.transportInfo.containerId.error.length")
       }
     }
   }
