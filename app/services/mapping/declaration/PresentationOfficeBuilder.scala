@@ -16,14 +16,10 @@
 
 package services.mapping.declaration
 
-import forms.Choice
 import forms.Choice.AllowedChoiceValues
-import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard}
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-import services.mapping.declaration.PresentationOfficeBuilder.createPresentationOffice
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.PresentationOffice
 import wco.datamodel.wco.declaration_ds.dms._2._
@@ -36,22 +32,6 @@ class PresentationOfficeBuilder @Inject()() extends ModifyingBuilder[ExportsCach
         .map(createPresentationOffice)
         .foreach(declaration.setPresentationOffice)
     }
-}
-
-object PresentationOfficeBuilder {
-
-  def build(implicit cacheMap: CacheMap, choice: Choice): Declaration.PresentationOffice =
-    choice match {
-      case Choice(AllowedChoiceValues.StandardDec)      => buildPresentationOffice(choice)
-      case Choice(AllowedChoiceValues.SupplementaryDec) => null
-    }
-
-  private def buildPresentationOffice(choice: Choice)(implicit cacheMap: CacheMap): Declaration.PresentationOffice =
-    cacheMap
-      .getEntry[OfficeOfExitStandard](OfficeOfExitForms.formId)
-      .flatMap(_.presentationOfficeId)
-      .map(createPresentationOffice)
-      .orNull
 
   private def createPresentationOffice(value: String): Declaration.PresentationOffice = {
     val presentationOfficeId = new PresentationOfficeIdentificationIDType()

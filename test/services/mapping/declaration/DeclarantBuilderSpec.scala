@@ -16,48 +16,14 @@
 
 package services.mapping.declaration
 import forms.common.Address
-import forms.declaration.{DeclarantDetails, DeclarantDetailsSpec}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json.Json
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
 
   "DeclarantBuilder" should {
-    "build wco declarant successfully " when {
-      "only address has been supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(DeclarantDetails.id -> Json.toJson(DeclarantDetailsSpec.correctDeclarantDetailsAddressOnly))
-          )
-
-        val declarant = DeclarantBuilder.build(cacheMap)
-
-        declarant.getID should be(null)
-        declarant.getName.getValue should be("Full Name")
-        declarant.getAddress.getLine.getValue should be("Address Line")
-        declarant.getAddress.getCityName.getValue should be("Town or City")
-        declarant.getAddress.getPostcodeID.getValue should be("AB12 34CD")
-        declarant.getAddress.getCountryCode.getValue should be("PL")
-      }
-
-      "only eori has been supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(DeclarantDetails.id -> Json.toJson(DeclarantDetailsSpec.correctDeclarantDetailsEORIOnly))
-          )
-
-        val declarant = DeclarantBuilder.build(cacheMap)
-        declarant.getID.getValue should be("9GB1234567ABCDEF")
-        declarant.getAddress should be(null)
-        declarant.getName should be(null)
-      }
-    }
 
     "build then add" when {
       "no declarant details" in {

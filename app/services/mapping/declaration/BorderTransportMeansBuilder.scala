@@ -21,15 +21,8 @@ import javax.inject.Inject
 import services.Countries.allCountries
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
-import wco.datamodel.wco.declaration_ds.dms._2.{
-  BorderTransportMeansIdentificationIDType,
-  BorderTransportMeansIdentificationTypeCodeType,
-  BorderTransportMeansModeCodeType,
-  BorderTransportMeansRegistrationNationalityCodeType
-}
-import BorderTransportMeansBuilder.{appendBorderTransport, appendTransportDetails, isDefined}
+import wco.datamodel.wco.declaration_ds.dms._2.{BorderTransportMeansIdentificationIDType, BorderTransportMeansIdentificationTypeCodeType, BorderTransportMeansModeCodeType, BorderTransportMeansRegistrationNationalityCodeType}
 
 class BorderTransportMeansBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
   override def buildThenAdd(model: ExportsCacheModel, t: Declaration): Unit = {
@@ -41,27 +34,6 @@ class BorderTransportMeansBuilder @Inject()() extends ModifyingBuilder[ExportsCa
     if (maybeDetails.isDefined || maybeTransport.isDefined) {
       t.setBorderTransportMeans(transportMeans)
     }
-  }
-}
-
-object BorderTransportMeansBuilder {
-
-  def build(implicit cacheMap: CacheMap): Declaration.BorderTransportMeans = {
-    val transportMeans = new Declaration.BorderTransportMeans()
-    val maybeTransport = cacheMap
-      .getEntry[BorderTransport](BorderTransport.formId)
-      .filter(isDefined)
-
-    maybeTransport
-      .foreach(appendBorderTransport(_, transportMeans))
-
-    val maybeDetails = cacheMap
-      .getEntry[TransportDetails](TransportDetails.formId)
-      .filter(isDefined)
-
-    maybeDetails
-      .foreach(appendTransportDetails(_, transportMeans))
-    if (maybeDetails.isDefined || maybeTransport.isDefined) transportMeans else null
   }
 
   private def isDefined(transportDetails: TransportDetails): Boolean =

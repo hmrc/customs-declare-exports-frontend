@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MetaData xmlns="urn:wco:datamodel:WCO:DocumentMetaData-DMS:2" xmlns:ns2="urn:wco:datamodel:WCO:Declaration_DS:DMS:2" xmlns:ns3="urn:wco:datamodel:WCO:DEC-DMS:2">
+    <WCODataModelVersionCode>3.6</WCODataModelVersionCode>
+    <WCOTypeName>DEC</WCOTypeName>
+    <ResponsibleCountryCode>GB</ResponsibleCountryCode>
+    <ResponsibleAgencyName>HMRC</ResponsibleAgencyName>
+    <AgencyAssignedCustomizationCode>v2.1</AgencyAssignedCustomizationCode>
+    <ns3:Declaration>
+        <ns3:FunctionCode>9</ns3:FunctionCode>
+        <ns3:FunctionalReferenceID>123LRN</ns3:FunctionalReferenceID>
+        <ns3:TypeCode>EXY</ns3:TypeCode>
+        <ns3:GoodsItemQuantity>1</ns3:GoodsItemQuantity>
+        <ns3:InvoiceAmount currencyID="GBP">1212312.12</ns3:InvoiceAmount>
+        <ns3:TotalPackageQuantity>123</ns3:TotalPackageQuantity>
+        <ns3:Agent>
+            <ns3:ID>9GB1234567ABCDEF</ns3:ID>
+            <ns3:FunctionCode>2</ns3:FunctionCode>
+        </ns3:Agent>
+        <ns3:AuthorisationHolder>
+            <ns3:ID>PL213472539481923</ns3:ID>
+            <ns3:CategoryCode>1234</ns3:CategoryCode>
+        </ns3:AuthorisationHolder>
+        <ns3:AuthorisationHolder>
+            <ns3:ID>PT213472539481923</ns3:ID>
+            <ns3:CategoryCode>4321</ns3:CategoryCode>
+        </ns3:AuthorisationHolder>
+        <ns3:BorderTransportMeans>
+            <ns3:ID>1234567878ui</ns3:ID>
+            <ns3:IdentificationTypeCode>40</ns3:IdentificationTypeCode>
+            <ns3:RegistrationNationalityCode>PT</ns3:RegistrationNationalityCode>
+            <ns3:ModeCode>3</ns3:ModeCode>
+        </ns3:BorderTransportMeans>
+        <ns3:CurrencyExchange>
+            <ns3:RateNumeric>1212121.12345</ns3:RateNumeric>
+        </ns3:CurrencyExchange>
+        <ns3:Declarant>
+            <ns3:ID>9GB1234567ABCDEF</ns3:ID>
+        </ns3:Declarant>
+        <ns3:ExitOffice>
+            <ns3:ID>123qwe12</ns3:ID>
+        </ns3:ExitOffice>
+        <ns3:Exporter>
+            <ns3:Name>Full Name</ns3:Name>
+            <ns3:ID>9GB1234567ABCDEF</ns3:ID>
+            <ns3:Address>
+                <ns3:CityName>Town or City</ns3:CityName>
+                <ns3:CountryCode>PL</ns3:CountryCode>
+                <ns3:Line>Address Line</ns3:Line>
+                <ns3:PostcodeID>AB12 34CD</ns3:PostcodeID>
+            </ns3:Address>
+        </ns3:Exporter>
+        <ns3:GoodsShipment>
+            <ns3:TransactionNatureCode>1</ns3:TransactionNatureCode>
+            <ns3:AEOMutualRecognitionParty>
+                <ns3:ID>eori1</ns3:ID>
+                <ns3:RoleCode>CS</ns3:RoleCode>
+            </ns3:AEOMutualRecognitionParty>
+            <ns3:Consignee>
+                <ns3:Name>Full Name</ns3:Name>
+                <ns3:ID>9GB1234567ABCDEF</ns3:ID>
+                <ns3:Address>
+                    <ns3:CityName>Town or City</ns3:CityName>
+                    <ns3:CountryCode>PL</ns3:CountryCode>
+                    <ns3:Line>Address Line</ns3:Line>
+                    <ns3:PostcodeID>AB12 34CD</ns3:PostcodeID>
+                </ns3:Address>
+            </ns3:Consignee>
+            <ns3:Consignment>
+                <ns3:ContainerCode>1</ns3:ContainerCode>
+                <ns3:ArrivalTransportMeans>
+                    <ns3:ModeCode>2</ns3:ModeCode>
+                </ns3:ArrivalTransportMeans>
+                <ns3:DepartureTransportMeans>
+                    <ns3:ID>123112yu78</ns3:ID>
+                    <ns3:IdentificationTypeCode>10</ns3:IdentificationTypeCode>
+                </ns3:DepartureTransportMeans>
+                <ns3:GoodsLocation>
+                    <ns3:Name>9GB1234567ABCDEF</ns3:Name>
+                    <ns3:ID>LOC</ns3:ID>
+                    <ns3:TypeCode>T</ns3:TypeCode>
+                    <ns3:Address>
+                        <ns3:TypeCode>Y</ns3:TypeCode>
+                        <ns3:CityName>City</ns3:CityName>
+                        <ns3:CountryCode>GB</ns3:CountryCode>
+                        <ns3:Line>Street and Number</ns3:Line>
+                        <ns3:PostcodeID>Postcode</ns3:PostcodeID>
+                    </ns3:Address>
+                </ns3:GoodsLocation>
+            </ns3:Consignment>
+            <ns3:Destination>
+                <ns3:CountryCode>PL</ns3:CountryCode>
+            </ns3:Destination>
+            <ns3:ExportCountry>
+                <ns3:ID>PL</ns3:ID>
+            </ns3:ExportCountry>
+            <ns3:GovernmentAgencyGoodsItem>
+                <ns3:SequenceNumeric>1</ns3:SequenceNumeric>
+                <ns3:StatisticalValueAmount currencyID="GBP">100</ns3:StatisticalValueAmount>
+                <ns3:AdditionalDocument>
+                    <ns3:CategoryCode>C</ns3:CategoryCode>
+                    <ns3:EffectiveDateTime>
+                        <ns2:DateTimeString formatCode="102">20170101</ns2:DateTimeString>
+                    </ns3:EffectiveDateTime>
+                    <ns3:ID>SYSUYSU12324554</ns3:ID>
+                    <ns3:Name>Reason</ns3:Name>
+                    <ns3:TypeCode>501</ns3:TypeCode>
+                    <ns3:LPCOExemptionCode>PND</ns3:LPCOExemptionCode>
+                    <ns3:Submitter>
+                        <ns3:Name>issuingAuthorityName</ns3:Name>
+                    </ns3:Submitter>
+                    <ns3:WriteOff>
+                        <ns3:QuantityQuantity unitCode="KGM">10</ns3:QuantityQuantity>
+                    </ns3:WriteOff>
+                </ns3:AdditionalDocument>
+                <ns3:AdditionalInformation>
+                    <ns3:StatementCode>code</ns3:StatementCode>
+                    <ns3:StatementDescription>description</ns3:StatementDescription>
+                </ns3:AdditionalInformation>
+                <ns3:Commodity>
+                    <ns3:Description>commodityDescription</ns3:Description>
+                    <ns3:Classification>
+                        <ns3:ID>classificationsId</ns3:ID>
+                        <ns3:IdentificationTypeCode>TSP</ns3:IdentificationTypeCode>
+                    </ns3:Classification>
+                    <ns3:Classification>
+                        <ns3:ID>cusCode</ns3:ID>
+                        <ns3:IdentificationTypeCode>CV</ns3:IdentificationTypeCode>
+                    </ns3:Classification>
+                    <ns3:Classification>
+                        <ns3:ID>nationalAdditionalCodes</ns3:ID>
+                        <ns3:IdentificationTypeCode>GN</ns3:IdentificationTypeCode>
+                    </ns3:Classification>
+                    <ns3:Classification>
+                        <ns3:ID>taricAdditionalCodes</ns3:ID>
+                        <ns3:IdentificationTypeCode>TRA</ns3:IdentificationTypeCode>
+                    </ns3:Classification>
+                    <ns3:DangerousGoods>
+                        <ns3:UNDGID>999</ns3:UNDGID>
+                    </ns3:DangerousGoods>
+                    <ns3:GoodsMeasure>
+                        <ns3:GrossMassMeasure unitCode="KGM">100</ns3:GrossMassMeasure>
+                        <ns3:NetNetWeightMeasure unitCode="KGM">90</ns3:NetNetWeightMeasure>
+                        <ns3:TariffQuantity unitCode="KGM">2</ns3:TariffQuantity>
+                    </ns3:GoodsMeasure>
+                </ns3:Commodity>
+                <ns3:DomesticDutyTaxParty>
+                    <ns3:ID>PL12345</ns3:ID>
+                    <ns3:RoleCode>FR1</ns3:RoleCode>
+                </ns3:DomesticDutyTaxParty>
+                <ns3:DomesticDutyTaxParty>
+                    <ns3:ID>FR54321</ns3:ID>
+                    <ns3:RoleCode>FR1</ns3:RoleCode>
+                </ns3:DomesticDutyTaxParty>
+                <ns3:GovernmentProcedure>
+                    <ns3:CurrentCode>CU</ns3:CurrentCode>
+                    <ns3:PreviousCode>PR</ns3:PreviousCode>
+                </ns3:GovernmentProcedure>
+                <ns3:GovernmentProcedure>
+                    <ns3:CurrentCode>CC</ns3:CurrentCode>
+                </ns3:GovernmentProcedure>
+                <ns3:GovernmentProcedure>
+                    <ns3:CurrentCode>PR</ns3:CurrentCode>
+                </ns3:GovernmentProcedure>
+                <ns3:Packaging>
+                    <ns3:SequenceNumeric>0</ns3:SequenceNumeric>
+                    <ns3:MarksNumbersID>mark1</ns3:MarksNumbersID>
+                    <ns3:QuantityQuantity>2</ns3:QuantityQuantity>
+                    <ns3:TypeCode>AA</ns3:TypeCode>
+                </ns3:Packaging>
+                <ns3:Packaging>
+                    <ns3:SequenceNumeric>1</ns3:SequenceNumeric>
+                    <ns3:MarksNumbersID>mark2</ns3:MarksNumbersID>
+                    <ns3:QuantityQuantity>4</ns3:QuantityQuantity>
+                    <ns3:TypeCode>AB</ns3:TypeCode>
+                </ns3:Packaging>
+            </ns3:GovernmentAgencyGoodsItem>
+            <ns3:PreviousDocument>
+                <ns3:CategoryCode>X</ns3:CategoryCode>
+                <ns3:ID>DocumentReference</ns3:ID>
+                <ns3:TypeCode>MCR</ns3:TypeCode>
+                <ns3:LineNumeric>123</ns3:LineNumeric>
+            </ns3:PreviousDocument>
+            <ns3:UCR>
+                <ns3:TraderAssignedReferenceID>8GB123456789012-1234567890QWERTYUIO</ns3:TraderAssignedReferenceID>
+            </ns3:UCR>
+            <ns3:Warehouse>
+                <ns3:ID>1234567GB</ns3:ID>
+                <ns3:TypeCode>R</ns3:TypeCode>
+            </ns3:Warehouse>
+        </ns3:GoodsShipment>
+        <ns3:SupervisingOffice>
+            <ns3:ID>12345678</ns3:ID>
+        </ns3:SupervisingOffice>
+    </ns3:Declaration>
+</MetaData>

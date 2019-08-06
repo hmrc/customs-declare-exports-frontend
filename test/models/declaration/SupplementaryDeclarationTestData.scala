@@ -22,6 +22,7 @@ import forms.common.Date
 import forms.declaration.ConsigneeDetailsSpec._
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
+import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors1
 import forms.declaration.DestinationCountriesSpec._
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import forms.declaration.DispatchLocationSpec._
@@ -31,10 +32,8 @@ import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
-import forms.declaration.TransportInformationContainerSpec.{
-  correctTransportInformationContainerData,
-  correctTransportInformationContainerDataJSON
-}
+import forms.declaration.TransportCodes.Rail
+import forms.declaration.TransportInformationContainerSpec.{correctTransportInformationContainerData, correctTransportInformationContainerDataJSON}
 import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec
@@ -51,7 +50,7 @@ import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
-import services.cache.ExportsCacheModel
+import services.cache.{ExportItem, ExportsCacheModel}
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilderSpec
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -205,6 +204,65 @@ object SupplementaryDeclarationTestData {
       warehouseIdentification = Some(correctWarehouseIdentification),
       officeOfExit = Some(correctOfficeOfExit)
     )
+  )
+
+  lazy val allRecordsXmlMarshallingTest = allRecords.copy(
+    items = Set(ExportItem(
+      "itemid",
+      sequenceId = 1,
+      itemType = Some(ItemType(
+        combinedNomenclatureCode =  "classificationsId",
+        taricAdditionalCodes = Seq("taricAdditionalCodes"),
+        nationalAdditionalCodes = Seq("nationalAdditionalCodes"),
+        descriptionOfGoods = "commodityDescription",
+        cusCode = Some("cusCode"),
+        unDangerousGoodsCode = Some("999"),
+        statisticalValue = "100")
+      ),
+      documentsProducedData = Some(DocumentsProducedData(Seq(DocumentsProduced(
+        documentTypeCode = Some("C501"),
+        documentIdentifierAndPart = Some(DocumentIdentifierAndPart(documentIdentifier = Some("SYSUYSU123"), documentPart = Some("24554"))),
+        documentStatus = Some("PND"),
+        documentStatusReason = Some("Reason"),
+        issuingAuthorityName = Some("issuingAuthorityName"),
+        dateOfValidity = Some(Date(year = Some(2017), month = Some(1), day = Some(1))),
+        documentWriteOff = Some(DocumentWriteOff(measurementUnit = Some("KGM"), documentQuantity = Some(BigDecimal("10"))))
+      )))),
+      additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("code", "description")))),
+      commodityMeasure = Some(CommodityMeasure(Some("2"), "90", "100")),
+      additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(
+        AdditionalFiscalReference("PL", "12345"),
+        AdditionalFiscalReference("FR", "54321")
+      ))),
+      procedureCodes = Some(ProcedureCodesData(Some("CUPR"), Seq("CC", "PR"))),
+      packageInformation = List(
+        PackageInformation(Some("AA"), Some(2), Some("mark1")),
+        PackageInformation(Some("AB"), Some(4), Some("mark2"))
+      )
+    )),
+    totalNumberOfItems = Some(TotalNumberOfItems(Some("1212312.12"), Some("1212121.12345"), "123")),
+    parties = Parties(
+      exporterDetails = Some(correctExporterDetails),
+      declarantDetails = Some(correctDeclarantDetailsEORIOnly),
+      consigneeDetails = Some(ConsigneeDetails(EntityDetailsSpec.correctEntityDetails)),
+      representativeDetails = Some(correctRepresentativeDetails),
+      declarationAdditionalActorsData = Some(DeclarationAdditionalActorsData(
+        Seq(correctAdditionalActors1)
+      )),
+      declarationHoldersData = Some(DeclarationHoldersData(Seq(
+        DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some("PL213472539481923")),
+        DeclarationHolder(authorisationTypeCode = Some("4321"), eori = Some("PT213472539481923"))
+      ))),
+      carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
+    ),
+    locations = Locations(
+      destinationCountries = Some(DestinationCountriesSpec.correctDestinationCountries),
+      goodsLocation = Some(correctGoodsLocation),
+      warehouseIdentification = Some(WarehouseIdentification(Some("12345678"), Some("R"), Some("1234567GB"), Some(Rail))),
+      officeOfExit = Some(correctOfficeOfExit)
+    ),
+
+    previousDocuments = Some(PreviousDocumentsData(Seq(Document("X", "MCR", "DocumentReference", Some("123")))))
   )
 
   lazy val cacheMapAllRecords = CacheMap(

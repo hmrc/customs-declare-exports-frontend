@@ -16,53 +16,14 @@
 
 package services.mapping
 
-import forms.Choice
 import javax.xml.bind.JAXBElement
 import javax.xml.namespace.QName
-import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
-import services.mapping.declaration.DeclarationBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
-import wco.datamodel.wco.metadata_ds_dms._2._
 
 object MetaDataBuilder {
 
-  def build(cacheMap: CacheMap, choice: Choice): MetaData = {
-    val metaData = new MetaData
-
-    val agencyAssignedCustomizationCodeType = new MetaDataAgencyAssignedCustomizationCodeType
-    agencyAssignedCustomizationCodeType.setValue(SchemaMandatoryValues.agencyAssignedCustomizationVersionCode)
-
-    val metaDataResponsibleAgencyNameTextType = new MetaDataResponsibleAgencyNameTextType
-    metaDataResponsibleAgencyNameTextType.setValue(SchemaMandatoryValues.responsibleAgencyName)
-
-    val metaDataResponsibleCountryCodeType = new MetaDataResponsibleCountryCodeType
-    metaDataResponsibleCountryCodeType.setValue(SchemaMandatoryValues.responsibleCountryCode)
-
-    val metaDataWCODataModelVersionCodeType = new MetaDataWCODataModelVersionCodeType
-    metaDataWCODataModelVersionCodeType.setValue(SchemaMandatoryValues.wcoDataModelVersionCode)
-
-    val metaDataWCOTypeNameTextType = new MetaDataWCOTypeNameTextType
-    metaDataWCOTypeNameTextType.setValue(SchemaMandatoryValues.wcoTypeName)
-
-    metaData.setAgencyAssignedCustomizationCode(agencyAssignedCustomizationCodeType)
-    metaData.setResponsibleAgencyName(metaDataResponsibleAgencyNameTextType)
-    metaData.setResponsibleCountryCode(metaDataResponsibleCountryCodeType)
-    metaData.setWCODataModelVersionCode(metaDataWCODataModelVersionCodeType)
-    metaData.setWCOTypeName(metaDataWCOTypeNameTextType)
-
-    val element: JAXBElement[Declaration] = new JAXBElement[Declaration](
-      new QName("urn:wco:datamodel:WCO:DEC-DMS:2", "Declaration"),
-      classOf[Declaration],
-      DeclarationBuilder.build(cacheMap, choice)
-    )
-    metaData.setAny(element)
-
-    metaData
-  }
-
-  def buildCancellationRequest(declaration: Declaration): MetaData = {
+  def buildRequest(declaration: Declaration): MetaData = {
     val metaData = new MetaData
 
     val element: JAXBElement[Declaration] = new JAXBElement[Declaration](

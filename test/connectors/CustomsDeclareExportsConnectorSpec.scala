@@ -16,13 +16,12 @@
 
 package connectors
 
-import java.time.LocalDateTime
+import java.time.{Instant, LocalDateTime, ZoneOffset}
 import java.util.UUID
 
 import base.TestHelper._
 import base.{CustomExportsBaseSpec, MockHttpClient, TestHelper}
-import forms.Choice
-import models.declaration.SupplementaryDeclarationTestData
+import forms.CancelDeclaration
 import models.declaration.notifications.Notification
 import models.declaration.submissions.{Action, Submission, SubmissionRequest}
 import models.requests.CancellationRequested
@@ -31,7 +30,7 @@ import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
 import play.api.test.Helpers.ACCEPTED
 import services.WcoMetadataMapper
-import services.mapping.MetaDataBuilder
+import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -43,6 +42,8 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with Guic
   "Customs Declare Exports Connector" should {
 
     "POST to Customs Declare Exports endpoint to submit declaration" in {
+      val metadata = wcoMetadataMapper.produceMetaData(exportCacheModel)
+
       val http = new MockHttpClient(
         mockWSClient,
         expectedExportsUrl(appConfig.submitDeclaration),
@@ -86,6 +87,8 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with Guic
     }
 
     "POST to Customs Declare Exports endpoint to submit cancellation" in {
+      val metadata = cancellationRequest.createCancellationMetadata("eori")
+
       val http = new MockHttpClient(
         mockWSClient,
         expectedExportsUrl(appConfig.cancelDeclaration),
@@ -108,7 +111,6 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with Guic
 object CustomsDeclareExportsConnectorSpec {
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(createRandomAlphanumericString(255))))
   val mrn = TestHelper.createRandomAlphanumericString(10)
-  val metadata = MetaDataBuilder.build(SupplementaryDeclarationTestData.cacheMapAllRecords, Choice("SMP"))
 
   val conversationId = TestHelper.createRandomAlphanumericString(10)
   val eori = TestHelper.createRandomAlphanumericString(15)
@@ -142,4 +144,22 @@ object CustomsDeclareExportsConnectorSpec {
   )
   val falseServerError: Boolean = false
 
+  private val instant = Instant.EPOCH
+
+  val exportCacheModel =
+    ExportsCacheModel(
+      sessionId = "",
+      draftId = "",
+      createdDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC),
+      updatedDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC),
+      choice = "SMP"
+    )
+
+  val cancellationRequest =
+    CancelDeclaration(
+      functionalReferenceId = "",
+      declarationId = "",
+      statementDescription = "",
+      changeReason = ""
+    )
 }

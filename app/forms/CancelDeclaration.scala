@@ -40,9 +40,9 @@ case class CancelDeclaration(
   private val PointerDocumentSectionCode2 = "06A"
 
   def createCancellationMetadata(eori: String): MetaData =
-    MetaDataBuilder.buildCancellationRequest(
+    MetaDataBuilder.buildRequest(
       DeclarationBuilder
-        .buildCancelationRequest(functionalReferenceId, declarationId, statementDescription, changeReason, eori)
+        .buildCancellationRequest(functionalReferenceId, declarationId, statementDescription, changeReason, eori)
     )
 }
 

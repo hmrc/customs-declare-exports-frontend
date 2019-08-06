@@ -16,14 +16,11 @@
 
 package services.mapping.declaration
 
-import forms.declaration.TotalNumberOfItems
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2._
-import InvoiceAmountBuilder.createInvoiceAmount
 
 class InvoiceAmountBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
 
@@ -32,17 +29,6 @@ class InvoiceAmountBuilder @Inject()() extends ModifyingBuilder[ExportsCacheMode
       .flatMap(_.totalAmountInvoiced)
       .map(createInvoiceAmount)
       .foreach(declaration.setInvoiceAmount)
-
-}
-
-object InvoiceAmountBuilder {
-
-  def build(implicit cacheMap: CacheMap): DeclarationInvoiceAmountType =
-    cacheMap
-      .getEntry[TotalNumberOfItems](TotalNumberOfItems.formId)
-      .flatMap(_.totalAmountInvoiced)
-      .map(createInvoiceAmount)
-      .orNull
 
   private def createInvoiceAmount(amount: String): DeclarationInvoiceAmountType = {
     val invoiceAmountType = new DeclarationInvoiceAmountType()

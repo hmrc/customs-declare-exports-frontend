@@ -17,43 +17,13 @@
 package services.mapping.declaration
 
 import forms.common.Address
-import forms.declaration.{ExporterDetails, ExporterDetailsSpec}
 import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json.Json
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class ExporterBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "ExporterBuilder" should {
-    "correctly map to the WCO-DEC Exporter instance" when {
-      "only EORI is supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(ExporterDetails.id -> Json.toJson(ExporterDetailsSpec.correctExporterDetailsEORIOnly))
-          )
-        val exporter = ExporterBuilder.build(cacheMap)
-        exporter.getID.getValue should be("9GB1234567ABCDEF")
-        exporter.getName should be(null)
-        exporter.getAddress should be(null)
-      }
-      "only address is not supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap(
-            "CacheID",
-            Map(ExporterDetails.id -> Json.toJson(ExporterDetailsSpec.correctExporterDetailsAddressOnly))
-          )
-        val exporter = ExporterBuilder.build(cacheMap)
-        exporter.getID should be(null)
-        exporter.getName.getValue should be("Full Name")
-        exporter.getAddress.getLine.getValue should be("Address Line")
-        exporter.getAddress.getCityName.getValue should be("Town or City")
-        exporter.getAddress.getCountryCode.getValue should be("PL")
-        exporter.getAddress.getPostcodeID.getValue should be("AB12 34CD")
-      }
-    }
 
     "build then add" when {
       "no exporter details" in {

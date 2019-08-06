@@ -15,24 +15,13 @@
  */
 
 package services.mapping.declaration
-import forms.declaration.{WarehouseIdentification, WarehouseIdentificationSpec}
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class SupervisingOfficeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "SupervisingOfficeBuilder" should {
-    "correctly map to the WCO-DEC SupervisingOffice instance" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(WarehouseIdentification.formId -> WarehouseIdentificationSpec.correctWarehouseIdentificationJSON)
-        )
-      val supervisingOffice = SupervisingOfficeBuilder.build(cacheMap)
-      supervisingOffice.getID.getValue should be("12345678")
-    }
 
     "build then add" when {
       "no warehouse identification" in {
