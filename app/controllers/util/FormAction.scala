@@ -16,6 +16,8 @@
 
 package controllers.util
 
+import play.api.mvc.{AnyContent, Request}
+
 sealed trait FormAction {
   def label: String = this.getClass.getSimpleName.replace("$", "")
 }
@@ -34,6 +36,8 @@ object FormAction {
       case (`removeLabel`, values)     => Some(Remove(values))
       case _                           => None
     }.headOption.getOrElse(Unknown)
+
+  def bindFromRequest(implicit request: Request[AnyContent]): Option[FormAction] = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 }
 
 case object Unknown extends FormAction

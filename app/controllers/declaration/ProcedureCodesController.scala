@@ -152,7 +152,6 @@ class ProcedureCodesController @Inject()(
       updateCache(itemId, journeySessionId, updatedCache)
         .map(_ => Ok(
           procedureCodesPage(
-            appConfig,
             itemId,
             form().fill(userInput),
             updatedCache.additionalProcedureCodes

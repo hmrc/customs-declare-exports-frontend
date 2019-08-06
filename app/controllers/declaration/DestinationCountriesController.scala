@@ -106,12 +106,17 @@ class DestinationCountriesController @Inject()(
       .map(_.getOrElse(DestinationCountries.empty()))
 
     cachedData.flatMap { cache =>
-      actionTypeOpt match {
-        case Some(Add)             => addRoutingCountry(cache)
-        case Some(SaveAndContinue) => saveAndContinue(cache)
-        case Some(Remove(values))  => removeRoutingCountry(values, cache)
-        case _                     => errorHandler.displayErrorPage()
-      }
+      Standard.form.bindFromRequest.fold(
+      formWithErrors =>
+        Future.successful(BadRequest(destinationCountriesStandardPage(formWithErrors))),
+        userInput =>
+          actionTypeOpt match {
+            case Some(Add)             => addRoutingCountry(cache)
+            case Some(SaveAndContinue) => saveAndContinue(cache)
+            case Some(Remove(values))  => removeRoutingCountry(values, userInput, cache)
+            case _                     => errorHandler.displayErrorPage()
+          }
+      )
     }
   }
 
@@ -181,13 +186,10 @@ class DestinationCountriesController @Inject()(
       case (key, value)                                       => (key, value)
     })
 
-  private def removeRoutingCountry(keys: Seq[String], cachedData: DestinationCountries)(
+  private def removeRoutingCountry(keys: Seq[String], userInput: DestinationCountries, cachedData: DestinationCountries)(
     implicit request: JourneyRequest[_]
   ): Future[Result] = {
-    val key = if (isKeysFormatCorrect(keys)) {
-      keys.head.toInt
-    } else throw new IllegalArgumentException("Data format for removal request is incorrect")
-
+    val key = parseRemoval(keys).getOrElse(throw new IllegalArgumentException("Data format for removal request is incorrect"))
     val updatedCountries = removeElement(cachedData.countriesOfRouting, key)
 
     val updatedCache = cachedData.copy(countriesOfRouting = updatedCountries)
@@ -195,11 +197,14 @@ class DestinationCountriesController @Inject()(
     for {
       _ <- updateCache(journeySessionId, updatedCache)
       _ <- customsCacheService.cache[DestinationCountries](cacheId, formId, updatedCache)
-      result <- refreshPage(Standard.form.bindFromRequest().value.getOrElse(DestinationCountries.empty()))
-    } yield result
+    } yield Ok(destinationCountriesStandardPage(Standard.form.fill(userInput), updatedCache.countriesOfRouting))
   }
 
-  private def isKeysFormatCorrect(keys: Seq[String]): Boolean = keys.length == 1 && Try(keys.head.toInt).isSuccess
+  private def parseRemoval(keys: Seq[String]): Try[Int] = Try(keys)
+    .filter(_.size == 1)
+    .map(_.head.split("_"))
+    .filter(_.length == 2)
+    .map(_(1).toInt)
 
   private def removeElement[A](collection: Seq[A], indexToRemove: Int): Seq[A] = collection.removeByIdx(indexToRemove)
 

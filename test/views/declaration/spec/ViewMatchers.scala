@@ -32,13 +32,23 @@ package views.declaration.spec
  * limitations under the License.
  */
 
-import org.jsoup.nodes.Element
+import org.jsoup.Jsoup
+import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.matchers._
-import play.api.mvc.Call
+import play.api.mvc.{Call, Result}
+import play.api.test.Helpers.contentAsString
+import play.twirl.api.Html
+import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 //noinspection ScalaStyle
 trait ViewMatchers {
+
+  implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
+  implicit protected def htmlBodyOf(page: String): Document = Jsoup.parse(page)
+  implicit protected def htmlBodyOf(result: Future[Result]): Document = htmlBodyOf(contentAsString(result))
 
   private def actualContentWas(node: Element): String =
     if (node == null) {
@@ -222,5 +232,12 @@ trait ViewMatchers {
       fieldName,
       content
     )
+
+  def haveFieldErrorLink(fieldName: String, link: String): Matcher[Element] =
+    new ContainElementWithIDMatcher(s"error-message-$fieldName-input") and new ElementHasAttributeValueMatcher(
+      "href",
+      link
+    )
+
   def haveGlobalErrorSummary: Matcher[Element] = new ContainElementWithIDMatcher("error-summary-heading")
 }

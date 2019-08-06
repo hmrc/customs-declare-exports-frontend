@@ -56,8 +56,7 @@ class PreviousDocumentsController @Inject()(
     import MultipleItemsHelper._
 
     val boundForm = form().bindFromRequest()
-
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+    val actionTypeOpt = FormAction.bindFromRequest
 
     val cachedData = exportsCacheService
       .get(journeySessionId)
@@ -75,9 +74,9 @@ class PreviousDocumentsController @Inject()(
           )
 
         case Some(Remove(ids)) => {
-          val updatedCache = remove(ids.headOption, cache.documents)
-          updateCache(PreviousDocumentsData(updatedCache))
-            .map(_ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
+          val updatedDocuments = remove(ids.headOption, cache.documents)
+          updateCache(PreviousDocumentsData(updatedDocuments))
+            .map(_ => Ok(previousDocumentsPage(boundForm.discardingErrors, updatedDocuments)))
         }
 
         case Some(SaveAndContinue) => {

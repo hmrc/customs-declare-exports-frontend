@@ -74,7 +74,7 @@ class DeclarationHolderController @Inject()(
               actionTypeOpt match {
                 case Some(Add)             => addHolder(validForm, cache)
                 case Some(SaveAndContinue) => saveAndContinue(validForm, cache)
-                case Some(Remove(values))  => removeHolder(retrieveHolder(values), cache)
+                case Some(Remove(values))  => removeHolder(retrieveHolder(values), validForm, cache)
                 case _                     => errorHandler.displayErrorPage()
             }
           )
@@ -182,13 +182,13 @@ class DeclarationHolderController @Inject()(
 
   private def removeHolder(
     holderToRemove: DeclarationHolder,
+    userInput: DeclarationHolder,
     cachedData: DeclarationHoldersData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    if (cachedData.containsHolder(holderToRemove)) {
-      val updatedCache = cachedData.copy(holders = cachedData.holders.filterNot(_ == holderToRemove))
-      updateCache(journeySessionId, updatedCache)
-        .map(_ => Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm()))
-    } else errorHandler.displayErrorPage()
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+    val updatedCache = cachedData.copy(holders = cachedData.holders.filterNot(_ == holderToRemove))
+    updateCache(journeySessionId, updatedCache)
+      .map(_ => Ok(declarationHolderPage(form().fill(userInput), updatedCache.holders)))
+  }
 
   private def retrieveHolder(values: Seq[String]): DeclarationHolder =
     DeclarationHolder.buildFromString(values.headOption.getOrElse(""))

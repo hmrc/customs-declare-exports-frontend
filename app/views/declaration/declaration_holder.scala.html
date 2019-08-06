@@ -37,16 +37,12 @@
 
     @components.page_title(Some("supplementary.declarationHolder.title"))
 
-    @if(holders.nonEmpty) {
-        @helper.form(DeclarationHolderController.submitHoldersOfAuthorisation(), 'autoComplete -> "off") {
-            @helper.CSRF.formField
-
-            @components.fields.removable_elements_table(holders.map(_.toString).map(LabelledValue(_)))
-        }
-    }
-
     @helper.form(DeclarationHolderController.submitHoldersOfAuthorisation(), 'autoComplete -> "off") {
         @helper.CSRF.formField
+
+        @if(holders.nonEmpty) {
+            @components.fields.removable_elements_table(holders.map(_.toString).map(LabelledValue(_)))
+        }
 
         @components.fields.field_autocomplete(
             field = form("authorisationTypeCode"),

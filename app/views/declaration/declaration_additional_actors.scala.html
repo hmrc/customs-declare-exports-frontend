@@ -43,9 +43,10 @@
     @components.section_header(messages("supplementary.summary.parties.header"))
     @components.page_title(Some("supplementary.additionalActors.title"), Some(""))
 
-    @if(actors.nonEmpty) {
-        @helper.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
-            @helper.CSRF.formField
+    @helper.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @if(actors.nonEmpty) {
             <table class="form-group">
                 <thead>
                     <tr>
@@ -67,17 +68,11 @@
                 </tbody>
             </table>
         }
-    }
-
-
-    <span class="heading-24">@messages("supplementary.additionalActors.partyType")</span>
-
-    @helper.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
 
         @components.fields.field_radio(
             field = form("partyType"),
-            legend = "",
+            legend = messages("supplementary.additionalActors.partyType"),
+            legendClass = Some("heading-24"),
             inputs = Seq(
                 RadioOption("supplementary.partyType", Consolidator),
                 RadioOption("supplementary.partyType", Manufacturer),

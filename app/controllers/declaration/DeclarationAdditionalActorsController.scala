@@ -17,19 +17,17 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActors.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.DeclarationAdditionalActorsData
-import models.declaration.DeclarationAdditionalActorsData.{formId, maxNumberOfItems}
+import models.declaration.DeclarationAdditionalActorsData.maxNumberOfItems
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.CustomsCacheService
 import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -77,7 +75,7 @@ class DeclarationAdditionalActorsController @Inject()(
             actionTypeOpt match {
               case Some(Add)             => addItem(validForm, cache)
               case Some(SaveAndContinue) => saveAndContinue(validForm, cache)
-              case Some(Remove(values))  => removeItem(retrieveItem(values.headOption.get), cache)
+              case Some(Remove(values))  => removeItem(retrieveItem(values.headOption.get), validForm, cache)
               case _                     => errorHandler.displayErrorPage()
           }
         )
@@ -163,6 +161,7 @@ class DeclarationAdditionalActorsController @Inject()(
 
   private def removeItem(
     actorToRemove: Option[DeclarationAdditionalActors],
+    formData: DeclarationAdditionalActors,
     cachedData: DeclarationAdditionalActorsData
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     actorToRemove match {
@@ -170,7 +169,7 @@ class DeclarationAdditionalActorsController @Inject()(
         if (cachedData.containsItem(actorToRemove)) {
           val updatedCache = cachedData.copy(actors = cachedData.actors.filterNot(_ == actorToRemove))
           updateCache(journeySessionId, updatedCache)
-            .map(_ => Redirect(routes.DeclarationAdditionalActorsController.displayForm()))
+            .map(_ => Ok(declarationAdditionalActorsPage(form().fill(formData), updatedCache.actors)))
         } else errorHandler.displayErrorPage()
       case _ => errorHandler.displayErrorPage()
     }
