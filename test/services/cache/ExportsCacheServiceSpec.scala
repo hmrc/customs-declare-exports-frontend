@@ -19,8 +19,9 @@ package services.cache
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{doNothing, reset, when}
 import org.scalatest.BeforeAndAfterEach
+import reactivemongo.play.json.collection.JSONBatchCommands
 
 import scala.concurrent.Future
 
@@ -106,6 +107,16 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
         val result = service.getItemByIdAndSession("thisIdwillNotBeUsed", "unknownSessionid").futureValue
         result must be(None)
 
+      }
+    }
+
+    "removing" should {
+      "return unit" in {
+        val mockResult = mock[JSONBatchCommands.FindAndModifyCommand.FindAndModifyResult]
+        when(mockRepo.remove(any[String])).thenReturn(Future.successful(mockResult))
+
+        val result = service.remove("sessionId").futureValue
+        result must be(mockResult)
       }
     }
   }

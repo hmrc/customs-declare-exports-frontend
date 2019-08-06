@@ -41,7 +41,6 @@ class TypeCodeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, De
     typeCodeType
   }
 }
-
 object TypeCodeBuilder {
 
   def build(codeType: String): DeclarationTypeCodeType = {

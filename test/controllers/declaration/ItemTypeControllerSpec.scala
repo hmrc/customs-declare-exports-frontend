@@ -609,7 +609,7 @@ class ItemTypeControllerSpec
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_")), Map.empty)
-          withCaching[ItemType](Some(cachedItemType), ItemType.id)
+          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
           ScalaFutures.whenReady(result.failed) { exc =>
@@ -622,7 +622,7 @@ class ItemTypeControllerSpec
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_incorrectIndex")), Map.empty)
-          withCaching[ItemType](Some(cachedItemType), ItemType.id)
+          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
           ScalaFutures.whenReady(result.failed) { exc =>

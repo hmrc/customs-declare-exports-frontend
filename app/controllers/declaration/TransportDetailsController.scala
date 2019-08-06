@@ -26,7 +26,6 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.CustomsCacheService
 import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.transport_details
@@ -36,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransportDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   transportDetailsPage: transport_details
@@ -55,11 +53,7 @@ class TransportDetailsController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transportDetailsPage(formWithErrors))),
-        transportDetails =>
-          for {
-            _ <- updateCache(journeySessionId, transportDetails)
-            _ <- customsCacheService.cache[TransportDetails](cacheId, TransportDetails.formId, transportDetails)
-          } yield redirect(transportDetails)
+        transportDetails => updateCache(journeySessionId, transportDetails).map(_ => redirect(transportDetails))
       )
   }
 

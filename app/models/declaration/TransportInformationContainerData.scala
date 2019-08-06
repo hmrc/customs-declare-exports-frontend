@@ -19,9 +19,7 @@ package models.declaration
 import forms.declaration.TransportInformationContainer
 import play.api.libs.json.Json
 
-case class TransportInformationContainerData(containers: Seq[TransportInformationContainer]) {
-  def containsItem(container: TransportInformationContainer): Boolean = containers.contains(container)
-}
+case class TransportInformationContainerData(containers: Seq[TransportInformationContainer])
 
 object TransportInformationContainerData {
   implicit val format = Json.format[TransportInformationContainerData]

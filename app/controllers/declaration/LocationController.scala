@@ -17,14 +17,11 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.GoodsLocation
 import javax.inject.Inject
-import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.goods_location
@@ -34,7 +31,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class LocationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   goodsLocationPage: goods_location,
   override val exportsCacheService: ExportsCacheService
@@ -55,20 +51,15 @@ class LocationController @Inject()(
       .fold(
         (formWithErrors: Form[GoodsLocation]) => Future.successful(BadRequest(goodsLocationPage(formWithErrors))),
         formData =>
-          updateCache(journeySessionId, formData).map { _ =>
+          getAndUpdateExportCacheModel(
+            journeySessionId,
+            model =>
+              exportsCacheService
+                .update(journeySessionId, model.copy(locations = model.locations.copy(goodsLocation = Some(formData))))
+          ).map { _ =>
             Redirect(controllers.declaration.routes.OfficeOfExitController.displayForm())
         }
       )
   }
 
-  private def updateCache(sessionId: String, formData: GoodsLocation)(implicit req: JourneyRequest[_]): Future[Unit] =
-    for {
-      _ <- getAndUpdateExportCacheModel(
-        sessionId,
-        model =>
-          exportsCacheService
-            .update(sessionId, model.copy(locations = model.locations.copy(goodsLocation = Some(formData))))
-      )
-      _ <- customsCacheService.cache[GoodsLocation](cacheId, formId, formData)
-    } yield Unit
 }

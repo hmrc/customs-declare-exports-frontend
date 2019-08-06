@@ -16,9 +16,6 @@
 
 package models.declaration.governmentagencygoodsitem
 
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, ZoneId, ZonedDateTime}
-
 import forms.declaration.{AdditionalFiscalReference, AdditionalInformation}
 import play.api.libs.json.Json
 
@@ -90,23 +87,4 @@ case class GovernmentAgencyGoodsItemAdditionalDocumentSubmitter(
 
 case class DateTimeElement(dateTimeString: DateTimeString)
 
-case class DateTimeString(formatCode: String, value: String) {
-  import DateTimeFormats._
-
-  def time(): ZonedDateTime = formatCode match {
-    case "102" => handle102Format(value)
-    case "304" => handle304Format(value)
-  }
-}
-
-object DateTimeFormats {
-  private val format102 = DateTimeFormatter.ofPattern("yyyyMMdd")
-  private val format304 = DateTimeFormatter.ofPattern("yyyyMMddHHmmssX")
-
-  def handle102Format(value: String): ZonedDateTime = {
-    val localDate = LocalDate.parse(value, format102)
-    localDate.atStartOfDay(ZoneId.systemDefault())
-  }
-
-  def handle304Format(value: String): ZonedDateTime = ZonedDateTime.parse(value, format304)
-}
+case class DateTimeString(formatCode: String, value: String)

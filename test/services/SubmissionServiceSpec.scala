@@ -21,14 +21,13 @@ import com.kenshoo.play.metrics.Metrics
 import forms.Choice.AllowedChoiceValues
 import metrics.MetricIdentifiers
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.{any, anyString}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.FakeRequest
-import play.api.test.Helpers.OK
+import reactivemongo.play.json.collection.JSONBatchCommands
 import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder}
-import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 import scala.io.Source
@@ -37,18 +36,21 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
 
   val mockAuditService = mock[AuditService]
   val mapper = mock[WcoMetadataMapper]
+  val sessionId = "123456"
 
   override def beforeEach() {
-    reset(mockCustomsCacheService, mockCustomsDeclareExportsConnector, mockAuditService, mapper)
+    reset(mockExportsCacheService, mockCustomsDeclareExportsConnector, mockAuditService, mapper)
     successfulCustomsDeclareExportsResponse()
-    when(mockCustomsCacheService.remove(anyString())(any(), any()))
-      .thenReturn(Future.successful(HttpResponse(OK)))
+
     when(mapper.toXml(any()))
       .thenReturn(Source.fromURL(getClass.getResource("/wco_dec_metadata.xml")).mkString)
     when(mapper.declarationUcr(any()))
       .thenReturn(Some("8GB123456789012-1234567890QWERTYUIO"))
     when(mapper.declarationLrn(any()))
       .thenReturn(Some("123LRN"))
+    val mockResult = mock[JSONBatchCommands.FindAndModifyCommand.FindAndModifyResult]
+
+    when(mockExportsCacheService.remove(any[String])).thenReturn(Future.successful(mockResult))
   }
 
   implicit val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
@@ -62,7 +64,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
   )
   val submissionService = new SubmissionService(
     appConfig,
-    mockCustomsCacheService,
+    mockExportsCacheService,
     mockCustomsDeclareExportsConnector,
     mockAuditService,
     metrics,
@@ -72,47 +74,29 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
   "SubmissionService" should {
 
     "submit cached data to backend" in {
-      val result = submissionService.submit(createFullModel).futureValue
-      result.value mustBe "123LRN"
-      verify(mockCustomsCacheService, times(1)).remove(any())(any(), any())
-
-    }
-    "handle success response" in {
-      val result = submissionService.submit(createFullModel).futureValue
-      result.value mustBe "123LRN"
-      verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
-    }
-
-    "handle failure response" in {
-      customsDeclaration400Response()
-      val result = submissionService.submit(createFullModel).futureValue
-      result mustBe None
-      verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
-    }
-
-    "audit a submission" in {
-      val result = submissionService.submit(createFullModel).futureValue
-      result.value mustBe "123LRN"
-      verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
-      verify(mockAuditService, times(1)).audit(any(), any())(any())
-      verify(mockAuditService, times(1)).auditAllPagesUserInput(any())(any())
-      verify(mockAuditService)
-        .audit(ArgumentMatchers.eq(AuditTypes.Submission), ArgumentMatchers.eq[Map[String, String]](auditData))(any())
-    }
-
-    "record submission timing and increase the Success Counter when response is OK" in {
       val registry = app.injector.instanceOf[Metrics].defaultRegistry
 
       val metric = MetricIdentifiers.submissionMetric
       val timerBefore = registry.getTimers.get(metrics.timerName(metric)).getCount
       val counterBefore = registry.getCounters.get(metrics.counterName(metric)).getCount
 
-      val result = submissionService.submit(createFullModel).futureValue
+      val result = submissionService
+        .submit(sessionId, createFullModel)
+        .futureValue
       result.value mustBe "123LRN"
+
+      verify(mockExportsCacheService, times(1)).remove(any[String])
+      verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
+
+      verify(mockAuditService, times(1)).audit(any(), any())(any())
+      verify(mockAuditService, times(1)).auditAllPagesUserInput(any())(any())
+      verify(mockAuditService)
+        .audit(ArgumentMatchers.eq(AuditTypes.Submission), ArgumentMatchers.eq[Map[String, String]](auditData))(any())
 
       registry.getTimers.get(metrics.timerName(metric)).getCount mustBe >(timerBefore)
       registry.getCounters.get(metrics.counterName(metric)).getCount mustBe >(counterBefore)
     }
+
   }
 
   private def createFullModel(): ExportsCacheModel = aCacheModel()

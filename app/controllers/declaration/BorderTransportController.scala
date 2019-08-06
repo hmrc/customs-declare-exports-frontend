@@ -17,14 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport._
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
 import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.border_transport
@@ -34,7 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class BorderTransportController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   borderTransportPage: border_transport
@@ -54,10 +51,8 @@ class BorderTransportController @Inject()(
       .fold(
         (formWithErrors: Form[BorderTransport]) => Future.successful(BadRequest(borderTransportPage(formWithErrors))),
         borderTransport =>
-          for {
-            _ <- updateCache(journeySessionId, borderTransport)
-            _ <- customsCacheService.cache[BorderTransport](cacheId, BorderTransport.formId, borderTransport)
-          } yield Redirect(routes.TransportDetailsController.displayForm())
+          updateCache(journeySessionId, borderTransport)
+            .map(_ => Redirect(routes.TransportDetailsController.displayForm()))
       )
   }
 

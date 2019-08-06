@@ -24,7 +24,6 @@ import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
 import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.nature_of_transaction
@@ -34,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class NatureOfTransactionController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   natureOfTransactionPage: nature_of_transaction,
   override val exportsCacheService: ExportsCacheService
@@ -54,10 +52,9 @@ class NatureOfTransactionController @Inject()(
         (formWithErrors: Form[NatureOfTransaction]) =>
           Future.successful(BadRequest(natureOfTransactionPage(adjustErrors(formWithErrors)))),
         form =>
-          for {
-            _ <- updateCache(journeySessionId, form)
-            _ <- customsCacheService.cache[NatureOfTransaction](cacheId, formId, form)
-          } yield Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm())
+          updateCache(journeySessionId, form).map(
+            _ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm())
+        )
       )
   }
 

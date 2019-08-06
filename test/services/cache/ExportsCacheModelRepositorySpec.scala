@@ -95,6 +95,25 @@ class ExportsCacheModelRepositorySpec
       }
     }
 
+    "removing" should {
+      "remove Some with model when exists" in {
+        val model = createModel(sessionId)
+        repo.upsert(sessionId, model).futureValue
+        val result = repo.get(sessionId).futureValue
+        result must be(Some(model))
+
+        repo.remove(sessionId)
+        val result2 = repo.get(sessionId).futureValue
+        result2 must be(None)
+      }
+
+      "remove nothing when does not exist" in {
+        repo.remove(sessionId)
+        val result2 = repo.get(sessionId).futureValue
+        result2 must be(None)
+      }
+    }
+
     "list indexes" should {
       "return TTL" in {
         val index = repo.indexes.find(_.name.contains("ttl"))

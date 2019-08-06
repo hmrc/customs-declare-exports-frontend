@@ -16,7 +16,7 @@
 
 package unit.base
 
-import base.{MockAuthAction, MockConnectors, MockCustomsCacheService, MockExportsCacheService}
+import base.{MockAuthAction, MockConnectors, MockExportsCacheService}
 import controllers.util.{Add, SaveAndContinue}
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, Request}
@@ -29,8 +29,8 @@ import utils.FakeRequestCSRFSupport._
 import scala.concurrent.ExecutionContext
 
 trait ControllerSpec
-    extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockCustomsCacheService
-    with MockExportsCacheService with ExportsCacheModelBuilder with ExportsItemBuilder with JourneyActionMocks {
+    extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockExportsCacheService
+    with ExportsCacheModelBuilder with ExportsItemBuilder with JourneyActionMocks {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 

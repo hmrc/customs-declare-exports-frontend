@@ -45,6 +45,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
     val itemId = exampleItem.id
 
     authorizedUser()
+    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
     setupErrorHandler()
   }
 

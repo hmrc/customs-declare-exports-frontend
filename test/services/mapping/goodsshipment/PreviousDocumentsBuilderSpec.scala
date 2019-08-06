@@ -16,13 +16,10 @@
 
 package services.mapping.goodsshipment
 
-import forms.declaration.{Document, DocumentSpec, PreviousDocumentsData}
-import org.mockito.Mockito.when
+import forms.declaration.{DocumentSpec, PreviousDocumentsData}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
