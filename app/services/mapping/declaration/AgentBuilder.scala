@@ -35,7 +35,7 @@ class AgentBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Decla
     }
 
   def isDefined(representativeDetails: RepresentativeDetails): Boolean =
-    representativeDetails.details.isDefined && (representativeDetails.details.get.eori.isDefined || representativeDetails.details.get.address.isDefined)
+    representativeDetails.details.exists(details => details.eori.isDefined || details.address.isDefined)
 
   private def createAgent(data: RepresentativeDetails): Declaration.Agent = {
     val agent = new Declaration.Agent()
