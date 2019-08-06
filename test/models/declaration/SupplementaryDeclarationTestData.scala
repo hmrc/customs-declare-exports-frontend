@@ -33,10 +33,6 @@ import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransportCodes.Rail
-import forms.declaration.TransportInformationContainerSpec.{
-  correctTransportInformationContainerData,
-  correctTransportInformationContainerDataJSON
-}
 import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec
@@ -181,7 +177,19 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
   }
 }
 
+object TransportInformationContainerSpec {
+  private val containerId = "id"
+  val correctTransportInformationContainerData =
+    TransportInformationContainerData(Seq(TransportInformationContainer(id = "M1l3s")))
+  val emptyTransportInformationContainerData = TransportInformationContainer("")
+  val correctTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("container-M1l3s")))
+  val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
+  val emptyTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("")))
+  val correctTransportInformationContainerDataJSON: JsValue = Json.toJson(correctTransportInformationContainerData)
+}
+
 object SupplementaryDeclarationTestData {
+  import TransportInformationContainerSpec._
   lazy val allRecords = declaration.copy(
     dispatchLocation = Some(correctDispatchLocation),
     additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
