@@ -33,7 +33,6 @@ class TransportDetailsControllerSpec extends ControllerSpec {
     val controller = new TransportDetailsController(
       mockAuthAction,
       mockJourneyAction,
-      mockCustomsCacheService,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       transportDetailsPage
@@ -77,8 +76,6 @@ class TransportDetailsControllerSpec extends ControllerSpec {
     }
 
     "return 303 (SEE_OTHER)" in new SetUp {
-
-      withCaching(None)
 
       val correctForm =
         Json.toJson(TransportDetails(Some("United Kingdom"), true, IMOShipIDNumber, Some("correct"), Some(cash)))

@@ -18,7 +18,6 @@ package controllers.declaration
 
 import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
-import forms.Choice
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.{Document, PreviousDocumentsData}
 import helpers.views.declaration.{CommonMessages, PreviousDocumentsMessages}
@@ -38,12 +37,11 @@ class PreviousDocumentsControllerSpec
     super.beforeEach()
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[PreviousDocumentsData](None)
   }
 
   override def afterEach() {
     super.afterEach()
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Previous Documents Controller on GET" should {

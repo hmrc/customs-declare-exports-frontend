@@ -19,7 +19,7 @@ package services
 import com.google.inject.Inject
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
-import controllers.util.CacheIdGenerator.cacheId
+import controllers.declaration.SessionIdAware
 import javax.inject.Singleton
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
@@ -29,7 +29,7 @@ import play.api.http.Status.ACCEPTED
 import play.api.libs.json.{JsObject, Json}
 import services.audit.EventData._
 import services.audit.{AuditService, AuditTypes}
-import services.cache.ExportsCacheModel
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SubmissionService @Inject()(
   appConfig: AppConfig,
-  cacheService: CustomsCacheService,
+  cacheService: ExportsCacheService,
   exportsConnector: CustomsDeclareExportsConnector,
   auditService: AuditService,
   exportsMetrics: ExportsMetrics,
@@ -47,6 +47,7 @@ class SubmissionService @Inject()(
   private val logger = Logger(this.getClass())
 
   def submit(
+    sessionId: String,
     exportsCacheModel: ExportsCacheModel
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
 
@@ -55,12 +56,15 @@ class SubmissionService @Inject()(
     auditService.auditAllPagesUserInput(getCachedData(exportsCacheModel))
     exportsConnector.submitExportDeclaration(data.ducr, data.lrn, data.payload).flatMap {
       case HttpResponse(ACCEPTED, _, _, _) =>
-        cacheService.remove(cacheId).map { _ =>
-          auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Success.toString))
-          exportsMetrics.incrementCounter(submissionMetric)
-          timerContext.stop()
-          data.lrn
-        }
+        cacheService
+          .remove(sessionId)
+          .map { _ =>
+            auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Success.toString))
+            exportsMetrics.incrementCounter(submissionMetric)
+            timerContext.stop()
+            data.lrn
+          }
+
       case error =>
         logger.error(s"Error response from backend ${error.body}")
         auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Failure.toString))

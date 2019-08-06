@@ -34,17 +34,11 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
   trait SetUp {
     val choicePage = new choice_page(mainTemplate, minimalAppConfig)
 
-    val controller = new ChoiceController(
-      mockAuthAction,
-      mockCustomsCacheService,
-      mockExportsCacheService,
-      stubMessagesControllerComponents(),
-      choicePage
-    )(ec)
+    val controller =
+      new ChoiceController(mockAuthAction, mockExportsCacheService, stubMessagesControllerComponents(), choicePage)(ec)
 
     setupErrorHandler()
     authorizedUser()
-    withCaching(None)
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
   }
 

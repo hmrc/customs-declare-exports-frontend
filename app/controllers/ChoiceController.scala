@@ -21,7 +21,6 @@ import java.util.UUID
 
 import controllers.actions.AuthAction
 import controllers.declaration.{ModelCacheable, SessionIdAware}
-import controllers.util.CacheIdGenerator.eoriCacheId
 import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
@@ -30,7 +29,6 @@ import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
 import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.choice_page
@@ -39,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ChoiceController @Inject()(
   authenticate: AuthAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   choicePage: choice_page
@@ -61,10 +58,8 @@ class ChoiceController @Inject()(
       .fold(
         (formWithErrors: Form[Choice]) => Future.successful(BadRequest(choicePage(formWithErrors))),
         validChoice => {
-
-          (for {
-            _ <- customsCacheService.cache[Choice](eoriCacheId, choiceId, validChoice)
-            _ <- exportsCacheService.update(
+          exportsCacheService
+            .update(
               authenticatedSessionId,
               ExportsCacheModel(
                 authenticatedSessionId,
@@ -74,16 +69,16 @@ class ChoiceController @Inject()(
                 validChoice.value
               )
             )
-          } yield ()).map { _ =>
-            validChoice.value match {
-              case SupplementaryDec | StandardDec =>
-                Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
-              case CancelDec =>
-                Redirect(controllers.routes.CancelDeclarationController.displayForm())
-              case Submissions =>
-                Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
-            }
-          }
+            .map(_ => {
+              validChoice.value match {
+                case SupplementaryDec | StandardDec =>
+                  Redirect(controllers.declaration.routes.DispatchLocationController.displayPage())
+                case CancelDec =>
+                  Redirect(controllers.routes.CancelDeclarationController.displayForm())
+                case Submissions =>
+                  Redirect(controllers.routes.SubmissionsController.displayListOfSubmissions())
+              }
+            })
         }
       )
   }

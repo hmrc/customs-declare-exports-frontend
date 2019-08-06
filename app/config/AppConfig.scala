@@ -44,13 +44,6 @@ class AppConfig @Inject()(
   private def loadConfig(key: String): String =
     runModeConfiguration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  lazy val keyStoreSource: String = appName
-  lazy val keyStoreUrl: String = servicesConfig.baseUrl("keystore")
-  lazy val sessionCacheDomain: String = servicesConfig.getConfString(
-    "cachable.session-cache.domain",
-    throw new Exception(s"Could not find config 'cachable.session-cache.domain'")
-  )
-
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
   lazy val analyticsHost = loadConfig(s"google-analytics.host")
 

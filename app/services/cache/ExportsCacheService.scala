@@ -19,6 +19,8 @@ package services.cache
 import java.time.LocalDateTime.now
 
 import javax.inject.{Inject, Singleton}
+import reactivemongo.play.json.collection.JSONBatchCommands.FindAndModifyCommand
+import uk.gov.hmrc.http.logging.SessionId
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,5 +37,8 @@ class ExportsCacheService @Inject()(journeyCacheModelRepo: ExportsCacheModelRepo
       case Some(model) => model.items.find(_.id.equalsIgnoreCase(itemId))
       case _           => None
     }
+
+  def remove(sessionId: String): Future[FindAndModifyCommand.FindAndModifyResult] =
+    journeyCacheModelRepo.remove(sessionId)
 
 }

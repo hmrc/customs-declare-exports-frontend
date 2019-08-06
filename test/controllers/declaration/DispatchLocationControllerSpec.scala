@@ -38,7 +38,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Declaration Type Controller on GET" should {

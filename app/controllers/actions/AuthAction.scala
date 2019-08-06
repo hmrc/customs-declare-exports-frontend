@@ -87,12 +87,16 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, mcc: M
 
   private def validateEnrollments(eori: Option[EnrolmentIdentifier], externalId: Option[String]): Unit = {
     if (eori.isEmpty) {
+      // $COVERAGE-OFF$Trivial
       logger.error("User doesn't have eori")
+      // $COVERAGE-ON
       throw InsufficientEnrolments()
     }
 
     if (externalId.isEmpty) {
+      // $COVERAGE-OFF$Trivial
       logger.error("User doesn't have external Id")
+      // $COVERAGE-ON
       throw NoExternalId()
     }
   }

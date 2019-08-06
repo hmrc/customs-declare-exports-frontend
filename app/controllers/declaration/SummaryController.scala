@@ -28,7 +28,6 @@ import play.api.mvc._
 import services._
 import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.summary.{summary_page, summary_page_no_data}
 
@@ -38,7 +37,6 @@ class SummaryController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   submissionService: SubmissionService,
   mcc: MessagesControllerComponents,
@@ -71,7 +69,7 @@ class SummaryController @Inject()(
   private def handleDecSubmission(
     exportsCacheModel: ExportsCacheModel
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    submissionService.submit(exportsCacheModel).map {
+    submissionService.submit(journeySessionId, exportsCacheModel).map {
       case Some(lrn) =>
         Redirect(controllers.declaration.routes.ConfirmationController.displayPage())
           .flashing(Flash(Map("LRN" -> lrn)))

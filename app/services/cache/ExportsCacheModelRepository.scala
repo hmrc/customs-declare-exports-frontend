@@ -25,9 +25,11 @@ import javax.inject.Inject
 import models.declaration.{Locations, Parties, TransportInformationContainerData}
 import play.api.libs.json.{JsError, JsNumber, JsObject, JsResult, JsSuccess, JsValue, Json, OFormat}
 import play.modules.reactivemongo.ReactiveMongoComponent
+import play.mvc.Http.Session
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import reactivemongo.play.json.ImplicitBSONHandlers._
+import reactivemongo.play.json.collection.JSONBatchCommands.FindAndModifyCommand
 import reactivemongo.play.json.commands.JSONFindAndModifyCommand.FindAndModifyResult
 import uk.gov.hmrc.mongo.ReactiveRepository
 import uk.gov.hmrc.mongo.json.ReactiveMongoFormats.objectIdFormats
@@ -68,6 +70,9 @@ class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent, appConfi
         if (updateResult.value.isEmpty) logDatabaseUpdateError(updateResult)
         updateResult.result[ExportsCacheModel]
       }
+
+  def remove(sessionId: String): Future[FindAndModifyCommand.FindAndModifyResult] =
+    collection.findAndRemove(selector = bySessionId(sessionId))
 
   private def bySessionId(id: String): JsObject =
     Json.obj("sessionId" -> id)

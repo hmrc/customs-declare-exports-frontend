@@ -45,7 +45,6 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     setupErrorHandler()
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
-    withJourneyType(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
   }
 
   "Additional information controller" should {

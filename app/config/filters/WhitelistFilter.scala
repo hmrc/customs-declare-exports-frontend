@@ -32,12 +32,10 @@ class WhitelistFilter @Inject()(val appConfig: AppConfig, implicit val mat: Mate
   override val destination: Call = Call("GET", appConfig.shutterPage)
   override val excludedPaths: Seq[Call] = appConfig.whitelistExcludedPaths
 
-  override def apply(f: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] = {
-    Logger.debug(s"[WhitelistFilter][apply] whitelisted ips: $whitelist")
+  override def apply(f: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] =
     if (appConfig.whiteListEnabled) {
       super.apply(f)(rh)
     } else {
       f(rh)
     }
-  }
 }
