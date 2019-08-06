@@ -67,7 +67,7 @@ object MultipleItemsHelper {
     */
   def remove[A](idOpt: Option[String], cachedData: Seq[A]): Seq[A] = idOpt match {
     case Some(id) if validateId(id) && cachedData.length - 1 >= id.toInt => removeItem(id, cachedData)
-    case _                                             => throw new InternalServerException("Incorrect id")
+    case _                                                               => throw new InternalServerException("Incorrect id")
   }
 
   private def validateId(id: String): Boolean = id.nonEmpty && id.forall(_.isDigit)

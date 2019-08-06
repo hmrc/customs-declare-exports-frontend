@@ -25,8 +25,7 @@ import helpers.views.declaration.{CommonMessages, PreviousDocumentsMessages}
 import org.mockito.Mockito.reset
 import play.api.test.Helpers._
 
-class
-PreviousDocumentsControllerSpec
+class PreviousDocumentsControllerSpec
     extends CustomExportsBaseSpec with PreviousDocumentsMessages with CommonMessages with ViewValidator {
   import PreviousDocumentsControllerSpec._
 

@@ -21,7 +21,6 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class ArrivalTransportMeansBuilderSpec extends WordSpec with Matchers {
 
-
   "ArrivalTransportMeansBuilder" should {
     "correctly map ArrivalTransportMeans instance" in {
       val builder = new ArrivalTransportMeansBuilder

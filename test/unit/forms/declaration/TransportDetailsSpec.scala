@@ -39,7 +39,8 @@ class TransportDetailsSpec extends WordSpec with MustMatchers {
 
       "all fields contains correct data" in {
 
-        val correctForm = TransportDetails(Some("United Kingdom"), false, "40", Some("IdNumber"), Some(TransportCodes.cash))
+        val correctForm =
+          TransportDetails(Some("United Kingdom"), false, "40", Some("IdNumber"), Some(TransportCodes.cash))
 
         val result = form.fillAndValidate(correctForm)
 

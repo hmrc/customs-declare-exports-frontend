@@ -54,8 +54,7 @@ class TransportDetailsController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[TransportDetails]) =>
-          Future.successful(BadRequest(transportDetailsPage(formWithErrors))),
+        (formWithErrors: Form[TransportDetails]) => Future.successful(BadRequest(transportDetailsPage(formWithErrors))),
         transportDetails =>
           for {
             _ <- updateCache(journeySessionId, transportDetails)

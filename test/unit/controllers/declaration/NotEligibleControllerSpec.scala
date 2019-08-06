@@ -27,12 +27,10 @@ class NotEligibleControllerSpec extends ControllerSpec {
   trait SetUp {
     val notEligiblePage = new not_eligible(mainTemplate)
 
-    val controller = new NotEligibleController(
-      mockAuthAction,
-      mockJourneyAction,
-      stubMessagesControllerComponents(),
-      notEligiblePage
-    )(ec)
+    val controller =
+      new NotEligibleController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), notEligiblePage)(
+        ec
+      )
 
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
