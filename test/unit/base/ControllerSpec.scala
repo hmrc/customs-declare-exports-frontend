@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait ControllerSpec
     extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockCustomsCacheService
-    with MockExportsCacheService with ExportsCacheModelBuilder with ExportsCacheItemBuilder{
+    with MockExportsCacheService with ExportsCacheModelBuilder with ExportsCacheItemBuilder {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 

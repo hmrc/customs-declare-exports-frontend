@@ -19,7 +19,9 @@ package services.mapping.governmentagencygoodsitem
 import javax.inject.Inject
 import services.cache.ExportItem
 import services.mapping.ModifyingBuilder
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem}
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
+  GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
+}
 import wco.datamodel.wco.declaration_ds.dms._2.GovernmentAgencyGoodsItemStatisticalValueAmountType
 
 class StatisticalValueAmountBuilder @Inject()() extends ModifyingBuilder[ExportItem, WCOGovernmentAgencyGoodsItem] {

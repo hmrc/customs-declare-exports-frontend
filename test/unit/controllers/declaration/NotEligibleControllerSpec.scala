@@ -14,26 +14,38 @@
  * limitations under the License.
  */
 
-package controllers.declaration
+package unit.controllers.declaration
 
-import base.CustomExportsBaseSpec
+import controllers.declaration.NotEligibleController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import play.api.test.Helpers._
+import unit.base.ControllerSpec
+import views.html.declaration.not_eligible
 
-class NotEligibleControllerSpec extends CustomExportsBaseSpec {
+class NotEligibleControllerSpec extends ControllerSpec {
 
-  override def beforeEach() {
+  trait SetUp {
+    val notEligiblePage = new not_eligible(mainTemplate)
+
+    val controller =
+      new NotEligibleController(mockAuthAction, mockJourneyAction, stubMessagesControllerComponents(), notEligiblePage)(
+        ec
+      )
+
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
   }
 
-  "Not Eligible Controller on GET" should {
+  "Not Eligible Controller" should {
 
-    "return 200 with a success" in {
+    "return 200 (OK)" when {
 
-      val result = route(app, getRequest(uriWithContextPath("/declaration/not-eligible"))).get
+      "display method is invoked" in new SetUp {
 
-      status(result) must be(OK)
+        val result = controller.displayPage()(getRequest())
+
+        status(result) must be(OK)
+      }
     }
   }
 }
