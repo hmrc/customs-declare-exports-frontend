@@ -16,18 +16,13 @@
 
 package controllers.declaration
 
-import java.time.LocalDateTime
-
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.common.Address
 import forms.declaration.ExporterDetailsSpec._
-import forms.declaration.{EntityDetails, ExporterDetails}
 import helpers.views.declaration.CommonMessages
-import models.declaration.Parties
 import org.mockito.Mockito
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMessages {
 
@@ -37,7 +32,6 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
     super.beforeEach()
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[ExporterDetails](None)
   }
 
   override def afterEach() = {

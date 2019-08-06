@@ -16,13 +16,10 @@
 
 package controllers.declaration
 
-import java.time.LocalDateTime
-
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify}
 import play.api.libs.json.{JsObject, JsString, JsValue}
@@ -38,7 +35,6 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
   override def beforeEach() {
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[DispatchLocation](None, DispatchLocation.formId)
   }
 
   override def afterEach() {
@@ -69,9 +65,6 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 
       val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.OutsideEU)
       route(app, postRequest(dispatchLocationUri, validForm)).get.futureValue
-
-      verify(mockCustomsCacheService)
-        .cache[DispatchLocation](any(), ArgumentMatchers.eq(DispatchLocation.formId), any())(any(), any(), any())
 
       verify(mockExportsCacheService).update(any(), any[ExportsCacheModel])
       verify(mockExportsCacheService, times(2)).get(any())

@@ -30,7 +30,7 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
   private val form: Form[CommodityMeasure] = CommodityMeasure.form()
   private val goodsMeasurePage = app.injector.instanceOf[goods_measure]
   private def createView(form: Form[CommodityMeasure] = form): Html =
-    goodsMeasurePage(itemId, form)(fakeRequest, messages, appConfig)
+    goodsMeasurePage(itemId, form)(fakeRequest, messages)
 
   "Commodity Measure View" should {
 

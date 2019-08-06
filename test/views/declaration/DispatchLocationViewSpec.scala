@@ -30,7 +30,7 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
   private val form: Form[DispatchLocation] = DispatchLocation.form()
   private val dispatchLocationPage = app.injector.instanceOf[dispatch_location]
   private def createView(form: Form[DispatchLocation] = form): Html =
-    dispatchLocationPage(form)(appConfig, fakeRequest, messages)
+    dispatchLocationPage(form)(fakeRequest, messages)
 
   "Dispatch Location View" should {
 

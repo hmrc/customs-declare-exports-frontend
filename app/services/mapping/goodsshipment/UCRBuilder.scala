@@ -18,36 +18,27 @@ package services.mapping.goodsshipment
 import forms.declaration.ConsignmentReferences
 import javax.inject.Inject
 import services.mapping.ModifyingBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.UCR
 import wco.datamodel.wco.declaration_ds.dms._2.UCRTraderAssignedReferenceIDType
 
 class UCRBuilder @Inject()() extends ModifyingBuilder[ConsignmentReferences, GoodsShipment] {
   override def buildThenAdd(model: ConsignmentReferences, goodsShipment: GoodsShipment): Unit =
-    goodsShipment.setUCR(UCRBuilder.createUCR(model))
-}
-
-object UCRBuilder {
-
-  def build(implicit cacheMap: CacheMap): UCR =
-    cacheMap
-      .getEntry[ConsignmentReferences](ConsignmentReferences.id)
-      .filter(isDefined)
-      .map(createUCR)
-      .orNull
+    if (isDefined(model)) {
+      goodsShipment.setUCR(createUCR(model))
+    }
 
   private def isDefined(reference: ConsignmentReferences): Boolean = reference.ducr.isDefined
 
   private def createUCR(data: ConsignmentReferences): UCR = {
-    val warehouse = new UCR()
+    val ucr = new UCR()
 
     data.ducr.foreach { value =>
       val traderAssignedReferenceID = new UCRTraderAssignedReferenceIDType()
       traderAssignedReferenceID.setValue(value.ducr)
-      warehouse.setTraderAssignedReferenceID(traderAssignedReferenceID)
+      ucr.setTraderAssignedReferenceID(traderAssignedReferenceID)
     }
 
-    warehouse
+    ucr
   }
 }

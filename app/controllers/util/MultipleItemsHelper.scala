@@ -19,6 +19,8 @@ package controllers.util
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.http.InternalServerException
 
+import scala.util.Try
+
 /**
   * Object to help dealing with multiple items page.
   *
@@ -64,9 +66,11 @@ object MultipleItemsHelper {
     * @return Updated sequence ready to update to db
     */
   def remove[A](idOpt: Option[String], cachedData: Seq[A]): Seq[A] = idOpt match {
-    case Some(id) if cachedData.length - 1 >= id.toInt => removeItem(id, cachedData)
-    case _                                             => throw new InternalServerException("Incorrect id")
+    case Some(id) if validateId(id) && cachedData.length - 1 >= id.toInt => removeItem(id, cachedData)
+    case _                                                               => throw new InternalServerException("Incorrect id")
   }
+
+  private def validateId(id: String): Boolean = id.nonEmpty && id.forall(_.isDigit)
 
   private def removeItem[A](id: String, cachedData: Seq[A]): Seq[A] =
     cachedData.zipWithIndex.filter(_._2 != id.toInt).map(_._1)

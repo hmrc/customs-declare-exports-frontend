@@ -27,18 +27,6 @@ class AdditionalInformationBuilderSpec extends WordSpec with Matchers with Mocki
   val additionalInformation = AdditionalInformation("code", "description")
 
   "AdditionalInformationBuilder" should {
-    "map correctly when values are present" in {
-      val mappedAdditionalInformation = AdditionalInformationBuilder.build(Seq(additionalInformation))
-
-      mappedAdditionalInformation shouldNot be(empty)
-      mappedAdditionalInformation.get(0).getStatementCode.getValue shouldBe additionalInformation.code
-      mappedAdditionalInformation.get(0).getStatementDescription.getValue shouldBe additionalInformation.description
-    }
-
-    "map correctly when values are not Present" in {
-      val mappedAdditionalInformation = AdditionalInformationBuilder.build(Seq())
-      mappedAdditionalInformation.isEmpty shouldBe true
-    }
 
     "build then add" when {
       "no additional information" in {
@@ -57,8 +45,14 @@ class AdditionalInformationBuilderSpec extends WordSpec with Matchers with Mocki
         builder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
 
         governmentAgencyGoodsItem.getAdditionalInformation shouldNot be(empty)
-        governmentAgencyGoodsItem.getAdditionalInformation.get(0).getStatementCode.getValue shouldBe additionalInformation.code
-        governmentAgencyGoodsItem.getAdditionalInformation.get(0).getStatementDescription.getValue shouldBe additionalInformation.description
+        governmentAgencyGoodsItem.getAdditionalInformation
+          .get(0)
+          .getStatementCode
+          .getValue shouldBe additionalInformation.code
+        governmentAgencyGoodsItem.getAdditionalInformation
+          .get(0)
+          .getStatementDescription
+          .getValue shouldBe additionalInformation.description
       }
     }
   }

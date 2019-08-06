@@ -14,13 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import uk.gov.hmrc.play.views.html.layouts.{Article, Sidebar}
 
 @this(govuk_wrapper: views.html.govuk_wrapper, sidebar_di: Sidebar, article_di: Article)
 
 @(title: String,
-  appConfig: AppConfig,
   sidebarLinks: Option[Html] = None,
   contentHeader: Option[Html] = None,
   bodyClasses: Option[String] = None,
@@ -35,8 +33,7 @@
     }
 }
 
-@govuk_wrapper(appConfig = appConfig,
-               title = title,
+@govuk_wrapper(title = title,
                mainClass = mainClass,
                bodyClasses = bodyClasses,
                sidebar = sidebar,

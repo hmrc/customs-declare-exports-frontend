@@ -27,7 +27,7 @@ import play.api.{Configuration, Environment}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import views.declaration.spec.ViewSpec
-import views.html.choice_page
+import views.html.{choice_page, main_template}
 import views.tags.ViewTest
 
 import scala.collection.immutable
@@ -94,11 +94,11 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
       val servicesConfig = new ServicesConfig(conf, runMode)
       val supplementaryAppConfig = new AppConfig(conf, Environment.simple(), servicesConfig, "AppName")
 
-      val view = choicePage(Choice.form().fill(Choice("SMP")))(
-        appConfig = supplementaryAppConfig,
-        messages = messages,
-        request = fakeRequest
-      )
+      val mainTemplate = app.injector.instanceOf[main_template]
+
+      val page = new choice_page(mainTemplate, supplementaryAppConfig)
+
+      val view = page(Choice.form().fill(Choice("SMP")))(messages = messages, request = fakeRequest)
       ensureSupplementaryLabelIsCorrect(view)
 
       ensureRadioIsChecked(view, "Supplementary declaration")

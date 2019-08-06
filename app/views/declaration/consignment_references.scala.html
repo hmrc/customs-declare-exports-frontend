@@ -14,18 +14,16 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.ConsignmentReferences
 @import uk.gov.hmrc.play.views.html._
 
 @this(main_template: views.html.main_template)
 
-@(appConfig: AppConfig, form: Form[ConsignmentReferences])(implicit request: Request[_], messages: Messages)
+@(form: Form[ConsignmentReferences])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages("supplementary.consignmentReferences.title"),
-  appConfig = appConfig
+  title = messages("supplementary.consignmentReferences.title")
 ) {
 
   @components.back_link("/customs-declare-exports/declaration/type")

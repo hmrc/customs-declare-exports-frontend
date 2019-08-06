@@ -24,9 +24,9 @@ import forms.declaration.ItemType.IdentificationTypeCodes.{
   TARICAdditionalCode
 }
 import models.declaration.governmentagencygoodsitem.{Classification, Commodity, DangerousGoods, GoodsMeasure, Measure}
-import services.ExportsItemsCacheIds.defaultMeasureCode
 
 object CachingMappingHelper {
+  val defaultMeasureCode = "KGM"
 
   def commodityFromItemTypes(itemType: ItemType): Commodity =
     Commodity(
@@ -50,12 +50,16 @@ object CachingMappingHelper {
         GoodsMeasure(
           Some(createMeasure(data.grossMass)),
           Some(createMeasure(data.netMass)),
-          data.supplementaryUnits.map(createMeasure(_))
+          data.supplementaryUnits.map(createMeasure)
         )
       )
     )
 
   private def createMeasure(unitValue: String) =
-    Measure(Some(defaultMeasureCode), value = Some(BigDecimal(unitValue)))
+    try {
+      Measure(Some(defaultMeasureCode), value = Some(BigDecimal(unitValue)))
+    } catch {
+      case _: NumberFormatException => Measure(Some(defaultMeasureCode), value = Some(BigDecimal(0)))
+    }
 
 }

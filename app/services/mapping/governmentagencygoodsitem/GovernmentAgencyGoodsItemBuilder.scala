@@ -16,26 +16,24 @@
 
 package services.mapping.governmentagencygoodsitem
 
+import forms.declaration.{CommodityMeasure, ItemType}
 import javax.inject.Inject
-import models.declaration.governmentagencygoodsitem.Formats._
-import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
-import services.ExportsItemsCacheIds
+import models.declaration.governmentagencygoodsitem.Commodity
 import services.cache.ExportItem
-import services.mapping.ModifyingBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
+import services.mapping.{CachingMappingHelper, ModifyingBuilder}
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
   GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
 }
-
-import scala.collection.JavaConverters._
 
 class GovernmentAgencyGoodsItemBuilder @Inject()(
   statisticalValueAmountBuilder: StatisticalValueAmountBuilder,
   packagingBuilder: PackagingBuilder,
   governmentProcedureBuilder: GovernmentProcedureBuilder,
   additionalInformationBuilder: AdditionalInformationBuilder,
-  additionalDocumentsBuilder: AdditionalDocumentsBuilder
+  additionalDocumentsBuilder: AdditionalDocumentsBuilder,
+  domesticDutyTaxPartyBuilder: DomesticDutyTaxPartyBuilder,
+  commodityBuilder: CommodityBuilder
 ) extends ModifyingBuilder[ExportItem, Declaration.GoodsShipment] {
 
   override def buildThenAdd(exportItem: ExportItem, goodsShipment: Declaration.GoodsShipment): Unit = {
@@ -48,62 +46,32 @@ class GovernmentAgencyGoodsItemBuilder @Inject()(
     additionalInformationBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
     additionalDocumentsBuilder.buildThenAdd(exportItem, wcoGovernmentAgencyGoodsItem)
 
+    val combinedCommodity = for {
+      commodityWithoutGoodsMeasure <- mapItemTypeToCommodity(exportItem.itemType)
+      commodityOnlyGoodsMeasure <- mapCommodityMeasureToCommodity(exportItem.commodityMeasure)
+    } yield combineCommodities(commodityWithoutGoodsMeasure, commodityOnlyGoodsMeasure)
+
+    combinedCommodity.foreach(commodityBuilder.buildThenAdd(_, wcoGovernmentAgencyGoodsItem))
+
+    exportItem.additionalFiscalReferencesData.foreach(
+      _.references.foreach(
+        additionalFiscalReference =>
+          domesticDutyTaxPartyBuilder.buildThenAdd(additionalFiscalReference, wcoGovernmentAgencyGoodsItem)
+      )
+    )
+
     goodsShipment.getGovernmentAgencyGoodsItem.add(wcoGovernmentAgencyGoodsItem)
   }
 
-}
+  private def mapItemTypeToCommodity(itemType: Option[ItemType]): Option[Commodity] =
+    itemType.map({ item =>
+      CachingMappingHelper.commodityFromItemTypes(item)
+    })
 
-object GovernmentAgencyGoodsItemBuilder {
+  private def mapCommodityMeasureToCommodity(commodityMeasure: Option[CommodityMeasure]): Option[Commodity] =
+    commodityMeasure.map(measure => CachingMappingHelper.mapGoodsMeasure(measure))
 
-  def build(implicit cacheMap: CacheMap): java.util.List[WCOGovernmentAgencyGoodsItem] =
-    cacheMap
-      .getEntry[Seq[GovernmentAgencyGoodsItem]](ExportsItemsCacheIds.itemsId)
-      .getOrElse(Seq.empty)
-      .map(goodsItem => createWCOGovernmentAgencyGoodsItem(goodsItem))
-      .toList
-      .asJava
-
-  //scalastyle:off method.length
-  def createWCOGovernmentAgencyGoodsItem(
-    governmentAgencyGoodsItem: GovernmentAgencyGoodsItem
-  )(implicit cacheMap: CacheMap): WCOGovernmentAgencyGoodsItem = {
-
-    val wcoGovernmentAgencyGoodsItem = new WCOGovernmentAgencyGoodsItem
-
-    StatisticalValueAmountBuilder.buildThenAdd(governmentAgencyGoodsItem, wcoGovernmentAgencyGoodsItem)
-
-    wcoGovernmentAgencyGoodsItem.setSequenceNumeric(BigDecimal(governmentAgencyGoodsItem.sequenceNumeric).bigDecimal)
-
-    if (governmentAgencyGoodsItem.packagings.nonEmpty) {
-      wcoGovernmentAgencyGoodsItem.getPackaging.addAll(PackagingBuilder.build(governmentAgencyGoodsItem.packagings))
-    }
-
-    if (governmentAgencyGoodsItem.governmentProcedures.nonEmpty) {
-      wcoGovernmentAgencyGoodsItem.getGovernmentProcedure.addAll(
-        GovernmentProcedureBuilder.build(governmentAgencyGoodsItem.governmentProcedures)
-      )
-    }
-
-    if (governmentAgencyGoodsItem.additionalInformations.nonEmpty) {
-      wcoGovernmentAgencyGoodsItem.getAdditionalInformation.addAll(
-        AdditionalInformationBuilder.build(governmentAgencyGoodsItem.additionalInformations)
-      )
-    }
-
-    if (governmentAgencyGoodsItem.additionalDocuments.nonEmpty) {
-      wcoGovernmentAgencyGoodsItem.getAdditionalDocument.addAll(
-        AdditionalDocumentsBuilder.build(governmentAgencyGoodsItem.additionalDocuments)
-      )
-    }
-
-    if (governmentAgencyGoodsItem.fiscalReferences.nonEmpty) {
-      wcoGovernmentAgencyGoodsItem.getDomesticDutyTaxParty.addAll(
-        DomesticDutyTaxPartyBuilder.build(governmentAgencyGoodsItem.fiscalReferences)
-      )
-    }
-
-    wcoGovernmentAgencyGoodsItem.setCommodity(CommodityBuilder.build(governmentAgencyGoodsItem.commodity))
-    wcoGovernmentAgencyGoodsItem
-  }
+  private def combineCommodities(commodityPart1: Commodity, commodityPart2: Commodity): Commodity =
+    commodityPart1.copy(goodsMeasure = commodityPart2.goodsMeasure)
 
 }

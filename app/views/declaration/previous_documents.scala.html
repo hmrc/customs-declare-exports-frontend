@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.Document
 @import forms.declaration.Document.AllowedValues._
@@ -25,11 +24,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[Document], documents: Seq[Document])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[Document], documents: Seq[Document])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.previousDocuments"),
-    appConfig = appConfig
+    title = messages("supplementary.previousDocuments")
 ) {
 
     @components.back_link(controllers.declaration.routes.NatureOfTransactionController.displayForm().url)

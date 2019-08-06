@@ -34,34 +34,36 @@ object WarehouseIdentification {
 
   val formId = "IdentificationOfWarehouse"
 
-  val mapping = Forms.mapping(
-    "supervisingCustomsOffice" -> optional(
-      text()
-        .verifying("supplementary.warehouse.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
-    ),
-    "identificationType" -> optional(
-      text().verifying("supplementary.warehouse.identificationType.error", isContainedIn(IdentifierType.all))
-    ),
-    "identificationNumber" -> optional(
-      text().verifying(
-        "supplementary.warehouse.identificationNumber.error",
-        noShorterThan(1) and noLongerThan(35) and isAlphanumeric
-      )
-    ),
-    "inlandModeOfTransportCode" -> optional(
-      text()
-        .verifying(
-          "supplementary.warehouse.inlandTransportMode.error.incorrect",
-          isContainedIn(allowedModeOfTransportCodes)
+  val mapping = Forms
+    .mapping(
+      "supervisingCustomsOffice" -> optional(
+        text()
+          .verifying("supplementary.warehouse.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
+      ),
+      "identificationType" -> optional(
+        text().verifying("supplementary.warehouse.identificationType.error", isContainedIn(IdentifierType.all))
+      ),
+      "identificationNumber" -> optional(
+        text().verifying(
+          "supplementary.warehouse.identificationNumber.error",
+          noShorterThan(1) and noLongerThan(35) and isAlphanumeric
         )
-    )
-  )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
+      ),
+      "inlandModeOfTransportCode" -> optional(
+        text()
+          .verifying(
+            "supplementary.warehouse.inlandTransportMode.error.incorrect",
+            isContainedIn(allowedModeOfTransportCodes)
+          )
+      )
+    )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
     .verifying("supplementary.warehouse.identificationNumber.empty", idNumberIsPopulatedWhenIDTypeIsSelected)
 
   private def idNumberIsPopulatedWhenIDTypeIsSelected: WarehouseIdentification => Boolean =
-    w => w.identificationType match {
-      case Some(_) => w.identificationNumber.exists(_.nonEmpty)
-      case None => true
+    w =>
+      w.identificationType match {
+        case Some(_) => w.identificationNumber.exists(_.nonEmpty)
+        case None    => true
     }
 
   def form(): Form[WarehouseIdentification] = Form(mapping)

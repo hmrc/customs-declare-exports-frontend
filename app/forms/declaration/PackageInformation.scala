@@ -36,6 +36,7 @@ object PackageInformation {
   implicit val format = Json.format[PackageInformation]
 
   val formId = "PackageInformation"
+  val limit = 99
 
   val mapping = Forms
     .mapping(
@@ -49,7 +50,7 @@ object PackageInformation {
       ),
       "numberOfPackages" ->
         optional(
-          number.verifying("supplementary.packageInformation.numberOfPackages.error", (q => q > 0 && q <= 999999))
+          number.verifying("supplementary.packageInformation.numberOfPackages.error", q => q > 0 && q <= 999999)
         ),
       "shippingMarks" -> optional(
         text()

@@ -16,6 +16,8 @@
 
 package utils.validators.forms
 
+import java.util.regex.Pattern
+
 import scala.util.{Success, Try}
 
 object FieldValidator {
@@ -40,9 +42,9 @@ object FieldValidator {
     def or(second: Boolean): Boolean = first || second
   }
 
-  private val zerosOnlyRegexValue = "[0]+"
-  private val noMoreDecimalPlacesThanRegexValue: Int => String = (decimalPlaces: Int) =>
-    s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$"
+  private def noMoreDecimalPlacesThanRegexValue(decimalPlaces: Int): Pattern =
+    Pattern.compile(s"^([0-9]*)([\\.]{0,1}[0-9]{0,$decimalPlaces})$$")
+
   private val allowedSpecialChars = Set(',', '.', '-', '\'', '/', ' ')
 
   private val allowedHyphenChar = Set('-')
@@ -84,7 +86,7 @@ object FieldValidator {
   val isContainedIn: Iterable[String] => String => Boolean =
     (iterable: Iterable[String]) => (input: String) => iterable.exists(_ == input)
 
-  val containsNotOnlyZeros: String => Boolean = (input: String) => !input.matches(zerosOnlyRegexValue)
+  val containsNotOnlyZeros: String => Boolean = (input: String) => input.isEmpty || input.exists(char => char != '0')
 
   val isTailNumeric: String => Boolean = (input: String) =>
     Try(input.tail) match {
@@ -92,8 +94,11 @@ object FieldValidator {
       case _              => false
   }
 
-  val isDecimalWithNoMoreDecimalPlacesThan: Int => String => Boolean = (decimalPlaces: Int) =>
-    (input: String) => input.matches(noMoreDecimalPlacesThanRegexValue(decimalPlaces))
+  def isDecimalWithNoMoreDecimalPlacesThan(decimalPlaces: Int): String => Boolean = {
+    val pattern = noMoreDecimalPlacesThanRegexValue(decimalPlaces)
+    input =>
+      pattern.matcher(input).matches()
+  }
 
   val validateDecimal: Int => Int => String => Boolean = (totalLength: Int) =>
     (decimalPlaces: Int) =>
@@ -108,9 +113,13 @@ object FieldValidator {
 
   val areAllElementsUnique: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size == input.size
 
-  val ofPattern: String => String => Boolean = (pattern: String) => (input: String) => input.matches(pattern)
+  val ofPattern: String => String => Boolean = (pattern: String) => {
+    val compiledPattern = Pattern.compile(pattern)
+    input =>
+      compiledPattern.matcher(input).matches()
+  }
 
-  private val namePattern = "[\\p{IsLatin} ,.'-]+"
+  private val namePattern = Pattern.compile("[\\p{IsLatin} ,.'-]+")
 
-  val isValidName: String => Boolean = (name: String) => name.matches(namePattern)
+  val isValidName: String => Boolean = (name: String) => namePattern.matcher(name).matches()
 }

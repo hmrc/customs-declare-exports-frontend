@@ -31,7 +31,7 @@ class ChoiceControllerSpec extends ControllerSpec {
   import ChoiceControllerSpec._
 
   trait SetUp {
-    val choicePage = new choice_page(mainTemplate)
+    val choicePage = new choice_page(mainTemplate, minimalAppConfig)
 
     val controller = new ChoiceController(
       mockAuthAction,
@@ -39,7 +39,7 @@ class ChoiceControllerSpec extends ControllerSpec {
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       choicePage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
     withCaching(None)

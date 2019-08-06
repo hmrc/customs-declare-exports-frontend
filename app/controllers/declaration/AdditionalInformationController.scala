@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util._
@@ -41,19 +40,18 @@ class AdditionalInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  legacyCustomsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   additionalInformationPage: additional_information
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   val elementLimit = 99
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.flatMap(_.additionalInformation)).map {
-      case Some(data) => Ok(additionalInformationPage(itemId, appConfig, form(), data.items))
-      case _          => Ok(additionalInformationPage(itemId, appConfig, form(), Seq()))
+      case Some(data) => Ok(additionalInformationPage(itemId, form(), data.items))
+      case _          => Ok(additionalInformationPage(itemId, form(), Seq()))
     }
   }
 
@@ -83,14 +81,10 @@ class AdditionalInformationController @Inject()(
     MultipleItemsHelper
       .add(boundForm, cachedData, elementLimit)
       .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(additionalInformationPage(itemId, appConfig, formWithErrors, cachedData))),
+        formWithErrors => Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors, cachedData))),
         updatedCache =>
-          updateCacheModelAndRedirect(
-            itemId,
-            updatedCache,
-            controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)
-        )
+          updateCache(itemId, journeySessionId, AdditionalInformationData(updatedCache))
+            .map(_ => Redirect(controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)))
       )
 
   private def handleSaveAndContinue(
@@ -101,15 +95,11 @@ class AdditionalInformationController @Inject()(
     MultipleItemsHelper
       .saveAndContinue(boundForm, cachedData, true, elementLimit)
       .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(additionalInformationPage(itemId, appConfig, formWithErrors, cachedData))),
+        formWithErrors => Future.successful(BadRequest(additionalInformationPage(itemId, formWithErrors, cachedData))),
         updatedCache =>
           if (updatedCache != cachedData)
-            updateCacheModelAndRedirect(
-              itemId,
-              updatedCache,
-              controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)
-            )
+            updateCache(itemId, journeySessionId, AdditionalInformationData(updatedCache))
+              .map(_ => Redirect(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)))
           else
             Future.successful(Redirect(controllers.declaration.routes.DocumentsProducedController.displayPage(itemId)))
       )
@@ -121,21 +111,9 @@ class AdditionalInformationController @Inject()(
     items: Seq[AdditionalInformation]
   )(implicit request: JourneyRequest[_]): Future[Result] = {
     val updatedCache = MultipleItemsHelper.remove(ids.headOption, items)
-    updateCacheModelAndRedirect(
-      itemId,
-      updatedCache,
-      controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)
-    )
+    updateCache(itemId, journeySessionId, AdditionalInformationData(updatedCache))
+      .map(_ => Redirect(controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)))
   }
-
-  private def updateCacheModelAndRedirect(itemId: String, updatedCache: Seq[AdditionalInformation], redirectCall: Call)(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] =
-    for {
-      _ <- updateCache(itemId, journeySessionId, AdditionalInformationData(updatedCache))
-      _ <- legacyCustomsCacheService
-        .cache[AdditionalInformationData](goodsItemCacheId, formId, AdditionalInformationData(updatedCache))
-    } yield Redirect(redirectCall)
 
   private def updateCache(
     itemId: String,
@@ -145,10 +123,11 @@ class AdditionalInformationController @Inject()(
     getAndUpdateExportCacheModel(
       sessionId,
       model => {
-        val item: Option[ExportItem] = model.items
+        val itemList = model.items
           .find(item => item.id.equals(itemId))
           .map(_.copy(additionalInformation = Some(updatedAdditionalInformation)))
-        val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+          .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+
         exportsCacheService.update(sessionId, model.copy(items = itemList))
       }
     )

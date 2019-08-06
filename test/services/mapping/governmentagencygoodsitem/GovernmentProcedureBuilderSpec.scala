@@ -28,15 +28,6 @@ class GovernmentProcedureBuilderSpec
   val additionalProcedureCode = "ABC"
 
   "ProcedureCodesBuilder" should {
-    "build governmentProcedure correctly" in {
-
-      val governmentProcedure = GovernmentProcedure(Some(firstProcedureCode), Some(additionalProcedureCode))
-
-      val procedures = GovernmentProcedureBuilder.build(Seq(governmentProcedure))
-
-      procedures.get(0).getCurrentCode.getValue shouldBe governmentProcedure.currentCode.get
-      procedures.get(0).getPreviousCode.getValue shouldBe governmentProcedure.previousCode.get
-    }
 
     "build then add" when {
       "no procedure codes" in {

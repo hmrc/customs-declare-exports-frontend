@@ -27,7 +27,7 @@ import views.html.error_template
 class ErrorHandlerSpec extends CustomExportsBaseSpec {
 
   val errorPage = app.injector.instanceOf[error_template]
-  val errorHandler = new ErrorHandler(appConfig, messagesApi, errorPage)
+  val errorHandler = new ErrorHandler(messagesApi, errorPage)(appConfig)
   val req = FakeRequest("GET", "/foo")
 
   "ErrorHandlerSpec" should {
@@ -47,7 +47,9 @@ class ErrorHandlerSpec extends CustomExportsBaseSpec {
       val res = errorHandler.resolveError(req, new NoActiveSession("A user is not logged in") {})
       res.header.status must be(Status.SEE_OTHER)
       res.header.headers.get(HeaderNames.LOCATION) must be(
-        Some(s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode("http://localhost:6791/customs-declare-exports/start")}")
+        Some(
+          s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode("http://localhost:6791/customs-declare-exports/start")}"
+        )
       )
     }
 

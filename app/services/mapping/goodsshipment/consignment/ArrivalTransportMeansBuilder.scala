@@ -18,27 +18,19 @@ package services.mapping.goodsshipment.consignment
 import forms.declaration.WarehouseIdentification
 import javax.inject.Inject
 import services.mapping.ModifyingBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
-import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.Consignment.ArrivalTransportMeans
 import wco.datamodel.wco.declaration_ds.dms._2.ArrivalTransportMeansModeCodeType
 
 class ArrivalTransportMeansBuilder @Inject()() extends ModifyingBuilder[WarehouseIdentification, Consignment] {
   override def buildThenAdd(model: WarehouseIdentification, consignment: Consignment): Unit =
-    consignment.setArrivalTransportMeans(ArrivalTransportMeansBuilder.createArrivalTransportMeans(model))
-}
+    if (isDefined(model)) {
+      consignment.setArrivalTransportMeans(createArrivalTransportMeans(model))
+    }
 
-object ArrivalTransportMeansBuilder {
+  private def isDefined(model: WarehouseIdentification): Boolean = model.inlandModeOfTransportCode.isDefined
 
-  def build(implicit cacheMap: CacheMap): GoodsShipment.Consignment.ArrivalTransportMeans =
-    cacheMap
-      .getEntry[WarehouseIdentification](WarehouseIdentification.formId)
-      .filter(_.inlandModeOfTransportCode.isDefined)
-      .map(createArrivalTransportMeans)
-      .orNull
-
-  private def createArrivalTransportMeans(transportInformation: WarehouseIdentification) = {
+  private def createArrivalTransportMeans(transportInformation: WarehouseIdentification): ArrivalTransportMeans = {
     val arrivalTransportMeans = new ArrivalTransportMeans()
 
     transportInformation.inlandModeOfTransportCode.foreach { value =>

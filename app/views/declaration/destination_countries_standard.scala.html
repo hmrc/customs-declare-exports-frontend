@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes
 @import controllers.util.{Add, SaveAndContinue}
 @import forms.declaration.destinationCountries.DestinationCountries
@@ -24,11 +23,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[DestinationCountries], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[DestinationCountries], routingCountries: Seq[String] = Seq.empty)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.destinationCountries.title"),
-    appConfig = appConfig
+    title = messages("declaration.destinationCountries.title")
 ) {
     @helper.form(routes.DestinationCountriesController.saveCountries(), 'autoComplete -> "off") {
         @helper.CSRF.formField

@@ -17,6 +17,7 @@
 package integration.services.mapping.governmentagencygoodsitem
 
 import forms.common.Date
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure}
 import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
 import models.declaration.DocumentsProducedData
 import org.scalatest.{Matchers, WordSpec}
@@ -51,7 +52,17 @@ class GovernmentAgencyGoodsItemIntegrationTest
         withAdditionalInformation("code", "description"),
         withItemType(statisticalValue = "123"),
         withPackageInformation(packageInformation),
-        withProcedureCodes(Some("AB12344"), additionalProcedureCodes)
+        withProcedureCodes(Some("AB12344"), additionalProcedureCodes),
+        withCommodityMeasure(CommodityMeasure(Some("2"), "90", "100")),
+        withAdditionalFiscalReferenceData(
+          AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))
+        ),
+        withItemType(
+          descriptionOfGoods = "commodityDescription",
+          statisticalValue = "123",
+          combinedNomenclatureCode = "classificationsId",
+          unDangerousGoodsCode = Some("dangerousGoodsCode")
+        )
       )
 
       val goodsShipment = new GoodsShipment
@@ -74,12 +85,21 @@ class GovernmentAgencyGoodsItemIntegrationTest
 
   }
 
+  def validateDomesticDutyTax(item: GovernmentAgencyGoodsItem) = {
+    val domesticDutyTaxParties = item.getDomesticDutyTaxParty
+    domesticDutyTaxParties.size() should be(1)
+    domesticDutyTaxParties.get(0).getID.getValue should be("PL12345")
+    domesticDutyTaxParties.get(0).getRoleCode.getValue should be("FR1")
+  }
+
   private def validateGovernmentAgencyGoodsItem(item: GovernmentAgencyGoodsItem) = {
     validateAdditionalDocument(item)
     validateAdditionalInformation(item)
     validateStatisticalValueAmount(item)
     validatePackingInformation(item)
     validateGovernmentProcedure(item)
+    validateCommodity(item)
+    validateDomesticDutyTax(item)
   }
 
   private def validateAdditionalInformation(item: GovernmentAgencyGoodsItem) = {
@@ -106,6 +126,25 @@ class GovernmentAgencyGoodsItemIntegrationTest
     val writeOffQuantity = writeoff.getQuantityQuantity
     writeOffQuantity.getUnitCode shouldBe measurementUnit
     writeOffQuantity.getValue shouldBe documentQuantity.bigDecimal
+  }
+
+  private def validateCommodity(item: GovernmentAgencyGoodsItem) = {
+    val mappedCommodity = item.getCommodity
+    mappedCommodity.getDescription.getValue should be("commodityDescription")
+
+    mappedCommodity.getClassification.get(0).getID.getValue should be("classificationsId")
+    mappedCommodity.getClassification.get(0).getIdentificationTypeCode.getValue should be("TSP")
+
+    mappedCommodity.getDangerousGoods.get(0).getUNDGID.getValue should be("dangerousGoodsCode")
+
+    mappedCommodity.getGoodsMeasure.getGrossMassMeasure.getUnitCode should be("KGM")
+    mappedCommodity.getGoodsMeasure.getGrossMassMeasure.getValue.intValue() should be(100)
+
+    mappedCommodity.getGoodsMeasure.getNetNetWeightMeasure.getUnitCode should be("KGM")
+    mappedCommodity.getGoodsMeasure.getNetNetWeightMeasure.getValue.intValue() should be(90)
+
+    mappedCommodity.getGoodsMeasure.getTariffQuantity.getUnitCode should be("KGM")
+    mappedCommodity.getGoodsMeasure.getTariffQuantity.getValue.intValue() should be(2)
   }
 
   private def validatePackingInformation(item: GovernmentAgencyGoodsItem) = {

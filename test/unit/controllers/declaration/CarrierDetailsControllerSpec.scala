@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.CarrierDetailsController
+import controllers.declaration.{routes, CarrierDetailsController}
 import forms.Choice
 import forms.declaration.{CarrierDetails, EntityDetails}
 import play.api.libs.json.Json
@@ -32,14 +32,12 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
     val controller = new CarrierDetailsController(
       mockAuthAction,
       mockJourneyAction,
-      mockCustomsCacheService,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       carrierDetailsPage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
-    withCaching(None)
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
     withJourneyType(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
   }
@@ -56,8 +54,6 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
       }
 
       "display page method is invoked and cache contains data" in new SetUp {
-        val cachedData = CarrierDetails(EntityDetails(Some("12345678"), None))
-        withCaching(Some(cachedData), CarrierDetails.id)
 
         val result = controller.displayForm()(getRequest())
 
@@ -86,7 +82,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         val result = controller.saveAddress()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/additional-actors"))
+        redirectLocation(result) must be(Some(routes.DeclarationAdditionalActorsController.displayForm().url))
       }
     }
   }

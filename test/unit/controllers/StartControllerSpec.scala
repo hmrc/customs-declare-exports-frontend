@@ -26,7 +26,7 @@ class StartControllerSpec extends ControllerSpec {
   val mcc = stubMessagesControllerComponents()
   val startPage = new start_page(mainTemplate)
 
-  val controller = new StartController(mcc, startPage)(ec, minimalAppConfig)
+  val controller = new StartController(mcc, startPage)(ec)
 
   "Start Controller" should {
 

@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.GoodsLocation
@@ -39,14 +38,14 @@ class LocationController @Inject()(
   mcc: MessagesControllerComponents,
   goodsLocationPage: goods_location,
   override val exportsCacheService: ExportsCacheService
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
   import forms.declaration.GoodsLocation._
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.goodsLocation)).map {
-      case Some(data) => Ok(goodsLocationPage(appConfig, form.fill(data)))
-      case _          => Ok(goodsLocationPage(appConfig, form))
+      case Some(data) => Ok(goodsLocationPage(form.fill(data)))
+      case _          => Ok(goodsLocationPage(form))
     }
   }
 
@@ -54,8 +53,7 @@ class LocationController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[GoodsLocation]) =>
-          Future.successful(BadRequest(goodsLocationPage(appConfig, formWithErrors))),
+        (formWithErrors: Form[GoodsLocation]) => Future.successful(BadRequest(goodsLocationPage(formWithErrors))),
         formData =>
           updateCache(journeySessionId, formData).map { _ =>
             Redirect(controllers.declaration.routes.OfficeOfExitController.displayForm())

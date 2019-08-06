@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
 import controllers.util.SubmissionDisplayHelper
@@ -33,7 +32,7 @@ class SubmissionsController @Inject()(
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
   submissionsPage: submissions
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayListOfSubmissions(): Action[AnyContent] = authenticate.async { implicit request =>
@@ -43,7 +42,7 @@ class SubmissionsController @Inject()(
 
       result = SubmissionDisplayHelper.createSubmissionsWithSortedNotificationsMap(submissions, notifications)
 
-    } yield Ok(submissionsPage(appConfig, result.toSeq))
+    } yield Ok(submissionsPage(result.toSeq))
   }
 
 }

@@ -20,21 +20,20 @@ import base.{CustomExportsBaseSpec, TestHelper}
 import com.kenshoo.play.metrics.Metrics
 import forms.Choice.AllowedChoiceValues
 import metrics.MetricIdentifiers
-import models.declaration.SupplementaryDeclarationTestData._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.FakeRequest
 import play.api.test.Helpers.OK
-import services.audit.EventData._
 import services.audit.{AuditService, AuditTypes, EventData}
+import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 import scala.io.Source
 
-class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
+class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with ExportsCacheModelBuilder {
 
   val mockAuditService = mock[AuditService]
   val mapper = mock[WcoMetadataMapper]
@@ -73,26 +72,26 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
   "SubmissionService" should {
 
     "submit cached data to backend" in {
-      val result = submissionService.submit(cacheMapAllRecords).futureValue
+      val result = submissionService.submit(createFullModel).futureValue
       result.value mustBe "123LRN"
       verify(mockCustomsCacheService, times(1)).remove(any())(any(), any())
 
     }
     "handle success response" in {
-      val result = submissionService.submit(cacheMapAllRecords).futureValue
+      val result = submissionService.submit(createFullModel).futureValue
       result.value mustBe "123LRN"
       verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
     }
 
     "handle failure response" in {
       customsDeclaration400Response()
-      val result = submissionService.submit(cacheMapAllRecords).futureValue
+      val result = submissionService.submit(createFullModel).futureValue
       result mustBe None
       verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
     }
 
     "audit a submission" in {
-      val result = submissionService.submit(cacheMapAllRecords).futureValue
+      val result = submissionService.submit(createFullModel).futureValue
       result.value mustBe "123LRN"
       verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
       verify(mockAuditService, times(1)).audit(any(), any())(any())
@@ -108,11 +107,13 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues {
       val timerBefore = registry.getTimers.get(metrics.timerName(metric)).getCount
       val counterBefore = registry.getCounters.get(metrics.counterName(metric)).getCount
 
-      val result = submissionService.submit(cacheMapAllRecords).futureValue
+      val result = submissionService.submit(createFullModel).futureValue
       result.value mustBe "123LRN"
 
-      registry.getTimers.get(metrics.timerName(metric)).getCount mustBe > (timerBefore)
-      registry.getCounters.get(metrics.counterName(metric)).getCount mustBe > (counterBefore)
+      registry.getTimers.get(metrics.timerName(metric)).getCount mustBe >(timerBefore)
+      registry.getCounters.get(metrics.counterName(metric)).getCount mustBe >(counterBefore)
     }
   }
+
+  private def createFullModel(): ExportsCacheModel = aCacheModel()
 }

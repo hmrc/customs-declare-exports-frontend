@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.CommodityMeasureController
+import controllers.declaration.{routes, CommodityMeasureController}
 import forms.Choice
 import forms.declaration.{CommodityMeasure, PackageInformation}
 import play.api.libs.json.Json
@@ -33,14 +33,12 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
     val controller = new CommodityMeasureController(
       mockAuthAction,
       mockJourneyAction,
-      mockCustomsCacheService,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       goodsMeasurePage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
-    withCaching(None)
 
     val item =
       ExportItem("itemId", packageInformation = List(PackageInformation(Some("123"), Some(123), Some("123"))))
@@ -110,9 +108,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
         val result = controller.submitForm("itemId")(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(
-          Some("/customs-declare-exports/declaration/items/itemId/additional-information")
-        )
+        redirectLocation(result) must be(Some(routes.AdditionalInformationController.displayPage("itemId").url))
       }
     }
   }

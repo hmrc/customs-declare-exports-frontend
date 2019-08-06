@@ -30,7 +30,7 @@ import views.tags.ViewTest
 class ItemSummaryViewSpec extends ViewSpec with ItemSummaryMessages {
 
   private val confirmationPage = app.injector.instanceOf[items_summary]
-  private def view(items: List[ExportItem]): Document = confirmationPage(items)(fakeRequest, messages, appConfig)
+  private def view(items: List[ExportItem]): Document = confirmationPage(items)(fakeRequest, messages)
 
   "Item Summary Page View" should {
 

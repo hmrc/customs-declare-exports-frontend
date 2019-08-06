@@ -31,7 +31,7 @@ class SubmissionsControllerSpec extends ControllerSpec {
       mockCustomsDeclareExportsConnector,
       stubMessagesControllerComponents(),
       submissionsPage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
   }

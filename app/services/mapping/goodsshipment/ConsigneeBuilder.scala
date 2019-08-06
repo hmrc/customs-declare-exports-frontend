@@ -19,26 +19,14 @@ import forms.declaration.{ConsigneeDetails, EntityDetails}
 import javax.inject.Inject
 import services.Countries.allCountries
 import services.mapping.ModifyingBuilder
-import services.mapping.goodsshipment.ConsigneeBuilder.createConsignee
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.declaration_ds.dms._2._
 
 class ConsigneeBuilder @Inject()() extends ModifyingBuilder[ConsigneeDetails, GoodsShipment] {
 
   override def buildThenAdd(consigneeDetails: ConsigneeDetails, goodsShipment: GoodsShipment) =
-    goodsShipment.setConsignee(createConsignee(consigneeDetails.details))
-
-}
-
-object ConsigneeBuilder {
-
-  def build(implicit cacheMap: CacheMap): GoodsShipment.Consignee =
-    cacheMap
-      .getEntry[ConsigneeDetails](ConsigneeDetails.id)
-      .filter(isDefined)
-      .map(consigneeDetails => createConsignee(consigneeDetails.details))
-      .orNull
+    if (isDefined(consigneeDetails))
+      goodsShipment.setConsignee(createConsignee(consigneeDetails.details))
 
   private def isDefined(consigneeDetails: ConsigneeDetails): Boolean =
     consigneeDetails.details.eori.getOrElse("").nonEmpty ||
@@ -47,9 +35,9 @@ object ConsigneeBuilder {
   private def createConsignee(details: EntityDetails): GoodsShipment.Consignee = {
     val consignee = new GoodsShipment.Consignee()
 
-    details.eori.foreach { value =>
+    details.eori.foreach { eori =>
       val id = new ConsigneeIdentificationIDType()
-      id.setValue(details.eori.orNull)
+      id.setValue(eori)
       consignee.setID(id)
     }
 

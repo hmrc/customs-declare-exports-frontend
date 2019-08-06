@@ -19,13 +19,8 @@ package services.mapping.governmentagencygoodsitem
 import forms.declaration.additionaldocuments.DocumentsProduced
 import javax.inject.Inject
 import models.declaration.governmentagencygoodsitem._
-import services.ExportsItemsCacheIds.dateTimeCode
 import services.cache.ExportItem
 import services.mapping.ModifyingBuilder
-import services.mapping.governmentagencygoodsitem.AdditionalDocumentsBuilder.{
-  createAdditionalDocument,
-  createGoodsItemAdditionalDocument
-}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.AdditionalDocument.{
@@ -51,14 +46,18 @@ class AdditionalDocumentsBuilder @Inject()()
     exportItem: ExportItem,
     wcoGovernmentAgencyGoodsItem: GoodsShipment.GovernmentAgencyGoodsItem
   ): Unit =
-    exportItem.documentsProducedData.foreach { documentsProduced =>
-      documentsProduced.documents.map(createGoodsItemAdditionalDocument).foreach { goodsItemAdditionalDocument =>
-        wcoGovernmentAgencyGoodsItem.getAdditionalDocument.add(createAdditionalDocument(goodsItemAdditionalDocument))
+    exportItem.documentsProducedData.foreach {
+      _.documents.map(AdditionalDocumentsBuilder.createGoodsItemAdditionalDocument(_)).foreach {
+        goodsItemAdditionalDocument =>
+          wcoGovernmentAgencyGoodsItem.getAdditionalDocument
+            .add(AdditionalDocumentsBuilder.createAdditionalDocument(goodsItemAdditionalDocument))
       }
     }
+
 }
 
 object AdditionalDocumentsBuilder {
+  val dateTimeCode = "102"
 
   def build(procedureCodes: Seq[GovernmentAgencyGoodsItemAdditionalDocument]): java.util.List[AdditionalDocument] =
     procedureCodes
@@ -82,7 +81,7 @@ object AdditionalDocumentsBuilder {
       writeOff = createAdditionalDocumentWriteOff(doc)
     )
 
-  private def createAdditionalDocument(doc: GovernmentAgencyGoodsItemAdditionalDocument): AdditionalDocument = {
+  def createAdditionalDocument(doc: GovernmentAgencyGoodsItemAdditionalDocument): AdditionalDocument = {
     val additionalDocument = new AdditionalDocument
 
     doc.categoryCode.foreach { categoryCode =>

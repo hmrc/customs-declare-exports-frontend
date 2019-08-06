@@ -20,7 +20,6 @@ import base.{CustomExportsBaseSpec, ViewValidator}
 import controllers.util.{Add, Remove, SaveAndContinue}
 import helpers.views.declaration.{CommonMessages, ProcedureCodesMessages}
 import models.declaration.ProcedureCodesData
-import models.declaration.ProcedureCodesData.formId
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify}
 import play.api.test.Helpers._
@@ -40,13 +39,12 @@ class ProcedureCodesControllerSpec
 
     authorizedUser()
     withNewCaching(itemModel)
-    withCaching[ProcedureCodesData](None, formId)
   }
 
   override def afterEach(): Unit = {
     super.afterEach()
 
-    reset(mockExportsCacheService, mockCustomsCacheService)
+    reset(mockExportsCacheService)
   }
 
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)

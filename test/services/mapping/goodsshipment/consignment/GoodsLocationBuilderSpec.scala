@@ -16,11 +16,9 @@
 
 package services.mapping.goodsshipment.consignment
 
-import forms.declaration.GoodsLocation
 import forms.declaration.GoodsLocationTestData._
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class GoodsLocationBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
@@ -28,14 +26,6 @@ class GoodsLocationBuilderSpec extends WordSpec with Matchers with ExportsCacheM
   "GoodsLocationBuilder" should {
 
     "correctly map GoodsLocation instance for supplementary journey" when {
-
-      "all data is supplied" in {
-
-        implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(GoodsLocation.formId -> correctGoodsLocationJSON))
-
-        validateGoodsLocation(GoodsLocationBuilder.build)
-      }
 
       "all data is supplied from form model" in {
         val builder = new GoodsLocationBuilder

@@ -31,7 +31,7 @@ class DestinationCountriesViewSpec extends ViewSpec with DestinationCountriesMes
   private val form: Form[DestinationCountries] = DestinationCountries.Supplementary.form
   private val destiantionCountriesSupplementaryPage = app.injector.instanceOf[destination_countries_supplementary]
   private def createView(form: Form[DestinationCountries] = form): Html =
-    destiantionCountriesSupplementaryPage(form)(fakeJourneyRequest("SMP"), messages, appConfig)
+    destiantionCountriesSupplementaryPage(form)(fakeJourneyRequest("SMP"), messages)
 
   "Destination Countries View" should {
 

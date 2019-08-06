@@ -16,22 +16,19 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.{cacheId, goodsItemCacheId}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.DocumentsProducedData
-import models.declaration.DocumentsProducedData.{formId, maxNumberOfItems}
+import models.declaration.DocumentsProducedData.maxNumberOfItems
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
-import services.{CustomsCacheService, ItemsCachingService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.documents_produced
@@ -42,19 +39,17 @@ class DocumentsProducedController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  legacyCustomsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
-  itemsCache: ItemsCachingService,
   mcc: MessagesControllerComponents,
   documentProducedPage: documents_produced
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.getItemByIdAndSession(itemId, journeySessionId) map (_.flatMap(_.documentsProducedData)
       .map(_.documents)) map {
-      case Some(data) => Ok(documentProducedPage(itemId, appConfig, form(), data))
-      case _          => Ok(documentProducedPage(itemId, appConfig, form(), Seq()))
+      case Some(data) => Ok(documentProducedPage(itemId, form(), data))
+      case _          => Ok(documentProducedPage(itemId, form(), Seq()))
     }
   }
 
@@ -69,7 +64,7 @@ class DocumentsProducedController @Inject()(
       boundForm
         .fold(
           (formWithErrors: Form[DocumentsProduced]) =>
-            Future.successful(BadRequest(documentProducedPage(itemId, appConfig, formWithErrors, cache.documents))),
+            Future.successful(BadRequest(documentProducedPage(itemId, formWithErrors, cache.documents))),
           validForm =>
             actionTypeOpt match {
               case Some(Add)             => addItem(itemId, validForm, cache)
@@ -111,27 +106,13 @@ class DocumentsProducedController @Inject()(
   ): Future[Result] =
     if (document.isDefined) {
       val updateDocs = DocumentsProducedData(documents :+ document)
-      updateModelInCache(itemId, document, updateDocs).flatMap(
-        _ => addGoodsItem(itemId, document, updateDocs.documents)
-      )
-    } else addGoodsItem(itemId, document)
+      updateModelInCache(itemId, document, updateDocs)
+        .map(_ => Redirect(routes.ItemsSummaryController.displayPage()))
+    } else Future.successful(Redirect(routes.ItemsSummaryController.displayPage()))
 
   private def updateModelInCache(itemId: String, document: DocumentsProduced, updatedDocs: DocumentsProducedData)(
     implicit journeyRequest: JourneyRequest[_]
-  ) =
-    for {
-      _ <- updateCache(itemId, journeySessionId, updatedDocs)
-      _ <- legacyCustomsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, updatedDocs)
-    } yield ()
-
-  private def addGoodsItem(itemId: String, document: DocumentsProduced, docs: Seq[DocumentsProduced] = Seq.empty)(
-    implicit request: JourneyRequest[_],
-    hc: HeaderCarrier
-  ) =
-    itemsCache.addItemToCache(goodsItemCacheId, cacheId).flatMap {
-      case true  => Future.successful(Redirect(routes.ItemsSummaryController.displayPage()))
-      case false => handleErrorPage(itemId, Seq(("", "supplementary.addgoodsitems.addallpages.error")), document, docs)
-    }
+  ) = updateCache(itemId, journeySessionId, updatedDocs)
 
   private def addItem(itemId: String, userInput: DocumentsProduced, cachedData: DocumentsProducedData)(
     implicit request: JourneyRequest[_],
@@ -156,11 +137,8 @@ class DocumentsProducedController @Inject()(
 
       case (document, documents) =>
         if (document.isDefined) {
-          updateCacheAndRedirect(
-            itemId,
-            DocumentsProducedData(documents :+ document),
-            routes.DocumentsProducedController.displayPage(itemId)
-          )
+          updateCache(itemId, journeySessionId, DocumentsProducedData(documents :+ document))
+            .map(_ => Redirect(routes.DocumentsProducedController.displayPage(itemId)))
         } else
           handleErrorPage(
             itemId,
@@ -175,16 +153,10 @@ class DocumentsProducedController @Inject()(
     hc: HeaderCarrier
   ): Future[Result] = keys.headOption.fold(errorHandler.displayErrorPage()) { index =>
     val updatedCache = cachedData.copy(documents = cachedData.documents.patch(index.toInt, Nil, 1))
-    updateCacheAndRedirect(itemId, updatedCache, routes.DocumentsProducedController.displayPage(itemId))
+    updateCache(itemId, journeySessionId, updatedCache).map(
+      _ => Redirect(routes.DocumentsProducedController.displayPage(itemId))
+    )
   }
-
-  private def updateCacheAndRedirect(itemId: String, documentsToUpdate: DocumentsProducedData, redirectCall: Call)(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] =
-    for {
-      _ <- updateCache(itemId, journeySessionId, documentsToUpdate)
-      _ <- legacyCustomsCacheService.cache[DocumentsProducedData](goodsItemCacheId, formId, documentsToUpdate)
-    } yield Redirect(redirectCall)
 
   private def handleErrorPage(
     itemId: String,
@@ -196,7 +168,7 @@ class DocumentsProducedController @Inject()(
 
     val formWithError = form().fill(userInput).copy(errors = updatedErrors)
 
-    Future.successful(BadRequest(documentProducedPage(itemId, appConfig, formWithError, documents)))
+    Future.successful(BadRequest(documentProducedPage(itemId, formWithError, documents)))
   }
 
   private def updateCache(

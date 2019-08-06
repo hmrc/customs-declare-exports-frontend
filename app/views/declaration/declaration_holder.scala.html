@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.DeclarationHolder
 @import uk.gov.hmrc.play.views.html._
@@ -24,11 +23,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(appConfig: AppConfig, form: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(implicit request: Request[_], messages: Messages)
+@(form: Form[DeclarationHolder], holders: Seq[DeclarationHolder])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.declarationHolder.title"),
-    appConfig = appConfig
+    title = messages("supplementary.declarationHolder.title")
 ) {
 
     @components.back_link("/customs-declare-exports/declaration/additional-actors")

@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes._
 @import forms.declaration.Seal
 @import uk.gov.hmrc.play.views.html._
@@ -23,11 +22,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[Seal], seals: Seq[Seal], hasContainers:Boolean)(implicit appConfig: AppConfig, request: Request[_], messages: Messages)
+@(form: Form[Seal], seals: Seq[Seal], hasContainers:Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("standard.seal.title"),
-    appConfig = appConfig
+    title = messages("standard.seal.title")
 ) {
 
     @{

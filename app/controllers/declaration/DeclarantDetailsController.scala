@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.DeclarantDetails
@@ -34,17 +33,16 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarantDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   declarantDetailsPage: declarant_details
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.declarantDetails)).map {
-      case Some(data) => Ok(declarantDetailsPage(appConfig, DeclarantDetails.form().fill(data)))
-      case _          => Ok(declarantDetailsPage(appConfig, DeclarantDetails.form()))
+      case Some(data) => Ok(declarantDetailsPage(DeclarantDetails.form().fill(data)))
+      case _          => Ok(declarantDetailsPage(DeclarantDetails.form()))
     }
   }
 
@@ -52,14 +50,15 @@ class DeclarantDetailsController @Inject()(
     DeclarantDetails.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[DeclarantDetails]) =>
-          Future.successful(BadRequest(declarantDetailsPage(appConfig, formWithErrors))),
+        (formWithErrors: Form[DeclarantDetails]) => Future.successful(BadRequest(declarantDetailsPage(formWithErrors))),
         form =>
-          for {
-            _ <- updateCache(journeySessionId, form)
-            _ <- customsCacheService.cache[DeclarantDetails](cacheId, DeclarantDetails.id, form)
-          } yield
-            Redirect(controllers.declaration.routes.RepresentativeDetailsController.displayRepresentativeDetailsPage())
+          updateCache(journeySessionId, form)
+            .map(
+              _ =>
+                Redirect(
+                  controllers.declaration.routes.RepresentativeDetailsController.displayRepresentativeDetailsPage()
+              )
+          )
       )
   }
 

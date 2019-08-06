@@ -16,17 +16,17 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import forms.declaration.AdditionalFiscalReference
-import models.declaration.governmentagencygoodsitem.{Commodity => _, GovernmentProcedure => _, Packaging => _}
-import models.declaration.{DocumentsProducedData, DocumentsProducedDataSpec}
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure}
+import models.declaration.DocumentsProducedData
+import models.declaration.governmentagencygoodsitem.Commodity
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import play.api.libs.json._
-import services.ExportsItemsCacheIds
+
 import services.cache.ExportsCacheItemBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
+
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
   GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
@@ -34,60 +34,63 @@ import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
 
 class GovernmentAgencyGoodsItemBuilderSpec
     extends WordSpec with Matchers with GovernmentAgencyGoodsItemData with MockitoSugar with ExportsCacheItemBuilder {
+  val defaultMeasureCode = "KGM"
 
   private val statisticalValueAmountBuilder = mock[StatisticalValueAmountBuilder]
   private val packagingBuilder = mock[PackagingBuilder]
   private val governmentProcedureBuilder = mock[GovernmentProcedureBuilder]
   private val additionalInformationBuilder = mock[AdditionalInformationBuilder]
   private val additionalDocumentsBuilder = mock[AdditionalDocumentsBuilder]
+  private val commodityBuilder = mock[CommodityBuilder]
+  private val dutyTaxPartyBuilder = mock[DomesticDutyTaxPartyBuilder]
 
   "GovernmentAgencyGoodsItemBuilder" should {
-    "map to WCO model correctly " in {
-      implicit val cacheMap: CacheMap =
-        CacheMap("CacheID", Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemBuilderSpec.itemsJsonList))
-
-      val agencyGoodsItems: java.util.List[WCOGovernmentAgencyGoodsItem] = GovernmentAgencyGoodsItemBuilder.build
-      agencyGoodsItems.isEmpty shouldBe false
-
-      validateAdditionalDocuments(agencyGoodsItems.get(0).getAdditionalDocument.get(0))
-      validateAdditionalInformation(agencyGoodsItems.get(0).getAdditionalInformation.get(0))
-      validateCommodity(agencyGoodsItems.get(0).getCommodity)
-      validatePackaging(agencyGoodsItems.get(0).getPackaging.get(0))
-      validateGovernmentProcedure(agencyGoodsItems.get(0).getGovernmentProcedure.get(0))
-    }
-
-    "map correctly if ItemType is None " in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(ExportsItemsCacheIds.itemsId -> GovernmentAgencyGoodsItemBuilderSpec.emptyItemsJsonList)
-        )
-
-      val mappedGoodsItemList: java.util.List[WCOGovernmentAgencyGoodsItem] = GovernmentAgencyGoodsItemBuilder.build
-      mappedGoodsItemList.isEmpty shouldBe true
-    }
 
     "map ExportItem Correctly" in {
-      val exportItem = aCachedItem(withSequenceId(99))
+      val exportItem = aCachedItem(
+        withSequenceId(99),
+        withCommodityMeasure(CommodityMeasure(Some("2"), "90", "100")),
+        withAdditionalFiscalReferenceData(
+          AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "reference")))
+        ),
+        withItemType(
+          descriptionOfGoods = "commodityDescription",
+          statisticalValue = "123",
+          combinedNomenclatureCode = "classificationsId",
+          unDangerousGoodsCode = Some("dangerousGoodsCode")
+        )
+      )
 
       val goodsShipment = new GoodsShipment
       builder.buildThenAdd(exportItem, goodsShipment)
 
-      verify(statisticalValueAmountBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
+      verify(statisticalValueAmountBuilder)
+        .buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
       verify(packagingBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
       verify(governmentProcedureBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
       verify(additionalInformationBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
       verify(additionalDocumentsBuilder).buildThenAdd(refEq(exportItem), any[GoodsShipment.GovernmentAgencyGoodsItem])
-
+      verify(commodityBuilder).buildThenAdd(any[Commodity], any[GoodsShipment.GovernmentAgencyGoodsItem])
+      verify(dutyTaxPartyBuilder)
+        .buildThenAdd(any[AdditionalFiscalReference], any[GoodsShipment.GovernmentAgencyGoodsItem])
       goodsShipment.getGovernmentAgencyGoodsItem shouldNot be(empty)
       goodsShipment.getGovernmentAgencyGoodsItem.get(0).getSequenceNumeric.intValue() shouldBe 99
     }
   }
 
-  private def builder = new GovernmentAgencyGoodsItemBuilder(statisticalValueAmountBuilder, packagingBuilder, governmentProcedureBuilder, additionalInformationBuilder, additionalDocumentsBuilder)
+  private def builder =
+    new GovernmentAgencyGoodsItemBuilder(
+      statisticalValueAmountBuilder,
+      packagingBuilder,
+      governmentProcedureBuilder,
+      additionalInformationBuilder,
+      additionalDocumentsBuilder,
+      dutyTaxPartyBuilder,
+      commodityBuilder
+    )
 
   private def validateStatisticalValueAmount(value: java.math.BigDecimal, currencyId: String) = {
-    currencyId should be(StatisticalValueAmountBuilder.defaultCurrencyCode)
+    currencyId should be("GBP")
     value.compareTo(BigDecimal(itemType.statisticalValue).bigDecimal) should be(0)
   }
 
@@ -110,13 +113,13 @@ class GovernmentAgencyGoodsItemBuilderSpec
     val goodsMeasure = mappedCommodity.getGoodsMeasure
 
     goodsMeasure.getNetNetWeightMeasure.getValue shouldBe BigDecimal(90).bigDecimal
-    goodsMeasure.getNetNetWeightMeasure.getUnitCode shouldBe ExportsItemsCacheIds.defaultMeasureCode
+    goodsMeasure.getNetNetWeightMeasure.getUnitCode shouldBe defaultMeasureCode
 
     goodsMeasure.getGrossMassMeasure.getValue shouldBe BigDecimal(100).bigDecimal
-    goodsMeasure.getGrossMassMeasure.getUnitCode shouldBe ExportsItemsCacheIds.defaultMeasureCode
+    goodsMeasure.getGrossMassMeasure.getUnitCode shouldBe defaultMeasureCode
 
     goodsMeasure.getTariffQuantity.getValue shouldBe BigDecimal(2).bigDecimal
-    goodsMeasure.getTariffQuantity.getUnitCode shouldBe ExportsItemsCacheIds.defaultMeasureCode
+    goodsMeasure.getTariffQuantity.getUnitCode shouldBe defaultMeasureCode
   }
   private def validateAdditionalInformation(
     additionalInfomation: WCOGovernmentAgencyGoodsItem.AdditionalInformation

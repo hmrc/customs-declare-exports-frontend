@@ -18,14 +18,13 @@ package integration.services.cache.mapping.declaration
 
 import forms.declaration.DispatchLocationSpec
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
-import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import services.cache.mapping.declaration.DeclarationBuilder
 import services.cache.ExportsCacheModelBuilder
+import services.cache.mapping.declaration.DeclarationBuilder
 
 class DeclarationBuilderIntegrationSpec
-    extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder with GuiceOneAppPerSuite {
+    extends WordSpec with Matchers with ExportsCacheModelBuilder with GuiceOneAppPerSuite {
 
   val declarationBuilder: DeclarationBuilder = app.injector.instanceOf[DeclarationBuilder]
 

@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.ConsigneeDetails
@@ -37,11 +36,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConsigneeDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   consigneeDetailsPage: consignee_details
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -57,10 +55,8 @@ class ConsigneeDetailsController @Inject()(
       .fold(
         (formWithErrors: Form[ConsigneeDetails]) => Future.successful(BadRequest(consigneeDetailsPage(formWithErrors))),
         form =>
-          for {
-            _ <- updateCache(journeySessionId, form)
-            _ <- customsCacheService.cache[ConsigneeDetails](cacheId, ConsigneeDetails.id, form)
-          } yield Redirect(controllers.declaration.routes.DeclarantDetailsController.displayForm())
+          updateCache(journeySessionId, form)
+            .map(_ => Redirect(controllers.declaration.routes.DeclarantDetailsController.displayForm()))
       )
   }
 

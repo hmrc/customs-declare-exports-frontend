@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes
 @import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 @import uk.gov.hmrc.play.views.html._
@@ -26,11 +25,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@(itemId:String, form: Form[AdditionalFiscalReference], additionalReferences: Seq[AdditionalFiscalReference] = Seq.empty)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.additionalFiscalReferences.title"),
-    appConfig = appConfig
+    title = messages("declaration.additionalFiscalReferences.title")
 ) {
 
     @helper.form(routes.AdditionalFiscalReferencesController.saveReferences(itemId), 'autoComplete -> "off") {

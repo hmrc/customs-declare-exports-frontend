@@ -30,7 +30,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
   private val form: Form[PackageInformation] = PackageInformation.form()
   private val packageInformationPage = app.injector.instanceOf[package_information]
   private def createView(form: Form[PackageInformation] = form): Html =
-    packageInformationPage(itemId, form, Seq())(fakeRequest, messages, appConfig)
+    packageInformationPage(itemId, form, Seq())(fakeRequest, messages)
 
   "Package Information View" should {
 
@@ -161,7 +161,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
     "display one row with data in table" in {
 
       val packages = Seq(PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")))
-      val view = packageInformationPage("12345", form, packages)(fakeRequest, messages, appConfig)
+      val view = packageInformationPage("12345", form, packages)(fakeRequest, messages)
 
       // check table header
       getElementByCss(view, "table>caption").text() must be(messages(tableHeading))
@@ -182,7 +182,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
         PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")),
         PackageInformation(Some("PB"), Some(101), Some("Shipping Mark"))
       )
-      val view = packageInformationPage("12345", form, packages)(fakeRequest, messages, appConfig)
+      val view = packageInformationPage("12345", form, packages)(fakeRequest, messages)
 
       // check table header
       getElementByCss(view, "table>caption").text() must be("2 Packages added")

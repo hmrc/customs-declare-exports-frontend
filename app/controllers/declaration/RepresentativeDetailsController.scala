@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice.AllowedChoiceValues._
@@ -36,18 +35,17 @@ import scala.concurrent.{ExecutionContext, Future}
 class RepresentativeDetailsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   representativeDetailsPage: representative_details
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
       exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.representativeDetails)).map {
-        case Some(data) => Ok(representativeDetailsPage(appConfig, RepresentativeDetails.form().fill(data)))
-        case _          => Ok(representativeDetailsPage(appConfig, RepresentativeDetails.form()))
+        case Some(data) => Ok(representativeDetailsPage(RepresentativeDetails.form().fill(data)))
+        case _          => Ok(representativeDetailsPage(RepresentativeDetails.form()))
       }
   }
 
@@ -56,15 +54,9 @@ class RepresentativeDetailsController @Inject()(
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>
-          Future.successful(
-            BadRequest(representativeDetailsPage(appConfig, RepresentativeDetails.adjustErrors(formWithErrors)))
-        ),
+          Future.successful(BadRequest(representativeDetailsPage(RepresentativeDetails.adjustErrors(formWithErrors)))),
         validRepresentativeDetails =>
-          for {
-            _ <- updateCache(journeySessionId, validRepresentativeDetails)
-            _ <- customsCacheService
-              .cache[RepresentativeDetails](cacheId, RepresentativeDetails.formId, validRepresentativeDetails)
-          } yield Redirect(nextPage(request))
+          updateCache(journeySessionId, validRepresentativeDetails).map(_ => Redirect(nextPage(request)))
       )
   }
 

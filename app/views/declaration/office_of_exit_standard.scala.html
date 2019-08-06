@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.declaration.routes
 @import forms.declaration.officeOfExit.OfficeOfExitStandard
 @import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers
@@ -25,11 +24,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[OfficeOfExitStandard])(implicit request: Request[_], appConfig: AppConfig, messages: Messages)
+@(form: Form[OfficeOfExitStandard])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.officeOfExit.title"),
-    appConfig = appConfig
+    title = messages("declaration.officeOfExit.title")
 ) {
     @helper.form(routes.OfficeOfExitController.saveOffice(), 'autoComplete -> "off") {
         @helper.CSRF.formField

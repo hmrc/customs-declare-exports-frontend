@@ -33,7 +33,7 @@ class NotificationControllerSpec extends ControllerSpec {
       stubMessagesControllerComponents(),
       notificationPage,
       submissionNotificationsPage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
   }

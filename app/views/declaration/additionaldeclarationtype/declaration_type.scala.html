@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import forms.Choice.AllowedChoiceValues._
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 @import models.requests.JourneyRequest
@@ -22,11 +21,10 @@
 
 @this(main_template: views.html.main_template)
 
-@(form: Form[AdditionalDeclarationType])(implicit appConfig: AppConfig, request: JourneyRequest[_], messages: Messages)
+@(form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.declarationType.title"),
-    appConfig = appConfig
+    title = messages("declaration.declarationType.title")
 ) {
 
     @components.back_link("/customs-declare-exports/declaration/dispatch-location")

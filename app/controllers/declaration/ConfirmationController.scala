@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
@@ -31,7 +30,7 @@ class ConfirmationController @Inject()(
   journeyType: JourneyAction,
   mcc: MessagesControllerComponents,
   confirmationPage: confirmation_page
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

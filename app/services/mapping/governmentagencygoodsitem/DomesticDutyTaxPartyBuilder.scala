@@ -17,18 +17,19 @@
 package services.mapping.governmentagencygoodsitem
 
 import forms.declaration.AdditionalFiscalReference
+import javax.inject.Inject
+import services.mapping.ModifyingBuilder
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.DomesticDutyTaxParty
 import wco.datamodel.wco.declaration_ds.dms._2.{
   DomesticDutyTaxPartyIdentificationIDType,
   DomesticDutyTaxPartyRoleCodeType
 }
 
-import scala.collection.JavaConverters._
-
-object DomesticDutyTaxPartyBuilder {
-
-  def build(fiscalReferences: Seq[AdditionalFiscalReference]): java.util.List[DomesticDutyTaxParty] =
-    fiscalReferences.map(ref => createDomesticDutyTaxParty(ref)).toList.asJava
+class DomesticDutyTaxPartyBuilder @Inject()()
+    extends ModifyingBuilder[AdditionalFiscalReference, GovernmentAgencyGoodsItem] {
+  override def buildThenAdd(model: AdditionalFiscalReference, item: GovernmentAgencyGoodsItem): Unit =
+    item.getDomesticDutyTaxParty.add(createDomesticDutyTaxParty(model))
 
   def createDomesticDutyTaxParty(additionalFiscalReference: AdditionalFiscalReference): DomesticDutyTaxParty = {
 

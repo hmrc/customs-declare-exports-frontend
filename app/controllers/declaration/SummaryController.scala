@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import handlers.ErrorHandler
@@ -45,7 +44,7 @@ class SummaryController @Inject()(
   mcc: MessagesControllerComponents,
   summaryPage: summary_page,
   summaryPageNoData: summary_page_no_data
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   private val logger = Logger(this.getClass())
@@ -62,16 +61,17 @@ class SummaryController @Inject()(
 
   def submitSupplementaryDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
-      customsCacheService.fetch(cacheId).flatMap {
-        case Some(cacheMap) => handleDecSubmission(cacheMap)
-        case None           => Future.successful(handleError("Could not obtain data from DB"))
+      exportsCacheService.get(journeySessionId).flatMap {
+        case Some(model) => handleDecSubmission(model)
+        case None        => Future.successful(handleError("Could not obtain data from DB"))
       }
+
   }
 
   private def handleDecSubmission(
-    cacheMap: CacheMap
+    exportsCacheModel: ExportsCacheModel
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    submissionService.submit(cacheMap).map {
+    submissionService.submit(exportsCacheModel).map {
       case Some(lrn) =>
         Redirect(controllers.declaration.routes.ConfirmationController.displayPage())
           .flashing(Flash(Map("LRN" -> lrn)))

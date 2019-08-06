@@ -15,25 +15,25 @@
  */
 
 package services.mapping.goodsshipment.consignment
-import forms.declaration.{WarehouseIdentification, WarehouseIdentificationSpec}
+import forms.declaration.{TransportCodes, WarehouseIdentification, WarehouseIdentificationSpec}
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class ArrivalTransportMeansBuilderSpec extends WordSpec with Matchers {
 
   "ArrivalTransportMeansBuilder" should {
     "correctly map ArrivalTransportMeans instance" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(WarehouseIdentification.formId -> WarehouseIdentificationSpec.correctWarehouseIdentificationJSON)
-        )
-      val arrivalTransportMeans = ArrivalTransportMeansBuilder.build
-      arrivalTransportMeans.getID should be(null)
-      arrivalTransportMeans.getIdentificationTypeCode should be(null)
-      arrivalTransportMeans.getName should be(null)
-      arrivalTransportMeans.getTypeCode should be(null)
-      arrivalTransportMeans.getModeCode.getValue should be("2")
+      val builder = new ArrivalTransportMeansBuilder
+
+      var model: WarehouseIdentification = WarehouseIdentificationSpec.correctWarehouseIdentification
+      var consignment: GoodsShipment.Consignment = new GoodsShipment.Consignment
+      builder.buildThenAdd(model, consignment)
+
+      consignment.getArrivalTransportMeans.getID should be(null)
+      consignment.getArrivalTransportMeans.getIdentificationTypeCode should be(null)
+      consignment.getArrivalTransportMeans.getName should be(null)
+      consignment.getArrivalTransportMeans.getTypeCode should be(null)
+      consignment.getArrivalTransportMeans.getModeCode.getValue should be(TransportCodes.Maritime)
     }
   }
 }

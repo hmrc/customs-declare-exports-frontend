@@ -15,31 +15,30 @@
  */
 
 package services.mapping.goodsshipment.consignment
-import forms.Choice
-import forms.Choice.AllowedChoiceValues
 import forms.declaration.Seal
 import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.CacheMap
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class TransportEquipmentBuilderSpec extends WordSpec with Matchers {
 
   "TransportEquipmentBuilder" should {
     "correctly map TransportEquipment instance for Standard journey " when {
       "all data is supplied" in {
-        implicit val cacheMap: CacheMap =
-          CacheMap("CacheID", Map(Seal.formId -> Json.toJson(Seq(Seal("first"), Seal("second")))))
+        val builder = new TransportEquipmentBuilder
 
-        val transportEquipments = TransportEquipmentBuilder.build()(cacheMap, Choice(AllowedChoiceValues.StandardDec))
+        var consignment: GoodsShipment.Consignment = new GoodsShipment.Consignment
+        var seals: Seq[Seal] = Seq(Seal("first"), Seal("second"))
 
-        transportEquipments.size() should be(1)
-        transportEquipments.get(0).getSeal.size() should be(2)
-        transportEquipments.get(0).getSequenceNumeric.intValue() should be(2)
+        builder.buildThenAdd(seals, consignment)
 
-        transportEquipments.get(0).getSeal.get(0).getID.getValue should be("first")
-        transportEquipments.get(0).getSeal.get(0).getSequenceNumeric.intValue() should be(1)
-        transportEquipments.get(0).getSeal.get(1).getID.getValue should be("second")
-        transportEquipments.get(0).getSeal.get(1).getSequenceNumeric.intValue() should be(2)
+        consignment.getTransportEquipment.size() should be(1)
+        consignment.getTransportEquipment.get(0).getSeal.size() should be(2)
+        consignment.getTransportEquipment.get(0).getSequenceNumeric.intValue() should be(2)
+
+        consignment.getTransportEquipment.get(0).getSeal.get(0).getID.getValue should be("first")
+        consignment.getTransportEquipment.get(0).getSeal.get(0).getSequenceNumeric.intValue() should be(1)
+        consignment.getTransportEquipment.get(0).getSeal.get(1).getID.getValue should be("second")
+        consignment.getTransportEquipment.get(0).getSeal.get(1).getSequenceNumeric.intValue() should be(2)
       }
     }
   }

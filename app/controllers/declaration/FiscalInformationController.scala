@@ -16,19 +16,15 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.goodsItemCacheId
 import forms.declaration.FiscalInformation
-import forms.declaration.FiscalInformation.{form, formId}
+import forms.declaration.FiscalInformation.form
 import javax.inject.Inject
-import models.declaration.ProcedureCodesData
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.CustomsCacheService
-import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.fiscal_information
 
@@ -37,11 +33,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class FiscalInformationController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  legacyCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   fiscalInformationPage: fiscal_information
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -74,41 +69,36 @@ class FiscalInformationController @Inject()(
           }
         )
   }
+  //TODO Use one method instead of updateCacheForYes and updateCacheForNo
 
   private def updateCacheForYes(itemId: String, sessionId: String, updatedFiscalInformation: FiscalInformation)(
     implicit req: JourneyRequest[_]
   ): Future[Unit] =
-    for {
-      _ <- legacyCacheService.cache[FiscalInformation](goodsItemCacheId, formId, updatedFiscalInformation)
-      _ <- getAndUpdateExportCacheModel(
-        sessionId,
-        model => {
-          val item: Option[ExportItem] =
-            model.items
-              .find(item => item.id.equals(itemId))
-              .map(_.copy(fiscalInformation = Some(updatedFiscalInformation)))
-          val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-          exportsCacheService.update(sessionId, model.copy(items = itemList))
-        }
-      )
-    } yield Unit
+    getAndUpdateExportCacheModel(
+      sessionId,
+      model => {
+        val itemList = model.items
+          .find(item => item.id.equals(itemId))
+          .map(_.copy(fiscalInformation = Some(updatedFiscalInformation)))
+          .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+
+        exportsCacheService.update(sessionId, model.copy(items = itemList))
+      }
+    ).map(_ => ())
 
   private def updateCacheForNo(itemId: String, sessionId: String, updatedFiscalInformation: FiscalInformation)(
     implicit req: JourneyRequest[_]
   ): Future[Unit] =
-    for {
-      _ <- legacyCacheService.cache[FiscalInformation](goodsItemCacheId, formId, updatedFiscalInformation)
-      _ <- getAndUpdateExportCacheModel(
-        sessionId,
-        model => {
-          val item: Option[ExportItem] =
-            model.items
-              .find(item => item.id.equals(itemId))
-              .map(_.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
-          val itemList = item.fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-          exportsCacheService.update(sessionId, model.copy(items = itemList))
-        }
-      )
-    } yield Unit
+    getAndUpdateExportCacheModel(
+      sessionId,
+      model => {
+        val itemList = model.items
+          .find(item => item.id.equals(itemId))
+          .map(_.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
+          .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+
+        exportsCacheService.update(sessionId, model.copy(items = itemList))
+      }
+    ).map(_ => ())
 
 }

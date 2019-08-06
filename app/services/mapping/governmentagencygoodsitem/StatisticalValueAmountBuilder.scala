@@ -17,13 +17,8 @@
 package services.mapping.governmentagencygoodsitem
 
 import javax.inject.Inject
-import models.declaration.governmentagencygoodsitem.GovernmentAgencyGoodsItem
 import services.cache.ExportItem
 import services.mapping.ModifyingBuilder
-import services.mapping.governmentagencygoodsitem.StatisticalValueAmountBuilder.{
-  createWCODecStatisticalValueAmount,
-  defaultCurrencyCode
-}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.{
   GovernmentAgencyGoodsItem => WCOGovernmentAgencyGoodsItem
 }
@@ -31,34 +26,13 @@ import wco.datamodel.wco.declaration_ds.dms._2.GovernmentAgencyGoodsItemStatisti
 
 class StatisticalValueAmountBuilder @Inject()() extends ModifyingBuilder[ExportItem, WCOGovernmentAgencyGoodsItem] {
 
+  private val defaultCurrencyCode = "GBP"
+
   def buildThenAdd(exportItem: ExportItem, wcoGovernmentAgencyGoodsItem: WCOGovernmentAgencyGoodsItem): Unit =
     exportItem.itemType.foreach { itemType =>
       wcoGovernmentAgencyGoodsItem.setStatisticalValueAmount(
         createWCODecStatisticalValueAmount(Some(BigDecimal(itemType.statisticalValue)), Some(defaultCurrencyCode))
       )
-    }
-
-}
-
-object StatisticalValueAmountBuilder {
-
-  val defaultCurrencyCode = "GBP"
-
-  @Deprecated
-  def buildThenAdd(
-    governmentAgencyGoodsItem: GovernmentAgencyGoodsItem,
-    wcoGovernmentAgencyGoodsItem: WCOGovernmentAgencyGoodsItem
-  ) {
-    createStatisticalValueAmountType(governmentAgencyGoodsItem).foreach { statisticalValueAmount =>
-      wcoGovernmentAgencyGoodsItem.setStatisticalValueAmount(statisticalValueAmount)
-    }
-  }
-
-  private def createStatisticalValueAmountType(
-    governmentAgencyGoodsItem: GovernmentAgencyGoodsItem
-  ): Option[GovernmentAgencyGoodsItemStatisticalValueAmountType] =
-    governmentAgencyGoodsItem.statisticalValueAmount.map { statisticalAmount =>
-      createWCODecStatisticalValueAmount(statisticalAmount.value, statisticalAmount.currencyId)
     }
 
   private def createWCODecStatisticalValueAmount(amountValue: Option[BigDecimal], currencyId: Option[String]) = {

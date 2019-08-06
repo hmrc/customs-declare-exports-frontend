@@ -31,7 +31,7 @@ class ItemTypeViewSpec extends ViewSpec with ItemTypeMessages with CommonMessage
   private val form: Form[ItemType] = ItemType.form()
   private val itemTypePage = app.injector.instanceOf[item_type]
   private def createView(form: Form[ItemType] = form, journeyType: String): Html =
-    itemTypePage(itemId, form, false)(appConfig, fakeJourneyRequest(journeyType), messages)
+    itemTypePage(itemId, form, false)(fakeJourneyRequest(journeyType), messages)
 
   /*
    * Validation for the errors is done in ItemTypeController

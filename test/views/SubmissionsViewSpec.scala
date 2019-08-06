@@ -32,8 +32,7 @@ import views.tags.ViewTest
 class SubmissionsViewSpec extends ViewSpec with SubmissionsMessages with CommonMessages {
 
   private val submissionsPage = app.injector.instanceOf[submissions]
-  private def createView(data: Seq[(Submission, Seq[Notification])] = Seq.empty): Html =
-    submissionsPage(appConfig, data)
+  private def createView(data: Seq[(Submission, Seq[Notification])] = Seq.empty): Html = submissionsPage(data)
 
   "submissions View" should {
     "have message content" in {

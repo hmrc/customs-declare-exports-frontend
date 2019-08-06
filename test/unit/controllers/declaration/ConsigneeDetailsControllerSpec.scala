@@ -32,15 +32,13 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
     val controller = new ConsigneeDetailsController(
       mockAuthAction,
       mockJourneyAction,
-      mockCustomsCacheService,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       consigneeDetailsPage
-    )(ec, minimalAppConfig)
+    )(ec)
 
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching(None)
   }
 
   "Consignee Details controller" should {
@@ -84,7 +82,9 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
         val result = controller.saveAddress()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/declarant-details"))
+        redirectLocation(result) must be(
+          Some(controllers.declaration.routes.DeclarantDetailsController.displayForm().url)
+        )
       }
     }
   }

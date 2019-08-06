@@ -16,7 +16,6 @@
 
 package controllers.declaration
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
@@ -35,11 +34,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalDeclarationTypeController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   declarationTypePage: declaration_type
-)(implicit appConfig: AppConfig, ec: ExecutionContext)
+)(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -58,11 +56,8 @@ class AdditionalDeclarationTypeController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(declarationTypePage(formWithErrors))),
         validAdditionalDeclarationType =>
-          for {
-            _ <- updateCache(journeySessionId, validAdditionalDeclarationType)
-            _ <- customsCacheService
-              .cache[AdditionalDeclarationType](cacheId, decType.formId, validAdditionalDeclarationType)
-          } yield Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage())
+          updateCache(journeySessionId, validAdditionalDeclarationType)
+            .map(_ => Redirect(controllers.declaration.routes.ConsignmentReferencesController.displayPage()))
       )
   }
 

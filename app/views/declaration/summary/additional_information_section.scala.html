@@ -16,6 +16,7 @@
 
 @import models.declaration.AdditionalInformationData
 @import models.viewmodels.HtmlTableRow
+
 @(additionalInformationData: Option[AdditionalInformationData])(implicit messages: Messages)
 
 @components.summary_list(Some(messages("supplementary.summary.additionalInformation.header"))) {

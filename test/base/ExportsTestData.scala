@@ -22,12 +22,15 @@ import models.{IdentityData, SignedInUser}
 import org.joda.time.DateTimeZone.UTC
 import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json._
+import services.cache.ExportsCacheModelBuilder
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments, User}
 
-object ExportsTestData {
+object ExportsTestData extends ExportsCacheModelBuilder {
+
+  val exportsCacheModelFull = aCacheModel()
 
   val nrsCredentials = Credentials(providerId = "providerId", providerType = "providerType")
   val nrsGroupIdentifierValue = Some("groupIdentifierValue")

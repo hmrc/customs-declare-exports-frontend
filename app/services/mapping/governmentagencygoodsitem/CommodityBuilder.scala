@@ -15,8 +15,10 @@
  */
 
 package services.mapping.governmentagencygoodsitem
+import javax.inject.Inject
 import models.declaration.governmentagencygoodsitem.{Classification, Commodity, DangerousGoods, GoodsMeasure}
-import services.ExportsItemsCacheIds
+import services.mapping.ModifyingBuilder
+import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem.Commodity.{
   Classification => WCOClassification,
   DangerousGoods => WCODangerousGoods,
@@ -27,12 +29,11 @@ import wco.datamodel.wco.declaration_ds.dms._2._
 
 import scala.collection.JavaConverters._
 
-object CommodityBuilder {
+class CommodityBuilder @Inject()() extends ModifyingBuilder[Commodity, GovernmentAgencyGoodsItem] {
+  val defaultMeasureCode = "KGM"
 
-  def build(commodity: Option[Commodity]): WCOCommodity =
-    commodity
-      .map(item => mapCommodity(item))
-      .orNull
+  override def buildThenAdd(model: Commodity, item: GovernmentAgencyGoodsItem): Unit =
+    item.setCommodity(mapCommodity(model))
 
   private def mapCommodity(commodity: Commodity): WCOCommodity = {
     val wcoCommodity = new WCOCommodity
@@ -97,7 +98,7 @@ object CommodityBuilder {
 
     data.netWeightMeasure.foreach { measure =>
       val netWeightMeasureType = new GoodsMeasureNetNetWeightMeasureType
-      netWeightMeasureType.setUnitCode(ExportsItemsCacheIds.defaultMeasureCode)
+      netWeightMeasureType.setUnitCode(defaultMeasureCode)
       netWeightMeasureType.setValue(measure.value.get.bigDecimal)
       goodsMeasure.setNetNetWeightMeasure(netWeightMeasureType)
     }
@@ -105,13 +106,13 @@ object CommodityBuilder {
     data.grossMassMeasure.foreach { measure =>
       val grossMassMeasureType = new GoodsMeasureGrossMassMeasureType
       grossMassMeasureType.setValue(measure.value.get.bigDecimal)
-      grossMassMeasureType.setUnitCode(ExportsItemsCacheIds.defaultMeasureCode)
+      grossMassMeasureType.setUnitCode(defaultMeasureCode)
       goodsMeasure.setGrossMassMeasure(grossMassMeasureType)
     }
 
     data.tariffQuantity.foreach { tariff =>
       val mappedQuantity = new GoodsMeasureTariffQuantityType
-      mappedQuantity.setUnitCode(ExportsItemsCacheIds.defaultMeasureCode)
+      mappedQuantity.setUnitCode(defaultMeasureCode)
       mappedQuantity.setValue(tariff.value.get.bigDecimal)
       goodsMeasure.setTariffQuantity(mappedQuantity)
     }
