@@ -1,0 +1,90 @@
+/*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package unit.forms.declaration
+
+import base.TestHelper
+import forms.declaration.Seal
+import org.scalatest.{MustMatchers, WordSpec}
+
+class SealSpec extends WordSpec with MustMatchers {
+
+  val form = Seal.form
+
+  "Seal object" should {
+
+    "has correct form id" in {
+
+      Seal.formId must be("Seal")
+    }
+
+    "has correct seals limit" in {
+
+      Seal.sealsAllowed must be(9999)
+    }
+  }
+
+  "Seal form" should {
+
+    "has no errors" when {
+
+      "id field contains correct value" in {
+
+        val correctForm = Seal("12345")
+
+        val result = form.fill(correctForm)
+
+        result.hasErrors must be(false)
+      }
+    }
+
+    "has errors" when {
+
+      "id field is empty" in {
+
+        val emptyForm = Map("id" -> "")
+
+        val result = form.bind(emptyForm)
+        val error = result.errors.head
+
+        error.key must be("id")
+        error.message must be("standard.transport.sealId.empty.error")
+      }
+
+      "id field is not alphanumeric" in {
+
+        val emptyForm = Map("id" -> "!@#$")
+
+        val result = form.bind(emptyForm)
+        val error = result.errors.head
+
+        error.key must be("id")
+        error.message must be("standard.transport.sealId.alphaNumeric.error")
+      }
+
+      "id field is longer than 20 characters" in {
+
+        val emptyForm = Map("id" -> TestHelper.createRandomAlphanumericString(21))
+
+        val result = form.bind(emptyForm)
+        val error = result.errors.head
+
+        error.key must be("id")
+        error.message must be("standard.transport.sealId.longer.error")
+      }
+    }
+  }
+}

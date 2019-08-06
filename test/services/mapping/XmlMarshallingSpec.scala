@@ -57,5 +57,4 @@ class XmlMarshallingSpec extends WordSpec with Matchers with GuiceOneAppPerSuite
     }
   }
 
-
 }

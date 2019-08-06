@@ -19,8 +19,7 @@ import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class TypeCodeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder{
-
+class TypeCodeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "TypeCodeBuilder" should {
     "correctly map to the WCO-DEC Type Code Code instance" in {
@@ -28,10 +27,7 @@ class TypeCodeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelB
       val builder = new TypeCodeBuilder
 
       val declaration = new Declaration
-      val model = aCacheModel(
-        withDispatchLocation("EX"),
-        withAdditionalDeclarationType("Y")
-      )
+      val model = aCacheModel(withDispatchLocation("EX"), withAdditionalDeclarationType("Y"))
       builder.buildThenAdd(model, declaration)
 
       declaration.getTypeCode.getValue should be("EXY")
