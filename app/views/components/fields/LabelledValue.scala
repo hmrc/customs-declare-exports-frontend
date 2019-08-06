@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import controllers.util.Remove
+package views.components.fields
 
-@(
-    elements: Seq[String],
-    buttonMessagesKey: String = "site.remove"
-)(implicit messages: Messages)
+case class LabelledValue(label: String, value: String)
 
-<div class="field-group">
-    <table >
-    @for(elem <- elements) {
-        <tr>
-            <th>@elem</th>
-            <th>
-                <button class="button--secondary" name="@Remove.toString" value="@elem">@messages(buttonMessagesKey)</button>
-            </th>
-        </tr>
-    }
-    </table>
-    <br><br>
-</div>
+object LabelledValue {
+  def apply(labelAndValue: String): LabelledValue = LabelledValue(labelAndValue, labelAndValue)
+}

@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import services.HolderOfAuthorisationCode
 @import services.view.AutoCompleteItem
+@import views.components.fields.LabelledValue
 
 @this(main_template: views.html.main_template)
 
@@ -42,7 +43,7 @@
         @helper.form(DeclarationHolderController.submitHoldersOfAuthorisation(), 'autoComplete -> "off") {
             @helper.CSRF.formField
 
-            @components.single_value_elements_table(holders.map(_.toString))
+            @components.fields.removable_elements_table(holders.map(_.toString).map(LabelledValue(_)))
         }
     }
 

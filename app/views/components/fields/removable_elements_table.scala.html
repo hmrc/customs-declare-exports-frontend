@@ -16,21 +16,22 @@
 
 @import controllers.util.Remove
 
-@(elements: Seq[String])(implicit messages: Messages)
+@import views.components.fields.LabelledValue
+@(
+    elements: Seq[LabelledValue],
+    buttonMessagesKey: String = "site.remove"
+)(implicit messages: Messages)
 
-@if(elements.nonEmpty) {
-    <div class="field-group">
-        <table>
-            @for(element <- elements.zipWithIndex) {
-                <tr>
-                    <th>@element._1</th>
-                    <th>
-                        <button class="button--secondary" name="@Remove.toString" value="@{element._2}">@messages("site.remove")</button>
-                    </th>
-                </tr>
-            }
-        </table>
-        <br/>
-        <br/>
-    </div>
-}
+<div class="field-group">
+    <table>
+    @for(elem <- elements) {
+        <tr>
+            <th>@{elem.label}</th>
+            <th>
+                <button class="button--secondary" name="@Remove.toString" value="@{elem.value}">@messages(buttonMessagesKey)</button>
+            </th>
+        </tr>
+    }
+    </table>
+    <br><br>
+</div>

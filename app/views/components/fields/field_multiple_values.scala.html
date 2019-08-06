@@ -16,7 +16,9 @@
 
 @import controllers.util.{Add, Remove}
 @import views.html.components.add_button
+@import views.components.fields.LabelledValue
 
+@import sun.font.Decoration.Label
 @(
     field: Field,
     label: String,
@@ -40,24 +42,15 @@
     </label>
 
     @if(elements.nonEmpty) {
-        <div class="field-group">
-            <table >
-            @elements.zipWithIndex.map { case (elem, index) =>
-                <tr>
-                    <th>@elem</th>
-                    <th>
-                        @defining(if(field.name.endsWith("[]")) field.id + index else elem){ value =>
-                            <button
-                                class="button--secondary"
-                                name="@Remove.toString"
-                                value="@value">@messages("site.remove")</button>
-                        }
-                    </th>
-                </tr>
+      @if(field.name.endsWith("[]")) {
+        @removable_elements_table(
+            elements.zipWithIndex.map {
+                case (element, index) => LabelledValue(element, field.id + index)
             }
-            </table>
-            <br/><br/>
-        </div>
+        )
+      } else {
+        @removable_elements_table(elements.map(LabelledValue(_)))
+      }
     }
 
     <div class="form-control-wrapper">
