@@ -105,12 +105,12 @@ class AdditionalFiscalReferencesController @Inject()(
           else Future.successful(Redirect(routes.ItemTypeController.displayPage(itemId)))
       )
 
-  private def removeReference(itemId: String,
-                              values: Seq[String],
-                              form: Form[AdditionalFiscalReference],
-                              cachedData: AdditionalFiscalReferencesData)(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] = {
+  private def removeReference(
+    itemId: String,
+    values: Seq[String],
+    form: Form[AdditionalFiscalReference],
+    cachedData: AdditionalFiscalReferencesData
+  )(implicit request: JourneyRequest[_]): Future[Result] = {
     val updatedCache = MultipleItemsHelper.remove(values.headOption, cachedData.references)
     updateExportsCache(itemId, journeySessionId, AdditionalFiscalReferencesData(updatedCache))
       .map(_ => Ok(additionalFiscalReferencesPage(itemId, form.discardingErrors)))

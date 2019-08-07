@@ -37,7 +37,8 @@ object FormAction {
       case _                           => None
     }.headOption.getOrElse(Unknown)
 
-  def bindFromRequest()(implicit request: Request[AnyContent]): Option[FormAction] = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+  def bindFromRequest()(implicit request: Request[AnyContent]): Option[FormAction] =
+    request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 }
 
 case object Unknown extends FormAction

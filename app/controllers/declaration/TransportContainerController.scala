@@ -90,12 +90,14 @@ class TransportContainerController @Inject()(
     if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
     else Redirect(routes.SummaryController.displayPage())
 
-  private def removeContainer(userInput: Form[TransportInformationContainer], cache: TransportInformationContainerData, ids: Seq[String])(
-    implicit request: JourneyRequest[_]
-  ) = {
+  private def removeContainer(
+    userInput: Form[TransportInformationContainer],
+    cache: TransportInformationContainerData,
+    ids: Seq[String]
+  )(implicit request: JourneyRequest[_]) = {
     val updatedCache = remove(ids.headOption, cache.containers)
-    updateCache(journeySessionId, TransportInformationContainerData(updatedCache)).map {
-      _ => Ok(transportContainersPage(userInput.discardingErrors, updatedCache))
+    updateCache(journeySessionId, TransportInformationContainerData(updatedCache)).map { _ =>
+      Ok(transportContainersPage(userInput.discardingErrors, updatedCache))
     }
   }
 

@@ -64,10 +64,10 @@ class DeclarationHolderController @Inject()(
 
       cachedData.flatMap { cache =>
         actionTypeOpt match {
-          case Some(Add) if !boundForm.hasErrors            => addHolder(boundForm.get, cache)
+          case Some(Add) if !boundForm.hasErrors             => addHolder(boundForm.get, cache)
           case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(boundForm.get, cache)
-          case Some(Remove(values))  => removeHolder(retrieveHolder(values), boundForm, cache)
-          case _                     => Future.successful(BadRequest(declarationHolderPage(boundForm, cache.holders)))
+          case Some(Remove(values))                          => removeHolder(retrieveHolder(values), boundForm, cache)
+          case _                                             => Future.successful(BadRequest(declarationHolderPage(boundForm, cache.holders)))
         }
       }
   }
