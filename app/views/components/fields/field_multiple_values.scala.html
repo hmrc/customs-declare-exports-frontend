@@ -44,12 +44,16 @@
     @if(elements.nonEmpty) {
       @if(field.name.endsWith("[]")) {
         @removable_elements_table(
-            elements.zipWithIndex.map {
+            id = field.id + "-table",
+            elements = elements.zipWithIndex.map {
                 case (element, index) => LabelledValue(element, field.id + index)
             }
         )
       } else {
-        @removable_elements_table(elements.map(LabelledValue(_)))
+        @removable_elements_table(
+              id = field.id + "-table",
+              elements = elements.map(LabelledValue(_))
+          )
       }
     }
 

@@ -107,13 +107,11 @@ class TransportInformationContainersViewSpec
         transportContainersPage(form, Seq(TransportInformationContainer("Test")))(fakeRequest, messages)
 
       // table header
-      getElementByCss(view, "form>div.field-group>table>thead>tr>th").text() must be(messages(ticTitle))
+      view.getElementById("removable_elements-heading") must containText(messages(ticTitle))
 
       // table row
-      getElementByCss(view, "form>div.field-group>table>tbody>tr>td:nth-child(1)").text() must be("Test")
-      getElementByCss(view, "form>div.field-group>table>tbody>tr>td:nth-child(2)>button").text() must be(
-        messages(removeCaption)
-      )
+      view.getElementById("removable_elements-row0-label") must containText("Test")
+      view.getElementById("removable_elements-row0-remove_button") must containText( messages(removeCaption))
     }
   }
 }

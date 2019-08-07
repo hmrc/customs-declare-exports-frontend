@@ -41,7 +41,7 @@
         @helper.CSRF.formField
 
         @if(holders.nonEmpty) {
-            @components.fields.removable_elements_table(holders.map(_.toString).map(LabelledValue(_)))
+            @components.fields.removable_elements_table(elements = holders.map(_.toString).map(LabelledValue(_)))
         }
 
         @components.fields.field_autocomplete(

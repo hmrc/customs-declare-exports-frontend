@@ -45,7 +45,7 @@
         <h3>@messages("declaration.additionalFiscalReferences.numbers.header")</h3>
 
         @components.fields.removable_elements_table(
-            additionalReferences.map(elem => elem.country + elem.reference).zipWithIndex.map {
+            elements = additionalReferences.map(elem => elem.country + elem.reference).zipWithIndex.map {
                 case (label, index) => LabelledValue(label, index.toString)
             }
         )

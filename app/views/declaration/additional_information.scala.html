@@ -43,7 +43,7 @@
 
         @if(items.nonEmpty){
           @components.fields.removable_elements_table(
-              items.zipWithIndex.map {
+              elements = items.zipWithIndex.map {
                   case (item, index) => LabelledValue(item.toString, index.toString)
               }
             )
