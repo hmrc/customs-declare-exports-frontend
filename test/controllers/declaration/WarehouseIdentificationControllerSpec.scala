@@ -44,7 +44,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
 
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/border-transport"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/border-transport"))
       theCacheModelUpdated.locations.warehouseIdentification must be(Some(emptyWarehouseIdentification))
     }
 
@@ -54,7 +54,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
 
       status(result) must be(SEE_OTHER)
 
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/border-transport"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/border-transport"))
       theCacheModelUpdated.locations.warehouseIdentification.get.identificationNumber must be(Some("1234567GB"))
     }
   }
