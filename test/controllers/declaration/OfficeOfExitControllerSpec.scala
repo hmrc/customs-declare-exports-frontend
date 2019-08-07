@@ -30,11 +30,9 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
   private val uri: String = uriWithContextPath("/declaration/office-of-exit")
 
-  override def beforeEach(): Unit =
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     authorizedUser()
-
-  override def afterEach() {
-    reset(mockExportsCacheService)
   }
 
   trait SupplementarySetUp {
