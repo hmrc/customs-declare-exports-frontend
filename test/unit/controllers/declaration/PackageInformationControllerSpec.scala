@@ -79,15 +79,6 @@ class PackageInformationControllerSpec extends ControllerSpec {
         status(result) must be(BAD_REQUEST)
       }
 
-      "user tried to remove item which doesn't exist" in new SetUp {
-
-        val body = (Remove.toString, "")
-
-        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(body))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
       "user tried to continue without adding an item" in new SetUp {
 
         val body = (SaveAndContinue.toString, "")

@@ -46,9 +46,10 @@
 
     @components.page_title(Some("supplementary.packageInformation.title"))
 
-    @if(packages.nonEmpty) {
-        @helper.form(routes.PackageInformationController.submitForm(itemId), 'autoComplete -> "off") {
-            @helper.CSRF.formField
+    @helper.form(routes.PackageInformationController.submitForm(itemId), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @if(packages.nonEmpty) {
             <table class="form-group">
                 <caption>@tableHeader</caption>
                 <thead>
@@ -67,18 +68,14 @@
                     <td>@item.shippingMarks</td>
                     <td>
                         <button class="button--secondary" name=@messages("site.remove") value=@index>
-                            @messages("site.remove")
-                        </button>
-                    </td>
+                        @messages("site.remove")
+                </button>
+                </td>
                 </tr>
                 }
                 </tbody>
             </table>
         }
-    }
-
-    @helper.form(routes.PackageInformationController.submitForm(itemId), 'autoComplete -> "off") {
-        @helper.CSRF.formField
 
         @components.fields.field_autocomplete(
             field = form("typesOfPackages"),

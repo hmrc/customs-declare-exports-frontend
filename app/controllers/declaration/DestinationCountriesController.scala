@@ -99,6 +99,7 @@ class DestinationCountriesController @Inject()(
 
   private def handleSubmitStandard()(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
     val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+    val boundForm = Standard.form.bindFromRequest
 
     val cachedData = exportsCacheService
       .get(journeySessionId)
@@ -106,17 +107,12 @@ class DestinationCountriesController @Inject()(
       .map(_.getOrElse(DestinationCountries.empty()))
 
     cachedData.flatMap { cache =>
-      Standard.form.bindFromRequest.fold(
-      formWithErrors =>
-        Future.successful(BadRequest(destinationCountriesStandardPage(formWithErrors))),
-        userInput =>
-          actionTypeOpt match {
-            case Some(Add)             => addRoutingCountry(cache)
-            case Some(SaveAndContinue) => saveAndContinue(cache)
-            case Some(Remove(values))  => removeRoutingCountry(values, userInput, cache)
-            case _                     => errorHandler.displayErrorPage()
-          }
-      )
+      actionTypeOpt match {
+        case Some(Add) if !boundForm.hasErrors             => addRoutingCountry(cache)
+        case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(cache)
+        case Some(Remove(values))                          => removeRoutingCountry(values, boundForm, cache)
+        case _                                             => Future.successful(BadRequest(destinationCountriesStandardPage(boundForm)))
+      }
     }
   }
 
@@ -186,10 +182,13 @@ class DestinationCountriesController @Inject()(
       case (key, value)                                       => (key, value)
     })
 
-  private def removeRoutingCountry(keys: Seq[String], userInput: DestinationCountries, cachedData: DestinationCountries)(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] = {
-    val key = parseRemoval(keys).getOrElse(throw new IllegalArgumentException("Data format for removal request is incorrect"))
+  private def removeRoutingCountry(
+    keys: Seq[String],
+    userInput: Form[DestinationCountries],
+    cachedData: DestinationCountries
+  )(implicit request: JourneyRequest[_]): Future[Result] = {
+    val key =
+      parseRemoval(keys).getOrElse(throw new IllegalArgumentException("Data format for removal request is incorrect"))
     val updatedCountries = removeElement(cachedData.countriesOfRouting, key)
 
     val updatedCache = cachedData.copy(countriesOfRouting = updatedCountries)
@@ -197,14 +196,15 @@ class DestinationCountriesController @Inject()(
     for {
       _ <- updateCache(journeySessionId, updatedCache)
       _ <- customsCacheService.cache[DestinationCountries](cacheId, formId, updatedCache)
-    } yield Ok(destinationCountriesStandardPage(Standard.form.fill(userInput), updatedCache.countriesOfRouting))
+    } yield Ok(destinationCountriesStandardPage(userInput.discardingErrors, updatedCache.countriesOfRouting))
   }
 
-  private def parseRemoval(keys: Seq[String]): Try[Int] = Try(keys)
-    .filter(_.size == 1)
-    .map(_.head.split("_"))
-    .filter(_.length == 2)
-    .map(_(1).toInt)
+  private def parseRemoval(keys: Seq[String]): Try[Int] =
+    Try(keys)
+      .filter(_.size == 1)
+      .map(_.head.split("_"))
+      .filter(_.length == 2)
+      .map(_(1).toInt)
 
   private def removeElement[A](collection: Seq[A], indexToRemove: Int): Seq[A] = collection.removeByIdx(indexToRemove)
 

@@ -254,7 +254,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec {
 
         val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(removeForm))
 
-        status(result) must be(SEE_OTHER)
+        status(result) must be(OK)
       }
     }
   }

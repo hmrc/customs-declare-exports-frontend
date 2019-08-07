@@ -16,8 +16,6 @@
 
 package controllers.declaration
 
-import java.time.LocalDateTime
-
 import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.declaration.TransportInformationContainersControllerSpec.cacheWithMaximumAmountOfHolders
 import controllers.util.{Add, Remove, SaveAndContinue}
@@ -30,7 +28,6 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify}
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class TransportInformationContainersControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with TransportInformationContainerMessages with CommonMessages {
@@ -119,7 +116,7 @@ class TransportInformationContainersControllerSpec
         val body = removeActionURLEncoded("0")
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) must be(OK)
       }
     }
 

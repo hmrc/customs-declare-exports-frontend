@@ -56,7 +56,7 @@ class PreviousDocumentsController @Inject()(
     import MultipleItemsHelper._
 
     val boundForm = form().bindFromRequest()
-    val actionTypeOpt = FormAction.bindFromRequest
+    val actionTypeOpt = FormAction.bindFromRequest()
 
     val cachedData = exportsCacheService
       .get(journeySessionId)
@@ -65,6 +65,18 @@ class PreviousDocumentsController @Inject()(
 
     cachedData.flatMap { cache =>
       actionTypeOpt match {
+        case Some(SaveAndContinue) => {
+          saveAndContinue(boundForm, cache.documents, isScreenMandatory, maxAmountOfItems).fold(
+            formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
+            updatedCache =>
+              if (updatedCache != cache.documents)
+                updateCache(PreviousDocumentsData(updatedCache))
+                  .map(_ => Redirect(controllers.declaration.routes.ItemsSummaryController.displayPage()))
+              else
+                Future.successful(Redirect(controllers.declaration.routes.ItemsSummaryController.displayPage()))
+          )
+        }
+
         case Some(Add) =>
           add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
             formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
@@ -79,19 +91,7 @@ class PreviousDocumentsController @Inject()(
             .map(_ => Ok(previousDocumentsPage(boundForm.discardingErrors, updatedDocuments)))
         }
 
-        case Some(SaveAndContinue) => {
-          saveAndContinue(boundForm, cache.documents, isScreenMandatory, maxAmountOfItems).fold(
-            formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
-            updatedCache =>
-              if (updatedCache != cache.documents)
-                updateCache(PreviousDocumentsData(updatedCache))
-                  .map(_ => Redirect(controllers.declaration.routes.ItemsSummaryController.displayPage()))
-              else
-                Future.successful(Redirect(controllers.declaration.routes.ItemsSummaryController.displayPage()))
-          )
-        }
-
-        case _ => errorHandler.displayErrorPage()
+        case _ => Future.successful(BadRequest(previousDocumentsPage(boundForm, cache.documents)))
       }
     }
   }

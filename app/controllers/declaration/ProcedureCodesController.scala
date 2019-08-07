@@ -74,19 +74,12 @@ class ProcedureCodesController @Inject()(
         .map(_.getOrElse(ProcedureCodesData(None, Seq())))
 
       cachedData.flatMap { cache =>
-        boundForm
-          .fold(
-            (formWithErrors: Form[ProcedureCodes]) =>
-              Future.successful(BadRequest(procedureCodesPage(itemId, formWithErrors, cache.additionalProcedureCodes))),
-            validForm => {
-              actionTypeOpt match {
-                case Some(Add)             => addAnotherCodeHandler(itemId, validForm, cache)
-                case Some(SaveAndContinue) => saveAndContinueHandler(itemId, validForm, cache)
-                case Some(Remove(values))  => removeCodeHandler(itemId, retrieveProcedureCode(values), validForm, cache)
-                case _                     => errorHandler.displayErrorPage()
-              }
-            }
-          )
+        actionTypeOpt match {
+          case Some(Add) if !boundForm.hasErrors             => addAnotherCodeHandler(itemId, boundForm.get, cache)
+          case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinueHandler(itemId, boundForm.get, cache)
+          case Some(Remove(values))                          => removeCodeHandler(itemId, retrieveProcedureCode(values), boundForm, cache)
+          case _                                             => Future.successful(BadRequest(procedureCodesPage(itemId, boundForm, cache.additionalProcedureCodes)))
+        }
       }
   }
 
@@ -142,21 +135,17 @@ class ProcedureCodesController @Inject()(
 
     }
 
-  private def removeCodeHandler(itemId: String, code: String, userInput: ProcedureCodes, cachedData: ProcedureCodesData)(
-    implicit request: JourneyRequest[_],
-    hc: HeaderCarrier
-  ): Future[Result] =
+  private def removeCodeHandler(
+    itemId: String,
+    code: String,
+    userInput: Form[ProcedureCodes],
+    cachedData: ProcedureCodesData
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     if (cachedData.containsAdditionalCode(code)) {
       val updatedCache =
         cachedData.copy(additionalProcedureCodes = cachedData.additionalProcedureCodes.filterNot(_ == code))
       updateCache(itemId, journeySessionId, updatedCache)
-        .map(_ => Ok(
-          procedureCodesPage(
-            itemId,
-            form().fill(userInput),
-            updatedCache.additionalProcedureCodes
-          )
-        ))
+        .map(_ => Ok(procedureCodesPage(itemId, userInput.discardingErrors, updatedCache.additionalProcedureCodes)))
     } else errorHandler.displayErrorPage()
 
   //scalastyle:off method.length

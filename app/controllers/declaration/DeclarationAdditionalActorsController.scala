@@ -67,18 +67,12 @@ class DeclarationAdditionalActorsController @Inject()(
       )
 
     cachedData.flatMap { cache =>
-      boundForm
-        .fold(
-          (formWithErrors: Form[DeclarationAdditionalActors]) =>
-            Future.successful(BadRequest(declarationAdditionalActorsPage(formWithErrors, cache.actors))),
-          validForm =>
-            actionTypeOpt match {
-              case Some(Add)             => addItem(validForm, cache)
-              case Some(SaveAndContinue) => saveAndContinue(validForm, cache)
-              case Some(Remove(values))  => removeItem(retrieveItem(values.headOption.get), validForm, cache)
-              case _                     => errorHandler.displayErrorPage()
-          }
-        )
+      actionTypeOpt match {
+        case Some(Add) if !boundForm.hasErrors             => addItem(boundForm.get, cache)
+        case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(boundForm.get, cache)
+        case Some(Remove(values))                          => removeItem(retrieveItem(values.headOption.get), boundForm, cache)
+        case _                                             => Future.successful(BadRequest(declarationAdditionalActorsPage(boundForm, cache.actors)))
+      }
     }
   }
 
@@ -161,7 +155,7 @@ class DeclarationAdditionalActorsController @Inject()(
 
   private def removeItem(
     actorToRemove: Option[DeclarationAdditionalActors],
-    formData: DeclarationAdditionalActors,
+    formData: Form[DeclarationAdditionalActors],
     cachedData: DeclarationAdditionalActorsData
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
     actorToRemove match {
@@ -169,7 +163,7 @@ class DeclarationAdditionalActorsController @Inject()(
         if (cachedData.containsItem(actorToRemove)) {
           val updatedCache = cachedData.copy(actors = cachedData.actors.filterNot(_ == actorToRemove))
           updateCache(journeySessionId, updatedCache)
-            .map(_ => Ok(declarationAdditionalActorsPage(form().fill(formData), updatedCache.actors)))
+            .map(_ => Ok(declarationAdditionalActorsPage(formData.discardingErrors, updatedCache.actors)))
         } else errorHandler.displayErrorPage()
       case _ => errorHandler.displayErrorPage()
     }

@@ -61,18 +61,12 @@ class DocumentsProducedController @Inject()(
       .map(_.flatMap(_.documentsProducedData).getOrElse(DocumentsProducedData(Seq())))
 
     cachedData.flatMap { cache: DocumentsProducedData =>
-      boundForm
-        .fold(
-          (formWithErrors: Form[DocumentsProduced]) =>
-            Future.successful(BadRequest(documentProducedPage(itemId, formWithErrors, cache.documents))),
-          validForm =>
-            actionTypeOpt match {
-              case Some(Add)             => addItem(itemId, validForm, cache)
-              case Some(SaveAndContinue) => saveAndContinue(itemId, validForm, cache)
-              case Some(Remove(keys))    => removeItem(itemId, keys, cache)
-              case _                     => errorHandler.displayErrorPage()
-          }
-        )
+      actionTypeOpt match {
+        case Some(Add) if !boundForm.hasErrors             => addItem(itemId, boundForm.get, cache)
+        case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(itemId, boundForm.get, cache)
+        case Some(Remove(keys))                            => removeItem(itemId, keys, boundForm, cache)
+        case _                                             => Future.successful(BadRequest(documentProducedPage(itemId, boundForm, cache.documents)))
+      }
     }
   }
 
@@ -148,13 +142,13 @@ class DocumentsProducedController @Inject()(
           )
     }
 
-  private def removeItem(itemId: String, keys: Seq[String], cachedData: DocumentsProducedData)(
+  private def removeItem(itemId: String, keys: Seq[String], boundForm: Form[DocumentsProduced], cachedData: DocumentsProducedData)(
     implicit request: JourneyRequest[_],
     hc: HeaderCarrier
   ): Future[Result] = keys.headOption.fold(errorHandler.displayErrorPage()) { index =>
     val updatedCache = cachedData.copy(documents = cachedData.documents.patch(index.toInt, Nil, 1))
     updateCache(itemId, journeySessionId, updatedCache).map(
-      _ => Redirect(routes.DocumentsProducedController.displayPage(itemId))
+      _ => Ok(documentProducedPage(itemId, boundForm.discardingErrors, updatedCache.documents))
     )
   }
 

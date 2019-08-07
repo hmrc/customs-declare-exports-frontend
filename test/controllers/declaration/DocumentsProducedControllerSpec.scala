@@ -190,21 +190,6 @@ class DocumentsProducedControllerSpec
 
       }
 
-      "try to remove a non existent document" in {
-
-        val body = ("action", "Remove:123-123-123-123-123-123")
-
-        val result = route(app, postRequestFormUrlEncoded(uri, body)).get
-        val stringResult = contentAsString(result)
-
-        status(result) must be(BAD_REQUEST)
-        stringResult must include(messages(globalErrorTitle))
-        stringResult must include(messages(globalErrorHeading))
-        stringResult must include(messages(globalErrorMessage))
-
-        verifyTheCacheIsUnchanged()
-      }
-
       "try to add duplicated document" in {
         val cachedData = ExportItem(id = "id", documentsProducedData = Some(correctDocumentsProducedData))
         withNewCaching(aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
@@ -289,7 +274,7 @@ class DocumentsProducedControllerSpec
         val body = removeActionUrlEncoded(firstElementIndex)
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) must be(OK)
 
         verify(mockExportsCacheService, times(2)).get(any[String])
         verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])

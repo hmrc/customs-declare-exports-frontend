@@ -58,8 +58,7 @@ class TransportContainerController @Inject()(
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
-
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+    val actionTypeOpt = FormAction.bindFromRequest()
 
     val cachedData = exportsCacheService
       .get(journeySessionId)
@@ -69,7 +68,7 @@ class TransportContainerController @Inject()(
     cachedData.flatMap { cache =>
       actionTypeOpt match {
         case Some(Add)             => addContainer(boundForm, maxNumberOfItems, cache)
-        case Some(Remove(ids))     => removeContainer(cache, ids)
+        case Some(Remove(ids))     => removeContainer(boundForm, cache, ids)
         case Some(SaveAndContinue) => saveContainer(boundForm, maxNumberOfItems, cache)
         case _                     => errorHandler.displayErrorPage()
       }
@@ -97,10 +96,14 @@ class TransportContainerController @Inject()(
     if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
     else Redirect(routes.SummaryController.displayPage())
 
-  private def removeContainer(cache: TransportInformationContainerData, ids: Seq[String])(
+  private def removeContainer(userInput: Form[TransportInformationContainer], cache: TransportInformationContainerData, ids: Seq[String])(
     implicit request: JourneyRequest[_]
-  ) =
-    cacheAndRedirect(remove(ids.headOption, cache.containers))
+  ) = {
+    val updatedCache = remove(ids.headOption, cache.containers)
+    updateCache(journeySessionId, TransportInformationContainerData(updatedCache)).map {
+      _ => Ok(transportContainersPage(userInput.discardingErrors, updatedCache))
+    }
+  }
 
   private def addContainer(
     boundForm: Form[TransportInformationContainer],
