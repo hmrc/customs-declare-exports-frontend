@@ -27,20 +27,18 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
 
   private val uri = uriWithContextPath("/declaration/warehouse")
 
+  private val exampleModel = aCacheModel(withChoice(SupplementaryDec))
+
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-  }
-
-  override def afterEach() {
-    Mockito.reset(mockExportsCacheService)
+    withNewCaching(exampleModel)
   }
 
   "Warehouse Identification Controller on POST" should {
 
     "validate request and redirect - no answers" in {
 
-      val result = route(app, postRequest(uri, emptyWarehouseIdentificationJSON)).get
+      val result = route(app, postRequest(uri, emptyWarehouseIdentificationJSON, sessionId = exampleModel.sessionId)).get
 
       status(result) must be(SEE_OTHER)
 
@@ -50,7 +48,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
 
     "validate request and redirect - correct values" in {
 
-      val result = route(app, postRequest(uri, correctWarehouseIdentificationJSON)).get
+      val result = route(app, postRequest(uri, correctWarehouseIdentificationJSON, sessionId = exampleModel.sessionId)).get
 
       status(result) must be(SEE_OTHER)
 

@@ -32,16 +32,21 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import services.cache.{ExportItem, ExportsCacheModel}
+import services.cache.{ExportItem, ExportsCacheModel, ExportsItemBuilder}
 
 class DocumentsProducedControllerSpec
-    extends CustomExportsBaseSpec with DocumentsProducedMessages with CommonMessages with ViewValidator {
+    extends CustomExportsBaseSpec with DocumentsProducedMessages with CommonMessages with ViewValidator with ExportsItemBuilder {
 
   import DocumentsProducedControllerSpec._
 
-  val exampleModel: ExportsCacheModel = aCacheModel(withChoice(SupplementaryDec), withItem())
+  val exampleItem: ExportItem = aCachedItem()
 
-  private val uri = uriWithContextPath(s"/declaration/items/${exampleModel.items.head.id}/add-document")
+  val exampleModel: ExportsCacheModel = aCacheModel(withChoice(SupplementaryDec), withItem(exampleItem))
+
+  private def uri(item: ExportItem) = uriWithContextPath(s"/declaration/items/${item.id}/add-document")
+
+  private val exampleUri = uri(exampleItem)
+
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
@@ -61,7 +66,7 @@ class DocumentsProducedControllerSpec
   "Documents Produced Controller on GET" should {
 
     "return 200 with a success" in {
-      val result = route(app, getRequest(uri, sessionId = exampleModel.sessionId)).get
+      val result = route(app, getRequest(exampleUri, sessionId = exampleModel.sessionId)).get
 
       status(result) must be(OK)
     }
@@ -69,12 +74,12 @@ class DocumentsProducedControllerSpec
     "read item from cache and display it" in {
 
       val document = DocumentsProducedSpec.correctDocumentsProduced
-      val cachedData = ExportItem(id = "id", documentsProducedData = Some(DocumentsProducedData(Seq(document))))
-      val cacheModel = aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+      val item = ExportItem(id = "id", documentsProducedData = Some(DocumentsProducedData(Seq(document))))
+      val cacheModel = aCacheModel(withItem(item), withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
 
       withNewCaching(cacheModel)
 
-      val result = route(app, getRequest(uri, sessionId = cacheModel.sessionId)).get
+      val result = route(app, getRequest(uri(item), sessionId = cacheModel.sessionId)).get
       val view = contentAsString(result)
 
       status(result) must be(OK)
@@ -116,7 +121,7 @@ class DocumentsProducedControllerSpec
       "provided with incorrect document type code" in {
         val incorrectDocumentTypeCode: JsValue = JsObject(Map("documentTypeCode" -> JsString("abcdf")))
 
-        val result = route(app, postRequest(uri, incorrectDocumentTypeCode, sessionId = exampleModel.sessionId)).get
+        val result = route(app, postRequest(exampleUri, incorrectDocumentTypeCode, sessionId = exampleModel.sessionId)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentTypeCodeError))
         verifyTheCacheIsUnchanged()
@@ -132,7 +137,7 @@ class DocumentsProducedControllerSpec
             )
           )
 
-        val result = route(app, postRequest(uri, incorrectDocumentIdentifier, sessionId = exampleModel.sessionId)).get
+        val result = route(app, postRequest(exampleUri, incorrectDocumentIdentifier, sessionId = exampleModel.sessionId)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentIdentifierError))
 
@@ -149,7 +154,7 @@ class DocumentsProducedControllerSpec
             )
           )
 
-        val result = route(app, postRequest(uri, incorrectDocumentPart, sessionId = exampleModel.sessionId)).get
+        val result = route(app, postRequest(exampleUri, incorrectDocumentPart, sessionId = exampleModel.sessionId)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentPartError))
 
@@ -159,7 +164,7 @@ class DocumentsProducedControllerSpec
       "provided with incorrect document status" in {
         val incorrectDocumentStatus: JsValue = JsObject(Map(documentStatusKey -> JsString("as")))
 
-        val result = route(app, postRequest(uri, incorrectDocumentStatus, sessionId = exampleModel.sessionId)).get
+        val result = route(app, postRequest(exampleUri, incorrectDocumentStatus, sessionId = exampleModel.sessionId)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentStatusError))
 
@@ -170,7 +175,7 @@ class DocumentsProducedControllerSpec
         val incorrectDocumentStatusReason: JsValue =
           JsObject(Map(documentStatusReasonKey -> JsString(TestHelper.createRandomAlphanumericString(36))))
 
-        val result = route(app, postRequest(uri, incorrectDocumentStatusReason, sessionId = exampleModel.sessionId)).get
+        val result = route(app, postRequest(exampleUri, incorrectDocumentStatusReason, sessionId = exampleModel.sessionId)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentStatusReasonError))
 
@@ -181,7 +186,7 @@ class DocumentsProducedControllerSpec
         val incorrectDocumentQuantity: JsValue =
           JsObject(Map(s"$documentWriteOffKey.$documentQuantityKey" -> JsString("123456789012123.1234567")))
 
-        val result = route(app, postRequest(uri, incorrectDocumentQuantity, sessionId = exampleModel.sessionId)).get
+        val result = route(app, postRequest(exampleUri, incorrectDocumentQuantity, sessionId = exampleModel.sessionId)).get
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(documentQuantityPrecisionError))
 
@@ -197,7 +202,7 @@ class DocumentsProducedControllerSpec
         val duplicatedDocument: Map[String, String] = correctDocumentsProducedMap
 
         val body = duplicatedDocument.toSeq :+ addActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(exampleUri, model.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -213,7 +218,7 @@ class DocumentsProducedControllerSpec
         val undefinedDocument: Map[String, String] = emptyDocumentsProducedMap
 
         val body = undefinedDocument.toSeq :+ addActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(exampleUri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -229,7 +234,7 @@ class DocumentsProducedControllerSpec
         withNewCaching(model)
 
         val body = (correctDocumentsProducedMap + ("documentIdentifier" -> "Davis")).toSeq :+ addActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(exampleUri, model.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -246,7 +251,7 @@ class DocumentsProducedControllerSpec
       "cache is empty" in {
 
         val body = correctDocumentsProducedMap.toSeq :+ addActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(exampleUri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
 
@@ -258,7 +263,7 @@ class DocumentsProducedControllerSpec
 
         val newDocument = correctDocumentsProducedMap + (s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> "DOCID123")
         val body = newDocument.toSeq :+ addActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(exampleUri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
 
@@ -273,7 +278,7 @@ class DocumentsProducedControllerSpec
 
         val firstElementIndex = "0"
         val body = removeActionUrlEncoded(firstElementIndex)
-        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body)).get
+        val result = route(app, postRequestFormUrlEncoded(exampleUri, exampleModel.sessionId)(body)).get
 
         status(result) must be(OK)
 
@@ -287,7 +292,7 @@ class DocumentsProducedControllerSpec
       "provided with empty form and with empty cache" in {
 
         val body = emptyDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(exampleUri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
@@ -297,7 +302,7 @@ class DocumentsProducedControllerSpec
       "provided with empty form and with existing cache" in {
 
         val body = emptyDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(exampleUri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
@@ -308,7 +313,7 @@ class DocumentsProducedControllerSpec
       "provided with a valid document and with empty cache" in {
 
         val body = correctDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(exampleUri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
@@ -321,7 +326,7 @@ class DocumentsProducedControllerSpec
 
         val newDocument = correctDocumentsProducedMap + (s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> "DOCID123")
         val body = newDocument.toSeq :+ saveAndContinueActionUrlEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(exampleUri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
