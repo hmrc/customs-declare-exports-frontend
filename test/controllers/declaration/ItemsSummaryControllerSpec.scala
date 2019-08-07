@@ -18,17 +18,15 @@ package controllers.declaration
 
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import generators.Generators
 import models.declaration.governmentagencygoodsitem.{GovernmentAgencyGoodsItem, Packaging}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
-import org.scalatest.prop.PropertyChecks
 import play.api.test.Helpers._
 import services.cache.{ExportItem, ExportsCacheModel}
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
-class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with Generators with PropertyChecks with OptionValues {
+class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues {
 
   private lazy val testItem = ExportItem(id = item1Id)
   private lazy val testItem2 = ExportItem(id = item2Id)

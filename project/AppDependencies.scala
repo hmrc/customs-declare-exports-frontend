@@ -28,8 +28,7 @@ object AppDependencies {
     "org.pegdown" % "pegdown" % "1.6.0" % "test",
     "org.jsoup" % "jsoup" % "1.11.3" % "test",
     "com.typesafe.play" %% "play-test" % PlayVersion.current % "test",
-    "org.mockito" % "mockito-core" % "2.27.0" % "test",
-    "org.scalacheck" %% "scalacheck" % "1.14.0" % "test"
+    "org.mockito" % "mockito-core" % "2.27.0" % "test"
   )
 
   def apply(): Seq[ModuleID] = compile ++ test
