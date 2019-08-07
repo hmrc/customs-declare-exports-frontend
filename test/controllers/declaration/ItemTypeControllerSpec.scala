@@ -26,44 +26,47 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
-import services.cache.{ExportItem, ExportsCacheModel}
+import services.cache.{ExportItem, ExportsCacheModel, ExportsItemBuilder}
 
 class ItemTypeControllerSpec
-    extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages {
+    extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages with ExportsItemBuilder {
   import ItemTypeControllerSpec._
-  private val cacheModel = aCacheModel(withChoice("SMP"), withItem())
-  private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/item-type")
+
+  private val exampleItem = aCachedItem()
+
+  private val cacheModel = aCacheModel(withChoice("SMP"), withItem(exampleItem))
+
+  private def uri(item: ExportItem) = uriWithContextPath(s"/declaration/items/${item.id}/item-type")
 
   override def beforeEach() {
     super.beforeEach()
-
     authorizedUser()
-    withNewCaching(cacheModel)
   }
 
   override def afterEach() {
-    super.afterEach()
-
     reset(mockAuthConnector, mockExportsCacheService)
+    super.afterEach()
   }
 
   "Item Type Page Controller on GET" should {
 
     "return 200 status code" in {
-      val result = route(app, getRequest(uri)).get
+      withNewCaching(cacheModel)
+
+      val result = route(app, getRequest(uri(exampleItem), sessionId = cacheModel.sessionId)).get
 
       status(result) must be(OK)
     }
 
     "read item from cache and display it" in {
 
-      val cachedData = ItemType("5555", Seq("6666"), Seq("7777"), "FaultyGoods", Some("CusCus"), Some("12CD"), "900")
-
-      val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP"))
+      val exampleItemType = ItemType("5555", Seq("6666"), Seq("7777"), "FaultyGoods", Some("CusCus"), Some("12CD"), "900")
+      val item = ExportItem("id", itemType = Some(exampleItemType))
+      val model = aCacheModel(withItem(item), withChoice("SMP"))
 
       withNewCaching(model)
 
-      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
+      val result = route(app, getRequest(uri(item), sessionId = model.sessionId)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)
@@ -84,9 +87,11 @@ class ItemTypeControllerSpec
       "user added one TARIC" in {
 
         val cachedData = ItemType("100", Seq("1234"), Seq(), "Description", None, None, "100")
-        withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
+        val item = ExportItem("id", itemType = Some(cachedData))
+        val model = aCacheModel(withItem(item), withChoice("SMP"))
+        withNewCaching(model)
 
-        val result = route(app, getRequest(uri)).get
+        val result = route(app, getRequest(uri(item), sessionId = model.sessionId)).get
         val page = contentAsString(result)
 
         getElementByCss(page, "table>tbody>tr>th:nth-child(1)").text() must be("1234")
@@ -96,9 +101,11 @@ class ItemTypeControllerSpec
       "user added one NAC" in {
 
         val cachedData = ItemType("100", Seq(), Seq("1234"), "Description", None, None, "100")
-        withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
+        val item = ExportItem("id", itemType = Some(cachedData))
+        val model = aCacheModel(withItem(item), withChoice("SMP"))
+        withNewCaching(model)
 
-        val result = route(app, getRequest(uri)).get
+        val result = route(app, getRequest(uri(item), sessionId = model.sessionId)).get
         val page = contentAsString(result)
 
         getElementByCss(page, "table>tbody>tr>th:nth-child(1)").text() must be("1234")
@@ -114,10 +121,11 @@ class ItemTypeControllerSpec
       "display form page with error" when {
 
         "Combined Nomenclature Code is empty" in {
+          withNewCaching(cacheModel)
 
           val form =
             buildItemTypeUrlEncodedInput(SaveAndContinue)(statisticalValue = "100", descriptionOfGoods = "Description")
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -129,13 +137,14 @@ class ItemTypeControllerSpec
         }
 
         "Combined Nomenclature Code is longer than 8 characters" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "123456789",
             statisticalValue = "100",
             descriptionOfGoods = "Description"
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -149,13 +158,14 @@ class ItemTypeControllerSpec
         }
 
         "Combined Nomenclature Code contains special characters" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "123$%^",
             statisticalValue = "100",
             descriptionOfGoods = "Description"
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -169,6 +179,7 @@ class ItemTypeControllerSpec
         }
 
         "TARIC additional code is not 4 characters long" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
@@ -176,7 +187,7 @@ class ItemTypeControllerSpec
             statisticalValue = "100",
             descriptionOfGoods = "Description"
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -188,6 +199,7 @@ class ItemTypeControllerSpec
         }
 
         "TARIC additional code contains special characters" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
@@ -195,7 +207,7 @@ class ItemTypeControllerSpec
             statisticalValue = "100",
             descriptionOfGoods = "Description"
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -209,6 +221,7 @@ class ItemTypeControllerSpec
         }
 
         "National additional code is invalid" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
@@ -217,7 +230,7 @@ class ItemTypeControllerSpec
             statisticalValue = "100",
             descriptionOfGoods = "Description"
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -231,6 +244,7 @@ class ItemTypeControllerSpec
         }
 
         "Description of goods is empty" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
@@ -238,7 +252,7 @@ class ItemTypeControllerSpec
             nationalAdditionalCodes = Seq("VATE"),
             statisticalValue = "100"
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -252,6 +266,7 @@ class ItemTypeControllerSpec
         }
 
         "Description of goods is longer than 280 characters" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
@@ -260,7 +275,7 @@ class ItemTypeControllerSpec
             statisticalValue = "100",
             descriptionOfGoods = TestHelper.createRandomAlphanumericString(281)
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -274,6 +289,7 @@ class ItemTypeControllerSpec
         }
 
         "CUS code is not 8 characters long" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
@@ -283,7 +299,7 @@ class ItemTypeControllerSpec
             statisticalValue = "100",
             descriptionOfGoods = "Description"
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -295,6 +311,7 @@ class ItemTypeControllerSpec
         }
 
         "CUS code contains special characters" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
@@ -304,7 +321,7 @@ class ItemTypeControllerSpec
             statisticalValue = "100",
             descriptionOfGoods = "Description"
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -316,12 +333,13 @@ class ItemTypeControllerSpec
         }
 
         "Statistical value is empty" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
             descriptionOfGoods = "Description"
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -333,13 +351,14 @@ class ItemTypeControllerSpec
         }
 
         "Statistical value contains more than 15 digits" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
             statisticalValue = "12345678901234.56",
             descriptionOfGoods = "Description"
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -353,13 +372,14 @@ class ItemTypeControllerSpec
         }
 
         "Statistical value contains non-digit characters" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "12345",
             statisticalValue = "123456Q.78",
             descriptionOfGoods = "Description"
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -373,9 +393,10 @@ class ItemTypeControllerSpec
         }
 
         "user press 'Save and continue' without entering anything" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)()
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -393,6 +414,7 @@ class ItemTypeControllerSpec
         }
 
         "user put incorrect/empty values into all fields" in {
+          withNewCaching(cacheModel)
 
           val form = buildItemTypeUrlEncodedInput(SaveAndContinue)(
             combinedNomenclatureCode = "123456789",
@@ -400,7 +422,7 @@ class ItemTypeControllerSpec
             nationalAdditionalCodes = Seq("12345"),
             cusCode = "%^&%6789"
           )
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -430,23 +452,29 @@ class ItemTypeControllerSpec
       }
 
       "save data to the cache" in {
+        withNewCaching(cacheModel)
+
         val userInput = addActionTypeToFormData(SaveAndContinue, correctItemTypeMap)
-        route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(userInput.toSeq: _*)).get.futureValue
+        route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(userInput.toSeq: _*)).get.futureValue
 
         verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
       }
 
       "return 303 code" in {
+        withNewCaching(cacheModel)
+
         val userInput = addActionTypeToFormData(SaveAndContinue, correctItemTypeMap)
-        val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(userInput.toSeq: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(userInput.toSeq: _*)).get
         status(result) must be(SEE_OTHER)
       }
 
       "redirect to 'Add Package Information' page" when {
 
         "provided with mandatory data only" in {
+          withNewCaching(cacheModel)
+
           val userInput = addActionTypeToFormData(SaveAndContinue, mandatoryFieldsOnlyItemTypeMap)
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(userInput.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(userInput.toSeq: _*)).get
 
           redirectLocation(result) must be(
             Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
@@ -454,8 +482,10 @@ class ItemTypeControllerSpec
         }
 
         "provided with all data" in {
+          withNewCaching(cacheModel)
+
           val userInput = addActionTypeToFormData(SaveAndContinue, correctItemTypeMap)
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(userInput.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(userInput.toSeq: _*)).get
 
           redirectLocation(result) must be(
             Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
@@ -469,13 +499,16 @@ class ItemTypeControllerSpec
       "display form page with error" when {
 
         "user tries to add duplicated TARIC" in {
+          withNewCaching(cacheModel)
+
           val cachedData = ItemType("100", fourDigitsSequence(98), Seq(), "Description", None, None, "100")
-          val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP"))
+          val item = ExportItem("id", itemType = Some(cachedData))
+          val model = aCacheModel(withItem(item), withChoice("SMP"))
           withNewCaching(model)
 
           val form =
             buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", taricAdditionalCodes = Seq("1010"))
-          val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -489,14 +522,16 @@ class ItemTypeControllerSpec
         }
 
         "user tries to add more than 99 TARIC" in {
+          withNewCaching(cacheModel)
 
           val cachedData = ItemType("100", fourDigitsSequence(99), Seq(), "Description", None, None, "100")
-          val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP"))
+          val item = ExportItem("id", itemType = Some(cachedData))
+          val model = aCacheModel(withItem(item), withChoice("SMP"))
           withNewCaching(model)
 
           val form =
             buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", taricAdditionalCodes = Seq("2345"))
-          val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)(form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -510,14 +545,16 @@ class ItemTypeControllerSpec
         }
 
         "user tries to add duplicated NAC" in {
+          withNewCaching(cacheModel)
 
           val cachedData = ItemType("100", Seq(), Seq("VATE"), "Description", None, None, "100")
-          val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP"))
+          val item = ExportItem("id", itemType = Some(cachedData))
+          val model = aCacheModel(withItem(item), withChoice("SMP"))
           withNewCaching(model)
 
           val form =
             buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", nationalAdditionalCodes = Seq("VATE"))
-          val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)( form.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)( form.toSeq: _*)).get
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -534,14 +571,17 @@ class ItemTypeControllerSpec
       "save updated data to the cache" when {
 
         "provided with TARIC" in {
+          withNewCaching(cacheModel)
+
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq("VATE", "VATR"), "Description", None, None, "100")
           val taricToAdd = "1234"
           val userInput = buildItemTypeUrlEncodedInput(Add)(taricAdditionalCodes = Seq(taricToAdd))
-          val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP"))
+          val item = ExportItem("id", itemType = Some(cachedItemType))
+          val model = aCacheModel(withItem(item), withChoice("SMP"))
           withNewCaching(model)
 
-          route(app, postRequestFormUrlEncoded(uri, model.sessionId)(userInput.toSeq: _*)).get.futureValue
+          route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)(userInput.toSeq: _*)).get.futureValue
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes :+ taricToAdd)
@@ -549,14 +589,17 @@ class ItemTypeControllerSpec
         }
 
         "provided with NAC" in {
+          withNewCaching(cacheModel)
+
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq("VATE", "VATR"), "Description", None, None, "100")
           val nacToAdd = "X442"
           val userInput = buildItemTypeUrlEncodedInput(Add)(nationalAdditionalCodes = Seq(nacToAdd))
-          val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP"))
+          val item = ExportItem("id", itemType = Some(cachedItemType))
+          val model = aCacheModel(withItem(item), withChoice("SMP"))
           withNewCaching(model)
 
-          route(app, postRequestFormUrlEncoded(uri, model.sessionId)(userInput.toSeq: _*)).get.futureValue
+          route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)(userInput.toSeq: _*)).get.futureValue
 
           val expectedUpdatedItemType =
             cachedItemType.copy(nationalAdditionalCodes = cachedItemType.nationalAdditionalCodes :+ nacToAdd)
@@ -564,6 +607,8 @@ class ItemTypeControllerSpec
         }
 
         "provided with both TARIC and NAC" in {
+          withNewCaching(cacheModel)
+
           val cachedItemType =
             ItemType("100", fourDigitsSequence(1), Seq("VATE", "VATR"), "Description", None, None, "100")
           val taricToAdd = "1234"
@@ -572,10 +617,11 @@ class ItemTypeControllerSpec
             taricAdditionalCodes = Seq(taricToAdd),
             nationalAdditionalCodes = Seq(nacToAdd)
           )
-          val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP"))
+          val item = ExportItem("id", itemType = Some(cachedItemType))
+          val model = aCacheModel(withItem(item), withChoice("SMP"))
           withNewCaching(model)
 
-          route(app, postRequestFormUrlEncoded(uri, model.sessionId)(userInput.toSeq: _*)).get.futureValue
+          route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)(userInput.toSeq: _*)).get.futureValue
 
           val expectedUpdatedItemType = cachedItemType.copy(
             taricAdditionalCodes = cachedItemType.taricAdditionalCodes :+ taricToAdd,
@@ -586,22 +632,27 @@ class ItemTypeControllerSpec
       }
 
       "return OK code" in {
+        withNewCaching(cacheModel)
+
         val taricToAdd = "1234"
         val userInput = buildItemTypeUrlEncodedInput(Add)(taricAdditionalCodes = Seq(taricToAdd))
 
-        val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(userInput.toSeq: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri(exampleItem), cacheModel.sessionId)(userInput.toSeq: _*)).get
 
         status(result) must be(OK)
       }
 
       "refresh Item Type page" in {
+        withNewCaching(cacheModel)
+
         val taricToAdd = "1234"
         val userInput = buildItemTypeUrlEncodedInput(Add)(taricAdditionalCodes = Seq(taricToAdd))
 
-        val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(userInput.toSeq: _*)).get
+        val pageAddress = uri(exampleItem)
+        val result = route(app, postRequestFormUrlEncoded(pageAddress, cacheModel.sessionId)(userInput.toSeq: _*)).get
 
         val page = contentAsString(result)
-        page must include(uri)
+        page must include(pageAddress)
       }
     }
 
@@ -610,12 +661,15 @@ class ItemTypeControllerSpec
       "display error page" when {
 
         "provided with no index" in {
+
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_")), Map.empty)
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
+          val item = ExportItem("id", itemType = Some(cachedItemType))
+          val model = aCacheModel(withItem(item), withChoice("SMP"))
+          withNewCaching(model)
 
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)( userInput.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)( userInput.toSeq: _*)).get
           ScalaFutures.whenReady(result.failed) { exc =>
             exc.getMessage must equal(messages("error.removeAction.incorrectFormat"))
             exc mustBe an[IllegalArgumentException]
@@ -623,12 +677,15 @@ class ItemTypeControllerSpec
         }
 
         "provided with incorrect index value" in {
+
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_incorrectIndex")), Map.empty)
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
+          val item = ExportItem("id", itemType = Some(cachedItemType))
+          val model = aCacheModel(withItem(item), withChoice("SMP"))
+          withNewCaching(model)
 
-          val result = route(app, postRequestFormUrlEncoded(uri, cacheModel.sessionId)(userInput.toSeq: _*)).get
+          val result = route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)(userInput.toSeq: _*)).get
           ScalaFutures.whenReady(result.failed) { exc =>
             exc.getMessage must equal(messages("error.removeAction.incorrectFormat"))
             exc mustBe an[IllegalArgumentException]
@@ -642,10 +699,11 @@ class ItemTypeControllerSpec
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_0")), Map.empty)
-          val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP"))
+          val item = ExportItem("id", itemType = Some(cachedItemType))
+          val model = aCacheModel(withItem(item), withChoice("SMP"))
           withNewCaching(model)
 
-          route(app, postRequestFormUrlEncoded(uri, model.sessionId)(userInput.toSeq: _*)).get.futureValue
+          route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)(userInput.toSeq: _*)).get.futureValue
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes.tail)
@@ -656,10 +714,11 @@ class ItemTypeControllerSpec
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_9")), Map.empty)
-          val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP"))
+          val item = ExportItem("id", itemType = Some(cachedItemType))
+          val model = aCacheModel(withItem(item), withChoice("SMP"))
           withNewCaching(model)
 
-          route(app, postRequestFormUrlEncoded(uri, model.sessionId)(userInput.toSeq: _*)).get.futureValue
+          route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)(userInput.toSeq: _*)).get.futureValue
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes.init)
@@ -671,10 +730,11 @@ class ItemTypeControllerSpec
           val cachedItemType =
             ItemType("100", taricAddCodes, Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_2")), Map.empty)
-          val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP"))
+          val item = ExportItem("id", itemType = Some(cachedItemType))
+          val model = aCacheModel(withItem(item), withChoice("SMP"))
           withNewCaching(model)
 
-          route(app, postRequestFormUrlEncoded(uri, model.sessionId)(userInput.toSeq: _*)).get.futureValue
+          route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)(userInput.toSeq: _*)).get.futureValue
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = Seq("1111", "2222", "4444", "5555"))
@@ -686,10 +746,11 @@ class ItemTypeControllerSpec
         val cachedItemType =
           ItemType("100", fourDigitsSequence(10), fourDigitsSequence(10), "Description", None, None, "100")
         val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_0")), Map.empty)
-        val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP"))
+        val item = ExportItem("id", itemType = Some(cachedItemType))
+        val model = aCacheModel(withItem(item), withChoice("SMP"))
         withNewCaching(model)
 
-        val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(userInput.toSeq: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)(userInput.toSeq: _*)).get
 
         status(result) must be(OK)
       }
@@ -698,13 +759,15 @@ class ItemTypeControllerSpec
         val cachedItemType =
           ItemType("100", fourDigitsSequence(10), fourDigitsSequence(10), "Description", None, None, "100")
         val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_0")), Map.empty)
-        val model = aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP"))
+        val item = ExportItem("id", itemType = Some(cachedItemType))
+        val model = aCacheModel(withItem(item), withChoice("SMP"))
         withNewCaching(model)
 
-        val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(userInput.toSeq: _*)).get
+        val pageAddress = uri(item)
+        val result = route(app, postRequestFormUrlEncoded(pageAddress, model.sessionId)(userInput.toSeq: _*)).get
 
         val page = contentAsString(result)
-        page must include(uri)
+        page must include(pageAddress)
       }
     }
   }
