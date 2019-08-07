@@ -16,13 +16,15 @@
 
 @(
     field: Field,
-    label: String
+    inputClass: Option[String] = None
 )(implicit messages: Messages)
 
+<input
+        class="form-control @inputClass"
+        type="text"
+        id="@{field.id}"
+        name="@{field.name}"
+        value="@{field.value}"
+        @if(field.hasErrors){aria-describedby="error-message-@{field.id}-input" }
+/>
 
-<div class="form-group">
-        <div class="multiple-choice">
-            <input id="id=@{field.id}" name="name=@{field.name}" type="checkbox" value=@{field.value}>
-            <label for="id=@{field.id}">@label</label>
-        </div>
-</div>

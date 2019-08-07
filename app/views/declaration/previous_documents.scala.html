@@ -36,9 +36,10 @@
 
     @components.section_header(messages("supplementary.consignmentReferences.heading"))
 
-    @if(documents.nonEmpty) {
-        @helper.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
-            @helper.CSRF.formField
+    @helper.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @if(documents.nonEmpty){
             <table class="form-group">
                 <caption>@messages("supplementary.previousDocuments")</caption>
                 <thead>
@@ -59,18 +60,14 @@
                     <td>@document.goodsItemIdentifier.getOrElse("")</td>
                     <td>
                         <button class="button--secondary" name=@messages("site.remove") value=@index>
-                            @messages("site.remove")
-                        </button>
-                    </td>
+                        @messages("site.remove")
+                </button>
+                </td>
                 </tr>
                 }
                 </tbody>
             </table>
         }
-    }
-
-    @helper.form(PreviousDocumentsController.savePreviousDocuments(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
 
         @components.page_title(Some("supplementary.previousDocuments.title"), Some("supplementary.previousDocuments.hint"))
 

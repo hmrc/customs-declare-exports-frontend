@@ -14,11 +14,8 @@
  * limitations under the License.
  *@
 
-@(messageKey: String = "Warning")(implicit messages: Messages)
+@import controllers.util.Remove
 
-<div class="notice">
-    <i class="icon icon-important">
-        <span class="visually-hidden">Warning</span>
-    </i>
-    <strong class="bold-small">@messages(messageKey)</strong>
-</div>
+@(value: Option[Any] = None, label: String = "site.remove")(implicit messages: Messages)
+
+<button id="add" class="button--secondary" name="@Remove.toString" @value.map{v => value="@{v.toString}"}>@messages(label)</button>

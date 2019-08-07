@@ -37,14 +37,12 @@ object Document {
   val correctDocumentCategories = Set("X", "Y", "Z")
 
   val mapping = Forms.mapping(
-    "documentCategory" -> optional(
-      text()
-        .verifying(
-          "supplementary.previousDocuments.documentCategory.error.incorrect",
-          isEmpty or isContainedIn(correctDocumentCategories)
-        )
-    ).verifying("supplementary.previousDocuments.documentCategory.error.empty", _.isDefined)
-      .transform[String](optValue => optValue.getOrElse(""), docCategory => Some(docCategory)),
+    "documentCategory" -> text()
+      .verifying("supplementary.previousDocuments.documentCategory.error.empty", nonEmpty)
+      .verifying(
+        "supplementary.previousDocuments.documentCategory.error.incorrect",
+        isEmpty or isContainedIn(correctDocumentCategories)
+      ),
     "documentType" -> text()
       .verifying("supplementary.previousDocuments.documentType.empty", nonEmpty)
       .verifying(

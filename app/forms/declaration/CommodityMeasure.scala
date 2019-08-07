@@ -26,7 +26,6 @@ object CommodityMeasure {
   implicit val format = Json.format[CommodityMeasure]
 
   val commodityFormId = "CommodityMeasure"
-  val ADD_ONE = "supplementary.commodityMeasure.global.addOne"
 
   val mapping = Forms.mapping(
     "supplementaryUnits" -> optional(

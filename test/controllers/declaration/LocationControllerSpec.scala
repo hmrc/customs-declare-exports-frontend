@@ -110,7 +110,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val result = route(app, postRequest(uri, correctGoodsLocation)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/office-of-exit"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/office-of-exit"))
 
       theCacheModelUpdated.locations.goodsLocation.get mustBe GoodsLocation(
         country = "Poland",
@@ -129,7 +129,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val result = route(app, postRequest(uri, correctGoodsLocationJSON)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/office-of-exit"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/office-of-exit"))
       theCacheModelUpdated.locations.goodsLocation.get mustBe GoodsLocation(
         country = country,
         typeOfLocation = "T",

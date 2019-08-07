@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package controllers.util
-import models.requests.{AuthenticatedRequest, JourneyRequest}
+@import controllers.util.SaveAndContinue
 
-object CacheIdGenerator {
+@(messageKey: String = "site.save_and_continue")(implicit messages: Messages)
 
-  def eoriCacheId()(implicit request: AuthenticatedRequest[_]): String = request.user.eori
-
-  def goodsItemCacheId()(implicit request: JourneyRequest[_]): String =
-    s"suppl-items-${request.authenticatedRequest.user.eori}"
-
-  def cacheId()(implicit request: JourneyRequest[_]): String =
-    s"${request.choice.value}-${request.authenticatedRequest.user.eori}"
-}
+<button id="submit" class="button" name="@SaveAndContinue.toString">@messages(messageKey)</button>

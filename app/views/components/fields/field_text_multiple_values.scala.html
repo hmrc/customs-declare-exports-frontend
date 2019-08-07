@@ -15,6 +15,7 @@
  *@
 
 @import controllers.util.{Add, Remove}
+@import components.inputs.input_text
 
 @(
     field: Field,
@@ -22,51 +23,16 @@
     hint: Option[String] = None,
     elements: Seq[String] = Seq.empty,
     inputClass: Option[String] = None,
-    labelClass: Option[String] = None
+    labelClass: Option[String] = None,
+    includeAddButton: Boolean = true
 )(implicit messages: Messages)
 
-<div class="form-field @if(field.hasErrors){form-field--error}">
-    <label class="form-label" for="@{field.id}">
-        <span id="@{field.id}-label" class="@if(labelClass.nonEmpty){@labelClass}">@label</span>
-        @if(hint.nonEmpty){
-            <span id="@{field.id}-hint" class="form-hint">@hint</span>
-        }
-        @field.errors.map { error =>
-            <span class="error-notification"
-                id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
-        }
-    </label>
-
-    @if(elements.nonEmpty) {
-        <div class="field-group">
-            <table >
-            @elements.zipWithIndex.map { case (elem, index) =>
-                <tr>
-                    <th>@elem</th>
-                    <th>
-                        <button
-                            class="button--secondary"
-                            name="@Remove.toString"
-                            value="@{field.id}@{index}">@messages("site.remove")</button>
-                    </th>
-                </tr>
-            }
-            </table>
-            <br/><br/>
-        </div>
-    }
-
-    <div class="form-control-wrapper">
-        <input
-        class="form-control @inputClass"
-        type="text"
-        id="@{field.id}"
-        name="@{field.name}"
-        value="@{field.value}"
-            @if(field.hasErrors){aria-describedby="error-message-@{field.id}-input" }
-        />
-    </div>
-    <div class="section align='right'">
-        <button id="add" class="button--secondary" name="@Add.toString">@messages("site.add")</button>
-    </div>
-</div>
+@field_multiple_values(
+    field = field,
+    label = label,
+    hint = hint,
+    elements = elements,
+    labelClass = labelClass,
+    input = input_text(field, inputClass),
+    includeAddButton = includeAddButton
+)

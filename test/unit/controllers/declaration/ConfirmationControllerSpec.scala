@@ -28,15 +28,10 @@ class ConfirmationControllerSpec extends ControllerSpec {
   trait SetUp {
     val confirmationPage = new confirmation_page(mainTemplate)
 
-    val controller = new ConfirmationController(
-      mockAuthAction,
-      mockJourneyAction,
-      stubMessagesControllerComponents(),
-      confirmationPage
-    )(ec)
+    val controller =
+      new ConfirmationController(mockAuthAction, stubMessagesControllerComponents(), confirmationPage)(ec)
 
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
   }
 
   "Confirmation Controller on GET" should {

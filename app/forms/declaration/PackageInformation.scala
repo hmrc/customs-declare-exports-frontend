@@ -22,6 +22,7 @@ import play.api.libs.json.Json
 import services.PackageTypes
 import utils.validators.forms.FieldValidator._
 
+//TODO Change those field to be non optional - all page is mandatory
 case class PackageInformation(
   typesOfPackages: Option[String],
   numberOfPackages: Option[Int],
@@ -38,6 +39,7 @@ object PackageInformation {
   val formId = "PackageInformation"
   val limit = 99
 
+  //TODO Remove the last validation and inlined error and validate separately every field like mandatory field
   val mapping = Forms
     .mapping(
       "typesOfPackages" -> optional(

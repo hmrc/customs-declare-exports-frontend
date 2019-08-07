@@ -18,6 +18,7 @@
 @import forms.declaration.Seal
 @import uk.gov.hmrc.play.views.html._
 @import controllers.util.Remove
+@import views.components.fields.LabelledValue
 
 @this(main_template: views.html.main_template)
 
@@ -36,37 +37,22 @@
 
     @components.page_title(Some("standard.seal.title"), None)
 
-    @if(seals.nonEmpty) {
-        @helper.form(SealController.submitForm(), 'autoComplete -> "off") {
-            @helper.CSRF.formField
-            <div class="field-group">
-                <table >
-                    <thead>
-                        <tr>
-                            <th scope="col">@messages("standard.seal.id")</th>
-                            <td></td>
-                        </tr>
-                    </thead>
-                @seals.zipWithIndex.map { case (seal, index) =>
-                    <tr>
-                        <td>@seal.id</td>
-                        <td>
-                            <button class="button--secondary" name="@Remove.toString" value="@index">@messages("site.remove")</button>
-                        </td>
-                    </tr>
-                }
-                </table>
-                <br><br>
-            </div>
-        }
-    }
-
     @helper.form(SealController.submitForm(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
+        @if(seals.nonEmpty) {
+            @components.fields.removable_elements_table(
+                title = Some(messages("standard.seal.id")),
+                elements = seals.zipWithIndex.map {
+                    case (seal, index) => LabelledValue(seal.id, index.toString)
+                }
+            )
+        }
+
         @components.fields.field_text(
             field = form("id"),
-            label = messages("standard.seal.id")
+            label = messages("standard.seal.id"),
+            labelClass = Some("bold-small")
         )
 
         @components.add_save_button()

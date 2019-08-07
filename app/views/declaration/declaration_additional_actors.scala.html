@@ -43,9 +43,10 @@
     @components.section_header(messages("supplementary.summary.parties.header"))
     @components.page_title(Some("supplementary.additionalActors.title"), Some(""))
 
-    @if(actors.nonEmpty) {
-        @helper.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
-            @helper.CSRF.formField
+    @helper.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @if(actors.nonEmpty) {
             <table class="form-group">
                 <thead>
                     <tr>
@@ -59,23 +60,19 @@
                     <tr>
                         <td scope="row">@actor.eori</td>
                         <td>@actor.partyType</td>
-                        <td><button class="button--secondary" name="@Remove.toString" value="@actor.toJson">@messages("site.remove")</button></td>
+                        <td>
+                            @components.buttons.remove_button(value = Some(actor.toJson.toString))
+                        </td>
                     </tr>
                 }
                 </tbody>
             </table>
         }
-    }
-
-
-    <span class="heading-24">@messages("supplementary.additionalActors.partyType")</span>
-
-    @helper.form(DeclarationAdditionalActorsController.saveForm(), 'autoComplete -> "off") {
-        @helper.CSRF.formField
 
         @components.fields.field_radio(
             field = form("partyType"),
-            legend = "",
+            legend = messages("supplementary.additionalActors.partyType"),
+            legendClass = Some("heading-24"),
             inputs = Seq(
                 RadioOption("supplementary.partyType", Consolidator),
                 RadioOption("supplementary.partyType", Manufacturer),

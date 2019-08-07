@@ -32,9 +32,16 @@
 
     @components.back_link(AdditionalInformationController.displayPage(itemId).url)
 
-    @if(documents.nonEmpty) {
-        @helper.form(DocumentsProducedController.saveForm(itemId), 'autoComplete -> "off") {
-            @helper.CSRF.formField
+    @components.error_summary(form.errors)
+
+    @components.section_header(messages("supplementary.summary.yourReferences.header"))
+
+    @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
+
+    @helper.form(DocumentsProducedController.saveForm(itemId), 'autoComplete -> "off") {
+        @helper.CSRF.formField
+
+        @if(documents.nonEmpty) {
             <table class="form-group">
                 <thead>
                     <tr>
@@ -62,22 +69,12 @@
                         <td>@item.dateOfValidity</td>
                         <td>@item.documentWriteOff.map(_.measurementUnit)</td>
                         <td>@item.documentWriteOff.map(_.documentQuantity)</td>
-                        <td><button class="button--secondary" name=@Remove.toString value=@index>@messages("site.remove")</button></td>
+                        <td>@components.buttons.remove_button(value = Some(index))</td>
                     </tr>
                 }
                 </tbody>
             </table>
         }
-    }
-
-    @components.error_summary(form.errors)
-
-    @components.section_header(messages("supplementary.summary.yourReferences.header"))
-
-    @components.page_title(Some("supplementary.addDocument.title"), Some("supplementary.addDocument.hint"))
-
-    @helper.form(DocumentsProducedController.saveForm(itemId), 'autoComplete -> "off") {
-        @helper.CSRF.formField
 
         @components.fields.field_text(
             field = form(documentTypeCodeKey),

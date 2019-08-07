@@ -113,11 +113,11 @@ class PreviousDocumentsControllerSpec
 
         withNewCaching(aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
 
-        val body = removeActionURLEncoded("0")
+        val body = correctDocument :+ removeActionURLEncoded("0")
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) must be(OK)
         theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(documents = Seq())
       }
     }
@@ -468,7 +468,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/export-items"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
         theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
           documents = List(Document("X", "MCR", "A", Some("1")))
         )
@@ -482,7 +482,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/export-items"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
         verifyTheCacheIsUnchanged()
       }
 
@@ -501,7 +501,7 @@ class PreviousDocumentsControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/export-items"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
         theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
           documents = List(Document("X", "MCR", "A", Some("1")), Document("Y", "MCR", "B", Some("2")))
         )

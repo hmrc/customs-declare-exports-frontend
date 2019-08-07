@@ -265,10 +265,14 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val cachedData = DestinationCountries("Poland", Seq("Slovakia", "Italy"), "England")
         withNewCaching(aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData)))
 
-        val action = Remove(Seq("0"))
-        val body = (action.label, action.keys.head)
+        val action = Remove(Seq("countriesOfRouting_0"))
+        val body = Seq(
+          "countryOfDispatch" -> "",
+          "countryOfDestination" -> "",
+          action.label -> action.keys.head
+        )
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(OK)
         theCacheModelUpdated.locations.destinationCountries mustBe Some(
@@ -295,7 +299,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val result = route(app, postRequest(uri, correctDestinationCountriesJSON)).get
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/location-of-goods"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/location-of-goods"))
         theCacheModelUpdated.locations.destinationCountries mustBe Some(
           DestinationCountries(countryOfDispatch = "PL", countriesOfRouting = Seq(), countryOfDestination = "PL")
         )

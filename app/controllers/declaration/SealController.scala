@@ -27,7 +27,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.cache.ExportsCacheService
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.seal
 
@@ -45,34 +45,28 @@ class SealController @Inject()(
 
   def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val declaration = exportsCacheService.get(journeySessionId)
-    declaration.map(_.flatMap(_.transportDetails)).flatMap { data =>
-      declaration.map(_.map(_.seals)).map { seals =>
-        Ok(sealPage(form, seals.getOrElse(Seq.empty), data.fold(false)(_.container)))
-      }
-    }
+    for {
+      transportDetails <- declaration.map(_.flatMap(_.transportDetails))
+      seals <- declaration.map(_.map(_.seals))
+    } yield Ok(sealPage(form(), seals.getOrElse(Seq.empty), transportDetails.fold(false)(_.container)))
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+    val actionTypeOpt = FormAction.bindFromRequest()
+    val boundForm = form().bindFromRequest()
 
     exportsCacheService
       .get(journeySessionId)
-      .map(_.map(_.seals))
-      .flatMap { data =>
-        processRequest(data.getOrElse(Seq.empty), actionTypeOpt)
+      .flatMap { data: Option[ExportsCacheModel] =>
+        val seals = data.map(_.seals)
+        val hasContainers: Boolean = data.flatMap(_.transportDetails).fold(false)(_.container)
+        actionTypeOpt match {
+          case Some(Add)             => addSeal(boundForm, sealsAllowed, seals.getOrElse(Seq.empty))
+          case Some(Remove(ids))     => removeSeal(boundForm, seals.getOrElse(Seq.empty), hasContainers, ids)
+          case Some(SaveAndContinue) => saveSeal(boundForm, sealsAllowed, seals.getOrElse(Seq.empty))
+          case _                     => errorHandler.displayErrorPage()
+        }
       }
-  }
-
-  private def processRequest(cachedSeals: Seq[Seal], action: Option[FormAction])(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] = {
-    val boundForm = form.bindFromRequest()
-    action match {
-      case Some(Add)             => addSeal(boundForm, sealsAllowed, cachedSeals)
-      case Some(Remove(ids))     => removeSeal(cachedSeals, ids)
-      case Some(SaveAndContinue) => saveSeal(boundForm, sealsAllowed, cachedSeals)
-      case _                     => errorHandler.displayErrorPage()
-    }
   }
 
   private def saveSeal(boundForm: Form[Seal], elementLimit: Int, cachedSeals: Seq[Seal])(
@@ -97,12 +91,14 @@ class SealController @Inject()(
     }
   }
 
-  private def removeSeal(cachedSeals: Seq[Seal], ids: Seq[String])(
+  private def removeSeal(userInput: Form[Seal], cachedSeals: Seq[Seal], hasContainers: Boolean, ids: Seq[String])(
     implicit request: JourneyRequest[_]
-  ): Future[Result] =
-    updateCache(journeySessionId, remove(ids.headOption, cachedSeals)).map { _ =>
-      Redirect(routes.SealController.displayForm())
+  ): Future[Result] = {
+    val updatedSeals = remove(ids.headOption, cachedSeals)
+    updateCache(journeySessionId, updatedSeals).map { _ =>
+      Ok(sealPage(userInput.discardingErrors, cachedSeals, hasContainers))
     }
+  }
 
   private def updateCache(sessionId: String, formData: Seq[Seal])(implicit req: JourneyRequest[_]) =
     getAndUpdateExportCacheModel(

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(
-  messageKey: String = "",
-  inputType: String = "button",
-  id: String = ""
-)(implicit messages: Messages)
+package views.components.fields
 
-<div class="section">
-  <input type="@inputType" class="button" id="@id" value="@messages(messageKey)"/>
-</div>
+case class LabelledValue(label: String, value: String)
+
+object LabelledValue {
+  def apply(labelAndValue: String): LabelledValue = LabelledValue(labelAndValue, labelAndValue)
+}

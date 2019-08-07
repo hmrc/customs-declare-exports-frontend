@@ -114,7 +114,7 @@ class TransportInformationContainersControllerSpec
         val body = removeActionURLEncoded("0")
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) must be(OK)
       }
     }
 
@@ -275,7 +275,7 @@ class TransportInformationContainersControllerSpec
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/summary"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/summary"))
     }
 
     "user doesn't fill form but some containers already exist in the cache" in {
@@ -286,7 +286,7 @@ class TransportInformationContainersControllerSpec
       val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionURLEncoded)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/summary"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/summary"))
     }
 
     "user provide container with some different container in cache" in {
@@ -297,7 +297,7 @@ class TransportInformationContainersControllerSpec
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/summary"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/summary"))
     }
   }
 

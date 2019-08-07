@@ -52,31 +52,31 @@ class PackageInformationController @Inject()(
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit authRequest =>
-      val actionTypeOpt = authRequest.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+      val actionTypeOpt = FormAction.bindFromRequest()
+      val boundForm = form().bindFromRequest()
       exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.map(_.packageInformation)).flatMap {
         data =>
           val packagings = data.getOrElse(Seq.empty)
 
           actionTypeOpt match {
             case Some(Add)             => addItem(itemId, packagings)
-            case Some(Remove(ids))     => remove(itemId, packagings, ids.filter(_.nonEmpty).headOption)
+            case Some(Remove(ids))     => remove(itemId, packagings, boundForm, ids)
             case Some(SaveAndContinue) => continue(itemId, packagings)
             case _                     => errorHandler.displayErrorPage()
           }
       }
   }
 
-  def remove(itemId: String, packages: Seq[PackageInformation], id: Option[String])(
+  def remove(itemId: String, packages: Seq[PackageInformation], form: Form[PackageInformation], id: Seq[String])(
     implicit authRequest: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    id match {
-      case Some(identifier) =>
-        val updatedPackages =
-          packages.zipWithIndex.filterNot(_._2.toString == identifier).map(_._1)
-        updateExportsCache(itemId, journeySessionId, updatedPackages)
-          .map(_ => Redirect(routes.PackageInformationController.displayPage(itemId)))
-      case _ => errorHandler.displayErrorPage()
-    }
+  ): Future[Result] = {
+    val updatedPackages =
+      packages.zipWithIndex.filterNot {
+        case (_, index) => id.headOption.contains(index.toString)
+      }.map(_._1)
+    updateExportsCache(itemId, journeySessionId, updatedPackages)
+      .map(_ => Ok(packageInformationPage(itemId, form.discardingErrors, updatedPackages)))
+  }
 
   def continue(itemId: String, packages: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]

@@ -56,7 +56,7 @@ class AdditionalInformationController @Inject()(
     implicit request =>
       val boundForm = form().bindFromRequest()
 
-      val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+      val actionTypeOpt = FormAction.bindFromRequest()
 
       val cachedData = exportsCacheService
         .getItemByIdAndSession(itemId, journeySessionId)
@@ -109,7 +109,7 @@ class AdditionalInformationController @Inject()(
   )(implicit request: JourneyRequest[_]): Future[Result] = {
     val updatedCache = MultipleItemsHelper.remove(ids.headOption, items)
     updateCache(itemId, journeySessionId, AdditionalInformationData(updatedCache))
-      .map(_ => Redirect(controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)))
+      .map(_ => Ok(additionalInformationPage(itemId, boundForm.discardingErrors, updatedCache)))
   }
 
   private def updateCache(

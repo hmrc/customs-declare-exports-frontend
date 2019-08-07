@@ -55,27 +55,20 @@ class DeclarationHolderController @Inject()(
 
   def submitHoldersOfAuthorisation(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
-      val boundForm = form.bindFromRequest()
-
-      val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded(_))
+      val boundForm = form().bindFromRequest()
+      val actionTypeOpt = FormAction.bindFromRequest()
 
       val cachedData = exportsCacheService
         .get(journeySessionId)
         .map(_.flatMap(_.parties.declarationHoldersData).getOrElse(DeclarationHoldersData(Seq())))
 
       cachedData.flatMap { cache =>
-        boundForm
-          .fold(
-            (formWithErrors: Form[DeclarationHolder]) =>
-              Future.successful(BadRequest(declarationHolderPage(formWithErrors, cache.holders))),
-            validForm =>
-              actionTypeOpt match {
-                case Some(Add)             => addHolder(validForm, cache)
-                case Some(SaveAndContinue) => saveAndContinue(validForm, cache)
-                case Some(Remove(values))  => removeHolder(retrieveHolder(values), cache)
-                case _                     => errorHandler.displayErrorPage()
-            }
-          )
+        actionTypeOpt match {
+          case Some(Add) if !boundForm.hasErrors             => addHolder(boundForm.get, cache)
+          case Some(SaveAndContinue) if !boundForm.hasErrors => saveAndContinue(boundForm.get, cache)
+          case Some(Remove(values))                          => removeHolder(retrieveHolder(values), boundForm, cache)
+          case _                                             => Future.successful(BadRequest(declarationHolderPage(boundForm, cache.holders)))
+        }
       }
   }
 
@@ -180,13 +173,13 @@ class DeclarationHolderController @Inject()(
 
   private def removeHolder(
     holderToRemove: DeclarationHolder,
+    userInput: Form[DeclarationHolder],
     cachedData: DeclarationHoldersData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    if (cachedData.containsHolder(holderToRemove)) {
-      val updatedCache = cachedData.copy(holders = cachedData.holders.filterNot(_ == holderToRemove))
-      updateCache(journeySessionId, updatedCache)
-        .map(_ => Redirect(controllers.declaration.routes.DeclarationHolderController.displayForm()))
-    } else errorHandler.displayErrorPage()
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+    val updatedCache = cachedData.copy(holders = cachedData.holders.filterNot(_ == holderToRemove))
+    updateCache(journeySessionId, updatedCache)
+      .map(_ => Ok(declarationHolderPage(userInput.discardingErrors, updatedCache.holders)))
+  }
 
   private def retrieveHolder(values: Seq[String]): DeclarationHolder =
     DeclarationHolder.buildFromString(values.headOption.getOrElse(""))

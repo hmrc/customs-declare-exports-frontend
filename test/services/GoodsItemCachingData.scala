@@ -20,12 +20,11 @@ import base.TestHelper._
 import forms.common.DateSpec.correctDate
 import forms.declaration._
 import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
-import generators.Generators
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 
 import scala.util.Random
 
-trait GoodsItemCachingData extends Generators {
+trait GoodsItemCachingData {
 
   def intBetween(min: Int, max: Int): Int = min + Random.nextInt((max - min) + 1)
 

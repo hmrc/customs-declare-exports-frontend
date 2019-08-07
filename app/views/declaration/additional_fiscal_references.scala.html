@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import services.model.Country
 @import services.Countries
+@import views.components.fields.LabelledValue
 
 @import services.view.AutoCompleteItem
 
@@ -43,7 +44,11 @@
 
         <h3>@messages("declaration.additionalFiscalReferences.numbers.header")</h3>
 
-        @components.multiple_items_list(additionalReferences.map(elem => elem.country + elem.reference))
+        @components.fields.removable_elements_table(
+            elements = additionalReferences.map(elem => elem.country + elem.reference).zipWithIndex.map {
+                case (label, index) => LabelledValue(label, index.toString)
+            }
+        )
 
         <div id="country-of-dispatch-field" class="inline-block form-group">
             @components.fields.field_autocomplete(
