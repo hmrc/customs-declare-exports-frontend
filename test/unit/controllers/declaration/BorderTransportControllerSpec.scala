@@ -59,6 +59,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
       }
 
       "display page method is invoked and cache contains data" in new SetUp {
+
         withNewCaching(
           aCacheModel(
             withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
