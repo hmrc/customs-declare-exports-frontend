@@ -47,7 +47,6 @@ class ItemTypeController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Seq.empty.mkString
     request.cacheModel.itemBy(itemId).map { item =>
       item.itemType match {
         case Some(itemType) =>
