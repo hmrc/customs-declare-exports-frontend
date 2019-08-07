@@ -17,8 +17,8 @@
 package models.declaration
 
 import forms.declaration._
+import models.ExportsCacheModel
 import models.declaration.dectype.DeclarationTypeSupplementary
-import services.cache.ExportsCacheModel
 
 case class SupplementaryDeclarationData(
   declarationType: Option[DeclarationTypeSupplementary] = None,

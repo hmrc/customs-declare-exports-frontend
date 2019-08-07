@@ -17,7 +17,7 @@
 package services.mapping.goodsshipment.consignment
 import forms.Choice.AllowedChoiceValues
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsCacheModel
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class ConsignmentBuilder @Inject()(

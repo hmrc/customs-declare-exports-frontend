@@ -18,7 +18,7 @@ package services.mapping.declaration.consignment
 
 import forms.Choice.AllowedChoiceValues
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsCacheModel
 import services.mapping.ModifyingBuilder
 import services.mapping.goodsshipment.consignment.ConsignmentCarrierBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration

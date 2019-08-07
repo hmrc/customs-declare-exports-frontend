@@ -26,12 +26,8 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupp
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
-import models.declaration.{
-  DeclarationAdditionalActorsData,
-  DeclarationHoldersData,
-  Locations,
-  TransportInformationContainerData
-}
+import models.ExportsCacheModel
+import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, Locations, TransportInformationContainerData}
 
 //noinspection ScalaStyle
 trait ExportsCacheModelBuilder {
@@ -41,7 +37,7 @@ trait ExportsCacheModelBuilder {
 
   private def uuid: String = UUID.randomUUID().toString
 
-  private val modelWithDefaults: ExportsCacheModel = ExportsCacheModel(
+  private val modelWithDefaults: ExportsCacheModel = models.ExportsCacheModel(
     sessionId = uuid,
     draftId = uuid,
     createdDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0),

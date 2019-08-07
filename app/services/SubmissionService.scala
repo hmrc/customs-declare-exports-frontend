@@ -19,17 +19,17 @@ package services
 import com.google.inject.Inject
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
-import controllers.declaration.SessionIdAware
 import javax.inject.Singleton
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
+import models.ExportsCacheModel
 import models.requests.JourneyRequest
 import play.api.Logger
 import play.api.http.Status.ACCEPTED
 import play.api.libs.json.{JsObject, Json}
 import services.audit.EventData._
 import services.audit.{AuditService, AuditTypes}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}

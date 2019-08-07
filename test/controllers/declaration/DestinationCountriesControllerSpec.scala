@@ -22,10 +22,10 @@ import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.DestinationCountriesSpec._
 import forms.declaration.destinationCountries.DestinationCountries
 import helpers.views.declaration.DestinationCountriesMessages
+import models.ExportsCacheModel
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with DestinationCountriesMessages {
 

@@ -17,13 +17,14 @@
 package services.cache.mapping
 
 import javax.xml.bind.JAXBElement
+import models.ExportsCacheModel
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
+import services.cache.ExportsCacheModelBuilder
 import services.cache.mapping.declaration.DeclarationBuilder
-import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder}
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class SubmissionMetaDataBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {

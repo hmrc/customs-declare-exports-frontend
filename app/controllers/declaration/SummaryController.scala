@@ -17,16 +17,16 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.ExportsCacheModel
 import models.declaration.SupplementaryDeclarationData
 import models.requests.JourneyRequest
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc._
 import services._
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.summary.{summary_page, summary_page_no_data}

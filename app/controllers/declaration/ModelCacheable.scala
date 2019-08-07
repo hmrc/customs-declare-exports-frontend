@@ -16,9 +16,10 @@
 
 package controllers.declaration
 
+import models.ExportsCacheModel
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.mvc.AnyContent
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 
 import scala.concurrent.{ExecutionContext, Future}
 

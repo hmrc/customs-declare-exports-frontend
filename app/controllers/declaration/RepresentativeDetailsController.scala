@@ -20,11 +20,12 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.Choice.AllowedChoiceValues._
 import forms.declaration.RepresentativeDetails
 import javax.inject.Inject
+import models.ExportsCacheModel
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.representative_details
 

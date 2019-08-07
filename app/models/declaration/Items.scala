@@ -17,7 +17,7 @@
 package models.declaration
 
 import forms.declaration._
-import services.cache.ExportsCacheModel
+import models.ExportsCacheModel
 
 case class Items(
   totalNumberOfItems: Option[TotalNumberOfItems] = None,

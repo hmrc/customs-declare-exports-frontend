@@ -16,7 +16,7 @@
 
 package services.mapping.goodsshipment
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsCacheModel
 import services.mapping.ModifyingBuilder
 import services.mapping.goodsshipment.consignment.ConsignmentBuilder
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilder

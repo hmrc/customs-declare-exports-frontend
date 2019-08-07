@@ -16,7 +16,6 @@
 
 package base
 
-import java.time.LocalDateTime
 import java.util.UUID
 
 import akka.stream.Materializer
@@ -24,15 +23,13 @@ import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import metrics.ExportsMetrics
-import models.NrsSubmissionResponse
-import models.declaration.Parties
+import models.{ExportsCacheModel, NrsSubmissionResponse}
 import org.joda.time.DateTime
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{never, verify, when}
 import org.mockito.stubbing.OngoingStubbing
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -40,7 +37,6 @@ import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.Application
-import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -50,13 +46,7 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services._
-import services.cache.{
-  ExportItem,
-  ExportItemIdGeneratorService,
-  ExportsCacheModel,
-  ExportsCacheModelBuilder,
-  ExportsCacheService
-}
+import services.cache.{ExportItemIdGeneratorService, ExportsCacheModelBuilder, ExportsCacheService}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}

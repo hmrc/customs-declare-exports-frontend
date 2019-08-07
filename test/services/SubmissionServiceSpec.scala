@@ -20,6 +20,7 @@ import base.{CustomExportsBaseSpec, TestHelper}
 import com.kenshoo.play.metrics.Metrics
 import forms.Choice.AllowedChoiceValues
 import metrics.MetricIdentifiers
+import models.ExportsCacheModel
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -27,7 +28,7 @@ import org.scalatest.OptionValues
 import play.api.test.FakeRequest
 import reactivemongo.play.json.collection.JSONBatchCommands
 import services.audit.{AuditService, AuditTypes, EventData}
-import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder}
+import services.cache.ExportsCacheModelBuilder
 
 import scala.concurrent.Future
 import scala.io.Source

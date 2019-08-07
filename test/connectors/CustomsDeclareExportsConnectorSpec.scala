@@ -30,7 +30,6 @@ import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
 import play.api.test.Helpers.ACCEPTED
 import services.WcoMetadataMapper
-import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -147,7 +146,7 @@ object CustomsDeclareExportsConnectorSpec {
   private val instant = Instant.EPOCH
 
   val exportCacheModel =
-    ExportsCacheModel(
+    models.ExportsCacheModel(
       sessionId = "",
       draftId = "",
       createdDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC),

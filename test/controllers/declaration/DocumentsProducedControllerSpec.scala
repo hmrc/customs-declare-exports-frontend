@@ -26,13 +26,14 @@ import forms.declaration.additionaldocuments.DocumentIdentifierAndPart.{document
 import forms.declaration.additionaldocuments.DocumentWriteOff.documentQuantityKey
 import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
+import models.ExportsCacheModel
 import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedDataSpec._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import services.cache.{ExportItem, ExportsCacheModel}
+import services.cache.ExportItem
 
 class DocumentsProducedControllerSpec
     extends CustomExportsBaseSpec with DocumentsProducedMessages with CommonMessages with ViewValidator {

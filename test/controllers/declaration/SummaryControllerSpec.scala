@@ -19,6 +19,7 @@ package controllers.declaration
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice.AllowedChoiceValues
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import models.ExportsCacheModel
 import models.declaration.SupplementaryDeclarationTestData
 import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers.{any, anyString}
@@ -27,7 +28,6 @@ import org.mockito.verification.VerificationMode
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

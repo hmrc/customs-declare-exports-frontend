@@ -19,7 +19,6 @@ package models.declaration
 import java.time.LocalDateTime
 
 import forms.common.Date
-import forms.declaration.ConsigneeDetailsSpec._
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
 import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors1
@@ -35,13 +34,10 @@ import forms.declaration.TotalNumberOfItemsSpec._
 import forms.declaration.TransportCodes.Rail
 import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
-import forms.declaration.destinationCountries.DestinationCountries
-import forms.declaration.officeOfExit.OfficeOfExitForms
-import forms.{Choice, ChoiceSpec}
+import models.ExportsCacheModel
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
 import models.declaration.dectype.DeclarationTypeSupplementarySpec._
@@ -49,8 +45,7 @@ import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
-import services.cache.{ExportItem, ExportsCacheModel}
-import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilderSpec
+import services.cache.ExportItem
 
 class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
   import SupplementaryDeclarationTestData._

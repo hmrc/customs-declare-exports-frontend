@@ -18,6 +18,7 @@ package services.cache
 
 import java.time.{Instant, LocalDateTime, ZoneOffset}
 
+import models.ExportsCacheModel
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterEach, MustMatchers, OptionValues, WordSpec}
@@ -128,7 +129,7 @@ class ExportsCacheModelRepositorySpec
   }
 
   def createModel(existingSessionId: String): ExportsCacheModel =
-    ExportsCacheModel(
+    models.ExportsCacheModel(
       sessionId = existingSessionId,
       draftId = "",
       createdDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC),

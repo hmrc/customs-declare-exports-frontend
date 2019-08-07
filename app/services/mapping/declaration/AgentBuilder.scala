@@ -18,8 +18,8 @@ package services.mapping.declaration
 
 import forms.declaration.RepresentativeDetails
 import javax.inject.Inject
+import models.ExportsCacheModel
 import services.Countries.allCountries
-import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Agent

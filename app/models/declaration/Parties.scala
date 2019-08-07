@@ -17,8 +17,8 @@
 package models.declaration
 
 import forms.declaration._
+import models.ExportsCacheModel
 import play.api.libs.json.Json
-import services.cache.ExportsCacheModel
 
 case class Parties(
   exporterDetails: Option[ExporterDetails] = None,

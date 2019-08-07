@@ -18,7 +18,7 @@ package services.mapping.declaration
 
 import forms.declaration.TotalNumberOfItems
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsCacheModel
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.CurrencyExchange
