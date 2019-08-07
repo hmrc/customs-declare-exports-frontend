@@ -90,7 +90,7 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
 
       theCacheModelUpdated.natureOfTransaction.get mustBe NatureOfTransaction("1")
 
-      verifyLocation(result,"/customs-declare-exports/declaration/previous-documents")
+      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/previous-documents"))
     }
   }
 

@@ -18,13 +18,10 @@ package controllers.declaration
 
 import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
-import forms.Choice
-import forms.Choice.choiceId
+import forms.declaration.ItemType
 import forms.declaration.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
 import forms.declaration.ItemTypeSpec._
-import forms.declaration.{FiscalInformation, ItemType}
 import helpers.views.declaration.{CommonMessages, ItemTypeMessages}
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import org.scalatest.concurrent.ScalaFutures
@@ -448,14 +445,14 @@ class ItemTypeControllerSpec
           val userInput = addActionTypeToFormData(SaveAndContinue, mandatoryFieldsOnlyItemTypeMap)
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
 
-          verifyLocation(result, s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
+          redirectLocation(result) must be (Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information"))
         }
 
         "provided with all data" in {
           val userInput = addActionTypeToFormData(SaveAndContinue, correctItemTypeMap)
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
 
-          verifyLocation(result, s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
+          redirectLocation(result) must be (Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information"))
         }
       }
     }

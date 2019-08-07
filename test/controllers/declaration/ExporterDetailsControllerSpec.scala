@@ -97,7 +97,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
         val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
 
         status(result) must be(SEE_OTHER)
-        verifyLocation(result, "/customs-declare-exports/declaration/consignee-details")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/consignee-details"))
         theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetailsEORIOnly))
       }
 
@@ -105,7 +105,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
         val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
 
         status(result) must be(SEE_OTHER)
-        verifyLocation(result, "/customs-declare-exports/declaration/consignee-details")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/consignee-details"))
         theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetailsAddressOnly))
       }
 
@@ -113,7 +113,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
         val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
 
         status(result) must be(SEE_OTHER)
-        verifyLocation(result, "/customs-declare-exports/declaration/consignee-details")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/consignee-details"))
         theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetails))
 
       }
@@ -125,7 +125,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
         val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
 
         status(result) must be(SEE_OTHER)
-        verifyLocation(result, "/customs-declare-exports/declaration/consignee-details")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/consignee-details"))
         theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetailsEORIOnly))
       }
 
@@ -133,7 +133,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
         val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
 
         status(result) must be(SEE_OTHER)
-        verifyLocation(result, "/customs-declare-exports/declaration/consignee-details")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/consignee-details"))
         theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetailsAddressOnly))
       }
 
@@ -141,7 +141,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
         val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
 
         status(result) must be(SEE_OTHER)
-        verifyLocation(result, "/customs-declare-exports/declaration/consignee-details")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/consignee-details"))
         theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetails))
       }
     }

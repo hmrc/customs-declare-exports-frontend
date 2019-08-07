@@ -86,7 +86,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
         val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.OutsideEU)
         val result = route(app, postRequest(dispatchLocationUri, validForm)).get
 
-        verifyLocation(result, "/customs-declare-exports/declaration/type")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/type"))
         theCacheModelUpdated.dispatchLocation must be(Some(DispatchLocation(AllowedDispatchLocations.OutsideEU)))
       }
     }
@@ -98,7 +98,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
         val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.SpecialFiscalTerritory)
         val result = route(app, postRequest(dispatchLocationUri, validForm)).get
 
-        verifyLocation(result, "/customs-declare-exports/declaration/not-eligible")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/not-eligible"))
         theCacheModelUpdated.dispatchLocation must be(
           Some(DispatchLocation(AllowedDispatchLocations.SpecialFiscalTerritory))
         )

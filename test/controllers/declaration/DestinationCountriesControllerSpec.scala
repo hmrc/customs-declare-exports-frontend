@@ -22,7 +22,6 @@ import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.DestinationCountriesSpec._
 import forms.declaration.destinationCountries.DestinationCountries
 import helpers.views.declaration.DestinationCountriesMessages
-import models.declaration.Locations
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
@@ -298,7 +297,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val result = route(app, postRequest(uri, correctDestinationCountriesJSON)).get
 
         status(result) must be(SEE_OTHER)
-        verifyLocation(result, "/customs-declare-exports/declaration/location-of-goods")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/location-of-goods"))
         theCacheModelUpdated.locations.destinationCountries mustBe Some(
           DestinationCountries(countryOfDispatch = "PL", countriesOfRouting = Seq(), countryOfDestination = "PL")
         )

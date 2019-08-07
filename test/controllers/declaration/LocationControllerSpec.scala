@@ -18,10 +18,9 @@ package controllers.declaration
 
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.{GoodsLocation, GoodsLocationTestData}
 import forms.declaration.GoodsLocationTestData._
+import forms.declaration.{GoodsLocation, GoodsLocationTestData}
 import helpers.views.declaration.LocationOfGoodsMessages
-import models.declaration
 import org.mockito.Mockito.reset
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
@@ -112,7 +111,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val result = route(app, postRequest(uri, correctGoodsLocation)).get
 
       status(result) must be(SEE_OTHER)
-      verifyLocation(result, "/customs-declare-exports/declaration/office-of-exit")
+      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/office-of-exit"))
 
       theCacheModelUpdated.locations.goodsLocation.get mustBe GoodsLocation(
         country = "Poland",
@@ -131,7 +130,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val result = route(app, postRequest(uri, correctGoodsLocationJSON)).get
 
       status(result) must be(SEE_OTHER)
-      verifyLocation(result, "/customs-declare-exports/declaration/office-of-exit")
+      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/office-of-exit"))
       theCacheModelUpdated.locations.goodsLocation.get mustBe GoodsLocation(
         country = country,
         typeOfLocation = "T",

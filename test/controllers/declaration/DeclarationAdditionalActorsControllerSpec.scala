@@ -26,10 +26,7 @@ import helpers.views.declaration.{CommonMessages, DeclarationAdditionalActorsMes
 import models.declaration.DeclarationAdditionalActorsData
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import org.mockito.Mockito.reset
-import play.api.mvc.Result
 import play.api.test.Helpers._
-
-import scala.concurrent.Future
 
 class DeclarationAdditionalActorsControllerSpec
     extends CustomExportsBaseSpec with DeclarationAdditionalActorsMessages with CommonMessages with ViewValidator {
@@ -317,7 +314,7 @@ class DeclarationAdditionalActorsControllerSpec
     val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
     status(result) must be(SEE_OTHER)
-    verifyLocation(result, expectedPath)
+    redirectLocation(result) must be (Some( expectedPath))
   }
 
   private def testErrorScenario(

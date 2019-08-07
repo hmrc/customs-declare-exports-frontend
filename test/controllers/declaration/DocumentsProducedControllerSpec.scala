@@ -27,15 +27,12 @@ import forms.declaration.additionaldocuments.DocumentWriteOff.documentQuantityKe
 import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
 import models.declaration.DocumentsProducedData
-import models.declaration.DocumentsProducedData.formId
 import models.declaration.DocumentsProducedDataSpec._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
 import services.cache.{ExportItem, ExportsCacheModel}
-
-import scala.concurrent.Future
 
 class DocumentsProducedControllerSpec
     extends CustomExportsBaseSpec with DocumentsProducedMessages with CommonMessages with ViewValidator {
@@ -304,7 +301,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        verifyLocation(result, "/customs-declare-exports/declaration/export-items")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/export-items"))
         verifyTheCacheIsUnchanged()
       }
 
@@ -314,7 +311,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        verifyLocation(result, "/customs-declare-exports/declaration/export-items")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/export-items"))
 
         verifyTheCacheIsUnchanged()
       }
@@ -325,7 +322,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        verifyLocation(result, "/customs-declare-exports/declaration/export-items")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/export-items"))
 
         verify(mockExportsCacheService, times(2)).get(any[String])
         verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
@@ -338,7 +335,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        verifyLocation(result, "/customs-declare-exports/declaration/export-items")
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/export-items"))
 
         verify(mockExportsCacheService, times(2)).get(any[String])
         verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
