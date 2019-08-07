@@ -58,11 +58,7 @@ class SummaryController @Inject()(
     data.consignmentReferences.exists(references => references.lrn.nonEmpty)
 
   def submitSupplementaryDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async {
-    implicit request =>
-      exportsCacheService.get(journeySessionId).flatMap {
-        case Some(model) => handleDecSubmission(model)
-        case None        => Future.successful(handleError("Could not obtain data from DB"))
-      }
+    implicit request => handleDecSubmission(request.cacheModel)
 
   }
 
