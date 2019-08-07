@@ -18,8 +18,8 @@ package models.declaration.dectype
 
 import forms.declaration.DispatchLocation
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
+import models.ExportsCacheModel
 import models.declaration.SummaryContainer
-import services.cache.ExportsCacheModel
 
 case class DeclarationTypeSupplementary(
   dispatchLocation: Option[DispatchLocation],

@@ -22,13 +22,14 @@ import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActors.form
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.ExportsCacheModel
 import models.declaration.DeclarationAdditionalActorsData
 import models.declaration.DeclarationAdditionalActorsData.maxNumberOfItems
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.declaration_additional_actors

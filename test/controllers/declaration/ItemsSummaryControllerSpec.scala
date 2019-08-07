@@ -18,12 +18,13 @@ package controllers.declaration
 
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import models.ExportsCacheModel
 import models.declaration.governmentagencygoodsitem.{GovernmentAgencyGoodsItem, Packaging}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.Helpers._
-import services.cache.{ExportItem, ExportsCacheModel}
+import services.cache.ExportItem
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
 class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues {

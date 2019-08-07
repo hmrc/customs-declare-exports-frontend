@@ -19,8 +19,8 @@ package services.cache
 import java.time.LocalDateTime.now
 
 import javax.inject.{Inject, Singleton}
+import models.ExportsCacheModel
 import reactivemongo.play.json.collection.JSONBatchCommands.FindAndModifyCommand
-import uk.gov.hmrc.http.logging.SessionId
 
 import scala.concurrent.{ExecutionContext, Future}
 

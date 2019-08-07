@@ -16,13 +16,14 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, AdditionalFiscalReferencesController}
+import controllers.declaration.{AdditionalFiscalReferencesController, routes}
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
+import models.ExportsCacheModel
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import services.cache.{ExportItem, ExportsCacheModel}
+import services.cache.ExportItem
 import unit.base.ControllerSpec
 import unit.mock.ErrorHandlerMocks
 import views.html.declaration.additional_fiscal_references

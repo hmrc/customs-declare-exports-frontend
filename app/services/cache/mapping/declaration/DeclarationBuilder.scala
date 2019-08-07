@@ -17,7 +17,7 @@
 package services.cache.mapping.declaration
 
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsCacheModel
 import services.mapping.AuthorisationHoldersBuilder
 import services.mapping.declaration._
 import services.mapping.declaration.consignment.DeclarationConsignmentBuilder

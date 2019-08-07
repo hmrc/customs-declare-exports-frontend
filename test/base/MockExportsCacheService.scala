@@ -16,12 +16,13 @@
 
 package base
 
-import org.mockito.{ArgumentCaptor, Mockito}
+import models.ExportsCacheModel
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{never, verify, when}
-import org.scalatest.{BeforeAndAfterEach, Suite}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.mockito.MockitoSugar
-import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder, ExportsCacheService}
+import org.scalatest.{BeforeAndAfterEach, Suite}
+import services.cache.{ExportsCacheModelBuilder, ExportsCacheService}
 
 import scala.concurrent.Future
 

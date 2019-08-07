@@ -16,9 +16,8 @@
 
 package services.mapping.declaration
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-
 import services.mapping.declaration.FunctionalReferenceIdBuilder.build
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationFunctionalReferenceIDType

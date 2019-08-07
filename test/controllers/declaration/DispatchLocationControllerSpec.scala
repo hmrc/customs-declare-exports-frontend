@@ -20,11 +20,11 @@ import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
+import models.ExportsCacheModel
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 

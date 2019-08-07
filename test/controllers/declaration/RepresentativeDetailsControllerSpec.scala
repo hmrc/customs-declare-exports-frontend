@@ -23,12 +23,12 @@ import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.RepresentativeDetails
 import forms.declaration.RepresentativeDetailsSpec._
 import helpers.views.declaration.{CommonMessages, RepresentativeDetailsMessages}
+import models.ExportsCacheModel
 import models.declaration.Parties
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 import scala.concurrent.Future
 

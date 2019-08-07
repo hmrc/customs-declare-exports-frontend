@@ -19,8 +19,8 @@ package models.declaration
 import forms.declaration._
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
+import models.ExportsCacheModel
 import play.api.libs.json.Json
-import services.cache.ExportsCacheModel
 
 case class Locations(
   destinationCountries: Option[DestinationCountries] = None,

@@ -21,11 +21,12 @@ import forms.Choice.AllowedChoiceValues
 import forms.declaration.TransportDetails
 import forms.declaration.TransportDetails._
 import javax.inject.Inject
+import models.ExportsCacheModel
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.transport_details
 

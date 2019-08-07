@@ -20,10 +20,11 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.additionaldeclarationtype._
 import javax.inject.Inject
+import models.ExportsCacheModel
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.additionaldeclarationtype.declaration_type
 

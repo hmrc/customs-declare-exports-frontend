@@ -19,8 +19,8 @@ package services.cache.mapping
 import javax.inject.Inject
 import javax.xml.bind.JAXBElement
 import javax.xml.namespace.QName
+import models.ExportsCacheModel
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
-import services.cache.ExportsCacheModel
 import services.cache.mapping.declaration.DeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData

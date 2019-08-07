@@ -19,9 +19,10 @@ package integration.services.mapping.goodsshipment.consignment
 import forms.declaration.GoodsLocationTestData._
 import forms.declaration.TransportCodes.Maritime
 import forms.declaration._
+import models.ExportsCacheModel
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder}
+import services.cache.ExportsCacheModelBuilder
 import services.mapping.goodsshipment.consignment.ConsignmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
