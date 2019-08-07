@@ -19,6 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.WarehouseIdentification
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -53,14 +54,14 @@ class WarehouseIdentificationController @Inject()(
         (formWithErrors: Form[WarehouseIdentification]) =>
           Future.successful(BadRequest(warehouseIdentificationPage(formWithErrors))),
         form =>
-          updateCache(journeySessionId, form)
+          updateCache(form)
             .map(_ => Redirect(controllers.declaration.routes.BorderTransportController.displayForm()))
       )
   }
 
-  private def updateCache(sessionId: String, formData: WarehouseIdentification): Future[Option[ExportsCacheModel]] =
-    getAndUpdateExportCacheModel(sessionId, model => {
+  private def updateCache(formData: WarehouseIdentification)(implicit request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] =
+    updateExportCacheModelSyncDirect { model =>
       val updatedLocations = model.locations.copy(warehouseIdentification = Some(formData))
-      exportsCacheService.update(sessionId, model.copy(locations = updatedLocations))
-    })
+      model.copy(locations = updatedLocations)
+    }
 }

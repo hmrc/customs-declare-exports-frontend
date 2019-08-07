@@ -50,16 +50,11 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services._
-import services.cache.{
-  ExportItem,
-  ExportItemIdGeneratorService,
-  ExportsCacheModel,
-  ExportsCacheModelBuilder,
-  ExportsCacheService
-}
+import services.cache.{ExportItem, ExportItemIdGeneratorService, ExportsCacheModel, ExportsCacheModelBuilder, ExportsCacheService}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import unit.mock.ExportsMetricsMocks
 import utils.FakeRequestCSRFSupport._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -67,11 +62,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait CustomExportsBaseSpec
     extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction
-    with MockConnectors with BeforeAndAfterEach with ExportsCacheModelBuilder {
+    with MockConnectors with BeforeAndAfterEach with ExportsCacheModelBuilder with MockExportsCacheService {
 
   protected val contextPath: String = "/customs-declare-exports"
 
-  val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
   val mockSubmissionService: SubmissionService = mock[SubmissionService]
   val mockItemGeneratorService: ExportItemIdGeneratorService = mock[ExportItemIdGeneratorService]
   val mockNrsService: NRSService = mock[NRSService]
@@ -175,7 +169,8 @@ trait CustomExportsBaseSpec
       .withCSRFToken
   }
 
-  def withNewCaching(dataToReturn: ExportsCacheModel) {
+  // FIXME move this stricter version to parent trait
+  override def withNewCaching(dataToReturn: ExportsCacheModel) {
     when(mockExportsCacheService.getItemByIdAndSession(any[String], ArgumentMatchers.eq(dataToReturn.sessionId)))
       .thenReturn(Future.successful(dataToReturn.items.headOption))
 
@@ -208,15 +203,6 @@ trait CustomExportsBaseSpec
   def withNrsSubmission(): OngoingStubbing[Future[NrsSubmissionResponse]] =
     when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
-
-  protected def theCacheModelUpdated: ExportsCacheModel = {
-    val captor = ArgumentCaptor.forClass(classOf[ExportsCacheModel])
-    verify(mockExportsCacheService).update(anyString, captor.capture())
-    captor.getValue
-  }
-
-  protected def verifyTheCacheIsUnchanged(): Unit =
-    verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
 
 }
 

@@ -16,7 +16,7 @@
 
 package base
 
-import org.mockito.{ArgumentCaptor, Mockito}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers, Mockito}
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{never, verify, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
@@ -28,10 +28,9 @@ import scala.concurrent.Future
 trait MockExportsCacheService extends MockitoSugar with ExportsCacheModelBuilder with BeforeAndAfterEach {
   self: Suite =>
 
-  val mockExportsCacheService = mock[ExportsCacheService]
+  val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
 
   def withNewCaching(dataToReturn: ExportsCacheModel): Unit = {
-
     when(mockExportsCacheService.getItemByIdAndSession(anyString, anyString))
       .thenReturn(Future.successful(dataToReturn.items.headOption))
 
