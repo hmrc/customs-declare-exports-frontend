@@ -21,8 +21,6 @@ import javax.inject.Inject
 import services.Countries.allCountries
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-import services.mapping.declaration.AgentBuilder.createAgent
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Agent
 import wco.datamodel.wco.declaration_ds.dms._2._
@@ -31,21 +29,13 @@ class AgentBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Decla
 
   override def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
     exportsCacheModel.parties.representativeDetails.foreach { representativeDetails =>
-      if (RepresentativeDetails.isDefined(representativeDetails)) {
+      if (isDefined(representativeDetails)) {
         declaration.setAgent(createAgent(representativeDetails))
       }
     }
 
-}
-
-object AgentBuilder {
-
-  def build(implicit cacheMap: CacheMap): Declaration.Agent =
-    cacheMap
-      .getEntry[RepresentativeDetails](RepresentativeDetails.formId)
-      .filter(RepresentativeDetails.isDefined)
-      .map(data => createAgent(data))
-      .orNull
+  def isDefined(representativeDetails: RepresentativeDetails): Boolean =
+    representativeDetails.details.exists(details => details.eori.isDefined || details.address.isDefined)
 
   private def createAgent(data: RepresentativeDetails): Declaration.Agent = {
     val agent = new Declaration.Agent()

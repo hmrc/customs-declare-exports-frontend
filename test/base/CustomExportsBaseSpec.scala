@@ -58,7 +58,6 @@ import services.cache.{
   ExportsCacheService
 }
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import utils.FakeRequestCSRFSupport._
@@ -72,8 +71,8 @@ trait CustomExportsBaseSpec
 
   protected val contextPath: String = "/customs-declare-exports"
 
-  val mockCustomsCacheService: CustomsCacheService = mock[CustomsCacheService]
   val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
+  val mockSubmissionService: SubmissionService = mock[SubmissionService]
   val mockItemGeneratorService: ExportItemIdGeneratorService = mock[ExportItemIdGeneratorService]
   val mockNrsService: NRSService = mock[NRSService]
 
@@ -88,11 +87,11 @@ trait CustomExportsBaseSpec
   override lazy val app: Application = GuiceApplicationBuilder()
     .overrides(
       bind[AuthConnector].to(mockAuthConnector),
-      bind[CustomsCacheService].to(mockCustomsCacheService),
       bind[ExportsCacheService].to(mockExportsCacheService),
       bind[ExportItemIdGeneratorService].to(mockItemGeneratorService),
       bind[CustomsDeclareExportsConnector].to(mockCustomsDeclareExportsConnector),
       bind[NrsConnector].to(mockNrsConnector),
+      bind[SubmissionService].to(mockSubmissionService),
       bind[NRSService].to(mockNrsService)
     )
     .build()
@@ -169,24 +168,6 @@ trait CustomExportsBaseSpec
       .withSession(session.toSeq: _*)
       .withFormUrlEncodedBody(body: _*)
       .withCSRFToken
-  }
-
-  def withCaching[T](form: Option[Form[T]]): OngoingStubbing[Future[CacheMap]] = {
-    when(mockCustomsCacheService.fetchAndGetEntry[Form[T]](any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(form))
-
-    when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(CacheMap("id1", Map.empty)))
-  }
-
-  def withCaching[T](dataToReturn: Option[T], id: String): OngoingStubbing[Future[CacheMap]] = {
-    when(
-      mockCustomsCacheService
-        .fetchAndGetEntry[T](any(), ArgumentMatchers.eq(id))(any(), any(), any())
-    ).thenReturn(Future.successful(dataToReturn))
-
-    when(mockCustomsCacheService.cache[T](any(), any(), any())(any(), any(), any()))
-      .thenReturn(Future.successful(CacheMap(id, Map.empty)))
   }
 
   def withNewCaching(dataToReturn: ExportsCacheModel) {

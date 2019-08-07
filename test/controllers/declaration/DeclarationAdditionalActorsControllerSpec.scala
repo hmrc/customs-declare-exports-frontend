@@ -313,10 +313,8 @@ class DeclarationAdditionalActorsControllerSpec
     val body = actorsMap.toSeq :+ action
     val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
-    val header = result.futureValue.header
-
     status(result) must be(SEE_OTHER)
-    header.headers.get("Location") must be(Some(expectedPath))
+    redirectLocation(result) must be(Some(expectedPath))
   }
 
   private def testErrorScenario(

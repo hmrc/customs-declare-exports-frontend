@@ -95,28 +95,25 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
 
       "validate request and redirect to consignee-details page with only EORI provided" in {
         val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignee-details"))
         theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetailsEORIOnly))
       }
 
       "validate request and redirect to consignee-details page with only address provided" in {
         val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignee-details"))
         theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetailsAddressOnly))
       }
 
       "validate request and redirect to consignee-details page with correct values" in {
         val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignee-details"))
         theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetails))
 
       }
@@ -126,28 +123,25 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
 
       "validate request and redirect to consignee-details page with only EORI provided" in {
         val result = route(app, postRequest(uri, correctExporterDetailsEORIOnlyJSON)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignee-details"))
         theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetailsEORIOnly))
       }
 
       "validate request and redirect to consignee-details page with only address provided" in {
         val result = route(app, postRequest(uri, correctExporterDetailsAddressOnlyJSON)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignee-details"))
         theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetailsAddressOnly))
       }
 
       "validate request and redirect to consignee-details page with correct values" in {
         val result = route(app, postRequest(uri, correctExporterDetailsJSON)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/consignee-details"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/consignee-details"))
         theCacheModelUpdated.parties.exporterDetails must be(Some(correctExporterDetails))
       }
     }

@@ -20,11 +20,9 @@ import forms.declaration.{EntityDetails, ExporterDetails}
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Exporter
 import wco.datamodel.wco.declaration_ds.dms._2._
-import ExporterBuilder.{createExporter, isDefined}
 
 class ExporterBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
   override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
@@ -33,16 +31,6 @@ class ExporterBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, De
       .map(_.details)
       .map(createExporter)
       .foreach(declaration.setExporter)
-}
-
-object ExporterBuilder {
-
-  def build(implicit cacheMap: CacheMap): Exporter =
-    cacheMap
-      .getEntry[ExporterDetails](ExporterDetails.id)
-      .filter(isDefined)
-      .map(data => createExporter(data.details))
-      .orNull
 
   private def isDefined(exporterDetails: ExporterDetails): Boolean =
     exporterDetails.details.eori.isDefined || exporterDetails.details.address.isDefined

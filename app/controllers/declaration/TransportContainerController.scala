@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.Choice.AllowedChoiceValues
@@ -26,12 +25,11 @@ import forms.declaration.TransportInformationContainer.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.TransportInformationContainerData
-import models.declaration.TransportInformationContainerData.{id, maxNumberOfItems}
+import models.declaration.TransportInformationContainerData.maxNumberOfItems
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
 import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.add_transport_containers
@@ -42,7 +40,6 @@ class TransportContainerController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
   errorHandler: ErrorHandler,
-  customsCacheService: CustomsCacheService,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   transportContainersPage: add_transport_containers
@@ -80,15 +77,12 @@ class TransportContainerController @Inject()(
     elementLimit: Int,
     cache: TransportInformationContainerData
   )(implicit request: JourneyRequest[_]) =
-    saveAndContinue(boundForm, cache.containers, true, elementLimit).fold(
+    saveAndContinue(boundForm, cache.containers, isMandatory = true, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(transportContainersPage(formWithErrors, cache.containers))),
       updatedCache =>
         if (updatedCache != cache.containers)
-          for {
-            _ <- updateCache(journeySessionId, TransportInformationContainerData(updatedCache))
-            _ <- customsCacheService
-              .cache[TransportInformationContainerData](cacheId, id, TransportInformationContainerData(updatedCache))
-          } yield redirect()
+          updateCache(journeySessionId, TransportInformationContainerData(updatedCache))
+            .map(_ => redirect())
         else Future.successful(redirect())
     )
 
@@ -112,15 +106,10 @@ class TransportContainerController @Inject()(
   )(implicit request: JourneyRequest[_]) =
     add(boundForm, cache.containers, elementLimit).fold(
       formWithErrors => Future.successful(BadRequest(transportContainersPage(formWithErrors, cache.containers))),
-      updatedCache => cacheAndRedirect(updatedCache)
+      updatedCache =>
+        updateCache(journeySessionId, TransportInformationContainerData(updatedCache))
+          .map(_ => Redirect(routes.TransportContainerController.displayPage()))
     )
-
-  private def cacheAndRedirect(containers: Seq[TransportInformationContainer])(implicit request: JourneyRequest[_]) =
-    for {
-      _ <- updateCache(journeySessionId, TransportInformationContainerData(containers))
-      _ <- customsCacheService
-        .cache[TransportInformationContainerData](cacheId, id, TransportInformationContainerData(containers))
-    } yield Redirect(routes.TransportContainerController.displayPage())
 
   private def updateCache(
     sessionId: String,

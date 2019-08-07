@@ -18,13 +18,10 @@ package controllers.declaration
 
 import base.{CustomExportsBaseSpec, TestHelper, ViewValidator}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
-import forms.Choice
-import forms.Choice.choiceId
+import forms.declaration.ItemType
 import forms.declaration.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
 import forms.declaration.ItemTypeSpec._
-import forms.declaration.{FiscalInformation, ItemType}
 import helpers.views.declaration.{CommonMessages, ItemTypeMessages}
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import org.scalatest.concurrent.ScalaFutures
@@ -447,9 +444,8 @@ class ItemTypeControllerSpec
         "provided with mandatory data only" in {
           val userInput = addActionTypeToFormData(SaveAndContinue, mandatoryFieldsOnlyItemTypeMap)
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
-          val header = result.futureValue.header
 
-          header.headers.get("Location") must be(
+          redirectLocation(result) must be(
             Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
           )
         }
@@ -457,9 +453,8 @@ class ItemTypeControllerSpec
         "provided with all data" in {
           val userInput = addActionTypeToFormData(SaveAndContinue, correctItemTypeMap)
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
-          val header = result.futureValue.header
 
-          header.headers.get("Location") must be(
+          redirectLocation(result) must be(
             Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
           )
         }
@@ -609,7 +604,7 @@ class ItemTypeControllerSpec
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_")), Map.empty)
-          withCaching[ItemType](Some(cachedItemType), ItemType.id)
+          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
           ScalaFutures.whenReady(result.failed) { exc =>
@@ -622,7 +617,7 @@ class ItemTypeControllerSpec
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_incorrectIndex")), Map.empty)
-          withCaching[ItemType](Some(cachedItemType), ItemType.id)
+          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
           ScalaFutures.whenReady(result.failed) { exc =>

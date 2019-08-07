@@ -40,7 +40,6 @@ class TransportInformationContainersControllerSpec
   override def beforeEach() {
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[TransportInformationContainerData](None, id)
   }
 
   override def afterEach(): Unit =
@@ -91,7 +90,6 @@ class TransportInformationContainersControllerSpec
       "that does not exist in cache" in {
 
         val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("M1l3s")))
-        withCaching[TransportInformationContainerData](Some(cachedData), id)
 
         val body = Seq(("id", "x4rlz"), addActionURLEncoded)
 
@@ -275,10 +273,9 @@ class TransportInformationContainersControllerSpec
       val body = Seq(("id", "M1l3s"), saveAndContinueActionURLEncoded)
 
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/summary"))
     }
 
     "user doesn't fill form but some containers already exist in the cache" in {
@@ -287,10 +284,9 @@ class TransportInformationContainersControllerSpec
       )
 
       val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionURLEncoded)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/summary"))
     }
 
     "user provide container with some different container in cache" in {
@@ -299,10 +295,9 @@ class TransportInformationContainersControllerSpec
       val body = Seq(("id", "M1l3s"), saveAndContinueActionURLEncoded)
 
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/summary"))
     }
   }
 

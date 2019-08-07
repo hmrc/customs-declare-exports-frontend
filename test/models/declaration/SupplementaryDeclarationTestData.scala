@@ -22,6 +22,7 @@ import forms.common.Date
 import forms.declaration.ConsigneeDetailsSpec._
 import forms.declaration.ConsignmentReferencesSpec._
 import forms.declaration.DeclarantDetailsSpec._
+import forms.declaration.DeclarationAdditionalActorsSpec.correctAdditionalActors1
 import forms.declaration.DestinationCountriesSpec._
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import forms.declaration.DispatchLocationSpec._
@@ -31,10 +32,7 @@ import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.OfficeOfExitSupplementarySpec._
 import forms.declaration.RepresentativeDetailsSpec._
 import forms.declaration.TotalNumberOfItemsSpec._
-import forms.declaration.TransportInformationContainerSpec.{
-  correctTransportInformationContainerData,
-  correctTransportInformationContainerDataJSON
-}
+import forms.declaration.TransportCodes.Rail
 import forms.declaration.WarehouseIdentificationSpec._
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec
@@ -51,9 +49,8 @@ import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
-import services.cache.ExportsCacheModel
+import services.cache.{ExportItem, ExportsCacheModel}
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilderSpec
-import uk.gov.hmrc.http.cache.client.CacheMap
 
 class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
   import SupplementaryDeclarationTestData._
@@ -179,7 +176,19 @@ class SupplementaryDeclarationTestData extends WordSpec with MustMatchers {
   }
 }
 
+object TransportInformationContainerSpec {
+  private val containerId = "id"
+  val correctTransportInformationContainerData =
+    TransportInformationContainerData(Seq(TransportInformationContainer(id = "M1l3s")))
+  val emptyTransportInformationContainerData = TransportInformationContainer("")
+  val correctTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("container-M1l3s")))
+  val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
+  val emptyTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("")))
+  val correctTransportInformationContainerDataJSON: JsValue = Json.toJson(correctTransportInformationContainerData)
+}
+
 object SupplementaryDeclarationTestData {
+  import TransportInformationContainerSpec._
   lazy val allRecords = declaration.copy(
     dispatchLocation = Some(correctDispatchLocation),
     additionalDeclarationType = Some(correctAdditionalDeclarationTypeSupplementaryDec),
@@ -207,78 +216,81 @@ object SupplementaryDeclarationTestData {
     )
   )
 
-  lazy val cacheMapAllRecords = CacheMap(
-    id = "CacheID",
-    data = Map(
-      Choice.choiceId -> ChoiceSpec.correctSupplementaryChoiceJSON,
-      DispatchLocation.formId -> correctDispatchLocationJSON,
-      AdditionalDeclarationTypeSupplementaryDec.formId -> correctAdditionalDeclarationTypeSupplementaryDecJSON,
-      ConsignmentReferences.id -> correctConsignmentReferencesJSON,
-      ExporterDetails.id -> correctExporterDetailsJSON,
-      DeclarantDetails.id -> Json.toJson(DeclarantDetailsSpec.correctDeclarantDetailsEORIOnly),
-      RepresentativeDetails.formId -> correctRepresentativeDetailsJSON,
-      Document.formId -> DocumentSpec.correctPreviousDocumentsJSONList,
-      CarrierDetails.id -> CarrierDetailsSpec.correctCarrierDetailsJSON,
-      ConsigneeDetails.id -> correctConsigneeDetailsJSON,
-      DeclarationAdditionalActorsData.formId -> correctAdditionalActorsDataJSON,
-      DeclarationHoldersData.formId -> correctDeclarationHoldersDataJSON,
-      DestinationCountries.formId -> correctDestinationCountriesJSON,
-      GoodsLocation.formId -> correctGoodsLocationJSON,
-      WarehouseIdentification.formId -> correctWarehouseIdentificationJSON,
-      OfficeOfExitForms.formId -> correctOfficeOfExitJSON,
-      TransportInformationContainerData.id -> correctTransportInformationContainerDataJSON,
-      TransportDetails.formId -> Json.toJson(
-        TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))
-      ),
-      BorderTransport.formId -> Json.toJson(BorderTransport("3", "10", Some("123112yu78"))),
-      TotalNumberOfItems.formId -> correctTotalNumberOfItemsDecimalValuesJSON,
-      NatureOfTransaction.formId -> correctNatureOfTransactionJSON,
-      DeclarationAdditionalActors.formId -> correctAdditionalActorsDataJSON,
-      AdditionalInformationData.formId -> Json.toJson(
-        AdditionalInformationData(items = Seq(AdditionalInformation("code", "description")))
-      ),
-      DocumentsProducedData.formId -> Json.toJson(
-        DocumentsProducedData(
-          documents = Seq(
-            DocumentsProduced(
-              documentTypeCode = Some("123"),
-              documentIdentifierAndPart = Some(DocumentIdentifierAndPart(Some("docId"), Some("DocPart"))),
-              documentStatus = Some("567"),
-              documentStatusReason = Some("statusReason"),
-              issuingAuthorityName = Some("issuingAuthName"),
-              dateOfValidity = Some(date),
-              documentWriteOff =
-                Some(DocumentWriteOff(measurementUnit = Some("KGM"), documentQuantity = Some(BigDecimal(12))))
+  lazy val allRecordsXmlMarshallingTest = allRecords.copy(
+    items = Set(
+      ExportItem(
+        "itemid",
+        sequenceId = 1,
+        itemType = Some(
+          ItemType(
+            combinedNomenclatureCode = "classificationsId",
+            taricAdditionalCodes = Seq("taricAdditionalCodes"),
+            nationalAdditionalCodes = Seq("nationalAdditionalCodes"),
+            descriptionOfGoods = "commodityDescription",
+            cusCode = Some("cusCode"),
+            unDangerousGoodsCode = Some("999"),
+            statisticalValue = "100"
+          )
+        ),
+        documentsProducedData = Some(
+          DocumentsProducedData(
+            Seq(
+              DocumentsProduced(
+                documentTypeCode = Some("C501"),
+                documentIdentifierAndPart = Some(
+                  DocumentIdentifierAndPart(documentIdentifier = Some("SYSUYSU123"), documentPart = Some("24554"))
+                ),
+                documentStatus = Some("PND"),
+                documentStatusReason = Some("Reason"),
+                issuingAuthorityName = Some("issuingAuthorityName"),
+                dateOfValidity = Some(Date(year = Some(2017), month = Some(1), day = Some(1))),
+                documentWriteOff =
+                  Some(DocumentWriteOff(measurementUnit = Some("KGM"), documentQuantity = Some(BigDecimal("10"))))
+              )
             )
+          )
+        ),
+        additionalInformation = Some(AdditionalInformationData(Seq(AdditionalInformation("code", "description")))),
+        commodityMeasure = Some(CommodityMeasure(Some("2"), "90", "100")),
+        additionalFiscalReferencesData = Some(
+          AdditionalFiscalReferencesData(
+            Seq(AdditionalFiscalReference("PL", "12345"), AdditionalFiscalReference("FR", "54321"))
+          )
+        ),
+        procedureCodes = Some(ProcedureCodesData(Some("CUPR"), Seq("CC", "PR"))),
+        packageInformation = List(
+          PackageInformation(Some("AA"), Some(2), Some("mark1")),
+          PackageInformation(Some("AB"), Some(4), Some("mark2"))
+        )
+      )
+    ),
+    totalNumberOfItems = Some(TotalNumberOfItems(Some("1212312.12"), Some("1212121.12345"), "123")),
+    parties = Parties(
+      exporterDetails = Some(correctExporterDetails),
+      declarantDetails = Some(correctDeclarantDetailsEORIOnly),
+      consigneeDetails = Some(ConsigneeDetails(EntityDetailsSpec.correctEntityDetails)),
+      representativeDetails = Some(correctRepresentativeDetails),
+      declarationAdditionalActorsData = Some(DeclarationAdditionalActorsData(Seq(correctAdditionalActors1))),
+      declarationHoldersData = Some(
+        DeclarationHoldersData(
+          Seq(
+            DeclarationHolder(authorisationTypeCode = Some("1234"), eori = Some("PL213472539481923")),
+            DeclarationHolder(authorisationTypeCode = Some("4321"), eori = Some("PT213472539481923"))
           )
         )
       ),
-      ProcedureCodesData.formId -> Json.toJson(
-        ProcedureCodesData(procedureCode = Some("procedureCode"), additionalProcedureCodes = Seq("code1", "code2"))
-      ),
-      PackageInformation.formId -> Json.toJson(
-        Seq(
-          PackageInformation(typesOfPackages = Some("AA"), numberOfPackages = Some(2), shippingMarks = Some("mark1")),
-          PackageInformation(typesOfPackages = Some("AB"), numberOfPackages = Some(4), shippingMarks = Some("mark2"))
-        )
-      ),
-      "exportItems" -> GovernmentAgencyGoodsItemBuilderSpec.itemsJsonList,
-      CommodityMeasure.commodityFormId -> Json.toJson(
-        CommodityMeasure(supplementaryUnits = Some("2"), netMass = "23", grossMass = "23")
-      ),
-      ItemType.id -> Json.toJson(
-        ItemType(
-          combinedNomenclatureCode = "nonClamCode",
-          taricAdditionalCodes = Seq("tarricCode1", "tarricCode2", "tarricCode3"),
-          nationalAdditionalCodes = Seq("nationalAddCode1", "nationalAddCode2", "nationalAddCode3"),
-          descriptionOfGoods = "description",
-          cusCode = Some("CustCode"),
-          unDangerousGoodsCode = Some("999"),
-          statisticalValue = "12"
-        )
-      )
-    )
+      carrierDetails = Some(CarrierDetails(EntityDetailsSpec.correctEntityDetails))
+    ),
+    locations = Locations(
+      destinationCountries = Some(DestinationCountriesSpec.correctDestinationCountries),
+      goodsLocation = Some(correctGoodsLocation),
+      warehouseIdentification =
+        Some(WarehouseIdentification(Some("12345678"), Some("R"), Some("1234567GB"), Some(Rail))),
+      officeOfExit = Some(correctOfficeOfExit)
+    ),
+    previousDocuments = Some(PreviousDocumentsData(Seq(Document("X", "MCR", "DocumentReference", Some("123")))))
   )
+
   lazy val correctGovernmentAgencyGoodsItemJSON: JsValue = JsArray(Seq(Json.toJson(createGovernmentAgencyGoodsItem())))
   lazy val correctStatisticalValueAmountJSON: JsValue =
     JsObject(Map("currencyId" -> JsString("GBP"), "value" -> JsString("44")))

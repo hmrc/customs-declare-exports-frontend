@@ -30,10 +30,9 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class JourneyAction @Inject()(cacheService: ExportsCacheService, mcc: MessagesControllerComponents)
-    extends ActionRefiner[AuthenticatedRequest, JourneyRequest] with SessionIdAware {
-
-  implicit override val executionContext: ExecutionContext = mcc.executionContext
+class JourneyAction @Inject()(cacheService: ExportsCacheService)(
+  implicit override val executionContext: ExecutionContext
+) extends ActionRefiner[AuthenticatedRequest, JourneyRequest] with SessionIdAware {
 
   private val logger = Logger(this.getClass())
 
@@ -43,8 +42,10 @@ case class JourneyAction @Inject()(cacheService: ExportsCacheService, mcc: Messa
 
     cacheService.get(request.session.data("sessionId")).map(_.map(_.choice)).map {
       case Some(journeyType) => Right(JourneyRequest(request, Choice(journeyType)))
-      case _ =>
+      case _                 =>
+        // $COVERAGE-OFF$Trivial
         logger.error(s"Could not obtain journey type for ${eoriCacheId()(request)}")
+        // $COVERAGE-ON
         Left(Conflict("Could not obtain information about journey type"))
     }
   }

@@ -17,14 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
 import forms.declaration.TotalNumberOfItems
 import javax.inject.Inject
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.CustomsCacheService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.total_number_of_items
@@ -34,7 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class TotalNumberOfItemsController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   totalNumberOfItemsPage: total_number_of_items,
   override val exportsCacheService: ExportsCacheService
@@ -62,16 +59,11 @@ class TotalNumberOfItemsController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: TotalNumberOfItems)(
-    implicit req: JourneyRequest[_]
-  ): Future[Unit] =
-    for {
-      _ <- getAndUpdateExportCacheModel(
-        sessionId,
-        model =>
-          exportsCacheService
-            .update(sessionId, model.copy(totalNumberOfItems = Some(formData)))
-      )
-      _ <- customsCacheService.cache[TotalNumberOfItems](cacheId, formId, formData)
-    } yield Unit
+  private def updateCache(sessionId: String, formData: TotalNumberOfItems)(implicit req: JourneyRequest[_]) =
+    getAndUpdateExportCacheModel(
+      sessionId,
+      model =>
+        exportsCacheService
+          .update(sessionId, model.copy(totalNumberOfItems = Some(formData)))
+    )
 }

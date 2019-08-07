@@ -61,10 +61,4 @@ class ErrorHandler @Inject()(override val messagesApi: MessagesApi, errorPage: e
       )
     )
 
-  def globalErrorTemplate()(implicit request: Request[_]): Html =
-    errorPage(
-      pageTitle = Messages("global.error.title"),
-      heading = Messages("global.error.heading"),
-      message = Messages("global.error.message")
-    )
 }

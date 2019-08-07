@@ -17,20 +17,17 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.goodsItemCacheId
 import controllers.util._
 import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.form
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.AdditionalInformationData
-import models.declaration.AdditionalInformationData.formId
 import models.requests.JourneyRequest
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
-import services.CustomsCacheService
-import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.additional_information
 

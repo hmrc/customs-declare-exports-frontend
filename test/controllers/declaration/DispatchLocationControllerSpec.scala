@@ -38,7 +38,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Declaration Type Controller on GET" should {
@@ -85,9 +85,8 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 
         val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.OutsideEU)
         val result = route(app, postRequest(dispatchLocationUri, validForm)).get
-        val header = result.futureValue.header
 
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/type"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/type"))
         theCacheModelUpdated.dispatchLocation must be(Some(DispatchLocation(AllowedDispatchLocations.OutsideEU)))
       }
     }
@@ -98,9 +97,8 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 
         val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.SpecialFiscalTerritory)
         val result = route(app, postRequest(dispatchLocationUri, validForm)).get
-        val header = result.futureValue.header
 
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/not-eligible"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/not-eligible"))
         theCacheModelUpdated.dispatchLocation must be(
           Some(DispatchLocation(AllowedDispatchLocations.SpecialFiscalTerritory))
         )

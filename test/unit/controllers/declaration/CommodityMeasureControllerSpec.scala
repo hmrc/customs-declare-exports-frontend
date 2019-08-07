@@ -45,7 +45,6 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
     val cachedData = aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(item))
 
     withNewCaching(cachedData)
-    withJourneyType(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
   }
 
   "Commodity Measure controller" should {

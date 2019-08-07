@@ -29,7 +29,7 @@ import forms.declaration.{
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
 import uk.gov.hmrc.wco.dec.Commodity
 
-trait ExportsCacheItemBuilder {
+trait ExportsItemBuilder {
 
   private def uuid: String = UUID.randomUUID().toString
 
@@ -97,7 +97,10 @@ trait ExportsCacheItemBuilder {
   def withoutPackageInformation(): CachedItemModifier = _.copy(packageInformation = List.empty)
 
   def withPackageInformation(first: PackageInformation, others: PackageInformation*): CachedItemModifier =
-    _.copy(packageInformation = List(first) ++ others.toList)
+    withPackageInformation(List(first) ++ others.toList)
+
+  def withPackageInformation(informations: List[PackageInformation]): CachedItemModifier =
+    _.copy(packageInformation = informations)
 
   def withPackageInformation(
     typesOfPackages: Option[String] = None,

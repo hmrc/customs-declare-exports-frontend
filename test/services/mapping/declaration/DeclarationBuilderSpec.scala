@@ -15,112 +15,26 @@
  */
 
 package services.mapping.declaration
-import forms.ChoiceSpec.supplementaryChoice
-import forms.declaration.GoodsLocationTestData
-import forms.declaration.GoodsLocationTestData._
-import models.declaration.SupplementaryDeclarationTestData
 import org.scalatest.{Matchers, WordSpec}
-import wco.datamodel.wco.dec_dms._2.Declaration
+
+import scala.collection.JavaConverters._
 
 class DeclarationBuilderSpec extends WordSpec with Matchers {
 
   "DeclarationBuilder" should {
-    "correctly map a Supplementary declaration to the WCO-DEC Declaration instance" in {
+    "correctly build a cancellation request" in {
+
       val declaration =
-        DeclarationBuilder.build(SupplementaryDeclarationTestData.cacheMapAllRecords, supplementaryChoice)
+        DeclarationBuilder.buildCancellationRequest("funcRefId", "decId", "statDesc", "changeReason", "eori")
 
-      declaration.getAgent.getID.getValue should be("9GB1234567ABCDEF")
-      declaration.getAgent.getName should be(null)
-      declaration.getAgent.getAddress should be(null)
-      declaration.getAgent.getFunctionCode.getValue should be("2")
+      declaration.getFunctionalReferenceID.getValue should be("funcRefId")
+      declaration.getID.getValue should be("decId")
+      declaration.getAdditionalInformation.asScala
+        .count(_.getStatementDescription.getValue.equals("statDesc")) should be(1)
+      declaration.getAmendment.asScala.count(_.getChangeReasonCode.getValue.equals("changeReason")) should be(1)
+      declaration.getSubmitter.getID.getValue should be("eori")
 
-      declaration.getBorderTransportMeans.getID.getValue should be("1234567878ui")
-      declaration.getBorderTransportMeans.getIdentificationTypeCode.getValue should be("40")
-      declaration.getBorderTransportMeans.getRegistrationNationalityCode.getValue should be("PT")
-      declaration.getBorderTransportMeans.getModeCode.getValue should be("3")
-      declaration.getBorderTransportMeans.getName should be(null)
-      declaration.getBorderTransportMeans.getTypeCode should be(null)
-
-      declaration.getCurrencyExchange.get(0).getRateNumeric.doubleValue() should be(1212121.12345)
-
-      declaration.getDeclarant.getID.getValue should be("9GB1234567ABCDEF")
-      declaration.getDeclarant.getName should be(null)
-      declaration.getDeclarant.getAddress should be(null)
-
-      declaration.getExitOffice.getID.getValue should be("123qwe12")
-
-      declaration.getExporter.getID.getValue should be("9GB1234567ABCDEF")
-      declaration.getExporter.getName.getValue should be("Full Name")
-      declaration.getExporter.getAddress.getLine.getValue should be("Address Line")
-      declaration.getExporter.getAddress.getCityName.getValue should be("Town or City")
-      declaration.getExporter.getAddress.getCountryCode.getValue should be("PL")
-      declaration.getExporter.getAddress.getPostcodeID.getValue should be("AB12 34CD")
-
-      declaration.getFunctionalReferenceID.getValue should be("123LRN")
-
-      declaration.getFunctionCode.getValue should be("9")
-
-      declaration.getGoodsItemQuantity.getValue.intValue() should be(1)
-
-      declaration.getInvoiceAmount.getValue.doubleValue() should be(1212312.12)
-      declaration.getInvoiceAmount.getCurrencyID should be("GBP")
-
-      declaration.getPresentationOffice should be(null)
-
-      declaration.getSpecificCircumstancesCodeCode should be(null)
-
-      declaration.getSupervisingOffice.getID.getValue should be("12345678")
-
-      declaration.getTotalPackageQuantity.getValue.intValue() should be(123)
-
-      declaration.getTypeCode.getValue should be("EXY")
-
-//      assertGoodsShipment(declaration)
     }
   }
 
-  private def assertGoodsShipment(declaration: Declaration) = {
-    declaration.getGoodsShipment.getTransactionNatureCode.getValue should be("1")
-
-    declaration.getGoodsShipment.getConsignee.getID.getValue should be("9GB1234567ABCDEF")
-    declaration.getGoodsShipment.getConsignee.getName.getValue should be("Full Name")
-    declaration.getGoodsShipment.getConsignee.getAddress.getLine.getValue should be("Address Line")
-    declaration.getGoodsShipment.getConsignee.getAddress.getCityName.getValue should be("Town or City")
-    declaration.getGoodsShipment.getConsignee.getAddress.getPostcodeID.getValue should be("AB12 34CD")
-    declaration.getGoodsShipment.getConsignee.getAddress.getCountryCode.getValue should be("PL")
-
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getID.getValue should be("LOC")
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getName.getValue should be("9GB1234567ABCDEF")
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getLine.getValue should be(addressLine)
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getCityName.getValue should be(city)
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getPostcodeID.getValue should be(postcode)
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getCountryCode.getValue should be(
-      countryCode
-    )
-    declaration.getGoodsShipment.getConsignment.getGoodsLocation.getAddress.getTypeCode.getValue should be("Y")
-
-    declaration.getGoodsShipment.getDestination.getCountryCode.getValue should be("PL")
-
-    declaration.getGoodsShipment.getExportCountry.getID.getValue should be("PL")
-
-    declaration.getGoodsShipment.getUCR.getID should be(null)
-    declaration.getGoodsShipment.getUCR.getTraderAssignedReferenceID.getValue should be(
-      "8GB123456789012-1234567890QWERTYUIO"
-    )
-
-    declaration.getGoodsShipment.getWarehouse.getID.getValue should be("1234567GB")
-    declaration.getGoodsShipment.getWarehouse.getTypeCode.getValue should be("R")
-
-    declaration.getGoodsShipment.getPreviousDocument.size should be(1)
-    declaration.getGoodsShipment.getPreviousDocument.get(0).getID.getValue should be("DocumentReference")
-    declaration.getGoodsShipment.getPreviousDocument.get(0).getCategoryCode.getValue should be("X")
-    declaration.getGoodsShipment.getPreviousDocument.get(0).getLineNumeric.intValue() should be(123)
-    declaration.getGoodsShipment.getPreviousDocument.get(0).getTypeCode.getValue should be("MCR")
-
-    declaration.getGoodsShipment.getAEOMutualRecognitionParty.size should be(1)
-    declaration.getGoodsShipment.getAEOMutualRecognitionParty.get(0).getID.getValue should be("eori1")
-    declaration.getGoodsShipment.getAEOMutualRecognitionParty.get(0).getRoleCode.getValue should be("CS")
-
-    declaration.getGoodsShipment.getConsignment.getTransportEquipment.size() should be(0)
-  }
 }

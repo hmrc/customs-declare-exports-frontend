@@ -16,16 +16,20 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.BorderTransportController
+import controllers.declaration.{routes, BorderTransportController}
 import forms.Choice
 import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.{Maritime, WagonNumber}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
+import unit.mock.ErrorHandlerMocks
 import views.html.declaration.border_transport
 
-class BorderTransportControllerSpec extends ControllerSpec {
+import scala.concurrent.Future
+
+class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   trait SetUp {
     val borderTransportPage = new border_transport(mainTemplate)
@@ -33,16 +37,14 @@ class BorderTransportControllerSpec extends ControllerSpec {
     val controller = new BorderTransportController(
       mockAuthAction,
       mockJourneyAction,
-      mockCustomsCacheService,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
       borderTransportPage
     )(ec)
 
+    setupErrorHandler()
     authorizedUser()
-    withCaching(None)
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
-    withJourneyType(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
   }
 
   "Border transport controller" should {
@@ -51,7 +53,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayForm()(getRequest())
+        val result: Future[Result] = controller.displayForm()(getRequest())
 
         status(result) must be(OK)
       }
@@ -64,7 +66,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
           )
         )
 
-        val result = controller.displayForm()(getRequest())
+        val result: Future[Result] = controller.displayForm()(getRequest())
 
         status(result) must be(OK)
       }
@@ -74,9 +76,9 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
       "form is incorrect" in new SetUp {
 
-        val incorrectForm = Json.toJson(BorderTransport("wrongValue", "wrongValue", None))
+        val incorrectForm: JsValue = Json.toJson(BorderTransport("wrongValue", "wrongValue", None))
 
-        val result = controller.submitForm()(postRequest(incorrectForm))
+        val result: Future[Result] = controller.submitForm()(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -86,12 +88,12 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
       "information provided by user are correct" in new SetUp {
 
-        val correctForm = Json.toJson(BorderTransport(Maritime, WagonNumber, None))
+        val correctForm: JsValue = Json.toJson(BorderTransport(Maritime, WagonNumber, None))
 
-        val result = controller.submitForm()(postRequest(correctForm))
+        val result: Future[Result] = controller.submitForm()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/transport-details"))
+        redirectLocation(result) must be(Some(routes.TransportDetailsController.displayForm().url))
       }
     }
   }

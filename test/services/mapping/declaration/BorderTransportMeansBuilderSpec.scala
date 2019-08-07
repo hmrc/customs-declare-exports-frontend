@@ -15,35 +15,13 @@
  */
 
 package services.mapping.declaration
-import forms.declaration.{BorderTransport, TransportDetails}
 import org.scalatest.{Matchers, WordSpec}
-import play.api.libs.json.Json
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class BorderTransportMeansBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
 
   "BorderTransportMeansBuilder" should {
-    "correctly map to the WCO-DEC BorderTransportMeans instance" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(
-            TransportDetails.formId -> Json.toJson(
-              TransportDetails(Some("Portugal"), true, "40", Some("1234567878ui"), Some("A"))
-            ),
-            BorderTransport.formId -> Json.toJson(BorderTransport("3", "10", Some("123112yu78")))
-          )
-        )
-      val borderTransportMeanst = BorderTransportMeansBuilder.build(cacheMap)
-      borderTransportMeanst.getID.getValue should be("1234567878ui")
-      borderTransportMeanst.getIdentificationTypeCode.getValue should be("40")
-      borderTransportMeanst.getRegistrationNationalityCode.getValue should be("PT")
-      borderTransportMeanst.getModeCode.getValue should be("3")
-      borderTransportMeanst.getName should be(null)
-      borderTransportMeanst.getTypeCode should be(null)
-    }
 
     "build then add" when {
       "no border transport or transport details" in {

@@ -22,13 +22,13 @@ import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, Documen
 import models.declaration.DocumentsProducedData
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import services.cache.{ExportsCacheItemBuilder, ExportsCacheModelBuilder}
+import services.cache.{ExportsCacheModelBuilder, ExportsItemBuilder}
 import services.mapping.governmentagencygoodsitem.{GovernmentAgencyGoodsItemBuilder, GovernmentAgencyGoodsItemData}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
 
 class GovernmentAgencyGoodsItemIntegrationTest
-    extends WordSpec with Matchers with ExportsCacheModelBuilder with ExportsCacheItemBuilder with GuiceOneAppPerSuite
+    extends WordSpec with Matchers with ExportsCacheModelBuilder with ExportsItemBuilder with GuiceOneAppPerSuite
     with GovernmentAgencyGoodsItemData {
 
   private val builder = app.injector.instanceOf[GovernmentAgencyGoodsItemBuilder]

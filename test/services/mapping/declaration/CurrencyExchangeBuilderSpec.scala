@@ -15,10 +15,8 @@
  */
 
 package services.mapping.declaration
-import forms.declaration.{TotalNumberOfItems, TotalNumberOfItemsSpec}
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsCacheModelBuilder
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
@@ -26,15 +24,6 @@ class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCac
   private def builder = new CurrencyExchangeBuilder()
 
   "CurrencyExchangeBuilder" should {
-    "correctly map from CacheModel to the WCO-DEC CurrencyExchange instance" in {
-      implicit val cacheMap: CacheMap =
-        CacheMap(
-          "CacheID",
-          Map(TotalNumberOfItems.formId -> TotalNumberOfItemsSpec.correctTotalNumberOfItemsDecimalValuesJSON)
-        )
-      val currencyExchangeType = CurrencyExchangeBuilder.build(cacheMap)
-      currencyExchangeType.get(0).getRateNumeric.doubleValue() should be(1212121.12345)
-    }
 
     "build then add" when {
       "no Total Number Of Items" in {

@@ -16,17 +16,11 @@
 
 package services.mapping.declaration
 
-import forms.Choice
 import forms.Choice.AllowedChoiceValues
-import forms.declaration.officeOfExit.{OfficeOfExitForms, OfficeOfExitStandard, OfficeOfExitSupplementary}
+import forms.declaration.officeOfExit.{OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-import services.mapping.declaration.ExitOfficeBuilder.{
-  createExitOfficeFromStandardJourney,
-  createExitOfficeFromSupplementaryJourney
-}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.ExitOffice
 import wco.datamodel.wco.declaration_ds.dms._2._
@@ -45,21 +39,6 @@ class ExitOfficeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, 
         .map(createExitOfficeFromSupplementaryJourney)
         .foreach(declaration.setExitOffice)
   }
-}
-
-object ExitOfficeBuilder {
-
-  def build(implicit cacheMap: CacheMap, choice: Choice): Declaration.ExitOffice =
-    choice match {
-      case Choice(AllowedChoiceValues.SupplementaryDec) => buildExitOfficeFromSupplementary(cacheMap)
-      case Choice(AllowedChoiceValues.StandardDec)      => buildExitOfficeFromStandard(cacheMap)
-    }
-
-  private def buildExitOfficeFromStandard(implicit cacheMap: CacheMap): Declaration.ExitOffice =
-    cacheMap
-      .getEntry[OfficeOfExitStandard](OfficeOfExitForms.formId)
-      .map(createExitOfficeFromStandardJourney)
-      .orNull
 
   private def createExitOfficeFromStandardJourney(data: OfficeOfExitStandard): Declaration.ExitOffice = {
     val officeIdentificationIDType = new ExitOfficeIdentificationIDType()
@@ -69,12 +48,6 @@ object ExitOfficeBuilder {
     exitOffice.setID(officeIdentificationIDType)
     exitOffice
   }
-
-  private def buildExitOfficeFromSupplementary(implicit cacheMap: CacheMap): Declaration.ExitOffice =
-    cacheMap
-      .getEntry[OfficeOfExitSupplementary](OfficeOfExitForms.formId)
-      .map(createExitOfficeFromSupplementaryJourney)
-      .orNull
 
   private def createExitOfficeFromSupplementaryJourney(data: OfficeOfExitSupplementary): Declaration.ExitOffice = {
     val officeIdentificationIDType = new ExitOfficeIdentificationIDType()

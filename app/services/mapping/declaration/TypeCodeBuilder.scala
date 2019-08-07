@@ -20,8 +20,6 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import javax.inject.Inject
 import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
-import services.mapping.declaration.TypeCodeBuilder.createTypeCode
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationTypeCodeType
 
@@ -31,27 +29,6 @@ class TypeCodeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, De
     exportsCacheModel.additionalDeclarationType.foreach(additionalDeclarationType => {
       declaration.setTypeCode(createTypeCode(additionalDeclarationType, exportsCacheModel.dispatchLocation))
     })
-
-}
-
-object TypeCodeBuilder {
-
-  def build(codeType: String) = {
-    val typeCodeType = new DeclarationTypeCodeType()
-    typeCodeType.setValue(codeType)
-    typeCodeType
-  }
-
-  def build(implicit cacheMap: CacheMap): DeclarationTypeCodeType = {
-    val dispatchLocation = cacheMap
-      .getEntry[DispatchLocation](DispatchLocation.formId)
-
-    cacheMap
-      .getEntry[AdditionalDeclarationType]("AdditionalDeclarationType")
-      .filter(decType => !decType.additionalDeclarationType.isEmpty || dispatchLocation.isDefined)
-      .map(createTypeCode(_, dispatchLocation))
-      .orNull
-  }
 
   private def createTypeCode(
     decType: AdditionalDeclarationType,
@@ -63,4 +40,13 @@ object TypeCodeBuilder {
     }
     typeCodeType
   }
+}
+object TypeCodeBuilder {
+
+  def build(codeType: String): DeclarationTypeCodeType = {
+    val typeCodeType = new DeclarationTypeCodeType()
+    typeCodeType.setValue(codeType)
+    typeCodeType
+  }
+
 }
