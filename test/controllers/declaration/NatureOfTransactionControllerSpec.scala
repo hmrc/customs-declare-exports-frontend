@@ -84,13 +84,12 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
     "validate request and redirect - correct values" in {
 
       val result = route(app, postRequest(uri, correctNatureOfTransactionJSON)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
 
       theCacheModelUpdated.natureOfTransaction.get mustBe NatureOfTransaction("1")
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/previous-documents"))
+      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/previous-documents"))
     }
   }
 

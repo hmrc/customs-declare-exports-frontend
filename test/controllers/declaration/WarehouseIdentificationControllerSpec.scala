@@ -41,22 +41,20 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
     "validate request and redirect - no answers" in {
 
       val result = route(app, postRequest(uri, emptyWarehouseIdentificationJSON)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/border-transport"))
+      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/border-transport"))
       theCacheModelUpdated.locations.warehouseIdentification must be(Some(emptyWarehouseIdentification))
     }
 
     "validate request and redirect - correct values" in {
 
       val result = route(app, postRequest(uri, correctWarehouseIdentificationJSON)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/border-transport"))
+      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/border-transport"))
       theCacheModelUpdated.locations.warehouseIdentification.get.identificationNumber must be(Some("1234567GB"))
     }
   }

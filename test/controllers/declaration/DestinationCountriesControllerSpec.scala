@@ -22,7 +22,6 @@ import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.DestinationCountriesSpec._
 import forms.declaration.destinationCountries.DestinationCountries
 import helpers.views.declaration.DestinationCountriesMessages
-import models.declaration.Locations
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
@@ -294,10 +293,9 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "user is during supplementary declaration and provide correct values" in new SupplementarySetUp {
 
         val result = route(app, postRequest(uri, correctDestinationCountriesJSON)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/location-of-goods"))
+        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/location-of-goods"))
         theCacheModelUpdated.locations.destinationCountries mustBe Some(
           DestinationCountries(countryOfDispatch = "PL", countriesOfRouting = Seq(), countryOfDestination = "PL")
         )
