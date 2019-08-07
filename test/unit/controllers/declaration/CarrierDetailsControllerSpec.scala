@@ -39,7 +39,6 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
-    withJourneyType(Choice(Choice.AllowedChoiceValues.SupplementaryDec))
   }
 
   "Carrier Details Controller" should {

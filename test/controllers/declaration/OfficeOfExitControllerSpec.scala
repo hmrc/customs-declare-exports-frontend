@@ -19,9 +19,8 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice
 import forms.declaration.OfficeOfExitSupplementarySpec._
-import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
+import forms.declaration.officeOfExit.OfficeOfExit
 import helpers.views.declaration.OfficeOfExitMessages
-import models.declaration.Locations
 import org.mockito.Mockito.reset
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
@@ -38,12 +37,10 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
   }
 
   trait SupplementarySetUp {
-    withCaching[OfficeOfExitSupplementary](None)
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
   }
 
   trait StandardSetUp {
-    withCaching[OfficeOfExitStandard](None)
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.StandardDec)))
   }
 

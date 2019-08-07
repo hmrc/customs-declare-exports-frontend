@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
@@ -26,7 +25,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import play.twirl.api.Html
-import services.CustomsCacheService
 import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -37,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class OfficeOfExitController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   mcc: MessagesControllerComponents,
   officeOfExitSupplementaryPage: office_of_exit_supplementary,
   officeOfExitStandardPage: office_of_exit_standard,
@@ -79,10 +76,8 @@ class OfficeOfExitController @Inject()(
         (formWithErrors: Form[OfficeOfExitSupplementary]) =>
           Future.successful(BadRequest(officeOfExitSupplementaryPage(formWithErrors))),
         form =>
-          for {
-            _ <- updateCache(journeySessionId, form)
-            _ <- customsCacheService.cache[OfficeOfExitSupplementary](cacheId, formId, form)
-          } yield Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm())
+          updateCache(journeySessionId, form)
+            .map(_ => Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
       )
 
   private def saveStandardOffice()(implicit request: JourneyRequest[_]): Future[Result] =
@@ -95,10 +90,8 @@ class OfficeOfExitController @Inject()(
           Future.successful(BadRequest(officeOfExitStandardPage(formWithAdjustedErrors)))
         },
         form =>
-          for {
-            _ <- updateCache(journeySessionId, form)
-            _ <- customsCacheService.cache[OfficeOfExitStandard](cacheId, formId, form)
-          } yield Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm())
+          updateCache(journeySessionId, form)
+            .map(_ => Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
       )
 
   private def updateCache(sessionId: String, formData: OfficeOfExitSupplementary): Future[Option[ExportsCacheModel]] =

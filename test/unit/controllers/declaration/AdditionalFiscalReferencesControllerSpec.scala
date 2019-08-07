@@ -46,7 +46,6 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
 
     setupErrorHandler()
     authorizedUser()
-    withCaching(None)
     withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
   }
 

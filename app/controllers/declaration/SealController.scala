@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.Seal
@@ -28,7 +27,6 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.CustomsCacheService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.seal
@@ -106,10 +104,13 @@ class SealController @Inject()(
       Redirect(routes.SealController.displayForm())
     }
 
-  private def updateCache(sessionId: String, formData: Seq[Seal])(implicit req: JourneyRequest[_]): Future[Unit] =
-    getAndUpdateExportCacheModel(sessionId, model => {
-      exportsCacheService.update(sessionId, model.copy(seals = formData))
-    }).map(_ => ())
+  private def updateCache(sessionId: String, formData: Seq[Seal])(implicit req: JourneyRequest[_]) =
+    getAndUpdateExportCacheModel(
+      sessionId,
+      model =>
+        exportsCacheService
+          .update(sessionId, model.copy(seals = formData))
+    )
 
   private def addSeal(boundForm: Form[Seal], elementLimit: Int, seals: Seq[Seal])(
     implicit request: JourneyRequest[_]

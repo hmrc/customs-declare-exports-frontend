@@ -16,20 +16,21 @@
 
 package controllers.declaration
 
-import base.CustomExportsBaseSpec
+import base.{CustomExportsBaseSpec, TestHelper}
+import forms.Choice.AllowedChoiceValues
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.ConsignmentReferencesSpec.correctConsignmentReferencesJSON
-import forms.declaration.{ConsignmentReferences, ConsignmentReferencesSpec}
 import models.declaration.SupplementaryDeclarationTestData
+import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito._
 import org.mockito.verification.VerificationMode
 import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.http.cache.client.CacheMap
+import services.cache.ExportsCacheModel
+import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class SummaryControllerSpec extends CustomExportsBaseSpec {
 
@@ -37,8 +38,8 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
   val emptyForm: JsValue = JsObject(Map("" -> JsString("")))
   val onlyOnce: VerificationMode = times(1)
   val onlyTwice: VerificationMode = times(2)
-  val minimumValidCacheData =
-    CacheMap(eoriForCache, Map(ConsignmentReferences.id -> correctConsignmentReferencesJSON))
+
+  implicit val request = TestHelper.journeyRequest(FakeRequest("", ""), AllowedChoiceValues.SupplementaryDec)
 
   override def beforeEach() {
     super.beforeEach()
@@ -46,16 +47,11 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
     successfulCustomsDeclareExportsResponse()
     withNewCaching(SupplementaryDeclarationTestData.allRecords)
 
-    //TODO: Below, these three mocks will have to be deleted as part of the mapping story
-    when(mockCustomsCacheService.fetch(anyString())(any(), any()))
-      .thenReturn(Future.successful(Some(minimumValidCacheData)))
-    when(mockCustomsCacheService.remove(anyString())(any(), any()))
-      .thenReturn(Future.successful(HttpResponse(OK)))
   }
 
   override def afterEach() {
     super.afterEach()
-    reset(mockCustomsCacheService, mockExportsCacheService, mockNrsService, mockCustomsDeclareExportsConnector)
+    reset(mockExportsCacheService, mockNrsService, mockCustomsDeclareExportsConnector, mockSubmissionService)
   }
 
   "Summary Page Controller on display" when {
@@ -104,8 +100,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
       }
 
       "display content for Parties module" in {
-        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
-          .thenReturn(Future.successful(Some(SupplementaryDeclarationTestData.cacheMapAllRecords)))
+
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri)).get)
 
         resultAsString must include(messages("supplementary.summary.parties.header"))
@@ -161,7 +156,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
       "get the whole supplementary declaration data from cache" in {
         route(app, getRequest(summaryPageUri)).get.futureValue
-        verify(mockCustomsCacheService, never()).fetch(any())(any(), any())
+
         verify(mockExportsCacheService, onlyTwice).get(anyString)
       }
     }
@@ -195,21 +190,59 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
     "everything is correct" should {
       "get the whole supplementary declaration data from cache" in {
+        when(
+          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+            any[JourneyRequest[_]],
+            any[HeaderCarrier],
+            any[ExecutionContext]
+          )
+        ).thenReturn(Future.successful(Some("123LRN")))
+
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         verify(mockExportsCacheService, onlyTwice).get(any())
       }
 
       "remove supplementary declaration data from cache" in {
+
+        when(
+          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+            any[JourneyRequest[_]],
+            any[HeaderCarrier],
+            any[ExecutionContext]
+          )
+        ).thenReturn(Future.successful(Some("123LRN")))
+
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
-        verify(mockCustomsCacheService, onlyOnce).remove(any())(any(), any())
+
+        verify(mockSubmissionService, onlyOnce).submit(any[String], any[ExportsCacheModel])(
+          any[JourneyRequest[_]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
       }
 
       "return 303 code" in {
+        when(
+          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+            any[JourneyRequest[_]],
+            any[HeaderCarrier],
+            any[ExecutionContext]
+          )
+        ).thenReturn(Future.successful(Some("123LRN")))
+
         val result = route(app, postRequest(summaryPageUri, emptyForm)).get
         status(result) must be(SEE_OTHER)
       }
 
       "redirect to confirmation page" in {
+        when(
+          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+            any[JourneyRequest[_]],
+            any[HeaderCarrier],
+            any[ExecutionContext]
+          )
+        ).thenReturn(Future.successful(Some("123LRN")))
+
         val result = route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         val header = result.header
 
@@ -217,10 +250,14 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
       }
 
       "add flash scope with lrn " in {
-        val cacheData = Map(ConsignmentReferences.id -> ConsignmentReferencesSpec.correctConsignmentReferencesJSON)
-        when(mockCustomsCacheService.fetch(anyString())(any(), any()))
-          .thenReturn(Future.successful(Some(CacheMap(eoriForCache, cacheData))))
-
+        when(
+          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+            any[JourneyRequest[_]],
+            any[HeaderCarrier],
+            any[ExecutionContext]
+          )
+        ).thenReturn(Future.successful(Some("123LRN")))
+        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
         val result = route(app, postRequest(summaryPageUri, emptyForm)).get
 
         val f = flash(result)
@@ -231,8 +268,13 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
     "got error from Customs Declarations" should {
       "display error page" in {
-        when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
+        when(
+          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+            any[JourneyRequest[_]],
+            any[HeaderCarrier],
+            any[ExecutionContext]
+          )
+        ).thenReturn(Future.successful(None))
 
         val result = route(app, postRequest(summaryPageUri, emptyForm)).get
         val resultAsString = contentAsString(result)
@@ -243,12 +285,17 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
       }
 
       "not remove data from cache" in {
-        when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
+        when(
+          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+            any[JourneyRequest[_]],
+            any[HeaderCarrier],
+            any[ExecutionContext]
+          )
+        ).thenReturn(Future.successful(None))
 
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
 
-        verify(mockCustomsCacheService, never()).remove(eoriForCache)
+        verify(mockExportsCacheService, never()).remove(any[String])
       }
     }
   }

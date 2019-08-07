@@ -36,19 +36,17 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
   override def afterEach() {
     super.afterEach()
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   trait SupplementarySetUp {
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[DestinationCountries](None)
   }
 
   trait StandardSetUp {
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(StandardDec)))
-    withCaching[DestinationCountries](None)
   }
 
   "Destination Countries Controller on GET" should {

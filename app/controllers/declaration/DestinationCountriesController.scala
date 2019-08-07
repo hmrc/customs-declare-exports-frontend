@@ -17,10 +17,9 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
-import forms.declaration.destinationCountries.DestinationCountries.{formId, Standard, Supplementary}
+import forms.declaration.destinationCountries.DestinationCountries.{Standard, Supplementary}
 import forms.declaration.destinationCountries._
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -28,7 +27,6 @@ import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.CustomsCacheService
 import services.cache.{ExportsCacheModel, ExportsCacheService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -43,7 +41,6 @@ import scala.util.Try
 class DestinationCountriesController @Inject()(
   authenticate: AuthAction,
   journeyType: JourneyAction,
-  customsCacheService: CustomsCacheService,
   errorHandler: ErrorHandler,
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
@@ -91,10 +88,8 @@ class DestinationCountriesController @Inject()(
         (formWithErrors: Form[DestinationCountries]) =>
           Future.successful(BadRequest(destinationCountriesSupplementaryPage(formWithErrors))),
         formData =>
-          for {
-            _ <- updateCache(journeySessionId, formData)
-            _ <- customsCacheService.cache[DestinationCountries](cacheId, formId, formData)
-          } yield Redirect(controllers.declaration.routes.LocationController.displayForm())
+          updateCache(journeySessionId, formData)
+            .map(_ => Redirect(controllers.declaration.routes.LocationController.displayForm()))
       )
 
   private def handleSubmitStandard()(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
@@ -125,11 +120,7 @@ class DestinationCountriesController @Inject()(
 
     DestinationCountriesValidator.validateOnAddition(countriesStandardUpdated) match {
       case Valid =>
-        for {
-          _ <- updateCache(journeySessionId, countriesStandardUpdated)
-          _ <- customsCacheService.cache[DestinationCountries](cacheId, formId, countriesStandardUpdated)
-          result <- refreshPage(countriesStandardInput)
-        } yield result
+        updateCache(journeySessionId, countriesStandardUpdated).flatMap(_ => refreshPage(countriesStandardInput))
       case Invalid(errors) =>
         Future.successful(
           BadRequest(
@@ -153,10 +144,8 @@ class DestinationCountriesController @Inject()(
 
     DestinationCountriesValidator.validateOnSaveAndContinue(countriesStandardUpdated) match {
       case Valid =>
-        for {
-          _ <- updateCache(journeySessionId, countriesStandardUpdated)
-          _ <- customsCacheService.cache[DestinationCountries](cacheId, formId, countriesStandardUpdated)
-        } yield Redirect(controllers.declaration.routes.LocationController.displayForm())
+        updateCache(journeySessionId, countriesStandardUpdated)
+          .map(_ => Redirect(controllers.declaration.routes.LocationController.displayForm()))
       case Invalid(errors) =>
         Future.successful(
           BadRequest(
@@ -192,11 +181,8 @@ class DestinationCountriesController @Inject()(
 
     val updatedCache = cachedData.copy(countriesOfRouting = updatedCountries)
 
-    for {
-      _ <- updateCache(journeySessionId, updatedCache)
-      _ <- customsCacheService.cache[DestinationCountries](cacheId, formId, updatedCache)
-      result <- refreshPage(Standard.form.bindFromRequest().value.getOrElse(DestinationCountries.empty()))
-    } yield result
+    updateCache(journeySessionId, updatedCache)
+      .flatMap(_ => refreshPage(Standard.form.bindFromRequest().value.getOrElse(DestinationCountries.empty())))
   }
 
   private def isKeysFormatCorrect(keys: Seq[String]): Boolean = keys.length == 1 && Try(keys.head.toInt).isSuccess

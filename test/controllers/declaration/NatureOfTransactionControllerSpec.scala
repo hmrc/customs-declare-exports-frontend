@@ -32,7 +32,6 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
     super.beforeEach()
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[NatureOfTransaction](None)
   }
 
   override def afterEach() {

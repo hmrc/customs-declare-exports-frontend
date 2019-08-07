@@ -47,7 +47,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with Generators w
   }
 
   override def afterEach() {
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   private def removeItemUri(id: String) = uriWithContextPath(s"/declaration/export-items/$id/remove")
@@ -61,7 +61,6 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with Generators w
         "user does not have EORI" in {
           userWithoutEori()
           withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-          withCaching[Seq[GovernmentAgencyGoodsItem]](None)
 
           val result = route(app, getRequest(viewItemsUri)).value
           intercept[InsufficientEnrolments](status(result))

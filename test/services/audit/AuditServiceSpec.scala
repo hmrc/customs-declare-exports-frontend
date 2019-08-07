@@ -17,7 +17,7 @@
 package services.audit
 
 import base.CustomExportsBaseSpec
-import models.declaration.SupplementaryDeclarationTestData.cacheMapAllRecords
+import models.declaration.SupplementaryDeclarationTestData.allRecordsXmlMarshallingTest
 import org.mockito.ArgumentMatchers
 import org.scalatest.OptionValues
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
@@ -46,7 +46,7 @@ class AuditServiceSpec extends AuditTestSupport with OptionValues {
     }
 
     "audit full payload" in {
-      auditService.auditAllPagesUserInput(Json.toJson(cacheMapAllRecords.data).as[JsObject])
+      auditService.auditAllPagesUserInput(Json.toJson(allRecordsXmlMarshallingTest).as[JsObject])
       verify(mockAuditConnector).sendExtendedEvent(ArgumentMatchers.refEq(extendedEvent, "eventId", "generatedAt"))(
         any(),
         any()
@@ -54,7 +54,7 @@ class AuditServiceSpec extends AuditTestSupport with OptionValues {
 
     }
     "audit full payload success" in {
-      val res = auditService.auditAllPagesUserInput(Json.toJson(cacheMapAllRecords.data).as[JsObject]).futureValue
+      val res = auditService.auditAllPagesUserInput(Json.toJson(allRecordsXmlMarshallingTest).as[JsObject]).futureValue
       res mustBe AuditResult.Success
 
     }
@@ -112,7 +112,7 @@ trait AuditTestSupport extends CustomExportsBaseSpec {
     detail = Json
       .toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails())
       .as[JsObject]
-      .deepMerge(Json.toJson(cacheMapAllRecords.data).as[JsObject])
+      .deepMerge(Json.toJson(allRecordsXmlMarshallingTest).as[JsObject])
   )
 
   val auditFailure = Failure("Event sending failed")

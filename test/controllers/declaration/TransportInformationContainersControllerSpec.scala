@@ -40,7 +40,6 @@ class TransportInformationContainersControllerSpec
   override def beforeEach() {
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[TransportInformationContainerData](None, id)
   }
 
   override def afterEach(): Unit =
@@ -91,7 +90,6 @@ class TransportInformationContainersControllerSpec
       "that does not exist in cache" in {
 
         val cachedData = TransportInformationContainerData(Seq(TransportInformationContainer("M1l3s")))
-        withCaching[TransportInformationContainerData](Some(cachedData), id)
 
         val body = Seq(("id", "x4rlz"), addActionURLEncoded)
 

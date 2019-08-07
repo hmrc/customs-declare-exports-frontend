@@ -140,8 +140,6 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
       "user added correct item" in new SetUp {
 
-        withCaching(None)
-
         val body = Seq(("id", "value"), (Add.toString, ""))
 
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(body: _*))

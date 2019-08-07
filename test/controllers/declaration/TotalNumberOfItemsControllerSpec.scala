@@ -31,13 +31,12 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
   override def beforeEach {
     super.beforeEach()
     authorizedUser()
-    withCaching[TotalNumberOfItems](None)
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
   }
 
   override def afterEach() {
     super.afterEach()
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Total Number Of Items Controller on GET" should {

@@ -16,9 +16,8 @@
 
 package services.mapping.goodsshipment
 
-import forms.declaration.{NatureOfTransaction, NatureOfTransactionSpec}
+import forms.declaration.NatureOfTransaction
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 

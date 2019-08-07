@@ -19,7 +19,6 @@ package services.mapping.goodsshipment
 import forms.declaration.DestinationCountriesSpec
 import forms.declaration.destinationCountries.DestinationCountries
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class ExportCountryBuilderSpec extends WordSpec with Matchers {

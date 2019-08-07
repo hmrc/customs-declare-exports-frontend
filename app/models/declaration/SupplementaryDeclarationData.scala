@@ -27,16 +27,7 @@ case class SupplementaryDeclarationData(
   locations: Option[Locations] = None,
   transportInformationContainerData: Option[TransportInformationContainerData] = None,
   items: Option[Items] = None
-) extends SummaryContainer {
-
-  override def isEmpty: Boolean =
-    declarationType.isEmpty &&
-      consignmentReferences.isEmpty &&
-      parties.isEmpty &&
-      locations.isEmpty &&
-      transportInformationContainerData.isEmpty &&
-      items.isEmpty
-}
+)
 
 object SupplementaryDeclarationData {
 

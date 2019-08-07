@@ -18,12 +18,9 @@ package base
 
 import controllers.util.{Add, Remove, SaveAndContinue}
 import forms.Choice
-import forms.Choice.AllowedChoiceValues
 import models.requests.{AuthenticatedRequest, JourneyRequest}
-import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Request
 import play.api.test.FakeRequest
-import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.util.Random
 
@@ -37,9 +34,6 @@ object TestHelper {
   def getDataSeq[A](size: Int, elementBuilder: () => A): Seq[A] = (1 to size).map(_ => elementBuilder())
   def getDataSeq[A](size: Int, elementBuilder: Int => A, builderParam: Int): Seq[A] =
     (1 to size).map(_ => elementBuilder(builderParam))
-
-  def getCacheMap[A](data: A, formId: String)(implicit writes: Writes[A]): CacheMap =
-    CacheMap(formId, Map(formId -> Json.toJson(data)))
 
   val addActionUrlEncoded = (Add.toString, "")
   val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")

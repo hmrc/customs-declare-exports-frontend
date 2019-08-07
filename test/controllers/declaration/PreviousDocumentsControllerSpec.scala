@@ -37,12 +37,11 @@ class PreviousDocumentsControllerSpec
     super.beforeEach()
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[PreviousDocumentsData](None)
   }
 
   override def afterEach() {
     super.afterEach()
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Previous Documents Controller on GET" should {

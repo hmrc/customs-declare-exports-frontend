@@ -71,7 +71,9 @@ class CancelDeclarationController @Inject()(
               Future.successful(Ok(cancelConfirmationPage()))
 
             case CancellationRequestExists =>
+              // $COVERAGE-OFF$Trivial
               logger.error(s"Cancellation for declaration with mrn $mrn exists")
+              // $COVERAGE-ON
               Future.successful(
                 BadRequest(
                   errorHandler.standardErrorTemplate(
@@ -83,7 +85,9 @@ class CancelDeclarationController @Inject()(
               )
 
             case MissingDeclaration =>
+              // $COVERAGE-OFF$Trivial
               logger.error(s"Declaration with mrn $mrn doesn't exists")
+              // $COVERAGE-ON
               Future.successful(
                 BadRequest(
                   errorHandler.standardErrorTemplate(

@@ -33,12 +33,11 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
     super.beforeEach()
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[GoodsLocation](None)
   }
 
   override def afterEach() {
     super.afterEach()
-    reset(mockCustomsCacheService, mockExportsCacheService)
+    reset(mockExportsCacheService)
   }
 
   "Location Controller on GET" should {

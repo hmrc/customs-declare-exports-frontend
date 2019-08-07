@@ -30,7 +30,6 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
   override def beforeEach() {
     authorizedUser()
     withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-    withCaching[WarehouseIdentification](None)
   }
 
   override def afterEach() {

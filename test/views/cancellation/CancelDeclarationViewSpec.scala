@@ -34,6 +34,31 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
   private def createView(form: Form[CancelDeclaration] = form): Html =
     cancelDeclarationPage(form)(fakeRequest, messages)
 
+  def testView(
+    functionalReferenceId: String,
+    declarationId: String,
+    statementDescription: String,
+    cancellationReason: String,
+    elementId: String,
+    errorMsg: String,
+    hrefPageLink: String,
+    idOfErrorElement: String,
+    expectedMessage: String
+  ): Unit = {
+
+    val view = createView(
+      CancelDeclaration.form
+        .fillAndValidate(
+          CancelDeclaration(functionalReferenceId, declarationId, statementDescription, cancellationReason)
+        )
+    )
+
+    checkErrorsSummary(view)
+    checkErrorLink(view, elementId, errorMsg, hrefPageLink)
+
+    getElementById(view, idOfErrorElement).text() must be(expectedMessage)
+  }
+
   "Cancel Declaration View" should {
 
     "have proper messages for labels" in {
@@ -248,6 +273,21 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
         )
       }
 
+      "is empty" in {
+
+        testView(
+          "1SA123456789012-1FSA1234567",
+          "",
+          "Some Description",
+          NoLongerRequired.toString,
+          "declarationId-error",
+          "cancellation.declarationId.empty",
+          "#declarationId",
+          "error-message-declarationId-input",
+          messages("cancellation.declarationId.empty")
+        )
+      }
+
       "is entered but is in the wrong format" in {
 
         val view = createView(
@@ -275,29 +315,33 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
 
       "is entered but is too long" in {
 
-        val view = createView(
-          CancelDeclaration.form
-            .fillAndValidate(
-              CancelDeclaration(
-                "1SA123456789012-1FSA1234567",
-                "123456789",
-                createRandomAlphanumericString(600),
-                NoLongerRequired.toString
-              )
-            )
-        )
-
-        checkErrorsSummary(view)
-        checkErrorLink(
-          view,
+        testView(
+          "1SA123456789012-1FSA1234567",
+          "123456789",
+          createRandomAlphanumericString(600),
+          NoLongerRequired.toString,
           "statementDescription-error",
           "cancellation.statementDescription.tooLong",
-          "#statementDescription"
-        )
-
-        getElementById(view, "error-message-statementDescription-input").text() must be(
+          "#statementDescription",
+          "error-message-statementDescription-input",
           messages("cancellation.statementDescription.tooLong")
         )
+      }
+
+      "is empty " in {
+
+        testView(
+          "1SA123456789012-1FSA1234567",
+          "123456789",
+          "",
+          NoLongerRequired.toString,
+          "statementDescription-error",
+          "cancellation.statementDescription.empty",
+          "#statementDescription",
+          "error-message-statementDescription-input",
+          messages("cancellation.statementDescription.empty")
+        )
+
       }
 
       "is entered but is in the wrong format" in {
@@ -346,5 +390,6 @@ class CancelDeclarationViewSpec extends ViewSpec with CommonMessages {
         )
       }
     }
+
   }
 }
