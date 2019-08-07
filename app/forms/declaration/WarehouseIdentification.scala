@@ -57,7 +57,15 @@ object WarehouseIdentification {
           )
       )
     )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
+    .verifying("supplementary.warehouse.identificationType.error", typeSelectedWhenNumberIsPopulated)
     .verifying("supplementary.warehouse.identificationNumber.empty", idNumberIsPopulatedWhenIDTypeIsSelected)
+
+  private def typeSelectedWhenNumberIsPopulated: WarehouseIdentification => Boolean =
+    w =>
+      w.identificationNumber match {
+        case Some(_) => w.identificationType.exists(_.nonEmpty)
+        case None    => true
+      }
 
   private def idNumberIsPopulatedWhenIDTypeIsSelected: WarehouseIdentification => Boolean =
     w =>

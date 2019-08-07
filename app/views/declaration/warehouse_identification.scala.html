@@ -54,7 +54,7 @@
                 hint = None,
                 inputs = WarehouseIdentification.IdentifierType.all.map(v =>
                     RadioOption(s"identification_type_${v.toLowerCase}", v, messages(s"supplementary.warehouse.identificationType.${v.toLowerCase}"))
-                )
+                ) :+ RadioOption("identification_type_none", "", "supplementary.warehouse.identificationType.none")
             )
 
             @components.fields.field_text(

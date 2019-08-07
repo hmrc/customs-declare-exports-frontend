@@ -34,7 +34,7 @@ class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationM
       form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationTypeError)
     }
 
-    "validate identification type and number" in {
+    "validate identification type and number missing" in {
 
       val incorrectWarehouseIdentification: JsValue =
         JsObject(
@@ -45,6 +45,19 @@ class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationM
         )
 
       form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationNumberEmpty)
+    }
+
+    "validate identification number and type missing" in {
+
+      val incorrectWarehouseIdentification: JsValue =
+        JsObject(
+          Map(
+            "identificationType" -> JsString(""),
+            "identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(2))
+          )
+        )
+
+      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationTypeError)
     }
 
     "validate identification number - more than 35 characters" in {
@@ -68,6 +81,46 @@ class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationM
         JsObject(Map("inlandModeOfTransportCode" -> JsString("Incorrect more")))
 
       form().bind(incorrectTransportCode).errors.map(_.message) must contain(inlandTransportModeError)
+    }
+
+    "bind complete data" in {
+
+      val formData: JsValue =
+        JsObject(
+          Map(
+            "supervisingCustomsOffice" -> JsString("12345678"),
+            "identificationType" -> JsString("Z"),
+            "identificationNumber" -> JsString("ID24"),
+            "inlandModeOfTransportCode" -> JsString(Rail)
+          )
+        )
+
+      val submitted= form().bind(formData).value.get
+
+      submitted.supervisingCustomsOffice must be (Some("12345678"))
+      submitted.identificationType must be (Some("Z"))
+      submitted.identificationNumber must be (Some("ID24"))
+      submitted.inlandModeOfTransportCode must be (Some(Rail))
+    }
+
+    "bind optional data" in {
+
+      val formData: JsValue =
+        JsObject(
+          Map(
+            "supervisingCustomsOffice" -> JsString("12345678"),
+            "identificationType" -> JsString(""),
+            "identificationNumber" -> JsString(""),
+            "inlandModeOfTransportCode" -> JsString(Rail)
+          )
+        )
+
+      val submitted= form().bind(formData).value.get
+
+      submitted.supervisingCustomsOffice must be (Some("12345678"))
+      submitted.identificationType must be (None)
+      submitted.identificationNumber must be (None)
+      submitted.inlandModeOfTransportCode must be (Some(Rail))
     }
   }
 }

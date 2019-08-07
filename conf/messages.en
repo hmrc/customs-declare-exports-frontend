@@ -373,6 +373,7 @@ supplementary.warehouse.identificationType.t = Public customs warehouse type III
 supplementary.warehouse.identificationType.u = Private customs warehouse
 supplementary.warehouse.identificationType.y = Non-customs warehouse
 supplementary.warehouse.identificationType.z = Free zone
+supplementary.warehouse.identificationType.none = None
 supplementary.warehouse.identificationNumber = 2/7 Enter the warehouse identification number
 supplementary.warehouse.identificationNumber.error = Incorrect Identification Number
 supplementary.warehouse.identificationNumber.empty = Enter the warehouse identification number
