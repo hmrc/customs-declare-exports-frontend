@@ -219,6 +219,7 @@ class RepresentativeDetailsControllerSpec
       val representativeDetails = Parties(representativeDetails = Some(correctRepresentativeDetails))
 
       val model = aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+      withNewCaching(model)
 
       route(app, postRequest(uri, correctRepresentativeDetailsJSON, sessionId = model.sessionId)).get.futureValue
 

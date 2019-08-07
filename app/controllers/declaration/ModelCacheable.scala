@@ -35,6 +35,12 @@ trait ModelCacheable {
       case _           => Future.successful(None)
     }
 
+  protected def updateExportCacheModelSyncDirect(
+    update: ExportsCacheModel => ExportsCacheModel
+  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] = {
+    exportsCacheService.update(request.journeySessionId, update(request.cacheModel))
+  }
+
   protected def updateExportCacheModelSync(
     update: ExportsCacheModel => Option[ExportsCacheModel]
   )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] = {

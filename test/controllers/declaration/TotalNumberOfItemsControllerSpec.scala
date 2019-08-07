@@ -21,17 +21,18 @@ import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.TotalNumberOfItems
 import helpers.views.declaration.TotalNumberOfItemsMessages
 import org.mockito.Mockito.reset
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import play.api.test.Helpers._
 
 class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalNumberOfItemsMessages {
 
   private val uri = uriWithContextPath("/declaration/total-numbers-of-items")
 
+  val exampleModel = aCacheModel(withChoice(SupplementaryDec))
+
   override def beforeEach {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
   }
 
   override def afterEach() {
@@ -42,18 +43,18 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
   "Total Number Of Items Controller on GET" should {
 
     "return 200 code" in {
+      withNewCaching(exampleModel)
 
-      val Some(result) = route(app, getRequest(uri))
+      val Some(result) = route(app, getRequest(uri, sessionId = exampleModel.sessionId))
 
       status(result) must be(OK)
     }
 
     "read item from cache and display it" in {
-      withNewCaching(
-        aCacheModel(withChoice(SupplementaryDec), withTotalNumberOfItems(Some("7987.1"), Some("1.33"), " 631.1"))
-      )
+      val model = aCacheModel(withChoice(SupplementaryDec), withTotalNumberOfItems(Some("7987.1"), Some("1.33"), " 631.1"))
+      withNewCaching(model)
 
-      val Some(result) = route(app, getRequest(uri))
+      val Some(result) = route(app, getRequest(uri, sessionId = model.sessionId))
       val page = contentAsString(result)
 
       status(result) must be(OK)
@@ -66,16 +67,13 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
   "Total Number Of Items Controller on POST" should {
 
     "validate request and redirect - correct values for all fields (integers)" in {
-
-      val allFields: JsValue =
-        JsObject(
-          Map(
-            "totalAmountInvoiced" -> JsString("456"),
-            "exchangeRate" -> JsString("789"),
-            "totalPackage" -> JsString("123")
-          )
-        )
-      val Some(result) = route(app, postRequest(uri, allFields))
+      withNewCaching(exampleModel)
+      val allFields: JsValue = Json.obj(
+        "totalAmountInvoiced" -> "456",
+        "exchangeRate" -> "789",
+        "totalPackage" -> "123"
+      )
+      val Some(result) = route(app, postRequest(uri, allFields, sessionId = exampleModel.sessionId))
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/customs-declare-exports/declaration/nature-of-transaction"))
@@ -87,16 +85,14 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
     }
 
     "validate request and redirect - correct values for all fields (decimals)" in {
+      withNewCaching(exampleModel)
+      val allFields: JsValue = Json.obj(
+        "totalAmountInvoiced" -> "456.78",
+        "exchangeRate" -> "789.789",
+        "totalPackage" -> "123"
+      )
 
-      val allFields: JsValue =
-        JsObject(
-          Map(
-            "totalAmountInvoiced" -> JsString("456.78"),
-            "exchangeRate" -> JsString("789.789"),
-            "totalPackage" -> JsString("123")
-          )
-        )
-      val Some(result) = route(app, postRequest(uri, allFields))
+      val Some(result) = route(app, postRequest(uri, allFields, sessionId = exampleModel.sessionId))
 
       status(result) must be(SEE_OTHER)
 
@@ -109,17 +105,14 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
     }
 
     "validate request and redirect - all inputs alphabetic" in {
-
-      val allFields: JsValue =
-        JsObject(
-          Map(
-            "itemsQuantity" -> JsString("test"),
-            "totalAmountInvoiced" -> JsString("test"),
-            "exchangeRate" -> JsString("test"),
-            "totalPackage" -> JsString("test")
-          )
-        )
-      val Some(result) = route(app, postRequest(uri, allFields))
+      withNewCaching(exampleModel)
+      val allFields: JsValue = Json.obj(
+        "itemsQuantity" -> "test",
+        "totalAmountInvoiced" -> "test",
+        "exchangeRate" -> "test",
+        "totalPackage" -> "test"
+      )
+      val Some(result) = route(app, postRequest(uri, allFields, sessionId = exampleModel.sessionId))
 
       status(result) must be(BAD_REQUEST)
 
@@ -130,16 +123,14 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
     }
 
     "validate request and redirect - all inputs too long" in {
+      withNewCaching(exampleModel)
+      val allFields: JsValue = Json.obj(
+        "totalAmountInvoiced" -> "12312312312312123",
+        "exchangeRate" -> "1212121231123123",
+        "totalPackage" -> "123456789"
+      )
 
-      val allFields: JsValue =
-        JsObject(
-          Map(
-            "totalAmountInvoiced" -> JsString("12312312312312123"),
-            "exchangeRate" -> JsString("1212121231123123"),
-            "totalPackage" -> JsString("123456789")
-          )
-        )
-      val Some(result) = route(app, postRequest(uri, allFields))
+      val Some(result) = route(app, postRequest(uri, allFields, sessionId = exampleModel.sessionId))
 
       status(result) must be(BAD_REQUEST)
 
@@ -150,16 +141,14 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
     }
 
     "validate request and redirect - Total Amount Invoiced / Exchange Rate too long decimal format" in {
-
-      val allFields: JsValue = JsObject(
-        Map(
-          "totalAmountInvoiced" -> JsString("12312312312312.122"),
-          "exchangeRate" -> JsString("1212121.123456"),
-          "totalPackage" -> JsString("123")
-        )
+      withNewCaching(exampleModel)
+      val allFields: JsValue = Json.obj(
+        "totalAmountInvoiced" -> "12312312312312.122",
+        "exchangeRate" -> "1212121.123456",
+        "totalPackage" -> "123"
       )
 
-      val Some(result) = route(app, postRequest(uri, allFields))
+      val Some(result) = route(app, postRequest(uri, allFields, sessionId = exampleModel.sessionId))
       status(result) must be(BAD_REQUEST)
 
       contentAsString(result) must include(messages(totalAmountInvoicedError))
@@ -168,16 +157,14 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
     }
 
     "validate request and redirect - Total Amount Invoiced / Exchange Rate too long base integer" in {
-
-      val allFields: JsValue = JsObject(
-        Map(
-          "totalAmountInvoiced" -> JsString("12312312312312123.12"),
-          "exchangeRate" -> JsString("1212121231.12345"),
-          "totalPackage" -> JsString("123")
-        )
+      withNewCaching(exampleModel)
+      val allFields: JsValue = Json.obj(
+        "totalAmountInvoiced" -> JsString("12312312312312123.12"),
+        "exchangeRate" -> JsString("1212121231.12345"),
+        "totalPackage" -> JsString("123")
       )
 
-      val Some(result) = route(app, postRequest(uri, allFields))
+      val Some(result) = route(app, postRequest(uri, allFields, sessionId = exampleModel.sessionId))
       status(result) must be(BAD_REQUEST)
 
       contentAsString(result) must include(messages(totalAmountInvoicedError))

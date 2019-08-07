@@ -53,7 +53,7 @@ class RepresentativeDetailsController @Inject()(
         (formWithErrors: Form[RepresentativeDetails]) =>
           Future.successful(BadRequest(representativeDetailsPage(RepresentativeDetails.adjustErrors(formWithErrors)))),
         validRepresentativeDetails =>
-          updateCache(journeySessionId, validRepresentativeDetails).map(_ => Redirect(nextPage(request)))
+          updateCache(validRepresentativeDetails).map(_ => Redirect(nextPage(request)))
       )
   }
 
@@ -65,9 +65,9 @@ class RepresentativeDetailsController @Inject()(
         controllers.declaration.routes.CarrierDetailsController.displayForm()
     }
 
-  private def updateCache(sessionId: String, formData: RepresentativeDetails): Future[Option[ExportsCacheModel]] =
-    getAndUpdateExportCacheModel(sessionId, model => {
+  private def updateCache(formData: RepresentativeDetails)(implicit request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] =
+    updateExportCacheModelSyncDirect { model =>
       val updatedParties = model.parties.copy(representativeDetails = Some(formData))
-      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
-    })
+      model.copy(parties = updatedParties)
+    }
 }

@@ -68,8 +68,6 @@ class DispatchLocationController @Inject()(
 
   private def updateCache(sessionId: String, formData: DispatchLocation)
                          (implicit request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] =
-    updateExportCacheModel(model =>
-      exportsCacheService.update(sessionId, model.copy(dispatchLocation = Some(formData)))
-    )
+    updateExportCacheModelSyncDirect(model => model.copy(dispatchLocation = Some(formData)))
 
 }
