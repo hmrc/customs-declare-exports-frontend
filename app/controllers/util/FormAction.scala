@@ -16,6 +16,8 @@
 
 package controllers.util
 
+import play.api.mvc.{AnyContent, Request}
+
 sealed trait FormAction {
   def label: String = this.getClass.getSimpleName.replace("$", "")
 }
@@ -26,7 +28,7 @@ object FormAction {
   private val continueLabel = "Continue"
   private val removeLabel = "Remove"
 
-  def fromUrlEncoded(input: Map[String, Seq[String]]): FormAction =
+  private def fromUrlEncoded(input: Map[String, Seq[String]]): FormAction =
     input.flatMap {
       case (`addLabel`, _)             => Some(Add)
       case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
@@ -34,6 +36,9 @@ object FormAction {
       case (`removeLabel`, values)     => Some(Remove(values))
       case _                           => None
     }.headOption.getOrElse(Unknown)
+
+  def bindFromRequest()(implicit request: Request[AnyContent]): Option[FormAction] =
+    request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 }
 
 case object Unknown extends FormAction

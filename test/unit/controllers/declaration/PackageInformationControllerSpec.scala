@@ -89,17 +89,6 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
         status(result) must be(BAD_REQUEST)
       }
 
-      "user tried to remove item which doesn't exist" in new SetUp {
-
-        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
-
-        val body = (Remove.toString, "")
-
-        val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(body))
-
-        status(result) must be(BAD_REQUEST)
-      }
-
       "user tried to continue without adding an item" in new SetUp {
 
         withNewCaching(aCacheModel(withChoice(SupplementaryDec)))

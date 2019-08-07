@@ -66,11 +66,6 @@ class SealViewSpec extends SealFields with CommonMessages {
       val saveButton = getElementByCss(view, "#submit")
       saveButton.text() must be(messages(saveAndContinueCaption))
     }
-
-    "have all fields with labels" in {
-      val view = createView()
-      view.body must include(id)
-    }
   }
 }
 

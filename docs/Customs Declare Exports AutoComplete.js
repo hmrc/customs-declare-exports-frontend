@@ -176,7 +176,7 @@ function completePage() {
         document.getElementsByClassName('button')[0].click()
     }
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-fiscal-references')) {
-        selectFromAutoPredict(document.getElementById("country-container"));
+        selectFromAutoPredict(document.getElementById("country-container"), 'GB');
         document.getElementById("reference").value = '1234';
         document.getElementsByClassName('button')[0].click()
     }

@@ -14,23 +14,17 @@
  * limitations under the License.
  *@
 
-@import controllers.util.Remove
-
 @(
-    elements: Seq[String],
-    buttonMessagesKey: String = "site.remove"
+    field: Field,
+    inputClass: Option[String] = None
 )(implicit messages: Messages)
 
-<div class="field-group">
-    <table >
-    @for(elem <- elements) {
-        <tr>
-            <th>@elem</th>
-            <th>
-                <button class="button--secondary" name="@Remove.toString" value="@elem">@messages(buttonMessagesKey)</button>
-            </th>
-        </tr>
-    }
-    </table>
-    <br><br>
-</div>
+<input
+        class="form-control @inputClass"
+        type="text"
+        id="@{field.id}"
+        name="@{field.name}"
+        value="@{field.value}"
+        @if(field.hasErrors){aria-describedby="error-message-@{field.id}-input" }
+/>
+

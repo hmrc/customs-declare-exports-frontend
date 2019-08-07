@@ -21,20 +21,13 @@ import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import forms.Choice
 import models.requests.{AuthenticatedRequest, JourneyRequest}
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
-import play.api.mvc.{AnyContentAsEmpty, Flash, Request, Result}
+import play.api.mvc.{AnyContentAsEmpty, Flash, Request}
 import play.api.test.FakeRequest
-import play.twirl.api.Html
 import utils.FakeRequestCSRFSupport._
-
-import play.api.test.Helpers._
-
-import scala.concurrent.Future
 
 trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with ViewMatchers {
 
@@ -49,9 +42,6 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with
   implicit lazy val fakeRequest: Request[AnyContentAsEmpty.type] = FakeRequest("", "").withCSRFToken
   implicit lazy val messages: Messages = messagesApi.preferred(FakeRequest())
   implicit lazy val flash: Flash = new Flash()
-  implicit protected def htmlBodyOf(html: Html): Document = Jsoup.parse(html.toString())
-  implicit protected def htmlBodyOf(page: String): Document = Jsoup.parse(page)
-  implicit protected def htmlBodyOf(result: Future[Result]): Document = htmlBodyOf(contentAsString(result))
 
   def assertMessage(key: String, expected: String): Unit = messages(key) must be(expected)
 

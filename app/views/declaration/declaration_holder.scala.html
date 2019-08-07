@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import services.HolderOfAuthorisationCode
 @import services.view.AutoCompleteItem
+@import views.components.fields.LabelledValue
 
 @this(main_template: views.html.main_template)
 
@@ -36,16 +37,12 @@
 
     @components.page_title(Some("supplementary.declarationHolder.title"))
 
-    @if(holders.nonEmpty) {
-        @helper.form(DeclarationHolderController.submitHoldersOfAuthorisation(), 'autoComplete -> "off") {
-            @helper.CSRF.formField
-
-            @components.single_value_elements_table(holders.map(_.toString))
-        }
-    }
-
     @helper.form(DeclarationHolderController.submitHoldersOfAuthorisation(), 'autoComplete -> "off") {
         @helper.CSRF.formField
+
+        @if(holders.nonEmpty) {
+            @components.fields.removable_elements_table(elements = holders.map(_.toString).map(LabelledValue(_)))
+        }
 
         @components.fields.field_autocomplete(
             field = form("authorisationTypeCode"),

@@ -284,20 +284,6 @@ class DeclarationHolderControllerSpec
           verifyTheCacheIsUnchanged()
         }
       }
-
-      "try to remove not added Additional code" in {
-
-        withCache(DeclarationHoldersData(Seq(DeclarationHolder(Some("1234"), Some("eori")))))
-
-        val body = removeActionUrlEncoded("4321-eori")
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body))
-        val stringResult = contentAsString(result)
-
-        status(result) must be(BAD_REQUEST)
-        stringResult must include(messages(globalErrorTitle))
-        stringResult must include(messages(globalErrorHeading))
-        stringResult must include(messages(globalErrorMessage))
-      }
     }
 
     "add holder without error" when {
@@ -343,7 +329,7 @@ class DeclarationHolderControllerSpec
         val body = removeActionUrlEncoded("4321-eori")
         val Some(result) = route(app, postRequestFormUrlEncoded(uri, body))
 
-        status(result) must be(SEE_OTHER)
+        status(result) must be(OK)
         theCacheModelUpdated.parties.declarationHoldersData must be(Some(DeclarationHoldersData(List.empty)))
       }
     }

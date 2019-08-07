@@ -14,25 +14,8 @@
  * limitations under the License.
  *@
 
-@import controllers.util.{Add, Remove}
-@import components.inputs.input_text
+@import controllers.util.Remove
 
-@(
-    field: Field,
-    label: String,
-    hint: Option[String] = None,
-    elements: Seq[String] = Seq.empty,
-    inputClass: Option[String] = None,
-    labelClass: Option[String] = None,
-    includeAddButton: Boolean = true
-)(implicit messages: Messages)
+@(value: Option[Any] = None, label: String = "site.remove")(implicit messages: Messages)
 
-@field_multiple_values(
-    field = field,
-    label = label,
-    hint = hint,
-    elements = elements,
-    labelClass = labelClass,
-    input = input_text(field, inputClass),
-    includeAddButton = includeAddButton
-)
+<button id="add" class="button--secondary" name="@Remove.toString" @value.map{v => value="@{v.toString}"}>@messages(label)</button>

@@ -31,7 +31,7 @@
     @helper.form(routes.DestinationCountriesController.saveCountries(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
-        @components.back_link("/customs-declare-exports/declaration/holder-of-authorisation")
+        @components.back_link(routes.DeclarationHolderController.displayForm().url)
 
         @components.error_summary(form.errors)
 
@@ -47,29 +47,21 @@
             )
         </div>
 
-        <br/>
-        <br/>
         <h2>Countries of routing</h2>
-
-        @components.multiple_items_list(routingCountries)
-
         <div id="country-of-routing-field" class="inline-block form-group">
-            @components.fields.field_autocomplete(
-                form("countriesOfRouting[]"),
-                "declaration.destinationCountries.countriesOfRouting",
-                None,
-                messages("declaration.destinationCountries.countriesOfRouting.empty"),
-                AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+            @components.fields.field_multiple_values(
+                field = form("countriesOfRouting[]"),
+                label = messages("declaration.itemType.nationalAdditionalCode.header"),
+                hint = None,
+                elements = routingCountries,
+                labelClass = Some("bold-small"),
+                input = components.inputs.input_autocomplete(
+                    field = form("countriesOfRouting[]"),
+                    emptySelectValue = messages("declaration.destinationCountries.countriesOfRouting.empty"),
+                    items = AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
+                )
             )
         </div>
-
-        <br/>
-
-        <div class="section align='right'">
-            <button id="add" class="button--secondary" name="@Add.toString">@messages("site.add")</button>
-        </div>
-
-        <br/>
 
         <div id="country-of-destination-field" class="inline-block form-group">
             @components.fields.field_autocomplete(
@@ -82,7 +74,7 @@
         </div>
 
         <div class="section align='right'">
-            <button id="submit" class="button" name="@SaveAndContinue.toString">@messages("site.save_and_continue")</button>
+            @components.buttons.save_and_continue_button()
         </div>
     }
 }

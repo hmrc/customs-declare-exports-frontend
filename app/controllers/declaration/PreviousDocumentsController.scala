@@ -53,8 +53,7 @@ class PreviousDocumentsController @Inject()(
     import MultipleItemsHelper._
 
     val boundForm = form().bindFromRequest()
-
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+    val actionTypeOpt = FormAction.bindFromRequest()
 
     val cachedData = exportsCacheService
       .get(journeySessionId)
@@ -63,19 +62,6 @@ class PreviousDocumentsController @Inject()(
 
     cachedData.flatMap { cache =>
       actionTypeOpt match {
-        case Some(Add) =>
-          add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
-            formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
-            updatedCache =>
-              updateCache(PreviousDocumentsData(updatedCache))
-                .map(_ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
-          )
-
-        case Some(Remove(ids)) =>
-          val updatedCache = remove(ids.headOption, cache.documents)
-          updateCache(PreviousDocumentsData(updatedCache))
-            .map(_ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
-
         case Some(SaveAndContinue) =>
           saveAndContinue(boundForm, cache.documents, isScreenMandatory, maxAmountOfItems).fold(
             formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
@@ -87,7 +73,21 @@ class PreviousDocumentsController @Inject()(
                 Future.successful(Redirect(controllers.declaration.routes.ItemsSummaryController.displayPage()))
           )
 
-        case _ => errorHandler.displayErrorPage()
+        case Some(Add) =>
+          add(boundForm, cache.documents, PreviousDocumentsData.maxAmountOfItems).fold(
+            formWithErrors => Future.successful(BadRequest(previousDocumentsPage(formWithErrors, cache.documents))),
+            updatedCache =>
+              updateCache(PreviousDocumentsData(updatedCache))
+                .map(_ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
+          )
+
+        case Some(Remove(ids)) => {
+          val updatedDocuments = remove(ids.headOption, cache.documents)
+          updateCache(PreviousDocumentsData(updatedDocuments))
+            .map(_ => Ok(previousDocumentsPage(boundForm.discardingErrors, updatedDocuments)))
+        }
+
+        case _ => Future.successful(BadRequest(previousDocumentsPage(boundForm, cache.documents)))
       }
     }
   }

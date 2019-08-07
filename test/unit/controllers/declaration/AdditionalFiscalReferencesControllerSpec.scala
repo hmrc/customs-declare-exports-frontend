@@ -255,7 +255,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
 
         val result: Future[Result] = controller.saveReferences("itemId")(postRequestAsFormUrlEncoded(removeForm))
 
-        status(result) must be(SEE_OTHER)
+        status(result) must be(OK)
       }
     }
   }

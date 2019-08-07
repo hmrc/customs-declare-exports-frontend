@@ -18,6 +18,7 @@
 @import controllers.util.Remove
 @import forms.declaration.TransportInformationContainer
 @import uk.gov.hmrc.play.views.html._
+@import views.components.fields.LabelledValue
 
 @this(main_template: views.html.main_template)
 
@@ -33,37 +34,24 @@
 
     @components.page_title(Some("supplementary.transportInfo.containers.title"), None)
 
-    @if(containers.nonEmpty) {
-        @helper.form(TransportContainerController.submitForm(), 'autoComplete -> "off") {
-            @helper.CSRF.formField
-            <div class="field-group">
-                <table >
-                    <thead>
-                        <tr>
-                            <th scope="col">@messages("supplementary.transportInfo.containerId.title")</th>
-                            <td></td>
-                        </tr>
-                    </thead>
-                @containers.zipWithIndex.map { case (container, index) =>
-                    <tr>
-                        <td>@container.id</td>
-                        <td>
-                            <button class="button--secondary" name=@Remove.toString value=@index>@messages("site.remove")</button>
-                        </td>
-                    </tr>
-                }
-                </table>
-                <br><br>
-            </div>
-        }
-    }
-
     @helper.form(TransportContainerController.submitForm(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
+        @if(containers.nonEmpty) {
+            @components.fields.removable_elements_table(
+                title = Some(messages("supplementary.transportInfo.containerId.title")),
+                elements = containers.zipWithIndex.map {
+                    case (container, index) => LabelledValue(container.id, index.toString)
+                }
+            )
+        }
+
+        <br/>
+
         @components.fields.field_text(
             field = form("id"),
-            label = messages("supplementary.transportInfo.containerId")
+            label = messages("supplementary.transportInfo.containerId"),
+            labelClass = Some("bold-small")
         )
 
         @components.add_save_button()

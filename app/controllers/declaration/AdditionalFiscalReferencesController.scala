@@ -56,7 +56,7 @@ class AdditionalFiscalReferencesController @Inject()(
 
   def saveReferences(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
-      val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+      val actionTypeOpt = FormAction.bindFromRequest()
 
       val cachedData = exportsCacheService
         .getItemByIdAndSession(itemId, journeySessionId)
@@ -69,7 +69,7 @@ class AdditionalFiscalReferencesController @Inject()(
         actionTypeOpt match {
           case Some(Add)             => addReference(itemId, boundForm, cache)
           case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, cache)
-          case Some(Remove(values))  => removeReference(itemId, values, cache)
+          case Some(Remove(values))  => removeReference(itemId, values, boundForm, cache)
           case _                     => errorHandler.displayErrorPage()
         }
       }
@@ -105,12 +105,15 @@ class AdditionalFiscalReferencesController @Inject()(
           else Future.successful(Redirect(routes.ItemTypeController.displayPage(itemId)))
       )
 
-  private def removeReference(itemId: String, values: Seq[String], cachedData: AdditionalFiscalReferencesData)(
-    implicit request: JourneyRequest[_]
-  ): Future[Result] = {
+  private def removeReference(
+    itemId: String,
+    values: Seq[String],
+    form: Form[AdditionalFiscalReference],
+    cachedData: AdditionalFiscalReferencesData
+  )(implicit request: JourneyRequest[_]): Future[Result] = {
     val updatedCache = MultipleItemsHelper.remove(values.headOption, cachedData.references)
     updateExportsCache(itemId, journeySessionId, AdditionalFiscalReferencesData(updatedCache))
-      .map(_ => Redirect(routes.AdditionalFiscalReferencesController.displayPage(itemId)))
+      .map(_ => Ok(additionalFiscalReferencesPage(itemId, form.discardingErrors)))
   }
 
   private def badRequest(

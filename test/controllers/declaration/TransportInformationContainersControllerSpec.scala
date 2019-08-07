@@ -114,7 +114,7 @@ class TransportInformationContainersControllerSpec
         val body = removeActionURLEncoded("0")
         val result = route(app, postRequestFormUrlEncoded(uri, body)).get
 
-        status(result) must be(SEE_OTHER)
+        status(result) must be(OK)
       }
     }
 

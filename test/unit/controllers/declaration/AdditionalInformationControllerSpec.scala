@@ -234,7 +234,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
 
         val result = controller.saveAdditionalInfo("itemId")(postRequestAsFormUrlEncoded(removeForm))
 
-        status(result) must be(SEE_OTHER)
+        status(result) must be(OK)
       }
     }
   }
