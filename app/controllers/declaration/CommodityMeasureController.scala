@@ -46,7 +46,8 @@ class CommodityMeasureController @Inject()(
       (packageInformation, commodityMeasure) match {
         case (Some(p), Some(data)) if p.nonEmpty => Ok(goodsMeasurePage(itemId, form().fill(data)))
         case (Some(p), _) if p.nonEmpty          => Ok(goodsMeasurePage(itemId, form()))
-        case _                                   => BadRequest(goodsMeasurePage(itemId, form().withGlobalError(ADD_ONE)))
+        case _ =>
+          BadRequest(goodsMeasurePage(itemId, form().withGlobalError("supplementary.commodityMeasure.global.addOne")))
       }
     }
   }
