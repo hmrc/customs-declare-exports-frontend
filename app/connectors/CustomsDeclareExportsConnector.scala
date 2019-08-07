@@ -96,6 +96,4 @@ class CustomsDeclareExportsConnector @Inject()(
         response
       }
 
-  private[connectors] def get(url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    httpClient.GET(url, Seq())
 }

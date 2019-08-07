@@ -18,12 +18,11 @@ package controllers.actions
 
 import com.google.inject.Inject
 import controllers.declaration.SessionIdAware
-import controllers.util.CacheIdGenerator.eoriCacheId
 import forms.Choice
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.Logger
 import play.api.mvc.Results.Conflict
-import play.api.mvc.{ActionRefiner, MessagesControllerComponents, Result}
+import play.api.mvc.{ActionRefiner, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
@@ -42,10 +41,7 @@ class JourneyAction @Inject()(cacheService: ExportsCacheService)(
 
     cacheService.get(request.session.data("sessionId")).map(_.map(_.choice)).map {
       case Some(journeyType) => Right(JourneyRequest(request, Choice(journeyType)))
-      case _                 =>
-        // $COVERAGE-OFF$Trivial
-        logger.error(s"Could not obtain journey type for ${eoriCacheId()(request)}")
-        // $COVERAGE-ON
+      case _ =>
         Left(Conflict("Could not obtain information about journey type"))
     }
   }
