@@ -314,7 +314,7 @@ class DeclarationAdditionalActorsControllerSpec
     action: (String, String)
   ): Unit = {
     val body = actorsMap.toSeq :+ action
-    val result: Future[Result] = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+    val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
     status(result) must be(SEE_OTHER)
     verifyLocation(result, expectedPath)
