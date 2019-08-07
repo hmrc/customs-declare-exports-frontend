@@ -15,9 +15,7 @@
  */
 
 package services.mapping.governmentagencygoodsitem
-import forms.declaration.PackageInformation
 import javax.inject.Inject
-import models.declaration.governmentagencygoodsitem
 import services.cache.ExportItem
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
@@ -76,15 +74,4 @@ class PackagingBuilder @Inject()() extends ModifyingBuilder[ExportItem, GoodsShi
 
     wcoPackaging
   }
-}
-
-object PackagingBuilder {
-  def createPackaging(packageInfo: PackageInformation, index: Int): governmentagencygoodsitem.Packaging =
-    governmentagencygoodsitem.Packaging(
-      sequenceNumeric = Some(index),
-      typeCode = packageInfo.typesOfPackages,
-      quantity = packageInfo.numberOfPackages,
-      marksNumbersId = packageInfo.shippingMarks
-    )
-
 }

@@ -17,7 +17,6 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.CacheIdGenerator.cacheId
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.declaration.SupplementaryDeclarationData
