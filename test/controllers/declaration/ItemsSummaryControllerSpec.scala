@@ -28,17 +28,25 @@ import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
 class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues {
 
-  private lazy val testItem = ExportItem(id = item1Id)
-  private lazy val testItem2 = ExportItem(id = item2Id)
-  private lazy val cacheModelWith1Item =
-    aCacheModel(withItem(testItem), withChoice(SupplementaryDec))
-  private lazy val cacheModelWith2Items =
-    aCacheModel(withItem(testItem), withItem(testItem2), withChoice(SupplementaryDec))
-  private val viewItemsUri = uriWithContextPath("/declaration/export-items")
-  private val addItemUri = uriWithContextPath("/declaration/export-items/add")
-  private val formId = "PackageInformation"
   private val item1Id = "1234"
+
   private val item2Id = "5678"
+
+  private val testItem = ExportItem(id = item1Id)
+
+  private val testItem2 = ExportItem(id = item2Id)
+
+  private val cacheModelWith1Item =
+    aCacheModel(withItem(testItem), withChoice(SupplementaryDec))
+
+  private val cacheModelWith2Items =
+    aCacheModel(withItem(testItem), withItem(testItem2), withChoice(SupplementaryDec))
+
+  private val viewItemsUri = uriWithContextPath("/declaration/export-items")
+
+  private val addItemUri = uriWithContextPath("/declaration/export-items/add")
+
+  private val formId = "PackageInformation"
 
   override def beforeEach() {
     authorizedUser()
@@ -52,15 +60,17 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
   "Item Summary Controller" should {
 
+    val supplementaryModel = aCacheModel(withChoice(SupplementaryDec))
+
     "displayForm" should {
 
       "return UNAUTHORIZED" when {
 
         "user does not have EORI" in {
           userWithoutEori()
-          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+          withNewCaching(supplementaryModel)
 
-          val result = route(app, getRequest(viewItemsUri)).value
+          val result = route(app, getRequest(viewItemsUri, sessionId = supplementaryModel.sessionId)).value
           intercept[InsufficientEnrolments](status(result))
 
         }
@@ -70,9 +80,9 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
         "user is signed in" in {
           authorizedUser()
-          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+          withNewCaching(supplementaryModel)
 
-          val result = route(app, getRequest(viewItemsUri)).value
+          val result = route(app, getRequest(viewItemsUri, sessionId = supplementaryModel.sessionId)).value
           val stringResult = contentAsString(result)
 
           status(result) must be(OK)
@@ -85,11 +95,9 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
         "1 export item added before" in {
           authorizedUser()
-
-          val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
           withNewCaching(cacheModelWith1Item)
 
-          val result = route(app, getRequest(viewItemsUri)).value
+          val result = route(app, getRequest(viewItemsUri, sessionId = cacheModelWith1Item.sessionId)).value
           status(result) must be(OK)
 
           val stringResult = contentAsString(result)
@@ -99,13 +107,9 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
         "more than one export item added " in {
           authorizedUser()
-
-          GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging()))
-
-          val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
           withNewCaching(cacheModelWith2Items)
 
-          val result = route(app, getRequest(viewItemsUri)).value
+          val result = route(app, getRequest(viewItemsUri, sessionId = cacheModelWith2Items.sessionId)).value
           status(result) must be(OK)
 
           val stringResult = contentAsString(result)
@@ -121,12 +125,11 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
         GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging()))
 
-        val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
         val cachedItem = aCacheModel(withItem(testItem), withChoice(SupplementaryDec))
         withNewCaching(cachedItem)
         when(mockItemGeneratorService.generateItemId()).thenReturn(item1Id)
 
-        val result = route(app, getRequest(addItemUri)).value
+        val result = route(app, getRequest(addItemUri, sessionId = cachedItem.sessionId)).value
         status(result) must be(SEE_OTHER)
 
         redirectLocation(result).getOrElse("") must be(routes.ProcedureCodesController.displayPage(item1Id).url)
@@ -142,18 +145,18 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
     "remove item" should {
       "do nothing and redirect back to items" when {
         "cache is empty" in {
-          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+          withNewCaching(supplementaryModel)
 
-          val result = route(app, getRequest(removeItemUri("id"))).value
+          val result = route(app, getRequest(removeItemUri("id"), sessionId = supplementaryModel.sessionId)).value
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(routes.ItemsSummaryController.displayPage().url))
           verifyTheCacheIsUnchanged()
         }
 
         "item does not exist" in {
-          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+          withNewCaching(supplementaryModel)
 
-          val result = route(app, getRequest(removeItemUri("id"))).value
+          val result = route(app, getRequest(removeItemUri("id"), sessionId = supplementaryModel.sessionId)).value
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(routes.ItemsSummaryController.displayPage().url))
           verifyTheCacheIsUnchanged()
@@ -162,15 +165,14 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
       "update cache and redirect" when {
         "item exists" in {
-          withNewCaching(
-            aCacheModel(
-              withItem(ExportItem("id1", sequenceId = 1)),
-              withItem(ExportItem("id2", sequenceId = 2)),
-              withChoice(SupplementaryDec)
-            )
+          val model = aCacheModel(
+            withItem(ExportItem("id1", sequenceId = 1)),
+            withItem(ExportItem("id2", sequenceId = 2)),
+            withChoice(SupplementaryDec)
           )
+          withNewCaching(model)
 
-          val result = route(app, getRequest(removeItemUri("id1"))).value
+          val result = route(app, getRequest(removeItemUri("id1"), sessionId = model.sessionId)).value
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(routes.ItemsSummaryController.displayPage().url))
           theCacheModelUpdated.items must be(Set(ExportItem("id2", sequenceId = 1)))
