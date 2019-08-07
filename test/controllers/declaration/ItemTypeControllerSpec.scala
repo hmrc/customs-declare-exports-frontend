@@ -447,21 +447,15 @@ class ItemTypeControllerSpec
         "provided with mandatory data only" in {
           val userInput = addActionTypeToFormData(SaveAndContinue, mandatoryFieldsOnlyItemTypeMap)
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
-          val header = result.futureValue.header
 
-          header.headers.get("Location") must be(
-            Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
-          )
+          verifyLocation(result, s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
         }
 
         "provided with all data" in {
           val userInput = addActionTypeToFormData(SaveAndContinue, correctItemTypeMap)
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
-          val header = result.futureValue.header
 
-          header.headers.get("Location") must be(
-            Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
-          )
+          verifyLocation(result, s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
         }
       }
     }

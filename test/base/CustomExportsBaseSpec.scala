@@ -16,7 +16,6 @@
 
 package base
 
-import java.time.LocalDateTime
 import java.util.UUID
 
 import akka.stream.Materializer
@@ -24,10 +23,8 @@ import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
 import connectors.{CustomsDeclareExportsConnector, NrsConnector}
 import controllers.actions.FakeAuthAction
-import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import metrics.ExportsMetrics
 import models.NrsSubmissionResponse
-import models.declaration.Parties
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{never, verify, when}
@@ -48,15 +45,10 @@ import play.api.libs.json.JsValue
 import play.api.libs.ws.WSClient
 import play.api.mvc._
 import play.api.test.FakeRequest
+import play.api.test.Helpers.headers
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services._
-import services.cache.{
-  ExportItem,
-  ExportItemIdGeneratorService,
-  ExportsCacheModel,
-  ExportsCacheModelBuilder,
-  ExportsCacheService
-}
+import services.cache.{ExportItemIdGeneratorService, ExportsCacheModel, ExportsCacheModelBuilder, ExportsCacheService}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.logging.Authorization
@@ -231,6 +223,9 @@ trait CustomExportsBaseSpec
 
   protected def verifyTheCacheIsUnchanged(): Unit =
     verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
+
+  protected def verifyLocation(result: Future[Result], expectedPath: String)(implicit timeout : akka.util.Timeout) =
+    headers(result).get("Location") must be(Some(expectedPath))
 
 }
 

@@ -113,9 +113,8 @@ class ConsignmentReferencesControllerSpec
     "redirect to 'Exporter Details' page" in {
 
       val result = route(app, postRequest(uri, correctConsignmentReferencesJSON)).get
-      val header = result.futureValue.header
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/exporter-details"))
+      verifyLocation(result, "/customs-declare-exports/declaration/exporter-details")
       theCacheModelUpdated.consignmentReferences.get.ducr must be(Some(Ducr("8GB123456789012-1234567890QWERTYUIO")))
     }
   }

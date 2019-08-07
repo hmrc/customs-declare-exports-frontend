@@ -296,10 +296,9 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "user is during supplementary declaration and provide correct values" in new SupplementarySetUp {
 
         val result = route(app, postRequest(uri, correctDestinationCountriesJSON)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/location-of-goods"))
+        verifyLocation(result, "/customs-declare-exports/declaration/location-of-goods")
         theCacheModelUpdated.locations.destinationCountries mustBe Some(
           DestinationCountries(countryOfDispatch = "PL", countriesOfRouting = Seq(), countryOfDestination = "PL")
         )

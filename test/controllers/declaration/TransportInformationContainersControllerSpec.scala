@@ -278,10 +278,9 @@ class TransportInformationContainersControllerSpec
       val body = Seq(("id", "M1l3s"), saveAndContinueActionURLEncoded)
 
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
+      verifyLocation(result, "/customs-declare-exports/declaration/summary")
     }
 
     "user doesn't fill form but some containers already exist in the cache" in {
@@ -290,10 +289,9 @@ class TransportInformationContainersControllerSpec
       )
 
       val result = route(app, postRequestFormUrlEncoded(uri, saveAndContinueActionURLEncoded)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
+      verifyLocation(result, "/customs-declare-exports/declaration/summary")
     }
 
     "user provide container with some different container in cache" in {
@@ -302,10 +300,9 @@ class TransportInformationContainersControllerSpec
       val body = Seq(("id", "M1l3s"), saveAndContinueActionURLEncoded)
 
       val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/summary"))
+      verifyLocation(result, "/customs-declare-exports/declaration/summary")
     }
   }
 

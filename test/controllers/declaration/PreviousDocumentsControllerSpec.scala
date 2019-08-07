@@ -468,10 +468,9 @@ class PreviousDocumentsControllerSpec
         val body = correctDocument :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+        verifyLocation(result, "/customs-declare-exports/declaration/export-items")
         theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
           documents = List(Document("X", "MCR", "A", Some("1")))
         )
@@ -483,10 +482,9 @@ class PreviousDocumentsControllerSpec
         val body = emptyDocument :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+        verifyLocation(result, "/customs-declare-exports/declaration/export-items")
         verifyTheCacheIsUnchanged()
       }
 
@@ -503,10 +501,9 @@ class PreviousDocumentsControllerSpec
         val body = document :+ saveAndContinueActionURLEncoded
 
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+        verifyLocation(result, "/customs-declare-exports/declaration/export-items")
         theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
           documents = List(Document("X", "MCR", "A", Some("1")), Document("Y", "MCR", "B", Some("2")))
         )

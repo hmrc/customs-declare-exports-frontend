@@ -171,39 +171,35 @@ class RepresentativeDetailsControllerSpec
 
     "accept form with status and EORI if on supplementary journey" in {
       val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+      verifyLocation(result, "/customs-declare-exports/declaration/additional-actors")
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetailsEORIOnly))
     }
 
     "accept form with status and EORI if on standard journey" in {
       withNewCaching(aCacheModel(withChoice(StandardDec)))
       val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/carrier-details"))
+      verifyLocation(result, "/customs-declare-exports/declaration/carrier-details")
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetailsEORIOnly))
     }
 
     "accept form with status and address if on supplementary journey" in {
       val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+      verifyLocation(result, "/customs-declare-exports/declaration/additional-actors")
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetailsAddressOnly))
     }
 
     "accept form with status and address only if on standard journey" in {
       withNewCaching(aCacheModel(withChoice(StandardDec)))
       val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
-      val header = result.futureValue.header
 
       status(result) must be(SEE_OTHER)
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/carrier-details"))
+      verifyLocation(result, "/customs-declare-exports/declaration/carrier-details")
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetailsAddressOnly))
     }
 
@@ -246,18 +242,16 @@ class RepresentativeDetailsControllerSpec
     "redirect to Additional Actors page if on supplementary journey" in {
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
-      val header = result.futureValue.header
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/additional-actors"))
+      verifyLocation(result, "/customs-declare-exports/declaration/additional-actors")
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetails))
     }
 
     "redirect to Consignee Details page if on standard journey" in {
       withNewCaching(aCacheModel(withChoice(StandardDec)))
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
-      val header = result.futureValue.header
 
-      header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/carrier-details"))
+      verifyLocation(result, "/customs-declare-exports/declaration/carrier-details")
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetails))
     }
   }

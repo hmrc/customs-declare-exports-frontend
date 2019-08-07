@@ -302,10 +302,9 @@ class DocumentsProducedControllerSpec
 
         val body = emptyDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+        verifyLocation(result, "/customs-declare-exports/declaration/export-items")
         verifyTheCacheIsUnchanged()
       }
 
@@ -313,10 +312,9 @@ class DocumentsProducedControllerSpec
 
         val body = emptyDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+        verifyLocation(result, "/customs-declare-exports/declaration/export-items")
 
         verifyTheCacheIsUnchanged()
       }
@@ -325,10 +323,9 @@ class DocumentsProducedControllerSpec
 
         val body = correctDocumentsProducedMap.toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+        verifyLocation(result, "/customs-declare-exports/declaration/export-items")
 
         verify(mockExportsCacheService, times(2)).get(any[String])
         verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
@@ -339,10 +336,9 @@ class DocumentsProducedControllerSpec
         val newDocument = correctDocumentsProducedMap + (s"$documentIdentifierAndPartKey.$documentIdentifierKey" -> "DOCID123")
         val body = newDocument.toSeq :+ saveAndContinueActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
-        val header = result.futureValue.header
 
         status(result) must be(SEE_OTHER)
-        header.headers.get("Location") must be(Some("/customs-declare-exports/declaration/export-items"))
+        verifyLocation(result, "/customs-declare-exports/declaration/export-items")
 
         verify(mockExportsCacheService, times(2)).get(any[String])
         verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
