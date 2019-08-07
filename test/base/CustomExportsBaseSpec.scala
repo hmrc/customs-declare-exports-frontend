@@ -45,7 +45,7 @@ import play.api.libs.json.JsValue
 import play.api.libs.ws.WSClient
 import play.api.mvc._
 import play.api.test.FakeRequest
-import play.api.test.Helpers.headers
+import play.api.test.Helpers.redirectLocation
 import play.filters.csrf.{CSRFConfig, CSRFConfigProvider, CSRFFilter}
 import services._
 import services.cache.{ExportItemIdGeneratorService, ExportsCacheModel, ExportsCacheModelBuilder, ExportsCacheService}
@@ -225,7 +225,7 @@ trait CustomExportsBaseSpec
     verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
 
   protected def verifyLocation(result: Future[Result], expectedPath: String)(implicit timeout : akka.util.Timeout) =
-    headers(result).get("Location") must be(Some(expectedPath))
+    redirectLocation(result) must be(Some(expectedPath))
 
 }
 
