@@ -445,14 +445,18 @@ class ItemTypeControllerSpec
           val userInput = addActionTypeToFormData(SaveAndContinue, mandatoryFieldsOnlyItemTypeMap)
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
 
-          redirectLocation(result) must be (Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information"))
+          redirectLocation(result) must be(
+            Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
+          )
         }
 
         "provided with all data" in {
           val userInput = addActionTypeToFormData(SaveAndContinue, correctItemTypeMap)
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
 
-          redirectLocation(result) must be (Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information"))
+          redirectLocation(result) must be(
+            Some(s"/customs-declare-exports/declaration/items/${cacheModel.items.head.id}/package-information")
+          )
         }
       }
     }

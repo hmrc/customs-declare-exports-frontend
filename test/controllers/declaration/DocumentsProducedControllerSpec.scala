@@ -301,7 +301,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/export-items"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
         verifyTheCacheIsUnchanged()
       }
 
@@ -311,7 +311,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/export-items"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
 
         verifyTheCacheIsUnchanged()
       }
@@ -322,7 +322,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/export-items"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
 
         verify(mockExportsCacheService, times(2)).get(any[String])
         verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
@@ -335,7 +335,7 @@ class DocumentsProducedControllerSpec
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/export-items"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
 
         verify(mockExportsCacheService, times(2)).get(any[String])
         verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])

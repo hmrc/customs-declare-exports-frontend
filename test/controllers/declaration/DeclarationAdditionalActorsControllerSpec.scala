@@ -314,7 +314,7 @@ class DeclarationAdditionalActorsControllerSpec
     val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
 
     status(result) must be(SEE_OTHER)
-    redirectLocation(result) must be (Some( expectedPath))
+    redirectLocation(result) must be(Some(expectedPath))
   }
 
   private def testErrorScenario(

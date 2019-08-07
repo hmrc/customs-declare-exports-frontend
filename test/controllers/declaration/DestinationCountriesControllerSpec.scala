@@ -295,7 +295,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
         val result = route(app, postRequest(uri, correctDestinationCountriesJSON)).get
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be (Some("/customs-declare-exports/declaration/location-of-goods"))
+        redirectLocation(result) must be(Some("/customs-declare-exports/declaration/location-of-goods"))
         theCacheModelUpdated.locations.destinationCountries mustBe Some(
           DestinationCountries(countryOfDispatch = "PL", countriesOfRouting = Seq(), countryOfDestination = "PL")
         )

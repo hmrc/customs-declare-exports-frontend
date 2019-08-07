@@ -173,7 +173,7 @@ class RepresentativeDetailsControllerSpec
       val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/additional-actors"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/additional-actors"))
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetailsEORIOnly))
     }
 
@@ -182,7 +182,7 @@ class RepresentativeDetailsControllerSpec
       val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/carrier-details"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/carrier-details"))
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetailsEORIOnly))
     }
 
@@ -190,7 +190,7 @@ class RepresentativeDetailsControllerSpec
       val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/additional-actors"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/additional-actors"))
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetailsAddressOnly))
     }
 
@@ -199,7 +199,7 @@ class RepresentativeDetailsControllerSpec
       val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/carrier-details"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/carrier-details"))
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetailsAddressOnly))
     }
 
@@ -243,7 +243,7 @@ class RepresentativeDetailsControllerSpec
 
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
 
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/additional-actors"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/additional-actors"))
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetails))
     }
 
@@ -251,7 +251,7 @@ class RepresentativeDetailsControllerSpec
       withNewCaching(aCacheModel(withChoice(StandardDec)))
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
 
-      redirectLocation(result) must be (Some("/customs-declare-exports/declaration/carrier-details"))
+      redirectLocation(result) must be(Some("/customs-declare-exports/declaration/carrier-details"))
       theCacheModelUpdated.parties.representativeDetails must be(Some(correctRepresentativeDetails))
     }
   }
