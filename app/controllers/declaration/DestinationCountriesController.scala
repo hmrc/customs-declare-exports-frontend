@@ -93,7 +93,7 @@ class DestinationCountriesController @Inject()(
       )
 
   private def handleSubmitStandard()(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+    val actionTypeOpt = FormAction.bindFromRequest()
     val boundForm = Standard.form.bindFromRequest
 
     val cachedData = exportsCacheService

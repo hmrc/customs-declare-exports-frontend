@@ -55,7 +55,7 @@ class DocumentsProducedController @Inject()(
 
   def saveForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val boundForm = form().bindFromRequest()
-    val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+    val actionTypeOpt = FormAction.bindFromRequest()
     val cachedData: Future[DocumentsProducedData] = exportsCacheService
       .getItemByIdAndSession(itemId, journeySessionId)
       .map(_.flatMap(_.documentsProducedData).getOrElse(DocumentsProducedData(Seq())))

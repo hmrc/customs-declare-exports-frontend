@@ -80,7 +80,7 @@ class ItemTypeController @Inject()(
           case (itemTypeCacheOpt, hasFiscalReferences) =>
             val itemTypeCache = itemTypeCacheOpt.getOrElse(ItemType.empty)
 
-            extractActionType() match {
+            FormAction.bindFromRequest() match {
               case Some(Add) => handleAddition(itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
               case Some(SaveAndContinue) =>
                 handleSaveAndContinue(itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
@@ -89,9 +89,6 @@ class ItemTypeController @Inject()(
             }
         }
   }
-
-  private def extractActionType()(implicit request: Request[AnyContent]): Option[FormAction] =
-    request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
 
   private def handleAddition(
     itemId: String,

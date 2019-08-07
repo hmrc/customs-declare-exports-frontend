@@ -66,7 +66,7 @@ class ProcedureCodesController @Inject()(
     implicit request =>
       val boundForm = form().bindFromRequest()
 
-      val actionTypeOpt = request.body.asFormUrlEncoded.map(FormAction.fromUrlEncoded)
+      val actionTypeOpt = FormAction.bindFromRequest()
 
       val cachedData = exportsCacheService
         .getItemByIdAndSession(itemId, journeySessionId)

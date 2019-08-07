@@ -28,7 +28,7 @@ object FormAction {
   private val continueLabel = "Continue"
   private val removeLabel = "Remove"
 
-  def fromUrlEncoded(input: Map[String, Seq[String]]): FormAction =
+  private def fromUrlEncoded(input: Map[String, Seq[String]]): FormAction =
     input.flatMap {
       case (`addLabel`, _)             => Some(Add)
       case (`saveAndContinueLabel`, _) => Some(SaveAndContinue)
