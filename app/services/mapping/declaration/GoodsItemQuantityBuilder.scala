@@ -17,14 +17,14 @@
 package services.mapping.declaration
 
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-class GoodsItemQuantityBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
+class GoodsItemQuantityBuilder @Inject()() extends ModifyingBuilder[ExportsDeclaration, Declaration] {
 
-  def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
+  def buildThenAdd(exportsCacheModel: ExportsDeclaration, declaration: Declaration): Unit =
     declaration.setGoodsItemQuantity(createGoodsItemQuantity(exportsCacheModel.items.toSeq))
 
   private def createGoodsItemQuantity[A](items: Seq[A]): DeclarationGoodsItemQuantityType = {

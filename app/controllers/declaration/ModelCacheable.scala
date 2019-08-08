@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.mvc.AnyContent
 import services.cache.ExportsCacheService
@@ -28,8 +28,8 @@ trait ModelCacheable {
 
   protected def getAndUpdateExportCacheModel(
     sessionId: String,
-    update: ExportsCacheModel => Future[Option[ExportsCacheModel]]
-  )(implicit ec: ExecutionContext): Future[Option[ExportsCacheModel]] =
+    update: ExportsDeclaration => Future[Option[ExportsDeclaration]]
+  )(implicit ec: ExecutionContext): Future[Option[ExportsDeclaration]] =
     exportsCacheService.get(sessionId).flatMap {
       case Some(model) => update(model)
       case _           => Future.successful(None)

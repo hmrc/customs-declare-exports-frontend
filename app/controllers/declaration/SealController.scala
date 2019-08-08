@@ -23,7 +23,7 @@ import forms.declaration.Seal
 import forms.declaration.Seal._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -58,7 +58,7 @@ class SealController @Inject()(
 
     exportsCacheService
       .get(journeySessionId)
-      .flatMap { data: Option[ExportsCacheModel] =>
+      .flatMap { data: Option[ExportsDeclaration] =>
         val seals = data.map(_.seals)
         val hasContainers: Boolean = data.flatMap(_.transportDetails).fold(false)(_.container)
         actionTypeOpt match {

@@ -17,7 +17,7 @@
 package models.declaration
 
 import forms.declaration._
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 
 case class Items(
   totalNumberOfItems: Option[TotalNumberOfItems] = None,
@@ -30,6 +30,6 @@ case class Items(
 object Items {
   val id = "Items"
 
-  def apply(cacheData: ExportsCacheModel): Items =
+  def apply(cacheData: ExportsDeclaration): Items =
     Items(totalNumberOfItems = cacheData.totalNumberOfItems, natureOfTransaction = cacheData.natureOfTransaction)
 }

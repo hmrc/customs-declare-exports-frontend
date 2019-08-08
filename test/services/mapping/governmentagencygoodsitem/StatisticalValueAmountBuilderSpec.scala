@@ -25,7 +25,7 @@ class StatisticalValueAmountBuilderSpec extends WordSpec with Matchers with Expo
   "Statistical Value Amount Builder" should {
     "build then add" when {
       "empty item type" in {
-        val model = aCachedItem(withoutItemType())
+        val model = anItem(withoutItemType())
         val dcoItem = new GoodsShipment.GovernmentAgencyGoodsItem()
 
         builder.buildThenAdd(model, dcoItem)
@@ -34,7 +34,7 @@ class StatisticalValueAmountBuilderSpec extends WordSpec with Matchers with Expo
       }
 
       "populated item type" in {
-        val model = aCachedItem(withItemType(statisticalValue = "123"))
+        val model = anItem(withItemType(statisticalValue = "123"))
         val dcoItem = new GoodsShipment.GovernmentAgencyGoodsItem()
 
         builder.buildThenAdd(model, dcoItem)

@@ -18,7 +18,7 @@ package services.cache
 
 import config.AppConfig
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import play.api.libs.json.{JsObject, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.api.indexes.{Index, IndexType}
@@ -31,16 +31,16 @@ import uk.gov.hmrc.mongo.json.ReactiveMongoFormats.objectIdFormats
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent, appConfig: AppConfig)(
+class ExportsDeclarationRepository @Inject()(mc: ReactiveMongoComponent, appConfig: AppConfig)(
   implicit ec: ExecutionContext
-) extends ReactiveRepository[ExportsCacheModel, BSONObjectID](
+) extends ReactiveRepository[ExportsDeclaration, BSONObjectID](
       "exportsJourneyCache",
       mc.mongoConnector.db,
-      ExportsCacheModel.format,
+      ExportsDeclaration.format,
       objectIdFormats
     ) {
 
-  implicit val journeyFormats = ExportsCacheModel.format
+  implicit val journeyFormats = ExportsDeclaration.format
 
   override def indexes: Seq[Index] = super.indexes ++ Seq(
     Index(
@@ -50,10 +50,10 @@ class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent, appConfi
     )
   )
 
-  def get(sessionId: String): Future[Option[ExportsCacheModel]] =
+  def get(sessionId: String): Future[Option[ExportsDeclaration]] =
     find("sessionId" -> sessionId).map(_.headOption)
 
-  def upsert(sessionId: String, journeyCacheModel: ExportsCacheModel): Future[Option[ExportsCacheModel]] =
+  def upsert(sessionId: String, journeyCacheModel: ExportsDeclaration): Future[Option[ExportsDeclaration]] =
     collection
       .findAndUpdate(
         selector = bySessionId(sessionId),
@@ -63,7 +63,7 @@ class ExportsCacheModelRepository @Inject()(mc: ReactiveMongoComponent, appConfi
       )
       .map { updateResult =>
         if (updateResult.value.isEmpty) logDatabaseUpdateError(updateResult)
-        updateResult.result[ExportsCacheModel]
+        updateResult.result[ExportsDeclaration]
       }
 
   def remove(sessionId: String): Future[FindAndModifyCommand.FindAndModifyResult] =

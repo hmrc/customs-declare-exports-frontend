@@ -38,7 +38,7 @@ class DeclarationAdditionalActorsControllerSpec
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   override def afterEach() {
@@ -303,7 +303,7 @@ class DeclarationAdditionalActorsControllerSpec
   }
 
   private def withCache(data: DeclarationAdditionalActorsData) =
-    withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationAdditionalActors(data)))
+    withNewCaching(aDeclaration(withChoice("SMP"), withDeclarationAdditionalActors(data)))
 
   private def testHappyPathsScenarios(
     expectedPath: String,

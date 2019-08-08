@@ -37,11 +37,11 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
   }
 
   trait SupplementarySetUp {
-    withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
   }
 
   trait StandardSetUp {
-    withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.StandardDec)))
+    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec)))
   }
 
   "Office Of Exit Controller during supplementary declaration on GET" should {
@@ -56,7 +56,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
     "read item from cache and display it" in new SupplementarySetUp {
 
       withNewCaching(
-        aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withOfficeOfExit(officeId = "999AAA45"))
+        aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withOfficeOfExit(officeId = "999AAA45"))
       )
 
       val Some(result) = route(app, getRequest(uri))
@@ -80,7 +80,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val presentationOfficeId = "87654321"
       val circumstancesCode = "Yes"
       withNewCaching(
-        aCacheModel(
+        aDeclaration(
           withChoice(Choice.AllowedChoiceValues.StandardDec),
           withOfficeOfExit(officeId, Some(presentationOfficeId), Some(circumstancesCode))
         )

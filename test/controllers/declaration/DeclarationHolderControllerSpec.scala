@@ -37,7 +37,7 @@ class DeclarationHolderControllerSpec
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
   }
 
@@ -58,7 +58,7 @@ class DeclarationHolderControllerSpec
 
     "read item from cache and display it" in {
 
-      withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("8899"), Some("0099887766"))))
+      withNewCaching(aDeclaration(withChoice("SMP"), withDeclarationHolders(Some("8899"), Some("0099887766"))))
 
       val Some(result) = route(app, getRequest(uri))
       val page = contentAsString(result)
@@ -161,7 +161,7 @@ class DeclarationHolderControllerSpec
 
         "is duplicated" in {
 
-          withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori"))))
+          withNewCaching(aDeclaration(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori"))))
 
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori"), addActionUrlEncoded)
 
@@ -177,7 +177,7 @@ class DeclarationHolderControllerSpec
 
         "has more than 99 holders" in {
 
-          withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationHolders(cacheWithMaximumAmountOfHolders)))
+          withNewCaching(aDeclaration(withChoice("SMP"), withDeclarationHolders(cacheWithMaximumAmountOfHolders)))
 
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori1"), addActionUrlEncoded)
 
@@ -257,7 +257,7 @@ class DeclarationHolderControllerSpec
         }
 
         "has duplicated holder" in {
-          withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori"))))
+          withNewCaching(aDeclaration(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori"))))
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori"), saveAndContinueActionUrlEncoded)
           val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
           val page = contentAsString(result)
@@ -387,7 +387,7 @@ class DeclarationHolderControllerSpec
     }
   }
   private def withCache(holders: DeclarationHoldersData) =
-    withNewCaching(aCacheModel(withChoice("SMP"), withDeclarationHolders(holders)))
+    withNewCaching(aDeclaration(withChoice("SMP"), withDeclarationHolders(holders)))
 }
 
 object DeclarationHolderControllerSpec {

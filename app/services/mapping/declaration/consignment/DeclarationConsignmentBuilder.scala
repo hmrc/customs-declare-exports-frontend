@@ -18,7 +18,7 @@ package services.mapping.declaration.consignment
 
 import forms.Choice.AllowedChoiceValues
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import services.mapping.ModifyingBuilder
 import services.mapping.goodsshipment.consignment.ConsignmentCarrierBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
@@ -27,8 +27,8 @@ class DeclarationConsignmentBuilder @Inject()(
   freightBuilder: FreightBuilder,
   iteneraryBuilder: IteneraryBuilder,
   consignmentCarrierBuilder: ConsignmentCarrierBuilder
-) extends ModifyingBuilder[ExportsCacheModel, Declaration] {
-  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
+) extends ModifyingBuilder[ExportsDeclaration, Declaration] {
+  override def buildThenAdd(model: ExportsDeclaration, declaration: Declaration): Unit =
     if (model.choice.equals(AllowedChoiceValues.StandardDec)) {
       val consignment = new Declaration.Consignment()
       freightBuilder.buildThenAdd(model, consignment)

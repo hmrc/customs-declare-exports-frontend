@@ -22,7 +22,7 @@ import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.form
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.declaration.AdditionalInformationData
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -117,7 +117,7 @@ class AdditionalInformationController @Inject()(
     itemId: String,
     sessionId: String,
     updatedAdditionalInformation: AdditionalInformationData
-  ): Future[Option[ExportsCacheModel]] =
+  ): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

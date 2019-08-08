@@ -20,13 +20,13 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import services.mapping.AuthorisationHoldersBuilder
 import services.mapping.declaration._
 import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
 import services.mapping.goodsshipment.GoodsShipmentBuilder
 
-class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
+class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsDeclarationBuilder {
 
   private val functionCodeBuilder = mock[FunctionCodeBuilder]
   private val functionalReferenceIdBuilder = mock[FunctionalReferenceIdBuilder]
@@ -71,7 +71,7 @@ class DeclarationBuilderSpec extends WordSpec with Matchers with MockitoSugar wi
 
   "DeclarationBuilder" should {
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance" in {
-      val model = aCacheModel()
+      val model = aDeclaration()
 
       val declaration = builder.build(model)
 

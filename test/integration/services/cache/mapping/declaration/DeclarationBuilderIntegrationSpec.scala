@@ -20,18 +20,18 @@ import forms.declaration.DispatchLocationSpec
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import services.cache.mapping.declaration.DeclarationBuilder
 
 class DeclarationBuilderIntegrationSpec
-    extends WordSpec with Matchers with ExportsCacheModelBuilder with GuiceOneAppPerSuite {
+    extends WordSpec with Matchers with ExportsDeclarationBuilder with GuiceOneAppPerSuite {
 
   val declarationBuilder: DeclarationBuilder = app.injector.instanceOf[DeclarationBuilder]
 
   "DeclarationBuilder" should {
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance" in {
       val exportsCacheModel =
-        aCacheModel(
+        aDeclaration(
           withConsignmentReferences(Some(DUCR), LRN),
           withAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard),
           withDispatchLocation(DispatchLocationSpec.correctDispatchLocation.dispatchLocation),
@@ -49,7 +49,7 @@ class DeclarationBuilderIntegrationSpec
 
     "correctly map a Supplementary declaration to the WCO-DEC Declaration instance when dispatchLocation is not present" in {
       val exportsCacheModel =
-        aCacheModel(
+        aDeclaration(
           withConsignmentReferences(Some(DUCR), LRN),
           withAdditionalDeclarationType(AllowedAdditionalDeclarationTypes.Standard)
         )

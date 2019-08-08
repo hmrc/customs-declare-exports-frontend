@@ -37,7 +37,7 @@ import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
 import models.declaration.dectype.DeclarationTypeSupplementarySpec._
@@ -322,7 +322,7 @@ object SupplementaryDeclarationTestData {
   val correctPackingJSON: JsValue = JsObject(
     Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
   )
-  val declaration = ExportsCacheModel("sessionId", "draftId", LocalDateTime.now(), LocalDateTime.now(), "SMP")
+  val declaration = ExportsDeclaration("sessionId", "draftId", LocalDateTime.now(), LocalDateTime.now(), "SMP")
 
   def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
     GovernmentAgencyGoodsItem(

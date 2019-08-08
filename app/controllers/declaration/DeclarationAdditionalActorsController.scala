@@ -22,7 +22,7 @@ import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActors.form
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.declaration.DeclarationAdditionalActorsData
 import models.declaration.DeclarationAdditionalActorsData.maxNumberOfItems
 import models.requests.JourneyRequest
@@ -116,7 +116,7 @@ class DeclarationAdditionalActorsController @Inject()(
   private def updateCache(
     sessionId: String,
     formData: DeclarationAdditionalActorsData
-  ): Future[Option[ExportsCacheModel]] =
+  ): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       val updatedParties = model.parties.copy(declarationAdditionalActorsData = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))

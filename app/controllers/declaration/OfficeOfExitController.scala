@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -95,7 +95,7 @@ class OfficeOfExitController @Inject()(
             .map(_ => Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
       )
 
-  private def updateCache(sessionId: String, formData: OfficeOfExitSupplementary): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: OfficeOfExitSupplementary): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model =>
@@ -105,7 +105,7 @@ class OfficeOfExitController @Inject()(
       )
     )
 
-  private def updateCache(sessionId: String, formData: OfficeOfExitStandard): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: OfficeOfExitStandard): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model =>

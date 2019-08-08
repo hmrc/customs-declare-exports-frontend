@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.CommodityMeasure
 import forms.declaration.CommodityMeasure.form
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -70,7 +70,7 @@ class CommodityMeasureController @Inject()(
     itemId: String,
     sessionId: String,
     updatedItem: CommodityMeasure
-  ): Future[Option[ExportsCacheModel]] =
+  ): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

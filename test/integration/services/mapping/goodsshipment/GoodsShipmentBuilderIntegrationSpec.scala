@@ -25,22 +25,22 @@ import forms.declaration.GoodsLocationTestData.correctGoodsLocation
 import forms.declaration.NatureOfTransactionSpec.correctNatureOfTransaction
 import forms.declaration.PreviousDocumentsData
 import forms.declaration.WarehouseIdentificationSpec.correctWarehouseIdentification
-import models.declaration.{DeclarationAdditionalActorsData, Locations}
+import models.declaration.DeclarationAdditionalActorsData
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import services.mapping.goodsshipment.GoodsShipmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class GoodsShipmentBuilderIntegrationSpec
-    extends WordSpec with Matchers with ExportsCacheModelBuilder with GuiceOneAppPerSuite {
+    extends WordSpec with Matchers with ExportsDeclarationBuilder with GuiceOneAppPerSuite {
 
   private def builder = app.injector.instanceOf[GoodsShipmentBuilder]
   "GoodsShipmentBuilder" should {
 
     "correctly map to the WCO-DEC GoodsShipment instance" in {
 
-      val cacheModel = aCacheModel(
+      val cacheModel = aDeclaration(
         withNatureOfTransaction(correctNatureOfTransaction.natureType),
         withConsigneeDetails(correctConsigneeDetailsFull),
         withDeclarationAdditionalActors(

@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction._
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -58,7 +58,7 @@ class NatureOfTransactionController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: NatureOfTransaction): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: NatureOfTransaction): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(natureOfTransaction = Some(formData)))

@@ -22,7 +22,7 @@ import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced.form
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedData.maxNumberOfItems
 import models.requests.JourneyRequest
@@ -173,7 +173,7 @@ class DocumentsProducedController @Inject()(
     itemId: String,
     sessionId: String,
     updatedData: DocumentsProducedData
-  ): Future[Option[ExportsCacheModel]] =
+  ): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

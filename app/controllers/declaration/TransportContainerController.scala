@@ -24,7 +24,7 @@ import forms.declaration.TransportInformationContainer
 import forms.declaration.TransportInformationContainer.form
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.declaration.TransportInformationContainerData
 import models.declaration.TransportInformationContainerData.maxNumberOfItems
 import models.requests.JourneyRequest
@@ -117,7 +117,7 @@ class TransportContainerController @Inject()(
   private def updateCache(
     sessionId: String,
     formData: TransportInformationContainerData
-  ): Future[Option[ExportsCacheModel]] =
+  ): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(containerData = Some(formData)))

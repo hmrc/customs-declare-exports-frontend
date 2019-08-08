@@ -19,7 +19,7 @@ package models.declaration
 import forms.declaration._
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import play.api.libs.json.Json
 
 case class Locations(
@@ -41,7 +41,7 @@ object Locations {
 
   implicit val format = Json.format[Locations]
 
-  def apply(cacheData: ExportsCacheModel): Locations = Locations(
+  def apply(cacheData: ExportsDeclaration): Locations = Locations(
     destinationCountries = cacheData.locations.destinationCountries,
     goodsLocation = cacheData.locations.goodsLocation,
     warehouseIdentification = cacheData.locations.warehouseIdentification,

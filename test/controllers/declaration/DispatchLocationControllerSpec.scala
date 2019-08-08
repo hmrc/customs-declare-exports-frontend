@@ -20,7 +20,7 @@ import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify}
 import play.api.libs.json.{JsObject, JsString, JsValue}
@@ -34,7 +34,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   override def afterEach() {
@@ -51,7 +51,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
     }
 
     "populate the form fields with data from cache" in {
-      withNewCaching(aCacheModel(withChoice("SMP"), withDispatchLocation(AllowedDispatchLocations.OutsideEU)))
+      withNewCaching(aDeclaration(withChoice("SMP"), withDispatchLocation(AllowedDispatchLocations.OutsideEU)))
 
       val result = route(app, getRequest(dispatchLocationUri)).get
       contentAsString(result) must include("checked=\"checked\"")
@@ -66,7 +66,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
       val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.OutsideEU)
       route(app, postRequest(dispatchLocationUri, validForm)).get.futureValue
 
-      verify(mockExportsCacheService).update(any(), any[ExportsCacheModel])
+      verify(mockExportsCacheService).update(any(), any[ExportsDeclaration])
       verify(mockExportsCacheService, times(2)).get(any())
     }
 

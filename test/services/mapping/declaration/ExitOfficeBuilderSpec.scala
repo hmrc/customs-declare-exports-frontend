@@ -17,16 +17,16 @@
 package services.mapping.declaration
 import forms.Choice.AllowedChoiceValues
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class ExitOfficeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class ExitOfficeBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "ExitOfficeBuilder" should {
 
     "build then add" when {
       "standard journey with no data" in {
-        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withoutOfficeOfExit())
+        val model = aDeclaration(withChoice(AllowedChoiceValues.StandardDec), withoutOfficeOfExit())
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -35,7 +35,7 @@ class ExitOfficeBuilderSpec extends WordSpec with Matchers with ExportsCacheMode
       }
 
       "supplementary journey with no data" in {
-        val model = aCacheModel(withChoice(AllowedChoiceValues.SupplementaryDec), withoutOfficeOfExit())
+        val model = aDeclaration(withChoice(AllowedChoiceValues.SupplementaryDec), withoutOfficeOfExit())
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -44,7 +44,7 @@ class ExitOfficeBuilderSpec extends WordSpec with Matchers with ExportsCacheMode
       }
 
       "standard journey with populated data" in {
-        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(officeId = "office-id"))
+        val model = aDeclaration(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(officeId = "office-id"))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -54,7 +54,7 @@ class ExitOfficeBuilderSpec extends WordSpec with Matchers with ExportsCacheMode
 
       "supplementary journey with populated data" in {
         val model =
-          aCacheModel(withChoice(AllowedChoiceValues.SupplementaryDec), withOfficeOfExit(officeId = "office-id"))
+          aDeclaration(withChoice(AllowedChoiceValues.SupplementaryDec), withOfficeOfExit(officeId = "office-id"))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)

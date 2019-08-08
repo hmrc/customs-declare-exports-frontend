@@ -39,7 +39,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
     )(ec)
 
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   "Consignment References controller" should {
@@ -55,7 +55,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache contains data" in new SetUp {
 
-        withNewCaching(aCacheModel(withConsignmentReferences()))
+        withNewCaching(aDeclaration(withConsignmentReferences()))
 
         val result = controller.displayPage()(getRequest())
 

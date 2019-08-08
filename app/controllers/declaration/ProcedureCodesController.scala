@@ -22,7 +22,7 @@ import forms.declaration.ProcedureCodes
 import forms.declaration.ProcedureCodes.form
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.declaration.ProcedureCodesData
 import models.declaration.ProcedureCodesData._
 import models.requests.JourneyRequest
@@ -88,7 +88,7 @@ class ProcedureCodesController @Inject()(
     itemId: String,
     sessionId: String,
     updatedProcedureCodes: ProcedureCodesData
-  ): Future[Option[ExportsCacheModel]] =
+  ): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

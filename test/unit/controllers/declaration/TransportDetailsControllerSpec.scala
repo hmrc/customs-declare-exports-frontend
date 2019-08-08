@@ -18,7 +18,7 @@ package unit.controllers.declaration
 
 import controllers.declaration.TransportDetailsController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.TransportCodes.{cash, IMOShipIDNumber}
+import forms.declaration.TransportCodes.{IMOShipIDNumber, cash}
 import forms.declaration.TransportDetails
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -39,7 +39,7 @@ class TransportDetailsControllerSpec extends ControllerSpec {
     )(ec)
 
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   "Transport Details Controller" should {
@@ -55,7 +55,7 @@ class TransportDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is not empty" in new SetUp {
 
-        withNewCaching(aCacheModel(withTransportDetails()))
+        withNewCaching(aDeclaration(withTransportDetails()))
 
         val result = controller.displayForm()(getRequest())
 

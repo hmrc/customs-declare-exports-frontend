@@ -16,14 +16,14 @@
 
 package services.mapping.declaration
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class FunctionCodeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class FunctionCodeBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "FunctionCodeBuilder" should {
     "correctly map to the WCO-DEC Declaration Function Code instance" in {
-      val model = aCacheModel()
+      val model = aDeclaration()
       val declaration = new Declaration()
 
       new FunctionCodeBuilder().buildThenAdd(model, declaration)

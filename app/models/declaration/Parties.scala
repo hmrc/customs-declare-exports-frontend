@@ -17,7 +17,7 @@
 package models.declaration
 
 import forms.declaration._
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import play.api.libs.json.Json
 
 case class Parties(
@@ -45,7 +45,7 @@ object Parties {
 
   implicit val format = Json.format[Parties]
 
-  def apply(cacheData: ExportsCacheModel): Parties = Parties(
+  def apply(cacheData: ExportsDeclaration): Parties = Parties(
     exporterDetails = cacheData.parties.exporterDetails,
     consigneeDetails = cacheData.parties.consigneeDetails,
     declarantDetails = cacheData.parties.declarantDetails,

@@ -17,17 +17,17 @@
 package services.mapping.goodsshipment.consignment
 import forms.common.Address
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "ConsignmentCarrierBuilderSpec" should {
 
     "build then add" when {
       "no carrier details" in {
         // Given
-        val model = aCacheModel(withoutCarrierDetails())
+        val model = aDeclaration(withoutCarrierDetails())
         val consignment = new Declaration.Consignment()
 
         // When
@@ -39,7 +39,7 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
 
       "address is empty" in {
         // Given
-        val model = aCacheModel(withCarrierDetails(eori = Some("eori"), address = None))
+        val model = aDeclaration(withCarrierDetails(eori = Some("eori"), address = None))
         val consignment = new Declaration.Consignment()
 
         // When
@@ -51,7 +51,7 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
 
       "eori is empty" in {
         // Given
-        val model = aCacheModel(
+        val model = aDeclaration(
           withCarrierDetails(eori = None, address = Some(Address("name", "line", "city", "postcode", "United Kingdom")))
         )
         val consignment = new Declaration.Consignment()
@@ -65,7 +65,7 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
 
       "fully populated" in {
         // Given
-        val model = aCacheModel(
+        val model = aDeclaration(
           withCarrierDetails(
             eori = Some("eori"),
             address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))
@@ -87,7 +87,7 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
 
       "empty address components" in {
         // Given
-        val model = aCacheModel(withCarrierDetails(eori = Some("eori"), address = Some(Address("", "", "", "", ""))))
+        val model = aDeclaration(withCarrierDetails(eori = Some("eori"), address = Some(Address("", "", "", "", ""))))
         val consignment = new Declaration.Consignment()
 
         // When
@@ -100,7 +100,7 @@ class ConsignmentCarrierBuilderSpec extends WordSpec with Matchers with ExportsC
 
       "invalid country" in {
         // Given
-        val model = aCacheModel(
+        val model = aDeclaration(
           withCarrierDetails(eori = Some("eori"), address = Some(Address("name", "line", "city", "postcode", "other")))
         )
         val consignment = new Declaration.Consignment()

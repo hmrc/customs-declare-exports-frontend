@@ -26,7 +26,7 @@ import forms.declaration.additionaldocuments.DocumentIdentifierAndPart.{document
 import forms.declaration.additionaldocuments.DocumentWriteOff.documentQuantityKey
 import forms.declaration.additionaldocuments.DocumentsProduced._
 import helpers.views.declaration.{CommonMessages, DocumentsProducedMessages}
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.declaration.DocumentsProducedData
 import models.declaration.DocumentsProducedDataSpec._
 import org.mockito.ArgumentMatchers.any
@@ -40,7 +40,7 @@ class DocumentsProducedControllerSpec
 
   import DocumentsProducedControllerSpec._
 
-  val cachedModel: ExportsCacheModel = aCacheModel(withChoice(SupplementaryDec), withItem())
+  val cachedModel: ExportsDeclaration = aDeclaration(withChoice(SupplementaryDec), withItem())
 
   private val uri = uriWithContextPath(s"/declaration/items/${cachedModel.items.head.id}/add-document")
   private val addActionUrlEncoded = (Add.toString, "")
@@ -71,7 +71,7 @@ class DocumentsProducedControllerSpec
 
       val document = DocumentsProducedSpec.correctDocumentsProduced
       val cachedData = ExportItem(id = "id", documentsProducedData = Some(DocumentsProducedData(Seq(document))))
-      withNewCaching(aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+      withNewCaching(aDeclaration(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
 
       val result = route(app, getRequest(uri)).get
       val view = contentAsString(result)
@@ -190,7 +190,7 @@ class DocumentsProducedControllerSpec
 
       "try to add duplicated document" in {
         val cachedData = ExportItem(id = "id", documentsProducedData = Some(correctDocumentsProducedData))
-        withNewCaching(aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+        withNewCaching(aDeclaration(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
 
         val duplicatedDocument: Map[String, String] = correctDocumentsProducedMap
 
@@ -223,7 +223,7 @@ class DocumentsProducedControllerSpec
 
       "try to add more then 99 documents" in {
         val cachedData = ExportItem(id = "id", documentsProducedData = Some(cacheWithMaximumAmountOfHolders))
-        withNewCaching(aCacheModel(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+        withNewCaching(aDeclaration(withItem(cachedData), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
 
         val body = (correctDocumentsProducedMap + ("documentIdentifier" -> "Davis")).toSeq :+ addActionUrlEncoded
         val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
@@ -248,7 +248,7 @@ class DocumentsProducedControllerSpec
         status(result) must be(SEE_OTHER)
 
         verify(mockExportsCacheService, times(2)).get(any[String])
-        verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+        verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
       }
 
       "that does not exist in cache" in {
@@ -260,7 +260,7 @@ class DocumentsProducedControllerSpec
         status(result) must be(SEE_OTHER)
 
         verify(mockExportsCacheService, times(2)).get(any[String])
-        verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+        verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
       }
     }
 
@@ -275,7 +275,7 @@ class DocumentsProducedControllerSpec
         status(result) must be(OK)
 
         verify(mockExportsCacheService, times(2)).get(any[String])
-        verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+        verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
       }
     }
 
@@ -311,7 +311,7 @@ class DocumentsProducedControllerSpec
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
 
         verify(mockExportsCacheService, times(2)).get(any[String])
-        verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+        verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
       }
 
       "provided with a valid document and with existing cache" in {
@@ -324,7 +324,7 @@ class DocumentsProducedControllerSpec
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
 
         verify(mockExportsCacheService, times(2)).get(any[String])
-        verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+        verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
       }
     }
   }

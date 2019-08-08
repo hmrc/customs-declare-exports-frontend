@@ -22,7 +22,7 @@ import connectors.CustomsDeclareExportsConnector
 import javax.inject.Singleton
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.submissionMetric
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.Logger
 import play.api.http.Status.ACCEPTED
@@ -48,7 +48,7 @@ class SubmissionService @Inject()(
 
   def submit(
     sessionId: String,
-    exportsCacheModel: ExportsCacheModel
+    exportsCacheModel: ExportsDeclaration
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
 
     val timerContext = exportsMetrics.startTimer(submissionMetric)
@@ -72,7 +72,7 @@ class SubmissionService @Inject()(
     }
   }
 
-  private def format(exportsCacheModel: ExportsCacheModel): FormattedData = {
+  private def format(exportsCacheModel: ExportsDeclaration): FormattedData = {
     val metaData = mapper.produceMetaData(exportsCacheModel)
 
     val lrn = mapper.declarationLrn(metaData)
@@ -93,7 +93,7 @@ class SubmissionService @Inject()(
       SubmissionResult.toString -> result
     )
 
-  def getCachedData(exportsCacheModel: ExportsCacheModel)(implicit request: JourneyRequest[_]): JsObject =
+  def getCachedData(exportsCacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): JsObject =
     Json.toJson(exportsCacheModel).as[JsObject]
 
   protected case class FormattedData(lrn: Option[String], ducr: Option[String], payload: String)

@@ -18,7 +18,7 @@ package services.cache
 
 import java.time.{Instant, LocalDateTime, ZoneOffset}
 
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterEach, MustMatchers, OptionValues, WordSpec}
@@ -32,7 +32,7 @@ import reactivemongo.play.json.ImplicitBSONHandlers.BSONDocumentWrites
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.global
 
-class ExportsCacheModelRepositorySpec
+class ExportsDeclarationRepositorySpec
     extends WordSpec with GuiceOneAppPerSuite with BeforeAndAfterEach with ScalaFutures with MustMatchers
     with OptionValues {
 
@@ -41,7 +41,7 @@ class ExportsCacheModelRepositorySpec
   private val sessionId = "12345"
   override lazy val app: Application = GuiceApplicationBuilder()
     .build()
-  private val repo = app.injector.instanceOf[ExportsCacheModelRepository]
+  private val repo = app.injector.instanceOf[ExportsDeclarationRepository]
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
@@ -128,8 +128,8 @@ class ExportsCacheModelRepositorySpec
     }
   }
 
-  def createModel(existingSessionId: String): ExportsCacheModel =
-    models.ExportsCacheModel(
+  def createModel(existingSessionId: String): ExportsDeclaration =
+    models.ExportsDeclaration(
       sessionId = existingSessionId,
       draftId = "",
       createdDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC),

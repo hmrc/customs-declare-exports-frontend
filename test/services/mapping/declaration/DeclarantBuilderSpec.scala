@@ -18,16 +18,16 @@ package services.mapping.declaration
 import forms.common.Address
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
+class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsDeclarationBuilder {
 
   "DeclarantBuilder" should {
 
     "build then add" when {
       "no declarant details" in {
-        val model = aCacheModel(withoutDeclarantDetails())
+        val model = aDeclaration(withoutDeclarantDetails())
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -36,7 +36,7 @@ class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar with
       }
 
       "no eori" in {
-        val model = aCacheModel(
+        val model = aDeclaration(
           withDeclarantDetails(
             eori = None,
             address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))
@@ -50,7 +50,7 @@ class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar with
       }
 
       "no address" in {
-        val model = aCacheModel(withDeclarantDetails(eori = Some("eori"), address = None))
+        val model = aDeclaration(withDeclarantDetails(eori = Some("eori"), address = None))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -59,7 +59,7 @@ class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar with
       }
 
       "unknown country" in {
-        val model = aCacheModel(
+        val model = aDeclaration(
           withDeclarantDetails(
             eori = Some("eori"),
             address = Some(Address("name", "line", "city", "postcode", "unknown"))
@@ -73,7 +73,7 @@ class DeclarantBuilderSpec extends WordSpec with Matchers with MockitoSugar with
       }
 
       "populated" in {
-        val model = aCacheModel(
+        val model = aDeclaration(
           withDeclarantDetails(
             eori = Some("eori"),
             address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))

@@ -17,7 +17,7 @@
 package unit.controllers.declaration
 
 import controllers.declaration.PackageInformationController
-import controllers.util.{Add, Remove, SaveAndContinue}
+import controllers.util.{Add, SaveAndContinue}
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.PackageInformation
 import play.api.test.Helpers._
@@ -40,12 +40,12 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
       packageInformationPage
     )(ec)
 
-    val exampleItem = aCachedItem()
+    val exampleItem = anItem()
 
     val itemId = exampleItem.id
 
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
     setupErrorHandler()
   }
 
@@ -55,7 +55,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
         val result = controller.displayPage(itemId)(getRequest())
 
@@ -64,10 +64,10 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "display page method is invoked and cache contain some data" in new SetUp {
 
-        val itemWithPackageInformation = aCachedItem(
+        val itemWithPackageInformation = anItem(
           withPackageInformation(typesOfPackages = Some("12"), numberOfPackages = Some(10), shippingMarks = Some("123"))
         )
-        withNewCaching(aCacheModel(withItem(itemWithPackageInformation)))
+        withNewCaching(aDeclaration(withItem(itemWithPackageInformation)))
 
         val result = controller.displayPage(itemId)(getRequest())
 
@@ -79,7 +79,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "action is incorrect" in new SetUp {
 
-        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
         val body =
           Seq(("typesOfPackages", "NT"), ("numberOfPackages", "123"), ("shippingMarks", "abc"), ("wrongAction", ""))
@@ -91,7 +91,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user tried to continue without adding an item" in new SetUp {
 
-        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
         val body = (SaveAndContinue.toString, "")
 
@@ -102,7 +102,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user tried to add incorrect item" in new SetUp {
 
-        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
         val body =
           Seq(("typesOfPackages", "wrongType"), ("numberOfPackages", ""), ("shippingMarks", ""), (Add.toString, ""))
@@ -115,8 +115,8 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
       "user reached limit of items" in new SetUp {
 
         val packageInformation = PackageInformation(None, None, None)
-        val maxItems = aCachedItem(withPackageInformation(List.fill(99)(packageInformation)))
-        withNewCaching(aCacheModel(withItem(maxItems)))
+        val maxItems = anItem(withPackageInformation(List.fill(99)(packageInformation)))
+        withNewCaching(aDeclaration(withItem(maxItems)))
 
         val body =
           Seq(("typesOfPackages", "NT"), ("numberOfPackages", "123"), ("shippingMarks", "abc"), (Add.toString, ""))
@@ -128,14 +128,14 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user tried to add duplicated value" in new SetUp {
 
-        val item = aCachedItem(
+        val item = anItem(
           withPackageInformation(
             typesOfPackages = Some("NT"),
             numberOfPackages = Some(1),
             shippingMarks = Some("value")
           )
         )
-        withNewCaching(aCacheModel(withItem(item)))
+        withNewCaching(aDeclaration(withItem(item)))
 
         val body =
           Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
@@ -150,7 +150,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user added correct item" in new SetUp {
 
-        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+        withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
         val body =
           Seq(("typesOfPackages", "NT"), ("numberOfPackages", "1"), ("shippingMarks", "value"), (Add.toString, ""))
@@ -162,14 +162,14 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user clicked continue with item in a cache" in new SetUp {
 
-        val item = aCachedItem(
+        val item = anItem(
           withPackageInformation(
             typesOfPackages = Some("NT"),
             numberOfPackages = Some(1),
             shippingMarks = Some("value")
           )
         )
-        withNewCaching(aCacheModel(withItem(item)))
+        withNewCaching(aDeclaration(withItem(item)))
 
         val body = (SaveAndContinue.toString, "")
 

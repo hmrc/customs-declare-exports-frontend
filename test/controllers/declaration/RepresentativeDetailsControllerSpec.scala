@@ -23,7 +23,7 @@ import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.RepresentativeDetails
 import forms.declaration.RepresentativeDetailsSpec._
 import helpers.views.declaration.{CommonMessages, RepresentativeDetailsMessages}
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.declaration.Parties
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -41,7 +41,7 @@ class RepresentativeDetailsControllerSpec
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   override def afterEach() {
@@ -69,7 +69,7 @@ class RepresentativeDetailsControllerSpec
 
     "populate the form fields with data from cache" in {
       withNewCaching(
-        aCacheModel(
+        aDeclaration(
           withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
           withRepresentativeDetails(correctRepresentativeDetails)
         )
@@ -178,7 +178,7 @@ class RepresentativeDetailsControllerSpec
     }
 
     "accept form with status and EORI if on standard journey" in {
-      withNewCaching(aCacheModel(withChoice(StandardDec)))
+      withNewCaching(aDeclaration(withChoice(StandardDec)))
       val result = route(app, postRequest(uri, correctRepresentativeDetailsEORIOnlyJSON)).get
 
       status(result) must be(SEE_OTHER)
@@ -195,7 +195,7 @@ class RepresentativeDetailsControllerSpec
     }
 
     "accept form with status and address only if on standard journey" in {
-      withNewCaching(aCacheModel(withChoice(StandardDec)))
+      withNewCaching(aDeclaration(withChoice(StandardDec)))
       val result = route(app, postRequest(uri, correctRepresentativeDetailsAddressOnlyJSON)).get
 
       status(result) must be(SEE_OTHER)
@@ -205,7 +205,7 @@ class RepresentativeDetailsControllerSpec
 
     "save data to the cache" in {
 
-      val model = aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+      val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
 
       when(mockExportsCacheService.get(any())).thenReturn(Future.successful(Some(model)))
 
@@ -213,7 +213,7 @@ class RepresentativeDetailsControllerSpec
 
       val updatedModel = model.copy(parties = representativeDetails)
 
-      when(mockExportsCacheService.update(any(), any[ExportsCacheModel]))
+      when(mockExportsCacheService.update(any(), any[ExportsDeclaration]))
         .thenReturn(Future.successful(Some(updatedModel)))
 
       route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get.futureValue
@@ -248,7 +248,7 @@ class RepresentativeDetailsControllerSpec
     }
 
     "redirect to Consignee Details page if on standard journey" in {
-      withNewCaching(aCacheModel(withChoice(StandardDec)))
+      withNewCaching(aDeclaration(withChoice(StandardDec)))
       val result = route(app, postRequest(uri, correctRepresentativeDetailsJSON)).get
 
       redirectLocation(result) must be(Some("/customs-declare-exports/declaration/carrier-details"))
