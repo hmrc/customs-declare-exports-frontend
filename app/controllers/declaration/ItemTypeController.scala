@@ -22,7 +22,7 @@ import forms.declaration.ItemType._
 import forms.declaration.{FiscalInformation, ItemType}
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
@@ -246,7 +246,7 @@ class ItemTypeController @Inject()(
     itemId: String,
     sessionId: String,
     updatedItem: ItemType
-  ): Future[Option[ExportsCacheModel]] =
+  ): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

@@ -16,16 +16,16 @@
 
 package services.mapping.declaration
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class BorderTransportMeansBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class BorderTransportMeansBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "BorderTransportMeansBuilder" should {
 
     "build then add" when {
       "no border transport or transport details" in {
-        val model = aCacheModel(withoutTransportDetails(), withoutBorderTransport())
+        val model = aDeclaration(withoutTransportDetails(), withoutBorderTransport())
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -34,7 +34,7 @@ class BorderTransportMeansBuilderSpec extends WordSpec with Matchers with Export
       }
 
       "transport details only" in {
-        val model = aCacheModel(
+        val model = aDeclaration(
           withTransportDetails(
             meansOfTransportCrossingTheBorderNationality = Some("United Kingdom"),
             meansOfTransportCrossingTheBorderType = "type",
@@ -52,7 +52,7 @@ class BorderTransportMeansBuilderSpec extends WordSpec with Matchers with Export
       }
 
       "invalid nationality" in {
-        val model = aCacheModel(
+        val model = aDeclaration(
           withTransportDetails(
             meansOfTransportCrossingTheBorderNationality = Some("other"),
             meansOfTransportCrossingTheBorderType = "type",
@@ -67,7 +67,7 @@ class BorderTransportMeansBuilderSpec extends WordSpec with Matchers with Export
       }
 
       "border transport only" in {
-        val model = aCacheModel(withoutTransportDetails(), withBorderTransport(borderModeOfTransportCode = "code"))
+        val model = aDeclaration(withoutTransportDetails(), withBorderTransport(borderModeOfTransportCode = "code"))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -76,7 +76,7 @@ class BorderTransportMeansBuilderSpec extends WordSpec with Matchers with Export
       }
 
       "fully populated" in {
-        val model = aCacheModel(
+        val model = aDeclaration(
           withTransportDetails(
             meansOfTransportCrossingTheBorderNationality = Some("United Kingdom"),
             meansOfTransportCrossingTheBorderType = "type",

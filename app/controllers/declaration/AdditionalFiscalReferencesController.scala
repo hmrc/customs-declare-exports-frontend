@@ -23,7 +23,7 @@ import forms.declaration.AdditionalFiscalReferencesData._
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -128,7 +128,7 @@ class AdditionalFiscalReferencesController @Inject()(
     itemId: String,
     sessionId: String,
     updatedAdditionalFiscalReferencesData: AdditionalFiscalReferencesData
-  ): Future[Option[ExportsCacheModel]] =
+  ): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

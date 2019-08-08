@@ -19,10 +19,10 @@ package services.mapping.goodsshipment
 import forms.declaration.{DocumentSpec, PreviousDocumentsData}
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
-class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
+class PreviousDocumentsBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsDeclarationBuilder {
 
   "PreviousDocumentsBuilder " should {
 

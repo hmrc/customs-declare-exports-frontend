@@ -48,7 +48,7 @@ class WarehouseIdentificationControllerSpec
   val exampleWarehauseIdentificationNumber = "SecretStash"
   val exampleTransportMode = Maritime
 
-  val cacheModel = aCacheModel(
+  val cacheModel = aDeclaration(
     withChoice(SupplementaryDec),
     withWarehouseIdentification(
       Some(exampleCustomsOfficeIdentifier),

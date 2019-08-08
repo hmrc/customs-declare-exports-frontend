@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.additionaldeclarationtype._
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -66,7 +66,7 @@ class AdditionalDeclarationTypeController @Inject()(
       case StandardDec      => AdditionalDeclarationTypeStandardDec
     }
 
-  private def updateCache(sessionId: String, formData: AdditionalDeclarationType): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: AdditionalDeclarationType): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       exportsCacheService.update(sessionId, model.copy(additionalDeclarationType = Some(formData)))
     })

@@ -22,7 +22,7 @@ import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -126,7 +126,7 @@ class PackageInformationController @Inject()(
     itemId: String,
     sessionId: String,
     updatedCache: Seq[PackageInformation]
-  ): Future[Option[ExportsCacheModel]] =
+  ): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

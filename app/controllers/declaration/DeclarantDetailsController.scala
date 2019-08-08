@@ -19,7 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.DeclarantDetails
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -61,7 +61,7 @@ class DeclarantDetailsController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: DeclarantDetails): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: DeclarantDetails): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       val updatedParties = model.parties.copy(declarantDetails = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))

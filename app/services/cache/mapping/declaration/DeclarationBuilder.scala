@@ -17,7 +17,7 @@
 package services.cache.mapping.declaration
 
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import services.mapping.AuthorisationHoldersBuilder
 import services.mapping.declaration._
 import services.mapping.declaration.consignment.DeclarationConsignmentBuilder
@@ -45,7 +45,7 @@ class DeclarationBuilder @Inject()(
   goodsShipmentBuilder: GoodsShipmentBuilder
 ) {
 
-  def build(model: ExportsCacheModel): Declaration = {
+  def build(model: ExportsDeclaration): Declaration = {
     val declaration = new Declaration()
     functionCodeBuilder.buildThenAdd(model, declaration)
     functionalReferenceIdBuilder.buildThenAdd(model, declaration)

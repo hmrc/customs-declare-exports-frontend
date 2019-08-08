@@ -18,15 +18,15 @@ package services.mapping
 
 import forms.declaration.DeclarationHolder
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.AuthorisationHolder
 import wco.datamodel.wco.declaration_ds.dms._2.{AuthorisationHolderCategoryCodeType, AuthorisationHolderIdentificationIDType}
 
 import scala.collection.JavaConverters._
 
-class AuthorisationHoldersBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
-  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
+class AuthorisationHoldersBuilder @Inject()() extends ModifyingBuilder[ExportsDeclaration, Declaration] {
+  override def buildThenAdd(model: ExportsDeclaration, declaration: Declaration): Unit = {
 
     val holders = model.parties.declarationHoldersData.map {
       _.holders

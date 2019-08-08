@@ -23,7 +23,7 @@ import forms.declaration.destinationCountries.DestinationCountries.{Standard, Su
 import forms.declaration.destinationCountries._
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
@@ -208,7 +208,7 @@ class DestinationCountriesController @Inject()(
         Ok(destinationCountriesStandardPage(Standard.form))
     }
 
-  private def updateCache(sessionId: String, formData: DestinationCountries): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: DestinationCountries): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model =>

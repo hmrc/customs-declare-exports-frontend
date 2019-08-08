@@ -32,7 +32,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
   override def beforeEach {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   override def afterEach() {
@@ -53,7 +53,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val cachedData =
         GoodsLocation("Spain", "1", "1", Some("1"), Some("1"), Some("BAFTA Street"), Some("LS37BH"), Some("SecretCity"))
 
-      withNewCaching(aCacheModel(withChoice(SupplementaryDec), withGoodsLocation(cachedData)))
+      withNewCaching(aDeclaration(withChoice(SupplementaryDec), withGoodsLocation(cachedData)))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)

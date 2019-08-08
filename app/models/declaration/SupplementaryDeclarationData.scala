@@ -17,7 +17,7 @@
 package models.declaration
 
 import forms.declaration._
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.declaration.dectype.DeclarationTypeSupplementary
 
 case class SupplementaryDeclarationData(
@@ -31,7 +31,7 @@ case class SupplementaryDeclarationData(
 
 object SupplementaryDeclarationData {
 
-  def apply(cacheData: ExportsCacheModel): SupplementaryDeclarationData =
+  def apply(cacheData: ExportsDeclaration): SupplementaryDeclarationData =
     SupplementaryDeclarationData(
       declarationType = flattenIfEmpty(DeclarationTypeSupplementary(cacheData)),
       consignmentReferences = cacheData.consignmentReferences,

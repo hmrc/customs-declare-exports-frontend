@@ -16,15 +16,15 @@
 
 package services.mapping.declaration
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import services.mapping.ModifyingBuilder
 import services.mapping.declaration.FunctionalReferenceIdBuilder.build
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationFunctionalReferenceIDType
 
-class FunctionalReferenceIdBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
+class FunctionalReferenceIdBuilder @Inject()() extends ModifyingBuilder[ExportsDeclaration, Declaration] {
 
-  override def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration) {
+  override def buildThenAdd(exportsCacheModel: ExportsDeclaration, declaration: Declaration) {
     exportsCacheModel.consignmentReferences.foreach(references => {
       if (references.lrn.nonEmpty) {
         declaration.setFunctionalReferenceID(build(references.lrn))

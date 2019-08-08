@@ -21,7 +21,7 @@ import forms.Choice.AllowedChoiceValues
 import forms.declaration.TransportDetails
 import forms.declaration.TransportDetails._
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -62,7 +62,7 @@ class TransportDetailsController @Inject()(
     else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
     else Redirect(routes.SummaryController.displayPage())
 
-  private def updateCache(sessionId: String, formData: TransportDetails): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: TransportDetails): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(transportDetails = Some(formData)))

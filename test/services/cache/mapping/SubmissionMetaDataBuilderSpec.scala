@@ -17,26 +17,26 @@
 package services.cache.mapping
 
 import javax.xml.bind.JAXBElement
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
 import org.mockito.ArgumentMatchers._
 import org.mockito.BDDMockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import services.cache.mapping.declaration.DeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class SubmissionMetaDataBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
+class SubmissionMetaDataBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsDeclarationBuilder {
 
   private val declarationBuilder = mock[DeclarationBuilder]
   private val declaration = mock[Declaration]
 
   "SubmissionMetaDataBuilder" should {
     "build wco MetaData with correct defaultValues when empty/ default model is passed in" in {
-      given(declarationBuilder.build(any[ExportsCacheModel])) willReturn (declaration)
+      given(declarationBuilder.build(any[ExportsDeclaration])) willReturn (declaration)
 
-      val metaData = new SubmissionMetaDataBuilder(declarationBuilder).build(aCacheModel())
+      val metaData = new SubmissionMetaDataBuilder(declarationBuilder).build(aDeclaration())
 
       metaData.getWCOTypeName.getValue shouldBe SchemaMandatoryValues.wcoTypeName
       metaData.getWCODataModelVersionCode.getValue shouldBe SchemaMandatoryValues.wcoDataModelVersionCode

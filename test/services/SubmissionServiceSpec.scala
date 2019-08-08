@@ -20,7 +20,7 @@ import base.{CustomExportsBaseSpec, TestHelper}
 import com.kenshoo.play.metrics.Metrics
 import forms.Choice.AllowedChoiceValues
 import metrics.MetricIdentifiers
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -28,12 +28,12 @@ import org.scalatest.OptionValues
 import play.api.test.FakeRequest
 import reactivemongo.play.json.collection.JSONBatchCommands
 import services.audit.{AuditService, AuditTypes, EventData}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 
 import scala.concurrent.Future
 import scala.io.Source
 
-class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with ExportsCacheModelBuilder {
+class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with ExportsDeclarationBuilder {
 
   val mockAuditService = mock[AuditService]
   val mapper = mock[WcoMetadataMapper]
@@ -100,5 +100,5 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
 
   }
 
-  private def createFullModel(): ExportsCacheModel = aCacheModel()
+  private def createFullModel(): ExportsDeclaration = aDeclaration()
 }

@@ -19,13 +19,13 @@ package services.mapping.declaration
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.officeOfExit.OfficeOfExitStandard.AllowedCircumstancesCodeAnswers.yes
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-class SpecificCircumstancesCodeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
-  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
+class SpecificCircumstancesCodeBuilder @Inject()() extends ModifyingBuilder[ExportsDeclaration, Declaration] {
+  override def buildThenAdd(model: ExportsDeclaration, declaration: Declaration): Unit =
     if (model.choice.equals(AllowedChoiceValues.StandardDec)) {
       model.locations.officeOfExit
         .filter(_.circumstancesCode.contains(yes))

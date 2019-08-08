@@ -21,7 +21,7 @@ import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.DeclarationHolder
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders
 import models.requests.JourneyRequest
@@ -115,7 +115,7 @@ class DeclarationHolderController @Inject()(
     Future.successful(BadRequest(declarationHolderPage(formWithError, holders)))
   }
 
-  private def updateCache(sessionId: String, formData: DeclarationHoldersData): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: DeclarationHoldersData): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       val updatedParties = model.parties.copy(declarationHoldersData = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))

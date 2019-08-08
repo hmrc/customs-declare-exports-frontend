@@ -17,7 +17,7 @@
 package services
 
 import base.ExportsTestData
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.BDDMockito._
 import org.mockito.Mockito.verify
@@ -39,7 +39,7 @@ class WcoMetadataMapperSpec extends WordSpec with Matchers with SchemaValidation
     "produce metadata" in {
       val metaData = new MetaData()
 
-      given(submissionMetaDataBuiler.build(any[ExportsCacheModel])) willReturn (metaData)
+      given(submissionMetaDataBuiler.build(any[ExportsDeclaration])) willReturn (metaData)
 
       val result = mapper.produceMetaData(ExportsTestData.exportsCacheModelFull)
 

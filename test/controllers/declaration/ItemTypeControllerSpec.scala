@@ -22,7 +22,7 @@ import forms.declaration.ItemType
 import forms.declaration.ItemType.{nationalAdditionalCodesKey, taricAdditionalCodesKey}
 import forms.declaration.ItemTypeSpec._
 import helpers.views.declaration.{CommonMessages, ItemTypeMessages}
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
 import org.scalatest.concurrent.ScalaFutures
@@ -32,7 +32,7 @@ import services.cache.ExportItem
 class ItemTypeControllerSpec
     extends CustomExportsBaseSpec with ViewValidator with ItemTypeMessages with CommonMessages {
   import ItemTypeControllerSpec._
-  private val cacheModel = aCacheModel(withChoice("SMP"), withItem())
+  private val cacheModel = aDeclaration(withChoice("SMP"), withItem())
   private val uri = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/item-type")
 
   override def beforeEach() {
@@ -59,7 +59,7 @@ class ItemTypeControllerSpec
     "read item from cache and display it" in {
 
       val cachedData = ItemType("5555", Seq("6666"), Seq("7777"), "FaultyGoods", Some("CusCus"), Some("12CD"), "900")
-      withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
+      withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
 
       val result = route(app, getRequest(uri)).get
       val page = contentAsString(result)
@@ -82,7 +82,7 @@ class ItemTypeControllerSpec
       "user added one TARIC" in {
 
         val cachedData = ItemType("100", Seq("1234"), Seq(), "Description", None, None, "100")
-        withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
+        withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
 
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
@@ -94,7 +94,7 @@ class ItemTypeControllerSpec
       "user added one NAC" in {
 
         val cachedData = ItemType("100", Seq(), Seq("1234"), "Description", None, None, "100")
-        withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
+        withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
 
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
@@ -431,7 +431,7 @@ class ItemTypeControllerSpec
         val userInput = addActionTypeToFormData(SaveAndContinue, correctItemTypeMap)
         route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
-        verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+        verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
       }
 
       "return 303 code" in {
@@ -468,7 +468,7 @@ class ItemTypeControllerSpec
 
         "user tries to add duplicated TARIC" in {
           val cachedData = ItemType("100", fourDigitsSequence(98), Seq(), "Description", None, None, "100")
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
+          withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
 
           val form =
             buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", taricAdditionalCodes = Seq("1010"))
@@ -488,7 +488,7 @@ class ItemTypeControllerSpec
         "user tries to add more than 99 TARIC" in {
 
           val cachedData = ItemType("100", fourDigitsSequence(99), Seq(), "Description", None, None, "100")
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
+          withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
 
           val form =
             buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", taricAdditionalCodes = Seq("2345"))
@@ -508,7 +508,7 @@ class ItemTypeControllerSpec
         "user tries to add duplicated NAC" in {
 
           val cachedData = ItemType("100", Seq(), Seq("VATE"), "Description", None, None, "100")
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
+          withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedData))), withChoice("SMP")))
 
           val form =
             buildItemTypeUrlEncodedInput(Add)(combinedNomenclatureCode = "100", nationalAdditionalCodes = Seq("VATE"))
@@ -533,13 +533,13 @@ class ItemTypeControllerSpec
             ItemType("100", fourDigitsSequence(10), Seq("VATE", "VATR"), "Description", None, None, "100")
           val taricToAdd = "1234"
           val userInput = buildItemTypeUrlEncodedInput(Add)(taricAdditionalCodes = Seq(taricToAdd))
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
+          withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes :+ taricToAdd)
-          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+          verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
         }
 
         "provided with NAC" in {
@@ -547,13 +547,13 @@ class ItemTypeControllerSpec
             ItemType("100", fourDigitsSequence(10), Seq("VATE", "VATR"), "Description", None, None, "100")
           val nacToAdd = "X442"
           val userInput = buildItemTypeUrlEncodedInput(Add)(nationalAdditionalCodes = Seq(nacToAdd))
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
+          withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
           val expectedUpdatedItemType =
             cachedItemType.copy(nationalAdditionalCodes = cachedItemType.nationalAdditionalCodes :+ nacToAdd)
-          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+          verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
         }
 
         "provided with both TARIC and NAC" in {
@@ -565,7 +565,7 @@ class ItemTypeControllerSpec
             taricAdditionalCodes = Seq(taricToAdd),
             nationalAdditionalCodes = Seq(nacToAdd)
           )
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
+          withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
@@ -573,7 +573,7 @@ class ItemTypeControllerSpec
             taricAdditionalCodes = cachedItemType.taricAdditionalCodes :+ taricToAdd,
             nationalAdditionalCodes = cachedItemType.nationalAdditionalCodes :+ nacToAdd
           )
-          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+          verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
         }
       }
 
@@ -605,7 +605,7 @@ class ItemTypeControllerSpec
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_")), Map.empty)
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
+          withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
           ScalaFutures.whenReady(result.failed) { exc =>
@@ -618,7 +618,7 @@ class ItemTypeControllerSpec
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_incorrectIndex")), Map.empty)
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
+          withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
           val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
           ScalaFutures.whenReady(result.failed) { exc =>
@@ -634,26 +634,26 @@ class ItemTypeControllerSpec
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_0")), Map.empty)
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
+          withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes.tail)
-          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+          verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
         }
 
         "removing the last element" in {
           val cachedItemType =
             ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_9")), Map.empty)
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
+          withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = cachedItemType.taricAdditionalCodes.init)
-          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+          verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
         }
 
         "removing an element in the middle" in {
@@ -661,13 +661,13 @@ class ItemTypeControllerSpec
           val cachedItemType =
             ItemType("100", taricAddCodes, Seq.empty, "Description", None, None, "100")
           val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_2")), Map.empty)
-          withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
+          withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
           route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get.futureValue
 
           val expectedUpdatedItemType =
             cachedItemType.copy(taricAdditionalCodes = Seq("1111", "2222", "4444", "5555"))
-          verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+          verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
         }
       }
 
@@ -675,7 +675,7 @@ class ItemTypeControllerSpec
         val cachedItemType =
           ItemType("100", fourDigitsSequence(10), fourDigitsSequence(10), "Description", None, None, "100")
         val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_0")), Map.empty)
-        withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
+        withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
         val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
 
@@ -686,7 +686,7 @@ class ItemTypeControllerSpec
         val cachedItemType =
           ItemType("100", fourDigitsSequence(10), fourDigitsSequence(10), "Description", None, None, "100")
         val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_0")), Map.empty)
-        withNewCaching(aCacheModel(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
+        withNewCaching(aDeclaration(withItem(ExportItem("id", itemType = Some(cachedItemType))), withChoice("SMP")))
 
         val result = route(app, postRequestFormUrlEncoded(uri, userInput.toSeq: _*)).get
 

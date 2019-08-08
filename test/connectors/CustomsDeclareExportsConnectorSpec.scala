@@ -146,7 +146,7 @@ object CustomsDeclareExportsConnectorSpec {
   private val instant = Instant.EPOCH
 
   val exportCacheModel =
-    models.ExportsCacheModel(
+    models.ExportsDeclaration(
       sessionId = "",
       draftId = "",
       createdDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC),

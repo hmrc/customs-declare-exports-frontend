@@ -20,12 +20,12 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import services.mapping.goodsshipment.consignment.ConsignmentCarrierBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
 class DeclarationConsignmentBuilderSpec
-    extends WordSpec with Matchers with MockitoSugar with BeforeAndAfterEach with ExportsCacheModelBuilder {
+    extends WordSpec with Matchers with MockitoSugar with BeforeAndAfterEach with ExportsDeclarationBuilder {
 
   private val freightBuilder = mock[FreightBuilder]
   private val iteneraryBuilder = mock[IteneraryBuilder]
@@ -42,7 +42,7 @@ class DeclarationConsignmentBuilderSpec
 
       "standard journey" in {
         // Given
-        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec))
+        val model = aDeclaration(withChoice(AllowedChoiceValues.StandardDec))
         val declaration = new Declaration()
 
         // When
@@ -57,7 +57,7 @@ class DeclarationConsignmentBuilderSpec
 
       "other journey" in {
         // Given
-        val model = aCacheModel(withChoice("other"))
+        val model = aDeclaration(withChoice("other"))
         val declaration = new Declaration()
 
         // When

@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport._
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -57,7 +57,7 @@ class BorderTransportController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: BorderTransport): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: BorderTransport): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(borderTransport = Some(formData)))

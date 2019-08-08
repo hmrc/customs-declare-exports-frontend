@@ -24,7 +24,7 @@ import models.declaration.{Locations, Parties, TransportInformationContainerData
 import play.api.libs.json._
 import services.cache.ExportItem
 
-case class ExportsCacheModel(
+case class ExportsDeclaration(
   sessionId: String,
   draftId: String,
   createdDateTime: LocalDateTime,
@@ -45,7 +45,7 @@ case class ExportsCacheModel(
   seals: Seq[Seal] = Seq.empty
 )
 
-object ExportsCacheModel {
+object ExportsDeclaration {
   implicit val formatInstant: OFormat[LocalDateTime] = new OFormat[LocalDateTime] {
     override def writes(datetime: LocalDateTime): JsObject =
       Json.obj("$date" -> datetime.toInstant(ZoneOffset.UTC).toEpochMilli)
@@ -60,5 +60,5 @@ object ExportsCacheModel {
         case _ => JsError("Unexpected Date Format. Expected an object containing a $date field.")
       }
   }
-  implicit val format: OFormat[ExportsCacheModel] = Json.format[ExportsCacheModel]
+  implicit val format: OFormat[ExportsDeclaration] = Json.format[ExportsDeclaration]
 }

@@ -19,17 +19,17 @@ package services.cache
 import java.time.LocalDateTime.now
 
 import javax.inject.{Inject, Singleton}
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import reactivemongo.play.json.collection.JSONBatchCommands.FindAndModifyCommand
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ExportsCacheService @Inject()(journeyCacheModelRepo: ExportsCacheModelRepository)(implicit ec: ExecutionContext) {
+class ExportsCacheService @Inject()(journeyCacheModelRepo: ExportsDeclarationRepository)(implicit ec: ExecutionContext) {
 
-  def get(sessionId: String): Future[Option[ExportsCacheModel]] = journeyCacheModelRepo.get(sessionId)
+  def get(sessionId: String): Future[Option[ExportsDeclaration]] = journeyCacheModelRepo.get(sessionId)
 
-  def update(sessionId: String, model: ExportsCacheModel): Future[Option[ExportsCacheModel]] =
+  def update(sessionId: String, model: ExportsDeclaration): Future[Option[ExportsDeclaration]] =
     journeyCacheModelRepo.upsert(sessionId, model.copy(updatedDateTime = now()))
 
   def getItemByIdAndSession(itemId: String, sessionId: String): Future[Option[ExportItem]] =

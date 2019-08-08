@@ -17,10 +17,10 @@
 package services.mapping.declaration
 
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "GoodsItemQuantityBuilder" should {
     "correctly map to the WCO-DEC Type Goods Item Quantity" in {
@@ -28,7 +28,7 @@ class GoodsItemQuantityBuilderSpec extends WordSpec with Matchers with ExportsCa
       val builder = new GoodsItemQuantityBuilder
 
       val declaration = new Declaration
-      val model = aCacheModel(withItems(6))
+      val model = aDeclaration(withItems(6))
       builder.buildThenAdd(model, declaration)
 
       declaration.getGoodsItemQuantity.getValue should be(new java.math.BigDecimal(6))

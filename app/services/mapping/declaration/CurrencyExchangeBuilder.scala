@@ -18,16 +18,16 @@ package services.mapping.declaration
 
 import forms.declaration.TotalNumberOfItems
 import javax.inject.Inject
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.CurrencyExchange
 
 import scala.collection.JavaConverters._
 
-class CurrencyExchangeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
+class CurrencyExchangeBuilder @Inject()() extends ModifyingBuilder[ExportsDeclaration, Declaration] {
 
-  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = {
+  override def buildThenAdd(model: ExportsDeclaration, declaration: Declaration): Unit = {
     val currencyExchanges: Seq[CurrencyExchange] = model.totalNumberOfItems
       .filter(_.exchangeRate.isDefined)
       .map(createCurrencyExchange)

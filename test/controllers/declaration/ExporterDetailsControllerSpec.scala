@@ -31,7 +31,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   override def afterEach() = {
@@ -49,7 +49,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
     }
 
     "read item from cache and display it" in {
-      val cachedData = aCacheModel(
+      val cachedData = aDeclaration(
         withChoice("SMP"),
         withExporterDetails(
           Some("99980"),

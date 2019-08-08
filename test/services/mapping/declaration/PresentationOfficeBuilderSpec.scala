@@ -17,16 +17,16 @@
 package services.mapping.declaration
 import forms.Choice.AllowedChoiceValues
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class PresentationOfficeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class PresentationOfficeBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "PresentationOfficeBuilder" should {
 
     "build then add" when {
       "no office of exit" in {
-        val model = aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withoutOfficeOfExit())
+        val model = aDeclaration(withChoice(AllowedChoiceValues.StandardDec), withoutOfficeOfExit())
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -36,7 +36,7 @@ class PresentationOfficeBuilderSpec extends WordSpec with Matchers with ExportsC
 
       "empty presentation office id" in {
         val model =
-          aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(presentationOfficeId = None))
+          aDeclaration(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(presentationOfficeId = None))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -45,7 +45,7 @@ class PresentationOfficeBuilderSpec extends WordSpec with Matchers with ExportsC
       }
 
       "choice is not standard" in {
-        val model = aCacheModel(withChoice("other"), withOfficeOfExit(presentationOfficeId = Some("id")))
+        val model = aDeclaration(withChoice("other"), withOfficeOfExit(presentationOfficeId = Some("id")))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -55,7 +55,7 @@ class PresentationOfficeBuilderSpec extends WordSpec with Matchers with ExportsC
 
       "populated" in {
         val model =
-          aCacheModel(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(presentationOfficeId = Some("id")))
+          aDeclaration(withChoice(AllowedChoiceValues.StandardDec), withOfficeOfExit(presentationOfficeId = Some("id")))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)

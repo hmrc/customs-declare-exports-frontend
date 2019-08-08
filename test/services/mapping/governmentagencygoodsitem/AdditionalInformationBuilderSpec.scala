@@ -30,7 +30,7 @@ class AdditionalInformationBuilderSpec extends WordSpec with Matchers with Mocki
 
     "build then add" when {
       "no additional information" in {
-        val exportItem = aCachedItem(withoutAdditionalInformation())
+        val exportItem = anItem(withoutAdditionalInformation())
         val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
 
         builder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
@@ -39,7 +39,7 @@ class AdditionalInformationBuilderSpec extends WordSpec with Matchers with Mocki
       }
 
       "populated additional information" in {
-        val exportItem = aCachedItem(withAdditionalInformation(additionalInformation))
+        val exportItem = anItem(withAdditionalInformation(additionalInformation))
         val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
 
         builder.buildThenAdd(exportItem, governmentAgencyGoodsItem)

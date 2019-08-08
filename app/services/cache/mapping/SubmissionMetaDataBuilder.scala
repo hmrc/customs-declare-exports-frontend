@@ -19,7 +19,7 @@ package services.cache.mapping
 import javax.inject.Inject
 import javax.xml.bind.JAXBElement
 import javax.xml.namespace.QName
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import models.declaration.SupplementaryDeclarationData.SchemaMandatoryValues
 import services.cache.mapping.declaration.DeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
@@ -28,7 +28,7 @@ import wco.datamodel.wco.metadata_ds_dms._2._
 
 class SubmissionMetaDataBuilder @Inject()(declarationBuilder: DeclarationBuilder) {
 
-  def build(model: ExportsCacheModel): MetaData = {
+  def build(model: ExportsDeclaration): MetaData = {
     val metaData = createMetaDataWithConstants()
 
     val element: JAXBElement[Declaration] = new JAXBElement[Declaration](

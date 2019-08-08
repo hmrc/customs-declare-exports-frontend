@@ -20,7 +20,7 @@ import controllers.declaration.{AdditionalFiscalReferencesController, routes}
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
-import models.ExportsCacheModel
+import models.ExportsDeclaration
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import services.cache.ExportItem
@@ -47,7 +47,7 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
 
     setupErrorHandler()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
   }
 
   "Additional fiscal references controller" should {
@@ -62,8 +62,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
 
       "display page method is invoked with empty additional fiscal references" in new SetUp {
         val itemCacheData = ExportItem("itemId", additionalFiscalReferencesData = None)
-        val cachedData: ExportsCacheModel =
-          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+        val cachedData: ExportsDeclaration =
+          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val result: Future[Result] = controller.displayPage("itemId")(getRequest())
@@ -78,8 +78,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData: ExportsCacheModel =
-          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+        val cachedData: ExportsDeclaration =
+          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val result: Future[Result] = controller.displayPage("itemId")(getRequest())
@@ -118,8 +118,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData: ExportsCacheModel =
-          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+        val cachedData: ExportsDeclaration =
+          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val duplicatedForm: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), addActionUrlEncoded)
@@ -137,8 +137,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData: ExportsCacheModel =
-          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+        val cachedData: ExportsDeclaration =
+          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val form: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "54321"), addActionUrlEncoded)
@@ -168,8 +168,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData: ExportsCacheModel =
-          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+        val cachedData: ExportsDeclaration =
+          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val duplicatedForm: Seq[(String, String)] =
@@ -188,8 +188,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData: ExportsCacheModel =
-          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+        val cachedData: ExportsDeclaration =
+          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val form: Seq[(String, String)] =
@@ -229,8 +229,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData: ExportsCacheModel =
-          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+        val cachedData: ExportsDeclaration =
+          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val correctForm: (String, String) = saveAndContinueActionUrlEncoded
@@ -248,8 +248,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with Error
           additionalFiscalReferencesData =
             Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345"))))
         )
-        val cachedData: ExportsCacheModel =
-          aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
+        val cachedData: ExportsDeclaration =
+          aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withItem(itemCacheData))
         withNewCaching(cachedData)
 
         val removeForm: (String, String) = (Remove.toString, "0")

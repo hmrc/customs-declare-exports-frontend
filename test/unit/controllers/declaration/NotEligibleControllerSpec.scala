@@ -33,7 +33,7 @@ class NotEligibleControllerSpec extends ControllerSpec {
       )
 
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   "Not Eligible Controller" should {

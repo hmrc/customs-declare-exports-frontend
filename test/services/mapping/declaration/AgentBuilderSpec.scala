@@ -17,17 +17,17 @@
 package services.mapping.declaration
 import forms.declaration.RepresentativeDetailsSpec
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class AgentBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class AgentBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "AgentBuilder" should {
 
     "correctly map from ExportsCacheModel to the WCO-DEC Agent instance" when {
       "only EORI is supplied" in {
         val model =
-          aCacheModel(withRepresentativeDetails(RepresentativeDetailsSpec.correctRepresentativeDetailsEORIOnly))
+          aDeclaration(withRepresentativeDetails(RepresentativeDetailsSpec.correctRepresentativeDetailsEORIOnly))
         val agentBuilder = new AgentBuilder
         val emptyDeclaration = new Declaration
 
@@ -41,7 +41,7 @@ class AgentBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuil
       }
       "only Address is supplied" in {
         val model =
-          aCacheModel(withRepresentativeDetails(RepresentativeDetailsSpec.correctRepresentativeDetailsAddressOnly))
+          aDeclaration(withRepresentativeDetails(RepresentativeDetailsSpec.correctRepresentativeDetailsAddressOnly))
         val agentBuilder = new AgentBuilder
         val emptyDeclaration = new Declaration
 

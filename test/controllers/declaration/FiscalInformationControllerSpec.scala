@@ -28,7 +28,7 @@ import services.cache.ExportItem
 class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalInformationMessages {
 
   private val existingItem = ExportItem("id")
-  private val cacheModel = aCacheModel(withItem(existingItem), withChoice(StandardDec))
+  private val cacheModel = aDeclaration(withItem(existingItem), withChoice(StandardDec))
   private val uri: String = uriWithContextPath(s"/declaration/items/${cacheModel.items.head.id}/fiscal-information")
   private val emptyFiscalInformationJson: JsValue = JsObject(Map("onwardSupplyRelief" -> JsString("")))
   private val incorrectFiscalInformation: JsValue = JsObject(
@@ -56,7 +56,7 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
 
     "read item from cache and display it" in {
       withNewCaching(
-        aCacheModel(
+        aDeclaration(
           withItem(ExportItem("id", fiscalInformation = Some(FiscalInformation("Yes")))),
           withChoice(StandardDec)
         )
@@ -99,7 +99,7 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
 
     "redirect to 'ItemsSummary' page and clear fiscal references when choice is no" in {
       withNewCaching(
-        aCacheModel(
+        aDeclaration(
           withItem(ExportItem("id", additionalFiscalReferencesData = Some(mock[AdditionalFiscalReferencesData]))),
           withChoice(StandardDec)
         )

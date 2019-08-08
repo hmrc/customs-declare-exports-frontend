@@ -16,16 +16,16 @@
 
 package services.mapping.declaration
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class InvoiceAmountBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class InvoiceAmountBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "InvoiceAmountBuilder" should {
 
     "build then add" when {
       "no total items" in {
-        val model = aCacheModel(withoutTotalNumberOfItems())
+        val model = aDeclaration(withoutTotalNumberOfItems())
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -34,7 +34,7 @@ class InvoiceAmountBuilderSpec extends WordSpec with Matchers with ExportsCacheM
       }
 
       "empty total amount invoiced" in {
-        val model = aCacheModel(withTotalNumberOfItems(totalAmountInvoiced = None))
+        val model = aDeclaration(withTotalNumberOfItems(totalAmountInvoiced = None))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -43,7 +43,7 @@ class InvoiceAmountBuilderSpec extends WordSpec with Matchers with ExportsCacheM
       }
 
       "populated" in {
-        val model = aCacheModel(withTotalNumberOfItems(totalAmountInvoiced = Some("123.45")))
+        val model = aDeclaration(withTotalNumberOfItems(totalAmountInvoiced = Some("123.45")))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)

@@ -18,7 +18,6 @@ package controllers.declaration
 
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
 import org.mockito.Mockito
 import play.api.test.Helpers._
@@ -29,7 +28,7 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
 
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   override def afterEach() {
