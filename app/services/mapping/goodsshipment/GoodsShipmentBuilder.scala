@@ -16,7 +16,7 @@
 
 package services.mapping.goodsshipment
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsDeclaration
 import services.mapping.ModifyingBuilder
 import services.mapping.goodsshipment.consignment.ConsignmentBuilder
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilder
@@ -34,9 +34,9 @@ class GoodsShipmentBuilder @Inject()(
   warehouseBuilder: WarehouseBuilder,
   previousDocumentsBuilder: PreviousDocumentsBuilder,
   aeoMutualRecognitionPartiesBuilder: AEOMutualRecognitionPartiesBuilder
-) extends ModifyingBuilder[ExportsCacheModel, Declaration] {
+) extends ModifyingBuilder[ExportsDeclaration, Declaration] {
 
-  override def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit = {
+  override def buildThenAdd(exportsCacheModel: ExportsDeclaration, declaration: Declaration): Unit = {
     val goodsShipment = new GoodsShipment()
 
     exportsCacheModel.natureOfTransaction.foreach(

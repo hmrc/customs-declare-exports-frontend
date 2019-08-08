@@ -18,16 +18,14 @@ package controllers.declaration
 
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.WarehouseIdentification
 import forms.declaration.WarehouseIdentificationSpec._
-import org.mockito.Mockito
 import play.api.test.Helpers._
 
 class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
 
   private val uri = uriWithContextPath("/declaration/warehouse")
 
-  private val exampleModel = aCacheModel(withChoice(SupplementaryDec))
+  private val exampleModel = aDeclaration(withChoice(SupplementaryDec))
 
   override def beforeEach() {
     authorizedUser()

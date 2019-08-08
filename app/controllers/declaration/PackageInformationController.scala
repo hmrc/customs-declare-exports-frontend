@@ -22,11 +22,12 @@ import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.cache.{ExportItem, ExportsCacheModel, ExportsCacheService}
+import services.cache.{ExportItem, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.package_information
 
@@ -123,7 +124,7 @@ class PackageInformationController @Inject()(
     itemId: String,
     sessionId: String,
     updatedCache: Seq[PackageInformation]
-  ): Future[Option[ExportsCacheModel]] =
+  ): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

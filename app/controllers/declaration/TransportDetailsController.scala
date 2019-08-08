@@ -21,11 +21,12 @@ import forms.Choice.AllowedChoiceValues
 import forms.declaration.TransportDetails
 import forms.declaration.TransportDetails._
 import javax.inject.Inject
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.transport_details
 
@@ -61,7 +62,7 @@ class TransportDetailsController @Inject()(
     else if (request.choice.value == AllowedChoiceValues.StandardDec) Redirect(routes.SealController.displayForm())
     else Redirect(routes.SummaryController.displayPage())
 
-  private def updateCache(sessionId: String, formData: TransportDetails): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: TransportDetails): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(transportDetails = Some(formData)))

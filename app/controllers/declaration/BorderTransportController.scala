@@ -20,10 +20,11 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.BorderTransport
 import forms.declaration.BorderTransport._
 import javax.inject.Inject
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.border_transport
 
@@ -56,7 +57,7 @@ class BorderTransportController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: BorderTransport): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: BorderTransport): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(borderTransport = Some(formData)))

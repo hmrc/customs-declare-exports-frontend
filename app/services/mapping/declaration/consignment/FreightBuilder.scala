@@ -17,15 +17,15 @@
 package services.mapping.declaration.consignment
 
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsDeclaration
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Consignment.Freight
 import wco.datamodel.wco.declaration_ds.dms._2.FreightPaymentMethodCodeType
 
-class FreightBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration.Consignment] {
+class FreightBuilder @Inject()() extends ModifyingBuilder[ExportsDeclaration, Declaration.Consignment] {
 
-  override def buildThenAdd(model: ExportsCacheModel, consignment: Declaration.Consignment): Unit =
+  override def buildThenAdd(model: ExportsDeclaration, consignment: Declaration.Consignment): Unit =
     model.transportDetails
       .flatMap(_.paymentMethod)
       .map(createFreight)

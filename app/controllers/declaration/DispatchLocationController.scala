@@ -21,10 +21,11 @@ import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import javax.inject.Inject
 import models.requests.JourneyRequest
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.dispatch_location
 
@@ -53,7 +54,7 @@ class DispatchLocationController @Inject()(
       .fold(
         (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(formWithErrors))),
         validDispatchLocation =>
-          updateCache(journeySessionId, validDispatchLocation)
+          updateCache(validDispatchLocation)
             .map(_ => Redirect(specifyNextPage(validDispatchLocation)))
       )
   }
@@ -66,8 +67,7 @@ class DispatchLocationController @Inject()(
         controllers.declaration.routes.NotEligibleController.displayPage()
     }
 
-  private def updateCache(sessionId: String, formData: DispatchLocation)
-                         (implicit request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] =
+  private def updateCache(formData: DispatchLocation)(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportCacheModelSyncDirect(model => model.copy(dispatchLocation = Some(formData)))
 
 }

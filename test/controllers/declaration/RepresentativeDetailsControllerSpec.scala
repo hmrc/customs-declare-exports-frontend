@@ -23,11 +23,14 @@ import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.RepresentativeDetails
 import forms.declaration.RepresentativeDetailsSpec._
 import helpers.views.declaration.{CommonMessages, RepresentativeDetailsMessages}
+import models.ExportsDeclaration
 import models.declaration.Parties
 import org.mockito.Mockito.reset
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class RepresentativeDetailsControllerSpec
     extends CustomExportsBaseSpec with RepresentativeDetailsMessages with CommonMessages with OptionValues {
@@ -35,9 +38,9 @@ class RepresentativeDetailsControllerSpec
   import RepresentativeDetailsControllerSpec._
   private val uri = uriWithContextPath("/declaration/representative-details")
 
-  val supplementaryModel = aCacheModel(withChoice(SupplementaryDec))
+  val supplementaryModel = aDeclaration(withChoice(SupplementaryDec))
 
-  val standardModel = aCacheModel(withChoice(StandardDec))
+  val standardModel = aDeclaration(withChoice(StandardDec))
 
   override def beforeEach() {
     super.beforeEach()
@@ -70,7 +73,7 @@ class RepresentativeDetailsControllerSpec
     }
 
     "populate the form fields with data from cache" in {
-      val model = aCacheModel(
+      val model = aDeclaration(
         withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
         withRepresentativeDetails(correctRepresentativeDetails)
       )
@@ -218,7 +221,7 @@ class RepresentativeDetailsControllerSpec
 
       val representativeDetails = Parties(representativeDetails = Some(correctRepresentativeDetails))
 
-      val model = aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+      val model = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
       withNewCaching(model)
 
       route(app, postRequest(uri, correctRepresentativeDetailsJSON, sessionId = model.sessionId)).get.futureValue

@@ -42,7 +42,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
     authorizedUser()
     setupErrorHandler()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   val containerData = TransportInformationContainerData(Seq(TransportInformationContainer("id")))
@@ -63,7 +63,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "display page method is invoked with data in cache" in new SetUp {
 
-        withNewCaching(aCacheModel(withContainerData(containerData)))
+        withNewCaching(aDeclaration(withContainerData(containerData)))
 
         val result = controller.displayPage()(getRequest())
 
@@ -96,7 +96,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user put duplicated item" in new SetUp {
 
-        withNewCaching(aCacheModel(withContainerData(containerData)))
+        withNewCaching(aDeclaration(withContainerData(containerData)))
 
         val duplicatedForm = Seq(("id", "id"), addActionUrlEncoded)
 
@@ -107,7 +107,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user reach maximum amount of items" in new SetUp {
 
-        withNewCaching(aCacheModel(withContainerData(maxContainerData)))
+        withNewCaching(aDeclaration(withContainerData(maxContainerData)))
 
         val form = Seq(("id", "id2"), addActionUrlEncoded)
 
@@ -130,7 +130,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user put duplicated item" in new SetUp {
 
-        withNewCaching(aCacheModel(withContainerData(containerData)))
+        withNewCaching(aDeclaration(withContainerData(containerData)))
 
         val duplicatedForm = Seq(("id", "id"), saveAndContinueActionUrlEncoded)
 
@@ -141,7 +141,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user reach maximum amount of items" in new SetUp {
 
-        withNewCaching(aCacheModel(withContainerData(maxContainerData)))
+        withNewCaching(aDeclaration(withContainerData(maxContainerData)))
 
         val form = Seq(("id", "id2"), saveAndContinueActionUrlEncoded)
 
@@ -173,7 +173,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user save correct data without new item" in new SetUp {
 
-        withNewCaching(aCacheModel(withContainerData(containerData)))
+        withNewCaching(aDeclaration(withContainerData(containerData)))
 
         val result = controller.submitForm()(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
@@ -182,7 +182,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user remove existing item" in new SetUp {
 
-        withNewCaching(aCacheModel(withContainerData(containerData)))
+        withNewCaching(aDeclaration(withContainerData(containerData)))
 
         val removeForm = (Remove.toString, "0")
 

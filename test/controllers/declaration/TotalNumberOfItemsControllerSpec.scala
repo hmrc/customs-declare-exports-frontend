@@ -28,7 +28,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
 
   private val uri = uriWithContextPath("/declaration/total-numbers-of-items")
 
-  val exampleModel = aCacheModel(withChoice(SupplementaryDec))
+  val exampleModel = aDeclaration(withChoice(SupplementaryDec))
 
   override def beforeEach {
     super.beforeEach()
@@ -51,7 +51,7 @@ class TotalNumberOfItemsControllerSpec extends CustomExportsBaseSpec with TotalN
     }
 
     "read item from cache and display it" in {
-      val model = aCacheModel(withChoice(SupplementaryDec), withTotalNumberOfItems(Some("7987.1"), Some("1.33"), " 631.1"))
+      val model = aDeclaration(withChoice(SupplementaryDec), withTotalNumberOfItems(Some("7987.1"), Some("1.33"), " 631.1"))
       withNewCaching(model)
 
       val Some(result) = route(app, getRequest(uri, sessionId = model.sessionId))

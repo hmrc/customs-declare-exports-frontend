@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, CarrierDetailsController}
+import controllers.declaration.{CarrierDetailsController, routes}
 import forms.Choice
 import forms.declaration.{CarrierDetails, EntityDetails}
 import play.api.libs.json.Json
@@ -38,7 +38,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
     )(ec)
 
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
   }
 
   "Carrier Details Controller" should {

@@ -16,9 +16,10 @@
 
 package controllers.declaration
 
+import models.ExportsDeclaration
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.mvc.AnyContent
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -28,30 +29,30 @@ trait ModelCacheable {
   @deprecated("Please use updateExportCacheModel", since = "2019-08-07")
   protected def getAndUpdateExportCacheModel(
     sessionId: String,
-    update: ExportsCacheModel => Future[Option[ExportsCacheModel]]
-  )(implicit ec: ExecutionContext): Future[Option[ExportsCacheModel]] =
+    update: ExportsDeclaration => Future[Option[ExportsDeclaration]]
+  )(implicit ec: ExecutionContext): Future[Option[ExportsDeclaration]] =
     exportsCacheService.get(sessionId).flatMap {
       case Some(model) => update(model)
       case _           => Future.successful(None)
     }
 
   protected def updateExportCacheModelSyncDirect(
-    update: ExportsCacheModel => ExportsCacheModel
-  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] = {
+    update: ExportsDeclaration => ExportsDeclaration
+  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] = {
     exportsCacheService.update(request.journeySessionId, update(request.cacheModel))
   }
 
   protected def updateExportCacheModelSync(
-    update: ExportsCacheModel => Option[ExportsCacheModel]
-  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] = {
+    update: ExportsDeclaration => Option[ExportsDeclaration]
+  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] = {
       update(request.cacheModel).map(
         model => exportsCacheService.update(request.journeySessionId, model)
       ).getOrElse(Future.successful(None))
   }
 
   protected def updateExportCacheModel(
-    update: ExportsCacheModel => Future[Option[ExportsCacheModel]]
-  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] = {
+    update: ExportsDeclaration => Future[Option[ExportsDeclaration]]
+  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] = {
     update(request.cacheModel).flatMap { updatedModel =>
       updatedModel.map(
         model => exportsCacheService.update(request.journeySessionId, model)

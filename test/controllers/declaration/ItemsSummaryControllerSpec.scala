@@ -18,12 +18,13 @@ package controllers.declaration
 
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import models.ExportsDeclaration
 import models.declaration.governmentagencygoodsitem.{GovernmentAgencyGoodsItem, Packaging}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.Helpers._
-import services.cache.{ExportItem, ExportsCacheModel}
+import services.cache.ExportItem
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
 class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues {
@@ -37,10 +38,10 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
   private val testItem2 = ExportItem(id = item2Id)
 
   private val cacheModelWith1Item =
-    aCacheModel(withItem(testItem), withChoice(SupplementaryDec))
+    aDeclaration(withItem(testItem), withChoice(SupplementaryDec))
 
   private val cacheModelWith2Items =
-    aCacheModel(withItem(testItem), withItem(testItem2), withChoice(SupplementaryDec))
+    aDeclaration(withItem(testItem), withItem(testItem2), withChoice(SupplementaryDec))
 
   private val viewItemsUri = uriWithContextPath("/declaration/export-items")
 
@@ -60,7 +61,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
   "Item Summary Controller" should {
 
-    val supplementaryModel = aCacheModel(withChoice(SupplementaryDec))
+    val supplementaryModel = aDeclaration(withChoice(SupplementaryDec))
 
     "displayForm" should {
 
@@ -125,7 +126,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
         GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging()))
 
-        val cachedItem = aCacheModel(withItem(testItem), withChoice(SupplementaryDec))
+        val cachedItem = aDeclaration(withItem(testItem), withChoice(SupplementaryDec))
         withNewCaching(cachedItem)
         when(mockItemGeneratorService.generateItemId()).thenReturn(item1Id)
 
@@ -138,7 +139,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
         stringResult.contains("1 Export items added")
 
-        verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+        verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
       }
     }
 
@@ -165,7 +166,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
       "update cache and redirect" when {
         "item exists" in {
-          val model = aCacheModel(
+          val model = aDeclaration(
             withItem(ExportItem("id1", sequenceId = 1)),
             withItem(ExportItem("id2", sequenceId = 2)),
             withChoice(SupplementaryDec)

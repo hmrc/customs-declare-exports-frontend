@@ -38,7 +38,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
     )(ec)
 
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   "Declarant Details Controller" should {
@@ -54,7 +54,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache is not empty" in new SetUp {
 
-        withNewCaching(aCacheModel(withDeclarantDetails()))
+        withNewCaching(aDeclaration(withDeclarantDetails()))
 
         val result = controller.displayForm()(getRequest())
 

@@ -24,13 +24,14 @@ import forms.declaration.TransportInformationContainer
 import forms.declaration.TransportInformationContainer.form
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.ExportsDeclaration
 import models.declaration.TransportInformationContainerData
 import models.declaration.TransportInformationContainerData.maxNumberOfItems
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.add_transport_containers
 
@@ -116,7 +117,7 @@ class TransportContainerController @Inject()(
   private def updateCache(
     sessionId: String,
     formData: TransportInformationContainerData
-  ): Future[Option[ExportsCacheModel]] =
+  ): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(containerData = Some(formData)))

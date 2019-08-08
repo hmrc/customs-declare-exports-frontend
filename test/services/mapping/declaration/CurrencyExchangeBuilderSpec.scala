@@ -16,10 +16,10 @@
 
 package services.mapping.declaration
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   private def builder = new CurrencyExchangeBuilder()
 
@@ -28,7 +28,7 @@ class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCac
     "build then add" when {
       "no Total Number Of Items" in {
         // Given
-        val model = aCacheModel(withoutTotalNumberOfItems())
+        val model = aDeclaration(withoutTotalNumberOfItems())
         val declaration = new Declaration()
         // When
         builder.buildThenAdd(model, declaration)
@@ -38,7 +38,7 @@ class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCac
 
       "exchange rate is empty" in {
         // Given
-        val model = aCacheModel(withTotalNumberOfItems(exchangeRate = None))
+        val model = aDeclaration(withTotalNumberOfItems(exchangeRate = None))
         val declaration = new Declaration()
         // When
         builder.buildThenAdd(model, declaration)
@@ -48,7 +48,7 @@ class CurrencyExchangeBuilderSpec extends WordSpec with Matchers with ExportsCac
 
       "exchange rate is populated" in {
         // Given
-        val model = aCacheModel(withTotalNumberOfItems(exchangeRate = Some("123")))
+        val model = aDeclaration(withTotalNumberOfItems(exchangeRate = Some("123")))
         val declaration = new Declaration()
         // When
         builder.buildThenAdd(model, declaration)

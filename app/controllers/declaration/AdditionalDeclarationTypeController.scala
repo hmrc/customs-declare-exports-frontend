@@ -20,10 +20,11 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.additionaldeclarationtype._
 import javax.inject.Inject
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.additionaldeclarationtype.declaration_type
 
@@ -66,7 +67,7 @@ class AdditionalDeclarationTypeController @Inject()(
     }
 
   private def updateCache(sessionId: String, formData: AdditionalDeclarationType)
-                         (implicit request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] =
+                         (implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportCacheModel(model => {
       exportsCacheService.update(sessionId, model.copy(additionalDeclarationType = Some(formData)))
     })

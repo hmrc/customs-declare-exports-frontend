@@ -21,7 +21,6 @@ import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.{ConsigneeDetails, EntityDetails}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 import unit.base.ControllerSpec
 import views.html.declaration.consignee_details
 
@@ -38,7 +37,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
       consigneeDetailsPage
     )(ec)
 
-    val model: ExportsCacheModel = aCacheModel(withChoice(SupplementaryDec))
+    val model = aDeclaration(withChoice(SupplementaryDec))
     authorizedUser()
     withNewCaching(model)
   }
@@ -55,7 +54,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache contrains data" in new SetUp {
 
-        val modelWithDetails = aCacheModel(withConsigneeDetails(Some("123"), None))
+        val modelWithDetails = aDeclaration(withConsigneeDetails(Some("123"), None))
 
         withNewCaching(modelWithDetails)
 

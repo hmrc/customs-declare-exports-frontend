@@ -20,11 +20,11 @@ import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
+import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 
@@ -32,7 +32,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 
   private val dispatchLocationUri = uriWithContextPath("/declaration/dispatch-location")
 
-  val exampleModel = aCacheModel(withChoice(SupplementaryDec))
+  val exampleModel = aDeclaration(withChoice(SupplementaryDec))
 
   override def beforeEach() {
     authorizedUser()
@@ -53,7 +53,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
     }
 
     "populate the form fields with data from cache" in {
-      val model = aCacheModel(withChoice("SMP"), withDispatchLocation(AllowedDispatchLocations.OutsideEU))
+      val model = aDeclaration(withChoice("SMP"), withDispatchLocation(AllowedDispatchLocations.OutsideEU))
       withNewCaching(model)
 
       val result = route(app, getRequest(dispatchLocationUri, sessionId = model.sessionId)).get
@@ -69,7 +69,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
       val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.OutsideEU)
       route(app, postRequest(dispatchLocationUri, validForm, sessionId = exampleModel.sessionId)).get.futureValue
 
-      verify(mockExportsCacheService).update(any(), any[ExportsCacheModel])
+      verify(mockExportsCacheService).update(any(), any[ExportsDeclaration])
       verify(mockExportsCacheService).get(any())
     }
 

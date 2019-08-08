@@ -29,12 +29,12 @@ import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.verify
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.{ExportItem, ExportsCacheModelBuilder}
+import services.cache.{ExportItem, ExportsDeclarationBuilder}
 import services.mapping.goodsshipment.consignment.ConsignmentBuilder
 import services.mapping.governmentagencygoodsitem.GovernmentAgencyGoodsItemBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class GoodsShipmentBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder with MockitoSugar {
+class GoodsShipmentBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder with MockitoSugar {
 
   private val mockGoodsShipmentNatureOfTransactionBuilder = mock[GoodsShipmentNatureOfTransactionBuilder]
   private val mockConsigneeBuilder = mock[ConsigneeBuilder]
@@ -64,7 +64,7 @@ class GoodsShipmentBuilderSpec extends WordSpec with Matchers with ExportsCacheM
 
     "build then add" when {
       "full declaration" in {
-        val model = aCacheModel(
+        val model = aDeclaration(
           withNatureOfTransaction(correctNatureOfTransaction),
           withConsigneeDetails(correctConsigneeDetailsFull),
           withDeclarationAdditionalActors(correctAdditionalActors1, correctAdditionalActors2),

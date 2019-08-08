@@ -23,11 +23,12 @@ import forms.declaration.destinationCountries.DestinationCountries.{Standard, Su
 import forms.declaration.destinationCountries._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.collections.Removable.RemovableSeq
@@ -204,7 +205,7 @@ class DestinationCountriesController @Inject()(
         Ok(destinationCountriesStandardPage(Standard.form))
     }
 
-  private def updateCache(sessionId: String, formData: DestinationCountries): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: DestinationCountries): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model =>

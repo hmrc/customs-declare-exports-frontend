@@ -33,7 +33,7 @@ class PreviousDocumentsControllerSpec
   private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
   private val removeActionURLEncoded: String => (String, String) = (value: String) => (Remove.toString, value)
 
-  private val exampleModel = aCacheModel(withChoice(SupplementaryDec))
+  private val exampleModel = aDeclaration(withChoice(SupplementaryDec))
 
   override def beforeEach() {
     super.beforeEach()
@@ -58,7 +58,7 @@ class PreviousDocumentsControllerSpec
     "read item from cache and display it" in {
 
       val cachedData = PreviousDocumentsData(Seq(Document("X", "MCR", "XH", Some("UX"))))
-      val model = aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
+      val model = aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
       withNewCaching(model)
 
       val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
@@ -75,7 +75,7 @@ class PreviousDocumentsControllerSpec
 
   "Previous Documents Controller on POST" should {
 
-    val modelWithPreviousDocuments = aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
+    val modelWithPreviousDocuments = aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
 
     "add an item successfully" when {
 
@@ -280,7 +280,7 @@ class PreviousDocumentsControllerSpec
 
       "limit of items reached" in {
 
-        val model = aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(fullCache))
+        val model = aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(fullCache))
         withNewCaching(model)
 
         val body = Seq(
@@ -448,7 +448,7 @@ class PreviousDocumentsControllerSpec
 
       "limit of items reached" in {
 
-        val model = aCacheModel(withChoice(SupplementaryDec), withPreviousDocuments(fullCache))
+        val model = aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(fullCache))
         withNewCaching(model)
 
         val body = Seq(

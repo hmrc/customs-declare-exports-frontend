@@ -16,39 +16,40 @@
 
 package base
 
-import org.mockito.{ArgumentCaptor, ArgumentMatchers, Mockito}
+import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{never, verify, when}
-import org.scalatest.{BeforeAndAfterEach, Suite}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.mockito.MockitoSugar
-import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder, ExportsCacheService}
+import org.scalatest.{BeforeAndAfterEach, Suite}
+import services.cache.{ExportsCacheService, ExportsDeclarationBuilder}
 
 import scala.concurrent.Future
 
-trait MockExportsCacheService extends MockitoSugar with ExportsCacheModelBuilder with BeforeAndAfterEach {
+trait MockExportsDeclarationService extends MockitoSugar with ExportsDeclarationBuilder with BeforeAndAfterEach {
   self: Suite =>
 
   val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
 
-  def withNewCaching(dataToReturn: ExportsCacheModel): Unit = {
+  def withNewCaching(dataToReturn: ExportsDeclaration): Unit = {
     when(mockExportsCacheService.getItemByIdAndSession(anyString, anyString))
       .thenReturn(Future.successful(dataToReturn.items.headOption))
 
-    when(mockExportsCacheService.update(anyString, any[ExportsCacheModel]))
+    when(mockExportsCacheService.update(anyString, any[ExportsDeclaration]))
       .thenReturn(Future.successful(Some(dataToReturn)))
 
     when(mockExportsCacheService.get(anyString))
       .thenReturn(Future.successful(Some(dataToReturn)))
   }
 
-  protected def theCacheModelUpdated: ExportsCacheModel = {
-    val captor = ArgumentCaptor.forClass(classOf[ExportsCacheModel])
+  protected def theCacheModelUpdated: ExportsDeclaration = {
+    val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
     verify(mockExportsCacheService).update(anyString, captor.capture())
     captor.getValue
   }
 
   protected def verifyTheCacheIsUnchanged(): Unit =
-    verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
+    verify(mockExportsCacheService, never()).update(anyString, any[ExportsDeclaration])
 
   override protected def afterEach(): Unit = {
     Mockito.reset(mockExportsCacheService)

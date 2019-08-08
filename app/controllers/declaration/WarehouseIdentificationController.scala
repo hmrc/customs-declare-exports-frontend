@@ -19,11 +19,12 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.WarehouseIdentification
 import javax.inject.Inject
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.warehouse_identification
 
@@ -59,7 +60,7 @@ class WarehouseIdentificationController @Inject()(
       )
   }
 
-  private def updateCache(formData: WarehouseIdentification)(implicit request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] =
+  private def updateCache(formData: WarehouseIdentification)(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportCacheModelSyncDirect { model =>
       val updatedLocations = model.locations.copy(warehouseIdentification = Some(formData))
       model.copy(locations = updatedLocations)

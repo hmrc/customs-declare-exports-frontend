@@ -16,17 +16,17 @@
 
 package services.mapping.declaration.consignment
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class IteneraryBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class IteneraryBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "IteneraryBuilder" should {
 
     "build then add" when {
       "no destination countries" in {
         // Given
-        val model = aCacheModel(withoutDestinationCountries())
+        val model = aDeclaration(withoutDestinationCountries())
         val consignment = new Declaration.Consignment()
 
         // When
@@ -38,7 +38,7 @@ class IteneraryBuilderSpec extends WordSpec with Matchers with ExportsCacheModel
 
       "multiple routing countries" in {
         // Given
-        val model = aCacheModel(withDestinationCountries(countriesOfRouting = Seq("routing1", "routing2")))
+        val model = aDeclaration(withDestinationCountries(countriesOfRouting = Seq("routing1", "routing2")))
         val consignment = new Declaration.Consignment()
 
         // When

@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{routes, BorderTransportController}
+import controllers.declaration.{BorderTransportController, routes}
 import forms.Choice
 import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.{Maritime, WagonNumber}
@@ -44,7 +44,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
 
     setupErrorHandler()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
   }
 
   "Border transport controller" should {
@@ -61,7 +61,7 @@ class BorderTransportControllerSpec extends ControllerSpec with ErrorHandlerMock
       "display page method is invoked and cache contains data" in new SetUp {
 
         withNewCaching(
-          aCacheModel(
+          aDeclaration(
             withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
             withBorderTransport(Maritime, WagonNumber, None)
           )

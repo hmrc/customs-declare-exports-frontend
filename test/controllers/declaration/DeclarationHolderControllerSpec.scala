@@ -35,7 +35,7 @@ class DeclarationHolderControllerSpec
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
-  val exampleModel = aCacheModel(withChoice(SupplementaryDec))
+  val exampleModel = aDeclaration(withChoice(SupplementaryDec))
 
   override def beforeEach() {
     authorizedUser()
@@ -59,7 +59,7 @@ class DeclarationHolderControllerSpec
 
     "read item from cache and display it" in {
 
-      val model = aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("8899"), Some("0099887766")))
+      val model = aDeclaration(withChoice("SMP"), withDeclarationHolders(Some("8899"), Some("0099887766")))
       withNewCaching(model)
 
       val Some(result) = route(app, getRequest(uri, sessionId = model.sessionId))
@@ -163,7 +163,7 @@ class DeclarationHolderControllerSpec
 
         "is duplicated" in {
 
-          val model = aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori")))
+          val model = aDeclaration(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori")))
 
           withNewCaching(model)
 
@@ -181,7 +181,7 @@ class DeclarationHolderControllerSpec
 
         "has more than 99 holders" in {
 
-          val model = aCacheModel(withChoice("SMP"), withDeclarationHolders(cacheWithMaximumAmountOfHolders))
+          val model = aDeclaration(withChoice("SMP"), withDeclarationHolders(cacheWithMaximumAmountOfHolders))
           withNewCaching(model)
 
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori1"), addActionUrlEncoded)
@@ -262,7 +262,7 @@ class DeclarationHolderControllerSpec
         }
 
         "has duplicated holder" in {
-          val model = aCacheModel(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori")))
+          val model = aDeclaration(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori")))
 
           withNewCaching(model)
 
@@ -395,7 +395,7 @@ class DeclarationHolderControllerSpec
     }
   }
   private def withCache(holders: DeclarationHoldersData): String = {
-    val model = aCacheModel(withChoice("SMP"), withDeclarationHolders(holders))
+    val model = aDeclaration(withChoice("SMP"), withDeclarationHolders(holders))
     withNewCaching(model)
     model.sessionId
   }

@@ -29,7 +29,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
   private val uri = uriWithContextPath("/declaration/location-of-goods")
 
-  val exampleModel = aCacheModel(withChoice(SupplementaryDec))
+  val exampleModel = aDeclaration(withChoice(SupplementaryDec))
 
   override def beforeEach {
     super.beforeEach()
@@ -55,7 +55,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val cachedData =
         GoodsLocation("Spain", "1", "1", Some("1"), Some("1"), Some("BAFTA Street"), Some("LS37BH"), Some("SecretCity"))
 
-      val model = aCacheModel(withChoice(SupplementaryDec), withGoodsLocation(cachedData))
+      val model = aDeclaration(withChoice(SupplementaryDec), withGoodsLocation(cachedData))
       withNewCaching(model)
 
       val result = route(app, getRequest(uri, sessionId = model.sessionId)).get

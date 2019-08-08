@@ -17,10 +17,10 @@
 package services.mapping.goodsshipment.consignment
 import forms.declaration.BorderTransport
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
-class DepartureTransportMeansBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class DepartureTransportMeansBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
   "DepartureTransportMeansBuilder" should {
 
     "correctly map DepartureTransportMeans instance using new model" in {

@@ -17,15 +17,16 @@
 package services.mapping.goodsshipment.consignment
 
 import forms.declaration._
+import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.verify
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder}
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
-class ConsignmentBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder with MockitoSugar {
+class ConsignmentBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder with MockitoSugar {
 
   private val mockContainerCodeBuilder = mock[ContainerCodeBuilder]
   private val mockGoodsLocationBuilder = mock[GoodsLocationBuilder]
@@ -49,8 +50,8 @@ class ConsignmentBuilderSpec extends WordSpec with Matchers with ExportsCacheMod
         val meansOfTransportOnDepartureType = "T"
         val meansOfTransportOnDepartureIDNumber = "12345"
 
-        val model: ExportsCacheModel =
-          aCacheModel(
+        val model: ExportsDeclaration =
+          aDeclaration(
             withGoodsLocation(GoodsLocationTestData.correctGoodsLocation),
             withBorderTransport(
               borderModeOfTransportCode,

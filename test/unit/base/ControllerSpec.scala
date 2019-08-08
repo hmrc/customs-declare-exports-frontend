@@ -16,13 +16,14 @@
 
 package unit.base
 
-import base.{MockAuthAction, MockConnectors, MockExportsCacheService}
+import base.{MockAuthAction, MockConnectors, MockExportsDeclarationService}
 import controllers.util.{Add, SaveAndContinue}
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, Request}
 import play.api.test.FakeRequest
-import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder, ExportsItemBuilder}
+import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import unit.mock.JourneyActionMocks
 import unit.tools.Stubs
 import utils.FakeRequestCSRFSupport._
@@ -30,8 +31,8 @@ import utils.FakeRequestCSRFSupport._
 import scala.concurrent.ExecutionContext
 
 trait ControllerSpec
-    extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockExportsCacheService
-    with ExportsCacheModelBuilder with ExportsItemBuilder with JourneyActionMocks {
+    extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockExportsDeclarationService
+    with ExportsDeclarationBuilder with ExportsItemBuilder with JourneyActionMocks {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 
@@ -39,8 +40,8 @@ trait ControllerSpec
 
   val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
 
-  def getRequest(cacheModel: ExportsCacheModel): JourneyRequest[AnyContentAsEmpty.type] =
-    JourneyRequest(getAuthenticatedRequest(sessionId = cacheModel.sessionId), cacheModel)
+  def getRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContentAsEmpty.type] =
+    JourneyRequest(getAuthenticatedRequest(sessionId = declaration.sessionId), declaration)
 
   def postRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("POST", "").withSession(("sessionId", "sessionId")).withJsonBody(body).withCSRFToken

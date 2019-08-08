@@ -19,10 +19,10 @@ package services.mapping.goodsshipment
 import forms.declaration.DestinationCountriesSpec
 import forms.declaration.destinationCountries.DestinationCountries
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class DestinationBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class DestinationBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "DestinationBuilder" should {
 

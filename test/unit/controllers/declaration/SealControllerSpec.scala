@@ -45,7 +45,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
     authorizedUser()
     setupErrorHandler()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   "Package Information Controller" should {
@@ -61,7 +61,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
       "display page method is invoked and cache contain some data" in new SetUp {
 
-        withNewCaching(aCacheModel(withSeal(Seal("id"))))
+        withNewCaching(aDeclaration(withSeal(Seal("id"))))
 
         val result = controller.displayForm()(getRequest())
 
@@ -101,7 +101,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
       "user reached limit of items" in new SetUp {
 
         val seals = Seq.fill(9999)(Seal("id"))
-        withNewCaching(aCacheModel(withSeals(seals)))
+        withNewCaching(aDeclaration(withSeals(seals)))
 
         val body = Seq(("id", "value"), (Add.toString, ""))
 
@@ -112,7 +112,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
       "user tried to add duplicated value" in new SetUp {
 
-        withNewCaching(aCacheModel(withSeal(Seal("value"))))
+        withNewCaching(aDeclaration(withSeal(Seal("value"))))
 
         val body = Seq(("id", "value"), (Add.toString, ""))
 
@@ -158,7 +158,7 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
 
       "user clicked save and continue with item in a cache" in new SetUp {
 
-        withNewCaching(aCacheModel(withSeal(Seal("value"))))
+        withNewCaching(aDeclaration(withSeal(Seal("value"))))
 
         val body = Seq((SaveAndContinue.toString, ""))
 

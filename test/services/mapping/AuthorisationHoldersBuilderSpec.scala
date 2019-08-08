@@ -17,17 +17,17 @@
 package services.mapping
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsCacheModelBuilder {
+class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with MockitoSugar with ExportsDeclarationBuilder {
 
   "AuthorisationHolders" should {
 
     "build and add to declaration" when {
       "no holders" in {
         // Given
-        val model = aCacheModel(withoutDeclarationHolders())
+        val model = aDeclaration(withoutDeclarationHolders())
         val declaration = new Declaration()
 
         // When
@@ -39,7 +39,7 @@ class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with Mockit
 
       "multiple holders" in {
         // Given
-        val model = aCacheModel(
+        val model = aDeclaration(
           withDeclarationHolders(Some("auth code1"), Some("eori1")),
           withDeclarationHolders(Some("auth code2"), Some("eori2"))
         )
@@ -58,7 +58,7 @@ class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with Mockit
 
       "auth code is empty" in {
         // Given
-        val model = aCacheModel(withDeclarationHolders(None, Some("eori")))
+        val model = aDeclaration(withDeclarationHolders(None, Some("eori")))
         val declaration = new Declaration()
 
         // When
@@ -70,7 +70,7 @@ class AuthorisationHoldersBuilderSpec extends WordSpec with Matchers with Mockit
 
       "eori is empty" in {
         // Given
-        val model = aCacheModel(withDeclarationHolders(Some("auth code"), None))
+        val model = aDeclaration(withDeclarationHolders(Some("auth code"), None))
         val declaration = new Declaration()
 
         // When

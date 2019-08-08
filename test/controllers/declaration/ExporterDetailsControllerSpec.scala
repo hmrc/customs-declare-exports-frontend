@@ -23,13 +23,12 @@ import forms.declaration.ExporterDetailsSpec._
 import helpers.views.declaration.CommonMessages
 import org.mockito.Mockito
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMessages {
 
   private val uri = uriWithContextPath("/declaration/exporter-details")
 
-  val supplementaryModel: ExportsCacheModel = aCacheModel(withChoice(SupplementaryDec))
+  val supplementaryModel = aDeclaration(withChoice(SupplementaryDec))
 
   override def beforeEach() {
     super.beforeEach()
@@ -52,7 +51,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
     }
 
     "read item from cache and display it" in {
-      val cachedData = aCacheModel(
+      val cachedData = aDeclaration(
         withChoice("SMP"),
         withExporterDetails(
           Some("99980"),
@@ -132,7 +131,7 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
 
     "on the standard journey " should {
 
-      val standardModel = aCacheModel(withChoice(StandardDec))
+      val standardModel = aDeclaration(withChoice(StandardDec))
 
       "validate request and redirect to consignee-details page with only EORI provided" in {
         withNewCaching(standardModel)

@@ -18,14 +18,14 @@ package services.mapping.declaration
 import forms.declaration.DispatchLocation
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsDeclaration
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.declaration_ds.dms._2.DeclarationTypeCodeType
 
-class TypeCodeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
+class TypeCodeBuilder @Inject()() extends ModifyingBuilder[ExportsDeclaration, Declaration] {
 
-  override def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
+  override def buildThenAdd(exportsCacheModel: ExportsDeclaration, declaration: Declaration): Unit =
     exportsCacheModel.additionalDeclarationType.foreach(additionalDeclarationType => {
       declaration.setTypeCode(createTypeCode(additionalDeclarationType, exportsCacheModel.dispatchLocation))
     })

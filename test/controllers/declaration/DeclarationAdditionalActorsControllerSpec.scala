@@ -35,7 +35,7 @@ class DeclarationAdditionalActorsControllerSpec
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
-  val exampleModel = aCacheModel(withChoice(SupplementaryDec))
+  val exampleModel = aDeclaration(withChoice(SupplementaryDec))
 
   override def beforeEach() {
     super.beforeEach()
@@ -305,10 +305,11 @@ class DeclarationAdditionalActorsControllerSpec
   }
 
   private def withCache(data: DeclarationAdditionalActorsData) = {
-    val model = aCacheModel(withChoice("SMP"), withDeclarationAdditionalActors(data))
+    val model = aDeclaration(withChoice("SMP"), withDeclarationAdditionalActors(data))
     withNewCaching(model)
     model.sessionId
   }
+
 
   private def testHappyPathsScenarios(
     expectedPath: String,

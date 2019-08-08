@@ -18,14 +18,14 @@ package services
 
 import javax.inject.Inject
 import javax.xml.bind.JAXBElement
-import services.cache.ExportsCacheModel
+import models.ExportsDeclaration
 import services.cache.mapping.SubmissionMetaDataBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
 class WcoMetadataMapper @Inject()(submissionMetadataBuilder: SubmissionMetaDataBuilder) {
 
-  def produceMetaData(exportsCacheModel: ExportsCacheModel): MetaData =
+  def produceMetaData(exportsCacheModel: ExportsDeclaration): MetaData =
     submissionMetadataBuilder.build(exportsCacheModel)
 
   def declarationUcr(metaData: Any): Option[String] = {

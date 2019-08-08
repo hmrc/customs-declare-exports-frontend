@@ -24,7 +24,6 @@ import helpers.views.declaration.OfficeOfExitMessages
 import org.mockito.Mockito.reset
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExitMessages {
 
@@ -36,12 +35,12 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
   }
 
   trait SupplementarySetUp {
-    val exampleModel: ExportsCacheModel = aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+    val exampleModel = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
     withNewCaching(exampleModel)
   }
 
   trait StandardSetUp {
-    val exampleModel: ExportsCacheModel = aCacheModel(withChoice(Choice.AllowedChoiceValues.StandardDec))
+    val exampleModel = aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec))
     withNewCaching(exampleModel)
   }
 
@@ -56,7 +55,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
     "read item from cache and display it" in new SupplementarySetUp {
 
-      val model: ExportsCacheModel = aCacheModel(
+      val model = aDeclaration(
         withChoice(Choice.AllowedChoiceValues.SupplementaryDec),
         withOfficeOfExit(officeId = "999AAA45")
       )
@@ -82,7 +81,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val officeId = "12345678"
       val presentationOfficeId = "87654321"
       val circumstancesCode = "Yes"
-      private val model: ExportsCacheModel = aCacheModel(
+      val model = aDeclaration(
         withChoice(Choice.AllowedChoiceValues.StandardDec),
         withOfficeOfExit(officeId, Some(presentationOfficeId), Some(circumstancesCode))
       )

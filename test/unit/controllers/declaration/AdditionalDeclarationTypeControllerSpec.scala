@@ -41,11 +41,11 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
   }
 
   trait SupplementarySetUp extends SetUp {
-    withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
   }
 
   trait StandardSetUp extends SetUp {
-    withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.StandardDec)))
+    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec)))
   }
 
   "Additional declaration type page controller for supplementary" should {
@@ -61,7 +61,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
       "display page method is invoked with data in cache" in new SupplementarySetUp {
 
-        val cachedData = aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+        val cachedData = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
           .copy(additionalDeclarationType = Some(AdditionalDeclarationType("Z")))
         withNewCaching(cachedData)
 
@@ -112,7 +112,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec {
 
       "display page method is invoked with data in cache" in new StandardSetUp {
 
-        val cachedData = aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+        val cachedData = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
           .copy(additionalDeclarationType = Some(AdditionalDeclarationType("D")))
         withNewCaching(cachedData)
 

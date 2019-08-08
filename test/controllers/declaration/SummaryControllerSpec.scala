@@ -19,6 +19,7 @@ package controllers.declaration
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice.AllowedChoiceValues
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import models.ExportsDeclaration
 import models.declaration.SupplementaryDeclarationTestData
 import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers.{any, anyString}
@@ -27,7 +28,6 @@ import org.mockito.verification.VerificationMode
 import play.api.libs.json.{JsObject, JsString, JsValue}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -163,7 +163,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
     "there is no data in cache for supplementary declaration" should {
       "display error page" in {
-        val model = aCacheModel(withChoice(SupplementaryDec))
+        val model = aDeclaration(withChoice(SupplementaryDec))
         withNewCaching(model)
         val resultAsString = contentAsString(route(app, getRequest(summaryPageUri, sessionId = model.sessionId)).get)
 
@@ -193,7 +193,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
     "everything is correct" should {
       "get the whole supplementary declaration data from cache" in {
         when(
-          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+          mockSubmissionService.submit(any[String], any[ExportsDeclaration])(
             any[JourneyRequest[_]],
             any[HeaderCarrier],
             any[ExecutionContext]
@@ -207,7 +207,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
       "remove supplementary declaration data from cache" in {
 
         when(
-          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+          mockSubmissionService.submit(any[String], any[ExportsDeclaration])(
             any[JourneyRequest[_]],
             any[HeaderCarrier],
             any[ExecutionContext]
@@ -216,7 +216,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
         route(app, postRequest(summaryPageUri, emptyForm, sessionId = allRecords.sessionId)).get.futureValue
 
-        verify(mockSubmissionService, onlyOnce).submit(any[String], any[ExportsCacheModel])(
+        verify(mockSubmissionService, onlyOnce).submit(any[String], any[ExportsDeclaration])(
           any[JourneyRequest[_]],
           any[HeaderCarrier],
           any[ExecutionContext]
@@ -225,7 +225,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
       "return 303 code" in {
         when(
-          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+          mockSubmissionService.submit(any[String], any[ExportsDeclaration])(
             any[JourneyRequest[_]],
             any[HeaderCarrier],
             any[ExecutionContext]
@@ -238,7 +238,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
       "redirect to confirmation page" in {
         when(
-          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+          mockSubmissionService.submit(any[String], any[ExportsDeclaration])(
             any[JourneyRequest[_]],
             any[HeaderCarrier],
             any[ExecutionContext]
@@ -253,13 +253,14 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
       "add flash scope with lrn " in {
         when(
-          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+          mockSubmissionService.submit(any[String], any[ExportsDeclaration])(
             any[JourneyRequest[_]],
             any[HeaderCarrier],
             any[ExecutionContext]
           )
         ).thenReturn(Future.successful(Some("123LRN")))
-        withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+        val model = aDeclaration(withChoice(SupplementaryDec))
+        withNewCaching(model)
         val result = route(app, postRequest(summaryPageUri, emptyForm, sessionId = allRecords.sessionId)).get
 
         val f = flash(result)
@@ -271,7 +272,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
     "got error from Customs Declarations" should {
       "display error page" in {
         when(
-          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+          mockSubmissionService.submit(any[String], any[ExportsDeclaration])(
             any[JourneyRequest[_]],
             any[HeaderCarrier],
             any[ExecutionContext]
@@ -288,7 +289,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
       "not remove data from cache" in {
         when(
-          mockSubmissionService.submit(any[String], any[ExportsCacheModel])(
+          mockSubmissionService.submit(any[String], any[ExportsDeclaration])(
             any[JourneyRequest[_]],
             any[HeaderCarrier],
             any[ExecutionContext]

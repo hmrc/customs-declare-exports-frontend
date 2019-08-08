@@ -18,16 +18,16 @@ package services.mapping.declaration
 
 import forms.declaration.RepresentativeDetails
 import javax.inject.Inject
+import models.ExportsDeclaration
 import services.Countries.allCountries
-import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Agent
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-class AgentBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
+class AgentBuilder @Inject()() extends ModifyingBuilder[ExportsDeclaration, Declaration] {
 
-  override def buildThenAdd(exportsCacheModel: ExportsCacheModel, declaration: Declaration): Unit =
+  override def buildThenAdd(exportsCacheModel: ExportsDeclaration, declaration: Declaration): Unit =
     exportsCacheModel.parties.representativeDetails.foreach { representativeDetails =>
       if (isDefined(representativeDetails)) {
         declaration.setAgent(createAgent(representativeDetails))

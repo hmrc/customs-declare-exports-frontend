@@ -22,11 +22,12 @@ import forms.declaration.ItemType
 import forms.declaration.ItemType._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.collections.Removable.RemovableSeq
 import utils.validators.forms.supplementary.ItemTypeValidator
@@ -235,7 +236,7 @@ class ItemTypeController @Inject()(
   private def updateExportsCache(
     itemId: String,
     updatedItem: ItemType
-  )(implicit request: JourneyRequest[_]): Future[Option[ExportsCacheModel]] =
+  )(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
     updateExportCacheModelSync(
       model => {
         val itemList = model.items

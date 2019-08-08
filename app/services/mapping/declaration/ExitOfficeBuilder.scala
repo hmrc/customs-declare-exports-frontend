@@ -19,14 +19,14 @@ package services.mapping.declaration
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.officeOfExit.{OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsDeclaration
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.ExitOffice
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-class ExitOfficeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
-  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit = model.choice match {
+class ExitOfficeBuilder @Inject()() extends ModifyingBuilder[ExportsDeclaration, Declaration] {
+  override def buildThenAdd(model: ExportsDeclaration, declaration: Declaration): Unit = model.choice match {
     case AllowedChoiceValues.StandardDec =>
       model.locations.officeOfExit
         .map(OfficeOfExitStandard(_))

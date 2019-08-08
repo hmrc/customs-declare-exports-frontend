@@ -23,11 +23,12 @@ import forms.declaration.Seal
 import forms.declaration.Seal._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.seal
 
@@ -54,7 +55,7 @@ class SealController @Inject()(
 
     exportsCacheService
       .get(journeySessionId)
-      .flatMap { data: Option[ExportsCacheModel] =>
+      .flatMap { data: Option[ExportsDeclaration] =>
         val seals = data.map(_.seals)
         val hasContainers: Boolean = data.flatMap(_.transportDetails).fold(false)(_.container)
         actionTypeOpt match {

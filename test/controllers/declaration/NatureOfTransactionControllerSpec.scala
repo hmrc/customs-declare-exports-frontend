@@ -23,12 +23,11 @@ import forms.declaration.NatureOfTransactionSpec._
 import helpers.views.declaration.NatureOfTransactionMessages
 import org.mockito.Mockito.reset
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with NatureOfTransactionMessages {
   private val uri = uriWithContextPath("/declaration/nature-of-transaction")
 
-  val supplementaryModel: ExportsCacheModel = aCacheModel(withChoice(SupplementaryDec))
+  val supplementaryModel = aDeclaration(withChoice(SupplementaryDec))
 
   override def beforeEach() {
     super.beforeEach()
@@ -51,7 +50,7 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
     }
 
     "read item from cache and display it" in {
-      val model = aCacheModel(withChoice(SupplementaryDec), withNatureOfTransaction("1"))
+      val model = aDeclaration(withChoice(SupplementaryDec), withNatureOfTransaction("1"))
       withNewCaching(model)
 
       val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
