@@ -34,7 +34,7 @@ class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationM
       form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationTypeError)
     }
 
-    "validate identification type and number" in {
+    "validate identification type present and number missing" in {
 
       val incorrectWarehouseIdentification: JsValue =
         JsObject(
@@ -44,7 +44,20 @@ class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationM
           )
         )
 
-      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationNumberEmpty)
+      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationTypeNoNumber)
+    }
+
+    "validate identification number present and type missing" in {
+
+      val incorrectWarehouseIdentification: JsValue =
+        JsObject(
+          Map(
+            "identificationType" -> JsString(""),
+            "identificationNumber" -> JsString(TestHelper.createRandomAlphanumericString(2))
+          )
+        )
+
+      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationNumberNoType)
     }
 
     "validate identification number - more than 35 characters" in {
@@ -69,6 +82,7 @@ class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationM
 
       form().bind(incorrectTransportCode).errors.map(_.message) must contain(inlandTransportModeError)
     }
+
   }
 }
 
