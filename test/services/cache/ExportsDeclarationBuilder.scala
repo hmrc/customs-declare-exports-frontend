@@ -37,7 +37,7 @@ trait ExportsDeclarationBuilder {
 
   private def uuid: String = UUID.randomUUID().toString
 
-  private val modelWithDefaults: ExportsDeclaration = models.ExportsDeclaration(
+  private val modelWithDefaults: ExportsDeclaration = ExportsDeclaration(
     sessionId = uuid,
     draftId = uuid,
     createdDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0),
