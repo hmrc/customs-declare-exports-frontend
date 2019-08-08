@@ -47,8 +47,8 @@ class DeclarationHolderController @Inject()(
 
   import forms.declaration.DeclarationHolder.form
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.declarationHoldersData)).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.parties.declarationHoldersData match {
       case Some(data) => Ok(declarationHolderPage(form(), data.holders))
       case _          => Ok(declarationHolderPage(form(), Seq()))
     }
@@ -116,7 +116,7 @@ class DeclarationHolderController @Inject()(
   }
 
   private def updateCache(sessionId: String, formData: DeclarationHoldersData): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportCacheModel(sessionId, model => {
+    getAndUpdateExportsDeclaration(sessionId, model => {
       val updatedParties = model.parties.copy(declarationHoldersData = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
     })

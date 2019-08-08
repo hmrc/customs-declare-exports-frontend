@@ -46,9 +46,8 @@ class DocumentsProducedController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId) map (_.flatMap(_.documentsProducedData)
-      .map(_.documents)) map {
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.itemBy(itemId).flatMap(_.documentsProducedData).map(_.documents) match {
       case Some(data) => Ok(documentProducedPage(itemId, form(), data))
       case _          => Ok(documentProducedPage(itemId, form(), Seq()))
     }
@@ -174,7 +173,7 @@ class DocumentsProducedController @Inject()(
     sessionId: String,
     updatedData: DocumentsProducedData
   ): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportCacheModel(
+    getAndUpdateExportsDeclaration(
       sessionId,
       model => {
         val item: Option[ExportItem] = model.items

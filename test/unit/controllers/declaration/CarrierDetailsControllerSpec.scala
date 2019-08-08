@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{CarrierDetailsController, routes}
+import controllers.declaration.{routes, CarrierDetailsController}
 import forms.Choice
 import forms.declaration.{CarrierDetails, EntityDetails}
 import play.api.libs.json.Json

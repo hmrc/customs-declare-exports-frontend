@@ -26,7 +26,8 @@ import scala.concurrent.{ExecutionContext, Future}
 trait ModelCacheable {
   def exportsCacheService: ExportsCacheService
 
-  protected def getAndUpdateExportCacheModel(
+  @deprecated("Please use updateExportCacheModel", since = "2019-08-07")
+  protected def getAndUpdateExportsDeclaration(
     sessionId: String,
     update: ExportsDeclaration => Future[Option[ExportsDeclaration]]
   )(implicit ec: ExecutionContext): Future[Option[ExportsDeclaration]] =
@@ -34,12 +35,33 @@ trait ModelCacheable {
       case Some(model) => update(model)
       case _           => Future.successful(None)
     }
+
+  protected def updateExportsDeclarationSyncDirect(
+    update: ExportsDeclaration => ExportsDeclaration
+  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    exportsCacheService.update(request.journeySessionId, update(request.cacheModel))
+
+  protected def updateExportsDeclarationSync(
+    update: ExportsDeclaration => Option[ExportsDeclaration]
+  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    update(request.cacheModel)
+      .map(model => exportsCacheService.update(request.journeySessionId, model))
+      .getOrElse(Future.successful(None))
+
+  protected def updateExportsDeclaration(
+    update: ExportsDeclaration => Future[Option[ExportsDeclaration]]
+  )(implicit ec: ExecutionContext, request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    update(request.cacheModel).flatMap { updatedModel =>
+      updatedModel
+        .map(model => exportsCacheService.update(request.journeySessionId, model))
+        .getOrElse(Future.successful(None))
+    }
 }
 
 trait SessionIdAware {
-  def journeySessionId(implicit request: JourneyRequest[_]) =
-    request.authenticatedRequest.session.data("sessionId")
+  def journeySessionId(implicit request: JourneyRequest[_]): String =
+    request.journeySessionId
 
-  def authenticatedSessionId(implicit request: AuthenticatedRequest[AnyContent]) =
-    request.session.data("sessionId")
+  def authenticatedSessionId(implicit request: AuthenticatedRequest[AnyContent]): String =
+    request.sessionId
 }

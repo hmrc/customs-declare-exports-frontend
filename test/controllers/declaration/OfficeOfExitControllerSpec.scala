@@ -29,37 +29,37 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
   private val uri: String = uriWithContextPath("/declaration/office-of-exit")
 
-  override def beforeEach(): Unit =
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     authorizedUser()
-
-  override def afterEach() {
-    reset(mockExportsCacheService)
   }
 
   trait SupplementarySetUp {
-    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    val exampleModel = aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec))
+    withNewCaching(exampleModel)
   }
 
   trait StandardSetUp {
-    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec)))
+    val exampleModel = aDeclaration(withChoice(Choice.AllowedChoiceValues.StandardDec))
+    withNewCaching(exampleModel)
   }
 
   "Office Of Exit Controller during supplementary declaration on GET" should {
 
     "return 200 with a success" in new SupplementarySetUp {
 
-      val Some(result) = route(app, getRequest(uri))
+      val Some(result) = route(app, getRequest(uri, sessionId = exampleModel.sessionId))
 
       status(result) must be(OK)
     }
 
     "read item from cache and display it" in new SupplementarySetUp {
 
-      withNewCaching(
+      val model =
         aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec), withOfficeOfExit(officeId = "999AAA45"))
-      )
+      withNewCaching(model)
 
-      val Some(result) = route(app, getRequest(uri))
+      val Some(result) = route(app, getRequest(uri, sessionId = model.sessionId))
 
       status(result) must be(OK)
       contentAsString(result) must include("999AAA45")
@@ -70,7 +70,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
     "return 200 with a success" in new StandardSetUp {
 
-      val Some(result) = route(app, getRequest(uri))
+      val Some(result) = route(app, getRequest(uri, sessionId = exampleModel.sessionId))
 
       status(result) must be(OK)
     }
@@ -79,14 +79,13 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
       val officeId = "12345678"
       val presentationOfficeId = "87654321"
       val circumstancesCode = "Yes"
-      withNewCaching(
-        aDeclaration(
-          withChoice(Choice.AllowedChoiceValues.StandardDec),
-          withOfficeOfExit(officeId, Some(presentationOfficeId), Some(circumstancesCode))
-        )
+      val model = aDeclaration(
+        withChoice(Choice.AllowedChoiceValues.StandardDec),
+        withOfficeOfExit(officeId, Some(presentationOfficeId), Some(circumstancesCode))
       )
+      withNewCaching(model)
 
-      val Some(result) = route(app, getRequest(uri))
+      val Some(result) = route(app, getRequest(uri, sessionId = model.sessionId))
       val page = contentAsString(result)
 
       status(result) must be(OK)
@@ -100,7 +99,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
     "return Bad Request for incorrect values" in new SupplementarySetUp {
 
-      val Some(result) = route(app, postRequest(uri, incorrectOfficeOfExitJSON))
+      val Some(result) = route(app, postRequest(uri, incorrectOfficeOfExitJSON, sessionId = exampleModel.sessionId))
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(officeOfExitLength))
@@ -109,7 +108,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
     "return Bad Request for empty form" in new SupplementarySetUp {
 
-      val Some(result) = route(app, postRequest(uri, emptyOfficeOfExitJSON))
+      val Some(result) = route(app, postRequest(uri, emptyOfficeOfExitJSON, sessionId = exampleModel.sessionId))
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(officeOfExitEmpty))
@@ -118,7 +117,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
 
     "redirect to Total Numbers of Items page for correct values" in new SupplementarySetUp {
 
-      val Some(result) = route(app, postRequest(uri, correctOfficeOfExitJSON))
+      val Some(result) = route(app, postRequest(uri, correctOfficeOfExitJSON, sessionId = exampleModel.sessionId))
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/customs-declare-exports/declaration/total-numbers-of-items"))
@@ -136,7 +135,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
         )
       )
 
-      val Some(result) = route(app, postRequest(uri, incorrectOfficeOfExit))
+      val Some(result) = route(app, postRequest(uri, incorrectOfficeOfExit, sessionId = exampleModel.sessionId))
 
       status(result) must be(BAD_REQUEST)
       verifyTheCacheIsUnchanged()
@@ -147,7 +146,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
         Map("officeId" -> JsString(""), "presentationOfficeId" -> JsString(""), "circumstancesCode" -> JsString(""))
       )
 
-      val Some(result) = route(app, postRequest(uri, emptyOfficeOfExit))
+      val Some(result) = route(app, postRequest(uri, emptyOfficeOfExit, sessionId = exampleModel.sessionId))
 
       status(result) must be(BAD_REQUEST)
       verifyTheCacheIsUnchanged()
@@ -162,7 +161,7 @@ class OfficeOfExitControllerSpec extends CustomExportsBaseSpec with OfficeOfExit
         )
       )
 
-      val Some(result) = route(app, postRequest(uri, correctOfficeOfExit))
+      val Some(result) = route(app, postRequest(uri, correctOfficeOfExit, sessionId = exampleModel.sessionId))
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/customs-declare-exports/declaration/total-numbers-of-items"))

@@ -39,8 +39,8 @@ class FiscalInformationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map {
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.itemBy(itemId) match {
       case Some(data) =>
         data.fiscalInformation.fold(Ok(fiscalInformationPage(itemId, form()))) { fiscalInformation =>
           Ok(fiscalInformationPage(itemId, form().fill(fiscalInformation)))
@@ -74,7 +74,7 @@ class FiscalInformationController @Inject()(
   private def updateCacheForYes(itemId: String, sessionId: String, updatedFiscalInformation: FiscalInformation)(
     implicit req: JourneyRequest[_]
   ): Future[Unit] =
-    getAndUpdateExportCacheModel(
+    getAndUpdateExportsDeclaration(
       sessionId,
       model => {
         val itemList = model.items
@@ -89,7 +89,7 @@ class FiscalInformationController @Inject()(
   private def updateCacheForNo(itemId: String, sessionId: String, updatedFiscalInformation: FiscalInformation)(
     implicit req: JourneyRequest[_]
   ): Future[Unit] =
-    getAndUpdateExportCacheModel(
+    getAndUpdateExportsDeclaration(
       sessionId,
       model => {
         val itemList = model.items

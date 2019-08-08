@@ -16,8 +16,10 @@
 
 package unit.base
 
-import base.{MockAuthAction, MockConnectors, MockExportsCacheService}
+import base.{MockAuthAction, MockConnectors, MockExportCacheService}
 import controllers.util.{Add, SaveAndContinue}
+import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, AnyContentAsJson, Request}
 import play.api.test.FakeRequest
@@ -29,7 +31,7 @@ import utils.FakeRequestCSRFSupport._
 import scala.concurrent.ExecutionContext
 
 trait ControllerSpec
-    extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockExportsCacheService
+    extends UnitSpec with Stubs with MockAuthAction with MockConnectors with MockExportCacheService
     with ExportsDeclarationBuilder with ExportsItemBuilder with JourneyActionMocks {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
@@ -38,8 +40,8 @@ trait ControllerSpec
 
   val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
 
-  def getRequest(): Request[AnyContentAsEmpty.type] =
-    FakeRequest("GET", "").withSession(("sessionId", "sessionId")).withCSRFToken
+  def getRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContentAsEmpty.type] =
+    JourneyRequest(getAuthenticatedRequest(sessionId = declaration.sessionId), declaration)
 
   def postRequest(body: JsValue): Request[AnyContentAsJson] =
     FakeRequest("POST", "").withSession(("sessionId", "sessionId")).withJsonBody(body).withCSRFToken

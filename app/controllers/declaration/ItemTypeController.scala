@@ -18,8 +18,8 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
+import forms.declaration.ItemType
 import forms.declaration.ItemType._
-import forms.declaration.{FiscalInformation, ItemType}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.ExportsDeclaration
@@ -47,25 +47,26 @@ class ItemTypeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService
-      .getItemByIdAndSession(itemId, journeySessionId)
-      .map(_.flatMap(_.itemType))
-      .zip(hasAdditionalFiscalReferencesFor(itemId))
-      .map {
-        case (Some(itemType), hasFiscalReferences) =>
-          Ok(
-            itemTypePage(
-              itemId,
-              ItemType.form().fill(itemType),
-              hasFiscalReferences,
-              itemType.taricAdditionalCodes,
-              itemType.nationalAdditionalCodes
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel
+      .itemBy(itemId)
+      .map { item =>
+        item.itemType match {
+          case Some(itemType) =>
+            Ok(
+              itemTypePage(
+                itemId,
+                ItemType.form().fill(itemType),
+                item.hasFiscalReferences,
+                itemType.taricAdditionalCodes,
+                itemType.nationalAdditionalCodes
+              )
             )
-          )
-        case (_, hasFiscalReferences) =>
-          Ok(itemTypePage(itemId, ItemType.form(), hasFiscalReferences))
+          case None =>
+            Ok(itemTypePage(itemId, ItemType.form(), item.hasFiscalReferences))
+        }
       }
+      .getOrElse(Ok(itemTypePage(itemId, ItemType.form(), false)))
   }
 
   def submitItemType(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
@@ -73,22 +74,24 @@ class ItemTypeController @Inject()(
       val inputForm = ItemType.form().bindFromRequest()
       val itemTypeInput: ItemType = inputForm.value.getOrElse(ItemType.empty)
 
-      exportsCacheService
-        .getItemByIdAndSession(itemId, journeySessionId)
-        .map(_.flatMap(_.itemType))
-        .zip(hasAdditionalFiscalReferencesFor(itemId))
-        .flatMap {
-          case (itemTypeCacheOpt, hasFiscalReferences) =>
-            val itemTypeCache = itemTypeCacheOpt.getOrElse(ItemType.empty)
-
-            FormAction.bindFromRequest() match {
-              case Some(Add) => handleAddition(itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
-              case Some(SaveAndContinue) =>
-                handleSaveAndContinue(itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
-              case Some(Remove(keys)) => handleRemoval(itemId, keys, itemTypeCache, hasFiscalReferences)
-              case _                  => errorHandler.displayErrorPage()
-            }
+      request.cacheModel
+        .itemBy(itemId)
+        .map { item =>
+          val itemTypeCache = item.itemType.getOrElse(ItemType.empty)
+          val hasFiscalReferences = item.hasFiscalReferences
+          val formAction = FormAction.bindFromRequest()
+          formAction match {
+            case Some(Add) =>
+              handleAddition(itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
+            case Some(SaveAndContinue) =>
+              handleSaveAndContinue(itemId, itemTypeInput, itemTypeCache, hasFiscalReferences)
+            case Some(Remove(keys)) =>
+              handleRemoval(itemId, keys, itemTypeCache, hasFiscalReferences)
+            case _ =>
+              errorHandler.displayErrorPage()
+          }
         }
+        .getOrElse(errorHandler.displayErrorPage())
   }
 
   private def handleAddition(
@@ -100,7 +103,7 @@ class ItemTypeController @Inject()(
     val itemTypeUpdated = updateCachedItemTypeAddition(itemId, itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnAddition(itemTypeUpdated) match {
       case Valid =>
-        updateExportsCache(itemId, journeySessionId, itemTypeUpdated).flatMap { _ =>
+        updateExportsCache(itemId, itemTypeUpdated).flatMap { _ =>
           refreshPage(itemId, itemTypeInput, hasFiscalReferences)
         }
       case Invalid(errors) =>
@@ -135,7 +138,7 @@ class ItemTypeController @Inject()(
     val itemTypeUpdated = updateCachedItemTypeSaveAndContinue(itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnSaveAndContinue(itemTypeUpdated) match {
       case Valid =>
-        updateExportsCache(itemId, journeySessionId, itemTypeUpdated).map { _ =>
+        updateExportsCache(itemId, itemTypeUpdated).map { _ =>
           Redirect(controllers.declaration.routes.PackageInformationController.displayPage(itemId))
         }
       case Invalid(errors) =>
@@ -193,7 +196,7 @@ class ItemTypeController @Inject()(
           nationalAdditionalCodes = removeElement(itemTypeCached.nationalAdditionalCodes, label.index)
         )
     }
-    updateExportsCache(itemId, journeySessionId, itemTypeUpdated).flatMap { _ =>
+    updateExportsCache(itemId, itemTypeUpdated).flatMap { _ =>
       val itemTypeInput: ItemType = ItemType.form().bindFromRequest().value.getOrElse(ItemType.empty)
       refreshPage(itemId, itemTypeInput, hasFiscalReferences)
     }
@@ -204,8 +207,8 @@ class ItemTypeController @Inject()(
 
   private def refreshPage(itemId: String, itemTypeInput: ItemType, hasFiscalReferences: Boolean)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map(_.flatMap(_.itemType)).map {
+  ): Future[Result] = Future.successful {
+    request.cacheModel.itemBy(itemId).flatMap(_.itemType) match {
       case Some(cachedData) =>
         Ok(
           itemTypePage(
@@ -219,6 +222,7 @@ class ItemTypeController @Inject()(
       case _ =>
         Ok(itemTypePage(itemId, ItemType.form(), hasFiscalReferences))
     }
+  }
 
   private case class Label(name: String, index: Int)
   private object Label {
@@ -236,26 +240,15 @@ class ItemTypeController @Inject()(
     }
   }
 
-  private def hasAdditionalFiscalReferencesFor(itemId: String)(implicit request: JourneyRequest[_]): Future[Boolean] =
-    exportsCacheService
-      .getItemByIdAndSession(itemId, journeySessionId)
-      .map(_.flatMap(_.fiscalInformation))
-      .map(_.fold(false)(_.onwardSupplyRelief == FiscalInformation.AllowedFiscalInformationAnswers.yes))
-
-  private def updateExportsCache(
-    itemId: String,
-    sessionId: String,
-    updatedItem: ItemType
+  private def updateExportsCache(itemId: String, updatedItem: ItemType)(
+    implicit request: JourneyRequest[_]
   ): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportCacheModel(
-      sessionId,
-      model => {
-        val itemList = model.items
-          .find(item => item.id.equals(itemId))
-          .map(_.copy(itemType = Some(updatedItem)))
-          .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
+    updateExportsDeclarationSync(model => {
+      val itemList = model.items
+        .find(item => item.id.equals(itemId))
+        .map(_.copy(itemType = Some(updatedItem)))
+        .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
 
-        exportsCacheService.update(sessionId, model.copy(items = itemList))
-      }
-    )
+      Some(model.copy(items = itemList))
+    })
 }

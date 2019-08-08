@@ -25,13 +25,14 @@ import org.mockito.Mockito.reset
 import play.api.test.Helpers._
 
 class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with NatureOfTransactionMessages {
-
   private val uri = uriWithContextPath("/declaration/nature-of-transaction")
+
+  val supplementaryModel = aDeclaration(withChoice(SupplementaryDec))
 
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(supplementaryModel)
   }
 
   override def afterEach() {
@@ -43,15 +44,16 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
 
     "return 200 code" in {
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = supplementaryModel.sessionId)).get
 
       status(result) must be(OK)
     }
 
     "read item from cache and display it" in {
-      withNewCaching(aDeclaration(withChoice(SupplementaryDec), withNatureOfTransaction("1")))
+      val model = aDeclaration(withChoice(SupplementaryDec), withNatureOfTransaction("1"))
+      withNewCaching(model)
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)
@@ -63,7 +65,8 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
 
     "validate request and redirect - empty value" in {
 
-      val result = route(app, postRequest(uri, emptyNatureOfTransactionJSON)).get
+      val result =
+        route(app, postRequest(uri, emptyNatureOfTransactionJSON, sessionId = supplementaryModel.sessionId)).get
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(natureOfTransactionEmpty))
@@ -72,7 +75,8 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
 
     "validate request and redirect - incorrect values" in {
 
-      val result = route(app, postRequest(uri, incorrectNatureOfTransactionJSON)).get
+      val result =
+        route(app, postRequest(uri, incorrectNatureOfTransactionJSON, sessionId = supplementaryModel.sessionId)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
@@ -83,7 +87,8 @@ class NatureOfTransactionControllerSpec extends CustomExportsBaseSpec with Natur
 
     "validate request and redirect - correct values" in {
 
-      val result = route(app, postRequest(uri, correctNatureOfTransactionJSON)).get
+      val result =
+        route(app, postRequest(uri, correctNatureOfTransactionJSON, sessionId = supplementaryModel.sessionId)).get
 
       status(result) must be(SEE_OTHER)
 

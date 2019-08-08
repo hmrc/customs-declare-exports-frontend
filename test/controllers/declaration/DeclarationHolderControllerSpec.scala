@@ -35,10 +35,11 @@ class DeclarationHolderControllerSpec
   private val addActionUrlEncoded = (Add.toString, "")
   private val saveAndContinueActionUrlEncoded = (SaveAndContinue.toString, "")
 
+  val exampleModel = aDeclaration(withChoice(SupplementaryDec))
+
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
-
+    withNewCaching(exampleModel)
   }
 
   override def afterEach() {
@@ -47,10 +48,16 @@ class DeclarationHolderControllerSpec
 
   private def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
+  private def sessionIdLinkedTo(holders: DeclarationHoldersData): String = {
+    val model = aDeclaration(withChoice("SMP"), withDeclarationHolders(holders))
+    withNewCaching(model)
+    model.sessionId
+  }
+
   "Declaration Holder Controller on GET" should {
 
     "return 200 status code" in {
-      val Some(result) = route(app, getRequest(uri))
+      val Some(result) = route(app, getRequest(uri, sessionId = exampleModel.sessionId))
 
       status(result) must be(OK)
       verifyTheCacheIsUnchanged()
@@ -58,9 +65,10 @@ class DeclarationHolderControllerSpec
 
     "read item from cache and display it" in {
 
-      withNewCaching(aDeclaration(withChoice("SMP"), withDeclarationHolders(Some("8899"), Some("0099887766"))))
+      val model = aDeclaration(withChoice("SMP"), withDeclarationHolders(Some("8899"), Some("0099887766")))
+      withNewCaching(model)
 
-      val Some(result) = route(app, getRequest(uri))
+      val Some(result) = route(app, getRequest(uri, sessionId = model.sessionId))
       val page = contentAsString(result)
 
       status(result) must be(OK)
@@ -78,7 +86,7 @@ class DeclarationHolderControllerSpec
         "has no EORI number" in {
 
           val body = Seq(("authorisationTypeCode", "ACE"), addActionUrlEncoded)
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -93,7 +101,7 @@ class DeclarationHolderControllerSpec
         "has longer EORI" in {
           val body = Seq(("eori", createRandomAlphanumericString(18)), addActionUrlEncoded)
 
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
 
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include(messages(eoriError))
@@ -104,7 +112,7 @@ class DeclarationHolderControllerSpec
 
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "e@#$1"), addActionUrlEncoded)
 
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
 
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include(messages(eoriError))
@@ -114,7 +122,7 @@ class DeclarationHolderControllerSpec
         "has no Authorisation code" in {
 
           val body = Seq(("eori", "eori1"), addActionUrlEncoded)
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -132,7 +140,7 @@ class DeclarationHolderControllerSpec
 
           val body = Seq(("authorisationTypeCode", "1$#4"), ("eori", "eori1"), addActionUrlEncoded)
 
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
 
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include(messages(authorisationCodeError))
@@ -143,7 +151,7 @@ class DeclarationHolderControllerSpec
 
           val body = addActionUrlEncoded
 
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body))
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -161,11 +169,13 @@ class DeclarationHolderControllerSpec
 
         "is duplicated" in {
 
-          withNewCaching(aDeclaration(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori"))))
+          val model = aDeclaration(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori")))
+
+          withNewCaching(model)
 
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori"), addActionUrlEncoded)
 
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, sessionId = model.sessionId)(body: _*))
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -177,11 +187,12 @@ class DeclarationHolderControllerSpec
 
         "has more than 99 holders" in {
 
-          withNewCaching(aDeclaration(withChoice("SMP"), withDeclarationHolders(cacheWithMaximumAmountOfHolders)))
+          val model = aDeclaration(withChoice("SMP"), withDeclarationHolders(cacheWithMaximumAmountOfHolders))
+          withNewCaching(model)
 
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori1"), addActionUrlEncoded)
 
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*))
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -197,7 +208,7 @@ class DeclarationHolderControllerSpec
         "has no EORI number" in {
 
           val body = Seq(("authorisationTypeCode", "ACE"), saveAndContinueActionUrlEncoded)
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -212,7 +223,7 @@ class DeclarationHolderControllerSpec
         "has longer EORI" in {
 
           val body = Seq(("eori", createRandomAlphanumericString(18)), addActionUrlEncoded)
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
 
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include(messages(eoriError))
@@ -222,7 +233,7 @@ class DeclarationHolderControllerSpec
         "has EORI with special characters" in {
 
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "e@#$1"), saveAndContinueActionUrlEncoded)
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
 
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include(messages(eoriError))
@@ -232,7 +243,7 @@ class DeclarationHolderControllerSpec
         "has no Authorisation code" in {
 
           val body = Seq(("eori", "eori1"), saveAndContinueActionUrlEncoded)
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -249,7 +260,7 @@ class DeclarationHolderControllerSpec
         "has invalid Authorisation code" in {
 
           val body = Seq(("authorisationTypeCode", "1$#4"), ("eori", "eori1"), saveAndContinueActionUrlEncoded)
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
 
           status(result) must be(BAD_REQUEST)
           contentAsString(result) must include(messages(authorisationCodeError))
@@ -257,9 +268,12 @@ class DeclarationHolderControllerSpec
         }
 
         "has duplicated holder" in {
-          withNewCaching(aDeclaration(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori"))))
+          val model = aDeclaration(withChoice("SMP"), withDeclarationHolders(Some("ACE"), Some("eori")))
+
+          withNewCaching(model)
+
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori"), saveAndContinueActionUrlEncoded)
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*))
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -271,10 +285,10 @@ class DeclarationHolderControllerSpec
 
         "has more than 99 holders" in {
 
-          withCache(cacheWithMaximumAmountOfHolders)
+          val sessionId = sessionIdLinkedTo(cacheWithMaximumAmountOfHolders)
 
           val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori9"), saveAndContinueActionUrlEncoded)
-          val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+          val Some(result) = route(app, postRequestFormUrlEncoded(uri, sessionId)(body: _*))
           val page = contentAsString(result)
 
           status(result) must be(BAD_REQUEST)
@@ -291,7 +305,7 @@ class DeclarationHolderControllerSpec
       "user provide holder with empty cache" in {
 
         val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori1"), addActionUrlEncoded)
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
 
         status(result) must be(SEE_OTHER)
         theCacheModelUpdated.parties.declarationHoldersData must be(
@@ -301,10 +315,10 @@ class DeclarationHolderControllerSpec
 
       "user provide holder that not exists in cache" in {
 
-        withCache(DeclarationHoldersData(Seq(DeclarationHolder(Some("ACP"), Some("eori")))))
+        val sessionId = sessionIdLinkedTo(DeclarationHoldersData(Seq(DeclarationHolder(Some("ACP"), Some("eori")))))
 
         val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori1"), addActionUrlEncoded)
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, sessionId)(body: _*))
 
         status(result) must be(SEE_OTHER)
         theCacheModelUpdated.parties.declarationHoldersData must be(
@@ -320,14 +334,14 @@ class DeclarationHolderControllerSpec
     "remove holder" when {
 
       "holder exists in cache" in {
-        withCache(
+        val sessionId = sessionIdLinkedTo(
           DeclarationHoldersData(
             Seq(DeclarationHolder(Some("4321"), Some("eori")), DeclarationHolder(Some("4321"), Some("eori")))
           )
         )
 
         val body = removeActionUrlEncoded("4321-eori")
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, sessionId)(body))
 
         status(result) must be(OK)
         theCacheModelUpdated.parties.declarationHoldersData must be(Some(DeclarationHoldersData(List.empty)))
@@ -339,7 +353,7 @@ class DeclarationHolderControllerSpec
       "user doesn't provide anything" in {
 
         val body = Seq(("authorisationTypeCode", ""), ("eori", ""), saveAndContinueActionUrlEncoded)
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/destination-countries"))
@@ -348,7 +362,7 @@ class DeclarationHolderControllerSpec
       "user provide holder with empty cache" in {
 
         val body = Seq(("authorisationTypeCode", "ACE"), ("eori", "eori1"), saveAndContinueActionUrlEncoded)
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/destination-countries"))
@@ -358,10 +372,10 @@ class DeclarationHolderControllerSpec
       }
 
       "user doesn't fill form but some holder exists inside the cache" in {
-        withCache(DeclarationHoldersData(Seq(DeclarationHolder(Some("1234"), Some("eori")))))
+        val sessionId = sessionIdLinkedTo(DeclarationHoldersData(Seq(DeclarationHolder(Some("1234"), Some("eori")))))
 
         val body = saveAndContinueActionUrlEncoded
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, sessionId)(body))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/destination-countries"))
@@ -369,10 +383,10 @@ class DeclarationHolderControllerSpec
       }
 
       "user provide holder with some different holder in cache" in {
-        withCache(DeclarationHoldersData(Seq(DeclarationHolder(Some("ACE"), Some("eori")))))
+        val sessionId = sessionIdLinkedTo(DeclarationHoldersData(Seq(DeclarationHolder(Some("ACE"), Some("eori")))))
 
         val body = Seq(("authorisationTypeCode", "ACP"), ("eori", "eori1"), saveAndContinueActionUrlEncoded)
-        val Some(result) = route(app, postRequestFormUrlEncoded(uri, body: _*))
+        val Some(result) = route(app, postRequestFormUrlEncoded(uri, sessionId)(body: _*))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/destination-countries"))
@@ -386,8 +400,6 @@ class DeclarationHolderControllerSpec
       }
     }
   }
-  private def withCache(holders: DeclarationHoldersData) =
-    withNewCaching(aDeclaration(withChoice("SMP"), withDeclarationHolders(holders)))
 }
 
 object DeclarationHolderControllerSpec {

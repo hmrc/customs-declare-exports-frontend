@@ -44,11 +44,9 @@ class PackageInformationController @Inject()(
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
   // TODO Future[Option[List[PackageInformation]]]...
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService
-      .getItemByIdAndSession(itemId, journeySessionId)
-      .map(_.map(_.packageInformation))
-      .map(items => Ok(packageInformationPage(itemId, form(), items.getOrElse(Seq.empty))))
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val items = request.cacheModel.itemBy(itemId).map(_.packageInformation).getOrElse(Nil)
+    Ok(packageInformationPage(itemId, form(), items))
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
@@ -127,7 +125,7 @@ class PackageInformationController @Inject()(
     sessionId: String,
     updatedCache: Seq[PackageInformation]
   ): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportCacheModel(
+    getAndUpdateExportsDeclaration(
       sessionId,
       model => {
         val item: Option[ExportItem] = model.items

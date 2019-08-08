@@ -61,10 +61,16 @@ object WarehouseIdentification {
     .verifying("supplementary.warehouse.identificationTypeNoNumber.error", idNumberIsPopulatedWhenIDTypeIsSelected)
 
   private def typeSelectedWhenNumberIsPopulated: WarehouseIdentification => Boolean =
-    warehouseIdentification => warehouseIdentification.identificationNumber.isEmpty || warehouseIdentification.identificationType.exists(_.nonEmpty)
+    warehouseIdentification =>
+      warehouseIdentification.identificationNumber.isEmpty || warehouseIdentification.identificationType.exists(
+        _.nonEmpty
+    )
 
   private def idNumberIsPopulatedWhenIDTypeIsSelected: WarehouseIdentification => Boolean =
-    warehouseIdentification => warehouseIdentification.identificationType.isEmpty || warehouseIdentification.identificationNumber.exists(_.nonEmpty)
+    warehouseIdentification =>
+      warehouseIdentification.identificationType.isEmpty || warehouseIdentification.identificationNumber.exists(
+        _.nonEmpty
+    )
 
   def form(): Form[WarehouseIdentification] = Form(mapping)
 
