@@ -57,22 +57,14 @@ object WarehouseIdentification {
           )
       )
     )(WarehouseIdentification.apply)(WarehouseIdentification.unapply)
-    .verifying("supplementary.warehouse.identificationType.error", typeSelectedWhenNumberIsPopulated)
-    .verifying("supplementary.warehouse.identificationNumber.empty", idNumberIsPopulatedWhenIDTypeIsSelected)
+    .verifying("supplementary.warehouse.identificationNumberNoType.error", typeSelectedWhenNumberIsPopulated)
+    .verifying("supplementary.warehouse.identificationTypeNoNumber.error", idNumberIsPopulatedWhenIDTypeIsSelected)
 
   private def typeSelectedWhenNumberIsPopulated: WarehouseIdentification => Boolean =
-    w =>
-      w.identificationNumber match {
-        case Some(_) => w.identificationType.exists(_.nonEmpty)
-        case None    => true
-      }
+    warehouseIdentification => warehouseIdentification.identificationNumber.isEmpty || warehouseIdentification.identificationType.exists(_.nonEmpty)
 
   private def idNumberIsPopulatedWhenIDTypeIsSelected: WarehouseIdentification => Boolean =
-    w =>
-      w.identificationType match {
-        case Some(_) => w.identificationNumber.exists(_.nonEmpty)
-        case None    => true
-    }
+    warehouseIdentification => warehouseIdentification.identificationType.isEmpty || warehouseIdentification.identificationNumber.exists(_.nonEmpty)
 
   def form(): Form[WarehouseIdentification] = Form(mapping)
 

@@ -44,7 +44,7 @@ class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationM
           )
         )
 
-      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationNumberEmpty)
+      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationTypeNoNumber)
     }
 
     "validate identification number present and type missing" in {
@@ -57,7 +57,7 @@ class WarehouseIdentificationSpec extends UnitSpec with WarehouseIdentificationM
           )
         )
 
-      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationTypeError)
+      form().bind(incorrectWarehouseIdentification).errors.map(_.message) must contain(identificationNumberNoType)
     }
 
     "validate identification number - more than 35 characters" in {
