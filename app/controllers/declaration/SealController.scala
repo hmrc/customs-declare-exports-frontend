@@ -97,7 +97,7 @@ class SealController @Inject()(
   ): Future[Result] = {
     val updatedSeals = remove(ids.headOption, cachedSeals)
     updateCache(journeySessionId, updatedSeals).map { _ =>
-      Ok(sealPage(userInput.discardingErrors, cachedSeals, hasContainers))
+      Ok(sealPage(userInput.discardingErrors, updatedSeals, hasContainers))
     }
   }
 
