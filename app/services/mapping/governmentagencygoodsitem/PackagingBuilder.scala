@@ -35,7 +35,7 @@ class PackagingBuilder @Inject()() extends ModifyingBuilder[ExportItem, GoodsShi
     exportItem.packageInformation.zipWithIndex.foreach {
       case (packing, index) => {
         wcoGovernmentAgencyGoodsItem.getPackaging.add(
-          createWcoPackaging(Some(index), packing.typesOfPackages, packing.numberOfPackages, packing.shippingMarks)
+          createWcoPackaging(Some(index), Some(packing.typesOfPackages), Some(packing.numberOfPackages), Some(packing.shippingMarks))
         )
       }
     }

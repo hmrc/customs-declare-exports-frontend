@@ -59,10 +59,10 @@ trait GovernmentAgencyGoodsItemData {
   val shippingMarksValue = "shippingMarks"
   val packageTypeValue = "packageType"
   val packageQuantity = 12
-  val numberOfPackages = Some(packageQuantity)
-  val shippingMarksString = Some(shippingMarksValue)
+  val numberOfPackages = packageQuantity
+  val shippingMarksString = shippingMarksValue
 
-  val packageInformation = new PackageInformation(Some(packageTypeValue), numberOfPackages, shippingMarksString)
+  val packageInformation = new PackageInformation(packageTypeValue, numberOfPackages, shippingMarksString)
 
   //Item Type Data
   val descriptionOfGoods = "descriptionOfGoods"

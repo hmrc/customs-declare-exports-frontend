@@ -114,7 +114,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user reached limit of items" in new SetUp {
 
-        val packageInformation = PackageInformation(None, None, None)
+        val packageInformation = PackageInformation("", 0, "")
         val maxItems = anItem(withPackageInformation(List.fill(99)(packageInformation)))
         withNewCaching(aDeclaration(withItem(maxItems)))
 

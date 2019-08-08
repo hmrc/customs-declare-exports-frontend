@@ -22,11 +22,10 @@ import play.api.libs.json.Json
 import services.PackageTypes
 import utils.validators.forms.FieldValidator._
 
-//TODO Change those field to be non optional - all page is mandatory
 case class PackageInformation(
-  typesOfPackages: Option[String],
-  numberOfPackages: Option[Int],
-  shippingMarks: Option[String]
+  typesOfPackages: String,
+  numberOfPackages: Int,
+  shippingMarks: String
 )
 
 object PackageInformation {
@@ -42,32 +41,29 @@ object PackageInformation {
   //TODO Remove the last validation and inlined error and validate separately every field like mandatory field
   val mapping = Forms
     .mapping(
-      "typesOfPackages" -> optional(
+      "typesOfPackages" ->
         text()
+          .verifying("supplementary.packageInformation.typesOfPackages.empty", nonEmpty)
           .verifying(
             "supplementary.packageInformation.typesOfPackages.error",
             isEmpty or isContainedIn(PackageTypes.all.map(_.code))
           )
-          .verifying("supplementary.packageInformation.typesOfPackages.empty", nonEmpty)
-      ),
+      ,
       "numberOfPackages" ->
-        optional(
-          number.verifying("supplementary.packageInformation.numberOfPackages.error", q => q > 0 && q <= 999999)
-        ),
-      "shippingMarks" -> optional(
+        number()
+          .verifying("supplementary.packageInformation.numberOfPackages.error", q => q > 0 && q <= 999999)
+        ,
+      "shippingMarks" ->
         text()
+          .verifying("supplementary.packageInformation.shippingMarks.empty", nonEmpty)
           .verifying(
             "supplementary.packageInformation.shippingMarks.characterError",
             isEmpty or isAlphanumericWithAllowedSpecialCharacters
           )
           .verifying("supplementary.packageInformation.shippingMarks.lengthError", isEmpty or noLongerThan(42))
-          .verifying("supplementary.packageInformation.shippingMarks.empty", nonEmpty)
-      )
+
+
     )(PackageInformation.apply)(PackageInformation.unapply)
-    .verifying(
-      "You must provide 6/9 item packaged, 6/10 Shipping Marks, 6/11 Number of Packages  for a package to be added",
-      require1Field[PackageInformation](_.typesOfPackages, _.numberOfPackages, _.shippingMarks)
-    )
 
   val DUPLICATE_MSG_KEY = "supplementary.packageInformation.global.duplicate"
   val LIMIT_MSG_KEY = "supplementary.packageInformation.global.limit"

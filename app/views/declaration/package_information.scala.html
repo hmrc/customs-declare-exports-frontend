@@ -63,7 +63,7 @@
                 <tbody>
                 @packages.zipWithIndex.map { case (item, index) =>
                 <tr>
-                    <td scope="row">@item.typesOfPackages.getOrElse("")</td>
+                    <td scope="row">@item.typesOfPackages</td>
                     <td>@item.numberOfPackages</td>
                     <td>@item.shippingMarks</td>
                     <td>

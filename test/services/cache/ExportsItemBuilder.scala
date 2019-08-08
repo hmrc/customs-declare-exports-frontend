@@ -103,9 +103,9 @@ trait ExportsItemBuilder {
     cache =>
       cache.copy(
         packageInformation = cache.packageInformation :+ PackageInformation(
-          typesOfPackages,
-          numberOfPackages,
-          shippingMarks
+          typesOfPackages.getOrElse(""),
+          numberOfPackages.getOrElse(0),
+          shippingMarks.getOrElse("")
         )
     )
 

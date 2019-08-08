@@ -43,7 +43,7 @@ class PackageInformationSpec extends WordSpec with MustMatchers {
 
       "correct data is provided" in {
 
-        val correctForm = PackageInformation(Some("1D"), Some(123), Some("correct"))
+        val correctForm = PackageInformation("1D", 123, "correct")
 
         val result = form.fillAndValidate(correctForm)
 
@@ -60,8 +60,10 @@ class PackageInformationSpec extends WordSpec with MustMatchers {
         val result = form.bind(incorrectForm)
         val errorMessages = result.errors.map(_.message)
 
-        errorMessages must contain(
-          "You must provide 6/9 item packaged, 6/10 Shipping Marks, 6/11 Number of Packages  for a package to be added"
+        errorMessages must be(
+          List("supplementary.packageInformation.typesOfPackages.empty",
+            "error.number",
+            "supplementary.packageInformation.shippingMarks.empty")
         )
       }
 

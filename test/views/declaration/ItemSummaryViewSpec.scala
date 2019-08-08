@@ -93,14 +93,14 @@ class ItemSummaryViewSpec extends ViewSpec with ItemSummaryMessages {
               sequenceId = 2,
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code2"), Seq.empty)),
               itemType = Some(ItemType("item-type2", Seq.empty, Seq.empty, "", None, None, "")),
-              packageInformation = List(PackageInformation(None, Some(2), None))
+              packageInformation = List(PackageInformation("", 2, ""))
             ),
             ExportItem(
               "id1",
               sequenceId = 1,
               procedureCodes = Some(ProcedureCodesData(Some("procedure-code1"), Seq.empty)),
               itemType = Some(ItemType("item-type1", Seq.empty, Seq.empty, "", None, None, "")),
-              packageInformation = List(PackageInformation(None, Some(1), None))
+              packageInformation = List(PackageInformation("", 1, ""))
             )
           )
         )
