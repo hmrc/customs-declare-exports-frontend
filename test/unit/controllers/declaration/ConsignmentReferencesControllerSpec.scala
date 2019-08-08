@@ -16,71 +16,67 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.TransportDetailsController
+import controllers.declaration.ConsignmentReferencesController
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import forms.declaration.TransportCodes.{IMOShipIDNumber, cash}
-import forms.declaration.TransportDetails
+import forms.Ducr
+import forms.declaration.ConsignmentReferences
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import unit.base.ControllerSpec
-import views.html.declaration.transport_details
+import views.html.declaration.consignment_references
 
-class TransportDetailsControllerSpec extends ControllerSpec {
+class ConsignmentReferencesControllerSpec extends ControllerSpec {
 
   trait SetUp {
-    val transportDetailsPage = new transport_details(mainTemplate)
+    val consignmentReferencesPage = new consignment_references(mainTemplate)
 
-    val controller = new TransportDetailsController(
+    val controller = new ConsignmentReferencesController(
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
       stubMessagesControllerComponents(),
-      transportDetailsPage
+      consignmentReferencesPage
     )(ec)
 
     authorizedUser()
     withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
-  "Transport Details Controller" should {
+  "Consignment References controller" should {
 
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in new SetUp {
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
 
-      "display page method is invoked and cache is not empty" in new SetUp {
+      "display page method is invoked and cache contains data" in new SetUp {
 
-        withNewCaching(aDeclaration(withTransportDetails()))
+        withNewCaching(aDeclaration(withConsignmentReferences()))
 
-        val result = controller.displayForm()(getRequest())
+        val result = controller.displayPage()(getRequest())
 
         status(result) must be(OK)
       }
     }
 
-    "return 400 (BAD_REQUEST)" when {
+    "return 400 (BAD_REQUEST)" in new SetUp {
 
-      "form contains incorrect values" in new SetUp {
+      val incorrectForm = Json.toJson(ConsignmentReferences(Some(Ducr("1234")), ""))
 
-        val incorrectForm = Json.toJson(TransportDetails(Some("incorrect"), false, "", None, None))
+      val result = controller.submitConsignmentReferences()(postRequest(incorrectForm))
 
-        val result = controller.submitForm()(postRequest(incorrectForm))
-
-        status(result) must be(BAD_REQUEST)
-      }
+      status(result) must be(BAD_REQUEST)
     }
 
     "return 303 (SEE_OTHER)" in new SetUp {
 
-      val correctForm =
-        Json.toJson(TransportDetails(Some("United Kingdom"), true, IMOShipIDNumber, Some("correct"), Some(cash)))
+      val correctForm = Json.toJson(ConsignmentReferences(Some(Ducr(DUCR)), LRN))
 
-      val result = controller.submitForm()(postRequest(correctForm))
+      val result = controller.submitConsignmentReferences()(postRequest(correctForm))
 
       status(result) must be(SEE_OTHER)
     }

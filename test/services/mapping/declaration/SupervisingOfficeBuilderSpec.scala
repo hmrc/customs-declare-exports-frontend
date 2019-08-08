@@ -16,16 +16,16 @@
 
 package services.mapping.declaration
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class SupervisingOfficeBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class SupervisingOfficeBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "SupervisingOfficeBuilder" should {
 
     "build then add" when {
       "no warehouse identification" in {
-        val model = aCacheModel(withoutWarehouseIdentification())
+        val model = aDeclaration(withoutWarehouseIdentification())
         val declaration = new Declaration()
 
         new SupervisingOfficeBuilder().buildThenAdd(model, declaration)
@@ -34,7 +34,7 @@ class SupervisingOfficeBuilderSpec extends WordSpec with Matchers with ExportsCa
       }
 
       "missing supervising customs office" in {
-        val model = aCacheModel(withWarehouseIdentification(supervisingCustomsOffice = None))
+        val model = aDeclaration(withWarehouseIdentification(supervisingCustomsOffice = None))
         val declaration = new Declaration()
 
         new SupervisingOfficeBuilder().buildThenAdd(model, declaration)
@@ -43,7 +43,7 @@ class SupervisingOfficeBuilderSpec extends WordSpec with Matchers with ExportsCa
       }
 
       "populated" in {
-        val model = aCacheModel(withWarehouseIdentification(supervisingCustomsOffice = Some("value")))
+        val model = aDeclaration(withWarehouseIdentification(supervisingCustomsOffice = Some("value")))
         val declaration = new Declaration()
 
         new SupervisingOfficeBuilder().buildThenAdd(model, declaration)

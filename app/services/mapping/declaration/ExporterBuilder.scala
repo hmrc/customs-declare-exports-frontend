@@ -18,14 +18,14 @@ package services.mapping.declaration
 import forms.common.Address
 import forms.declaration.{EntityDetails, ExporterDetails}
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsDeclaration
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Exporter
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-class ExporterBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
-  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
+class ExporterBuilder @Inject()() extends ModifyingBuilder[ExportsDeclaration, Declaration] {
+  override def buildThenAdd(model: ExportsDeclaration, declaration: Declaration): Unit =
     model.parties.exporterDetails
       .filter(isDefined)
       .map(_.details)

@@ -17,18 +17,18 @@
 package integration.services.mapping.governmentagencygoodsitem
 
 import forms.common.Date
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure}
 import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, CommodityMeasure}
 import models.declaration.DocumentsProducedData
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import services.cache.{ExportsCacheModelBuilder, ExportsItemBuilder}
+import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import services.mapping.governmentagencygoodsitem.{GovernmentAgencyGoodsItemBuilder, GovernmentAgencyGoodsItemData}
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
 
 class GovernmentAgencyGoodsItemIntegrationTest
-    extends WordSpec with Matchers with ExportsCacheModelBuilder with ExportsItemBuilder with GuiceOneAppPerSuite
+    extends WordSpec with Matchers with ExportsDeclarationBuilder with ExportsItemBuilder with GuiceOneAppPerSuite
     with GovernmentAgencyGoodsItemData {
 
   private val builder = app.injector.instanceOf[GovernmentAgencyGoodsItemBuilder]
@@ -47,7 +47,7 @@ class GovernmentAgencyGoodsItemIntegrationTest
       )
 
       val additionalProcedureCodes = Seq("additionalCode1", "additionalCode2")
-      val model = aCachedItem(
+      val model = anItem(
         withDocumentsProducedData(DocumentsProducedData(Seq(document))),
         withAdditionalInformation("code", "description"),
         withItemType(statisticalValue = "123"),

@@ -16,17 +16,17 @@
 
 package services.mapping.declaration.consignment
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class FreightBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class FreightBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "FreightBuilder" should {
 
     "build then add" when {
       "no transport details" in {
         // Given
-        val model = aCacheModel(withoutTransportDetails())
+        val model = aDeclaration(withoutTransportDetails())
         val consignment = new Declaration.Consignment()
 
         // When
@@ -38,7 +38,7 @@ class FreightBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBu
 
       "payment method is empty" in {
         // Given
-        val model = aCacheModel(withTransportDetails(paymentMethod = None))
+        val model = aDeclaration(withTransportDetails(paymentMethod = None))
         val consignment = new Declaration.Consignment()
 
         // When
@@ -50,7 +50,7 @@ class FreightBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBu
 
       "payment method is populated" in {
         // Given
-        val model = aCacheModel(withTransportDetails(paymentMethod = Some("method")))
+        val model = aDeclaration(withTransportDetails(paymentMethod = Some("method")))
         val consignment = new Declaration.Consignment()
 
         // When

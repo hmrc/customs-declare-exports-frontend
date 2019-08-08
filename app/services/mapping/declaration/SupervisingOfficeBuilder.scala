@@ -17,15 +17,15 @@
 package services.mapping.declaration
 
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsDeclaration
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.SupervisingOffice
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-class SupervisingOfficeBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration] {
+class SupervisingOfficeBuilder @Inject()() extends ModifyingBuilder[ExportsDeclaration, Declaration] {
 
-  override def buildThenAdd(model: ExportsCacheModel, declaration: Declaration): Unit =
+  override def buildThenAdd(model: ExportsDeclaration, declaration: Declaration): Unit =
     model.locations.warehouseIdentification
       .flatMap(_.supervisingCustomsOffice)
       .map(createSupervisingOffice)

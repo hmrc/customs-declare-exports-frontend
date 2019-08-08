@@ -16,7 +16,6 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import models.declaration.governmentagencygoodsitem.GovernmentProcedure
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.ExportsItemBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment.GovernmentAgencyGoodsItem
@@ -31,7 +30,7 @@ class GovernmentProcedureBuilderSpec
 
     "build then add" when {
       "no procedure codes" in {
-        val exportItem = aCachedItem(withoutProcedureCodes())
+        val exportItem = anItem(withoutProcedureCodes())
         val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
 
         builder.buildThenAdd(exportItem, governmentAgencyGoodsItem)
@@ -40,7 +39,7 @@ class GovernmentProcedureBuilderSpec
       }
 
       "populated procedure codes" in {
-        val exportItem = aCachedItem(withProcedureCodes(Some(firstProcedureCode), Seq(additionalProcedureCode)))
+        val exportItem = anItem(withProcedureCodes(Some(firstProcedureCode), Seq(additionalProcedureCode)))
         val governmentAgencyGoodsItem = new GovernmentAgencyGoodsItem()
 
         builder.buildThenAdd(exportItem, governmentAgencyGoodsItem)

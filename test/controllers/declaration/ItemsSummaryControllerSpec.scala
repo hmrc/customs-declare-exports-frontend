@@ -18,12 +18,13 @@ package controllers.declaration
 
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
+import models.ExportsDeclaration
 import models.declaration.governmentagencygoodsitem.{GovernmentAgencyGoodsItem, Packaging}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.Helpers._
-import services.cache.{ExportItem, ExportsCacheModel}
+import services.cache.ExportItem
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 
 class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues {
@@ -31,9 +32,9 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
   private lazy val testItem = ExportItem(id = item1Id)
   private lazy val testItem2 = ExportItem(id = item2Id)
   private lazy val cacheModelWith1Item =
-    aCacheModel(withItem(testItem), withChoice(SupplementaryDec))
+    aDeclaration(withItem(testItem), withChoice(SupplementaryDec))
   private lazy val cacheModelWith2Items =
-    aCacheModel(withItem(testItem), withItem(testItem2), withChoice(SupplementaryDec))
+    aDeclaration(withItem(testItem), withItem(testItem2), withChoice(SupplementaryDec))
   private val viewItemsUri = uriWithContextPath("/declaration/export-items")
   private val addItemUri = uriWithContextPath("/declaration/export-items/add")
   private val formId = "PackageInformation"
@@ -58,7 +59,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
         "user does not have EORI" in {
           userWithoutEori()
-          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+          withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
           val result = route(app, getRequest(viewItemsUri)).value
           intercept[InsufficientEnrolments](status(result))
@@ -70,7 +71,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
         "user is signed in" in {
           authorizedUser()
-          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+          withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
           val result = route(app, getRequest(viewItemsUri)).value
           val stringResult = contentAsString(result)
@@ -122,7 +123,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
         GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging()))
 
         val cachedData = Seq(GovernmentAgencyGoodsItem(sequenceNumeric = 1, packagings = Seq(Packaging())))
-        val cachedItem = aCacheModel(withItem(testItem), withChoice(SupplementaryDec))
+        val cachedItem = aDeclaration(withItem(testItem), withChoice(SupplementaryDec))
         withNewCaching(cachedItem)
         when(mockItemGeneratorService.generateItemId()).thenReturn(item1Id)
 
@@ -135,14 +136,14 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
 
         stringResult.contains("1 Export items added")
 
-        verify(mockExportsCacheService).update(any[String], any[ExportsCacheModel])
+        verify(mockExportsCacheService).update(any[String], any[ExportsDeclaration])
       }
     }
 
     "remove item" should {
       "do nothing and redirect back to items" when {
         "cache is empty" in {
-          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+          withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
           val result = route(app, getRequest(removeItemUri("id"))).value
           status(result) must be(SEE_OTHER)
@@ -151,7 +152,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
         }
 
         "item does not exist" in {
-          withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+          withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
 
           val result = route(app, getRequest(removeItemUri("id"))).value
           status(result) must be(SEE_OTHER)
@@ -163,7 +164,7 @@ class ItemsSummaryControllerSpec extends CustomExportsBaseSpec with OptionValues
       "update cache and redirect" when {
         "item exists" in {
           withNewCaching(
-            aCacheModel(
+            aDeclaration(
               withItem(ExportItem("id1", sequenceId = 1)),
               withItem(ExportItem("id2", sequenceId = 2)),
               withChoice(SupplementaryDec)

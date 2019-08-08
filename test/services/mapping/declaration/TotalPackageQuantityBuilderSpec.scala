@@ -16,16 +16,16 @@
 
 package services.mapping.declaration
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class TotalPackageQuantityBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class TotalPackageQuantityBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "GoodsItemQuantityBuilder" should {
 
     "build then add" when {
       "no Total number of Items" in {
-        val model = aCacheModel(withoutTotalNumberOfItems())
+        val model = aDeclaration(withoutTotalNumberOfItems())
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -34,7 +34,7 @@ class TotalPackageQuantityBuilderSpec extends WordSpec with Matchers with Export
       }
 
       "populated" in {
-        val model = aCacheModel(withTotalNumberOfItems(totalPackage = "123"))
+        val model = aDeclaration(withTotalNumberOfItems(totalPackage = "123"))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)

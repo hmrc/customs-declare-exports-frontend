@@ -18,9 +18,10 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import javax.inject.Inject
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.{ExportItem, ExportItemIdGeneratorService, ExportsCacheModel, ExportsCacheService}
+import services.cache.{ExportItem, ExportItemIdGeneratorService, ExportsCacheService}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.items_summary
 
@@ -70,7 +71,7 @@ class ItemsSummaryController @Inject()(
     }
   }
 
-  private def updateCache(sessionId: String, exportItem: ExportItem): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, exportItem: ExportItem): Future[Option[ExportsDeclaration]] =
     exportsCacheService.get(sessionId).flatMap {
       case Some(model) => {
         exportsCacheService

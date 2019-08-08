@@ -22,10 +22,10 @@ import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.DestinationCountriesSpec._
 import forms.declaration.destinationCountries.DestinationCountries
 import helpers.views.declaration.DestinationCountriesMessages
+import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.test.Helpers._
-import services.cache.ExportsCacheModel
 
 class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with DestinationCountriesMessages {
 
@@ -41,12 +41,12 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
   trait SupplementarySetUp {
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   trait StandardSetUp {
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(StandardDec)))
+    withNewCaching(aDeclaration(withChoice(StandardDec)))
   }
 
   "Destination Countries Controller on GET" should {
@@ -73,7 +73,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "user is during supplementary declaration" in new SupplementarySetUp {
 
         val cachedData = DestinationCountries("Netherlands", "Belgium")
-        withNewCaching(aCacheModel(withChoice("SMP"), withDestinationCountries(cachedData)))
+        withNewCaching(aDeclaration(withChoice("SMP"), withDestinationCountries(cachedData)))
 
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
@@ -86,7 +86,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "user is during standard declaration" in new StandardSetUp {
 
         val cachedData = DestinationCountries("Poland", Seq("Slovakia", "Italy"), "United Kingdom")
-        withNewCaching(aCacheModel(withChoice("SMP"), withDestinationCountries(cachedData)))
+        withNewCaching(aDeclaration(withChoice("SMP"), withDestinationCountries(cachedData)))
 
         val result = route(app, getRequest(uri)).get
         val page = contentAsString(result)
@@ -110,7 +110,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       status(result) must be(BAD_REQUEST)
       stringResult must include(messages(countryOfDestinationError))
       stringResult must include(messages(countryOfDispatchError))
-      verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
+      verify(mockExportsCacheService, never()).update(anyString, any[ExportsDeclaration])
     }
 
     "show page with errors for incorrect country of routing for standard declaration" in new StandardSetUp {
@@ -126,7 +126,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(countriesOfRoutingError))
-      verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
+      verify(mockExportsCacheService, never()).update(anyString, any[ExportsDeclaration])
     }
 
     "show page with errors for missing country of dispatch" when {
@@ -137,7 +137,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryOfDispatchEmpty))
-        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsDeclaration])
       }
 
       "user is during standard declaration" in new StandardSetUp {
@@ -153,7 +153,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryOfDispatchEmpty))
-        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsDeclaration])
       }
     }
 
@@ -172,7 +172,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countriesOfRoutingEmpty))
-        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsDeclaration])
       }
     }
 
@@ -184,7 +184,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryOfDestinationEmpty))
-        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsDeclaration])
       }
 
       "user is during standard declaration" in new StandardSetUp {
@@ -200,7 +200,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages(countryOfDestinationEmpty))
-        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsDeclaration])
       }
     }
 
@@ -226,7 +226,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         val fullCache = Seq.fill(99)("Slovakia")
         val cachedData = DestinationCountries("Poland", fullCache, "England")
-        withNewCaching(aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData)))
+        withNewCaching(aDeclaration(withChoice(StandardDec), withDestinationCountries(cachedData)))
 
         val body = Seq(
           ("countryOfDispatch", ""),
@@ -238,12 +238,12 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages("supplementary.limit"))
-        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsDeclaration])
       }
 
       "user try to add duplicated value" in new StandardSetUp {
         val cachedData = DestinationCountries("Poland", Seq("Poland"), "England")
-        withNewCaching(aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData)))
+        withNewCaching(aDeclaration(withChoice(StandardDec), withDestinationCountries(cachedData)))
 
         val body = Seq(
           ("countryOfDispatch", ""),
@@ -255,7 +255,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
 
         status(result) must be(BAD_REQUEST)
         contentAsString(result) must include(messages("supplementary.duplication"))
-        verify(mockExportsCacheService, never()).update(anyString, any[ExportsCacheModel])
+        verify(mockExportsCacheService, never()).update(anyString, any[ExportsDeclaration])
       }
     }
 
@@ -263,7 +263,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "country exist and user is during standard declaration" in new StandardSetUp {
 
         val cachedData = DestinationCountries("Poland", Seq("Slovakia", "Italy"), "England")
-        withNewCaching(aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData)))
+        withNewCaching(aDeclaration(withChoice(StandardDec), withDestinationCountries(cachedData)))
 
         val action = Remove(Seq("countriesOfRouting_0"))
         val body = Seq(
@@ -308,7 +308,7 @@ class DestinationCountriesControllerSpec extends CustomExportsBaseSpec with Dest
       "user is during standard declaration and provide correct values" in new StandardSetUp {
 
         val cachedData = DestinationCountries("", Seq("SK", "IT"), "")
-        withNewCaching(aCacheModel(withChoice(StandardDec), withDestinationCountries(cachedData)))
+        withNewCaching(aDeclaration(withChoice(StandardDec), withDestinationCountries(cachedData)))
 
         val body = Seq(
           ("countryOfDispatch", "PL"),

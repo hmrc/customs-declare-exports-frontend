@@ -16,7 +16,6 @@
 
 package services.mapping.governmentagencygoodsitem
 
-import models.declaration.governmentagencygoodsitem.Packaging
 import org.scalatest.{Matchers, WordSpec}
 import services.GoodsItemCachingData
 import services.cache.ExportsItemBuilder
@@ -28,7 +27,7 @@ class PackagingBuilderSpec extends WordSpec with Matchers with GoodsItemCachingD
 
     "build then add" when {
       "empty list" in {
-        val model = aCachedItem(withoutPackageInformation())
+        val model = anItem(withoutPackageInformation())
         val wcoItem = new GoodsShipment.GovernmentAgencyGoodsItem()
 
         builder.buildThenAdd(model, wcoItem)
@@ -37,7 +36,7 @@ class PackagingBuilderSpec extends WordSpec with Matchers with GoodsItemCachingD
       }
 
       "populated list" in {
-        val model = aCachedItem(withPackageInformation(Some("types"), Some(123), Some("marks")))
+        val model = anItem(withPackageInformation(Some("types"), Some(123), Some("marks")))
         val wcoItem = new GoodsShipment.GovernmentAgencyGoodsItem()
 
         builder.buildThenAdd(model, wcoItem)

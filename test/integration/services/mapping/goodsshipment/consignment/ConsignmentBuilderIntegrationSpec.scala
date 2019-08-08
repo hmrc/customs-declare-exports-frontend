@@ -19,15 +19,16 @@ package integration.services.mapping.goodsshipment.consignment
 import forms.declaration.GoodsLocationTestData._
 import forms.declaration.TransportCodes.Maritime
 import forms.declaration._
+import models.ExportsDeclaration
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import services.cache.{ExportsCacheModel, ExportsCacheModelBuilder}
+import services.cache.ExportsDeclarationBuilder
 import services.mapping.goodsshipment.consignment.ConsignmentBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class ConsignmentBuilderIntegrationSpec
-    extends WordSpec with Matchers with ExportsCacheModelBuilder with GuiceOneAppPerSuite {
+    extends WordSpec with Matchers with ExportsDeclarationBuilder with GuiceOneAppPerSuite {
 
   private val builder = app.injector.instanceOf[ConsignmentBuilder]
 
@@ -38,8 +39,8 @@ class ConsignmentBuilderIntegrationSpec
         val meansOfTransportOnDepartureType = "T"
         val meansOfTransportOnDepartureIDNumber = "12345"
 
-        val model: ExportsCacheModel =
-          aCacheModel(
+        val model: ExportsDeclaration =
+          aDeclaration(
             withGoodsLocation(GoodsLocationTestData.correctGoodsLocation),
             withBorderTransport(
               borderModeOfTransportCode,

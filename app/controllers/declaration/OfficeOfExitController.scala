@@ -20,12 +20,13 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.officeOfExit.{OfficeOfExit, OfficeOfExitStandard, OfficeOfExitSupplementary}
 import javax.inject.Inject
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import play.twirl.api.Html
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.{office_of_exit_standard, office_of_exit_supplementary}
@@ -94,7 +95,7 @@ class OfficeOfExitController @Inject()(
             .map(_ => Redirect(controllers.declaration.routes.TotalNumberOfItemsController.displayForm()))
       )
 
-  private def updateCache(sessionId: String, formData: OfficeOfExitSupplementary): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: OfficeOfExitSupplementary): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model =>
@@ -104,7 +105,7 @@ class OfficeOfExitController @Inject()(
       )
     )
 
-  private def updateCache(sessionId: String, formData: OfficeOfExitStandard): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: OfficeOfExitStandard): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model =>

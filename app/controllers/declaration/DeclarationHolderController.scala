@@ -21,13 +21,14 @@ import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.DeclarationHolder
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.ExportsDeclaration
 import models.declaration.DeclarationHoldersData
 import models.declaration.DeclarationHoldersData.limitOfHolders
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.declaration_holder
@@ -114,7 +115,7 @@ class DeclarationHolderController @Inject()(
     Future.successful(BadRequest(declarationHolderPage(formWithError, holders)))
   }
 
-  private def updateCache(sessionId: String, formData: DeclarationHoldersData): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: DeclarationHoldersData): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       val updatedParties = model.parties.copy(declarationHoldersData = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))

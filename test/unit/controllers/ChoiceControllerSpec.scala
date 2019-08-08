@@ -39,7 +39,7 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
     setupErrorHandler()
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
   }
 
   "Choice controller" should {
@@ -55,7 +55,7 @@ class ChoiceControllerSpec extends ControllerSpec with ErrorHandlerMocks {
       }
 
       "display page method is invoked with data in cache" in new SetUp {
-        withNewCaching(aCacheModel(withSessionId("sessionId"), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
+        withNewCaching(aDeclaration(withSessionId("sessionId"), withChoice(Choice.AllowedChoiceValues.SupplementaryDec)))
 
         val result = controller.displayPage()(getRequest())
 

@@ -38,7 +38,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
     )(ec)
 
     authorizedUser()
-    withNewCaching(aCacheModel(withChoice(SupplementaryDec)))
+    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
   }
 
   "Consignee Details controller" should {
@@ -53,7 +53,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache contrains data" in new SetUp {
 
-        withNewCaching(aCacheModel(withConsigneeDetails(Some("123"), None)))
+        withNewCaching(aDeclaration(withConsigneeDetails(Some("123"), None)))
 
         val result = controller.displayPage()(getRequest())
 

@@ -17,10 +17,10 @@
 package services.mapping.declaration
 import forms.declaration.ConsignmentReferencesSpec
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class FunctionalReferenceIdentificationBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class FunctionalReferenceIdentificationBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "FunctionalReferenceIdBuilder" should {
     "correctly map to the WCO-DEC FunctionalReferenceId instance" in {
@@ -29,7 +29,7 @@ class FunctionalReferenceIdentificationBuilderSpec extends WordSpec with Matcher
 
       val declaration = new Declaration
       val references = ConsignmentReferencesSpec.correctConsignmentReferences
-      val model = aCacheModel(withConsignmentReferences(references))
+      val model = aDeclaration(withConsignmentReferences(references))
       builder.buildThenAdd(model, declaration)
 
       declaration.getFunctionalReferenceID.getValue should be(references.lrn)
@@ -45,7 +45,7 @@ class FunctionalReferenceIdentificationBuilderSpec extends WordSpec with Matcher
 
       val declaration = new Declaration
       val references = ConsignmentReferencesSpec.emptyConsignmentReferences
-      val model = aCacheModel(withConsignmentReferences(references))
+      val model = aDeclaration(withConsignmentReferences(references))
       builder.buildThenAdd(model, declaration)
 
       declaration.getFunctionalReferenceID should be(null)

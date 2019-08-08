@@ -18,12 +18,13 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.CommodityMeasure
-import forms.declaration.CommodityMeasure.{form, _}
+import forms.declaration.CommodityMeasure.form
 import javax.inject.Inject
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.goods_measure
 
@@ -69,7 +70,7 @@ class CommodityMeasureController @Inject()(
     itemId: String,
     sessionId: String,
     updatedItem: CommodityMeasure
-  ): Future[Option[ExportsCacheModel]] =
+  ): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(
       sessionId,
       model => {

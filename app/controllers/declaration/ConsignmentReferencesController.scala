@@ -19,10 +19,11 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.ConsignmentReferences
 import javax.inject.Inject
+import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.consignment_references
 
@@ -56,7 +57,7 @@ class ConsignmentReferencesController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: ConsignmentReferences): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: ConsignmentReferences): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       exportsCacheService.update(sessionId, model.copy(consignmentReferences = Some(formData)))
     })

@@ -19,7 +19,7 @@ package services.cache
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{doNothing, reset, when}
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import reactivemongo.play.json.collection.JSONBatchCommands
 
@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterEach {
 
-  val mockRepo = mock[ExportsCacheModelRepository]
+  val mockRepo = mock[ExportsDeclarationRepository]
   val service = new ExportsCacheService(mockRepo)
   val sessionId = "12345"
 
@@ -39,7 +39,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
     "on get" should {
 
       "return a cached model when exist" in {
-        val returnedModel = aCacheModel(withChoice(SupplementaryDec))
+        val returnedModel = aDeclaration(withChoice(SupplementaryDec))
         when(mockRepo.get(sessionId))
           .thenReturn(Future.successful(Some(returnedModel)))
 
@@ -59,7 +59,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
     "on upsert" should {
 
       "update returns a model when upsert is successful" in {
-        val returnedModel = aCacheModel(withChoice(SupplementaryDec))
+        val returnedModel = aDeclaration(withChoice(SupplementaryDec))
         when(mockRepo.upsert(any(), any()))
           .thenReturn(Future.successful(Some(returnedModel)))
 
@@ -68,7 +68,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
       }
 
       "update returns a String with an error message when upsert is unsuccessful" in {
-        val returnedModel = aCacheModel(withChoice(SupplementaryDec))
+        val returnedModel = aDeclaration(withChoice(SupplementaryDec))
         when(mockRepo.upsert(any(), any()))
           .thenReturn(Future.successful(None))
 
@@ -81,7 +81,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
     "on getItemByIdAndSession" should {
 
       "return the correct item" in {
-        val returnedModel = aCacheModel(withChoice("SMP"), withItem())
+        val returnedModel = aDeclaration(withChoice("SMP"), withItem())
         when(mockRepo.get(sessionId))
           .thenReturn(Future.successful(Some(returnedModel)))
 
@@ -91,7 +91,7 @@ class ExportsCacheServiceSpec extends CustomExportsBaseSpec with BeforeAndAfterE
       }
 
       "return None when item cannot be found" in {
-        val returnedModel = aCacheModel(withChoice("SMP"), withItem())
+        val returnedModel = aDeclaration(withChoice("SMP"), withItem())
         when(mockRepo.get(sessionId))
           .thenReturn(Future.successful(Some(returnedModel)))
 

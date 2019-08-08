@@ -17,7 +17,7 @@
 package services.mapping.goodsshipment.consignment
 import forms.Choice.AllowedChoiceValues
 import javax.inject.Inject
-import services.cache.ExportsCacheModel
+import models.ExportsDeclaration
 import wco.datamodel.wco.dec_dms._2.Declaration.GoodsShipment
 
 class ConsignmentBuilder @Inject()(
@@ -28,7 +28,7 @@ class ConsignmentBuilder @Inject()(
   transportEquipmentBuilder: TransportEquipmentBuilder
 ) {
 
-  def buildThenAdd(exportsCacheModel: ExportsCacheModel, goodsShipment: GoodsShipment): Unit = {
+  def buildThenAdd(exportsCacheModel: ExportsDeclaration, goodsShipment: GoodsShipment): Unit = {
     val consignment = new GoodsShipment.Consignment()
 
     exportsCacheModel.locations.goodsLocation

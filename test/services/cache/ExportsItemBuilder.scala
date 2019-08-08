@@ -18,16 +18,9 @@ package services.cache
 
 import java.util.UUID
 
+import forms.declaration._
 import forms.declaration.additionaldocuments.DocumentsProduced
-import forms.declaration.{
-  AdditionalFiscalReferencesData,
-  AdditionalInformation,
-  CommodityMeasure,
-  ItemType,
-  PackageInformation
-}
 import models.declaration.{AdditionalInformationData, DocumentsProducedData, ProcedureCodesData}
-import uk.gov.hmrc.wco.dec.Commodity
 
 trait ExportsItemBuilder {
 
@@ -35,41 +28,41 @@ trait ExportsItemBuilder {
 
   private val modelWithDefaults: ExportItem = ExportItem(id = uuid)
 
-  private type CachedItemModifier = ExportItem => ExportItem
+  private type ItemModifier = ExportItem => ExportItem
 
-  def aCachedItem(modifiers: (CachedItemModifier)*): ExportItem =
+  def anItem(modifiers: (ItemModifier)*): ExportItem =
     modifiers.foldLeft(modelWithDefaults)((current, modifier) => modifier(current))
 
   // ************************************************* Builders ********************************************************
 
-  def withSequenceId(id: Int): CachedItemModifier = _.copy(sequenceId = id)
+  def withSequenceId(id: Int): ItemModifier = _.copy(sequenceId = id)
 
-  def withoutProcedureCodes(): CachedItemModifier = _.copy(procedureCodes = None)
+  def withoutProcedureCodes(): ItemModifier = _.copy(procedureCodes = None)
 
   def withProcedureCodes(
     procedureCode: Option[String] = None,
     additionalProcedureCodes: Seq[String] = Seq.empty
-  ): CachedItemModifier =
+  ): ItemModifier =
     _.copy(procedureCodes = Some(ProcedureCodesData(procedureCode, additionalProcedureCodes)))
 
-  def withoutAdditionalInformation(): CachedItemModifier = _.copy(additionalInformation = None)
+  def withoutAdditionalInformation(): ItemModifier = _.copy(additionalInformation = None)
 
-  def withCommodityMeasure(commodityMeasure: CommodityMeasure): CachedItemModifier =
+  def withCommodityMeasure(commodityMeasure: CommodityMeasure): ItemModifier =
     _.copy(commodityMeasure = Some(commodityMeasure))
 
-  def withAdditionalFiscalReferenceData(data: AdditionalFiscalReferencesData): CachedItemModifier =
+  def withAdditionalFiscalReferenceData(data: AdditionalFiscalReferencesData): ItemModifier =
     _.copy(additionalFiscalReferencesData = Some(data))
 
-  def withAdditionalInformation(code: String, description: String): CachedItemModifier =
+  def withAdditionalInformation(code: String, description: String): ItemModifier =
     withAdditionalInformation(AdditionalInformation(code, description))
 
-  def withAdditionalInformation(info1: AdditionalInformation, other: AdditionalInformation*): CachedItemModifier =
+  def withAdditionalInformation(info1: AdditionalInformation, other: AdditionalInformation*): ItemModifier =
     cache => {
       val existing: Seq[AdditionalInformation] = cache.additionalInformation.map(_.items).getOrElse(Seq.empty)
       cache.copy(additionalInformation = Some(AdditionalInformationData(existing ++ Seq(info1) ++ other)))
     }
 
-  def withoutItemType(): CachedItemModifier = _.copy(itemType = None)
+  def withoutItemType(): ItemModifier = _.copy(itemType = None)
 
   def withItemType(
     combinedNomenclatureCode: String = "",
@@ -79,7 +72,7 @@ trait ExportsItemBuilder {
     cusCode: Option[String] = None,
     unDangerousGoodsCode: Option[String] = None,
     statisticalValue: String = ""
-  ): CachedItemModifier =
+  ): ItemModifier =
     withItemType(
       ItemType(
         combinedNomenclatureCode,
@@ -92,21 +85,21 @@ trait ExportsItemBuilder {
       )
     )
 
-  def withItemType(data: ItemType): CachedItemModifier = _.copy(itemType = Some(data))
+  def withItemType(data: ItemType): ItemModifier = _.copy(itemType = Some(data))
 
-  def withoutPackageInformation(): CachedItemModifier = _.copy(packageInformation = List.empty)
+  def withoutPackageInformation(): ItemModifier = _.copy(packageInformation = List.empty)
 
-  def withPackageInformation(first: PackageInformation, others: PackageInformation*): CachedItemModifier =
+  def withPackageInformation(first: PackageInformation, others: PackageInformation*): ItemModifier =
     withPackageInformation(List(first) ++ others.toList)
 
-  def withPackageInformation(informations: List[PackageInformation]): CachedItemModifier =
+  def withPackageInformation(informations: List[PackageInformation]): ItemModifier =
     _.copy(packageInformation = informations)
 
   def withPackageInformation(
     typesOfPackages: Option[String] = None,
     numberOfPackages: Option[Int] = None,
     shippingMarks: Option[String] = None
-  ): CachedItemModifier =
+  ): ItemModifier =
     cache =>
       cache.copy(
         packageInformation = cache.packageInformation :+ PackageInformation(
@@ -116,12 +109,12 @@ trait ExportsItemBuilder {
         )
     )
 
-  def withDocumentsProduced(first: DocumentsProduced, docs: DocumentsProduced*): CachedItemModifier = cache => {
+  def withDocumentsProduced(first: DocumentsProduced, docs: DocumentsProduced*): ItemModifier = cache => {
     val existing = cache.documentsProducedData.map(_.documents).getOrElse(Seq.empty)
     cache.copy(documentsProducedData = Some(DocumentsProducedData(existing ++ Seq(first) ++ docs)))
   }
 
-  def withDocumentsProducedData(docs: DocumentsProducedData): CachedItemModifier =
+  def withDocumentsProducedData(docs: DocumentsProducedData): ItemModifier =
     cache => cache.copy(documentsProducedData = Some(docs))
 
 }

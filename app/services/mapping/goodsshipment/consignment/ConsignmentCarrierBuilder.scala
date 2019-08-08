@@ -20,16 +20,16 @@ import forms.Choice.AllowedChoiceValues
 import forms.common.Address
 import forms.declaration.{CarrierDetails, EntityDetails}
 import javax.inject.Inject
+import models.ExportsDeclaration
 import services.Countries.allCountries
-import services.cache.ExportsCacheModel
 import services.mapping.ModifyingBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 import wco.datamodel.wco.dec_dms._2.Declaration.Consignment.Carrier
 import wco.datamodel.wco.declaration_ds.dms._2._
 
-class ConsignmentCarrierBuilder @Inject()() extends ModifyingBuilder[ExportsCacheModel, Declaration.Consignment] {
+class ConsignmentCarrierBuilder @Inject()() extends ModifyingBuilder[ExportsDeclaration, Declaration.Consignment] {
 
-  override def buildThenAdd(model: ExportsCacheModel, consignment: Declaration.Consignment): Unit =
+  override def buildThenAdd(model: ExportsDeclaration, consignment: Declaration.Consignment): Unit =
     if (model.choice.equals(AllowedChoiceValues.StandardDec)) {
       model.parties.carrierDetails
         .filter(isDefined)

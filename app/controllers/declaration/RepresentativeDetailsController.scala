@@ -20,11 +20,12 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.Choice.AllowedChoiceValues._
 import forms.declaration.RepresentativeDetails
 import javax.inject.Inject
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.cache.{ExportsCacheModel, ExportsCacheService}
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.declaration.representative_details
 
@@ -66,7 +67,7 @@ class RepresentativeDetailsController @Inject()(
         controllers.declaration.routes.CarrierDetailsController.displayForm()
     }
 
-  private def updateCache(sessionId: String, formData: RepresentativeDetails): Future[Option[ExportsCacheModel]] =
+  private def updateCache(sessionId: String, formData: RepresentativeDetails): Future[Option[ExportsDeclaration]] =
     getAndUpdateExportCacheModel(sessionId, model => {
       val updatedParties = model.parties.copy(representativeDetails = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))

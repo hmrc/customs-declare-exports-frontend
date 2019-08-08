@@ -18,16 +18,16 @@ package services.mapping.declaration
 
 import forms.common.Address
 import org.scalatest.{Matchers, WordSpec}
-import services.cache.ExportsCacheModelBuilder
+import services.cache.ExportsDeclarationBuilder
 import wco.datamodel.wco.dec_dms._2.Declaration
 
-class ExporterBuilderSpec extends WordSpec with Matchers with ExportsCacheModelBuilder {
+class ExporterBuilderSpec extends WordSpec with Matchers with ExportsDeclarationBuilder {
 
   "ExporterBuilder" should {
 
     "build then add" when {
       "no exporter details" in {
-        val model = aCacheModel(withoutExporterDetails())
+        val model = aDeclaration(withoutExporterDetails())
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -36,7 +36,7 @@ class ExporterBuilderSpec extends WordSpec with Matchers with ExportsCacheModelB
       }
 
       "no eori" in {
-        val model = aCacheModel(
+        val model = aDeclaration(
           withExporterDetails(
             eori = None,
             address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))
@@ -50,7 +50,7 @@ class ExporterBuilderSpec extends WordSpec with Matchers with ExportsCacheModelB
       }
 
       "no address" in {
-        val model = aCacheModel(withExporterDetails(eori = Some("eori"), address = None))
+        val model = aDeclaration(withExporterDetails(eori = Some("eori"), address = None))
         val declaration = new Declaration()
 
         builder.buildThenAdd(model, declaration)
@@ -59,7 +59,7 @@ class ExporterBuilderSpec extends WordSpec with Matchers with ExportsCacheModelB
       }
 
       "unknown country" in {
-        val model = aCacheModel(
+        val model = aDeclaration(
           withExporterDetails(
             eori = Some("eori"),
             address = Some(Address("name", "line", "city", "postcode", "unknown"))
@@ -73,7 +73,7 @@ class ExporterBuilderSpec extends WordSpec with Matchers with ExportsCacheModelB
       }
 
       "populated" in {
-        val model = aCacheModel(
+        val model = aDeclaration(
           withExporterDetails(
             eori = Some("eori"),
             address = Some(Address("name", "line", "city", "postcode", "United Kingdom"))
