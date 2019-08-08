@@ -54,9 +54,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
   val maxAmountOfItems = aDeclaration(
     withDeclarationAdditionalActors(
-      DeclarationAdditionalActorsData(
-        Seq.fill(DeclarationAdditionalActorsData.maxNumberOfItems)(additionalActor)
-      )
+      DeclarationAdditionalActorsData(Seq.fill(DeclarationAdditionalActorsData.maxNumberOfItems)(additionalActor))
     )
   )
 

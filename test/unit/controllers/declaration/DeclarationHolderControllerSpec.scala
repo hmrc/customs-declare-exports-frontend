@@ -122,7 +122,8 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
       "user put incorrect data" in new SetUp {
 
-        val incorrectForm = Seq(("authorisationTypeCode", "incorrect"), ("eori", "GB123456"), saveAndContinueActionUrlEncoded)
+        val incorrectForm =
+          Seq(("authorisationTypeCode", "incorrect"), ("eori", "GB123456"), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
@@ -133,7 +134,8 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         withNewCaching(declarationWithHolder)
 
-        val duplicatedForm = Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), saveAndContinueActionUrlEncoded)
+        val duplicatedForm =
+          Seq(("authorisationTypeCode", "ACP"), ("eori", "GB123456"), saveAndContinueActionUrlEncoded)
 
         val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
@@ -176,7 +178,8 @@ class DeclarationHolderControllerSpec extends ControllerSpec with ErrorHandlerMo
 
         withNewCaching(declarationWithHolder)
 
-        val result = controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
+        val result =
+          controller.submitHoldersOfAuthorisation()(postRequestAsFormUrlEncoded(saveAndContinueActionUrlEncoded))
 
         status(result) must be(SEE_OTHER)
       }
