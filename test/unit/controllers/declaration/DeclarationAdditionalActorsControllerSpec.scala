@@ -52,7 +52,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
   val declarationWithActor =
     aDeclaration(withDeclarationAdditionalActors(additionalActor))
 
-  val maxAmountOfItem = aDeclaration(
+  val maxAmountOfItems = aDeclaration(
     withDeclarationAdditionalActors(
       DeclarationAdditionalActorsData(
         Seq.fill(DeclarationAdditionalActorsData.maxNumberOfItems)(additionalActor)
@@ -118,7 +118,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
       "user reach maximum amount of items" in new SetUp {
 
-        withNewCaching(maxAmountOfItem)
+        withNewCaching(maxAmountOfItems)
 
         val correctForm = Seq(("eori", "GB123456"), ("partyType", "CS"), addActionUrlEncoded)
 
@@ -153,7 +153,7 @@ class DeclarationAdditionalActorsControllerSpec extends ControllerSpec with Erro
 
       "user reach maximum amount of items" in new SetUp {
 
-        withNewCaching(maxAmountOfItem)
+        withNewCaching(maxAmountOfItems)
 
         val correctForm = Seq(("eori", "GB123456"), ("partyType", "CS"), saveAndContinueActionUrlEncoded)
 
