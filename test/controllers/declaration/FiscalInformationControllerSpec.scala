@@ -49,20 +49,19 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
   "GET" should {
 
     "return 200 on GET request with a success" in {
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = cacheModel.sessionId)).get
 
       status(result) must be(OK)
     }
 
     "read item from cache and display it" in {
-      withNewCaching(
-        aDeclaration(
-          withItem(ExportItem("id", fiscalInformation = Some(FiscalInformation("Yes")))),
-          withChoice(StandardDec)
-        )
+      val model = aDeclaration(
+        withItem(ExportItem("id", fiscalInformation = Some(FiscalInformation("Yes")))),
+        withChoice(StandardDec)
       )
+      withNewCaching(model)
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
 
       status(result) must be(OK)
       contentAsString(result) must include("Yes")
@@ -72,7 +71,7 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
   "POST" should {
 
     "return bad request for empty form" in {
-      val result = route(app, postRequest(uri, emptyFiscalInformationJson)).get
+      val result = route(app, postRequest(uri, emptyFiscalInformationJson, sessionId = cacheModel.sessionId)).get
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(errorMessageEmpty))
@@ -80,7 +79,7 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
     }
 
     "return bad request for incorrect values" in {
-      val result = route(app, postRequest(uri, incorrectFiscalInformation)).get
+      val result = route(app, postRequest(uri, incorrectFiscalInformation, sessionId = cacheModel.sessionId)).get
 
       status(result) must be(BAD_REQUEST)
       contentAsString(result) must include(messages(errorMessageIncorrect))
@@ -88,7 +87,7 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
     }
 
     "redirect to 'AdditionalFiscalReferences' page when choice is yes" in {
-      val result = route(app, postRequest(uri, fiscalInformationWithYes)).get
+      val result = route(app, postRequest(uri, fiscalInformationWithYes, sessionId = cacheModel.sessionId)).get
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(
@@ -98,14 +97,13 @@ class FiscalInformationControllerSpec extends CustomExportsBaseSpec with FiscalI
     }
 
     "redirect to 'ItemsSummary' page and clear fiscal references when choice is no" in {
-      withNewCaching(
-        aDeclaration(
-          withItem(ExportItem("id", additionalFiscalReferencesData = Some(mock[AdditionalFiscalReferencesData]))),
-          withChoice(StandardDec)
-        )
+      val model = aDeclaration(
+        withItem(ExportItem("id", additionalFiscalReferencesData = Some(mock[AdditionalFiscalReferencesData]))),
+        withChoice(StandardDec)
       )
+      withNewCaching(model)
 
-      val result = route(app, postRequest(uri, fiscalInformationWithNo)).get
+      val result = route(app, postRequest(uri, fiscalInformationWithNo, sessionId = model.sessionId)).get
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some(routes.ItemTypeController.displayPage(cacheModel.items.head.id).url))

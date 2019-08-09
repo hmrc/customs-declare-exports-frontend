@@ -16,7 +16,7 @@
 
 package unit.mock
 
-import base.MockExportsCacheService
+import base.MockExportCacheService
 import controllers.actions.JourneyAction
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatest.mockito.MockitoSugar
@@ -24,7 +24,7 @@ import unit.tools.Stubs
 
 import scala.concurrent.ExecutionContext
 
-trait JourneyActionMocks extends MockExportsCacheService with BeforeAndAfterEach {
+trait JourneyActionMocks extends MockExportCacheService with BeforeAndAfterEach {
   self: MockitoSugar with Suite with Stubs =>
 
   val mockJourneyAction: JourneyAction = new JourneyAction(mockExportsCacheService)(ExecutionContext.global)

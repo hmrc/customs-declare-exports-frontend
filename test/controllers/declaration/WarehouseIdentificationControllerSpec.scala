@@ -19,27 +19,25 @@ package controllers.declaration
 import base.CustomExportsBaseSpec
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
 import forms.declaration.WarehouseIdentificationSpec._
-import org.mockito.Mockito
 import play.api.test.Helpers._
 
 class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
 
   private val uri = uriWithContextPath("/declaration/warehouse")
 
+  private val exampleModel = aDeclaration(withChoice(SupplementaryDec))
+
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
-  }
-
-  override def afterEach() {
-    Mockito.reset(mockExportsCacheService)
+    withNewCaching(exampleModel)
   }
 
   "Warehouse Identification Controller on POST" should {
 
     "validate request and redirect - no answers" in {
 
-      val result = route(app, postRequest(uri, emptyWarehouseIdentificationJSON)).get
+      val result =
+        route(app, postRequest(uri, emptyWarehouseIdentificationJSON, sessionId = exampleModel.sessionId)).get
 
       status(result) must be(SEE_OTHER)
 
@@ -49,7 +47,8 @@ class WarehouseIdentificationControllerSpec extends CustomExportsBaseSpec {
 
     "validate request and redirect - correct values" in {
 
-      val result = route(app, postRequest(uri, correctWarehouseIdentificationJSON)).get
+      val result =
+        route(app, postRequest(uri, correctWarehouseIdentificationJSON, sessionId = exampleModel.sessionId)).get
 
       status(result) must be(SEE_OTHER)
 

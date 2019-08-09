@@ -32,48 +32,51 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
 
   private val dispatchLocationUri = uriWithContextPath("/declaration/dispatch-location")
 
+  val exampleModel = aDeclaration(withChoice(SupplementaryDec))
+
   override def beforeEach() {
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(exampleModel)
   }
 
   override def afterEach() {
     reset(mockExportsCacheService)
   }
 
-  "Declaration Type Controller on GET" should {
+  "Dispatch Location Controller on GET" should {
 
     "return 200 code" in {
 
-      val result = route(app, getRequest(dispatchLocationUri)).get
+      val result = route(app, getRequest(dispatchLocationUri, sessionId = exampleModel.sessionId)).get
       status(result) must be(OK)
-      verify(mockExportsCacheService, times(2)).get(any())
+      verify(mockExportsCacheService).get(any())
     }
 
     "populate the form fields with data from cache" in {
-      withNewCaching(aDeclaration(withChoice("SMP"), withDispatchLocation(AllowedDispatchLocations.OutsideEU)))
+      val model = aDeclaration(withChoice("SMP"), withDispatchLocation(AllowedDispatchLocations.OutsideEU))
+      withNewCaching(model)
 
-      val result = route(app, getRequest(dispatchLocationUri)).get
+      val result = route(app, getRequest(dispatchLocationUri, sessionId = model.sessionId)).get
       contentAsString(result) must include("checked=\"checked\"")
-      verify(mockExportsCacheService, times(2)).get(any())
+      verify(mockExportsCacheService).get(any())
     }
   }
 
-  "Declaration Type Controller on POST" should {
+  "Dispatch Location Controller on POST" should {
 
     "save the data to the cache" in {
 
       val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.OutsideEU)
-      route(app, postRequest(dispatchLocationUri, validForm)).get.futureValue
+      route(app, postRequest(dispatchLocationUri, validForm, sessionId = exampleModel.sessionId)).get.futureValue
 
       verify(mockExportsCacheService).update(any(), any[ExportsDeclaration])
-      verify(mockExportsCacheService, times(2)).get(any())
+      verify(mockExportsCacheService).get(any())
     }
 
     "return 303 code" in {
 
       val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.OutsideEU)
-      val result = route(app, postRequest(dispatchLocationUri, validForm)).get
+      val result = route(app, postRequest(dispatchLocationUri, validForm, sessionId = exampleModel.sessionId)).get
 
       status(result) must be(SEE_OTHER)
       theCacheModelUpdated.dispatchLocation must be(Some(DispatchLocation(AllowedDispatchLocations.OutsideEU)))
@@ -84,7 +87,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
       "dispatch location is Outside EU (EX)" in {
 
         val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.OutsideEU)
-        val result = route(app, postRequest(dispatchLocationUri, validForm)).get
+        val result = route(app, postRequest(dispatchLocationUri, validForm, sessionId = exampleModel.sessionId)).get
 
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/type"))
         theCacheModelUpdated.dispatchLocation must be(Some(DispatchLocation(AllowedDispatchLocations.OutsideEU)))
@@ -96,7 +99,7 @@ class DispatchLocationControllerSpec extends CustomExportsBaseSpec {
       "dispatch location is a Special Fiscal Territory (CO)" in {
 
         val validForm = buildDispatchLocationTestData(AllowedDispatchLocations.SpecialFiscalTerritory)
-        val result = route(app, postRequest(dispatchLocationUri, validForm)).get
+        val result = route(app, postRequest(dispatchLocationUri, validForm, sessionId = exampleModel.sessionId)).get
 
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/not-eligible"))
         theCacheModelUpdated.dispatchLocation must be(

@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{AdditionalFiscalReferencesController, routes}
+import controllers.declaration.{routes, AdditionalFiscalReferencesController}
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}

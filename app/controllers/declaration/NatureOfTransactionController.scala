@@ -39,8 +39,8 @@ class NatureOfTransactionController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.natureOfTransaction)).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.natureOfTransaction match {
       case Some(data) => Ok(natureOfTransactionPage(form.fill(data)))
       case _          => Ok(natureOfTransactionPage(form))
     }
@@ -59,7 +59,7 @@ class NatureOfTransactionController @Inject()(
   }
 
   private def updateCache(sessionId: String, formData: NatureOfTransaction): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportCacheModel(
+    getAndUpdateExportsDeclaration(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(natureOfTransaction = Some(formData)))
     )

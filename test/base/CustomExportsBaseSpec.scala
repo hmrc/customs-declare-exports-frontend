@@ -26,9 +26,8 @@ import controllers.actions.FakeAuthAction
 import metrics.ExportsMetrics
 import models.{ExportsDeclaration, NrsSubmissionResponse}
 import org.joda.time.DateTime
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.{never, verify, when}
+import org.mockito.ArgumentMatchers.{eq => eqRef, any}
+import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
@@ -57,11 +56,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait CustomExportsBaseSpec
     extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MockAuthAction
-    with MockConnectors with BeforeAndAfterEach with ExportsDeclarationBuilder {
+    with MockConnectors with BeforeAndAfterEach with ExportsDeclarationBuilder with MockExportCacheService {
 
   protected val contextPath: String = "/customs-declare-exports"
 
-  val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
   val mockSubmissionService: SubmissionService = mock[SubmissionService]
   val mockItemGeneratorService: ExportItemIdGeneratorService = mock[ExportItemIdGeneratorService]
   val mockNrsService: NRSService = mock[NRSService]
@@ -90,13 +88,13 @@ trait CustomExportsBaseSpec
 
   implicit val ec: ExecutionContext = global
 
-  def injector: Injector = app.injector
+  val injector: Injector = app.injector
 
-  def appConfig: AppConfig = injector.instanceOf[AppConfig]
+  val appConfig: AppConfig = injector.instanceOf[AppConfig]
 
-  def mcc: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
+  val mcc: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
 
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+  val messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
   val metrics = app.injector.instanceOf[ExportsMetrics]
 
@@ -118,9 +116,13 @@ trait CustomExportsBaseSpec
 
   protected def uriWithContextPath(path: String): String = s"$contextPath$path"
 
-  protected def getRequest(uri: String, headers: Map[String, String] = Map.empty): Request[AnyContentAsEmpty.type] = {
+  protected def getRequest(
+    uri: String,
+    headers: Map[String, String] = Map.empty,
+    sessionId: String = s"session-${UUID.randomUUID()}"
+  ): Request[AnyContentAsEmpty.type] = {
     val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
+      SessionKeys.sessionId -> sessionId,
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
@@ -133,10 +135,11 @@ trait CustomExportsBaseSpec
   protected def postRequest(
     uri: String,
     body: JsValue,
+    sessionId: String = s"session-${UUID.randomUUID()}",
     headers: Map[String, String] = Map.empty
   ): Request[AnyContentAsJson] = {
     val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
+      SessionKeys.sessionId -> sessionId,
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
@@ -147,9 +150,11 @@ trait CustomExportsBaseSpec
       .withCSRFToken
   }
 
-  protected def postRequestFormUrlEncoded(uri: String, body: (String, String)*): Request[AnyContentAsFormUrlEncoded] = {
+  protected def postRequestFormUrlEncoded(uri: String, sessionId: String = s"session-${UUID.randomUUID()}".toString)(
+    body: (String, String)*
+  ): Request[AnyContentAsFormUrlEncoded] = {
     val session: Map[String, String] = Map(
-      SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
+      SessionKeys.sessionId -> sessionId,
       SessionKeys.userId -> FakeAuthAction.defaultUser.identityData.internalId.get
     )
 
@@ -160,18 +165,19 @@ trait CustomExportsBaseSpec
       .withCSRFToken
   }
 
-  def withNewCaching(dataToReturn: ExportsDeclaration) {
-    when(mockExportsCacheService.getItemByIdAndSession(any[String], any[String]))
+  // FIXME should be promoted to MockExportsCacheService trait
+  override def withNewCaching(dataToReturn: ExportsDeclaration) {
+    when(mockExportsCacheService.getItemByIdAndSession(any[String], eqRef(dataToReturn.sessionId)))
       .thenReturn(Future.successful(dataToReturn.items.headOption))
 
     when(
       mockExportsCacheService
-        .update(any[String], any[ExportsDeclaration])
+        .update(eqRef(dataToReturn.sessionId), any[ExportsDeclaration])
     ).thenReturn(Future.successful(Some(dataToReturn)))
 
     when(
       mockExportsCacheService
-        .get(any[String])
+        .get(eqRef(dataToReturn.sessionId))
     ).thenReturn(Future.successful(Some(dataToReturn)))
   }
 
@@ -193,15 +199,6 @@ trait CustomExportsBaseSpec
   def withNrsSubmission(): OngoingStubbing[Future[NrsSubmissionResponse]] =
     when(mockNrsService.submit(any(), any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(NrsSubmissionResponse("submissionid1")))
-
-  protected def theCacheModelUpdated: ExportsDeclaration = {
-    val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
-    verify(mockExportsCacheService).update(anyString, captor.capture())
-    captor.getValue
-  }
-
-  protected def verifyTheCacheIsUnchanged(): Unit =
-    verify(mockExportsCacheService, never()).update(anyString, any[ExportsDeclaration])
 
 }
 

@@ -33,10 +33,12 @@ class PreviousDocumentsControllerSpec
   private val saveAndContinueActionURLEncoded = (SaveAndContinue.toString, "")
   private val removeActionURLEncoded: String => (String, String) = (value: String) => (Remove.toString, value)
 
+  private val exampleModel = aDeclaration(withChoice(SupplementaryDec))
+
   override def beforeEach() {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(exampleModel)
   }
 
   override def afterEach() {
@@ -48,7 +50,7 @@ class PreviousDocumentsControllerSpec
 
     "return 200 status code" in {
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = exampleModel.sessionId)).get
 
       status(result) must be(OK)
     }
@@ -56,9 +58,10 @@ class PreviousDocumentsControllerSpec
     "read item from cache and display it" in {
 
       val cachedData = PreviousDocumentsData(Seq(Document("X", "MCR", "XH", Some("UX"))))
-      withNewCaching(aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
+      val model = aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
+      withNewCaching(model)
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)
@@ -72,12 +75,14 @@ class PreviousDocumentsControllerSpec
 
   "Previous Documents Controller on POST" should {
 
+    val modelWithPreviousDocuments = aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(cachedData))
+
     "add an item successfully" when {
 
       "cache is empty" in {
 
         val body = correctDocument :+ addActionURLEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
@@ -87,7 +92,7 @@ class PreviousDocumentsControllerSpec
 
       "item is not duplicated" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
+        withNewCaching(modelWithPreviousDocuments)
 
         val document =
           Seq(
@@ -98,7 +103,7 @@ class PreviousDocumentsControllerSpec
           )
         val body = document :+ addActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, modelWithPreviousDocuments.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(
@@ -111,11 +116,11 @@ class PreviousDocumentsControllerSpec
 
       "exists in cache" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
+        withNewCaching(modelWithPreviousDocuments)
 
         val body = correctDocument :+ removeActionURLEncoded("0")
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, modelWithPreviousDocuments.sessionId)(body: _*)).get
 
         status(result) must be(OK)
         theCacheModelUpdated.previousDocuments.get mustBe PreviousDocumentsData(documents = Seq())
@@ -128,7 +133,7 @@ class PreviousDocumentsControllerSpec
 
         val body = emptyDocument :+ addActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -148,7 +153,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithoutCategory :+ addActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -164,7 +169,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithoutType :+ addActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -180,7 +185,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithoutReference :+ addActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -196,7 +201,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithIncorrectCategory :+ addActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -212,7 +217,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithIncorrectType :+ addActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -228,7 +233,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithIncorrectReference :+ addActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -244,7 +249,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithIncorrectIdentifier :+ addActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -260,10 +265,10 @@ class PreviousDocumentsControllerSpec
 
       "item duplication in cache" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
+        withNewCaching(modelWithPreviousDocuments)
 
         val body = correctDocument :+ addActionURLEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, modelWithPreviousDocuments.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -275,7 +280,8 @@ class PreviousDocumentsControllerSpec
 
       "limit of items reached" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(fullCache)))
+        val model = aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(fullCache))
+        withNewCaching(model)
 
         val body = Seq(
           ("documentCategory", "Y"),
@@ -283,7 +289,7 @@ class PreviousDocumentsControllerSpec
           ("documentReference", "A"),
           ("goodsItemIdentifier", "1")
         ) :+ addActionURLEncoded
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -300,7 +306,7 @@ class PreviousDocumentsControllerSpec
 
         val body = emptyDocument :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -314,7 +320,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithoutCategory :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -330,7 +336,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithoutType :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -346,7 +352,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithoutReference :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -362,7 +368,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithIncorrectCategory :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -378,7 +384,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithIncorrectType :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -394,7 +400,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithIncorrectReference :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -410,7 +416,7 @@ class PreviousDocumentsControllerSpec
 
         val body = documentWithIncorrectIdentifier :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -426,11 +432,11 @@ class PreviousDocumentsControllerSpec
 
       "item duplication in cache" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
+        withNewCaching(modelWithPreviousDocuments)
 
         val body = correctDocument :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, modelWithPreviousDocuments.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         status(result) must be(BAD_REQUEST)
@@ -442,7 +448,8 @@ class PreviousDocumentsControllerSpec
 
       "limit of items reached" in {
 
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(fullCache)))
+        val model = aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(fullCache))
+        withNewCaching(model)
 
         val body = Seq(
           ("documentCategory", "Y"),
@@ -451,7 +458,7 @@ class PreviousDocumentsControllerSpec
           ("goodsItemIdentifier", "3")
         ) :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, model.sessionId)(body: _*)).get
         val page = contentAsString(result)
 
         checkErrorsSummary(page)
@@ -465,7 +472,7 @@ class PreviousDocumentsControllerSpec
       "user provide correct item with empty cache" in {
         val body = correctDocument :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, exampleModel.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
@@ -475,11 +482,11 @@ class PreviousDocumentsControllerSpec
       }
 
       "user has empty form but cache contains some item" in {
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
+        withNewCaching(modelWithPreviousDocuments)
 
         val body = emptyDocument :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, modelWithPreviousDocuments.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))
@@ -487,7 +494,7 @@ class PreviousDocumentsControllerSpec
       }
 
       "user provide correct item with different item in cache" in {
-        withNewCaching(aDeclaration(withChoice(SupplementaryDec), withPreviousDocuments(cachedData)))
+        withNewCaching(modelWithPreviousDocuments)
 
         val document =
           Seq(
@@ -498,7 +505,7 @@ class PreviousDocumentsControllerSpec
           )
         val body = document :+ saveAndContinueActionURLEncoded
 
-        val result = route(app, postRequestFormUrlEncoded(uri, body: _*)).get
+        val result = route(app, postRequestFormUrlEncoded(uri, modelWithPreviousDocuments.sessionId)(body: _*)).get
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) must be(Some("/customs-declare-exports/declaration/export-items"))

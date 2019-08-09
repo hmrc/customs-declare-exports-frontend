@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.WarehouseIdentification
 import javax.inject.Inject
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,8 +41,8 @@ class WarehouseIdentificationController @Inject()(
 
   import forms.declaration.WarehouseIdentification._
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.locations.warehouseIdentification)).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.locations.warehouseIdentification match {
       case Some(data) => Ok(warehouseIdentificationPage(form.fill(data)))
       case _          => Ok(warehouseIdentificationPage(form))
     }
@@ -54,14 +55,16 @@ class WarehouseIdentificationController @Inject()(
         (formWithErrors: Form[WarehouseIdentification]) =>
           Future.successful(BadRequest(warehouseIdentificationPage(formWithErrors))),
         form =>
-          updateCache(journeySessionId, form)
+          updateCache(form)
             .map(_ => Redirect(controllers.declaration.routes.BorderTransportController.displayForm()))
       )
   }
 
-  private def updateCache(sessionId: String, formData: WarehouseIdentification): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportCacheModel(sessionId, model => {
+  private def updateCache(
+    formData: WarehouseIdentification
+  )(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect { model =>
       val updatedLocations = model.locations.copy(warehouseIdentification = Some(formData))
-      exportsCacheService.update(sessionId, model.copy(locations = updatedLocations))
-    })
+      model.copy(locations = updatedLocations)
+    }
 }

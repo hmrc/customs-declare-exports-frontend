@@ -27,7 +27,12 @@ import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
 import models.ExportsDeclaration
-import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, Locations, TransportInformationContainerData}
+import models.declaration.{
+  DeclarationAdditionalActorsData,
+  DeclarationHoldersData,
+  Locations,
+  TransportInformationContainerData
+}
 
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
@@ -65,7 +70,9 @@ trait ExportsDeclarationBuilder {
   ): ExportsDeclarationModifier =
     _.copy(totalNumberOfItems = Some(TotalNumberOfItems(totalAmountInvoiced, exchangeRate, totalPackage)))
 
-  def withAdditionalDeclarationType(decType: String = AllowedAdditionalDeclarationTypes.Standard): ExportsDeclarationModifier =
+  def withAdditionalDeclarationType(
+    decType: String = AllowedAdditionalDeclarationTypes.Standard
+  ): ExportsDeclarationModifier =
     _.copy(additionalDeclarationType = Some(AdditionalDeclarationType(decType)))
 
   def withDispatchLocation(location: String = "GB"): ExportsDeclarationModifier =
@@ -86,7 +93,8 @@ trait ExportsDeclarationBuilder {
   def withItem(item: ExportItem = ExportItem(uuid)): ExportsDeclarationModifier =
     m => m.copy(items = m.items + item)
 
-  def withItems(item1: ExportItem, others: ExportItem*): ExportsDeclarationModifier = _.copy(items = Set(item1) ++ others)
+  def withItems(item1: ExportItem, others: ExportItem*): ExportsDeclarationModifier =
+    _.copy(items = Set(item1) ++ others)
 
   def withItems(count: Int): ExportsDeclarationModifier =
     cache => cache.copy(items = cache.items ++ (1 to count).map(_ => ExportItem(id = uuid)).toSet)
@@ -160,7 +168,9 @@ trait ExportsDeclarationBuilder {
         parties = cache.parties.copy(declarationAdditionalActorsData = Some(DeclarationAdditionalActorsData(data)))
     )
 
-  def withDeclarationAdditionalActors(declarationAdditionalActorsData: DeclarationAdditionalActorsData): ExportsDeclarationModifier =
+  def withDeclarationAdditionalActors(
+    declarationAdditionalActorsData: DeclarationAdditionalActorsData
+  ): ExportsDeclarationModifier =
     cache =>
       cache.copy(parties = cache.parties.copy(declarationAdditionalActorsData = Some(declarationAdditionalActorsData)))
 
@@ -179,14 +189,16 @@ trait ExportsDeclarationBuilder {
   def withPreviousDocuments(previousDocumentsData: PreviousDocumentsData): ExportsDeclarationModifier =
     _.copy(previousDocuments = Some(previousDocumentsData))
 
-  def withNatureOfTransaction(nature: NatureOfTransaction): ExportsDeclarationModifier = _.copy(natureOfTransaction = Some(nature))
+  def withNatureOfTransaction(nature: NatureOfTransaction): ExportsDeclarationModifier =
+    _.copy(natureOfTransaction = Some(nature))
 
   def withNatureOfTransaction(natureType: String): ExportsDeclarationModifier =
     _.copy(natureOfTransaction = Some(NatureOfTransaction(natureType)))
 
   def withoutTransportDetails(): ExportsDeclarationModifier = _.copy(transportDetails = None)
 
-  def withTransportDetails(details: TransportDetails): ExportsDeclarationModifier = _.copy(transportDetails = Some(details))
+  def withTransportDetails(details: TransportDetails): ExportsDeclarationModifier =
+    _.copy(transportDetails = Some(details))
 
   def withTransportDetails(
     meansOfTransportCrossingTheBorderNationality: Option[String] = None,
@@ -221,7 +233,8 @@ trait ExportsDeclarationBuilder {
     m.copy(locations = m.locations.copy(destinationCountries = Some(destinationCountries)))
   }
 
-  def withoutCarrierDetails(): ExportsDeclarationModifier = cache => cache.copy(parties = cache.parties.copy(carrierDetails = None))
+  def withoutCarrierDetails(): ExportsDeclarationModifier =
+    cache => cache.copy(parties = cache.parties.copy(carrierDetails = None))
 
   def withCarrierDetails(eori: Option[String] = None, address: Option[Address] = None): ExportsDeclarationModifier =
     cache =>
@@ -248,7 +261,8 @@ trait ExportsDeclarationBuilder {
       )
     )
 
-  def withoutOfficeOfExit(): ExportsDeclarationModifier = cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))
+  def withoutOfficeOfExit(): ExportsDeclarationModifier =
+    cache => cache.copy(locations = cache.locations.copy(officeOfExit = None))
 
   def withOfficeOfExit(
     officeId: String = "",
@@ -261,7 +275,8 @@ trait ExportsDeclarationBuilder {
           cache.locations.copy(officeOfExit = Some(OfficeOfExit(officeId, presentationOfficeId, circumstancesCode)))
     )
 
-  def withContainerData(data: TransportInformationContainerData): ExportsDeclarationModifier = _.copy(containerData = Some(data))
+  def withContainerData(data: TransportInformationContainerData): ExportsDeclarationModifier =
+    _.copy(containerData = Some(data))
 
   def withContainerData(data: TransportInformationContainer*): ExportsDeclarationModifier =
     cache =>

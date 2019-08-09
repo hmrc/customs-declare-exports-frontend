@@ -50,7 +50,6 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     Seq.fill(TransportInformationContainerData.maxNumberOfItems)(TransportInformationContainer("id"))
   )
 
-
   "Transport Container controller" should {
 
     "return 200 (OK)" when {

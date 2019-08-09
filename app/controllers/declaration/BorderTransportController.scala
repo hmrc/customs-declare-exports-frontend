@@ -39,8 +39,8 @@ class BorderTransportController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.borderTransport)).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.borderTransport match {
       case Some(data) => Ok(borderTransportPage(form.fill(data)))
       case _          => Ok(borderTransportPage(form))
     }
@@ -58,7 +58,7 @@ class BorderTransportController @Inject()(
   }
 
   private def updateCache(sessionId: String, formData: BorderTransport): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportCacheModel(
+    getAndUpdateExportsDeclaration(
       sessionId,
       model => exportsCacheService.update(sessionId, model.copy(borderTransport = Some(formData)))
     )

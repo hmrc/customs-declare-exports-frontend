@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{AdditionalInformationController, routes}
+import controllers.declaration.{routes, AdditionalInformationController}
 import controllers.util.Remove
 import forms.Choice
 import forms.declaration.AdditionalInformation
