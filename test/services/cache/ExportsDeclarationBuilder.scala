@@ -16,7 +16,7 @@
 
 package services.cache
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneOffset}
 import java.util.UUID
 
 import forms.common.Address
@@ -41,8 +41,8 @@ trait ExportsDeclarationBuilder {
   private val modelWithDefaults: ExportsDeclaration = ExportsDeclaration(
     sessionId = uuid,
     draftId = uuid,
-    createdDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0),
-    updatedDateTime = LocalDateTime.of(2019, 2, 2, 0, 0, 0),
+    createdDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0).toInstant(ZoneOffset.UTC),
+    updatedDateTime = LocalDateTime.of(2019, 2, 2, 0, 0, 0).toInstant(ZoneOffset.UTC),
     choice = Choice.AllowedChoiceValues.StandardDec
   )
 

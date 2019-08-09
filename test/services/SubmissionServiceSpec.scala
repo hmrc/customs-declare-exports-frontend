@@ -22,7 +22,7 @@ import forms.Choice.AllowedChoiceValues
 import metrics.MetricIdentifiers
 import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.test.FakeRequest
@@ -81,13 +81,15 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
       val timerBefore = registry.getTimers.get(metrics.timerName(metric)).getCount
       val counterBefore = registry.getCounters.get(metrics.counterName(metric)).getCount
 
+      val model = createFullModel()
       val result = submissionService
-        .submit(sessionId, createFullModel)
+        .submit(sessionId, model)
         .futureValue
       result.value mustBe "123LRN"
 
       verify(mockExportsCacheService, times(1)).remove(any[String])
       verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
+      verify(mockCustomsDeclareExportsConnector, times(1)).submit(refEq(model))(any(), any())
 
       verify(mockAuditService, times(1)).audit(any(), any())(any())
       verify(mockAuditService, times(1)).auditAllPagesUserInput(any())(any())

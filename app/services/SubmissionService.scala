@@ -54,22 +54,25 @@ class SubmissionService @Inject()(
     val timerContext = exportsMetrics.startTimer(submissionMetric)
     val data = format(exportsDeclaration)
     auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
-    exportsConnector.submitExportDeclaration(data.ducr, data.lrn, data.payload).flatMap {
-      case HttpResponse(ACCEPTED, _, _, _) =>
-        cacheService
-          .remove(sessionId)
-          .map { _ =>
-            auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Success.toString))
-            exportsMetrics.incrementCounter(submissionMetric)
-            timerContext.stop()
-            data.lrn
-          }
+    (for {
+      _ <- exportsConnector.submit(exportsDeclaration)
+      response <- exportsConnector.submitExportDeclaration(data.ducr, data.lrn, data.payload)
+    } yield response) flatMap  {
+        case HttpResponse(ACCEPTED, _, _, _) =>
+          cacheService
+            .remove(sessionId)
+            .map { _ =>
+              auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Success.toString))
+              exportsMetrics.incrementCounter(submissionMetric)
+              timerContext.stop()
+              data.lrn
+            }
 
-      case error =>
-        logger.error(s"Error response from backend ${error.body}")
-        auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Failure.toString))
-        Future.successful(None)
-    }
+        case error =>
+          logger.error(s"Error response from backend ${error.body}")
+          auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Failure.toString))
+          Future.successful(None)
+      }
   }
 
   private def format(exportsCacheModel: ExportsDeclaration): FormattedData = {

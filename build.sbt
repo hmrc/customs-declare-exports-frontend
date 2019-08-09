@@ -2,7 +2,6 @@ import com.typesafe.sbt.digest.Import._
 import com.typesafe.sbt.uglify.Import._
 import com.typesafe.sbt.web.Import._
 import net.ground5hark.sbt.concat.Import._
-import play.sbt.routes._
 import sbt.Keys._
 import sbt._
 import uk.gov.hmrc.DefaultBuildSettings._
@@ -17,7 +16,8 @@ PlayKeys.devSettings := Seq("play.server.http.port" -> "6791")
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory, SbtWeb)
   .settings(
-    libraryDependencies ++= AppDependencies(),
+    libraryDependencies ++= (AppDependencies.compile ++ AppDependencies.test).map(_.withSources()),
+    dependencyOverrides ++= AppDependencies.overrides,
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     majorVersion := 0,

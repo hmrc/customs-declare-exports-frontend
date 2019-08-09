@@ -16,7 +16,7 @@
 
 package connectors
 
-import java.time.{Instant, LocalDateTime, ZoneOffset}
+import java.time.{Instant, LocalDateTime}
 import java.util.UUID
 
 import base.TestHelper._
@@ -149,8 +149,8 @@ object CustomsDeclareExportsConnectorSpec {
     models.ExportsDeclaration(
       sessionId = "",
       draftId = "",
-      createdDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC),
-      updatedDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC),
+      createdDateTime = instant,
+      updatedDateTime = instant,
       choice = "SMP"
     )
 

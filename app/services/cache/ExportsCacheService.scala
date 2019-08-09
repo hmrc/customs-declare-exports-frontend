@@ -16,7 +16,7 @@
 
 package services.cache
 
-import java.time.LocalDateTime.now
+import java.time.Instant
 
 import javax.inject.{Inject, Singleton}
 import models.ExportsDeclaration
@@ -30,7 +30,7 @@ class ExportsCacheService @Inject()(journeyCacheModelRepo: ExportsDeclarationRep
   def get(sessionId: String): Future[Option[ExportsDeclaration]] = journeyCacheModelRepo.get(sessionId)
 
   def update(sessionId: String, model: ExportsDeclaration): Future[Option[ExportsDeclaration]] =
-    journeyCacheModelRepo.upsert(sessionId, model.copy(updatedDateTime = now()))
+    journeyCacheModelRepo.upsert(sessionId, model.copy(updatedDateTime = Instant.now()))
 
   def getItemByIdAndSession(itemId: String, sessionId: String): Future[Option[ExportItem]] =
     get(sessionId).map {

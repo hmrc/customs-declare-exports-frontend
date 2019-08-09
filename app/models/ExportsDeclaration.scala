@@ -16,7 +16,7 @@
 
 package models
 
-import java.time.{Instant, LocalDateTime, ZoneOffset}
+import java.time.Instant
 
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
@@ -29,8 +29,8 @@ case class ExportsDeclaration(
   status: DeclarationStatus = DeclarationStatus.COMPLETE,
   sessionId: String,
   draftId: String,
-  createdDateTime: LocalDateTime,
-  updatedDateTime: LocalDateTime,
+  createdDateTime: Instant,
+  updatedDateTime: Instant,
   choice: String,
   dispatchLocation: Option[DispatchLocation] = None,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
@@ -48,15 +48,15 @@ case class ExportsDeclaration(
 )
 
 object ExportsDeclaration {
-  implicit val formatInstant: OFormat[LocalDateTime] = new OFormat[LocalDateTime] {
-    override def writes(datetime: LocalDateTime): JsObject =
-      Json.obj("$date" -> datetime.toInstant(ZoneOffset.UTC).toEpochMilli)
+  implicit val formatInstant: OFormat[Instant] = new OFormat[Instant] {
+    override def writes(datetime: Instant): JsObject =
+      Json.obj("$date" -> datetime.toEpochMilli)
 
-    override def reads(json: JsValue): JsResult[LocalDateTime] =
+    override def reads(json: JsValue): JsResult[Instant] =
       json match {
         case JsObject(map) if map.contains("$date") =>
           map("$date") match {
-            case JsNumber(v) => JsSuccess(Instant.ofEpochMilli(v.toLong).atOffset(ZoneOffset.UTC).toLocalDateTime)
+            case JsNumber(v) => JsSuccess(Instant.ofEpochMilli(v.toLong))
             case _           => JsError("Unexpected Date Format. Expected a Number (Epoch Milliseconds)")
           }
         case _ => JsError("Unexpected Date Format. Expected an object containing a $date field.")

@@ -16,7 +16,7 @@
 
 package models.declaration
 
-import java.time.LocalDateTime
+import java.time.Instant
 
 import forms.common.Date
 import forms.declaration.ConsignmentReferencesSpec._
@@ -322,7 +322,7 @@ object SupplementaryDeclarationTestData {
   val correctPackingJSON: JsValue = JsObject(
     Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
   )
-  val declaration = ExportsDeclaration(DeclarationStatus.DRAFT, "sessionId", "draftId", LocalDateTime.now(), LocalDateTime.now(), "SMP")
+  val declaration = ExportsDeclaration(DeclarationStatus.DRAFT, "sessionId", "draftId", Instant.now(), Instant.now(), "SMP")
 
   def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
     GovernmentAgencyGoodsItem(

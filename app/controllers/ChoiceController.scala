@@ -16,7 +16,7 @@
 
 package controllers
 
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.UUID
 
 import controllers.actions.AuthAction
@@ -66,8 +66,8 @@ class ChoiceController @Inject()(
                 DeclarationStatus.DRAFT,
                 authenticatedSessionId,
                 UUID.randomUUID().toString,
-                createdDateTime = LocalDateTime.now,
-                updatedDateTime = LocalDateTime.now,
+                createdDateTime = Instant.now,
+                updatedDateTime = Instant.now,
                 validChoice.value
               )
             )

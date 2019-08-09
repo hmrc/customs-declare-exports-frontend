@@ -51,6 +51,7 @@ class AppConfigSpec extends CustomExportsBaseSpec {
         |microservice.services.customs-declare-exports.host=localhoste
         |microservice.services.customs-declare-exports.port=9875
         |microservice.services.customs-declare-exports.submit-declaration=/declaration
+        |microservice.services.customs-declare-exports.submit-declaration-v2=/v2/declaration
         |microservice.services.customs-declare-exports.cancel-declaration=/cancel-declaration
         |microservice.services.customs-declare-exports.fetch-notifications=/notifications
         |microservice.services.customs-declare-exports-movements.host=localhostm
@@ -136,6 +137,10 @@ class AppConfigSpec extends CustomExportsBaseSpec {
       validConfigService.submitDeclaration must be("/declaration")
     }
 
+    "have submit declaration v2 URL" in {
+      validConfigService.submitDeclarationV2 must be("/v2/declaration")
+    }
+
     "have cancel declaration URL" in {
       validConfigService.cancelDeclaration must be("/cancel-declaration")
     }
@@ -219,6 +224,12 @@ class AppConfigSpec extends CustomExportsBaseSpec {
 
   "throw an exception when submit declaration uri is missing" in {
     intercept[Exception](emptyConfigService.submitDeclaration).getMessage must be(
+      "Missing configuration for Customs Declarations Exports submit declaration URI"
+    )
+  }
+
+  "throw an exception when submit declaration v2 uri is missing" in {
+    intercept[Exception](emptyConfigService.submitDeclarationV2).getMessage must be(
       "Missing configuration for Customs Declarations Exports submit declaration URI"
     )
   }
