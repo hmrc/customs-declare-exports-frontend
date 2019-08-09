@@ -19,9 +19,9 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.ExportsDeclaration
 import models.declaration.SupplementaryDeclarationData
 import models.requests.JourneyRequest
+import models.{DeclarationStatus, ExportsDeclaration}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc._
@@ -67,7 +67,7 @@ class SummaryController @Inject()(
   private def handleDecSubmission(
     exportsCacheModel: ExportsDeclaration
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    submissionService.submit(journeySessionId, exportsCacheModel).map {
+    submissionService.submit(journeySessionId, exportsCacheModel.copy(status = DeclarationStatus.COMPLETE)).map {
       case Some(lrn) =>
         Redirect(controllers.declaration.routes.ConfirmationController.displayPage())
           .flashing(Flash(Map("LRN" -> lrn)))

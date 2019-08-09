@@ -16,7 +16,7 @@
 
 package services.cache
 
-import java.time.{Instant, LocalDateTime, ZoneOffset}
+import java.time.Instant
 
 import models.ExportsDeclaration
 import org.scalatest.concurrent.ScalaFutures
@@ -132,8 +132,8 @@ class ExportsDeclarationRepositorySpec
     models.ExportsDeclaration(
       sessionId = existingSessionId,
       draftId = "",
-      createdDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC),
-      updatedDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC),
+      createdDateTime = instant,
+      updatedDateTime = instant,
       choice = "SMP"
     )
 }

@@ -16,7 +16,7 @@
 
 package models.declaration
 
-import java.time.LocalDateTime
+import java.time.Instant
 
 import forms.common.Date
 import forms.declaration.ConsignmentReferencesSpec._
@@ -37,12 +37,12 @@ import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDecSpec._
 import forms.declaration.additionaldocuments.{DocumentIdentifierAndPart, DocumentWriteOff, DocumentsProduced}
-import models.ExportsDeclaration
 import models.declaration.DeclarationAdditionalActorsDataSpec._
 import models.declaration.DeclarationHoldersDataSpec._
 import models.declaration.dectype.DeclarationTypeSupplementarySpec._
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
+import models.{DeclarationStatus, ExportsDeclaration}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json._
 import services.cache.ExportItem
@@ -322,7 +322,7 @@ object SupplementaryDeclarationTestData {
   val correctPackingJSON: JsValue = JsObject(
     Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
   )
-  val declaration = ExportsDeclaration("sessionId", "draftId", LocalDateTime.now(), LocalDateTime.now(), "SMP")
+  val declaration = ExportsDeclaration(DeclarationStatus.DRAFT, "sessionId", "draftId", Instant.now(), Instant.now(), "SMP")
 
   def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
     GovernmentAgencyGoodsItem(

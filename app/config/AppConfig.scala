@@ -53,6 +53,11 @@ class AppConfig @Inject()(
 
   lazy val customsDeclareExports = servicesConfig.baseUrl("customs-declare-exports")
 
+  lazy val submitDeclarationV2 = servicesConfig.getConfString(
+    "customs-declare-exports.submit-declaration-v2",
+    throw new IllegalStateException("Missing configuration for Customs Declarations Exports submit declaration URI")
+  )
+
   lazy val submitDeclaration = servicesConfig.getConfString(
     "customs-declare-exports.submit-declaration",
     throw new IllegalStateException("Missing configuration for Customs Declarations Exports submit declaration URI")

@@ -16,7 +16,7 @@
 
 package services.cache
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneOffset}
 import java.util.UUID
 
 import forms.common.Address
@@ -27,6 +27,7 @@ import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.{Choice, Ducr}
+import models.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration
 import models.declaration.{
   DeclarationAdditionalActorsData,
@@ -46,8 +47,8 @@ trait ExportsDeclarationBuilder {
   private val modelWithDefaults: ExportsDeclaration = ExportsDeclaration(
     sessionId = uuid,
     draftId = uuid,
-    createdDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0),
-    updatedDateTime = LocalDateTime.of(2019, 2, 2, 0, 0, 0),
+    createdDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0).toInstant(ZoneOffset.UTC),
+    updatedDateTime = LocalDateTime.of(2019, 2, 2, 0, 0, 0).toInstant(ZoneOffset.UTC),
     choice = Choice.AllowedChoiceValues.StandardDec
   )
 
@@ -57,6 +58,8 @@ trait ExportsDeclarationBuilder {
     modifiers.foldLeft(modelWithDefaults)((current, modifier) => modifier(current))
 
   // ************************************************* Builders ********************************************************
+
+  def withStatus(status: DeclarationStatus): ExportsDeclarationModifier = _.copy(status = status)
 
   def withSessionId(id: String = uuid): ExportsDeclarationModifier = _.copy(sessionId = id)
 

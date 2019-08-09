@@ -48,28 +48,31 @@ class SubmissionService @Inject()(
 
   def submit(
     sessionId: String,
-    exportsCacheModel: ExportsDeclaration
+    exportsDeclaration: ExportsDeclaration
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
 
     val timerContext = exportsMetrics.startTimer(submissionMetric)
-    val data = format(exportsCacheModel)
-    auditService.auditAllPagesUserInput(getCachedData(exportsCacheModel))
-    exportsConnector.submitExportDeclaration(data.ducr, data.lrn, data.payload).flatMap {
-      case HttpResponse(ACCEPTED, _, _, _) =>
-        cacheService
-          .remove(sessionId)
-          .map { _ =>
-            auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Success.toString))
-            exportsMetrics.incrementCounter(submissionMetric)
-            timerContext.stop()
-            data.lrn
-          }
+    val data = format(exportsDeclaration)
+    auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
+    (for {
+      _ <- exportsConnector.submit(exportsDeclaration)
+      response <- exportsConnector.submitExportDeclaration(data.ducr, data.lrn, data.payload)
+    } yield response) flatMap  {
+        case HttpResponse(ACCEPTED, _, _, _) =>
+          cacheService
+            .remove(sessionId)
+            .map { _ =>
+              auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Success.toString))
+              exportsMetrics.incrementCounter(submissionMetric)
+              timerContext.stop()
+              data.lrn
+            }
 
-      case error =>
-        logger.error(s"Error response from backend ${error.body}")
-        auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Failure.toString))
-        Future.successful(None)
-    }
+        case error =>
+          logger.error(s"Error response from backend ${error.body}")
+          auditService.audit(AuditTypes.Submission, auditData(data.lrn, data.ducr, Failure.toString))
+          Future.successful(None)
+      }
   }
 
   private def format(exportsCacheModel: ExportsDeclaration): FormattedData = {

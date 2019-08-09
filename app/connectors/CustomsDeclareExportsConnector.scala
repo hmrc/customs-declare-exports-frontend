@@ -17,7 +17,9 @@
 package connectors
 
 import config.AppConfig
+import connectors.request.ExportsDeclarationRequest
 import javax.inject.{Inject, Singleton}
+import models.ExportsDeclaration
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
 import models.requests.CancellationStatus
@@ -39,6 +41,18 @@ class CustomsDeclareExportsConnector @Inject()(
 ) {
 
   private val logger = Logger(this.getClass())
+
+  def submit(
+    declaration: ExportsDeclaration
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    httpClient.POST[ExportsDeclarationRequest, HttpResponse](
+      s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}",
+      ExportsDeclarationRequest(declaration)
+    ).map { response =>
+      logger.debug(s"CUSTOMS_DECLARE_EXPORTS response is --> ${response.toString}")
+      response
+    }
+  }
 
   def submitExportDeclaration(ducr: Option[String], lrn: Option[String], payload: String)(
     implicit hc: HeaderCarrier,
