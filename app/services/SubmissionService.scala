@@ -48,12 +48,12 @@ class SubmissionService @Inject()(
 
   def submit(
     sessionId: String,
-    exportsCacheModel: ExportsDeclaration
+    exportsDeclaration: ExportsDeclaration
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
 
     val timerContext = exportsMetrics.startTimer(submissionMetric)
-    val data = format(exportsCacheModel)
-    auditService.auditAllPagesUserInput(getCachedData(exportsCacheModel))
+    val data = format(exportsDeclaration)
+    auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
     exportsConnector.submitExportDeclaration(data.ducr, data.lrn, data.payload).flatMap {
       case HttpResponse(ACCEPTED, _, _, _) =>
         cacheService

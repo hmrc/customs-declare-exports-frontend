@@ -26,6 +26,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupp
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
+import models.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration
 import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, Locations, TransportInformationContainerData}
 
@@ -51,6 +52,8 @@ trait ExportsDeclarationBuilder {
     modifiers.foldLeft(modelWithDefaults)((current, modifier) => modifier(current))
 
   // ************************************************* Builders ********************************************************
+
+  def withStatus(status: DeclarationStatus): ExportsDeclarationModifier = _.copy(status = status)
 
   def withSessionId(id: String = uuid): ExportsDeclarationModifier = _.copy(sessionId = id)
 

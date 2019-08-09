@@ -25,7 +25,7 @@ import forms.Choice
 import forms.Choice.AllowedChoiceValues._
 import forms.Choice._
 import javax.inject.Inject
-import models.ExportsDeclaration
+import models.{DeclarationStatus, ExportsDeclaration}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -63,6 +63,7 @@ class ChoiceController @Inject()(
             .update(
               authenticatedSessionId,
               ExportsDeclaration(
+                DeclarationStatus.DRAFT,
                 authenticatedSessionId,
                 UUID.randomUUID().toString,
                 createdDateTime = LocalDateTime.now,

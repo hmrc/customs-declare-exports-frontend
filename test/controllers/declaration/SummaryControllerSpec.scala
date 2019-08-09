@@ -19,9 +19,10 @@ package controllers.declaration
 import base.{CustomExportsBaseSpec, TestHelper}
 import forms.Choice.AllowedChoiceValues
 import forms.Choice.AllowedChoiceValues.SupplementaryDec
-import models.ExportsDeclaration
 import models.declaration.SupplementaryDeclarationTestData
 import models.requests.JourneyRequest
+import models.{DeclarationStatus, ExportsDeclaration}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito._
 import org.mockito.verification.VerificationMode
@@ -187,6 +188,11 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
   }
 
   "Summary Page Controller on submit" when {
+    def theExportsDeclarationSubmitted: ExportsDeclaration = {
+      val captor: ArgumentCaptor[ExportsDeclaration] = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
+      verify(mockSubmissionService).submit(anyString(), captor.capture())(any[JourneyRequest[_]], any[HeaderCarrier], any[ExecutionContext])
+      captor.getValue
+    }
 
     "everything is correct" should {
       "get the whole supplementary declaration data from cache" in {
@@ -200,6 +206,7 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
 
         route(app, postRequest(summaryPageUri, emptyForm)).get.futureValue
         verify(mockExportsCacheService, onlyTwice).get(any())
+        theExportsDeclarationSubmitted.status mustBe DeclarationStatus.COMPLETE
       }
 
       "remove supplementary declaration data from cache" in {
