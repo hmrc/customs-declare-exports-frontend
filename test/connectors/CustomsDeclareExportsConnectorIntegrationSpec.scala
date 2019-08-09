@@ -49,7 +49,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
       )
       val declaration = aDeclaration()
 
-      val response = connector.submit(declaration).futureValue
+      val response = await(connector.submit(declaration))
 
       response.status shouldBe Status.ACCEPTED
       verify(

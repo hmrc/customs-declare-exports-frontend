@@ -16,11 +16,11 @@
 
 package base
 
-import java.time.LocalDateTime
+import java.time.Instant
 
 import controllers.util.{Add, Remove, SaveAndContinue}
-import models.ExportsDeclaration
 import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.{DeclarationStatus, ExportsDeclaration}
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 
@@ -42,7 +42,7 @@ object TestHelper {
   def removeActionUrlEncoded(value: String) = (Remove.toString, value)
 
   def journeyRequest(fakeRequest: FakeRequest[_], choice: String): JourneyRequest[_] = {
-    val cache = ExportsDeclaration.apply("sessionId", "draftId", LocalDateTime.now(), LocalDateTime.now(), choice)
+    val cache = ExportsDeclaration.apply(DeclarationStatus.COMPLETE, "sessionId", "draftId", Instant.now(), Instant.now(), choice)
     JourneyRequest(
       AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
       cache
@@ -50,7 +50,7 @@ object TestHelper {
   }
 
   def journeyRequest(fakeRequest: Request[_], choice: String): JourneyRequest[_] = {
-    val cache = ExportsDeclaration.apply("sessionId", "draftId", LocalDateTime.now(), LocalDateTime.now(), choice)
+    val cache = ExportsDeclaration.apply(DeclarationStatus.COMPLETE, "sessionId", "draftId", Instant.now(), Instant.now(), choice)
     JourneyRequest(
       AuthenticatedRequest(fakeRequest, ExportsTestData.newUser(Random.nextString(10), Random.nextString(5))),
       cache

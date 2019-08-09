@@ -16,13 +16,13 @@
 
 package views.declaration.spec
 
-import java.time.LocalDateTime
+import java.time.Instant
 
 import base.{ExportsTestData, ViewValidator}
 import com.codahale.metrics.SharedMetricRegistries
 import config.AppConfig
-import models.ExportsDeclaration
 import models.requests.{AuthenticatedRequest, JourneyRequest}
+import models.{DeclarationStatus, ExportsDeclaration}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Messages, MessagesApi}
@@ -48,7 +48,7 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with
   def assertMessage(key: String, expected: String): Unit = messages(key) must be(expected)
 
   def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] = {
-    val cache = ExportsDeclaration.apply("sessionId", "draftId", LocalDateTime.now(), LocalDateTime.now(), choice)
+    val cache = ExportsDeclaration.apply(DeclarationStatus.COMPLETE, "sessionId", "draftId", Instant.now(), Instant.now(), choice)
     JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), cache)
   }
 
