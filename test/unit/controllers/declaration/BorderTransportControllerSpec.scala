@@ -16,7 +16,7 @@
 
 package unit.controllers.declaration
 
-import controllers.declaration.{BorderTransportController, routes}
+import controllers.declaration.{routes, BorderTransportController}
 import forms.Choice
 import forms.declaration.BorderTransport
 import forms.declaration.TransportCodes.{Maritime, WagonNumber}

@@ -44,8 +44,8 @@ class AdditionalFiscalReferencesController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.getItemByIdAndSession(itemId, journeySessionId).map {
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.itemBy(itemId) match {
       case Some(model) => {
         model.additionalFiscalReferencesData.fold(Ok(additionalFiscalReferencesPage(itemId, form()))) { data =>
           Ok(additionalFiscalReferencesPage(itemId, form(), data.references))
@@ -129,7 +129,7 @@ class AdditionalFiscalReferencesController @Inject()(
     sessionId: String,
     updatedAdditionalFiscalReferencesData: AdditionalFiscalReferencesData
   ): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportCacheModel(
+    getAndUpdateExportsDeclaration(
       sessionId,
       model => {
         val itemList = model.items

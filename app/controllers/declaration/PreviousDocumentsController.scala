@@ -42,8 +42,8 @@ class PreviousDocumentsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.previousDocuments)).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.previousDocuments match {
       case Some(data) => Ok(previousDocumentsPage(form(), data.documents))
       case _          => Ok(previousDocumentsPage(form(), Seq.empty))
     }
@@ -93,7 +93,7 @@ class PreviousDocumentsController @Inject()(
   }
 
   private def updateCache(formData: PreviousDocumentsData)(implicit req: JourneyRequest[_]) =
-    getAndUpdateExportCacheModel(
+    getAndUpdateExportsDeclaration(
       journeySessionId,
       model =>
         exportsCacheService

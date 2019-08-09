@@ -40,12 +40,11 @@ class RepresentativeDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType).async {
-    implicit request =>
-      exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.representativeDetails)).map {
-        case Some(data) => Ok(representativeDetailsPage(RepresentativeDetails.form().fill(data)))
-        case _          => Ok(representativeDetailsPage(RepresentativeDetails.form()))
-      }
+  def displayRepresentativeDetailsPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.parties.representativeDetails match {
+      case Some(data) => Ok(representativeDetailsPage(RepresentativeDetails.form().fill(data)))
+      case _          => Ok(representativeDetailsPage(RepresentativeDetails.form()))
+    }
   }
 
   def submitRepresentativeDetails(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -54,8 +53,7 @@ class RepresentativeDetailsController @Inject()(
       .fold(
         (formWithErrors: Form[RepresentativeDetails]) =>
           Future.successful(BadRequest(representativeDetailsPage(RepresentativeDetails.adjustErrors(formWithErrors)))),
-        validRepresentativeDetails =>
-          updateCache(journeySessionId, validRepresentativeDetails).map(_ => Redirect(nextPage(request)))
+        validRepresentativeDetails => updateCache(validRepresentativeDetails).map(_ => Redirect(nextPage(request)))
       )
   }
 
@@ -67,9 +65,11 @@ class RepresentativeDetailsController @Inject()(
         controllers.declaration.routes.CarrierDetailsController.displayForm()
     }
 
-  private def updateCache(sessionId: String, formData: RepresentativeDetails): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportCacheModel(sessionId, model => {
+  private def updateCache(
+    formData: RepresentativeDetails
+  )(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect { model =>
       val updatedParties = model.parties.copy(representativeDetails = Some(formData))
-      exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
-    })
+      model.copy(parties = updatedParties)
+    }
 }

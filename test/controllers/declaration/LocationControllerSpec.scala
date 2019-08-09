@@ -29,10 +29,12 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
   private val uri = uriWithContextPath("/declaration/location-of-goods")
 
+  val exampleModel = aDeclaration(withChoice(SupplementaryDec))
+
   override def beforeEach {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(exampleModel)
   }
 
   override def afterEach() {
@@ -43,7 +45,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
   "Location Controller on GET" should {
 
     "return 200 status code" in {
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = exampleModel.sessionId)).get
 
       status(result) must be(OK)
     }
@@ -53,9 +55,10 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
       val cachedData =
         GoodsLocation("Spain", "1", "1", Some("1"), Some("1"), Some("BAFTA Street"), Some("LS37BH"), Some("SecretCity"))
 
-      withNewCaching(aDeclaration(withChoice(SupplementaryDec), withGoodsLocation(cachedData)))
+      val model = aDeclaration(withChoice(SupplementaryDec), withGoodsLocation(cachedData))
+      withNewCaching(model)
 
-      val result = route(app, getRequest(uri)).get
+      val result = route(app, getRequest(uri, sessionId = model.sessionId)).get
       val page = contentAsString(result)
 
       status(result) must be(OK)
@@ -70,7 +73,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
     "validate request and redirect - incorrect values" in {
 
-      val result = route(app, postRequest(uri, incorrectGoodsLocationJSON)).get
+      val result = route(app, postRequest(uri, incorrectGoodsLocationJSON, sessionId = exampleModel.sessionId)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
@@ -86,7 +89,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
     "validate request and redirect - empty form" in {
 
-      val result = route(app, postRequest(uri, emptyGoodsLocationJSON)).get
+      val result = route(app, postRequest(uri, emptyGoodsLocationJSON, sessionId = exampleModel.sessionId)).get
       val stringResult = contentAsString(result)
 
       status(result) must be(BAD_REQUEST)
@@ -107,7 +110,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
             "additionalQualifier" -> JsString("9GB1234567ABCDEF")
           )
         )
-      val result = route(app, postRequest(uri, correctGoodsLocation)).get
+      val result = route(app, postRequest(uri, correctGoodsLocation, sessionId = exampleModel.sessionId)).get
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/customs-declare-exports/declaration/office-of-exit"))
@@ -126,7 +129,7 @@ class LocationControllerSpec extends CustomExportsBaseSpec with LocationOfGoodsM
 
     "validate request and redirect - correct values" in {
 
-      val result = route(app, postRequest(uri, correctGoodsLocationJSON)).get
+      val result = route(app, postRequest(uri, correctGoodsLocationJSON, sessionId = exampleModel.sessionId)).get
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/customs-declare-exports/declaration/office-of-exit"))

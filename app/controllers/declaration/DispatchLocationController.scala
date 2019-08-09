@@ -20,6 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.DispatchLocation
 import forms.declaration.DispatchLocation.AllowedDispatchLocations
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -39,8 +40,8 @@ class DispatchLocationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.dispatchLocation)).map {
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.dispatchLocation match {
       case Some(data) => Ok(dispatchLocationPage(DispatchLocation.form().fill(data)))
       case _          => Ok(dispatchLocationPage(DispatchLocation.form()))
     }
@@ -53,7 +54,7 @@ class DispatchLocationController @Inject()(
       .fold(
         (formWithErrors: Form[DispatchLocation]) => Future.successful(BadRequest(dispatchLocationPage(formWithErrors))),
         validDispatchLocation =>
-          updateCache(journeySessionId, validDispatchLocation)
+          updateCache(validDispatchLocation)
             .map(_ => Redirect(specifyNextPage(validDispatchLocation)))
       )
   }
@@ -66,9 +67,9 @@ class DispatchLocationController @Inject()(
         controllers.declaration.routes.NotEligibleController.displayPage()
     }
 
-  private def updateCache(sessionId: String, formData: DispatchLocation): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportCacheModel(sessionId, model => {
-      exportsCacheService.update(sessionId, model.copy(dispatchLocation = Some(formData)))
-    })
+  private def updateCache(
+    formData: DispatchLocation
+  )(implicit request: JourneyRequest[_]): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclarationSyncDirect(model => model.copy(dispatchLocation = Some(formData)))
 
 }

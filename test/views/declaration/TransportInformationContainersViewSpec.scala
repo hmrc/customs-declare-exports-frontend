@@ -111,7 +111,7 @@ class TransportInformationContainersViewSpec
 
       // table row
       view.getElementById("removable_elements-row0-label") must containText("Test")
-      view.getElementById("removable_elements-row0-remove_button") must containText( messages(removeCaption))
+      view.getElementById("removable_elements-row0-remove_button") must containText(messages(removeCaption))
     }
   }
 }

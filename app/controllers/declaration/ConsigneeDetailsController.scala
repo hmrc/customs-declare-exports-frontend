@@ -19,6 +19,7 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import forms.declaration.ConsigneeDetails
 import javax.inject.Inject
+import models.requests.JourneyRequest
 import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -41,8 +42,8 @@ class ConsigneeDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.consigneeDetails)).map {
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.parties.consigneeDetails match {
       case Some(data) => Ok(consigneeDetailsPage(ConsigneeDetails.form().fill(data)))
       case _          => Ok(consigneeDetailsPage(ConsigneeDetails.form()))
     }
@@ -59,9 +60,11 @@ class ConsigneeDetailsController @Inject()(
       )
   }
 
-  private def updateCache(sessionId: String, formData: ConsigneeDetails): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportCacheModel(sessionId, model => {
+  private def updateCache(sessionId: String, formData: ConsigneeDetails)(
+    implicit request: JourneyRequest[_]
+  ): Future[Option[ExportsDeclaration]] =
+    updateExportsDeclaration { model =>
       val updatedParties = model.parties.copy(consigneeDetails = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
-    })
+    }
 }

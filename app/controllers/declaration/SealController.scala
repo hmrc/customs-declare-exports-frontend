@@ -44,12 +44,9 @@ class SealController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val declaration = exportsCacheService.get(journeySessionId)
-    for {
-      transportDetails <- declaration.map(_.flatMap(_.transportDetails))
-      seals <- declaration.map(_.map(_.seals))
-    } yield Ok(sealPage(form(), seals.getOrElse(Seq.empty), transportDetails.fold(false)(_.container)))
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    val declaration = request.cacheModel
+    Ok(sealPage(form, declaration.seals, declaration.transportDetails.exists(_.container)))
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
@@ -97,12 +94,12 @@ class SealController @Inject()(
   ): Future[Result] = {
     val updatedSeals = remove(ids.headOption, cachedSeals)
     updateCache(journeySessionId, updatedSeals).map { _ =>
-      Ok(sealPage(userInput.discardingErrors, cachedSeals, hasContainers))
+      Ok(sealPage(userInput.discardingErrors, updatedSeals, hasContainers))
     }
   }
 
   private def updateCache(sessionId: String, formData: Seq[Seal])(implicit req: JourneyRequest[_]) =
-    getAndUpdateExportCacheModel(
+    getAndUpdateExportsDeclaration(
       sessionId,
       model =>
         exportsCacheService

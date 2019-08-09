@@ -41,8 +41,8 @@ class CarrierDetailsController @Inject()(
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SessionIdAware {
 
-  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map(_.flatMap(_.parties.carrierDetails)).map {
+  def displayForm(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    request.cacheModel.parties.carrierDetails match {
       case Some(data) => Ok(carrierDetailsPage(CarrierDetails.form().fill(data)))
       case _          => Ok(carrierDetailsPage(CarrierDetails.form()))
     }
@@ -61,7 +61,7 @@ class CarrierDetailsController @Inject()(
   }
 
   private def updateCache(sessionId: String, formData: CarrierDetails)(implicit req: JourneyRequest[_]) =
-    getAndUpdateExportCacheModel(sessionId, model => {
+    getAndUpdateExportsDeclaration(sessionId, model => {
       val updatedParties = model.parties.copy(carrierDetails = Some(formData))
       exportsCacheService.update(sessionId, model.copy(parties = updatedParties))
     })

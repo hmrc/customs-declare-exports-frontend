@@ -47,10 +47,11 @@ class SummaryController @Inject()(
 
   private val logger = Logger(this.getClass())
 
-  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    exportsCacheService.get(journeySessionId).map {
-      case Some(data) if containsMandatoryData(data) => Ok(summaryPage(SupplementaryDeclarationData(data)))
-      case _                                         => Ok(summaryPageNoData())
+  def displayPage(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    if (containsMandatoryData(request.cacheModel)) {
+      Ok(summaryPage(SupplementaryDeclarationData(request.cacheModel)))
+    } else {
+      Ok(summaryPageNoData())
     }
   }
 
@@ -59,10 +60,7 @@ class SummaryController @Inject()(
 
   def submitSupplementaryDeclaration(): Action[AnyContent] = (authenticate andThen journeyType).async {
     implicit request =>
-      exportsCacheService.get(journeySessionId).flatMap {
-        case Some(model) => handleDecSubmission(model)
-        case None        => Future.successful(handleError("Could not obtain data from DB"))
-      }
+      handleDecSubmission(request.cacheModel)
 
   }
 

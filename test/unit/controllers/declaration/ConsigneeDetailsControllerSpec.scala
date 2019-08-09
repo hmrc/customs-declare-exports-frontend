@@ -37,8 +37,9 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
       consigneeDetailsPage
     )(ec)
 
+    val model = aDeclaration(withChoice(SupplementaryDec))
     authorizedUser()
-    withNewCaching(aDeclaration(withChoice(SupplementaryDec)))
+    withNewCaching(model)
   }
 
   "Consignee Details controller" should {
@@ -46,16 +47,18 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in new SetUp {
-        val result = controller.displayPage()(getRequest())
+        val result = controller.displayPage()(getRequest(model))
 
         status(result) must be(OK)
       }
 
       "display page method is invoked and cache contrains data" in new SetUp {
 
-        withNewCaching(aDeclaration(withConsigneeDetails(Some("123"), None)))
+        val modelWithDetails = aDeclaration(withConsigneeDetails(Some("123"), None))
 
-        val result = controller.displayPage()(getRequest())
+        withNewCaching(modelWithDetails)
+
+        val result = controller.displayPage()(getRequest(modelWithDetails))
 
         status(result) must be(OK)
       }

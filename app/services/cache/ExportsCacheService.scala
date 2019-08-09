@@ -25,16 +25,19 @@ import reactivemongo.play.json.collection.JSONBatchCommands.FindAndModifyCommand
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ExportsCacheService @Inject()(journeyCacheModelRepo: ExportsDeclarationRepository)(implicit ec: ExecutionContext) {
+class ExportsCacheService @Inject()(journeyCacheModelRepo: ExportsDeclarationRepository)(
+  implicit ec: ExecutionContext
+) {
 
   def get(sessionId: String): Future[Option[ExportsDeclaration]] = journeyCacheModelRepo.get(sessionId)
 
   def update(sessionId: String, model: ExportsDeclaration): Future[Option[ExportsDeclaration]] =
     journeyCacheModelRepo.upsert(sessionId, model.copy(updatedDateTime = Instant.now()))
 
+  @deprecated("Please use `get` and `ExportCacheModel#itemBy` methods")
   def getItemByIdAndSession(itemId: String, sessionId: String): Future[Option[ExportItem]] =
     get(sessionId).map {
-      case Some(model) => model.items.find(_.id.equalsIgnoreCase(itemId))
+      case Some(model) => model.itemBy(itemId)
       case _           => None
     }
 

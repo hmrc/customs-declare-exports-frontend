@@ -26,13 +26,12 @@ import services.cache.{ExportsCacheService, ExportsDeclarationBuilder}
 
 import scala.concurrent.Future
 
-trait MockExportsCacheService extends MockitoSugar with ExportsDeclarationBuilder with BeforeAndAfterEach {
+trait MockExportCacheService extends MockitoSugar with ExportsDeclarationBuilder with BeforeAndAfterEach {
   self: Suite =>
 
-  val mockExportsCacheService = mock[ExportsCacheService]
+  val mockExportsCacheService: ExportsCacheService = mock[ExportsCacheService]
 
   def withNewCaching(dataToReturn: ExportsDeclaration): Unit = {
-
     when(mockExportsCacheService.getItemByIdAndSession(anyString, anyString))
       .thenReturn(Future.successful(dataToReturn.items.headOption))
 
