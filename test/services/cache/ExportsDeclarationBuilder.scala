@@ -25,6 +25,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
+import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.{Choice, Ducr}
 import models.ExportsDeclaration
 import models.declaration.{
@@ -75,7 +76,7 @@ trait ExportsDeclarationBuilder {
   ): ExportsDeclarationModifier =
     _.copy(additionalDeclarationType = Some(AdditionalDeclarationType(decType)))
 
-  def withDispatchLocation(location: String = "GB"): ExportsDeclarationModifier =
+  def withDispatchLocation(location: String = OutsideEU): ExportsDeclarationModifier =
     _.copy(dispatchLocation = Some(DispatchLocation(location)))
 
   def withGoodsLocation(goodsLocation: GoodsLocation): ExportsDeclarationModifier = { m =>

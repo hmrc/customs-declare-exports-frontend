@@ -54,6 +54,8 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
       "display page method is invoked and cache contains data" in new SetUp {
 
+        withNewCaching(aDeclaration(withCarrierDetails(Some("1234"))))
+
         val result = controller.displayForm()(getRequest())
 
         status(result) must be(OK)
