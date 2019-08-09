@@ -103,13 +103,13 @@ class ExportsDeclarationRepositorySpec
         val result = repo.get(sessionId).futureValue
         result must be(Some(model))
 
-        repo.remove(sessionId)
+        repo.remove(sessionId).futureValue
         val result2 = repo.get(sessionId).futureValue
         result2 must be(None)
       }
 
       "remove nothing when does not exist" in {
-        repo.remove(sessionId)
+        repo.remove(sessionId).futureValue
         val result2 = repo.get(sessionId).futureValue
         result2 must be(None)
       }
