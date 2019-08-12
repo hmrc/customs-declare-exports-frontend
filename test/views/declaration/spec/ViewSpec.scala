@@ -48,7 +48,7 @@ trait ViewSpec extends PlaySpec with GuiceOneAppPerSuite with ViewValidator with
   def assertMessage(key: String, expected: String): Unit = messages(key) must be(expected)
 
   def fakeJourneyRequest(choice: String): JourneyRequest[AnyContentAsEmpty.type] = {
-    val cache = ExportsDeclaration.apply(DeclarationStatus.COMPLETE, "sessionId", "draftId", Instant.now(), Instant.now(), choice)
+    val cache = ExportsDeclaration(None, DeclarationStatus.COMPLETE, "sessionId", Instant.now(), Instant.now(), choice)
     JourneyRequest(AuthenticatedRequest(fakeRequest, ExportsTestData.newUser("", "")), cache)
   }
 

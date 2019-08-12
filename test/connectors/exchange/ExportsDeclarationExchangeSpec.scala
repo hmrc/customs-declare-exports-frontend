@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package connectors.request
+package connectors.exchange
 
 import java.time.Instant
 
@@ -26,14 +26,14 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 import services.cache.{ExportItem, ExportsDeclarationBuilder}
 
-class ExportsDeclarationRequestSpec extends WordSpec with Matchers with ExportsDeclarationBuilder with MockitoSugar {
+class ExportsDeclarationExchangeSpec extends WordSpec with Matchers with ExportsDeclarationBuilder with MockitoSugar {
 
+  private val id = "id"
   private val status = DeclarationStatus.COMPLETE
   private val choice = "choice"
   private val createdDate = Instant.MIN
   private val updatedDate = Instant.MAX
   private val sessionId = "session-id"
-  private val draftId = "draft-id"
   private val dispatchLocation = mock[DispatchLocation]
   private val additionalDeclarationType = mock[AdditionalDeclarationType]
   private val consignmentReferences = mock[ConsignmentReferences]
@@ -48,7 +48,8 @@ class ExportsDeclarationRequestSpec extends WordSpec with Matchers with ExportsD
   private val natureOfTransaction = mock[NatureOfTransaction]
   private val seal = mock[Seal]
 
-  private val request = ExportsDeclarationRequest(
+  private val request = ExportsDeclarationExchange(
+    id = Some(id),
     status = status,
     createdDateTime = createdDate,
     updatedDateTime = updatedDate,
@@ -69,11 +70,11 @@ class ExportsDeclarationRequestSpec extends WordSpec with Matchers with ExportsD
   )
 
   private val declaration = ExportsDeclaration(
+    id = Some(id),
     status = status,
     createdDateTime = createdDate,
     updatedDateTime = updatedDate,
     sessionId = sessionId,
-    draftId = draftId,
     choice = choice,
     dispatchLocation = Some(dispatchLocation),
     additionalDeclarationType = Some(additionalDeclarationType),
@@ -92,11 +93,11 @@ class ExportsDeclarationRequestSpec extends WordSpec with Matchers with ExportsD
 
   "Request" should {
     "map to ExportsDeclaration" in {
-      request.toExportsDeclaration(sessionId, draftId) shouldBe declaration
+      request.toExportsDeclaration(sessionId) shouldBe declaration
     }
 
     "map from ExportsDeclaration" in {
-      ExportsDeclarationRequest(declaration) shouldBe request
+      ExportsDeclarationExchange(declaration) shouldBe request
     }
   }
 
