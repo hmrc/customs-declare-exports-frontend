@@ -26,7 +26,8 @@
     elements: Seq[String] = Seq.empty,
     labelClass: Option[String] = None,
     input: Html,
-    includeAddButton: Boolean = true
+    includeAddButton: Boolean = true,
+    valuePrefix: Option[String] = None
 )(implicit messages: Messages)
 
 <div class="form-field @if(field.hasErrors){form-field--error}">
@@ -42,19 +43,12 @@
     </label>
 
     @if(elements.nonEmpty) {
-      @if(field.name.endsWith("[]")) {
-        @removable_elements_table(
-            id = field.id + "-table",
-            elements = elements.zipWithIndex.map {
-                case (element, index) => LabelledValue(element, field.id + index)
-            }
-        )
-      } else {
+
         @removable_elements_table(
               id = field.id + "-table",
-              elements = elements.map(LabelledValue(_))
+              elements = elements.map(elm => LabelledValue(elm, valuePrefix.getOrElse("") + elm))
           )
-      }
+
     }
 
     <div class="form-control-wrapper">

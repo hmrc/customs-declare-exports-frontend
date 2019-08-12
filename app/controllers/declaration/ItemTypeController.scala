@@ -29,13 +29,11 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.collections.Removable.RemovableSeq
 import utils.validators.forms.supplementary.ItemTypeValidator
 import utils.validators.forms.{Invalid, Valid}
 import views.html.declaration.item_type
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class ItemTypeController @Inject()(
   authenticate: AuthAction,
@@ -193,10 +191,10 @@ class ItemTypeController @Inject()(
 
     val itemTypeUpdated = label.name match {
       case `taricAdditionalCodesKey` =>
-        itemTypeCached.copy(taricAdditionalCodes = removeElement(itemTypeCached.taricAdditionalCodes, label.index))
+        itemTypeCached.copy(taricAdditionalCodes = removeElement(itemTypeCached.taricAdditionalCodes, label.value))
       case `nationalAdditionalCodesKey` =>
         itemTypeCached.copy(
-          nationalAdditionalCodes = removeElement(itemTypeCached.nationalAdditionalCodes, label.index)
+          nationalAdditionalCodes = removeElement(itemTypeCached.nationalAdditionalCodes, label.value)
         )
     }
     updateExportsCache(itemId, itemTypeUpdated).map {
@@ -208,42 +206,38 @@ class ItemTypeController @Inject()(
     }
   }
 
-  private def removeElement(collection: Seq[String], indexToRemove: Int): Seq[String] =
-    collection.removeByIdx(indexToRemove)
+  private def removeElement(collection: Seq[String], valueToRemove: String): Seq[String] =
+    collection.filterNot(_ == valueToRemove)
 
   private def refreshPage(itemId: String, itemTypeInput: ItemType, model: ExportsDeclaration)(
     implicit request: JourneyRequest[AnyContent]
-  ): Result = model.itemBy(itemId).map { item =>
-      item.itemType match {
-        case Some(cachedData) =>
-          Ok(
-            itemTypePage(
-              item.id,
-              ItemType.form().fill(itemTypeInput),
-              item.hasFiscalReferences,
-              cachedData.taricAdditionalCodes,
-              cachedData.nationalAdditionalCodes
+  ): Result =
+    model
+      .itemBy(itemId)
+      .map { item =>
+        item.itemType match {
+          case Some(cachedData) =>
+            Ok(
+              itemTypePage(
+                item.id,
+                ItemType.form().fill(itemTypeInput),
+                item.hasFiscalReferences,
+                cachedData.taricAdditionalCodes,
+                cachedData.nationalAdditionalCodes
+              )
             )
-          )
-        case _ =>
-          Ok(itemTypePage(itemId, ItemType.form(), item.hasFiscalReferences))
+          case _ =>
+            Ok(itemTypePage(itemId, ItemType.form(), item.hasFiscalReferences))
+        }
       }
-    }.getOrElse(Redirect(routes.ItemsSummaryController.displayPage()))
+      .getOrElse(Redirect(routes.ItemsSummaryController.displayPage()))
 
-
-  private case class Label(name: String, index: Int)
+  private case class Label(name: String, value: String)
   private object Label {
 
-    def apply(str: String): Label =
-      if (isFormatCorrect(str)) {
-        val name = str.split("_")(0)
-        val idx = str.split("_")(1)
-        new Label(name, idx.toInt)
-      } else throw new IllegalArgumentException("Data format for removal request is incorrect")
-
-    private def isFormatCorrect(str: String): Boolean = {
-      val labelElements = str.split("_")
-      (labelElements.length == 2) && Try(labelElements(1).toInt).isSuccess
+    def apply(str: String): Label = {
+      val Array(name, value) = str.split("_")
+      Label(name, value)
     }
   }
 

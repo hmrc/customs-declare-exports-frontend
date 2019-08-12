@@ -24,7 +24,8 @@
     elements: Seq[String] = Seq.empty,
     inputClass: Option[String] = None,
     labelClass: Option[String] = None,
-    includeAddButton: Boolean = true
+    includeAddButton: Boolean = true,
+    valuePrefix: Option[String] = None
 )(implicit messages: Messages)
 
 @field_multiple_values(
@@ -34,5 +35,6 @@
     elements = elements,
     labelClass = labelClass,
     input = input_text(field, inputClass),
-    includeAddButton = includeAddButton
+    includeAddButton = includeAddButton,
+    valuePrefix = valuePrefix
 )
