@@ -103,8 +103,11 @@ class ItemTypeController @Inject()(
     val itemTypeUpdated = updateCachedItemTypeAddition(itemId, itemTypeInput, itemTypeCache)
     ItemTypeValidator.validateOnAddition(itemTypeUpdated) match {
       case Valid =>
-        updateExportsCache(itemId, itemTypeUpdated).flatMap { _ =>
-          refreshPage(itemId, itemTypeInput, hasFiscalReferences)
+        updateExportsCache(itemId, itemTypeUpdated).map {
+          case Some(model) =>
+            refreshPage(itemId, itemTypeInput, model)
+          case None =>
+            InternalServerError("Declaration not updated")
         }
       case Invalid(errors) =>
         val formWithErrors =
@@ -196,33 +199,37 @@ class ItemTypeController @Inject()(
           nationalAdditionalCodes = removeElement(itemTypeCached.nationalAdditionalCodes, label.index)
         )
     }
-    updateExportsCache(itemId, itemTypeUpdated).flatMap { _ =>
-      val itemTypeInput: ItemType = ItemType.form().bindFromRequest().value.getOrElse(ItemType.empty)
-      refreshPage(itemId, itemTypeInput, hasFiscalReferences)
+    updateExportsCache(itemId, itemTypeUpdated).map {
+      case Some(model) =>
+        val itemTypeInput: ItemType = ItemType.form().bindFromRequest().value.getOrElse(ItemType.empty)
+        refreshPage(itemId, itemTypeInput, model)
+      case None =>
+        BadRequest("Model not updated")
     }
   }
 
   private def removeElement(collection: Seq[String], indexToRemove: Int): Seq[String] =
     collection.removeByIdx(indexToRemove)
 
-  private def refreshPage(itemId: String, itemTypeInput: ItemType, hasFiscalReferences: Boolean)(
+  private def refreshPage(itemId: String, itemTypeInput: ItemType, model: ExportsDeclaration)(
     implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = Future.successful {
-    request.cacheModel.itemBy(itemId).flatMap(_.itemType) match {
-      case Some(cachedData) =>
-        Ok(
-          itemTypePage(
-            itemId,
-            ItemType.form().fill(itemTypeInput),
-            hasFiscalReferences,
-            cachedData.taricAdditionalCodes,
-            cachedData.nationalAdditionalCodes
+  ): Result = model.itemBy(itemId).map { item =>
+      item.itemType match {
+        case Some(cachedData) =>
+          Ok(
+            itemTypePage(
+              item.id,
+              ItemType.form().fill(itemTypeInput),
+              item.hasFiscalReferences,
+              cachedData.taricAdditionalCodes,
+              cachedData.nationalAdditionalCodes
+            )
           )
-        )
-      case _ =>
-        Ok(itemTypePage(itemId, ItemType.form(), hasFiscalReferences))
-    }
-  }
+        case _ =>
+          Ok(itemTypePage(itemId, ItemType.form(), item.hasFiscalReferences))
+      }
+    }.getOrElse(Ok(itemTypePage(itemId, ItemType.form(), false)))
+
 
   private case class Label(name: String, index: Int)
   private object Label {
