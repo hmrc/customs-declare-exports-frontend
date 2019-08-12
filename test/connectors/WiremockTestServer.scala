@@ -30,9 +30,8 @@ trait WiremockTestServer extends UnitSpec with BeforeAndAfterAll {
 
   lazy val host: String = s"http://$wireHost:$wirePort"
 
-  protected def stubFor(mappingBuilder: MappingBuilder): StubMapping = {
+  protected def stubFor(mappingBuilder: MappingBuilder): StubMapping =
     wireMockServer.stubFor(mappingBuilder)
-  }
 
   override protected def beforeAll(): Unit = {
     super.beforeAll()

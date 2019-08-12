@@ -61,9 +61,11 @@ class PackageInformationSpec extends WordSpec with MustMatchers {
         val errorMessages = result.errors.map(_.message)
 
         errorMessages must be(
-          List("supplementary.packageInformation.typesOfPackages.empty",
+          List(
+            "supplementary.packageInformation.typesOfPackages.empty",
             "error.number",
-            "supplementary.packageInformation.shippingMarks.empty")
+            "supplementary.packageInformation.shippingMarks.empty"
+          )
         )
       }
 

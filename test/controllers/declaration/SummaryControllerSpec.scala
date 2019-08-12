@@ -199,7 +199,8 @@ class SummaryControllerSpec extends CustomExportsBaseSpec {
   "Summary Page Controller on submit" when {
     def theExportsDeclarationSubmitted: ExportsDeclaration = {
       val captor: ArgumentCaptor[ExportsDeclaration] = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
-      verify(mockSubmissionService).submit(anyString(), captor.capture())(any[JourneyRequest[_]], any[HeaderCarrier], any[ExecutionContext])
+      verify(mockSubmissionService)
+        .submit(anyString(), captor.capture())(any[JourneyRequest[_]], any[HeaderCarrier], any[ExecutionContext])
       captor.getValue
     }
 

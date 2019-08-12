@@ -64,9 +64,8 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "display page method is invoked and cache contain some data" in new SetUp {
 
-        val itemWithPackageInformation = anItem(
-          withPackageInformation(typesOfPackages = "12", numberOfPackages = 10, shippingMarks = "123")
-        )
+        val itemWithPackageInformation =
+          anItem(withPackageInformation(typesOfPackages = "12", numberOfPackages = 10, shippingMarks = "123"))
         withNewCaching(aDeclaration(withItem(itemWithPackageInformation)))
 
         val result = controller.displayPage(itemId)(getRequest())
@@ -128,13 +127,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user tried to add duplicated value" in new SetUp {
 
-        val item = anItem(
-          withPackageInformation(
-            typesOfPackages = "NT",
-            numberOfPackages = 1,
-            shippingMarks = "value"
-          )
-        )
+        val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
         withNewCaching(aDeclaration(withItem(item)))
 
         val body =
@@ -162,13 +155,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
       "user clicked continue with item in a cache" in new SetUp {
 
-        val item = anItem(
-          withPackageInformation(
-            typesOfPackages = "NT",
-            numberOfPackages = 1,
-            shippingMarks = "value"
-          )
-        )
+        val item = anItem(withPackageInformation(typesOfPackages = "NT", numberOfPackages = 1, shippingMarks = "value"))
         withNewCaching(aDeclaration(withItem(item)))
 
         val body = (SaveAndContinue.toString, "")

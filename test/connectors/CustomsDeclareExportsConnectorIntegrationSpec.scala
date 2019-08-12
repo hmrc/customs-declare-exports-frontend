@@ -28,7 +28,8 @@ import services.cache.ExportsDeclarationBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ScalaFutures {
+class CustomsDeclareExportsConnectorIntegrationSpec
+    extends ConnectorSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ScalaFutures {
 
   private val id = "id"
   private val sessionId = "session-id"
