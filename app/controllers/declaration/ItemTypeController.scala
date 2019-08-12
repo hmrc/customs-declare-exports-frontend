@@ -66,7 +66,7 @@ class ItemTypeController @Inject()(
             Ok(itemTypePage(itemId, ItemType.form(), item.hasFiscalReferences))
         }
       }
-      .getOrElse(Ok(itemTypePage(itemId, ItemType.form(), false)))
+      .getOrElse(Redirect(routes.ItemsSummaryController.displayPage()))
   }
 
   def submitItemType(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async {
@@ -107,7 +107,7 @@ class ItemTypeController @Inject()(
           case Some(model) =>
             refreshPage(itemId, itemTypeInput, model)
           case None =>
-            InternalServerError("Declaration not updated")
+            Redirect(routes.ItemsSummaryController.displayPage())
         }
       case Invalid(errors) =>
         val formWithErrors =
@@ -204,7 +204,7 @@ class ItemTypeController @Inject()(
         val itemTypeInput: ItemType = ItemType.form().bindFromRequest().value.getOrElse(ItemType.empty)
         refreshPage(itemId, itemTypeInput, model)
       case None =>
-        BadRequest("Model not updated")
+        Redirect(routes.ItemsSummaryController.displayPage())
     }
   }
 
@@ -228,7 +228,7 @@ class ItemTypeController @Inject()(
         case _ =>
           Ok(itemTypePage(itemId, ItemType.form(), item.hasFiscalReferences))
       }
-    }.getOrElse(Ok(itemTypePage(itemId, ItemType.form(), false)))
+    }.getOrElse(Redirect(routes.ItemsSummaryController.displayPage()))
 
 
   private case class Label(name: String, index: Int)
