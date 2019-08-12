@@ -148,7 +148,6 @@ object CustomsDeclareExportsConnectorSpec {
   val exportCacheModel =
     models.ExportsDeclaration(
       sessionId = "",
-      draftId = "",
       createdDateTime = instant,
       updatedDateTime = instant,
       choice = "SMP"

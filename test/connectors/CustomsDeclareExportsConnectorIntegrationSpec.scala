@@ -17,12 +17,12 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import connectors.request.ExportsDeclarationRequest
+import connectors.exchange.ExportsDeclarationExchange
 import org.mockito.BDDMockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, Writes}
 import services.WcoMetadataMapper
 import services.cache.ExportsDeclarationBuilder
 
@@ -30,6 +30,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ScalaFutures {
 
+  private val id = "id"
+  private val sessionId = "session-id"
+  private val newDeclaration = aDeclaration(withoutId(), withSessionId(sessionId))
+  private val existingDeclaration = aDeclaration(withId(id), withSessionId(sessionId))
+  private val declarationRequest = ExportsDeclarationExchange(newDeclaration)
+  private val declarationResponse = ExportsDeclarationExchange(existingDeclaration)
   private val mapper = mock[WcoMetadataMapper]
   private val connector = new CustomsDeclareExportsConnector(config, httpClient, mapper)
 
@@ -39,24 +45,62 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
   }
 
   "Submit" should {
-    "return Accepted" in {
+    "return payload" in {
       stubFor(
         post("/v2/declaration")
           .willReturn(
             aResponse()
               .withStatus(Status.ACCEPTED)
+              .withBody(json(declarationResponse))
           )
       )
-      val declaration = aDeclaration()
 
-      val response = await(connector.submit(declaration))
+      val response = await(connector.submit(newDeclaration))
 
-      response.status shouldBe Status.ACCEPTED
+      response shouldBe existingDeclaration
       verify(
         postRequestedFor(urlEqualTo("/v2/declaration"))
-          .withRequestBody(containing(Json.toJson(ExportsDeclarationRequest(declaration)).toString()))
+          .withRequestBody(containing(json(declarationRequest)))
       )
     }
   }
+
+  "Find" should {
+    "return Ok" in {
+      stubFor(
+        get("/v2/declaration")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(json(Seq(declarationResponse)))
+          )
+      )
+
+      val response = await(connector.find(sessionId))
+
+      response.toList shouldBe List(existingDeclaration)
+      verify(getRequestedFor(urlEqualTo("/v2/declaration")))
+    }
+  }
+
+  "Find by ID" should {
+    "return Ok" in {
+      stubFor(
+        get(s"/v2/declaration/$id")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.OK)
+              .withBody(json(declarationResponse))
+          )
+      )
+
+      val response = await(connector.find(sessionId, id))
+
+      response shouldBe Some(existingDeclaration)
+      verify(getRequestedFor(urlEqualTo(s"/v2/declaration/$id")))
+    }
+  }
+
+  private def json[T](t: T)(implicit wts: Writes[T]): String = Json.toJson(t).toString()
 
 }

@@ -26,9 +26,9 @@ import play.api.libs.json._
 import services.cache.ExportItem
 
 case class ExportsDeclaration(
+  id: Option[String] = None,
   status: DeclarationStatus = DeclarationStatus.COMPLETE,
   sessionId: String,
-  draftId: String,
   createdDateTime: Instant,
   updatedDateTime: Instant,
   choice: String,
