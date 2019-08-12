@@ -151,9 +151,11 @@ class GovernmentAgencyGoodsItemIntegrationTest
 
     val items = item.getPackaging
     items.size() should be(1)
-    items.get(0).getQuantityQuantity.getValue shouldBe BigDecimal(packageInformation.numberOfPackages.get).bigDecimal
-    items.get(0).getMarksNumbersID.getValue shouldBe packageInformation.shippingMarks.get
-    items.get(0).getTypeCode.getValue shouldBe packageInformation.typesOfPackages.get
+
+    val packaging = items.get(0)
+    packaging.getQuantityQuantity.getValue shouldBe BigDecimal(packageInformation.numberOfPackages).bigDecimal
+    packaging.getMarksNumbersID.getValue shouldBe packageInformation.shippingMarks
+    packaging.getTypeCode.getValue shouldBe packageInformation.typesOfPackages
   }
 
   private def validateStatisticalValueAmount(item: GovernmentAgencyGoodsItem) = {

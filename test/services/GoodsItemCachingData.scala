@@ -31,9 +31,9 @@ trait GoodsItemCachingData {
   def decimalString(): String = Random.nextDouble().toString
 
   def createPackageInformation(): PackageInformation = PackageInformation(
-    Some(createRandomAlphanumericString(2)),
-    Some(Random.nextInt(20)),
-    shippingMarks = Some(createRandomAlphanumericString(150))
+    createRandomAlphanumericString(2),
+    Random.nextInt(20) + 1,
+    shippingMarks = createRandomAlphanumericString(150)
   )
 
   def createProcedureCodesData(): ProcedureCodesData =

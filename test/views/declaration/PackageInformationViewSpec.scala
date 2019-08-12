@@ -124,16 +124,16 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
     "display data in Types of Packages input" in {
 
-      val view = createView(PackageInformation.form().fill(PackageInformation(Some("PA"), None, None)))
+      val view = createView(PackageInformation.form().fill(PackageInformation("PA", 0, "")))
 
       getElementById(view, "typesOfPackages").attr("value") must be("PA")
-      getElementById(view, "numberOfPackages").attr("value") must be("")
+      getElementById(view, "numberOfPackages").attr("value") must be("0")
       getElementById(view, "shippingMarks").attr("value") must be("")
     }
 
     "display data in Number of Packages input" in {
 
-      val view = createView(PackageInformation.form().fill(PackageInformation(None, Some(100), None)))
+      val view = createView(PackageInformation.form().fill(PackageInformation("", 100, "")))
 
       getElementById(view, "typesOfPackages").attr("value") must be("")
       getElementById(view, "numberOfPackages").attr("value") must be("100")
@@ -142,16 +142,16 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
     "display data in Shipping Marks" in {
 
-      val view = createView(PackageInformation.form().fill(PackageInformation(None, None, Some("Test"))))
+      val view = createView(PackageInformation.form().fill(PackageInformation("", 0, "Test")))
 
       getElementById(view, "typesOfPackages").attr("value") must be("")
-      getElementById(view, "numberOfPackages").attr("value") must be("")
+      getElementById(view, "numberOfPackages").attr("value") must be("0")
       getElementById(view, "shippingMarks").attr("value") must be("Test")
     }
 
     "display data in all inputs" in {
 
-      val view = createView(PackageInformation.form().fill(PackageInformation(Some("PA"), Some(100), Some("Test"))))
+      val view = createView(PackageInformation.form().fill(PackageInformation("PA", 100, "Test")))
 
       getElementById(view, "typesOfPackages").attr("value") must be("PA")
       getElementById(view, "numberOfPackages").attr("value") must be("100")
@@ -160,7 +160,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
     "display one row with data in table" in {
 
-      val packages = Seq(PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")))
+      val packages = Seq(PackageInformation("PA", 100, "Shipping Mark"))
       val view = packageInformationPage("12345", form, packages)(fakeRequest, messages)
 
       // check table header
@@ -179,8 +179,8 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
     "display two rows with data in table" in {
 
       val packages = Seq(
-        PackageInformation(Some("PA"), Some(100), Some("Shipping Mark")),
-        PackageInformation(Some("PB"), Some(101), Some("Shipping Mark"))
+        PackageInformation("PA", 100, "Shipping Mark"),
+        PackageInformation("PB", 101, "Shipping Mark")
       )
       val view = packageInformationPage("12345", form, packages)(fakeRequest, messages)
 

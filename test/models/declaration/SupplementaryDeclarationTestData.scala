@@ -254,8 +254,8 @@ object SupplementaryDeclarationTestData {
         ),
         procedureCodes = Some(ProcedureCodesData(Some("CUPR"), Seq("CC", "PR"))),
         packageInformation = List(
-          PackageInformation(Some("AA"), Some(2), Some("mark1")),
-          PackageInformation(Some("AB"), Some(4), Some("mark2"))
+          PackageInformation("AA", 2, "mark1"),
+          PackageInformation("AB", 4, "mark2")
         )
       )
     ),

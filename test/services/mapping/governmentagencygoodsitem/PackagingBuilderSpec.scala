@@ -36,7 +36,7 @@ class PackagingBuilderSpec extends WordSpec with Matchers with GoodsItemCachingD
       }
 
       "populated list" in {
-        val model = anItem(withPackageInformation(Some("types"), Some(123), Some("marks")))
+        val model = anItem(withPackageInformation("types", 123, "marks"))
         val wcoItem = new GoodsShipment.GovernmentAgencyGoodsItem()
 
         builder.buildThenAdd(model, wcoItem)

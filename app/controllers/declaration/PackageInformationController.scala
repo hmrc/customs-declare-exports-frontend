@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
+import controllers.util._
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation._
 import handlers.ErrorHandler
@@ -58,67 +58,53 @@ class PackageInformationController @Inject()(
           val packagings = data.getOrElse(Seq.empty)
 
           actionTypeOpt match {
-            case Some(Add)             => addItem(itemId, packagings)
-            case Some(Remove(ids))     => remove(itemId, packagings, boundForm, ids)
-            case Some(SaveAndContinue) => continue(itemId, packagings)
+            case Some(Add)             => addItem(itemId, boundForm, packagings)
+            case Some(Remove(ids))     => removeItem(itemId, ids, boundForm, packagings)
+            case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, packagings)
             case _                     => errorHandler.displayErrorPage()
           }
       }
   }
 
-  def remove(itemId: String, packages: Seq[PackageInformation], form: Form[PackageInformation], id: Seq[String])(
-    implicit authRequest: JourneyRequest[AnyContent]
-  ): Future[Result] = {
-    val updatedPackages =
-      packages.zipWithIndex.filterNot {
-        case (_, index) => id.headOption.contains(index.toString)
-      }.map(_._1)
-    updateExportsCache(itemId, journeySessionId, updatedPackages)
-      .map(_ => Ok(packageInformationPage(itemId, form.discardingErrors, updatedPackages)))
+  private def removeItem(
+    itemId: String,
+    ids: Seq[String],
+    boundForm: Form[PackageInformation],
+    items: Seq[PackageInformation]
+  )(implicit request: JourneyRequest[_]): Future[Result] = {
+    val updatedCache = MultipleItemsHelper.remove(ids.headOption, items)
+    updateExportsCache(itemId, journeySessionId, updatedCache)
+      .map(_ => Ok(packageInformationPage(itemId, boundForm.discardingErrors, updatedCache)))
   }
 
-  def continue(itemId: String, packages: Seq[PackageInformation])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] = {
-    val payload = form().bindFromRequest()
-    if (!isFormEmpty(payload)) badRequest(itemId, packages, payload, USE_ADD)
-    else if (packages.isEmpty) badRequest(itemId, packages, payload, ADD_ONE)
-    else
-      updateExportsCache(itemId, journeySessionId, packages)
-        .map(_ => Redirect(controllers.declaration.routes.CommodityMeasureController.displayPage(itemId)))
-  }
-
-  private def isFormEmpty[A](form: Form[A]): Boolean =
-    !retrieveData(form).exists { case (_, value) => value.nonEmpty }
-
-  private def retrieveData[A](form: Form[A]): Map[String, String] =
-    form.data.filter { case (name, _) => name != "csrfToken" }
-
-  def addItem(itemId: String, packages: Seq[PackageInformation])(
-    implicit authenticatedRequest: JourneyRequest[AnyContent]
-  ): Future[Result] =
-    form()
-      .bindFromRequest()
+  private def saveAndContinue(
+    itemId: String,
+    boundForm: Form[PackageInformation],
+    cachedData: Seq[PackageInformation]
+  )(implicit request: JourneyRequest[_]): Future[Result] =
+    MultipleItemsHelper
+      .saveAndContinue(boundForm, cachedData, true, PackageInformation.limit)
       .fold(
-        (formWithErrors: Form[PackageInformation]) =>
-          Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors, packages))),
-        validForm => {
-          isAdditionInvalid[PackageInformation](validForm, packages).fold(
-            updateExportsCache(itemId, journeySessionId, packages :+ validForm)
-              .map(_ => Redirect(routes.PackageInformationController.displayPage(itemId)))
-          )(badRequest(itemId, packages, form().fill(validForm), _))
-        }
+        formWithErrors => Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors, cachedData))),
+        updatedCache =>
+          if (updatedCache != cachedData)
+            updateExportsCache(itemId, journeySessionId, updatedCache)
+              .map(_ => Redirect(controllers.declaration.routes.CommodityMeasureController.displayPage(itemId)))
+          else
+            Future.successful(Redirect(controllers.declaration.routes.CommodityMeasureController.displayPage(itemId)))
       )
 
-  private def isAdditionInvalid[A](item: A, cachedItems: Seq[A]): Option[String] =
-    if (cachedItems.contains(item)) Some(DUPLICATE_MSG_KEY)
-    else if (cachedItems.size >= PackageInformation.limit) Some(LIMIT_MSG_KEY)
-    else None
-
-  private def badRequest(itemId: String, packages: Seq[PackageInformation], form: Form[_], error: String)(
-    implicit authenticatedRequest: JourneyRequest[AnyContent]
-  ) =
-    Future.successful(BadRequest(packageInformationPage(itemId, form.withGlobalError(error), packages)))
+  private def addItem(itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
+    implicit request: JourneyRequest[_]
+  ): Future[Result] =
+    MultipleItemsHelper
+      .add(boundForm, cachedData, PackageInformation.limit)
+      .fold(
+        formWithErrors => Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors, cachedData))),
+        updatedCache =>
+          updateExportsCache(itemId, journeySessionId, updatedCache)
+            .map(_ => Redirect(controllers.declaration.routes.PackageInformationController.displayPage(itemId)))
+      )
 
   private def updateExportsCache(
     itemId: String,
