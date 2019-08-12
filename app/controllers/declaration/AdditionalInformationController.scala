@@ -108,7 +108,7 @@ class AdditionalInformationController @Inject()(
     boundForm: Form[AdditionalInformation],
     items: Seq[AdditionalInformation]
   )(implicit request: JourneyRequest[_]): Future[Result] = {
-    val updatedCache = MultipleItemsHelper.remove(ids.headOption, items)
+    val updatedCache = items.filterNot(addItem => addItem.toString == ids.head)
     updateCache(itemId, journeySessionId, AdditionalInformationData(updatedCache))
       .map(_ => Ok(additionalInformationPage(itemId, boundForm.discardingErrors, updatedCache)))
   }

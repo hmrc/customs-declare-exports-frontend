@@ -67,7 +67,7 @@
                     <td>@item.numberOfPackages</td>
                     <td>@item.shippingMarks</td>
                     <td>
-                        <button class="button--secondary" name=@messages("site.remove") value=@index>
+                        <button class="button--secondary" name=@messages("site.remove") value=@item.toJson>
                         @messages("site.remove")
                 </button>
                 </td>

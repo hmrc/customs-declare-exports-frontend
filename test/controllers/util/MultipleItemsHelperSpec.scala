@@ -52,10 +52,12 @@ class MultipleItemsHelperSpec extends WordSpec with MustMatchers {
   }
 
   "MultipleItemsHelper on remove method" should {
-    "throw InternalServerError when id is not defined" in {
-      assertThrows[InternalServerException] {
-        MultipleItemsHelper.remove(None, Seq())
-      }
+
+    "return cache when item not defined" in {
+      val idToRemove = Some("99")
+      val cachedData = Seq(TestForm("ABC"), TestForm("DEF"))
+
+      MultipleItemsHelper.remove(idToRemove, cachedData) must be(cachedData)
     }
 
     "return updated sequence without selected item" in {

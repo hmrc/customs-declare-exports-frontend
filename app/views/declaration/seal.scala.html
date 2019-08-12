@@ -43,9 +43,7 @@
         @if(seals.nonEmpty) {
             @components.fields.removable_elements_table(
                 title = Some(messages("standard.seal.id")),
-                elements = seals.zipWithIndex.map {
-                    case (seal, index) => LabelledValue(seal.id, index.toString)
-                }
+                elements = seals.map(seal => LabelledValue(seal.id))
             )
         }
 

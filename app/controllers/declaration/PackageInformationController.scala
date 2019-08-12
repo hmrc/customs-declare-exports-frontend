@@ -59,7 +59,7 @@ class PackageInformationController @Inject()(
 
           actionTypeOpt match {
             case Some(Add)             => addItem(itemId, boundForm, packagings)
-            case Some(Remove(ids))     => removeItem(itemId, ids, boundForm, packagings)
+            case Some(Remove(values))     => removeItem(itemId, values, boundForm, packagings)
             case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, packagings)
             case _                     => errorHandler.displayErrorPage()
           }
@@ -68,11 +68,12 @@ class PackageInformationController @Inject()(
 
   private def removeItem(
     itemId: String,
-    ids: Seq[String],
+    values: Seq[String],
     boundForm: Form[PackageInformation],
     items: Seq[PackageInformation]
   )(implicit request: JourneyRequest[_]): Future[Result] = {
-    val updatedCache = MultipleItemsHelper.remove(ids.headOption, items)
+    val itemToRemove = PackageInformation.fromJsonString(values.head)
+    val updatedCache = items.filterNot(itemToRemove.contains(_))
     updateExportsCache(itemId, journeySessionId, updatedCache)
       .map(_ => Ok(packageInformationPage(itemId, boundForm.discardingErrors, updatedCache)))
   }

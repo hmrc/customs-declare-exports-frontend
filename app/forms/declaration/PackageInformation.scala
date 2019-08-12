@@ -18,7 +18,7 @@ package forms.declaration
 
 import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import services.PackageTypes
 import utils.validators.forms.FieldValidator._
 
@@ -26,9 +26,13 @@ case class PackageInformation(
   typesOfPackages: String,
   numberOfPackages: Int,
   shippingMarks: String
-)
+) {
+  def toJson: JsValue = Json.toJson(this)(PackageInformation.format)
+}
 
 object PackageInformation {
+
+  def fromJsonString(value: String): Option[PackageInformation] = Json.fromJson(Json.parse(value)).asOpt
 
   def require1Field[T](fs: (T => Option[_])*): T => Boolean =
     t => fs.exists(f => f(t).nonEmpty)

@@ -40,9 +40,7 @@
         @if(containers.nonEmpty) {
             @components.fields.removable_elements_table(
                 title = Some(messages("supplementary.transportInfo.containerId.title")),
-                elements = containers.zipWithIndex.map {
-                    case (container, index) => LabelledValue(container.id, index.toString)
-                }
+                elements = containers.map(container => LabelledValue(container.id))
             )
         }
 

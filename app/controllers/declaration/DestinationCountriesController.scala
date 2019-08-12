@@ -174,24 +174,14 @@ class DestinationCountriesController @Inject()(
     userInput: Form[DestinationCountries],
     cachedData: DestinationCountries
   )(implicit request: JourneyRequest[_]): Future[Result] = {
-    val key =
-      parseRemoval(keys).getOrElse(throw new IllegalArgumentException("Data format for removal request is incorrect"))
-    val updatedCountries = removeElement(cachedData.countriesOfRouting, key)
+
+    val updatedCountries = cachedData.countriesOfRouting.filterNot(keys.contains(_))
 
     val updatedCache = cachedData.copy(countriesOfRouting = updatedCountries)
 
     updateCache(journeySessionId, updatedCache)
       .map(_ => Ok(destinationCountriesStandardPage(userInput.discardingErrors, updatedCache.countriesOfRouting)))
   }
-
-  private def parseRemoval(keys: Seq[String]): Try[Int] =
-    Try(keys)
-      .filter(_.size == 1)
-      .map(_.head.split("_"))
-      .filter(_.length == 2)
-      .map(_(1).toInt)
-
-  private def removeElement[A](collection: Seq[A], indexToRemove: Int): Seq[A] = collection.removeByIdx(indexToRemove)
 
   private def refreshPage(
     inputDestinationCountries: DestinationCountries

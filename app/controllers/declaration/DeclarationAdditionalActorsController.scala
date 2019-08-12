@@ -158,14 +158,9 @@ class DeclarationAdditionalActorsController @Inject()(
     actorToRemove: Option[DeclarationAdditionalActors],
     formData: Form[DeclarationAdditionalActors],
     cachedData: DeclarationAdditionalActorsData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    actorToRemove match {
-      case Some(actorToRemove) =>
-        if (cachedData.containsItem(actorToRemove)) {
-          val updatedCache = cachedData.copy(actors = cachedData.actors.filterNot(_ == actorToRemove))
-          updateCache(journeySessionId, updatedCache)
-            .map(_ => Ok(declarationAdditionalActorsPage(formData.discardingErrors, updatedCache.actors)))
-        } else errorHandler.displayErrorPage()
-      case _ => errorHandler.displayErrorPage()
-    }
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+    val updatedCache = cachedData.copy(actors = cachedData.actors.filterNot(actorToRemove.contains(_)))
+    updateCache(journeySessionId, updatedCache)
+      .map(_ => Ok(declarationAdditionalActorsPage(formData.discardingErrors, updatedCache.actors)))
+  }
 }

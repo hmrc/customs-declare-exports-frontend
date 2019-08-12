@@ -144,16 +144,16 @@ class DocumentsProducedController @Inject()(
 
   private def removeItem(
     itemId: String,
-    keys: Seq[String],
+    values: Seq[String],
     boundForm: Form[DocumentsProduced],
     cachedData: DocumentsProducedData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    keys.headOption.fold(errorHandler.displayErrorPage()) { index =>
-      val updatedCache = cachedData.copy(documents = cachedData.documents.patch(index.toInt, Nil, 1))
-      updateCache(itemId, journeySessionId, updatedCache).map(
-        _ => Ok(documentProducedPage(itemId, boundForm.discardingErrors, updatedCache.documents))
-      )
-    }
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+    val itemToRemove = DocumentsProduced.fromJsonString(values.head)
+    val updatedCache = cachedData.copy(documents = cachedData.documents.filterNot(itemToRemove.contains(_)))
+    updateCache(itemId, journeySessionId, updatedCache).map(
+      _ => Ok(documentProducedPage(itemId, boundForm.discardingErrors, updatedCache.documents))
+    )
+  }
 
   private def handleErrorPage(
     itemId: String,

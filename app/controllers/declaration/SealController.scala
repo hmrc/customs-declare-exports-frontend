@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
+import controllers.util.MultipleItemsHelper.{add, saveAndContinue}
 import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
 import forms.declaration.Seal
 import forms.declaration.Seal._
@@ -92,7 +92,7 @@ class SealController @Inject()(
   private def removeSeal(userInput: Form[Seal], cachedSeals: Seq[Seal], hasContainers: Boolean, ids: Seq[String])(
     implicit request: JourneyRequest[_]
   ): Future[Result] = {
-    val updatedSeals = remove(ids.headOption, cachedSeals)
+    val updatedSeals = cachedSeals.filterNot(_.id == ids.head)
     updateCache(journeySessionId, updatedSeals).map { _ =>
       Ok(sealPage(userInput.discardingErrors, updatedSeals, hasContainers))
     }
