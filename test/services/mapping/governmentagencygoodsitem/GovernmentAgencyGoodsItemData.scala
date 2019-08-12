@@ -56,13 +56,11 @@ trait GovernmentAgencyGoodsItemData {
   val documentsProducedData = DocumentsProducedData(documentsProduced)
 
   //Package Information Data
-  val shippingMarksValue = "shippingMarks"
+  val shippingMarks = "shippingMarks"
   val packageTypeValue = "packageType"
-  val packageQuantity = 12
-  val numberOfPackages = packageQuantity
-  val shippingMarksString = shippingMarksValue
+  val numberOfPackages = 12
 
-  val packageInformation = new PackageInformation(packageTypeValue, numberOfPackages, shippingMarksString)
+  val packageInformation = new PackageInformation(packageTypeValue, numberOfPackages, shippingMarks)
 
   //Item Type Data
   val descriptionOfGoods = "descriptionOfGoods"

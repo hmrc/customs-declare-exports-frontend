@@ -96,16 +96,16 @@ trait ExportsItemBuilder {
     _.copy(packageInformation = informations)
 
   def withPackageInformation(
-    typesOfPackages: Option[String] = None,
-    numberOfPackages: Option[Int] = None,
-    shippingMarks: Option[String] = None
+    typesOfPackages: String = "",
+    numberOfPackages: Int = 0,
+    shippingMarks: String = ""
   ): ItemModifier =
     cache =>
       cache.copy(
         packageInformation = cache.packageInformation :+ PackageInformation(
-          typesOfPackages.getOrElse(""),
-          numberOfPackages.getOrElse(0),
-          shippingMarks.getOrElse("")
+          typesOfPackages,
+          numberOfPackages,
+          shippingMarks
         )
     )
 

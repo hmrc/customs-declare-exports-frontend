@@ -33,44 +33,35 @@ class PackagingBuilder @Inject()() extends ModifyingBuilder[ExportItem, GoodsShi
     wcoGovernmentAgencyGoodsItem: GoodsShipment.GovernmentAgencyGoodsItem
   ): Unit =
     exportItem.packageInformation.zipWithIndex.foreach {
-      case (packing, index) => {
+      case (packing, index) =>
         wcoGovernmentAgencyGoodsItem.getPackaging.add(
-          createWcoPackaging(Some(index), Some(packing.typesOfPackages), Some(packing.numberOfPackages), Some(packing.shippingMarks))
+          createWcoPackaging(index, packing.typesOfPackages, packing.numberOfPackages, packing.shippingMarks)
         )
-      }
     }
 
   private def createWcoPackaging(
-    sequenceNumeric: Option[Int],
-    typeCode: Option[String],
-    quantity: Option[Int],
-    marksNumbersId: Option[String]
+    sequenceNumeric: Int,
+    typeCode: String,
+    quantity: Int,
+    markNumber: String
   ): Packaging = {
     val wcoPackaging = new Packaging
 
-    typeCode.foreach { typeCode =>
-      val packagingTypeCodeType = new PackagingTypeCodeType
-      packagingTypeCodeType.setValue(typeCode)
-      wcoPackaging.setTypeCode(packagingTypeCodeType)
-    }
+    val packagingTypeCodeType = new PackagingTypeCodeType
+    packagingTypeCodeType.setValue(typeCode)
+    wcoPackaging.setTypeCode(packagingTypeCodeType)
 
-    quantity.foreach { quantity =>
-      val packagingQuantityQuantityType = new PackagingQuantityQuantityType
-      //TODO noticed here that quantity type in old scala wco is not captured.. no cannot set :-
-      // packagingQuantityQuantityType.setUnitCode(????)
-      packagingQuantityQuantityType.setValue(new java.math.BigDecimal(quantity))
-      wcoPackaging.setQuantityQuantity(packagingQuantityQuantityType)
-    }
+    val packagingQuantityQuantityType = new PackagingQuantityQuantityType
+    //TODO noticed here that quantity type in old scala wco is not captured.. no cannot set :-
+    // packagingQuantityQuantityType.setUnitCode(????)
+    packagingQuantityQuantityType.setValue(new java.math.BigDecimal(quantity))
+    wcoPackaging.setQuantityQuantity(packagingQuantityQuantityType)
 
-    marksNumbersId.foreach { markNumber =>
-      val packagingMarksNumbersIDType = new PackagingMarksNumbersIDType
-      packagingMarksNumbersIDType.setValue(markNumber)
-      wcoPackaging.setMarksNumbersID(packagingMarksNumbersIDType)
-    }
+    val packagingMarksNumbersIDType = new PackagingMarksNumbersIDType
+    packagingMarksNumbersIDType.setValue(markNumber)
+    wcoPackaging.setMarksNumbersID(packagingMarksNumbersIDType)
 
-    sequenceNumeric.foreach(
-      numericSequence => wcoPackaging.setSequenceNumeric(new java.math.BigDecimal(numericSequence))
-    )
+    wcoPackaging.setSequenceNumeric(new java.math.BigDecimal(sequenceNumeric))
 
     wcoPackaging
   }

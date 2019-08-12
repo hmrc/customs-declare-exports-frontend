@@ -32,7 +32,7 @@ trait GoodsItemCachingData {
 
   def createPackageInformation(): PackageInformation = PackageInformation(
     createRandomAlphanumericString(2),
-    Random.nextInt(20),
+    Random.nextInt(20) + 1,
     shippingMarks = createRandomAlphanumericString(150)
   )
 

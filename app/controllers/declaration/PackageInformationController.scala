@@ -60,15 +60,15 @@ class PackageInformationController @Inject()(
           val packagings = data.getOrElse(Seq.empty)
 
           actionTypeOpt match {
-            case Some(Add)             => handleAdd(itemId, boundForm, packagings)
-            case Some(Remove(ids))     => handleRemove(itemId, ids, boundForm, packagings)
-            case Some(SaveAndContinue) => handleSaveAndContinue(itemId, boundForm, packagings)
+            case Some(Add)             => addItem(itemId, boundForm, packagings)
+            case Some(Remove(ids))     => removeItem(itemId, ids, boundForm, packagings)
+            case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, packagings)
             case _                     => errorHandler.displayErrorPage()
           }
       }
   }
 
-  private def handleRemove(
+  private def removeItem(
     itemId: String,
     ids: Seq[String],
     boundForm: Form[PackageInformation],
@@ -79,7 +79,7 @@ class PackageInformationController @Inject()(
       .map(_ => Ok(packageInformationPage(itemId, boundForm.discardingErrors, updatedCache)))
   }
 
-  private def handleSaveAndContinue(
+  private def saveAndContinue(
     itemId: String,
     boundForm: Form[PackageInformation],
     cachedData: Seq[PackageInformation]
@@ -96,7 +96,7 @@ class PackageInformationController @Inject()(
             Future.successful(Redirect(controllers.declaration.routes.CommodityMeasureController.displayPage(itemId)))
       )
 
-  private def handleAdd(itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
+  private def addItem(itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
     implicit request: JourneyRequest[_]
   ): Future[Result] =
     MultipleItemsHelper

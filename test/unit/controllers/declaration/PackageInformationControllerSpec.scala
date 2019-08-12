@@ -65,7 +65,7 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
       "display page method is invoked and cache contain some data" in new SetUp {
 
         val itemWithPackageInformation = anItem(
-          withPackageInformation(typesOfPackages = Some("12"), numberOfPackages = Some(10), shippingMarks = Some("123"))
+          withPackageInformation(typesOfPackages = "12", numberOfPackages = 10, shippingMarks = "123")
         )
         withNewCaching(aDeclaration(withItem(itemWithPackageInformation)))
 
@@ -130,9 +130,9 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val item = anItem(
           withPackageInformation(
-            typesOfPackages = Some("NT"),
-            numberOfPackages = Some(1),
-            shippingMarks = Some("value")
+            typesOfPackages = "NT",
+            numberOfPackages = 1,
+            shippingMarks = "value"
           )
         )
         withNewCaching(aDeclaration(withItem(item)))
@@ -164,9 +164,9 @@ class PackageInformationControllerSpec extends ControllerSpec with ErrorHandlerM
 
         val item = anItem(
           withPackageInformation(
-            typesOfPackages = Some("NT"),
-            numberOfPackages = Some(1),
-            shippingMarks = Some("value")
+            typesOfPackages = "NT",
+            numberOfPackages = 1,
+            shippingMarks = "value"
           )
         )
         withNewCaching(aDeclaration(withItem(item)))
