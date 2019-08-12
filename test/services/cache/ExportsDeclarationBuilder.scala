@@ -20,21 +20,16 @@ import java.time.{LocalDateTime, ZoneOffset}
 import java.util.UUID
 
 import forms.common.Address
+import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypeSupplementaryDec.AllowedAdditionalDeclarationTypes
 import forms.declaration.destinationCountries.DestinationCountries
 import forms.declaration.officeOfExit.OfficeOfExit
-import forms.declaration.DispatchLocation.AllowedDispatchLocations.OutsideEU
 import forms.{Choice, Ducr}
 import models.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration
-import models.declaration.{
-  DeclarationAdditionalActorsData,
-  DeclarationHoldersData,
-  Locations,
-  TransportInformationContainerData
-}
+import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, Locations, TransportInformationContainerData}
 
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
@@ -46,7 +41,6 @@ trait ExportsDeclarationBuilder {
 
   private val modelWithDefaults: ExportsDeclaration = ExportsDeclaration(
     sessionId = uuid,
-    draftId = uuid,
     createdDateTime = LocalDateTime.of(2019, 1, 1, 0, 0, 0).toInstant(ZoneOffset.UTC),
     updatedDateTime = LocalDateTime.of(2019, 2, 2, 0, 0, 0).toInstant(ZoneOffset.UTC),
     choice = Choice.AllowedChoiceValues.StandardDec
@@ -58,6 +52,10 @@ trait ExportsDeclarationBuilder {
     modifiers.foldLeft(modelWithDefaults)((current, modifier) => modifier(current))
 
   // ************************************************* Builders ********************************************************
+
+  def withId(id: String = uuid): ExportsDeclarationModifier = _.copy(id = Some(id))
+
+  def withoutId(): ExportsDeclarationModifier = _.copy(id = None)
 
   def withStatus(status: DeclarationStatus): ExportsDeclarationModifier = _.copy(status = status)
 

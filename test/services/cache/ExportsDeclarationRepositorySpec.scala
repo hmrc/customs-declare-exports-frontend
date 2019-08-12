@@ -131,7 +131,6 @@ class ExportsDeclarationRepositorySpec
   def createModel(existingSessionId: String): ExportsDeclaration =
     models.ExportsDeclaration(
       sessionId = existingSessionId,
-      draftId = "",
       createdDateTime = instant,
       updatedDateTime = instant,
       choice = "SMP"

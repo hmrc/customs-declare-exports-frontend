@@ -17,7 +17,6 @@
 package controllers
 
 import java.time.Instant
-import java.util.UUID
 
 import controllers.actions.AuthAction
 import controllers.declaration.{ModelCacheable, SessionIdAware}
@@ -63,9 +62,9 @@ class ChoiceController @Inject()(
             .update(
               authenticatedSessionId,
               ExportsDeclaration(
+                None,
                 DeclarationStatus.DRAFT,
                 authenticatedSessionId,
-                UUID.randomUUID().toString,
                 createdDateTime = Instant.now,
                 updatedDateTime = Instant.now,
                 validChoice.value

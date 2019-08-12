@@ -17,7 +17,7 @@
 package connectors
 
 import config.AppConfig
-import connectors.request.ExportsDeclarationRequest
+import connectors.exchange.ExportsDeclarationExchange
 import javax.inject.{Inject, Singleton}
 import models.ExportsDeclaration
 import models.declaration.notifications.Notification
@@ -40,18 +40,25 @@ class CustomsDeclareExportsConnector @Inject()(
   wcoMetadataMapper: WcoMetadataMapper
 ) {
 
-  private val logger = Logger(this.getClass())
+  private val logger = Logger(this.getClass)
 
   def submit(
     declaration: ExportsDeclaration
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    httpClient.POST[ExportsDeclarationRequest, HttpResponse](
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
+    httpClient.POST[ExportsDeclarationExchange, ExportsDeclarationExchange](
       s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}",
-      ExportsDeclarationRequest(declaration)
-    ).map { response =>
-      logger.debug(s"CUSTOMS_DECLARE_EXPORTS response is --> ${response.toString}")
-      response
-    }
+      ExportsDeclarationExchange(declaration)
+    ).map(_.toExportsDeclaration(declaration.sessionId))
+  }
+
+  def find(sessionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsDeclaration]] = {
+    httpClient.GET[Seq[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}")
+      .map(_.map(_.toExportsDeclaration(sessionId)))
+  }
+
+  def find(sessionId: String, id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
+    httpClient.GET[Option[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}/$id")
+      .map(_.map(_.toExportsDeclaration(sessionId)))
   }
 
   def submitExportDeclaration(ducr: Option[String], lrn: Option[String], payload: String)(

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package connectors.request
+package connectors.exchange
 
 import java.time.Instant
 
@@ -26,27 +26,29 @@ import models.declaration.{Locations, Parties, TransportInformationContainerData
 import play.api.libs.json.{Json, OFormat}
 import services.cache.ExportItem
 
-case class ExportsDeclarationRequest(status: DeclarationStatus,
-                                     createdDateTime: Instant,
-                                     updatedDateTime: Instant,
-                                     choice: String,
-                                     dispatchLocation: Option[DispatchLocation] = None,
-                                     additionalDeclarationType: Option[AdditionalDeclarationType] = None,
-                                     consignmentReferences: Option[ConsignmentReferences] = None,
-                                     borderTransport: Option[BorderTransport] = None,
-                                     transportDetails: Option[TransportDetails] = None,
-                                     containerData: Option[TransportInformationContainerData] = None,
-                                     parties: Parties = Parties(),
-                                     locations: Locations = Locations(),
-                                     items: Set[ExportItem] = Set.empty[ExportItem],
-                                     totalNumberOfItems: Option[TotalNumberOfItems] = None,
-                                     previousDocuments: Option[PreviousDocumentsData] = None,
-                                     natureOfTransaction: Option[NatureOfTransaction] = None,
-                                     seals: Seq[Seal] = Seq.empty
-                                    ) {
-  def toExportsDeclaration(sessionId: String, draftId: String): ExportsDeclaration = ExportsDeclaration(
+case class ExportsDeclarationExchange(
+  id: Option[String] = None,
+  status: DeclarationStatus,
+  createdDateTime: Instant,
+  updatedDateTime: Instant,
+  choice: String,
+  dispatchLocation: Option[DispatchLocation] = None,
+  additionalDeclarationType: Option[AdditionalDeclarationType] = None,
+  consignmentReferences: Option[ConsignmentReferences] = None,
+  borderTransport: Option[BorderTransport] = None,
+  transportDetails: Option[TransportDetails] = None,
+  containerData: Option[TransportInformationContainerData] = None,
+  parties: Parties = Parties(),
+  locations: Locations = Locations(),
+  items: Set[ExportItem] = Set.empty[ExportItem],
+  totalNumberOfItems: Option[TotalNumberOfItems] = None,
+  previousDocuments: Option[PreviousDocumentsData] = None,
+  natureOfTransaction: Option[NatureOfTransaction] = None,
+  seals: Seq[Seal] = Seq.empty
+) {
+  def toExportsDeclaration(sessionId: String): ExportsDeclaration = ExportsDeclaration(
+    id = this.id,
     sessionId = sessionId,
-    draftId = draftId,
     status = this.status,
     createdDateTime = this.createdDateTime,
     updatedDateTime = this.updatedDateTime,
@@ -67,10 +69,11 @@ case class ExportsDeclarationRequest(status: DeclarationStatus,
   )
 }
 
-object ExportsDeclarationRequest {
-  implicit val format: OFormat[ExportsDeclarationRequest] = Json.format[ExportsDeclarationRequest]
+object ExportsDeclarationExchange {
+  implicit val format: OFormat[ExportsDeclarationExchange] = Json.format[ExportsDeclarationExchange]
 
-  def apply(declaration: ExportsDeclaration): ExportsDeclarationRequest = ExportsDeclarationRequest(
+  def apply(declaration: ExportsDeclaration): ExportsDeclarationExchange = ExportsDeclarationExchange(
+    id = declaration.id,
     status = declaration.status,
     createdDateTime = declaration.createdDateTime,
     updatedDateTime = declaration.updatedDateTime,

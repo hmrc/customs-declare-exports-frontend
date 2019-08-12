@@ -26,7 +26,8 @@ import models.declaration.submissions.{Action, Submission, SubmissionRequest}
 import models.requests.CancellationStatus
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.mockito.stubbing.OngoingStubbing
+import org.mockito.invocation.InvocationOnMock
+import org.mockito.stubbing.{Answer, OngoingStubbing}
 import org.scalatest.mockito.MockitoSugar
 import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST}
 import uk.gov.hmrc.http.HttpResponse
@@ -39,10 +40,14 @@ trait MockConnectors extends MockitoSugar {
   lazy val mockNrsConnector: NrsConnector = mock[NrsConnector]
 
   def successfulCustomsDeclareExportsResponse(): OngoingStubbing[Future[HttpResponse]] = {
+    when(mockCustomsDeclareExportsConnector.submit(any[ExportsDeclaration])(any(), any()))
+      .thenAnswer(withTheFirstArgument)
     when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
-    when(mockCustomsDeclareExportsConnector.submit(any())(any(), any()))
-      .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
+  }
+
+  private def withTheFirstArgument[T]: Answer[Future[T]] = new Answer[Future[T]] {
+    override def answer(invocation: InvocationOnMock): Future[T] = Future.successful(invocation.getArgument(0))
   }
 
   def customsDeclaration400Response(): OngoingStubbing[Future[HttpResponse]] =
