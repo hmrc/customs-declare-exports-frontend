@@ -55,7 +55,11 @@ class SubmissionService @Inject()(
     val data = format(exportsDeclaration)
     auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
     (for {
-      _ <- exportsConnector.submit(exportsDeclaration)
+      _ <- exportsConnector.submit(exportsDeclaration).recover {
+        case error =>
+          Logger.error("V2 Submission failed", error)
+          Future.successful((): Unit)
+      }
       response <- exportsConnector.submitExportDeclaration(data.ducr, data.lrn, data.payload)
     } yield response) flatMap  {
         case HttpResponse(ACCEPTED, _, _, _) =>
