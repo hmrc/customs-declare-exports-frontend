@@ -61,7 +61,7 @@
         )
 
         @components.fields.field_text_multiple_values(
-            field = form(taricAdditionalCodesKey),
+            field = form(taricAdditionalCodesKey + "[]"),
             label = messages("declaration.itemType.taricAdditionalCodes.header"),
             hint = Some(messages("declaration.itemType.taricAdditionalCodes.header.hint")),
             elements = taricAdditionalCodes,
@@ -70,7 +70,7 @@
         )
 
         @components.fields.field_multiple_values(
-            field = form(nationalAdditionalCodesKey),
+            field = form(nationalAdditionalCodesKey + "[]"),
             label = messages("declaration.itemType.nationalAdditionalCode.header"),
             hint = Some(messages("declaration.itemType.nationalAdditionalCode.header.hint")),
             elements = nationalAdditionalCodes,
