@@ -45,7 +45,7 @@
         <h3>@messages("declaration.additionalFiscalReferences.numbers.header")</h3>
 
         @components.fields.removable_elements_table(
-            elements = additionalReferences.map(elem => elem.country + elem.reference).map(ref => LabelledValue(ref))
+            elements = additionalReferences.map(_.asString).map(ref => LabelledValue(ref))
         )
 
         <div id="country-of-dispatch-field" class="inline-block form-group">

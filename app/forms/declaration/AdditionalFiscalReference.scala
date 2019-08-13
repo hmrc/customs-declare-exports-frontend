@@ -22,7 +22,9 @@ import play.api.libs.json.Json
 import services.Countries.allCountries
 import utils.validators.forms.FieldValidator._
 
-case class AdditionalFiscalReference(country: String, reference: String)
+case class AdditionalFiscalReference(country: String, reference: String) {
+  val asString: String = country + reference
+}
 
 object AdditionalFiscalReference {
   implicit val format = Json.format[AdditionalFiscalReference]
@@ -42,7 +44,12 @@ object AdditionalFiscalReference {
   def form(): Form[AdditionalFiscalReference] = Form(mapping)
 }
 
-case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalReference])
+case class AdditionalFiscalReferencesData(references: Seq[AdditionalFiscalReference]) {
+  def removeReferences(values: Seq[String]): AdditionalFiscalReferencesData = {
+    val patterns = values.toSet
+    copy(references = references.filterNot(reference => patterns.contains(reference.asString)))
+  }
+}
 
 object AdditionalFiscalReferencesData {
   implicit val format = Json.format[AdditionalFiscalReferencesData]
