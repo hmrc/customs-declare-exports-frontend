@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.MultipleItemsHelper.remove
 import controllers.util.{MultipleItemsHelper, _}
 import forms.declaration.AdditionalFiscalReference.form
 import forms.declaration.AdditionalFiscalReferencesData._
@@ -111,7 +112,8 @@ class AdditionalFiscalReferencesController @Inject()(
     form: Form[AdditionalFiscalReference],
     cachedData: AdditionalFiscalReferencesData
   )(implicit request: JourneyRequest[_]): Future[Result] = {
-    val updatedCache = MultipleItemsHelper.remove(values.headOption, cachedData.references)
+    val filter: AdditionalFiscalReference => Boolean = ref => s"${ref.country}${ref.reference}" == itemId
+    val updatedCache = MultipleItemsHelper.remove(cachedData.references, filter)
     updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache)).map {
       case Some(model) => Ok(additionalFiscalReferencesPage(itemId, form.discardingErrors))
       case None        => Redirect(routes.ItemsSummaryController.displayPage())

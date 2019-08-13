@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.form
@@ -108,7 +109,7 @@ class AdditionalInformationController @Inject()(
     boundForm: Form[AdditionalInformation],
     items: Seq[AdditionalInformation]
   )(implicit request: JourneyRequest[_]): Future[Result] = {
-    val updatedCache = MultipleItemsHelper.remove(ids.headOption, items)
+    val updatedCache = remove(items, (addItem: AdditionalInformation) => addItem.toString == ids.head)
     updateCache(itemId, journeySessionId, AdditionalInformationData(updatedCache))
       .map(_ => Ok(additionalInformationPage(itemId, boundForm.discardingErrors, updatedCache)))
   }

@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util.MultipleItemsHelper.{add, remove, saveAndContinue}
-import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
+import controllers.util._
 import forms.Choice.AllowedChoiceValues
 import forms.declaration.TransportInformationContainer
 import forms.declaration.TransportInformationContainer.form
@@ -96,7 +96,7 @@ class TransportContainerController @Inject()(
     cache: TransportInformationContainerData,
     ids: Seq[String]
   )(implicit request: JourneyRequest[_]) = {
-    val updatedCache = remove(ids.headOption, cache.containers)
+    val updatedCache = remove(cache.containers, {container: TransportInformationContainer => ids.contains(container.id)})
     updateCache(journeySessionId, TransportInformationContainerData(updatedCache)).map { _ =>
       Ok(transportContainersPage(userInput.discardingErrors, updatedCache))
     }

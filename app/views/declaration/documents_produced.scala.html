@@ -69,7 +69,7 @@
                         <td>@item.dateOfValidity</td>
                         <td>@item.documentWriteOff.map(_.measurementUnit)</td>
                         <td>@item.documentWriteOff.map(_.documentQuantity)</td>
-                        <td>@components.buttons.remove_button(value = Some(index))</td>
+                        <td>@components.buttons.remove_button(value = Some(item.toJson))</td>
                     </tr>
                 }
                 </tbody>

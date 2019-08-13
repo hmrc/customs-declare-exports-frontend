@@ -19,7 +19,7 @@ package forms.declaration.additionaldocuments
 import forms.common.Date
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import utils.validators.forms.FieldValidator._
 
 case class DocumentsProduced(
@@ -31,6 +31,8 @@ case class DocumentsProduced(
   dateOfValidity: Option[Date],
   documentWriteOff: Option[DocumentWriteOff]
 ) {
+  def toJson: JsValue = Json.toJson(this)(DocumentsProduced.format)
+
   implicit val writes = Json.writes[DocumentsProduced]
 
   def isDefined: Boolean =
@@ -46,6 +48,8 @@ case class DocumentsProduced(
 }
 
 object DocumentsProduced {
+
+  def fromJsonString(value: String): Option[DocumentsProduced] = Json.fromJson(Json.parse(value)).asOpt
 
   implicit val format = Json.format[DocumentsProduced]
 

@@ -19,8 +19,8 @@ package controllers.declaration
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.util._
 import forms.declaration.Document._
-import forms.declaration.PreviousDocumentsData
 import forms.declaration.PreviousDocumentsData._
+import forms.declaration.{Document, PreviousDocumentsData}
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.requests.JourneyRequest
@@ -81,11 +81,11 @@ class PreviousDocumentsController @Inject()(
                 .map(_ => Redirect(controllers.declaration.routes.PreviousDocumentsController.displayForm()))
           )
 
-        case Some(Remove(ids)) => {
-          val updatedDocuments = remove(ids.headOption, cache.documents)
+        case Some(Remove(ids)) =>
+          val itemToRemove = Document.fromJsonString(ids.head)
+          val updatedDocuments = MultipleItemsHelper.remove(cache.documents, itemToRemove.contains(_: Document))
           updateCache(PreviousDocumentsData(updatedDocuments))
             .map(_ => Ok(previousDocumentsPage(boundForm.discardingErrors, updatedDocuments)))
-        }
 
         case _ => Future.successful(BadRequest(previousDocumentsPage(boundForm, cache.documents)))
       }

@@ -17,7 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
+import controllers.util.MultipleItemsHelper.remove
+import controllers.util._
 import forms.declaration.DeclarationAdditionalActors
 import forms.declaration.DeclarationAdditionalActors.form
 import handlers.ErrorHandler
@@ -158,14 +159,9 @@ class DeclarationAdditionalActorsController @Inject()(
     actorToRemove: Option[DeclarationAdditionalActors],
     formData: Form[DeclarationAdditionalActors],
     cachedData: DeclarationAdditionalActorsData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    actorToRemove match {
-      case Some(actorToRemove) =>
-        if (cachedData.containsItem(actorToRemove)) {
-          val updatedCache = cachedData.copy(actors = cachedData.actors.filterNot(_ == actorToRemove))
-          updateCache(journeySessionId, updatedCache)
-            .map(_ => Ok(declarationAdditionalActorsPage(formData.discardingErrors, updatedCache.actors)))
-        } else errorHandler.displayErrorPage()
-      case _ => errorHandler.displayErrorPage()
-    }
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+    val updatedCache = cachedData.copy(actors = remove(cachedData.actors, actorToRemove.contains(_: DeclarationAdditionalActors)))
+    updateCache(journeySessionId, updatedCache)
+      .map(_ => Ok(declarationAdditionalActorsPage(formData.discardingErrors, updatedCache.actors)))
+  }
 }

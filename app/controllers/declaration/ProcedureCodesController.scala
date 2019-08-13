@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.ProcedureCodes
 import forms.declaration.ProcedureCodes.form
@@ -141,13 +142,12 @@ class ProcedureCodesController @Inject()(
     code: String,
     userInput: Form[ProcedureCodes],
     cachedData: ProcedureCodesData
-  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] =
-    if (cachedData.containsAdditionalCode(code)) {
-      val updatedCache =
-        cachedData.copy(additionalProcedureCodes = cachedData.additionalProcedureCodes.filterNot(_ == code))
-      updateCache(itemId, journeySessionId, updatedCache)
-        .map(_ => Ok(procedureCodesPage(itemId, userInput.discardingErrors, updatedCache.additionalProcedureCodes)))
-    } else errorHandler.displayErrorPage()
+  )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
+    val updatedCache =
+      cachedData.copy(additionalProcedureCodes = remove(cachedData.additionalProcedureCodes, (_: String) == code))
+    updateCache(itemId, journeySessionId, updatedCache)
+      .map(_ => Ok(procedureCodesPage(itemId, userInput.discardingErrors, updatedCache.additionalProcedureCodes)))
+  }
 
   //scalastyle:off method.length
   private def saveAndContinueHandler(itemId: String, userInput: ProcedureCodes, cachedData: ProcedureCodesData)(

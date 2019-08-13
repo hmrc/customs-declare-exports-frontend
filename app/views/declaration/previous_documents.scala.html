@@ -59,7 +59,7 @@
                     <td>@document.documentReference</td>
                     <td>@document.goodsItemIdentifier.getOrElse("")</td>
                     <td>
-                        <button class="button--secondary" name=@messages("site.remove") value=@index>
+                        <button class="button--secondary" name=@messages("site.remove") value=@document.toJson>
                         @messages("site.remove")
                 </button>
                 </td>

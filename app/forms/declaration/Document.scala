@@ -18,7 +18,7 @@ package forms.declaration
 
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import services.DocumentType
 import utils.validators.forms.FieldValidator._
 
@@ -27,9 +27,13 @@ case class Document(
   documentType: String,
   documentReference: String,
   goodsItemIdentifier: Option[String]
-)
+) {
+  def toJson: JsValue = Json.toJson(this)(Document.format)
+}
 
 object Document {
+  def fromJsonString(value: String): Option[Document] = Json.fromJson(Json.parse(value)).asOpt
+
   implicit val format = Json.format[Document]
 
   val formId = "PreviousDocuments"

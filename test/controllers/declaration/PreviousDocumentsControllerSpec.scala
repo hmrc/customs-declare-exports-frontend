@@ -118,7 +118,7 @@ class PreviousDocumentsControllerSpec
 
         withNewCaching(modelWithPreviousDocuments)
 
-        val body = correctDocument :+ removeActionURLEncoded("0")
+        val body = correctDocument :+ removeActionURLEncoded(s"${document.toJson}")
 
         val result = route(app, postRequestFormUrlEncoded(uri, modelWithPreviousDocuments.sessionId)(body: _*)).get
 

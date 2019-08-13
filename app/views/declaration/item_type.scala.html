@@ -65,7 +65,8 @@
             label = messages("declaration.itemType.taricAdditionalCodes.header"),
             hint = Some(messages("declaration.itemType.taricAdditionalCodes.header.hint")),
             elements = taricAdditionalCodes,
-            labelClass = Some("bold-small")
+            labelClass = Some("bold-small"),
+            valuePrefix = Some(taricAdditionalCodesKey+"_")
         )
 
         @components.fields.field_multiple_values(
@@ -78,7 +79,8 @@
                 field = form(nationalAdditionalCodesKey + "[]"),
                 emptySelectValue = messages("declaration.itemType.nationalAdditionalCode.error.empty"),
                 items = AutoCompleteItem.fromNationalAdditionalCode(NationalAdditionalCode.all)
-            )
+            ),
+            valuePrefix = Some(nationalAdditionalCodesKey+"_")
         )
 
         @components.fields.field_text(

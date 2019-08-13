@@ -25,7 +25,6 @@ import helpers.views.declaration.{CommonMessages, ItemTypeMessages}
 import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify}
-import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
 import services.cache.{ExportItem, ExportsItemBuilder}
 
@@ -662,41 +661,6 @@ class ItemTypeControllerSpec
     }
 
     "form action is 'Remove'" should {
-
-      "display error page" when {
-
-        "provided with no index" in {
-
-          val cachedItemType =
-            ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
-          val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_")), Map.empty)
-          val item = ExportItem("id", itemType = Some(cachedItemType))
-          val model = aDeclaration(withItem(item), withChoice("SMP"))
-          withNewCaching(model)
-
-          val result = route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)(userInput.toSeq: _*)).get
-          ScalaFutures.whenReady(result.failed) { exc =>
-            exc.getMessage must equal(messages("error.removeAction.incorrectFormat"))
-            exc mustBe an[IllegalArgumentException]
-          }
-        }
-
-        "provided with incorrect index value" in {
-
-          val cachedItemType =
-            ItemType("100", fourDigitsSequence(10), Seq.empty, "Description", None, None, "100")
-          val userInput = addActionTypeToFormData(Remove(Seq(taricAdditionalCodesKey + "_incorrectIndex")), Map.empty)
-          val item = ExportItem("id", itemType = Some(cachedItemType))
-          val model = aDeclaration(withItem(item), withChoice("SMP"))
-          withNewCaching(model)
-
-          val result = route(app, postRequestFormUrlEncoded(uri(item), model.sessionId)(userInput.toSeq: _*)).get
-          ScalaFutures.whenReady(result.failed) { exc =>
-            exc.getMessage must equal(messages("error.removeAction.incorrectFormat"))
-            exc mustBe an[IllegalArgumentException]
-          }
-        }
-      }
 
       "save data without removed element to the cache" when {
 

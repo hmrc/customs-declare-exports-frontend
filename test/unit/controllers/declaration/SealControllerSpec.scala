@@ -122,20 +122,6 @@ class SealControllerSpec extends ControllerSpec with ScalaFutures with ErrorHand
       }
     }
 
-    "throw an exception" when {
-
-      "id is incorrect" in new SetUp {
-
-        val body = (Remove.toString, "")
-
-        val caught = intercept[InternalServerException] {
-          Await.result(controller.submitForm()(postRequestAsFormUrlEncoded(body)), patienceConfig.timeout)
-        }
-
-        assert(caught.getMessage == "Incorrect id")
-      }
-    }
-
     "return 303 (SEE_OTHER)" when {
 
       "user added correct item" in new SetUp {

@@ -17,7 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
+import controllers.util.MultipleItemsHelper.remove
+import controllers.util._
 import forms.Choice.AllowedChoiceValues.{StandardDec, SupplementaryDec}
 import forms.declaration.destinationCountries.DestinationCountries.{Standard, Supplementary}
 import forms.declaration.destinationCountries._
@@ -31,13 +32,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.collections.Removable.RemovableSeq
 import utils.validators.forms.supplementary.DestinationCountriesValidator
 import utils.validators.forms.{Invalid, Valid}
 import views.html.declaration.{destination_countries_standard, destination_countries_supplementary}
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class DestinationCountriesController @Inject()(
   authenticate: AuthAction,
@@ -174,24 +173,13 @@ class DestinationCountriesController @Inject()(
     userInput: Form[DestinationCountries],
     cachedData: DestinationCountries
   )(implicit request: JourneyRequest[_]): Future[Result] = {
-    val key =
-      parseRemoval(keys).getOrElse(throw new IllegalArgumentException("Data format for removal request is incorrect"))
-    val updatedCountries = removeElement(cachedData.countriesOfRouting, key)
 
+    val updatedCountries = remove(cachedData.countriesOfRouting, keys.contains(_: String))
     val updatedCache = cachedData.copy(countriesOfRouting = updatedCountries)
 
     updateCache(journeySessionId, updatedCache)
       .map(_ => Ok(destinationCountriesStandardPage(userInput.discardingErrors, updatedCache.countriesOfRouting)))
   }
-
-  private def parseRemoval(keys: Seq[String]): Try[Int] =
-    Try(keys)
-      .filter(_.size == 1)
-      .map(_.head.split("_"))
-      .filter(_.length == 2)
-      .map(_(1).toInt)
-
-  private def removeElement[A](collection: Seq[A], indexToRemove: Int): Seq[A] = collection.removeByIdx(indexToRemove)
 
   private def refreshPage(
     inputDestinationCountries: DestinationCountries

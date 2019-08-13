@@ -596,7 +596,7 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
       val firstItemIndex = "0"
 
       removeButton.text() must be("Remove")
-      removeButton.attr("value") must be(firstItemIndex)
+      removeButton.attr("value") must be(correctDocumentsProduced.toJson.toString())
     }
   }
 }
