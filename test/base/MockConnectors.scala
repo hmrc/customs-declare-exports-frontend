@@ -40,7 +40,7 @@ trait MockConnectors extends MockitoSugar {
   lazy val mockNrsConnector: NrsConnector = mock[NrsConnector]
 
   def successfulCustomsDeclareExportsResponse(): OngoingStubbing[Future[HttpResponse]] = {
-    when(mockCustomsDeclareExportsConnector.submit(any[ExportsDeclaration])(any(), any()))
+    when(mockCustomsDeclareExportsConnector.create(any[ExportsDeclaration])(any(), any()))
       .thenAnswer(withTheFirstArgument)
     when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
