@@ -19,10 +19,10 @@ package connectors
 import config.AppConfig
 import connectors.exchange.ExportsDeclarationExchange
 import javax.inject.{Inject, Singleton}
-import models.ExportsDeclaration
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Submission
 import models.requests.CancellationStatus
+import models.{ExportsDeclaration, Page, Paginated}
 import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
@@ -63,10 +63,12 @@ class CustomsDeclareExportsConnector @Inject()(
       )
       .map(_.toExportsDeclaration(declaration.sessionId))
 
-  def find(sessionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsDeclaration]] =
+  def find(sessionId: String, page: Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
+    val pagination = Page.bindable.unbind("page", page)
     httpClient
-      .GET[Seq[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}")
+      .GET[Paginated[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}?$pagination")
       .map(_.map(_.toExportsDeclaration(sessionId)))
+  }
 
   def find(
     sessionId: String,
