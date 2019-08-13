@@ -17,9 +17,11 @@
 package unit.controllers.declaration
 
 import controllers.declaration.ExporterDetailsController
+import forms.common.Address
 import forms.declaration.ExporterDetails
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers._
+import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.twirl.api.HtmlFormat
@@ -29,7 +31,7 @@ import play.api.test.Helpers._
 
 import scala.concurrent.ExecutionContext
 
-class ExporterDetailsControllerSpec extends ControllerSpec {
+class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   val exporter_details = mock[exporter_details]
 
@@ -68,10 +70,18 @@ class ExporterDetailsControllerSpec extends ControllerSpec {
         status(response) mustBe OK
       }
       "details are filled" in {
-        val declaration = aDeclaration(withExporterDetails(eori = Some(exampleUser.eori)))
+        val declaration = aDeclaration(
+          withExporterDetails(
+            eori = Some("99980"),
+            address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal"))
+          )
+        )
         withNewCaching(declaration)
         val response = controller.displayForm().apply(getRequest(declaration))
         status(response) mustBe OK
+        val details = templateArgument.value.value.details
+        details.eori mustBe defined
+        details.address mustBe defined
       }
     }
     "return 400 bad request" when {
@@ -99,7 +109,6 @@ class ExporterDetailsControllerSpec extends ControllerSpec {
           )
         )
         val response = controller.saveAddress().apply(postRequest(body, declaration))
-        println(templateArgument)
         status(response) mustBe SEE_OTHER
       }
     }

@@ -40,39 +40,6 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
     Mockito.reset(mockExportsCacheService)
   }
 
-  "Exporter Details Controller on GET" should {
-
-    "return 200 with a success" in {
-      withNewCaching(supplementaryModel)
-      val result = route(app, getRequest(uri, sessionId = supplementaryModel.sessionId)).get
-
-      status(result) must be(OK)
-      verifyTheCacheIsUnchanged()
-    }
-
-    "read item from cache and display it" in {
-      val cachedData = aDeclaration(
-        withChoice("SMP"),
-        withExporterDetails(
-          Some("99980"),
-          Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "Portugal"))
-        )
-      )
-      withNewCaching(cachedData)
-
-      val result = route(app, getRequest(uri, sessionId = cachedData.sessionId)).get
-      val page = contentAsString(result)
-
-      status(result) must be(OK)
-      page must include("99980")
-      page must include("CaptainAmerica")
-      page must include("Test Street")
-      page must include("Leeds")
-      page must include("LS18BN")
-      page must include("Portugal")
-    }
-  }
-
   "Exporter Details Controller on POST" should {
 
     "validate request - empty values" in {
