@@ -42,24 +42,41 @@ class CustomsDeclareExportsConnector @Inject()(
 
   private val logger = Logger(this.getClass)
 
-  def submit(
+  def create(
     declaration: ExportsDeclaration
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
-    httpClient.POST[ExportsDeclarationExchange, ExportsDeclarationExchange](
-      s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}",
-      ExportsDeclarationExchange(declaration)
-    ).map(_.toExportsDeclaration(declaration.sessionId))
-  }
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] =
+    httpClient
+      .POST[ExportsDeclarationExchange, ExportsDeclarationExchange](
+        s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}",
+        ExportsDeclarationExchange(declaration)
+      )
+      .map(_.toExportsDeclaration(declaration.sessionId))
 
-  def find(sessionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsDeclaration]] = {
-    httpClient.GET[Seq[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}")
-      .map(_.map(_.toExportsDeclaration(sessionId)))
-  }
+  def update(
+    declaration: ExportsDeclaration
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] =
+    httpClient
+      .PUT[ExportsDeclarationExchange, ExportsDeclarationExchange](
+        s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}/${declaration.id
+          .getOrElse(throw new IllegalArgumentException("Cannot update a declaration which hasnt been created first"))}",
+        ExportsDeclarationExchange(declaration)
+      )
+      .map(_.toExportsDeclaration(declaration.sessionId))
 
-  def find(sessionId: String, id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
-    httpClient.GET[Option[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}/$id")
+  def find(sessionId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ExportsDeclaration]] =
+    httpClient
+      .GET[Seq[ExportsDeclarationExchange]](s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}")
       .map(_.map(_.toExportsDeclaration(sessionId)))
-  }
+
+  def find(
+    sessionId: String,
+    id: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] =
+    httpClient
+      .GET[Option[ExportsDeclarationExchange]](
+        s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}/$id"
+      )
+      .map(_.map(_.toExportsDeclaration(sessionId)))
 
   def submitExportDeclaration(ducr: Option[String], lrn: Option[String], payload: String)(
     implicit hc: HeaderCarrier,

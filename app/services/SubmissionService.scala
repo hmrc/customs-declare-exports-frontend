@@ -55,7 +55,7 @@ class SubmissionService @Inject()(
     val data = format(exportsDeclaration)
     auditService.auditAllPagesUserInput(getCachedData(exportsDeclaration))
     (for {
-      _ <- exportsConnector.submit(exportsDeclaration).recover {
+      _ <- exportsConnector.create(exportsDeclaration).recover {
         case error =>
           Logger.error("V2 Submission failed", error)
           Future.successful((): Unit)

@@ -34,8 +34,8 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
   private val sessionId = "session-id"
   private val newDeclaration = aDeclaration(withoutId(), withSessionId(sessionId))
   private val existingDeclaration = aDeclaration(withId(id), withSessionId(sessionId))
-  private val declarationRequest = ExportsDeclarationExchange(newDeclaration)
-  private val declarationResponse = ExportsDeclarationExchange(existingDeclaration)
+  private val newDeclarationExchange = ExportsDeclarationExchange(newDeclaration)
+  private val existingDeclarationExchange = ExportsDeclarationExchange(existingDeclaration)
   private val mapper = mock[WcoMetadataMapper]
   private val connector = new CustomsDeclareExportsConnector(config, httpClient, mapper)
 
@@ -44,24 +44,51 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
     given(config.submitDeclarationV2).willReturn("/v2/declaration")
   }
 
-  "Submit" should {
+  "Create" should {
     "return payload" in {
       stubFor(
         post("/v2/declaration")
           .willReturn(
             aResponse()
               .withStatus(Status.ACCEPTED)
-              .withBody(json(declarationResponse))
+              .withBody(json(existingDeclarationExchange))
           )
       )
 
-      val response = await(connector.submit(newDeclaration))
+      val response = await(connector.create(newDeclaration))
 
       response shouldBe existingDeclaration
       verify(
         postRequestedFor(urlEqualTo("/v2/declaration"))
-          .withRequestBody(containing(json(declarationRequest)))
+          .withRequestBody(containing(json(newDeclarationExchange)))
       )
+    }
+  }
+
+  "Update" should {
+    "return payload" in {
+      stubFor(
+        put(s"/v2/declaration/$id")
+          .willReturn(
+            aResponse()
+              .withStatus(Status.ACCEPTED)
+              .withBody(json(existingDeclarationExchange))
+          )
+      )
+
+      val response = await(connector.update(existingDeclaration))
+
+      response shouldBe existingDeclaration
+      verify(
+        putRequestedFor(urlEqualTo(s"/v2/declaration/id"))
+          .withRequestBody(containing(json(existingDeclarationExchange)))
+      )
+    }
+
+    "throw IllegalArgument for missing ID" in {
+      intercept[IllegalArgumentException] {
+        await(connector.update(newDeclaration))
+      }
     }
   }
 
@@ -72,7 +99,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(Seq(declarationResponse)))
+              .withBody(json(Seq(existingDeclarationExchange)))
           )
       )
 
@@ -90,7 +117,7 @@ class CustomsDeclareExportsConnectorIntegrationSpec extends ConnectorSpec with B
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(declarationResponse))
+              .withBody(json(existingDeclarationExchange))
           )
       )
 
