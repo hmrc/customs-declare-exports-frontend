@@ -51,7 +51,7 @@ case class ExportsDeclaration(
   def updatedItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
     itemBy(itemId).fold(this) { item =>
       val updated = update(item)
-      copy(items = items.filter(_.id == itemId) + updated)
+      copy(items = items.filterNot(_.id.equalsIgnoreCase(itemId)) + updated)
     }
 }
 
