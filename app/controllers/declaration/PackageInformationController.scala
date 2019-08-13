@@ -77,11 +77,9 @@ class PackageInformationController @Inject()(
       .map(_ => Ok(packageInformationPage(itemId, boundForm.discardingErrors, updatedCache)))
   }
 
-  private def saveAndContinue(
-    itemId: String,
-    boundForm: Form[PackageInformation],
-    cachedData: Seq[PackageInformation]
-  )(implicit request: JourneyRequest[_]): Future[Result] =
+  private def saveAndContinue(itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
+    implicit request: JourneyRequest[_]
+  ): Future[Result] =
     MultipleItemsHelper
       .saveAndContinue(boundForm, cachedData, true, PackageInformation.limit)
       .fold(

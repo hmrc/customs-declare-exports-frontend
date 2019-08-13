@@ -22,11 +22,7 @@ import play.api.libs.json.Json
 import services.PackageTypes
 import utils.validators.forms.FieldValidator._
 
-case class PackageInformation(
-  typesOfPackages: String,
-  numberOfPackages: Int,
-  shippingMarks: String
-)
+case class PackageInformation(typesOfPackages: String, numberOfPackages: Int, shippingMarks: String)
 
 object PackageInformation {
 
@@ -47,12 +43,10 @@ object PackageInformation {
           .verifying(
             "supplementary.packageInformation.typesOfPackages.error",
             isEmpty or isContainedIn(PackageTypes.all.map(_.code))
-          )
-      ,
+          ),
       "numberOfPackages" ->
         number()
-          .verifying("supplementary.packageInformation.numberOfPackages.error", q => q > 0 && q <= 999999)
-        ,
+          .verifying("supplementary.packageInformation.numberOfPackages.error", q => q > 0 && q <= 999999),
       "shippingMarks" ->
         text()
           .verifying("supplementary.packageInformation.shippingMarks.empty", nonEmpty)
@@ -61,8 +55,6 @@ object PackageInformation {
             isEmpty or isAlphanumericWithAllowedSpecialCharacters
           )
           .verifying("supplementary.packageInformation.shippingMarks.lengthError", isEmpty or noLongerThan(42))
-
-
     )(PackageInformation.apply)(PackageInformation.unapply)
 
   val DUPLICATE_MSG_KEY = "supplementary.packageInformation.global.duplicate"

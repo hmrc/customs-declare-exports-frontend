@@ -47,6 +47,12 @@ case class ExportsDeclaration(
   seals: Seq[Seal] = Seq.empty
 ) {
   def itemBy(itemId: String): Option[ExportItem] = items.find(_.id.equalsIgnoreCase(itemId))
+
+  def updatedItem(itemId: String, update: ExportItem => ExportItem): ExportsDeclaration =
+    itemBy(itemId).fold(this) { item =>
+      val updated = update(item)
+      copy(items = items.filter(_.id == itemId) + updated)
+    }
 }
 
 object ExportsDeclaration {

@@ -26,7 +26,8 @@ import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
 import scala.concurrent.ExecutionContext
 
-class ConnectorSpec extends WordSpec with GuiceOneAppPerSuite with WiremockTestServer with MockitoSugar with BeforeAndAfterEach {
+class ConnectorSpec
+    extends WordSpec with GuiceOneAppPerSuite with WiremockTestServer with MockitoSugar with BeforeAndAfterEach {
 
   protected implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   protected implicit val hc: HeaderCarrier = HeaderCarrier()

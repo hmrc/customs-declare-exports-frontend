@@ -178,10 +178,7 @@ class PackageInformationViewSpec extends ViewSpec with PackageInformationMessage
 
     "display two rows with data in table" in {
 
-      val packages = Seq(
-        PackageInformation("PA", 100, "Shipping Mark"),
-        PackageInformation("PB", 101, "Shipping Mark")
-      )
+      val packages = Seq(PackageInformation("PA", 100, "Shipping Mark"), PackageInformation("PB", 101, "Shipping Mark"))
       val view = packageInformationPage("12345", form, packages)(fakeRequest, messages)
 
       // check table header

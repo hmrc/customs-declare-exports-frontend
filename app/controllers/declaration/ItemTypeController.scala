@@ -213,23 +213,26 @@ class ItemTypeController @Inject()(
 
   private def refreshPage(itemId: String, itemTypeInput: ItemType, model: ExportsDeclaration)(
     implicit request: JourneyRequest[AnyContent]
-  ): Result = model.itemBy(itemId).map { item =>
-      item.itemType match {
-        case Some(cachedData) =>
-          Ok(
-            itemTypePage(
-              item.id,
-              ItemType.form().fill(itemTypeInput),
-              item.hasFiscalReferences,
-              cachedData.taricAdditionalCodes,
-              cachedData.nationalAdditionalCodes
+  ): Result =
+    model
+      .itemBy(itemId)
+      .map { item =>
+        item.itemType match {
+          case Some(cachedData) =>
+            Ok(
+              itemTypePage(
+                item.id,
+                ItemType.form().fill(itemTypeInput),
+                item.hasFiscalReferences,
+                cachedData.taricAdditionalCodes,
+                cachedData.nationalAdditionalCodes
+              )
             )
-          )
-        case _ =>
-          Ok(itemTypePage(itemId, ItemType.form(), item.hasFiscalReferences))
+          case _ =>
+            Ok(itemTypePage(itemId, ItemType.form(), item.hasFiscalReferences))
+        }
       }
-    }.getOrElse(Redirect(routes.ItemsSummaryController.displayPage()))
-
+      .getOrElse(Redirect(routes.ItemsSummaryController.displayPage()))
 
   private case class Label(name: String, index: Int)
   private object Label {

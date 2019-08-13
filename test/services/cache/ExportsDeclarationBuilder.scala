@@ -29,7 +29,12 @@ import forms.declaration.officeOfExit.OfficeOfExit
 import forms.{Choice, Ducr}
 import models.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration
-import models.declaration.{DeclarationAdditionalActorsData, DeclarationHoldersData, Locations, TransportInformationContainerData}
+import models.declaration.{
+  DeclarationAdditionalActorsData,
+  DeclarationHoldersData,
+  Locations,
+  TransportInformationContainerData
+}
 
 //noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
