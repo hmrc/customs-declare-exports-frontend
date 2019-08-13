@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
+import controllers.util._
 import forms.declaration.ItemType
 import forms.declaration.ItemType._
 import handlers.ErrorHandler
@@ -207,7 +207,7 @@ class ItemTypeController @Inject()(
   }
 
   private def removeElement(collection: Seq[String], valueToRemove: String): Seq[String] =
-    collection.filterNot(_ == valueToRemove)
+    MultipleItemsHelper.remove(collection, (_: String) == valueToRemove)
 
   private def refreshPage(itemId: String, itemTypeInput: ItemType, model: ExportsDeclaration)(
     implicit request: JourneyRequest[AnyContent]

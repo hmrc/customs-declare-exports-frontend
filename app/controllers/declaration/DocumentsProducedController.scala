@@ -17,7 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
+import controllers.util.MultipleItemsHelper.remove
+import controllers.util._
 import forms.declaration.additionaldocuments.DocumentsProduced
 import forms.declaration.additionaldocuments.DocumentsProduced.form
 import handlers.ErrorHandler
@@ -149,7 +150,7 @@ class DocumentsProducedController @Inject()(
     cachedData: DocumentsProducedData
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
     val itemToRemove = DocumentsProduced.fromJsonString(values.head)
-    val updatedCache = cachedData.copy(documents = cachedData.documents.filterNot(itemToRemove.contains(_)))
+    val updatedCache = cachedData.copy(documents = remove(cachedData.documents, itemToRemove.contains(_: DocumentsProduced)))
     updateCache(itemId, journeySessionId, updatedCache).map(
       _ => Ok(documentProducedPage(itemId, boundForm.discardingErrors, updatedCache.documents))
     )

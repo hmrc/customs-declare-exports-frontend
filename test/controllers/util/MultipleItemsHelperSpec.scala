@@ -54,18 +54,17 @@ class MultipleItemsHelperSpec extends WordSpec with MustMatchers {
   "MultipleItemsHelper on remove method" should {
 
     "return cache when item not defined" in {
-      val idToRemove = Some("99")
       val cachedData = Seq(TestForm("ABC"), TestForm("DEF"))
-
-      MultipleItemsHelper.remove(idToRemove, cachedData) must be(cachedData)
+      val filter: TestForm => Boolean = _.value == "99"
+      MultipleItemsHelper.remove(cachedData, filter) must be(cachedData)
     }
 
     "return updated sequence without selected item" in {
-      val idToRemove = Some("1")
+      val filter: TestForm => Boolean = _.value == "DEF"
       val cachedData = Seq(TestForm("ABC"), TestForm("DEF"))
       val expectedOutput = Seq(TestForm("ABC"))
 
-      MultipleItemsHelper.remove(idToRemove, cachedData) must be(expectedOutput)
+      MultipleItemsHelper.remove(cachedData, filter) must be(expectedOutput)
     }
   }
 

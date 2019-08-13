@@ -17,7 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.util.{Add, FormAction, Remove, SaveAndContinue}
+import controllers.util.MultipleItemsHelper.remove
+import controllers.util._
 import forms.declaration.DeclarationHolder
 import handlers.ErrorHandler
 import javax.inject.Inject
@@ -177,7 +178,7 @@ class DeclarationHolderController @Inject()(
     userInput: Form[DeclarationHolder],
     cachedData: DeclarationHoldersData
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
-    val updatedCache = cachedData.copy(holders = cachedData.holders.filterNot(_ == holderToRemove))
+    val updatedCache = cachedData.copy(holders = remove(cachedData.holders, (_: DeclarationHolder) == holderToRemove))
     updateCache(journeySessionId, updatedCache)
       .map(_ => Ok(declarationHolderPage(userInput.discardingErrors, updatedCache.holders)))
   }

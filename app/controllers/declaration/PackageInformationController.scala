@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.util.MultipleItemsHelper.remove
 import controllers.util._
 import forms.declaration.PackageInformation
 import forms.declaration.PackageInformation._
@@ -59,7 +60,7 @@ class PackageInformationController @Inject()(
 
           actionTypeOpt match {
             case Some(Add)             => addItem(itemId, boundForm, packagings)
-            case Some(Remove(values))     => removeItem(itemId, values, boundForm, packagings)
+            case Some(Remove(values))  => removeItem(itemId, values, boundForm, packagings)
             case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, packagings)
             case _                     => errorHandler.displayErrorPage()
           }
@@ -73,7 +74,7 @@ class PackageInformationController @Inject()(
     items: Seq[PackageInformation]
   )(implicit request: JourneyRequest[_]): Future[Result] = {
     val itemToRemove = PackageInformation.fromJsonString(values.head)
-    val updatedCache = items.filterNot(itemToRemove.contains(_))
+    val updatedCache = remove(items, itemToRemove.contains(_: PackageInformation))
     updateExportsCache(itemId, journeySessionId, updatedCache)
       .map(_ => Ok(packageInformationPage(itemId, boundForm.discardingErrors, updatedCache)))
   }

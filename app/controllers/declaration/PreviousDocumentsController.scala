@@ -83,7 +83,7 @@ class PreviousDocumentsController @Inject()(
 
         case Some(Remove(ids)) =>
           val itemToRemove = Document.fromJsonString(ids.head)
-          val updatedDocuments = cache.documents.filterNot(itemToRemove.contains(_))
+          val updatedDocuments = MultipleItemsHelper.remove(cache.documents, itemToRemove.contains(_: Document))
           updateCache(PreviousDocumentsData(updatedDocuments))
             .map(_ => Ok(previousDocumentsPage(boundForm.discardingErrors, updatedDocuments)))
 
