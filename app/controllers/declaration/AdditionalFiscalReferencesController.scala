@@ -60,21 +60,20 @@ class AdditionalFiscalReferencesController @Inject()(
     implicit request =>
       val actionTypeOpt = FormAction.bindFromRequest()
 
-      val cachedData = exportsCacheService
-        .getItemByIdAndSession(itemId, journeySessionId)
-        .map(_.flatMap(_.additionalFiscalReferencesData))
-        .map(_.getOrElse(AdditionalFiscalReferencesData(Seq.empty)))
+      val cache = request.cacheModel
+        .itemBy(itemId)
+        .flatMap(_.additionalFiscalReferencesData)
+        .getOrElse(AdditionalFiscalReferencesData(Seq.empty))
 
       val boundForm = form.bindFromRequest()
 
-      cachedData.flatMap { cache =>
-        actionTypeOpt match {
-          case Some(Add)             => addReference(itemId, boundForm, cache)
-          case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, cache)
-          case Some(Remove(values))  => removeReference(itemId, values, boundForm, cache)
-          case _                     => errorHandler.displayErrorPage()
-        }
+      actionTypeOpt match {
+        case Some(Add)             => addReference(itemId, boundForm, cache)
+        case Some(SaveAndContinue) => saveAndContinue(itemId, boundForm, cache)
+        case Some(Remove(values))  => removeReference(itemId, values, boundForm, cache)
+        case _                     => errorHandler.displayErrorPage()
       }
+
   }
 
   private def addReference(
@@ -87,7 +86,7 @@ class AdditionalFiscalReferencesController @Inject()(
       .fold(
         formWithErrors => Future.successful(badRequest(itemId, formWithErrors, cachedData.references)),
         updatedCache =>
-          updateExportsCache(itemId, journeySessionId, AdditionalFiscalReferencesData(updatedCache))
+          updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache))
             .map(_ => Redirect(routes.AdditionalFiscalReferencesController.displayPage(itemId)))
       )
 
@@ -102,7 +101,7 @@ class AdditionalFiscalReferencesController @Inject()(
         formWithErrors => Future.successful(badRequest(itemId, formWithErrors, cachedData.references)),
         updatedCache =>
           if (updatedCache != cachedData.references)
-            updateExportsCache(itemId, journeySessionId, AdditionalFiscalReferencesData(updatedCache))
+            updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache))
               .map(_ => Redirect(routes.ItemTypeController.displayPage(itemId)))
           else Future.successful(Redirect(routes.ItemTypeController.displayPage(itemId)))
       )
@@ -113,9 +112,12 @@ class AdditionalFiscalReferencesController @Inject()(
     form: Form[AdditionalFiscalReference],
     cachedData: AdditionalFiscalReferencesData
   )(implicit request: JourneyRequest[_]): Future[Result] = {
-    val updatedCache = remove(cachedData.references, (ref: AdditionalFiscalReference) => s"${ref.country}${ref.reference}" == values.head)
-    updateExportsCache(itemId, journeySessionId, AdditionalFiscalReferencesData(updatedCache))
-      .map(_ => Ok(additionalFiscalReferencesPage(itemId, form.discardingErrors, updatedCache)))
+    val filter: AdditionalFiscalReference => Boolean = ref => s"${ref.country}${ref.reference}" == itemId
+    val updatedCache = MultipleItemsHelper.remove(cachedData.references, filter)
+    updateExportsCache(itemId, AdditionalFiscalReferencesData(updatedCache)).map {
+      case Some(model) => Ok(additionalFiscalReferencesPage(itemId, form.discardingErrors))
+      case None        => Redirect(routes.ItemsSummaryController.displayPage())
+    }
   }
 
   private def badRequest(
@@ -125,20 +127,13 @@ class AdditionalFiscalReferencesController @Inject()(
   )(implicit request: JourneyRequest[_]): Result =
     BadRequest(additionalFiscalReferencesPage(itemId, formWithErrors, references))
 
-  private def updateExportsCache(
-    itemId: String,
-    sessionId: String,
-    updatedAdditionalFiscalReferencesData: AdditionalFiscalReferencesData
+  private def updateExportsCache(itemId: String, updatedAdditionalFiscalReferencesData: AdditionalFiscalReferencesData)(
+    implicit request: JourneyRequest[_]
   ): Future[Option[ExportsDeclaration]] =
-    getAndUpdateExportsDeclaration(
-      sessionId,
-      model => {
-        val itemList = model.items
-          .find(item => item.id.equals(itemId))
-          .map(_.copy(additionalFiscalReferencesData = Some(updatedAdditionalFiscalReferencesData)))
-          .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-
-        exportsCacheService.update(sessionId, model.copy(items = itemList))
-      }
-    )
+    updateExportsDeclarationSyncDirect { model =>
+      model.updatedItem(
+        itemId,
+        item => item.copy(additionalFiscalReferencesData = Some(updatedAdditionalFiscalReferencesData))
+      )
+    }
 }

@@ -89,7 +89,7 @@ class SubmissionServiceSpec extends CustomExportsBaseSpec with OptionValues with
 
       verify(mockExportsCacheService, times(1)).remove(any[String])
       verify(mockCustomsDeclareExportsConnector, times(1)).submitExportDeclaration(any(), any(), any())(any(), any())
-      verify(mockCustomsDeclareExportsConnector, times(1)).submit(refEq(model))(any(), any())
+      verify(mockCustomsDeclareExportsConnector, times(1)).create(refEq(model))(any(), any())
 
       verify(mockAuditService, times(1)).audit(any(), any())(any())
       verify(mockAuditService, times(1)).auditAllPagesUserInput(any())(any())
