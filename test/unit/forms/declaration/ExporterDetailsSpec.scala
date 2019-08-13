@@ -31,9 +31,28 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
     }
   }
 
-  "Exporter Details" should {
-    "validate is eori and address is empty" in {
+  "Exporter Details form" should {
+    "validate is eori and address is non empty" in {
       ExporterDetails.form().bind(emptyExporterDetailsJSON).error("details") must haveMessage(eoriOrAddressEmpty)
+    }
+    val outcomeFromIncorrectForm = ExporterDetails.form().bind(incorrectExporterDetailsJSON)
+    "validate eori and address" in {
+      outcomeFromIncorrectForm.error("details.eori") must haveMessage(eoriError)
+    }
+    "validate address fullname" in {
+      outcomeFromIncorrectForm.error("details.address.fullName") must haveMessage(fullNameError)
+    }
+    "validate address addresline" in {
+      outcomeFromIncorrectForm.error("details.address.addressLine") must haveMessage(addressLineError)
+    }
+    "validate town or city" in {
+      outcomeFromIncorrectForm.error("details.address.townOrCity") must haveMessage(townOrCityError)
+    }
+    "validate post code" in {
+      outcomeFromIncorrectForm.error("details.address.postCode") must haveMessage(postCodeError)
+    }
+    "validate country" in {
+      outcomeFromIncorrectForm.error("details.address.country") must haveMessage(countryError)
     }
   }
 }

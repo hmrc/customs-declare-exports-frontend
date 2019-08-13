@@ -41,21 +41,6 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
   }
 
   "Exporter Details Controller on POST" should {
-
-    "validate request - incorrect values" in {
-      withNewCaching(supplementaryModel)
-      val result =
-        route(app, postRequest(uri, incorrectExporterDetailsJSON, sessionId = supplementaryModel.sessionId)).get
-      val stringResult = contentAsString(result)
-
-      stringResult must include(messages(eoriError))
-      stringResult must include(messages(fullNameError))
-      stringResult must include(messages(addressLineError))
-      stringResult must include(messages(townOrCityError))
-      stringResult must include(messages(postCodeError))
-      stringResult must include(messages(countryError))
-    }
-
     "on the supplementary journey " should {
 
       "validate request and redirect to consignee-details page with only EORI provided" in {
