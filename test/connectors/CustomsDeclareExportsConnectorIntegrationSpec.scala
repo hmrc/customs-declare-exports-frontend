@@ -18,6 +18,7 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.exchange.ExportsDeclarationExchange
+import models.{Page, Paginated}
 import org.mockito.BDDMockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
@@ -94,20 +95,22 @@ class CustomsDeclareExportsConnectorIntegrationSpec
   }
 
   "Find" should {
+    val pagination = Page(1, 10)
+
     "return Ok" in {
       stubFor(
-        get("/v2/declaration")
+        get("/v2/declaration?page-index=1&page-size=10")
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(Seq(existingDeclarationExchange)))
+              .withBody(json(Paginated(Seq(existingDeclarationExchange), pagination, 1)))
           )
       )
 
-      val response = await(connector.find(sessionId))
+      val response = await(connector.find(sessionId, pagination))
 
-      response.toList shouldBe List(existingDeclaration)
-      verify(getRequestedFor(urlEqualTo("/v2/declaration")))
+      response shouldBe Paginated(Seq(existingDeclaration), pagination, 1)
+      verify(getRequestedFor(urlEqualTo("/v2/declaration?page-index=1&page-size=10")))
     }
   }
 
