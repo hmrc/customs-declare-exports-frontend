@@ -129,10 +129,9 @@ class AdditionalFiscalReferencesController @Inject()(
     implicit request: JourneyRequest[_]
   ): Future[Option[ExportsDeclaration]] =
     updateExportsDeclarationSyncDirect { model =>
-      val itemList = model
-        .itemBy(itemId)
-        .map(_.copy(additionalFiscalReferencesData = Some(updatedAdditionalFiscalReferencesData)))
-        .fold(model.items)(model.items.filter(item => !item.id.equals(itemId)) + _)
-      model.copy(items = itemList)
+      model.updatedItem(
+        itemId,
+        item => item.copy(additionalFiscalReferencesData = Some(updatedAdditionalFiscalReferencesData))
+      )
     }
 }

@@ -146,12 +146,7 @@ object CustomsDeclareExportsConnectorSpec {
   private val instant = Instant.EPOCH
 
   val exportCacheModel =
-    models.ExportsDeclaration(
-      sessionId = "",
-      createdDateTime = instant,
-      updatedDateTime = instant,
-      choice = "SMP"
-    )
+    models.ExportsDeclaration(sessionId = "", createdDateTime = instant, updatedDateTime = instant, choice = "SMP")
 
   val cancellationRequest =
     CancelDeclaration(functionalReferenceId = "", declarationId = "", statementDescription = "", changeReason = "")
