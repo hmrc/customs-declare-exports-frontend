@@ -33,6 +33,8 @@ import scala.concurrent.ExecutionContext
 
 class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
+  import forms.declaration.ExporterDetailsSpec._
+
   val exporter_details = mock[exporter_details]
 
   val controller = new ExporterDetailsController(
@@ -45,10 +47,9 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
   def templateArgument: Form[ExporterDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ExporterDetails]])
-    Mockito.verify(exporter_details).apply(captor.capture())(any(), any() )
+    Mockito.verify(exporter_details).apply(captor.capture())(any(), any())
     captor.getValue
   }
-
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -96,18 +97,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
       "correct form is submitted" in {
         val declaration = aDeclaration()
         withNewCaching(declaration)
-        val body = Json.obj(
-          "details" -> Json.obj(
-            "eori" -> "PL213472539481923",
-            "address" -> Json.obj(
-              "fullname" -> "Example Subject",
-              "addressLine" -> "Test Street",
-              "townOrCity" -> "Test",
-              "postCode" -> "AB12 34CD",
-              "country" -> "GB"
-            )
-          )
-        )
+        val body = Json.obj("details" -> Json.obj("eori" -> "PL213472539481923"))
         val response = controller.saveAddress().apply(postRequest(body, declaration))
         status(response) mustBe SEE_OTHER
       }

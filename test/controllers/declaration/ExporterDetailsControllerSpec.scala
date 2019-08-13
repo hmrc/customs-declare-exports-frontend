@@ -42,13 +42,6 @@ class ExporterDetailsControllerSpec extends CustomExportsBaseSpec with CommonMes
 
   "Exporter Details Controller on POST" should {
 
-    "validate request - empty values" in {
-      withNewCaching(supplementaryModel)
-      val result = route(app, postRequest(uri, emptyExporterDetailsJSON, sessionId = supplementaryModel.sessionId)).get
-      val stringResult = contentAsString(result)
-      stringResult must include(messages(eoriOrAddressEmpty))
-    }
-
     "validate request - incorrect values" in {
       withNewCaching(supplementaryModel)
       val result =
