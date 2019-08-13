@@ -115,7 +115,7 @@ class AdditionalFiscalReferencesController @Inject()(
     val updatedCache = cachedData.removeReferences(values)
     updateExportsCache(itemId, updatedCache).map {
       case Some(_) => Ok(additionalFiscalReferencesPage(itemId, form.discardingErrors, updatedCache.references))
-      case None        => Redirect(routes.ItemsSummaryController.displayPage())
+      case None    => Redirect(routes.ItemsSummaryController.displayPage())
     }
   }
 

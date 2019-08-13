@@ -150,7 +150,8 @@ class DocumentsProducedController @Inject()(
     cachedData: DocumentsProducedData
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
     val itemToRemove = DocumentsProduced.fromJsonString(values.head)
-    val updatedCache = cachedData.copy(documents = remove(cachedData.documents, itemToRemove.contains(_: DocumentsProduced)))
+    val updatedCache =
+      cachedData.copy(documents = remove(cachedData.documents, itemToRemove.contains(_: DocumentsProduced)))
     updateCache(itemId, journeySessionId, updatedCache).map(
       _ => Ok(documentProducedPage(itemId, boundForm.discardingErrors, updatedCache.documents))
     )

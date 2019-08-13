@@ -56,9 +56,8 @@ object MultipleItemsHelper {
 
   private def addElement[A](document: A, cachedData: Seq[A]): Seq[A] = cachedData :+ document
 
-  def remove[A](cachedData: Seq[A], filterNot: A => Boolean): Seq[A] = {
+  def remove[A](cachedData: Seq[A], filterNot: A => Boolean): Seq[A] =
     cachedData.filterNot(filterNot)
-  }
 
   /**
     * Method to handle continue with items.

@@ -26,9 +26,8 @@ trait LightFormMatchers {
 
   val errorless: BePropertyMatcher[Form[_]] = new BePropertyMatcher[Form[_]] {
 
-    override def apply(form: Form[_]): BePropertyMatchResult = {
+    override def apply(form: Form[_]): BePropertyMatchResult =
       BePropertyMatchResult(!form.hasErrors, "errorless")
-    }
   }
 }
 
@@ -43,7 +42,6 @@ object LightFormMatchers {
       )
   }
 }
-
 
 //TODO Remove CustomsExportsBaseSpec from this trait or stop using this
 trait FormMatchers extends CustomExportsBaseSpec {

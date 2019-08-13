@@ -160,7 +160,8 @@ class DeclarationAdditionalActorsController @Inject()(
     formData: Form[DeclarationAdditionalActors],
     cachedData: DeclarationAdditionalActorsData
   )(implicit request: JourneyRequest[_], hc: HeaderCarrier): Future[Result] = {
-    val updatedCache = cachedData.copy(actors = remove(cachedData.actors, actorToRemove.contains(_: DeclarationAdditionalActors)))
+    val updatedCache =
+      cachedData.copy(actors = remove(cachedData.actors, actorToRemove.contains(_: DeclarationAdditionalActors)))
     updateCache(journeySessionId, updatedCache)
       .map(_ => Ok(declarationAdditionalActorsPage(formData.discardingErrors, updatedCache.actors)))
   }
