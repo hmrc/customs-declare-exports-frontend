@@ -30,7 +30,7 @@
 @(form: Form[TransportDetails])(implicit request: JourneyRequest[_], messages: Messages)
 
 @main_template(
-    title = messages("supplementary.transportInfo.title")
+    title = messages("supplementary.transportInfo.active.title")
 ) {
 
     @components.back_link("/customs-declare-exports/declaration/border-transport")
@@ -40,7 +40,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.page_title(Some("supplementary.transportInfo.title"), None)
+        @components.page_title(Some("supplementary.transportInfo.active.title"), None)
 
         @components.fields.field_autocomplete(
             form("meansOfTransportCrossingTheBorderNationality"),
@@ -75,7 +75,8 @@
         )
         @components.fields.field_text(
             field = form("meansOfTransportCrossingTheBorderIDNumber"),
-            label = messages("supplementary.transportInfo.meansOfTransport.reference.header")
+            label = messages("supplementary.transportInfo.meansOfTransport.reference.header"),
+            labelClass = Some("bold-small")
         )
         @components.fields.field_radio(
             field = form("container"),

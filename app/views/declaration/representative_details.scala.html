@@ -40,9 +40,9 @@
 
         @components.page_title(Some("supplementary.representative.header"), None)
 
-        @components.form_fields_wrapper(field = form("details")) {
+        <p>@messages("supplementary.representative.hint")</p>
 
-            <p>@messages("supplementary.eori.info")</p>
+        @components.form_fields_wrapper(field = form("details")) {
 
             @components.fields.field_text(
                 field = form("details.eori"),
@@ -51,7 +51,7 @@
                 labelClass = Some("heading-24")
             )
 
-            <p>Or</p>
+            <p class="margin-or">Or</p>
 
             @components.address(form, "details.address", Some(messages("supplementary.representative.address.info")))
         }

@@ -37,16 +37,18 @@
 
         @components.page_title(Some("supplementary.consignee.title"))
 
+        <p>@messages("supplementary.carrier.title.hint")</p>
+
         @components.form_fields_wrapper(field = form("details")) {
 
             @components.fields.field_text(
                 field = form("details.eori"),
                 label = messages("supplementary.consignee.eori.info"),
                 hint = Some(messages("supplementary.consignee.eori.hint")),
-                labelClass = Some("bold-small")
+                labelClass = Some("heading-24")
             )
 
-            <p>Or</p>
+            <p class="margin-or">Or</p>
 
             @components.address(form, "details.address", Some(messages("supplementary.consignee.address.info")))
         }

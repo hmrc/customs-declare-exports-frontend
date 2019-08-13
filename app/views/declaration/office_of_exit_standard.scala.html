@@ -59,6 +59,7 @@
         @components.fields.field_radio(
             field = form("circumstancesCode"),
             legend = messages("standard.officeOfExit.circumstancesCode"),
+            hint = Some(messages("standard.officeOfExit.circumstancesCode.hint")),
             inputs = Seq(
                 RadioOption("Yes", AllowedCircumstancesCodeAnswers.yes, messages("site.yes")),
                 RadioOption("No", AllowedCircumstancesCodeAnswers.no, messages("site.no"))

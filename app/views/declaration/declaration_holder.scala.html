@@ -37,6 +37,8 @@
 
     @components.page_title(Some("supplementary.declarationHolder.title"))
 
+    <p>@messages("supplementary.declarationHolder.title.hint")</p>
+
     @helper.form(DeclarationHolderController.submitHoldersOfAuthorisation(), 'autoComplete -> "off") {
         @helper.CSRF.formField
 
