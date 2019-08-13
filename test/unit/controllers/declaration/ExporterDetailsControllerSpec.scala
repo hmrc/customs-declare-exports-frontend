@@ -20,7 +20,7 @@ import controllers.declaration.ExporterDetailsController
 import forms.common.Address
 import forms.declaration.ExporterDetails
 import org.mockito.{ArgumentCaptor, Mockito}
-import org.mockito.ArgumentMatchers._
+import org.mockito.ArgumentMatchers.any
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -100,6 +100,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
         val body = Json.obj("details" -> Json.obj("eori" -> "PL213472539481923"))
         val response = controller.saveAddress().apply(postRequest(body, declaration))
         status(response) mustBe SEE_OTHER
+        redirectLocation(response).value must endWith("consignee-details")
       }
     }
   }

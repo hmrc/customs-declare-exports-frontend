@@ -54,5 +54,17 @@ class ExporterDetailsSpec extends WordSpec with MustMatchers with LightFormMatch
     "validate country" in {
       outcomeFromIncorrectForm.error("details.address.country") must haveMessage(countryError)
     }
+
+    "bind correctly to EORI only request" in {
+      ExporterDetails.form().bind(correctExporterDetailsEORIOnlyJSON) mustBe errorless
+    }
+
+    "bind correctly to address only data" in {
+      ExporterDetails.form().bind(correctExporterDetailsAddressOnlyJSON) mustBe errorless
+    }
+
+    "bind correctly to EORI and address data at once" in {
+      ExporterDetails.form().bind(correctExporterDetailsJSON) mustBe errorless
+    }
   }
 }
