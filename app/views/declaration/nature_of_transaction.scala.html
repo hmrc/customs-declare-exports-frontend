@@ -23,9 +23,6 @@
 
 @(form: Form[NatureOfTransaction])(implicit request: Request[_], messages: Messages)
 
-@displayOption(messageKey: String) = {
-  @Html(messages(messageKey, """<span class="font-bold">""", "</span>"))
-}
 
 
 @main_template(
