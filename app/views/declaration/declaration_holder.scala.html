@@ -49,6 +49,7 @@
         @components.fields.field_autocomplete(
             field = form("authorisationTypeCode"),
             label = messages("supplementary.declarationHolder.authorisationCode"),
+            labelClass = Some("form-label-bold"),
             hintText = Some(messages("supplementary.declarationHolder.authorisationCode.hint")),
             emptySelectValue = messages("supplementary.declarationHolder.authorisationCode.empty"),
             items = AutoCompleteItem.fromHolderOfAuthorisationCode(HolderOfAuthorisationCode.all)

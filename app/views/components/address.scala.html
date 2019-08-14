@@ -43,7 +43,7 @@
         label = messages("supplementary.address.postCode")
     )
 
-    @components.fields.field_autocomplete_with_labelclass(
+    @components.fields.field_autocomplete(
         form(s"$addressPrefix.country"),
         "supplementary.address.country",
         None,

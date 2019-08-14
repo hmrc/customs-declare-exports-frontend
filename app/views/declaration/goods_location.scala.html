@@ -83,6 +83,7 @@
             @components.fields.field_autocomplete(
                 form("country"),
                 "supplementary.address.country",
+                Some("form-label-bold"),
                 None,
                 messages("supplementary.address.country.empty"),
                 AutoCompleteItem.fromCountry(Countries.allCountries),

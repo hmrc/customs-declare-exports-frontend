@@ -67,6 +67,7 @@
             @components.fields.field_autocomplete(
                 form("country"),
                 messages("declaration.additionalFiscalReferences.country"),
+                Some("form-label-bold"),
                 None,
                 messages("declaration.additionalFiscalReferences.country.empty"),
                 AutoCompleteItem.fromCountry(Countries.allCountries, _.countryCode)
