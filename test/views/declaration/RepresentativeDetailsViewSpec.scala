@@ -33,27 +33,6 @@ class RepresentativeDetailsViewSpec extends ViewSpec with RepresentativeDetailsM
   private def createView(form: Form[RepresentativeDetails] = form): Html =
     representativeDetailsPage(form)(fakeRequest, messages)
 
-  "Representative Details View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "Add representative")
-      assertMessage(header, "Was a representative used? (optional)")
-      assertMessage(eoriInfo, "3/20 EORI number")
-      assertMessage(addressInfo, "3/19 Enter representative’s name and address")
-      assertMessage(repTypeHeader, "3/21 What type of representation is being used? (optional)")
-      assertMessage(repTypeDeclarant, "I am declaring for the company I work for or own")
-      assertMessage(repTypeDirect, "Direct representative")
-      assertMessage(repTypeIndirect, "Indirect representative")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(repTypeErrorEmpty, "Please, choose your representative status")
-      assertMessage(repTypeErrorWrongValue, "Please, choose valid representative status")
-    }
-  }
-
   "Representative Details View on empty page" should {
 
     "display page title" in {

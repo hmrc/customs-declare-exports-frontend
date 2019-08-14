@@ -42,44 +42,6 @@ class DocumentsProducedViewSpec extends ViewSpec with DocumentsProducedMessages 
   private def createView(form: Form[DocumentsProduced] = form, cachedDocuments: Seq[DocumentsProduced] = Seq()): Html =
     documentsProducedPage(itemId, form, cachedDocuments)(fakeRequest, messages)
 
-  "Documents Produced View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "2/3 Do you need to add any documents?")
-      assertMessage(hint, "Including certificates, authorisations or additional references")
-      assertMessage(documentTypeCode, "Document type code")
-      assertMessage(documentIdentifier, "Document identifier")
-      assertMessage(documentPart, "Document part")
-      assertMessage(documentStatus, "Document status")
-      assertMessage(documentStatusReason, "Document status reason")
-      assertMessage(issuingAuthorityName, "Issuing authority name")
-      assertMessage(dateOfValidity, "Date of validity")
-      assertMessage(measurementUnit, "Measurement unit and qualifier")
-      assertMessage(documentQuantity, "Quantity")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(documentTypeCodeError, "Incorrect document type code")
-      assertMessage(documentIdentifierError, "Incorrect document identifier")
-      assertMessage(documentPartError, "Incorrect document part")
-      assertMessage(documentStatusError, "Incorrect document status")
-      assertMessage(documentStatusReasonError, "Incorrect document status reason")
-      assertMessage(issuingAuthorityNameLengthError, "Issuing authority name is too long")
-      assertMessage(measurementUnitLengthError, "Measurement unit and qualifier has to be exactly 4 characters long")
-      assertMessage(
-        measurementUnitSpecialCharactersError,
-        "Measurement unit and qualifier cannot contain special characters"
-      )
-      assertMessage(maximumAmountReachedError, "You cannot have more than 99 documents")
-      assertMessage(duplicatedItemError, "You cannot add an already existent document")
-      assertMessage(notDefinedError, "Please provide some document information")
-      assertMessage(documentIdentifierAndPartError, "Please provide both Document Identifier and Document Part")
-      assertMessage(measurementUnitAndQuantityError, "Please provide both Measurement Unit and Document Quantity")
-    }
-  }
-
   "Documents Produced View on empty page" should {
 
     "display page title" in {

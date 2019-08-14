@@ -41,26 +41,6 @@ class ConsignmentReferencesViewSpec extends ViewSpec with ConsignmentReferencesM
   private def createView(form: Form[ConsignmentReferences] = form): Html =
     consignmentReferencesPage(form)(fakeRequest, messages)
 
-  "Consignment References View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "Consignment References")
-      assertMessage(header, "Enter your consignment references")
-      assertMessage(lrnInfo, "2/5 Enter your LRN reference number")
-      assertMessage(lrnHint, "This is your own reference number of up to 22 digits")
-      assertMessage(ucrInfo, "2/4 Enter your DUCR (Optional)")
-      assertMessage(ucrHint, "Your own reference, which must be used only for this declaration")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(lrnEmpty, "LRN cannot be empty")
-      assertMessage(lrnLength, "LRN cannot exceed 22 characters")
-      assertMessage(lrnSpecialCharacter, "LRN cannot contain special characters")
-    }
-  }
-
   "Consignment References View on empty page" should {
 
     "display page title" in {

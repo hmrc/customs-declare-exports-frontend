@@ -32,26 +32,6 @@ class DispatchLocationViewSpec extends ViewSpec with DispatchLocationMessages wi
   private def createView(form: Form[DispatchLocation] = form): Html =
     dispatchLocationPage(form)(fakeRequest, messages)
 
-  "Dispatch Location View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(header, "1/1 Where have the goods been sent?")
-      assertMessage(hint, "Hint text if needed here")
-      assertMessage(outsideEu, "Outside the EU")
-      assertMessage(
-        specialFiscalTerritory,
-        "Special fiscal territory of the EU or a country with which the EU has formed a customs union"
-      )
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(errorMessageEmpty, "Please, choose dispatch location")
-      assertMessage(errorMessageIncorrect, "Please, choose valid dispatch location")
-    }
-  }
-
   "Dispatch Location View on empty page" should {
 
     "display page title" in {

@@ -44,13 +44,13 @@ class TransportDetailsViewSpec extends TransportDetailsFields with CommonMessage
     "display page title" in {
       val view = createView()
 
-      getElementById(view, "title").text() must be(messages("supplementary.transportInfo.title"))
+      view.getElementById("title").text() must be(messages("supplementary.transportInfo.active.title"))
     }
 
     "display header" in {
       val view = createView()
 
-      getElementByCss(view, "legend>h1").text() must be(messages("supplementary.transportInfo.title"))
+      getElementByCss(view, "legend>h1").text() must be(messages("supplementary.transportInfo.active.title"))
     }
 
     "display 'Back' button that links to 'border-transport' page" in {
@@ -102,7 +102,7 @@ trait TransportDetailsFields extends ViewSpec {
 
   val meansOfTransportCrossingTheBorderType = field_radio(
     field = form("meansOfTransportCrossingTheBorderType"),
-    legend = "7/14 What was the active means of transport",
+    legend = messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header"),
     hint = Some(messages("supplementary.transportInfo.meansOfTransport.crossingTheBorder.header.hint")),
     inputs = Seq(
       RadioOption(
@@ -153,13 +153,13 @@ trait TransportDetailsFields extends ViewSpec {
 
   val container = field_radio(
     field = form("container"),
-    legend = "7/2 Were the goods in a container?",
+    legend = messages("supplementary.transportInfo.container"),
     inputs = Seq(RadioOption("Yes", "true", messages("site.yes")), RadioOption("No", "false", messages("site.no")))
   ).body
 
   val paymentMethod = field_radio(
     field = form("paymentMethod"),
-    legend = "4/2 Enter transport charges method of payment",
+    legend = messages("standard.transportDetails.paymentMethod"),
     inputs = paymentMethods.toSeq.map { case (a, b) => RadioOption(messages(b), a, messages(b)) }
   ).body
 }

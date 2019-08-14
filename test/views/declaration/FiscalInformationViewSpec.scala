@@ -32,21 +32,6 @@ class FiscalInformationViewSpec extends ViewSpec with FiscalInformationMessages 
   private def createView(form: Form[FiscalInformation] = form): Html =
     fiscalInformationPage(itemId, form)(fakeRequest, messages)
 
-  "Fiscal Information View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "Onward Supply Relief (OSR)")
-      assertMessage(header, "Item 1")
-      assertMessage(yes, "Yes")
-      assertMessage(no, "No")
-    }
-    "have proper messages for error labels" in {
-      assertMessage(errorMessageEmpty, "Please enter a value")
-      assertMessage(errorMessageIncorrect, "Please enter a value")
-    }
-  }
-
   "Fiscal Information View on empty page" should {
 
     "display page title" in {

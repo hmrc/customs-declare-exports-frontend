@@ -32,34 +32,6 @@ class ProcedureCodesViewSpec extends ViewSpec with ProcedureCodesMessages with C
   private def createView(form: Form[ProcedureCodes] = form): Html =
     procedureCodesPage("1234", form, Seq())(fakeRequest, messages)
 
-  /*
-   * Tests for errors are in the ProcedureCodesControllerSpec
-   */
-  "Procedure Codes View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "Procedure Codes")
-      assertMessage(procCodeHeader, "1/10 Enter the procedure code")
-      assertMessage(procCodeHeaderHint, "A 4 digit code, made up of the requested procedure and the previous procedure")
-      assertMessage(addProcCodeHeader, "1/11 Do you need to enter additional procedure codes?")
-      assertMessage(addProcCodeHeaderHint, "A 3 digit code. Up to 99 may be declared for each goods item.")
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(procCodeErrorEmpty, "Procedure code cannot be empty")
-      assertMessage(procCodeErrorLength, "Procedure code must be exactly 4 characters long")
-      assertMessage(procCodeErrorSpecialCharacters, "Procedure code cannot contain special characters")
-      assertMessage(addProcCodeErrorLength, "Additional procedure code must be exactly 3 characters long")
-      assertMessage(addProcCodeErrorSpecialCharacters, "Additional procedure code cannot contain special characters")
-      assertMessage(addProcCodeErrorMandatory, "You must have at least one additional procedure code")
-      assertMessage(addProcCodeErrorMaxAmount, "You can have up to 99 codes")
-      assertMessage(addProcCodeErrorEmpty, "You cannot add empty code")
-      assertMessage(addProcCodeErrorDuplication, "You cannot add the same code like before")
-    }
-  }
-
   "Procedure Codes View on empty page" should {
 
     "display page title" in {

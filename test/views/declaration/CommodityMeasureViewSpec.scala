@@ -32,41 +32,6 @@ class CommodityMeasureViewSpec extends ViewSpec with CommodityMeasureMessages wi
   private def createView(form: Form[CommodityMeasure] = form): Html =
     goodsMeasurePage(itemId, form)(fakeRequest, messages)
 
-  "Commodity Measure View" should {
-
-    "have proper messages for labels" in {
-
-      assertMessage(title, "Commodity measurements")
-      assertMessage(netMass, "6/1 Net Weight")
-      assertMessage(netMassHint, "The weight excluding container and packaging in kg")
-      assertMessage(grossMass, "6/5 Gross Weight")
-      assertMessage(grossMassHint, "The weight excluding container and packaging in kg")
-      assertMessage(supplementaryUnits, "6/2 Do you need to add supplementary units?")
-      assertMessage(
-        supplementaryUnitsHint,
-        "Enter the quantity in the unit specified by the commodity code, for example 1,000 kWh"
-      )
-    }
-
-    "have proper messages for error labels" in {
-
-      assertMessage(globalAddOne, "You must add package information to proceed")
-      assertMessage(netMassEmpty, "Net weight cannot be empty")
-      assertMessage(
-        netMassError,
-        "Net weight should be a decimal value and should be less than or equal to 99999999999.999 with 3 decimals"
-      )
-      assertMessage(grossMassEmpty, "Gross weight cannot be empty")
-      assertMessage(
-        grossMassError,
-        "Gross weight should be a decimal value and should be less than or equal to 99999999999999.99 with 2 decimals"
-      )
-      assertMessage(
-        supplementaryUnitsError,
-        "Supplementary units should be a decimal value and should be less than or equal to 99999999999999.99 with 2 decimals"
-      )
-    }
-  }
 
   "Commodity Measure View on empty page" should {
 

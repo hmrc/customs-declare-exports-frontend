@@ -39,24 +39,6 @@ class ChoiceViewSpec extends ViewSpec with ChoiceMessages with CommonMessages {
   private val choicePage = app.injector.instanceOf[choice_page]
   private def createView(form: Form[Choice] = form): Html = choicePage(form)
 
-  "Choice View" should {
-
-    "have proper labels for messages" in {
-
-      assertMessage(title, "What do you want to do?")
-      assertMessage(supplementaryDec, "Supplementary declaration")
-      assertMessage(standardDec, "Standard declaration")
-      assertMessage(cancelDec, "Cancel declaration")
-      assertMessage(recentDec, "View recent declarations")
-    }
-
-    "have proper labels for error messages" in {
-
-      assertMessage(choiceEmpty, "Please, choose what do you want to do")
-      assertMessage(choiceError, "Please, choose valid option")
-    }
-  }
-
   "Choice View on empty page" should {
 
     "display page title" in {
