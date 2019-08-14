@@ -30,7 +30,7 @@
 ) {
     @components.back_link(routes.PreviousDocumentsController.displayForm().url)
 
-    <span id="section-header" class="pre-heading" style="margin-top: 50px">@messages("supplementary.items")</span>
+    @components.section_header(messages("supplementary.items"))
 
     @if(items.isEmpty) {
         <h1 id="title" style="margin:0">@messages("supplementary.itemsAdd.title")</h1>

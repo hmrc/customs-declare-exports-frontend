@@ -58,13 +58,12 @@
 
         @components.page_title(Some(messages("declaration.additionalFiscalReferences.title")))
 
-        <h3>@messages("declaration.additionalFiscalReferences.numbers.header")</h3>
-
         @components.fields.removable_elements_table(
-            elements = additionalReferences.map(_.asString).map(ref => LabelledValue(ref))
+          title = Some(messages("declaration.additionalFiscalReferences.numbers.header")),
+          elements = additionalReferences.map(_.asString).map(ref => LabelledValue(ref))
         )
 
-        <div id="country-of-dispatch-field" class="inline-block form-group">
+        <div id="country-of-dispatch-field">
             @components.fields.field_autocomplete(
                 form("country"),
                 messages("declaration.additionalFiscalReferences.country"),

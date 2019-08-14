@@ -25,31 +25,28 @@
 <div class="form-field">
     @components.fields.field_text(
         field = form(s"$addressPrefix.fullName"),
-        label = messages("supplementary.address.fullName"),
-        labelClass = Some("form-label-bold")
+        label = messages("supplementary.address.fullName")
     )
 
     @components.fields.field_text(
         field = form(s"$addressPrefix.addressLine"),
-        label = messages("supplementary.address.addressLine"),
-        labelClass = Some("form-label-bold")
+        label = messages("supplementary.address.addressLine")
     )
 
     @components.fields.field_text(
         field = form(s"$addressPrefix.townOrCity"),
-        label = messages("supplementary.address.townOrCity"),
-        labelClass = Some("form-label-bold")
+        label = messages("supplementary.address.townOrCity")
     )
 
     @components.fields.field_text(
         field = form(s"$addressPrefix.postCode"),
-        label = messages("supplementary.address.postCode"),
-        labelClass = Some("form-label-bold")
+        label = messages("supplementary.address.postCode")
     )
 
-    @components.fields.field_autocomplete(
+    @components.fields.field_autocomplete_with_labelclass(
         form(s"$addressPrefix.country"),
         "supplementary.address.country",
+        None,
         None,
         messages("supplementary.address.country.empty"),
         AutoCompleteItem.fromCountry(Countries.allCountries),

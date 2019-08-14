@@ -15,43 +15,7 @@
  *@
 
 @import services.view.AutoCompleteItem
-@import views.html.helper._
-@import views.html.components.inputs.input_autocomplete
+@import views.html.components.fields.field_autocomplete_with_labelclass
 @(field: Field, label: String, hintText: Option[String], emptySelectValue: String, items: List[AutoCompleteItem], args: (Symbol, Any)*)(implicit messages: Messages)
-@*
-Some fields contains Sequence as type of the field, e.g. countries of routing on destination countries page.
-JQuery treats [] as element's attribute and tried evaluated this.
-To avoid problems, we need to remove [] from field.
-*@
-@fieldNameWithoutBrackets = @{
-    field.name.replace("[]", "")
-}
 
-@elements = @{
-    FieldElements(field.id, field, null, args.toMap, messages)
-}
-
-@allErrors = @{
-    elements.errors ++ args.flatMap {
-        case ('otherErrors, otherErrors: Seq[_]) => otherErrors.map(_.toString)
-        case _ => Seq.empty
-    }
-}
-
-<div id="@fieldNameWithoutBrackets-autocomplete-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
-    <label id="@(fieldNameWithoutBrackets)-label" for="@fieldNameWithoutBrackets" class="form-label-bold">
-        @messages(label)
-    </label>
-
-    @allErrors.map { error => <span id="error-message-@{field.name}-input" class="error-message">@messages(error)</span> }
-
-    @hintText.map { ht =>
-        <span class="form-hint" id="@(fieldNameWithoutBrackets)-hint">@ht</span>
-    }
-
-    @input_autocomplete(
-        field = field,
-        emptySelectValue = emptySelectValue,
-        items = items
-    )
-</div>
+@field_autocomplete_with_labelclass(field, label, Some("form-label-bold"), hintText, emptySelectValue, items, args:_*)

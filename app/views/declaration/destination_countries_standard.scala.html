@@ -39,7 +39,7 @@
 
         @components.page_title(Some("declaration.destinationCountries.title"))
 
-        <div id="country-of-dispatch-field" class="inline-block form-group">
+        <div id="country-of-dispatch-field">
             @components.fields.field_autocomplete(
                 form("countryOfDispatch"),
                 "declaration.destinationCountries.countryOfDispatch",
@@ -49,7 +49,7 @@
             )
         </div>
 
-        <div id="country-of-routing-field" class="inline-block form-group">
+        <div id="country-of-routing-field">
             @components.fields.field_multiple_values(
                 field = form("countriesOfRouting"),
                 label = messages("declaration.destinationCountries.routing"),
@@ -64,7 +64,7 @@
             )
         </div>
 
-        <div id="country-of-destination-field" class="inline-block form-group">
+        <div id="country-of-destination-field">
             @components.fields.field_autocomplete(
                 form("countryOfDestination"),
                 "declaration.destinationCountries.countryOfDestination",
