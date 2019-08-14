@@ -19,7 +19,8 @@ package unit.controllers.declaration
 import controllers.declaration.ExporterDetailsController
 import forms.common.Address
 import forms.declaration.ExporterDetails
-import org.mockito.{ArgumentCaptor, Mockito}
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito.{verify, when, reset}
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.OptionValues
 import play.api.data.Form
@@ -45,20 +46,20 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
     exporter_details
   )(ExecutionContext.global)
 
-  def templateArgument: Form[ExporterDetails] = {
+  def theResponseForm: Form[ExporterDetails] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[ExporterDetails]])
-    Mockito.verify(exporter_details).apply(captor.capture())(any(), any())
+    verify(exporter_details).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    Mockito.when(exporter_details.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(exporter_details.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    Mockito.reset(exporter_details)
+    reset(exporter_details)
     super.afterEach()
   }
 
@@ -67,7 +68,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
       "details are empty" in {
         val declaration = aDeclaration()
         withNewCaching(declaration)
-        val response = controller.displayForm().apply(getRequest(declaration))
+        val response = controller.displayForm()(getRequest(declaration))
         status(response) mustBe OK
       }
       "details are filled" in {
@@ -78,9 +79,9 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           )
         )
         withNewCaching(declaration)
-        val response = controller.displayForm().apply(getRequest(declaration))
+        val response = controller.displayForm()(getRequest(declaration))
         status(response) mustBe OK
-        val details = templateArgument.value.value.details
+        val details = theResponseForm.value.value.details
         details.eori mustBe defined
         details.address mustBe defined
       }
@@ -89,7 +90,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
       "form contains erros" in {
         val declaration = aDeclaration()
         withNewCaching(declaration)
-        val response = controller.saveAddress().apply(postRequest(Json.obj(), declaration))
+        val response = controller.saveAddress()(postRequest(Json.obj(), declaration))
         status(response) mustBe BAD_REQUEST
       }
     }
@@ -98,7 +99,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
         val declaration = aDeclaration()
         withNewCaching(declaration)
         val body = Json.obj("details" -> Json.obj("eori" -> "PL213472539481923"))
-        val response = controller.saveAddress().apply(postRequest(body, declaration))
+        val response = controller.saveAddress()(postRequest(body, declaration))
         status(response) mustBe SEE_OTHER
         redirectLocation(response).value must endWith("consignee-details")
       }
