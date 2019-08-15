@@ -35,8 +35,8 @@ class CancelDeclarationControllerSpec extends CustomExportsBaseSpec {
       val registry = app.injector.instanceOf[Metrics].defaultRegistry
       val cancelMetric = MetricIdentifiers.cancelMetric
 
-      val cancelTimer = registry.getTimers().get(metrics.timerName(cancelMetric))
-      val cancelCounter = registry.getCounters().get(metrics.counterName(cancelMetric))
+      val cancelTimer = registry.getTimers().get(exportsMetricsMock.timerName(cancelMetric))
+      val cancelCounter = registry.getCounters().get(exportsMetricsMock.counterName(cancelMetric))
 
       val timerBefore = cancelTimer.getCount
       val counterBefore = cancelCounter.getCount
