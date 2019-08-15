@@ -87,6 +87,7 @@ trait TransportDetailsFields extends ViewSpec {
   val meansOfTransportCrossingTheBorderNationality = field_autocomplete(
     form("meansOfTransportCrossingTheBorderNationality"),
     "supplementary.transportInfo.meansOfTransport.crossingTheBorder.nationality.header",
+    Some("form-label-bold"),
     None,
     messages("declaration.destinationCountries.countriesOfRouting.empty"),
     AutoCompleteItem.fromCountry(Countries.allCountries),
