@@ -29,30 +29,27 @@ import org.mockito.Mockito.when
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.{Answer, OngoingStubbing}
 import org.scalatest.mockito.MockitoSugar
-import play.api.test.Helpers.{ACCEPTED, BAD_REQUEST}
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockConnectors extends MockitoSugar {
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
 
   lazy val mockNrsConnector: NrsConnector = mock[NrsConnector]
 
-  def successfulCustomsDeclareExportsResponse(): OngoingStubbing[Future[HttpResponse]] = {
+  def successfulCustomsDeclareExportsResponse(): Unit = {
     when(mockCustomsDeclareExportsConnector.create(any[ExportsDeclaration])(any(), any()))
       .thenAnswer(withTheFirstArgument)
-    when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
-      .thenReturn(Future.successful(HttpResponse(ACCEPTED)))
   }
 
   private def withTheFirstArgument[T]: Answer[Future[T]] = new Answer[Future[T]] {
     override def answer(invocation: InvocationOnMock): Future[T] = Future.successful(invocation.getArgument(0))
   }
 
-  def customsDeclaration400Response(): OngoingStubbing[Future[HttpResponse]] =
-    when(mockCustomsDeclareExportsConnector.submitExportDeclaration(any(), any(), any())(any(), any()))
-      .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
+  def customsDeclaration400Response(): Unit =
+    when(mockCustomsDeclareExportsConnector.create(any())(any[HeaderCarrier], any[ExecutionContext]))
+      .thenReturn(Future.failed(new IllegalArgumentException("Bad Request")))
 
   def listOfNotifications(): OngoingStubbing[Future[Seq[Notification]]] =
     when(mockCustomsDeclareExportsConnector.fetchNotifications()(any(), any()))

@@ -28,10 +28,9 @@ import models.requests.CancellationRequested
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
-import play.api.test.Helpers.ACCEPTED
 import services.WcoMetadataMapper
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.Authorization
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with GuiceOneAppPerSuite {
   import CustomsDeclareExportsConnectorSpec._
@@ -39,24 +38,6 @@ class CustomsDeclareExportsConnectorSpec extends CustomExportsBaseSpec with Guic
   private val wcoMetadataMapper = app.injector.instanceOf[WcoMetadataMapper]
 
   "Customs Declare Exports Connector" should {
-
-    "POST to Customs Declare Exports endpoint to submit declaration" in {
-      val metadata = wcoMetadataMapper.produceMetaData(exportCacheModel)
-
-      val http = new MockHttpClient(
-        mockWSClient,
-        expectedExportsUrl(appConfig.submitDeclaration),
-        wcoMetadataMapper.toXml(metadata),
-        submissionHeaders,
-        falseServerError,
-        HttpResponse(ACCEPTED)
-      )
-
-      val client = new CustomsDeclareExportsConnector(appConfig, http, wcoMetadataMapper)
-      val response = client.submitExportDeclaration(Some(""), None, wcoMetadataMapper.toXml(metadata))(hc, ec)
-
-      response.futureValue.status must be(ACCEPTED)
-    }
 
     "GET to Customs Declare Exports endpoint to fetch notifications" in {
       val http =

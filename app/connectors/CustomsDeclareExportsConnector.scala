@@ -27,7 +27,7 @@ import play.api.Logger
 import play.api.http.{ContentTypes, HeaderNames}
 import play.api.mvc.Codec
 import services.WcoMetadataMapper
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import wco.datamodel.wco.documentmetadata_dms._2.MetaData
 
@@ -79,26 +79,6 @@ class CustomsDeclareExportsConnector @Inject()(
         s"${appConfig.customsDeclareExports}${appConfig.submitDeclarationV2}/$id"
       )
       .map(_.map(_.toExportsDeclaration(sessionId)))
-
-  def submitExportDeclaration(ducr: Option[String], lrn: Option[String], payload: String)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[HttpResponse] =
-    httpClient
-      .POSTString[HttpResponse](
-        s"${appConfig.customsDeclareExports}${appConfig.submitDeclaration}",
-        payload,
-        Seq(
-          (HeaderNames.CONTENT_TYPE -> ContentTypes.XML(Codec.utf_8)),
-          (HeaderNames.ACCEPT -> ContentTypes.XML(Codec.utf_8)),
-          ("X-DUCR", ducr.getOrElse("")),
-          ("X-LRN", lrn.getOrElse(""))
-        )
-      )
-      .map { response =>
-        logger.debug(s"CUSTOMS_DECLARE_EXPORTS response is --> ${response.toString}")
-        response
-      }
 
   def fetchNotifications()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[Notification]] =
     httpClient.GET[Seq[Notification]](s"${appConfig.customsDeclareExports}${appConfig.fetchNotifications}")
